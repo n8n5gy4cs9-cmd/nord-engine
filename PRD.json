@@ -1173,6 +1173,18 @@
       "milestone": "M8",
       "title": "Bug-bash all examples + KNOWN_ISSUES cleanup",
       "status": "todo"
+    },
+    {
+      "id": "M8-09",
+      "milestone": "M8",
+      "title": "build.sh: Windows build into dist/windows/ (exe + resources, zip/installer)",
+      "status": "todo"
+    },
+    {
+      "id": "M8-10",
+      "milestone": "M8",
+      "title": "build.sh: Linux build into dist/linux/ (tar.gz/AppImage)",
+      "status": "todo"
     }
   ]
 }

@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
-# Build the macOS app bundle:  dist/Nord Engine.app   (+ optional .dmg)
+# Builds the full editor + everything it needs into ./dist  (gitignored):
+#   dist/Nord Engine.app          macOS app bundle (+ optional .dmg)          <- implemented
+#   dist/windows/                 Windows build                               <- planned, goes here (see TODO below)
+#   dist/linux/                   Linux build                                 <- planned, goes here (see TODO below)
+# Step 1 always regenerates the offline manual (node tools/build-manual.mjs) so docs/manual is fresh inside the bundle.
 #
 #   ./build.sh                 # native arch (Apple Silicon -> arm64), ad-hoc signed
 #   ./build.sh --universal     # arm64 + x86_64 (rustup adds the missing target)
@@ -20,14 +24,25 @@ for a in "$@"; do
     --dmg) DMG=1 ;;
     --no-webview) WEBVIEW=0 ;;
     --open) OPEN=1 ;;
-    -h|--help) sed -n '2,13p' "$0"; exit 0 ;;
+    -h|--help) sed -n '2,17p' "$0"; exit 0 ;;
     *) echo "unknown option: $a" >&2; exit 2 ;;
   esac
 done
 
+# ---- step 1: generated docs (needs Node 18+) --------------------------------------------------------------------------
+command -v node >/dev/null || { echo "node not found (needed for the manual: tools/build-manual.mjs). Install Node 18+." >&2; exit 1; }
+echo "==> building the manual (node tools/build-manual.mjs)"
+node tools/build-manual.mjs
+
 OS="$(uname -s)"
+# TODO(windows): on Windows (Git Bash/MSYS) or cross-built: cargo build --release -p nord-editor -p nord-cli -p nord-player,
+#   assemble dist/windows/NordEngine/{nord-editor.exe,nord.exe,nord-player.exe,vendor,runtime,editor,docs,library,examples}, zip it
+#   (and optionally an installer). WebView2 replaces WKWebView for the wry features. Not implemented yet.
+# TODO(linux): cargo build --release (webkit2gtk + gtk dev packages for the `webview`/`shell` features), assemble dist/linux/nord-engine/
+#   with the same resource folders, produce a .tar.gz (and optionally an AppImage). Not implemented yet.
 if [ "$OS" != "Darwin" ] && [ "${NORD_BUILD_ALLOW_NON_MAC:-0}" != 1 ]; then
-  echo "build.sh builds the macOS .app and must run on a Mac." >&2
+  echo "build.sh currently builds the macOS .app and must run on a Mac." >&2
+  echo "Windows and Linux builds are planned (output: dist/windows/ and dist/linux/) but not implemented yet." >&2
   echo "(NORD_BUILD_ALLOW_NON_MAC=1 assembles the bundle layout elsewhere for testing; no signing/lipo.)" >&2
   exit 1
 fi

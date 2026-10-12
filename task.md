@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 114/143 tasks (80%)** · updated 2026-10-12
+**Overall: 114/145 tasks (79%)** · updated 2026-10-12
 
 | Milestone | Progress |
 |---|---|
@@ -15,7 +15,7 @@
 | M5 Rust/WASM | 9/9 (100%) |
 | M6 Library | 18/18 (100%) |
 | M7 Docs | 12/12 (100%) |
-| M8 Polish & portability | 0/8 (0%) |
+| M8 Polish & portability | 0/10 (0%) |
 | M9 Desktop apps | 0/16 (0%) |
 
 ## Next up
@@ -187,6 +187,8 @@ _dmg, CI, Windows, Linux, perf_
 - [ ] **M8-06** Optional: Bevy template, PlayCanvas engine as 4th web tier
 - [ ] **M8-07** Optional: TypeScript support in code editor
 - [ ] **M8-08** Bug-bash all examples + KNOWN_ISSUES cleanup
+- [ ] **M8-09** build.sh: Windows build into dist/windows/ (exe + resources, zip/installer)
+- [ ] **M8-10** build.sh: Linux build into dist/linux/ (tar.gz/AppImage)
 
 ## M9 — Desktop apps
 _real native desktop apps (Rust backend): files, dialogs, notifications, tray, windows, storage, packaging_
