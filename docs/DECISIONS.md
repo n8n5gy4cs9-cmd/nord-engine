@@ -66,3 +66,33 @@ Mac wrapper uses a minimal `wry`+`tao` `nord-player`.
 
 ## ADR: Skins + themes are data (assets/themes/themes.json), dark only (2026-10-12)
 A *skin* is a font pair (UI + code, ligatures on/off); a *theme* is a dark color set (UI colors + syntax colors). One JSON is the source for the JS runtime (generated module), the egui editor (`include_str!`) and the code editor. Light themes are deliberately not shipped for now. All fonts are vendored woff2 (OFL) — no CDN.
+
+## ADR-014 Editor ⇄ viewport/game bridge is HTTP/SSE through `nord-serve`, not wry IPC (M3, 2026-10-12)
+**Context.** The plan (ARCHITECTURE §4) used `evaluate_script` (down) and `ipc_handler` (up). That makes the *whole* editor loop depend on the
+macOS-only, unverifiable-in-sandbox webview embedding, and it can't be tested without a window.
+**Decision.** The dev server became a library crate `nord-serve` (used by `nord serve` and in-process by the editor). It owns a `Hub`:
+editor → page commands over SSE (`/__edit/events`, also injectable via `POST /__edit/cmd`), page → editor messages via `POST /api/ipc`,
+game console via `POST /api/log` (a tiny script injected into served HTML forwards `console.*`/errors). The embedded webview is then *only a
+display surface* for a URL. **Consequences.** + protocol fully tested headless (Playwright against the real `nord serve`), identical in the
+"Open in browser" fallback; + the webview spike (M3-07) shrinks to placement/resize/focus; − one local HTTP hop (negligible, localhost).
+
+## ADR-015 Undo = snapshot commands (M3, 2026-10-12)
+Scenes are small JSON trees, so every mutation goes through `EditorState::edit(label, coalesce_key, f)`, which snapshots the entity list
+before/after and records a `Command`. Consecutive edits with the same key within 800 ms merge (a drag/slider = one step). Simpler and safer
+than hand-written inverse operations; cost is O(scene) per edit, fine at hobby scale. Autosave writes `.nord-cache/autosave/…` atomically and is
+offered for recovery on next open if newer than the scene file.
+
+## ADR-016 Code editor: own tokenizer, not syntect (M3, 2026-10-12)
+syntect's bundled grammars lack TypeScript, TOML, GLSL and WGSL, and its themes would not match `themes.json`. `code/highlight.rs` is a ~300-line
+tokenizer (JS/TS/Rust/HTML/CSS/JSON/MD/GLSL/WGSL/TOML) coloured from the shared theme's `code` palette, so web, editor and code editor share one
+palette. Limits: not a real parser (regex literals, nested template strings are approximations). `egui_code_editor` was evaluated on paper (no
+multi-cursor, fixed themes, no gutter hooks) and rejected; CodeMirror-in-webview stays the escape hatch.
+
+## ADR-017 2D edit view is Canvas2D, 3D edit view is Babylon (M3, 2026-10-12)
+The 2D edit view needs sprites/text/tilemap/collider outlines, picking and handles — not Phaser's renderer or physics. Plain Canvas2D starts
+instantly, is ~450 lines, and is trivially testable. 3D uses Babylon (GizmoManager, picking, glTF) so models/lights look right. The *Game* tab
+(Play) always runs the real Phaser/Babylon runtime.
+
+## ADR-018 One window for splash + main (M3, 2026-10-12)
+Splash is the same eframe window started borderless 640×360 and turned into the decorated main window (resize, centre, restore saved geometry)
+after ≥ 2000 ms. Avoids multi-window plumbing; tradeoff: a visible resize on slow compositors.

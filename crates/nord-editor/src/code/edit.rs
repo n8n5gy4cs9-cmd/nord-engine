@@ -58,7 +58,11 @@ pub fn newline(s: &str, cursor: usize, tab: usize) -> Edit {
     let before = &s[line_start..i];
     let indent = leading_ws(before).to_string();
     let unit = " ".repeat(tab);
-    let opener = before.trim_end().chars().last().is_some_and(|c| "{([:".contains(c) && (c != ':' || false));
+    let opener = before
+        .trim_end()
+        .chars()
+        .last()
+        .is_some_and(|c| "{([:".contains(c) && (c != ':' || false));
     let closer_next = s[i..].chars().next().is_some_and(|c| "})]".contains(c));
     let mut ins = format!("\n{indent}");
     let mut pos = cursor + 1 + nchars(&indent);
@@ -73,10 +77,14 @@ pub fn newline(s: &str, cursor: usize, tab: usize) -> Edit {
     t.push_str(&s[..i]);
     t.push_str(&ins);
     t.push_str(&s[i..]);
-    Edit { text: t, sel: (pos, pos) }
+    Edit {
+        text: t,
+        sel: (pos, pos),
+    }
 }
 
 /// Indent (or dedent) all lines covered by the selection.
+#[allow(clippy::needless_range_loop)]
 pub fn indent_lines(s: &str, a: usize, b: usize, tab: usize, dedent: bool) -> Edit {
     let (l0, l1) = lines_covering(s, a, b);
     let unit = " ".repeat(tab);
@@ -86,7 +94,11 @@ pub fn indent_lines(s: &str, a: usize, b: usize, tab: usize, dedent: bool) -> Ed
     for l in l0..=l1.min(lines.len() - 1) {
         let delta: isize = if dedent {
             let ws = leading_ws(&lines[l]).to_string();
-            let remove = if ws.starts_with('\t') { 1 } else { ws.chars().take(tab).take_while(|&c| c == ' ').count() };
+            let remove = if ws.starts_with('\t') {
+                1
+            } else {
+                ws.chars().take(tab).take_while(|&c| c == ' ').count()
+            };
             lines[l] = lines[l][remove..].to_string();
             -(remove as isize)
         } else {
@@ -102,13 +114,19 @@ pub fn indent_lines(s: &str, a: usize, b: usize, tab: usize, dedent: bool) -> Ed
     }
     let na = (a as isize + da).max(0) as usize;
     let nb = (b as isize + db).max(0) as usize;
-    Edit { text: lines.join("\n"), sel: (na, nb) }
+    Edit {
+        text: lines.join("\n"),
+        sel: (na, nb),
+    }
 }
 
+#[allow(clippy::needless_range_loop)]
 pub fn toggle_comment(s: &str, a: usize, b: usize, prefix: &str) -> Edit {
     let (l0, l1) = lines_covering(s, a, b);
     let mut lines: Vec<String> = s.split('\n').map(String::from).collect();
-    let all = (l0..=l1).filter(|&l| !lines[l].trim().is_empty()).all(|l| lines[l].trim_start().starts_with(prefix));
+    let all = (l0..=l1)
+        .filter(|&l| !lines[l].trim().is_empty())
+        .all(|l| lines[l].trim_start().starts_with(prefix));
     let mut delta_first = 0isize;
     let mut delta_total = 0isize;
     for l in l0..=l1 {
@@ -134,7 +152,10 @@ pub fn toggle_comment(s: &str, a: usize, b: usize, prefix: &str) -> Edit {
     let nlo = (lo as isize + delta_first).max(0) as usize;
     let nhi = (hi as isize + delta_total).max(nlo as isize) as usize;
     let sel = if a <= b { (nlo, nhi) } else { (nhi, nlo) };
-    Edit { text: lines.join("\n"), sel }
+    Edit {
+        text: lines.join("\n"),
+        sel,
+    }
 }
 
 fn closing(c: char) -> Option<char> {
@@ -154,7 +175,10 @@ pub fn typed(s: &str, cursor: usize, ch: char) -> Option<Edit> {
     let i = byte(s, cursor);
     let next = s[i..].chars().next();
     if ")]}\"'`".contains(ch) && next == Some(ch) {
-        return Some(Edit { text: s.to_string(), sel: (cursor + 1, cursor + 1) });
+        return Some(Edit {
+            text: s.to_string(),
+            sel: (cursor + 1, cursor + 1),
+        });
     }
     let close = closing(ch)?;
     let prev = s[..i].chars().last();
@@ -169,7 +193,10 @@ pub fn typed(s: &str, cursor: usize, ch: char) -> Option<Edit> {
     t.push(ch);
     t.push(close);
     t.push_str(&s[i..]);
-    Some(Edit { text: t, sel: (cursor + 1, cursor + 1) })
+    Some(Edit {
+        text: t,
+        sel: (cursor + 1, cursor + 1),
+    })
 }
 
 /// Backspace between an empty pair `(|)` removes both.
@@ -183,7 +210,10 @@ pub fn backspace_pair(s: &str, cursor: usize) -> Option<Edit> {
     (closing(prev) == Some(next)).then(|| {
         let mut t = s[..i - prev.len_utf8()].to_string();
         t.push_str(&s[i + next.len_utf8()..]);
-        Edit { text: t, sel: (cursor - 1, cursor - 1) }
+        Edit {
+            text: t,
+            sel: (cursor - 1, cursor - 1),
+        }
     })
 }
 
@@ -239,7 +269,12 @@ pub fn matching_bracket(s: &str, cursor: usize) -> Option<(usize, usize)> {
 pub fn word_before(s: &str, cursor: usize) -> (usize, String) {
     let chars: Vec<char> = s.chars().collect();
     let mut st = cursor.min(chars.len());
-    while st > 0 && (chars[st - 1].is_alphanumeric() || chars[st - 1] == '_' || chars[st - 1] == '$' || chars[st - 1] == '.') {
+    while st > 0
+        && (chars[st - 1].is_alphanumeric()
+            || chars[st - 1] == '_'
+            || chars[st - 1] == '$'
+            || chars[st - 1] == '.')
+    {
         st -= 1;
     }
     (st, chars[st..cursor.min(chars.len())].iter().collect())
@@ -259,7 +294,11 @@ pub fn reindent(s: &str, tab: usize) -> String {
         }
         let lead_close = t.chars().take_while(|c| "})]".contains(*c)).count() as i32;
         let d = (depth - if in_block { 0 } else { lead_close }).max(0);
-        let pad = if in_block && !t.starts_with("*/") { " " } else { "" };
+        let pad = if in_block && !t.starts_with("*/") {
+            " "
+        } else {
+            ""
+        };
         out.push(format!("{}{pad}{t}", " ".repeat(d as usize * tab)));
         let (mut q, mut esc) = (None::<char>, false);
         let cs: Vec<char> = t.chars().collect();
@@ -347,7 +386,10 @@ mod tests {
     #[test]
     fn format_braces() {
         let src = "function f() {\nif (a) {\nx('}');\n}\n}\n";
-        assert_eq!(reindent(src, 2), "function f() {\n  if (a) {\n    x('}');\n  }\n}\n");
+        assert_eq!(
+            reindent(src, 2),
+            "function f() {\n  if (a) {\n    x('}');\n  }\n}\n"
+        );
     }
 
     #[test]

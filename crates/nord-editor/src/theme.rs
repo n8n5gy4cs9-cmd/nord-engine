@@ -159,7 +159,7 @@ impl Themes {
     }
 
     /// Apply skin (fonts) + theme (colors) to the egui context. Cheap enough to call live from Settings.
-    pub fn apply(&self, ctx: &egui::Context, skin: &str, theme: &str, ui_scale: f32) {
+    pub fn apply(&self, ctx: &egui::Context, skin: &str, theme: &str) {
         let skin = self.skin(skin);
         let th = self.theme(theme);
         ctx.set_fonts(self.fonts(skin));
@@ -206,15 +206,34 @@ impl Themes {
         }
         v.widgets.noninteractive.fg_stroke = egui::Stroke::new(1.0_f32, dim);
         ctx.set_visuals(v);
+    }
 
+    /// Text styles reference the "bold" font family, which only exists once `set_fonts` took effect (next frame) —
+    /// so this runs one frame after `apply` (egui panics on an unbound family).
+    pub fn apply_text_styles(&self, ctx: &egui::Context, ui_scale: f32) {
         let mut style = (*ctx.style()).clone();
         let s = ui_scale;
         style.text_styles = [
-            (TextStyle::Small, FontId::new(10.5 * s, FontFamily::Proportional)),
-            (TextStyle::Body, FontId::new(13.0 * s, FontFamily::Proportional)),
-            (TextStyle::Button, FontId::new(13.0 * s, FontFamily::Proportional)),
-            (TextStyle::Heading, FontId::new(17.0 * s, FontFamily::Name("bold".into()))),
-            (TextStyle::Monospace, FontId::new(13.0 * s, FontFamily::Monospace)),
+            (
+                TextStyle::Small,
+                FontId::new(10.5 * s, FontFamily::Proportional),
+            ),
+            (
+                TextStyle::Body,
+                FontId::new(13.0 * s, FontFamily::Proportional),
+            ),
+            (
+                TextStyle::Button,
+                FontId::new(13.0 * s, FontFamily::Proportional),
+            ),
+            (
+                TextStyle::Heading,
+                FontId::new(17.0 * s, FontFamily::Name("bold".into())),
+            ),
+            (
+                TextStyle::Monospace,
+                FontId::new(13.0 * s, FontFamily::Monospace),
+            ),
         ]
         .into();
         style.spacing.item_spacing = egui::vec2(6.0, 4.0);

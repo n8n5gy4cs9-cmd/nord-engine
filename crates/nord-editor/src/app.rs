@@ -46,7 +46,11 @@ pub fn default_dock() -> DockState<Tab> {
     let s = dock.main_surface_mut();
     let [center, _] = s.split_left(NodeIndex::root(), 0.18, vec![Tab::Hierarchy]);
     let [center, _] = s.split_right(center, 0.78, vec![Tab::Inspector]);
-    let [_, _] = s.split_below(center, 0.68, vec![Tab::Assets, Tab::Console, Tab::Library, Tab::Docs]);
+    let [_, _] = s.split_below(
+        center,
+        0.68,
+        vec![Tab::Assets, Tab::Console, Tab::Library, Tab::Docs],
+    );
     dock
 }
 
@@ -81,18 +85,27 @@ impl App {
 
     pub fn show_tab(&mut self, t: Tab) {
         if let Some(loc) = self.dock.find_tab(&t) {
-            let _ = self.dock.set_active_tab(loc);
+            self.dock.set_active_tab(loc);
         } else {
             self.dock.push_to_focused_leaf(t);
         }
     }
 
     fn splash(&mut self, ctx: &Context) -> bool {
-        let Some(t0) = self.splash_start else { return false };
+        let Some(t0) = self.splash_start else {
+            return false;
+        };
         if t0.elapsed() < SPLASH_MIN {
-            egui::CentralPanel::default().frame(egui::Frame::NONE.fill(egui::Color32::BLACK)).show(ctx, |ui| {
-                ui.add(egui::Image::new(egui::include_image!("../../../assets/brand/splash-640x360.png")).fit_to_exact_size(ui.available_size()));
-            });
+            egui::CentralPanel::default()
+                .frame(egui::Frame::NONE.fill(egui::Color32::BLACK))
+                .show(ctx, |ui| {
+                    ui.add(
+                        egui::Image::new(egui::include_image!(
+                            "../../../assets/brand/splash-640x360.png"
+                        ))
+                        .fit_to_exact_size(ui.available_size()),
+                    );
+                });
             if t0.elapsed() < Duration::from_millis(100) {
                 if let Some(c) = egui::ViewportCommand::center_on_screen(ctx) {
                     ctx.send_viewport_cmd(c);
@@ -106,8 +119,13 @@ impl App {
         let w = self.st.settings.window.unwrap_or([0.0, 0.0, 1440.0, 900.0]);
         ctx.send_viewport_cmd(egui::ViewportCommand::Decorations(true));
         ctx.send_viewport_cmd(egui::ViewportCommand::Resizable(true));
-        ctx.send_viewport_cmd(egui::ViewportCommand::MinInnerSize(egui::vec2(900.0, 600.0)));
-        ctx.send_viewport_cmd(egui::ViewportCommand::InnerSize(egui::vec2(w[2].max(900.0), w[3].max(600.0))));
+        ctx.send_viewport_cmd(egui::ViewportCommand::MinInnerSize(egui::vec2(
+            900.0, 600.0,
+        )));
+        ctx.send_viewport_cmd(egui::ViewportCommand::InnerSize(egui::vec2(
+            w[2].max(900.0),
+            w[3].max(600.0),
+        )));
         if self.st.settings.window.is_some() && (w[0] != 0.0 || w[1] != 0.0) {
             ctx.send_viewport_cmd(egui::ViewportCommand::OuterPosition(egui::pos2(w[0], w[1])));
         } else if let Some(c) = egui::ViewportCommand::center_on_screen(ctx) {
@@ -139,7 +157,12 @@ impl App {
             if i.consume_key(cmd, Key::Comma) {
                 st.push(Action::Settings);
             }
-            for (k, t) in [(Key::Num1, Tab::Scene), (Key::Num2, Tab::Game), (Key::Num3, Tab::Code), (Key::Num4, Tab::Assets)] {
+            for (k, t) in [
+                (Key::Num1, Tab::Scene),
+                (Key::Num2, Tab::Game),
+                (Key::Num3, Tab::Code),
+                (Key::Num4, Tab::Assets),
+            ] {
                 if i.consume_key(cmd, k) {
                     st.push(Action::ShowTab(t));
                 }
@@ -159,10 +182,16 @@ impl App {
                 if i.consume_key(cmd, Key::V) {
                     st.push(Action::Paste);
                 }
-                if i.consume_key(Modifiers::NONE, Key::Delete) || i.consume_key(Modifiers::NONE, Key::Backspace) {
+                if i.consume_key(Modifiers::NONE, Key::Delete)
+                    || i.consume_key(Modifiers::NONE, Key::Backspace)
+                {
                     st.push(Action::Delete);
                 }
-                for (k, t) in [(Key::W, Tool::Move), (Key::E, Tool::Rotate), (Key::R, Tool::Scale)] {
+                for (k, t) in [
+                    (Key::W, Tool::Move),
+                    (Key::E, Tool::Rotate),
+                    (Key::R, Tool::Scale),
+                ] {
                     if i.consume_key(Modifiers::NONE, k) {
                         st.push(Action::SetTool(t));
                     }
@@ -189,7 +218,10 @@ impl App {
                 self.web = WebPanes::default();
             }
             Action::OpenProject => {
-                if let Some(d) = rfd::FileDialog::new().set_title("Open Nord project folder").pick_folder() {
+                if let Some(d) = rfd::FileDialog::new()
+                    .set_title("Open Nord project folder")
+                    .pick_folder()
+                {
                     st.push(Action::OpenPath(d));
                 }
             }
@@ -313,7 +345,12 @@ impl App {
                 .assets_ui
                 .model_requests
                 .drain(..)
-                .filter_map(|p| st.assets.iter().find(|a| a.path == p).map(|a| serde_json::json!({"path": a.path, "sha": a.sha256})))
+                .filter_map(|p| {
+                    st.assets
+                        .iter()
+                        .find(|a| a.path == p)
+                        .map(|a| serde_json::json!({"path": a.path, "sha": a.sha256}))
+                })
                 .collect();
             st.send_viewport(serde_json::json!({"t":"thumbs","items":reqs}));
         }
@@ -322,7 +359,7 @@ impl App {
     fn menu(&mut self, ui: &mut egui::Ui) {
         let st = &mut self.st;
         egui::menu::bar(ui, |ui| {
-            let mut act = |ui: &mut egui::Ui, label: &str, a: Action, st: &mut EditorState| {
+            let act = |ui: &mut egui::Ui, label: &str, a: Action, st: &mut EditorState| {
                 if ui.button(label).clicked() {
                     st.push(a);
                     ui.close_menu();
@@ -359,7 +396,18 @@ impl App {
                 }
             });
             ui.menu_button("View", |ui| {
-                for t in [Tab::Scene, Tab::Game, Tab::Code, Tab::Animation, Tab::Hierarchy, Tab::Inspector, Tab::Assets, Tab::Console, Tab::Library, Tab::Docs] {
+                for t in [
+                    Tab::Scene,
+                    Tab::Game,
+                    Tab::Code,
+                    Tab::Animation,
+                    Tab::Hierarchy,
+                    Tab::Inspector,
+                    Tab::Assets,
+                    Tab::Console,
+                    Tab::Library,
+                    Tab::Docs,
+                ] {
                     act(ui, t.title(), Action::ShowTab(t), st);
                 }
                 ui.separator();
@@ -400,18 +448,36 @@ fn run_build(st: &mut EditorState, what: &str) {
             let mut parts = cmd.split_whitespace();
             let prog = parts.next().unwrap_or("cargo").to_string();
             let args: Vec<String> = parts.map(String::from).collect();
-            let hub = st.ensure_server().and_then(|_| st.play.as_ref().map(|p| p.hub.clone()));
+            let hub = st
+                .ensure_server()
+                .and_then(|_| st.play.as_ref().map(|p| p.hub.clone()));
             std::thread::spawn(move || {
-                let out = std::process::Command::new(prog).args(args).current_dir(root).output();
+                let out = std::process::Command::new(prog)
+                    .args(args)
+                    .current_dir(root)
+                    .output();
                 if let Some(hub) = hub {
                     let mut l = hub.logs.lock().unwrap();
                     match out {
                         Ok(o) => {
-                            for line in String::from_utf8_lossy(&o.stderr).lines().chain(String::from_utf8_lossy(&o.stdout).lines()) {
-                                l.push(nord_serve::LogEntry { level: if line.contains("error") { "error".into() } else { "info".into() }, text: line.to_string() });
+                            for line in String::from_utf8_lossy(&o.stderr)
+                                .lines()
+                                .chain(String::from_utf8_lossy(&o.stdout).lines())
+                            {
+                                l.push(nord_serve::LogEntry {
+                                    level: if line.contains("error") {
+                                        "error".into()
+                                    } else {
+                                        "info".into()
+                                    },
+                                    text: line.to_string(),
+                                });
                             }
                         }
-                        Err(e) => l.push(nord_serve::LogEntry { level: "error".into(), text: e.to_string() }),
+                        Err(e) => l.push(nord_serve::LogEntry {
+                            level: "error".into(),
+                            text: e.to_string(),
+                        }),
                     }
                 }
             });
@@ -422,7 +488,7 @@ fn run_build(st: &mut EditorState, what: &str) {
 struct Viewer<'a> {
     st: &'a mut EditorState,
     web: &'a mut WebPanes,
-    frame: &'a eframe::Frame,
+    frame: Option<&'a eframe::Frame>,
     overlay: bool,
 }
 
@@ -457,7 +523,10 @@ impl TabViewer for Viewer<'_> {
                 if st.scene.is_none() {
                     ui.weak("No scene open");
                 } else if let Some(base) = st.ensure_server() {
-                    let url = format!("{base}/__edit?mode={}", if st.is_3d() { "3d" } else { "2d" });
+                    let url = format!(
+                        "{base}/__edit?mode={}",
+                        if st.is_3d() { "3d" } else { "2d" }
+                    );
                     self.web.show(ui, self.frame, "scene", &url, self.overlay);
                 }
             }
@@ -484,16 +553,41 @@ impl TabViewer for Viewer<'_> {
 
 impl eframe::App for App {
     fn update(&mut self, ctx: &Context, frame: &mut eframe::Frame) {
+        self.frame_ui(ctx, Some(frame));
+    }
+
+    fn on_exit(&mut self) {
+        self.st.settings.save();
+    }
+}
+
+impl App {
+    /// One UI frame. `frame` is `None` in headless tests (no native window => no embedded webview).
+    pub fn frame_ui(&mut self, ctx: &Context, frame: Option<&eframe::Frame>) {
         egui_extras::install_image_loaders(ctx);
         if self.splash(ctx) {
             return;
         }
         if self.st.apply_theme {
-            self.st.themes.apply(ctx, &self.st.settings.skin.clone(), &self.st.settings.theme.clone(), self.st.settings.ui_scale);
+            self.st.themes.apply(
+                ctx,
+                &self.st.settings.skin.clone(),
+                &self.st.settings.theme.clone(),
+            );
             self.st.apply_theme = false;
+            self.st.apply_styles = true;
+            ctx.request_repaint();
+        } else if self.st.apply_styles {
+            self.st
+                .themes
+                .apply_text_styles(ctx, self.st.settings.ui_scale);
+            self.st.apply_styles = false;
         }
         // close handling
-        if ctx.input(|i| i.viewport().close_requested()) && !self.allow_close && (self.st.dirty || self.st.code.any_dirty()) {
+        if ctx.input(|i| i.viewport().close_requested())
+            && !self.allow_close
+            && (self.st.dirty || self.st.code.any_dirty())
+        {
             ctx.send_viewport_cmd(egui::ViewportCommand::CancelClose);
             self.quit_confirm = true;
         }
@@ -517,7 +611,13 @@ impl eframe::App for App {
 
         egui::TopBottomPanel::top("menu").show(ctx, |ui| self.menu(ui));
         egui::TopBottomPanel::top("toolbar").show(ctx, |ui| panels::toolbar::ui(&mut self.st, ui));
-        let overlay = ctx.memory(|m| m.any_popup_open()) || self.st.palette.mode != PMode::Closed || self.st.settings_open || self.st.about_open || self.quit_confirm || self.st.assets_ui.confirm_delete.is_some() || self.st.code.confirm_close.is_some();
+        let overlay = ctx.memory(|m| m.any_popup_open())
+            || self.st.palette.mode != PMode::Closed
+            || self.st.settings_open
+            || self.st.about_open
+            || self.quit_confirm
+            || self.st.assets_ui.confirm_delete.is_some()
+            || self.st.code.confirm_close.is_some();
         self.web.begin_frame();
         if self.st.project.is_none() {
             egui::CentralPanel::default().show(ctx, |ui| panels::hub::ui(&mut self.st, ui));
@@ -525,9 +625,22 @@ impl eframe::App for App {
             let mut style = Style::from_egui(ctx.style().as_ref());
             style.tab_bar.fill_tab_bar = true;
             let mut dock = std::mem::replace(&mut self.dock, DockState::new(vec![]));
-            egui::CentralPanel::default().frame(egui::Frame::NONE).show(ctx, |ui| {
-                DockArea::new(&mut dock).style(style).show_inside(ui, &mut Viewer { st: &mut self.st, web: &mut self.web, frame, overlay });
-            });
+            egui::CentralPanel::default()
+                .frame(egui::Frame::NONE)
+                .show(ctx, |ui| {
+                    DockArea::new(&mut dock)
+                        .style(style)
+                        .show_close_buttons(false)
+                        .show_inside(
+                            ui,
+                            &mut Viewer {
+                                st: &mut self.st,
+                                web: &mut self.web,
+                                frame,
+                                overlay,
+                            },
+                        );
+                });
             self.dock = dock;
         }
         self.web.end_frame();
@@ -548,29 +661,36 @@ impl eframe::App for App {
             });
         }
         if self.quit_confirm {
-            egui::Window::new("Unsaved changes").collapsible(false).resizable(false).anchor(egui::Align2::CENTER_CENTER, [0.0, 0.0]).show(ctx, |ui| {
-                ui.label("Save changes before quitting?");
-                ui.horizontal(|ui| {
-                    if ui.button("Save & quit").clicked() {
-                        self.run(Action::SaveAll, ctx);
-                        self.allow_close = true;
-                        ctx.send_viewport_cmd(egui::ViewportCommand::Close);
-                    }
-                    if ui.button("Quit without saving").clicked() {
-                        self.allow_close = true;
-                        ctx.send_viewport_cmd(egui::ViewportCommand::Close);
-                    }
-                    if ui.button("Cancel").clicked() {
-                        self.quit_confirm = false;
-                    }
+            egui::Window::new("Unsaved changes")
+                .collapsible(false)
+                .resizable(false)
+                .anchor(egui::Align2::CENTER_CENTER, [0.0, 0.0])
+                .show(ctx, |ui| {
+                    ui.label("Save changes before quitting?");
+                    ui.horizontal(|ui| {
+                        if ui.button("Save & quit").clicked() {
+                            self.run(Action::SaveAll, ctx);
+                            self.allow_close = true;
+                            ctx.send_viewport_cmd(egui::ViewportCommand::Close);
+                        }
+                        if ui.button("Quit without saving").clicked() {
+                            self.allow_close = true;
+                            ctx.send_viewport_cmd(egui::ViewportCommand::Close);
+                        }
+                        if ui.button("Cancel").clicked() {
+                            self.quit_confirm = false;
+                        }
+                    });
                 });
-            });
         }
         if let Some((t, at)) = &self.st.toast {
             if at.elapsed() < Duration::from_secs(3) {
-                egui::Area::new(egui::Id::new("toast")).anchor(egui::Align2::CENTER_BOTTOM, [0.0, -20.0]).order(egui::Order::Tooltip).show(ctx, |ui| {
-                    egui::Frame::popup(ui.style()).show(ui, |ui| ui.label(t));
-                });
+                egui::Area::new(egui::Id::new("toast"))
+                    .anchor(egui::Align2::CENTER_BOTTOM, [0.0, -20.0])
+                    .order(egui::Order::Tooltip)
+                    .show(ctx, |ui| {
+                        egui::Frame::popup(ui.style()).show(ui, |ui| ui.label(t));
+                    });
                 ctx.request_repaint_after(Duration::from_millis(300));
             } else {
                 self.st.toast = None;
@@ -580,9 +700,5 @@ impl eframe::App for App {
         if self.st.play.is_some() {
             ctx.request_repaint_after(Duration::from_millis(100));
         }
-    }
-
-    fn on_exit(&mut self) {
-        self.st.settings.save();
     }
 }

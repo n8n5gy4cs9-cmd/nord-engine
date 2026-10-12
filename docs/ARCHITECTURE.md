@@ -4,7 +4,7 @@
 
 ```
 ┌──────────────────────── Nord Editor (native Rust: eframe/egui, wgpu→Metal on M1) ───────────────────────┐
-│ egui_dock panels: hierarchy | inspector | assets+thumbnails | code editor (syntect) | console | library │
+│ egui_dock panels: hierarchy | inspector | assets+thumbnails | code editor (native) | console | library │
 │ ┌───────────────────────────── Viewport / Play / Docs panel ─────────────────────────────────────────┐ │
 │ │  wry child webview → `nord serve` → vendored Phaser / Babylon runtime in EDIT or PLAY mode          │ │
 │ └──────────────▲──────────────────────────────────────────────────────────────────────────────────────┘ │
@@ -62,13 +62,18 @@ nord-engine/
 - **Dev server**: `nord serve` (axum) serves project + vendor + runtime with live reload (SSE);
   the editor's Play iframe and browser preview both use it.
 
-## 4. Editor ⇄ viewport contract
-The editor (egui) owns all state (project, selection, undo). The viewport webview is a *dumb renderer*:
-- egui → web: `webview.evaluate_script("nordEdit.apply(<json patch>)")` (scene patches, selection, tool mode, camera).
-- web → egui: `window.ipc.postMessage(json)` → `ipc_handler` (pick, drag-transform preview, commit, log lines).
-- Web side is plain JS in `editor/viewport/` reusing `runtime/` adapters in edit mode; also loadable in any
-  browser at `http://127.0.0.1:PORT/__edit` for debugging/tests (Playwright can drive it without egui).
-- Fallback if embedding is troublesome on a platform: open the viewport in its own `wry` window.
+## 4. Editor ⇄ viewport contract (ADR-014)
+The editor (egui) owns all state (project, selection, undo). The viewport page (`editor/viewport/edit.html`, served at `/__edit?mode=2d|3d`
+by `nord-serve`) is a renderer + input surface. Transport is HTTP/SSE via the server's `Hub`, **independent of the webview**:
+- editor → page (SSE `/__edit/events`; tests may `POST /__edit/cmd`): `scene {project,scene,selection,rev}`, `select {ids}`,
+  `settings {tool,snap,snapMove,snapRot,snapScale,grid}`, `focus`, `thumbs {items:[{path,sha}]}` (offscreen model thumbnails).
+- page → editor (`POST /api/ipc`, polled in-process): `ready`, `select {id}`, `transform {id,pos,rot,scale,final}`, `key {key,cmd,shift}`
+  (shortcuts forwarded because a native webview owns keyboard focus), `thumb {path}`, `log {text}`.
+- Game/Play console: served HTML gets an injected hook posting `console.*` + errors to `/api/log`; the Console panel drains it.
+- Security: server binds 127.0.0.1 only, rejects non-loopback `Host` (DNS rebinding), JSON endpoints need `application/json` and the raw-body ones (`/__edit/cmd`, `/api/thumb-upload`) need an `x-nord` header, so other web pages cannot drive the editor (no CORS preflight is ever answered).
+- Webview (`--features webview`): `wry` child view placed over the egui panel rect (macOS WKWebView); hidden while an egui popup/modal is open.
+  Without it (or on failure) the pane shows an "Open in browser" card; everything else works identically.
+- 2D view = Canvas2D (`edit2d.js`), 3D view = Babylon (`edit3d.js`). Both are testable in Chromium without egui (`tools/e2e/50-edit-viewport.mjs`).
 
 ## 5. Build tiers (when to use what)
 | Tier | Use when | Size | Needs |

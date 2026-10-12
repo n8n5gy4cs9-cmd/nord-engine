@@ -50,12 +50,20 @@ pub fn parse_frames(s: &str) -> Vec<i64> {
 }
 
 pub fn frames_text(frames: &[Value]) -> String {
-    frames.iter().filter_map(Value::as_i64).map(|n| n.to_string()).collect::<Vec<_>>().join(", ")
+    frames
+        .iter()
+        .filter_map(Value::as_i64)
+        .map(|n| n.to_string())
+        .collect::<Vec<_>>()
+        .join(", ")
 }
 
 fn tex(ui: &Ui, root: &Path, rel: &str) -> Option<(egui::TextureId, Vec2)> {
     let uri = format!("file://{}", root.join(rel).display());
-    match ui.ctx().try_load_texture(&uri, TextureOptions::NEAREST, egui::SizeHint::default()) {
+    match ui
+        .ctx()
+        .try_load_texture(&uri, TextureOptions::NEAREST, egui::SizeHint::default())
+    {
         Ok(egui::load::TexturePoll::Ready { texture }) => Some((texture.id, texture.size)),
         Ok(_) => {
             ui.ctx().request_repaint();
@@ -68,7 +76,10 @@ fn tex(ui: &Ui, root: &Path, rel: &str) -> Option<(egui::TextureId, Vec2)> {
 /// Read a cell of a layer (`data` as rows of ints, or flat with `width`).
 pub fn get_cell(layer: &Value, width: usize, x: usize, y: usize) -> i64 {
     let d = &layer["data"];
-    d[y][x].as_i64().or_else(|| d[y * width + x].as_i64()).unwrap_or(-1)
+    d[y][x]
+        .as_i64()
+        .or_else(|| d[y * width + x].as_i64())
+        .unwrap_or(-1)
 }
 
 pub fn set_cell(layer: &mut Value, width: usize, x: usize, y: usize, v: i64) {
@@ -82,11 +93,14 @@ pub fn set_cell(layer: &mut Value, width: usize, x: usize, y: usize, v: i64) {
 pub fn map_size(m: &Value) -> (usize, usize) {
     let l = &m["layers"][0];
     match l["data"].get(0) {
-        Some(r) if r.is_array() => (r.as_array().map_or(0, Vec::len), l["data"].as_array().map_or(0, Vec::len)),
+        Some(r) if r.is_array() => (
+            r.as_array().map_or(0, Vec::len),
+            l["data"].as_array().map_or(0, Vec::len),
+        ),
         _ => {
             let w = l["width"].as_u64().or(m["width"].as_u64()).unwrap_or(0) as usize;
             let n = l["data"].as_array().map_or(0, Vec::len);
-            (w, if w > 0 { n / w } else { 0 })
+            (w, n.checked_div(w).unwrap_or(0))
         }
     }
 }
@@ -108,7 +122,12 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
 }
 
 fn anim_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
-    let sheets: Vec<String> = st.assets.iter().filter(|a| matches!(a.kind, AssetType::Image | AssetType::Spritesheet)).map(|a| a.path.clone()).collect();
+    let sheets: Vec<String> = st
+        .assets
+        .iter()
+        .filter(|a| matches!(a.kind, AssetType::Image | AssetType::Spritesheet))
+        .map(|a| a.path.clone())
+        .collect();
     ui.horizontal(|ui| {
         ui.label("Sheet");
         let cur = st.anim.sheet.clone().unwrap_or_else(|| "(choose)".into());
@@ -150,18 +169,32 @@ fn anim_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
         st.anim.meta["frameHeight"] = json!(h);
     });
     let texinfo = tex(ui, root, &sheet);
-    let names: Vec<String> = st.anim.meta["anims"].as_object().map(|o| o.keys().cloned().collect()).unwrap_or_default();
+    let names: Vec<String> = st.anim.meta["anims"]
+        .as_object()
+        .map(|o| o.keys().cloned().collect())
+        .unwrap_or_default();
     ui.columns(2, |cols| {
         let ui = &mut cols[0];
         ui.strong("Animations");
         for n in &names {
-            if ui.selectable_label(st.anim.anim.as_deref() == Some(n), n).clicked() {
+            if ui
+                .selectable_label(st.anim.anim.as_deref() == Some(n), n)
+                .clicked()
+            {
                 st.anim.anim = Some(n.clone());
-                st.anim.frames_text = frames_text(st.anim.meta["anims"][n]["frames"].as_array().map_or(&[][..], |v| &v[..]));
+                st.anim.frames_text = frames_text(
+                    st.anim.meta["anims"][n]["frames"]
+                        .as_array()
+                        .map_or(&[][..], |v| &v[..]),
+                );
             }
         }
         ui.horizontal(|ui| {
-            ui.add(egui::TextEdit::singleline(&mut st.anim.new_name).hint_text("new animation").desired_width(120.0));
+            ui.add(
+                egui::TextEdit::singleline(&mut st.anim.new_name)
+                    .hint_text("new animation")
+                    .desired_width(120.0),
+            );
             if ui.button("+").clicked() && !st.anim.new_name.trim().is_empty() {
                 let n = st.anim.new_name.trim().to_string();
                 st.anim.meta["anims"][&n] = json!({"frames":[0],"fps":10,"loop":true});
@@ -193,7 +226,10 @@ fn anim_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
             }
             // preview
             if let Some((id, size)) = texinfo {
-                let frames: Vec<i64> = st.anim.meta["anims"][&n]["frames"].as_array().map(|a| a.iter().filter_map(Value::as_i64).collect()).unwrap_or_default();
+                let frames: Vec<i64> = st.anim.meta["anims"][&n]["frames"]
+                    .as_array()
+                    .map(|a| a.iter().filter_map(Value::as_i64).collect())
+                    .unwrap_or_default();
                 if !frames.is_empty() {
                     st.anim.clock += ui.input(|i| i.unstable_dt) as f64;
                     let fi = ((st.anim.clock * fps) as usize) % frames.len();
@@ -215,20 +251,39 @@ fn anim_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
                     let z = 2.0;
                     let (r, resp) = ui.allocate_exact_size(size * z, Sense::click());
                     ui.painter().rect_filled(r, 0.0, Color32::from_gray(40));
-                    ui.painter().image(id, r, Rect::from_min_max(Pos2::ZERO, Pos2::new(1.0, 1.0)), Color32::WHITE);
+                    ui.painter().image(
+                        id,
+                        r,
+                        Rect::from_min_max(Pos2::ZERO, Pos2::new(1.0, 1.0)),
+                        Color32::WHITE,
+                    );
                     let (cn, rn) = ((size.x / fw) as i64, (size.y / fh) as i64);
                     for c in 0..=cn {
-                        ui.painter().vline(r.left() + c as f32 * fw * z, r.y_range(), egui::Stroke::new(1.0_f32, Color32::from_white_alpha(40)));
+                        ui.painter().vline(
+                            r.left() + c as f32 * fw * z,
+                            r.y_range(),
+                            egui::Stroke::new(1.0_f32, Color32::from_white_alpha(40)),
+                        );
                     }
                     for rr in 0..=rn {
-                        ui.painter().hline(r.x_range(), r.top() + rr as f32 * fh * z, egui::Stroke::new(1.0_f32, Color32::from_white_alpha(40)));
+                        ui.painter().hline(
+                            r.x_range(),
+                            r.top() + rr as f32 * fh * z,
+                            egui::Stroke::new(1.0_f32, Color32::from_white_alpha(40)),
+                        );
                     }
                     if resp.clicked() {
-                        if let (Some(p), Some(n)) = (resp.interact_pointer_pos(), st.anim.anim.clone()) {
-                            let (cx, cy) = (((p.x - r.left()) / (fw * z)) as i64, ((p.y - r.top()) / (fh * z)) as i64);
+                        if let (Some(p), Some(n)) =
+                            (resp.interact_pointer_pos(), st.anim.anim.clone())
+                        {
+                            let (cx, cy) = (
+                                ((p.x - r.left()) / (fw * z)) as i64,
+                                ((p.y - r.top()) / (fh * z)) as i64,
+                            );
                             if cx < cn && cy < rn {
                                 let f = cy * cn + cx;
-                                if let Some(a) = st.anim.meta["anims"][&n]["frames"].as_array_mut() {
+                                if let Some(a) = st.anim.meta["anims"][&n]["frames"].as_array_mut()
+                                {
                                     a.push(json!(f));
                                     st.anim.frames_text = frames_text(a);
                                 }
@@ -246,27 +301,49 @@ fn anim_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
 
 pub fn frame_uv(f: i64, cols: i64, fw: f32, fh: f32, size: Vec2) -> Rect {
     let (cx, cy) = ((f % cols) as f32, (f / cols) as f32);
-    Rect::from_min_max(Pos2::new(cx * fw / size.x, cy * fh / size.y), Pos2::new((cx + 1.0) * fw / size.x, (cy + 1.0) * fh / size.y))
+    Rect::from_min_max(
+        Pos2::new(cx * fw / size.x, cy * fh / size.y),
+        Pos2::new((cx + 1.0) * fw / size.x, (cy + 1.0) * fh / size.y),
+    )
 }
 
 fn tile_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
     if st.anim.zoom == 0.0 {
         st.anim.zoom = 2.0;
     }
-    let maps: Vec<String> = st.assets.iter().filter(|a| a.path.ends_with(".tilemap.json") || a.path.ends_with(".tmj")).map(|a| a.path.clone()).collect();
+    let maps: Vec<String> = st
+        .assets
+        .iter()
+        .filter(|a| a.path.ends_with(".tilemap.json") || a.path.ends_with(".tmj"))
+        .map(|a| a.path.clone())
+        .collect();
     ui.horizontal(|ui| {
-        egui::ComboBox::from_id_salt("tmap").selected_text(st.anim.map.clone().unwrap_or_else(|| "(choose tilemap)".into())).show_ui(ui, |ui| {
-            for m in &maps {
-                if ui.selectable_label(st.anim.map.as_deref() == Some(m), m).clicked() {
-                    st.anim.map = Some(m.clone());
-                    st.anim.map_json = nord_core::io::load_json(&root.join(m)).unwrap_or(Value::Null);
-                    st.anim.layer = 0;
-                    st.anim.dirty_map = false;
+        egui::ComboBox::from_id_salt("tmap")
+            .selected_text(
+                st.anim
+                    .map
+                    .clone()
+                    .unwrap_or_else(|| "(choose tilemap)".into()),
+            )
+            .show_ui(ui, |ui| {
+                for m in &maps {
+                    if ui
+                        .selectable_label(st.anim.map.as_deref() == Some(m), m)
+                        .clicked()
+                    {
+                        st.anim.map = Some(m.clone());
+                        st.anim.map_json =
+                            nord_core::io::load_json(&root.join(m)).unwrap_or(Value::Null);
+                        st.anim.layer = 0;
+                        st.anim.dirty_map = false;
+                    }
                 }
-            }
-        });
+            });
         ui.add(egui::Slider::new(&mut st.anim.zoom, 0.5..=6.0).text("zoom"));
-        if ui.add_enabled(st.anim.dirty_map, egui::Button::new("Save tilemap")).clicked() {
+        if ui
+            .add_enabled(st.anim.dirty_map, egui::Button::new("Save tilemap"))
+            .clicked()
+        {
             if let Some(m) = &st.anim.map {
                 match nord_core::io::save_json(&root.join(m), &st.anim.map_json) {
                     Ok(()) => {
@@ -286,77 +363,138 @@ fn tile_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
         return;
     }
     let (mw, mh) = map_size(&st.anim.map_json);
-    let tw = st.anim.map_json["tileWidth"].as_f64().or(st.anim.map_json["tilewidth"].as_f64()).unwrap_or(16.0) as f32;
-    let th = st.anim.map_json["tileHeight"].as_f64().or(st.anim.map_json["tileheight"].as_f64()).unwrap_or(16.0) as f32;
-    let tileset = st.anim.map_json["tileset"].as_str().map(String::from).or_else(|| st.anim.map_json["tilesets"][0]["image"].as_str().map(String::from));
+    let tw = st.anim.map_json["tileWidth"]
+        .as_f64()
+        .or(st.anim.map_json["tilewidth"].as_f64())
+        .unwrap_or(16.0) as f32;
+    let th = st.anim.map_json["tileHeight"]
+        .as_f64()
+        .or(st.anim.map_json["tileheight"].as_f64())
+        .unwrap_or(16.0) as f32;
+    let tileset = st.anim.map_json["tileset"]
+        .as_str()
+        .map(String::from)
+        .or_else(|| {
+            st.anim.map_json["tilesets"][0]["image"]
+                .as_str()
+                .map(String::from)
+        });
     let tinfo = tileset.as_deref().and_then(|t| tex(ui, root, t));
     let nl = st.anim.map_json["layers"].as_array().map_or(0, Vec::len);
     ui.horizontal(|ui| {
         for i in 0..nl {
-            let name = st.anim.map_json["layers"][i]["name"].as_str().unwrap_or("layer").to_string();
+            let name = st.anim.map_json["layers"][i]["name"]
+                .as_str()
+                .unwrap_or("layer")
+                .to_string();
             ui.selectable_value(&mut st.anim.layer, i, name);
         }
-        ui.weak(format!("{mw}×{mh} tiles, brush {} (right-click erases)", st.anim.brush));
+        ui.weak(format!(
+            "{mw}×{mh} tiles, brush {} (right-click erases)",
+            st.anim.brush
+        ));
     });
-    egui::SidePanel::left("tile-palette").default_width(150.0).show_inside(ui, |ui| {
-        ui.strong("Tileset");
-        if let Some((id, size)) = tinfo {
-            egui::ScrollArea::both().show(ui, |ui| {
-                let z = 2.0;
-                let (r, resp) = ui.allocate_exact_size(size * z, Sense::click());
-                ui.painter().image(id, r, Rect::from_min_max(Pos2::ZERO, Pos2::new(1.0, 1.0)), Color32::WHITE);
-                let cols = (size.x / tw).floor().max(1.0) as i64;
-                if resp.clicked() {
-                    if let Some(p) = resp.interact_pointer_pos() {
-                        let (cx, cy) = (((p.x - r.left()) / (tw * z)) as i64, ((p.y - r.top()) / (th * z)) as i64);
-                        st.anim.brush = cy * cols + cx;
+    egui::SidePanel::left("tile-palette")
+        .default_width(150.0)
+        .show_inside(ui, |ui| {
+            ui.strong("Tileset");
+            if let Some((id, size)) = tinfo {
+                egui::ScrollArea::both().show(ui, |ui| {
+                    let z = 2.0;
+                    let (r, resp) = ui.allocate_exact_size(size * z, Sense::click());
+                    ui.painter().image(
+                        id,
+                        r,
+                        Rect::from_min_max(Pos2::ZERO, Pos2::new(1.0, 1.0)),
+                        Color32::WHITE,
+                    );
+                    let cols = (size.x / tw).floor().max(1.0) as i64;
+                    if resp.clicked() {
+                        if let Some(p) = resp.interact_pointer_pos() {
+                            let (cx, cy) = (
+                                ((p.x - r.left()) / (tw * z)) as i64,
+                                ((p.y - r.top()) / (th * z)) as i64,
+                            );
+                            st.anim.brush = cy * cols + cx;
+                        }
                     }
-                }
-                let (bx, by) = ((st.anim.brush % cols) as f32, (st.anim.brush / cols) as f32);
-                if st.anim.brush >= 0 {
-                    ui.painter().rect_stroke(Rect::from_min_size(r.min + Vec2::new(bx * tw * z, by * th * z), Vec2::new(tw * z, th * z)), 0.0, egui::Stroke::new(2.0_f32, Color32::YELLOW), egui::StrokeKind::Inside);
-                }
-            });
-        } else {
-            ui.weak("tileset image not found");
-        }
-    });
+                    let (bx, by) = ((st.anim.brush % cols) as f32, (st.anim.brush / cols) as f32);
+                    if st.anim.brush >= 0 {
+                        ui.painter().rect_stroke(
+                            Rect::from_min_size(
+                                r.min + Vec2::new(bx * tw * z, by * th * z),
+                                Vec2::new(tw * z, th * z),
+                            ),
+                            0.0,
+                            egui::Stroke::new(2.0_f32, Color32::YELLOW),
+                            egui::StrokeKind::Inside,
+                        );
+                    }
+                });
+            } else {
+                ui.weak("tileset image not found");
+            }
+        });
     let z = st.anim.zoom;
     egui::ScrollArea::both().show(ui, |ui| {
-        let (r, resp) = ui.allocate_exact_size(Vec2::new(mw as f32 * tw * z, mh as f32 * th * z), Sense::click_and_drag());
+        let (r, resp) = ui.allocate_exact_size(
+            Vec2::new(mw as f32 * tw * z, mh as f32 * th * z),
+            Sense::click_and_drag(),
+        );
         ui.painter().rect_filled(r, 0.0, Color32::from_gray(30));
         let layer = st.anim.layer.min(nl.saturating_sub(1));
         let cols = tinfo.map_or(1, |(_, s)| (s.x / tw).floor().max(1.0) as i64);
         for y in 0..mh {
             for x in 0..mw {
-                let cell = Rect::from_min_size(r.min + Vec2::new(x as f32 * tw * z, y as f32 * th * z), Vec2::new(tw * z, th * z));
+                let cell = Rect::from_min_size(
+                    r.min + Vec2::new(x as f32 * tw * z, y as f32 * th * z),
+                    Vec2::new(tw * z, th * z),
+                );
                 if !ui.is_rect_visible(cell) {
                     continue;
                 }
                 let v = get_cell(&st.anim.map_json["layers"][layer], mw, x, y);
                 if v >= 0 {
                     if let Some((id, size)) = tinfo {
-                        ui.painter().image(id, cell, frame_uv(v, cols, tw, th, size), Color32::WHITE);
+                        ui.painter().image(
+                            id,
+                            cell,
+                            frame_uv(v, cols, tw, th, size),
+                            Color32::WHITE,
+                        );
                     }
                 }
-                ui.painter().rect_stroke(cell, 0.0, egui::Stroke::new(0.5_f32, Color32::from_white_alpha(18)), egui::StrokeKind::Inside);
+                ui.painter().rect_stroke(
+                    cell,
+                    0.0,
+                    egui::Stroke::new(0.5_f32, Color32::from_white_alpha(18)),
+                    egui::StrokeKind::Inside,
+                );
             }
         }
         let paint = resp.dragged_by(egui::PointerButton::Primary) || resp.clicked();
         let erase = resp.dragged_by(egui::PointerButton::Secondary) || resp.secondary_clicked();
         if paint || erase {
             if let Some(p) = resp.interact_pointer_pos() {
-                let (x, y) = (((p.x - r.left()) / (tw * z)).floor() as i64, ((p.y - r.top()) / (th * z)).floor() as i64);
+                let (x, y) = (
+                    ((p.x - r.left()) / (tw * z)).floor() as i64,
+                    ((p.y - r.top()) / (th * z)).floor() as i64,
+                );
                 if x >= 0 && y >= 0 && (x as usize) < mw && (y as usize) < mh {
                     let v = if erase { -1 } else { st.anim.brush };
-                    set_cell(&mut st.anim.map_json["layers"][layer], mw, x as usize, y as usize, v);
+                    set_cell(
+                        &mut st.anim.map_json["layers"][layer],
+                        mw,
+                        x as usize,
+                        y as usize,
+                        v,
+                    );
                     st.anim.dirty_map = true;
                 }
             }
         }
     });
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -379,7 +517,13 @@ mod tests {
         assert_eq!(get_cell(&flat, 2, 0, 1), 3);
         set_cell(&mut flat, 2, 1, 1, 7);
         assert_eq!(flat["data"][3], 7);
-        assert_eq!(map_size(&json!({"layers": [{"data": [[0, 0, 0], [0, 0, 0]]}]})), (3, 2));
-        assert_eq!(map_size(&json!({"layers": [{"data": [0, 0, 0, 0, 0, 0], "width": 3}]})), (3, 2));
+        assert_eq!(
+            map_size(&json!({"layers": [{"data": [[0, 0, 0], [0, 0, 0]]}]})),
+            (3, 2)
+        );
+        assert_eq!(
+            map_size(&json!({"layers": [{"data": [0, 0, 0, 0, 0, 0], "width": 3}]})),
+            (3, 2)
+        );
     }
 }

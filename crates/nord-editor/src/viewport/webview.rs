@@ -20,7 +20,9 @@ pub fn open_in_browser(url: &str) {
     #[cfg(target_os = "macos")]
     let _ = std::process::Command::new("open").arg(url).spawn();
     #[cfg(target_os = "windows")]
-    let _ = std::process::Command::new("cmd").args(["/C", "start", url]).spawn();
+    let _ = std::process::Command::new("cmd")
+        .args(["/C", "start", url])
+        .spawn();
     #[cfg(not(any(target_os = "macos", target_os = "windows")))]
     let _ = std::process::Command::new("xdg-open").arg(url).spawn();
 }
@@ -68,7 +70,14 @@ impl WebPanes {
 
     /// Draw the pane into `ui`. `overlay` = an egui popup/modal is open: native views would cover it, so hide meanwhile.
     #[allow(unused_variables)]
-    pub fn show(&mut self, ui: &mut Ui, frame: &eframe::Frame, key: &str, url: &str, overlay: bool) -> bool {
+    pub fn show(
+        &mut self,
+        ui: &mut Ui,
+        frame: Option<&eframe::Frame>,
+        key: &str,
+        url: &str,
+        overlay: bool,
+    ) -> bool {
         let size = ui.available_size().max(Vec2::splat(10.0));
         let (rect, _) = ui.allocate_exact_size(size, egui::Sense::hover());
         self.shown.insert(key.to_string());
@@ -77,11 +86,17 @@ impl WebPanes {
             use wry::dpi::{LogicalPosition, LogicalSize};
             let z = ui.ctx().zoom_factor();
             let bounds = wry::Rect {
-                position: LogicalPosition::new((rect.min.x * z) as f64, (rect.min.y * z) as f64).into(),
-                size: LogicalSize::new((rect.width() * z) as f64, (rect.height() * z) as f64).into(),
+                position: LogicalPosition::new((rect.min.x * z) as f64, (rect.min.y * z) as f64)
+                    .into(),
+                size: LogicalSize::new((rect.width() * z) as f64, (rect.height() * z) as f64)
+                    .into(),
             };
-            if !self.panes.contains_key(key) {
-                match wry::WebViewBuilder::new().with_url(url).with_bounds(bounds).build_as_child(frame) {
+            if let (false, Some(frame)) = (self.panes.contains_key(key), frame) {
+                match wry::WebViewBuilder::new()
+                    .with_url(url)
+                    .with_bounds(bounds)
+                    .build_as_child(frame)
+                {
                     Ok(wv) => {
                         self.panes.insert(key.to_string(), wv);
                         self.urls.insert(key.to_string(), url.to_string());
@@ -97,8 +112,15 @@ impl WebPanes {
                 let _ = wv.set_bounds(bounds);
                 let _ = wv.set_visible(!overlay);
                 if overlay {
-                    ui.painter().rect_filled(rect, 0.0, ui.visuals().extreme_bg_color);
-                    ui.painter().text(rect.center(), egui::Align2::CENTER_CENTER, "(paused while a menu is open)", egui::FontId::proportional(13.0), ui.visuals().weak_text_color());
+                    ui.painter()
+                        .rect_filled(rect, 0.0, ui.visuals().extreme_bg_color);
+                    ui.painter().text(
+                        rect.center(),
+                        egui::Align2::CENTER_CENTER,
+                        "(paused while a menu is open)",
+                        egui::FontId::proportional(13.0),
+                        ui.visuals().weak_text_color(),
+                    );
                 }
                 return true;
             }
@@ -109,7 +131,9 @@ impl WebPanes {
             ui.add_space(rect.height() * 0.3);
             ui.heading("Web view");
             ui.label(if Self::available() {
-                self.error.clone().unwrap_or_else(|| "Could not create the embedded webview.".into())
+                self.error
+                    .clone()
+                    .unwrap_or_else(|| "Could not create the embedded webview.".into())
             } else {
                 "This build has no embedded webview (cargo feature `webview`).".into()
             });

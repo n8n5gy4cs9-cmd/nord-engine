@@ -1,10 +1,21 @@
-use crate::{icons, state::{Action, EditorState, Tool}};
+use crate::{
+    icons,
+    state::{Action, EditorState, Tool},
+};
 use egui::Ui;
 
 pub fn ui(st: &mut EditorState, ui: &mut Ui) {
     ui.horizontal(|ui| {
-        ui.add(egui::Image::new(egui::include_image!("../../../../assets/brand/logo-mark-transparent.png")).max_height(22.0));
-        let name = st.project.as_ref().map_or("No project".to_string(), |p| p.name.clone());
+        ui.add(
+            egui::Image::new(egui::include_image!(
+                "../../../../assets/brand/logo-mark-transparent.png"
+            ))
+            .max_height(22.0),
+        );
+        let name = st
+            .project
+            .as_ref()
+            .map_or("No project".to_string(), |p| p.name.clone());
         ui.strong(format!("{}{}", name, if st.dirty { " •" } else { "" }));
         ui.separator();
         let has = st.project.is_some();
@@ -20,7 +31,11 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                 st.push(Action::Reload);
             }
             ui.separator();
-            for (t, ic, tip) in [(Tool::Move, "move", "Move (W)"), (Tool::Rotate, "rotate-cw", "Rotate (E)"), (Tool::Scale, "scaling", "Scale (R)")] {
+            for (t, ic, tip) in [
+                (Tool::Move, "move", "Move (W)"),
+                (Tool::Rotate, "rotate-cw", "Rotate (E)"),
+                (Tool::Scale, "scaling", "Scale (R)"),
+            ] {
                 if icons::button(ui, ic, tip, st.tool == t).clicked() {
                     st.push(Action::SetTool(t));
                 }
@@ -51,7 +66,8 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
             if icons::button(ui, "book-open", "Docs", false).clicked() {
                 st.push(Action::ShowTab(crate::app::Tab::Docs));
             }
-            ui.add_enabled(false, egui::Button::new("Export ▾")).on_hover_text("Export arrives in M4");
+            ui.add_enabled(false, egui::Button::new("Export ▾"))
+                .on_hover_text("Export arrives in M4");
         });
     });
 }

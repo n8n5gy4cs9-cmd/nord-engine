@@ -21,7 +21,13 @@ pub enum Lang {
 
 impl Lang {
     pub fn from_path(p: &str) -> Lang {
-        match p.rsplit('.').next().unwrap_or("").to_ascii_lowercase().as_str() {
+        match p
+            .rsplit('.')
+            .next()
+            .unwrap_or("")
+            .to_ascii_lowercase()
+            .as_str()
+        {
             "js" | "mjs" | "cjs" | "jsx" => Lang::Js,
             "ts" | "tsx" => Lang::Ts,
             "rs" => Lang::Rust,
@@ -47,25 +53,132 @@ impl Lang {
     fn keywords(self) -> &'static [&'static str] {
         match self {
             Lang::Js | Lang::Ts => &[
-                "async", "await", "break", "case", "catch", "class", "const", "continue", "default", "delete", "do", "else", "export",
-                "extends", "finally", "for", "from", "function", "if", "import", "in", "instanceof", "let", "new", "of", "return",
-                "static", "super", "switch", "this", "throw", "try", "typeof", "var", "void", "while", "yield", "true", "false", "null",
-                "undefined", "interface", "type", "enum", "implements", "public", "private", "readonly", "as",
+                "async",
+                "await",
+                "break",
+                "case",
+                "catch",
+                "class",
+                "const",
+                "continue",
+                "default",
+                "delete",
+                "do",
+                "else",
+                "export",
+                "extends",
+                "finally",
+                "for",
+                "from",
+                "function",
+                "if",
+                "import",
+                "in",
+                "instanceof",
+                "let",
+                "new",
+                "of",
+                "return",
+                "static",
+                "super",
+                "switch",
+                "this",
+                "throw",
+                "try",
+                "typeof",
+                "var",
+                "void",
+                "while",
+                "yield",
+                "true",
+                "false",
+                "null",
+                "undefined",
+                "interface",
+                "type",
+                "enum",
+                "implements",
+                "public",
+                "private",
+                "readonly",
+                "as",
             ],
             Lang::Rust => &[
-                "as", "async", "await", "break", "const", "continue", "crate", "dyn", "else", "enum", "extern", "false", "fn", "for", "if",
-                "impl", "in", "let", "loop", "match", "mod", "move", "mut", "pub", "ref", "return", "self", "Self", "static", "struct",
+                "as", "async", "await", "break", "const", "continue", "crate", "dyn", "else",
+                "enum", "extern", "false", "fn", "for", "if", "impl", "in", "let", "loop", "match",
+                "mod", "move", "mut", "pub", "ref", "return", "self", "Self", "static", "struct",
                 "super", "trait", "true", "type", "unsafe", "use", "where", "while",
             ],
             Lang::Glsl => &[
-                "attribute", "break", "const", "continue", "discard", "do", "else", "for", "if", "in", "inout", "out", "precision",
-                "return", "struct", "uniform", "varying", "void", "while", "highp", "mediump", "lowp", "layout", "true", "false",
-                "float", "int", "bool", "vec2", "vec3", "vec4", "mat3", "mat4", "sampler2D", "uint",
+                "attribute",
+                "break",
+                "const",
+                "continue",
+                "discard",
+                "do",
+                "else",
+                "for",
+                "if",
+                "in",
+                "inout",
+                "out",
+                "precision",
+                "return",
+                "struct",
+                "uniform",
+                "varying",
+                "void",
+                "while",
+                "highp",
+                "mediump",
+                "lowp",
+                "layout",
+                "true",
+                "false",
+                "float",
+                "int",
+                "bool",
+                "vec2",
+                "vec3",
+                "vec4",
+                "mat3",
+                "mat4",
+                "sampler2D",
+                "uint",
             ],
             Lang::Wgsl => &[
-                "fn", "let", "var", "const", "struct", "return", "if", "else", "for", "while", "loop", "break", "continue", "switch",
-                "case", "default", "true", "false", "override", "alias", "f32", "i32", "u32", "bool", "vec2", "vec3", "vec4", "mat3x3",
-                "mat4x4", "texture_2d", "sampler", "array",
+                "fn",
+                "let",
+                "var",
+                "const",
+                "struct",
+                "return",
+                "if",
+                "else",
+                "for",
+                "while",
+                "loop",
+                "break",
+                "continue",
+                "switch",
+                "case",
+                "default",
+                "true",
+                "false",
+                "override",
+                "alias",
+                "f32",
+                "i32",
+                "u32",
+                "bool",
+                "vec2",
+                "vec3",
+                "vec4",
+                "mat3x3",
+                "mat4x4",
+                "texture_2d",
+                "sampler",
+                "array",
             ],
             Lang::Json | Lang::Toml => &["true", "false", "null"],
             Lang::Css => &["important", "inherit", "initial", "none", "auto", "solid"],
@@ -94,7 +207,7 @@ pub fn tokenize(src: &str, lang: Lang) -> Vec<(Tok, std::ops::Range<usize>)> {
     let n = b.len();
     let at = |i: usize| b.get(i).map(|x| x.1);
     let byte = |i: usize| b.get(i).map_or(src.len(), |x| x.0);
-    let mut push = |t: Tok, s: usize, e: usize, out: &mut Vec<(Tok, std::ops::Range<usize>)>| {
+    let push = |t: Tok, s: usize, e: usize, out: &mut Vec<(Tok, std::ops::Range<usize>)>| {
         if e > s {
             out.push((t, byte(s)..byte(e)));
         }
@@ -163,7 +276,11 @@ pub fn tokenize(src: &str, lang: Lang) -> Vec<(Tok, std::ops::Range<usize>)> {
                 continue;
             }
         }
-        if matches!(lang, Lang::Js | Lang::Ts | Lang::Rust | Lang::Css | Lang::Glsl | Lang::Wgsl) && starts("/*", i) {
+        if matches!(
+            lang,
+            Lang::Js | Lang::Ts | Lang::Rust | Lang::Css | Lang::Glsl | Lang::Wgsl
+        ) && starts("/*", i)
+        {
             let mut j = i + 2;
             while j < n && !starts("*/", j) {
                 j += 1;
@@ -200,7 +317,8 @@ pub fn tokenize(src: &str, lang: Lang) -> Vec<(Tok, std::ops::Range<usize>)> {
         if c == '"' || c == '\'' || (c == '`' && matches!(lang, Lang::Js | Lang::Ts)) {
             // rust lifetimes / chars: 'a without closing quote on same token
             if lang == Lang::Rust && c == '\'' {
-                let close = (i + 2 < n && b[i + 2].1 == '\'') || (i + 3 < n && b[i + 1].1 == '\\' && b[i + 3].1 == '\'');
+                let close = (i + 2 < n && b[i + 2].1 == '\'')
+                    || (i + 3 < n && b[i + 1].1 == '\\' && b[i + 3].1 == '\'');
                 if !close {
                     push(Tok::Type, i, i + 1, &mut out);
                     i += 1;
@@ -219,7 +337,11 @@ pub fn tokenize(src: &str, lang: Lang) -> Vec<(Tok, std::ops::Range<usize>)> {
             i = e;
             continue;
         }
-        if c.is_ascii_digit() || (c == '#' && matches!(lang, Lang::Css) && at(i + 1).is_some_and(|x| x.is_ascii_hexdigit())) {
+        if c.is_ascii_digit()
+            || (c == '#'
+                && matches!(lang, Lang::Css)
+                && at(i + 1).is_some_and(|x| x.is_ascii_hexdigit()))
+        {
             let mut j = i + 1;
             while j < n && (b[j].1.is_ascii_alphanumeric() || b[j].1 == '.' || b[j].1 == '_') {
                 j += 1;
@@ -230,7 +352,12 @@ pub fn tokenize(src: &str, lang: Lang) -> Vec<(Tok, std::ops::Range<usize>)> {
         }
         if c.is_alphabetic() || c == '_' || c == '$' || (c == '@' && lang == Lang::Css) {
             let mut j = i + 1;
-            while j < n && (b[j].1.is_alphanumeric() || b[j].1 == '_' || b[j].1 == '$' || (b[j].1 == '-' && lang == Lang::Css)) {
+            while j < n
+                && (b[j].1.is_alphanumeric()
+                    || b[j].1 == '_'
+                    || b[j].1 == '$'
+                    || (b[j].1 == '-' && lang == Lang::Css))
+            {
                 j += 1;
             }
             let w = &src[byte(i)..byte(j)];
@@ -240,8 +367,6 @@ pub fn tokenize(src: &str, lang: Lang) -> Vec<(Tok, std::ops::Range<usize>)> {
                 Tok::Func
             } else if w.chars().next().is_some_and(|f| f.is_uppercase()) && lang != Lang::Json {
                 Tok::Type
-            } else if lang == Lang::Json && at(j) == Some('"') {
-                Tok::Plain
             } else {
                 Tok::Plain
             };
@@ -328,7 +453,10 @@ mod tests {
     use super::*;
 
     fn kinds(s: &str, l: Lang) -> Vec<(Tok, &str)> {
-        tokenize(s, l).into_iter().map(|(t, r)| (t, &s[r])).collect()
+        tokenize(s, l)
+            .into_iter()
+            .map(|(t, r)| (t, &s[r]))
+            .collect()
     }
 
     #[test]
@@ -349,7 +477,19 @@ mod tests {
     #[test]
     fn every_language_roundtrips_unicode() {
         let s = "héllo = \"wörld\" // ü\n# x\n<a href='y'>t</a>\nfn main() { let a = 'c'; 'l: loop {} }";
-        for l in [Lang::Js, Lang::Ts, Lang::Rust, Lang::Html, Lang::Css, Lang::Json, Lang::Md, Lang::Glsl, Lang::Wgsl, Lang::Toml, Lang::Plain] {
+        for l in [
+            Lang::Js,
+            Lang::Ts,
+            Lang::Rust,
+            Lang::Html,
+            Lang::Css,
+            Lang::Json,
+            Lang::Md,
+            Lang::Glsl,
+            Lang::Wgsl,
+            Lang::Toml,
+            Lang::Plain,
+        ] {
             let joined: String = tokenize(s, l).iter().map(|(_, r)| &s[r.clone()]).collect();
             assert_eq!(joined, s, "{l:?}");
         }

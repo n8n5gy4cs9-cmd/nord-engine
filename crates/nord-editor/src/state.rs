@@ -159,10 +159,17 @@ pub struct EditorState {
     pub settings_open: bool,
     pub about_open: bool,
     pub apply_theme: bool,
+    pub apply_styles: bool,
     /// bumps on Play/Reload so the Game webview reloads
     pub game_nonce: u32,
     /// the edit viewport page has said hello (so scene/thumb messages are meaningful)
     pub viewport_ready: bool,
+}
+
+impl Default for EditorState {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl EditorState {
@@ -205,6 +212,7 @@ impl EditorState {
             settings_open: false,
             about_open: false,
             apply_theme: true,
+            apply_styles: false,
             game_nonce: 0,
             viewport_ready: false,
         }
@@ -215,7 +223,10 @@ impl EditorState {
     }
 
     pub fn log(&mut self, level: LogLevel, text: impl Into<String>) {
-        self.console.push(LogLine { level, text: text.into() });
+        self.console.push(LogLine {
+            level,
+            text: text.into(),
+        });
         if self.console.len() > 5000 {
             self.console.drain(..1000);
         }
@@ -226,7 +237,9 @@ impl EditorState {
     }
 
     pub fn is_3d(&self) -> bool {
-        self.project.as_ref().is_some_and(|p| p.kind == nord_core::ProjectType::ThreeD)
+        self.project
+            .as_ref()
+            .is_some_and(|p| p.kind == nord_core::ProjectType::ThreeD)
     }
 
     pub fn selected(&self) -> Option<&Entity> {
@@ -239,8 +252,15 @@ impl EditorState {
     }
 
     /// The one way to change the scene: records undo, marks dirty, bumps the revision (viewport resync).
-    pub fn edit(&mut self, label: &str, key: Option<&str>, f: impl FnOnce(&mut Vec<Entity>)) -> bool {
-        let Some(s) = self.scene.as_mut() else { return false };
+    pub fn edit(
+        &mut self,
+        label: &str,
+        key: Option<&str>,
+        f: impl FnOnce(&mut Vec<Entity>),
+    ) -> bool {
+        let Some(s) = self.scene.as_mut() else {
+            return false;
+        };
         let changed = self.undo.apply(&mut s.entities, label, key, f);
         if changed {
             self.dirty = true;
@@ -272,7 +292,8 @@ impl EditorState {
     pub fn add_entity(&mut self, parent: Option<String>) {
         let mut e = Entity::new("Entity");
         if self.is_3d() {
-            e.components.push(serde_json::from_value(json!({"type":"mesh","shape":"box"})).unwrap());
+            e.components
+                .push(serde_json::from_value(json!({"type":"mesh","shape":"box"})).unwrap());
         } else {
             e.transform.pos = [0.0, 0.0, 0.0];
         }
@@ -280,6 +301,58 @@ impl EditorState {
         self.edit("Add entity", None, |l| {
             let idx = usize::MAX;
             scene_ops::insert(l, parent.as_deref(), idx, e);
+        });
+        self.select(Some(id));
+    }
+
+    /// Dropping an asset on the hierarchy: image -> sprite entity, model -> model entity, prefab -> instance,
+    /// audio -> audioSource entity, script -> attached to the selection.
+    pub fn add_asset_entity(&mut self, path: &str) {
+        use nord_core::assets::{classify, AssetType};
+        let name = path
+            .rsplit('/')
+            .next()
+            .unwrap_or(path)
+            .split('.')
+            .next()
+            .unwrap_or("Entity")
+            .to_string();
+        let mut e = Entity::new(&name);
+        match classify(path) {
+            AssetType::Image | AssetType::Spritesheet => e
+                .components
+                .push(serde_json::from_value(json!({"type":"sprite","texture":path})).unwrap()),
+            AssetType::Model => e
+                .components
+                .push(serde_json::from_value(json!({"type":"model","path":path})).unwrap()),
+            AssetType::Audio => e
+                .components
+                .push(serde_json::from_value(json!({"type":"audioSource","clip":path})).unwrap()),
+            AssetType::Prefab => {
+                e.prefab = Some(nord_core::scene::PrefabRef {
+                    path: path.into(),
+                    overrides: Default::default(),
+                })
+            }
+            _ if path.ends_with(".js") || path.ends_with(".ts") => {
+                if let Some(id) = self.selection.first().cloned() {
+                    let p = path.to_string();
+                    self.edit("Attach script", None, |l| {
+                        if let Some(t) = scene_ops::find_mut(l, &id) {
+                            t.scripts.push(nord_core::scene::ScriptRef {
+                                path: p,
+                                attributes: Default::default(),
+                            });
+                        }
+                    });
+                }
+                return;
+            }
+            _ => return,
+        }
+        let id = e.id.clone();
+        self.edit("Add from asset", None, |l| {
+            scene_ops::insert(l, None, usize::MAX, e);
         });
         self.select(Some(id));
     }
@@ -317,11 +390,15 @@ impl EditorState {
     }
 
     pub fn paste(&mut self) {
-        let Some(c) = self.clipboard.clone() else { return };
+        let Some(c) = self.clipboard.clone() else {
+            return;
+        };
         let e = scene_ops::clone_fresh(&c);
         let id = e.id.clone();
         let parent = self.selection.first().and_then(|s| {
-            self.scene.as_ref().and_then(|sc| scene_ops::parent_of(&sc.entities, s))
+            self.scene
+                .as_ref()
+                .and_then(|sc| scene_ops::parent_of(&sc.entities, s))
         });
         self.edit("Paste", None, |l| {
             scene_ops::insert(l, parent.as_deref(), usize::MAX, e);
@@ -386,7 +463,12 @@ impl EditorState {
 
     fn autosave_path(&self) -> Option<PathBuf> {
         let f = self.scene_file.as_ref()?;
-        Some(self.root.as_ref()?.join(".nord-cache/autosave").join(f.replace('/', "__")))
+        Some(
+            self.root
+                .as_ref()?
+                .join(".nord-cache/autosave")
+                .join(f.replace('/', "__")),
+        )
     }
 
     pub fn recover_autosave(&mut self) {
@@ -402,7 +484,9 @@ impl EditorState {
     }
 
     pub fn save(&mut self) {
-        let (Some(root), Some(f), Some(s)) = (&self.root, &self.scene_file, &self.scene) else { return };
+        let (Some(root), Some(f), Some(s)) = (&self.root, &self.scene_file, &self.scene) else {
+            return;
+        };
         match nord_core::io::save_json(&root.join(f), s) {
             Ok(()) => {
                 self.dirty = false;
@@ -417,7 +501,10 @@ impl EditorState {
 
     /// Crash-safe autosave: atomic write to `.nord-cache/autosave/`, never touches the real file.
     pub fn autosave_tick(&mut self) {
-        if !self.dirty || self.last_autosave.elapsed() < Duration::from_secs(self.settings.autosave_secs.max(5)) {
+        if !self.dirty
+            || self.last_autosave.elapsed()
+                < Duration::from_secs(self.settings.autosave_secs.max(5))
+        {
             return;
         }
         self.last_autosave = Instant::now();
@@ -440,13 +527,25 @@ impl EditorState {
             let root = self.root.clone()?;
             let engine = self.engine_root.clone();
             let Some(engine) = engine else {
-                self.log(LogLevel::Error, "Engine root not found (vendor/VENDOR.json). Set NORD_ROOT.");
+                self.log(
+                    LogLevel::Error,
+                    "Engine root not found (vendor/VENDOR.json). Set NORD_ROOT.",
+                );
                 return None;
             };
             match nord_serve::start_background(root, engine) {
                 Ok((port, hub)) => {
-                    self.play = Some(Play { port, hub, log_seen: 0, inbox_seen: 0, running: false });
-                    self.log(LogLevel::Build, format!("Dev server on http://127.0.0.1:{port}"));
+                    self.play = Some(Play {
+                        port,
+                        hub,
+                        log_seen: 0,
+                        inbox_seen: 0,
+                        running: false,
+                    });
+                    self.log(
+                        LogLevel::Build,
+                        format!("Dev server on http://127.0.0.1:{port}"),
+                    );
                 }
                 Err(e) => {
                     self.log(LogLevel::Error, format!("Server failed: {e}"));
@@ -454,7 +553,9 @@ impl EditorState {
                 }
             }
         }
-        self.play.as_ref().map(|p| format!("http://127.0.0.1:{}", p.port))
+        self.play
+            .as_ref()
+            .map(|p| format!("http://127.0.0.1:{}", p.port))
     }
 
     pub fn stop(&mut self) {
@@ -465,7 +566,9 @@ impl EditorState {
 
     /// Pull game console lines + viewport messages from the hub.
     pub fn pump_hub(&mut self) -> Vec<Value> {
-        let Some(p) = self.play.as_mut() else { return vec![] };
+        let Some(p) = self.play.as_mut() else {
+            return vec![];
+        };
         let (logs, msgs) = {
             let l = p.hub.logs.lock().unwrap();
             let new: Vec<_> = l.iter().skip(p.log_seen).cloned().collect();
@@ -531,7 +634,11 @@ impl EditorState {
                 let Some(id) = m["id"].as_str() else { return };
                 let v3 = |k: &str| -> Option<[f64; 3]> {
                     let a = m[k].as_array()?;
-                    Some([a.first()?.as_f64()?, a.get(1)?.as_f64()?, a.get(2)?.as_f64()?])
+                    Some([
+                        a.first()?.as_f64()?,
+                        a.get(1)?.as_f64()?,
+                        a.get(2)?.as_f64()?,
+                    ])
                 };
                 let (pos, rot, scale) = (v3("pos"), v3("rot"), v3("scale"));
                 let id = id.to_string();
@@ -550,6 +657,31 @@ impl EditorState {
                     }
                 });
             }
+            Some("key") => {
+                let (cmd, shift) = (
+                    m["cmd"].as_bool().unwrap_or(false),
+                    m["shift"].as_bool().unwrap_or(false),
+                );
+                let a = match (m["key"].as_str().unwrap_or(""), cmd) {
+                    ("w", false) => Some(Action::SetTool(Tool::Move)),
+                    ("e", false) => Some(Action::SetTool(Tool::Rotate)),
+                    ("r", false) => Some(Action::SetTool(Tool::Scale)),
+                    ("f", false) => Some(Action::Focus),
+                    ("delete" | "backspace", false) => Some(Action::Delete),
+                    ("z", true) if shift => Some(Action::Redo),
+                    ("z", true) => Some(Action::Undo),
+                    ("d", true) => Some(Action::Duplicate),
+                    ("s", true) => Some(Action::SaveAll),
+                    ("c", true) => Some(Action::Copy),
+                    ("v", true) => Some(Action::Paste),
+                    ("p", true) => Some(Action::QuickOpen),
+                    ("k", true) => Some(Action::Palette),
+                    _ => None,
+                };
+                if let Some(a) = a {
+                    self.push(a);
+                }
+            }
             Some("thumb") => {
                 // model thumbnail rendered by the viewport; the file is written by the server (/api/thumb-upload)
                 if let Some(p) = m["path"].as_str() {
@@ -566,15 +698,21 @@ impl EditorState {
 
     /// `scripts/foo.js` -> attribute schema (cached by mtime).
     pub fn script_fields(&mut self, rel: &str) -> Vec<crate::schema::Field> {
-        let Some(root) = &self.root else { return vec![] };
+        let Some(root) = &self.root else {
+            return vec![];
+        };
         let p = root.join(rel);
-        let Ok(mt) = std::fs::metadata(&p).and_then(|m| m.modified()) else { return vec![] };
+        let Ok(mt) = std::fs::metadata(&p).and_then(|m| m.modified()) else {
+            return vec![];
+        };
         if let Some((t, f)) = self.script_cache.get(rel) {
             if *t == mt {
                 return f.clone();
             }
         }
-        let f = std::fs::read_to_string(&p).map(|s| crate::schema::script_attributes(&s)).unwrap_or_default();
+        let f = std::fs::read_to_string(&p)
+            .map(|s| crate::schema::script_attributes(&s))
+            .unwrap_or_default();
         self.script_cache.insert(rel.to_string(), (mt, f.clone()));
         f
     }

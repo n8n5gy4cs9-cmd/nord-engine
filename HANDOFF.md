@@ -40,13 +40,14 @@ cargo build --workspace && cargo test --workspace && cargo clippy --workspace --
 ```
 
 ## Current status (update every session)
-- **M0 + M1 done** (core model/schemas/assets/thumbs/IO, CLI `new/doctor/thumbs/check/serve/check-offline/vendor`, CI). Work was done on the session branch
-  `claude/friendly-knuth-qv79yh` (cloud harness designated it) — merge to `main` when convenient.
-- **M2 done** (runtime/core incl. audio/UI/themes, runtime/phaser, runtime/babylon, hot reload, runtime/lite, e2e). Tests: `node --test runtime/core/*.test.mjs`
-  and `node tools/e2e.mjs` (Playwright; suites in tools/e2e/*.mjs, screenshots in target/e2e/). Examples: `examples/conformance{,-2d,-3d}`, `examples/html-lite`.
-  Skins/themes: `assets/themes/themes.json` → `node tools/gen_themes.mjs` → `runtime/core/themes.js`.
-  **Next: M3 editor** — spike M3-07 first (wry webview in egui, macOS only — verify on CI/owner), then M3-01.. . M3-23 = apply skins/themes in editor + code editor.
-  Docs tasks M7-11/12 (complete Nord-format API docs + manual with "for dummies" toggle boxes) are owner requests — don't drop them.
-  Then M4 export, M5 Rust/WASM, M6 library, M7 docs, M8 polish.
+- **M0 + M1 + M2 done.** Work happens on the session branch the cloud harness designates (merge to `main` when convenient).
+- **M3 editor implemented** (`crates/nord-editor`, `crates/nord-serve`, `editor/viewport/`, `library/`) — 23 of 25 tasks done; see `docs/EDITOR_UI.md` ("Implemented (M3)")
+  and ADR-014..018. **Open:** M3-07 (wry embedding must be *run* on macOS — checklist in KNOWN_ISSUES RISK-001a; CI only compiles it),
+  M3-14 (multi-cursor → M3-24), M3-25 (owner verification). Owner scripts: `./run.sh`, `./build.sh`.
+- How to test the editor in this sandbox: `cargo test -p nord-editor` (kittest), `node tools/e2e.mjs edit-viewport-2d edit-viewport-3d game-log-bridge`
+  (needs `cargo build -p nord-cli`), real-window smoke under Xvfb (see docs/TESTING.md; `apt-get install libxkbcommon-x11-0 mesa-vulkan-drivers libegl1`).
+- Skins/themes: `assets/themes/themes.json` → `node tools/gen_themes.mjs` → `runtime/core/themes.js`; editor reads the JSON directly; TTFs via `tools/woff2_to_ttf.py`.
+- **Next: M4 export** (`nord build/export`, mac player + `nord-player`), reusing `nord-serve`/`engine_root` for assets. Docs tasks M7-11/12 (complete Nord-format API docs +
+  manual with "for dummies" toggle boxes) are owner requests — don't drop them; the editor's Docs tab already embeds `docs/manual/index.html` (served at `/__docs/`) once it exists.
 - Vendored: Phaser 4.2.1, Babylon 9.30.0 (+Havok 1.3.14), PlayCanvas 2.23.2 (optional), CodeMirror bundle, marked, fonts, Lucide.
 - Known risks: `docs/KNOWN_ISSUES.md`.

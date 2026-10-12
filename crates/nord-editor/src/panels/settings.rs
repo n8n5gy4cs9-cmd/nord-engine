@@ -88,16 +88,27 @@ pub fn window(st: &mut EditorState, ctx: &Context) {
     }
     if st.about_open {
         let mut open = true;
-        egui::Window::new("About Nord Engine").open(&mut open).collapsible(false).resizable(false).show(ctx, |ui| {
-            ui.vertical_centered(|ui| {
-                ui.add(egui::Image::new(egui::include_image!("../../../../assets/brand/logo-256.png")).max_width(128.0));
-                ui.heading("Nord Engine");
-                ui.label(format!("Editor v{}", env!("CARGO_PKG_VERSION")));
-                ui.label("Crowelian 2026 + Sonnet");
-                ui.weak("Personal engine & editor · exports static HTML web games and a Mac app");
-                ui.weak("Phaser · Babylon.js · Havok · egui · wry — see THIRD_PARTY.md");
+        egui::Window::new("About Nord Engine")
+            .open(&mut open)
+            .collapsible(false)
+            .resizable(false)
+            .show(ctx, |ui| {
+                ui.vertical_centered(|ui| {
+                    ui.add(
+                        egui::Image::new(egui::include_image!(
+                            "../../../../assets/brand/logo-256.png"
+                        ))
+                        .max_width(128.0),
+                    );
+                    ui.heading("Nord Engine");
+                    ui.label(format!("Editor v{}", env!("CARGO_PKG_VERSION")));
+                    ui.label("Crowelian 2026 + Sonnet");
+                    ui.weak(
+                        "Personal engine & editor · exports static HTML web games and a Mac app",
+                    );
+                    ui.weak("Phaser · Babylon.js · Havok · egui · wry — see THIRD_PARTY.md");
+                });
             });
-        });
         if !open {
             st.about_open = false;
         }

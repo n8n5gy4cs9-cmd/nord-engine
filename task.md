@@ -3,14 +3,14 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 43/123 tasks (35%)** · updated 2026-10-12
+**Overall: 64/125 tasks (51%)** · updated 2026-10-12
 
 | Milestone | Progress |
 |---|---|
 | M0 Planning, identity, assets, vendoring | 13/13 (100%) |
 | M1 Foundation | 11/11 (100%) |
 | M2 JS runtimes | 19/19 (100%) |
-| M3 Editor | 0/23 (0%) |
+| M3 Editor | 21/25 (84%) |
 | M4 Export | 0/10 (0%) |
 | M5 Rust/WASM | 0/9 (0%) |
 | M6 Library | 0/18 (0%) |
@@ -18,11 +18,11 @@
 | M8 Polish & portability | 0/8 (0%) |
 
 ## Next up
-- **M3-01** nord-editor crate: eframe (wgpu) app, theme (Nord palette), bundled fonts (Inter/JetBrains Mono TTF), egui_dock layout, menu bar
-- **M3-02** Splash: borderless window with assets/brand/splash.png shown >= 2000 ms, then main window
-- **M3-03** Project hub: new (templates), open (rfd dialog), recent, examples, tutorials
-- **M3-04** Hierarchy panel: tree, drag-reparent, add/delete/duplicate, search, Lucide icons
-- **M3-05** Inspector: generated from component/script schemas (all attribute types) as egui widgets
+- **M3-07** SPIKE: wry child webview embedded in egui panel on macOS (resize, HiDPI, focus, IPC both ways); fallback separate window
+- **M3-14** Code editor v3 (stretch): multi-cursor, minimap, split view; evaluate egui_code_editor reuse / CodeMirror-webview fallback
+- **M3-24** Code editor: multi-cursor editing (custom text-edit core; egui TextEdit has a single selection)
+- **M3-25** OWNER: verify webview embedding on macOS (checklist in docs/KNOWN_ISSUES.md RISK-001a), then tick M3-07
+- **M4-01** `nord build` pipeline: validate, resolve libs, copy assets, nord.json, index.html templates
 
 ## M0 — Planning, identity, assets, vendoring
 _Plans, brand, placeholder assets, vendored libs, workspace skeleton_
@@ -82,29 +82,31 @@ _nord.js core + Phaser 2D + Babylon 3D adapters_
 ## M3 — Editor
 _Native egui editor + wry viewport + code editor_
 
-- [ ] **M3-01** nord-editor crate: eframe (wgpu) app, theme (Nord palette), bundled fonts (Inter/JetBrains Mono TTF), egui_dock layout, menu bar
-- [ ] **M3-02** Splash: borderless window with assets/brand/splash.png shown >= 2000 ms, then main window
-- [ ] **M3-03** Project hub: new (templates), open (rfd dialog), recent, examples, tutorials
-- [ ] **M3-04** Hierarchy panel: tree, drag-reparent, add/delete/duplicate, search, Lucide icons
-- [ ] **M3-05** Inspector: generated from component/script schemas (all attribute types) as egui widgets
-- [ ] **M3-06** Undo/redo Command system + copy/paste/duplicate + autosave (crash-safe)
-- [ ] **M3-07** SPIKE: wry child webview embedded in egui panel on macOS (resize, HiDPI, focus, IPC both ways); fallback separate window
-- [ ] **M3-08** 3D viewport (Babylon edit mode in webview): orbit/fly cam, grid, picking, move/rotate/scale gizmos, snap, IPC sync
-- [ ] **M3-09** 2D viewport (Phaser edit mode): pan/zoom, grid, picking, move/rotate/scale handles, snap, IPC sync
-- [ ] **M3-10** Asset browser: folder tree, thumbnail grid (size slider, lazy), search/filter, drag&drop, import, rename/move/delete
-- [ ] **M3-11** Thumbnails: images/spritesheets/audio waveform via nord-core; models rendered via Babylon offscreen in webview
-- [ ] **M3-12** Code editor v1: tabs, line numbers, syntect highlighting (JS/TS/Rust/HTML/CSS/JSON/MD/GLSL/WGSL/TOML), auto-indent, brackets, comment toggle, save
-- [ ] **M3-13** Code editor v2: find/replace (regex), goto line, project search, autocomplete (nord.js API + snippets), error squiggles, format
-- [ ] **M3-14** Code editor v3 (stretch): multi-cursor, minimap, split view; evaluate egui_code_editor reuse / CodeMirror-webview fallback
-- [ ] **M3-15** Quick open (Cmd+P), command palette (Cmd+K), shortcuts map
-- [ ] **M3-16** Play/Stop/Reload in webview via nord serve; hot-reload on save
-- [ ] **M3-17** Console panel: logs/errors from game (IPC) + build output; click error -> open file:line
-- [ ] **M3-18** Library browser: search, preview, insert snippet/prefab/script
-- [ ] **M3-19** Docs viewer tab (offline HTML manual in webview)
-- [ ] **M3-20** Settings (theme, fonts, editor prefs), About dialog (credit Crowelian 2026 + Sonnet), window state persistence
-- [ ] **M3-21** Animation editor (spritesheet anims) + tilemap painter (Tiled JSON) basics
-- [ ] **M3-22** egui_kittest headless tests for panels + CI job
-- [ ] **M3-23** Editor: apply selected skin + theme (UI fonts, code font + ligatures, syntax colors) via shared themes.json; settings UI to switch live
+- [x] **M3-01** nord-editor crate: eframe (wgpu) app, theme (Nord palette), bundled fonts (Inter/JetBrains Mono TTF), egui_dock layout, menu bar
+- [x] **M3-02** Splash: borderless window with assets/brand/splash.png shown >= 2000 ms, then main window
+- [x] **M3-03** Project hub: new (templates), open (rfd dialog), recent, examples, tutorials
+- [x] **M3-04** Hierarchy panel: tree, drag-reparent, add/delete/duplicate, search, Lucide icons
+- [x] **M3-05** Inspector: generated from component/script schemas (all attribute types) as egui widgets
+- [x] **M3-06** Undo/redo Command system + copy/paste/duplicate + autosave (crash-safe)
+- [~] **M3-07** SPIKE: wry child webview embedded in egui panel on macOS (resize, HiDPI, focus, IPC both ways); fallback separate window
+- [x] **M3-08** 3D viewport (Babylon edit mode in webview): orbit/fly cam, grid, picking, move/rotate/scale gizmos, snap, IPC sync
+- [x] **M3-09** 2D viewport (Phaser edit mode): pan/zoom, grid, picking, move/rotate/scale handles, snap, IPC sync
+- [x] **M3-10** Asset browser: folder tree, thumbnail grid (size slider, lazy), search/filter, drag&drop, import, rename/move/delete
+- [x] **M3-11** Thumbnails: images/spritesheets/audio waveform via nord-core; models rendered via Babylon offscreen in webview
+- [x] **M3-12** Code editor v1: tabs, line numbers, syntect highlighting (JS/TS/Rust/HTML/CSS/JSON/MD/GLSL/WGSL/TOML), auto-indent, brackets, comment toggle, save
+- [x] **M3-13** Code editor v2: find/replace (regex), goto line, project search, autocomplete (nord.js API + snippets), error squiggles, format
+- [~] **M3-14** Code editor v3 (stretch): multi-cursor, minimap, split view; evaluate egui_code_editor reuse / CodeMirror-webview fallback
+- [x] **M3-15** Quick open (Cmd+P), command palette (Cmd+K), shortcuts map
+- [x] **M3-16** Play/Stop/Reload in webview via nord serve; hot-reload on save
+- [x] **M3-17** Console panel: logs/errors from game (IPC) + build output; click error -> open file:line
+- [x] **M3-18** Library browser: search, preview, insert snippet/prefab/script
+- [x] **M3-19** Docs viewer tab (offline HTML manual in webview)
+- [x] **M3-20** Settings (theme, fonts, editor prefs), About dialog (credit Crowelian 2026 + Sonnet), window state persistence
+- [x] **M3-21** Animation editor (spritesheet anims) + tilemap painter (Tiled JSON) basics
+- [x] **M3-22** egui_kittest headless tests for panels + CI job
+- [x] **M3-23** Editor: apply selected skin + theme (UI fonts, code font + ligatures, syntax colors) via shared themes.json; settings UI to switch live
+- [ ] **M3-24** Code editor: multi-cursor editing (custom text-edit core; egui TextEdit has a single selection)
+- [ ] **M3-25** OWNER: verify webview embedding on macOS (checklist in docs/KNOWN_ISSUES.md RISK-001a), then tick M3-07
 
 ## M4 — Export
 _web static, single-file, mac wrapper_

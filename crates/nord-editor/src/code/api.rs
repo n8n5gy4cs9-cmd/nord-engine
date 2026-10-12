@@ -72,12 +72,20 @@ pub fn candidates(prefix: &str, text: &str) -> Vec<Item> {
     let mut out: Vec<Item> = vec![];
     for (s, body) in SNIPPETS {
         if s.starts_with(&p) && *s != prefix {
-            out.push(Item { label: format!("{s} (snippet)"), insert: body.to_string(), detail: "snippet" });
+            out.push(Item {
+                label: format!("{s} (snippet)"),
+                insert: body.to_string(),
+                detail: "snippet",
+            });
         }
     }
     for (a, d) in API {
         if a.to_lowercase().starts_with(&p) && *a != prefix {
-            out.push(Item { label: a.to_string(), insert: a.to_string(), detail: d });
+            out.push(Item {
+                label: a.to_string(),
+                insert: a.to_string(),
+                detail: d,
+            });
         }
     }
     // words already in the file
@@ -88,7 +96,11 @@ pub fn candidates(prefix: &str, text: &str) -> Vec<Item> {
     words.sort_unstable();
     words.dedup();
     for w in words.into_iter().take(6) {
-        out.push(Item { label: w.to_string(), insert: w.to_string(), detail: "word" });
+        out.push(Item {
+            label: w.to_string(),
+            insert: w.to_string(),
+            detail: "word",
+        });
     }
     out.truncate(10);
     out
@@ -103,7 +115,9 @@ mod tests {
         let c = candidates("this.inp", "");
         assert!(c.iter().any(|i| i.label.starts_with("this.input.down")));
         let c = candidates("upd", "let updater = 1");
-        assert!(c.iter().any(|i| i.detail == "snippet" && i.insert.starts_with("update(dt)")));
+        assert!(c
+            .iter()
+            .any(|i| i.detail == "snippet" && i.insert.starts_with("update(dt)")));
         assert!(c.iter().any(|i| i.label == "updater"));
         assert!(candidates("", "x").is_empty());
     }

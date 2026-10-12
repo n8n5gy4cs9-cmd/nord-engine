@@ -1,4 +1,3 @@
-
 use anyhow::{bail, Context};
 use clap::{Parser, Subcommand};
 use nord_core::{assets, offline, thumbs, validate, ProjectType};
@@ -172,7 +171,8 @@ fn main() -> anyhow::Result<()> {
             println!("OK");
         }
         Cmd::Serve { project, port } => {
-            let engine = nord_serve::engine_root().context("engine root not found (set NORD_ROOT)")?;
+            let engine =
+                nord_serve::engine_root().context("engine root not found (set NORD_ROOT)")?;
             tokio::runtime::Runtime::new()?.block_on(nord_serve::run(project, engine, port))?;
         }
         Cmd::CheckOffline { dir, allow } => {

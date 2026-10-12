@@ -64,6 +64,14 @@ pub fn engine_root() -> Option<PathBuf> {
     {
         return Some(r);
     }
+    // macOS bundle: Nord Engine.app/Contents/MacOS/<exe>  ->  Contents/Resources holds vendor/, runtime/, editor/ ...
+    if let Some(res) = std::env::current_exe()
+        .ok()
+        .and_then(|e| Some(e.parent()?.parent()?.join("Resources")))
+        .filter(|p| ok(p))
+    {
+        return Some(res);
+    }
     let starts = [std::env::current_dir().ok(), std::env::current_exe().ok()];
     starts
         .into_iter()
@@ -109,7 +117,9 @@ fn file_response(p: &Path) -> Response {
 
 async fn static_files(State(a): State<App>, uri: Uri) -> Response {
     let path = uri.path();
-    let (base, rel) = if path == "/__edit" {
+    let (base, rel) = if let Some(r) = path.strip_prefix("/__docs/") {
+        (a.engine.join("docs/manual"), r)
+    } else if path == "/__edit" {
         (a.engine.join("editor/viewport"), "edit.html")
     } else if let Some(r) = path.strip_prefix("/editor/") {
         (a.engine.join("editor"), r)
@@ -164,10 +174,71 @@ async fn ipc_get(State(a): State<App>, Query(q): Query<Since>) -> Json<Vec<serde
     Json(l.iter().skip(q.since).cloned().collect())
 }
 
+/// Non-JSON POSTs must carry a custom header: a cross-site page cannot set it without a CORS preflight (which we never answer).
+fn has_nord_header(h: &axum::http::HeaderMap) -> bool {
+    h.contains_key("x-nord")
+}
+
 /// Send a command to connected viewports (used by tests and the separate-window fallback).
-async fn edit_cmd(State(a): State<App>, body: String) -> StatusCode {
+async fn edit_cmd(State(a): State<App>, headers: axum::http::HeaderMap, body: String) -> StatusCode {
+    if !has_nord_header(&headers) {
+        return StatusCode::FORBIDDEN;
+    }
     let _ = a.hub.edit_tx.send(body);
     StatusCode::NO_CONTENT
+}
+
+/// Model thumbnails rendered by the 3D edit viewport arrive as a PNG data URL; stored where nord-core caches thumbs.
+async fn thumb_upload(
+    State(a): State<App>,
+    UrlPath(sha): UrlPath<String>,
+    body: String,
+) -> StatusCode {
+    if sha.is_empty() || !sha.chars().all(|c| c.is_ascii_hexdigit()) {
+        return StatusCode::BAD_REQUEST;
+    }
+    let Some(b64) = body.strip_prefix("data:image/png;base64,") else {
+        return StatusCode::BAD_REQUEST;
+    };
+    let Some(bytes) = b64_decode(b64) else {
+        return StatusCode::BAD_REQUEST;
+    };
+    let p = a
+        .project
+        .join(".nord-cache/thumbs")
+        .join(format!("{sha}.png"));
+    if let Some(d) = p.parent() {
+        let _ = std::fs::create_dir_all(d);
+    }
+    match nord_core::io::write_atomic(&p, &bytes) {
+        Ok(()) => StatusCode::NO_CONTENT,
+        Err(_) => StatusCode::INTERNAL_SERVER_ERROR,
+    }
+}
+
+fn b64_decode(s: &str) -> Option<Vec<u8>> {
+    let val = |c: u8| -> Option<u32> {
+        Some(match c {
+            b'A'..=b'Z' => c - b'A',
+            b'a'..=b'z' => c - b'a' + 26,
+            b'0'..=b'9' => c - b'0' + 52,
+            b'+' => 62,
+            b'/' => 63,
+            _ => return None,
+        } as u32)
+    };
+    let mut out = Vec::with_capacity(s.len() * 3 / 4);
+    let (mut acc, mut bits) = (0u32, 0);
+    for c in s.bytes().filter(|c| !c.is_ascii_whitespace() && *c != b'=') {
+        acc = (acc << 6) | val(c)?;
+        bits += 6;
+        if bits >= 8 {
+            bits -= 8;
+            out.push((acc >> bits) as u8);
+            acc &= (1 << bits) - 1;
+        }
+    }
+    Some(out)
 }
 
 async fn api_project(State(a): State<App>) -> Response {
@@ -256,6 +327,17 @@ fn watch(root: PathBuf, tx: broadcast::Sender<Vec<String>>) {
     });
 }
 
+/// DNS-rebinding guard: only answer requests addressed to a loopback host name.
+async fn local_host_only(req: axum::extract::Request, next: axum::middleware::Next) -> Response {
+    let host = req.headers().get(header::HOST).and_then(|h| h.to_str().ok()).unwrap_or("");
+    let name = host.rsplit_once(':').map_or(host, |x| x.0);
+    if matches!(name, "127.0.0.1" | "localhost" | "[::1]") {
+        next.run(req).await
+    } else {
+        StatusCode::FORBIDDEN.into_response()
+    }
+}
+
 pub fn router(project: PathBuf, engine: PathBuf) -> (Router, Arc<Hub>) {
     let (tx, _) = broadcast::channel(16);
     let (edit_tx, _) = broadcast::channel(64);
@@ -277,11 +359,13 @@ pub fn router(project: PathBuf, engine: PathBuf) -> (Router, Arc<Hub>) {
         .route("/api/assets", get(api_assets))
         .route("/api/validate", get(api_validate))
         .route("/api/thumb/*path", get(api_thumb))
+        .route("/api/thumb-upload/:sha", post(thumb_upload))
         .route("/api/log", get(log_get).post(log_post))
         .route("/api/ipc", get(ipc_get).post(ipc_post))
         .route("/__edit/events", get(edit_events))
         .route("/__edit/cmd", post(edit_cmd))
         .fallback(static_files)
+        .layer(axum::middleware::from_fn(local_host_only))
         .with_state(app);
     (r, hub)
 }
@@ -294,7 +378,9 @@ pub fn start_background(project: PathBuf, engine: PathBuf) -> anyhow::Result<(u1
     std::thread::spawn(move || {
         let rt = tokio::runtime::Runtime::new().expect("tokio");
         rt.block_on(async move {
-            let l = tokio::net::TcpListener::bind(("127.0.0.1", 0)).await.expect("bind");
+            let l = tokio::net::TcpListener::bind(("127.0.0.1", 0))
+                .await
+                .expect("bind");
             let _ = ptx.send(l.local_addr().map(|a| a.port()).unwrap_or(0));
             watch(project, tx);
             let _ = axum::serve(l, r).await;
@@ -319,6 +405,29 @@ pub async fn run(project: PathBuf, engine: PathBuf, port: u16) -> anyhow::Result
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[tokio::test]
+    async fn guards_host_and_cross_site_posts() {
+        let d = std::env::temp_dir().join(format!("nord-serve-guard-{}", std::process::id()));
+        std::fs::create_dir_all(&d).unwrap();
+        let (r, _) = router(d.clone(), d);
+        let l = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let port = l.local_addr().unwrap().port();
+        tokio::spawn(async move { axum::serve(l, r).await.unwrap() });
+        let c = reqwest::Client::new();
+        let url = format!("http://127.0.0.1:{port}/__edit/cmd");
+        assert_eq!(c.post(&url).body("{}").send().await.unwrap().status(), 403, "no custom header");
+        assert_eq!(c.post(&url).header("x-nord", "1").body("{}").send().await.unwrap().status(), 204);
+        let rebound = c.get(format!("http://127.0.0.1:{port}/api/log")).header("host", "evil.example").send().await.unwrap();
+        assert_eq!(rebound.status(), 403, "non-loopback Host rejected");
+    }
+
+    #[test]
+    fn base64_decodes() {
+        assert_eq!(b64_decode("aGVsbG8=").unwrap(), b"hello");
+        assert_eq!(b64_decode("aGk").unwrap(), b"hi");
+        assert!(b64_decode("a*b").is_none());
+    }
 
     #[test]
     fn rejects_traversal() {

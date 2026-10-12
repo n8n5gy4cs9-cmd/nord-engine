@@ -14,11 +14,57 @@ macro_rules! icons {
 }
 
 icons!(
-    "play", "square", "refresh-cw", "move", "rotate-cw", "scaling", "grid-3x3", "magnet", "plus", "trash-2", "copy",
-    "folder", "folder-open", "file", "file-code", "file-text", "image", "music", "box", "boxes", "search", "settings",
-    "book-open", "terminal", "save", "undo-2", "redo-2", "x", "chevron-right", "chevron-down", "eye", "eye-off",
-    "layers", "package", "film", "map", "library", "alert-circle", "alert-triangle", "info", "download", "upload",
-    "video", "lightbulb", "type", "component", "sparkles", "crosshair", "pencil", "home", "external-link",
+    "play",
+    "square",
+    "refresh-cw",
+    "move",
+    "rotate-cw",
+    "scaling",
+    "grid-3x3",
+    "magnet",
+    "plus",
+    "trash-2",
+    "copy",
+    "folder",
+    "folder-open",
+    "file",
+    "file-code",
+    "file-text",
+    "image",
+    "music",
+    "box",
+    "boxes",
+    "search",
+    "settings",
+    "book-open",
+    "terminal",
+    "save",
+    "undo-2",
+    "redo-2",
+    "x",
+    "chevron-right",
+    "chevron-down",
+    "eye",
+    "eye-off",
+    "layers",
+    "package",
+    "film",
+    "map",
+    "library",
+    "alert-circle",
+    "alert-triangle",
+    "info",
+    "download",
+    "upload",
+    "video",
+    "lightbulb",
+    "type",
+    "component",
+    "sparkles",
+    "crosshair",
+    "pencil",
+    "home",
+    "external-link",
 );
 
 pub fn source(name: &'static str) -> ImageSource<'static> {
@@ -31,14 +77,29 @@ pub fn source(name: &'static str) -> ImageSource<'static> {
 }
 
 pub fn icon(name: &'static str, size: f32, tint: Color32) -> Image<'static> {
-    Image::new(source(name)).fit_to_exact_size(Vec2::splat(size)).tint(tint)
+    Image::new(source(name))
+        .fit_to_exact_size(Vec2::splat(size))
+        .tint(tint)
 }
 
-/// Icon-only button with tooltip.
+/// Icon-only button with tooltip. Drawn by hand: `egui::Button::image` sizes a not-yet-loaded image to *all* remaining
+/// space, which starves the next widget (negative sizes -> panic) on the first frame.
 pub fn button(ui: &mut Ui, name: &'static str, tip: &str, selected: bool) -> egui::Response {
-    let tint = if selected { ui.visuals().selection.stroke.color } else { ui.visuals().text_color() };
-    let b = egui::Button::image(icon(name, 16.0, tint)).selected(selected);
-    ui.add(b).on_hover_text(tip)
+    let (rect, resp) = ui.allocate_exact_size(Vec2::splat(24.0), egui::Sense::click());
+    if ui.is_rect_visible(rect) {
+        let v = ui.style().interact_selectable(&resp, selected);
+        let fill = if selected {
+            ui.visuals().selection.bg_fill
+        } else if resp.hovered() {
+            v.bg_fill
+        } else {
+            Color32::TRANSPARENT
+        };
+        ui.painter().rect_filled(rect, v.corner_radius, fill);
+        let r = egui::Rect::from_center_size(rect.center(), Vec2::splat(16.0));
+        icon(name, 16.0, v.fg_stroke.color).paint_at(ui, r);
+    }
+    resp.on_hover_text(tip)
 }
 
 pub fn label_icon(ui: &mut Ui, name: &'static str, text: &str) -> egui::Response {

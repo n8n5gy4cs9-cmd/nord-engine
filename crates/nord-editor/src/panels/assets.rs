@@ -1,6 +1,10 @@
 //! Asset browser: folder tree + thumbnail grid (lazy, worker-thread thumbnails via nord-core), search/filter,
 //! import (dialog or OS drag&drop), rename/move/delete, drag out as `AssetDrag`.
-use crate::{icons, panels::inspector::AssetDrag, state::{Action, EditorState, LogLevel}};
+use crate::{
+    icons,
+    panels::inspector::AssetDrag,
+    state::{Action, EditorState, LogLevel},
+};
 use egui::{Sense, Ui, Vec2};
 use nord_core::assets::{classify, Asset, AssetType};
 use std::{
@@ -67,10 +71,19 @@ impl Default for AssetsUi {
     }
 }
 
-const SKIP: [&str; 6] = [".nord-cache", "dist", ".git", "node_modules", "target", ".DS_Store"];
+const SKIP: [&str; 6] = [
+    ".nord-cache",
+    "dist",
+    ".git",
+    "node_modules",
+    "target",
+    ".DS_Store",
+];
 
 fn list_dir(root: &Path, rel: &str) -> Vec<Entry> {
-    let Ok(rd) = std::fs::read_dir(root.join(rel)) else { return vec![] };
+    let Ok(rd) = std::fs::read_dir(root.join(rel)) else {
+        return vec![];
+    };
     let mut v: Vec<Entry> = rd
         .flatten()
         .filter_map(|e| {
@@ -79,12 +92,29 @@ fn list_dir(root: &Path, rel: &str) -> Vec<Entry> {
                 return None;
             }
             let is_dir = e.path().is_dir();
-            let rel = if rel.is_empty() { name.clone() } else { format!("{rel}/{name}") };
-            let kind = if is_dir { AssetType::Other } else { classify(&rel) };
-            Some(Entry { rel, name, is_dir, kind })
+            let rel = if rel.is_empty() {
+                name.clone()
+            } else {
+                format!("{rel}/{name}")
+            };
+            let kind = if is_dir {
+                AssetType::Other
+            } else {
+                classify(&rel)
+            };
+            Some(Entry {
+                rel,
+                name,
+                is_dir,
+                kind,
+            })
         })
         .collect();
-    v.sort_by(|a, b| b.is_dir.cmp(&a.is_dir).then(a.name.to_lowercase().cmp(&b.name.to_lowercase())));
+    v.sort_by(|a, b| {
+        b.is_dir
+            .cmp(&a.is_dir)
+            .then(a.name.to_lowercase().cmp(&b.name.to_lowercase()))
+    });
     v
 }
 
@@ -108,21 +138,32 @@ pub fn import_files(st: &mut EditorState, files: &[PathBuf]) {
             }
         }
     }
-    st.log(LogLevel::Info, format!("Imported {n} file(s) into {}", st.assets_ui.dir));
+    st.log(
+        LogLevel::Info,
+        format!("Imported {n} file(s) into {}", st.assets_ui.dir),
+    );
     st.refresh_assets();
     st.assets_ui.listed_at = None;
 }
 
 fn tree(st: &mut EditorState, ui: &mut Ui, rel: &str, depth: usize) {
     let Some(root) = st.root.clone() else { return };
-    let dirs: Vec<Entry> = list_dir(&root, rel).into_iter().filter(|e| e.is_dir).collect();
+    let dirs: Vec<Entry> = list_dir(&root, rel)
+        .into_iter()
+        .filter(|e| e.is_dir)
+        .collect();
     for d in dirs {
         let sel = st.assets_ui.dir == d.rel;
         let has_sub = list_dir(&root, &d.rel).iter().any(|e| e.is_dir);
-        let open = st.assets_ui.dir == d.rel || st.assets_ui.dir.starts_with(&format!("{}/", d.rel));
+        let open =
+            st.assets_ui.dir == d.rel || st.assets_ui.dir.starts_with(&format!("{}/", d.rel));
         ui.horizontal(|ui| {
             ui.add_space(depth as f32 * 12.0);
-            ui.add(icons::icon(if open { "folder-open" } else { "folder" }, 14.0, ui.visuals().text_color()));
+            ui.add(icons::icon(
+                if open { "folder-open" } else { "folder" },
+                14.0,
+                ui.visuals().text_color(),
+            ));
             let r = ui.selectable_label(sel, &d.name);
             if r.clicked() {
                 st.assets_ui.dir = d.rel.clone();
@@ -141,12 +182,19 @@ fn tree(st: &mut EditorState, ui: &mut Ui, rel: &str, depth: usize) {
 fn move_asset(st: &mut EditorState, from: &str, to_dir: &str) {
     let Some(root) = st.root.clone() else { return };
     let name = from.rsplit('/').next().unwrap_or(from);
-    let dest = if to_dir.is_empty() { name.to_string() } else { format!("{to_dir}/{name}") };
+    let dest = if to_dir.is_empty() {
+        name.to_string()
+    } else {
+        format!("{to_dir}/{name}")
+    };
     if dest == from || root.join(&dest).exists() {
         return;
     }
     if std::fs::rename(root.join(from), root.join(&dest)).is_ok() {
-        let _ = std::fs::rename(root.join(format!("{from}.meta.json")), root.join(format!("{dest}.meta.json")));
+        let _ = std::fs::rename(
+            root.join(format!("{from}.meta.json")),
+            root.join(format!("{dest}.meta.json")),
+        );
         st.log(LogLevel::Info, format!("Moved {from} -> {dest}"));
         st.refresh_assets();
         st.assets_ui.listed_at = None;
@@ -159,7 +207,13 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         return;
     };
     // OS drag&drop import
-    let dropped: Vec<PathBuf> = ui.ctx().input(|i| i.raw.dropped_files.iter().filter_map(|f| f.path.clone()).collect());
+    let dropped: Vec<PathBuf> = ui.ctx().input(|i| {
+        i.raw
+            .dropped_files
+            .iter()
+            .filter_map(|f| f.path.clone())
+            .collect()
+    });
     if !dropped.is_empty() && ui.rect_contains_pointer(ui.max_rect()) {
         import_files(st, &dropped);
     }
@@ -170,7 +224,10 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
     }
     // refresh listing
     let a = &mut st.assets_ui;
-    if a.listed_at.is_none_or(|t| t.elapsed() > Duration::from_secs(2)) || a.listed_dir != a.dir {
+    if a.listed_at
+        .is_none_or(|t| t.elapsed() > Duration::from_secs(2))
+        || a.listed_dir != a.dir
+    {
         a.listing = list_dir(&root, &a.dir);
         a.listed_at = Some(Instant::now());
         a.listed_dir = a.dir.clone();
@@ -199,12 +256,28 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
             }
             st.assets_ui.listed_at = None;
         }
-        ui.add(egui::TextEdit::singleline(&mut st.assets_ui.search).hint_text("Search…").desired_width(160.0));
+        ui.add(
+            egui::TextEdit::singleline(&mut st.assets_ui.search)
+                .hint_text("Search…")
+                .desired_width(160.0),
+        );
         egui::ComboBox::from_id_salt("kindf")
-            .selected_text(st.assets_ui.kind_filter.map_or("All".to_string(), |k| format!("{k:?}")))
+            .selected_text(
+                st.assets_ui
+                    .kind_filter
+                    .map_or("All".to_string(), |k| format!("{k:?}")),
+            )
             .show_ui(ui, |ui| {
                 ui.selectable_value(&mut st.assets_ui.kind_filter, None, "All");
-                for k in [AssetType::Image, AssetType::Audio, AssetType::Model, AssetType::Prefab, AssetType::Scene, AssetType::Json, AssetType::Font] {
+                for k in [
+                    AssetType::Image,
+                    AssetType::Audio,
+                    AssetType::Model,
+                    AssetType::Prefab,
+                    AssetType::Scene,
+                    AssetType::Json,
+                    AssetType::Font,
+                ] {
                     ui.selectable_value(&mut st.assets_ui.kind_filter, Some(k), format!("{k:?}"));
                 }
             });
@@ -213,15 +286,18 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
     });
     ui.separator();
 
-    egui::SidePanel::left("asset-tree").resizable(true).default_width(140.0).show_inside(ui, |ui| {
-        egui::ScrollArea::both().show(ui, |ui| {
-            let sel = st.assets_ui.dir.is_empty();
-            if ui.selectable_label(sel, "📁 (project)").clicked() {
-                st.assets_ui.dir.clear();
-            }
-            tree(st, ui, "", 0);
+    egui::SidePanel::left("asset-tree")
+        .resizable(true)
+        .default_width(140.0)
+        .show_inside(ui, |ui| {
+            egui::ScrollArea::both().show(ui, |ui| {
+                let sel = st.assets_ui.dir.is_empty();
+                if ui.selectable_label(sel, "📁 (project)").clicked() {
+                    st.assets_ui.dir.clear();
+                }
+                tree(st, ui, "", 0);
+            });
         });
-    });
 
     let search = st.assets_ui.search.to_lowercase();
     let filter = st.assets_ui.kind_filter;
@@ -232,77 +308,108 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
             .assets
             .iter()
             .filter(|a| a.path.to_lowercase().contains(&search))
-            .map(|a| Entry { rel: a.path.clone(), name: a.path.clone(), is_dir: false, kind: a.kind })
+            .map(|a| Entry {
+                rel: a.path.clone(),
+                name: a.path.clone(),
+                is_dir: false,
+                kind: a.kind,
+            })
             .collect();
     }
-    let entries: Vec<Entry> = entries.into_iter().filter(|e| filter.is_none_or(|k| e.is_dir || e.kind == k)).collect();
+    let entries: Vec<Entry> = entries
+        .into_iter()
+        .filter(|e| filter.is_none_or(|k| e.is_dir || e.kind == k))
+        .collect();
     let cell = st.assets_ui.size;
     let mut open: Option<Entry> = None;
     let mut ctx_op: Option<(Entry, u8)> = None;
-    egui::ScrollArea::vertical().auto_shrink([false; 2]).show(ui, |ui| {
-        ui.horizontal_wrapped(|ui| {
-            ui.spacing_mut().item_spacing = Vec2::splat(6.0);
-            for e in &entries {
-                if st.assets_ui.rename.as_ref().is_some_and(|(r, _)| *r == e.rel) {
-                    let mut commit = false;
-                    let buf = &mut st.assets_ui.rename.as_mut().unwrap().1;
-                    let r = ui.add(egui::TextEdit::singleline(buf).desired_width(cell));
-                    r.request_focus();
-                    if r.lost_focus() && ui.input(|i| i.key_pressed(egui::Key::Enter)) {
-                        commit = true;
-                    }
-                    if ui.input(|i| i.key_pressed(egui::Key::Escape)) {
-                        st.assets_ui.rename = None;
-                    }
-                    if commit {
-                        let (from, new) = st.assets_ui.rename.take().unwrap();
-                        let dir = from.rsplit_once('/').map_or("", |x| x.0).to_string();
-                        let to = if dir.is_empty() { new } else { format!("{dir}/{new}") };
-                        if !root.join(&to).exists() && std::fs::rename(root.join(&from), root.join(&to)).is_ok() {
-                            let _ = std::fs::rename(root.join(format!("{from}.meta.json")), root.join(format!("{to}.meta.json")));
-                            st.refresh_assets();
-                            st.assets_ui.listed_at = None;
+    egui::ScrollArea::vertical()
+        .auto_shrink([false; 2])
+        .show(ui, |ui| {
+            ui.horizontal_wrapped(|ui| {
+                ui.spacing_mut().item_spacing = Vec2::splat(6.0);
+                for e in &entries {
+                    if st
+                        .assets_ui
+                        .rename
+                        .as_ref()
+                        .is_some_and(|(r, _)| *r == e.rel)
+                    {
+                        let mut commit = false;
+                        let buf = &mut st.assets_ui.rename.as_mut().unwrap().1;
+                        let r = ui.add(egui::TextEdit::singleline(buf).desired_width(cell));
+                        r.request_focus();
+                        if r.lost_focus() && ui.input(|i| i.key_pressed(egui::Key::Enter)) {
+                            commit = true;
                         }
-                    }
-                    continue;
-                }
-                let (rect, resp) = ui.allocate_exact_size(Vec2::new(cell, cell + 18.0), Sense::click_and_drag());
-                if !ui.is_rect_visible(rect) {
-                    continue; // lazy: no thumbnail work for off-screen cells
-                }
-                let p = ui.painter_at(rect);
-                if resp.hovered() {
-                    p.rect_filled(rect, 4.0, ui.visuals().widgets.hovered.bg_fill);
-                }
-                let img_rect = egui::Rect::from_min_size(rect.min + Vec2::splat(4.0), Vec2::splat(cell - 8.0));
-                draw_thumb(st, ui, &root, e, img_rect);
-                p.text(
-                    egui::pos2(rect.center().x, rect.bottom() - 9.0),
-                    egui::Align2::CENTER_CENTER,
-                    truncate(&e.name, (cell / 6.5) as usize),
-                    egui::TextStyle::Small.resolve(ui.style()),
-                    ui.visuals().text_color(),
-                );
-                let resp = resp.on_hover_text(&e.rel);
-                if resp.double_clicked() {
-                    open = Some(e.clone());
-                } else if resp.clicked() && e.is_dir {
-                    st.assets_ui.dir = e.rel.clone();
-                }
-                if !e.is_dir {
-                    resp.dnd_set_drag_payload(AssetDrag(e.rel.clone()));
-                }
-                resp.context_menu(|ui| {
-                    for (i, t) in ["Open", "Rename", "Delete", "Reveal in Finder", "Copy path"].iter().enumerate() {
-                        if ui.button(*t).clicked() {
-                            ctx_op = Some((e.clone(), i as u8));
-                            ui.close_menu();
+                        if ui.input(|i| i.key_pressed(egui::Key::Escape)) {
+                            st.assets_ui.rename = None;
                         }
+                        if commit {
+                            let (from, new) = st.assets_ui.rename.take().unwrap();
+                            let dir = from.rsplit_once('/').map_or("", |x| x.0).to_string();
+                            let to = if dir.is_empty() {
+                                new
+                            } else {
+                                format!("{dir}/{new}")
+                            };
+                            if !root.join(&to).exists()
+                                && std::fs::rename(root.join(&from), root.join(&to)).is_ok()
+                            {
+                                let _ = std::fs::rename(
+                                    root.join(format!("{from}.meta.json")),
+                                    root.join(format!("{to}.meta.json")),
+                                );
+                                st.refresh_assets();
+                                st.assets_ui.listed_at = None;
+                            }
+                        }
+                        continue;
                     }
-                });
-            }
+                    let (rect, resp) = ui
+                        .allocate_exact_size(Vec2::new(cell, cell + 18.0), Sense::click_and_drag());
+                    if !ui.is_rect_visible(rect) {
+                        continue; // lazy: no thumbnail work for off-screen cells
+                    }
+                    let p = ui.painter_at(rect);
+                    if resp.hovered() {
+                        p.rect_filled(rect, 4.0, ui.visuals().widgets.hovered.bg_fill);
+                    }
+                    let img_rect = egui::Rect::from_min_size(
+                        rect.min + Vec2::splat(4.0),
+                        Vec2::splat(cell - 8.0),
+                    );
+                    draw_thumb(st, ui, &root, e, img_rect);
+                    p.text(
+                        egui::pos2(rect.center().x, rect.bottom() - 9.0),
+                        egui::Align2::CENTER_CENTER,
+                        truncate(&e.name, (cell / 6.5) as usize),
+                        egui::TextStyle::Small.resolve(ui.style()),
+                        ui.visuals().text_color(),
+                    );
+                    let resp = resp.on_hover_text(&e.rel);
+                    if resp.double_clicked() {
+                        open = Some(e.clone());
+                    } else if resp.clicked() && e.is_dir {
+                        st.assets_ui.dir = e.rel.clone();
+                    }
+                    if !e.is_dir {
+                        resp.dnd_set_drag_payload(AssetDrag(e.rel.clone()));
+                    }
+                    resp.context_menu(|ui| {
+                        for (i, t) in ["Open", "Rename", "Delete", "Reveal in Finder", "Copy path"]
+                            .iter()
+                            .enumerate()
+                        {
+                            if ui.button(*t).clicked() {
+                                ctx_op = Some((e.clone(), i as u8));
+                                ui.close_menu();
+                            }
+                        }
+                    });
+                }
+            });
         });
-    });
     if let Some(e) = open {
         open_entry(st, &e);
     }
@@ -316,22 +423,30 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         }
     }
     if let Some(p) = st.assets_ui.confirm_delete.clone() {
-        egui::Window::new("Delete asset?").collapsible(false).resizable(false).anchor(egui::Align2::CENTER_CENTER, [0.0, 0.0]).show(ui.ctx(), |ui| {
-            ui.label(format!("Delete {p}? This cannot be undone."));
-            ui.horizontal(|ui| {
-                if ui.button("Delete").clicked() {
-                    let f = root.join(&p);
-                    let _ = if f.is_dir() { std::fs::remove_dir_all(&f) } else { std::fs::remove_file(&f) };
-                    let _ = std::fs::remove_file(root.join(format!("{p}.meta.json")));
-                    st.refresh_assets();
-                    st.assets_ui.listed_at = None;
-                    st.assets_ui.confirm_delete = None;
-                }
-                if ui.button("Cancel").clicked() {
-                    st.assets_ui.confirm_delete = None;
-                }
+        egui::Window::new("Delete asset?")
+            .collapsible(false)
+            .resizable(false)
+            .anchor(egui::Align2::CENTER_CENTER, [0.0, 0.0])
+            .show(ui.ctx(), |ui| {
+                ui.label(format!("Delete {p}? This cannot be undone."));
+                ui.horizontal(|ui| {
+                    if ui.button("Delete").clicked() {
+                        let f = root.join(&p);
+                        let _ = if f.is_dir() {
+                            std::fs::remove_dir_all(&f)
+                        } else {
+                            std::fs::remove_file(&f)
+                        };
+                        let _ = std::fs::remove_file(root.join(format!("{p}.meta.json")));
+                        st.refresh_assets();
+                        st.assets_ui.listed_at = None;
+                        st.assets_ui.confirm_delete = None;
+                    }
+                    if ui.button("Cancel").clicked() {
+                        st.assets_ui.confirm_delete = None;
+                    }
+                });
             });
-        });
     }
 }
 
@@ -349,7 +464,9 @@ fn reveal(p: &Path) {
     #[cfg(target_os = "macos")]
     let _ = std::process::Command::new("open").arg("-R").arg(p).spawn();
     #[cfg(not(target_os = "macos"))]
-    let _ = std::process::Command::new("xdg-open").arg(p.parent().unwrap_or(p)).spawn();
+    let _ = std::process::Command::new("xdg-open")
+        .arg(p.parent().unwrap_or(p))
+        .spawn();
 }
 
 fn open_entry(st: &mut EditorState, e: &Entry) {
@@ -364,7 +481,11 @@ fn open_entry(st: &mut EditorState, e: &Entry) {
                 st.log(LogLevel::Error, m);
             }
         }
-        AssetType::Image | AssetType::Audio | AssetType::Model | AssetType::Video | AssetType::Font => reveal(&root.join(&e.rel)),
+        AssetType::Image
+        | AssetType::Audio
+        | AssetType::Model
+        | AssetType::Video
+        | AssetType::Font => reveal(&root.join(&e.rel)),
         _ => {
             st.push(Action::OpenFile(root.join(&e.rel), None));
         }
@@ -389,14 +510,23 @@ fn kind_icon(k: AssetType, dir: bool) -> &'static str {
 }
 
 fn draw_thumb(st: &mut EditorState, ui: &mut Ui, root: &Path, e: &Entry, rect: egui::Rect) {
-    let wants_thumb = matches!(e.kind, AssetType::Image | AssetType::Spritesheet | AssetType::Audio | AssetType::Model) && !e.is_dir;
+    let wants_thumb = matches!(
+        e.kind,
+        AssetType::Image | AssetType::Spritesheet | AssetType::Audio | AssetType::Model
+    ) && !e.is_dir;
     if wants_thumb {
         match st.assets_ui.thumbs.get(&e.rel) {
             Some(Some(p)) => {
                 let uri = format!("file://{}", p.display());
                 ui.put(rect, egui::Image::new(uri).fit_to_exact_size(rect.size()));
                 if e.kind == AssetType::Spritesheet {
-                    ui.painter().text(rect.right_top(), egui::Align2::RIGHT_TOP, "▦", egui::FontId::proportional(12.0), ui.visuals().text_color());
+                    ui.painter().text(
+                        rect.right_top(),
+                        egui::Align2::RIGHT_TOP,
+                        "▦",
+                        egui::FontId::proportional(12.0),
+                        ui.visuals().text_color(),
+                    );
                 }
                 return;
             }
@@ -407,7 +537,9 @@ fn draw_thumb(st: &mut EditorState, ui: &mut Ui, root: &Path, e: &Entry, rect: e
                 if let Some(a) = st.assets.iter().find(|a| a.path == e.rel).cloned() {
                     if e.kind == AssetType::Model {
                         // models are rendered by the edit viewport (Babylon offscreen); see viewport "thumb" command
-                        let cached = root.join(".nord-cache/thumbs").join(format!("{}.png", a.sha256));
+                        let cached = root
+                            .join(".nord-cache/thumbs")
+                            .join(format!("{}.png", a.sha256));
                         if cached.exists() {
                             st.assets_ui.thumbs.insert(e.rel.clone(), Some(cached));
                         } else if !st.assets_ui.pending.contains(&e.rel) {

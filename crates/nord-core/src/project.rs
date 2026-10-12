@@ -1,8 +1,8 @@
 //! `nord.project.json` model. See docs/PROJECT_FORMAT.md.
 use serde::{Deserialize, Serialize};
-use std::path::Path;
 use serde_json::{Map, Value};
 use std::collections::BTreeMap;
+use std::path::Path;
 
 /// Which runtime tier a project exports to. See docs/EXPORT_TARGETS.md.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -162,7 +162,10 @@ pub fn create(dir: &Path, kind: ProjectType) -> crate::Result<()> {
             _ => None,
         };
         if let Some(page) = page {
-            io::write_atomic(&dir.join("index.html"), page.replace("{{name}}", &name).as_bytes())?;
+            io::write_atomic(
+                &dir.join("index.html"),
+                page.replace("{{name}}", &name).as_bytes(),
+            )?;
         }
         io::write_atomic(
             &dir.join(&p.start_scene),

@@ -4,7 +4,10 @@ use serde_json::{json, Map, Value};
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum FieldType {
-    Number { min: Option<f64>, max: Option<f64> },
+    Number {
+        min: Option<f64>,
+        max: Option<f64>,
+    },
     Int,
     Bool,
     Str,
@@ -55,7 +58,10 @@ pub fn parse_type(t: &str) -> Option<FieldType> {
         return Some(FieldType::Asset(o.to_string()));
     }
     Some(match t {
-        "number" | "float" => FieldType::Number { min: None, max: None },
+        "number" | "float" => FieldType::Number {
+            min: None,
+            max: None,
+        },
         "int" | "integer" => FieldType::Int,
         "bool" | "boolean" => FieldType::Bool,
         "string" | "text" => FieldType::Str,
@@ -82,7 +88,12 @@ fn dsl(s: &str) -> Vec<Field> {
             let default = def
                 .map(|d| serde_json::from_str(d).unwrap_or_else(|_| json!(d)))
                 .unwrap_or_else(|| default_for(&ty));
-            Some(Field { name: name.into(), label: label_of(name), ty, default })
+            Some(Field {
+                name: name.into(),
+                label: label_of(name),
+                ty,
+                default,
+            })
         })
         .collect()
 }
@@ -99,9 +110,31 @@ pub fn label_of(name: &str) -> String {
 }
 
 pub const COMPONENT_TYPES: [&str; 25] = [
-    "sprite", "animatedSprite", "text", "tilemap", "particles", "camera", "light", "mesh", "model", "material",
-    "rigidbody", "collider", "audioSource", "audioListener", "uiPanel", "uiButton", "uiLabel", "uiImage", "uiBar",
-    "trigger", "path", "spawner", "parallax", "skybox", "postProcess",
+    "sprite",
+    "animatedSprite",
+    "text",
+    "tilemap",
+    "particles",
+    "camera",
+    "light",
+    "mesh",
+    "model",
+    "material",
+    "rigidbody",
+    "collider",
+    "audioSource",
+    "audioListener",
+    "uiPanel",
+    "uiButton",
+    "uiLabel",
+    "uiImage",
+    "uiBar",
+    "trigger",
+    "path",
+    "spawner",
+    "parallax",
+    "skybox",
+    "postProcess",
 ];
 
 const UI_POS: &str = "x:number y:number anchor:enum(tl|t|tr|l|c|r|bl|b|br)=\"tl\" w:number h:number screen:string=\"hud\"";
@@ -115,9 +148,9 @@ pub fn component_fields(kind: &str) -> Vec<Field> {
         "particles" => "texture:asset(image) lifespan:number=1000 speed:number=100 angle:number gravityY:number scale:number=1 alpha:number=1 tint:color frequency:number=50 quantity:int=1 burst:bool emitting:bool=true blend:enum(normal|add|multiply|screen)",
         "camera" => "zoom:number=1 follow:entity lerp:number=0.1 background:color deadzone:vec2 roundPixels:bool fov:number=60 near:number=0.1 far:number=1000 type:enum(free|follow|arcRotate)=\"follow\" active:bool=true",
         "light" => "kind:enum(point|directional|spot|hemispheric)=\"point\" color:color intensity:number=1 radius:number=200 range:number=10 flicker:number castShadows:bool",
-        "mesh" => "shape:enum(box|sphere|cylinder|plane|ground|capsule|torus)=\"box\" size:vec3 segments:int=16 shadow:bool",
+        "mesh" => "shape:enum(box|sphere|cylinder|plane|ground|capsule|torus)=\"box\" size:vec3 segments:int=24 castShadow:bool=true receiveShadow:bool=true",
         "model" => "path:asset(model) animation:string speed:number=1 shadow:bool unique:bool",
-        "material" => "color:color castShadow:bool",
+        "material" => "color:color metallic:number roughness:number=0.8 texture:asset(image) normalMap:asset(image) emissive:color alpha:number=1 doubleSided:bool unlit:bool",
         "rigidbody" => "mode:enum(dynamic|static|kinematic)=\"dynamic\" mass:number=1 drag:number=0.1 gravityScale:number=1 bounce:number",
         "collider" => "shape:enum(box|circle|sphere|capsule)=\"box\" size:vec3 radius:number offset:vec3 trigger:bool",
         "trigger" => "shape:enum(box|circle|sphere)=\"box\" size:vec3 radius:number offset:vec3",
@@ -244,10 +277,13 @@ pub fn script_attributes(src: &str) -> Vec<Field> {
         }
     }
     let Some(end) = end else { return vec![] };
-    let Ok(Value::Object(m)) = serde_json::from_str::<Value>(&js_literal_to_json(&body[..end])) else {
+    let Ok(Value::Object(m)) = serde_json::from_str::<Value>(&js_literal_to_json(&body[..end]))
+    else {
         return vec![];
     };
-    m.into_iter().filter_map(|(k, v)| attr_field(&k, &v)).collect()
+    m.into_iter()
+        .filter_map(|(k, v)| attr_field(&k, &v))
+        .collect()
 }
 
 fn attr_field(name: &str, v: &Value) -> Option<Field> {
@@ -255,12 +291,30 @@ fn attr_field(name: &str, v: &Value) -> Option<Field> {
     let t = o.get("type").and_then(Value::as_str).unwrap_or("string");
     let mut ty = match t {
         "enum" => {
-            let opts = o.get("options").or_else(|| o.get("values")).and_then(Value::as_array);
-            FieldType::Enum(opts.map(|a| a.iter().filter_map(|x| x.as_str().map(String::from)).collect()).unwrap_or_default())
+            let opts = o
+                .get("options")
+                .or_else(|| o.get("values"))
+                .and_then(Value::as_array);
+            FieldType::Enum(
+                opts.map(|a| {
+                    a.iter()
+                        .filter_map(|x| x.as_str().map(String::from))
+                        .collect()
+                })
+                .unwrap_or_default(),
+            )
         }
-        "asset" => FieldType::Asset(o.get("assetType").and_then(Value::as_str).unwrap_or("image").into()),
+        "asset" => FieldType::Asset(
+            o.get("assetType")
+                .and_then(Value::as_str)
+                .unwrap_or("image")
+                .into(),
+        ),
         "array" => FieldType::Array(Box::new(
-            o.get("of").and_then(Value::as_str).and_then(parse_type).unwrap_or(FieldType::Str),
+            o.get("of")
+                .and_then(Value::as_str)
+                .and_then(parse_type)
+                .unwrap_or(FieldType::Str),
         )),
         other => parse_type(other)?,
     };
@@ -268,9 +322,22 @@ fn attr_field(name: &str, v: &Value) -> Option<Field> {
         *min = o.get("min").and_then(Value::as_f64);
         *max = o.get("max").and_then(Value::as_f64);
     }
-    let default = o.get("default").filter(|d| !d.is_null()).cloned().unwrap_or_else(|| default_for(&ty));
-    let label = o.get("label").and_then(Value::as_str).map(String::from).unwrap_or_else(|| label_of(name));
-    Some(Field { name: name.into(), label, ty, default })
+    let default = o
+        .get("default")
+        .filter(|d| !d.is_null())
+        .cloned()
+        .unwrap_or_else(|| default_for(&ty));
+    let label = o
+        .get("label")
+        .and_then(Value::as_str)
+        .map(String::from)
+        .unwrap_or_else(|| label_of(name));
+    Some(Field {
+        name: name.into(),
+        label,
+        ty,
+        default,
+    })
 }
 
 /// Guess an editor type for a raw JSON value (fields not in any schema).
@@ -278,8 +345,13 @@ pub fn guess(v: &Value) -> FieldType {
     match v {
         Value::Bool(_) => FieldType::Bool,
         Value::Number(n) if n.is_i64() => FieldType::Int,
-        Value::Number(_) => FieldType::Number { min: None, max: None },
-        Value::String(s) if s.starts_with('#') && (s.len() == 7 || s.len() == 4) => FieldType::Color,
+        Value::Number(_) => FieldType::Number {
+            min: None,
+            max: None,
+        },
+        Value::String(s) if s.starts_with('#') && (s.len() == 7 || s.len() == 4) => {
+            FieldType::Color
+        }
         Value::Array(a) if a.len() == 2 && a.iter().all(Value::is_number) => FieldType::Vec2,
         Value::Array(a) if a.len() == 3 && a.iter().all(Value::is_number) => FieldType::Vec3,
         _ => FieldType::Str,
@@ -288,7 +360,8 @@ pub fn guess(v: &Value) -> FieldType {
 
 pub fn merge_defaults(fields: &[Field], into: &mut Map<String, Value>) {
     for f in fields {
-        into.entry(f.name.clone()).or_insert_with(|| f.default.clone());
+        into.entry(f.name.clone())
+            .or_insert_with(|| f.default.clone());
     }
 }
 
@@ -327,7 +400,13 @@ export default class P extends NordScript {
         let f = script_attributes(src);
         assert_eq!(f.len(), 6);
         assert_eq!(f[0].label, "Move speed");
-        assert_eq!(f[0].ty, FieldType::Number { min: Some(0.0), max: Some(1000.0) });
+        assert_eq!(
+            f[0].ty,
+            FieldType::Number {
+                min: Some(0.0),
+                max: Some(1000.0)
+            }
+        );
         assert_eq!(f[2].ty, FieldType::Asset("audio".into()));
         assert_eq!(f[3].ty, FieldType::Enum(vec!["a".into(), "b".into()]));
         assert_eq!(f[3].default, json!("b"));

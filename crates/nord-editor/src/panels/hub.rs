@@ -13,23 +13,49 @@ pub struct HubUi {
 
 impl Default for HubUi {
     fn default() -> Self {
-        let home = std::env::var_os("HOME").map(PathBuf::from).unwrap_or_default();
+        let home = std::env::var_os("HOME")
+            .map(PathBuf::from)
+            .unwrap_or_default();
         let docs = home.join("Documents");
         Self {
             name: "My Game".into(),
             kind: ProjectType::TwoD,
-            parent: if docs.exists() { docs.join("Nord Projects") } else { home.join("NordProjects") },
+            parent: if docs.exists() {
+                docs.join("Nord Projects")
+            } else {
+                home.join("NordProjects")
+            },
             error: None,
         }
     }
 }
 
 pub const TEMPLATES: [(ProjectType, &str, &str); 5] = [
-    (ProjectType::TwoD, "2D game", "Phaser 2D — sprites, tilemaps, arcade physics"),
-    (ProjectType::ThreeD, "3D game", "Babylon.js 3D + Havok physics"),
-    (ProjectType::Html, "HTML-lite", "Plain HTML/JS page with the tiny nord-lite runtime"),
-    (ProjectType::WasmGame, "Rust game (WASM)", "Rust runtime compiled to WebAssembly (M5)"),
-    (ProjectType::WasmApp, "Rust app (WASM)", "egui app in the browser (M5)"),
+    (
+        ProjectType::TwoD,
+        "2D game",
+        "Phaser 2D — sprites, tilemaps, arcade physics",
+    ),
+    (
+        ProjectType::ThreeD,
+        "3D game",
+        "Babylon.js 3D + Havok physics",
+    ),
+    (
+        ProjectType::Html,
+        "HTML-lite",
+        "Plain HTML/JS page with the tiny nord-lite runtime",
+    ),
+    (
+        ProjectType::WasmGame,
+        "Rust game (WASM)",
+        "Rust runtime compiled to WebAssembly (M5)",
+    ),
+    (
+        ProjectType::WasmApp,
+        "Rust app (WASM)",
+        "egui app in the browser (M5)",
+    ),
 ];
 
 pub fn create_project(parent: &Path, name: &str, kind: ProjectType) -> Result<PathBuf, String> {
@@ -48,7 +74,10 @@ fn copy_dir(from: &Path, to: &Path) -> std::io::Result<()> {
     for e in std::fs::read_dir(from)? {
         let e = e?;
         let n = e.file_name();
-        if matches!(n.to_string_lossy().as_ref(), ".nord-cache" | "dist" | ".git") {
+        if matches!(
+            n.to_string_lossy().as_ref(),
+            ".nord-cache" | "dist" | ".git"
+        ) {
             continue;
         }
         let (a, b) = (e.path(), to.join(&n));
@@ -86,7 +115,12 @@ fn list_projects(dir: &Path) -> Vec<PathBuf> {
 pub fn ui(st: &mut EditorState, ui: &mut Ui) {
     ui.add_space(24.0);
     ui.vertical_centered(|ui| {
-        ui.add(egui::Image::new(egui::include_image!("../../../../assets/brand/logo-256.png")).max_height(96.0));
+        ui.add(
+            egui::Image::new(egui::include_image!(
+                "../../../../assets/brand/logo-256.png"
+            ))
+            .max_height(96.0),
+        );
         ui.label(RichText::new("Nord Engine").size(28.0).strong());
         ui.weak("Crowelian 2026 + Sonnet");
     });
@@ -101,7 +135,10 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
             ui.label("Location");
             ui.horizontal(|ui| {
                 let mut s = st.hub.parent.to_string_lossy().into_owned();
-                if ui.add(egui::TextEdit::singleline(&mut s).desired_width(220.0)).changed() {
+                if ui
+                    .add(egui::TextEdit::singleline(&mut s).desired_width(220.0))
+                    .changed()
+                {
                     st.hub.parent = s.into();
                 }
                 if ui.button("…").clicked() {
@@ -144,19 +181,37 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         if recent.is_empty() {
             ui.weak("Nothing yet");
         }
-        for p in recent.iter().filter(|p| p.join(nord_core::io::PROJECT_FILE).exists()).take(8) {
-            if ui.link(format!("{}  —  {}", p.file_name().map_or(String::new(), |n| n.to_string_lossy().into_owned()), p.display())).clicked() {
+        for p in recent
+            .iter()
+            .filter(|p| p.join(nord_core::io::PROJECT_FILE).exists())
+            .take(8)
+        {
+            if ui
+                .link(format!(
+                    "{}  —  {}",
+                    p.file_name()
+                        .map_or(String::new(), |n| n.to_string_lossy().into_owned()),
+                    p.display()
+                ))
+                .clicked()
+            {
                 st.push(Action::OpenPath(p.clone()));
             }
         }
         ui.add_space(10.0);
         ui.heading("Examples");
-        let ex = st.engine_root.as_ref().map(|r| list_projects(&r.join("examples"))).unwrap_or_default();
+        let ex = st
+            .engine_root
+            .as_ref()
+            .map(|r| list_projects(&r.join("examples")))
+            .unwrap_or_default();
         if ex.is_empty() {
             ui.weak("No examples found");
         }
         for p in ex {
-            let n = p.file_name().map_or(String::new(), |n| n.to_string_lossy().into_owned());
+            let n = p
+                .file_name()
+                .map_or(String::new(), |n| n.to_string_lossy().into_owned());
             if ui.link(&n).on_hover_text("Opens a private copy").clicked() {
                 match open_example(&p) {
                     Ok(d) => st.push(Action::OpenPath(d)),
@@ -166,12 +221,18 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         }
         ui.add_space(10.0);
         ui.heading("Tutorials");
-        let tut = st.engine_root.as_ref().map(|r| list_projects(&r.join("examples/tutorials"))).unwrap_or_default();
+        let tut = st
+            .engine_root
+            .as_ref()
+            .map(|r| list_projects(&r.join("examples/tutorials")))
+            .unwrap_or_default();
         if tut.is_empty() {
             ui.weak("Tutorials ship with the manual (M7)");
         }
         for p in tut {
-            let n = p.file_name().map_or(String::new(), |n| n.to_string_lossy().into_owned());
+            let n = p
+                .file_name()
+                .map_or(String::new(), |n| n.to_string_lossy().into_owned());
             if ui.link(&n).clicked() {
                 if let Ok(d) = open_example(&p) {
                     st.push(Action::OpenPath(d));
@@ -193,6 +254,9 @@ mod tests {
             assert!(d.join("nord.project.json").exists(), "{t}");
         }
         assert!(create_project(&base, "bad/name", ProjectType::TwoD).is_err());
-        assert!(create_project(&base, "2D game", ProjectType::TwoD).is_err(), "already exists");
+        assert!(
+            create_project(&base, "2D game", ProjectType::TwoD).is_err(),
+            "already exists"
+        );
     }
 }

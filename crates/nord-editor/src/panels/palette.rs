@@ -45,12 +45,17 @@ pub fn fuzzy(query: &str, text: &str) -> Option<i32> {
 }
 
 fn collect_files(root: &Path, dir: &Path, out: &mut Vec<String>) {
-    let Ok(rd) = std::fs::read_dir(dir) else { return };
+    let Ok(rd) = std::fs::read_dir(dir) else {
+        return;
+    };
     for e in rd.flatten() {
         let p = e.path();
         let n = e.file_name().to_string_lossy().into_owned();
         if p.is_dir() {
-            if !matches!(n.as_str(), ".nord-cache" | "dist" | ".git" | "node_modules" | "target") {
+            if !matches!(
+                n.as_str(),
+                ".nord-cache" | "dist" | ".git" | "node_modules" | "target"
+            ) {
                 collect_files(root, &p, out);
             }
         } else if !n.ends_with(".meta.json") && out.len() < 20_000 {
@@ -61,7 +66,9 @@ fn collect_files(root: &Path, dir: &Path, out: &mut Vec<String>) {
     }
 }
 
-pub const COMMANDS: &[(&str, fn() -> Action)] = &[
+type CmdFn = fn() -> Action;
+
+pub const COMMANDS: &[(&str, CmdFn)] = &[
     ("File: New project…", || Action::NewProject),
     ("File: Open project…", || Action::OpenProject),
     ("File: Save", || Action::SaveAll),
@@ -77,14 +84,24 @@ pub const COMMANDS: &[(&str, fn() -> Action)] = &[
     ("View: Toggle snap", || Action::ToggleSnap),
     ("View: Toggle grid", || Action::ToggleGrid),
     ("View: Focus selection", || Action::Focus),
-    ("View: Scene tab", || Action::ShowTab(crate::app::Tab::Scene)),
+    ("View: Scene tab", || {
+        Action::ShowTab(crate::app::Tab::Scene)
+    }),
     ("View: Game tab", || Action::ShowTab(crate::app::Tab::Game)),
     ("View: Code tab", || Action::ShowTab(crate::app::Tab::Code)),
-    ("View: Assets tab", || Action::ShowTab(crate::app::Tab::Assets)),
-    ("View: Console tab", || Action::ShowTab(crate::app::Tab::Console)),
-    ("View: Library tab", || Action::ShowTab(crate::app::Tab::Library)),
+    ("View: Assets tab", || {
+        Action::ShowTab(crate::app::Tab::Assets)
+    }),
+    ("View: Console tab", || {
+        Action::ShowTab(crate::app::Tab::Console)
+    }),
+    ("View: Library tab", || {
+        Action::ShowTab(crate::app::Tab::Library)
+    }),
     ("View: Docs tab", || Action::ShowTab(crate::app::Tab::Docs)),
-    ("View: Animation & tilemap tab", || Action::ShowTab(crate::app::Tab::Animation)),
+    ("View: Animation & tilemap tab", || {
+        Action::ShowTab(crate::app::Tab::Animation)
+    }),
     ("Run: Play", || Action::Play),
     ("Run: Stop", || Action::Stop),
     ("Run: Reload", || Action::Reload),
@@ -107,8 +124,16 @@ pub fn window(st: &mut EditorState, ctx: &Context) {
     let mode = st.palette.mode;
     let q = st.palette.query.clone();
     let mut results: Vec<(i32, String, Option<Action>)> = match mode {
-        Mode::Commands => COMMANDS.iter().filter_map(|(n, a)| fuzzy(&q, n).map(|s| (s, n.to_string(), Some(a())))).collect(),
-        _ => st.palette.files.iter().filter_map(|f| fuzzy(&q, f).map(|s| (s, f.clone(), None))).collect(),
+        Mode::Commands => COMMANDS
+            .iter()
+            .filter_map(|(n, a)| fuzzy(&q, n).map(|s| (s, n.to_string(), Some(a()))))
+            .collect(),
+        _ => st
+            .palette
+            .files
+            .iter()
+            .filter_map(|f| fuzzy(&q, f).map(|s| (s, f.clone(), None)))
+            .collect(),
     };
     results.sort_by(|a, b| b.0.cmp(&a.0).then(a.1.cmp(&b.1)));
     results.truncate(12);
@@ -117,40 +142,59 @@ pub fn window(st: &mut EditorState, ctx: &Context) {
     }
     let mut chosen: Option<usize> = None;
     let mut close = false;
-    egui::Window::new(if mode == Mode::Commands { "Command palette" } else { "Quick open" })
-        .title_bar(false)
-        .collapsible(false)
-        .resizable(false)
-        .anchor(egui::Align2::CENTER_TOP, [0.0, 70.0])
-        .fixed_size([520.0, 0.0])
-        .show(ctx, |ui| {
-            let r = ui.add(egui::TextEdit::singleline(&mut st.palette.query).hint_text(if mode == Mode::Commands { "Type a command…" } else { "Type a file name…" }).desired_width(f32::INFINITY));
-            r.request_focus();
-            if r.changed() {
-                st.palette.sel = 0;
-            }
-            let (down, up, enter, esc) = ui.input(|i| (i.key_pressed(Key::ArrowDown), i.key_pressed(Key::ArrowUp), i.key_pressed(Key::Enter), i.key_pressed(Key::Escape)));
-            if down && st.palette.sel + 1 < results.len() {
-                st.palette.sel += 1;
-            }
-            if up && st.palette.sel > 0 {
-                st.palette.sel -= 1;
-            }
-            if enter && !results.is_empty() {
-                chosen = Some(st.palette.sel);
-            }
-            if esc {
-                close = true;
-            }
-            for (i, (_, label, _)) in results.iter().enumerate() {
-                if ui.selectable_label(i == st.palette.sel, label).clicked() {
-                    chosen = Some(i);
-                }
-            }
-            if results.is_empty() {
-                ui.weak("No matches");
-            }
+    egui::Window::new(if mode == Mode::Commands {
+        "Command palette"
+    } else {
+        "Quick open"
+    })
+    .title_bar(false)
+    .collapsible(false)
+    .resizable(false)
+    .anchor(egui::Align2::CENTER_TOP, [0.0, 70.0])
+    .fixed_size([520.0, 0.0])
+    .show(ctx, |ui| {
+        let r = ui.add(
+            egui::TextEdit::singleline(&mut st.palette.query)
+                .hint_text(if mode == Mode::Commands {
+                    "Type a command…"
+                } else {
+                    "Type a file name…"
+                })
+                .desired_width(f32::INFINITY),
+        );
+        r.request_focus();
+        if r.changed() {
+            st.palette.sel = 0;
+        }
+        let (down, up, enter, esc) = ui.input(|i| {
+            (
+                i.key_pressed(Key::ArrowDown),
+                i.key_pressed(Key::ArrowUp),
+                i.key_pressed(Key::Enter),
+                i.key_pressed(Key::Escape),
+            )
         });
+        if down && st.palette.sel + 1 < results.len() {
+            st.palette.sel += 1;
+        }
+        if up && st.palette.sel > 0 {
+            st.palette.sel -= 1;
+        }
+        if enter && !results.is_empty() {
+            chosen = Some(st.palette.sel);
+        }
+        if esc {
+            close = true;
+        }
+        for (i, (_, label, _)) in results.iter().enumerate() {
+            if ui.selectable_label(i == st.palette.sel, label).clicked() {
+                chosen = Some(i);
+            }
+        }
+        if results.is_empty() {
+            ui.weak("No matches");
+        }
+    });
     if let Some(i) = chosen {
         let (_, label, act) = results.swap_remove(i);
         match (mode, act) {

@@ -573,138 +573,150 @@
       "id": "M3-01",
       "milestone": "M3",
       "title": "nord-editor crate: eframe (wgpu) app, theme (Nord palette), bundled fonts (Inter/JetBrains Mono TTF), egui_dock layout, menu bar",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M3-02",
       "milestone": "M3",
       "title": "Splash: borderless window with assets/brand/splash.png shown >= 2000 ms, then main window",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M3-03",
       "milestone": "M3",
       "title": "Project hub: new (templates), open (rfd dialog), recent, examples, tutorials",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M3-04",
       "milestone": "M3",
       "title": "Hierarchy panel: tree, drag-reparent, add/delete/duplicate, search, Lucide icons",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M3-05",
       "milestone": "M3",
       "title": "Inspector: generated from component/script schemas (all attribute types) as egui widgets",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M3-06",
       "milestone": "M3",
       "title": "Undo/redo Command system + copy/paste/duplicate + autosave (crash-safe)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M3-07",
       "milestone": "M3",
       "title": "SPIKE: wry child webview embedded in egui panel on macOS (resize, HiDPI, focus, IPC both ways); fallback separate window",
-      "status": "todo"
+      "status": "in_progress"
     },
     {
       "id": "M3-08",
       "milestone": "M3",
       "title": "3D viewport (Babylon edit mode in webview): orbit/fly cam, grid, picking, move/rotate/scale gizmos, snap, IPC sync",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M3-09",
       "milestone": "M3",
       "title": "2D viewport (Phaser edit mode): pan/zoom, grid, picking, move/rotate/scale handles, snap, IPC sync",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M3-10",
       "milestone": "M3",
       "title": "Asset browser: folder tree, thumbnail grid (size slider, lazy), search/filter, drag&drop, import, rename/move/delete",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M3-11",
       "milestone": "M3",
       "title": "Thumbnails: images/spritesheets/audio waveform via nord-core; models rendered via Babylon offscreen in webview",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M3-12",
       "milestone": "M3",
       "title": "Code editor v1: tabs, line numbers, syntect highlighting (JS/TS/Rust/HTML/CSS/JSON/MD/GLSL/WGSL/TOML), auto-indent, brackets, comment toggle, save",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M3-13",
       "milestone": "M3",
       "title": "Code editor v2: find/replace (regex), goto line, project search, autocomplete (nord.js API + snippets), error squiggles, format",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M3-14",
       "milestone": "M3",
       "title": "Code editor v3 (stretch): multi-cursor, minimap, split view; evaluate egui_code_editor reuse / CodeMirror-webview fallback",
-      "status": "todo"
+      "status": "in_progress"
     },
     {
       "id": "M3-15",
       "milestone": "M3",
       "title": "Quick open (Cmd+P), command palette (Cmd+K), shortcuts map",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M3-16",
       "milestone": "M3",
       "title": "Play/Stop/Reload in webview via nord serve; hot-reload on save",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M3-17",
       "milestone": "M3",
       "title": "Console panel: logs/errors from game (IPC) + build output; click error -> open file:line",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M3-18",
       "milestone": "M3",
       "title": "Library browser: search, preview, insert snippet/prefab/script",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M3-19",
       "milestone": "M3",
       "title": "Docs viewer tab (offline HTML manual in webview)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M3-20",
       "milestone": "M3",
       "title": "Settings (theme, fonts, editor prefs), About dialog (credit Crowelian 2026 + Sonnet), window state persistence",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M3-21",
       "milestone": "M3",
       "title": "Animation editor (spritesheet anims) + tilemap painter (Tiled JSON) basics",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M3-22",
       "milestone": "M3",
       "title": "egui_kittest headless tests for panels + CI job",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M3-23",
       "milestone": "M3",
       "title": "Editor: apply selected skin + theme (UI fonts, code font + ligatures, syntax colors) via shared themes.json; settings UI to switch live",
+      "status": "done"
+    },
+    {
+      "id": "M3-24",
+      "milestone": "M3",
+      "title": "Code editor: multi-cursor editing (custom text-edit core; egui TextEdit has a single selection)",
+      "status": "todo"
+    },
+    {
+      "id": "M3-25",
+      "milestone": "M3",
+      "title": "OWNER: verify webview embedding on macOS (checklist in docs/KNOWN_ISSUES.md RISK-001a), then tick M3-07",
       "status": "todo"
     },
     {

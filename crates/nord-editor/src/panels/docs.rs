@@ -38,7 +38,11 @@ pub fn render_md(ui: &mut Ui, text: &str) {
         } else if let Some(h) = line.strip_prefix("# ") {
             ui.add_space(8.0);
             ui.heading(RichText::new(h).size(22.0));
-        } else if let Some(b) = line.trim_start().strip_prefix("- ").or_else(|| line.trim_start().strip_prefix("* ")) {
+        } else if let Some(b) = line
+            .trim_start()
+            .strip_prefix("- ")
+            .or_else(|| line.trim_start().strip_prefix("* "))
+        {
             ui.horizontal_wrapped(|ui| {
                 ui.label("•");
                 ui.label(b.replace('`', ""));
@@ -66,16 +70,22 @@ pub fn markdown_ui(st: &mut EditorState, ui: &mut Ui) {
         return;
     };
     let files = md_files(&engine);
-    egui::SidePanel::left("docs-list").default_width(170.0).show_inside(ui, |ui| {
-        egui::ScrollArea::vertical().show(ui, |ui| {
-            for f in &files {
-                if ui.selectable_label(st.docs_ui.file.as_deref() == Some(f), f).clicked() {
-                    st.docs_ui.text = std::fs::read_to_string(engine.join("docs").join(f)).unwrap_or_default();
-                    st.docs_ui.file = Some(f.clone());
+    egui::SidePanel::left("docs-list")
+        .default_width(170.0)
+        .show_inside(ui, |ui| {
+            egui::ScrollArea::vertical().show(ui, |ui| {
+                for f in &files {
+                    if ui
+                        .selectable_label(st.docs_ui.file.as_deref() == Some(f), f)
+                        .clicked()
+                    {
+                        st.docs_ui.text = std::fs::read_to_string(engine.join("docs").join(f))
+                            .unwrap_or_default();
+                        st.docs_ui.file = Some(f.clone());
+                    }
                 }
-            }
+            });
         });
-    });
     egui::ScrollArea::vertical().auto_shrink([false; 2]).show(ui, |ui| {
         if st.docs_ui.file.is_none() {
             ui.heading("Nord Engine docs");
