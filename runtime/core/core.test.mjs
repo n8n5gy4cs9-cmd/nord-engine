@@ -146,3 +146,49 @@ test('loader: progress, cache, inline files, external rejected', async () => {
   await assert.rejects(l.loadAll([{ path: 'bad.png' }]), /404/);
   for (const p of ['https://cdn.x/a.js', '//cdn/a', '/abs', '../up']) assert.throws(() => safePath(p));
 });
+
+// ---- audio + ui ----
+import { Audio, UI } from './index.js';
+const fakeParam = () => ({ value: 1, calls: [], setValueAtTime(v, t) { this.calls.push(['set', v, t]); }, linearRampToValueAtTime(v, t) { this.calls.push(['ramp', v, t]); } });
+const fakeCtx = () => {
+  const started = [];
+  const node = () => ({ gain: fakeParam(), connect() {}, });
+  return { started, currentTime: 10, destination: {}, resumed: 0, resume() { this.resumed++; }, createGain: node,
+    createBufferSource() { const s = { playbackRate: { value: 1 }, connect() {}, start() { started.push(s); }, stop() { s.stopped = true; } }; return s; },
+    decodeAudioData: async (ab) => ({ ab }) };
+};
+const mkAudio = () => { const g = mk(); const ctx = fakeCtx(); const a = new Audio(g, { ctxFactory: () => ctx, fetchBuffer: async (p) => p }); return { a, ctx }; };
+
+test('audio: locked until unlock; buses volume/mute', async () => {
+  const { a, ctx } = mkAudio();
+  assert.equal(await a.play('x.wav'), null);
+  assert.ok(a.unlock()); assert.equal(ctx.resumed, 1);
+  assert.ok(await a.play('x.wav')); assert.equal(ctx.started.length, 1);
+  a.volume('sfx', 0.5); assert.equal(a.buses.sfx.gain.value, 0.5);
+  a.mute('sfx'); assert.equal(a.buses.sfx.gain.value, 0);
+  a.mute('sfx', false); assert.equal(a.buses.sfx.gain.value, 0.5);
+});
+
+test('audio: music crossfades and ignores same-track restart', async () => {
+  const { a, ctx } = mkAudio(); a.unlock();
+  await a.music('a.ogg', { fade: 2 }); await a.music('a.ogg');
+  assert.equal(ctx.started.length, 1);
+  const first = ctx.started[0];
+  await a.music('b.ogg', { fade: 2 });
+  assert.equal(ctx.started.length, 2); assert.equal(a.currentMusic, 'b.ogg');
+  assert.ok(first.stopped);
+  a.stopMusic(); assert.equal(a.currentMusic, null);
+});
+
+test('ui: screens, widgets, button errors reported', () => {
+  const mkEl = (tag) => ({ tag, style: {}, dataset: {}, children: [], listeners: {}, appendChild(c) { this.children.push(c); }, addEventListener(e, f) { this.listeners[e] = f; }, remove() {} });
+  const doc = { head: mkEl('head'), body: mkEl('body'), getElementById: () => null, createElement: mkEl };
+  const g = mk(); const errs = []; g.onError = (e) => errs.push(e.message);
+  const ui = new UI(g, { doc });
+  const shown = []; g.events.on('uiShow', (n) => shown.push(n));
+  ui.label('hud', 'hi', { x: 4 }).set('yo'); const bar = ui.bar('hud', 0.5);
+  assert.equal(bar.children[0].style.transform, 'scaleX(0.5)'); bar.set(2); assert.equal(bar.children[0].style.transform, 'scaleX(1)');
+  assert.equal(ui.screen('hud').el.style.display, 'none'); ui.show('hud'); assert.equal(ui.screen('hud').el.style.display, ''); assert.deepEqual(shown, ['hud']);
+  const b = ui.button('hud', 'Go', () => { throw new Error('click'); }); b.listeners.click({});
+  assert.deepEqual(errs, ['click']);
+});
