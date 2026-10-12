@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "nord.project.schema.json",
+  "title": "Nord project (nord.project.json)",
+  "type": "object",
+  "required": ["format", "name", "id", "type", "startScene"],
+  "properties": {
+    "format": { "const": 1 },
+    "name": { "type": "string", "minLength": 1 },
+    "id": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$" },
+    "type": { "enum": ["2d", "3d", "wasm-game", "wasm-app", "html"] },
+    "engineVersion": { "type": "string" },
+    "startScene": { "type": "string" },
+    "display": {
+      "type": "object",
+      "properties": {
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 },
+        "scale": { "enum": ["fit", "fill", "none", "stretch"] },
+        "pixelArt": { "type": "boolean" },
+        "background": { "type": "string" }
+      }
+    },
+    "physics": {
+      "type": "object",
+      "properties": {
+        "engine": { "enum": ["arcade", "matter", "havok", "rapier", "none"] },
+        "gravity": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 }
+      }
+    },
+    "input": { "type": "object", "properties": { "actions": { "type": "object", "additionalProperties": { "type": "array", "items": { "type": "string" } } } } },
+    "plugins": { "type": "array", "items": { "type": "string" } },
+    "export": { "type": "object" }
+  }
+}

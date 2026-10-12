@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "nord.scene.schema.json",
+  "title": "Nord scene (*.scene.json)",
+  "type": "object",
+  "required": ["format", "name", "entities"],
+  "properties": {
+    "format": { "const": 1 },
+    "name": { "type": "string" },
+    "settings": {
+      "type": "object",
+      "properties": {
+        "ambient": { "type": ["string", "null"] },
+        "skybox": { "type": ["string", "null"] },
+        "gravity": { "type": ["array", "null"], "items": { "type": "number" }, "minItems": 3, "maxItems": 3 }
+      }
+    },
+    "entities": { "type": "array", "items": { "$ref": "#/definitions/entity" } }
+  },
+  "definitions": {
+    "vec3": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 },
+    "entity": {
+      "type": "object",
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "type": "string" },
+        "enabled": { "type": "boolean" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "layer": { "type": "integer" },
+        "transform": {
+          "type": "object",
+          "properties": { "pos": { "$ref": "#/definitions/vec3" }, "rot": { "$ref": "#/definitions/vec3" }, "scale": { "$ref": "#/definitions/vec3" } }
+        },
+        "components": { "type": "array", "items": { "$ref": "#/definitions/component" } },
+        "scripts": {
+          "type": "array",
+          "items": { "type": "object", "required": ["path"], "properties": { "path": { "type": "string" }, "attributes": { "type": "object" } } }
+        },
+        "children": { "type": "array", "items": { "$ref": "#/definitions/entity" } },
+        "prefab": {
+          "type": ["object", "null"],
+          "required": ["path"],
+          "properties": { "path": { "type": "string" }, "overrides": { "type": "object" } }
+        }
+      }
+    },
+    "component": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "enum": ["sprite", "animatedSprite", "text", "tilemap", "particles", "camera", "light", "mesh", "model", "material",
+                   "rigidbody", "collider", "audioSource", "audioListener", "uiPanel", "uiButton", "uiLabel", "uiImage", "uiBar",
+                   "trigger", "path", "spawner"]
+        }
+      }
+    }
+  }
+}
