@@ -426,6 +426,108 @@
         "operator": "#89ddff",
         "punctuation": "#a6accd"
       }
+    },
+    {
+      "id": "nord-light",
+      "name": "Nord Light",
+      "dark": false,
+      "ui": {
+        "bg": "#eceff4",
+        "panel": "#e5e9f0",
+        "panel2": "#d8dee9",
+        "border": "#c2c9d6",
+        "fg": "#2e3440",
+        "fgDim": "#5c6779",
+        "accent": "#5e81ac",
+        "good": "#6f9a5a",
+        "warn": "#b48a2b",
+        "bad": "#bf616a"
+      },
+      "code": {
+        "bg": "#eceff4",
+        "fg": "#2e3440",
+        "selection": "#d8dee9",
+        "lineHighlight": "#e5e9f0",
+        "cursor": "#5e81ac",
+        "gutter": "#7b8798",
+        "keyword": "#5e81ac",
+        "string": "#6f9a5a",
+        "number": "#a0627f",
+        "comment": "#8a94a5",
+        "function": "#4c7a8c",
+        "variable": "#2e3440",
+        "type": "#5e81ac",
+        "operator": "#5e81ac",
+        "punctuation": "#4c566a"
+      }
+    },
+    {
+      "id": "github-light",
+      "name": "GitHub Light",
+      "dark": false,
+      "ui": {
+        "bg": "#ffffff",
+        "panel": "#f6f8fa",
+        "panel2": "#eaeef2",
+        "border": "#d0d7de",
+        "fg": "#1f2328",
+        "fgDim": "#656d76",
+        "accent": "#0969da",
+        "good": "#1a7f37",
+        "warn": "#9a6700",
+        "bad": "#cf222e"
+      },
+      "code": {
+        "bg": "#ffffff",
+        "fg": "#1f2328",
+        "selection": "#b6d6f8",
+        "lineHighlight": "#f6f8fa",
+        "cursor": "#0969da",
+        "gutter": "#8c959f",
+        "keyword": "#cf222e",
+        "string": "#0a3069",
+        "number": "#0550ae",
+        "comment": "#6e7781",
+        "function": "#8250df",
+        "variable": "#953800",
+        "type": "#0550ae",
+        "operator": "#cf222e",
+        "punctuation": "#1f2328"
+      }
+    },
+    {
+      "id": "solarized-light",
+      "name": "Solarized Light",
+      "dark": false,
+      "ui": {
+        "bg": "#fdf6e3",
+        "panel": "#eee8d5",
+        "panel2": "#e4dcc3",
+        "border": "#d3cbb7",
+        "fg": "#586e75",
+        "fgDim": "#93a1a1",
+        "accent": "#268bd2",
+        "good": "#859900",
+        "warn": "#b58900",
+        "bad": "#dc322f"
+      },
+      "code": {
+        "bg": "#fdf6e3",
+        "fg": "#586e75",
+        "selection": "#e4dcc3",
+        "lineHighlight": "#eee8d5",
+        "cursor": "#268bd2",
+        "gutter": "#93a1a1",
+        "keyword": "#859900",
+        "string": "#2aa198",
+        "number": "#d33682",
+        "comment": "#93a1a1",
+        "function": "#268bd2",
+        "variable": "#586e75",
+        "type": "#b58900",
+        "operator": "#859900",
+        "punctuation": "#586e75"
+      }
     }
   ]
 }

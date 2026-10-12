@@ -1,4 +1,4 @@
-// @nord {"id":"app.code-editor","title":"Code editor (desktop)","category":"apps","tier":["html"],"tags":["editor","code","codemirror","desktop","files"],"description":"A real code editor for Nord desktop apps: file tree, tabs, syntax highlighting (JS/TS/HTML/CSS/JSON/Markdown/Rust/GLSL/TOML), find & replace, multi-cursor, folding, autocomplete, go to line, quick open, themes, autosave, external-change detection, session restore. Uses window.nord.desktop (files, dialogs, menu) and the vendored CodeMirror 6 bundle; in a browser it runs on the virtual app-data files."}
+// @nord {"id":"app.code-editor","title":"Code editor (desktop)","category":"apps","tier":["html"],"tags":["editor","code","codemirror","desktop","files"],"description":"A real code editor for Nord desktop apps: file tree, tabs, syntax highlighting (JS/TS/HTML/CSS/JSON/Markdown/Rust/GLSL/TOML/PHP/Python/Go/C/C++/C#/Java/Kotlin/Swift/Ruby/Lua/Shell/SQL/YAML/XML), find & replace, multi-cursor, folding, autocomplete, go to line, quick open, themes, autosave, external-change detection, session restore. Uses window.nord.desktop (files, dialogs, menu) and the vendored CodeMirror 6 bundle; in a browser it runs on the virtual app-data files."}
 import * as cm from './cm.bundle.js';
 import desktop from './nord-desktop.js';
 
@@ -8,6 +8,13 @@ const LANGS = {
   ts: ['TypeScript', () => cm.javascript({ typescript: true })], tsx: ['TypeScript (TSX)', () => cm.javascript({ typescript: true, jsx: true })],
   html: ['HTML', () => cm.html()], htm: ['HTML', () => cm.html()], css: ['CSS', () => cm.css()], json: ['JSON', () => cm.json()], md: ['Markdown', () => cm.markdown()],
   rs: ['Rust', () => cm.rust()], glsl: ['GLSL', () => cm.glsl()], vert: ['GLSL', () => cm.glsl()], frag: ['GLSL', () => cm.glsl()], wgsl: ['WGSL', () => cm.glsl()], toml: ['TOML', () => cm.tomlLang()],
+  php: ['PHP', () => cm.php()], phtml: ['PHP', () => cm.php()], py: ['Python', () => cm.python()], pyw: ['Python', () => cm.python()],
+  xml: ['XML', () => cm.xml()], svg: ['XML', () => cm.xml()], plist: ['XML', () => cm.xml()], sql: ['SQL', () => cm.sql()],
+  go: ['Go', cm.legacy.go], c: ['C', cm.legacy.c], h: ['C', cm.legacy.c], cpp: ['C++', cm.legacy.cpp], cc: ['C++', cm.legacy.cpp], hpp: ['C++', cm.legacy.cpp],
+  cs: ['C#', cm.legacy.csharp], java: ['Java', cm.legacy.java], kt: ['Kotlin', cm.legacy.kotlin], scala: ['Scala', cm.legacy.scala], swift: ['Swift', cm.legacy.swift],
+  m: ['Objective-C', cm.legacy.objc], dart: ['Dart', cm.legacy.dart], rb: ['Ruby', cm.legacy.ruby], lua: ['Lua', cm.legacy.lua], pl: ['Perl', cm.legacy.perl],
+  sh: ['Shell', cm.legacy.shell], bash: ['Shell', cm.legacy.shell], zsh: ['Shell', cm.legacy.shell], yml: ['YAML', cm.legacy.yaml], yaml: ['YAML', cm.legacy.yaml],
+  dockerfile: ['Dockerfile', cm.legacy.dockerfile], diff: ['Diff', cm.legacy.diff], patch: ['Diff', cm.legacy.diff],
 };
 const extOf = (p) => (p.split('/').pop().split('.').pop() ?? '').toLowerCase();
 const nameOf = (p) => p.split(/[\\/]/).pop().replace(/^appData:/, '');
@@ -252,7 +259,7 @@ export async function mount(root) {
   async function refresh() { if (!rootDir) return; for (const d of [...listings.keys()]) await loadDir(d); drawTree(); files = []; walk(rootDir).then((f) => { files = f; }); }
 
   // ---- commands ----
-  const FILTERS = [{ name: 'Code', extensions: Object.keys(LANGS).concat(['txt', 'yml', 'yaml', 'xml', 'svg', 'sh', 'py', 'lock']) }];
+  const FILTERS = [{ name: 'Code', extensions: Object.keys(LANGS).concat(['txt', 'lock']) }];
   const cmds = {
     async new() { show(addTab(null, '')); },
     async newIn(dir) {

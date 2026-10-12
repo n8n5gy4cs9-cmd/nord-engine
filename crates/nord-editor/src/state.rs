@@ -32,6 +32,10 @@ pub struct Settings {
     pub play_tint: [u8; 3],
     /// colour while compiling (before the game starts)
     pub build_tint: [u8; 3],
+    /// Cmd/Ctrl + key: run, and stop again while running (toggle). Rebindable in case a game/app needs the combo.
+    pub run_key: String,
+    /// Cmd/Ctrl + key: stop only
+    pub stop_key: String,
 }
 
 impl Default for Settings {
@@ -52,11 +56,21 @@ impl Default for Settings {
             tint: true,
             play_tint: [34, 56, 96],
             build_tint: [104, 72, 20],
+            run_key: "R".into(),
+            stop_key: ".".into(),
         }
     }
 }
 
 impl Settings {
+    /// Key bound to run/stop-toggle (`run`) or stop-only; falls back to the default when the saved name is not a key.
+    pub fn key(&self, run: bool) -> egui::Key {
+        let (n, d) = if run { (&self.run_key, egui::Key::R) } else { (&self.stop_key, egui::Key::Period) };
+        egui::Key::from_name(n.trim()).unwrap_or(d)
+    }
+    pub fn key_label(&self, run: bool) -> String {
+        format!("Cmd+{}", self.key(run).name())
+    }
     fn path() -> PathBuf {
         nord_core::io::config_dir().join("editor.json")
     }

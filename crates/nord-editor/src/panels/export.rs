@@ -116,7 +116,7 @@ pub fn window(st: &mut EditorState, ctx: &egui::Context) {
                         t => t.as_str(),
                     })
                     .show_ui(ui, |ui| {
-                        for t in [Target::Auto, Target::Html, Target::Web2d, Target::Web3d] {
+                        for t in [Target::Auto, Target::Html, Target::Web2d, Target::Web3d, Target::Web3dPc] {
                             ui.selectable_value(&mut e.target, t, t.as_str());
                         }
                     });

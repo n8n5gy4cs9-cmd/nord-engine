@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// assets/themes/themes.json (single source: skins, fonts, 10 dark themes) → runtime/core/themes.data.js (ES module for the JS runtime).
+// assets/themes/themes.json (single source: skins, fonts, 13 themes: 10 dark + 3 light) → runtime/core/themes.data.js (ES module for the JS runtime).
 // The Rust editor embeds the JSON directly (include_str!). Re-run after editing the JSON.
 import fs from 'node:fs';
 const src = JSON.parse(fs.readFileSync(new URL('../assets/themes/themes.json', import.meta.url), 'utf8'));

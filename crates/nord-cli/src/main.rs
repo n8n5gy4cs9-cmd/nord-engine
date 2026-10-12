@@ -42,12 +42,12 @@ enum Cmd {
         #[arg(short, long, default_value_t = 4173)]
         port: u16,
     },
-    /// Build a static, offline web export (web-2d / web-3d / html / web-wasm-game / web-wasm-app) into a folder
+    /// Build a static, offline web export (web-2d / web-3d / web-3d-pc / html / web-wasm-game / web-wasm-app) into a folder
     #[command(alias = "export")]
     Build {
         #[arg(default_value = ".")]
         project: PathBuf,
-        /// auto | html | web-2d | web-3d | web-wasm-game | web-wasm-app
+        /// auto | html | web-2d | web-3d | web-3d-pc | web-wasm-game | web-wasm-app
         #[arg(short, long, default_value = "auto")]
         target: String,
         /// Output folder (default: <project>/dist)

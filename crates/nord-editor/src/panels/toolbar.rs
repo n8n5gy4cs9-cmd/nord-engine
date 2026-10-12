@@ -21,10 +21,10 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         let has = st.project.is_some();
         ui.add_enabled_ui(has, |ui| {
             let running = st.play.as_ref().is_some_and(|p| p.running);
-            if icons::button(ui, "play", "Play (Cmd+R)", running).clicked() {
-                st.push(Action::Play);
+            if icons::button(ui, "play", &format!("Play / stop ({})", st.settings.key_label(true)), running).clicked() {
+                st.push(if st.play.is_some() { Action::Stop } else { Action::Play });
             }
-            if icons::button(ui, "square", "Stop (Cmd+.)", false).clicked() {
+            if icons::button(ui, "square", &format!("Stop ({})", st.settings.key_label(false)), false).clicked() {
                 st.push(Action::Stop);
             }
             if icons::button(ui, "refresh-cw", "Reload game", false).clicked() {

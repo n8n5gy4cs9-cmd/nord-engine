@@ -7,13 +7,14 @@
 | `html` | folder | none (your own HTML/JS) | simple games/apps; optional `nord-lite.js` helpers |
 | `web-2d` | folder | nord.js + Phaser (+ chosen plugins) | `lib/phaser.min.js`, assets copied/atlased |
 | `web-3d` | folder | nord.js + Babylon packages + Havok wasm | only packages used by scene are copied |
+| `web-3d-pc` | folder | nord.js + PlayCanvas engine (optional 4th tier, ADR-021) | `vendor/playcanvas/playcanvas.min.js` (~2.5 MB); **no physics**, no particles/postProcess/skybox yet |
 | `web-wasm-game` | folder | `nord_game.wasm` + `mq_js_bundle.js` + `index.html` | built with `cargo build --release --target wasm32-unknown-unknown` + `wasm-opt -Oz` if present |
 | `web-wasm-app` | folder | eframe wasm (+ JS glue via `wasm-bindgen`) | |
 | `mac-app` | `Name.app` (+ optional `.dmg`) | NordPlayer + any of the above | uses prebuilt player; ad-hoc signed |
 | `zip` | `name.zip` | any web target zipped | for itch.io-style upload |
 
 ## Implemented (M4)
-`nord build <project> [-t auto|html|web-2d|web-3d] [-o dir] [--minify] [--single-file] [--optimize] [--zip]` (alias `nord export`), crate `nord-export`;
+`nord build <project> [-t auto|html|web-2d|web-3d|web-3d-pc] [-o dir] [--minify] [--single-file] [--optimize] [--zip]` (alias `nord export`), crate `nord-export`;
 editor: **Project → Export…**. `web-wasm-game` (M5-05, verified) builds the Rust project with `cargo build --release --target wasm32-unknown-unknown` (flags: `--allow-undefined` via `--config`), copies `game.wasm`, the vendored `mq_js_bundle.js` and project data/assets, writes a relative `index.html`; `--optimize` runs `wasm-opt -Oz` if installed. `web-wasm-app` (M5-06) uses `wasm-bindgen --target web`. Rust-tier scripts are registry names (no file check in validation); audio must be .wav/.ogg. `--minify`/`--single-file` run `tools/export-bundle.mjs` (Node + vendored `esbuild-wasm`).
 `nord bundle-mac <project|dist> [--player nord-player|NordPlayer.app] [--name] [-o dir] [--icon png] [--dmg]` assembles `<Name>.app`
 (`Contents/Resources/game/` + Info.plist + generated AppIcon.icns, ad-hoc codesign on macOS); the player is `crates/nord-player` (wry+tao, `--features shell`, macOS-only to build). Hosting: HOSTING.md.

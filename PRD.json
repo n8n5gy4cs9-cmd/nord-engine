@@ -1154,13 +1154,13 @@
       "id": "M8-05",
       "milestone": "M8",
       "title": "Dockable panels (optional), light theme",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M8-06",
       "milestone": "M8",
       "title": "Optional: Bevy template, PlayCanvas engine as 4th web tier",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M8-07",
@@ -1196,6 +1196,18 @@
       "id": "M8-12",
       "milestone": "M8",
       "title": "Play-mode tint + status bar (one-sentence activity, compile progress) + hub per-column scroll",
+      "status": "done"
+    },
+    {
+      "id": "M8-13",
+      "milestone": "M8",
+      "title": "Run/stop toggle + rebindable run/stop keys, Stop button in game header",
+      "status": "done"
+    },
+    {
+      "id": "M8-14",
+      "milestone": "M8",
+      "title": "Code editor example: PHP, Python and more syntaxes",
       "status": "done"
     }
   ]

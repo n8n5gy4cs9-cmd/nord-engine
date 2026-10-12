@@ -1,0 +1,21 @@
+[package]
+name = "my-bevy-game"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "app"
+path = "src/main.rs"
+
+# Slim Bevy: 2D/3D rendering + winit + wasm WebGL2 only (no audio/gltf/ui) keeps the .wasm small and the build quick.
+[dependencies]
+bevy = { version = "0.16", default-features = false, features = ["bevy_window", "bevy_winit", "bevy_render", "bevy_core_pipeline", "bevy_pbr", "bevy_asset", "bevy_log", "x11", "webgl2", "std", "async_executor"] }
+
+[workspace]
+
+[profile.dev]
+opt-level = 1
+[profile.release]
+opt-level = "s"
+lto = true
+panic = "abort"

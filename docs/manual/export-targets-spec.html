@@ -42,6 +42,12 @@
 <td>only packages used by scene are copied</td>
 </tr>
 <tr>
+<td><code>web-3d-pc</code></td>
+<td>folder</td>
+<td>nord.js + PlayCanvas engine (optional 4th tier, ADR-021)</td>
+<td><code>vendor/playcanvas/playcanvas.min.js</code> (~2.5 MB); <strong>no physics</strong>, no particles/postProcess/skybox yet</td>
+</tr>
+<tr>
 <td><code>web-wasm-game</code></td>
 <td>folder</td>
 <td><code>nord_game.wasm</code> + <code>mq_js_bundle.js</code> + <code>index.html</code></td>
@@ -67,7 +73,7 @@
 </tr>
 </tbody></table>
 <h2 id="implemented-m4">Implemented (M4)<a class="anchor" href="#implemented-m4">#</a></h2>
-<p><code>nord build &lt;project&gt; [-t auto|html|web-2d|web-3d] [-o dir] [--minify] [--single-file] [--optimize] [--zip]</code> (alias <code>nord export</code>), crate <code>nord-export</code>;
+<p><code>nord build &lt;project&gt; [-t auto|html|web-2d|web-3d|web-3d-pc] [-o dir] [--minify] [--single-file] [--optimize] [--zip]</code> (alias <code>nord export</code>), crate <code>nord-export</code>;
 editor: <strong>Project → Export…</strong>. <code>web-wasm-game</code> (M5-05, verified) builds the Rust project with <code>cargo build --release --target wasm32-unknown-unknown</code> (flags: <code>--allow-undefined</code> via <code>--config</code>), copies <code>game.wasm</code>, the vendored <code>mq_js_bundle.js</code> and project data/assets, writes a relative <code>index.html</code>; <code>--optimize</code> runs <code>wasm-opt -Oz</code> if installed. <code>web-wasm-app</code> (M5-06) uses <code>wasm-bindgen --target web</code>. Rust-tier scripts are registry names (no file check in validation); audio must be .wav/.ogg. <code>--minify</code>/<code>--single-file</code> run <code>tools/export-bundle.mjs</code> (Node + vendored <code>esbuild-wasm</code>).
 <code>nord bundle-mac &lt;project|dist&gt; [--player nord-player|NordPlayer.app] [--name] [-o dir] [--icon png] [--dmg]</code> assembles <code>&lt;Name&gt;.app</code>
 (<code>Contents/Resources/game/</code> + Info.plist + generated AppIcon.icns, ad-hoc codesign on macOS); the player is <code>crates/nord-player</code> (wry+tao, <code>--features shell</code>, macOS-only to build). Hosting: HOSTING.md.

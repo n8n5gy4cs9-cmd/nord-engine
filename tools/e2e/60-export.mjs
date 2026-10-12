@@ -89,6 +89,23 @@ const check3d = (name, flags, fileUrl) => async () => {
 
 suites['export-web-2d'] = check2d('web-2d', []);
 suites['export-web-3d'] = check3d('web-3d', []);
+// PlayCanvas tier: no physics, so only check that the scene loads, scripts run without errors and the canvas renders.
+suites['export-web-3d-pc'] = async () => {
+  const dir = build('conformance-3d', 'web-3d-pc', ['--target', 'web-3d-pc']);
+  const { errors, result } = await open(dir, undefined, async (page) => {
+    await waitReady(page, 40000);
+    const err = await page.evaluate(() => window.__nord_error);
+    if (err) throw new Error(err);
+    await page.waitForTimeout(3000);
+    const info = await page.evaluate(() => { const g = window.__nord; return { ball: !!g.scene.find('Ball'), errs: g.errors.length, cam: !!g.backend.camera }; });
+    const shot = await page.screenshot({ path: `${dir}.png` });
+    return { info, colors: await nonBlank(page, shot) };
+  });
+  console.log(JSON.stringify(result));
+  if (errors.length) throw new Error(errors.join('\n'));
+  if (!result.info.ball || !result.info.cam || result.info.errs) throw new Error('web-3d-pc: scene did not load cleanly');
+  if (result.colors < 15) throw new Error('web-3d-pc: canvas looks blank');
+};
 suites['export-web-2d-min'] = check2d('web-2d-min', ['--minify', '--optimize']);
 suites['export-single-2d'] = check2d('single-2d', ['--single-file', '--minify'], true);
 suites['export-single-3d'] = check3d('single-3d', ['--single-file'], true);

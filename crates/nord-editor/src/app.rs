@@ -11,7 +11,7 @@ use std::time::{Duration, Instant};
 
 const SPLASH_MIN: Duration = Duration::from_millis(2000);
 
-#[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Hash, serde::Serialize, serde::Deserialize)]
 pub enum Tab {
     Hierarchy,
     Inspector,
@@ -55,6 +55,18 @@ pub fn default_dock() -> DockState<Tab> {
     dock
 }
 
+fn layout_path() -> std::path::PathBuf {
+    nord_core::io::config_dir().join("layout.json")
+}
+
+/// The dock layout the user arranged last time (tabs dragged, split, popped out, closed), else the default.
+fn load_dock() -> DockState<Tab> {
+    nord_core::io::load_json::<DockState<Tab>>(&layout_path())
+        .ok()
+        .filter(|d| d.iter_all_tabs().next().is_some())
+        .unwrap_or_else(default_dock)
+}
+
 pub struct App {
     pub st: EditorState,
     pub dock: DockState<Tab>,
@@ -66,6 +78,7 @@ pub struct App {
     quit_confirm: bool,
     allow_close: bool,
     last_window_save: Instant,
+    saved_layout: String,
     os_fullscreen: bool,
 }
 
@@ -73,7 +86,7 @@ impl App {
     pub fn new(splash: bool) -> Self {
         Self {
             st: EditorState::new(),
-            dock: default_dock(),
+            dock: load_dock(),
             web: WebPanes::default(),
             splash_start: splash.then(Instant::now),
             sent_rev: 0,
@@ -82,11 +95,25 @@ impl App {
             quit_confirm: false,
             allow_close: false,
             last_window_save: Instant::now(),
+            saved_layout: String::new(),
             os_fullscreen: false,
         }
     }
 
+    /// Persist the dock layout when it changed (cheap string compare; called with the periodic settings save).
+    fn save_layout(&mut self) {
+        if let Ok(j) = serde_json::to_string(&self.dock) {
+            if j != self.saved_layout {
+                let _ = nord_core::io::write_atomic(&layout_path(), j.as_bytes());
+                self.saved_layout = j;
+            }
+        }
+    }
+
     pub fn show_tab(&mut self, t: Tab) {
+        if self.dock.iter_all_tabs().next().is_none() {
+            self.dock = default_dock(); // everything was closed
+        }
         if let Some(loc) = self.dock.find_tab(&t) {
             self.dock.set_active_tab(loc);
         } else {
@@ -151,10 +178,10 @@ impl App {
             if i.consume_key(cmd, Key::K) {
                 st.push(Action::Palette);
             }
-            if i.consume_key(cmd, Key::R) {
-                st.push(Action::Play);
-            }
-            if i.consume_key(cmd, Key::Period) {
+            let (run, stop) = (st.settings.key(true), st.settings.key(false));
+            if i.consume_key(cmd, run) {
+                st.push(if st.play.is_some() { Action::Stop } else { Action::Play });
+            } else if i.consume_key(cmd, stop) {
                 st.push(Action::Stop);
             }
             if i.consume_key(cmd, Key::Comma) {
@@ -326,7 +353,6 @@ impl App {
                         self.sent_rev = 0;
                         self.sent_sel.clear();
                         st.viewport_ready = false;
-                        self.dock = default_dock();
                         if st.recover.is_some() {
                             st.toast("Unsaved autosave found — see Edit ▸ Recover autosave");
                         }
@@ -507,8 +533,9 @@ impl App {
                 act(ui, "Settings…", Action::Settings, st);
             });
             ui.menu_button("Project", |ui| {
-                act(ui, "Play  (Cmd+R)", Action::Play, st);
-                act(ui, "Stop  (Cmd+.)", Action::Stop, st);
+                let (rk, sk) = (st.settings.key_label(true), st.settings.key_label(false));
+                act(ui, &format!("Play / stop  ({rk})"), Action::Play, st);
+                act(ui, &format!("Stop  ({sk})"), Action::Stop, st);
                 act(ui, "Validate", Action::Build("validate".into()), st);
                 if is_rust(st) {
                     act(ui, "Build Rust", Action::Build("rust build".into()), st);
@@ -685,7 +712,7 @@ impl TabViewer for Viewer<'_> {
     }
 
     fn closeable(&mut self, _: &mut Tab) -> bool {
-        false
+        true // closed panels come back via the View menu / Reset layout
     }
 
     fn ui(&mut self, ui: &mut egui::Ui, t: &mut Tab) {
@@ -768,6 +795,10 @@ pub fn game_tab(
         {
             st.game_full = !st.game_full;
         }
+        if st.play.is_some() && ui.button("■ Stop").on_hover_text("Stop the game and return to editing").clicked() {
+            st.push(Action::Stop);
+            st.game_full = false;
+        }
         if let Some(p) = &st.play {
             if ui.button("Open in browser").clicked() {
                 open_in_browser(&format!("http://127.0.0.1:{}/", p.port));
@@ -799,7 +830,7 @@ pub fn game_tab(
         } else {
             ui.add_space(30.0);
             ui.vertical_centered(|ui| {
-                ui.weak("Press ▶ Play (Cmd+R) to run the game here");
+                ui.weak(format!("Press ▶ Play ({}) to run the game here", st.settings.key_label(true)));
             });
         }
     });
@@ -831,6 +862,7 @@ impl eframe::App for App {
 
     fn on_exit(&mut self) {
         self.st.settings.save();
+        self.save_layout();
     }
 }
 
@@ -881,6 +913,7 @@ impl App {
         }
         if self.last_window_save.elapsed() > Duration::from_secs(10) {
             self.st.settings.save();
+            self.save_layout();
             self.last_window_save = Instant::now();
         }
 
@@ -926,7 +959,7 @@ impl App {
                 .show(ctx, |ui| {
                     DockArea::new(&mut dock)
                         .style(style)
-                        .show_close_buttons(false)
+                        .show_close_buttons(true)
                         .show_inside(
                             ui,
                             &mut Viewer {

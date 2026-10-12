@@ -10,7 +10,7 @@ pub const SHORTCUTS: &[(&str, &str)] = &[
     ("Delete", "Delete selection"),
     ("W / E / R", "Move / rotate / scale gizmo"),
     ("F", "Focus selection in viewport"),
-    ("Cmd+R / Cmd+.", "Play / stop"),
+    ("Cmd+R / Cmd+.", "Play (toggles stop) / stop — rebind above"),
     ("Cmd+F / Cmd+Opt+F", "Find / replace in file"),
     ("Cmd+Shift+F", "Search in project"),
     ("Cmd+G", "Go to line"),
@@ -61,6 +61,14 @@ pub fn window(st: &mut EditorState, ctx: &Context) {
                     ui.label("playing");
                     ui.color_edit_button_srgb(&mut s.build_tint).on_hover_text("editor colour while a Rust game compiles / exports");
                     ui.label("compiling");
+                });
+                ui.end_row();
+                ui.label("Run / stop keys");
+                ui.horizontal(|ui| {
+                    ui.weak("Cmd/Ctrl +");
+                    ui.add(egui::TextEdit::singleline(&mut s.run_key).desired_width(36.0)).on_hover_text("Run; press again to stop. Key name, e.g. R, F5, Enter");
+                    ui.weak("stop only:");
+                    ui.add(egui::TextEdit::singleline(&mut s.stop_key).desired_width(36.0)).on_hover_text("Stop only. Change it if your game/app uses Cmd+. itself");
                 });
                 ui.end_row();
                 ui.label("Snap move / rotate / scale");
