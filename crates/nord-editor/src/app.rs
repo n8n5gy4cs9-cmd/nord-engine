@@ -180,7 +180,7 @@ impl App {
             }
             let (run, stop) = (st.settings.key(true), st.settings.key(false));
             if i.consume_key(cmd, run) {
-                st.push(if st.play.is_some() {
+                st.push(if st.is_playing() {
                     Action::Stop
                 } else {
                     Action::Play
@@ -246,6 +246,7 @@ impl App {
         if st.dirty {
             st.save();
         }
+        st.stopping = None;
         if let Some(p) = st.play.as_mut() {
             p.running = true;
         }
@@ -834,7 +835,7 @@ pub fn game_tab(
         {
             st.game_full = !st.game_full;
         }
-        if st.play.is_some()
+        if st.is_playing()
             && ui
                 .button("■ Stop")
                 .on_hover_text("Stop the game and return to editing")
@@ -954,6 +955,9 @@ impl App {
         self.run_actions(ctx);
         self.poll_rust_build(ctx);
         self.st.autosave_tick();
+        if self.st.stopping.is_some() {
+            ctx.request_repaint_after(Duration::from_millis(100)); // let the "stopping" tint expire
+        }
         self.apply_tint(ctx);
         self.sync_viewport();
 

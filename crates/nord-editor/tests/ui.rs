@@ -615,3 +615,40 @@ fn game_view_anchor_top_and_bottom() {
         ys[0]
     );
 }
+
+/// Play → Stop → Play must start again (toggle key must only stop while *running*), and the play tint lingers briefly after Stop.
+#[test]
+fn play_stop_play_again() {
+    use nord_editor::state::{Action, Tint};
+    let d = temp_project("replay", nord_core::ProjectType::TwoD);
+    let mut h = Harness::builder()
+        .with_size(egui::vec2(1400.0, 900.0))
+        .build_state(
+            |ctx, app: &mut App| {
+                app.frame_ui(ctx, None);
+            },
+            App::new(false),
+        );
+    h.run_steps(3);
+    h.state_mut().st.push(Action::OpenPath(d));
+    h.run_steps(3);
+    for round in 0..2 {
+        h.press_key_modifiers(egui::Modifiers::COMMAND, egui::Key::R);
+        h.run_steps(3);
+        assert!(
+            h.state().st.is_playing(),
+            "round {round}: Cmd+R did not start the game"
+        );
+        h.press_key_modifiers(egui::Modifiers::COMMAND, egui::Key::R);
+        h.run_steps(3);
+        assert!(
+            !h.state().st.is_playing(),
+            "round {round}: Cmd+R did not stop the game"
+        );
+        assert_eq!(
+            h.state().st.activity().0,
+            Some(Tint::Playing),
+            "tint dropped immediately on stop"
+        );
+    }
+}

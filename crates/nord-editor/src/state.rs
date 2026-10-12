@@ -229,6 +229,8 @@ pub struct EditorState {
     pub status_msg: Option<(String, Instant)>,
     /// bumps on Play/Reload so the Game webview reloads
     pub game_nonce: u32,
+    /// set by Stop: keeps the play-mode tint for a moment while the game view is torn down
+    pub stopping: Option<Instant>,
     /// running `cargo build` for a Rust (wasm-game / wasm-app) project; `None` when idle
     pub rust_job: Option<Arc<RustJob>>,
     /// the edit viewport page has said hello (so scene/thumb messages are meaningful)
@@ -292,6 +294,7 @@ impl EditorState {
             base_visuals: None,
             status_msg: None,
             game_nonce: 0,
+            stopping: None,
             rust_job: None,
             viewport_ready: false,
         }
@@ -354,6 +357,12 @@ impl EditorState {
                 Some(Tint::Playing),
                 "Playing — press Cmd+. (Stop) to return to editing".into(),
             );
+        }
+        if self
+            .stopping
+            .is_some_and(|t| t.elapsed() < Duration::from_millis(1500))
+        {
+            return (Some(Tint::Playing), "Stopping…".into());
         }
         if let Some((m, t)) = &self.status_msg {
             if t.elapsed() < Duration::from_secs(6) {
@@ -688,8 +697,15 @@ impl EditorState {
             .map(|p| format!("http://127.0.0.1:{}", p.port))
     }
 
+    pub fn is_playing(&self) -> bool {
+        self.play.as_ref().is_some_and(|p| p.running)
+    }
+
     pub fn stop(&mut self) {
         if let Some(p) = self.play.as_mut() {
+            if p.running {
+                self.stopping = Some(Instant::now());
+            }
             p.running = false;
         }
     }

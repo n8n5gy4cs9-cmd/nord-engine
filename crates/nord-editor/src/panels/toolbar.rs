@@ -29,7 +29,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
             )
             .clicked()
             {
-                st.push(if st.play.is_some() {
+                st.push(if st.is_playing() {
                     Action::Stop
                 } else {
                     Action::Play
