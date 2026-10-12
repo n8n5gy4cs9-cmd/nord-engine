@@ -38,6 +38,8 @@ icons!(
     "settings",
     "book-open",
     "terminal",
+    "layout-grid",
+    "list",
     "save",
     "undo-2",
     "redo-2",

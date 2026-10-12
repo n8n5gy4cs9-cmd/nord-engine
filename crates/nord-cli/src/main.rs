@@ -42,6 +42,30 @@ enum Cmd {
         #[arg(short, long, default_value_t = 4173)]
         port: u16,
     },
+    /// Build a static, offline web export (web-2d / web-3d / html) into a folder
+    #[command(alias = "export")]
+    Build {
+        #[arg(default_value = ".")]
+        project: PathBuf,
+        /// auto | html | web-2d | web-3d
+        #[arg(short, long, default_value = "auto")]
+        target: String,
+        /// Output folder (default: <project>/dist)
+        #[arg(short, long)]
+        out: Option<PathBuf>,
+        /// Minify JS and JSON
+        #[arg(long)]
+        minify: bool,
+        /// One index.html with everything inlined (works from file://)
+        #[arg(long)]
+        single_file: bool,
+        /// Lossless PNG recompression, WAV→MP3 when ffmpeg is installed
+        #[arg(long)]
+        optimize: bool,
+        /// Also write <out>.zip (for itch.io style uploads)
+        #[arg(long)]
+        zip: bool,
+    },
     /// Fail if a directory (build output or project) references external http(s) hosts
     CheckOffline {
         #[arg(default_value = ".")]
@@ -174,6 +198,31 @@ fn main() -> anyhow::Result<()> {
             let engine =
                 nord_serve::engine_root().context("engine root not found (set NORD_ROOT)")?;
             tokio::runtime::Runtime::new()?.block_on(nord_serve::run(project, engine, port))?;
+        }
+        Cmd::Build {
+            project,
+            target,
+            out,
+            minify,
+            single_file,
+            optimize,
+            zip,
+        } => {
+            let engine =
+                nord_serve::engine_root().context("engine root not found (set NORD_ROOT)")?;
+            let r = nord_export::build(
+                &project,
+                &engine,
+                &nord_export::Opts {
+                    target: target.parse().map_err(anyhow::Error::msg)?,
+                    out,
+                    minify,
+                    single_file,
+                    optimize,
+                    zip,
+                },
+            )?;
+            print!("{}", r.summary());
         }
         Cmd::CheckOffline { dir, allow } => {
             let f = offline::scan_dir(&dir, &allow);

@@ -25,6 +25,7 @@ const LIBS = [
   { name: 'babylonjs-serializers', pkg: 'babylonjs-serializers@9.30.0', license: 'Apache-2.0', files: [['babylonjs.serializers.min.js']] },
   { name: 'havok', pkg: '@babylonjs/havok@1.3.14', license: 'MIT wrapper (Havok wasm free for use with Babylon.js)', files: [['lib/umd/HavokPhysics_umd.js'], ['lib/umd/HavokPhysics.wasm'], ['LICENSE.md']] },
   { name: 'playcanvas', pkg: 'playcanvas@2.23.2', license: 'MIT', optional: true, files: [['build/playcanvas.min.js'], ['LICENSE']] },
+  { name: 'esbuild-wasm', pkg: 'esbuild-wasm@0.25.10', license: 'MIT', files: [['lib/browser.js'], ['esbuild.wasm'], ['LICENSE.md']] },
   { name: 'marked', pkg: 'marked@18.1.0', license: 'MIT', files: [['lib/marked.umd.js'], ['LICENSE.md']] },
   { name: 'fonts', pkg: '@fontsource/inter@5.3.0', license: 'OFL-1.1', to: 'fonts/inter', files: [['files/inter-latin-400-normal.woff2'], ['files/inter-latin-500-normal.woff2'], ['files/inter-latin-600-normal.woff2'], ['files/inter-latin-700-normal.woff2'], ['LICENSE']] },
   { name: 'fonts', pkg: '@fontsource/jetbrains-mono@5.3.0', license: 'OFL-1.1', to: 'fonts/jetbrains-mono', files: [['files/jetbrains-mono-latin-400-normal.woff2'], ['files/jetbrains-mono-latin-700-normal.woff2'], ['LICENSE']] },

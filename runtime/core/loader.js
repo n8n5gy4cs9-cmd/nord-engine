@@ -9,8 +9,9 @@ export function safePath(path) {
 }
 
 export class Loader {
-  constructor({ files = globalThis.__NORD_FILES__, fetchFn = (...a) => globalThis.fetch(...a) } = {}) {
+  constructor({ files = globalThis.__NORD_FILES__, inlineOnly = false, fetchFn = (...a) => globalThis.fetch(...a) } = {}) {
     this.files = files ?? null;
+    this.inlineOnly = inlineOnly; // single-file/file:// exports: a path missing from the bundle is an error, never a fetch
     this.fetchFn = fetchFn;
     this.cache = new Map();
   }
@@ -19,6 +20,7 @@ export class Loader {
     const key = `${kind}:${path}`;
     if (!this.cache.has(key)) {
       this.cache.set(key, (async () => {
+        if (this.inlineOnly && !(path in (this.files ?? {}))) throw new Error(`[nord] ${path} is not in the inlined bundle`); // never fetch on file://
         const res = await this.fetchFn(this.url(path));
         if (!res.ok) throw new Error(`[nord] failed to load ${path} (${res.status})`);
         return kind === 'json' ? res.json() : kind === 'text' ? res.text() : res.arrayBuffer();

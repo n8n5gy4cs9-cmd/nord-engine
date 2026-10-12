@@ -531,6 +531,29 @@ impl TabViewer for Viewer<'_> {
                 }
             }
             Tab::Game => {
+                ui.horizontal(|ui| {
+                    if crate::icons::button(
+                        ui,
+                        "terminal",
+                        "Show/hide console under the game",
+                        st.game_console,
+                    )
+                    .clicked()
+                    {
+                        st.game_console = !st.game_console;
+                    }
+                    ui.weak(if st.game_console {
+                        "console on"
+                    } else {
+                        "console off"
+                    });
+                });
+                if st.game_console {
+                    egui::TopBottomPanel::bottom("game-console")
+                        .resizable(true)
+                        .default_height(140.0)
+                        .show_inside(ui, |ui| panels::console::ui(st, ui));
+                }
                 if st.play.as_ref().is_some_and(|p| p.running) {
                     let base = st.ensure_server().unwrap_or_default();
                     let url = format!("{base}/?n={}", st.game_nonce);

@@ -723,25 +723,25 @@
       "id": "M4-01",
       "milestone": "M4",
       "title": "`nord build` pipeline: validate, resolve libs, copy assets, nord.json, index.html templates",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M4-02",
       "milestone": "M4",
       "title": "web-2d export (Phaser) verified offline in headless Chromium",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M4-03",
       "milestone": "M4",
       "title": "web-3d export (Babylon+Havok) verified offline",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M4-04",
       "milestone": "M4",
       "title": "Single-file / file:// safe export mode",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M4-05",
@@ -753,7 +753,7 @@
       "id": "M4-06",
       "milestone": "M4",
       "title": "Minify option (esbuild) + size report",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M4-07",

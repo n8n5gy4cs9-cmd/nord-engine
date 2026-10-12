@@ -7,10 +7,10 @@ import { attachDom } from './input.js';
 
 /**
  * @param project parsed nord.project.json
- * @param opts { container: HTMLElement (position:relative), canvas, backend, files, storage, importScript, onError, seed }
+ * @param opts { container: HTMLElement (position:relative), canvas, backend, files, storage, importScript, onError, seed, inlineOnly }
  */
 export function createGame(project, opts = {}) {
-  const loader = new Loader({ files: opts.files });
+  const loader = new Loader({ files: opts.files, inlineOnly: opts.inlineOnly });
   const game = new Game(project, {
     backend: opts.backend, storage: opts.storage, importScript: opts.importScript, onError: opts.onError, seed: opts.seed,
     fetchJSON: (p) => loader.json(p),

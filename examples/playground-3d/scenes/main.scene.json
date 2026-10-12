@@ -1,0 +1,1611 @@
+{
+  "format": 1,
+  "name": "main",
+  "settings": {},
+  "entities": [
+    {
+      "id": "cam00001",
+      "name": "Camera",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          4,
+          -9
+        ],
+        "rot": [
+          18,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "camera",
+          "fov": 60
+        },
+        {
+          "type": "postProcess",
+          "bloom": true,
+          "bloomThreshold": 0.9,
+          "fxaa": true,
+          "vignette": 0.4,
+          "tonemap": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/camera_rig.js"
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "sun00001",
+      "name": "Sun",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          10,
+          0
+        ],
+        "rot": [
+          50,
+          -30,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "light",
+          "kind": "directional",
+          "intensity": 1.4,
+          "castShadows": true,
+          "color": "#fff4e0"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "amb00001",
+      "name": "Ambient",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "light",
+          "kind": "hemispheric",
+          "intensity": 0.5,
+          "color": "#b0c0ff"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "sky00001",
+      "name": "Sky",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "skybox",
+          "path": "assets/skybox/day"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "gnd00001",
+      "name": "Ground",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "ground",
+          "size": [
+            40,
+            0.2,
+            40
+          ]
+        },
+        {
+          "type": "material",
+          "texture": "assets/textures/grass.png",
+          "uvScale": [
+            8,
+            8
+          ],
+          "roughness": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            40,
+            0.2,
+            40
+          ],
+          "offset": [
+            0,
+            -0.1,
+            0
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "pg000001",
+      "name": "Player",
+      "enabled": true,
+      "tags": [
+        "player"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          1,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "sphere",
+          "size": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "type": "material",
+          "color": "#88c0d0",
+          "metallic": 0.4,
+          "roughness": 0.3
+        },
+        {
+          "type": "rigidbody",
+          "mode": "dynamic",
+          "mass": 1,
+          "bounce": 0,
+          "friction": 0.4
+        },
+        {
+          "type": "collider",
+          "shape": "sphere",
+          "radius": 0.5
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/player.js"
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "pg000002",
+      "name": "Platform1",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          6,
+          0.25,
+          4
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "box",
+          "size": [
+            3,
+            0.5,
+            3
+          ]
+        },
+        {
+          "type": "material",
+          "texture": "assets/textures/checker.png"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static",
+          "mass": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            3,
+            0.5,
+            3
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "pg000003",
+      "name": "Platform2",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          9,
+          0.75,
+          6
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "box",
+          "size": [
+            3,
+            0.5,
+            3
+          ]
+        },
+        {
+          "type": "material",
+          "texture": "assets/textures/checker.png"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static",
+          "mass": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            3,
+            0.5,
+            3
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "pg000004",
+      "name": "Platform3",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          12,
+          1.25,
+          9
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "box",
+          "size": [
+            3,
+            0.5,
+            3
+          ]
+        },
+        {
+          "type": "material",
+          "texture": "assets/textures/checker.png"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static",
+          "mass": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            3,
+            0.5,
+            3
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "pg000005",
+      "name": "Platform4",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          9,
+          1.75,
+          12
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "box",
+          "size": [
+            3,
+            0.5,
+            3
+          ]
+        },
+        {
+          "type": "material",
+          "texture": "assets/textures/checker.png"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static",
+          "mass": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            3,
+            0.5,
+            3
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "pg000006",
+      "name": "Platform5",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          4,
+          2.25,
+          13
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "box",
+          "size": [
+            3,
+            0.5,
+            3
+          ]
+        },
+        {
+          "type": "material",
+          "texture": "assets/textures/checker.png"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static",
+          "mass": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            3,
+            0.5,
+            3
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "pg000007",
+      "name": "Crate1",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          -4,
+          0.5,
+          3
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "box",
+          "size": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "type": "material",
+          "texture": "assets/textures/brick.png"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "dynamic",
+          "mass": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "pg000008",
+      "name": "Crate2",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          -4,
+          0.5,
+          4.2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "box",
+          "size": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "type": "material",
+          "texture": "assets/textures/brick.png"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "dynamic",
+          "mass": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "pg000009",
+      "name": "Crate3",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          -4,
+          1.5,
+          3.6
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "box",
+          "size": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "type": "material",
+          "texture": "assets/textures/brick.png"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "dynamic",
+          "mass": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "pg000010",
+      "name": "Crate4",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          -6.5,
+          0.5,
+          6
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "box",
+          "size": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "type": "material",
+          "texture": "assets/textures/brick.png"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "dynamic",
+          "mass": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "pg000011",
+      "name": "Wall1",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          -8,
+          0.5,
+          -8
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "box",
+          "size": [
+            2,
+            1,
+            1
+          ]
+        },
+        {
+          "type": "material",
+          "texture": "assets/textures/brick.png"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static",
+          "mass": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            2,
+            1,
+            1
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "pg000012",
+      "name": "Wall2",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          -6,
+          0.5,
+          -8
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "box",
+          "size": [
+            2,
+            1,
+            1
+          ]
+        },
+        {
+          "type": "material",
+          "texture": "assets/textures/brick.png"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static",
+          "mass": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            2,
+            1,
+            1
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "pg000013",
+      "name": "Wall3",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          -4,
+          0.5,
+          -8
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "box",
+          "size": [
+            2,
+            1,
+            1
+          ]
+        },
+        {
+          "type": "material",
+          "texture": "assets/textures/brick.png"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static",
+          "mass": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            2,
+            1,
+            1
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "pg000014",
+      "name": "Wall4",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          -2,
+          0.5,
+          -8
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "box",
+          "size": [
+            2,
+            1,
+            1
+          ]
+        },
+        {
+          "type": "material",
+          "texture": "assets/textures/brick.png"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static",
+          "mass": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            2,
+            1,
+            1
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "pg000015",
+      "name": "Wall5",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0.5,
+          -8
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "box",
+          "size": [
+            2,
+            1,
+            1
+          ]
+        },
+        {
+          "type": "material",
+          "texture": "assets/textures/brick.png"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static",
+          "mass": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            2,
+            1,
+            1
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "pg000016",
+      "name": "Coin1",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          3,
+          1,
+          3
+        ],
+        "rot": [
+          90,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "cylinder",
+          "size": [
+            0.6,
+            0.12,
+            0.6
+          ]
+        },
+        {
+          "type": "material",
+          "color": "#ebcb8b",
+          "metallic": 0,
+          "roughness": 0.35,
+          "emissive": "#6b5a20"
+        },
+        {
+          "type": "trigger",
+          "shape": "box",
+          "size": [
+            0.8,
+            0.8,
+            0.8
+          ]
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/spin.js"
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "pg000017",
+      "name": "Coin2",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          6,
+          1.6,
+          4
+        ],
+        "rot": [
+          90,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "cylinder",
+          "size": [
+            0.6,
+            0.12,
+            0.6
+          ]
+        },
+        {
+          "type": "material",
+          "color": "#ebcb8b",
+          "metallic": 0,
+          "roughness": 0.35,
+          "emissive": "#6b5a20"
+        },
+        {
+          "type": "trigger",
+          "shape": "box",
+          "size": [
+            0.8,
+            0.8,
+            0.8
+          ]
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/spin.js"
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "pg000018",
+      "name": "Coin3",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          9,
+          2.1,
+          6
+        ],
+        "rot": [
+          90,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "cylinder",
+          "size": [
+            0.6,
+            0.12,
+            0.6
+          ]
+        },
+        {
+          "type": "material",
+          "color": "#ebcb8b",
+          "metallic": 0,
+          "roughness": 0.35,
+          "emissive": "#6b5a20"
+        },
+        {
+          "type": "trigger",
+          "shape": "box",
+          "size": [
+            0.8,
+            0.8,
+            0.8
+          ]
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/spin.js"
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "pg000019",
+      "name": "Coin4",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          12,
+          2.6,
+          9
+        ],
+        "rot": [
+          90,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "cylinder",
+          "size": [
+            0.6,
+            0.12,
+            0.6
+          ]
+        },
+        {
+          "type": "material",
+          "color": "#ebcb8b",
+          "metallic": 0,
+          "roughness": 0.35,
+          "emissive": "#6b5a20"
+        },
+        {
+          "type": "trigger",
+          "shape": "box",
+          "size": [
+            0.8,
+            0.8,
+            0.8
+          ]
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/spin.js"
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "pg000020",
+      "name": "Coin5",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          9,
+          3.1,
+          12
+        ],
+        "rot": [
+          90,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "cylinder",
+          "size": [
+            0.6,
+            0.12,
+            0.6
+          ]
+        },
+        {
+          "type": "material",
+          "color": "#ebcb8b",
+          "metallic": 0,
+          "roughness": 0.35,
+          "emissive": "#6b5a20"
+        },
+        {
+          "type": "trigger",
+          "shape": "box",
+          "size": [
+            0.8,
+            0.8,
+            0.8
+          ]
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/spin.js"
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "pg000021",
+      "name": "Coin6",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          4,
+          3.6,
+          13
+        ],
+        "rot": [
+          90,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "cylinder",
+          "size": [
+            0.6,
+            0.12,
+            0.6
+          ]
+        },
+        {
+          "type": "material",
+          "color": "#ebcb8b",
+          "metallic": 0,
+          "roughness": 0.35,
+          "emissive": "#6b5a20"
+        },
+        {
+          "type": "trigger",
+          "shape": "box",
+          "size": [
+            0.8,
+            0.8,
+            0.8
+          ]
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/spin.js"
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "pg000022",
+      "name": "Coin7",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          -4,
+          3,
+          3.6
+        ],
+        "rot": [
+          90,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "cylinder",
+          "size": [
+            0.6,
+            0.12,
+            0.6
+          ]
+        },
+        {
+          "type": "material",
+          "color": "#ebcb8b",
+          "metallic": 0,
+          "roughness": 0.35,
+          "emissive": "#6b5a20"
+        },
+        {
+          "type": "trigger",
+          "shape": "box",
+          "size": [
+            0.8,
+            0.8,
+            0.8
+          ]
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/spin.js"
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "pg000023",
+      "name": "Coin8",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          -8,
+          1,
+          -5
+        ],
+        "rot": [
+          90,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "cylinder",
+          "size": [
+            0.6,
+            0.12,
+            0.6
+          ]
+        },
+        {
+          "type": "material",
+          "color": "#ebcb8b",
+          "metallic": 0,
+          "roughness": 0.35,
+          "emissive": "#6b5a20"
+        },
+        {
+          "type": "trigger",
+          "shape": "box",
+          "size": [
+            0.8,
+            0.8,
+            0.8
+          ]
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/spin.js"
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "pg000024",
+      "name": "Score",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "uiLabel",
+          "text": "Coins: 0   (WASD move · Space jump · Q/E camera)",
+          "x": 12,
+          "y": 10,
+          "size": 18
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    }
+  ]
+}

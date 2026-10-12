@@ -138,6 +138,8 @@ pub struct EditorState {
     pub actions: Vec<Action>,
     pub toast: Option<(String, Instant)>,
     pub play: Option<Play>,
+    /// show the console under the Game view (off by default)
+    pub game_console: bool,
     pub lock: Option<nord_core::io::ProjectLock>,
     pub last_autosave: Instant,
     pub recover: Option<String>,
@@ -192,6 +194,7 @@ impl EditorState {
             actions: vec![],
             toast: None,
             play: None,
+            game_console: false,
             lock: None,
             last_autosave: Instant::now(),
             recover: None,

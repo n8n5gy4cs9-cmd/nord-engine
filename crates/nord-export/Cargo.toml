@@ -1,0 +1,14 @@
+[package]
+name = "nord-export"
+description = "Nord project export: `nord build` pipeline (web-2d, web-3d, html, single-file, zip)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+nord-core = { path = "../nord-core" }
+anyhow.workspace = true
+serde_json.workspace = true
+base64 = "0.22"
+zip = { version = "2", default-features = false, features = ["deflate"] }
+image = { version = "0.25", default-features = false, features = ["png"] }

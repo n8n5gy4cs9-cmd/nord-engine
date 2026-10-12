@@ -133,7 +133,7 @@ class Backend {
   enableLights() {
     if (this.lightsOn) return;
     this.lightsOn = true;
-    this.scene.lights.enable().setAmbientColor(parseInt((this.game.scene?.settings?.ambient ?? '#555566').slice(1, 7), 16));
+    this.scene.lights.enable().setAmbientColor(parseInt((this.game.scene?.settings?.ambient ?? '#b8b8c8').slice(1, 7), 16));
     for (const v of this.visuals) if (v.scene) v.setLighting?.(true);
   }
 

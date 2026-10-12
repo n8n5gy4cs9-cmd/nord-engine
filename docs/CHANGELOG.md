@@ -2,6 +2,9 @@
 Newest first. One line per notable change. Credit: Crowelian 2026 + Sonnet.
 
 ## Unreleased
+- M4-01..04,06: `nord build` / `nord export` (new `nord-export` crate): validate → stage project + runtime + vendored libs → generated relative `index.html` + `nord.json`; targets html / web-2d / web-3d; `--minify` and `--single-file` (file://-safe, esbuild-wasm vendored in `vendor/esbuild-wasm`, run via `tools/export-bundle.mjs`), `--optimize` (lossless PNG, WAV→MP3 via ffmpeg), `--zip`, size report, offline check. e2e: `export-*` suites (strict static server + file://).
+- Assets panel: grid layout fixed (cells were staggered like stairs) + grid/list view toggle. Game tab: optional console under the game (terminal button, off by default).
+- New example `examples/playground-3d` (WASD/Space/Q-E orbit camera, coins, crates, platforms); 2D lights: default ambient raised (#b8b8c8) so sprites are no longer dark when a light exists — set `settings.ambient` per scene.
 - M3-24: multi-cursor code editing (`code/multi.rs`): Alt+click, Cmd+D next occurrence, Cmd+Alt+Up/Down, typing/delete/enter/tab/arrows on all cursors; kittest + unit tests.
 - M0: planning docs, PRD.json, task.md, task tool, AI handoff guide.
 - Editor switched to native egui (ADR-013), Tauri dropped; main is the only branch.

@@ -36,7 +36,7 @@ export async function boot(project, opts = {}) {
   if (eng === 'havok' || eng === undefined) {
     try {
       if (globalThis.HavokPhysics) {
-        const hk = await globalThis.HavokPhysics({ locateFile: (f) => `${libBase}/havok/${f}` });
+        const hk = await globalThis.HavokPhysics({ locateFile: (f) => opts.locateLib?.(f) ?? `${libBase}/havok/${f}` });
         game.physics = backend.physics = new HavokAdapter(backend, hk, project.physics?.gravity ?? [0, -9.81, 0]);
       } else if (eng === 'havok') game.warn('[nord] HavokPhysics global not found; physics disabled');
     } catch (e) { game.warn(`[nord] Havok init failed: ${e.message}`); }

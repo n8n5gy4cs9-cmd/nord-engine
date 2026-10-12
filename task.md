@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 66/125 tasks (53%)** · updated 2026-10-12
+**Overall: 71/125 tasks (57%)** · updated 2026-10-12
 
 | Milestone | Progress |
 |---|---|
@@ -11,7 +11,7 @@
 | M1 Foundation | 11/11 (100%) |
 | M2 JS runtimes | 19/19 (100%) |
 | M3 Editor | 23/25 (92%) |
-| M4 Export | 0/10 (0%) |
+| M4 Export | 5/10 (50%) |
 | M5 Rust/WASM | 0/9 (0%) |
 | M6 Library | 0/18 (0%) |
 | M7 Docs | 0/12 (0%) |
@@ -20,9 +20,9 @@
 ## Next up
 - **M3-07** SPIKE: wry child webview embedded in egui panel on macOS (resize, HiDPI, focus, IPC both ways); fallback separate window
 - **M3-25** OWNER: verify webview embedding on macOS (checklist in docs/KNOWN_ISSUES.md RISK-001a), then tick M3-07
-- **M4-01** `nord build` pipeline: validate, resolve libs, copy assets, nord.json, index.html templates
-- **M4-02** web-2d export (Phaser) verified offline in headless Chromium
-- **M4-03** web-3d export (Babylon+Havok) verified offline
+- **M4-05** Asset optimisation (png quantise, atlas packing, audio transcode via optional ffmpeg)
+- **M4-07** Export dialog in editor + open-folder + zip target
+- **M4-08** nord-player crate (Tauri shell) + `bundle-mac` command (resource swap, Info.plist, icns, ad-hoc codesign)
 
 ## M0 — Planning, identity, assets, vendoring
 _Plans, brand, placeholder assets, vendored libs, workspace skeleton_
@@ -111,12 +111,12 @@ _Native egui editor + wry viewport + code editor_
 ## M4 — Export
 _web static, single-file, mac wrapper_
 
-- [ ] **M4-01** `nord build` pipeline: validate, resolve libs, copy assets, nord.json, index.html templates
-- [ ] **M4-02** web-2d export (Phaser) verified offline in headless Chromium
-- [ ] **M4-03** web-3d export (Babylon+Havok) verified offline
-- [ ] **M4-04** Single-file / file:// safe export mode
+- [x] **M4-01** `nord build` pipeline: validate, resolve libs, copy assets, nord.json, index.html templates
+- [x] **M4-02** web-2d export (Phaser) verified offline in headless Chromium
+- [x] **M4-03** web-3d export (Babylon+Havok) verified offline
+- [x] **M4-04** Single-file / file:// safe export mode
 - [ ] **M4-05** Asset optimisation (png quantise, atlas packing, audio transcode via optional ffmpeg)
-- [ ] **M4-06** Minify option (esbuild) + size report
+- [x] **M4-06** Minify option (esbuild) + size report
 - [ ] **M4-07** Export dialog in editor + open-folder + zip target
 - [ ] **M4-08** nord-player crate (Tauri shell) + `bundle-mac` command (resource swap, Info.plist, icns, ad-hoc codesign)
 - [ ] **M4-09** CI builds NordPlayer.app + NordEditor.app on macos-14, uploads artifacts

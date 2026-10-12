@@ -18,6 +18,8 @@ pub struct AssetsUi {
     pub dir: String, // project-relative folder ("" = project root)
     pub search: String,
     pub size: f32,
+    /// list view (rows) instead of the thumbnail grid
+    pub list: bool,
     pub kind_filter: Option<AssetType>,
     pub rename: Option<(String, String)>,
     pub confirm_delete: Option<String>,
@@ -56,6 +58,7 @@ impl Default for AssetsUi {
             dir: "assets".into(),
             search: String::new(),
             size: 84.0,
+            list: false,
             kind_filter: None,
             rename: None,
             confirm_delete: None,
@@ -281,7 +284,16 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                     ui.selectable_value(&mut st.assets_ui.kind_filter, Some(k), format!("{k:?}"));
                 }
             });
-        ui.add(egui::Slider::new(&mut st.assets_ui.size, 48.0..=160.0).show_value(false));
+        let list = st.assets_ui.list;
+        if icons::button(ui, "layout-grid", "Grid view", !list).clicked() {
+            st.assets_ui.list = false;
+        }
+        if icons::button(ui, "list", "List view", list).clicked() {
+            st.assets_ui.list = true;
+        }
+        if !list {
+            ui.add(egui::Slider::new(&mut st.assets_ui.size, 48.0..=160.0).show_value(false));
+        }
         ui.weak(&st.assets_ui.dir);
     });
     ui.separator();
@@ -321,13 +333,19 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         .filter(|e| filter.is_none_or(|k| e.is_dir || e.kind == k))
         .collect();
     let cell = st.assets_ui.size;
+    let as_list = st.assets_ui.list;
     let mut open: Option<Entry> = None;
     let mut ctx_op: Option<(Entry, u8)> = None;
     egui::ScrollArea::vertical()
         .auto_shrink([false; 2])
         .show(ui, |ui| {
-            ui.horizontal_wrapped(|ui| {
-                ui.spacing_mut().item_spacing = Vec2::splat(6.0);
+            let layout = if as_list {
+                egui::Layout::top_down(egui::Align::Min)
+            } else {
+                egui::Layout::left_to_right(egui::Align::Min).with_main_wrap(true)
+            };
+            ui.with_layout(layout, |ui| {
+                ui.spacing_mut().item_spacing = Vec2::splat(if as_list { 1.0 } else { 6.0 });
                 for e in &entries {
                     if st
                         .assets_ui
@@ -366,8 +384,12 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                         }
                         continue;
                     }
-                    let (rect, resp) = ui
-                        .allocate_exact_size(Vec2::new(cell, cell + 18.0), Sense::click_and_drag());
+                    let size = if as_list {
+                        Vec2::new(ui.available_width().max(200.0), 24.0)
+                    } else {
+                        Vec2::new(cell, cell + 18.0)
+                    };
+                    let (rect, resp) = ui.allocate_exact_size(size, Sense::click_and_drag());
                     if !ui.is_rect_visible(rect) {
                         continue; // lazy: no thumbnail work for off-screen cells
                     }
@@ -375,18 +397,47 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                     if resp.hovered() {
                         p.rect_filled(rect, 4.0, ui.visuals().widgets.hovered.bg_fill);
                     }
-                    let img_rect = egui::Rect::from_min_size(
-                        rect.min + Vec2::splat(4.0),
-                        Vec2::splat(cell - 8.0),
-                    );
-                    draw_thumb(st, ui, &root, e, img_rect);
-                    p.text(
-                        egui::pos2(rect.center().x, rect.bottom() - 9.0),
-                        egui::Align2::CENTER_CENTER,
-                        truncate(&e.name, (cell / 6.5) as usize),
-                        egui::TextStyle::Small.resolve(ui.style()),
-                        ui.visuals().text_color(),
-                    );
+                    if as_list {
+                        let img_rect = egui::Rect::from_min_size(
+                            rect.min + Vec2::new(4.0, 2.0),
+                            Vec2::splat(20.0),
+                        );
+                        draw_thumb(st, ui, &root, e, img_rect);
+                        let small = egui::TextStyle::Body.resolve(ui.style());
+                        p.text(
+                            egui::pos2(rect.left() + 32.0, rect.center().y),
+                            egui::Align2::LEFT_CENTER,
+                            &e.name,
+                            small.clone(),
+                            ui.visuals().text_color(),
+                        );
+                        let info = if e.is_dir {
+                            "folder".to_string()
+                        } else {
+                            let sz = std::fs::metadata(root.join(&e.rel)).map_or(0, |m| m.len());
+                            format!("{:?} · {:.1} KB", e.kind, sz as f64 / 1024.0)
+                        };
+                        p.text(
+                            egui::pos2(rect.right() - 8.0, rect.center().y),
+                            egui::Align2::RIGHT_CENTER,
+                            info,
+                            small,
+                            ui.visuals().weak_text_color(),
+                        );
+                    } else {
+                        let img_rect = egui::Rect::from_min_size(
+                            rect.min + Vec2::splat(4.0),
+                            Vec2::splat(cell - 8.0),
+                        );
+                        draw_thumb(st, ui, &root, e, img_rect);
+                        p.text(
+                            egui::pos2(rect.center().x, rect.bottom() - 9.0),
+                            egui::Align2::CENTER_CENTER,
+                            truncate(&e.name, (cell / 6.5) as usize),
+                            egui::TextStyle::Small.resolve(ui.style()),
+                            ui.visuals().text_color(),
+                        );
+                    }
                     let resp = resp.on_hover_text(&e.rel);
                     if resp.double_clicked() {
                         open = Some(e.clone());
