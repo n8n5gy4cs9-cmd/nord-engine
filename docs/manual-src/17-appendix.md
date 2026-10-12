@@ -26,7 +26,7 @@ Credit line: **Crowelian 2026 + Sonnet**.
 ## FAQ
 **Do I have to learn Phaser or Babylon?** No. Nord's API covers them; `entity.native` is only an escape hatch.
 **Can I use TypeScript?** Not yet (planned via esbuild-wasm).
-**Can I make a Windows/Linux app?** The web export runs anywhere; the app wrapper is macOS-only for now. Desktop apps are planned (M9, see [Desktop apps](desktop-apps.html)).
+**Can I make a Windows/Linux app?** The web export runs anywhere; `nord bundle-mac` (macOS) and `nord bundle-portable --os windows|linux` wrap it with the native player; real desktop apps (files, dialogs, tray…) are covered in [Desktop apps](desktop-apps.html). Windows/Linux builds are CI-built; owner verification pending.
 **Where do I report bugs / what is known broken?** [Known issues](known-issues.html).
 **Can I use my own assets?** Yes — just keep them under `assets/` and make sure you may redistribute them.
 

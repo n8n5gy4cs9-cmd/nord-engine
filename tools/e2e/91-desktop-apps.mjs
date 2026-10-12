@@ -89,3 +89,34 @@ suites['desktop-app-web-server'] = async () => {
     assert.deepEqual(errors, []);
   } finally { proc.kill(); }
 };
+
+suites['desktop-apps-notes-markdown'] = async () => {
+  const { errors } = await withPage(`${ROOT}/examples/app-desktop-notes`, async (page) => {
+    await page.waitForSelector('.dn textarea');
+    await page.fill('.dn textarea', '# Shopping\n\nmilk, eggs'); await page.waitForTimeout(900);
+    assert.match(await page.evaluate(() => window.nord.desktop.fs.readText(`notes/${[...document.querySelectorAll('.dn .it')][0].dataset.id}.md`)), /milk, eggs/);
+    await page.click('.dn button:has-text("New note")'); await page.waitForTimeout(200);
+    assert.equal(await page.locator('.dn .it').count(), 2);
+    await page.fill('.dn aside input', 'shopping'); assert.equal(await page.locator('.dn .it').count(), 1);
+    await page.evaluate(() => { window.nord.desktop.dialog.confirm = async () => true; }); // headless confirm
+    await page.selectOption('.dn aside select', 'de'); await page.waitForSelector('.dn button:has-text("Neue Notiz")');
+  }, { viewport: { width: 1000, height: 650 } });
+  assert.deepEqual(errors.filter((e) => !/desktop\/events/.test(e)), []);
+  const r2 = await withPage(`${ROOT}/examples/app-markdown-editor`, async (page) => {
+    await page.waitForSelector('.me .cm-editor'); await page.waitForSelector('.me .pv h1');
+    assert.match(await page.textContent('.me .pv h1'), /Hello/);
+    await page.click('.me .cm-content'); await page.keyboard.press('Control+End'); await page.keyboard.type('\n\n<script>window.pwned=1</script><img src=x onerror="window.pwned=2"> **bold**');
+    await page.waitForTimeout(200);
+    assert.equal(await page.evaluate(() => window.pwned), undefined, 'preview is sanitised');
+    assert.ok(await page.evaluate(() => !!document.querySelector('.me .pv strong')));
+    assert.match(await page.textContent('.me .st'), /words/);
+  }, { viewport: { width: 1100, height: 700 } });
+  assert.deepEqual(r2.errors.filter((e) => !/desktop\/events|HTTP 404/.test(e)), []); // 404s = the test's own <img src=x> probes
+};
+
+suites['desktop-apps-load'] = async () => {
+  for (const id of ['app-file-organizer', 'app-clipboard-manager']) {
+    const { errors } = await withPage(`${ROOT}/examples/${id}`, async (page) => { await page.waitForTimeout(1500); assert.ok(await page.evaluate(() => document.querySelector('#app').children.length > 0), id); }, { viewport: { width: 1000, height: 650 } });
+    assert.deepEqual(errors.filter((e) => !/desktop\/events/.test(e)), [], id);
+  }
+};

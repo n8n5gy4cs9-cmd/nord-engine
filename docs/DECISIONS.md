@@ -116,4 +116,4 @@ Audio: macroquad's audio supports only .wav/.ogg (no mp3). Known harmless JS err
 least-privilege manifest (`desktop.permissions` in `nord.project.json`, baked into `nord.json`), enforced in `nord-desktop` so both tiers share one check;
 sensitive grants prompt on first use and are audit-logged. Tauri stays rejected (ADR-013). **Consequences.** + one implementation to test; + JS/Rust parity;
 − caps are an application-level guard, not an OS sandbox (macOS App Sandbox/bookmarks optional, M9-03); − macOS/Windows backends unverifiable in the
-Linux sandbox (CI matrix + owner). Details and checklist: `docs/DESKTOP_APPS.md`. Status: **proposed — pending owner review.**
+Linux sandbox (CI matrix + owner). Details and checklist: `docs/DESKTOP_APPS.md`. Status: **accepted & implemented** (owner asked to proceed; defaults for the open questions: plain DOM apps, JSON KV store + optional SQLite, portable zip/tar.gz first, caps are not an OS sandbox).

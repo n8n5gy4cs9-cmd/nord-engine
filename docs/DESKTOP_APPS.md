@@ -1,6 +1,15 @@
 # Desktop apps — design (M9-01)
 
-Status: **design only, awaiting owner review.** Nothing here is implemented; M9-02…16 start after sign-off. See ADR-020 in `DECISIONS.md`.
+Status: **implemented (M9)** with the defaults chosen below (owner can still veto: plain DOM UI, JSON store + optional SQLite, portable zip/tar.gz first). See ADR-020 in `DECISIONS.md`.
+
+## What exists now
+* Crate `crates/nord-desktop`: `caps` (manifest, audit, grants), `paths`, `fs` (scoped, atomic, polling watcher), `store` (+ `sqlite` feature, migrations), `services` (dialogs/notifications/clipboard/shell/secrets traits; `native` = rfd/notify-rust/arboard/opener, `keychain` = keyring, Headless for tests), `process` (+ `http`), `server` (static HTTP server), `lifecycle` (single instance, argv/deep links, autostart), `window` (menu/tray/window specs → `HostCommand`s), `bridge` (JSON dispatcher = the whole JS API).
+* JS client `runtime/desktop/nord-desktop.js` (+ `.d.ts`): `ipc` / `http` / `web` transports. `nord serve` mounts `/__desktop/call` (needs the `x-nord` header; same permissions).
+* Player shell `crates/nord-player` (`--features shell`): IPC, multi-window, native menu bar, tray, global shortcuts, drag & drop, single instance, window-state persistence, quit guard.
+* Rust: `nord_app_wasm::desktop` (+ `ux`). Packaging: `nord bundle-mac` (+ file types/URL schemes), `nord bundle-portable --os windows|linux`, `docs/PACKAGING.md`.
+* Editor: **Project ▸ Desktop app permissions…**; `nord-core` validates the manifest.
+* Examples/templates: code editor, web server, notes, file organiser, clipboard manager, markdown editor (JS) and Rust notes.
+* Verified on Linux (webkit2gtk under Xvfb, headless Chromium); macOS/Windows paths compile-checked or CI-only — see KNOWN_ISSUES.
 
 ## Goal
 Build *real* desktop apps (notes, file organiser, clipboard manager, markdown editor…) from a Nord project, in either tier:

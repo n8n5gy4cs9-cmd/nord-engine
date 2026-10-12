@@ -23,6 +23,7 @@ impl std::fmt::Display for Error {
 }
 impl std::error::Error for Error {}
 pub type Result<T> = std::result::Result<T, Error>;
+#[cfg(target_arch = "wasm32")]
 fn unsupported<T>(what: &str) -> Result<T> {
     Err(Error {
         code: "unsupported".into(),

@@ -70,6 +70,12 @@ pub fn start(st: &mut EditorState) {
     st.export_ui.status = "Building…".into();
 }
 
+impl ExportUi {
+    pub fn is_running(&self) -> bool {
+        self.running.is_some()
+    }
+}
+
 pub fn window(st: &mut EditorState, ctx: &egui::Context) {
     if let Some(rx) = &st.export_ui.running {
         if let Ok(r) = rx.try_recv() {

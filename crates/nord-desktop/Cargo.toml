@@ -8,7 +8,7 @@ license.workspace = true
 [features]
 default = []
 # real OS services (dialogs, clipboard, notifications, open). Off by default so `cargo build --workspace` needs no system libs.
-native = ["dep:rfd", "dep:arboard", "dep:notify-rust", "dep:opener", "dep:wayland-sys"]
+native = ["dep:rfd", "dep:arboard", "dep:notify-rust", "dep:opener"]
 sqlite = ["dep:rusqlite"]   # structured store (bundled SQLite)
 keychain = ["dep:keyring"]  # secrets in the OS keychain
 http = ["dep:ureq"]         # HTTP client (net.hosts allow-list)
@@ -18,8 +18,6 @@ serde.workspace = true
 serde_json.workspace = true
 thiserror.workspace = true
 mime_guess = "2"
-# wayland-sys: load libwayland at runtime (dlopen) so building needs no wayland dev packages (same as eframe/winit do)
-wayland-sys = { version = "0.31", features = ["dlopen"], optional = true }
 rfd = { version = "0.15", optional = true }
 arboard = { version = "3", default-features = false, optional = true } # image-data off; Wayland clipboard: enable "wayland-data-control" on Linux builds
 notify-rust = { version = "4", optional = true }
@@ -30,3 +28,7 @@ ureq = { version = "2", optional = true }
 
 [dev-dependencies]
 tempfile = "3"
+
+[target.'cfg(target_os = "linux")'.dependencies]
+# load libwayland at runtime (dlopen) so building `native` needs no wayland dev packages (rfd's portal backend pulls wayland-sys; eframe/winit do the same)
+wayland-sys = { version = "0.31", features = ["dlopen"] }

@@ -519,7 +519,7 @@ mod shell {
                              flow: &mut ControlFlow| {
                 let Some(b) = &bridge else { return };
                 for e in b.take_events() {
-                    for (_, (_, w)) in wins.iter() {
+                    for (_, w) in wins.values() {
                         let _ = w.view.evaluate_script(&format!(
                             "window.__nordDesktop&&window.__nordDesktop.emit({},{})",
                             e["name"], e["payload"]

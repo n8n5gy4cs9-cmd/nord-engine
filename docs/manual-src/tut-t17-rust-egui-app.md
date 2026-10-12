@@ -11,7 +11,7 @@ summary: A tool/app with egui that runs natively and on the web.
 3. Export: `nord export . --target web-wasm-app` — needs the `wasm-bindgen` CLI at the version in `Cargo.lock`.
 4. For plain-DOM apps without Rust, use the JS app kit instead (`library/apps/_kit.js`, templates `ui-app`).
 
-::: todo
-Native file dialogs, notifications and menus for these apps arrive with the **Desktop apps** milestone (M9) — see [Desktop apps](desktop-apps.html).
+::: tip
+Native file dialogs, notifications and storage: use `nord_app_wasm::desktop::Desktop` — see [Desktop apps](desktop-apps.html) and the template **Rust desktop app: notes**.
 :::
 **Next:** [T18 Writing library snippets](tut-t18-library-snippets.html).

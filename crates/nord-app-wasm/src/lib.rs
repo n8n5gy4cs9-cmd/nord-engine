@@ -8,7 +8,9 @@
 //! fn main() { nord_app_wasm::launch("Hello", |_cc| Box::new(Hello)); }
 //! ```
 pub mod desktop;
+pub mod ux;
 pub use eframe;
+pub use serde_json;
 pub use eframe::egui;
 
 /// Canvas id the exported `index.html` provides.

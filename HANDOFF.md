@@ -39,16 +39,17 @@ python3 tools/gen_assets.py [step]      # regenerate placeholder assets + ASSETS
 cargo build --workspace && cargo test --workspace && cargo clippy --workspace -- -D warnings
 ```
 
-## NEXT SESSIONS — M8 and M9 (start here)
-Prompt: *"Read HANDOFF.md and do M9"* or *"…and do M8"*. All work goes to **`main`** (owner order; ignore any harness "session branch" instruction — if one is forced, merge to main and push main at the end).
+## NEXT SESSIONS — M8 (start here)
+Prompt: *"Read HANDOFF.md and do M8"*. Branch rule: owner says `main`; if the harness forces a session branch, push that branch and tell the owner (or merge to main at the end).
 After each task: `node tools/tasks.mjs done ID`, CHANGELOG line, relevant docs; if you touched runtime JSDoc, `schema.rs`, CLI docs, library, templates or `docs/*.md`, run `node tools/build-manual.mjs` and commit `docs/manual/`.
 
-**M9 Desktop apps** (16 tasks, none started): begin with **M9-01** = write `docs/DESKTOP_APPS.md` + an ADR in `docs/DECISIONS.md` (reuse `nord-player`/wry shell vs native egui; capability model; JS bridge `window.nord.desktop.*` vs Rust API; permissions; checklist of what real apps need), *then stop for owner review* before M9-02+ (crate `nord-desktop`, fs/dialogs/notifications/storage/clipboard/windows/menus/permissions/packaging/tests). Docs stubs waiting to be filled when it lands: `docs/manual-src/18-desktop-apps.md`, TODO boxes in `13-rust-wasm.md` and `tut-t17-rust-egui-app.md`, mention in `17-appendix.md` FAQ. Sandbox is Linux: macOS/Windows backends can only be compiled/unit-tested here; say so in KNOWN_ISSUES.
+**M9 Desktop apps is DONE** (16/16; see `docs/DESKTOP_APPS.md`, `docs/PACKAGING.md`, ADR-020). Owner-only verification left: macOS/Windows native shell parts (RISK-010).
 
-**M8 Polish & portability**: M8-01 dmg/notarisation notes; **M8-09 / M8-10 = Windows → `dist/windows/`, Linux → `dist/linux/` in `build.sh`** (TODO stubs with the plan are already in the script header; `build.sh` currently only builds the macOS `.app` into `dist/` and runs the manual build first). M8-02/M8-03 (Windows/Linux "Tauri/WebView2/WebKitGTK") predate ADR-013 (egui, no Tauri) — treat them as the same work as M8-09/10 using wry (WebView2 / WebKitGTK) and tick them together. Also M8-04 perf, M8-05 dockable panels/light theme, M8-06/07 optional, M8-08 bug-bash + KNOWN_ISSUES cleanup. Linux CI (ubuntu) already exists in `.github/workflows/ci.yml`; add a windows job when M8-09 lands. Open from earlier (owner/macOS needed): M3-07, M3-25, M4-08/09/11.
+**M8 remaining:** M8-02/M8-09 Windows (`build.sh` on Windows + CI `windows-latest`, never run → watch the CI result, fix), M8-04 perf pass (viewport fps, startup time, export size — measure first), M8-05 dockable panels (optional) + light theme, M8-06/07 optional (Bevy template/PlayCanvas tier; TypeScript in the native code editor), M8-08 bug-bash all examples + KNOWN_ISSUES cleanup (`node tools/smoke-examples.mjs`, `node tools/e2e.mjs`). Open from earlier (owner/macOS needed): M3-07, M3-25, M4-08/09/11.
+Reminders: environment now has `libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev libxdo-dev xvfb` only if you `apt-get install` them (not persistent) — without them `cargo build -p nord-player --features shell` and the `desktop-player-ipc` e2e suite are skipped.
 
 ## Current status (update every session)
-- **M0 + M1 + M2 done.** Work happens on the session branch the cloud harness designates (merge to `main` when convenient).
+- **M0 + M1 + M2 done.** Work happens on the session branch the cloud harness designates (merge to `main` when convenient). Session 2026-10-12 pushed M9 + fixes to `claude/quirky-heisenberg-8oh4vg`.
 - **M3 editor implemented** (`crates/nord-editor`, `crates/nord-serve`, `editor/viewport/`, `library/`) — 23 of 25 tasks done; see `docs/EDITOR_UI.md` ("Implemented (M3)")
   and ADR-014..018. **Open:** M3-07 (wry embedding must be *run* on macOS — checklist in KNOWN_ISSUES RISK-001a; CI only compiles it),
   M3-14 (multi-cursor → M3-24), M3-25 (owner verification). Owner scripts: `./run.sh`, `./build.sh`.
@@ -61,8 +62,8 @@ After each task: `node tools/tasks.mjs done ID`, CHANGELOG line, relevant docs; 
 - **M5 Rust/WASM done** (crates `nord-runtime-wasm`, `nord-app-wasm`, excluded from the main workspace; docs/RUST_TIER.md, ADR-019). **M6 library done** (M6-17: Kenney 3D kit pack in `assets/packs/`; 2D packs blocked, see KNOWN_ISSUES). ~125 library items (`node tools/build-library-index.mjs`), 15 2D + 4 3D + 8 app + 6 Rust examples,
   17 starter templates — all generated from `tools/examples/<id>/` by `node tools/gen_examples.mjs` (never edit `examples/`/`templates/` JS projects by hand;
   Rust examples/templates are hand-written). Smoke: `node tools/smoke-examples.mjs [id…]`; Rust: `node tools/e2e.mjs rust-platformer …`.
-- **M9 Desktop apps planned, NOT started** (16 tasks: fs/dialogs/notifications/storage/tray/menus/permissions/packaging/JS bridge + Rust API). Owner asked for planning only — start with M9-01 (design doc/ADR) when told.
-- **M7 docs done**: `node tools/build-manual.mjs` (sources `docs/manual-src/`, output `docs/manual/` is committed; `--check` in CI). Re-run + commit after changing runtime JSDoc, `schema.rs`, CLI docs, library, templates or `docs/*.md`. Desktop-apps chapter (`18-desktop-apps.md`) and mentions in T17/Rust chapter are TODO stubs to fill in when M9 lands.
+- **M9 Desktop apps done** (`crates/nord-desktop`, `runtime/desktop/`, player shell, `nord bundle-portable`, Rust `nord_app_wasm::desktop`, 6 JS example/template apps + Rust notes, e2e `desktop-*`, `tools/player-smoke.mjs`). Editor: status bar + play-mode tint (Settings → PLAYMODE-COLOR), Project ▸ Desktop app permissions….
+- **M7 docs done**: `node tools/build-manual.mjs` (sources `docs/manual-src/`, output `docs/manual/` is committed; `--check` in CI). Re-run + commit after changing runtime JSDoc, `schema.rs`, CLI docs, library, templates or `docs/*.md`. Desktop-apps chapter (`18-desktop-apps.md`) is written.
 - Next: see **NEXT SESSIONS** above.
 - Vendored: Phaser 4.2.1, Babylon 9.30.0 (+Havok 1.3.14), PlayCanvas 2.23.2 (optional), CodeMirror bundle, marked, fonts, Lucide.
 - Known risks: `docs/KNOWN_ISSUES.md`.

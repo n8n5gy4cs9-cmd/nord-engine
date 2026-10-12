@@ -54,6 +54,15 @@ pub fn window(st: &mut EditorState, ctx: &Context) {
                 ui.label("Autosave (seconds)");
                 ui.add(egui::Slider::new(&mut s.autosave_secs, 5..=300));
                 ui.end_row();
+                ui.label("Play-mode tint");
+                ui.horizontal(|ui| {
+                    ui.checkbox(&mut s.tint, "tint the editor");
+                    ui.color_edit_button_srgb(&mut s.play_tint).on_hover_text("PLAYMODE-COLOR: editor colour while the game is playing");
+                    ui.label("playing");
+                    ui.color_edit_button_srgb(&mut s.build_tint).on_hover_text("editor colour while a Rust game compiles / exports");
+                    ui.label("compiling");
+                });
+                ui.end_row();
                 ui.label("Snap move / rotate / scale");
                 ui.horizontal(|ui| {
                     ui.add(egui::DragValue::new(&mut s.snap_move).speed(0.1));

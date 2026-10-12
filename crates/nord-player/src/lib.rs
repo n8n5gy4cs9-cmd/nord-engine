@@ -91,7 +91,12 @@ mod tests {
     use super::*;
 
     fn game() -> PathBuf {
-        let d = std::env::temp_dir().join(format!("nord-player-{}", std::process::id()));
+        static N: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
+        let d = std::env::temp_dir().join(format!(
+            "nord-player-{}-{}",
+            std::process::id(),
+            N.fetch_add(1, std::sync::atomic::Ordering::Relaxed)
+        ));
         let _ = std::fs::remove_dir_all(&d);
         std::fs::create_dir_all(d.join("assets")).unwrap();
         std::fs::write(d.join("index.html"), "<html>").unwrap();

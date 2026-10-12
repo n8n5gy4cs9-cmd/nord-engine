@@ -494,3 +494,39 @@ fn docs_markdown_viewer_renders_design_docs() {
     h.get_by_label("item one");
     h.get_by_label("code line");
 }
+
+#[test]
+fn status_activity_and_play_tint_follow_the_editor_state() {
+    use nord_editor::state::{RustJob, Tint};
+    use std::sync::{atomic::AtomicBool, Arc};
+    use std::time::Instant;
+    let mut st = state_with_scene("status");
+    assert_eq!(st.activity(), (None, "Ready".to_string()));
+    st.toast("Saved scene");
+    assert_eq!(st.activity().1, "Saved scene");
+    // a Rust build in flight → Building tint + a sentence naming the crate being compiled
+    let job = Arc::new(RustJob {
+        done: AtomicBool::new(false),
+        ok: AtomicBool::new(false),
+        play_after: true,
+        started: Instant::now(),
+        phase: Default::default(),
+        crates: Default::default(),
+    });
+    *job.phase.lock().unwrap() = "rapier2d v0.22.0".into();
+    job.crates.store(41, std::sync::atomic::Ordering::SeqCst);
+    st.rust_job = Some(job.clone());
+    let (t, s) = st.activity();
+    assert_eq!(t, Some(Tint::Building));
+    assert!(
+        s.contains("rapier2d") && s.contains("41 crates") && s.contains("then it will start"),
+        "{s}"
+    );
+    job.done.store(true, std::sync::atomic::Ordering::SeqCst);
+    assert_eq!(st.activity().0, None);
+    // playing → Playing tint
+    st.rust_job = None;
+    st.ensure_server();
+    st.play.as_mut().unwrap().running = true;
+    assert_eq!(st.activity().0, Some(Tint::Playing));
+}

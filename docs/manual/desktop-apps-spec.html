@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Desktop apps spec — Nord Engine</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')==='1')document.documentElement.classList.add('dummies-on')}catch(e){}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><header><a class="brand" href="index.html"><img src="assets/logo.png" alt="" width="28" height="28">Nord Engine <span class="muted">Manual</span></a>
+<input id="q" type="search" placeholder="Search docs…" autocomplete="off"><div id="results" hidden></div>
+<button id="dummies-toggle" title="Show plain-language 'For dummies' boxes" aria-pressed="false">For dummies: <b>off</b></button></header>
+<div class="layout"><nav><details class="nav-sec"><summary>Manual</summary><a href="welcome.html">Welcome</a><a href="editor-tour.html">Editor tour</a><a href="projects-scenes.html">Projects &amp; scenes</a><a href="scripting.html">Scripting</a><a href="2d.html">2D games</a><a href="3d.html">3D games</a><a href="physics.html">Physics</a><a href="audio.html">Audio</a><a href="ui.html">UI &amp; HUD</a><a href="input.html">Input</a><a href="assets.html">Assets</a><a href="library.html">The library</a><a href="rust-wasm.html">Rust / WASM</a><a href="export.html">Export &amp; hosting</a><a href="performance.html">Performance &amp; debugging</a><a href="reference.html">Reference overview</a><a href="desktop-apps.html">Desktop apps</a><a href="_project-format-extra.html">_project-format-extra.md</a></details>
+<details class="nav-sec"><summary>Tutorials</summary><a href="tut-t01-hello-nord.html">T01 Hello Nord</a><a href="tut-t02-sprite-movement.html">T02 Sprite &amp; movement</a><a href="tut-t03-first-script.html">T03 Your first script</a><a href="tut-t04-platformer.html">T04 Platformer from template</a><a href="tut-t05-physics.html">T05 Physics &amp; collisions</a><a href="tut-t06-tilemaps.html">T06 Tilemaps</a><a href="tut-t07-animation-juice.html">T07 Animation &amp; juice</a><a href="tut-t08-ui-hud.html">T08 UI &amp; HUD</a><a href="tut-t09-audio.html">T09 Audio</a><a href="tut-t10-3d-scene.html">T10 3D scene &amp; camera</a><a href="tut-t11-3d-physics.html">T11 3D physics (FPS)</a><a href="tut-t12-enemy-ai.html">T12 Enemy AI</a><a href="tut-t13-save-load.html">T13 Save &amp; load</a><a href="tut-t14-export-host.html">T14 Export to web &amp; host it</a><a href="tut-t15-mac-app.html">T15 Mac app</a><a href="tut-t16-rust-game.html">T16 Rust/WASM game</a><a href="tut-t17-rust-egui-app.html">T17 Rust egui app</a><a href="tut-t18-library-snippets.html">T18 Writing library snippets</a></details>
+<details class="nav-sec"><summary>Guides</summary><a href="cookbook.html">Cookbook</a><a href="cheat-sheet-nordjs.html">Cheat sheet — nord.js</a><a href="cheat-sheet-export.html">Cheat sheet — export</a><a href="glossary.html">Glossary</a><a href="shortcuts.html">Keyboard shortcuts</a></details>
+<details class="nav-sec"><summary>API</summary><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a></details>
+<details class="nav-sec"><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details>
+<details class="nav-sec" open><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html" class="cur">Desktop apps spec</a><a href="packaging.html">Packaging</a></details>
+<details class="nav-sec"><summary>Appendix</summary><a href="appendix.html">Appendix</a><a href="decisions.html">Design decisions</a><a href="known-issues.html">Known issues</a><a href="changelog.html">Changelog</a></details></nav><main><div class="crumb">Reference</div><h1>Desktop apps spec</h1>
+<p>Status: <strong>implemented (M9)</strong> with the defaults chosen below (owner can still veto: plain DOM UI, JSON store + optional SQLite, portable zip/tar.gz first). See ADR-020 in <code>DECISIONS.md</code>.</p>
+<h2 id="what-exists-now">What exists now<a class="anchor" href="#what-exists-now">#</a></h2>
+<ul>
+<li>Crate <code>crates/nord-desktop</code>: <code>caps</code> (manifest, audit, grants), <code>paths</code>, <code>fs</code> (scoped, atomic, polling watcher), <code>store</code> (+ <code>sqlite</code> feature, migrations), <code>services</code> (dialogs/notifications/clipboard/shell/secrets traits; <code>native</code> = rfd/notify-rust/arboard/opener, <code>keychain</code> = keyring, Headless for tests), <code>process</code> (+ <code>http</code>), <code>server</code> (static HTTP server), <code>lifecycle</code> (single instance, argv/deep links, autostart), <code>window</code> (menu/tray/window specs → <code>HostCommand</code>s), <code>bridge</code> (JSON dispatcher = the whole JS API).</li>
+<li>JS client <code>runtime/desktop/nord-desktop.js</code> (+ <code>.d.ts</code>): <code>ipc</code> / <code>http</code> / <code>web</code> transports. <code>nord serve</code> mounts <code>/__desktop/call</code> (needs the <code>x-nord</code> header; same permissions).</li>
+<li>Player shell <code>crates/nord-player</code> (<code>--features shell</code>): IPC, multi-window, native menu bar, tray, global shortcuts, drag &amp; drop, single instance, window-state persistence, quit guard.</li>
+<li>Rust: <code>nord_app_wasm::desktop</code> (+ <code>ux</code>). Packaging: <code>nord bundle-mac</code> (+ file types/URL schemes), <code>nord bundle-portable --os windows|linux</code>, <code>docs/PACKAGING.md</code>.</li>
+<li>Editor: <strong>Project ▸ Desktop app permissions…</strong>; <code>nord-core</code> validates the manifest.</li>
+<li>Examples/templates: code editor, web server, notes, file organiser, clipboard manager, markdown editor (JS) and Rust notes.</li>
+<li>Verified on Linux (webkit2gtk under Xvfb, headless Chromium); macOS/Windows paths compile-checked or CI-only — see KNOWN_ISSUES.</li>
+</ul>
+<h2 id="goal">Goal<a class="anchor" href="#goal">#</a></h2>
+<p>Build <em>real</em> desktop apps (notes, file organiser, clipboard manager, markdown editor…) from a Nord project, in either tier:</p>
+<ul>
+<li><strong>JS/web tier</strong> — HTML/JS app (Phaser UI or plain DOM) running in a native window, calling <code>window.nord.desktop.*</code>.</li>
+<li><strong>Rust tier</strong> — <code>nord-app-wasm</code> (eframe/egui) app calling a Rust <code>Desktop</code> API.</li>
+</ul>
+<p>Same project, same export pipeline; the app runs in the browser too with graceful fallbacks.</p>
+<h2 id="decision-shell-reuse-nord-player-wry-tao-rust-apps-run-native-egui-both-on-one-backend-crate">Decision: shell = reuse <code>nord-player</code> (wry+tao); Rust apps run native egui — both on one backend crate<a class="anchor" href="#decision-shell-reuse-nord-player-wry-tao-rust-apps-run-native-egui-both-on-one-backend-crate">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Verdict</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A. Extend <code>nord-player</code> (wry webview + tao window) with an IPC bridge</td>
+<td><strong>Chosen for JS apps.</strong> Already built, already bundles <code>.app</code>; WebView2 / WKWebView / WebKitGTK per OS. Adds IPC + a few tao features (menus, tray, multi-window)</td>
+</tr>
+<tr>
+<td>B. Rust apps as <em>native</em> eframe (not wasm in a webview)</td>
+<td><strong>Chosen for Rust apps.</strong> <code>nord-app-wasm::launch</code> already runs native; add the <code>Desktop</code> services to <code>Ctx</code>. No webview, no IPC</td>
+</tr>
+<tr>
+<td>C. Tauri</td>
+<td>Rejected (ADR-013: we own the shell; Tauri adds a framework and a JS API we don&#39;t control)</td>
+</tr>
+<tr>
+<td>D. Everything in the webview, Rust app as wasm inside it</td>
+<td>Rejected: slower, needs IPC for every call, loses native text input/IME</td>
+</tr>
+</tbody></table>
+<p>So: <strong>one Rust crate <code>nord-desktop</code> holds all services</strong> (fs, dialogs, notifications, clipboard, store, paths, shell-open, windows/tray/menu helpers where toolkit-independent). The JS bridge (in <code>nord-player</code>) and the Rust API (in <code>nord-app-wasm</code>) are two thin front-ends over it. No logic is duplicated; permission checks live in the crate, so both tiers are equally sandboxed.</p>
+<pre class="code" data-lang=""><code>JS app  --window.nord.desktop.fs.read()--&gt; wry ipc_handler --&gt; Bridge(dispatch+caps) --\
+                                                                                        &gt;-- nord-desktop services
+Rust app --desktop.fs().read()-------------------------------&gt; (same Caps check)    --/
+Web build (no shell): JS shim / cfg(wasm) impl falls back to File System Access API, Notification API, IndexedDB/localStorage; unsupported calls return a typed `Unsupported` error.</code></pre>
+<h3 id="bridge-protocol-js">Bridge protocol (JS)<a class="anchor" href="#bridge-protocol-js">#</a></h3>
+<ul>
+<li>Page → host: <code>window.ipc.postMessage(JSON {id, method:&quot;fs.read&quot;, params})</code>; host → page: <code>evaluate_script(&quot;__nord_reply(id, ok, payload)&quot;)</code>. Promise-based wrapper in <code>runtime/desktop/nord-desktop.js</code> (injected via <code>with_initialization_script</code>; same file used in the editor&#39;s Play, where calls go through <code>nord-serve</code> HTTP instead — ADR-014 style — with the same capability checks, so dev ≈ exported).</li>
+<li>Events host → page (file watch, menu click, tray click, deep link, drop): <code>nord.desktop.on(&quot;menu&quot;, fn)</code>.</li>
+<li>Only pages loaded from <code>nord://game/</code> may call the bridge (origin check); remote URLs never get it.</li>
+<li>Binary data is base64 (small) or via <code>nord://</code> blob URLs for large reads (decide in M9-10).</li>
+</ul>
+<h2 id="capability-model-least-privilege">Capability model (least privilege)<a class="anchor" href="#capability-model-least-privilege">#</a></h2>
+<p><code>nord.project.json</code>:</p>
+<pre class="code" data-lang="json"><code>&quot;desktop&quot;: { &quot;permissions&quot;: {
+  &quot;fs&quot;: { &quot;roots&quot;: [&quot;appData&quot;, &quot;documents&quot;, &quot;picked&quot;], &quot;write&quot;: true },
+  &quot;dialogs&quot;: true, &quot;notifications&quot;: true, &quot;clipboard&quot;: &quot;write&quot;,
+  &quot;net&quot;: { &quot;hosts&quot;: [&quot;api.example.com&quot;] }, &quot;process&quot;: [], &quot;tray&quot;: true, &quot;globalShortcuts&quot;: false } }</code></pre>
+<ul>
+<li>Default = <strong>nothing</strong> except appData storage and dialogs. Everything else must be declared; the export bakes the manifest into <code>nord.json</code>; the host never widens it at runtime.</li>
+<li><code>fs</code> roots are symbolic: <code>appData</code> (per-app dir), <code>documents</code>, <code>downloads</code>, <code>temp</code>, <code>picked</code> (paths the user chose through an Open/Save dialog this run or persisted as bookmarks). No arbitrary absolute paths from the app.</li>
+<li>Path rules (implemented once in <code>nord-desktop::fs</code>): canonicalise → must be inside a granted root → reject <code>..</code>, symlink escapes, Windows device names/UNC/ADS; tests for each (M9-16).</li>
+<li>Sensitive grants (<code>process</code>, <code>net</code>, <code>globalShortcuts</code>, <code>clipboard: read</code>) ask on first use (native confirm dialog), remembered per app; audit log in appData (<code>audit.log</code>); editor shows/reviews them (M9-12).</li>
+<li>macOS: App Sandbox is optional; when signed with sandbox entitlement, <code>picked</code> uses security-scoped bookmarks (M9-03). Unsandboxed ad-hoc builds (default) rely on our own caps only — <strong>our caps are not an OS sandbox</strong>; documented honestly (the app&#39;s own code is trusted, the page content is the thing constrained).</li>
+</ul>
+<h2 id="what-real-apps-need-checklist-task">What real apps need — checklist (→ task)<a class="anchor" href="#what-real-apps-need-checklist-task">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Need</th>
+<th>Task</th>
+<th>Tier support</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Read/write/list/watch files, user-picked folders</td>
+<td>M9-03</td>
+<td>JS, Rust</td>
+</tr>
+<tr>
+<td>Open/save/folder/message dialogs, recent files</td>
+<td>M9-04</td>
+<td>JS, Rust</td>
+</tr>
+<tr>
+<td>Notifications, dock/taskbar badge + progress</td>
+<td>M9-05</td>
+<td>JS, Rust</td>
+</tr>
+<tr>
+<td>Settings, key-value + structured store, secrets in keychain</td>
+<td>M9-06</td>
+<td>JS, Rust</td>
+</tr>
+<tr>
+<td>Clipboard, drag&amp;drop, file associations, deep links, single instance</td>
+<td>M9-07</td>
+<td>JS, Rust</td>
+</tr>
+<tr>
+<td>Multi-window, menu bar, context menu, tray, global shortcuts, window state</td>
+<td>M9-08</td>
+<td>JS (tao); Rust (eframe viewports + <code>tray-icon</code>/<code>muda</code>)</td>
+</tr>
+<tr>
+<td>Timers/threads, HTTP, process spawn allow-list, quit confirm, autostart</td>
+<td>M9-09</td>
+<td>JS, Rust</td>
+</tr>
+<tr>
+<td>Typed API (<code>d.ts</code>), docs, same in dev &amp; export</td>
+<td>M9-10/11</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Permission manifest, prompts, editor UI</td>
+<td>M9-12</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Packaging mac/win/linux, icons, versions, optional updater</td>
+<td>M9-13</td>
+<td>—</td>
+</tr>
+<tr>
+<td>IME, hi-DPI, dark-mode follow, keyboard nav, i18n, undo helpers</td>
+<td>M9-14</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Templates/examples</td>
+<td>M9-15</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Tests + CI matrix</td>
+<td>M9-16</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<h2 id="crate-library-picks-all-permissive-pinned-in-m9-02">Crate/library picks (all permissive, pinned in M9-02)<a class="anchor" href="#crate-library-picks-all-permissive-pinned-in-m9-02">#</a></h2>
+<p><code>rfd</code> (dialogs), <code>notify-rust</code> or platform calls (notifications), <code>arboard</code> (clipboard), <code>directories</code> (paths), <code>notify</code> (fs watch), <code>rusqlite</code> bundled (structured store; sled rejected — unmaintained), <code>keyring</code> (secrets), <code>muda</code> + <code>tray-icon</code> (menus/tray, work with tao and winit), <code>global-hotkey</code>, <code>single-instance</code>-style lock via a localhost/lockfile (own ~40 lines), <code>opener</code> (open URL/file), <code>ureq</code> (HTTP). Each is logged in <code>THIRD_PARTY.md</code> when added. <code>nord-desktop</code> features gate heavy deps so <code>cargo build --workspace</code> still works on bare Linux CI.</p>
+<h2 id="platform-reality">Platform reality<a class="anchor" href="#platform-reality">#</a></h2>
+<ul>
+<li>Sandbox is Linux: <strong>only compiles + unit-tests</strong> the fs/caps/store/protocol logic and the JS bridge in headless Chromium against a mock host. macOS/Windows backends, tray, menus, notifications, wry IPC, packaging are verified by CI (<code>macos-14</code>, <code>windows-latest</code>, <code>ubuntu</code>) or the owner — recorded in <code>KNOWN_ISSUES.md</code> as each lands.</li>
+<li>Wayland has no global shortcuts/tray guarantees; Linux support is best-effort and documented as such.</li>
+</ul>
+<h2 id="non-goals">Non-goals<a class="anchor" href="#non-goals">#</a></h2>
+<p>Mobile; auto-update server (strategy doc only, opt-in later); full OS sandbox profiles; Electron-style node integration; remote content with bridge access.</p>
+<h2 id="open-questions-for-the-owner-defaults-in-bold">Open questions for the owner (defaults in bold)<a class="anchor" href="#open-questions-for-the-owner-defaults-in-bold">#</a></h2>
+<ol>
+<li>JS apps: Phaser-UI or <strong>plain DOM</strong> as the recommended UI for non-game apps? (templates will show DOM; the bridge is UI-agnostic)</li>
+<li>Structured store: <strong>SQLite</strong> (rusqlite bundled; one C dep) vs pure-Rust sled/redb.</li>
+<li>Windows installer: <strong>portable zip first</strong>, MSI/NSIS later; Linux <strong>tar.gz + AppImage</strong>.</li>
+<li>OK that our caps are not an OS sandbox in v1 (<strong>yes</strong>, documented)?</li>
+</ol>
+
+<footer>Crowelian 2026 + Sonnet · <a href="https://github.com/n8n5gy4cs9-cmd/nord-engine">source</a> · generated by <code>tools/build-manual.mjs</code></footer></main></div>
+<script type="module" src="assets/manual.js"></script></body></html>

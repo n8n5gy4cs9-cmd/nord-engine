@@ -26,6 +26,12 @@ pub struct Settings {
     pub snap_scale: f64,
     pub grid: bool,
     pub window: Option<[f32; 4]>, // x, y, w, h
+    /// Unity-style feedback: tint the whole editor while the game is playing / a Rust game is compiling
+    pub tint: bool,
+    /// PLAYMODE-COLOR (rgb)
+    pub play_tint: [u8; 3],
+    /// colour while compiling (before the game starts)
+    pub build_tint: [u8; 3],
 }
 
 impl Default for Settings {
@@ -43,6 +49,9 @@ impl Default for Settings {
             snap_scale: 0.1,
             grid: true,
             window: None,
+            tint: true,
+            play_tint: [34, 56, 96],
+            build_tint: [104, 72, 20],
         }
     }
 }
@@ -114,12 +123,22 @@ pub enum Action {
     Build(String),
 }
 
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum Tint {
+    Building,
+    Playing,
+}
+
 /// Background Rust build (see `app::start_rust_build`). Output lines go to the hub log so they appear in the Console with clickable `file:line` links.
 pub struct RustJob {
     pub done: std::sync::atomic::AtomicBool,
     pub ok: std::sync::atomic::AtomicBool,
     /// start the game as soon as the build succeeds (Play on a Rust project)
     pub play_after: bool,
+    pub started: Instant,
+    /// last cargo line, e.g. `rapier2d v0.22.0`
+    pub phase: std::sync::Mutex<String>,
+    pub crates: std::sync::atomic::AtomicUsize,
 }
 
 pub struct Play {
@@ -180,6 +199,11 @@ pub struct EditorState {
     pub about_open: bool,
     pub apply_theme: bool,
     pub apply_styles: bool,
+    /// editor tint currently applied (`Tint::None` = theme colours) and the untinted visuals to restore
+    pub tint_applied: Option<(Tint, [u8; 3])>,
+    pub base_visuals: Option<egui::Visuals>,
+    /// transient one-sentence status (shown in the status bar for a few seconds)
+    pub status_msg: Option<(String, Instant)>,
     /// bumps on Play/Reload so the Game webview reloads
     pub game_nonce: u32,
     /// running `cargo build` for a Rust (wasm-game / wasm-app) project; `None` when idle
@@ -241,6 +265,9 @@ impl EditorState {
             about_open: false,
             apply_theme: true,
             apply_styles: false,
+            tint_applied: None,
+            base_visuals: None,
+            status_msg: None,
             game_nonce: 0,
             rust_job: None,
             viewport_ready: false,
@@ -262,7 +289,58 @@ impl EditorState {
     }
 
     pub fn toast(&mut self, t: impl Into<String>) {
-        self.toast = Some((t.into(), Instant::now()));
+        let t = t.into();
+        self.status_msg = Some((t.clone(), Instant::now()));
+        self.toast = Some((t, Instant::now()));
+    }
+
+    /// What the editor is doing right now, in one sentence (status bar).
+    pub fn activity(&self) -> (Option<Tint>, String) {
+        use std::sync::atomic::Ordering::SeqCst;
+        if let Some(j) = self.rust_job.as_ref().filter(|j| !j.done.load(SeqCst)) {
+            let secs = j.started.elapsed().as_secs();
+            let phase = j.phase.lock().map(|p| p.clone()).unwrap_or_default();
+            let n = j.crates.load(SeqCst);
+            let what = if phase.is_empty() {
+                "starting cargo".to_string()
+            } else {
+                phase
+            };
+            let hint = if secs > 20 && n > 0 {
+                " — first builds compile all dependencies and can take a few minutes"
+            } else {
+                ""
+            };
+            return (
+                Some(Tint::Building),
+                format!(
+                    "Compiling Rust {} — {what} ({n} crates, {secs}s){hint}",
+                    if j.play_after {
+                        "game, then it will start"
+                    } else {
+                        "project"
+                    }
+                ),
+            );
+        }
+        if self.export_ui.is_running() {
+            return (Some(Tint::Building), "Exporting…".into());
+        }
+        if self.play.as_ref().is_some_and(|p| p.running) {
+            return (
+                Some(Tint::Playing),
+                "Playing — press Cmd+. (Stop) to return to editing".into(),
+            );
+        }
+        if let Some((m, t)) = &self.status_msg {
+            if t.elapsed() < Duration::from_secs(6) {
+                return (None, m.clone());
+            }
+        }
+        if self.dirty || self.code.any_dirty() {
+            return (None, "Unsaved changes (Cmd+S to save)".into());
+        }
+        (None, "Ready".into())
     }
 
     pub fn is_3d(&self) -> bool {

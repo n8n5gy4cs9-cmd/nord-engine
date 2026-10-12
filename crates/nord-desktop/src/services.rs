@@ -317,12 +317,14 @@ pub mod native {
             opener::reveal(p).map_err(io)
         }
     }
-    pub fn all() -> (
+    /// dialogs, notifier, clipboard, shell
+    pub type Set = (
         Box<dyn Dialogs>,
         Box<dyn Notifier>,
         Box<dyn Clipboard>,
         Box<dyn Shell>,
-    ) {
+    );
+    pub fn all() -> Set {
         (
             Box::new(Native),
             Box::new(Native),

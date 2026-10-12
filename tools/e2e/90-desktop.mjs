@@ -89,23 +89,9 @@ suites['desktop-bridge-web'] = async () => {
 // The real native shell (wry + tao + webkit2gtk) under Xvfb: page → window.ipc → Rust bridge → page. Needs
 // `cargo build -p nord-player --features shell` and xvfb-run; skipped (passes with a note) when either is missing.
 suites['desktop-player-ipc'] = async () => {
-  const { execFileSync, spawnSync } = await import('node:child_process');
+  const { spawnSync } = await import('node:child_process');
+  const { runPlayerSmoke } = await import('../player-smoke.mjs');
   const player = `${ROOT}/target/debug/nord-player`;
-  const have = (c) => spawnSync('which', [c]).status === 0;
-  if (!fs.existsSync(player) || !have('xvfb-run')) { console.log('     (skipped: build nord-player --features shell and install xvfb)'); return; }
-  const app = fs.mkdtempSync(path.join(os.tmpdir(), 'nord-player-app-')), home = fs.mkdtempSync(path.join(os.tmpdir(), 'nord-player-home-'));
-  fs.copyFileSync(`${ROOT}/runtime/desktop/nord-desktop.js`, `${app}/nord-desktop.js`);
-  fs.writeFileSync(`${app}/nord.json`, JSON.stringify({ name: 'T', id: 'com.t.app', display: { width: 500, height: 300 }, desktop: { permissions: { server: true, prompt: false } } }));
-  fs.writeFileSync(`${app}/index.html`, `<!doctype html><meta charset=utf-8><title>T</title><meta name=nord-app-id content=com.t.app><script type=module>
-import d from './nord-desktop.js'; await d.ready; const out = { transport: d.transport };
-await d.fs.writeText('hello.txt', 'from webview'); out.read = await d.fs.readText('hello.txt');
-out.traversal = await d.fs.readText('../x').catch((e) => e.code); out.docs = await d.fs.readText('documents:a').catch((e) => e.code);
-out.proc = await d.process.run('ls').catch((e) => e.code); out.notify = await d.notify('x').catch((e) => e.code);
-await d.store.set('k', { n: 5 }); out.k = await d.store.get('k');
-await d.fs.writeText('www/index.html', '<h1>native server</h1>'); const sv = await d.server.start({ root: 'appData:www', cors: true, liveReload: false }); out.served = (await (await fetch(sv.url)).text()); await d.server.stop(sv.id);
-await d.fs.writeText('result.json', JSON.stringify(out)); await d.app.quit();</script>`);
-  try { execFileSync('xvfb-run', ['-a', 'timeout', '40', player, app], { env: { ...process.env, HOME: home, XDG_DATA_HOME: `${home}/data` }, stdio: 'ignore' }); } catch (e) { throw new Error(`player did not exit cleanly: ${e.message}`); }
-  const r = JSON.parse(fs.readFileSync(`${home}/data/com.t.app/result.json`, 'utf8'));
-  assert.deepEqual(r, { transport: 'ipc', read: 'from webview', traversal: 'denied', docs: 'denied', proc: 'denied', notify: 'denied', k: { n: 5 }, served: '<h1>native server</h1>' });
-  assert.deepEqual(JSON.parse(fs.readFileSync(`${home}/data/com.t.app/store.json`, 'utf8')).k, { n: 5 });
+  if (!fs.existsSync(player) || spawnSync('which', ['xvfb-run']).status !== 0) { console.log('     (skipped: build nord-player --features shell and install xvfb)'); return; }
+  await runPlayerSmoke(player, { xvfb: true });
 };

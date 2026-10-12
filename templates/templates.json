@@ -1,8 +1,32 @@
 [
   {
+    "id": "desktop-clipboard-manager",
+    "title": "Desktop app: clipboard manager",
+    "description": "Clipboard history with search/pin, tray icon + menu, global shortcut Ctrl+Alt+V, badge count.",
+    "type": "html"
+  },
+  {
     "id": "desktop-code-editor",
     "title": "Desktop app: code editor",
     "description": "Tabs, file tree, syntax highlighting (JS/TS/HTML/CSS/JSON/MD/Rust/GLSL/TOML), find & replace, multi-cursor, quick open — CodeMirror 6 + window.nord.desktop.",
+    "type": "html"
+  },
+  {
+    "id": "desktop-notes",
+    "title": "Desktop app: notes",
+    "description": "Notes as files in the app data folder: search, reorder, autosave, import/export dialogs, reminders (notifications), dark-mode follow, en/de.",
+    "type": "html"
+  },
+  {
+    "id": "desktop-file-organizer",
+    "title": "Desktop app: file organiser",
+    "description": "Pick a folder, sort files into folders by type/month with preview + undo, find duplicates (SHA-256), virtual table for 10k+ files.",
+    "type": "html"
+  },
+  {
+    "id": "desktop-markdown-editor",
+    "title": "Desktop app: markdown editor",
+    "description": "Split view CodeMirror + live sanitised preview (marked), open/save/export HTML, drag-drop, file association for .md.",
     "type": "html"
   },
   {

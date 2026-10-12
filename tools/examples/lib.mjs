@@ -142,11 +142,13 @@ export const appSpec = (id, name, kit, o = {}) => ({
 });
 
 /** Desktop app (M9): an `appSpec` plus the desktop client, CodeMirror bundle (if asked) and a `desktop.permissions` manifest. */
-export const desktopAppSpec = (id, name, kit, { permissions, cm = false, singleInstance = false, bootJs, template, example, note } = {}) => {
+export const desktopAppSpec = (id, name, kit, { permissions, cm = false, ux = false, marked = false, singleInstance = false, fileTypes, schemes, bootJs, template, example, note } = {}) => {
   const s = appSpec(id, name, kit, { template, example, bootJs, note });
   s.html.files.push({ from: 'runtime/desktop/nord-desktop.js', to: 'nord-desktop.js' }, { from: 'runtime/desktop/nord-desktop.d.ts', to: 'nord-desktop.d.ts' });
   if (cm) s.html.files.push({ from: 'vendor/codemirror/cm.bundle.js', to: 'cm.bundle.js' });
-  s.project.desktop = { permissions, singleInstance };
+  if (ux) s.html.files.push({ from: 'library/apps/_ux.js', to: '_ux.js' });
+  if (marked) s.html.files.push({ from: 'vendor/marked/marked.umd.js', to: 'marked.umd.js' });
+  s.project.desktop = { permissions, singleInstance, ...(schemes ? { schemes } : {}), ...(fileTypes ? { fileTypes } : {}) };
   s.project.display = { ...s.project.display, width: 1100, height: 700 };
   s.readme = `# ${name}\nA Nord **desktop app**: plain HTML + ES modules using \`window.nord.desktop\` (files, dialogs, menus, ...). Permissions are declared in \`nord.project.json\` → \`desktop.permissions\` (least privilege; see docs/DESKTOP_APPS.md).\n\n- Develop: \`nord serve .\` (open the URL; the dev server provides the same desktop API with the same permission checks).\n- Native window: \`nord export . --target html\`, then run the player: \`nord-player <export folder>\` (\`nord bundle-mac\` makes a .app).\n- In a plain browser the app falls back to browser storage where it can.\n${note ?? ''}`;
   return s;

@@ -1,0 +1,18 @@
+[package]
+name = "my-rust-notes"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "app"
+path = "src/main.rs"
+
+[dependencies]
+nord-app-wasm = { path = "../../crates/nord-app-wasm" }
+
+[workspace]
+
+[profile.release]
+opt-level = "s"
+lto = true
+panic = "abort"

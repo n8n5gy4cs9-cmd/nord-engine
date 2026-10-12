@@ -34,6 +34,9 @@ from `node --check`/`cargo check` output, big-file safe (virtualised via galley 
 reuse first; if too limited, keep our own.
 **Multi-cursor** (`code/multi.rs`, pure + unit-tested): the primary selection stays in `egui::TextEdit`, secondary ones live in `Doc.extra`. Alt+click adds a cursor, Cmd/Ctrl+D selects the word / next occurrence, Cmd/Ctrl+Alt+Up/Down adds a cursor above/below. While extras exist, typing, paste, Backspace/Delete, Enter (auto-indent), Tab, arrows/Home/End (+Shift) apply to every cursor; Esc or a plain click drops the extras. Not multi-cursor aware yet: word-wise moves, Cmd+/ comment toggle, find-replace, auto-close pairs (they act on the primary only / clear extras on text change). Monaco/CodeMirror-in-webview is the escape hatch (not the default).
 
+## Status bar & play-mode tint (M8-12)
+Bottom status bar: dot/spinner + one sentence from `EditorState::activity()` ("Compiling Rust game, then it will start — rapier2d v0.22 (41 crates, 35s)…", "Playing — press Cmd+. to return to editing", "Exporting…", "Unsaved changes", "Ready"). While compiling/exporting (amber) or playing (blue) the editor chrome is tinted (`Settings.tint`, `play_tint`, `build_tint` = PLAYMODE-COLOR, Settings dialog); colours are restored when the activity ends.
+
 ## Implemented (M3) — where things live
 ```
 crates/nord-editor/src/
