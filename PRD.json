@@ -339,37 +339,37 @@
       "id": "M0-05",
       "milestone": "M0",
       "title": "Brand assets: logo (svg/png), wordmark, splash 2s image, app icons (icns/ico/png), palette",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M0-06",
       "milestone": "M0",
       "title": "Generate placeholder textures (tileable), skyboxes, particle sprites",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M0-07",
       "milestone": "M0",
       "title": "Generate placeholder pixel-art sprites/spritesheets/tileset + UI kit",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M0-08",
       "milestone": "M0",
       "title": "Generate placeholder sfx + music loops (tools/gen_assets.py) + icon set (Lucide subset)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M0-09",
       "milestone": "M0",
       "title": "Generate docs/manual graphics (banner, section icons, favicon)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M0-10",
       "milestone": "M0",
       "title": "ASSETS.md catalogue + replacement guide",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M0-11",
@@ -381,13 +381,13 @@
       "id": "M0-12",
       "milestone": "M0",
       "title": "Cargo workspace skeleton (nord-core, nord-cli) compiles; wasm32 target check",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M0-13",
       "milestone": "M0",
       "title": "Commit + push M0 to branch",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M1-01",

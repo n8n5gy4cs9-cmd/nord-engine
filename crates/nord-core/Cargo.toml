@@ -1,0 +1,11 @@
+[package]
+name = "nord-core"
+description = "Nord Engine core: project/scene model, asset index, thumbnails, offline scan"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true

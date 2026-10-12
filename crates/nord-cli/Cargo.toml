@@ -1,0 +1,16 @@
+[package]
+name = "nord-cli"
+description = "The `nord` command line tool"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "nord"
+path = "src/main.rs"
+
+[dependencies]
+nord-core = { path = "../nord-core" }
+clap.workspace = true
+anyhow.workspace = true
+serde_json.workspace = true

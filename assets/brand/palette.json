@@ -1,0 +1,23 @@
+{
+  "name": "Nord",
+  "colors": {
+    "bg0": "#070B14",
+    "bg1": "#0E1626",
+    "bg2": "#16243A",
+    "panel": "#1B2A42",
+    "line": "#2A3F5F",
+    "accent": "#4FA3FF",
+    "accent2": "#7CC4FF",
+    "accentDark": "#2468C8",
+    "text": "#E8F0FF",
+    "muted": "#8FA5C7",
+    "ok": "#4ADE80",
+    "warn": "#FBBF24",
+    "err": "#F87171",
+    "star": "#FFD86B"
+  },
+  "fonts": {
+    "ui": "Inter",
+    "code": "JetBrains Mono"
+  }
+}

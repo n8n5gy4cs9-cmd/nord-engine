@@ -1,0 +1,18 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 32,
+  "frameHeight": 32,
+  "filter": "nearest",
+  "anims": {
+    "idle": {
+      "frames": [
+        0,
+        1,
+        2,
+        1
+      ],
+      "fps": 6,
+      "loop": true
+    }
+  }
+}

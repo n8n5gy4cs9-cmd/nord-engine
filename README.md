@@ -10,4 +10,4 @@ Personal Rust-based game & app engine + editor. Builds **static HTML web games**
 - Assets (all replaceable placeholders): [`ASSETS.md`](ASSETS.md)
 - AI/contributor handoff: [`AGENTS.md`](AGENTS.md)
 
-Status: **M0 – planning & foundation** (see task.md).
+Status: **M0 done** (plans, vendored libs, placeholder assets, workspace skeleton). Next: **M1 foundation** (see task.md).

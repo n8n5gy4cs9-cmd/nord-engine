@@ -3,11 +3,11 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 5/119 tasks (4%)** · updated 2026-10-12
+**Overall: 13/119 tasks (11%)** · updated 2026-10-12
 
 | Milestone | Progress |
 |---|---|
-| M0 Planning, identity, assets, vendoring | 5/13 (38%) |
+| M0 Planning, identity, assets, vendoring | 13/13 (100%) |
 | M1 Foundation | 0/11 (0%) |
 | M2 JS runtimes | 0/18 (0%) |
 | M3 Editor | 0/22 (0%) |
@@ -18,11 +18,11 @@
 | M8 Polish & portability | 0/8 (0%) |
 
 ## Next up
-- **M0-05** Brand assets: logo (svg/png), wordmark, splash 2s image, app icons (icns/ico/png), palette
-- **M0-06** Generate placeholder textures (tileable), skyboxes, particle sprites
-- **M0-07** Generate placeholder pixel-art sprites/spritesheets/tileset + UI kit
-- **M0-08** Generate placeholder sfx + music loops (tools/gen_assets.py) + icon set (Lucide subset)
-- **M0-09** Generate docs/manual graphics (banner, section icons, favicon)
+- **M1-01** nord-core: project + scene + prefab structs (serde) matching PROJECT_FORMAT.md; load/save; validation
+- **M1-02** JSON schemas for project/scene/components (generated from Rust or hand-written) in crates/nord-core/schema
+- **M1-03** nord-core: asset index (scan, types, meta sidecars, hashes)
+- **M1-04** nord-core: thumbnail generator (images, spritesheets, audio waveform PNG) with cache
+- **M1-05** nord-cli: `new` (templates), `doctor` (tier recommendation), `thumbs`
 
 ## M0 — Planning, identity, assets, vendoring
 _Plans, brand, placeholder assets, vendored libs, workspace skeleton_
@@ -31,15 +31,15 @@ _Plans, brand, placeholder assets, vendored libs, workspace skeleton_
 - [x] **M0-02** Write library plan, manual plan, testing plan, AGENTS.md handoff guide
 - [x] **M0-03** PRD.json + generated task.md + tools/tasks.mjs
 - [x] **M0-04** tools/fetch-upstreams.sh + UPSTREAM.lock.json (godot, playcanvas engine/editor/pcui, macroquad, bevy, raylib, defold, egui, phaser-examples)
-- [ ] **M0-05** Brand assets: logo (svg/png), wordmark, splash 2s image, app icons (icns/ico/png), palette
-- [ ] **M0-06** Generate placeholder textures (tileable), skyboxes, particle sprites
-- [ ] **M0-07** Generate placeholder pixel-art sprites/spritesheets/tileset + UI kit
-- [ ] **M0-08** Generate placeholder sfx + music loops (tools/gen_assets.py) + icon set (Lucide subset)
-- [ ] **M0-09** Generate docs/manual graphics (banner, section icons, favicon)
-- [ ] **M0-10** ASSETS.md catalogue + replacement guide
+- [x] **M0-05** Brand assets: logo (svg/png), wordmark, splash 2s image, app icons (icns/ico/png), palette
+- [x] **M0-06** Generate placeholder textures (tileable), skyboxes, particle sprites
+- [x] **M0-07** Generate placeholder pixel-art sprites/spritesheets/tileset + UI kit
+- [x] **M0-08** Generate placeholder sfx + music loops (tools/gen_assets.py) + icon set (Lucide subset)
+- [x] **M0-09** Generate docs/manual graphics (banner, section icons, favicon)
+- [x] **M0-10** ASSETS.md catalogue + replacement guide
 - [x] **M0-11** tools/vendor.mjs + vendor Phaser, Babylon (+loaders/gui/materials/Havok), CodeMirror bundle (manual only), Lucide, marked, fonts; VENDOR.json + THIRD_PARTY.md
-- [ ] **M0-12** Cargo workspace skeleton (nord-core, nord-cli) compiles; wasm32 target check
-- [ ] **M0-13** Commit + push M0 to branch
+- [x] **M0-12** Cargo workspace skeleton (nord-core, nord-cli) compiles; wasm32 target check
+- [x] **M0-13** Commit + push M0 to branch
 
 ## M1 — Foundation
 _nord-core, CLI, project format, dev server, thumbnails, offline check_

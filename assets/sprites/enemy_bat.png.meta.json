@@ -1,0 +1,18 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 32,
+  "frameHeight": 32,
+  "filter": "nearest",
+  "anims": {
+    "fly": {
+      "frames": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "fps": 10,
+      "loop": true
+    }
+  }
+}

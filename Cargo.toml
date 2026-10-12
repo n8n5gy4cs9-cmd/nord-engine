@@ -1,0 +1,17 @@
+[workspace]
+resolver = "2"
+members = ["crates/nord-core", "crates/nord-cli"]
+# Added in later milestones: nord-editor (M3), nord-player (M4), nord-runtime-wasm + nord-app-wasm (M5; wasm32 only).
+
+[workspace.package]
+version = "0.0.1"
+edition = "2021"
+authors = ["Crowelian 2026 + Sonnet"]
+license = "MIT"
+
+[workspace.dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["preserve_order"] }
+thiserror = "2"
+anyhow = "1"
+clap = { version = "4", features = ["derive"] }
