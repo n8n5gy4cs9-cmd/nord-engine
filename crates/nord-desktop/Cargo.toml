@@ -1,0 +1,31 @@
+[package]
+name = "nord-desktop"
+description = "Nord desktop backend: scoped fs, dialogs, notifications, clipboard, storage, permissions — shared by the JS bridge and Rust apps (ADR-020)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[features]
+default = []
+# real OS services (dialogs, clipboard, notifications, open). Off by default so `cargo build --workspace` needs no system libs.
+native = ["dep:rfd", "dep:arboard", "dep:notify-rust", "dep:opener", "dep:wayland-sys"]
+sqlite = ["dep:rusqlite"]   # structured store (bundled SQLite)
+keychain = ["dep:keyring"]  # secrets in the OS keychain
+http = ["dep:ureq"]         # HTTP client (net.hosts allow-list)
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+# wayland-sys: load libwayland at runtime (dlopen) so building needs no wayland dev packages (same as eframe/winit do)
+wayland-sys = { version = "0.31", features = ["dlopen"], optional = true }
+rfd = { version = "0.15", optional = true }
+arboard = { version = "3", default-features = false, optional = true } # image-data off; Wayland clipboard: enable "wayland-data-control" on Linux builds
+notify-rust = { version = "4", optional = true }
+opener = { version = "0.7", features = ["reveal"], optional = true }
+rusqlite = { version = "0.32", features = ["bundled"], optional = true }
+keyring = { version = "3", optional = true }
+ureq = { version = "2", optional = true }
+
+[dev-dependencies]
+tempfile = "3"
