@@ -668,11 +668,15 @@ mod shell {
     }
 
     #[cfg(target_os = "macos")]
-    fn w_nsview(wins: &HashMap<WindowId, (String, Win)>, main: Option<WindowId>) -> isize {
+    fn w_nsview(
+        wins: &HashMap<WindowId, (String, Win)>,
+        main: Option<WindowId>,
+    ) -> *const std::ffi::c_void {
         use tao::platform::macos::WindowExtMacOS;
         main.and_then(|i| wins.get(&i))
-            .map(|w| w.1.window.ns_view() as isize)
-            .unwrap_or(0)
+            .map_or(std::ptr::null(), |w| {
+                w.1.window.ns_view() as *const std::ffi::c_void
+            })
     }
     #[allow(dead_code)]
     fn c_dummy() -> HostCommand {
