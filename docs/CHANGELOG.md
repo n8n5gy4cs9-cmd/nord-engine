@@ -2,6 +2,7 @@
 Newest first. One line per notable change. Credit: Crowelian 2026 + Sonnet.
 
 ## Unreleased
+- M9-01: `docs/DESKTOP_APPS.md` + ADR-020 (design only, pending owner review): wry shell + IPC bridge for JS apps, native egui for Rust apps, one `nord-desktop` backend, capability manifest, checklist, open questions.
 - build.sh now runs `node tools/build-manual.mjs` first and documents the `dist/` layout; Windows (`dist/windows/`) and Linux (`dist/linux/`) builds planned as M8-09/M8-10 (TODO stubs in the script).
 - M7 docs: `tools/build-manual.mjs` + `docs/manual-src` → offline HTML manual `docs/manual/` (96 pages): 17 chapters, 18 tutorials (T01–T18, pointing at runnable templates/examples), cookbook, cheat sheets, glossary; generated API reference (JS classes from runtime source, `game.*` namespaces, 25 component pages from `schema.rs`, CLI from clap docs, library catalog, templates/examples, shortcuts, repo specs); search index (works from file://), runnable `nord-live` snippets (vendored CodeMirror + sandboxed iframe on the real core runtime), global *For dummies* toggle (localStorage). Desktop-apps chapter = TODO stub for M9. CI runs `--check`. Editor Docs tab embeds it.
 - M6-17: optional CC0 pack `assets/packs/kenney-platformer-3d` (15 glTF models, 6 OGG sfx, sprites; 4.3 MB) via `tools/fetch-packs.sh`; ASSETS.md pack section. Kenney 2D sprite packs still unreachable (kenney.nl blocked) — drop-in later.

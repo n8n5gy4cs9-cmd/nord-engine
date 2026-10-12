@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 114/145 tasks (79%)** · updated 2026-10-12
+**Overall: 115/145 tasks (79%)** · updated 2026-10-12
 
 | Milestone | Progress |
 |---|---|
@@ -16,14 +16,14 @@
 | M6 Library | 18/18 (100%) |
 | M7 Docs | 12/12 (100%) |
 | M8 Polish & portability | 0/10 (0%) |
-| M9 Desktop apps | 0/16 (0%) |
+| M9 Desktop apps | 1/16 (6%) |
 
 ## Next up
-- **M9-01** PLAN: docs/DESKTOP_APPS.md — desktop target architecture (ADR): reuse nord-player/wry shell vs native egui apps; capability model, API surface per tier (JS via IPC bridge, Rust direct); permissions/sandbox; what real apps need (checklist)
 - **M9-02** nord-desktop crate: shared Rust backend services behind one trait set (fs, dialogs, notifications, clipboard, shell/open, paths, app lifecycle) used by JS bridge and Rust apps
 - **M9-03** Files & folders: scoped fs API (read/write/list/watch/stat/mkdir/remove/rename), per-app allowed roots (app data, documents, user-picked via dialog), path traversal protection, macOS sandbox/security-scoped bookmarks
 - **M9-04** Native dialogs: open/save file, pick folder, message/confirm, with remembered recent locations (rfd)
 - **M9-05** System notifications (local), badges, dock/taskbar progress; macOS/Windows/Linux backends
+- **M9-06** Persistent app storage: key-value + structured (sqlite or sled), settings file, app data dir, migrations; secure secrets via OS keychain
 
 ## M0 — Planning, identity, assets, vendoring
 _Plans, brand, placeholder assets, vendored libs, workspace skeleton_
@@ -193,7 +193,7 @@ _dmg, CI, Windows, Linux, perf_
 ## M9 — Desktop apps
 _real native desktop apps (Rust backend): files, dialogs, notifications, tray, windows, storage, packaging_
 
-- [ ] **M9-01** PLAN: docs/DESKTOP_APPS.md — desktop target architecture (ADR): reuse nord-player/wry shell vs native egui apps; capability model, API surface per tier (JS via IPC bridge, Rust direct); permissions/sandbox; what real apps need (checklist)
+- [x] **M9-01** PLAN: docs/DESKTOP_APPS.md — desktop target architecture (ADR): reuse nord-player/wry shell vs native egui apps; capability model, API surface per tier (JS via IPC bridge, Rust direct); permissions/sandbox; what real apps need (checklist)
 - [ ] **M9-02** nord-desktop crate: shared Rust backend services behind one trait set (fs, dialogs, notifications, clipboard, shell/open, paths, app lifecycle) used by JS bridge and Rust apps
 - [ ] **M9-03** Files & folders: scoped fs API (read/write/list/watch/stat/mkdir/remove/rename), per-app allowed roots (app data, documents, user-picked via dialog), path traversal protection, macOS sandbox/security-scoped bookmarks
 - [ ] **M9-04** Native dialogs: open/save file, pick folder, message/confirm, with remembered recent locations (rfd)
