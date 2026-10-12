@@ -564,6 +564,12 @@
       "status": "todo"
     },
     {
+      "id": "M2-19",
+      "milestone": "M2",
+      "title": "Fonts (Inter, Plus Jakarta Sans, IBM Plex Sans, JetBrains Mono, Fira Code, IBM Plex Mono) vendored + 3 skins (font combos) + 10 dark themes shared by runtime UI, editor and code editor",
+      "status": "todo"
+    },
+    {
       "id": "M3-01",
       "milestone": "M3",
       "title": "nord-editor crate: eframe (wgpu) app, theme (Nord palette), bundled fonts (Inter/JetBrains Mono TTF), egui_dock layout, menu bar",
@@ -693,6 +699,12 @@
       "id": "M3-22",
       "milestone": "M3",
       "title": "egui_kittest headless tests for panels + CI job",
+      "status": "todo"
+    },
+    {
+      "id": "M3-23",
+      "milestone": "M3",
+      "title": "Editor: apply selected skin + theme (UI fonts, code font + ligatures, syntax colors) via shared themes.json; settings UI to switch live",
       "status": "todo"
     },
     {
@@ -975,6 +987,18 @@
       "id": "M7-10",
       "milestone": "M7",
       "title": "Per-feature guides & cheat sheets (shortcuts, nord.js, export)",
+      "status": "todo"
+    },
+    {
+      "id": "M7-11",
+      "milestone": "M7",
+      "title": "Full engine API docs: everything Phaser/Babylon offer, documented in Nord format (components, NordScript, game.*/physics/camera/gui namespaces) — no raw Phaser/Babylon API needed; searchable HTML reference generated from JSDoc + component schemas",
+      "status": "todo"
+    },
+    {
+      "id": "M7-12",
+      "milestone": "M7",
+      "title": "HTML manual/guide/tutorials 'complete edition': every feature, per-component pages, cookbook, plus 'For dummies' info boxes (hidden by default, global toggle persisted in localStorage)",
       "status": "todo"
     },
     {

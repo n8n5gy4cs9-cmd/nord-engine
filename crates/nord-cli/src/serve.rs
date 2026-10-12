@@ -21,14 +21,15 @@ use std::{
 use tokio::sync::broadcast;
 use tokio_stream::wrappers::BroadcastStream;
 
-const RELOAD_JS: &str =
-    "<script>new EventSource('/__reload').onmessage=()=>location.reload()</script>";
+/// Injected into served HTML. The event carries the changed paths as JSON; a running Nord game may hot-swap scripts
+/// (`window.__nord.hotReload(paths)` returns true when it handled the change), anything else reloads the page.
+const RELOAD_JS: &str = "<script>new EventSource('/__reload').onmessage=e=>{let p=[];try{p=JSON.parse(e.data)}catch{}if(!(window.__nord&&window.__nord.hotReload&&window.__nord.hotReload(p)))location.reload()}</script>";
 
 #[derive(Clone)]
 struct App {
     project: Arc<PathBuf>,
     engine: Arc<PathBuf>,
-    tx: broadcast::Sender<()>,
+    tx: broadcast::Sender<Vec<String>>,
 }
 
 /// Find the engine root (the directory holding `vendor/VENDOR.json`): `$NORD_ROOT`, else walk up from cwd and the exe.
@@ -99,7 +100,9 @@ async fn static_files(State(a): State<App>, uri: Uri) -> Response {
 }
 
 async fn reload(State(a): State<App>) -> Sse<impl Stream<Item = Result<Event, Infallible>>> {
-    let s = BroadcastStream::new(a.tx.subscribe()).map(|_| Ok(Event::default().data("reload")));
+    let s = BroadcastStream::new(a.tx.subscribe())
+        .filter_map(|m| async move { m.ok() })
+        .map(|paths| Ok(Event::default().data(serde_json::to_string(&paths).unwrap_or_default())));
     Sse::new(s).keep_alive(axum::response::sse::KeepAlive::new())
 }
 
@@ -144,7 +147,7 @@ async fn api_thumb(State(a): State<App>, UrlPath(rel): UrlPath<String>) -> Respo
 }
 
 /// Poll mtimes of project files (cheap for hobby-sized projects; no watcher dependency).
-fn watch(root: PathBuf, tx: broadcast::Sender<()>) {
+fn watch(root: PathBuf, tx: broadcast::Sender<Vec<String>>) {
     fn snap(d: &Path, m: &mut HashMap<PathBuf, std::time::SystemTime>) {
         let Ok(rd) = std::fs::read_dir(d) else { return };
         for e in rd.flatten() {
@@ -170,14 +173,26 @@ fn watch(root: PathBuf, tx: broadcast::Sender<()>) {
             let mut now = HashMap::new();
             snap(&root, &mut now);
             if now != last {
+                let mut changed: Vec<String> = now
+                    .iter()
+                    .filter(|(k, v)| last.get(*k) != Some(*v))
+                    .map(|(k, _)| k.clone())
+                    .chain(last.keys().filter(|k| !now.contains_key(*k)).cloned())
+                    .filter_map(|p| {
+                        p.strip_prefix(&root)
+                            .ok()
+                            .map(|r| r.to_string_lossy().replace('\\', "/"))
+                    })
+                    .collect();
+                changed.sort();
                 last = now;
-                let _ = tx.send(());
+                let _ = tx.send(changed);
             }
         }
     });
 }
 
-pub fn router(project: PathBuf, engine: PathBuf) -> (Router, broadcast::Sender<()>) {
+pub fn router(project: PathBuf, engine: PathBuf) -> (Router, broadcast::Sender<Vec<String>>) {
     let (tx, _) = broadcast::channel(16);
     let app = App {
         project: Arc::new(project),

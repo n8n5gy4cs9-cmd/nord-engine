@@ -146,3 +146,21 @@ test('loader: progress, cache, inline files, external rejected', async () => {
   await assert.rejects(l.loadAll([{ path: 'bad.png' }]), /404/);
   for (const p of ['https://cdn.x/a.js', '//cdn/a', '/abs', '../up']) assert.throws(() => safePath(p));
 });
+
+test('hotReloadScript: swaps prototype, keeps state, calls onHotReload, re-resolves attributes', async () => {
+  class V1 extends NordScript { static attributes = { speed: { type: 'number', default: 1 } }; hello() { return 'v1'; } }
+  class V2 extends NordScript { static attributes = { speed: { type: 'number', default: 1 }, extra: { type: 'bool', default: true } }; hello() { return 'v2'; } onHotReload(old) { this.saw = old.counter; } }
+  files['mod:h.js'] = V1;
+  files.s = { name: 's', entities: [ent('H', { scripts: [{ path: 'h.js', attributes: { speed: 5 } }] }), ent('Other', { scripts: [] })] };
+  const g = mk(); await g.loadScene('s');
+  const s = g.scene.find('H').scripts[0];
+  s.counter = 42;
+  assert.equal(s.hello(), 'v1');
+  files['mod:h.js'] = V2;
+  assert.equal(await g.hotReloadScript('h.js'), 1);
+  assert.equal(s.hello(), 'v2'); assert.equal(s.counter, 42); assert.equal(s.saw, 42);
+  assert.deepEqual(s.attrs, { speed: 5, extra: true });
+  assert.equal(g.hotReload(['h.js']), true);
+  assert.equal(g.hotReload(['scenes/x.scene.json']), false);
+  assert.equal(g.hotReload(['unknown.js']), false);
+});

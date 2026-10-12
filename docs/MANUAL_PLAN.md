@@ -33,3 +33,8 @@ T13 Save/load · T14 Export to web & host it · T15 Mac app · T16 Rust/WASM gam
 
 ## Graphics needed (generated, replaceable — see ASSETS.md "docs")
 manual banner, per-section icons, diagram templates (architecture, tiers, editor layout), favicon, tutorial covers, code-theme preview.
+
+## Complete-edition requirements (owner, 2026-10-12)
+- Document **everything Phaser and Babylon can do, expressed in Nord format**: users only learn Nord namespaces (`NordScript`, `entity.*`, `game.physics/camera/audio/ui/gui/save`, component schemas). Raw Phaser/Babylon APIs appear only under an "escape hatch (`entity.native`)" heading.
+- One HTML site: manual, guides, tutorials, per-component and per-API pages, cookbook, search. Generated from JSDoc + component schemas + hand-written pages so it can't drift.
+- **"For dummies" info boxes** (plain-language explanations, analogies) on every concept page; shown only when the global toggle is on (persisted in localStorage; default off).

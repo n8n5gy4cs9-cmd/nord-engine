@@ -63,6 +63,7 @@ export class Scene {
       const Class = await this.game.loadScript(sd.path);
       if (!Class) continue;
       const s = new Class(e, resolveAttributes(Class, sd.attributes, (m) => this.game.warn(m)));
+      s._path = sd.path;
       e.scripts.push(s);
     }
     for (const cd of data.children ?? []) e.children.push(await this.#make(cd, e, { regenIds }));

@@ -4,6 +4,7 @@ import { Input } from './input.js';
 import { Save } from './save.js';
 import { Rng } from './util.js';
 import { Scene } from './scene.js';
+import { resolveAttributes } from './script.js';
 
 export class Game {
   /**
@@ -38,6 +39,37 @@ export class Game {
       this._scripts.set(path, mod.default ?? null);
     }
     return this._scripts.get(path);
+  }
+  /**
+   * Re-import a script module (cache-busted) and swap the prototype of every live instance, keeping its fields.
+   * Each instance gets `onHotReload(oldState)` if defined (oldState = shallow copy of its own fields). Attributes are re-resolved
+   * against the new class so added/removed attributes take effect. Relative imports *of* the script are not re-fetched.
+   * Returns the number of instances patched; on a syntax/runtime error nothing changes and the error is shown/returned.
+   */
+  async hotReloadScript(path) {
+    let Class;
+    try { Class = await this.loadScript(path, { fresh: true }); } catch (err) { this.reportError(err, { constructor: { name: path } }, 'hotReload'); return -1; }
+    if (!Class) return 0;
+    let n = 0;
+    for (const e of this.scene?.all() ?? []) {
+      for (const s of e.scripts) {
+        if (s._path !== path) continue;
+        const old = { ...s };
+        Object.setPrototypeOf(s, Class.prototype);
+        s.attrs = resolveAttributes(Class, s.attrs, (m) => this.warn(m));
+        try { s.onHotReload?.(old); } catch (err) { this.reportError(err, s, 'onHotReload'); }
+        n++;
+      }
+    }
+    this.overlay?.clear?.();
+    this.events.emit('hotReload', { path, count: n });
+    return n;
+  }
+  /** Dev-server hook (see serve.rs): returns true if every changed file was a script we hot-swapped; false → caller reloads the page. */
+  hotReload(paths) {
+    if (!paths?.length || !paths.every((p) => p.endsWith('.js') && this._scripts.has(p))) return false;
+    for (const p of paths) this.hotReloadScript(p);
+    return true;
   }
   async loadScene(path = this.project.startScene) {
     this.scene?.destroy();
