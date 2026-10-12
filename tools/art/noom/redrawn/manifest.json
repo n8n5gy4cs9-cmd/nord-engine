@@ -1,0 +1,469 @@
+[
+  {
+    "out": "assets/textures/walls.png",
+    "width": 256,
+    "height": 64,
+    "preview": 3,
+    "meta": {
+      "type": "texture-atlas",
+      "tile": 64,
+      "order": [
+        "brick",
+        "moss",
+        "crypt",
+        "hell"
+      ]
+    }
+  },
+  {
+    "out": "assets/textures/surfaces.png",
+    "width": 256,
+    "height": 128,
+    "preview": 3,
+    "meta": {
+      "type": "texture-atlas",
+      "tile": 64,
+      "order": [
+        "floor",
+        "floorBlood",
+        "floorHell",
+        "ceiling",
+        "door",
+        "keyDoor",
+        "exit",
+        "doorTrack"
+      ]
+    }
+  },
+  {
+    "out": "assets/sprites/skeleton.png",
+    "width": 288,
+    "height": 48,
+    "preview": 4,
+    "meta": {
+      "type": "spritesheet",
+      "frameWidth": 32,
+      "frameHeight": 48,
+      "filter": "nearest",
+      "frames": [
+        "stand",
+        "walk1",
+        "walk2",
+        "aim",
+        "shoot",
+        "pain",
+        "die1",
+        "die2",
+        "die3"
+      ],
+      "height": 1.8
+    }
+  },
+  {
+    "out": "assets/sprites/goblin.png",
+    "width": 288,
+    "height": 40,
+    "preview": 4,
+    "meta": {
+      "type": "spritesheet",
+      "frameWidth": 32,
+      "frameHeight": 40,
+      "filter": "nearest",
+      "frames": [
+        "stand",
+        "walk1",
+        "walk2",
+        "windup",
+        "strike",
+        "pain",
+        "die1",
+        "die2",
+        "die3"
+      ],
+      "height": 1.35
+    }
+  },
+  {
+    "out": "assets/sprites/imp.png",
+    "width": 360,
+    "height": 52,
+    "preview": 4,
+    "meta": {
+      "type": "spritesheet",
+      "frameWidth": 40,
+      "frameHeight": 52,
+      "filter": "nearest",
+      "frames": [
+        "stand",
+        "walk1",
+        "walk2",
+        "windup",
+        "throw",
+        "pain",
+        "die1",
+        "die2",
+        "die3"
+      ],
+      "height": 1.8
+    }
+  },
+  {
+    "out": "assets/sprites/baron.png",
+    "width": 576,
+    "height": 72,
+    "preview": 4,
+    "meta": {
+      "type": "spritesheet",
+      "frameWidth": 64,
+      "frameHeight": 72,
+      "filter": "nearest",
+      "frames": [
+        "stand",
+        "walk1",
+        "walk2",
+        "windup",
+        "throw",
+        "pain",
+        "die1",
+        "die2",
+        "die3"
+      ],
+      "height": 2.7
+    }
+  },
+  {
+    "out": "assets/sprites/weapons.png",
+    "width": 560,
+    "height": 80,
+    "preview": 4,
+    "meta": {
+      "type": "spritesheet",
+      "frameWidth": 80,
+      "frameHeight": 80,
+      "filter": "nearest",
+      "frames": [
+        "mace_idle",
+        "mace_swing1",
+        "mace_swing2",
+        "gun_idle",
+        "gun_fire",
+        "gun_pump1",
+        "gun_pump2"
+      ]
+    }
+  },
+  {
+    "out": "assets/sprites/props.png",
+    "width": 256,
+    "height": 64,
+    "preview": 4,
+    "meta": {
+      "type": "atlas",
+      "rects": {
+        "torch1": [
+          0,
+          0,
+          13,
+          31
+        ],
+        "torch2": [
+          14,
+          0,
+          13,
+          31
+        ],
+        "barrel": [
+          28,
+          0,
+          18,
+          20
+        ],
+        "bones": [
+          47,
+          0,
+          32,
+          9
+        ],
+        "flaskSmall": [
+          80,
+          0,
+          10,
+          11
+        ],
+        "flaskBig": [
+          91,
+          0,
+          12,
+          15
+        ],
+        "shells": [
+          104,
+          0,
+          26,
+          9
+        ],
+        "armor": [
+          131,
+          0,
+          32,
+          17
+        ],
+        "key": [
+          164,
+          0,
+          12,
+          17
+        ],
+        "gun": [
+          177,
+          0,
+          32,
+          9
+        ],
+        "impBall": [
+          210,
+          0,
+          8,
+          8
+        ],
+        "impBall2": [
+          219,
+          0,
+          8,
+          8
+        ],
+        "baronBall": [
+          228,
+          0,
+          12,
+          10
+        ],
+        "baronBall2": [
+          241,
+          0,
+          12,
+          10
+        ],
+        "arrow": [
+          0,
+          32,
+          16,
+          5
+        ],
+        "puff1": [
+          17,
+          32,
+          6,
+          6
+        ],
+        "puff2": [
+          24,
+          32,
+          7,
+          6
+        ],
+        "boom1": [
+          32,
+          32,
+          32,
+          32
+        ],
+        "boom2": [
+          65,
+          32,
+          32,
+          32
+        ],
+        "boom3": [
+          98,
+          32,
+          32,
+          32
+        ],
+        "blood1": [
+          131,
+          32,
+          8,
+          7
+        ],
+        "blood2": [
+          140,
+          32,
+          10,
+          8
+        ],
+        "blood3": [
+          151,
+          32,
+          13,
+          7
+        ]
+      }
+    }
+  },
+  {
+    "out": "assets/ui/hud.png",
+    "width": 320,
+    "height": 41,
+    "preview": 4,
+    "meta": {
+      "type": "atlas",
+      "rects": {
+        "plate": [
+          0,
+          0,
+          16,
+          16
+        ],
+        "box": [
+          17,
+          0,
+          54,
+          25
+        ],
+        "faceFrame": [
+          72,
+          0,
+          32,
+          30
+        ],
+        "crosshair": [
+          105,
+          0,
+          5,
+          5
+        ],
+        "face0": [
+          111,
+          0,
+          24,
+          26
+        ],
+        "face1": [
+          136,
+          0,
+          24,
+          26
+        ],
+        "face2": [
+          161,
+          0,
+          24,
+          26
+        ],
+        "face3": [
+          186,
+          0,
+          24,
+          26
+        ],
+        "face4": [
+          211,
+          0,
+          24,
+          26
+        ],
+        "face5": [
+          236,
+          0,
+          24,
+          26
+        ],
+        "face6": [
+          261,
+          0,
+          24,
+          26
+        ],
+        "d0": [
+          286,
+          0,
+          8,
+          11
+        ],
+        "d1": [
+          295,
+          0,
+          9,
+          11
+        ],
+        "d2": [
+          305,
+          0,
+          8,
+          10
+        ],
+        "d3": [
+          0,
+          31,
+          8,
+          10
+        ],
+        "d4": [
+          9,
+          31,
+          8,
+          10
+        ],
+        "d5": [
+          18,
+          31,
+          8,
+          10
+        ],
+        "d6": [
+          27,
+          31,
+          8,
+          10
+        ],
+        "d7": [
+          36,
+          31,
+          8,
+          10
+        ],
+        "d8": [
+          45,
+          31,
+          8,
+          10
+        ],
+        "d9": [
+          54,
+          31,
+          8,
+          10
+        ],
+        "dpct": [
+          63,
+          31,
+          9,
+          10
+        ]
+      },
+      "faces": [
+        "100-80",
+        "80-60",
+        "60-40",
+        "40-20",
+        "<20",
+        "dead",
+        "ouch"
+      ]
+    }
+  },
+  {
+    "out": "assets/ui/font.png",
+    "width": 96,
+    "height": 32,
+    "preview": 4,
+    "meta": {
+      "type": "bitmapfont",
+      "cellWidth": 6,
+      "cellHeight": 8,
+      "chars": " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_",
+      "charsPerRow": 16
+    }
+  }
+]

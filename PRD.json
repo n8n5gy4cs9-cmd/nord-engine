@@ -1055,6 +1055,12 @@
       "status": "done"
     },
     {
+      "id": "M6-19",
+      "milestone": "M6",
+      "title": "Redraw all Noom sprites, textures and HUD in a Barony/Doom-inspired style",
+      "status": "done"
+    },
+    {
       "id": "M7-01",
       "milestone": "M7",
       "title": "tools/build-manual.mjs (marked + CodeMirror readonly + nord-live blocks)",

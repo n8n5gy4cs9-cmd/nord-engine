@@ -9,6 +9,6 @@ find the secret alcove behind the start crypt's north wall (look for the mossy b
 mobjinfo stats (Imp, Baron of Hell, Zombieman, Demon), attack damage formulas, shotgun spread (7 pellets, 5×(1-3)), armor absorption (⅓), barrel blast radius (`P_RadiusAttack`), sound-wakes-monsters (`P_NoiseAlert`),
 Doom's 35 Hz tic rate and door timing. **From Barony** (TurningWheel/Barony, GPL-3.0): the setting and monster roster (skeletons, goblins, crypt/dungeon look); no Barony code or art is used — Barony's code is a different engine (SDL/OpenGL, voxels).
 Simplified: grid-based map instead of BSP/linedefs, front-facing sprites (no 8-way rotations), one hand-designed level, no infighting.
-All **art is original and hand-drawn** — see `assets.md` to replace it. Derived from Doom code, this example is **GPL-2.0-or-later**.
+All **art is original, with a Barony/Doom-inspired ImageGen redraw and hand-drawn lettering** — see `assets.md` to replace it. Derived from Doom code, this example is **GPL-2.0-or-later**.
 
 Code: `scripts/noom.js` (glue), `scripts/noom/sim.js` (rules), `render.js` (Babylon level + billboards), `hud.js` (canvas HUD), `level.js` (the level). Headless test: `node tools/noom-sim.mjs`.

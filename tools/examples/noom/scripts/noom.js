@@ -1,5 +1,5 @@
 // @nord {"id":"noom.game","title":"Noom — game glue","category":"games","tier":["3d"],"tags":["fps","doom","dungeon"],"description":"Noom (Doom x Barony) first-person shooter proof of concept: input, 35 Hz sim loop, Babylon renderer, canvas HUD, sound. Rules live in noom/sim.js (ported from id Software's DOOM source, GPL-2.0)."}
-// Noom — one level, Doom-style: ported monster AI/damage from DOOM (linuxdoom-1.10), Barony-flavoured dungeon, all art original and hand-drawn (tools/art/noom).
+// Noom — one level, Doom-style: ported monster AI/damage from DOOM (linuxdoom-1.10), Barony-flavoured dungeon, original redrawn art (tools/art/noom).
 // Crowelian 2026 + Sonnet.
 import { NordScript } from 'nord';
 import { Sim, TIC, MOBS } from './noom/sim.js';

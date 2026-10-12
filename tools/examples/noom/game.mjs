@@ -3,10 +3,14 @@ import { E, project } from '../lib.mjs';
 const SFX = ['shoot', 'swing', 'hit', 'hurt', 'death', 'explosion', 'explosion_small', 'pickup', 'powerup', 'open', 'close', 'magic', 'laser', 'reload', 'error', 'win', 'step_stone', 'lose'];
 const ASSETS_MD = `# Noom — assets (how to replace them)
 
-All pictures are **original, hand-drawn pixel art** (one character = one pixel, typed by hand in \`tools/art/noom/*.mjs\` — no procedural generation,
-no AI-image output). The PNGs in \`assets/\` are what the game loads. **Replace any file by dropping a new one at the same path with the same
-size/layout** — the game reads sizes from the \`*.meta.json\` next to each PNG, so if you change frame counts or sizes, edit the meta too.
-Everything is drawn with nearest-neighbour filtering, 64 px = 1 cell (2 m) so wall/floor textures and sprites share the same pixel density.
+All pictures were **redrawn for Noom in a Barony/Doom-inspired style**: gritty sculpted pixel sprites, warm stone, rusty iron,
+bone highlights, crimson demons and vivid spell effects. The nine illustrated sheets use original artwork from the built-in
+ImageGen tool, reviewed and packed at the existing game resolution. The compact font and red HUD digits are hand-drawn.
+No Doom or Barony art files were copied. Prompts are preserved in \`tools/art/noom/redrawn/prompts.json\` in the engine repo.
+
+The PNGs in \`assets/\` are what the game loads. Replace a file at the same path with the same size/layout.
+Frame names, counts, atlas rectangles and nearest-neighbour filtering are unchanged. Monster feet are aligned to the bottom
+of each frame; textures use 64 px per cell (2 m). Audio remains the shared Nord placeholder set.
 
 ## Textures (tiled on walls, floors, ceilings, doors)
 
@@ -37,7 +41,7 @@ boom1-3 (explosion), blood1-3. Keep the names; you may resize a rect if you upda
 
 ## First-person weapons — \`assets/sprites/weapons.png\`
 
-7 frames of **80×80** (drawn at 40×40 and doubled for chunky Doom pixels): \`mace_idle, mace_swing1, mace_swing2, gun_idle, gun_fire, gun_pump1, gun_pump2\`.
+7 frames of **80×80** (redrawn with chunky Doom-style shading): \`mace_idle, mace_swing1, mace_swing2, gun_idle, gun_fire, gun_pump1, gun_pump2\`.
 Drawn on a 320×180 virtual screen, bottom-centre.
 
 ## HUD — \`assets/ui/hud.png\` (atlas) and \`assets/ui/font.png\`
@@ -50,14 +54,18 @@ Drawn on a 320×180 virtual screen, bottom-centre.
 \`assets/audio/sfx/*.wav\`: ${SFX.join(', ')}.  Music: \`assets/audio/music/music_action.mp3\` (level), \`music_boss.mp3\` (when the Baron wakes).
 Which sound plays for which event is the table at the top of \`scripts/noom.js\` (\`SFX\`).
 
-## Re-packing the pixel-art sources (optional)
+## Re-packing the artwork (offline)
 
-The drawings live as text in \`tools/art/noom/\` of the Nord Engine repo; \`node tools/pixelart.mjs noom --preview\` packs them into these PNGs (+ a contact sheet at
-\`target/art-preview/noom.png\`) and \`node tools/gen_examples.mjs noom\` regenerates this folder. If you replaced PNGs by hand, do **not** re-run the packer.
+Reviewed raster masters live in \`tools/art/noom/redrawn/*.rgba.gz\`: lossless gzip-compressed RGBA bytes,
+with dimensions and metadata in \`manifest.json\`. The bitmap font lives in \`tools/art/noom/font.mjs\`.
+
+Run \`node tools/pixelart.mjs noom --preview\` to restore all ten PNGs and metadata without calling an image service;
+then \`node tools/gen_examples.mjs noom\` to refresh the playable example. The contact sheet is \`target/art-preview/noom.png\`.
+To keep a later manual PNG replacement through re-packing, update its raster master too.
 
 ## Credits
 
-Art: Crowelian 2026 + Sonnet (original). Rules/AI ported from id Software's DOOM source (GPL-2.0); setting inspired by Barony — see README.md and THIRD_PARTY.md.
+Art: Crowelian 2026 + Sonnet; 2026-10-12 redraw with OpenAI ImageGen and original hand-drawn lettering. Rules/AI ported from id Software's DOOM source (GPL-2.0); setting inspired by Barony — see README.md and THIRD_PARTY.md.
 `;
 
 const input = { fwd: ['KeyW'], back: ['KeyS'], left: ['KeyA'], right: ['KeyD'], turnL: ['ArrowLeft', 'KeyQ'], turnR: ['ArrowRight'], run: ['ShiftLeft', 'ShiftRight'], fire: ['Mouse0', 'ControlLeft', 'KeyF'], use: ['Space', 'KeyE'], w1: ['Digit1'], w2: ['Digit2'], map: ['Tab'], restart: ['KeyR'] };
@@ -80,7 +88,7 @@ find the secret alcove behind the start crypt's north wall (look for the mossy b
 mobjinfo stats (Imp, Baron of Hell, Zombieman, Demon), attack damage formulas, shotgun spread (7 pellets, 5×(1-3)), armor absorption (⅓), barrel blast radius (\`P_RadiusAttack\`), sound-wakes-monsters (\`P_NoiseAlert\`),
 Doom's 35 Hz tic rate and door timing. **From Barony** (TurningWheel/Barony, GPL-3.0): the setting and monster roster (skeletons, goblins, crypt/dungeon look); no Barony code or art is used — Barony's code is a different engine (SDL/OpenGL, voxels).
 Simplified: grid-based map instead of BSP/linedefs, front-facing sprites (no 8-way rotations), one hand-designed level, no infighting.
-All **art is original and hand-drawn** — see \`assets.md\` to replace it. Derived from Doom code, this example is **GPL-2.0-or-later**.
+All **art is original, with a Barony/Doom-inspired ImageGen redraw and hand-drawn lettering** — see \`assets.md\` to replace it. Derived from Doom code, this example is **GPL-2.0-or-later**.
 
 Code: \`scripts/noom.js\` (glue), \`scripts/noom/sim.js\` (rules), \`render.js\` (Babylon level + billboards), \`hud.js\` (canvas HUD), \`level.js\` (the level). Headless test: \`node tools/noom-sim.mjs\`.
 `,

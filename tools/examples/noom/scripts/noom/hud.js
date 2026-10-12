@@ -13,7 +13,7 @@ export class Hud {
   message(text) { this.msgs.push({ text, t: 4 }); if (this.msgs.length > 4) this.msgs.shift(); }
   rect(name) { return this.meta.hud.rects[name]; }
   draw(name, x, y) { const r = this.rect(name); this.g.drawImage(this.imgs.hud, r[0], r[1], r[2], r[3], Math.round(x), Math.round(y), r[2], r[3]); return r; }
-  /** pixel text from the hand-drawn font sheet, tinted */
+  /** pixel text from the hand-drawn dungeon font sheet, tinted */
   text(str, x, y, color = '#ffffff', scale = 1, shadow = true) {
     const key = color; let t = this.tintCache.get(key);
     if (!t) { t = document.createElement('canvas'); t.width = this.imgs.font.width; t.height = this.imgs.font.height; const c = t.getContext('2d'); c.drawImage(this.imgs.font, 0, 0); c.globalCompositeOperation = 'source-in'; c.fillStyle = color; c.fillRect(0, 0, t.width, t.height); this.tintCache.set(key, t); }

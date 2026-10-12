@@ -28,6 +28,15 @@ When you add or replace assets by hand, delete/adjust the generator step (or the
 | **Music** | `assets/audio/music/*.mp3` | examples, templates | MP3 96 kbps mono loops (`music_*`), one-shot jingles (`jingle_*`) | MP3 adds ~25 ms encoder delay → for gapless loops use OGG/WAV |
 | **Manual art** | `assets/docs/manual-banner.png`, `tutorial-cover-template.png`, `icons/NN-*.png` (17 section badges) | HTML manual & tutorials | banner 1600×320; badges 128×128 | |
 
+## Noom artwork
+
+Noom's ten image sheets were redrawn on 2026-10-12 with gritty Barony/Doom-inspired dungeon artwork, using the built-in
+ImageGen tool for nine illustrated sheets and original hand-drawn pixel lettering/digits. No external game art was copied.
+Runtime PNGs: `examples/noom/assets/{sprites,textures,ui}/`; source PNGs: `tools/examples/noom/assets/`.
+Reviewed lossless RGBA masters, dimensions, metadata and generation prompts: `tools/art/noom/redrawn/`; font: `tools/art/noom/font.mjs`.
+Re-pack offline with `node tools/pixelart.mjs noom --preview`, then `node tools/gen_examples.mjs noom`.
+All existing frame sizes, names and atlas rectangles are preserved. Full inventory: `examples/noom/assets.md`.
+
 ## Planned / missing (tracked in task.md)
 - More real CC0 packs (Kenney 2D sprites etc.) — kenney.nl/opengameart.org unreachable from the sandbox; drop them into `assets/packs/<name>/` with a README
 - 3D model placeholders (glTF props/characters) — **M6**
