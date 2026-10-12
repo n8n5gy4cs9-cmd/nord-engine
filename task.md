@@ -3,17 +3,17 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 89/126 tasks (71%)** · updated 2026-10-12
+**Overall: 91/127 tasks (72%)** · updated 2026-10-12
 
 | Milestone | Progress |
 |---|---|
 | M0 Planning, identity, assets, vendoring | 13/13 (100%) |
 | M1 Foundation | 11/11 (100%) |
 | M2 JS runtimes | 19/19 (100%) |
-| M3 Editor | 23/25 (92%) |
+| M3 Editor | 24/26 (92%) |
 | M4 Export | 8/11 (73%) |
 | M5 Rust/WASM | 0/9 (0%) |
-| M6 Library | 15/18 (83%) |
+| M6 Library | 16/18 (89%) |
 | M7 Docs | 0/12 (0%) |
 | M8 Polish & portability | 0/8 (0%) |
 
@@ -107,6 +107,7 @@ _Native egui editor + wry viewport + code editor_
 - [x] **M3-23** Editor: apply selected skin + theme (UI fonts, code font + ligatures, syntax colors) via shared themes.json; settings UI to switch live
 - [x] **M3-24** Code editor: multi-cursor editing (custom text-edit core; egui TextEdit has a single selection)
 - [ ] **M3-25** OWNER: verify webview embedding on macOS (checklist in docs/KNOWN_ISSUES.md RISK-001a), then tick M3-07
+- [x] **M3-26** Game view: size presets (Fit/50-200%), fullscreen (Esc), console strip that cannot be covered by the webview
 
 ## M4 — Export
 _web static, single-file, mac wrapper_
@@ -151,7 +152,7 @@ _snippets, controllers, systems, asset packs, examples_
 - [x] **M6-10** Utilities (tween, pool, noise, grid, localisation, gamepad map, debug overlay, recorder, jsfxr-style sfx, console)
 - [x] **M6-11** FX (particle presets, shake, flash, hitstop, slow-mo, trail, post-fx, parallax) + shaders
 - [x] **M6-12** App kits (todo, notes, kanban, dashboard+charts, calculator, paint, audio player, json viewer, router/state)
-- [ ] **M6-13** Templates for New Project (>= 12, see LIBRARY_PLAN J)
+- [x] **M6-13** Templates for New Project (>= 12, see LIBRARY_PLAN J)
 - [x] **M6-14** Example games 2D (>= 10)
 - [x] **M6-15** Example games 3D (>= 4)
 - [ ] **M6-16** Example apps (>= 6) + Rust samples (>= 3)

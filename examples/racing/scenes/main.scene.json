@@ -4,7 +4,7 @@
   "settings": {},
   "entities": [
     {
-      "id": "eeeeee1y",
+      "id": "eeeeee3q",
       "name": "Sun",
       "enabled": true,
       "tags": [],
@@ -40,7 +40,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeee1z",
+      "id": "eeeeee3r",
       "name": "Ambient",
       "enabled": true,
       "tags": [],
@@ -75,7 +75,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeee20",
+      "id": "eeeeee3s",
       "name": "Sky",
       "enabled": true,
       "tags": [],
@@ -108,7 +108,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeee21",
+      "id": "eeeeee3t",
       "name": "Ground",
       "enabled": true,
       "tags": [],
@@ -173,7 +173,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeee22",
+      "id": "eeeeee3u",
       "name": "WallN",
       "enabled": true,
       "tags": [],
@@ -234,7 +234,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeee23",
+      "id": "eeeeee3v",
       "name": "WallS",
       "enabled": true,
       "tags": [],
@@ -295,7 +295,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeee24",
+      "id": "eeeeee3w",
       "name": "WallE",
       "enabled": true,
       "tags": [],
@@ -356,7 +356,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeee25",
+      "id": "eeeeee3x",
       "name": "WallW",
       "enabled": true,
       "tags": [],
@@ -417,7 +417,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeee26",
+      "id": "eeeeee3y",
       "name": "Island",
       "enabled": true,
       "tags": [],
@@ -482,7 +482,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeee27",
+      "id": "eeeeee3z",
       "name": "CP0",
       "enabled": true,
       "tags": [
@@ -545,7 +545,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeee28",
+      "id": "eeeeee40",
       "name": "CP1",
       "enabled": true,
       "tags": [
@@ -608,7 +608,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeee29",
+      "id": "eeeeee41",
       "name": "CP2",
       "enabled": true,
       "tags": [
@@ -671,7 +671,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeee2a",
+      "id": "eeeeee42",
       "name": "CP3",
       "enabled": true,
       "tags": [
@@ -734,7 +734,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeee2b",
+      "id": "eeeeee43",
       "name": "Car",
       "enabled": true,
       "tags": [
@@ -810,7 +810,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeee2c",
+      "id": "eeeeee44",
       "name": "Camera",
       "enabled": true,
       "tags": [],

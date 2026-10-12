@@ -7,6 +7,8 @@ use std::path::{Path, PathBuf};
 pub struct HubUi {
     pub name: String,
     pub kind: ProjectType,
+    /// starter template id from `templates/templates.json` (overrides `kind` when set)
+    pub starter: Option<String>,
     pub parent: PathBuf,
     pub error: Option<String>,
 }
@@ -20,6 +22,7 @@ impl Default for HubUi {
         Self {
             name: "My Game".into(),
             kind: ProjectType::TwoD,
+            starter: None,
             parent: if docs.exists() {
                 docs.join("Nord Projects")
             } else {
@@ -67,6 +70,31 @@ pub fn create_project(parent: &Path, name: &str, kind: ProjectType) -> Result<Pa
     std::fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
     nord_core::project::create(&dir, kind).map_err(|e| e.to_string())?;
     Ok(dir)
+}
+
+/// Create a project from a starter folder (`templates/<id>`).
+pub fn create_starter(parent: &Path, name: &str, src: &Path) -> Result<PathBuf, String> {
+    let name = name.trim();
+    if name.is_empty() || name.contains(['/', '\\']) {
+        return Err("Enter a project name (no slashes)".into());
+    }
+    let dir = parent.join(name);
+    nord_core::project::create_from_template(src, &dir).map_err(|e| e.to_string())?;
+    Ok(dir)
+}
+
+/// `(id, title, description, type)` rows of `templates/templates.json` (empty when the engine ships none).
+pub fn starters(root: &Path) -> Vec<(String, String, String, String)> {
+    let Ok(txt) = std::fs::read_to_string(root.join("templates/templates.json")) else {
+        return vec![];
+    };
+    let Ok(v) = serde_json::from_str::<Vec<serde_json::Value>>(&txt) else {
+        return vec![];
+    };
+    let g = |x: &serde_json::Value, k: &str| x[k].as_str().unwrap_or("").to_string();
+    v.iter()
+        .map(|x| (g(x, "id"), g(x, "title"), g(x, "description"), g(x, "type")))
+        .collect()
 }
 
 fn copy_dir(from: &Path, to: &Path) -> std::io::Result<()> {
@@ -151,15 +179,48 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         });
         ui.add_space(4.0);
         for (k, title, desc) in TEMPLATES {
-            let sel = st.hub.kind == k;
+            let sel = st.hub.starter.is_none() && st.hub.kind == k;
             let r = ui.selectable_label(sel, RichText::new(title).strong());
             if r.clicked() {
                 st.hub.kind = k;
+                st.hub.starter = None;
             }
             ui.indent(title, |ui| ui.weak(desc));
         }
+        let rows = st
+            .engine_root
+            .as_ref()
+            .map(|r| starters(r))
+            .unwrap_or_default();
+        if !rows.is_empty() {
+            ui.add_space(6.0);
+            ui.label(RichText::new("Starter templates").strong());
+            egui::ScrollArea::vertical()
+                .id_salt("starters")
+                .max_height(190.0)
+                .show(ui, |ui| {
+                    for (id, title, desc, ty) in &rows {
+                        let sel = st.hub.starter.as_deref() == Some(id.as_str());
+                        if ui
+                            .selectable_label(sel, format!("{title}  ·  {ty}"))
+                            .on_hover_text(desc)
+                            .clicked()
+                        {
+                            st.hub.starter = Some(id.clone());
+                        }
+                    }
+                });
+        }
         if ui.button("Create project").clicked() {
-            match create_project(&st.hub.parent.clone(), &st.hub.name.clone(), st.hub.kind) {
+            let parent = st.hub.parent.clone();
+            let name = st.hub.name.clone();
+            let res = match (&st.hub.starter, &st.engine_root) {
+                (Some(id), Some(root)) => {
+                    create_starter(&parent, &name, &root.join("templates").join(id))
+                }
+                _ => create_project(&parent, &name, st.hub.kind),
+            };
+            match res {
                 Ok(dir) => {
                     st.hub.error = None;
                     st.push(Action::OpenPath(dir));

@@ -78,8 +78,29 @@ impl WebPanes {
         url: &str,
         overlay: bool,
     ) -> bool {
+        self.show_sized(ui, frame, key, url, overlay, None)
+    }
+
+    #[allow(unused_variables)]
+    /// Like [`show`](Self::show) but optionally with a fixed pixel size (centered in the available area, never larger than it).
+    pub fn show_sized(
+        &mut self,
+        ui: &mut Ui,
+        frame: Option<&eframe::Frame>,
+        key: &str,
+        url: &str,
+        overlay: bool,
+        fixed: Option<Vec2>,
+    ) -> bool {
         let size = ui.available_size().max(Vec2::splat(10.0));
-        let (rect, _) = ui.allocate_exact_size(size, egui::Sense::hover());
+        let (full, _) = ui.allocate_exact_size(size, egui::Sense::hover());
+        let rect = match fixed {
+            Some(f) => egui::Rect::from_center_size(full.center(), f.min(size).max(Vec2::splat(10.0))),
+            None => full,
+        };
+        if fixed.is_some() {
+            ui.painter().rect_filled(full, 0.0, ui.visuals().extreme_bg_color);
+        }
         self.shown.insert(key.to_string());
         #[cfg(feature = "webview")]
         {

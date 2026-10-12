@@ -176,9 +176,60 @@ pub fn create(dir: &Path, kind: ProjectType) -> crate::Result<()> {
     io::save_project(dir, &p)
 }
 
+/// Copy a starter template folder (`templates/<id>`) to `dst` and give the project its own name and id.
+pub fn create_from_template(src: &Path, dst: &Path) -> crate::Result<()> {
+    use crate::io;
+    fn copy(from: &Path, to: &Path) -> crate::Result<()> {
+        std::fs::create_dir_all(to).map_err(|e| io::io_err(to, e))?;
+        for e in std::fs::read_dir(from).map_err(|e| io::io_err(from, e))? {
+            let e = e.map_err(|e| io::io_err(from, e))?;
+            let (a, b) = (e.path(), to.join(e.file_name()));
+            if a.is_dir() {
+                copy(&a, &b)?;
+            } else {
+                std::fs::copy(&a, &b).map_err(|e| io::io_err(&b, e))?;
+            }
+        }
+        Ok(())
+    }
+    if dst.join(io::PROJECT_FILE).exists() {
+        return Err(crate::Error::Msg(format!(
+            "{} already contains a Nord project",
+            dst.display()
+        )));
+    }
+    copy(src, dst)?;
+    let name = dst
+        .file_name()
+        .map(|n| n.to_string_lossy().into_owned())
+        .unwrap_or_else(|| "My Game".into());
+    let mut p = io::load_project(dst)?;
+    p.name = name.clone();
+    p.id = format!("com.crowelian.{}", slug(&name));
+    io::write_atomic(&dst.join(".gitignore"), b".nord-cache/\ndist/\ntarget/\n")?;
+    io::save_project(dst, &p)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn creates_from_template_folder() {
+        let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../templates");
+        let Some(src) = std::fs::read_dir(&root)
+            .ok()
+            .and_then(|d| d.flatten().map(|e| e.path()).find(|p| p.join("nord.project.json").exists()))
+        else {
+            return; // engine ships no starter templates (yet)
+        };
+        let dst = std::env::temp_dir().join(format!("nord-tpl-{}/My Starter", std::process::id()));
+        create_from_template(&src, &dst).unwrap();
+        let p = crate::io::load_project(&dst).unwrap();
+        assert_eq!(p.name, "My Starter");
+        assert_eq!(p.id, "com.crowelian.mystarter");
+        assert!(create_from_template(&src, &dst).is_err());
+    }
 
     #[test]
     fn slug_strips() {

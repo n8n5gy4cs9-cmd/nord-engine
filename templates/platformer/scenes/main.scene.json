@@ -6,7 +6,7 @@
   },
   "entities": [
     {
-      "id": "eeeeeee1",
+      "id": "eeeeee1t",
       "name": "Sky",
       "enabled": true,
       "tags": [],
@@ -43,7 +43,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeee2",
+      "id": "eeeeee1u",
       "name": "Hills",
       "enabled": true,
       "tags": [],
@@ -80,7 +80,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeee3",
+      "id": "eeeeee1v",
       "name": "Level",
       "enabled": true,
       "tags": [],
@@ -114,7 +114,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeee4",
+      "id": "eeeeee1w",
       "name": "Hero",
       "enabled": true,
       "tags": [
@@ -190,7 +190,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeee5",
+      "id": "eeeeee1x",
       "name": "Coin0",
       "enabled": true,
       "tags": [
@@ -249,7 +249,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeee6",
+      "id": "eeeeee1y",
       "name": "Coin1",
       "enabled": true,
       "tags": [
@@ -308,7 +308,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeee7",
+      "id": "eeeeee1z",
       "name": "Coin2",
       "enabled": true,
       "tags": [
@@ -367,7 +367,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeee8",
+      "id": "eeeeee20",
       "name": "Coin3",
       "enabled": true,
       "tags": [
@@ -426,7 +426,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeee9",
+      "id": "eeeeee21",
       "name": "Coin4",
       "enabled": true,
       "tags": [
@@ -485,7 +485,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeea",
+      "id": "eeeeee22",
       "name": "Coin5",
       "enabled": true,
       "tags": [
@@ -544,7 +544,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeeb",
+      "id": "eeeeee23",
       "name": "Coin6",
       "enabled": true,
       "tags": [
@@ -603,7 +603,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeec",
+      "id": "eeeeee24",
       "name": "Coin7",
       "enabled": true,
       "tags": [
@@ -662,7 +662,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeed",
+      "id": "eeeeee25",
       "name": "Coin8",
       "enabled": true,
       "tags": [
@@ -721,7 +721,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeee",
+      "id": "eeeeee26",
       "name": "Coin9",
       "enabled": true,
       "tags": [
@@ -780,7 +780,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeef",
+      "id": "eeeeee27",
       "name": "Coin10",
       "enabled": true,
       "tags": [
@@ -839,7 +839,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeeg",
+      "id": "eeeeee28",
       "name": "Coin11",
       "enabled": true,
       "tags": [
@@ -898,7 +898,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeeh",
+      "id": "eeeeee29",
       "name": "Coin12",
       "enabled": true,
       "tags": [
@@ -957,7 +957,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeei",
+      "id": "eeeeee2a",
       "name": "Coin13",
       "enabled": true,
       "tags": [
@@ -1016,7 +1016,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeej",
+      "id": "eeeeee2b",
       "name": "Coin14",
       "enabled": true,
       "tags": [
@@ -1075,7 +1075,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeek",
+      "id": "eeeeee2c",
       "name": "Coin15",
       "enabled": true,
       "tags": [
@@ -1134,7 +1134,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeel",
+      "id": "eeeeee2d",
       "name": "Slime",
       "enabled": true,
       "tags": [
@@ -1199,7 +1199,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeem",
+      "id": "eeeeee2e",
       "name": "Slime",
       "enabled": true,
       "tags": [
@@ -1264,7 +1264,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeen",
+      "id": "eeeeee2f",
       "name": "Slime",
       "enabled": true,
       "tags": [
@@ -1329,7 +1329,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeeo",
+      "id": "eeeeee2g",
       "name": "Slime",
       "enabled": true,
       "tags": [
@@ -1394,7 +1394,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeep",
+      "id": "eeeeee2h",
       "name": "Boss",
       "enabled": true,
       "tags": [
@@ -1459,7 +1459,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeeq",
+      "id": "eeeeee2i",
       "name": "Checkpoint",
       "enabled": true,
       "tags": [],
@@ -1513,7 +1513,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeer",
+      "id": "eeeeee2j",
       "name": "Checkpoint",
       "enabled": true,
       "tags": [],
@@ -1567,7 +1567,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeees",
+      "id": "eeeeee2k",
       "name": "Camera",
       "enabled": true,
       "tags": [],
@@ -1621,7 +1621,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeet",
+      "id": "eeeeee2l",
       "name": "Systems",
       "enabled": true,
       "tags": [],

@@ -720,6 +720,12 @@
       "status": "todo"
     },
     {
+      "id": "M3-26",
+      "milestone": "M3",
+      "title": "Game view: size presets (Fit/50-200%), fullscreen (Esc), console strip that cannot be covered by the webview",
+      "status": "done"
+    },
+    {
       "id": "M4-01",
       "milestone": "M4",
       "title": "`nord build` pipeline: validate, resolve libs, copy assets, nord.json, index.html templates",
@@ -915,7 +921,7 @@
       "id": "M6-13",
       "milestone": "M6",
       "title": "Templates for New Project (>= 12, see LIBRARY_PLAN J)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M6-14",

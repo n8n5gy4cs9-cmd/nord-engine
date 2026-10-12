@@ -4,7 +4,7 @@
   "settings": {},
   "entities": [
     {
-      "id": "eeeeeeee",
+      "id": "eeeeee6e",
       "name": "Camera",
       "enabled": true,
       "tags": [],
@@ -37,7 +37,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeef",
+      "id": "eeeeee6f",
       "name": "Backdrop",
       "enabled": true,
       "tags": [],
@@ -76,7 +76,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeeg",
+      "id": "eeeeee6g",
       "name": "Speaker",
       "enabled": true,
       "tags": [],
@@ -115,7 +115,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeeh",
+      "id": "eeeeee6h",
       "name": "Story",
       "enabled": true,
       "tags": [],

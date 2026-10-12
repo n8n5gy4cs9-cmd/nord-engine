@@ -65,6 +65,7 @@ pub struct App {
     quit_confirm: bool,
     allow_close: bool,
     last_window_save: Instant,
+    os_fullscreen: bool,
 }
 
 impl App {
@@ -80,6 +81,7 @@ impl App {
             quit_confirm: false,
             allow_close: false,
             last_window_save: Instant::now(),
+            os_fullscreen: false,
         }
     }
 
@@ -532,47 +534,83 @@ impl TabViewer for Viewer<'_> {
                     self.web.show(ui, self.frame, "scene", &url, self.overlay);
                 }
             }
-            Tab::Game => {
-                ui.horizontal(|ui| {
-                    if crate::icons::button(
-                        ui,
-                        "terminal",
-                        "Show/hide console under the game",
-                        st.game_console,
-                    )
-                    .clicked()
-                    {
-                        st.game_console = !st.game_console;
-                    }
-                    ui.weak(if st.game_console {
-                        "console on"
-                    } else {
-                        "console off"
-                    });
-                });
-                if st.game_console {
-                    egui::TopBottomPanel::bottom("game-console")
-                        .resizable(true)
-                        .default_height(140.0)
-                        .show_inside(ui, |ui| panels::console::ui(st, ui));
-                }
-                if st.play.as_ref().is_some_and(|p| p.running) {
-                    let base = st.ensure_server().unwrap_or_default();
-                    let url = format!("{base}/?n={}", st.game_nonce);
-                    self.web.show(ui, self.frame, "game", &url, self.overlay);
-                } else {
-                    ui.add_space(30.0);
-                    ui.vertical_centered(|ui| {
-                        ui.weak("Press ▶ Play (Cmd+R) to run the game here");
-                        if let Some(p) = &st.play {
-                            if ui.small_button("Open dev server in browser").clicked() {
-                                open_in_browser(&format!("http://127.0.0.1:{}/", p.port));
-                            }
-                        }
-                    });
-                }
+            Tab::Game => game_tab(st, ui, self.web, self.frame, self.overlay),
+        }
+    }
+}
+
+/// The Game tab: toolbar (console / size / fullscreen), the embedded game webview and an optional console strip under it.
+/// The console strip is laid out *before* the webview from a stored height, so the native webview can never cover it.
+pub fn game_tab(
+    st: &mut crate::state::EditorState,
+    ui: &mut egui::Ui,
+    web: &mut WebPanes,
+    frame: Option<&eframe::Frame>,
+    overlay: bool,
+) {
+    ui.horizontal_wrapped(|ui| {
+        if crate::icons::button(ui, "terminal", "Show/hide console under the game", st.game_console).clicked() {
+            st.game_console = !st.game_console;
+        }
+        ui.separator();
+        ui.weak("Size");
+        for (label, v) in [("Fit", 0.0_f32), ("50%", 0.5), ("100%", 1.0), ("150%", 1.5), ("200%", 2.0)] {
+            if ui.selectable_label((st.game_scale - v).abs() < f32::EPSILON, label).clicked() {
+                st.game_scale = v;
             }
         }
+        ui.separator();
+        if ui
+            .button(if st.game_full { "Exit fullscreen (Esc)" } else { "Fullscreen" })
+            .on_hover_text("Maximise the game over the whole window (Esc leaves)")
+            .clicked()
+        {
+            st.game_full = !st.game_full;
+        }
+        if let Some(p) = &st.play {
+            if ui.button("Open in browser").clicked() {
+                open_in_browser(&format!("http://127.0.0.1:{}/", p.port));
+            }
+        }
+    });
+    let running = st.play.as_ref().is_some_and(|p| p.running);
+    // console strip: fixed height (draggable handle), reserved first
+    let total = ui.available_size();
+    let mut console_h = 0.0;
+    if st.game_console && !st.game_full {
+        console_h = st.game_console_h.clamp(60.0, (total.y - 80.0).max(60.0));
+    }
+    let game_h = (total.y - console_h - if console_h > 0.0 { 8.0 } else { 0.0 }).max(40.0);
+    ui.allocate_ui(egui::vec2(total.x, game_h), |ui| {
+        ui.set_min_size(egui::vec2(total.x, game_h));
+        if running {
+            let base = st.ensure_server().unwrap_or_default();
+            let url = format!("{base}/?n={}", st.game_nonce);
+            let fixed = (st.game_scale > 0.0).then(|| {
+                let d = st.project.as_ref().map(|p| (p.display.width as f32, p.display.height as f32)).unwrap_or((1280.0, 720.0));
+                egui::vec2(d.0 * st.game_scale, d.1 * st.game_scale)
+            });
+            web.show_sized(ui, frame, "game", &url, overlay, fixed);
+        } else {
+            ui.add_space(30.0);
+            ui.vertical_centered(|ui| {
+                ui.weak("Press ▶ Play (Cmd+R) to run the game here");
+            });
+        }
+    });
+    if console_h > 0.0 {
+        let (handle, resp) = ui.allocate_exact_size(egui::vec2(total.x, 8.0), egui::Sense::drag());
+        ui.painter().rect_filled(handle.shrink2(egui::vec2(0.0, 2.0)), 2.0, ui.visuals().widgets.noninteractive.bg_stroke.color);
+        if resp.dragged() {
+            st.game_console_h = (st.game_console_h - resp.drag_delta().y).clamp(60.0, (total.y - 80.0).max(60.0));
+        }
+        if resp.hovered() || resp.dragged() {
+            ui.ctx().set_cursor_icon(egui::CursorIcon::ResizeVertical);
+        }
+        ui.allocate_ui(egui::vec2(total.x, console_h), |ui| {
+            ui.set_min_size(egui::vec2(total.x, console_h));
+            panels::console::ui(st, ui);
+        });
     }
 }
 
@@ -634,8 +672,18 @@ impl App {
             self.last_window_save = Instant::now();
         }
 
-        egui::TopBottomPanel::top("menu").show(ctx, |ui| self.menu(ui));
-        egui::TopBottomPanel::top("toolbar").show(ctx, |ui| panels::toolbar::ui(&mut self.st, ui));
+        if self.st.game_full && ctx.input(|i| i.key_pressed(egui::Key::Escape)) {
+            self.st.game_full = false;
+        }
+        if self.st.game_full != self.os_fullscreen {
+            self.os_fullscreen = self.st.game_full;
+            ctx.send_viewport_cmd(egui::ViewportCommand::Fullscreen(self.os_fullscreen));
+        }
+        let game_full = self.st.game_full && self.st.project.is_some();
+        if !game_full {
+            egui::TopBottomPanel::top("menu").show(ctx, |ui| self.menu(ui));
+            egui::TopBottomPanel::top("toolbar").show(ctx, |ui| panels::toolbar::ui(&mut self.st, ui));
+        }
         let overlay = ctx.memory(|m| m.any_popup_open())
             || self.st.palette.mode != PMode::Closed
             || self.st.settings_open
@@ -647,6 +695,10 @@ impl App {
         self.web.begin_frame();
         if self.st.project.is_none() {
             egui::CentralPanel::default().show(ctx, |ui| panels::hub::ui(&mut self.st, ui));
+        } else if game_full {
+            egui::CentralPanel::default().frame(egui::Frame::NONE).show(ctx, |ui| {
+                game_tab(&mut self.st, ui, &mut self.web, frame, overlay);
+            });
         } else {
             let mut style = Style::from_egui(ctx.style().as_ref());
             style.tab_bar.fill_tab_bar = true;

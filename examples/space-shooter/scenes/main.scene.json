@@ -4,7 +4,7 @@
   "settings": {},
   "entities": [
     {
-      "id": "eeeeeeeb",
+      "id": "eeeeee4b",
       "name": "Camera",
       "enabled": true,
       "tags": [],
@@ -37,7 +37,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeec",
+      "id": "eeeeee4c",
       "name": "Star0",
       "enabled": true,
       "tags": [],
@@ -76,7 +76,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeed",
+      "id": "eeeeee4d",
       "name": "Star1",
       "enabled": true,
       "tags": [],
@@ -115,7 +115,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeee",
+      "id": "eeeeee4e",
       "name": "Star2",
       "enabled": true,
       "tags": [],
@@ -154,7 +154,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeef",
+      "id": "eeeeee4f",
       "name": "Star3",
       "enabled": true,
       "tags": [],
@@ -193,7 +193,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeeg",
+      "id": "eeeeee4g",
       "name": "Star4",
       "enabled": true,
       "tags": [],
@@ -232,7 +232,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeeh",
+      "id": "eeeeee4h",
       "name": "Star5",
       "enabled": true,
       "tags": [],
@@ -271,7 +271,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeei",
+      "id": "eeeeee4i",
       "name": "Star6",
       "enabled": true,
       "tags": [],
@@ -310,7 +310,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeej",
+      "id": "eeeeee4j",
       "name": "Star7",
       "enabled": true,
       "tags": [],
@@ -349,7 +349,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeek",
+      "id": "eeeeee4k",
       "name": "Star8",
       "enabled": true,
       "tags": [],
@@ -388,7 +388,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeel",
+      "id": "eeeeee4l",
       "name": "Star9",
       "enabled": true,
       "tags": [],
@@ -427,7 +427,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeem",
+      "id": "eeeeee4m",
       "name": "Star10",
       "enabled": true,
       "tags": [],
@@ -466,7 +466,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeen",
+      "id": "eeeeee4n",
       "name": "Star11",
       "enabled": true,
       "tags": [],
@@ -505,7 +505,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeeo",
+      "id": "eeeeee4o",
       "name": "Star12",
       "enabled": true,
       "tags": [],
@@ -544,7 +544,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeep",
+      "id": "eeeeee4p",
       "name": "Star13",
       "enabled": true,
       "tags": [],
@@ -583,7 +583,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeeq",
+      "id": "eeeeee4q",
       "name": "Star14",
       "enabled": true,
       "tags": [],
@@ -622,7 +622,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeer",
+      "id": "eeeeee4r",
       "name": "Star15",
       "enabled": true,
       "tags": [],
@@ -661,7 +661,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeees",
+      "id": "eeeeee4s",
       "name": "Star16",
       "enabled": true,
       "tags": [],
@@ -700,7 +700,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeet",
+      "id": "eeeeee4t",
       "name": "Star17",
       "enabled": true,
       "tags": [],
@@ -739,7 +739,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeeu",
+      "id": "eeeeee4u",
       "name": "Star18",
       "enabled": true,
       "tags": [],
@@ -778,7 +778,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeev",
+      "id": "eeeeee4v",
       "name": "Star19",
       "enabled": true,
       "tags": [],
@@ -817,7 +817,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeew",
+      "id": "eeeeee4w",
       "name": "Star20",
       "enabled": true,
       "tags": [],
@@ -856,7 +856,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeex",
+      "id": "eeeeee4x",
       "name": "Star21",
       "enabled": true,
       "tags": [],
@@ -895,7 +895,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeey",
+      "id": "eeeeee4y",
       "name": "Star22",
       "enabled": true,
       "tags": [],
@@ -934,7 +934,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeez",
+      "id": "eeeeee4z",
       "name": "Star23",
       "enabled": true,
       "tags": [],
@@ -973,7 +973,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeee10",
+      "id": "eeeeee50",
       "name": "Star24",
       "enabled": true,
       "tags": [],
@@ -1012,7 +1012,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeee11",
+      "id": "eeeeee51",
       "name": "Star25",
       "enabled": true,
       "tags": [],
@@ -1051,7 +1051,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeee12",
+      "id": "eeeeee52",
       "name": "Star26",
       "enabled": true,
       "tags": [],
@@ -1090,7 +1090,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeee13",
+      "id": "eeeeee53",
       "name": "Star27",
       "enabled": true,
       "tags": [],
@@ -1129,7 +1129,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeee14",
+      "id": "eeeeee54",
       "name": "Star28",
       "enabled": true,
       "tags": [],
@@ -1168,7 +1168,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeee15",
+      "id": "eeeeee55",
       "name": "Star29",
       "enabled": true,
       "tags": [],
@@ -1207,7 +1207,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeee16",
+      "id": "eeeeee56",
       "name": "Star30",
       "enabled": true,
       "tags": [],
@@ -1246,7 +1246,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeee17",
+      "id": "eeeeee57",
       "name": "Star31",
       "enabled": true,
       "tags": [],
@@ -1285,7 +1285,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeee18",
+      "id": "eeeeee58",
       "name": "Star32",
       "enabled": true,
       "tags": [],
@@ -1324,7 +1324,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeee19",
+      "id": "eeeeee59",
       "name": "Star33",
       "enabled": true,
       "tags": [],
@@ -1363,7 +1363,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeee1a",
+      "id": "eeeeee5a",
       "name": "Star34",
       "enabled": true,
       "tags": [],
@@ -1402,7 +1402,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeee1b",
+      "id": "eeeeee5b",
       "name": "Star35",
       "enabled": true,
       "tags": [],
@@ -1441,7 +1441,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeee1c",
+      "id": "eeeeee5c",
       "name": "Star36",
       "enabled": true,
       "tags": [],
@@ -1480,7 +1480,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeee1d",
+      "id": "eeeeee5d",
       "name": "Star37",
       "enabled": true,
       "tags": [],
@@ -1519,7 +1519,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeee1e",
+      "id": "eeeeee5e",
       "name": "Star38",
       "enabled": true,
       "tags": [],
@@ -1558,7 +1558,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeee1f",
+      "id": "eeeeee5f",
       "name": "Star39",
       "enabled": true,
       "tags": [],
@@ -1597,7 +1597,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeee1g",
+      "id": "eeeeee5g",
       "name": "Player",
       "enabled": true,
       "tags": [
@@ -1637,7 +1637,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeee1h",
+      "id": "eeeeee5h",
       "name": "Game",
       "enabled": true,
       "tags": [],

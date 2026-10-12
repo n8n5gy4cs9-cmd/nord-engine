@@ -4,7 +4,7 @@
   "settings": {},
   "entities": [
     {
-      "id": "eeeeeee7",
+      "id": "eeeeee45",
       "name": "Camera",
       "enabled": true,
       "tags": [],
@@ -37,7 +37,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeee8",
+      "id": "eeeeee46",
       "name": "Ground",
       "enabled": true,
       "tags": [],
@@ -76,7 +76,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeee9",
+      "id": "eeeeee47",
       "name": "Runner",
       "enabled": true,
       "tags": [
@@ -117,7 +117,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeea",
+      "id": "eeeeee48",
       "name": "Game",
       "enabled": true,
       "tags": [],

@@ -4,7 +4,7 @@
   "settings": {},
   "entities": [
     {
-      "id": "eeeeeee1",
+      "id": "eeeeee5k",
       "name": "Camera",
       "enabled": true,
       "tags": [],
@@ -55,7 +55,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeee2",
+      "id": "eeeeee5l",
       "name": "Floor",
       "enabled": true,
       "tags": [],
@@ -94,7 +94,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeee3",
+      "id": "eeeeee5m",
       "name": "WallTop",
       "enabled": true,
       "tags": [
@@ -147,7 +147,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeee4",
+      "id": "eeeeee5n",
       "name": "WallBottom",
       "enabled": true,
       "tags": [
@@ -200,7 +200,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeee5",
+      "id": "eeeeee5o",
       "name": "WallLeft",
       "enabled": true,
       "tags": [
@@ -253,7 +253,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeee6",
+      "id": "eeeeee5p",
       "name": "WallRight",
       "enabled": true,
       "tags": [
@@ -306,7 +306,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeee7",
+      "id": "eeeeee5q",
       "name": "Divider1",
       "enabled": true,
       "tags": [
@@ -359,7 +359,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeee8",
+      "id": "eeeeee5r",
       "name": "Divider2",
       "enabled": true,
       "tags": [
@@ -412,7 +412,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeee9",
+      "id": "eeeeee5s",
       "name": "DoorWall",
       "enabled": true,
       "tags": [
@@ -465,7 +465,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeea",
+      "id": "eeeeee5t",
       "name": "DoorSensor",
       "enabled": true,
       "tags": [],
@@ -518,7 +518,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeeb",
+      "id": "eeeeee5u",
       "name": "Hero",
       "enabled": true,
       "tags": [
@@ -596,7 +596,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeec",
+      "id": "eeeeee5v",
       "name": "Elder",
       "enabled": true,
       "tags": [
@@ -643,7 +643,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeed",
+      "id": "eeeeee5w",
       "name": "Key",
       "enabled": true,
       "tags": [
@@ -700,7 +700,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeee",
+      "id": "eeeeee5x",
       "name": "Gem0",
       "enabled": true,
       "tags": [
@@ -757,7 +757,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeef",
+      "id": "eeeeee5y",
       "name": "Gem1",
       "enabled": true,
       "tags": [
@@ -814,7 +814,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeeg",
+      "id": "eeeeee5z",
       "name": "Gem2",
       "enabled": true,
       "tags": [
@@ -871,7 +871,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeeh",
+      "id": "eeeeee60",
       "name": "Potion",
       "enabled": true,
       "tags": [],
@@ -926,7 +926,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeei",
+      "id": "eeeeee61",
       "name": "Bat0",
       "enabled": true,
       "tags": [
@@ -993,7 +993,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeej",
+      "id": "eeeeee62",
       "name": "Bat1",
       "enabled": true,
       "tags": [
@@ -1060,7 +1060,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeek",
+      "id": "eeeeee63",
       "name": "Chest",
       "enabled": true,
       "tags": [],
@@ -1111,7 +1111,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeeel",
+      "id": "eeeeee64",
       "name": "Systems",
       "enabled": true,
       "tags": [],

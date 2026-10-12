@@ -4,7 +4,7 @@
   "settings": {},
   "entities": [
     {
-      "id": "eeeeeee6",
+      "id": "eeeeeee8",
       "name": "Camera",
       "enabled": true,
       "tags": [],
@@ -37,7 +37,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeee7",
+      "id": "eeeeeee9",
       "name": "Ground",
       "enabled": true,
       "tags": [],
@@ -76,7 +76,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeee8",
+      "id": "eeeeeeea",
       "name": "Bird",
       "enabled": true,
       "tags": [],
@@ -114,7 +114,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeee9",
+      "id": "eeeeeeeb",
       "name": "Game",
       "enabled": true,
       "tags": [],

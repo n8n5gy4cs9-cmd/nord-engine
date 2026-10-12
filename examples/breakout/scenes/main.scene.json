@@ -4,7 +4,7 @@
   "settings": {},
   "entities": [
     {
-      "id": "eeeeeee1",
+      "id": "eeeeeee3",
       "name": "Camera",
       "enabled": true,
       "tags": [],
@@ -37,7 +37,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeee2",
+      "id": "eeeeeee4",
       "name": "Paddle",
       "enabled": true,
       "tags": [],
@@ -76,7 +76,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeee3",
+      "id": "eeeeeee5",
       "name": "Ball",
       "enabled": true,
       "tags": [],
@@ -115,7 +115,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeee4",
+      "id": "eeeeeee6",
       "name": "Info",
       "enabled": true,
       "tags": [],
@@ -150,7 +150,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeee5",
+      "id": "eeeeeee7",
       "name": "Game",
       "enabled": true,
       "tags": [],

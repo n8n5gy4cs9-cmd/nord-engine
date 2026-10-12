@@ -141,6 +141,12 @@ pub struct EditorState {
     pub play: Option<Play>,
     /// show the console under the Game view (off by default)
     pub game_console: bool,
+    /// console strip height under the Game view (px, draggable)
+    pub game_console_h: f32,
+    /// Game view size: 0.0 = fit the tab, otherwise a fixed scale of the project's display size (centered)
+    pub game_scale: f32,
+    /// Game view maximised over the whole window (menu/toolbar/panels hidden, OS fullscreen); Esc leaves
+    pub game_full: bool,
     pub lock: Option<nord_core::io::ProjectLock>,
     pub last_autosave: Instant,
     pub recover: Option<String>,
@@ -197,6 +203,9 @@ impl EditorState {
             toast: None,
             play: None,
             game_console: false,
+            game_console_h: 160.0,
+            game_scale: 0.0,
+            game_full: false,
             lock: None,
             last_autosave: Instant::now(),
             recover: None,

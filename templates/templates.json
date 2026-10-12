@@ -1,0 +1,86 @@
+[
+  {
+    "id": "endless-runner",
+    "title": "Endless one-button (Flappy)",
+    "description": "Scrolling obstacles, one-button control, score and restart.",
+    "type": "2d"
+  },
+  {
+    "id": "fps-arena",
+    "title": "FPS arena",
+    "description": "First-person controller (mouse look, sprint, crouch, jump), hit-scan weapon, destructible targets.",
+    "type": "3d"
+  },
+  {
+    "id": "idle-clicker",
+    "title": "Idle / clicker",
+    "description": "Currency, upgrades with cost scaling, per-second income, offline progress, autosave.",
+    "type": "2d"
+  },
+  {
+    "id": "puzzle-match3",
+    "title": "Puzzle (Match-3)",
+    "description": "Swap-and-match core: board, cascades, refill, score and move limit.",
+    "type": "2d"
+  },
+  {
+    "id": "card-game",
+    "title": "Card game (Memory)",
+    "description": "Card grid with flip animation, matching logic, move counter and win state — DOM UI based.",
+    "type": "2d"
+  },
+  {
+    "id": "platformer",
+    "title": "Platformer",
+    "description": "Tilemap level, hero with coyote time/variable jump/dash, enemies you can stomp, coins, checkpoints, boss, HUD.",
+    "type": "2d"
+  },
+  {
+    "id": "platformer-3d",
+    "title": "3D platformer",
+    "description": "Third-person-ish 3D platformer: coyote jump, double jump, moving platform, gems, respawn.",
+    "type": "3d"
+  },
+  {
+    "id": "racing",
+    "title": "Racing (time-trial)",
+    "description": "Arcade car, checkpoints, lap timer, best lap saved, chase camera.",
+    "type": "3d"
+  },
+  {
+    "id": "runner",
+    "title": "Endless runner",
+    "description": "Auto-running character with jump/duck, obstacles, speed ramp and distance score.",
+    "type": "2d"
+  },
+  {
+    "id": "puzzle-grid",
+    "title": "Grid game (Snake)",
+    "description": "Tile-based game loop: timed steps, grid entities, food, game over.",
+    "type": "2d"
+  },
+  {
+    "id": "shooter",
+    "title": "Shooter (Space)",
+    "description": "Side-scrolling shooter: player ship, bullets, waves of enemies, score and game over.",
+    "type": "2d"
+  },
+  {
+    "id": "topdown-adventure",
+    "title": "Top-down adventure",
+    "description": "Rooms, NPC dialogue, inventory, key + door, pickups, chasing enemies, HUD.",
+    "type": "2d"
+  },
+  {
+    "id": "tower-defense",
+    "title": "Tower defense",
+    "description": "Path, waves of creeps, click-to-build towers with range and fire rate, gold and lives.",
+    "type": "2d"
+  },
+  {
+    "id": "visual-novel",
+    "title": "Visual novel",
+    "description": "Branching dialogue from a JSON file (library dialogue script): speakers, typewriter text, choices.",
+    "type": "2d"
+  }
+]

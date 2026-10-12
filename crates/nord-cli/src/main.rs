@@ -19,7 +19,7 @@ enum Cmd {
     New {
         /// Directory to create (its name becomes the project name)
         dir: PathBuf,
-        /// html | 2d | 3d | wasm-game | wasm-app
+        /// html | 2d | 3d | wasm-game | wasm-app, or a starter id from templates/ (e.g. platformer, fps-arena)
         #[arg(short, long, default_value = "html")]
         template: String,
     },
@@ -103,6 +103,13 @@ enum Cmd {
 }
 
 fn new_project(dir: &Path, template: &str) -> anyhow::Result<()> {
+    // a starter from `templates/<id>` (see `templates/templates.json`) wins over the built-in project types
+    if let Some(src) = nord_serve::engine_root()
+        .map(|r| r.join("templates").join(template))
+        .filter(|p| p.join(nord_core::io::PROJECT_FILE).exists())
+    {
+        return Ok(nord_core::project::create_from_template(&src, dir)?);
+    }
     let kind: ProjectType = serde_json::from_value(serde_json::Value::String(template.into()))
         .with_context(|| {
             format!("unknown template '{template}' (html, 2d, 3d, wasm-game, wasm-app)")

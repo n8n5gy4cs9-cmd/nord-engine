@@ -4,7 +4,7 @@
   "settings": {},
   "entities": [
     {
-      "id": "eeeeeee3",
+      "id": "eeeeee5i",
       "name": "Camera",
       "enabled": true,
       "tags": [],
@@ -37,7 +37,7 @@
       "prefab": null
     },
     {
-      "id": "eeeeeee4",
+      "id": "eeeeee5j",
       "name": "Game",
       "enabled": true,
       "tags": [],
