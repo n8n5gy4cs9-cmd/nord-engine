@@ -42,6 +42,8 @@ pub struct Permissions {
     pub tray: bool,
     pub global_shortcuts: bool,
     pub windows: bool,
+    /// run local web servers (`server.*`)
+    pub server: bool,
     /// ask the user (native confirm) the first time a sensitive capability is used; remembered in appData/grants.json
     pub prompt: bool,
 }
@@ -59,6 +61,7 @@ impl Default for Permissions {
             tray: false,
             global_shortcuts: false,
             windows: false,
+            server: false,
             prompt: true,
         }
     }
@@ -86,6 +89,7 @@ impl Permissions {
             tray: true,
             global_shortcuts: true,
             windows: true,
+            server: true,
             prompt: false,
             ..Self::default()
         }

@@ -19,6 +19,7 @@ export interface Desktop {
   secret: { get(k: string): Promise<string | null>; set(k: string, v: string): Promise<void>; delete(k: string): Promise<void> };
   shell: { openUrl(u: string): Promise<void>; openPath(p: string): Promise<void>; reveal(p: string): Promise<void> };
   process: { run(program: string, args?: string[], o?: { cwd?: string }): Promise<{ code: number | null; stdout: string; stderr: string }> };
+  server: { start(o: { root: string; port?: number; cors?: boolean; spa?: boolean; listing?: boolean; liveReload?: boolean; lan?: boolean; cache?: boolean }): Promise<{ id: number; port: number; url: string; root: string }>; stop(id: number): Promise<void>; list(): Promise<{ id: number; port: number; url: string; root: string; requests: number }[]>; logs(id: number, since?: number): Promise<{ entries: { seq: number; ts: number; method: string; path: string; status: number; bytes: number; ms: number; ip: string }[]; next: number }> };
   http: { fetch(url: string, o?: { method?: string; headers?: Record<string, string>; body?: string }): Promise<{ status: number; body: string }> };
   window: { open(o: WindowOptions): Promise<void>; close(id: string): Promise<void>; setTitle(t: string): Promise<void>; setFullscreen(on?: boolean): Promise<void>; setAlwaysOnTop(on?: boolean): Promise<void> };
   menu: { set(items: MenuItem[]): Promise<void>; context(items: MenuItem[], pos?: { x?: number; y?: number }): Promise<void> };

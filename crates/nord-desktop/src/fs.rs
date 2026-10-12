@@ -306,7 +306,7 @@ pub struct Watcher {
     spec: String,
 }
 
-fn snapshot(root: &Path, recursive: bool) -> BTreeMap<PathBuf, (u64, u64)> {
+pub fn snapshot(root: &Path, recursive: bool) -> BTreeMap<PathBuf, (u64, u64)> {
     let mut m = BTreeMap::new();
     let mut stack = vec![root.to_path_buf()];
     while let Some(d) = stack.pop() {

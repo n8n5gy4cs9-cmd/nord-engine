@@ -132,6 +132,8 @@ export function create(appId = 'web-app', force) {
     secret: { get: (key) => c('secret.get', { key }), set: (key, value) => c('secret.set', { key, value }), delete: (key) => c('secret.delete', { key }) },
     shell: { openUrl: (url) => c('shell.openUrl', { url }), openPath: (path) => c('shell.openPath', { path }), reveal: (path) => c('shell.reveal', { path }) },
     process: { run: (program, args = [], opts = {}) => c('process.run', { program, args, ...opts }) },
+    /** Local static web server (needs `server: true`): start({root, port?, cors?, spa?, listing?, liveReload?, lan?, cache?}) → {id, port, url} */
+    server: { start: (o) => c('server.start', o), stop: (id) => c('server.stop', { id }), list: () => c('server.list'), logs: (id, since = 0) => c('server.logs', { id, since }) },
     http: { fetch: (url, o = {}) => c('http.fetch', { url, ...o }) },
     window: { open: (o) => c('window.open', o), close: (id) => c('window.close', { id }), setTitle: (title) => c('window.setTitle', { title }), setFullscreen: (on = true) => c('window.setFullscreen', { on }), setAlwaysOnTop: (on = true) => c('window.setAlwaysOnTop', { on }) },
     menu: { set: (items) => c('menu.set', { items }), context: (items, pos = {}) => c('menu.context', { items, ...pos }) },

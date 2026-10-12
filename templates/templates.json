@@ -1,8 +1,20 @@
 [
   {
+    "id": "desktop-code-editor",
+    "title": "Desktop app: code editor",
+    "description": "Tabs, file tree, syntax highlighting (JS/TS/HTML/CSS/JSON/MD/Rust/GLSL/TOML), find & replace, multi-cursor, quick open — CodeMirror 6 + window.nord.desktop.",
+    "type": "html"
+  },
+  {
     "id": "ui-app",
     "title": "UI app (Todo)",
     "description": "Plain HTML/JS app with a tiny DOM kit — todo list with persistence. Swap in any library app kit.",
+    "type": "html"
+  },
+  {
+    "id": "desktop-web-server",
+    "title": "Desktop app: local web server",
+    "description": "Serve a folder over HTTP: live reload, SPA fallback, CORS, directory listing, request log + graph — window.nord.desktop.server.",
     "type": "html"
   },
   {

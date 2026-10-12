@@ -16,6 +16,7 @@ pub struct Bridge {
     grants: Grants,
     host: Mutex<Vec<HostCommand>>,
     events: Mutex<Vec<(String, Value)>>,
+    servers: Mutex<(u32, HashMap<u32, crate::server::Server>)>,
     watchers: Mutex<(u32, HashMap<u32, Watcher>)>,
     pub launch: Mutex<Launch>,
     pub name: String,
@@ -71,6 +72,7 @@ impl Bridge {
             grants,
             host: Mutex::new(vec![]),
             events: Mutex::new(vec![]),
+            servers: Mutex::new((0, HashMap::new())),
             watchers: Mutex::new((0, HashMap::new())),
             launch: Mutex::new(Launch {
                 files: vec![],
@@ -92,7 +94,10 @@ impl Bridge {
         }
     }
     pub fn take_events(&self) -> Vec<Value> {
-        std::mem::take(&mut *self.events.lock().unwrap_or_else(|e| e.into_inner())).into_iter().map(|(n, p)| json!({"name": n, "payload": p})).collect()
+        std::mem::take(&mut *self.events.lock().unwrap_or_else(|e| e.into_inner()))
+            .into_iter()
+            .map(|(n, p)| json!({"name": n, "payload": p}))
+            .collect()
     }
     fn push(&self, c: HostCommand) {
         self.host.lock().unwrap_or_else(|e| e.into_inner()).push(c);
@@ -394,6 +399,38 @@ impl Bridge {
                 Ok(json!({"status": status, "body": body}))
             }
 
+            ("server", _) => {
+                c.require(c.server, "server")?;
+                let mut g = self.servers.lock().unwrap_or_else(|e| e.into_inner());
+                let sid = |p: &Value| p["id"].as_u64().unwrap_or(0) as u32;
+                match name {
+                    "start" => {
+                        let opts: crate::server::Options = window::parse(p, "server options")?;
+                        self.ask("server", "run a local web server on this computer")?;
+                        if opts.lan {
+                            self.ask("server.lan", "make the web server reachable from other devices on your network")?;
+                        }
+                        if g.1.len() >= 4 {
+                            return Err(DesktopError::denied("at most 4 servers"));
+                        }
+                        let root = self.d.fs.resolve(s(p, "root")?, false)?;
+                        let srv = crate::server::Server::start(root, opts)?;
+                        let out = json!({"id": g.0 + 1, "port": srv.port, "url": srv.url(), "root": srv.root});
+                        g.0 += 1;
+                        let id = g.0;
+                        g.1.insert(id, srv);
+                        Ok(out)
+                    }
+                    "stop" => { g.1.remove(&sid(p)); Ok(Value::Null) }
+                    "list" => Ok(json!(g.1.iter().map(|(id, s)| json!({"id": id, "port": s.port, "url": s.url(), "root": s.root, "requests": s.requests.load(std::sync::atomic::Ordering::Relaxed)})).collect::<Vec<_>>())),
+                    "logs" => {
+                        let s = g.1.get(&sid(p)).ok_or_else(|| DesktopError::new("not_found", "no such server"))?;
+                        let (entries, next) = s.logs(p["since"].as_u64().unwrap_or(0));
+                        Ok(json!({"entries": entries, "next": next}))
+                    }
+                    _ => Err(DesktopError::unsupported(method.to_string())),
+                }
+            }
             ("window", "open") => {
                 c.require(c.windows, "windows")?;
                 let mut o: WindowOpts = window::parse(p, "window")?;
@@ -779,5 +816,75 @@ mod tests {
             "denied"
         );
         assert_eq!(b.call_json("store.keys", &json!({}))["ok"], json!([]));
+    }
+}
+
+#[cfg(test)]
+mod server_tests {
+    use super::*;
+    use crate::{caps::Permissions, paths::Roots, services::Headless};
+    use std::{
+        io::{Read, Write},
+        sync::Arc,
+    };
+
+    #[test]
+    fn server_needs_permission_and_a_scoped_root() {
+        let d = tempfile::tempdir().unwrap();
+        let h = Headless::default();
+        let mk = |p: Permissions| {
+            Bridge::new(
+                Desktop::with_services(
+                    "com.t.s",
+                    p,
+                    Arc::new(Roots::with_base("com.t.s", d.path())),
+                    Box::new(h.clone()),
+                    Box::new(h.clone()),
+                    Box::new(h.clone()),
+                    Box::new(h.clone()),
+                )
+                .unwrap(),
+                "T",
+                "1",
+            )
+        };
+        assert_eq!(
+            mk(Permissions::default())
+                .call("server.start", &json!({"root":"www"}))
+                .unwrap_err()
+                .code,
+            "denied"
+        );
+        let b = mk(Permissions {
+            server: true,
+            prompt: false,
+            ..Permissions::default()
+        });
+        b.call(
+            "fs.writeText",
+            &json!({"path":"www/index.html","text":"<h1>x</h1>"}),
+        )
+        .unwrap();
+        assert_eq!(
+            b.call("server.start", &json!({"root":"/etc"}))
+                .unwrap_err()
+                .code,
+            "denied"
+        );
+        let r = b
+            .call("server.start", &json!({"root":"www","liveReload":false}))
+            .unwrap();
+        let port = r["port"].as_u64().unwrap() as u16;
+        let mut s = std::net::TcpStream::connect(("127.0.0.1", port)).unwrap();
+        s.write_all(b"GET / HTTP/1.1\r\n\r\n").unwrap();
+        let mut out = String::new();
+        s.read_to_string(&mut out).unwrap();
+        assert!(out.contains("<h1>x</h1>"));
+        assert_eq!(
+            b.call("server.logs", &json!({"id": r["id"]})).unwrap()["entries"][0]["path"],
+            "/"
+        );
+        b.call("server.stop", &json!({"id": r["id"]})).unwrap();
+        assert_eq!(b.call("server.list", &json!({})).unwrap(), json!([]));
     }
 }

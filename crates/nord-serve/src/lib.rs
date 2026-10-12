@@ -199,15 +199,28 @@ fn desktop_bridge(a: &App) -> Option<Arc<nord_desktop::bridge::Bridge>> {
     a.desktop
         .get_or_init(|| {
             let p = nord_core::io::load_project(&a.project).ok()?;
-            let perms = nord_desktop::caps::Permissions::from_json(p.desktop.get("permissions").unwrap_or(&serde_json::Value::Null)).ok()?;
+            let perms = nord_desktop::caps::Permissions::from_json(
+                p.desktop
+                    .get("permissions")
+                    .unwrap_or(&serde_json::Value::Null),
+            )
+            .ok()?;
             let base = std::env::var_os("NORD_DESKTOP_BASE").map(PathBuf::from);
             let d = nord_desktop::Desktop::new(&p.id, perms, base).ok()?;
-            Some(Arc::new(nord_desktop::bridge::Bridge::new(d, &p.name, &p.engine_version)))
+            Some(Arc::new(nord_desktop::bridge::Bridge::new(
+                d,
+                &p.name,
+                &p.engine_version,
+            )))
         })
         .clone()
 }
 
-async fn desktop_call(State(a): State<App>, headers: axum::http::HeaderMap, Json(req): Json<serde_json::Value>) -> Response {
+async fn desktop_call(
+    State(a): State<App>,
+    headers: axum::http::HeaderMap,
+    Json(req): Json<serde_json::Value>,
+) -> Response {
     if !has_nord_header(&headers) {
         return StatusCode::FORBIDDEN.into_response();
     }
@@ -224,7 +237,11 @@ async fn desktop_call(State(a): State<App>, headers: axum::http::HeaderMap, Json
 }
 
 async fn desktop_events(State(a): State<App>) -> Json<Vec<serde_json::Value>> {
-    Json(desktop_bridge(&a).map(|b| b.take_events()).unwrap_or_default())
+    Json(
+        desktop_bridge(&a)
+            .map(|b| b.take_events())
+            .unwrap_or_default(),
+    )
 }
 
 /// Model thumbnails rendered by the 3D edit viewport arrive as a PNG data URL; stored where nord-core caches thumbs.

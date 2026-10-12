@@ -17,6 +17,7 @@ http = ["dep:ureq"]         # HTTP client (net.hosts allow-list)
 serde.workspace = true
 serde_json.workspace = true
 thiserror.workspace = true
+mime_guess = "2"
 # wayland-sys: load libwayland at runtime (dlopen) so building needs no wayland dev packages (same as eframe/winit do)
 wayland-sys = { version = "0.31", features = ["dlopen"], optional = true }
 rfd = { version = "0.15", optional = true }

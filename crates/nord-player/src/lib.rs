@@ -43,7 +43,11 @@ pub fn read_manifest(game: &Path) -> Manifest {
         width: n("width", 1280).clamp(320, 7680),
         height: n("height", 720).clamp(200, 4320),
         id: v["id"].as_str().unwrap_or("nord-game").to_string(),
-        version: v["version"].as_str().or(v["engine"].as_str()).unwrap_or("").to_string(),
+        version: v["version"]
+            .as_str()
+            .or(v["engine"].as_str())
+            .unwrap_or("")
+            .to_string(),
         desktop: v["desktop"].clone(),
     }
 }

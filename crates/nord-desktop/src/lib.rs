@@ -7,6 +7,7 @@ pub mod fs;
 pub mod lifecycle;
 pub mod paths;
 pub mod process;
+pub mod server;
 pub mod services;
 pub mod store;
 pub mod window;

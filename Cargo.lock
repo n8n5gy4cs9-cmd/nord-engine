@@ -3312,6 +3312,7 @@ version = "0.0.1"
 dependencies = [
  "arboard",
  "keyring",
+ "mime_guess",
  "notify-rust",
  "opener",
  "rfd",
