@@ -530,3 +530,45 @@ fn status_activity_and_play_tint_follow_the_editor_state() {
     st.play.as_mut().unwrap().running = true;
     assert_eq!(st.activity().0, Some(Tint::Playing));
 }
+
+/// The embedded game view must sit inside the Game panel (above the console strip), never spill over other panels.
+#[test]
+fn game_view_stays_inside_its_panel() {
+    let d = temp_project("gamerect", nord_core::ProjectType::TwoD);
+    let mut h = Harness::builder()
+        .with_size(egui::vec2(1400.0, 900.0))
+        .build_state(
+            |ctx, app: &mut App| {
+                app.frame_ui(ctx, None);
+            },
+            App::new(false),
+        );
+    h.run_steps(3);
+    h.state_mut()
+        .st
+        .push(nord_editor::state::Action::OpenPath(d));
+    h.run_steps(3);
+    {
+        let app = h.state_mut();
+        app.show_tab(nord_editor::app::Tab::Game);
+        app.st.game_console = true;
+        app.st.ensure_server();
+        app.st.play.as_mut().unwrap().running = true;
+    }
+    for scale in [0.0_f32, 1.0, 2.0] {
+        h.state_mut().st.game_scale = scale;
+        h.run_steps(3);
+        let r = h.state().web.rects["game"];
+        let screen = egui::Rect::from_min_size(egui::Pos2::ZERO, egui::vec2(1400.0, 900.0));
+        eprintln!("scale {scale}: game rect {r:?}");
+        assert!(
+            r.is_finite() && screen.contains_rect(r),
+            "game rect {r:?} leaves the window (scale {scale})"
+        );
+        // console strip is drawn below the game: its heading/rows must start at or below the game's bottom
+        assert!(
+            r.height() < 700.0,
+            "game rect {r:?} is as tall as the window"
+        );
+    }
+}

@@ -14,6 +14,8 @@ pub struct WebPanes {
     shown: HashSet<String>,
     urls: HashMap<String, String>,
     pub error: Option<String>,
+    /// Last rect (egui points) each pane was placed at — what the native view is sized to; used by tests.
+    pub rects: HashMap<String, egui::Rect>,
 }
 
 pub fn open_in_browser(url: &str) {
@@ -95,16 +97,32 @@ impl WebPanes {
         let size = ui.available_size().max(Vec2::splat(10.0));
         let (full, _) = ui.allocate_exact_size(size, egui::Sense::hover());
         let rect = match fixed {
+            // keep the aspect ratio: scale down uniformly when the panel is smaller than the requested size
             Some(f) => {
-                egui::Rect::from_center_size(full.center(), f.min(size).max(Vec2::splat(10.0)))
+                let k = (size.x / f.x).min(size.y / f.y).min(1.0);
+                egui::Rect::from_center_size(full.center(), (f * k).max(Vec2::splat(10.0)))
             }
             None => full,
         };
+        // a native view is not clipped by egui: never let it leave the visible part of its panel
+        let rect = {
+            let c = rect.intersect(ui.clip_rect());
+            if c.is_positive() {
+                c
+            } else {
+                egui::Rect::from_min_size(rect.min, Vec2::splat(1.0))
+            }
+        };
+        // the native view lags a frame behind egui's layout: repaint once more whenever its rect moved
+        if self.rects.get(key) != Some(&rect) {
+            ui.ctx().request_repaint();
+        }
         if fixed.is_some() {
             ui.painter()
                 .rect_filled(full, 0.0, ui.visuals().extreme_bg_color);
         }
         self.shown.insert(key.to_string());
+        self.rects.insert(key.to_string(), rect);
         #[cfg(feature = "webview")]
         {
             use wry::dpi::{LogicalPosition, LogicalSize};

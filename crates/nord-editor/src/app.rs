@@ -180,7 +180,11 @@ impl App {
             }
             let (run, stop) = (st.settings.key(true), st.settings.key(false));
             if i.consume_key(cmd, run) {
-                st.push(if st.play.is_some() { Action::Stop } else { Action::Play });
+                st.push(if st.play.is_some() {
+                    Action::Stop
+                } else {
+                    Action::Play
+                });
             } else if i.consume_key(cmd, stop) {
                 st.push(Action::Stop);
             }
@@ -795,7 +799,12 @@ pub fn game_tab(
         {
             st.game_full = !st.game_full;
         }
-        if st.play.is_some() && ui.button("■ Stop").on_hover_text("Stop the game and return to editing").clicked() {
+        if st.play.is_some()
+            && ui
+                .button("■ Stop")
+                .on_hover_text("Stop the game and return to editing")
+                .clicked()
+        {
             st.push(Action::Stop);
             st.game_full = false;
         }
@@ -830,7 +839,10 @@ pub fn game_tab(
         } else {
             ui.add_space(30.0);
             ui.vertical_centered(|ui| {
-                ui.weak(format!("Press ▶ Play ({}) to run the game here", st.settings.key_label(true)));
+                ui.weak(format!(
+                    "Press ▶ Play ({}) to run the game here",
+                    st.settings.key_label(true)
+                ));
             });
         }
     });

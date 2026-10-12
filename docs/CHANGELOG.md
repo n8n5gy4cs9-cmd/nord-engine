@@ -2,6 +2,7 @@
 Newest first. One line per notable change. Credit: Crowelian 2026 + Sonnet.
 
 ## Unreleased
+- **Game view placement fix:** the embedded game webview keeps its aspect ratio when scaled (was clamped per axis, so it was distorted/cropped), is clipped to its panel and repaints once whenever its rect moves (native view lagged one frame behind the layout). Test `game_view_stays_inside_its_panel`. Real-window behaviour still needs a macOS check (RISK-001a).
 - **Run/stop keys + fullscreen exit:** Cmd/Ctrl+R now toggles run ↔ stop (toolbar ▶ too); the separate stop-only key (default Cmd+.) and the run key are rebindable in Settings (`run_key` / `stop_key` in `editor.json`) for games/apps that use those combos; the Game tab header (also in fullscreen) has a ■ Stop button next to "Exit fullscreen (Esc)". Note: when the embedded game webview has focus, keys go to the game — use the header buttons / the shortcut after clicking the editor.
 - **Code editor example:** PHP, Python, Go, C/C++/C#/Java/Kotlin/Scala/Swift/Dart/Obj-C, Ruby, Lua, Perl, Shell, SQL, YAML, XML/SVG, Dockerfile, Diff syntax (CodeMirror `lang-php/python/xml/sql` + legacy modes; `vendor/codemirror/cm.bundle.js` rebuilt, +200 KB).
 - **M8-05 dockable panels + light theme:** tabs closable and drag-dockable (layout persisted in `layout.json`, kept across projects, View ▸ reopens, Reset layout); 3 light themes (Nord Light, GitHub Light, Solarized Light) → 13 themes total.

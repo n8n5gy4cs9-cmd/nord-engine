@@ -65,7 +65,11 @@ impl Default for Settings {
 impl Settings {
     /// Key bound to run/stop-toggle (`run`) or stop-only; falls back to the default when the saved name is not a key.
     pub fn key(&self, run: bool) -> egui::Key {
-        let (n, d) = if run { (&self.run_key, egui::Key::R) } else { (&self.stop_key, egui::Key::Period) };
+        let (n, d) = if run {
+            (&self.run_key, egui::Key::R)
+        } else {
+            (&self.stop_key, egui::Key::Period)
+        };
         egui::Key::from_name(n.trim()).unwrap_or(d)
     }
     pub fn key_label(&self, run: bool) -> String {
