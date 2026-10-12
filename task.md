@@ -3,12 +3,12 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 13/119 tasks (11%)** · updated 2026-10-12
+**Overall: 24/119 tasks (20%)** · updated 2026-10-12
 
 | Milestone | Progress |
 |---|---|
 | M0 Planning, identity, assets, vendoring | 13/13 (100%) |
-| M1 Foundation | 0/11 (0%) |
+| M1 Foundation | 11/11 (100%) |
 | M2 JS runtimes | 0/18 (0%) |
 | M3 Editor | 0/22 (0%) |
 | M4 Export | 0/10 (0%) |
@@ -18,11 +18,11 @@
 | M8 Polish & portability | 0/8 (0%) |
 
 ## Next up
-- **M1-01** nord-core: project + scene + prefab structs (serde) matching PROJECT_FORMAT.md; load/save; validation
-- **M1-02** JSON schemas for project/scene/components (generated from Rust or hand-written) in crates/nord-core/schema
-- **M1-03** nord-core: asset index (scan, types, meta sidecars, hashes)
-- **M1-04** nord-core: thumbnail generator (images, spritesheets, audio waveform PNG) with cache
-- **M1-05** nord-cli: `new` (templates), `doctor` (tier recommendation), `thumbs`
+- **M2-01** runtime/core: Entity tree, component registry, NordScript lifecycle, attributes
+- **M2-02** runtime/core: events bus, timers, tween/easing, rng, math, object pool
+- **M2-03** runtime/core: input actions (kbd/mouse/touch/gamepad) + virtual joystick
+- **M2-04** runtime/core: asset loader w/ progress + offline-safe paths + file:// safe mode
+- **M2-05** runtime/core: scene loader/prefab instantiate/overrides + scene switching
 
 ## M0 — Planning, identity, assets, vendoring
 _Plans, brand, placeholder assets, vendored libs, workspace skeleton_
@@ -44,17 +44,17 @@ _Plans, brand, placeholder assets, vendored libs, workspace skeleton_
 ## M1 — Foundation
 _nord-core, CLI, project format, dev server, thumbnails, offline check_
 
-- [ ] **M1-01** nord-core: project + scene + prefab structs (serde) matching PROJECT_FORMAT.md; load/save; validation
-- [ ] **M1-02** JSON schemas for project/scene/components (generated from Rust or hand-written) in crates/nord-core/schema
-- [ ] **M1-03** nord-core: asset index (scan, types, meta sidecars, hashes)
-- [ ] **M1-04** nord-core: thumbnail generator (images, spritesheets, audio waveform PNG) with cache
-- [ ] **M1-05** nord-cli: `new` (templates), `doctor` (tier recommendation), `thumbs`
-- [ ] **M1-06** nord-cli: `serve` dev server (axum) with project+vendor+runtime mounting, SSE live reload, `/api/*` editor backend
-- [ ] **M1-07** nord-cli: `check-offline` scanner (+ allowlist, tests)
-- [ ] **M1-08** nord-cli: `vendor --verify` wiring to tools/vendor.mjs manifest
-- [ ] **M1-09** Template: blank html project that runs via `nord serve`
-- [ ] **M1-10** CI: GitHub Actions (fmt, clippy, test, tasks check) on ubuntu + macos-14
-- [ ] **M1-11** Crash-safe file writes (tmp+rename), project lock, recent-projects store
+- [x] **M1-01** nord-core: project + scene + prefab structs (serde) matching PROJECT_FORMAT.md; load/save; validation
+- [x] **M1-02** JSON schemas for project/scene/components (generated from Rust or hand-written) in crates/nord-core/schema
+- [x] **M1-03** nord-core: asset index (scan, types, meta sidecars, hashes)
+- [x] **M1-04** nord-core: thumbnail generator (images, spritesheets, audio waveform PNG) with cache
+- [x] **M1-05** nord-cli: `new` (templates), `doctor` (tier recommendation), `thumbs`
+- [x] **M1-06** nord-cli: `serve` dev server (axum) with project+vendor+runtime mounting, SSE live reload, `/api/*` editor backend
+- [x] **M1-07** nord-cli: `check-offline` scanner (+ allowlist, tests)
+- [x] **M1-08** nord-cli: `vendor --verify` wiring to tools/vendor.mjs manifest
+- [x] **M1-09** Template: blank html project that runs via `nord serve`
+- [x] **M1-10** CI: GitHub Actions (fmt, clippy, test, tasks check) on ubuntu + macos-14
+- [x] **M1-11** Crash-safe file writes (tmp+rename), project lock, recent-projects store
 
 ## M2 — JS runtimes
 _nord.js core + Phaser 2D + Babylon 3D adapters_

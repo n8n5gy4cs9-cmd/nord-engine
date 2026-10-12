@@ -54,11 +54,16 @@ pub struct Asset {
 
 pub fn sha256_file(p: &Path) -> Result<String> {
     let bytes = std::fs::read(p).map_err(|e| io::io_err(p, e))?;
-    Ok(Sha256::digest(&bytes).iter().map(|b| format!("{b:02x}")).collect())
+    Ok(Sha256::digest(&bytes)
+        .iter()
+        .map(|b| format!("{b:02x}"))
+        .collect())
 }
 
 fn walk(dir: &Path, out: &mut Vec<PathBuf>) {
-    let Ok(rd) = std::fs::read_dir(dir) else { return };
+    let Ok(rd) = std::fs::read_dir(dir) else {
+        return;
+    };
     for e in rd.flatten() {
         let p = e.path();
         if p.is_dir() {
@@ -76,19 +81,32 @@ pub fn scan(root: &Path) -> Result<Vec<Asset>> {
     files.sort();
     let mut out = vec![];
     for f in files {
-        let rel = f.strip_prefix(root).unwrap().to_string_lossy().replace('\\', "/");
-        if rel.ends_with(".meta.json") || rel.rsplit('/').next().is_some_and(|n| n.starts_with('.')) {
+        let rel = f
+            .strip_prefix(root)
+            .unwrap()
+            .to_string_lossy()
+            .replace('\\', "/");
+        if rel.ends_with(".meta.json") || rel.rsplit('/').next().is_some_and(|n| n.starts_with('.'))
+        {
             continue;
         }
         let mut meta_path = f.clone().into_os_string();
         meta_path.push(".meta.json");
         let meta: Option<Value> = io::load_json(Path::new(&meta_path)).ok();
         let mut kind = classify(&rel);
-        if kind == AssetType::Image && meta.as_ref().and_then(|m| m["type"].as_str()) == Some("spritesheet") {
+        if kind == AssetType::Image
+            && meta.as_ref().and_then(|m| m["type"].as_str()) == Some("spritesheet")
+        {
             kind = AssetType::Spritesheet;
         }
         let size = std::fs::metadata(&f).map_err(|e| io::io_err(&f, e))?.len();
-        out.push(Asset { sha256: sha256_file(&f)?, path: rel, kind, size, meta });
+        out.push(Asset {
+            sha256: sha256_file(&f)?,
+            path: rel,
+            kind,
+            size,
+            meta,
+        });
     }
     Ok(out)
 }
@@ -105,7 +123,11 @@ mod tests {
         let _ = std::fs::remove_dir_all(&d);
         std::fs::create_dir_all(d.join("assets/s")).unwrap();
         std::fs::write(d.join("assets/s/p.png"), b"x").unwrap();
-        std::fs::write(d.join("assets/s/p.png.meta.json"), r#"{"type":"spritesheet","frameWidth":8}"#).unwrap();
+        std::fs::write(
+            d.join("assets/s/p.png.meta.json"),
+            r#"{"type":"spritesheet","frameWidth":8}"#,
+        )
+        .unwrap();
         std::fs::write(d.join("assets/hit.ogg"), b"y").unwrap();
         let a = scan(&d).unwrap();
         assert_eq!(a.len(), 2);

@@ -40,9 +40,9 @@ cargo build --workspace && cargo test --workspace && cargo clippy --workspace --
 ```
 
 ## Current status (update every session)
-- **M0 done** (plans, upstream fetch, vendoring, placeholder assets, workspace skeleton: `nord-core`, `nord-cli`).
-- **Next: M1 Foundation** — start at M1-01 (`nord-core` project/scene structs per `docs/PROJECT_FORMAT.md`), then CLI `new/serve/thumbs/check-offline`,
-  dev server (axum, SSE reload), CI. Then M2 JS runtimes, M3 editor (spike M3-07 first: wry webview in egui), M4 export, M5 Rust/WASM,
-  M6 library/examples, M7 docs, M8 polish.
+- **M0 + M1 done** (core model/schemas/assets/thumbs/IO, CLI `new/doctor/thumbs/check/serve/check-offline/vendor`, CI). Work was done on the session branch
+  `claude/friendly-knuth-qv79yh` (cloud harness designated it) — merge to `main` when convenient.
+- **Next: M2 JS runtimes** — start at M2-01 (`runtime/core`: entity tree, components, NordScript lifecycle); `nord serve` already mounts `/runtime/*` from `<engine>/runtime/`.
+  Then M3 editor (spike M3-07 first: wry webview in egui), M4 export, M5 Rust/WASM, M6 library/examples, M7 docs, M8 polish.
 - Vendored: Phaser 4.2.1, Babylon 9.30.0 (+Havok 1.3.14), PlayCanvas 2.23.2 (optional), CodeMirror bundle, marked, fonts, Lucide.
 - Known risks: `docs/KNOWN_ISSUES.md`.

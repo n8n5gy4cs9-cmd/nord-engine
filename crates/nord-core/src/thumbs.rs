@@ -12,7 +12,8 @@ fn waveform(samples: &[i16]) -> RgbaImage {
     let mut img = RgbaImage::from_pixel(w, h, Rgba([24, 28, 34, 255]));
     let per = (samples.len() / w as usize).max(1);
     for x in 0..w {
-        let s = &samples[(x as usize * per).min(samples.len())..((x as usize + 1) * per).min(samples.len())];
+        let s = &samples
+            [(x as usize * per).min(samples.len())..((x as usize + 1) * per).min(samples.len())];
         let peak = s.iter().map(|v| v.unsigned_abs() as u32).max().unwrap_or(0);
         let amp = (peak * (h / 2 - 1) / 32768).max(1);
         for y in (h / 2 - amp)..=(h / 2 + amp) {
@@ -38,7 +39,11 @@ fn wav_samples(b: &[u8]) -> Option<Vec<i16>> {
             if bits != 16 {
                 return None;
             }
-            return Some(body.chunks_exact(2 * ch.max(1)).map(|c| i16::from_le_bytes([c[0], c[1]])).collect());
+            return Some(
+                body.chunks_exact(2 * ch.max(1))
+                    .map(|c| i16::from_le_bytes([c[0], c[1]]))
+                    .collect(),
+            );
         }
         i += 8 + len + (len & 1);
     }
@@ -47,15 +52,24 @@ fn wav_samples(b: &[u8]) -> Option<Vec<i16>> {
 
 fn ffmpeg_samples(p: &Path) -> Option<Vec<i16>> {
     let out = std::process::Command::new("ffmpeg")
-        .args(["-v", "quiet", "-i"]).arg(p)
+        .args(["-v", "quiet", "-i"])
+        .arg(p)
         .args(["-ac", "1", "-ar", "8000", "-t", "30", "-f", "s16le", "-"])
-        .output().ok()?;
-    out.status.success().then(|| out.stdout.chunks_exact(2).map(|c| i16::from_le_bytes([c[0], c[1]])).collect())
+        .output()
+        .ok()?;
+    out.status.success().then(|| {
+        out.stdout
+            .chunks_exact(2)
+            .map(|c| i16::from_le_bytes([c[0], c[1]]))
+            .collect()
+    })
 }
 
 /// Returns the cached thumbnail path for an asset (generating it if needed), or `None` if the type has no thumbnail.
 pub fn thumb_for(root: &Path, a: &Asset) -> Result<Option<PathBuf>> {
-    let out = root.join(".nord-cache/thumbs").join(format!("{}.png", a.sha256));
+    let out = root
+        .join(".nord-cache/thumbs")
+        .join(format!("{}.png", a.sha256));
     if out.exists() {
         return Ok(Some(out));
     }
@@ -78,7 +92,8 @@ pub fn thumb_for(root: &Path, a: &Asset) -> Result<Option<PathBuf>> {
         _ => return Ok(None),
     };
     std::fs::create_dir_all(out.parent().unwrap()).map_err(|e| io::io_err(&out, e))?;
-    img.save(&out).map_err(|e| Error::Msg(format!("{}: {e}", out.display())))?;
+    img.save(&out)
+        .map_err(|e| Error::Msg(format!("{}: {e}", out.display())))?;
     Ok(Some(out))
 }
 
@@ -104,17 +119,25 @@ mod tests {
         let d = std::env::temp_dir().join(format!("nord-thumb-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&d);
         std::fs::create_dir_all(d.join("assets")).unwrap();
-        RgbaImage::from_pixel(400, 200, Rgba([255, 0, 0, 255])).save(d.join("assets/a.png")).unwrap();
+        RgbaImage::from_pixel(400, 200, Rgba([255, 0, 0, 255]))
+            .save(d.join("assets/a.png"))
+            .unwrap();
         // 0.1 s mono 16-bit 8 kHz sine-ish WAV
-        let pcm: Vec<u8> = (0..800i32).flat_map(|i| ((((i % 40) - 20) * 800) as i16).to_le_bytes()).collect();
+        let pcm: Vec<u8> = (0..800i32)
+            .flat_map(|i| ((((i % 40) - 20) * 800) as i16).to_le_bytes())
+            .collect();
         let mut w = b"RIFF".to_vec();
         w.extend((36 + pcm.len() as u32).to_le_bytes());
         w.extend(b"WAVEfmt ");
         w.extend(16u32.to_le_bytes());
-        for v in [1u16, 1] { w.extend(v.to_le_bytes()); }
+        for v in [1u16, 1] {
+            w.extend(v.to_le_bytes());
+        }
         w.extend(8000u32.to_le_bytes());
         w.extend(16000u32.to_le_bytes());
-        for v in [2u16, 16] { w.extend(v.to_le_bytes()); }
+        for v in [2u16, 16] {
+            w.extend(v.to_le_bytes());
+        }
         w.extend(b"data");
         w.extend((pcm.len() as u32).to_le_bytes());
         w.extend(pcm);

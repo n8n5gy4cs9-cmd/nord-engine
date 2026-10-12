@@ -8,7 +8,10 @@ use std::path::{Path, PathBuf};
 pub const PROJECT_FILE: &str = "nord.project.json";
 
 pub fn io_err(path: &Path, source: std::io::Error) -> Error {
-    Error::Io { path: path.display().to_string(), source }
+    Error::Io {
+        path: path.display().to_string(),
+        source,
+    }
 }
 
 /// Write via tmp file + fsync + rename so a crash never leaves a half-written file.
@@ -44,13 +47,20 @@ pub fn save_json<T: Serialize>(path: &Path, v: &T) -> Result<()> {
 
 pub fn load_json<T: DeserializeOwned>(path: &Path) -> Result<T> {
     let s = fs::read_to_string(path).map_err(|e| io_err(path, e))?;
-    serde_json::from_str(&s).map_err(|e| Error::Json { path: path.display().to_string(), source: e })
+    serde_json::from_str(&s).map_err(|e| Error::Json {
+        path: path.display().to_string(),
+        source: e,
+    })
 }
 
 pub fn load_project(root: &Path) -> Result<Project> {
     let p: Project = load_json(&root.join(PROJECT_FILE))?;
     if p.format > crate::FORMAT {
-        return Err(Error::Msg(format!("project format {} is newer than supported ({})", p.format, crate::FORMAT)));
+        return Err(Error::Msg(format!(
+            "project format {} is newer than supported ({})",
+            p.format,
+            crate::FORMAT
+        )));
     }
     Ok(p)
 }
@@ -71,16 +81,24 @@ impl ProjectLock {
         let path = root.join(".nord-cache").join("lock");
         fs::create_dir_all(path.parent().unwrap()).map_err(|e| io_err(&path, e))?;
         for _ in 0..2 {
-            match fs::OpenOptions::new().write(true).create_new(true).open(&path) {
+            match fs::OpenOptions::new()
+                .write(true)
+                .create_new(true)
+                .open(&path)
+            {
                 Ok(mut f) => {
                     let _ = write!(f, "{}", std::process::id());
                     return Ok(Self { path });
                 }
                 Err(e) if e.kind() == std::io::ErrorKind::AlreadyExists => {
-                    let pid: Option<u32> = fs::read_to_string(&path).ok().and_then(|s| s.trim().parse().ok());
+                    let pid: Option<u32> = fs::read_to_string(&path)
+                        .ok()
+                        .and_then(|s| s.trim().parse().ok());
                     match pid {
                         Some(p) if pid_alive(p) && p != std::process::id() => {
-                            return Err(Error::Msg(format!("project is open in another Nord process (pid {p})")))
+                            return Err(Error::Msg(format!(
+                                "project is open in another Nord process (pid {p})"
+                            )))
                         }
                         _ => {
                             let _ = fs::remove_file(&path);
@@ -117,7 +135,9 @@ pub fn config_dir() -> PathBuf {
     if let Some(d) = std::env::var_os("NORD_CONFIG_DIR") {
         return d.into();
     }
-    let home = std::env::var_os("HOME").map(PathBuf::from).unwrap_or_else(|| PathBuf::from("."));
+    let home = std::env::var_os("HOME")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| PathBuf::from("."));
     home.join(".config").join("nord")
 }
 
@@ -150,7 +170,9 @@ mod tests {
         let d = tmp("io");
         let p = Project::new("T", "com.x.t", crate::ProjectType::TwoD);
         save_project(&d, &p).unwrap();
-        assert!(fs::read_to_string(d.join(PROJECT_FILE)).unwrap().ends_with("}\n"));
+        assert!(fs::read_to_string(d.join(PROJECT_FILE))
+            .unwrap()
+            .ends_with("}\n"));
         assert_eq!(load_project(&d).unwrap(), p);
         assert!(!d.join("nord.project.json.nordtmp").exists());
     }

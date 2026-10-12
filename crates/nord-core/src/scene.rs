@@ -11,7 +11,11 @@ pub struct Transform {
 
 impl Default for Transform {
     fn default() -> Self {
-        Self { pos: [0.0; 3], rot: [0.0; 3], scale: [1.0; 3] }
+        Self {
+            pos: [0.0; 3],
+            rot: [0.0; 3],
+            scale: [1.0; 3],
+        }
     }
 }
 
@@ -111,7 +115,12 @@ pub struct Scene {
 
 impl Scene {
     pub fn new(name: &str) -> Self {
-        Self { format: crate::FORMAT, name: name.into(), settings: SceneSettings::default(), entities: vec![] }
+        Self {
+            format: crate::FORMAT,
+            name: name.into(),
+            settings: SceneSettings::default(),
+            entities: vec![],
+        }
     }
 }
 
@@ -126,14 +135,26 @@ pub fn new_id() -> String {
     use std::sync::atomic::{AtomicU64, Ordering};
     use std::time::{SystemTime, UNIX_EPOCH};
     static N: AtomicU64 = AtomicU64::new(0);
-    let t = SystemTime::now().duration_since(UNIX_EPOCH).map(|d| d.as_nanos() as u64).unwrap_or(0);
-    let mut x = t ^ N.fetch_add(1, Ordering::Relaxed).wrapping_mul(0x9E37_79B9_7F4A_7C15) ^ u64::from(std::process::id());
+    let t = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map(|d| d.as_nanos() as u64)
+        .unwrap_or(0);
+    let mut x = t
+        ^ N.fetch_add(1, Ordering::Relaxed)
+            .wrapping_mul(0x9E37_79B9_7F4A_7C15)
+        ^ u64::from(std::process::id());
     // splitmix64 finaliser
     x = (x ^ (x >> 30)).wrapping_mul(0xBF58_476D_1CE4_E5B9);
     x = (x ^ (x >> 27)).wrapping_mul(0x94D0_49BB_1331_11EB);
     x ^= x >> 31;
     const A: &[u8] = b"0123456789abcdefghijklmnopqrstuvwxyz";
-    (0..8).map(|_| { let c = A[(x % 36) as usize] as char; x /= 36; c }).collect()
+    (0..8)
+        .map(|_| {
+            let c = A[(x % 36) as usize] as char;
+            x /= 36;
+            c
+        })
+        .collect()
 }
 
 #[cfg(test)]

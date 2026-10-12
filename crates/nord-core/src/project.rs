@@ -40,7 +40,13 @@ pub struct Display {
 
 impl Default for Display {
     fn default() -> Self {
-        Self { width: 1280, height: 720, scale: "fit".into(), pixel_art: false, background: "#101418".into() }
+        Self {
+            width: 1280,
+            height: 720,
+            scale: "fit".into(),
+            pixel_art: false,
+            background: "#101418".into(),
+        }
     }
 }
 
@@ -53,7 +59,10 @@ pub struct Physics {
 
 impl Default for Physics {
     fn default() -> Self {
-        Self { engine: "arcade".into(), gravity: [0.0, 980.0, 0.0] }
+        Self {
+            engine: "arcade".into(),
+            gravity: [0.0, 980.0, 0.0],
+        }
     }
 }
 

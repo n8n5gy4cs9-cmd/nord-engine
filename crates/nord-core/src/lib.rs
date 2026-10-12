@@ -18,9 +18,15 @@ pub const FORMAT: u32 = 1;
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
     #[error("{path}: {source}")]
-    Io { path: String, source: std::io::Error },
+    Io {
+        path: String,
+        source: std::io::Error,
+    },
     #[error("{path}: invalid JSON: {source}")]
-    Json { path: String, source: serde_json::Error },
+    Json {
+        path: String,
+        source: serde_json::Error,
+    },
     #[error("{0}")]
     Msg(String),
 }
@@ -42,6 +48,12 @@ pub mod schema {
         }
         // every component type the schema allows must be accepted by the model (free-form), and spec list must match docs
         let v: serde_json::Value = serde_json::from_str(SCENE).unwrap();
-        assert_eq!(v["definitions"]["component"]["properties"]["type"]["enum"].as_array().unwrap().len(), 22);
+        assert_eq!(
+            v["definitions"]["component"]["properties"]["type"]["enum"]
+                .as_array()
+                .unwrap()
+                .len(),
+            22
+        );
     }
 }

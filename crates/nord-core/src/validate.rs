@@ -11,13 +11,20 @@ pub struct Issue {
 }
 
 fn push(v: &mut Vec<Issue>, file: &str, msg: impl Into<String>) {
-    v.push(Issue { file: file.into(), msg: msg.into() });
+    v.push(Issue {
+        file: file.into(),
+        msg: msg.into(),
+    });
 }
 
 /// Collect string values that look like project-relative asset/script paths.
 fn refs(v: &Value, out: &mut Vec<String>) {
     match v {
-        Value::String(s) if (s.starts_with("assets/") || s.starts_with("scripts/") || s.starts_with("prefabs/")) => {
+        Value::String(s)
+            if (s.starts_with("assets/")
+                || s.starts_with("scripts/")
+                || s.starts_with("prefabs/")) =>
+        {
             out.push(s.clone())
         }
         Value::Array(a) => a.iter().for_each(|x| refs(x, out)),
@@ -29,12 +36,20 @@ fn refs(v: &Value, out: &mut Vec<String>) {
 pub fn validate_scene(root: &Path, file: &str, s: &Scene) -> Vec<Issue> {
     let mut v = vec![];
     if s.format != crate::FORMAT {
-        push(&mut v, file, format!("unsupported scene format {}", s.format));
+        push(
+            &mut v,
+            file,
+            format!("unsupported scene format {}", s.format),
+        );
     }
     let mut ids = HashSet::new();
     let mut check = |e: &Entity| {
         if e.id.is_empty() || !ids.insert(e.id.clone()) {
-            push(&mut v, file, format!("entity '{}' has empty or duplicate id '{}'", e.name, e.id));
+            push(
+                &mut v,
+                file,
+                format!("entity '{}' has empty or duplicate id '{}'", e.name, e.id),
+            );
         }
         let mut r = vec![];
         for c in &e.components {
@@ -49,7 +64,11 @@ pub fn validate_scene(root: &Path, file: &str, s: &Scene) -> Vec<Issue> {
         }
         for path in r {
             if !root.join(&path).exists() {
-                push(&mut v, file, format!("entity '{}' references missing file '{path}'", e.name));
+                push(
+                    &mut v,
+                    file,
+                    format!("entity '{}' references missing file '{path}'", e.name),
+                );
             }
         }
     };
@@ -72,14 +91,31 @@ pub fn validate_project(root: &Path) -> Vec<Issue> {
     if p.name.trim().is_empty() {
         push(&mut v, io::PROJECT_FILE, "name is empty");
     }
-    if p.id.is_empty() || !p.id.chars().all(|c| c.is_ascii_alphanumeric() || c == '.' || c == '-' || c == '_') {
-        push(&mut v, io::PROJECT_FILE, format!("id '{}' must be reverse-DNS style ([A-Za-z0-9._-])", p.id));
+    if p.id.is_empty()
+        || !p
+            .id
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || c == '.' || c == '-' || c == '_')
+    {
+        push(
+            &mut v,
+            io::PROJECT_FILE,
+            format!("id '{}' must be reverse-DNS style ([A-Za-z0-9._-])", p.id),
+        );
     }
-    if !root.join(&p.start_scene).exists() {
-        push(&mut v, io::PROJECT_FILE, format!("startScene '{}' does not exist", p.start_scene));
+    if p.kind != crate::ProjectType::Html && !root.join(&p.start_scene).exists() {
+        push(
+            &mut v,
+            io::PROJECT_FILE,
+            format!("startScene '{}' does not exist", p.start_scene),
+        );
     }
     if let Ok(rd) = std::fs::read_dir(root.join("scenes")) {
-        let mut files: Vec<_> = rd.flatten().map(|e| e.path()).filter(|p| p.to_string_lossy().ends_with(".scene.json")).collect();
+        let mut files: Vec<_> = rd
+            .flatten()
+            .map(|e| e.path())
+            .filter(|p| p.to_string_lossy().ends_with(".scene.json"))
+            .collect();
         files.sort();
         for f in files {
             let rel = format!("scenes/{}", f.file_name().unwrap().to_string_lossy());
@@ -104,13 +140,18 @@ mod tests {
         io::save_project(&d, &Project::new("T", "com.x.t", ProjectType::TwoD)).unwrap();
         let mut s = Scene::new("main");
         let mut a = Entity::new("A");
-        a.components.push(Component { kind: "sprite".into(), fields: serde_json::from_str(r#"{"texture":"assets/nope.png"}"#).unwrap() });
+        a.components.push(Component {
+            kind: "sprite".into(),
+            fields: serde_json::from_str(r#"{"texture":"assets/nope.png"}"#).unwrap(),
+        });
         let mut b = Entity::new("B");
         b.id = a.id.clone();
         s.entities = vec![a, b];
         io::save_json(&d.join("scenes/main.scene.json"), &s).unwrap();
         let issues = validate_project(&d);
-        assert!(issues.iter().any(|i| i.msg.contains("missing file 'assets/nope.png'")));
+        assert!(issues
+            .iter()
+            .any(|i| i.msg.contains("missing file 'assets/nope.png'")));
         assert!(issues.iter().any(|i| i.msg.contains("duplicate id")));
         assert_eq!(issues.len(), 2);
     }

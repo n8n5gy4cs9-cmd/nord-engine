@@ -393,67 +393,67 @@
       "id": "M1-01",
       "milestone": "M1",
       "title": "nord-core: project + scene + prefab structs (serde) matching PROJECT_FORMAT.md; load/save; validation",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M1-02",
       "milestone": "M1",
       "title": "JSON schemas for project/scene/components (generated from Rust or hand-written) in crates/nord-core/schema",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M1-03",
       "milestone": "M1",
       "title": "nord-core: asset index (scan, types, meta sidecars, hashes)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M1-04",
       "milestone": "M1",
       "title": "nord-core: thumbnail generator (images, spritesheets, audio waveform PNG) with cache",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M1-05",
       "milestone": "M1",
       "title": "nord-cli: `new` (templates), `doctor` (tier recommendation), `thumbs`",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M1-06",
       "milestone": "M1",
       "title": "nord-cli: `serve` dev server (axum) with project+vendor+runtime mounting, SSE live reload, `/api/*` editor backend",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M1-07",
       "milestone": "M1",
       "title": "nord-cli: `check-offline` scanner (+ allowlist, tests)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M1-08",
       "milestone": "M1",
       "title": "nord-cli: `vendor --verify` wiring to tools/vendor.mjs manifest",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M1-09",
       "milestone": "M1",
       "title": "Template: blank html project that runs via `nord serve`",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M1-10",
       "milestone": "M1",
       "title": "CI: GitHub Actions (fmt, clippy, test, tasks check) on ubuntu + macos-14",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M1-11",
       "milestone": "M1",
       "title": "Crash-safe file writes (tmp+rename), project lock, recent-projects store",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M2-01",
