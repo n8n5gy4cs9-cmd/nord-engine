@@ -5,6 +5,13 @@
 use egui::{Ui, Vec2};
 use std::collections::{HashMap, HashSet};
 
+#[cfg(any(all(target_os = "macos", feature = "webview"), test))]
+fn mac_child_position(rect: egui::Rect, parent_height: f32, zoom: f32) -> Vec2 {
+    // wry 0.50 converts top-left coordinates for an unflipped NSView. winit 0.30's
+    // parent NSView is already flipped: compensate before wry performs its conversion.
+    egui::vec2(rect.left(), parent_height - rect.bottom()) * zoom
+}
+
 #[derive(Default)]
 pub struct WebPanes {
     #[cfg(feature = "webview")]
@@ -55,7 +62,10 @@ impl WebPanes {
     }
 
     /// Hide panes whose tab was not drawn this frame (egui_dock only calls `ui` for visible tabs).
-    pub fn end_frame(&mut self) {
+    pub fn end_frame(&mut self, overlay: bool) {
+        if overlay {
+            self.shown.clear();
+        }
         #[cfg(feature = "webview")]
         for (k, wv) in &self.panes {
             let _ = wv.set_visible(self.shown.contains(k));
@@ -161,15 +171,20 @@ impl WebPanes {
             ui.painter()
                 .rect_filled(full, 0.0, ui.visuals().extreme_bg_color);
         }
-        self.shown.insert(key.to_string());
+        if !overlay {
+            self.shown.insert(key.to_string());
+        }
         self.rects.insert(key.to_string(), rect);
         #[cfg(feature = "webview")]
         {
             use wry::dpi::{LogicalPosition, LogicalSize};
             let z = ui.ctx().zoom_factor();
+            #[cfg(target_os = "macos")]
+            let position = mac_child_position(rect, ui.ctx().screen_rect().height(), z);
+            #[cfg(not(target_os = "macos"))]
+            let position = rect.min.to_vec2() * z;
             let bounds = wry::Rect {
-                position: LogicalPosition::new((rect.min.x * z) as f64, (rect.min.y * z) as f64)
-                    .into(),
+                position: LogicalPosition::new(position.x as f64, position.y as f64).into(),
                 size: LogicalSize::new((rect.width() * z) as f64, (rect.height() * z) as f64)
                     .into(),
             };
@@ -232,6 +247,45 @@ impl WebPanes {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn mac_webview_matches_egui_top_left_in_flipped_winit_view() {
+        for zoom in [1.0, 1.5] {
+            for y in [100.0, 140.0] {
+                let rect = egui::Rect::from_min_size(egui::pos2(40.0, y), egui::vec2(640.0, 360.0));
+                let pos = mac_child_position(rect, 900.0, zoom);
+                // wry 0.50 assumes an unflipped NSView and computes this frame origin;
+                // winit's NSView is flipped, so that origin is already a top-left coordinate.
+                let frame_y = 900.0 * zoom - pos.y - rect.height() * zoom;
+                assert_eq!(
+                    frame_y,
+                    rect.top() * zoom,
+                    "native webview vertically mirrored"
+                );
+                assert_eq!(pos.x, rect.left() * zoom);
+            }
+        }
+    }
+
+    #[test]
+    fn dialog_keeps_webview_hidden_at_end_of_frame() {
+        let ctx = egui::Context::default();
+        let mut web = WebPanes::default();
+        for overlay in [false, true, false] {
+            web.begin_frame();
+            let _ = ctx.run(Default::default(), |ctx| {
+                egui::CentralPanel::default().show(ctx, |ui| {
+                    web.show(ui, None, "scene", "http://127.0.0.1/__edit", overlay);
+                });
+            });
+            web.end_frame(overlay);
+            assert_eq!(
+                web.shown.contains("scene"),
+                !overlay,
+                "end_frame must not re-show a view hidden by a dialog"
+            );
+        }
+    }
 
     #[test]
     fn content_mode_defaults_fresh_and_recreates_panes_when_changed() {

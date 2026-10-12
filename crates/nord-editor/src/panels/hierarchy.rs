@@ -24,12 +24,12 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         if icons::button(ui, "trash-2", "Delete (Del)", false).clicked() {
             st.delete_selected();
         }
-        ui.add(
-            egui::TextEdit::singleline(&mut st.hierarchy_filter)
-                .hint_text("Search…")
-                .desired_width(f32::INFINITY),
-        );
     });
+    ui.add(
+        egui::TextEdit::singleline(&mut st.hierarchy_filter)
+            .hint_text("Search entities…")
+            .desired_width(f32::INFINITY),
+    );
     ui.separator();
     let filter = st.hierarchy_filter.to_lowercase();
     let entities = st

@@ -42,7 +42,7 @@ VERSION="$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -1)"
 # copy the resource folders the editor/player find via nord_serve::engine_root()
 copy_resources() { # $1 = destination dir
   local RES="$1"; mkdir -p "$RES"
-  for d in vendor runtime editor docs library examples; do
+  for d in vendor runtime editor docs library examples templates; do
     [ -d "$d" ] && cp -R "$d" "$RES/"
   done
   find "$RES" \( -name '.nord-cache' -o -name 'dist' -o -name '.DS_Store' \) -prune -exec rm -rf {} + 2>/dev/null || true

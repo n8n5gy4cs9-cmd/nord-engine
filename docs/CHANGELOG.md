@@ -1,4 +1,5 @@
 # Changelog
+- 2026-10-12 (M8-18): Refreshed editor with neutral Graphite default, cleaner dock/toolbar/hub, searchable examples, scrolling settings, accessible icons and bundled starters. Fixed disabled Export, webview dialog overlap, hub Docs navigation, mirrored macOS viewport bounds, Inspector mutating on selection and theme restoration during Play; preserved PLAYMODE-COLOR.
 Newest first. One line per notable change. Credit: Crowelian 2026 + Sonnet.
 
 ## Unreleased

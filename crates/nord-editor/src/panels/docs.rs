@@ -89,7 +89,7 @@ pub fn markdown_ui(st: &mut EditorState, ui: &mut Ui) {
     egui::ScrollArea::vertical().auto_shrink([false; 2]).show(ui, |ui| {
         if st.docs_ui.file.is_none() {
             ui.heading("Nord Engine docs");
-            ui.label("The HTML manual is missing (run `node tools/build-manual.mjs`). Until then these are the design documents.");
+            ui.label("Choose a guide from the sidebar. Open a project to access the searchable HTML manual.");
         } else {
             render_md(ui, &st.docs_ui.text.clone());
         }

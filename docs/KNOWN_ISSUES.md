@@ -6,8 +6,17 @@ Format: `BUG-nnn [open|fixed] title — repro / notes`. Unverified-but-plausible
 _(none yet)_
 
 ## Fixed
+- BUG-007 [fixed] macOS child webviews were vertically mirrored, covering the game header/console. wry 0.50 assumes an unflipped NSView but winit 0.30 supplies a flipped view; bounds now compensate. Reproduced and verified in the packaged editor with Noom on macOS, plus geometry regression at multiple zooms.
+- BUG-008 [fixed] Selecting an entity silently inserted missing component/script defaults and dirtied the scene. Inspector now displays defaults locally and writes only fields the user edits; regression opens Noom and verifies an unchanged scene/undo stack.
+- BUG-003 [fixed] Toolbar Export was permanently disabled despite the implemented export dialog; click regression now dispatches Export.
+- BUG-004 [fixed] Embedded views reappeared above menus/dialogs because end_frame overrode set_visible(false); frame visibility now honors overlays, including newly opened popups and recovery/desktop dialogs.
+- BUG-005 [fixed] Changing themes during Play could restore stale colors after Stop; the tint base is reset when applying a theme.
+- BUG-006 [fixed] Packaged hub omitted starter templates; build.sh now ships templates/ alongside examples/.
 - BUG-002 [fixed] macOS project locks misidentified live foreign-user processes as stale because `kill -0` returned EPERM. The macOS check now reads `ps -p PID -o pid=`; the existing exclusivity regression covers pid 1.
 - BUG-001 [fixed] Rebuilt app examples showed old art/code — the hub reused persistent private copies under `~/.config/nord/examples/`. `USE CACHED CONTENT` now defaults OFF: current example files open directly and old Recent/launch paths resolve to the current bundle. Opt-in ON retains saved copies for testing. Regression replaces an example asset then reopens it and verifies the new bytes; server regression verifies `no-store` and new bytes at the same URL.
+
+## Verification for M8-18
+Workspace tests pass with the editor webview feature (42 editor unit tests + 27 headless UI tests), Clippy all targets, formatting, task consistency, manual checks, and signed macOS app build. Native macOS checks: Graphite hub/workspace, packaged starter catalog, Noom Play/Stop, unchanged blue play tint, Settings above the webview, Export from the toolbar, and corrected viewport placement above the Console. Other native OS-specific paths and the broader owner checklist below remain unverified.
 
 ## Unverified / risks
 - RISK-010 (M9, owner action) Desktop shell parts that are **not verified on macOS/Windows**: native menu bar, tray icon, global shortcuts, dock badge/taskbar progress (`HostCommand::Badge/Progress`: badge macOS only, progress via tao), context menus on Windows/Linux (only macOS popup is wired), `app.autostart` (LaunchAgent/registry/.desktop writers), file-association/URL-scheme registration (Info.plist keys generated; Windows `register.reg` needs the install path edited), `rfd`/`notify-rust`/`arboard` backends. Linux (webkit2gtk under Xvfb) runs the IPC/files/store/server smoke test in CI; Windows `cargo check` of the shell passes, macOS cannot be checked here. CI runs `tools/player-smoke.mjs` on macOS/Windows as non-blocking steps. Wayland: tray/global shortcuts compositor-dependent.

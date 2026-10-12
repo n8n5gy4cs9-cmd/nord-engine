@@ -62,7 +62,7 @@ pub fn newline(s: &str, cursor: usize, tab: usize) -> Edit {
         .trim_end()
         .chars()
         .last()
-        .is_some_and(|c| "{([:".contains(c) && (c != ':' || false));
+        .is_some_and(|c| "{([".contains(c));
     let closer_next = s[i..].chars().next().is_some_and(|c| "})]".contains(c));
     let mut ins = format!("\n{indent}");
     let mut pos = cursor + 1 + nchars(&indent);

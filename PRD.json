@@ -1245,6 +1245,12 @@
       "milestone": "M8",
       "title": "Fix macOS project-lock live-process detection",
       "status": "todo"
+    },
+    {
+      "id": "M8-18",
+      "milestone": "M8",
+      "title": "Editor UI uplift: charcoal theme, polished workspace and hub, reliable toolbar and dialogs",
+      "status": "done"
     }
   ]
 }

@@ -251,14 +251,18 @@ fn fields_ui(
         .show(ui, |ui| {
             for f in fields {
                 ui.label(&f.label);
-                let cur = data
-                    .entry(f.name.clone())
-                    .or_insert_with(|| f.default.clone());
+                let mut cur = data
+                    .get(&f.name)
+                    .cloned()
+                    .unwrap_or_else(|| f.default.clone());
                 // keep the stored value usable for the widget's type (e.g. null from a hand-edited file)
                 if cur.is_null() {
-                    *cur = f.default.clone();
+                    cur = f.default.clone();
                 }
-                ch |= field_ui(ui, cx, &f.ty, cur, &format!("{id}.{}", f.name));
+                if field_ui(ui, cx, &f.ty, &mut cur, &format!("{id}.{}", f.name)) {
+                    data.insert(f.name.clone(), cur);
+                    ch = true;
+                }
                 ui.end_row();
             }
             // fields present in the file but not in the schema: still editable (guessed type)

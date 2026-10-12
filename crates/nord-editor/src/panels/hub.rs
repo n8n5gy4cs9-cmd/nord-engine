@@ -11,6 +11,8 @@ pub struct HubUi {
     pub starter: Option<String>,
     pub parent: PathBuf,
     pub error: Option<String>,
+    pub search: String,
+    pub show_docs: bool,
 }
 
 impl Default for HubUi {
@@ -29,6 +31,8 @@ impl Default for HubUi {
                 home.join("NordProjects")
             },
             error: None,
+            search: String::new(),
+            show_docs: false,
         }
     }
 }
@@ -174,184 +178,324 @@ fn list_projects(dir: &Path) -> Vec<PathBuf> {
 
 pub fn ui(st: &mut EditorState, ui: &mut Ui) {
     ui.add_space(24.0);
-    ui.vertical_centered(|ui| {
-        ui.add(
-            egui::Image::new(egui::include_image!(
-                "../../../../assets/brand/logo-256.png"
-            ))
-            .max_height(96.0),
-        );
-        ui.label(RichText::new("Nord Engine").size(28.0).strong());
-        ui.weak("Crowelian 2026 + Sonnet");
-    });
-    ui.add_space(16.0);
-    ui.columns(2, |cols| {
-        egui::ScrollArea::vertical()
-            .id_salt("hub-new")
-            .auto_shrink([false, false])
-            .show(&mut cols[0], |ui| {
-                ui.heading("New project");
-                egui::Grid::new("newproj").num_columns(2).show(ui, |ui| {
-                    ui.label("Name");
-                    ui.text_edit_singleline(&mut st.hub.name);
-                    ui.end_row();
-                    ui.label("Location");
-                    ui.horizontal(|ui| {
-                        let mut s = st.hub.parent.to_string_lossy().into_owned();
-                        if ui
-                            .add(egui::TextEdit::singleline(&mut s).desired_width(220.0))
-                            .changed()
-                        {
-                            st.hub.parent = s.into();
-                        }
-                        if ui.button("…").clicked() {
-                            if let Some(p) = rfd::FileDialog::new().pick_folder() {
-                                st.hub.parent = p;
-                            }
-                        }
-                    });
-                    ui.end_row();
-                });
-                ui.add_space(4.0);
-                for (k, title, desc) in TEMPLATES {
-                    let sel = st.hub.starter.is_none() && st.hub.kind == k;
-                    let r = ui.selectable_label(sel, RichText::new(title).strong());
-                    if r.clicked() {
-                        st.hub.kind = k;
-                        st.hub.starter = None;
-                    }
-                    ui.indent(title, |ui| ui.weak(desc));
-                }
-                let rows = st
-                    .engine_root
-                    .as_ref()
-                    .map(|r| starters(r))
-                    .unwrap_or_default();
-                if !rows.is_empty() {
-                    ui.add_space(6.0);
-                    ui.label(RichText::new("Starter templates").strong());
-                    for (id, title, desc, ty) in &rows {
-                        let sel = st.hub.starter.as_deref() == Some(id.as_str());
-                        if ui
-                            .selectable_label(sel, format!("{title}  ·  {ty}"))
-                            .on_hover_text(desc)
-                            .clicked()
-                        {
-                            st.hub.starter = Some(id.clone());
-                        }
-                        if sel {
-                            ui.indent(id, |ui| ui.weak(desc));
-                        }
-                    }
-                }
-                if ui.button("Create project").clicked() {
-                    let parent = st.hub.parent.clone();
-                    let name = st.hub.name.clone();
-                    // Rust project types start from their template folder (Cargo.toml + src/main.rs + scene) when the engine ships it
-                    let starter = st.hub.starter.clone().or_else(|| match st.hub.kind {
-                        ProjectType::WasmGame => Some("rust-2d-game".to_string()),
-                        ProjectType::WasmApp => Some("rust-egui-app".to_string()),
-                        _ => None,
-                    });
-                    let res = match (&starter, &st.engine_root) {
-                        (Some(id), Some(root)) if root.join("templates").join(id).exists() => {
-                            create_starter(&parent, &name, &root.join("templates").join(id))
-                        }
-                        _ => create_project(&parent, &name, st.hub.kind),
-                    };
-                    match res {
-                        Ok(dir) => {
-                            st.hub.error = None;
-                            st.push(Action::OpenPath(dir));
-                        }
-                        Err(e) => st.hub.error = Some(e),
-                    }
-                }
-                if let Some(e) = &st.hub.error {
-                    ui.colored_label(ui.visuals().error_fg_color, e);
-                }
-                ui.add_space(12.0);
-                if ui.button("Open project…").clicked() {
-                    st.push(Action::OpenProject);
-                }
-
-                ui.add_space(32.0);
-            });
-        egui::ScrollArea::vertical()
-            .id_salt("hub-lists")
-            .auto_shrink([false, false])
-            .show(&mut cols[1], |ui| {
-                ui.heading("Recent");
-                let recent = nord_core::io::recent_projects();
-                if recent.is_empty() {
-                    ui.weak("Nothing yet");
-                }
-                for p in recent
-                    .iter()
-                    .filter(|p| p.join(nord_core::io::PROJECT_FILE).exists())
-                    .take(8)
-                {
-                    if ui
-                        .link(format!(
-                            "{}  —  {}",
-                            p.file_name()
-                                .map_or(String::new(), |n| n.to_string_lossy().into_owned()),
-                            p.display()
+    let width = ui.available_width().min(1120.0);
+    let height = ui.available_height();
+    let gutter = ((ui.available_width() - width) * 0.5).max(0.0);
+    ui.horizontal(|ui| {
+        ui.add_space(gutter);
+        ui.allocate_ui_with_layout(
+            egui::vec2(width, height),
+            egui::Layout::top_down(egui::Align::Min),
+            |ui| {
+                ui.horizontal(|ui| {
+                    ui.add(
+                        egui::Image::new(egui::include_image!(
+                            "../../../../assets/brand/logo-mark-transparent.png"
                         ))
-                        .clicked()
-                    {
-                        st.push(Action::OpenPath(p.clone()));
-                    }
-                }
-                ui.add_space(10.0);
-                ui.heading("Examples");
-                let ex = st
-                    .engine_root
-                    .as_ref()
-                    .map(|r| list_projects(&r.join("examples")))
-                    .unwrap_or_default();
-                if ex.is_empty() {
-                    ui.weak("No examples found");
-                }
-                for p in ex {
-                    let n = p
-                        .file_name()
-                        .map_or(String::new(), |n| n.to_string_lossy().into_owned());
-                    let hint = if st.settings.use_cached_content {
-                        "Opens the saved example copy (USE CACHED CONTENT is ON)"
-                    } else {
-                        "Opens the current example files directly"
-                    };
-                    if ui.link(&n).on_hover_text(hint).clicked() {
-                        match open_example(&p, st.settings.use_cached_content) {
-                            Ok(d) => st.push(Action::OpenPath(d)),
-                            Err(e) => st.log(LogLevel::Error, e),
+                        .fit_to_exact_size(egui::vec2(40.0, 40.0)),
+                    );
+                    ui.vertical(|ui| {
+                        ui.label(RichText::new("Nord Engine").size(26.0).strong());
+                        ui.weak("Your next game starts here.");
+                    });
+                    ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+                        if ui.button("Open project…").clicked() {
+                            st.push(Action::OpenProject);
                         }
-                    }
-                }
-                ui.add_space(10.0);
-                ui.heading("Tutorials");
-                let tut = st
-                    .engine_root
-                    .as_ref()
-                    .map(|r| list_projects(&r.join("examples/tutorials")))
-                    .unwrap_or_default();
-                if tut.is_empty() {
-                    ui.weak("Tutorials ship with the manual (M7)");
-                }
-                for p in tut {
-                    let n = p
-                        .file_name()
-                        .map_or(String::new(), |n| n.to_string_lossy().into_owned());
-                    if ui.link(&n).clicked() {
-                        if let Ok(d) = open_example(&p, st.settings.use_cached_content) {
-                            st.push(Action::OpenPath(d));
-                        }
-                    }
-                }
-                ui.add_space(32.0);
-            });
+                    });
+                });
+                ui.add_space(16.0);
+                ui.columns(2, |cols| {
+                    egui::ScrollArea::vertical()
+                        .id_salt("hub-new")
+                        .auto_shrink([false, false])
+                        .show(&mut cols[0], |ui| {
+                            card(ui, |ui| {
+                                ui.heading("New project");
+                                ui.weak("Choose a starting point, then make it yours.");
+                                ui.add_space(10.0);
+                                ui.label("Project name");
+                                ui.add(
+                                    egui::TextEdit::singleline(&mut st.hub.name)
+                                        .desired_width(f32::INFINITY),
+                                );
+                                ui.label("Location");
+                                ui.horizontal(|ui| {
+                                    let mut location = st.hub.parent.to_string_lossy().into_owned();
+                                    let field_width = (ui.available_width() - 48.0).max(80.0);
+                                    if ui
+                                        .add(
+                                            egui::TextEdit::singleline(&mut location)
+                                                .desired_width(field_width),
+                                        )
+                                        .changed()
+                                    {
+                                        st.hub.parent = location.into();
+                                    }
+                                    if ui
+                                        .button("…")
+                                        .on_hover_text("Choose project folder")
+                                        .clicked()
+                                    {
+                                        if let Some(p) = rfd::FileDialog::new().pick_folder() {
+                                            st.hub.parent = p;
+                                        }
+                                    }
+                                });
+                                ui.add_space(10.0);
+                                ui.strong("Project type");
+                                for (kind, title, desc) in TEMPLATES {
+                                    let selected = st.hub.starter.is_none() && st.hub.kind == kind;
+                                    if ui
+                                        .add_sized(
+                                            [ui.available_width(), 30.0],
+                                            egui::SelectableLabel::new(selected, title),
+                                        )
+                                        .on_hover_text(desc)
+                                        .clicked()
+                                    {
+                                        st.hub.kind = kind;
+                                        st.hub.starter = None;
+                                    }
+                                    if selected {
+                                        ui.small(desc);
+                                    }
+                                }
+                                let rows = st
+                                    .engine_root
+                                    .as_ref()
+                                    .map(|r| starters(r))
+                                    .unwrap_or_default();
+                                if !rows.is_empty() {
+                                    ui.add_space(6.0);
+                                    egui::CollapsingHeader::new("Starter templates")
+                                        .default_open(false)
+                                        .show(ui, |ui| {
+                                            for (id, title, desc, ty) in &rows {
+                                                let selected =
+                                                    st.hub.starter.as_deref() == Some(id.as_str());
+                                                if ui
+                                                    .selectable_label(
+                                                        selected,
+                                                        format!("{title}  ·  {ty}"),
+                                                    )
+                                                    .on_hover_text(desc)
+                                                    .clicked()
+                                                {
+                                                    st.hub.starter = Some(id.clone());
+                                                }
+                                            }
+                                        });
+                                    if let Some(id) = &st.hub.starter {
+                                        if let Some((_, title, desc, _)) =
+                                            rows.iter().find(|r| &r.0 == id)
+                                        {
+                                            ui.strong(title);
+                                            ui.small(desc);
+                                        }
+                                    }
+                                }
+                                ui.add_space(12.0);
+                                if ui
+                                    .add_sized(
+                                        [ui.available_width(), 36.0],
+                                        egui::Button::new("Create project")
+                                            .fill(ui.visuals().selection.bg_fill),
+                                    )
+                                    .clicked()
+                                {
+                                    let parent = st.hub.parent.clone();
+                                    let name = st.hub.name.clone();
+                                    let starter =
+                                        st.hub.starter.clone().or_else(|| match st.hub.kind {
+                                            ProjectType::WasmGame => {
+                                                Some("rust-2d-game".to_string())
+                                            }
+                                            ProjectType::WasmApp => {
+                                                Some("rust-egui-app".to_string())
+                                            }
+                                            _ => None,
+                                        });
+                                    let res = match (&starter, &st.engine_root) {
+                                        (Some(id), Some(root))
+                                            if root.join("templates").join(id).exists() =>
+                                        {
+                                            create_starter(
+                                                &parent,
+                                                &name,
+                                                &root.join("templates").join(id),
+                                            )
+                                        }
+                                        _ => create_project(&parent, &name, st.hub.kind),
+                                    };
+                                    match res {
+                                        Ok(dir) => {
+                                            st.hub.error = None;
+                                            st.push(Action::OpenPath(dir));
+                                        }
+                                        Err(e) => st.hub.error = Some(e),
+                                    }
+                                }
+                                if let Some(e) = &st.hub.error {
+                                    ui.colored_label(ui.visuals().error_fg_color, e);
+                                }
+                            });
+                            ui.add_space(14.0);
+                            ui.small("Crowelian 2026 + Sonnet");
+                        });
+                    egui::ScrollArea::vertical()
+                        .id_salt("hub-lists")
+                        .auto_shrink([false, false])
+                        .show(&mut cols[1], |ui| {
+                            card(ui, |ui| {
+                                ui.heading("Recent projects");
+                                let recent: Vec<_> = nord_core::io::recent_projects()
+                                    .into_iter()
+                                    .filter(|p| p.join(nord_core::io::PROJECT_FILE).exists())
+                                    .take(8)
+                                    .collect();
+                                if recent.is_empty() {
+                                    ui.weak("Projects you open will appear here.");
+                                }
+                                egui::ScrollArea::vertical()
+                                    .id_salt("hub-recent")
+                                    .max_height(150.0)
+                                    .show(ui, |ui| {
+                                        for p in recent {
+                                            let name = project_name(&p);
+                                            if project_row(ui, &name, &p.display().to_string())
+                                                .clicked()
+                                            {
+                                                st.push(Action::OpenPath(p));
+                                            }
+                                        }
+                                    });
+                            });
+                            ui.add_space(12.0);
+                            card(ui, |ui| {
+                                ui.heading("Explore & learn");
+                                ui.weak("Playable examples and guided tutorials.");
+                                ui.add_space(8.0);
+                                ui.add(
+                                    egui::TextEdit::singleline(&mut st.hub.search)
+                                        .hint_text("Search examples and tutorials…")
+                                        .desired_width(f32::INFINITY),
+                                );
+                                let query = st.hub.search.to_lowercase();
+                                let ex = st
+                                    .engine_root
+                                    .as_ref()
+                                    .map(|r| list_projects(&r.join("examples")))
+                                    .unwrap_or_default();
+                                ui.add_space(8.0);
+                                ui.strong("Examples");
+                                let mut count = 0;
+                                for p in ex {
+                                    let name = project_name(&p);
+                                    if !name.to_lowercase().contains(&query) {
+                                        continue;
+                                    }
+                                    count += 1;
+                                    let hint = if st.settings.use_cached_content {
+                                        "Open saved example copy"
+                                    } else {
+                                        "Open current example files"
+                                    };
+                                    if project_row(ui, &name, hint).clicked() {
+                                        open_sample(st, &p);
+                                    }
+                                }
+                                if count == 0 {
+                                    ui.weak("No matching examples");
+                                }
+                                ui.add_space(10.0);
+                                egui::CollapsingHeader::new("Tutorials")
+                                    .default_open(true)
+                                    .show(ui, |ui| {
+                                        let tutorials = st
+                                            .engine_root
+                                            .as_ref()
+                                            .map(|r| list_projects(&r.join("examples/tutorials")))
+                                            .unwrap_or_default();
+                                        if tutorials.is_empty() {
+                                            ui.weak("Find guided tutorials in Documentation.");
+                                        }
+                                        for p in tutorials {
+                                            let name = project_name(&p);
+                                            if name.to_lowercase().contains(&query)
+                                                && project_row(ui, &name, "Open tutorial").clicked()
+                                            {
+                                                open_sample(st, &p);
+                                            }
+                                        }
+                                        if ui.button("Documentation").clicked() {
+                                            st.push(Action::ShowTab(crate::app::Tab::Docs));
+                                        }
+                                    });
+                            });
+                        });
+                });
+            },
+        );
     });
+}
+
+fn card(ui: &mut Ui, content: impl FnOnce(&mut Ui)) {
+    egui::Frame::new()
+        .fill(ui.visuals().panel_fill)
+        .stroke(ui.visuals().window_stroke)
+        .corner_radius(10)
+        .inner_margin(18)
+        .show(ui, |ui| {
+            ui.set_min_width(ui.available_width());
+            content(ui);
+        });
+}
+
+fn project_name(path: &Path) -> String {
+    path.file_name()
+        .map_or(String::new(), |n| n.to_string_lossy().into_owned())
+}
+
+fn project_row(ui: &mut Ui, name: &str, hint: &str) -> egui::Response {
+    let (rect, response) =
+        ui.allocate_exact_size(egui::vec2(ui.available_width(), 32.0), egui::Sense::click());
+    response
+        .widget_info(|| egui::WidgetInfo::labeled(egui::WidgetType::Button, ui.is_enabled(), name));
+    if ui.is_rect_visible(rect) {
+        let visuals = ui.style().interact(&response);
+        if response.hovered() || response.has_focus() {
+            ui.painter().rect_filled(rect, 5, visuals.bg_fill);
+        }
+        crate::icons::icon("folder", 16.0, ui.visuals().weak_text_color()).paint_at(
+            ui,
+            egui::Rect::from_center_size(
+                egui::pos2(rect.left() + 18.0, rect.center().y),
+                egui::vec2(16.0, 16.0),
+            ),
+        );
+        let text = ui.painter().layout(
+            name.into(),
+            egui::TextStyle::Body.resolve(ui.style()),
+            visuals.fg_stroke.color,
+            (rect.width() - 44.0).max(20.0),
+        );
+        ui.painter().with_clip_rect(rect).galley(
+            egui::pos2(rect.left() + 36.0, rect.center().y - text.size().y * 0.5),
+            text,
+            visuals.fg_stroke.color,
+        );
+    }
+    response
+        .on_hover_cursor(egui::CursorIcon::PointingHand)
+        .on_hover_text(hint)
+}
+
+fn open_sample(st: &mut EditorState, path: &Path) {
+    match open_example(path, st.settings.use_cached_content) {
+        Ok(dir) => st.push(Action::OpenPath(dir)),
+        Err(e) => st.log(LogLevel::Error, e),
+    }
 }
 
 #[cfg(test)]

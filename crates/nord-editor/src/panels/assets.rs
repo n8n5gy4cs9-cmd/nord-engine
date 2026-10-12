@@ -236,7 +236,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         a.listed_dir = a.dir.clone();
     }
 
-    ui.horizontal(|ui| {
+    ui.horizontal_wrapped(|ui| {
         if icons::button(ui, "upload", "Import files…", false).clicked() {
             if let Some(files) = rfd::FileDialog::new().pick_files() {
                 import_files(st, &files);

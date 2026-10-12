@@ -16,6 +16,9 @@ use std::{
 pub struct Settings {
     pub skin: String,
     pub theme: String,
+    /// One-time migration from the original blue default; later theme choices persist.
+    #[serde(default)]
+    pub appearance_version: u8,
     pub ui_scale: f32,
     pub code_font_size: f32,
     pub tab_width: usize,
@@ -47,7 +50,8 @@ impl Default for Settings {
     fn default() -> Self {
         Self {
             skin: "modern".into(),
-            theme: "nord".into(),
+            theme: "graphite".into(),
+            appearance_version: 1,
             ui_scale: 1.0,
             code_font_size: 13.0,
             tab_width: 2,
@@ -87,7 +91,17 @@ impl Settings {
         nord_core::io::config_dir().join("editor.json")
     }
     pub fn load() -> Self {
-        nord_core::io::load_json(&Self::path()).unwrap_or_default()
+        let mut s: Self = nord_core::io::load_json(&Self::path()).unwrap_or_default();
+        s.migrate_appearance();
+        s
+    }
+    fn migrate_appearance(&mut self) {
+        if self.appearance_version == 0 {
+            if self.theme == "nord" {
+                self.theme = "graphite".into();
+            }
+            self.appearance_version = 1;
+        }
     }
     pub fn save(&self) {
         let _ = nord_core::io::save_json(&Self::path(), self);
@@ -879,5 +893,32 @@ impl EditorState {
             self.script_cache.insert(rel.to_string(), (mt, f.clone()));
         }
         f
+    }
+}
+
+#[cfg(test)]
+mod appearance_tests {
+    use super::Settings;
+
+    #[test]
+    fn upgrade_default_once_and_keep_custom_themes_and_play_color() {
+        for (old, expected) in [("nord", "graphite"), ("dracula", "dracula")] {
+            let mut s: Settings = serde_json::from_value(serde_json::json!({
+                "theme": old, "play_tint": [20, 40, 80]
+            }))
+            .unwrap();
+            s.migrate_appearance();
+            assert_eq!(s.theme, expected);
+            assert_eq!(s.play_tint, [20, 40, 80]);
+            s.theme = "nord".into();
+            let mut saved: Settings =
+                serde_json::from_str(&serde_json::to_string(&s).unwrap()).unwrap();
+            saved.migrate_appearance();
+            assert_eq!(
+                saved.theme, "nord",
+                "explicit choices after migration must survive restart"
+            );
+        }
+        assert_eq!(Settings::default().play_tint, [34, 56, 96]);
     }
 }

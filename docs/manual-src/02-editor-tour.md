@@ -15,6 +15,13 @@ The editor is a native **egui** app. Its layout follows the PlayCanvas editor wi
 │ folders | thumbnails | search | Library | Console | Docs                                          │
 ```
 
+## Appearance and project hub
+The default **Graphite** theme uses neutral dark-grey panels, a darker canvas and a soft blue accent. Existing settings using the original Nord default migrate once; custom themes remain selected. All previous themes are available in Settings. The blue **Play-mode tint** and your chosen PLAYMODE-COLOR are preserved.
+
+The hub provides New project, Recent projects and searchable Examples/Tutorials in separately scrolling cards. Expand **Starter templates** for a ready-made project; the templates are included in the app bundle. Hover a recent-project row to see its full path. **Docs** opens the guides even before opening a project; **Back to projects** returns to the hub.
+
+Toolbar **Play** toggles Stop, **Export…** opens the export dialog, and the search icon opens the command palette. Settings scrolls in smaller windows. Drag dock tabs to rearrange panels; closed tabs reopen from View.
+
 ## Panels
 * **Hierarchy** — the entity tree (**Add entity** button; right-click: Add child, Duplicate, Delete, Copy, Paste). Drag a row onto another to reparent (top 30 % of a row inserts *before*), drop on empty space to move to the root. Dropping an asset on empty space creates an entity from it.
 * **Viewport** — *Scene* tab is the edit view (2D Canvas / 3D Babylon): pan, orbit, zoom, pick, and move/rotate/scale gizmos with snapping. *Game* tab runs the real game.

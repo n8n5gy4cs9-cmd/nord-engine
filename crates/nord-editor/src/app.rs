@@ -340,6 +340,7 @@ impl App {
         match a {
             Action::NewProject | Action::CloseProject => {
                 st.close_project();
+                st.hub.show_docs = false;
                 self.web = WebPanes::default();
             }
             Action::OpenProject => {
@@ -449,6 +450,7 @@ impl App {
                     }
                 }
             }
+            Action::ShowTab(Tab::Docs) if st.project.is_none() => st.hub.show_docs = true,
             Action::ShowTab(t) => self.show_tab(t),
             Action::Build(what) => run_build(st, &what),
         }
@@ -550,7 +552,12 @@ impl App {
             });
             ui.menu_button("Project", |ui| {
                 let (rk, sk) = (st.settings.key_label(true), st.settings.key_label(false));
-                act(ui, &format!("Play / stop  ({rk})"), Action::Play, st);
+                let play_action = if st.is_playing() {
+                    Action::Stop
+                } else {
+                    Action::Play
+                };
+                act(ui, &format!("Play / stop  ({rk})"), play_action, st);
                 act(ui, &format!("Stop  ({sk})"), Action::Stop, st);
                 act(ui, "Validate", Action::Build("validate".into()), st);
                 if is_rust(st) {
@@ -946,6 +953,20 @@ impl eframe::App for App {
 }
 
 impl App {
+    fn overlays_open(&self, ctx: &Context) -> bool {
+        ctx.memory(|m| m.any_popup_open())
+            || self.st.palette.mode != PMode::Closed
+            || self.st.settings_open
+            || self.st.export_ui.open
+            || self.st.about_open
+            || self.st.desktop_ui.open
+            || (self.st.recover.is_some() && self.st.project.is_some())
+            || self.st.code.goto.is_some()
+            || self.quit_confirm
+            || self.st.assets_ui.confirm_delete.is_some()
+            || self.st.code.confirm_close.is_some()
+    }
+
     /// One UI frame. `frame` is `None` in headless tests (no native window => no embedded webview).
     pub fn frame_ui(&mut self, ctx: &Context, frame: Option<&eframe::Frame>) {
         egui_extras::install_image_loaders(ctx);
@@ -959,6 +980,8 @@ impl App {
                 &self.st.settings.theme.clone(),
             );
             self.st.apply_theme = false;
+            self.st.base_visuals = None;
+            self.st.tint_applied = None;
             self.st.apply_styles = true;
             ctx.request_repaint();
         } else if self.st.apply_styles {
@@ -1010,24 +1033,32 @@ impl App {
         if !game_full {
             egui::TopBottomPanel::top("menu").show(ctx, |ui| self.menu(ui));
             egui::TopBottomPanel::top("toolbar")
+                .frame(
+                    egui::Frame::NONE
+                        .fill(ctx.style().visuals.panel_fill)
+                        .inner_margin(egui::Margin::symmetric(12, 8)),
+                )
                 .show(ctx, |ui| panels::toolbar::ui(&mut self.st, ui));
             if self.st.project.is_some() {
                 egui::TopBottomPanel::bottom("status").show(ctx, |ui| status_bar(&mut self.st, ui));
             }
         }
-        let overlay = ctx.memory(|m| m.any_popup_open())
-            || self.st.palette.mode != PMode::Closed
-            || self.st.settings_open
-            || self.st.export_ui.open
-            || self.st.about_open
-            || self.quit_confirm
-            || self.st.assets_ui.confirm_delete.is_some()
-            || self.st.code.confirm_close.is_some();
+        let overlay = self.overlays_open(ctx);
         self.web
             .set_use_cached_content(self.st.settings.use_cached_content);
         self.web.begin_frame();
         if self.st.project.is_none() {
-            egui::CentralPanel::default().show(ctx, |ui| panels::hub::ui(&mut self.st, ui));
+            egui::CentralPanel::default().show(ctx, |ui| {
+                if self.st.hub.show_docs {
+                    if ui.button("Back to projects").clicked() {
+                        self.st.hub.show_docs = false;
+                    }
+                    ui.separator();
+                    panels::docs::markdown_ui(&mut self.st, ui);
+                } else {
+                    panels::hub::ui(&mut self.st, ui);
+                }
+            });
         } else if game_full {
             egui::CentralPanel::default()
                 .frame(egui::Frame::NONE)
@@ -1036,7 +1067,16 @@ impl App {
                 });
         } else {
             let mut style = Style::from_egui(ctx.style().as_ref());
-            style.tab_bar.fill_tab_bar = true;
+            style.tab_bar.fill_tab_bar = false;
+            style.tab_bar.height = 34.0 * self.st.settings.ui_scale;
+            style.tab_bar.bg_fill = ctx.style().visuals.extreme_bg_color;
+            style.tab_bar.hline_color = ctx.style().visuals.widgets.noninteractive.bg_stroke.color;
+            style.tab.tab_body.inner_margin = egui::Margin::same(10);
+            style.tab.active.bg_fill = ctx.style().visuals.panel_fill;
+            style.tab.focused.bg_fill = ctx.style().visuals.panel_fill;
+            style.tab.focused.text_color = ctx.style().visuals.hyperlink_color;
+            style.separator.width = 3.0;
+            style.separator.color_idle = ctx.style().visuals.extreme_bg_color;
             let mut dock = std::mem::replace(&mut self.dock, DockState::new(vec![]));
             egui::CentralPanel::default()
                 .frame(egui::Frame::NONE)
@@ -1056,7 +1096,6 @@ impl App {
                 });
             self.dock = dock;
         }
-        self.web.end_frame();
 
         panels::palette::window(&mut self.st, ctx);
         panels::settings::window(&mut self.st, ctx);
@@ -1111,6 +1150,8 @@ impl App {
                 self.st.toast = None;
             }
         }
+        let overlay = self.overlays_open(ctx);
+        self.web.end_frame(overlay);
         // keep polling the hub (game logs, viewport events) while a server runs
         if self.st.play.is_some() {
             ctx.request_repaint_after(Duration::from_millis(100));

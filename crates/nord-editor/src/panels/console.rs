@@ -40,7 +40,7 @@ pub fn find_location(s: &str) -> Option<(String, usize)> {
 }
 
 pub fn ui(st: &mut EditorState, ui: &mut Ui) {
-    ui.horizontal(|ui| {
+    ui.horizontal_wrapped(|ui| {
         if ui.small_button("Clear").clicked() {
             st.console.clear();
         }

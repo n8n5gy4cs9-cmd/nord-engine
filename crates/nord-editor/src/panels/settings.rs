@@ -26,7 +26,7 @@ pub fn window(st: &mut EditorState, ctx: &Context) {
         let mut open = true;
         let mut changed = false;
         let mut content_changed = false;
-        egui::Window::new("Settings").open(&mut open).default_width(420.0).show(ctx, |ui| {
+        egui::Window::new("Settings").open(&mut open).default_width(560.0).default_height(560.0).vscroll(true).show(ctx, |ui| {
             let s = &mut st.settings;
             egui::Grid::new("settings").num_columns(2).spacing([12.0, 6.0]).show(ui, |ui| {
                 ui.label("Skin (fonts)");

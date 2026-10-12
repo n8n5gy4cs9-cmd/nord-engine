@@ -87,7 +87,11 @@ pub fn icon(name: &'static str, size: f32, tint: Color32) -> Image<'static> {
 /// Icon-only button with tooltip. Drawn by hand: `egui::Button::image` sizes a not-yet-loaded image to *all* remaining
 /// space, which starves the next widget (negative sizes -> panic) on the first frame.
 pub fn button(ui: &mut Ui, name: &'static str, tip: &str, selected: bool) -> egui::Response {
-    let (rect, resp) = ui.allocate_exact_size(Vec2::splat(24.0), egui::Sense::click());
+    let side = (28.0 * (ui.text_style_height(&egui::TextStyle::Body) / 15.0)).max(24.0);
+    let (rect, resp) = ui.allocate_exact_size(Vec2::splat(side), egui::Sense::click());
+    resp.widget_info(|| {
+        egui::WidgetInfo::selected(egui::WidgetType::Button, ui.is_enabled(), selected, tip)
+    });
     if ui.is_rect_visible(rect) {
         let v = ui.style().interact_selectable(&resp, selected);
         let fill = if selected {
@@ -101,7 +105,8 @@ pub fn button(ui: &mut Ui, name: &'static str, tip: &str, selected: bool) -> egu
         let r = egui::Rect::from_center_size(rect.center(), Vec2::splat(16.0));
         icon(name, 16.0, v.fg_stroke.color).paint_at(ui, r);
     }
-    resp.on_hover_text(tip)
+    resp.on_hover_cursor(egui::CursorIcon::PointingHand)
+        .on_hover_text(tip)
 }
 
 pub fn label_icon(ui: &mut Ui, name: &'static str, text: &str) -> egui::Response {

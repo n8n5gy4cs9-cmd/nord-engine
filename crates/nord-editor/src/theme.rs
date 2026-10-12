@@ -106,9 +106,30 @@ font_files!(
 
 impl Themes {
     pub fn load() -> Self {
-        Self {
-            cat: serde_json::from_str(THEMES_JSON).expect("themes.json"),
-        }
+        let mut cat: Catalog = serde_json::from_str(THEMES_JSON).expect("themes.json");
+        // Editor-only palette: exported games retain their existing shared themes.
+        let mut graphite = cat.themes[0].clone();
+        graphite.id = "graphite".into();
+        graphite.name = "Graphite".into();
+        graphite.ui = UiColors {
+            bg: "#191919".into(),
+            panel: "#232323".into(),
+            panel2: "#2d2d2d".into(),
+            border: "#3d3d3d".into(),
+            fg: "#ededed".into(),
+            fg_dim: "#a5a5a5".into(),
+            accent: "#80b8ee".into(),
+            good: "#8fc9a3".into(),
+            warn: "#e8bd78".into(),
+            bad: "#ef9292".into(),
+        };
+        graphite.code.bg = "#191919".into();
+        graphite.code.fg = "#dedede".into();
+        graphite.code.gutter = "#858585".into();
+        graphite.code.line_highlight = "#252525".into();
+        graphite.code.selection = "#35495d".into();
+        cat.themes.insert(0, graphite);
+        Self { cat }
     }
     pub fn skins(&self) -> &[Skin] {
         &self.cat.skins
@@ -188,14 +209,16 @@ impl Themes {
         v.warn_fg_color = hex(&u.warn);
         v.error_fg_color = hex(&u.bad);
         v.window_stroke = egui::Stroke::new(1.0_f32, border);
-        v.selection.bg_fill = accent.linear_multiply(0.45);
+        v.window_corner_radius = egui::CornerRadius::same(10);
+        v.menu_corner_radius = egui::CornerRadius::same(6);
+        v.selection.bg_fill = bg.lerp_to_gamma(accent, 0.28);
         v.selection.stroke = egui::Stroke::new(1.0_f32, fg);
-        let rounding = egui::CornerRadius::same(4);
+        let rounding = egui::CornerRadius::same(5);
         for (w, fill) in [
             (&mut v.widgets.noninteractive, panel),
             (&mut v.widgets.inactive, panel2),
             (&mut v.widgets.hovered, border),
-            (&mut v.widgets.active, accent.linear_multiply(0.6)),
+            (&mut v.widgets.active, bg.lerp_to_gamma(accent, 0.3)),
             (&mut v.widgets.open, panel2),
         ] {
             w.bg_fill = fill;
@@ -205,6 +228,9 @@ impl Themes {
             w.fg_stroke = egui::Stroke::new(1.0_f32, fg);
         }
         v.widgets.noninteractive.fg_stroke = egui::Stroke::new(1.0_f32, dim);
+        v.widgets.inactive.bg_stroke = egui::Stroke::new(1.0, panel2);
+        v.widgets.hovered.bg_stroke = egui::Stroke::new(1.0, dim.linear_multiply(0.6));
+        v.widgets.active.bg_stroke = egui::Stroke::new(1.0, accent);
         ctx.set_visuals(v);
     }
 
@@ -216,7 +242,7 @@ impl Themes {
         style.text_styles = [
             (
                 TextStyle::Small,
-                FontId::new(10.5 * s, FontFamily::Proportional),
+                FontId::new(11.0 * s, FontFamily::Proportional),
             ),
             (
                 TextStyle::Body,
@@ -236,8 +262,11 @@ impl Themes {
             ),
         ]
         .into();
-        style.spacing.item_spacing = egui::vec2(6.0, 4.0);
-        style.spacing.button_padding = egui::vec2(8.0, 3.0);
+        style.spacing.item_spacing = egui::vec2(8.0 * s, 6.0 * s);
+        style.spacing.button_padding = egui::vec2(10.0 * s, 5.0 * s);
+        style.spacing.interact_size = egui::vec2(32.0 * s, 26.0 * s);
+        style.spacing.window_margin = egui::Margin::same(16);
+        style.spacing.menu_margin = egui::Margin::same(8);
         ctx.set_style(style);
     }
 }

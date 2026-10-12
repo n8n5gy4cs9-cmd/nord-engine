@@ -3,6 +3,25 @@ use egui_kittest::{kittest::Queryable, Harness};
 use nord_editor::{app::App, panels, state::EditorState};
 use std::path::PathBuf;
 
+#[test]
+fn toolbar_export_opens_the_export_dialog() {
+    let st = state_with_scene("toolbar-export");
+    let mut h = Harness::builder()
+        .with_size(egui::vec2(1400.0, 100.0))
+        .build_ui_state(|ui, st: &mut EditorState| panels::toolbar::ui(st, ui), st);
+    loaders(&h);
+    h.run_steps(3);
+    h.get_by_label("Export…").click();
+    h.run_steps(2);
+    assert!(
+        h.state()
+            .actions
+            .iter()
+            .any(|a| matches!(a, nord_editor::state::Action::Export)),
+        "toolbar Export must dispatch the implemented export dialog"
+    );
+}
+
 fn temp_project(name: &str, kind: nord_core::ProjectType) -> PathBuf {
     // keep recent-projects / settings out of the real config dir
     std::env::set_var(
@@ -171,7 +190,10 @@ fn autosave_and_recovery_roundtrip() {
     st2.recover_autosave();
     assert_eq!(st2.scene.as_ref().unwrap().entities.len(), 1);
     st2.save();
-    assert!(st2.recover.is_none() || true);
+    assert!(
+        st2.recover.is_none(),
+        "saving removes the recovery snapshot"
+    );
 }
 
 #[test]
@@ -763,8 +785,107 @@ fn reset_settings_and_layout_restore_defaults() {
     h.state_mut().st.push(Action::ResetSettings);
     h.run_steps(3);
     let app = h.state();
-    assert_eq!(app.st.settings.theme, "nord");
+    assert_eq!(app.st.settings.theme, "graphite");
     assert_eq!(app.st.settings.run_key, "R");
     assert!(!app.st.settings.use_cached_content);
     assert!(app.dock.iter_all_tabs().count() > 4, "layout not reset");
+}
+
+#[test]
+fn changing_theme_during_play_restores_the_new_theme_on_stop() {
+    use nord_editor::state::Action;
+    let mut app = App::new(false);
+    app.st = state_with_scene("theme-play");
+    let mut h = Harness::builder()
+        .with_size(egui::vec2(1200.0, 800.0))
+        .build_state(|ctx, app: &mut App| app.frame_ui(ctx, None), app);
+    h.run_steps(3);
+    let grey = h.ctx.style().visuals.panel_fill;
+    assert_eq!(grey.r(), grey.g());
+    assert_eq!(grey.g(), grey.b());
+    h.state_mut().st.push(Action::Play);
+    h.run_steps(3);
+    assert_ne!(h.ctx.style().visuals.panel_fill, grey);
+    h.state_mut().st.settings.theme = "dracula".into();
+    h.state_mut().st.apply_theme = true;
+    h.run_steps(3);
+    h.state_mut().st.push(Action::Stop);
+    h.run_steps(2);
+    h.state_mut().st.stopping = None;
+    h.run_steps(2);
+    let expected = nord_editor::theme::hex(&h.state().st.themes.theme("dracula").ui.panel);
+    assert_eq!(h.ctx.style().visuals.panel_fill, expected);
+}
+
+#[test]
+fn hub_search_opens_examples_and_docs_without_a_project() {
+    let _ = temp_project("hub-search-config", nord_core::ProjectType::TwoD);
+    let mut app = App::new(false);
+    app.st.settings = Default::default();
+    app.st.hub.search = "noom".into();
+    let mut h = Harness::builder()
+        .with_size(egui::vec2(1000.0, 700.0))
+        .build_state(|ctx, app: &mut App| app.frame_ui(ctx, None), app);
+    h.run_steps(3);
+    h.get_by_label("noom").simulate_click();
+    h.run_steps(3);
+    assert!(h.state().st.project.is_some());
+    h.state_mut()
+        .st
+        .push(nord_editor::state::Action::CloseProject);
+    h.run_steps(3);
+    h.get_by_label("Docs").simulate_click();
+    h.run_steps(3);
+    h.get_by_label("Back to projects").simulate_click();
+    h.run_steps(3);
+    h.get_by_label("New project");
+}
+
+#[test]
+fn hub_cards_do_not_clip_the_project_form() {
+    fn visible_text(shape: &egui::Shape, clip: egui::Rect, needle: &str) -> bool {
+        match shape {
+            egui::Shape::Text(text) if text.galley.job.text == needle => {
+                clip.contains_rect(egui::Rect::from_min_size(text.pos, text.galley.size()))
+            }
+            egui::Shape::Vec(shapes) => shapes.iter().any(|s| visible_text(s, clip, needle)),
+            _ => false,
+        }
+    }
+    for size in [egui::vec2(900.0, 800.0), egui::vec2(1440.0, 900.0)] {
+        let mut app = App::new(false);
+        app.st.settings = Default::default();
+        let mut h = Harness::builder()
+            .with_size(size)
+            .build_state(|ctx, app: &mut App| app.frame_ui(ctx, None), app);
+        h.run_steps(4);
+        assert!(
+            h.output()
+                .shapes
+                .iter()
+                .any(|s| visible_text(&s.shape, s.clip_rect, "Create project")),
+            "project form is clipped at {size:?}"
+        );
+    }
+}
+
+#[test]
+fn inspecting_an_example_does_not_edit_or_dirty_its_scene() {
+    let d = example_copy("inspect-read-only", "noom");
+    let mut st = EditorState::new();
+    st.open_project(&d).unwrap();
+    let original = st.scene.clone().unwrap();
+    st.select(Some(original.entities[0].id.clone()));
+    let mut h = Harness::builder()
+        .with_size(egui::vec2(480.0, 900.0))
+        .build_ui_state(|ui, st: &mut EditorState| panels::inspector::ui(st, ui), st);
+    loaders(&h);
+    h.run_steps(4);
+    assert_eq!(
+        h.state().scene.as_ref().unwrap().entities,
+        original.entities,
+        "viewing script defaults must not write them into the scene"
+    );
+    assert!(!h.state().dirty);
+    assert!(!h.state().undo.can_undo());
 }

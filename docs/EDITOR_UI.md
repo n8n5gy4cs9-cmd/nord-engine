@@ -1,7 +1,7 @@
 # Editor UI design
 
 Native **egui** editor (eframe, wgpu→Metal) with `egui_dock` panels. Visual model: PlayCanvas editor with Defold-style clean toolbars.
-Dark theme default, accent = Nord blue `#4FA3FF` (palette in `assets/brand/palette.json`). Fonts: Inter (UI) + JetBrains Mono (code) as TTF,
+Default editor theme = **Graphite**, a neutral dark-grey palette (`#191919` canvas, `#232323` panels, `#2d2d2d` controls) with a restrained blue accent. Fonts: Inter (UI) + JetBrains Mono (code) as TTF,
 bundled via `include_bytes!`. Icons: Lucide SVGs (`assets/icons/lucide`) via `egui_extras` SVG loader.
 
 ```
@@ -17,7 +17,15 @@ bundled via `include_bytes!`. Icons: Lucide SVGs (`assets/icons/lucide`) via `eg
 Panels are dockable (M8-05, `egui_dock`): drag a tab to another panel, to an edge (split) or out of the window (floating); tabs have a close button, closed panels come back via **View ▸ <panel>**, **View ▸ Reset layout** restores the default. The layout is saved to `<config>/layout.json` (next to `editor.json`) and survives restarts and project switches.
 Game view: the Game tab header sets size (Fit/50–200 %) and position (Top/Middle/Bottom + x/y offset, kept in settings); the view keeps the game's aspect ratio and stays inside the panel.
 Run/stop: **Cmd+R** runs and, while running, stops; **Cmd+.** stops only. Both keys are rebindable in Settings ▸ Run / stop keys (key names like `R`, `F5`, `Enter`). The Game tab header has ■ Stop and Fullscreen/Exit (Esc) — the reliable exit when the embedded game has keyboard focus.
-Themes: 10 dark + 3 light (Nord Light, GitHub Light, Solarized Light) in `assets/themes/themes.json`; pick in Settings. Light themes use `egui::Visuals::light()` as the base.
+Themes: editor-only Graphite plus 10 dark + 3 light (Nord Light, GitHub Light, Solarized Light) in `assets/themes/themes.json`; pick in Settings. Light themes use `egui::Visuals::light()` as the base.
+
+## Editor uplift (M8-18)
+
+Graphite is editor-only; shared runtime/game themes keep their original colors. Existing settings using the old Nord default migrate once (`appearance_version = 1`); custom themes, custom play/build colors, and subsequent explicit Nord choices persist. PLAYMODE-COLOR remains `[34, 56, 96]` by default. Switching theme during Play restores the new theme after Stop.
+
+The project hub has a centered, bounded width, independently scrolling cards, searchable examples/tutorials, compact recent-project rows (full path on hover), and collapsible starter templates. Packaged builds include the starter folders and catalog. Documentation is also reachable from the hub, with a Back to projects button.
+
+Toolbar controls wrap in smaller windows. Play is labeled; Stop/Reload and Undo/Redo reflect availability; Export opens the existing export dialog. All icon buttons expose accessible names. Hierarchy search has its own row, Console controls wrap, Settings scrolls, and dock tabs have clearer spacing and focus color. Native webviews remain hidden for menus/dialogs through the end of the frame, including desktop settings, autosave recovery and Go to line; opening a popup during panel drawing hides views in that same frame. macOS child bounds compensate for winit’s flipped NSView so game placement matches egui and does not cover the header or Console. Inspector renders missing defaults without changing the scene; only user edits enter Undo.
 
 ## Current content and optional cached-content testing
 **Settings → USE CACHED CONTENT** defaults to **OFF**, including for existing settings files that omit the option.
