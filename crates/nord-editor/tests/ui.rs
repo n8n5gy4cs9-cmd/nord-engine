@@ -652,3 +652,30 @@ fn play_stop_play_again() {
         );
     }
 }
+
+/// Position must have a visible effect in Fit mode too (x offset moves the aspect-fitted view).
+#[test]
+fn game_view_offset_moves_in_fit_mode() {
+    let d = temp_project("gamefit", nord_core::ProjectType::TwoD);
+    let mut h = Harness::builder().with_size(egui::vec2(1400.0, 900.0)).build_state(
+        |ctx, app: &mut App| {
+            app.frame_ui(ctx, None);
+        },
+        App::new(false),
+    );
+    h.run_steps(3);
+    h.state_mut().st.push(nord_editor::state::Action::OpenPath(d));
+    h.run_steps(3);
+    let app = h.state_mut();
+    app.show_tab(nord_editor::app::Tab::Game);
+    app.st.ensure_server();
+    app.st.play.as_mut().unwrap().running = true;
+    app.st.game_scale = 0.0;
+    h.run_steps(3);
+    let a = h.state().web.rects["game"];
+    h.state_mut().st.settings.game_anchor = [0.0, 0.0];
+    h.run_steps(3);
+    let left = h.state().web.rects["game"];
+    eprintln!("fit: centred {a:?}, left {left:?}");
+    assert!(left.min.x < a.min.x - 1.0, "x anchor does nothing in Fit mode: {a:?} vs {left:?}");
+}

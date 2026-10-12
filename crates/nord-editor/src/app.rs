@@ -793,7 +793,9 @@ pub fn game_tab(
                 .speed(1.0)
                 .prefix("x "),
         )
-        .on_hover_text("Horizontal offset in pixels (0 = centred)");
+        .on_hover_text(
+            "Horizontal offset in pixels (moves the game view; cropped at the panel edge)",
+        );
         ui.add(
             egui::DragValue::new(&mut st.settings.game_offset[1])
                 .speed(1.0)
@@ -863,14 +865,20 @@ pub fn game_tab(
         if running {
             let base = st.ensure_server().unwrap_or_default();
             let url = format!("{base}/?n={}", st.game_nonce);
-            let fixed = (st.game_scale > 0.0).then(|| {
+            let fixed = Some({
                 let d = st
                     .project
                     .as_ref()
                     .map(|p| (p.display.width as f32, p.display.height as f32))
                     .unwrap_or((1280.0, 720.0));
                 crate::viewport::webview::Fixed {
-                    size: egui::vec2(d.0 * st.game_scale, d.1 * st.game_scale),
+                    size: egui::vec2(d.0, d.1)
+                        * if st.game_scale > 0.0 {
+                            st.game_scale
+                        } else {
+                            1.0
+                        },
+                    fit: st.game_scale <= 0.0,
                     anchor: st.settings.game_anchor,
                     offset: st.settings.game_offset,
                 }

@@ -23,6 +23,8 @@ pub struct Fixed {
     pub size: Vec2,
     pub anchor: [f32; 2],
     pub offset: [f32; 2],
+    /// scale up to the largest aspect-correct size that fits (the Fit mode)
+    pub fit: bool,
 }
 
 pub fn open_in_browser(url: &str) {
@@ -109,13 +111,20 @@ impl WebPanes {
                 size: f,
                 anchor: a,
                 offset: o,
+                fit,
             }) => {
-                let k = (size.x / f.x).min(size.y / f.y).min(1.0);
+                let k = (size.x / f.x).min(size.y / f.y);
+                let k = if fit { k } else { k.min(1.0) }; // Fit also scales up
                 let f = (f * k).max(Vec2::splat(10.0));
                 let free = (size - f).max(Vec2::ZERO);
                 let min = full.min + egui::vec2(free.x * a[0] + o[0], free.y * a[1] + o[1]);
-                let min = min.clamp(full.min, full.min + free); // stay inside the panel
-                egui::Rect::from_min_size(min, f)
+                // the offset may push the view past the panel edge: crop to the panel (never over other panels)
+                let r = egui::Rect::from_min_size(min, f).intersect(full);
+                if r.is_positive() {
+                    r
+                } else {
+                    egui::Rect::from_min_size(full.min, Vec2::splat(1.0))
+                }
             }
             None => full,
         };
