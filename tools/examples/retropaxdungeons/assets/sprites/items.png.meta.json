@@ -1,0 +1,23 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 16,
+  "frameHeight": 16,
+  "filter": "nearest",
+  "items": {
+    "wornSword": 0,
+    "sword": 1,
+    "mace": 2,
+    "clothArmor": 3,
+    "leatherArmor": 4,
+    "potion_crimson": 5,
+    "potion_azure": 6,
+    "potion_jade": 7,
+    "potion_amber": 8,
+    "potion_violet": 9,
+    "scroll_rune": 10,
+    "scroll_blue": 11,
+    "ration": 12,
+    "gold": 13,
+    "key": 14
+  }
+}

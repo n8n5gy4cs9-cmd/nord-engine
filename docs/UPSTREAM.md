@@ -32,3 +32,5 @@ Recorded SHAs + licences: `UPSTREAM.lock.json`. **Copy only what is needed; add 
 - Godot UI: not used (C++/custom). Take only concepts: scene tree, inspector, FileSystem dock, output panel.
 - PlayCanvas editor: **primary visual model** for Nord Editor (hierarchy left, viewport centre, inspector right, assets bottom) — rebuilt in egui.
 - Defold: secondary inspiration (clean outline/properties panes, build/run toolbar).
+
+| spd / barony / doom | 00-Evan/shattered-pixel-dungeon, TurningWheel/Barony, id-software/doom | GPL-3 / GPL-3 / GPL-2 | Logic ported into the RetroPaxDungeons and Noom examples (see THIRD_PARTY.md) | Assets (SPD/Barony art not copied) |

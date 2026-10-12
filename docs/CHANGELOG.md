@@ -62,3 +62,4 @@ Newest first. One line per notable change. Credit: Crowelian 2026 + Sonnet.
   - Tests: 26 unit + 12 egui_kittest UI tests, 3 new Playwright suites; CI builds the webview feature and the `.app` on macos-14.
   - Found by tests: `egui::Button::image` starving following widgets before the image loads; batched key events desynchronising auto-close; bold font family panic on first frame.
 
+- 2026-10-12: Added example games **RetroPaxDungeons** (2D, SPD-ported rules) and **Noom** (3D, Doom-ported AI), hand-drawn pixel art (tools/pixelart.mjs + tools/art/), assets.md per game, tools/rpd-sim.mjs, tools/noom-sim.mjs, e2e rpd.

@@ -1,0 +1,14 @@
+{
+  "type": "texture-atlas",
+  "tile": 64,
+  "order": [
+    "floor",
+    "floorBlood",
+    "floorHell",
+    "ceiling",
+    "door",
+    "keyDoor",
+    "exit",
+    "doorTrack"
+  ]
+}

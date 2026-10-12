@@ -77,6 +77,7 @@ try { await mount(document.getElementById('app')${bootJs ?? ''}); window.__nord_
 
 const wj = (f, o) => { fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, JSON.stringify(o, null, 2) + '\n'); };
 const copy = (from, to) => { fs.mkdirSync(path.dirname(to), { recursive: true }); fs.copyFileSync(from, to); };
+const copyDir = (from, to) => { for (const f of fs.readdirSync(from, { withFileTypes: true })) (f.isDirectory() ? copyDir : copy)(path.join(from, f.name), path.join(to, f.name)); };
 
 /**
  * spec: { id, name, type, project:{…}, scenes:{ main: {settings, entities}, … }, prefabs:{ 'prefabs/x.prefab.json': entity }, scripts:{ 'a.js': 'own' } (files from tools/examples/<id>/scripts),
@@ -94,7 +95,9 @@ export function writeProject(spec, outDir, srcDir) {
     for (const [n, s] of Object.entries(spec.scenes)) wj(path.join(outDir, `scenes/${n}.scene.json`), { format: 1, name: n, settings: s.settings ?? {}, entities: s.entities });
     for (const [p, root] of Object.entries(spec.prefabs ?? {})) wj(path.join(outDir, p), { format: 1, root });
     const sdir = path.join(srcDir, 'scripts');
-    if (fs.existsSync(sdir)) for (const f of fs.readdirSync(sdir)) copy(path.join(sdir, f), path.join(outDir, 'scripts', f));
+    if (fs.existsSync(sdir)) copyDir(sdir, path.join(outDir, 'scripts')); // scripts (and helper modules in sub-folders)
+    const adir = path.join(srcDir, 'assets'); // art that belongs to this example only (e.g. hand-drawn pixel art from tools/art/<game>)
+    if (fs.existsSync(adir)) copyDir(adir, path.join(outDir, 'assets'));
     fs.mkdirSync(path.join(outDir, 'scripts'), { recursive: true });
     fs.writeFileSync(path.join(outDir, 'scripts/mk.js'), MK_JS);
     for (const n of spec.lib ?? []) copy(path.join(ROOT, 'library/scripts', `${n}.js`), path.join(outDir, 'scripts', `${n}.js`));

@@ -1,0 +1,82 @@
+{
+  "format": 1,
+  "name": "main",
+  "settings": {},
+  "entities": [
+    {
+      "id": "eeeeeee2",
+      "name": "Player",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          7.5,
+          0.6,
+          -31.5
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [
+        {
+          "path": "scripts/noom.js",
+          "attributes": {}
+        },
+        {
+          "path": "scripts/mouse-capture.js",
+          "attributes": {
+            "hint": false
+          }
+        }
+      ],
+      "children": [
+        {
+          "id": "eeeeeee1",
+          "name": "Camera",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [
+            {
+              "type": "camera",
+              "fov": 60,
+              "near": 0.03,
+              "far": 80
+            }
+          ],
+          "scripts": [],
+          "children": [],
+          "prefab": null
+        }
+      ],
+      "prefab": null
+    }
+  ]
+}

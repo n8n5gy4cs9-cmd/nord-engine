@@ -1,0 +1,14 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 16,
+  "frameHeight": 16,
+  "filter": "nearest",
+  "fx": {
+    "excl": 0,
+    "quest": 1,
+    "zzz": 2,
+    "spark": 3,
+    "slash1": 4,
+    "slash2": 5
+  }
+}

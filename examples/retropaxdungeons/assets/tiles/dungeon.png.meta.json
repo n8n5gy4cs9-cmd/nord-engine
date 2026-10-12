@@ -1,0 +1,24 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 16,
+  "frameHeight": 16,
+  "filter": "nearest",
+  "tiles": {
+    "void": 0,
+    "floor1": 1,
+    "floor2": 2,
+    "floor3": 3,
+    "wallFace": 4,
+    "wallTop": 5,
+    "wallMoss": 6,
+    "wallTorch": 7,
+    "doorClosed": 8,
+    "doorOpen": 9,
+    "stairsDown": 10,
+    "stairsUp": 11,
+    "water1": 12,
+    "water2": 13,
+    "grass": 14,
+    "floorBones": 15
+  }
+}

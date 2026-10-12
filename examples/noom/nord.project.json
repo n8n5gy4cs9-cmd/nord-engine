@@ -1,0 +1,79 @@
+{
+  "format": 1,
+  "name": "Noom",
+  "id": "com.crowelian.noom",
+  "type": "3d",
+  "engineVersion": "0.1.0",
+  "startScene": "scenes/main.scene.json",
+  "display": {
+    "width": 1280,
+    "height": 720,
+    "scale": "fit",
+    "pixelArt": false,
+    "background": "#000000"
+  },
+  "physics": {
+    "engine": "none",
+    "gravity": [
+      0,
+      0,
+      0
+    ]
+  },
+  "input": {
+    "actions": {
+      "fwd": [
+        "KeyW"
+      ],
+      "back": [
+        "KeyS"
+      ],
+      "left": [
+        "KeyA"
+      ],
+      "right": [
+        "KeyD"
+      ],
+      "turnL": [
+        "ArrowLeft",
+        "KeyQ"
+      ],
+      "turnR": [
+        "ArrowRight"
+      ],
+      "run": [
+        "ShiftLeft",
+        "ShiftRight"
+      ],
+      "fire": [
+        "Mouse0",
+        "ControlLeft",
+        "KeyF"
+      ],
+      "use": [
+        "Space",
+        "KeyE"
+      ],
+      "w1": [
+        "Digit1"
+      ],
+      "w2": [
+        "Digit2"
+      ],
+      "map": [
+        "Tab"
+      ],
+      "restart": [
+        "KeyR"
+      ]
+    }
+  },
+  "plugins": [
+    "ui",
+    "audio"
+  ],
+  "ui": {
+    "skin": "cyber",
+    "theme": "nord"
+  }
+}

@@ -27,3 +27,7 @@ with the file path and source commit (see `UPSTREAM.lock.json`):
 | `examples/rust-mq-snake/src/main.rs` | macroquad 0.4.16 `examples/snake.rs` | MIT OR Apache-2.0, © Fedor Logachev | entry point only |
 | `examples/rust-mq-life/src/main.rs` | macroquad 0.4.16 `examples/life.rs` | MIT OR Apache-2.0, © Fedor Logachev | entry point only |
 | `vendor/macroquad/mq_js_bundle.js` | macroquad 0.4.16 `js/` (gl.js + quad-snd + sapp-jsutils + quad-net, minified) | MIT OR Apache-2.0 | none (`node tools/vendor.mjs --crates`) |
+
+## Showcase games (M6 examples)
+- **RetroPaxDungeons** (`examples/retropaxdungeons`): rules/AI/FOV/level-patch logic ported from Shattered Pixel Dungeon (https://github.com/00-Evan/shattered-pixel-dungeon, GPL-3.0). Art original. Example is GPL-3.0.
+- **Noom** (`examples/noom`): `P_Random` table, monster AI, damage formulas ported from id Software DOOM (https://github.com/id-software/doom, GPL-2.0); setting inspired by Barony (https://github.com/TurningWheel/Barony, GPL-3.0; no code/art used). Art original. Example is GPL-2.0-or-later.

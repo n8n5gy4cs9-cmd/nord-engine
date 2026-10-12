@@ -1,0 +1,10 @@
+{
+  "type": "texture-atlas",
+  "tile": 64,
+  "order": [
+    "brick",
+    "moss",
+    "crypt",
+    "hell"
+  ]
+}

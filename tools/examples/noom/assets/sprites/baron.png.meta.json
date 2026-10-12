@@ -1,0 +1,18 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 64,
+  "frameHeight": 72,
+  "filter": "nearest",
+  "frames": [
+    "stand",
+    "walk1",
+    "walk2",
+    "windup",
+    "throw",
+    "pain",
+    "die1",
+    "die2",
+    "die3"
+  ],
+  "height": 2.7
+}

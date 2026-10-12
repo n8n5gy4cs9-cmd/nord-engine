@@ -1,0 +1,15 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 80,
+  "frameHeight": 80,
+  "filter": "nearest",
+  "frames": [
+    "mace_idle",
+    "mace_swing1",
+    "mace_swing2",
+    "gun_idle",
+    "gun_fire",
+    "gun_pump1",
+    "gun_pump2"
+  ]
+}
