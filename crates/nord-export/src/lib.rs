@@ -980,7 +980,7 @@ mod tests {
             },
         )
         .unwrap_err();
-        assert!(e.to_string().contains("M5"), "{e}");
+        assert!(e.to_string().contains("Cargo.toml"), "{e}");
     }
 
     #[test]

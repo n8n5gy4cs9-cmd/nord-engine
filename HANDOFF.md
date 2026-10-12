@@ -54,6 +54,7 @@ cargo build --workspace && cargo test --workspace && cargo clippy --workspace --
   (CC0 packs: sandbox cannot reach kenney.nl). ~125 library items (`node tools/build-library-index.mjs`), 15 2D + 4 3D + 8 app + 6 Rust examples,
   17 starter templates — all generated from `tools/examples/<id>/` by `node tools/gen_examples.mjs` (never edit `examples/`/`templates/` JS projects by hand;
   Rust examples/templates are hand-written). Smoke: `node tools/smoke-examples.mjs [id…]`; Rust: `node tools/e2e.mjs rust-platformer …`.
+- **M9 Desktop apps planned, NOT started** (16 tasks: fs/dialogs/notifications/storage/tray/menus/permissions/packaging/JS bridge + Rust API). Owner asked for planning only — start with M9-01 (design doc/ADR) when told.
 - Next: M7 docs (API reference + manual with "for dummies" boxes), M8 polish. Open from earlier: M3-07/M3-25, M4-08/09/11, M6-17.
 - Vendored: Phaser 4.2.1, Babylon 9.30.0 (+Havok 1.3.14), PlayCanvas 2.23.2 (optional), CodeMirror bundle, marked, fonts, Lucide.
 - Known risks: `docs/KNOWN_ISSUES.md`.

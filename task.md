@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 101/127 tasks (80%)** · updated 2026-10-12
+**Overall: 101/143 tasks (71%)** · updated 2026-10-12
 
 | Milestone | Progress |
 |---|---|
@@ -16,13 +16,14 @@
 | M6 Library | 17/18 (94%) |
 | M7 Docs | 0/12 (0%) |
 | M8 Polish & portability | 0/8 (0%) |
+| M9 Desktop apps | 0/16 (0%) |
 
 ## Next up
-- **M3-07** SPIKE: wry child webview embedded in egui panel on macOS (resize, HiDPI, focus, IPC both ways); fallback separate window
-- **M3-25** OWNER: verify webview embedding on macOS (checklist in docs/KNOWN_ISSUES.md RISK-001a), then tick M3-07
-- **M4-08** nord-player crate (Tauri shell) + `bundle-mac` command (resource swap, Info.plist, icns, ad-hoc codesign)
-- **M4-09** CI builds NordPlayer.app + NordEditor.app on macos-14, uploads artifacts
-- **M4-11** Texture atlas packing + lossy PNG quantise in nord build --optimize
+- **M9-01** PLAN: docs/DESKTOP_APPS.md — desktop target architecture (ADR): reuse nord-player/wry shell vs native egui apps; capability model, API surface per tier (JS via IPC bridge, Rust direct); permissions/sandbox; what real apps need (checklist)
+- **M9-02** nord-desktop crate: shared Rust backend services behind one trait set (fs, dialogs, notifications, clipboard, shell/open, paths, app lifecycle) used by JS bridge and Rust apps
+- **M9-03** Files & folders: scoped fs API (read/write/list/watch/stat/mkdir/remove/rename), per-app allowed roots (app data, documents, user-picked via dialog), path traversal protection, macOS sandbox/security-scoped bookmarks
+- **M9-04** Native dialogs: open/save file, pick folder, message/confirm, with remembered recent locations (rfd)
+- **M9-05** System notifications (local), badges, dock/taskbar progress; macOS/Windows/Linux backends
 
 ## M0 — Planning, identity, assets, vendoring
 _Plans, brand, placeholder assets, vendored libs, workspace skeleton_
@@ -186,6 +187,26 @@ _dmg, CI, Windows, Linux, perf_
 - [ ] **M8-06** Optional: Bevy template, PlayCanvas engine as 4th web tier
 - [ ] **M8-07** Optional: TypeScript support in code editor
 - [ ] **M8-08** Bug-bash all examples + KNOWN_ISSUES cleanup
+
+## M9 — Desktop apps
+_real native desktop apps (Rust backend): files, dialogs, notifications, tray, windows, storage, packaging_
+
+- [ ] **M9-01** PLAN: docs/DESKTOP_APPS.md — desktop target architecture (ADR): reuse nord-player/wry shell vs native egui apps; capability model, API surface per tier (JS via IPC bridge, Rust direct); permissions/sandbox; what real apps need (checklist)
+- [ ] **M9-02** nord-desktop crate: shared Rust backend services behind one trait set (fs, dialogs, notifications, clipboard, shell/open, paths, app lifecycle) used by JS bridge and Rust apps
+- [ ] **M9-03** Files & folders: scoped fs API (read/write/list/watch/stat/mkdir/remove/rename), per-app allowed roots (app data, documents, user-picked via dialog), path traversal protection, macOS sandbox/security-scoped bookmarks
+- [ ] **M9-04** Native dialogs: open/save file, pick folder, message/confirm, with remembered recent locations (rfd)
+- [ ] **M9-05** System notifications (local), badges, dock/taskbar progress; macOS/Windows/Linux backends
+- [ ] **M9-06** Persistent app storage: key-value + structured (sqlite or sled), settings file, app data dir, migrations; secure secrets via OS keychain
+- [ ] **M9-07** Clipboard (text/image/files), drag & drop in/out, open-with / file associations / custom URL scheme (deep links), single-instance + argv handling
+- [ ] **M9-08** Windows & menus: multi-window, native menu bar + context menus, global shortcuts, tray/menu-bar icon, always-on-top/frameless/transparent, fullscreen, window state persistence
+- [ ] **M9-09** Background work: threads/async tasks API, timers, process spawn (sandboxed allow-list), HTTP client with permission prompt, optional local server; app lifecycle (suspend, quit confirm, autostart/login item)
+- [ ] **M9-10** JS bridge: window.nord.desktop.* (fs, dialogs, notify, clipboard, store, window, menu, tray) over wry IPC with capability checks; typed d.ts + docs; same API in dev (editor Play) and exported apps
+- [ ] **M9-11** Rust desktop API in nord-app-wasm/nord-runtime: native path = direct crates, web path = graceful fallbacks (File System Access API, Notifications API, localStorage/IndexedDB); one cfg-free app API
+- [ ] **M9-12** Permissions/capabilities manifest in nord.project.json (desktop.permissions) + first-run prompts + editor UI to review; least-privilege defaults; audit log
+- [ ] **M9-13** Packaging: macOS .app/.dmg (sign + notarise docs), Windows installer/portable exe, Linux AppImage/deb; icons, version metadata, auto-update strategy (optional, opt-in)
+- [ ] **M9-14** Accessibility & real-app UX: IME/text input, high-DPI, dark mode follow, keyboard navigation, undo/redo helpers, i18n (locale/formatting), drag-reorder lists, virtualised tables
+- [ ] **M9-15** Templates + examples: desktop notes app (files+store+notifications), file organiser (fs+dialogs), clipboard manager (tray+global shortcut), markdown editor — JS and Rust variants; e2e where headless-possible
+- [ ] **M9-16** Tests & CI: capability unit tests, fs sandbox escape tests, per-OS CI matrix (macos-14, windows, ubuntu) building/launching sample apps headless; document unverified parts honestly
 
 ## Features (PRD)
 
