@@ -39,5 +39,9 @@
   "plugins": [
     "ui",
     "audio"
-  ]
+  ],
+  "ui": {
+    "skin": "cyber",
+    "theme": "tokyo-night"
+  }
 }

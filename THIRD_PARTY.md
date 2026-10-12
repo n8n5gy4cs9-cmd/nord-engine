@@ -11,7 +11,7 @@ Exact versions + sha256: `vendor/VENDOR.json` (reinstall/verify with `node tools
 | PlayCanvas engine | 2.23.2 | MIT | vendor/playcanvas | optional alternative 3D tier |
 | CodeMirror 6 bundle | see lock | MIT | vendor/codemirror | manual live examples |
 | marked | 18.1.0 | MIT | vendor/marked | manual markdown |
-| Inter, JetBrains Mono (fontsource) | 5.3.0 | OFL-1.1 | vendor/fonts | UI/code fonts (woff2 for manual) |
+| Inter, Plus Jakarta Sans, IBM Plex Sans, JetBrains Mono, Fira Code, IBM Plex Mono (fontsource) | 5.3.0 | OFL-1.1 | vendor/fonts | UI/code fonts for runtime UI, editor, manual (woff2); skins in assets/themes/themes.json |
 | Lucide icons (subset) | 1.55.0 | ISC | assets/icons/lucide | editor + manual icons |
 
 Rust crates (egui, eframe, egui_dock, wry, macroquad, rapier, image, axum, …): see `Cargo.lock`; all MIT/Apache-2.0 class licences.

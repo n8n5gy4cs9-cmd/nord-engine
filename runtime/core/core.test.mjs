@@ -164,3 +164,23 @@ test('hotReloadScript: swaps prototype, keeps state, calls onHotReload, re-resol
   assert.equal(g.hotReload(['scenes/x.scene.json']), false);
   assert.equal(g.hotReload(['unknown.js']), false);
 });
+
+import fs from 'node:fs';
+import { THEMES, SKINS, FONTS, themeVars, fontFaceCSS, theme as themeOf } from './themes.js';
+
+test('themes: 10 dark themes, 3 skins, every font vendored, vars complete', () => {
+  assert.equal(THEMES.length, 10); assert.equal(SKINS.length, 3);
+  const lum = (h) => { const n = parseInt(h.slice(1), 16); return (0.299 * (n >> 16) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255; };
+  for (const t of THEMES) {
+    assert.ok(t.dark && lum(t.ui.bg) < 0.25, `${t.id} must be dark`);
+    for (const c of [...Object.values(t.ui), ...Object.values(t.code)]) assert.match(c, /^#[0-9a-f]{6}$/i, t.id);
+  }
+  for (const [fam, f] of Object.entries(FONTS)) for (const w of f.weights) assert.ok(fs.existsSync(new URL(`../../vendor/fonts/${f.dir}/${f.dir}-latin-${w}-normal.woff2`, import.meta.url)), `${fam} ${w}`);
+  for (const s of SKINS) { assert.ok(FONTS[s.ui] && FONTS[s.code]); }
+  const v = themeVars('cyber', 'dracula');
+  assert.equal(v['--nord-accent'], themeOf('dracula').ui.accent);
+  assert.match(v['--nord-font-code'], /Fira Code/); assert.equal(v['--nord-code-ligatures'], 'normal');
+  assert.equal(themeVars('industrial', 'nord')['--nord-code-ligatures'], 'none');
+  assert.match(fontFaceCSS('/f', ['Inter']), /url\('\/f\/inter\/inter-latin-400-normal\.woff2'\)/);
+  assert.equal(themeOf('nope').id, 'nord');
+});

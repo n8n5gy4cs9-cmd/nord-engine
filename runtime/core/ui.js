@@ -1,24 +1,25 @@
+import { applyTheme } from './themes.js';
 // DOM UI layer: an overlay div over the canvas with small HUD/menu primitives. Themed via CSS variables (Nord palette).
 // Every create function returns a handle { el, remove(), ...setters }. Works without a DOM only for tests that inject `doc`.
 export const THEME_CSS = `
-.nord-ui{position:absolute;inset:0;pointer-events:none;font-family:Inter,system-ui,sans-serif;color:var(--nord-fg,#eceff4);--nord-bg:#2e3440;--nord-panel:#3b4252;--nord-accent:#88c0d0;--nord-good:#a3be8c;--nord-bad:#bf616a;--nord-fg:#eceff4;user-select:none;-webkit-user-select:none}
+.nord-ui{position:absolute;inset:0;pointer-events:none;font-family:var(--nord-font-ui,Inter,system-ui,sans-serif);color:var(--nord-fg,#eceff4);user-select:none;-webkit-user-select:none}
 .nord-ui *{box-sizing:border-box}
 .nord-ui .nord-screen{position:absolute;inset:0;display:none;pointer-events:none}
 .nord-ui .nord-screen.show{display:block}
 .nord-ui .nord-el{position:absolute;pointer-events:auto}
-.nord-ui .nord-panel{background:var(--nord-panel);border:1px solid #4c566a;border-radius:8px;padding:12px;box-shadow:0 4px 16px #0006}
+.nord-ui .nord-panel{background:var(--nord-panel,#3b4252);border:1px solid var(--nord-border,#4c566a);border-radius:8px;padding:12px;box-shadow:0 4px 16px #0006}
 .nord-ui .nord-label{pointer-events:none;text-shadow:0 1px 3px #000a;white-space:pre}
-.nord-ui .nord-button{background:var(--nord-accent);color:#2e3440;border:0;border-radius:6px;padding:8px 16px;font:600 16px Inter,system-ui,sans-serif;cursor:pointer}
+.nord-ui .nord-button{background:var(--nord-accent,#88c0d0);color:var(--nord-bg,#2e3440);border:0;border-radius:6px;padding:8px 16px;font:600 16px var(--nord-font-ui,Inter,system-ui,sans-serif);cursor:pointer}
 .nord-ui .nord-button:hover{filter:brightness(1.1)}.nord-ui .nord-button:active{transform:translateY(1px)}
-.nord-ui .nord-bar{background:#2e3440;border:1px solid #4c566a;border-radius:4px;overflow:hidden;height:16px;width:160px}
-.nord-ui .nord-bar>i{display:block;height:100%;width:100%;background:var(--nord-good);transform-origin:left;transition:transform .08s linear}
+.nord-ui .nord-bar{background:var(--nord-bg,#2e3440);border:1px solid var(--nord-border,#4c566a);border-radius:4px;overflow:hidden;height:16px;width:160px}
+.nord-ui .nord-bar>i{display:block;height:100%;width:100%;background:var(--nord-good,#a3be8c);transform-origin:left;transition:transform .08s linear}
 .nord-ui .nord-image{pointer-events:none;image-rendering:auto}
 `;
 
 const POS = { tl: ['left', 'top'], tr: ['right', 'top'], bl: ['left', 'bottom'], br: ['right', 'bottom'] };
 
 export class UI {
-  constructor(container, { doc = globalThis.document, onSound = null } = {}) {
+  constructor(container, { doc = globalThis.document, onSound = null, skin, theme, fontBase = '/vendor/fonts' } = {}) {
     this.doc = doc;
     this.onSound = onSound;
     this.screens = new Map();
@@ -28,6 +29,7 @@ export class UI {
     style.textContent = THEME_CSS;
     this.root.appendChild(style);
     container.appendChild(this.root);
+    if (doc.head && doc.documentElement) applyTheme(this.root, { skin, theme, base: fontBase, storage: null }); // fonts + --nord-* vars from the project's ui.skin/ui.theme
     this.hud = this.screen('hud');
     this.hud.classList.add('show');
   }
@@ -44,6 +46,9 @@ export class UI {
   toggle(name) { this.screen(name).classList.toggle('show'); }
   isShown(name) { return !!this.screens.get(name)?.classList.contains('show'); }
   /** Replace theme variables, e.g. ui.theme({ accent: '#ebcb8b' }). */
+  /** Switch skin/theme at runtime: ui.setTheme({ theme: 'dracula', skin: 'cyber' }). */
+  setTheme(o) { return applyTheme(this.root, { ...o, storage: null }); }
+  /** Override individual variables, e.g. ui.theme({ accent: '#ebcb8b' }). */
   theme(vars) { for (const [k, v] of Object.entries(vars)) this.root.style.setProperty(`--nord-${k}`, v); }
 
   #place(el, { x, y, anchor = 'tl', w, h, style } = {}) {

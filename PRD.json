@@ -567,7 +567,7 @@
       "id": "M2-19",
       "milestone": "M2",
       "title": "Fonts (Inter, Plus Jakarta Sans, IBM Plex Sans, JetBrains Mono, Fira Code, IBM Plex Mono) vendored + 3 skins (font combos) + 10 dark themes shared by runtime UI, editor and code editor",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M3-01",

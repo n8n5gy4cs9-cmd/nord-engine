@@ -89,6 +89,9 @@ pub struct Project {
     pub physics: Physics,
     #[serde(default)]
     pub input: Input,
+    /// Runtime UI look: `{ "skin": "modern|industrial|cyber", "theme": "<id from assets/themes/themes.json>" }`.
+    #[serde(default)]
+    pub ui: Map<String, Value>,
     #[serde(default)]
     pub plugins: Vec<String>,
     /// Export settings are kept free-form (`web`, `mac`, …) so unknown keys survive round trips.
@@ -112,6 +115,7 @@ impl Project {
             display: Display::default(),
             physics: Physics::default(),
             input: Input::default(),
+            ui: Map::new(),
             plugins: vec![],
             export: Map::new(),
         }

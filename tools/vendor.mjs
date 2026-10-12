@@ -28,6 +28,10 @@ const LIBS = [
   { name: 'marked', pkg: 'marked@18.1.0', license: 'MIT', files: [['lib/marked.umd.js'], ['LICENSE.md']] },
   { name: 'fonts', pkg: '@fontsource/inter@5.3.0', license: 'OFL-1.1', to: 'fonts/inter', files: [['files/inter-latin-400-normal.woff2'], ['files/inter-latin-500-normal.woff2'], ['files/inter-latin-600-normal.woff2'], ['files/inter-latin-700-normal.woff2'], ['LICENSE']] },
   { name: 'fonts', pkg: '@fontsource/jetbrains-mono@5.3.0', license: 'OFL-1.1', to: 'fonts/jetbrains-mono', files: [['files/jetbrains-mono-latin-400-normal.woff2'], ['files/jetbrains-mono-latin-700-normal.woff2'], ['LICENSE']] },
+  { name: 'fonts', pkg: '@fontsource/plus-jakarta-sans@5.3.0', license: 'OFL-1.1', to: 'fonts/plus-jakarta-sans', files: [['files/plus-jakarta-sans-latin-400-normal.woff2'], ['files/plus-jakarta-sans-latin-500-normal.woff2'], ['files/plus-jakarta-sans-latin-600-normal.woff2'], ['files/plus-jakarta-sans-latin-700-normal.woff2'], ['LICENSE']] },
+  { name: 'fonts', pkg: '@fontsource/ibm-plex-sans@5.3.0', license: 'OFL-1.1', to: 'fonts/ibm-plex-sans', files: [['files/ibm-plex-sans-latin-400-normal.woff2'], ['files/ibm-plex-sans-latin-500-normal.woff2'], ['files/ibm-plex-sans-latin-600-normal.woff2'], ['files/ibm-plex-sans-latin-700-normal.woff2'], ['LICENSE']] },
+  { name: 'fonts', pkg: '@fontsource/ibm-plex-mono@5.3.0', license: 'OFL-1.1', to: 'fonts/ibm-plex-mono', files: [['files/ibm-plex-mono-latin-400-normal.woff2'], ['files/ibm-plex-mono-latin-700-normal.woff2'], ['LICENSE']] },
+  { name: 'fonts', pkg: '@fontsource/fira-code@5.3.0', license: 'OFL-1.1', to: 'fonts/fira-code', files: [['files/fira-code-latin-400-normal.woff2'], ['files/fira-code-latin-700-normal.woff2'], ['LICENSE']] },
 ];
 // Lucide icons: curated subset → assets/icons/lucide (used by the egui editor + manual)
 const LUCIDE = { pkg: 'lucide-static@1.55.0', license: 'ISC' };

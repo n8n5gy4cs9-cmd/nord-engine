@@ -12,3 +12,4 @@ export { Audio, BUSES } from './audio.js';
 export { UI, THEME_CSS } from './ui.js';
 export { createGame, makeStage, errorOverlay } from './boot.js';
 export { registerCoreComponents } from './components.js';
+export { SKINS, THEMES, FONTS, skin, theme, fontFaceCSS, themeVars, applyTheme, CODE_CSS } from './themes.js';

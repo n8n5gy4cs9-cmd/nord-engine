@@ -18,8 +18,9 @@ const run = (query) => async () => {
     await page.evaluate(() => { const g = window.__nord; g.scene.find('Hero').pos = g.scene.find('Coin').pos.map((v, i) => (i === 2 ? 1 : v)); });
     await page.waitForTimeout(400);
     const coin = await page.evaluate(() => ({ left: window.__nord.scene.findByTag('coin').length, score: window.__nord.scene.find('Score').getComponent('uiLabel').h.el.textContent }));
+    const fonts = await page.evaluate(async () => { await document.fonts.ready; return [...document.fonts].filter((f) => f.status === 'loaded').map((f) => f.family.replace(/"/g, '')); });
     const shot = await page.screenshot({ path: `${ROOT}/target/e2e/conformance-2d${query.replace(/\W/g, '')}.png` });
-    return { info, moved, coin, colors: await nonBlank(page, shot) };
+    return { info, moved, coin, fonts, colors: await nonBlank(page, shot) };
   }, { path: `/${query}` });
   console.log(JSON.stringify(result));
   if (errors.length) throw new Error(errors.join('\n'));
@@ -27,6 +28,7 @@ const run = (query) => async () => {
   if (!result.info.grounded) throw new Error('hero not grounded (physics/tilemap collision failed)');
   if (result.moved <= result.info.hero[0] + 20) throw new Error('hero did not move right');
   if (result.coin.left !== 0 || result.coin.score !== 'Score: 1') throw new Error(`trigger/coin failed: ${JSON.stringify(result.coin)}`);
+  if (!result.fonts.includes('Plus Jakarta Sans')) throw new Error(`skin font not loaded: ${result.fonts}`);
   if (result.colors < 12) throw new Error('canvas looks blank');
 };
 

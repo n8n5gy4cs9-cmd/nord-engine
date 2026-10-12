@@ -63,3 +63,6 @@ Mac wrapper uses a minimal `wry`+`tao` `nord-player`.
 **Consequences.** + fast, single Rust binary, native look, no web UI framework, easy cross-platform. − Must build a code editor on egui
 (no multi-cursor/LSP initially); − wry-in-egui embedding quirks (spike in M3-07; fallback = separate wry window);
 − editor UI tested via egui_kittest not Playwright. PCUI no longer vendored.
+
+## ADR: Skins + themes are data (assets/themes/themes.json), dark only (2026-10-12)
+A *skin* is a font pair (UI + code, ligatures on/off); a *theme* is a dark color set (UI colors + syntax colors). One JSON is the source for the JS runtime (generated module), the egui editor (`include_str!`) and the code editor. Light themes are deliberately not shipped for now. All fonts are vendored woff2 (OFL) — no CDN.

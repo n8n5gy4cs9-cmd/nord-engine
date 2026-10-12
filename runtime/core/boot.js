@@ -18,7 +18,7 @@ export function createGame(project, opts = {}) {
   game.loader = loader;
   game.audio = new Audio(loader, { saveKey: `nord:${project.id}:audio`, storage: opts.storage ?? globalThis.localStorage });
   if (opts.container) {
-    game.ui = new UI(opts.container, { onSound: (n) => game.audio.play(`assets/audio/sfx/${n}.wav`, { bus: 'ui' }) });
+    game.ui = new UI(opts.container, { skin: project.ui?.skin, theme: project.ui?.theme, fontBase: `${opts.libBase ?? '/vendor'}/fonts`, onSound: (n) => game.audio.play(`assets/audio/sfx/${n}.wav`, { bus: 'ui' }) });
     game.audio.attach(globalThis.window);
   }
   if (opts.canvas) game._detachInput = attachDom(game.input, opts.canvas, globalThis.window, (x, y) => game.backend?.toWorld?.(x, y) ?? [x, y]);
@@ -40,7 +40,7 @@ export function errorOverlay(container) {
   const doc = container.ownerDocument;
   const box = doc.createElement('pre');
   box.className = 'nord-error';
-  box.style.cssText = 'position:absolute;left:0;right:0;bottom:0;max-height:40%;overflow:auto;margin:0;padding:10px 14px;background:#bf616acc;color:#fff;font:12px/1.4 ui-monospace,Menlo,monospace;display:none;z-index:99;white-space:pre-wrap';
+  box.style.cssText = 'position:absolute;left:0;right:0;bottom:0;max-height:40%;overflow:auto;margin:0;padding:10px 14px;background:#bf616acc;color:#fff;font:12px/1.4 var(--nord-font-code,ui-monospace,Menlo,monospace);display:none;z-index:99;white-space:pre-wrap';
   box.addEventListener('click', () => { box.style.display = 'none'; });
   container.appendChild(box);
   return {

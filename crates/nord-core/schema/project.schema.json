@@ -28,6 +28,7 @@
         "gravity": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 }
       }
     },
+    "ui": { "type": "object", "properties": { "skin": { "enum": ["modern", "industrial", "cyber"] }, "theme": { "type": "string" } } },
     "input": { "type": "object", "properties": { "actions": { "type": "object", "additionalProperties": { "type": "array", "items": { "type": "string" } } } } },
     "plugins": { "type": "array", "items": { "type": "string" } },
     "export": { "type": "object" }
