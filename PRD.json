@@ -326,61 +326,61 @@
       "id": "M9-02",
       "milestone": "M9",
       "title": "nord-desktop crate: shared Rust backend services behind one trait set (fs, dialogs, notifications, clipboard, shell/open, paths, app lifecycle) used by JS bridge and Rust apps",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M9-03",
       "milestone": "M9",
       "title": "Files & folders: scoped fs API (read/write/list/watch/stat/mkdir/remove/rename), per-app allowed roots (app data, documents, user-picked via dialog), path traversal protection, macOS sandbox/security-scoped bookmarks",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M9-04",
       "milestone": "M9",
       "title": "Native dialogs: open/save file, pick folder, message/confirm, with remembered recent locations (rfd)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M9-05",
       "milestone": "M9",
       "title": "System notifications (local), badges, dock/taskbar progress; macOS/Windows/Linux backends",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M9-06",
       "milestone": "M9",
       "title": "Persistent app storage: key-value + structured (sqlite or sled), settings file, app data dir, migrations; secure secrets via OS keychain",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M9-07",
       "milestone": "M9",
       "title": "Clipboard (text/image/files), drag & drop in/out, open-with / file associations / custom URL scheme (deep links), single-instance + argv handling",
-      "status": "todo"
+      "status": "in_progress"
     },
     {
       "id": "M9-08",
       "milestone": "M9",
       "title": "Windows & menus: multi-window, native menu bar + context menus, global shortcuts, tray/menu-bar icon, always-on-top/frameless/transparent, fullscreen, window state persistence",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M9-09",
       "milestone": "M9",
       "title": "Background work: threads/async tasks API, timers, process spawn (sandboxed allow-list), HTTP client with permission prompt, optional local server; app lifecycle (suspend, quit confirm, autostart/login item)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M9-10",
       "milestone": "M9",
       "title": "JS bridge: window.nord.desktop.* (fs, dialogs, notify, clipboard, store, window, menu, tray) over wry IPC with capability checks; typed d.ts + docs; same API in dev (editor Play) and exported apps",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M9-11",
       "milestone": "M9",
       "title": "Rust desktop API in nord-app-wasm/nord-runtime: native path = direct crates, web path = graceful fallbacks (File System Access API, Notifications API, localStorage/IndexedDB); one cfg-free app API",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M9-12",
