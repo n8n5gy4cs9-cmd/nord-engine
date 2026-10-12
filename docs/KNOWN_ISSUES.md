@@ -53,3 +53,9 @@ Assets regressions pass for divider dragging, row alignment/wrapping at 48/84/16
 
 - M8-05/06: dock layout persistence + closable tabs, light themes and the `rust-bevy-game` template are unverified on macOS/with a real window (kittest only). PlayCanvas tier (`web-3d-pc`) has no physics/particles/postProcess/skybox and no editor-viewport support; its Z-mirroring (left→right-handed) is verified only on the conformance-3d scene. The Bevy template's first wasm build is slow and its `bevy` version/features are pinned to what compiled in the sandbox (see template Cargo.toml).
 - Game view placement: unit-tested for geometry only (egui rects). The native webview overlaying the panel (z-order/lag on macOS) is unverified — use Position/offset in the Game tab header as a workaround; no docs screenshots because the Linux sandbox cannot run the embedded webview.
+
+## Example games Altimu 5.7 / Harrison's Command (2026-10-12)
+- **Not tile-exact Trinsic**: the cloned repos (Exult, ultima5 engine, U7 decomp) ship no original game data, so Altimu's Trinsic is a faithful hand-built layout, not an import. `examples/altimu/GUIDE.md` §3 explains importing from the owner's own copy.
+- **Verified only headless** (Chromium/SwiftShader, scripted play): Altimu quest loop (gate → clue → boss → letter → ending) and combat; Harrison boot, RTT screens, 2-viewport split, unit launch/fight via the sim. **Unverified on real hardware**: Player-2 gamepad mapping (standard layout assumed), pointer-lock mouse look feel, performance with two viewports + two render-to-texture cameras on low-end GPUs.
+- Harrison: units move in straight lines (no pathfinding around islands/towers); the carrier stops when it would run aground; enemy mortars are the only indirect fire; no save/load. Altimu: no save/load, single map, shops are inline dialogue.
+- Carrier Command 2's Lua node system is proprietary and was not available to clone; Harrison's computers are plain JS (see its GUIDE.md).

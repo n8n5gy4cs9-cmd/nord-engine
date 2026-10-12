@@ -1067,6 +1067,18 @@
       "status": "done"
     },
     {
+      "id": "M6-21",
+      "milestone": "M6",
+      "title": "Altimu 5.7 example: Ultima V-style Trinsic PoC (hand-pixelled art, text .map, typed talk, tactical combat, GUIDE.md)",
+      "status": "done"
+    },
+    {
+      "id": "M6-22",
+      "milestone": "M6",
+      "title": "Harrison's Command example: Carrier Command-style 3D PoC (walkable moving carrier, RTT computers, 2-player gamepad split-screen, Kenney + WZ2100 stats)",
+      "status": "done"
+    },
+    {
       "id": "M7-01",
       "milestone": "M7",
       "title": "tools/build-manual.mjs (marked + CodeMirror readonly + nord-live blocks)",

@@ -1,0 +1,6 @@
+{
+  "type": "texture",
+  "filter": "nearest",
+  "tile": 32,
+  "note": "seamless 32x32 (two 16x16 hand-drawn tiles laid ABBA)"
+}

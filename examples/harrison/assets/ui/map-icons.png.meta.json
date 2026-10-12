@@ -1,0 +1,18 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 16,
+  "frameHeight": 16,
+  "filter": "nearest",
+  "frames": {
+    "carrier": 0,
+    "walrus": 1,
+    "manta": 2,
+    "tower": 3,
+    "hq": 4,
+    "waypoint": 5,
+    "cursor": 6,
+    "select": 7,
+    "drone": 8,
+    "mortar": 9
+  }
+}

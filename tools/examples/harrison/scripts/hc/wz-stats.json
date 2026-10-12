@@ -1,0 +1,91 @@
+{
+ "_source": "Warzone 2100 data/mp/stats/{weapons,structure,body}.json (GPL-2.0+). Subset used by Harrison's Command; range units: 128 = one WZ tile, firePause in 1/10 s.",
+ "weapons": {
+  "MG1Mk1": {
+   "name": "Machinegun",
+   "damage": 10,
+   "longRange": 768,
+   "firePause": 5,
+   "numRounds": null,
+   "reloadTime": null,
+   "radius": null,
+   "weaponEffect": "ANTI PERSONNEL"
+  },
+  "MG3Mk1": {
+   "name": "Heavy Machinegun",
+   "damage": 17,
+   "longRange": 960,
+   "firePause": 7,
+   "numRounds": null,
+   "reloadTime": null,
+   "radius": null,
+   "weaponEffect": "ANTI PERSONNEL"
+  },
+  "Cannon1Mk1": {
+   "name": "Light Cannon",
+   "damage": 35,
+   "longRange": 960,
+   "firePause": 30,
+   "numRounds": null,
+   "reloadTime": null,
+   "radius": 64,
+   "weaponEffect": "ALL ROUNDER"
+  },
+  "Rocket-Pod": {
+   "name": "Mini-Rocket Pod",
+   "damage": 22,
+   "longRange": 1088,
+   "firePause": 10,
+   "numRounds": null,
+   "reloadTime": null,
+   "radius": null,
+   "weaponEffect": "ANTI TANK"
+  },
+  "Mortar1Mk1": {
+   "name": "Mortar",
+   "damage": 60,
+   "longRange": 2304,
+   "firePause": 60,
+   "numRounds": null,
+   "reloadTime": null,
+   "radius": 160,
+   "weaponEffect": "ARTILLERY ROUND"
+  }
+ },
+ "structures": {
+  "GuardTower1": {
+   "name": "Heavy Machinegun Guard Tower",
+   "hitpoints": 450,
+   "armour": 10,
+   "weapons": [
+    "MG3Mk1"
+   ]
+  },
+  "Emplacement-MortarPit01": {
+   "name": "Mortar Pit",
+   "hitpoints": 300,
+   "armour": 10,
+   "weapons": [
+    "Mortar1Mk1"
+   ]
+  },
+  "A0CommandCentre": {
+   "name": "Command Center",
+   "hitpoints": 1000,
+   "armour": 10,
+   "weapons": null
+  }
+ },
+ "bodies": {
+  "Body11ABT": {
+   "name": "Python",
+   "hitpoints": 200,
+   "armourKinetic": 20
+  },
+  "Body3MBT": {
+   "name": "Retaliation",
+   "hitpoints": 150,
+   "armourKinetic": 20
+  }
+ }
+}
