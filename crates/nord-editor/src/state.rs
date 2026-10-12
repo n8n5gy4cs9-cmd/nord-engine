@@ -33,6 +33,9 @@ pub struct Settings {
     /// colour while compiling (before the game starts)
     pub build_tint: [u8; 3],
     /// Cmd/Ctrl + key: run, and stop again while running (toggle). Rebindable in case a game/app needs the combo.
+    /// where the game view sits inside the Game panel when not 'Fit': anchor 0..1 (x, y; 0,0 = top-left) + pixel offset
+    pub game_anchor: [f32; 2],
+    pub game_offset: [f32; 2],
     pub run_key: String,
     /// Cmd/Ctrl + key: stop only
     pub stop_key: String,
@@ -56,6 +59,8 @@ impl Default for Settings {
             tint: true,
             play_tint: [34, 56, 96],
             build_tint: [104, 72, 20],
+            game_anchor: [0.5, 0.0],
+            game_offset: [0.0, 0.0],
             run_key: "R".into(),
             stop_key: ".".into(),
         }

@@ -772,6 +772,41 @@ pub fn game_tab(
             st.game_console = !st.game_console;
         }
         ui.separator();
+        ui.weak("Position");
+        for (label, tip, y) in [
+            ("⬆ Top", "Dock the game under the toolbar", 0.0_f32),
+            ("Middle", "Centre vertically", 0.5),
+            ("⬇ Bottom", "Dock the game to the bottom of the panel", 1.0),
+        ] {
+            if ui
+                .selectable_label((st.settings.game_anchor[1] - y).abs() < 1e-3, label)
+                .on_hover_text(tip)
+                .clicked()
+            {
+                st.settings.game_anchor[1] = y;
+                st.settings.game_offset[1] = 0.0;
+            }
+        }
+        ui.add(
+            egui::DragValue::new(&mut st.settings.game_offset[0])
+                .speed(1.0)
+                .prefix("x "),
+        )
+        .on_hover_text("Horizontal offset in pixels (0 = centred)");
+        ui.add(
+            egui::DragValue::new(&mut st.settings.game_offset[1])
+                .speed(1.0)
+                .prefix("y "),
+        )
+        .on_hover_text("Vertical offset in pixels from the anchor");
+        if ui
+            .small_button("↺")
+            .on_hover_text("Reset position")
+            .clicked()
+        {
+            st.settings.game_anchor = [0.5, 0.0];
+            st.settings.game_offset = [0.0, 0.0];
+        }
         ui.weak("Size");
         for (label, v) in [
             ("Fit", 0.0_f32),
@@ -833,7 +868,11 @@ pub fn game_tab(
                     .as_ref()
                     .map(|p| (p.display.width as f32, p.display.height as f32))
                     .unwrap_or((1280.0, 720.0));
-                egui::vec2(d.0 * st.game_scale, d.1 * st.game_scale)
+                crate::viewport::webview::Fixed {
+                    size: egui::vec2(d.0 * st.game_scale, d.1 * st.game_scale),
+                    anchor: st.settings.game_anchor,
+                    offset: st.settings.game_offset,
+                }
             });
             web.show_sized(ui, frame, "game", &url, overlay, fixed);
         } else {

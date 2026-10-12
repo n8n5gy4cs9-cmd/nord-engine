@@ -15,6 +15,7 @@ bundled via `include_bytes!`. Icons: Lucide SVGs (`assets/icons/lucide`) via `eg
 └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 Panels are dockable (M8-05, `egui_dock`): drag a tab to another panel, to an edge (split) or out of the window (floating); tabs have a close button, closed panels come back via **View ▸ <panel>**, **View ▸ Reset layout** restores the default. The layout is saved to `<config>/layout.json` (next to `editor.json`) and survives restarts and project switches.
+Game view: the Game tab header sets size (Fit/50–200 %) and position (Top/Middle/Bottom + x/y offset, kept in settings); the view keeps the game's aspect ratio and stays inside the panel.
 Run/stop: **Cmd+R** runs and, while running, stops; **Cmd+.** stops only. Both keys are rebindable in Settings ▸ Run / stop keys (key names like `R`, `F5`, `Enter`). The Game tab header has ■ Stop and Fullscreen/Exit (Esc) — the reliable exit when the embedded game has keyboard focus.
 Themes: 10 dark + 3 light (Nord Light, GitHub Light, Solarized Light) in `assets/themes/themes.json`; pick in Settings. Light themes use `egui::Visuals::light()` as the base.
 

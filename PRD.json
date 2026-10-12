@@ -1209,6 +1209,12 @@
       "milestone": "M8",
       "title": "Code editor example: PHP, Python and more syntaxes",
       "status": "done"
+    },
+    {
+      "id": "M8-15",
+      "milestone": "M8",
+      "title": "Game view position settings (top/middle/bottom + x/y offset)",
+      "status": "done"
     }
   ]
 }

@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 139/149 tasks (93%)** · updated 2026-10-12
+**Overall: 140/150 tasks (93%)** · updated 2026-10-12
 
 | Milestone | Progress |
 |---|---|
@@ -15,7 +15,7 @@
 | M5 Rust/WASM | 9/9 (100%) |
 | M6 Library | 18/18 (100%) |
 | M7 Docs | 12/12 (100%) |
-| M8 Polish & portability | 9/14 (64%) |
+| M8 Polish & portability | 10/15 (67%) |
 | M9 Desktop apps | 16/16 (100%) |
 
 ## Next up
@@ -193,6 +193,7 @@ _dmg, CI, Windows, Linux, perf_
 - [x] **M8-12** Play-mode tint + status bar (one-sentence activity, compile progress) + hub per-column scroll
 - [x] **M8-13** Run/stop toggle + rebindable run/stop keys, Stop button in game header
 - [x] **M8-14** Code editor example: PHP, Python and more syntaxes
+- [x] **M8-15** Game view position settings (top/middle/bottom + x/y offset)
 
 ## M9 — Desktop apps
 _real native desktop apps (Rust backend): files, dialogs, notifications, tray, windows, storage, packaging_

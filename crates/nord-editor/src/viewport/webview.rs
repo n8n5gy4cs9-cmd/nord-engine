@@ -18,6 +18,13 @@ pub struct WebPanes {
     pub rects: HashMap<String, egui::Rect>,
 }
 
+/// A fixed-size view: pixel size, anchor (0..1, x/y) inside the panel and pixel offset from that anchor.
+pub struct Fixed {
+    pub size: Vec2,
+    pub anchor: [f32; 2],
+    pub offset: [f32; 2],
+}
+
 pub fn open_in_browser(url: &str) {
     #[cfg(target_os = "macos")]
     let _ = std::process::Command::new("open").arg(url).spawn();
@@ -92,15 +99,23 @@ impl WebPanes {
         key: &str,
         url: &str,
         overlay: bool,
-        fixed: Option<Vec2>,
+        fixed: Option<Fixed>,
     ) -> bool {
         let size = ui.available_size().max(Vec2::splat(10.0));
         let (full, _) = ui.allocate_exact_size(size, egui::Sense::hover());
         let rect = match fixed {
             // keep the aspect ratio: scale down uniformly when the panel is smaller than the requested size
-            Some(f) => {
+            Some(Fixed {
+                size: f,
+                anchor: a,
+                offset: o,
+            }) => {
                 let k = (size.x / f.x).min(size.y / f.y).min(1.0);
-                egui::Rect::from_center_size(full.center(), (f * k).max(Vec2::splat(10.0)))
+                let f = (f * k).max(Vec2::splat(10.0));
+                let free = (size - f).max(Vec2::ZERO);
+                let min = full.min + egui::vec2(free.x * a[0] + o[0], free.y * a[1] + o[1]);
+                let min = min.clamp(full.min, full.min + free); // stay inside the panel
+                egui::Rect::from_min_size(min, f)
             }
             None => full,
         };
