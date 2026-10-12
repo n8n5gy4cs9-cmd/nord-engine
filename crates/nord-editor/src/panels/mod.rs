@@ -2,6 +2,7 @@ pub mod animation;
 pub mod assets;
 pub mod console;
 pub mod docs;
+pub mod export;
 pub mod hierarchy;
 pub mod hub;
 pub mod inspector;

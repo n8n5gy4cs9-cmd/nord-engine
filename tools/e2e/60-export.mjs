@@ -3,7 +3,7 @@
 import fs from 'node:fs';
 import http from 'node:http';
 import path from 'node:path';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawn } from 'node:child_process';
 import { suites, loadPlaywright, waitReady, nonBlank, ROOT } from '../e2e-lib.mjs';
 
 const MIME = { html: 'text/html', js: 'text/javascript', json: 'application/json', png: 'image/png', wav: 'audio/wav', mp3: 'audio/mpeg', wasm: 'application/wasm', glb: 'model/gltf-binary', woff2: 'font/woff2' };
@@ -92,3 +92,26 @@ suites['export-web-3d'] = check3d('web-3d', []);
 suites['export-web-2d-min'] = check2d('web-2d-min', ['--minify', '--optimize']);
 suites['export-single-2d'] = check2d('single-2d', ['--single-file', '--minify'], true);
 suites['export-single-3d'] = check3d('single-3d', ['--single-file'], true);
+
+// docs/HOSTING.md: the 3D build (ES modules + Havok .wasm) must work from plain `python3 -m http.server`
+suites['export-python-http'] = async () => {
+  const dir = build('conformance-3d', 'pyhttp', ['--minify']);
+  const port = 18000 + Math.floor(Math.random() * 2000);
+  const py = spawn('python3', ['-m', 'http.server', String(port), '--bind', '127.0.0.1', '--directory', dir], { stdio: 'ignore' });
+  try {
+    await new Promise((r) => setTimeout(r, 800));
+    const { chromium } = loadPlaywright();
+    const browser = await chromium.launch({ args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
+    const errors = [];
+    try {
+      const page = await (await browser.newContext({ viewport: { width: 480, height: 270 } })).newPage();
+      page.on('pageerror', (e) => errors.push(e.message));
+      page.on('response', (r) => { if (r.status() >= 400 && !r.url().endsWith('.meta.json')) errors.push(`HTTP ${r.status()} ${r.url()}`); });
+      await page.goto(`http://127.0.0.1:${port}/`);
+      await waitReady(page, 40000);
+      const err = await page.evaluate(() => window.__nord_error);
+      if (err) throw new Error(err);
+    } finally { await browser.close(); }
+    if (errors.length) throw new Error(errors.join('\n'));
+  } finally { py.kill(); }
+};

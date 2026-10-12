@@ -301,6 +301,7 @@ impl App {
                 st.palette.query.clear();
             }
             Action::Settings => st.settings_open = true,
+            Action::Export => st.export_ui.open = true,
             Action::About => st.about_open = true,
             Action::OpenFile(p, line) => {
                 let root = st.root.clone();
@@ -421,6 +422,7 @@ impl App {
                 act(ui, "Play  (Cmd+R)", Action::Play, st);
                 act(ui, "Stop  (Cmd+.)", Action::Stop, st);
                 act(ui, "Validate", Action::Build("validate".into()), st);
+                act(ui, "Export…", Action::Export, st);
             });
             ui.menu_button("Help", |ui| {
                 act(ui, "Documentation", Action::ShowTab(Tab::Docs), st);
@@ -637,6 +639,7 @@ impl App {
         let overlay = ctx.memory(|m| m.any_popup_open())
             || self.st.palette.mode != PMode::Closed
             || self.st.settings_open
+            || self.st.export_ui.open
             || self.st.about_open
             || self.quit_confirm
             || self.st.assets_ui.confirm_delete.is_some()
@@ -670,6 +673,7 @@ impl App {
 
         panels::palette::window(&mut self.st, ctx);
         panels::settings::window(&mut self.st, ctx);
+        panels::export::window(&mut self.st, ctx);
         if self.st.recover.is_some() && self.st.project.is_some() {
             egui::Window::new("Recover unsaved work?").collapsible(false).resizable(false).anchor(egui::Align2::CENTER_CENTER, [0.0, 0.0]).show(ctx, |ui| {
                 ui.label("An autosave newer than the saved scene was found (the editor may have crashed).");

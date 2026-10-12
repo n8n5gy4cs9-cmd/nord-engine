@@ -747,7 +747,7 @@
       "id": "M4-05",
       "milestone": "M4",
       "title": "Asset optimisation (png quantise, atlas packing, audio transcode via optional ffmpeg)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M4-06",
@@ -759,24 +759,30 @@
       "id": "M4-07",
       "milestone": "M4",
       "title": "Export dialog in editor + open-folder + zip target",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M4-08",
       "milestone": "M4",
       "title": "nord-player crate (Tauri shell) + `bundle-mac` command (resource swap, Info.plist, icns, ad-hoc codesign)",
-      "status": "todo"
+      "status": "in_progress"
     },
     {
       "id": "M4-09",
       "milestone": "M4",
       "title": "CI builds NordPlayer.app + NordEditor.app on macos-14, uploads artifacts",
-      "status": "todo"
+      "status": "in_progress"
     },
     {
       "id": "M4-10",
       "milestone": "M4",
       "title": "Hosting guide (python http.server, nginx, itch.io, GitHub Pages) tested",
+      "status": "done"
+    },
+    {
+      "id": "M4-11",
+      "milestone": "M4",
+      "title": "Texture atlas packing + lossy PNG quantise in nord build --optimize",
       "status": "todo"
     },
     {

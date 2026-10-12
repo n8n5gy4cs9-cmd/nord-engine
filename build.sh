@@ -36,7 +36,8 @@ command -v cargo >/dev/null || { echo "cargo not found. Install Rust: https://ru
 NAME="Nord Engine"
 VERSION="$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -1)"
 OUT="dist/$NAME.app"
-FEATURES=""; if [ "$OS" = "Darwin" ] && [ "$WEBVIEW" = 1 ]; then FEATURES="--features webview"; fi
+FEATURES=""; FEATURES_PLAYER=""
+if [ "$OS" = "Darwin" ] && [ "$WEBVIEW" = 1 ]; then FEATURES="--features webview"; FEATURES_PLAYER="--features shell"; fi
 
 build() { # $1 = target triple or empty
   local t=()
@@ -45,6 +46,8 @@ build() { # $1 = target triple or empty
   # shellcheck disable=SC2086
   cargo build --release ${t[@]+"${t[@]}"} -p nord-editor $FEATURES
   cargo build --release ${t[@]+"${t[@]}"} -p nord-cli
+  # the game player shell (wry+tao window) used by `nord bundle-mac`; needs WKWebView so macOS only
+  cargo build --release ${t[@]+"${t[@]}"} -p nord-player $FEATURES_PLAYER
 }
 
 bin_path() { # $1 = bin name, $2 = triple or empty
@@ -56,12 +59,12 @@ mkdir -p "$OUT/Contents/MacOS" "$OUT/Contents/Resources"
 
 if [ "$UNIVERSAL" = 1 ] && [ "$OS" = "Darwin" ]; then
   for t in aarch64-apple-darwin x86_64-apple-darwin; do rustup target add "$t" >/dev/null; build "$t"; done
-  for b in nord-editor nord; do
+  for b in nord-editor nord nord-player; do
     lipo -create "$(bin_path $b aarch64-apple-darwin)" "$(bin_path $b x86_64-apple-darwin)" -output "$OUT/Contents/MacOS/$b"
   done
 else
   build ""
-  for b in nord-editor nord; do cp "$(bin_path $b '')" "$OUT/Contents/MacOS/$b"; done
+  for b in nord-editor nord nord-player; do cp "$(bin_path $b '')" "$OUT/Contents/MacOS/$b"; done
 fi
 
 echo "==> assembling resources"

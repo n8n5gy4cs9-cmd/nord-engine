@@ -47,7 +47,8 @@ cargo build --workspace && cargo test --workspace && cargo clippy --workspace --
 - How to test the editor in this sandbox: `cargo test -p nord-editor` (kittest), `node tools/e2e.mjs edit-viewport-2d edit-viewport-3d game-log-bridge`
   (needs `cargo build -p nord-cli`), real-window smoke under Xvfb (see docs/TESTING.md; `apt-get install libxkbcommon-x11-0 mesa-vulkan-drivers libegl1`).
 - Skins/themes: `assets/themes/themes.json` → `node tools/gen_themes.mjs` → `runtime/core/themes.js`; editor reads the JSON directly; TTFs via `tools/woff2_to_ttf.py`.
-- **Next: M4 export** (`nord build/export`, mac player + `nord-player`), reusing `nord-serve`/`engine_root` for assets. Docs tasks M7-11/12 (complete Nord-format API docs +
+- **M4 export done except M4-08 shell run + M4-09 macOS CI run (see KNOWN_ISSUES RISK-006) and M4-05 atlas (M4-11):** `nord build/export/bundle-mac`, `nord-export`, `nord-player`, Project→Export… dialog, docs/HOSTING.md, e2e `export-*`.
+- ~~Next: M4 export~~ (`nord build/export`, mac player + `nord-player`), reusing `nord-serve`/`engine_root` for assets. Docs tasks M7-11/12 (complete Nord-format API docs +
   manual with "for dummies" toggle boxes) are owner requests — don't drop them; the editor's Docs tab already embeds `docs/manual/index.html` (served at `/__docs/`) once it exists.
 - Vendored: Phaser 4.2.1, Babylon 9.30.0 (+Havok 1.3.14), PlayCanvas 2.23.2 (optional), CodeMirror bundle, marked, fonts, Lucide.
 - Known risks: `docs/KNOWN_ISSUES.md`.

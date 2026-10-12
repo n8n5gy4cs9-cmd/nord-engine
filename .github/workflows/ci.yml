@@ -30,6 +30,16 @@ jobs:
       - if: runner.os == 'macOS'
         uses: actions/upload-artifact@v4
         with: { name: nord-engine-app, path: dist/Nord Engine.app, retention-days: 7 }
+      # NordPlayer: wrap the 3D example into a standalone game .app (resource swap), ad-hoc signed, smoke-checked
+      - if: runner.os == 'macOS'
+        run: |
+          mkdir -p dist/games
+          target/release/nord bundle-mac examples/playground-3d --player target/release/nord-player -o dist/games
+          codesign --verify --deep --strict "dist/games/Playground 3D.app" && echo "game app signature OK"
+          test -f "dist/games/Playground 3D.app/Contents/Resources/game/index.html"
+      - if: runner.os == 'macOS'
+        uses: actions/upload-artifact@v4
+        with: { name: nord-player-sample-game, path: dist/games/Playground 3D.app, retention-days: 7 }
   js-e2e:
     runs-on: ubuntu-latest
     steps:

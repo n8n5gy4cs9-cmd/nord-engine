@@ -66,6 +66,26 @@ enum Cmd {
         #[arg(long)]
         zip: bool,
     },
+    /// Wrap a web build (or a project, built first) into a macOS .app using the prebuilt nord-player shell
+    BundleMac {
+        /// A web build folder (nord build output) or a project folder
+        #[arg(default_value = ".")]
+        input: PathBuf,
+        #[arg(long)]
+        name: Option<String>,
+        /// Output folder for the .app (default: current directory)
+        #[arg(short, long, default_value = ".")]
+        out: PathBuf,
+        /// nord-player binary or NordPlayer.app (default: auto-detect)
+        #[arg(long)]
+        player: Option<PathBuf>,
+        /// PNG for the app icon
+        #[arg(long)]
+        icon: Option<PathBuf>,
+        /// Also create a .dmg (macOS only)
+        #[arg(long)]
+        dmg: bool,
+    },
     /// Fail if a directory (build output or project) references external http(s) hosts
     CheckOffline {
         #[arg(default_value = ".")]
@@ -223,6 +243,47 @@ fn main() -> anyhow::Result<()> {
                 },
             )?;
             print!("{}", r.summary());
+        }
+        Cmd::BundleMac {
+            input,
+            name,
+            out,
+            player,
+            icon,
+            dmg,
+        } => {
+            let engine =
+                nord_serve::engine_root().context("engine root not found (set NORD_ROOT)")?;
+            let is_dist = input.join("nord.json").exists() && input.join("index.html").exists();
+            let dist = if is_dist {
+                input.clone()
+            } else {
+                let tmp = std::env::temp_dir().join(format!("nord-bundle-{}", std::process::id()));
+                let r = nord_export::build(
+                    &input,
+                    &engine,
+                    &nord_export::Opts {
+                        out: Some(tmp),
+                        minify: true,
+                        ..Default::default()
+                    },
+                )?;
+                print!("{}", r.summary());
+                r.out
+            };
+            std::fs::create_dir_all(&out)?;
+            let app = nord_export::mac::bundle_mac(
+                &dist,
+                &engine,
+                &nord_export::mac::BundleOpts {
+                    name,
+                    out_dir: out,
+                    player,
+                    icon,
+                    dmg,
+                },
+            )?;
+            println!("App: {}", app.display());
         }
         Cmd::CheckOffline { dir, allow } => {
             let f = offline::scan_dir(&dir, &allow);

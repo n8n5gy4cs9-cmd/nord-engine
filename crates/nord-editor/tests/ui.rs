@@ -295,6 +295,37 @@ fn code_editor_multi_cursor() {
     assert_eq!(h.state().code.docs[0].text, "x\nx\nx");
 }
 
+#[test]
+fn export_dialog_builds_in_background() {
+    let mut st = state_with_scene("export");
+    let out = st.root.clone().unwrap().join("out-export");
+    st.export_ui.open = true;
+    st.export_ui.minify = false;
+    st.export_ui.out = out.display().to_string();
+    nord_editor::panels::export::start(&mut st);
+    let mut h = Harness::builder()
+        .with_size(egui::vec2(700.0, 500.0))
+        .build_state(
+            |ctx, st: &mut EditorState| nord_editor::panels::export::window(st, ctx),
+            st,
+        );
+    for _ in 0..200 {
+        h.step();
+        if out.join("index.html").exists()
+            && h.state().console.iter().any(|l| l.text.contains("files,"))
+        {
+            break;
+        }
+        std::thread::sleep(std::time::Duration::from_millis(50));
+    }
+    assert!(out.join("index.html").exists() && out.join("nord.json").exists());
+    assert!(h
+        .state()
+        .console
+        .iter()
+        .any(|l| l.text.contains("Built web-2d")));
+}
+
 fn example_copy(name: &str, example: &str) -> PathBuf {
     std::env::set_var(
         "NORD_CONFIG_DIR",

@@ -1,0 +1,18 @@
+[package]
+name = "nord-player"
+description = "NordPlayer: tiny wry+tao shell that runs an exported Nord web build in a native window (Mac wrapper)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[features]
+default = []
+# the actual window (wry/tao). Off by default so the workspace builds on Linux CI without webkit2gtk; macOS CI + `build.sh` enable it.
+shell = ["dep:wry", "dep:tao"]
+
+[dependencies]
+anyhow.workspace = true
+serde_json.workspace = true
+mime_guess = "2"
+wry = { version = "0.50", optional = true }
+tao = { version = "0.33", optional = true }

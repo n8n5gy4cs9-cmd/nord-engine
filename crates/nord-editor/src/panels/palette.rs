@@ -107,6 +107,7 @@ pub const COMMANDS: &[(&str, CmdFn)] = &[
     ("Run: Reload", || Action::Reload),
     ("Project: Validate", || Action::Build("validate".into())),
     ("Editor: Settings", || Action::Settings),
+    ("Project: Export…", || Action::Export),
     ("Editor: About", || Action::About),
 ];
 

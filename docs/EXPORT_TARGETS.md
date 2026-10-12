@@ -12,6 +12,13 @@
 | `mac-app` | `Name.app` (+ optional `.dmg`) | NordPlayer + any of the above | uses prebuilt player; ad-hoc signed |
 | `zip` | `name.zip` | any web target zipped | for itch.io-style upload |
 
+## Implemented (M4)
+`nord build <project> [-t auto|html|web-2d|web-3d] [-o dir] [--minify] [--single-file] [--optimize] [--zip]` (alias `nord export`), crate `nord-export`;
+editor: **Project → Export…**. `web-wasm-*` arrive with M5. `--minify`/`--single-file` run `tools/export-bundle.mjs` (Node + vendored `esbuild-wasm`).
+`nord bundle-mac <project|dist> [--player nord-player|NordPlayer.app] [--name] [-o dir] [--icon png] [--dmg]` assembles `<Name>.app`
+(`Contents/Resources/game/` + Info.plist + generated AppIcon.icns, ad-hoc codesign on macOS); the player is `crates/nord-player` (wry+tao, `--features shell`, macOS-only to build). Hosting: HOSTING.md.
+Not done: texture-atlas packing and lossy PNG quantisation (M4-11).
+
 ## Output layout (web)
 ```
 dist/
