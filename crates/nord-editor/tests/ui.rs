@@ -264,9 +264,16 @@ fn code_editor_typing_behaviours() {
 }
 
 fn example_copy(name: &str, example: &str) -> PathBuf {
-    std::env::set_var("NORD_CONFIG_DIR", std::env::temp_dir().join(format!("nord-ui-config-{}", std::process::id())));
-    let src = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../examples").join(example);
-    let dst = std::env::temp_dir().join(format!("nord-ui-{name}-{}", std::process::id())).join(example);
+    std::env::set_var(
+        "NORD_CONFIG_DIR",
+        std::env::temp_dir().join(format!("nord-ui-config-{}", std::process::id())),
+    );
+    let src = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../examples")
+        .join(example);
+    let dst = std::env::temp_dir()
+        .join(format!("nord-ui-{name}-{}", std::process::id()))
+        .join(example);
     let _ = std::fs::remove_dir_all(&dst);
     std::fs::create_dir_all(&dst).unwrap();
     for e in walk(&src) {
@@ -295,34 +302,41 @@ fn animation_and_tilemap_editors_roundtrip() {
     let d = example_copy("anim", "conformance-2d");
     let mut st = EditorState::new();
     st.open_project(&d).unwrap();
-    let mut h = Harness::builder().with_size(egui::vec2(1000.0, 700.0)).build_ui_state(|ui, st: &mut EditorState| panels::animation::ui(st, ui), st);
+    let mut h = Harness::builder()
+        .with_size(egui::vec2(1000.0, 700.0))
+        .build_ui_state(|ui, st: &mut EditorState| panels::animation::ui(st, ui), st);
     loaders(&h);
     h.run_steps(2);
     // pick the hero spritesheet and add an animation, save the meta
     {
         let st = h.state_mut();
         st.anim.sheet = Some("assets/sprites/hero.png".into());
-        st.anim.meta = nord_core::io::load_json(&d.join("assets/sprites/hero.png.meta.json")).unwrap();
-        st.anim.meta["anims"]["dash"] = serde_json::json!({"frames": [2, 3], "fps": 20, "loop": false});
+        st.anim.meta =
+            nord_core::io::load_json(&d.join("assets/sprites/hero.png.meta.json")).unwrap();
+        st.anim.meta["anims"]["dash"] =
+            serde_json::json!({"frames": [2, 3], "fps": 20, "loop": false});
     }
     h.run_steps(3);
     h.get_by_label("Save meta").click();
     h.run_steps(2);
-    let saved: serde_json::Value = nord_core::io::load_json(&d.join("assets/sprites/hero.png.meta.json")).unwrap();
+    let saved: serde_json::Value =
+        nord_core::io::load_json(&d.join("assets/sprites/hero.png.meta.json")).unwrap();
     assert_eq!(saved["anims"]["dash"]["fps"], 20);
     // tilemap painter: paint a cell and save
     {
         let st = h.state_mut();
         st.anim.mode = panels::animation::Mode::Tile;
         st.anim.map = Some("assets/maps/level.tilemap.json".into());
-        st.anim.map_json = nord_core::io::load_json(&d.join("assets/maps/level.tilemap.json")).unwrap();
+        st.anim.map_json =
+            nord_core::io::load_json(&d.join("assets/maps/level.tilemap.json")).unwrap();
         panels::animation::set_cell(&mut st.anim.map_json["layers"][0], 40, 0, 0, 7);
         st.anim.dirty_map = true;
     }
     h.run_steps(3);
     h.get_by_label("Save tilemap").click();
     h.run_steps(2);
-    let m: serde_json::Value = nord_core::io::load_json(&d.join("assets/maps/level.tilemap.json")).unwrap();
+    let m: serde_json::Value =
+        nord_core::io::load_json(&d.join("assets/maps/level.tilemap.json")).unwrap();
     assert_eq!(m["layers"][0]["data"][0][0], 7);
 }
 
@@ -331,12 +345,14 @@ fn settings_switch_skin_and_theme_live() {
     let mut app = App::new(false);
     app.st.settings = Default::default();
     app.st.settings_open = true;
-    let mut h = Harness::builder().with_size(egui::vec2(1200.0, 800.0)).build_state(
-        |ctx, app: &mut App| {
-            app.frame_ui(ctx, None);
-        },
-        app,
-    );
+    let mut h = Harness::builder()
+        .with_size(egui::vec2(1200.0, 800.0))
+        .build_state(
+            |ctx, app: &mut App| {
+                app.frame_ui(ctx, None);
+            },
+            app,
+        );
     h.run_steps(3);
     h.get_by_label("Skin (fonts)");
     let before = h.ctx.style().visuals.panel_fill;
@@ -349,7 +365,11 @@ fn settings_switch_skin_and_theme_live() {
     h.run_steps(4);
     let after = h.ctx.style().visuals.panel_fill;
     assert_ne!(before, after, "theme colors applied");
-    assert!(h.ctx.fonts(|f| f.families()).iter().any(|f| matches!(f, egui::FontFamily::Name(n) if &**n == "bold")));
+    assert!(h
+        .ctx
+        .fonts(|f| f.families())
+        .iter()
+        .any(|f| matches!(f, egui::FontFamily::Name(n) if &**n == "bold")));
 }
 
 #[test]
@@ -359,19 +379,33 @@ fn assets_panel_lists_imports_and_renames() {
     st.open_project(&d).unwrap();
     let extra = d.join("extra.png");
     std::fs::copy(d.join("assets/sprites/coin.png"), &extra).unwrap();
-    let mut h = Harness::builder().with_size(egui::vec2(1000.0, 500.0)).build_ui_state(|ui, st: &mut EditorState| panels::assets::ui(st, ui), st);
+    let mut h = Harness::builder()
+        .with_size(egui::vec2(1000.0, 500.0))
+        .build_ui_state(|ui, st: &mut EditorState| panels::assets::ui(st, ui), st);
     loaders(&h);
     h.state_mut().assets_ui.dir = "assets/sprites".into();
     h.run_steps(3);
-    assert!(h.state().assets.iter().any(|a| a.path == "assets/sprites/hero.png"));
+    assert!(h
+        .state()
+        .assets
+        .iter()
+        .any(|a| a.path == "assets/sprites/hero.png"));
     panels::assets::import_files(h.state_mut(), &[extra]);
     h.run_steps(3);
     assert!(d.join("assets/sprites/extra.png").exists());
-    assert!(h.state().assets.iter().any(|a| a.path == "assets/sprites/extra.png"), "import refreshes the index");
+    assert!(
+        h.state()
+            .assets
+            .iter()
+            .any(|a| a.path == "assets/sprites/extra.png"),
+        "import refreshes the index"
+    );
     // thumbnails are produced on the worker thread and cached for visible cells
     std::thread::sleep(std::time::Duration::from_millis(600));
     h.run_steps(4);
-    let cached = std::fs::read_dir(d.join(".nord-cache/thumbs")).map(|r| r.count()).unwrap_or(0);
+    let cached = std::fs::read_dir(d.join(".nord-cache/thumbs"))
+        .map(|r| r.count())
+        .unwrap_or(0);
     assert!(cached > 0, "lazy thumbnails generated");
     // search mode and filters render without panicking
     h.state_mut().assets_ui.search = "tileset".into();
@@ -386,7 +420,12 @@ fn docs_markdown_viewer_renders_design_docs() {
     }
     st.docs_ui.file = Some("EDITOR_UI.md".into());
     st.docs_ui.text = "# Title\n\n## Sub\n- item one\n```\ncode line\n```\nplain text".into();
-    let mut h = Harness::builder().with_size(egui::vec2(900.0, 600.0)).build_ui_state(|ui, st: &mut EditorState| panels::docs::markdown_ui(st, ui), st);
+    let mut h = Harness::builder()
+        .with_size(egui::vec2(900.0, 600.0))
+        .build_ui_state(
+            |ui, st: &mut EditorState| panels::docs::markdown_ui(st, ui),
+            st,
+        );
     h.run_steps(2);
     h.get_by_label("Title");
     h.get_by_label("item one");

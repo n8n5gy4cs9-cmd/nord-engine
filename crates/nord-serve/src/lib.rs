@@ -180,7 +180,11 @@ fn has_nord_header(h: &axum::http::HeaderMap) -> bool {
 }
 
 /// Send a command to connected viewports (used by tests and the separate-window fallback).
-async fn edit_cmd(State(a): State<App>, headers: axum::http::HeaderMap, body: String) -> StatusCode {
+async fn edit_cmd(
+    State(a): State<App>,
+    headers: axum::http::HeaderMap,
+    body: String,
+) -> StatusCode {
     if !has_nord_header(&headers) {
         return StatusCode::FORBIDDEN;
     }
@@ -329,7 +333,11 @@ fn watch(root: PathBuf, tx: broadcast::Sender<Vec<String>>) {
 
 /// DNS-rebinding guard: only answer requests addressed to a loopback host name.
 async fn local_host_only(req: axum::extract::Request, next: axum::middleware::Next) -> Response {
-    let host = req.headers().get(header::HOST).and_then(|h| h.to_str().ok()).unwrap_or("");
+    let host = req
+        .headers()
+        .get(header::HOST)
+        .and_then(|h| h.to_str().ok())
+        .unwrap_or("");
     let name = host.rsplit_once(':').map_or(host, |x| x.0);
     if matches!(name, "127.0.0.1" | "localhost" | "[::1]") {
         next.run(req).await
@@ -416,9 +424,27 @@ mod tests {
         tokio::spawn(async move { axum::serve(l, r).await.unwrap() });
         let c = reqwest::Client::new();
         let url = format!("http://127.0.0.1:{port}/__edit/cmd");
-        assert_eq!(c.post(&url).body("{}").send().await.unwrap().status(), 403, "no custom header");
-        assert_eq!(c.post(&url).header("x-nord", "1").body("{}").send().await.unwrap().status(), 204);
-        let rebound = c.get(format!("http://127.0.0.1:{port}/api/log")).header("host", "evil.example").send().await.unwrap();
+        assert_eq!(
+            c.post(&url).body("{}").send().await.unwrap().status(),
+            403,
+            "no custom header"
+        );
+        assert_eq!(
+            c.post(&url)
+                .header("x-nord", "1")
+                .body("{}")
+                .send()
+                .await
+                .unwrap()
+                .status(),
+            204
+        );
+        let rebound = c
+            .get(format!("http://127.0.0.1:{port}/api/log"))
+            .header("host", "evil.example")
+            .send()
+            .await
+            .unwrap();
         assert_eq!(rebound.status(), 403, "non-loopback Host rejected");
     }
 
