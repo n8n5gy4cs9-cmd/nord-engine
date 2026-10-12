@@ -14,7 +14,8 @@ bundled via `include_bytes!`. Icons: Lucide SVGs (`assets/icons/lucide`) via `eg
 │ folders | thumbnail grid (size slider) | search/filter | Library tab | Console tab | Docs tab                        │
 └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
-Panels are dockable/resizable (simple splitter layout first; drag-dock in M8 only if wanted).
+Panels are dockable (M8-05, `egui_dock`): drag a tab to another panel, to an edge (split) or out of the window (floating); tabs have a close button, closed panels come back via **View ▸ <panel>**, **View ▸ Reset layout** restores the default. The layout is saved to `<config>/layout.json` (next to `editor.json`) and survives restarts and project switches.
+Themes: 10 dark + 3 light (Nord Light, GitHub Light, Solarized Light) in `assets/themes/themes.json`; pick in Settings. Light themes use `egui::Visuals::light()` as the base.
 
 ## Required features
 - Splash window (frameless, 640×360 `assets/brand/splash.png`) shown **≥ 2000 ms** then main window appears.

@@ -1154,13 +1154,13 @@
       "id": "M8-05",
       "milestone": "M8",
       "title": "Dockable panels (optional), light theme",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M8-06",
       "milestone": "M8",
       "title": "Optional: Bevy template, PlayCanvas engine as 4th web tier",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M8-07",

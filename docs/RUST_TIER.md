@@ -48,3 +48,6 @@ Units: pixels, y down, degrees; physics runs in metres at 32 px/m. Collider offs
 * Audio is .wav/.ogg only (macroquad). Export does not convert mp3.
 * macroquad's JS bundle logs a harmless `register_plugin is not defined` error (quad_net section).
 * The runtime needs the page to serve `nord.project.json`, scenes and assets next to `index.html` (the export does).
+
+## Bevy template (optional, M8-06)
+`rust-bevy-game` (hub / `nord new -t rust-bevy-game`) is a `wasm-app` project whose `src/main.rs` is a slim Bevy app (WebGL2, canvas `#the_canvas_id`). It uses the same `nord build-rust` / `nord export --target web-wasm-app` path as the egui template. Bevy has its own ECS and does not read Nord scenes; prefer `rust-2d-game` for small games.

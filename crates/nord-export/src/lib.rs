@@ -23,6 +23,8 @@ pub enum Target {
     Html,
     Web2d,
     Web3d,
+    /// 3D with the optional PlayCanvas engine (no physics yet)
+    Web3dPc,
     /// Rust game (macroquad runtime) → `game.wasm` + JS loader
     WasmGame,
     /// Rust egui/eframe app → wasm-bindgen output
@@ -37,11 +39,12 @@ impl std::str::FromStr for Target {
             "html" => Self::Html,
             "web-2d" => Self::Web2d,
             "web-3d" => Self::Web3d,
+            "web-3d-pc" => Self::Web3dPc,
             "web-wasm-game" => Self::WasmGame,
             "web-wasm-app" => Self::WasmApp,
             _ => {
                 return Err(format!(
-                    "unknown target '{s}' (auto, html, web-2d, web-3d, web-wasm-game, web-wasm-app)"
+                    "unknown target '{s}' (auto, html, web-2d, web-3d, web-3d-pc, web-wasm-game, web-wasm-app)"
                 ))
             }
         })
@@ -55,6 +58,7 @@ impl Target {
             Self::Html => "html",
             Self::Web2d => "web-2d",
             Self::Web3d => "web-3d",
+            Self::Web3dPc => "web-3d-pc",
             Self::WasmGame => "web-wasm-game",
             Self::WasmApp => "web-wasm-app",
         }
@@ -232,6 +236,10 @@ fn plan(target: Target, p: &nord_core::Project) -> Plan {
                 ("babylonjs-gui", "babylon.gui.min.js"),
                 ("havok", "HavokPhysics_umd.js"),
             ],
+        },
+        Target::Web3dPc => Plan {
+            backend: "playcanvas",
+            scripts: vec![("playcanvas", "playcanvas.min.js")],
         },
         _ => Plan {
             backend: "phaser",
@@ -459,7 +467,7 @@ pub fn build(project: &Path, engine: &Path, o: &Opts) -> Result<Report> {
         (t, _) => t,
     };
     if target == Target::Web2d && proj.kind == ProjectType::ThreeD
-        || target == Target::Web3d && proj.kind == ProjectType::TwoD
+        || matches!(target, Target::Web3d | Target::Web3dPc) && proj.kind == ProjectType::TwoD
     {
         bail!(
             "target {} does not fit a {} project",
@@ -468,7 +476,7 @@ pub fn build(project: &Path, engine: &Path, o: &Opts) -> Result<Report> {
         );
     }
     if target == Target::Html && (o.single_file || o.minify) {
-        bail!("--single-file/--minify apply to web-2d and web-3d; html projects are copied as you wrote them");
+        bail!("--single-file/--minify apply to the web-2d / web-3d / web-3d-pc targets; html projects are copied as you wrote them");
     }
 
     if matches!(target, Target::WasmGame | Target::WasmApp) {

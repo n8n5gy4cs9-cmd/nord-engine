@@ -16,5 +16,11 @@
     "title": "Rust desktop app: notes",
     "description": "egui notes app using nord_app_wasm::desktop \u2014 files in app data, settings store, notifications, native dialogs, clipboard; same code runs in the browser with fallbacks.",
     "type": "wasm-app"
+  },
+  {
+    "id": "rust-bevy-game",
+    "title": "Rust Bevy game (optional)",
+    "description": "Slim Bevy 0.16 app (WebGL2): spinning cube starter. Runs natively and in the browser via the wasm-app export path; own ECS, no Nord scenes.",
+    "type": "wasm-app"
   }
 ]

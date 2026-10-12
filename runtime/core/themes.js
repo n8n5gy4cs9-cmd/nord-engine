@@ -1,4 +1,4 @@
-// Skins (font pairs) + dark themes, shared by the runtime UI, the editor webviews and the code editor.
+// Skins (font pairs) + dark + light themes, shared by the runtime UI, the editor webviews and the code editor.
 // Data lives in assets/themes/themes.json (generated into themes.data.js). Everything is offline: fonts come from vendor/fonts.
 import data from './themes.data.js';
 

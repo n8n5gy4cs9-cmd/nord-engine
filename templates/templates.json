@@ -136,5 +136,11 @@
     "title": "Rust egui app",
     "description": "eframe/egui app that runs natively and in the browser (wasm-bindgen, no trunk).",
     "type": "wasm-app"
+  },
+  {
+    "id": "rust-bevy-game",
+    "title": "Rust Bevy game (optional)",
+    "description": "Slim Bevy 0.16 app (WebGL2): spinning cube starter. Runs natively and in the browser via the wasm-app export path; own ECS, no Nord scenes.",
+    "type": "wasm-app"
   }
 ]
