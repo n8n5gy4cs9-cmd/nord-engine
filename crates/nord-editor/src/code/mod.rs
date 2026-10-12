@@ -2,6 +2,7 @@
 pub mod api;
 pub mod edit;
 pub mod highlight;
+pub mod multi;
 
 use crate::{
     icons,
@@ -41,6 +42,10 @@ pub struct Doc {
     hl: Option<(u64, std::sync::Arc<egui::text::LayoutJob>)>,
     pub scroll_y: f32,
     goto: Option<usize>,
+    /// secondary selections (multi-cursor); primary lives in the TextEdit state
+    pub extra: Vec<multi::Sel>,
+    extra_len: usize,
+    prev_primary: Option<multi::Sel>,
 }
 
 impl Doc {
@@ -143,6 +148,9 @@ impl CodeState {
             hl: None,
             scroll_y: 0.0,
             goto: line,
+            extra: vec![],
+            extra_len: 0,
+            prev_primary: None,
         });
         self.active = self.docs.len() - 1;
         let d = &self.docs[self.active];
@@ -905,6 +913,14 @@ fn pane(
                                 ui.fonts(|f| f.layout_job((*job).clone()))
                             }
                         };
+                        if !ui.input(|i| i.pointer.any_down()) {
+                            doc.prev_primary = egui::TextEdit::load_state(ui.ctx(), id)
+                                .and_then(|s| s.cursor.char_range())
+                                .map(|r| multi::Sel {
+                                    anchor: r.secondary.index,
+                                    head: r.primary.index,
+                                });
+                        }
                         let mut te = egui::TextEdit::multiline(&mut doc.text)
                             .id(id)
                             .font(font.clone())
@@ -917,6 +933,36 @@ fn pane(
                             te = te.layouter(&mut layouter);
                         }
                         let mut out = te.show(ui);
+                        // Alt+click adds a cursor (the old primary becomes secondary); a plain click drops extras.
+                        if out.response.clicked() || out.response.drag_started() {
+                            if ui.input(|i| i.modifiers.alt) && out.response.clicked() {
+                                if let Some(p) = doc.prev_primary {
+                                    doc.extra.push(p);
+                                    doc.extra_len = doc.text.len();
+                                    let m = multi::Multi::new(
+                                        out.state.cursor.char_range().map_or(p, |r| multi::Sel {
+                                            anchor: r.secondary.index,
+                                            head: r.primary.index,
+                                        }),
+                                        &doc.extra,
+                                    );
+                                    doc.extra = m.split().1;
+                                }
+                            } else {
+                                doc.extra.clear();
+                            }
+                        }
+                        if !doc.extra.is_empty() {
+                            paint_extras(
+                                ui,
+                                doc,
+                                &out.galley,
+                                out.galley_pos,
+                                row_h,
+                                hex(&th.code.selection),
+                                hex(&th.code.cursor),
+                            );
+                        }
                         if let Some((a, b)) = sel_req {
                             out.state.cursor.set_char_range(Some(CCursorRange::two(
                                 CCursor::new(a),
@@ -1246,6 +1292,9 @@ fn process_keys(
         );
         changed = true;
     }
+    if multi_keys(&ctx, doc, &mut anchor, &mut head, tab) {
+        changed = true;
+    }
     let events = ctx.input_mut(|i| std::mem::take(&mut i.events));
     let mut keep = Vec::with_capacity(events.len());
     for ev in events {
@@ -1344,6 +1393,155 @@ fn process_keys(
             CCursor::new(head),
         )));
         state.store(&ctx, id);
+    }
+}
+
+/// Multi-cursor key handling (runs before the single-cursor logic). Add-cursor shortcuts always work; while extra
+/// cursors exist, editing/navigation keys are applied to every selection and removed from the event queue.
+fn multi_keys(
+    ctx: &egui::Context,
+    doc: &mut Doc,
+    anchor: &mut usize,
+    head: &mut usize,
+    tab: usize,
+) -> bool {
+    use multi::{Dir, Multi, Sel};
+    if !doc.extra.is_empty() && doc.text.len() != doc.extra_len {
+        doc.extra.clear(); // text changed behind our back (undo, cut, reload)
+    }
+    let is_add = |e: &egui::Event| {
+        matches!(e, egui::Event::Key { key, pressed: true, modifiers, .. }
+            if modifiers.command && ((*key == Key::D && !modifiers.alt)
+                || (modifiers.alt && matches!(key, Key::ArrowUp | Key::ArrowDown))))
+    };
+    let events = ctx.input(|i| i.events.clone());
+    if doc.extra.is_empty() && !events.iter().any(is_add) {
+        return false;
+    }
+    let mut m = Multi::new(
+        Sel {
+            anchor: *anchor,
+            head: *head,
+        },
+        &doc.extra,
+    );
+    let mut keep = Vec::with_capacity(events.len());
+    let mut changed = false;
+    for ev in events {
+        if is_add(&ev) {
+            if let egui::Event::Key { key, .. } = &ev {
+                match key {
+                    Key::D => {
+                        multi::add_next_occurrence(&doc.text, &mut m);
+                    }
+                    k => multi::add_vertical(&doc.text, &mut m, *k == Key::ArrowUp),
+                }
+            }
+            changed = true;
+            continue;
+        }
+        if m.sels.len() < 2 {
+            keep.push(ev);
+            continue;
+        }
+        let apply = |r: (String, Multi), doc: &mut Doc, m: &mut Multi| {
+            doc.text = r.0;
+            *m = r.1;
+        };
+        match &ev {
+            egui::Event::Text(t) | egui::Event::Paste(t)
+                if !t.is_empty() && !t.chars().any(|c| c.is_control() && c != '\n') =>
+            {
+                apply(multi::insert(&doc.text, &m, t), doc, &mut m);
+            }
+            egui::Event::Key {
+                key,
+                pressed: true,
+                modifiers,
+                ..
+            } if !modifiers.command && !modifiers.alt => match key {
+                Key::Backspace => apply(multi::backspace(&doc.text, &m), doc, &mut m),
+                Key::Delete => apply(multi::delete(&doc.text, &m), doc, &mut m),
+                Key::Enter if !modifiers.shift => {
+                    apply(multi::newline(&doc.text, &m, tab), doc, &mut m)
+                }
+                Key::Tab if !modifiers.shift => apply(multi::tab(&doc.text, &m, tab), doc, &mut m),
+                Key::Escape => m.sels = vec![m.sels[m.primary]],
+                Key::ArrowLeft => multi::move_all(&doc.text, &mut m, Dir::Left, modifiers.shift),
+                Key::ArrowRight => multi::move_all(&doc.text, &mut m, Dir::Right, modifiers.shift),
+                Key::ArrowUp => multi::move_all(&doc.text, &mut m, Dir::Up, modifiers.shift),
+                Key::ArrowDown => multi::move_all(&doc.text, &mut m, Dir::Down, modifiers.shift),
+                Key::Home => multi::move_all(&doc.text, &mut m, Dir::Home, modifiers.shift),
+                Key::End => multi::move_all(&doc.text, &mut m, Dir::End, modifiers.shift),
+                _ => {
+                    keep.push(ev);
+                    continue;
+                }
+            },
+            _ => {
+                keep.push(ev);
+                continue;
+            }
+        }
+        if matches!(
+            &ev,
+            egui::Event::Key {
+                key: Key::Escape,
+                ..
+            }
+        ) {
+            m.primary = 0;
+        }
+        changed = true;
+    }
+    ctx.input_mut(|i| i.events = keep);
+    if changed {
+        let (p, ex) = m.split();
+        *anchor = p.anchor;
+        *head = p.head;
+        doc.extra = if m.sels.len() > 1 { ex } else { vec![] };
+        doc.extra_len = doc.text.len();
+    }
+    changed
+}
+
+/// Paint secondary carets/selections.
+#[allow(clippy::needless_range_loop)]
+fn paint_extras(
+    ui: &Ui,
+    doc: &Doc,
+    galley: &egui::Galley,
+    origin: Pos2,
+    row_h: f32,
+    sel_c: Color32,
+    caret_c: Color32,
+) {
+    let p = ui.painter();
+    let at = |i: usize| galley.pos_from_cursor(&galley.from_ccursor(CCursor::new(i)));
+    let ranges = edit::line_ranges(&doc.text);
+    for s in &doc.extra {
+        if !s.is_empty() {
+            let (l0, l1) = (
+                edit::line_of(&doc.text, s.lo()),
+                edit::line_of(&doc.text, s.hi()),
+            );
+            for l in l0..=l1 {
+                let (a, b) = (s.lo().max(ranges[l].0), s.hi().min(ranges[l].1));
+                let (ra, rb) = (at(a), at(b));
+                let mut r = Rect::from_min_max(ra.min, Pos2::new(rb.min.x, ra.min.y + row_h));
+                if l < l1 {
+                    r.max.x += 6.0; // newline marker
+                }
+                p.rect_filled(r.translate(origin.to_vec2()), 0.0, sel_c);
+            }
+        }
+        let c = at(s.head);
+        let x = origin.x + c.min.x;
+        let y = origin.y + c.min.y;
+        p.line_segment(
+            [Pos2::new(x, y), Pos2::new(x, y + row_h)],
+            Stroke::new(2.0_f32, caret_c),
+        );
     }
 }
 

@@ -31,7 +31,8 @@ Built on `egui::TextEdit::multiline` + custom `layouter` using our own tokenizer
 auto-indent, bracket match + auto-close, Tab/Shift-Tab indent, Cmd+/ comment toggle, find/replace (regex, Cmd+F/Cmd+Opt+F),
 goto line, project-wide search, autocomplete popup (nord.js API list + library snippets + words in file), error squiggles
 from `node --check`/`cargo check` output, big-file safe (virtualised via galley rows). Evaluate `egui_code_editor` crate for
-reuse first; if too limited, keep our own. Monaco/CodeMirror-in-webview is the escape hatch (not the default).
+reuse first; if too limited, keep our own.
+**Multi-cursor** (`code/multi.rs`, pure + unit-tested): the primary selection stays in `egui::TextEdit`, secondary ones live in `Doc.extra`. Alt+click adds a cursor, Cmd/Ctrl+D selects the word / next occurrence, Cmd/Ctrl+Alt+Up/Down adds a cursor above/below. While extras exist, typing, paste, Backspace/Delete, Enter (auto-indent), Tab, arrows/Home/End (+Shift) apply to every cursor; Esc or a plain click drops the extras. Not multi-cursor aware yet: word-wise moves, Cmd+/ comment toggle, find-replace, auto-close pairs (they act on the primary only / clear extras on text change). Monaco/CodeMirror-in-webview is the escape hatch (not the default).
 
 ## Implemented (M3) — where things live
 ```

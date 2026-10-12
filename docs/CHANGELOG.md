@@ -2,6 +2,7 @@
 Newest first. One line per notable change. Credit: Crowelian 2026 + Sonnet.
 
 ## Unreleased
+- M3-24: multi-cursor code editing (`code/multi.rs`): Alt+click, Cmd+D next occurrence, Cmd+Alt+Up/Down, typing/delete/enter/tab/arrows on all cursors; kittest + unit tests.
 - M0: planning docs, PRD.json, task.md, task tool, AI handoff guide.
 - Editor switched to native egui (ADR-013), Tauri dropped; main is the only branch.
 - M0: vendored Phaser 4.2.1, Babylon 9.30.0 (+Havok), PlayCanvas 2.23.2, CodeMirror, marked, fonts, Lucide (vendor/VENDOR.json).

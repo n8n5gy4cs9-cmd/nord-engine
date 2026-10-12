@@ -3,14 +3,14 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 64/125 tasks (51%)** · updated 2026-10-12
+**Overall: 66/125 tasks (53%)** · updated 2026-10-12
 
 | Milestone | Progress |
 |---|---|
 | M0 Planning, identity, assets, vendoring | 13/13 (100%) |
 | M1 Foundation | 11/11 (100%) |
 | M2 JS runtimes | 19/19 (100%) |
-| M3 Editor | 21/25 (84%) |
+| M3 Editor | 23/25 (92%) |
 | M4 Export | 0/10 (0%) |
 | M5 Rust/WASM | 0/9 (0%) |
 | M6 Library | 0/18 (0%) |
@@ -19,10 +19,10 @@
 
 ## Next up
 - **M3-07** SPIKE: wry child webview embedded in egui panel on macOS (resize, HiDPI, focus, IPC both ways); fallback separate window
-- **M3-14** Code editor v3 (stretch): multi-cursor, minimap, split view; evaluate egui_code_editor reuse / CodeMirror-webview fallback
-- **M3-24** Code editor: multi-cursor editing (custom text-edit core; egui TextEdit has a single selection)
 - **M3-25** OWNER: verify webview embedding on macOS (checklist in docs/KNOWN_ISSUES.md RISK-001a), then tick M3-07
 - **M4-01** `nord build` pipeline: validate, resolve libs, copy assets, nord.json, index.html templates
+- **M4-02** web-2d export (Phaser) verified offline in headless Chromium
+- **M4-03** web-3d export (Babylon+Havok) verified offline
 
 ## M0 — Planning, identity, assets, vendoring
 _Plans, brand, placeholder assets, vendored libs, workspace skeleton_
@@ -95,7 +95,7 @@ _Native egui editor + wry viewport + code editor_
 - [x] **M3-11** Thumbnails: images/spritesheets/audio waveform via nord-core; models rendered via Babylon offscreen in webview
 - [x] **M3-12** Code editor v1: tabs, line numbers, syntect highlighting (JS/TS/Rust/HTML/CSS/JSON/MD/GLSL/WGSL/TOML), auto-indent, brackets, comment toggle, save
 - [x] **M3-13** Code editor v2: find/replace (regex), goto line, project search, autocomplete (nord.js API + snippets), error squiggles, format
-- [~] **M3-14** Code editor v3 (stretch): multi-cursor, minimap, split view; evaluate egui_code_editor reuse / CodeMirror-webview fallback
+- [x] **M3-14** Code editor v3 (stretch): multi-cursor, minimap, split view; evaluate egui_code_editor reuse / CodeMirror-webview fallback
 - [x] **M3-15** Quick open (Cmd+P), command palette (Cmd+K), shortcuts map
 - [x] **M3-16** Play/Stop/Reload in webview via nord serve; hot-reload on save
 - [x] **M3-17** Console panel: logs/errors from game (IPC) + build output; click error -> open file:line
@@ -105,7 +105,7 @@ _Native egui editor + wry viewport + code editor_
 - [x] **M3-21** Animation editor (spritesheet anims) + tilemap painter (Tiled JSON) basics
 - [x] **M3-22** egui_kittest headless tests for panels + CI job
 - [x] **M3-23** Editor: apply selected skin + theme (UI fonts, code font + ligatures, syntax colors) via shared themes.json; settings UI to switch live
-- [ ] **M3-24** Code editor: multi-cursor editing (custom text-edit core; egui TextEdit has a single selection)
+- [x] **M3-24** Code editor: multi-cursor editing (custom text-edit core; egui TextEdit has a single selection)
 - [ ] **M3-25** OWNER: verify webview embedding on macOS (checklist in docs/KNOWN_ISSUES.md RISK-001a), then tick M3-07
 
 ## M4 — Export

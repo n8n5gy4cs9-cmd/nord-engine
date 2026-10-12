@@ -651,7 +651,7 @@
       "id": "M3-14",
       "milestone": "M3",
       "title": "Code editor v3 (stretch): multi-cursor, minimap, split view; evaluate egui_code_editor reuse / CodeMirror-webview fallback",
-      "status": "in_progress"
+      "status": "done"
     },
     {
       "id": "M3-15",
@@ -711,7 +711,7 @@
       "id": "M3-24",
       "milestone": "M3",
       "title": "Code editor: multi-cursor editing (custom text-edit core; egui TextEdit has a single selection)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M3-25",

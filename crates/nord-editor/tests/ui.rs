@@ -263,6 +263,38 @@ fn code_editor_typing_behaviours() {
     assert!(!h.state().code.docs[0].dirty());
 }
 
+#[test]
+fn code_editor_multi_cursor() {
+    let mut st = state_with_scene("multicursor");
+    let root = st.root.clone().unwrap();
+    std::fs::write(root.join("scripts/m.js"), "\n\n").unwrap();
+    st.code
+        .open(Some(&root), &root.join("scripts/m.js"), None)
+        .unwrap();
+    let mut h = Harness::builder()
+        .with_size(egui::vec2(800.0, 500.0))
+        .build_ui_state(|ui, st: &mut EditorState| nord_editor::code::ui(st, ui), st);
+    loaders(&h);
+    h.run();
+    h.get_by_role(egui::accesskit::Role::MultilineTextInput)
+        .focus();
+    h.run();
+    let cm = egui::Modifiers::COMMAND | egui::Modifiers::ALT;
+    for k in [
+        egui::Key::ArrowDown,
+        egui::Key::ArrowDown,
+        egui::Key::ArrowUp,
+        egui::Key::ArrowUp,
+    ] {
+        h.press_key_modifiers(cm, k);
+        h.run();
+    }
+    assert_eq!(h.state().code.docs[0].extra.len(), 2, "three cursors");
+    h.input_mut().events.push(egui::Event::Text("x".into()));
+    h.run();
+    assert_eq!(h.state().code.docs[0].text, "x\nx\nx");
+}
+
 fn example_copy(name: &str, example: &str) -> PathBuf {
     std::env::set_var(
         "NORD_CONFIG_DIR",
