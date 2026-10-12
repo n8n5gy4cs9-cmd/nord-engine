@@ -399,7 +399,7 @@ fn tile_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
         .show_inside(ui, |ui| {
             ui.strong("Tileset");
             if let Some((id, size)) = tinfo {
-                egui::ScrollArea::both().show(ui, |ui| {
+                egui::ScrollArea::both().drag_to_scroll(false).show(ui, |ui| {
                     let z = 2.0;
                     let (r, resp) = ui.allocate_exact_size(size * z, Sense::click());
                     ui.painter().image(
@@ -436,7 +436,7 @@ fn tile_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
             }
         });
     let z = st.anim.zoom;
-    egui::ScrollArea::both().show(ui, |ui| {
+    egui::ScrollArea::both().drag_to_scroll(false).show(ui, |ui| {
         let (r, resp) = ui.allocate_exact_size(
             Vec2::new(mw as f32 * tw * z, mh as f32 * th * z),
             Sense::click_and_drag(),

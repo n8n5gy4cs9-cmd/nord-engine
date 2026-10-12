@@ -302,7 +302,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         .resizable(true)
         .default_width(140.0)
         .show_inside(ui, |ui| {
-            egui::ScrollArea::both().show(ui, |ui| {
+            egui::ScrollArea::both().drag_to_scroll(false).show(ui, |ui| {
                 let sel = st.assets_ui.dir.is_empty();
                 if ui.selectable_label(sel, "📁 (project)").clicked() {
                     st.assets_ui.dir.clear();
@@ -336,7 +336,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
     let as_list = st.assets_ui.list;
     let mut open: Option<Entry> = None;
     let mut ctx_op: Option<(Entry, u8)> = None;
-    egui::ScrollArea::vertical()
+    egui::ScrollArea::vertical().drag_to_scroll(false)
         .auto_shrink([false; 2])
         .show(ui, |ui| {
             let layout = if as_list {

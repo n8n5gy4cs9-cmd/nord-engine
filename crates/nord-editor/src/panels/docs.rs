@@ -73,7 +73,7 @@ pub fn markdown_ui(st: &mut EditorState, ui: &mut Ui) {
     egui::SidePanel::left("docs-list")
         .default_width(170.0)
         .show_inside(ui, |ui| {
-            egui::ScrollArea::vertical().show(ui, |ui| {
+            egui::ScrollArea::vertical().drag_to_scroll(false).show(ui, |ui| {
                 for f in &files {
                     if ui
                         .selectable_label(st.docs_ui.file.as_deref() == Some(f), f)
@@ -86,7 +86,7 @@ pub fn markdown_ui(st: &mut EditorState, ui: &mut Ui) {
                 }
             });
         });
-    egui::ScrollArea::vertical().auto_shrink([false; 2]).show(ui, |ui| {
+    egui::ScrollArea::vertical().drag_to_scroll(false).auto_shrink([false; 2]).show(ui, |ui| {
         if st.docs_ui.file.is_none() {
             ui.heading("Nord Engine docs");
             ui.label("The HTML manual is missing (run `node tools/build-manual.mjs`). Until then these are the design documents.");
