@@ -37,6 +37,16 @@ Reviewed lossless RGBA masters, dimensions, metadata and generation prompts: `to
 Re-pack offline with `node tools/pixelart.mjs noom --preview`, then `node tools/gen_examples.mjs noom`.
 All existing frame sizes, names and atlas rectangles are preserved. Full inventory: `examples/noom/assets.md`.
 
+## RetroPaxDungeons artwork
+
+All eleven image sheets were redrawn on 2026-10-12 for the retro dungeon game: a bronze-armored warrior, sewer creatures,
+Goo boss, inventory items, slate masonry, teal water, effects and HUD. Nine illustrated sheets use original built-in ImageGen
+art; effect markers and slashes are hand-drawn. The redrawn 6×8 dungeon font is shared with Noom. No external game art was copied.
+Runtime PNGs: `examples/retropaxdungeons/assets/{tiles,sprites,ui}/`; sources: `tools/examples/retropaxdungeons/assets/`.
+Lossless raster masters, metadata and prompts: `tools/art/rpd/redrawn/`; hand-drawn details: `tools/art/rpd/details.mjs`.
+Re-pack offline with `node tools/pixelart.mjs rpd --preview`, then `node tools/gen_examples.mjs retropaxdungeons`.
+Existing frame sizes, counts and names are preserved. Inventory: `examples/retropaxdungeons/assets.md`.
+
 ## Planned / missing (tracked in task.md)
 - More real CC0 packs (Kenney 2D sprites etc.) — kenney.nl/opengameart.org unreachable from the sandbox; drop them into `assets/packs/<name>/` with a README
 - 3D model placeholders (glTF props/characters) — **M6**

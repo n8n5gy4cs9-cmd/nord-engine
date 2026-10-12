@@ -9,6 +9,6 @@ up for triple-damage slams. Kill the Goo, then take the stairs down.
 generation, `Char.hit/attack` combat maths (accuracy vs. evasion, damage − armour DR, `NormalIntRange`), the `Mob` AI states (sleeping / wandering / hunting with
 SPD's noticing odds), Rat/Gnoll/Crab/Goo stats and Goo's pump-up + water-healing behaviour, hero levelling and regeneration, weapon/armour strength penalties.
 **Simplified:** one hand-written room-and-door generator instead of SPD's builders, no buffs system, no ranged items.
-All **art is original and hand-drawn** — see `assets.md` to replace it. Because it derives from SPD code, this example is **GPL-3.0**.
+All **art is original, with an ImageGen redraw and hand-drawn effects/lettering** — see `assets.md` to replace it. Because it derives from SPD code, this example is **GPL-3.0**.
 
 Code: `scripts/dungeon.js` (Phaser view + input + HUD) and `scripts/rpd/*.js` (pure rules; headless balance test: `node tools/rpd-sim.mjs`).

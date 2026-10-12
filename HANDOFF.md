@@ -49,6 +49,7 @@ After each task: `node tools/tasks.mjs done ID`, CHANGELOG line, relevant docs; 
 Reminders: environment now has `libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev libxdo-dev xvfb` only if you `apt-get install` them (not persistent) — without them `cargo build -p nord-player --features shell` and the `desktop-player-ipc` e2e suite are skipped.
 
 ## Current status (update every session)
+- **2026-10-12 RetroPaxDungeons redraw (M6-20):** eleven image sheets refreshed with original retro dungeon art. Reviewed raster masters and prompts in `tools/art/rpd/redrawn/`; hand-drawn effects/font in `tools/art/rpd/details.mjs` (font shared with Noom). Re-pack with `node tools/pixelart.mjs rpd --preview` and `node tools/gen_examples.mjs retropaxdungeons`.
 - **2026-10-12 Noom art redraw (M6-19):** all ten sprites/texture/HUD/font sheets replaced with original Barony/Doom-inspired art. Offline raster masters and prompts in `tools/art/noom/redrawn/`; run `node tools/pixelart.mjs noom --preview` then `node tools/gen_examples.mjs noom`. Existing game layouts preserved.
 - **M0 + M1 + M2 done.** Work happens on the session branch the cloud harness designates (merge to `main` when convenient). Session 2026-10-12 pushed M9 + fixes to `claude/quirky-heisenberg-8oh4vg`.
 - **M3 editor implemented** (`crates/nord-editor`, `crates/nord-serve`, `editor/viewport/`, `library/`) — 23 of 25 tasks done; see `docs/EDITOR_UI.md` ("Implemented (M3)")

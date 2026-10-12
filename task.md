@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 141/151 tasks (93%)** · updated 2026-10-12
+**Overall: 142/152 tasks (93%)** · updated 2026-10-12
 
 | Milestone | Progress |
 |---|---|
@@ -13,7 +13,7 @@
 | M3 Editor | 24/26 (92%) |
 | M4 Export | 8/11 (73%) |
 | M5 Rust/WASM | 9/9 (100%) |
-| M6 Library | 19/19 (100%) |
+| M6 Library | 20/20 (100%) |
 | M7 Docs | 12/12 (100%) |
 | M8 Polish & portability | 10/15 (67%) |
 | M9 Desktop apps | 16/16 (100%) |
@@ -160,6 +160,7 @@ _snippets, controllers, systems, asset packs, examples_
 - [x] **M6-17** Optional CC0 asset packs (Kenney etc.) replacing placeholders; update ASSETS.md
 - [x] **M6-18** tools/smoke-examples.mjs headless smoke test for every example
 - [x] **M6-19** Redraw all Noom sprites, textures and HUD in a Barony/Doom-inspired style
+- [x] **M6-20** Redraw RetroPaxDungeons sprites, dungeon tiles, effects and HUD
 
 ## M7 — Docs
 _manual, guides, tutorials, in-editor docs_

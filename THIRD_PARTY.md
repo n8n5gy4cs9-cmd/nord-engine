@@ -30,4 +30,5 @@ with the file path and source commit (see `UPSTREAM.lock.json`):
 
 ## Showcase games (M6 examples)
 - **RetroPaxDungeons** (`examples/retropaxdungeons`): rules/AI/FOV/level-patch logic ported from Shattered Pixel Dungeon (https://github.com/00-Evan/shattered-pixel-dungeon, GPL-3.0). Art original. Example is GPL-3.0.
+  Its field-of-view source also cites RogueBasin's [FOV using recursive shadowcasting](http://www.roguebasin.com/index.php?title=FOV_using_recursive_shadowcasting). This citation was moved from the JS comment here so the offline URL scanner does not treat it as a runtime request.
 - **Noom** (`examples/noom`): `P_Random` table, monster AI, damage formulas ported from id Software DOOM (https://github.com/id-software/doom, GPL-2.0); setting inspired by Barony (https://github.com/TurningWheel/Barony, GPL-3.0; no code/art used). Art original. Example is GPL-2.0-or-later.

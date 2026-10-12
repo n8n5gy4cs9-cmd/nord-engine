@@ -1,6 +1,6 @@
 // @nord {"id":"rpd.dungeon","title":"RetroPaxDungeons — game view","category":"games","tier":["2d"],"tags":["roguelike","turn-based","dungeon","shattered-pixel-dungeon"],"description":"Turn-based dungeon crawler view/controller for the RetroPaxDungeons example: renders the level (tiles, fog of war, sprites, minimap, HUD) with Phaser objects and feeds input to the pure rules in rpd/world.js."}
-// RetroPaxDungeons — a one-level proof of concept in the spirit of Shattered Pixel Dungeon (https://github.com/00-Evan/shattered-pixel-dungeon, GPL-3.0).
-// Rules/AI/level logic are ported from SPD (see rpd/*.js); all art is original, hand-drawn pixel art (tools/art/rpd). Crowelian 2026 + Sonnet.
+// RetroPaxDungeons — a one-level proof of concept in the spirit of Shattered Pixel Dungeon (GPL-3.0; source link in README.md and THIRD_PARTY.md).
+// Rules/AI/level logic are ported from SPD (see rpd/*.js); all art is original, redrawn pixel art (tools/art/rpd). Crowelian 2026 + Sonnet.
 import { NordScript } from 'nord';
 import { World, SLEEPING, WANDERING, HUNTING } from './rpd/world.js';
 import { T } from './rpd/levelgen.js';

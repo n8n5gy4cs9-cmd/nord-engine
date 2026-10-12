@@ -1,5 +1,5 @@
 // Recursive shadow casting FOV. Ported from Shattered Pixel Dungeon `mechanics/ShadowCaster.java` (GPL-3.0),
-// itself based on http://www.roguebasin.com/index.php?title=FOV_using_recursive_shadowcasting
+// itself based on RogueBasin’s "FOV using recursive shadowcasting" (source link in THIRD_PARTY.md).
 export const MAX_DISTANCE = 20;
 const rounding = [];
 for (let i = 1; i <= MAX_DISTANCE; i++) {

@@ -2,10 +2,13 @@ import { E, project } from '../lib.mjs';
 
 const ASSETS_MD = `# RetroPaxDungeons — assets (how to replace them)
 
-Every picture in this game is **original, hand-drawn pixel art** (one character = one pixel, typed by hand in \`tools/art/rpd/*.mjs\`;
-no procedural/Python generation). The PNGs in \`assets/\` are what the game loads. **To replace any asset, drop a new file at the same path
-with the same size/frame layout** — nothing is referenced by hash. Sprite sheets are plain horizontal strips (or grids) of equally sized
-frames; the \`.meta.json\` next to each PNG tells the engine the frame size and animations — edit it if you change frame counts.
+The sprites and dungeon tiles were **redrawn on 2026-10-12** with a Japanese 16-bit dungeon style: bold
+silhouettes, bronze and leather equipment, slate sewer masonry, teal water and vivid potions. Nine illustrated sheets
+use original artwork from the built-in ImageGen tool; effect markers/slashes and bitmap lettering are hand-drawn.
+No Shattered Pixel Dungeon or other game art files were copied. Prompts are preserved in \`tools/art/rpd/redrawn/prompts.json\`.
+
+The PNGs in \`assets/\` are what the game loads. Replace a file at the same path with the same size/frame layout.
+The existing frame IDs, animation metadata and gameplay remain compatible.
 
 All sprites use **nearest-neighbour** filtering (\`"filter":"nearest"\`, \`display.pixelArt: true\`) and are drawn at **16×16 px per tile, shown 3× larger**.
 Characters are drawn facing right/front; the game mirrors them for left (\`flipX\`).
@@ -16,7 +19,7 @@ Characters are drawn facing right/front; the game mirrors them for left (\`flipX
 |---|---|---|---|
 | \`assets/tiles/dungeon.png\` | 256×16 | 16 tiles, 16×16: 0 void, 1-3 floor, 4 wall face, 5 wall top, 6 mossy wall, 7 wall torch, 8 door closed, 9 door open, 10 stairs down, 11 stairs up, 12-13 water (animated), 14 grass, 15 floor+bones | Frame ids are named in \`dungeon.png.meta.json\` → \`tiles\`. *Wall face* is shown where the cell below is floor, *wall top* elsewhere. |
 | \`assets/sprites/hero.png\` | 96×16 | 0-1 idle, 2-3 walk, 4 attack, 5 dead (16×16) | animations: \`idle walk attack dead\` (meta). Warrior holding a sword on the right side. |
-| \`assets/sprites/rat.png\`, \`albino.png\` | 64×16 | 0-1 idle, 2 attack, 3 dead (16×16) | albino = same drawing, other palette |
+| \`assets/sprites/rat.png\`, \`albino.png\` | 64×16 | 0-1 idle, 2 attack, 3 dead (16×16) | pale variant with red eyes |
 | \`assets/sprites/gnoll.png\` | 64×16 | 0-1 idle, 2 attack, 3 dead | Gnoll scout |
 | \`assets/sprites/crab.png\` | 64×16 | 0-1 idle, 2 attack, 3 dead | Sewer crab |
 | \`assets/sprites/goo.png\` | 128×32 | 0-1 idle, 2 pumped-up, 3 dead (**32×32** frames) | Boss. The pumped-up frame is shown while it charges its big attack. |
@@ -33,15 +36,19 @@ Tip: an easy way to re-skin is to open a sheet in any pixel editor (Aseprite, Li
 \`assets/audio/music/\`: \`music_adventure.mp3\` (exploring), \`music_boss.mp3\` (when the Goo wakes). Replace with any MP3/OGG of the same name or edit the paths in
 \`scripts/dungeon.js\` (search for \`assets/audio\`).
 
-## Editing the pixel-art sources (optional)
+## Re-packing the artwork (offline)
 
-The drawings live as text in \`tools/art/rpd/\` of the Nord Engine repo (\`tiles.mjs\`, \`chars.mjs\`, \`items.mjs\`); \`node tools/pixelart.mjs rpd --preview\`
-packs them into the PNGs above (and writes a contact sheet to \`target/art-preview/rpd.png\`). Then \`node tools/gen_examples.mjs retropaxdungeons\`
-regenerates this folder. If you replace PNGs by hand, do **not** re-run the packer afterwards (it would overwrite your files).
+Reviewed raster masters live in \`tools/art/rpd/redrawn/*.rgba.gz\` (lossless gzip-compressed RGBA bytes);
+\`manifest.json\` records dimensions and metadata. Hand-drawn effects live in \`tools/art/rpd/details.mjs\`;
+the compact dungeon font is shared with Noom (\`tools/art/noom/font.mjs\`).
+
+Run \`node tools/pixelart.mjs rpd --preview\` to restore all eleven PNGs and metadata without an image service.
+Then run \`node tools/gen_examples.mjs retropaxdungeons\` to refresh this example. Preview: \`target/art-preview/rpd.png\`.
+To keep a later manual PNG replacement through re-packing, update its raster master too.
 
 ## Credits
 
-Art: Crowelian 2026 + Sonnet (original). Game rules and level logic ported from Shattered Pixel Dungeon (GPL-3.0) — see README.md and THIRD_PARTY.md.
+Art: Crowelian 2026 + Sonnet; redraw with OpenAI ImageGen and original hand-drawn effects/lettering. Game rules and level logic ported from Shattered Pixel Dungeon (GPL-3.0) — see README.md and THIRD_PARTY.md.
 `;
 
 const input = {
@@ -68,7 +75,7 @@ up for triple-damage slams. Kill the Goo, then take the stairs down.
 generation, \`Char.hit/attack\` combat maths (accuracy vs. evasion, damage − armour DR, \`NormalIntRange\`), the \`Mob\` AI states (sleeping / wandering / hunting with
 SPD's noticing odds), Rat/Gnoll/Crab/Goo stats and Goo's pump-up + water-healing behaviour, hero levelling and regeneration, weapon/armour strength penalties.
 **Simplified:** one hand-written room-and-door generator instead of SPD's builders, no buffs system, no ranged items.
-All **art is original and hand-drawn** — see \`assets.md\` to replace it. Because it derives from SPD code, this example is **GPL-3.0**.
+All **art is original, with an ImageGen redraw and hand-drawn effects/lettering** — see \`assets.md\` to replace it. Because it derives from SPD code, this example is **GPL-3.0**.
 
 Code: \`scripts/dungeon.js\` (Phaser view + input + HUD) and \`scripts/rpd/*.js\` (pure rules; headless balance test: \`node tools/rpd-sim.mjs\`).
 `,
