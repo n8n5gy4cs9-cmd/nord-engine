@@ -42,3 +42,10 @@ See the [shortcut table](shortcuts.html) (also in Settings, Cmd+,). Highlights: 
 
 ## Themes and skins
 Settings → *Skin* (fonts) and *Theme* (colours). The same skins/themes exist for in-game UI (`project.ui.skin`/`ui.theme`, see [UI](ui.html)).
+
+## Current example content
+**Settings → USE CACHED CONTENT** is **OFF by default**. Examples and Tutorials open the current files from your checkout or rebuilt app bundle. Old Recent entries for saved example copies also resolve to the current bundled example. Save edits to a separate project if you want your own version: editing an example with this setting OFF changes its current source files.
+
+Turn the setting **ON** to test saved example content: the editor creates/reuses a private copy under `~/.config/nord/examples/`. Rebuilding the app leaves those copies as they were. Reopen the example after changing this setting to switch its source.
+
+OFF also uses temporary embedded-browser storage and reads script attributes fresh. ON permits persistent embedded-browser storage. Changing the mode recreates webviews; game saves in temporary browser storage last only for that view. The dev server always reads requested files from disk and sends `Cache-Control: no-store`.

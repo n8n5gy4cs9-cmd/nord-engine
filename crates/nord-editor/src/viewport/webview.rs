@@ -16,6 +16,7 @@ pub struct WebPanes {
     pub error: Option<String>,
     /// Last rect (egui points) each pane was placed at — what the native view is sized to; used by tests.
     pub rects: HashMap<String, egui::Rect>,
+    use_cached_content: bool,
 }
 
 /// A fixed-size view: pixel size, anchor (0..1, x/y) inside the panel and pixel offset from that anchor.
@@ -39,6 +40,16 @@ pub fn open_in_browser(url: &str) {
 }
 
 impl WebPanes {
+    /// Browser storage is temporary by default; switching mode recreates every pane.
+    pub fn set_use_cached_content(&mut self, enabled: bool) {
+        if self.use_cached_content != enabled {
+            self.panes.clear();
+            self.urls.clear();
+            self.rects.clear();
+            self.use_cached_content = enabled;
+        }
+    }
+
     pub fn begin_frame(&mut self) {
         self.shown.clear();
     }
@@ -164,6 +175,7 @@ impl WebPanes {
             };
             if let (false, Some(frame)) = (self.panes.contains_key(key), frame) {
                 match wry::WebViewBuilder::new()
+                    .with_incognito(!self.use_cached_content)
                     .with_url(url)
                     .with_bounds(bounds)
                     .build_as_child(frame)
@@ -214,5 +226,28 @@ impl WebPanes {
             }
         });
         false
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn content_mode_defaults_fresh_and_recreates_panes_when_changed() {
+        let mut web = WebPanes::default();
+        assert!(!web.use_cached_content);
+        web.urls
+            .insert("game".into(), "http://127.0.0.1/game".into());
+        web.set_use_cached_content(false);
+        assert!(web.urls.contains_key("game"));
+        web.set_use_cached_content(true);
+        assert!(web.use_cached_content);
+        assert!(web.urls.is_empty());
+        web.urls
+            .insert("game".into(), "http://127.0.0.1/game".into());
+        web.set_use_cached_content(false);
+        assert!(!web.use_cached_content);
+        assert!(web.urls.is_empty());
     }
 }

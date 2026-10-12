@@ -1227,6 +1227,18 @@
       "milestone": "M8",
       "title": "Game view position settings (top/middle/bottom + x/y offset)",
       "status": "done"
+    },
+    {
+      "id": "M8-16",
+      "milestone": "M8",
+      "title": "Open current example content by default; add opt-in cached-content testing setting",
+      "status": "todo"
+    },
+    {
+      "id": "M8-17",
+      "milestone": "M8",
+      "title": "Fix macOS project-lock live-process detection",
+      "status": "todo"
     }
   ]
 }

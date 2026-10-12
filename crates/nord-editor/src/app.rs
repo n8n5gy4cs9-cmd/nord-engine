@@ -1023,6 +1023,8 @@ impl App {
             || self.quit_confirm
             || self.st.assets_ui.confirm_delete.is_some()
             || self.st.code.confirm_close.is_some();
+        self.web
+            .set_use_cached_content(self.st.settings.use_cached_content);
         self.web.begin_frame();
         if self.st.project.is_none() {
             egui::CentralPanel::default().show(ctx, |ui| panels::hub::ui(&mut self.st, ui));

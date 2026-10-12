@@ -25,6 +25,7 @@ pub fn window(st: &mut EditorState, ctx: &Context) {
     if st.settings_open {
         let mut open = true;
         let mut changed = false;
+        let mut content_changed = false;
         egui::Window::new("Settings").open(&mut open).default_width(420.0).show(ctx, |ui| {
             let s = &mut st.settings;
             egui::Grid::new("settings").num_columns(2).spacing([12.0, 6.0]).show(ui, |ui| {
@@ -53,6 +54,11 @@ pub fn window(st: &mut EditorState, ctx: &Context) {
                 ui.end_row();
                 ui.label("Autosave (seconds)");
                 ui.add(egui::Slider::new(&mut s.autosave_secs, 5..=300));
+                ui.end_row();
+                ui.label("USE CACHED CONTENT");
+                content_changed = ui.checkbox(&mut s.use_cached_content, "ON")
+                    .on_hover_text("OFF (default): current example files and temporary webview storage. ON: saved example copies and persistent webview storage for testing. Reopen an example to switch its source.")
+                    .changed();
                 ui.end_row();
                 ui.label("Play-mode tint");
                 ui.horizontal(|ui| {
@@ -106,6 +112,11 @@ pub fn window(st: &mut EditorState, ctx: &Context) {
         });
         if changed {
             st.apply_theme = true;
+        }
+        if content_changed {
+            st.script_cache.clear();
+            st.settings.save();
+            st.toast("Content mode changed. Reopen an example to switch its source.");
         }
         if !open {
             st.settings_open = false;

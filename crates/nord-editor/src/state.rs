@@ -20,6 +20,8 @@ pub struct Settings {
     pub code_font_size: f32,
     pub tab_width: usize,
     pub autosave_secs: u64,
+    /// Opt-in saved example copies and persistent embedded-browser storage for testing.
+    pub use_cached_content: bool,
     pub snap: bool,
     pub snap_move: f64,
     pub snap_rot: f64,
@@ -50,6 +52,7 @@ impl Default for Settings {
             code_font_size: 13.0,
             tab_width: 2,
             autosave_secs: 30,
+            use_cached_content: false,
             snap: false,
             snap_move: 1.0,
             snap_rot: 15.0,
@@ -550,6 +553,12 @@ impl EditorState {
     // ---- project / scene IO ----
 
     pub fn open_project(&mut self, dir: &Path) -> Result<(), String> {
+        let dir = crate::panels::hub::current_example_path(
+            dir,
+            self.engine_root.as_deref(),
+            self.settings.use_cached_content,
+        );
+        let dir = dir.as_path();
         self.close_project();
         let p = nord_core::io::load_project(dir).map_err(|e| e.to_string())?;
         self.lock = match nord_core::io::ProjectLock::acquire(dir) {
@@ -577,6 +586,7 @@ impl EditorState {
         self.selection.clear();
         self.undo.clear();
         self.assets.clear();
+        self.script_cache.clear();
         self.dirty = false;
         self.lock = None;
         self.rev += 1;
@@ -844,7 +854,7 @@ impl EditorState {
         }
     }
 
-    /// `scripts/foo.js` -> attribute schema (cached by mtime).
+    /// `scripts/foo.js` -> attribute schema (cached by mtime only when explicitly enabled).
     pub fn script_fields(&mut self, rel: &str) -> Vec<crate::schema::Field> {
         let Some(root) = &self.root else {
             return vec![];
@@ -853,7 +863,11 @@ impl EditorState {
         let Ok(mt) = std::fs::metadata(&p).and_then(|m| m.modified()) else {
             return vec![];
         };
-        if let Some((t, f)) = self.script_cache.get(rel) {
+        if let Some((t, f)) = self
+            .script_cache
+            .get(rel)
+            .filter(|_| self.settings.use_cached_content)
+        {
             if *t == mt {
                 return f.clone();
             }
@@ -861,7 +875,9 @@ impl EditorState {
         let f = std::fs::read_to_string(&p)
             .map(|s| crate::schema::script_attributes(&s))
             .unwrap_or_default();
-        self.script_cache.insert(rel.to_string(), (mt, f.clone()));
+        if self.settings.use_cached_content {
+            self.script_cache.insert(rel.to_string(), (mt, f.clone()));
+        }
         f
     }
 }

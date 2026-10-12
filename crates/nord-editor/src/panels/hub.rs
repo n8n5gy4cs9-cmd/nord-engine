@@ -118,8 +118,14 @@ fn copy_dir(from: &Path, to: &Path) -> std::io::Result<()> {
     Ok(())
 }
 
-/// Examples are opened as a private copy under the config dir so the engine folder stays clean.
-pub fn open_example(src: &Path) -> Result<PathBuf, String> {
+/// Open the current source; saved private copies are an explicit testing option.
+pub fn open_example(src: &Path, use_cached_content: bool) -> Result<PathBuf, String> {
+    if !src.join(nord_core::io::PROJECT_FILE).is_file() {
+        return Err(format!("Example project not found: {}", src.display()));
+    }
+    if !use_cached_content {
+        return Ok(src.to_path_buf());
+    }
     let name = src.file_name().ok_or("bad example")?;
     let dst = nord_core::io::config_dir().join("examples").join(name);
     if !dst.exists() {
@@ -130,6 +136,28 @@ pub fn open_example(src: &Path) -> Result<PathBuf, String> {
         }
     }
     Ok(dst)
+}
+
+/// Old Recent entries/launch paths may still point at the former saved example copies.
+pub fn current_example_path(
+    path: &Path,
+    engine: Option<&Path>,
+    use_cached_content: bool,
+) -> PathBuf {
+    if !use_cached_content {
+        if let (Some(engine), Ok(relative)) = (
+            engine,
+            path.strip_prefix(nord_core::io::config_dir().join("examples")),
+        ) {
+            for base in [engine.join("examples"), engine.join("examples/tutorials")] {
+                let current = base.join(relative);
+                if current.join(nord_core::io::PROJECT_FILE).is_file() {
+                    return current;
+                }
+            }
+        }
+    }
+    path.to_path_buf()
 }
 
 fn list_projects(dir: &Path) -> Vec<PathBuf> {
@@ -289,8 +317,13 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                     let n = p
                         .file_name()
                         .map_or(String::new(), |n| n.to_string_lossy().into_owned());
-                    if ui.link(&n).on_hover_text("Opens a private copy").clicked() {
-                        match open_example(&p) {
+                    let hint = if st.settings.use_cached_content {
+                        "Opens the saved example copy (USE CACHED CONTENT is ON)"
+                    } else {
+                        "Opens the current example files directly"
+                    };
+                    if ui.link(&n).on_hover_text(hint).clicked() {
+                        match open_example(&p, st.settings.use_cached_content) {
                             Ok(d) => st.push(Action::OpenPath(d)),
                             Err(e) => st.log(LogLevel::Error, e),
                         }
@@ -311,7 +344,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                         .file_name()
                         .map_or(String::new(), |n| n.to_string_lossy().into_owned());
                     if ui.link(&n).clicked() {
-                        if let Ok(d) = open_example(&p) {
+                        if let Ok(d) = open_example(&p, st.settings.use_cached_content) {
                             st.push(Action::OpenPath(d));
                         }
                     }
@@ -324,6 +357,80 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn example_opens_current_source_after_assets_change() {
+        let src = std::env::temp_dir()
+            .join(format!("nord-example-current-{}", std::process::id()))
+            .join("example");
+        std::fs::create_dir_all(src.join("assets")).unwrap();
+        std::fs::write(src.join("nord.project.json"), "{}").unwrap();
+        let asset = src.join("assets/hero.png");
+        std::fs::write(&asset, b"old art").unwrap();
+        let first = open_example(&src, false).unwrap();
+        assert_eq!(
+            std::fs::read(first.join("assets/hero.png")).unwrap(),
+            b"old art"
+        );
+        std::fs::write(&asset, b"new art").unwrap();
+        let reopened = open_example(&src, false).unwrap();
+        assert_eq!(
+            std::fs::read(reopened.join("assets/hero.png")).unwrap(),
+            b"new art"
+        );
+        assert_eq!(reopened, src);
+    }
+
+    #[test]
+    fn cached_example_reuse_is_opt_in() {
+        let src = std::env::temp_dir()
+            .join(format!("nord-example-opt-in-{}", std::process::id()))
+            .join(format!("cached-example-{}", std::process::id()));
+        std::fs::create_dir_all(&src).unwrap();
+        std::fs::write(src.join("nord.project.json"), "{}").unwrap();
+        std::fs::write(src.join("hero.png"), b"old art").unwrap();
+        let previous = nord_core::io::config_dir()
+            .join("examples")
+            .join(src.file_name().unwrap());
+        if previous.exists() {
+            std::fs::remove_dir_all(&previous).unwrap();
+        }
+        let copy = open_example(&src, true).unwrap();
+        assert_ne!(copy, src);
+        std::fs::write(src.join("hero.png"), b"new art").unwrap();
+        assert_eq!(open_example(&src, true).unwrap(), copy);
+        assert_eq!(std::fs::read(copy.join("hero.png")).unwrap(), b"old art");
+        assert_eq!(open_example(&src, false).unwrap(), src);
+        std::fs::remove_dir_all(copy).unwrap();
+    }
+
+    #[test]
+    fn cached_content_defaults_off_and_saved_setting_roundtrips() {
+        let old: crate::state::Settings = serde_json::from_str("{}").unwrap();
+        assert!(!old.use_cached_content);
+        assert!(!crate::state::Settings::default().use_cached_content);
+        let enabled = crate::state::Settings {
+            use_cached_content: true,
+            ..Default::default()
+        };
+        let loaded: crate::state::Settings =
+            serde_json::from_str(&serde_json::to_string(&enabled).unwrap()).unwrap();
+        assert!(loaded.use_cached_content);
+    }
+
+    #[test]
+    fn old_recent_example_paths_resolve_to_current_bundle_by_default() {
+        let engine =
+            std::env::temp_dir().join(format!("nord-example-bundle-{}", std::process::id()));
+        let current = engine.join("examples/noom");
+        std::fs::create_dir_all(&current).unwrap();
+        std::fs::write(current.join("nord.project.json"), "{}").unwrap();
+        let old = nord_core::io::config_dir().join("examples/noom");
+        assert_eq!(current_example_path(&old, Some(&engine), false), current);
+        assert_eq!(current_example_path(&old, Some(&engine), true), old);
+        let own = engine.join("my-game");
+        assert_eq!(current_example_path(&own, Some(&engine), false), own);
+    }
 
     #[test]
     fn creates_each_template() {

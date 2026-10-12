@@ -70,7 +70,7 @@ pub fn save_project(root: &Path, p: &Project) -> Result<()> {
 }
 
 /// Exclusive project lock (`.nord-cache/lock` holding the owner pid). Released on drop.
-/// A lock whose pid is no longer alive (Linux/macOS: `kill -0` semantics via /proc or ps) is treated as stale.
+/// A lock whose pid is no longer alive (Linux: /proc, macOS: ps) is treated as stale.
 #[derive(Debug)]
 pub struct ProjectLock {
     path: PathBuf,
@@ -115,6 +115,13 @@ impl ProjectLock {
 fn pid_alive(pid: u32) -> bool {
     if cfg!(target_os = "linux") {
         Path::new(&format!("/proc/{pid}")).exists()
+    } else if cfg!(target_os = "macos") {
+        // kill -0 can fail with EPERM for an existing process owned by another user (e.g. pid 1).
+        std::process::Command::new("ps")
+            .args(["-p", &pid.to_string(), "-o", "pid="])
+            .output()
+            .map(|o| o.status.success() && !o.stdout.is_empty())
+            .unwrap_or(true)
     } else {
         std::process::Command::new("kill")
             .args(["-0", &pid.to_string()])

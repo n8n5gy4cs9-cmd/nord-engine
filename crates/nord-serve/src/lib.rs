@@ -470,6 +470,28 @@ mod tests {
     use super::*;
 
     #[tokio::test]
+    async fn changed_assets_are_served_fresh_at_the_same_url() {
+        let d = std::env::temp_dir().join(format!("nord-serve-fresh-{}", std::process::id()));
+        std::fs::create_dir_all(d.join("assets")).unwrap();
+        let file = d.join("assets/hero.png");
+        std::fs::write(&file, b"old art").unwrap();
+        let (r, _) = router(d.clone(), d.clone());
+        let l = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let port = l.local_addr().unwrap().port();
+        tokio::spawn(async move { axum::serve(l, r).await.unwrap() });
+        let c = reqwest::Client::new();
+        let url = format!("http://127.0.0.1:{port}/assets/hero.png");
+        let old = c.get(&url).send().await.unwrap();
+        assert_eq!(old.headers()[header::CACHE_CONTROL], "no-store");
+        assert_eq!(old.bytes().await.unwrap().as_ref(), b"old art");
+        std::fs::write(&file, b"new art").unwrap();
+        let new = c.get(&url).send().await.unwrap();
+        assert_eq!(new.status(), StatusCode::OK);
+        assert_eq!(new.headers()[header::CACHE_CONTROL], "no-store");
+        assert_eq!(new.bytes().await.unwrap().as_ref(), b"new art");
+    }
+
+    #[tokio::test]
     async fn guards_host_and_cross_site_posts() {
         let d = std::env::temp_dir().join(format!("nord-serve-guard-{}", std::process::id()));
         std::fs::create_dir_all(&d).unwrap();

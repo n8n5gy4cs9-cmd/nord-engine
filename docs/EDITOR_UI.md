@@ -19,6 +19,13 @@ Game view: the Game tab header sets size (Fit/50–200 %) and position (Top/Midd
 Run/stop: **Cmd+R** runs and, while running, stops; **Cmd+.** stops only. Both keys are rebindable in Settings ▸ Run / stop keys (key names like `R`, `F5`, `Enter`). The Game tab header has ■ Stop and Fullscreen/Exit (Esc) — the reliable exit when the embedded game has keyboard focus.
 Themes: 10 dark + 3 light (Nord Light, GitHub Light, Solarized Light) in `assets/themes/themes.json`; pick in Settings. Light themes use `egui::Visuals::light()` as the base.
 
+## Current content and optional cached-content testing
+**Settings → USE CACHED CONTENT** defaults to **OFF**, including for existing settings files that omit the option.
+- **OFF:** Examples and Tutorials open their current files directly from the engine root (the checkout with `run.sh`, or the rebuilt app's `Contents/Resources/examples`). Old Recent entries and launch paths into `~/.config/nord/examples/` resolve to the matching current example. Rebuilding the `.app` therefore updates the example art and code the editor opens. Edits/saves affect these current example files; use a separate project for your own version.
+- **ON:** Examples and Tutorials use saved private copies under `~/.config/nord/examples/`, created on first open and reused for cached-content testing. These copies deliberately retain their saved content across app rebuilds.
+The setting is saved as `use_cached_content` in `editor.json`. Reopen an example after changing it to switch its source. Embedded webviews are recreated when the setting changes: OFF uses temporary/incognito browser storage; ON permits persistent browser storage. Script attribute parsing also bypasses its cache when OFF.
+The editor's dev server always serves project files with `Cache-Control: no-store` and reads them from disk on each request. Asset thumbnails are derived previews keyed by the source hash; they are not saved game/example copies. Autosaves and settings remain persistent.
+
 ## Required features
 - Splash window (frameless, 640×360 `assets/brand/splash.png`) shown **≥ 2000 ms** then main window appears.
 - Project hub: New (template picker), Open, Recent, Examples, Tutorials.

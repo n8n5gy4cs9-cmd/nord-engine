@@ -5,6 +5,10 @@ Format: `BUG-nnn [open|fixed] title — repro / notes`. Unverified-but-plausible
 ## Open
 _(none yet)_
 
+## Fixed
+- BUG-002 [fixed] macOS project locks misidentified live foreign-user processes as stale because `kill -0` returned EPERM. The macOS check now reads `ps -p PID -o pid=`; the existing exclusivity regression covers pid 1.
+- BUG-001 [fixed] Rebuilt app examples showed old art/code — the hub reused persistent private copies under `~/.config/nord/examples/`. `USE CACHED CONTENT` now defaults OFF: current example files open directly and old Recent/launch paths resolve to the current bundle. Opt-in ON retains saved copies for testing. Regression replaces an example asset then reopens it and verifies the new bytes; server regression verifies `no-store` and new bytes at the same URL.
+
 ## Unverified / risks
 - RISK-010 (M9, owner action) Desktop shell parts that are **not verified on macOS/Windows**: native menu bar, tray icon, global shortcuts, dock badge/taskbar progress (`HostCommand::Badge/Progress`: badge macOS only, progress via tao), context menus on Windows/Linux (only macOS popup is wired), `app.autostart` (LaunchAgent/registry/.desktop writers), file-association/URL-scheme registration (Info.plist keys generated; Windows `register.reg` needs the install path edited), `rfd`/`notify-rust`/`arboard` backends. Linux (webkit2gtk under Xvfb) runs the IPC/files/store/server smoke test in CI; Windows `cargo check` of the shell passes, macOS cannot be checked here. CI runs `tools/player-smoke.mjs` on macOS/Windows as non-blocking steps. Wayland: tray/global shortcuts compositor-dependent.
 - RISK-011 (M9) Permission manifest = application-level guard, not an OS sandbox (no App Sandbox/security-scoped bookmarks yet: `picked` paths are only remembered for the current run). Dialogs/`process.run`/`http.fetch` run on the UI thread in the native player (a slow call blocks the window; the page itself is not blocked). `dialog.open` in the browser fallback copies the chosen file into virtual app data. Clipboard images are unsupported natively. Markdown code fences are not syntax-highlighted in the code editor (CodeMirror `codeLanguages` not in the vendored bundle).
@@ -17,7 +21,7 @@ _(none yet)_
 - Viewport editing moves/rotates/scales the *first* selected entity only (multi-select is selection-only); parent rotation/scale are handled in 2D, 3D gizmos rely on Babylon's local/world handling (unparented entities verified).
 - Model thumbnails need the 3D edit view to be connected (they are rendered there); in 2D projects models show an icon.
 - `nord-serve` instances started by the editor keep running until the editor exits (one per opened project in a session).
-- Examples opened from the hub are private copies under `~/.config/nord/examples/` (never edited in the engine repo).
+- Examples open current engine/bundle files by default; their saved private copies under `~/.config/nord/examples/` are used only with Settings → USE CACHED CONTENT ON. See EDITOR_UI.md.
 - RISK-001 egui + wry child-webview embedding on macOS (z-order, keyboard focus, egui popups over the webview, HiDPI sizing) cannot be tested in the Linux sandbox; verify on macOS CI / M1 Max. Spike first (M3-07).
 - RISK-002 Babylon Havok needs wasm served with `application/wasm`; some static hosts misconfigure → provide JS fallback (cannon-es) or inline base64 in single-file mode.
 - RISK-003 `file://` loading blocks `fetch`/ES modules in browsers → single-file/file-safe export mode required (EXPORT_TARGETS).

@@ -404,6 +404,25 @@ fn animation_and_tilemap_editors_roundtrip() {
 }
 
 #[test]
+fn settings_cached_content_defaults_off_and_toggles() {
+    let mut app = App::new(false);
+    app.st.settings = Default::default();
+    app.st.settings_open = true;
+    let mut h = Harness::builder()
+        .with_size(egui::vec2(1200.0, 900.0))
+        .build_state(|ctx, app: &mut App| app.frame_ui(ctx, None), app);
+    h.run_steps(3);
+    h.get_by_label("USE CACHED CONTENT");
+    assert!(!h.state().st.settings.use_cached_content);
+    h.get_by_label("ON").click();
+    h.run_steps(3);
+    assert!(h.state().st.settings.use_cached_content);
+    h.get_by_label("ON").click();
+    h.run_steps(3);
+    assert!(!h.state().st.settings.use_cached_content);
+}
+
+#[test]
 fn settings_switch_skin_and_theme_live() {
     let mut app = App::new(false);
     app.st.settings = Default::default();
@@ -728,20 +747,24 @@ fn game_view_y_offset_moves_not_crops() {
 #[test]
 fn reset_settings_and_layout_restore_defaults() {
     use nord_editor::state::Action;
-    let mut h = Harness::builder().with_size(egui::vec2(1400.0, 900.0)).build_state(
-        |ctx, app: &mut App| {
-            app.frame_ui(ctx, None);
-        },
-        App::new(false),
-    );
+    let mut h = Harness::builder()
+        .with_size(egui::vec2(1400.0, 900.0))
+        .build_state(
+            |ctx, app: &mut App| {
+                app.frame_ui(ctx, None);
+            },
+            App::new(false),
+        );
     h.run_steps(3);
     h.state_mut().st.settings.theme = "github-light".into();
     h.state_mut().st.settings.run_key = "F5".into();
+    h.state_mut().st.settings.use_cached_content = true;
     h.state_mut().dock = egui_dock::DockState::new(vec![nord_editor::app::Tab::Code]);
     h.state_mut().st.push(Action::ResetSettings);
     h.run_steps(3);
     let app = h.state();
     assert_eq!(app.st.settings.theme, "nord");
     assert_eq!(app.st.settings.run_key, "R");
+    assert!(!app.st.settings.use_cached_content);
     assert!(app.dock.iter_all_tabs().count() > 4, "layout not reset");
 }

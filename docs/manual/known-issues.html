@@ -16,6 +16,10 @@
 <p>Format: <code>BUG-nnn [open|fixed] title — repro / notes</code>. Unverified-but-plausible risks are listed under &quot;Unverified&quot;.</p>
 <h2 id="open">Open<a class="anchor" href="#open">#</a></h2>
 <p><em>(none yet)</em></p>
+<h2 id="fixed">Fixed<a class="anchor" href="#fixed">#</a></h2>
+<ul>
+<li>BUG-001 [fixed] Rebuilt app examples showed old art/code — the hub reused persistent private copies under <code>~/.config/nord/examples/</code>. <code>USE CACHED CONTENT</code> now defaults OFF: current example files open directly and old Recent/launch paths resolve to the current bundle. Opt-in ON retains saved copies for testing. Regression replaces an example asset then reopens it and verifies the new bytes; server regression verifies <code>no-store</code> and new bytes at the same URL.</li>
+</ul>
 <h2 id="unverified-risks">Unverified / risks<a class="anchor" href="#unverified-risks">#</a></h2>
 <ul>
 <li><p>RISK-010 (M9, owner action) Desktop shell parts that are <strong>not verified on macOS/Windows</strong>: native menu bar, tray icon, global shortcuts, dock badge/taskbar progress (<code>HostCommand::Badge/Progress</code>: badge macOS only, progress via tao), context menus on Windows/Linux (only macOS popup is wired), <code>app.autostart</code> (LaunchAgent/registry/.desktop writers), file-association/URL-scheme registration (Info.plist keys generated; Windows <code>register.reg</code> needs the install path edited), <code>rfd</code>/<code>notify-rust</code>/<code>arboard</code> backends. Linux (webkit2gtk under Xvfb) runs the IPC/files/store/server smoke test in CI; Windows <code>cargo check</code> of the shell passes, macOS cannot be checked here. CI runs <code>tools/player-smoke.mjs</code> on macOS/Windows as non-blocking steps. Wayland: tray/global shortcuts compositor-dependent.</p>
@@ -40,7 +44,7 @@
 </li>
 <li><p><code>nord-serve</code> instances started by the editor keep running until the editor exits (one per opened project in a session).</p>
 </li>
-<li><p>Examples opened from the hub are private copies under <code>~/.config/nord/examples/</code> (never edited in the engine repo).</p>
+<li><p>Examples open current engine/bundle files by default; their saved private copies under <code>~/.config/nord/examples/</code> are used only with Settings → USE CACHED CONTENT ON. See EDITOR_UI.md.</p>
 </li>
 <li><p>RISK-001 egui + wry child-webview embedding on macOS (z-order, keyboard focus, egui popups over the webview, HiDPI sizing) cannot be tested in the Linux sandbox; verify on macOS CI / M1 Max. Spike first (M3-07).</p>
 </li>
