@@ -3,7 +3,7 @@ import { E, box3, ground3, env3, camera2d, project, keys, SKY } from '../lib.mjs
 const targets = [[-10, 1, 8], [0, 1, 14], [10, 1, 8], [-14, 1, -4], [14, 1, -4], [-6, 1, -12], [6, 1, -12], [0, 1, -6], [-18, 1, 12], [18, 1, 12]];
 export default () => ({
   name: 'FPS Arena',
-  project: project('fps-arena', 'FPS Arena', '3d', { input: keys({ sprint: ['ShiftLeft'], crouch: ['KeyC'], fire: ['Mouse0', 'KeyF'], interact: ['KeyE'] }) }),
+  project: project('fps-arena', 'FPS Arena', '3d', { input: keys({ jump: ['Space'], sprint: ['ShiftLeft'], crouch: ['KeyC'], fire: ['Mouse0', 'KeyF'], interact: ['KeyE'] }) }),
   scenes: { main: { entities: [
     ...env3('day'), ground3(60, 'assets/textures/concrete.png'),
     box3('WallN', [0, 2, 30], [60, 4, 1], { texture: 'assets/textures/brick.png' }), box3('WallS', [0, 2, -30], [60, 4, 1], { texture: 'assets/textures/brick.png' }),

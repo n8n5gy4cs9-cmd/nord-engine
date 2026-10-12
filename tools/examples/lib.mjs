@@ -28,7 +28,7 @@ export function project(id, name, type, o = {}) {
     format: 1, name, id: `com.crowelian.${id.replace(/\W/g, '')}`, type, engineVersion: '0.1.0', startScene: 'scenes/main.scene.json',
     display: { width: o.w ?? (is3 ? 1280 : 640), height: o.h ?? (is3 ? 720 : 360), scale: 'fit', pixelArt: o.pixelArt ?? false, background: o.bg ?? '#2e3440' },
     physics: o.physics ?? { engine: is3 ? 'havok' : 'none', gravity: is3 ? [0, -9.81, 0] : [0, 0, 0] },
-    input: { actions: o.input ?? keys() }, plugins: ['ui', 'audio'], ui: { skin: 'cyber', theme: o.theme ?? 'nord' },
+    input: { actions: o.input ?? (is3 ? keys({ jump: ['Space'] }) : keys()) }, plugins: ['ui', 'audio'], ui: { skin: 'cyber', theme: o.theme ?? 'nord' },
   };
 }
 

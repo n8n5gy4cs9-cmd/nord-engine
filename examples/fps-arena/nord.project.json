@@ -39,9 +39,7 @@
         "ArrowDown"
       ],
       "jump": [
-        "Space",
-        "KeyW",
-        "ArrowUp"
+        "Space"
       ],
       "fire": [
         "Mouse0",

@@ -5,7 +5,7 @@ const gem = (i, x, y, z) => E(`Gem${i}`, { pos: [x, y, z], tags: ['gem'], s: [['
 const P = [[0, 0.25, 6, 3], [4, 0.9, 10, 3], [8, 1.6, 14, 3], [3, 2.4, 18, 3], [-2, 3.2, 22, 3], [-7, 3.9, 25, 3], [-12, 4.6, 29, 4]];
 export default () => ({
   name: '3D Platformer',
-  project: project('platformer3d', '3D Platformer', '3d', { input: keys({ camLeft: ['KeyQ'], camRight: ['KeyE'] }) }),
+  project: project('platformer3d', '3D Platformer', '3d', { input: keys({ jump: ['Space'], camLeft: ['KeyQ'], camRight: ['KeyE'] }) }),
   scenes: { main: { entities: [
     ...env3('sunset'), ground3(120, 'assets/textures/sand.png'),
     box3('Start', [0, 0.25, 0], [6, 0.5, 6], { texture: 'assets/textures/stone.png' }),
