@@ -687,18 +687,22 @@ fn game_view_offset_moves_in_fit_mode() {
     );
 }
 
-/// The y offset moves the view down (starting position) without cropping it: same aspect, still inside the panel.
+/// The y offset moves the view down by exactly that many pixels, same size.
 #[test]
 fn game_view_y_offset_moves_not_crops() {
     let d = temp_project("gamey", nord_core::ProjectType::TwoD);
-    let mut h = Harness::builder().with_size(egui::vec2(1400.0, 900.0)).build_state(
-        |ctx, app: &mut App| {
-            app.frame_ui(ctx, None);
-        },
-        App::new(false),
-    );
+    let mut h = Harness::builder()
+        .with_size(egui::vec2(1400.0, 900.0))
+        .build_state(
+            |ctx, app: &mut App| {
+                app.frame_ui(ctx, None);
+            },
+            App::new(false),
+        );
     h.run_steps(3);
-    h.state_mut().st.push(nord_editor::state::Action::OpenPath(d));
+    h.state_mut()
+        .st
+        .push(nord_editor::state::Action::OpenPath(d));
     h.run_steps(3);
     let app = h.state_mut();
     app.show_tab(nord_editor::app::Tab::Game);
@@ -711,7 +715,12 @@ fn game_view_y_offset_moves_not_crops() {
     h.run_steps(3);
     let b = h.state().web.rects["game"];
     eprintln!("y offset: {a:?} -> {b:?}");
-    assert!(b.min.y > a.min.y + 39.0, "y offset did not move the view: {a:?} {b:?}");
-    assert!(b.max.y <= a.max.y + 0.5, "view moved out of its panel: {a:?} {b:?}");
-    assert!((b.width() / b.height() - a.width() / a.height()).abs() < 0.02, "view was cropped, not moved: {a:?} {b:?}");
+    assert!(
+        b.min.y > a.min.y + 39.0,
+        "y offset did not move the view: {a:?} {b:?}"
+    );
+    assert!(
+        (b.height() - a.height()).abs() < 0.5 && (b.width() - a.width()).abs() < 0.5,
+        "view was resized, not moved: {a:?} {b:?}"
+    );
 }

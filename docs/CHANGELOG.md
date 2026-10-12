@@ -2,6 +2,7 @@
 Newest first. One line per notable change. Credit: Crowelian 2026 + Sonnet.
 
 ## Unreleased
+- **Game view offset = real move:** x/y translate the view by exactly that many pixels with its size unchanged (anchor picks the start in the free space; only the window edge limits it, so it may overlap neighbouring panels when you push it). Replaces the shrink/crop behaviour.
 - **Game view offset moves instead of cropping:** x/y offsets now set where the view starts (the free area shrinks by the offset, the game is scaled to fit it with its aspect kept) — no more cut-off. Test `game_view_y_offset_moves_not_crops`.
 - **Game view position works in Fit mode:** Fit now scales the game to the largest aspect-correct size inside the panel (was: fill the panel, leaving no room to move), so Position/offsets take effect; offsets push the view and it is cropped at the panel edge. Vertical Top/Middle/Bottom only differ when the view is shorter than the panel (pick 50–100 % or a wide game). Tests `game_view_offset_moves_in_fit_mode`.
 - **Play → Stop → Play fix:** the run key/▶ toggled on "server exists" instead of "running", so after the first Stop the next press stopped again and the game never restarted (my M8-13 regression); now keyed on `is_playing()`. The play-mode tint now stays for 1.5 s after Stop ("Stopping…") while the game view is torn down. Test `play_stop_play_again`. If replay still fails with the ▶ button on macOS, the cause is in webview re-creation (RISK-001a), not state.

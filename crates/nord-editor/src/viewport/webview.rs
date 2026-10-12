@@ -113,24 +113,29 @@ impl WebPanes {
                 offset: o,
                 fit,
             }) => {
-                // the offset shrinks the area the view may use (it starts that many pixels from the edge), so the view
-                // moves and keeps its aspect ratio instead of being cropped
-                let area = egui::Rect::from_min_max(
-                    full.min + egui::vec2(o[0].max(0.0), o[1].max(0.0)),
-                    full.max + egui::vec2(o[0].min(0.0), o[1].min(0.0)),
-                );
-                let asz = area.size().max(Vec2::splat(10.0));
-                let k = (asz.x / f.x).min(asz.y / f.y);
+                // size comes from the whole panel; anchor places the view in the free space and the offset then translates it
+                // by exactly that many pixels (size unchanged — it may overlap neighbouring panels, that is what you asked for)
+                let k = (size.x / f.x).min(size.y / f.y);
                 let k = if fit { k } else { k.min(1.0) }; // Fit also scales up
                 let f = (f * k).max(Vec2::splat(10.0));
-                let free = (asz - f).max(Vec2::ZERO);
-                egui::Rect::from_min_size(area.min + egui::vec2(free.x * a[0], free.y * a[1]), f)
+                let free = (size - f).max(Vec2::ZERO);
+                egui::Rect::from_min_size(
+                    full.min + egui::vec2(free.x * a[0] + o[0], free.y * a[1] + o[1]),
+                    f,
+                )
             }
             None => full,
         };
-        // a native view is not clipped by egui: never let it leave the visible part of its panel
+        // a native view is not clipped by egui: keep it inside the visible part of its panel — unless the user moved it
+        // with an explicit offset, then only the window edge limits it
+        let moved = fixed.as_ref().is_some_and(|f| f.offset != [0.0, 0.0]);
+        let limit = if moved {
+            ui.ctx().screen_rect()
+        } else {
+            ui.clip_rect()
+        };
         let rect = {
-            let c = rect.intersect(ui.clip_rect());
+            let c = rect.intersect(limit);
             if c.is_positive() {
                 c
             } else {
