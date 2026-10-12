@@ -1,0 +1,20 @@
+[package]
+name = "nord-serve"
+description = "Nord dev server: static project + runtime, live reload, editor <-> viewport/game bridge (/api/*)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+nord-core = { path = "../nord-core" }
+anyhow.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+axum = "0.7"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "net", "time", "sync"] }
+tokio-stream = { version = "0.1", features = ["sync"] }
+futures-util = "0.3"
+mime_guess = "2"
+
+[dev-dependencies]
+reqwest = { version = "0.12", default-features = false }

@@ -1,0 +1,10 @@
+[
+  { "id": "util.spin", "title": "Spin", "kind": "script", "category": "utilities", "tags": ["rotate", "simple"], "tier": ["2d", "3d"], "file": "library/scripts/spin.js",
+    "description": "Rotates the entity continuously around one axis.", "attributes": ["speed", "axis"], "requires": [], "demo": "", "source": "original" },
+  { "id": "controller.follow-pointer", "title": "Follow pointer", "kind": "script", "category": "controllers", "tags": ["mouse", "touch", "simple"], "tier": ["2d"], "file": "library/scripts/follow-pointer.js",
+    "description": "Moves the entity toward the pointer at a maximum speed.", "attributes": ["speed", "snapRadius"], "requires": [], "demo": "", "source": "original" },
+  { "id": "fx.tween-fade", "title": "Tween fade-out", "kind": "snippet", "category": "fx", "tags": ["tween", "alpha"], "tier": ["2d", "3d"], "file": "library/snippets/tween-fade.js",
+    "description": "Fade the entity out then destroy it. Paste into a script method.", "attributes": [], "requires": [], "demo": "", "source": "original" },
+  { "id": "prefab.marker", "title": "Marker (text prefab)", "kind": "prefab", "category": "utilities", "tags": ["debug"], "tier": ["2d", "3d"], "file": "library/prefabs/marker.prefab.json",
+    "description": "A labelled marker entity, handy for level layout.", "attributes": [], "requires": [], "demo": "", "source": "original" }
+]

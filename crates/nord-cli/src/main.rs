@@ -1,8 +1,7 @@
-mod serve;
 
 use anyhow::{bail, Context};
 use clap::{Parser, Subcommand};
-use nord_core::{assets, io, offline, thumbs, validate, Project, ProjectType};
+use nord_core::{assets, offline, thumbs, validate, ProjectType};
 use std::path::{Path, PathBuf};
 
 /// Nord Engine CLI — Crowelian 2026 + Sonnet.
@@ -60,56 +59,12 @@ enum Cmd {
     },
 }
 
-fn slug(name: &str) -> String {
-    let s: String = name
-        .chars()
-        .map(|c| {
-            if c.is_ascii_alphanumeric() {
-                c.to_ascii_lowercase()
-            } else {
-                '-'
-            }
-        })
-        .collect();
-    s.split('-')
-        .filter(|p| !p.is_empty())
-        .collect::<Vec<_>>()
-        .join("")
-}
-
 fn new_project(dir: &Path, template: &str) -> anyhow::Result<()> {
     let kind: ProjectType = serde_json::from_value(serde_json::Value::String(template.into()))
         .with_context(|| {
             format!("unknown template '{template}' (html, 2d, 3d, wasm-game, wasm-app)")
         })?;
-    if dir.join(io::PROJECT_FILE).exists() {
-        bail!("{} already contains a Nord project", dir.display());
-    }
-    let name = dir
-        .file_name()
-        .map(|n| n.to_string_lossy().into_owned())
-        .unwrap_or_else(|| "My Game".into());
-    let mut p = Project::new(&name, &format!("com.crowelian.{}", slug(&name)), kind);
-    for d in ["scenes", "scripts", "assets"] {
-        std::fs::create_dir_all(dir.join(d))?;
-    }
-    if kind == ProjectType::Html {
-        p.start_scene = String::new();
-        io::write_atomic(
-            &dir.join("index.html"),
-            include_str!("../templates/html/index.html")
-                .replace("{{name}}", &name)
-                .as_bytes(),
-        )?;
-    } else {
-        io::write_atomic(
-            &dir.join(&p.start_scene),
-            include_str!("../templates/main.scene.json").as_bytes(),
-        )?;
-    }
-    io::write_atomic(&dir.join(".gitignore"), b".nord-cache/\ndist/\ntarget/\n")?;
-    io::save_project(dir, &p)?;
-    Ok(())
+    Ok(nord_core::project::create(dir, kind)?)
 }
 
 fn doctor() {
@@ -149,7 +104,7 @@ fn doctor() {
     println!(
         "{:<8} {}",
         "engine",
-        serve::engine_root()
+        nord_serve::engine_root()
             .map(|p| p.display().to_string())
             .unwrap_or_else(|| "not found (set NORD_ROOT)".into())
     );
@@ -165,7 +120,7 @@ fn doctor() {
 }
 
 fn run_vendor_verify() -> anyhow::Result<()> {
-    let root = serve::engine_root().context("engine root not found (set NORD_ROOT)")?;
+    let root = nord_serve::engine_root().context("engine root not found (set NORD_ROOT)")?;
     let st = std::process::Command::new("node")
         .arg(root.join("tools/vendor.mjs"))
         .arg("--verify")
@@ -217,8 +172,8 @@ fn main() -> anyhow::Result<()> {
             println!("OK");
         }
         Cmd::Serve { project, port } => {
-            let engine = serve::engine_root().context("engine root not found (set NORD_ROOT)")?;
-            tokio::runtime::Runtime::new()?.block_on(serve::run(project, engine, port))?;
+            let engine = nord_serve::engine_root().context("engine root not found (set NORD_ROOT)")?;
+            tokio::runtime::Runtime::new()?.block_on(nord_serve::run(project, engine, port))?;
         }
         Cmd::CheckOffline { dir, allow } => {
             let f = offline::scan_dir(&dir, &allow);
@@ -251,7 +206,6 @@ mod tests {
         assert!(d.join("index.html").exists());
         let issues = nord_core::validate::validate_project(&d);
         assert!(issues.is_empty(), "{issues:?}");
-        assert_eq!(slug("My Game!"), "mygame");
         assert!(new_project(&d, "html").is_err());
         let d2 = d.with_file_name("g2d");
         new_project(&d2, "2d").unwrap();

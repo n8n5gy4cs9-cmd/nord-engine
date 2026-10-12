@@ -1,0 +1,581 @@
+//! Single editor state. Panels are `fn ui(&mut EditorState, &mut Ui)`; every scene mutation goes through `edit`.
+use crate::{scene_ops, undo::UndoStack};
+use nord_core::{assets::Asset, scene::Entity, Project, Scene};
+use nord_serve::Hub;
+use serde::{Deserialize, Serialize};
+use serde_json::{json, Value};
+use std::{
+    collections::HashMap,
+    path::{Path, PathBuf},
+    sync::Arc,
+    time::{Duration, Instant},
+};
+
+#[derive(Serialize, Deserialize, Clone)]
+#[serde(default)]
+pub struct Settings {
+    pub skin: String,
+    pub theme: String,
+    pub ui_scale: f32,
+    pub code_font_size: f32,
+    pub tab_width: usize,
+    pub autosave_secs: u64,
+    pub snap: bool,
+    pub snap_move: f64,
+    pub snap_rot: f64,
+    pub snap_scale: f64,
+    pub grid: bool,
+    pub window: Option<[f32; 4]>, // x, y, w, h
+}
+
+impl Default for Settings {
+    fn default() -> Self {
+        Self {
+            skin: "modern".into(),
+            theme: "nord".into(),
+            ui_scale: 1.0,
+            code_font_size: 13.0,
+            tab_width: 2,
+            autosave_secs: 30,
+            snap: false,
+            snap_move: 1.0,
+            snap_rot: 15.0,
+            snap_scale: 0.1,
+            grid: true,
+            window: None,
+        }
+    }
+}
+
+impl Settings {
+    fn path() -> PathBuf {
+        nord_core::io::config_dir().join("editor.json")
+    }
+    pub fn load() -> Self {
+        nord_core::io::load_json(&Self::path()).unwrap_or_default()
+    }
+    pub fn save(&self) {
+        let _ = nord_core::io::save_json(&Self::path(), self);
+    }
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum Tool {
+    Move,
+    Rotate,
+    Scale,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum LogLevel {
+    Info,
+    Warn,
+    Error,
+    Build,
+}
+
+#[derive(Clone, Debug)]
+pub struct LogLine {
+    pub level: LogLevel,
+    pub text: String,
+}
+
+/// Things the UI asks the app to do (menu, palette, shortcuts all produce these).
+#[derive(Clone, Debug, PartialEq)]
+pub enum Action {
+    NewProject,
+    OpenProject,
+    OpenPath(PathBuf),
+    CloseProject,
+    Save,
+    SaveAll,
+    Undo,
+    Redo,
+    Copy,
+    Paste,
+    Duplicate,
+    Delete,
+    AddEntity(Option<String>),
+    Focus,
+    SetTool(Tool),
+    Play,
+    Stop,
+    Reload,
+    QuickOpen,
+    Palette,
+    Settings,
+    About,
+    OpenFile(PathBuf, Option<usize>),
+    ToggleSnap,
+    ToggleGrid,
+    ShowTab(crate::app::Tab),
+    Build(String),
+}
+
+pub struct Play {
+    pub port: u16,
+    pub hub: Arc<Hub>,
+    pub log_seen: usize,
+    pub inbox_seen: usize,
+    pub running: bool,
+}
+
+pub struct EditorState {
+    pub root: Option<PathBuf>,
+    pub project: Option<Project>,
+    pub scene: Option<Scene>,
+    pub scene_file: Option<String>,
+    pub selection: Vec<String>,
+    pub undo: UndoStack,
+    pub dirty: bool,
+    pub rev: u64,
+    pub assets: Vec<Asset>,
+    pub asset_dir: String,
+    pub console: Vec<LogLine>,
+    pub clipboard: Option<Entity>,
+    pub settings: Settings,
+    pub tool: Tool,
+    pub actions: Vec<Action>,
+    pub toast: Option<(String, Instant)>,
+    pub play: Option<Play>,
+    pub lock: Option<nord_core::io::ProjectLock>,
+    pub last_autosave: Instant,
+    pub recover: Option<String>,
+    pub script_cache: HashMap<String, (std::time::SystemTime, Vec<crate::schema::Field>)>,
+    /// viewport asked us not to echo the scene back after its own edit
+    pub skip_viewport_sync: bool,
+    pub hierarchy_filter: String,
+    pub collapsed: std::collections::HashSet<String>,
+    pub engine_root: Option<PathBuf>,
+    pub themes: Arc<crate::theme::Themes>,
+    pub code: crate::code::CodeState,
+    pub assets_ui: crate::panels::assets::AssetsUi,
+    pub console_ui: crate::panels::console::ConsoleUi,
+    pub library: crate::panels::library::LibraryUi,
+    pub docs_ui: crate::panels::docs::DocsUi,
+    pub hub: crate::panels::hub::HubUi,
+    pub palette: crate::panels::palette::PaletteUi,
+    pub anim: crate::panels::animation::AnimUi,
+    pub settings_open: bool,
+    pub about_open: bool,
+    pub apply_theme: bool,
+    /// bumps on Play/Reload so the Game webview reloads
+    pub game_nonce: u32,
+    /// the edit viewport page has said hello (so scene/thumb messages are meaningful)
+    pub viewport_ready: bool,
+}
+
+impl EditorState {
+    pub fn new() -> Self {
+        Self {
+            root: None,
+            project: None,
+            scene: None,
+            scene_file: None,
+            selection: vec![],
+            undo: UndoStack::default(),
+            dirty: false,
+            rev: 0,
+            assets: vec![],
+            asset_dir: "assets".into(),
+            console: vec![],
+            clipboard: None,
+            settings: Settings::load(),
+            tool: Tool::Move,
+            actions: vec![],
+            toast: None,
+            play: None,
+            lock: None,
+            last_autosave: Instant::now(),
+            recover: None,
+            script_cache: HashMap::new(),
+            skip_viewport_sync: false,
+            hierarchy_filter: String::new(),
+            collapsed: Default::default(),
+            engine_root: nord_serve::engine_root(),
+            themes: Arc::new(crate::theme::Themes::load()),
+            code: Default::default(),
+            assets_ui: Default::default(),
+            console_ui: Default::default(),
+            library: Default::default(),
+            docs_ui: Default::default(),
+            hub: Default::default(),
+            palette: Default::default(),
+            anim: Default::default(),
+            settings_open: false,
+            about_open: false,
+            apply_theme: true,
+            game_nonce: 0,
+            viewport_ready: false,
+        }
+    }
+
+    pub fn push(&mut self, a: Action) {
+        self.actions.push(a);
+    }
+
+    pub fn log(&mut self, level: LogLevel, text: impl Into<String>) {
+        self.console.push(LogLine { level, text: text.into() });
+        if self.console.len() > 5000 {
+            self.console.drain(..1000);
+        }
+    }
+
+    pub fn toast(&mut self, t: impl Into<String>) {
+        self.toast = Some((t.into(), Instant::now()));
+    }
+
+    pub fn is_3d(&self) -> bool {
+        self.project.as_ref().is_some_and(|p| p.kind == nord_core::ProjectType::ThreeD)
+    }
+
+    pub fn selected(&self) -> Option<&Entity> {
+        let id = self.selection.first()?;
+        scene_ops::find(&self.scene.as_ref()?.entities, id)
+    }
+
+    pub fn select(&mut self, id: Option<String>) {
+        self.selection = id.into_iter().collect();
+    }
+
+    /// The one way to change the scene: records undo, marks dirty, bumps the revision (viewport resync).
+    pub fn edit(&mut self, label: &str, key: Option<&str>, f: impl FnOnce(&mut Vec<Entity>)) -> bool {
+        let Some(s) = self.scene.as_mut() else { return false };
+        let changed = self.undo.apply(&mut s.entities, label, key, f);
+        if changed {
+            self.dirty = true;
+            self.rev += 1;
+        }
+        changed
+    }
+
+    pub fn do_undo(&mut self) {
+        if let Some(s) = self.scene.as_mut() {
+            if let Some(l) = self.undo.undo(&mut s.entities) {
+                self.dirty = true;
+                self.rev += 1;
+                self.toast(format!("Undo: {l}"));
+            }
+        }
+    }
+
+    pub fn do_redo(&mut self) {
+        if let Some(s) = self.scene.as_mut() {
+            if let Some(l) = self.undo.redo(&mut s.entities) {
+                self.dirty = true;
+                self.rev += 1;
+                self.toast(format!("Redo: {l}"));
+            }
+        }
+    }
+
+    pub fn add_entity(&mut self, parent: Option<String>) {
+        let mut e = Entity::new("Entity");
+        if self.is_3d() {
+            e.components.push(serde_json::from_value(json!({"type":"mesh","shape":"box"})).unwrap());
+        } else {
+            e.transform.pos = [0.0, 0.0, 0.0];
+        }
+        let id = e.id.clone();
+        self.edit("Add entity", None, |l| {
+            let idx = usize::MAX;
+            scene_ops::insert(l, parent.as_deref(), idx, e);
+        });
+        self.select(Some(id));
+    }
+
+    pub fn delete_selected(&mut self) {
+        let ids = self.selection.clone();
+        if ids.is_empty() {
+            return;
+        }
+        self.edit("Delete", None, |l| {
+            for id in &ids {
+                scene_ops::remove(l, id);
+            }
+        });
+        self.selection.clear();
+    }
+
+    pub fn duplicate_selected(&mut self) {
+        let ids = self.selection.clone();
+        let mut new = vec![];
+        self.edit("Duplicate", None, |l| {
+            for id in &ids {
+                if let Some(n) = scene_ops::duplicate(l, id) {
+                    new.push(n);
+                }
+            }
+        });
+        if !new.is_empty() {
+            self.selection = new;
+        }
+    }
+
+    pub fn copy_selected(&mut self) {
+        self.clipboard = self.selected().cloned();
+    }
+
+    pub fn paste(&mut self) {
+        let Some(c) = self.clipboard.clone() else { return };
+        let e = scene_ops::clone_fresh(&c);
+        let id = e.id.clone();
+        let parent = self.selection.first().and_then(|s| {
+            self.scene.as_ref().and_then(|sc| scene_ops::parent_of(&sc.entities, s))
+        });
+        self.edit("Paste", None, |l| {
+            scene_ops::insert(l, parent.as_deref(), usize::MAX, e);
+        });
+        self.select(Some(id));
+    }
+
+    // ---- project / scene IO ----
+
+    pub fn open_project(&mut self, dir: &Path) -> Result<(), String> {
+        self.close_project();
+        let p = nord_core::io::load_project(dir).map_err(|e| e.to_string())?;
+        self.lock = match nord_core::io::ProjectLock::acquire(dir) {
+            Ok(l) => Some(l),
+            Err(e) => return Err(e.to_string()),
+        };
+        let start = p.start_scene.clone();
+        self.root = Some(dir.to_path_buf());
+        self.project = Some(p);
+        let _ = nord_core::io::add_recent(dir);
+        self.refresh_assets();
+        if !start.is_empty() {
+            self.open_scene(&start)?;
+        }
+        self.log(LogLevel::Info, format!("Opened {}", dir.display()));
+        Ok(())
+    }
+
+    pub fn close_project(&mut self) {
+        self.stop();
+        self.root = None;
+        self.project = None;
+        self.scene = None;
+        self.scene_file = None;
+        self.selection.clear();
+        self.undo.clear();
+        self.assets.clear();
+        self.dirty = false;
+        self.lock = None;
+        self.rev += 1;
+    }
+
+    pub fn open_scene(&mut self, rel: &str) -> Result<(), String> {
+        let root = self.root.clone().ok_or("no project")?;
+        let path = root.join(rel);
+        let s: Scene = nord_core::io::load_json(&path).map_err(|e| e.to_string())?;
+        self.scene = Some(s);
+        self.scene_file = Some(rel.to_string());
+        self.selection.clear();
+        self.undo.clear();
+        self.dirty = false;
+        self.rev += 1;
+        self.recover = self
+            .autosave_path()
+            .filter(|a| {
+                let m = |p: &Path| std::fs::metadata(p).and_then(|m| m.modified()).ok();
+                matches!((m(a), m(&path)), (Some(x), Some(y)) if x > y)
+            })
+            .map(|a| a.to_string_lossy().into_owned());
+        Ok(())
+    }
+
+    fn autosave_path(&self) -> Option<PathBuf> {
+        let f = self.scene_file.as_ref()?;
+        Some(self.root.as_ref()?.join(".nord-cache/autosave").join(f.replace('/', "__")))
+    }
+
+    pub fn recover_autosave(&mut self) {
+        if let Some(p) = self.recover.take() {
+            if let Ok(s) = nord_core::io::load_json::<Scene>(Path::new(&p)) {
+                self.scene = Some(s);
+                self.dirty = true;
+                self.rev += 1;
+                self.undo.clear();
+                self.toast("Recovered autosave");
+            }
+        }
+    }
+
+    pub fn save(&mut self) {
+        let (Some(root), Some(f), Some(s)) = (&self.root, &self.scene_file, &self.scene) else { return };
+        match nord_core::io::save_json(&root.join(f), s) {
+            Ok(()) => {
+                self.dirty = false;
+                if let Some(a) = self.autosave_path() {
+                    let _ = std::fs::remove_file(a);
+                }
+                self.toast(format!("Saved {f}"));
+            }
+            Err(e) => self.log(LogLevel::Error, format!("Save failed: {e}")),
+        }
+    }
+
+    /// Crash-safe autosave: atomic write to `.nord-cache/autosave/`, never touches the real file.
+    pub fn autosave_tick(&mut self) {
+        if !self.dirty || self.last_autosave.elapsed() < Duration::from_secs(self.settings.autosave_secs.max(5)) {
+            return;
+        }
+        self.last_autosave = Instant::now();
+        if let (Some(p), Some(s)) = (self.autosave_path(), &self.scene) {
+            let _ = nord_core::io::save_json(&p, s);
+        }
+    }
+
+    pub fn refresh_assets(&mut self) {
+        if let Some(r) = &self.root {
+            self.assets = nord_core::assets::scan(r).unwrap_or_default();
+        }
+    }
+
+    // ---- play / viewport server ----
+
+    /// Start the embedded dev server (once per project); returns the base URL.
+    pub fn ensure_server(&mut self) -> Option<String> {
+        if self.play.is_none() {
+            let root = self.root.clone()?;
+            let engine = self.engine_root.clone();
+            let Some(engine) = engine else {
+                self.log(LogLevel::Error, "Engine root not found (vendor/VENDOR.json). Set NORD_ROOT.");
+                return None;
+            };
+            match nord_serve::start_background(root, engine) {
+                Ok((port, hub)) => {
+                    self.play = Some(Play { port, hub, log_seen: 0, inbox_seen: 0, running: false });
+                    self.log(LogLevel::Build, format!("Dev server on http://127.0.0.1:{port}"));
+                }
+                Err(e) => {
+                    self.log(LogLevel::Error, format!("Server failed: {e}"));
+                    return None;
+                }
+            }
+        }
+        self.play.as_ref().map(|p| format!("http://127.0.0.1:{}", p.port))
+    }
+
+    pub fn stop(&mut self) {
+        if let Some(p) = self.play.as_mut() {
+            p.running = false;
+        }
+    }
+
+    /// Pull game console lines + viewport messages from the hub.
+    pub fn pump_hub(&mut self) -> Vec<Value> {
+        let Some(p) = self.play.as_mut() else { return vec![] };
+        let (logs, msgs) = {
+            let l = p.hub.logs.lock().unwrap();
+            let new: Vec<_> = l.iter().skip(p.log_seen).cloned().collect();
+            p.log_seen = l.len();
+            let i = p.hub.inbox.lock().unwrap();
+            let m: Vec<_> = i.iter().skip(p.inbox_seen).cloned().collect();
+            p.inbox_seen = i.len();
+            (new, m)
+        };
+        for e in logs {
+            let level = match e.level.as_str() {
+                "warn" => LogLevel::Warn,
+                "error" => LogLevel::Error,
+                _ => LogLevel::Info,
+            };
+            self.log(level, e.text);
+        }
+        msgs
+    }
+
+    pub fn send_viewport(&self, msg: Value) {
+        if let Some(p) = &self.play {
+            let _ = p.hub.edit_tx.send(msg.to_string());
+        }
+    }
+
+    /// Full state for the edit viewport.
+    pub fn viewport_scene_msg(&self) -> Value {
+        json!({
+            "t": "scene",
+            "rev": self.rev,
+            "project": self.project,
+            "scene": self.scene,
+            "selection": self.selection,
+        })
+    }
+
+    pub fn viewport_settings_msg(&self) -> Value {
+        json!({
+            "t": "settings",
+            "tool": match self.tool { Tool::Move => "move", Tool::Rotate => "rotate", Tool::Scale => "scale" },
+            "snap": self.settings.snap,
+            "snapMove": self.settings.snap_move,
+            "snapRot": self.settings.snap_rot,
+            "snapScale": self.settings.snap_scale,
+            "grid": self.settings.grid,
+        })
+    }
+
+    /// Apply messages coming from the edit viewport.
+    pub fn handle_viewport(&mut self, m: &Value) {
+        match m["t"].as_str() {
+            Some("ready") => {
+                self.viewport_ready = true;
+                self.send_viewport(self.viewport_scene_msg());
+                self.send_viewport(self.viewport_settings_msg());
+            }
+            Some("select") => {
+                let id = m["id"].as_str().map(String::from);
+                self.select(id);
+            }
+            Some("transform") => {
+                let Some(id) = m["id"].as_str() else { return };
+                let v3 = |k: &str| -> Option<[f64; 3]> {
+                    let a = m[k].as_array()?;
+                    Some([a.first()?.as_f64()?, a.get(1)?.as_f64()?, a.get(2)?.as_f64()?])
+                };
+                let (pos, rot, scale) = (v3("pos"), v3("rot"), v3("scale"));
+                let id = id.to_string();
+                self.skip_viewport_sync = true;
+                self.edit("Transform", Some(&format!("xf:{id}")), |l| {
+                    if let Some(e) = scene_ops::find_mut(l, &id) {
+                        if let Some(p) = pos {
+                            e.transform.pos = p;
+                        }
+                        if let Some(r) = rot {
+                            e.transform.rot = r;
+                        }
+                        if let Some(s) = scale {
+                            e.transform.scale = s;
+                        }
+                    }
+                });
+            }
+            Some("thumb") => {
+                // model thumbnail rendered by the viewport; the file is written by the server (/api/thumb-upload)
+                if let Some(p) = m["path"].as_str() {
+                    self.assets_ui.thumbs_done(p);
+                }
+            }
+            Some("log") => {
+                let t = m["text"].as_str().unwrap_or("").to_string();
+                self.log(LogLevel::Info, format!("[viewport] {t}"));
+            }
+            _ => {}
+        }
+    }
+
+    /// `scripts/foo.js` -> attribute schema (cached by mtime).
+    pub fn script_fields(&mut self, rel: &str) -> Vec<crate::schema::Field> {
+        let Some(root) = &self.root else { return vec![] };
+        let p = root.join(rel);
+        let Ok(mt) = std::fs::metadata(&p).and_then(|m| m.modified()) else { return vec![] };
+        if let Some((t, f)) = self.script_cache.get(rel) {
+            if *t == mt {
+                return f.clone();
+            }
+        }
+        let f = std::fs::read_to_string(&p).map(|s| crate::schema::script_attributes(&s)).unwrap_or_default();
+        self.script_cache.insert(rel.to_string(), (mt, f.clone()));
+        f
+    }
+}

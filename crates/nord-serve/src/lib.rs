@@ -1,13 +1,13 @@
-//! `nord serve`: dev server. Mounts project at `/`, `/vendor/*` and `/runtime/*` from the engine root,
+//! `nord serve` (also embedded in the editor): dev server. Mounts project at `/`, `/vendor/*` and `/runtime/*` from the engine root,
 //! SSE live reload at `/__reload`, editor backend at `/api/*`.
 use axum::{
-    extract::{Path as UrlPath, State},
+    extract::{Path as UrlPath, Query, State},
     http::{header, StatusCode, Uri},
     response::{
         sse::{Event, Sse},
         IntoResponse, Response,
     },
-    routing::get,
+    routing::{get, post},
     Json, Router,
 };
 use futures_util::{Stream, StreamExt};
@@ -15,7 +15,7 @@ use std::{
     collections::HashMap,
     convert::Infallible,
     path::{Path, PathBuf},
-    sync::Arc,
+    sync::{Arc, Mutex},
     time::Duration,
 };
 use tokio::sync::broadcast;
@@ -23,13 +23,36 @@ use tokio_stream::wrappers::BroadcastStream;
 
 /// Injected into served HTML. The event carries the changed paths as JSON; a running Nord game may hot-swap scripts
 /// (`window.__nord.hotReload(paths)` returns true when it handled the change), anything else reloads the page.
-const RELOAD_JS: &str = "<script>new EventSource('/__reload').onmessage=e=>{let p=[];try{p=JSON.parse(e.data)}catch{}if(!(window.__nord&&window.__nord.hotReload&&window.__nord.hotReload(p)))location.reload()}</script>";
+const RELOAD_JS: &str = "<script>(()=>{const s=(l,a)=>{try{fetch('/api/log',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({level:l,text:a.map(x=>x instanceof Error?x.stack||x.message:typeof x==='object'?JSON.stringify(x):String(x)).join(' ')})})}catch{}};for(const l of ['log','info','warn','error']){const o=console[l].bind(console);console[l]=(...a)=>{o(...a);s(l,a)}}addEventListener('error',e=>s('error',[e.message+(e.filename?' ('+e.filename+':'+e.lineno+')':'')]));addEventListener('unhandledrejection',e=>s('error',[e.reason||'unhandled rejection']))})();new EventSource('/__reload').onmessage=e=>{let p=[];try{p=JSON.parse(e.data)}catch{}if(!(window.__nord&&window.__nord.hotReload&&window.__nord.hotReload(p)))location.reload()}</script>";
+
+/// Shared state between the server and an in-process embedder (the editor): game console, viewport messages, commands.
+pub struct Hub {
+    pub logs: Mutex<Vec<LogEntry>>,
+    /// viewport -> editor messages (selection, transforms, ...)
+    pub inbox: Mutex<Vec<serde_json::Value>>,
+    /// editor -> viewport commands (JSON strings), delivered over SSE
+    pub edit_tx: broadcast::Sender<String>,
+    pub reload_tx: broadcast::Sender<Vec<String>>,
+}
+
+#[derive(Clone, serde::Serialize, serde::Deserialize, Debug)]
+pub struct LogEntry {
+    pub level: String,
+    pub text: String,
+}
+
+#[derive(serde::Deserialize)]
+struct Since {
+    #[serde(default)]
+    since: usize,
+}
 
 #[derive(Clone)]
 struct App {
     project: Arc<PathBuf>,
     engine: Arc<PathBuf>,
     tx: broadcast::Sender<Vec<String>>,
+    hub: Arc<Hub>,
 }
 
 /// Find the engine root (the directory holding `vendor/VENDOR.json`): `$NORD_ROOT`, else walk up from cwd and the exe.
@@ -86,7 +109,11 @@ fn file_response(p: &Path) -> Response {
 
 async fn static_files(State(a): State<App>, uri: Uri) -> Response {
     let path = uri.path();
-    let (base, rel) = if let Some(r) = path.strip_prefix("/vendor/") {
+    let (base, rel) = if path == "/__edit" {
+        (a.engine.join("editor/viewport"), "edit.html")
+    } else if let Some(r) = path.strip_prefix("/editor/") {
+        (a.engine.join("editor"), r)
+    } else if let Some(r) = path.strip_prefix("/vendor/") {
         (a.engine.join("vendor"), r)
     } else if let Some(r) = path.strip_prefix("/runtime/") {
         (a.engine.join("runtime"), r)
@@ -104,6 +131,43 @@ async fn reload(State(a): State<App>) -> Sse<impl Stream<Item = Result<Event, In
         .filter_map(|m| async move { m.ok() })
         .map(|paths| Ok(Event::default().data(serde_json::to_string(&paths).unwrap_or_default())));
     Sse::new(s).keep_alive(axum::response::sse::KeepAlive::new())
+}
+
+async fn edit_events(State(a): State<App>) -> Sse<impl Stream<Item = Result<Event, Infallible>>> {
+    let s = BroadcastStream::new(a.hub.edit_tx.subscribe())
+        .filter_map(|m| async move { m.ok() })
+        .map(|m| Ok(Event::default().data(m)));
+    Sse::new(s).keep_alive(axum::response::sse::KeepAlive::new())
+}
+
+async fn log_post(State(a): State<App>, Json(e): Json<LogEntry>) -> StatusCode {
+    let mut l = a.hub.logs.lock().unwrap();
+    if l.len() > 5000 {
+        l.drain(..1000);
+    }
+    l.push(e);
+    StatusCode::NO_CONTENT
+}
+
+async fn log_get(State(a): State<App>, Query(q): Query<Since>) -> Json<Vec<LogEntry>> {
+    let l = a.hub.logs.lock().unwrap();
+    Json(l.iter().skip(q.since).cloned().collect())
+}
+
+async fn ipc_post(State(a): State<App>, Json(v): Json<serde_json::Value>) -> StatusCode {
+    a.hub.inbox.lock().unwrap().push(v);
+    StatusCode::NO_CONTENT
+}
+
+async fn ipc_get(State(a): State<App>, Query(q): Query<Since>) -> Json<Vec<serde_json::Value>> {
+    let l = a.hub.inbox.lock().unwrap();
+    Json(l.iter().skip(q.since).cloned().collect())
+}
+
+/// Send a command to connected viewports (used by tests and the separate-window fallback).
+async fn edit_cmd(State(a): State<App>, body: String) -> StatusCode {
+    let _ = a.hub.edit_tx.send(body);
+    StatusCode::NO_CONTENT
 }
 
 async fn api_project(State(a): State<App>) -> Response {
@@ -192,12 +256,20 @@ fn watch(root: PathBuf, tx: broadcast::Sender<Vec<String>>) {
     });
 }
 
-pub fn router(project: PathBuf, engine: PathBuf) -> (Router, broadcast::Sender<Vec<String>>) {
+pub fn router(project: PathBuf, engine: PathBuf) -> (Router, Arc<Hub>) {
     let (tx, _) = broadcast::channel(16);
+    let (edit_tx, _) = broadcast::channel(64);
+    let hub = Arc::new(Hub {
+        logs: Mutex::new(vec![]),
+        inbox: Mutex::new(vec![]),
+        edit_tx,
+        reload_tx: tx.clone(),
+    });
     let app = App {
         project: Arc::new(project),
         engine: Arc::new(engine),
-        tx: tx.clone(),
+        tx,
+        hub: hub.clone(),
     };
     let r = Router::new()
         .route("/__reload", get(reload))
@@ -205,14 +277,35 @@ pub fn router(project: PathBuf, engine: PathBuf) -> (Router, broadcast::Sender<V
         .route("/api/assets", get(api_assets))
         .route("/api/validate", get(api_validate))
         .route("/api/thumb/*path", get(api_thumb))
+        .route("/api/log", get(log_get).post(log_post))
+        .route("/api/ipc", get(ipc_get).post(ipc_post))
+        .route("/__edit/events", get(edit_events))
+        .route("/__edit/cmd", post(edit_cmd))
         .fallback(static_files)
         .with_state(app);
-    (r, tx)
+    (r, hub)
+}
+
+/// Start the server on a background thread (own tokio runtime) at a free port; returns (port, hub). Used by the editor.
+pub fn start_background(project: PathBuf, engine: PathBuf) -> anyhow::Result<(u16, Arc<Hub>)> {
+    let (r, hub) = router(project.clone(), engine);
+    let (ptx, prx) = std::sync::mpsc::channel();
+    let tx = hub.reload_tx.clone();
+    std::thread::spawn(move || {
+        let rt = tokio::runtime::Runtime::new().expect("tokio");
+        rt.block_on(async move {
+            let l = tokio::net::TcpListener::bind(("127.0.0.1", 0)).await.expect("bind");
+            let _ = ptx.send(l.local_addr().map(|a| a.port()).unwrap_or(0));
+            watch(project, tx);
+            let _ = axum::serve(l, r).await;
+        });
+    });
+    Ok((prx.recv()?, hub))
 }
 
 pub async fn run(project: PathBuf, engine: PathBuf, port: u16) -> anyhow::Result<()> {
-    let (r, tx) = router(project.clone(), engine);
-    watch(project.clone(), tx);
+    let (r, hub) = router(project.clone(), engine);
+    watch(project.clone(), hub.reload_tx.clone());
     let l = tokio::net::TcpListener::bind(("127.0.0.1", port)).await?;
     println!(
         "Serving {} at http://{} (Ctrl-C to stop)",

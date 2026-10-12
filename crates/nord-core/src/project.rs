@@ -1,5 +1,6 @@
 //! `nord.project.json` model. See docs/PROJECT_FORMAT.md.
 use serde::{Deserialize, Serialize};
+use std::path::Path;
 use serde_json::{Map, Value};
 use std::collections::BTreeMap;
 
@@ -122,9 +123,64 @@ impl Project {
     }
 }
 
+fn slug(name: &str) -> String {
+    name.chars()
+        .filter(|c| c.is_ascii_alphanumeric())
+        .map(|c| c.to_ascii_lowercase())
+        .collect()
+}
+
+/// Create a new project skeleton in `dir` (used by `nord new` and the editor's project hub).
+pub fn create(dir: &Path, kind: ProjectType) -> crate::Result<()> {
+    use crate::io;
+    if dir.join(io::PROJECT_FILE).exists() {
+        return Err(crate::Error::Msg(format!(
+            "{} already contains a Nord project",
+            dir.display()
+        )));
+    }
+    let name = dir
+        .file_name()
+        .map(|n| n.to_string_lossy().into_owned())
+        .unwrap_or_else(|| "My Game".into());
+    let mut p = Project::new(&name, &format!("com.crowelian.{}", slug(&name)), kind);
+    for d in ["scenes", "scripts", "assets"] {
+        std::fs::create_dir_all(dir.join(d)).map_err(|e| io::io_err(dir, e))?;
+    }
+    if kind == ProjectType::Html {
+        p.start_scene = String::new();
+        io::write_atomic(
+            &dir.join("index.html"),
+            include_str!("../templates/html/index.html")
+                .replace("{{name}}", &name)
+                .as_bytes(),
+        )?;
+    } else {
+        let page = match kind {
+            ProjectType::ThreeD => Some(include_str!("../templates/play-3d.html")),
+            ProjectType::TwoD => Some(include_str!("../templates/play-2d.html")),
+            _ => None,
+        };
+        if let Some(page) = page {
+            io::write_atomic(&dir.join("index.html"), page.replace("{{name}}", &name).as_bytes())?;
+        }
+        io::write_atomic(
+            &dir.join(&p.start_scene),
+            include_str!("../templates/main.scene.json").as_bytes(),
+        )?;
+    }
+    io::write_atomic(&dir.join(".gitignore"), b".nord-cache/\ndist/\ntarget/\n")?;
+    io::save_project(dir, &p)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn slug_strips() {
+        assert_eq!(slug("My Game!"), "mygame");
+    }
 
     #[test]
     fn parses_minimal_project() {

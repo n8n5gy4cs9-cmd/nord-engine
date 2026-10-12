@@ -1,0 +1,33 @@
+[package]
+name = "nord-editor"
+description = "Nord Engine native editor (egui)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "nord-editor"
+path = "src/main.rs"
+
+[features]
+default = []
+# wry child webview for viewport/preview/docs (macOS target; see docs/DECISIONS.md)
+webview = ["dep:wry"]
+
+[dependencies]
+nord-core = { path = "../nord-core" }
+nord-serve = { path = "../nord-serve" }
+regex = "1"
+serde.workspace = true
+serde_json.workspace = true
+anyhow.workspace = true
+egui = "0.31"
+eframe = { version = "0.31", default-features = false, features = ["wgpu", "default_fonts", "x11", "wayland", "accesskit"] }
+egui_extras = { version = "0.31", features = ["svg", "image", "file"] }
+egui_dock = "0.16"
+image = { version = "0.25", default-features = false, features = ["png", "jpeg"] }
+rfd = "0.15"
+wry = { version = "0.50", optional = true }
+
+[dev-dependencies]
+egui_kittest = { version = "0.31", default-features = false }
