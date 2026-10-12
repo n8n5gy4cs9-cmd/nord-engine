@@ -2,6 +2,7 @@
 Newest first. One line per notable change. Credit: Crowelian 2026 + Sonnet.
 
 ## Unreleased
+- M6-17: optional CC0 pack `assets/packs/kenney-platformer-3d` (15 glTF models, 6 OGG sfx, sprites; 4.3 MB) via `tools/fetch-packs.sh`; ASSETS.md pack section. Kenney 2D sprite packs still unreachable (kenney.nl blocked) — drop-in later.
 - Planning: new milestone M9 "Desktop apps" (16 tasks, not started) for real native apps on a Rust backend. Fixed the nord-export wasm test for the new export path.
 - M5-06..09 + M6-16: `crates/nord-app-wasm` (eframe `launch`, native + web), `nord build-rust`, editor Rust integration (Play builds, streaming cargo output, `Build Rust`), starter templates `rust-2d-game` / `rust-egui-app` (hub + `nord new -t`), Rust examples `rust-physics-toys`, `rust-platformer`, `rust-asteroids`, `rust-json-tool`, macroquad ports `rust-mq-snake`, `rust-mq-life` (THIRD_PARTY.md), `docs/RUST_TIER.md`, ADR-019, e2e suites `rust-*` (exports run in headless Chromium). Runtime additions: `spawn_prefab_with` JSON overrides, parent rotation, `Ctx` scale/rotation setters.
 - M5-05: `nord export --target web-wasm-game` (+ `web-wasm-app` plumbing): cargo wasm32 build, vendored macroquad JS loader, relative index.html, optional wasm-opt, offline check; `nord_export::rust` (`cargo_build`, `dev_build`, `parse_diagnostic`); validation accepts Rust script names; e2e suites `rust-platformer`, `rust-physics-toys`.

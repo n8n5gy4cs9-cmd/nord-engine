@@ -5,6 +5,7 @@ Exact versions + sha256: `vendor/VENDOR.json` (reinstall/verify with `node tools
 
 | Component | Version | Licence | Location | Used for |
 |---|---|---|---|---|
+| Kenney 3D Platformer Kit (assets only) | 3fa8a04 | CC0 (kit code MIT, not included) | assets/packs/kenney-platformer-3d | optional real models/sfx/sprites (`tools/fetch-packs.sh`) |
 | Phaser | 4.2.1 | MIT | vendor/phaser | 2D web runtime |
 | Babylon.js (+loaders, gui, materials, post-process, procedural textures, serializers) | 9.30.0 | Apache-2.0 | vendor/babylonjs* | 3D web runtime |
 | Havok physics (@babylonjs/havok) | 1.3.14 | MIT wrapper; wasm free with Babylon.js | vendor/havok | 3D physics |

@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 101/143 tasks (71%)** · updated 2026-10-12
+**Overall: 102/143 tasks (71%)** · updated 2026-10-12
 
 | Milestone | Progress |
 |---|---|
@@ -13,7 +13,7 @@
 | M3 Editor | 24/26 (92%) |
 | M4 Export | 8/11 (73%) |
 | M5 Rust/WASM | 9/9 (100%) |
-| M6 Library | 17/18 (94%) |
+| M6 Library | 18/18 (100%) |
 | M7 Docs | 0/12 (0%) |
 | M8 Polish & portability | 0/8 (0%) |
 | M9 Desktop apps | 0/16 (0%) |
@@ -157,7 +157,7 @@ _snippets, controllers, systems, asset packs, examples_
 - [x] **M6-14** Example games 2D (>= 10)
 - [x] **M6-15** Example games 3D (>= 4)
 - [x] **M6-16** Example apps (>= 6) + Rust samples (>= 3)
-- [ ] **M6-17** Optional CC0 asset packs (Kenney etc.) replacing placeholders; update ASSETS.md
+- [x] **M6-17** Optional CC0 asset packs (Kenney etc.) replacing placeholders; update ASSETS.md
 - [x] **M6-18** tools/smoke-examples.mjs headless smoke test for every example
 
 ## M7 — Docs
