@@ -66,6 +66,14 @@ enum Cmd {
         #[arg(long)]
         zip: bool,
     },
+    /// Build a Rust (wasm-game / wasm-app) project for `nord serve`: cargo build → target/web/
+    BuildRust {
+        #[arg(default_value = ".")]
+        project: PathBuf,
+        /// optimised build (slower, smaller)
+        #[arg(long)]
+        release: bool,
+    },
     /// Wrap a web build (or a project, built first) into a macOS .app using the prebuilt nord-player shell
     BundleMac {
         /// A web build folder (nord build output) or a project folder
@@ -102,7 +110,12 @@ enum Cmd {
     },
 }
 
-fn new_project(dir: &Path, template: &str) -> anyhow::Result<()> {
+fn new_project(dir: &Path, requested: &str) -> anyhow::Result<()> {
+    let template = match requested {
+        "wasm-game" => "rust-2d-game",
+        "wasm-app" => "rust-egui-app",
+        t => t,
+    };
     // a starter from `templates/<id>` (see `templates/templates.json`) wins over the built-in project types
     if let Some(src) = nord_serve::engine_root()
         .map(|r| r.join("templates").join(template))
@@ -110,9 +123,9 @@ fn new_project(dir: &Path, template: &str) -> anyhow::Result<()> {
     {
         return Ok(nord_core::project::create_from_template(&src, dir)?);
     }
-    let kind: ProjectType = serde_json::from_value(serde_json::Value::String(template.into()))
+    let kind: ProjectType = serde_json::from_value(serde_json::Value::String(requested.into()))
         .with_context(|| {
-            format!("unknown template '{template}' (html, 2d, 3d, wasm-game, wasm-app)")
+            format!("unknown template '{requested}' (html, 2d, 3d, wasm-game, wasm-app, or an id from templates/templates.json)")
         })?;
     Ok(nord_core::project::create(dir, kind)?)
 }
@@ -197,6 +210,10 @@ fn main() -> anyhow::Result<()> {
                 dir.display(),
                 dir.display()
             );
+        }
+        Cmd::BuildRust { project, release } => {
+            let out = nord_export::rust::dev_build(&project, release, &mut |l| eprintln!("{l}"))?;
+            println!("Built {} — run `nord serve {}`", out.display(), project.display());
         }
         Cmd::Doctor => doctor(),
         Cmd::Thumbs { project } => {

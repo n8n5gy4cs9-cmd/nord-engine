@@ -200,7 +200,7 @@ impl World {
     pub fn get(&self, id: EntityId) -> Option<&Entity> {
         self.ents.get(id.idx()).filter(|e| e.alive && e.gen == id.gen)
     }
-    fn get_mut(&mut self, id: EntityId) -> Option<&mut Entity> {
+    pub(crate) fn get_mut(&mut self, id: EntityId) -> Option<&mut Entity> {
         self.ents.get_mut(id.idx()).filter(|e| e.alive && e.gen == id.gen)
     }
     fn ids(&self) -> Vec<EntityId> {
@@ -212,16 +212,22 @@ impl World {
     pub fn find_tag(&self, tag: &str) -> Vec<EntityId> {
         self.ents.iter().enumerate().filter(|(_, e)| e.alive && e.tags.iter().any(|t| t == tag)).map(|(i, e)| EntityId { idx: i as u32, gen: e.gen }).collect()
     }
-    /// World position (parent chain: translation + scale).
+    /// World position (parent chain: scale, then rotation, then translation).
     pub fn pos(&self, id: EntityId) -> Vec2 {
         let Some(e) = self.get(id) else { return Vec2::ZERO };
-        match e.parent {
-            Some(p) => {
-                let ps = self.get(p).map_or(Vec2::ONE, |x| x.scale);
-                self.pos(p) + e.pos * ps
+        match e.parent.and_then(|p| self.get(p).map(|pe| (p, pe))) {
+            Some((p, pe)) => {
+                let r = self.world_rot(p).to_radians();
+                let o = e.pos * pe.scale;
+                self.pos(p) + vec2(o.x * r.cos() - o.y * r.sin(), o.x * r.sin() + o.y * r.cos())
             }
             None => e.pos,
         }
+    }
+    /// World rotation in degrees (sum along the parent chain).
+    pub fn world_rot(&self, id: EntityId) -> f32 {
+        let Some(e) = self.get(id) else { return 0.0 };
+        e.rot + e.parent.map_or(0.0, |p| self.world_rot(p))
     }
     pub fn set_pos(&mut self, id: EntityId, p: Vec2) {
         let (body, kin) = match self.get_mut(id) {
@@ -330,6 +336,16 @@ impl World {
 
     pub fn spawn_prefab(&mut self, path: &str, pos: Vec2) -> Option<EntityId> {
         let mut data = self.assets.prefab_data(path)?.root;
+        data.transform.pos = [pos.x, pos.y, data.transform.pos[2]];
+        Some(self.spawn_entity(data, None))
+    }
+
+    /// Spawn a prefab with JSON overrides merged onto its root entity, e.g.
+    /// `json!({"transform":{"scale":[2,2,1]}, "scripts":{"0":{"attributes":{"speed":120}}}})` (numeric keys patch arrays by index, like the JS tier).
+    pub fn spawn_prefab_with(&mut self, path: &str, pos: Vec2, overrides: Value) -> Option<EntityId> {
+        let mut root = self.assets.prefabs.get(path)?.get("root")?.clone();
+        deep_merge(&mut root, &overrides);
+        let mut data: EntityData = serde_json::from_value(root).ok()?;
         data.transform.pos = [pos.x, pos.y, data.transform.pos[2]];
         Some(self.spawn_entity(data, None))
     }
@@ -756,7 +772,7 @@ impl World {
             let sc = e.scale * e.parent.and_then(|p| self.get(p)).map_or(Vec2::ONE, |p| p.scale);
             for v in &e.visuals {
                 match v {
-                    Visual::Sprite(sp) => self.draw_sprite(sp, wp, sc, e.rot, s),
+                    Visual::Sprite(sp) => self.draw_sprite(sp, wp, sc, self.world_rot(id), s),
                     Visual::Text(t) => {
                         let p = self.to_screen(wp);
                         let size = (t.size * s * sc.y.abs()).max(4.0);

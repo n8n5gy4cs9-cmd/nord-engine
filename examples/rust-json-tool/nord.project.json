@@ -1,0 +1,12 @@
+{
+  "format": 1,
+  "name": "Rust JSON Tool",
+  "id": "com.crowelian.rustjsontool",
+  "type": "wasm-app",
+  "engineVersion": "0.1.0",
+  "startScene": "",
+  "display": { "width": 960, "height": 640, "scale": "fit", "pixelArt": false, "background": "#2e3440" },
+  "physics": { "engine": "none", "gravity": [0, 0, 0] },
+  "input": { "actions": {} },
+  "plugins": []
+}

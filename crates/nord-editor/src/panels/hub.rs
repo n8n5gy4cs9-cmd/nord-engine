@@ -124,6 +124,10 @@ pub fn open_example(src: &Path) -> Result<PathBuf, String> {
     let dst = nord_core::io::config_dir().join("examples").join(name);
     if !dst.exists() {
         copy_dir(src, &dst).map_err(|e| e.to_string())?;
+        // Rust examples depend on the engine crates by relative path: point the private copy at the real checkout
+        if let Some(root) = src.parent().and_then(Path::parent) {
+            nord_core::project::retarget_engine_paths(&dst, root);
+        }
     }
     Ok(dst)
 }
@@ -214,8 +218,14 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         if ui.button("Create project").clicked() {
             let parent = st.hub.parent.clone();
             let name = st.hub.name.clone();
-            let res = match (&st.hub.starter, &st.engine_root) {
-                (Some(id), Some(root)) => {
+            // Rust project types start from their template folder (Cargo.toml + src/main.rs + scene) when the engine ships it
+            let starter = st.hub.starter.clone().or_else(|| match st.hub.kind {
+                ProjectType::WasmGame => Some("rust-2d-game".to_string()),
+                ProjectType::WasmApp => Some("rust-egui-app".to_string()),
+                _ => None,
+            });
+            let res = match (&starter, &st.engine_root) {
+                (Some(id), Some(root)) if root.join("templates").join(id).exists() => {
                     create_starter(&parent, &name, &root.join("templates").join(id))
                 }
                 _ => create_project(&parent, &name, st.hub.kind),

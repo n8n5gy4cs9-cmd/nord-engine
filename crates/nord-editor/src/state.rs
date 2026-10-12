@@ -113,6 +113,14 @@ pub enum Action {
     Build(String),
 }
 
+/// Background Rust build (see `app::start_rust_build`). Output lines go to the hub log so they appear in the Console with clickable `file:line` links.
+pub struct RustJob {
+    pub done: std::sync::atomic::AtomicBool,
+    pub ok: std::sync::atomic::AtomicBool,
+    /// start the game as soon as the build succeeds (Play on a Rust project)
+    pub play_after: bool,
+}
+
 pub struct Play {
     pub port: u16,
     pub hub: Arc<Hub>,
@@ -172,6 +180,8 @@ pub struct EditorState {
     pub apply_styles: bool,
     /// bumps on Play/Reload so the Game webview reloads
     pub game_nonce: u32,
+    /// running `cargo build` for a Rust (wasm-game / wasm-app) project; `None` when idle
+    pub rust_job: Option<Arc<RustJob>>,
     /// the edit viewport page has said hello (so scene/thumb messages are meaningful)
     pub viewport_ready: bool,
 }
@@ -229,6 +239,7 @@ impl EditorState {
             apply_theme: true,
             apply_styles: false,
             game_nonce: 0,
+            rust_job: None,
             viewport_ready: false,
         }
     }

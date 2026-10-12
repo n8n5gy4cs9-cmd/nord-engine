@@ -1,0 +1,231 @@
+{
+  "format": 1,
+  "name": "main",
+  "settings": {},
+  "entities": [
+    {
+      "id": "camera00",
+      "name": "Camera",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          320,
+          180,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "camera"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "ship0000",
+      "name": "Ship",
+      "enabled": true,
+      "tags": [
+        "ship"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          320,
+          180,
+          3
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            14,
+            22
+          ],
+          "tint": "#88c0d0"
+        }
+      ],
+      "scripts": [
+        {
+          "path": "ship",
+          "attributes": {
+            "turn": 220,
+            "thrust": 260
+          }
+        }
+      ],
+      "children": [
+        {
+          "id": "nose0000",
+          "name": "Nose",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              0,
+              -14,
+              1
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [
+            {
+              "type": "sprite",
+              "texture": "assets/sprites/square.png",
+              "size": [
+                6,
+                8
+              ],
+              "tint": "#eceff4"
+            }
+          ],
+          "scripts": [],
+          "children": [],
+          "prefab": null
+        }
+      ],
+      "prefab": null
+    },
+    {
+      "id": "score000",
+      "name": "Score",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          320,
+          24,
+          9
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "text",
+          "text": "Score 0",
+          "size": 22,
+          "color": "#ebcb8b"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "help0000",
+      "name": "Help",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          320,
+          346,
+          9
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "text",
+          "text": "A/D rotate \u00b7 W thrust \u00b7 Space fire \u00b7 R restart",
+          "size": 14,
+          "color": "#7b88a1"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "game0000",
+      "name": "Game",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [
+        {
+          "path": "game",
+          "attributes": {
+            "rocks": 5
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    }
+  ]
+}

@@ -108,6 +108,19 @@ impl Ctx<'_> {
     pub fn set_rotation(&mut self, deg: f32) {
         self.world.ents[self.id.idx()].rot = deg;
     }
+    pub fn scale_of(&self, id: EntityId) -> Vec2 {
+        self.world.get(id).map_or(Vec2::ONE, |e| e.scale)
+    }
+    pub fn set_scale(&mut self, id: EntityId, s: Vec2) {
+        if let Some(e) = self.world.get_mut(id) {
+            e.scale = s;
+        }
+    }
+    pub fn set_rotation_of(&mut self, id: EntityId, deg: f32) {
+        if let Some(e) = self.world.get_mut(id) {
+            e.rot = deg;
+        }
+    }
     pub fn velocity(&self) -> Vec2 {
         self.world.velocity(self.id)
     }
@@ -151,6 +164,10 @@ impl Ctx<'_> {
     /// Spawn a preloaded prefab (see [`Registry::prefab`]); returns None if the prefab was not loaded.
     pub fn spawn_prefab(&mut self, path: &str, pos: Vec2) -> Option<EntityId> {
         self.world.spawn_prefab(path, pos)
+    }
+    /// Like [`spawn_prefab`](Self::spawn_prefab) with JSON overrides (transform, components, script attributes…) — see `World::spawn_prefab_with`.
+    pub fn spawn_prefab_with(&mut self, path: &str, pos: Vec2, overrides: Value) -> Option<EntityId> {
+        self.world.spawn_prefab_with(path, pos, overrides)
     }
     pub fn emit(&mut self, name: &str, value: f32) {
         self.world.events.push((name.to_string(), value));

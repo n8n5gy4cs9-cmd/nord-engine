@@ -89,11 +89,19 @@ fn find_wasm(project: &Path, release: bool) -> Result<PathBuf> {
         .with_context(|| format!("no .wasm produced in {}", dir.display()))
 }
 
-/// Dev build for the editor / `nord build-rust`: cargo build + copy to `target/web/game.wasm` (what the project's dev `index.html` loads).
+/// Dev build for the editor / `nord build-rust`: cargo build, then stage in `target/web/` — `game.wasm` for a wasm-game, wasm-bindgen output
+/// (`app.js` + `app_bg.wasm`) for a wasm-app — which is what the project's dev `index.html` loads. Returns the main staged file.
 pub fn dev_build(project: &Path, release: bool, on_line: &mut dyn FnMut(&str)) -> Result<PathBuf> {
+    let kind = nord_core::io::load_project(project)?.kind;
     let wasm = cargo_build(project, release, on_line)?;
-    let dst = project.join("target/web/game.wasm");
-    fs::create_dir_all(dst.parent().unwrap())?;
+    let dir = project.join("target/web");
+    fs::create_dir_all(&dir)?;
+    if kind == nord_core::ProjectType::WasmApp {
+        on_line("wasm-bindgen …");
+        bindgen(&wasm, &dir)?;
+        return Ok(dir.join("app.js"));
+    }
+    let dst = dir.join("game.wasm");
     fs::copy(&wasm, &dst)?;
     Ok(dst)
 }

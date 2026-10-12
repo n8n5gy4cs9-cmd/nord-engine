@@ -96,3 +96,14 @@ instantly, is ~450 lines, and is trivially testable. 3D uses Babylon (GizmoManag
 ## ADR-018 One window for splash + main (M3, 2026-10-12)
 Splash is the same eframe window started borderless 640×360 and turned into the decorated main window (resize, centre, restore saved geometry)
 after ≥ 2000 ms. Avoids multi-window plumbing; tradeoff: a visible resize on slow compositors.
+
+## ADR-019 Rust/WASM tier: macroquad + rapier2d, scenes stay JSON, scripts are registry names (M5, 2026-10-12)
+`crates/nord-runtime-wasm` (games) and `crates/nord-app-wasm` (egui apps) are **not** workspace members (own `[workspace]`, own lockfile): macroquad/eframe
+need wasm32 or native GL/audio libraries, so `cargo build --workspace` must keep working on a bare Linux box. The Rust runtime reads the *same*
+`nord.project.json` / scene / prefab / tilemap JSON as the JS runtimes (2D subset), so the editor, validation and export keep one data model.
+Scripts differ: scene entries say `"path": "scripts/player"` (or `"player"`); the file stem is a key into the `Registry` built in `main`
+(`launch(Registry::new().register("player", …))`). Everything referenced by JSON is preloaded before frame 1 (macroquad's asset loading is async).
+rapier2d is pinned to **0.22** (0.3x switched to glam and reshuffled the API; revisit when it matters), runs in metres (32 px/m) with y-down axes.
+Rendering is a thin manual world→screen transform (design size letterboxed into the canvas) rather than `Camera2D`, so pointer picking is trivial.
+Apps use eframe 0.31 + the **wasm-bindgen CLI** (trunk-free); dev builds land in `<project>/target/web/` and the project's `index.html` loads them.
+Audio: macroquad's audio supports only .wav/.ogg (no mp3). Known harmless JS error in macroquad's bundle (`register_plugin`, quad_net section).

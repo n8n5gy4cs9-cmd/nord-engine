@@ -12,6 +12,7 @@ pub mod util;
 pub mod world;
 
 pub use macroquad;
+pub use serde_json;
 #[cfg(feature = "ui")]
 pub use egui_macroquad::egui;
 pub use script::{Attrs, Ctx, Registry, Script};

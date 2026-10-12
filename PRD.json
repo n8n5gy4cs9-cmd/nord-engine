@@ -825,25 +825,25 @@
       "id": "M5-06",
       "milestone": "M5",
       "title": "nord-app-wasm: eframe app template -> web export (trunk-free: wasm-bindgen CLI)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M5-07",
       "milestone": "M5",
       "title": "Templates: rust-2d-game, rust-egui-app; examples (asteroids, physics toys, JSON tool)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M5-08",
       "milestone": "M5",
       "title": "Port selected raylib/macroquad/bevy examples",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M5-09",
       "milestone": "M5",
       "title": "Editor integration: Rust project build button, cargo output in console, error links",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M6-01",
@@ -939,7 +939,7 @@
       "id": "M6-16",
       "milestone": "M6",
       "title": "Example apps (>= 6) + Rust samples (>= 3)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M6-17",

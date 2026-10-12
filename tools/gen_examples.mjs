@@ -22,5 +22,7 @@ for (const id of ids) {
 if (!want.length) {
   const t = index.filter((i) => i.template).map((i) => ({ id: i.template.id, title: i.template.title, description: i.template.description, type: i.kind }));
   fs.mkdirSync(path.join(ROOT, 'templates'), { recursive: true });
+  const extra = path.join(ROOT, 'templates/templates.extra.json'); // hand-maintained entries (Rust templates)
+  if (fs.existsSync(extra)) t.push(...JSON.parse(fs.readFileSync(extra, 'utf8')));
   fs.writeFileSync(path.join(ROOT, 'templates/templates.json'), JSON.stringify(t, null, 2) + '\n');
 }

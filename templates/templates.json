@@ -1,5 +1,11 @@
 [
   {
+    "id": "ui-app",
+    "title": "UI app (Todo)",
+    "description": "Plain HTML/JS app with a tiny DOM kit — todo list with persistence. Swap in any library app kit.",
+    "type": "html"
+  },
+  {
     "id": "endless-runner",
     "title": "Endless one-button (Flappy)",
     "description": "Scrolling obstacles, one-button control, score and restart.",
@@ -82,5 +88,17 @@
     "title": "Visual novel",
     "description": "Branching dialogue from a JSON file (library dialogue script): speakers, typewriter text, choices.",
     "type": "2d"
+  },
+  {
+    "id": "rust-2d-game",
+    "title": "Rust 2D game",
+    "description": "macroquad + rapier2d runtime, scenes in JSON, scripts in Rust (builds to WebAssembly).",
+    "type": "wasm-game"
+  },
+  {
+    "id": "rust-egui-app",
+    "title": "Rust egui app",
+    "description": "eframe/egui app that runs natively and in the browser (wasm-bindgen, no trunk).",
+    "type": "wasm-app"
   }
 ]

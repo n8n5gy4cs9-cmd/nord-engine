@@ -1,0 +1,27 @@
+{
+  "format": 1,
+  "name": "Snake (macroquad port)",
+  "id": "com.crowelian.rustmqsnake",
+  "type": "wasm-game",
+  "engineVersion": "0.1.0",
+  "startScene": "",
+  "display": {
+    "width": 800,
+    "height": 600,
+    "scale": "fit",
+    "pixelArt": false,
+    "background": "#000000"
+  },
+  "physics": {
+    "engine": "none",
+    "gravity": [
+      0,
+      0,
+      0
+    ]
+  },
+  "input": {
+    "actions": {}
+  },
+  "plugins": []
+}

@@ -1,0 +1,18 @@
+[package]
+name = "my-rust-game"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "game"
+path = "src/main.rs"
+
+[dependencies]
+nord-runtime-wasm = { path = "../../crates/nord-runtime-wasm" }
+
+[workspace]
+
+[profile.release]
+opt-level = "s"
+lto = true
+panic = "abort"

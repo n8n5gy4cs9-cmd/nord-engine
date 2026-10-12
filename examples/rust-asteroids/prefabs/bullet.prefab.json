@@ -1,0 +1,48 @@
+{
+  "format": 1,
+  "root": {
+    "id": "bullet00",
+    "name": "Bullet",
+    "enabled": true,
+    "tags": [
+      "bullet"
+    ],
+    "layer": 0,
+    "transform": {
+      "pos": [
+        0,
+        0,
+        2
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    "components": [
+      {
+        "type": "sprite",
+        "texture": "assets/sprites/square.png",
+        "size": [
+          8,
+          3
+        ],
+        "tint": "#ebcb8b"
+      }
+    ],
+    "scripts": [
+      {
+        "path": "bullet",
+        "attributes": {}
+      }
+    ],
+    "children": [],
+    "prefab": null
+  }
+}

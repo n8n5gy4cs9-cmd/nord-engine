@@ -50,5 +50,10 @@ cargo build --workspace && cargo test --workspace && cargo clippy --workspace --
 - **M4 export done except M4-08 shell run + M4-09 macOS CI run (see KNOWN_ISSUES RISK-006) and M4-05 atlas (M4-11):** `nord build/export/bundle-mac`, `nord-export`, `nord-player`, Project→Export… dialog, docs/HOSTING.md, e2e `export-*`.
 - ~~Next: M4 export~~ (`nord build/export`, mac player + `nord-player`), reusing `nord-serve`/`engine_root` for assets. Docs tasks M7-11/12 (complete Nord-format API docs +
   manual with "for dummies" toggle boxes) are owner requests — don't drop them; the editor's Docs tab already embeds `docs/manual/index.html` (served at `/__docs/`) once it exists.
+- **M5 Rust/WASM done** (crates `nord-runtime-wasm`, `nord-app-wasm`, excluded from the main workspace; docs/RUST_TIER.md, ADR-019). **M6 library done except M6-17**
+  (CC0 packs: sandbox cannot reach kenney.nl). ~125 library items (`node tools/build-library-index.mjs`), 15 2D + 4 3D + 8 app + 6 Rust examples,
+  17 starter templates — all generated from `tools/examples/<id>/` by `node tools/gen_examples.mjs` (never edit `examples/`/`templates/` JS projects by hand;
+  Rust examples/templates are hand-written). Smoke: `node tools/smoke-examples.mjs [id…]`; Rust: `node tools/e2e.mjs rust-platformer …`.
+- Next: M7 docs (API reference + manual with "for dummies" boxes), M8 polish. Open from earlier: M3-07/M3-25, M4-08/09/11, M6-17.
 - Vendored: Phaser 4.2.1, Babylon 9.30.0 (+Havok 1.3.14), PlayCanvas 2.23.2 (optional), CodeMirror bundle, marked, fonts, Lucide.
 - Known risks: `docs/KNOWN_ISSUES.md`.

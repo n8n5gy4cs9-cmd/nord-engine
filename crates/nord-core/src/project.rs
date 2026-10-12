@@ -176,6 +176,19 @@ pub fn create(dir: &Path, kind: ProjectType) -> crate::Result<()> {
     io::save_project(dir, &p)
 }
 
+/// Rust projects reference the engine crates relatively (`../../crates/…` from `examples/<x>` or `templates/<x>`); after copying a project elsewhere
+/// point those paths at the real engine checkout (absolute, forward slashes so TOML needs no escaping).
+pub fn retarget_engine_paths(dir: &Path, engine: &Path) {
+    let f = dir.join("Cargo.toml");
+    if let Ok(t) = std::fs::read_to_string(&f) {
+        let abs = engine.to_string_lossy().replace('\\', "/");
+        let n = t.replace("\"../../crates/", &format!("\"{abs}/crates/"));
+        if n != t {
+            let _ = std::fs::write(&f, n);
+        }
+    }
+}
+
 /// Copy a starter template folder (`templates/<id>`) to `dst` and give the project its own name and id.
 pub fn create_from_template(src: &Path, dst: &Path) -> crate::Result<()> {
     use crate::io;
@@ -206,6 +219,9 @@ pub fn create_from_template(src: &Path, dst: &Path) -> crate::Result<()> {
     let mut p = io::load_project(dst)?;
     p.name = name.clone();
     p.id = format!("com.crowelian.{}", slug(&name));
+    if let Some(engine) = src.parent().and_then(Path::parent) {
+        retarget_engine_paths(dst, engine);
+    }
     io::write_atomic(&dst.join(".gitignore"), b".nord-cache/\ndist/\ntarget/\n")?;
     io::save_project(dst, &p)
 }

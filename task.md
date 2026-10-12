@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 96/127 tasks (76%)** · updated 2026-10-12
+**Overall: 101/127 tasks (80%)** · updated 2026-10-12
 
 | Milestone | Progress |
 |---|---|
@@ -12,8 +12,8 @@
 | M2 JS runtimes | 19/19 (100%) |
 | M3 Editor | 24/26 (92%) |
 | M4 Export | 8/11 (73%) |
-| M5 Rust/WASM | 5/9 (56%) |
-| M6 Library | 16/18 (89%) |
+| M5 Rust/WASM | 9/9 (100%) |
+| M6 Library | 17/18 (94%) |
 | M7 Docs | 0/12 (0%) |
 | M8 Polish & portability | 0/8 (0%) |
 
@@ -132,10 +132,10 @@ _macroquad+rapier game runtime, egui app runtime_
 - [x] **M5-03** Rust Script trait + registry + sample scripts (player, enemy)
 - [x] **M5-04** Audio, input actions, tilemap, particles, UI (egui-macroquad) in Rust runtime
 - [x] **M5-05** Export `web-wasm-game` (cargo build + wasm-opt if present + index.html + mq_js_bundle)
-- [ ] **M5-06** nord-app-wasm: eframe app template -> web export (trunk-free: wasm-bindgen CLI)
-- [ ] **M5-07** Templates: rust-2d-game, rust-egui-app; examples (asteroids, physics toys, JSON tool)
-- [ ] **M5-08** Port selected raylib/macroquad/bevy examples
-- [ ] **M5-09** Editor integration: Rust project build button, cargo output in console, error links
+- [x] **M5-06** nord-app-wasm: eframe app template -> web export (trunk-free: wasm-bindgen CLI)
+- [x] **M5-07** Templates: rust-2d-game, rust-egui-app; examples (asteroids, physics toys, JSON tool)
+- [x] **M5-08** Port selected raylib/macroquad/bevy examples
+- [x] **M5-09** Editor integration: Rust project build button, cargo output in console, error links
 
 ## M6 — Library
 _snippets, controllers, systems, asset packs, examples_
@@ -155,7 +155,7 @@ _snippets, controllers, systems, asset packs, examples_
 - [x] **M6-13** Templates for New Project (>= 12, see LIBRARY_PLAN J)
 - [x] **M6-14** Example games 2D (>= 10)
 - [x] **M6-15** Example games 3D (>= 4)
-- [ ] **M6-16** Example apps (>= 6) + Rust samples (>= 3)
+- [x] **M6-16** Example apps (>= 6) + Rust samples (>= 3)
 - [ ] **M6-17** Optional CC0 asset packs (Kenney etc.) replacing placeholders; update ASSETS.md
 - [x] **M6-18** tools/smoke-examples.mjs headless smoke test for every example
 

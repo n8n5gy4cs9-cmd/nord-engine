@@ -6,6 +6,7 @@ use crate::{
 };
 use egui::{Context, Key, Modifiers};
 use egui_dock::{DockArea, DockState, NodeIndex, Style, TabViewer};
+use std::sync::Arc;
 use std::time::{Duration, Instant};
 
 const SPLASH_MIN: Duration = Duration::from_millis(2000);
@@ -205,6 +206,42 @@ impl App {
         });
     }
 
+    /// Show the Game tab and (re)load the game page.
+    fn begin_play(&mut self) {
+        let st = &mut self.st;
+        if st.ensure_server().is_none() {
+            return;
+        }
+        if st.dirty {
+            st.save();
+        }
+        if let Some(p) = st.play.as_mut() {
+            p.running = true;
+        }
+        st.game_nonce += 1;
+        st.log(LogLevel::Build, "▶ Play");
+        self.show_tab(Tab::Game);
+    }
+
+    /// Poll the background Rust build; start the game when a Play-triggered build succeeded.
+    fn poll_rust_build(&mut self, ctx: &Context) {
+        use std::sync::atomic::Ordering::SeqCst;
+        let Some(job) = self.st.rust_job.clone() else { return };
+        if !job.done.load(SeqCst) {
+            ctx.request_repaint_after(Duration::from_millis(150));
+            return;
+        }
+        self.st.rust_job = None;
+        if job.ok.load(SeqCst) {
+            if job.play_after {
+                self.begin_play();
+            }
+        } else {
+            self.st.toast("Rust build failed — see Console");
+            self.show_tab(Tab::Console);
+        }
+    }
+
     pub fn run_actions(&mut self, ctx: &Context) {
         while !self.st.actions.is_empty() {
             let a = self.st.actions.remove(0);
@@ -273,16 +310,10 @@ impl App {
             Action::ToggleSnap => st.settings.snap = !st.settings.snap,
             Action::ToggleGrid => st.settings.grid = !st.settings.grid,
             Action::Play => {
-                if st.project.is_some() && st.ensure_server().is_some() {
-                    if st.dirty {
-                        st.save();
-                    }
-                    if let Some(p) = st.play.as_mut() {
-                        p.running = true;
-                    }
-                    st.game_nonce += 1;
-                    st.log(LogLevel::Build, "▶ Play");
-                    self.show_tab(Tab::Game);
+                if st.project.is_some() && is_rust(st) {
+                    start_rust_build(st, true); // builds, then `finish_rust_build` starts the game
+                } else if st.project.is_some() && st.ensure_server().is_some() {
+                    self.begin_play();
                 }
             }
             Action::Stop => {
@@ -424,6 +455,9 @@ impl App {
                 act(ui, "Play  (Cmd+R)", Action::Play, st);
                 act(ui, "Stop  (Cmd+.)", Action::Stop, st);
                 act(ui, "Validate", Action::Build("validate".into()), st);
+                if is_rust(st) {
+                    act(ui, "Build Rust", Action::Build("rust build".into()), st);
+                }
                 act(ui, "Export…", Action::Export, st);
             });
             ui.menu_button("Help", |ui| {
@@ -435,9 +469,73 @@ impl App {
     }
 }
 
+fn is_rust(st: &EditorState) -> bool {
+    st.project.as_ref().is_some_and(|p| {
+        matches!(
+            p.kind,
+            nord_core::ProjectType::WasmGame | nord_core::ProjectType::WasmApp
+        )
+    })
+}
+
+/// `nord build-rust` in a background thread: cargo output streams into the Console (hub log) with `file:line` links; `play_after` runs the game on success.
+fn start_rust_build(st: &mut EditorState, play_after: bool) {
+    use std::sync::atomic::{AtomicBool, Ordering::SeqCst};
+    if st.rust_job.as_ref().is_some_and(|j| !j.done.load(SeqCst)) {
+        st.toast("A Rust build is already running");
+        return;
+    }
+    let Some(root) = st.root.clone() else { return };
+    let Some(hub) = st
+        .ensure_server()
+        .and_then(|_| st.play.as_ref().map(|p| p.hub.clone()))
+    else {
+        return;
+    };
+    if st.dirty {
+        st.save();
+    }
+    st.log(LogLevel::Build, "$ nord build-rust (cargo build --target wasm32-unknown-unknown)");
+    let job = Arc::new(crate::state::RustJob {
+        done: AtomicBool::new(false),
+        ok: AtomicBool::new(false),
+        play_after,
+    });
+    st.rust_job = Some(job.clone());
+    std::thread::spawn(move || {
+        let push = |level: &str, text: String| {
+            hub.logs.lock().unwrap().push(nord_serve::LogEntry {
+                level: level.into(),
+                text,
+            });
+        };
+        let res = nord_export::rust::dev_build(&root, false, &mut |l| {
+            let level = if l.starts_with("error")
+                || nord_export::rust::parse_diagnostic(l).is_some_and(|d| d.3)
+            {
+                "error"
+            } else if l.contains("warning") {
+                "warn"
+            } else {
+                "info"
+            };
+            push(level, l.to_string());
+        });
+        match res {
+            Ok(p) => {
+                push("info", format!("✔ Rust build ok → {}", p.display()));
+                job.ok.store(true, SeqCst);
+            }
+            Err(e) => push("error", format!("✘ {e}")),
+        }
+        job.done.store(true, SeqCst);
+    });
+}
+
 fn run_build(st: &mut EditorState, what: &str) {
     let Some(root) = st.root.clone() else { return };
     match what {
+        "rust build" => start_rust_build(st, false),
         "validate" => {
             let issues = nord_core::validate::validate_project(&root);
             if issues.is_empty() {
@@ -659,6 +757,7 @@ impl App {
             self.st.handle_viewport(&m);
         }
         self.run_actions(ctx);
+        self.poll_rust_build(ctx);
         self.st.autosave_tick();
         self.sync_viewport();
 

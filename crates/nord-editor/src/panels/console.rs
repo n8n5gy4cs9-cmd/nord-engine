@@ -69,9 +69,13 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                 p.kind,
                 nord_core::ProjectType::WasmGame | nord_core::ProjectType::WasmApp
             )
-        }) && ui.small_button("cargo check").clicked()
-        {
-            st.push(Action::Build("cargo check".into()));
+        }) {
+            if ui.small_button("Build Rust").clicked() {
+                st.push(Action::Build("rust build".into()));
+            }
+            if ui.small_button("cargo check").clicked() {
+                st.push(Action::Build("cargo check".into()));
+            }
         }
     });
     ui.separator();

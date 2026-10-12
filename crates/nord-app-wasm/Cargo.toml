@@ -1,0 +1,22 @@
+[package]
+name = "nord-app-wasm"
+version = "0.0.1"
+edition = "2021"
+authors = ["Crowelian 2026 + Sonnet"]
+license = "MIT"
+description = "Nord Engine Rust/WASM app tier: eframe/egui apps that run natively and in the browser (exported with the wasm-bindgen CLI, no trunk)"
+
+# Not a member of the main workspace; check with
+#   cargo check --manifest-path crates/nord-app-wasm/Cargo.toml --target wasm32-unknown-unknown
+[workspace]
+
+[dependencies]
+eframe = { version = "0.31", default-features = false, features = ["glow", "default_fonts"] }
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+# native windowing backends (Linux); ignored on macOS/Windows
+eframe = { version = "0.31", default-features = false, features = ["x11", "wayland"] }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+wasm-bindgen-futures = "0.4"
+web-sys = { version = "0.3", features = ["Window", "Document", "HtmlCanvasElement", "Element"] }

@@ -1,0 +1,4 @@
+[
+  { "id": "rust-2d-game", "title": "Rust 2D game", "description": "macroquad + rapier2d runtime, scenes in JSON, scripts in Rust (builds to WebAssembly).", "type": "wasm-game" },
+  { "id": "rust-egui-app", "title": "Rust egui app", "description": "eframe/egui app that runs natively and in the browser (wasm-bindgen, no trunk).", "type": "wasm-app" }
+]
