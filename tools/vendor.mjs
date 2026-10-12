@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Vendor pinned third-party libs into vendor/ (committed) so built games have NO online dependencies.
 // Usage: node tools/vendor.mjs            install/update everything
+//        node tools/vendor.mjs --crates   (re)vendor only the Rust-crate assets (macroquad JS loader)
 //        node tools/vendor.mjs --verify   check sha256 of vendor/ files against vendor/VENDOR.json
 import fs from 'node:fs';
 import os from 'node:os';
@@ -60,6 +61,24 @@ function fetchPkg(pkg) {
   run('tar', ['xzf', tgz], dir);
   return path.join(dir, 'package');
 }
+// Rust crate assets (downloaded from static.crates.io, pinned): macroquad's JS loader needed by `web-wasm-game` exports.
+const CRATES = [
+  { name: 'macroquad', crate: 'macroquad', version: '0.4.16', license: 'MIT OR Apache-2.0', files: [['js/mq_js_bundle.js'], ['LICENSE-MIT'], ['LICENSE-APACHE']] },
+];
+function fetchCrate(c) {
+  const dir = path.join(work, `crate_${c.crate}`);
+  fs.mkdirSync(dir, { recursive: true });
+  run('curl', ['-fsSL', '-o', 'c.crate', `https://static.crates.io/crates/${c.crate}/${c.crate}-${c.version}.crate`], dir);
+  run('tar', ['xzf', 'c.crate'], dir);
+  return path.join(dir, `${c.crate}-${c.version}`);
+}
+function vendorCrates() {
+  for (const c of CRATES) {
+    const dir = fetchCrate(c);
+    for (const [from] of c.files) copy(path.join(dir, from), path.join(V, c.name, path.basename(from)), c.name, c.version, c.license);
+    console.log('vendored crate', `${c.crate}@${c.version}`);
+  }
+}
 const entries = [];
 const copy = (src, dst, lib, version, license) => {
   fs.mkdirSync(path.dirname(dst), { recursive: true });
@@ -67,6 +86,14 @@ const copy = (src, dst, lib, version, license) => {
   entries.push({ lib, version, license, file: path.relative(root, dst) });
 };
 
+if (process.argv.includes('--crates')) { // add/refresh only the crate assets, keep everything else (and the manifest) as is
+  vendorCrates();
+  const m = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+  for (const e of entries) { m.libs[e.lib] = { version: e.version, license: e.license }; m.files[e.file] = sha(path.join(root, e.file)); }
+  fs.writeFileSync(manifestPath, JSON.stringify(m, null, 2) + '\n');
+  fs.rmSync(work, { recursive: true, force: true });
+  process.exit(0);
+}
 fs.rmSync(V, { recursive: true, force: true });
 for (const L of LIBS) {
   const pkgDir = fetchPkg(L.pkg);
@@ -82,6 +109,8 @@ for (const L of LIBS) {
   }
   console.log('vendored', L.pkg);
 }
+
+vendorCrates();
 
 // CodeMirror bundle (manual live examples)
 const vb = path.join(root, 'tools/vendor');

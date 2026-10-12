@@ -795,25 +795,25 @@
       "id": "M5-01",
       "milestone": "M5",
       "title": "nord-runtime-wasm: macroquad app loading scene JSON (2D subset)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M5-02",
       "milestone": "M5",
       "title": "rapier2d integration, colliders/rigidbodies from scene components",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M5-03",
       "milestone": "M5",
       "title": "Rust Script trait + registry + sample scripts (player, enemy)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M5-04",
       "milestone": "M5",
       "title": "Audio, input actions, tilemap, particles, UI (egui-macroquad) in Rust runtime",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M5-05",

@@ -1,4 +1,4 @@
-/target
+target/
 /third_party/*/
 !/third_party/.gitkeep
 node_modules/

@@ -1,0 +1,670 @@
+{
+  "format": 1,
+  "name": "main",
+  "settings": {},
+  "entities": [
+    {
+      "id": "camera00",
+      "name": "Camera",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          320,
+          180,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "camera"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "ground00",
+      "name": "Ground",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          320,
+          350,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            640,
+            20
+          ],
+          "tint": "#4c566a"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            640,
+            20
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "walll000",
+      "name": "WallL",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          -5,
+          180,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            10,
+            360
+          ],
+          "tint": "#4c566a"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            10,
+            360
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "wallr000",
+      "name": "WallR",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          645,
+          180,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            10,
+            360
+          ],
+          "tint": "#4c566a"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            10,
+            360
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "ramp0000",
+      "name": "Ramp",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          200,
+          260,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          18
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            160,
+            12
+          ],
+          "tint": "#81a1c1"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            160,
+            12
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "crate000",
+      "name": "Crate0",
+      "enabled": true,
+      "tags": [
+        "toy"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          300,
+          60,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            28,
+            28
+          ],
+          "tint": "#ebcb8b"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "dynamic",
+          "bounce": 0.3,
+          "fixedRotation": false,
+          "friction": 0.6
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            28,
+            28
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "crate100",
+      "name": "Crate1",
+      "enabled": true,
+      "tags": [
+        "toy"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          330,
+          20,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            28,
+            28
+          ],
+          "tint": "#a3be8c"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "dynamic",
+          "bounce": 0.3,
+          "fixedRotation": false,
+          "friction": 0.6
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            28,
+            28
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "crate200",
+      "name": "Crate2",
+      "enabled": true,
+      "tags": [
+        "toy"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          360,
+          90,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            28,
+            28
+          ],
+          "tint": "#b48ead"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "dynamic",
+          "bounce": 0.3,
+          "fixedRotation": false,
+          "friction": 0.6
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            28,
+            28
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "crate300",
+      "name": "Crate3",
+      "enabled": true,
+      "tags": [
+        "toy"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          310,
+          -30,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            28,
+            28
+          ],
+          "tint": "#d08770"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "dynamic",
+          "bounce": 0.3,
+          "fixedRotation": false,
+          "friction": 0.6
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            28,
+            28
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "crate400",
+      "name": "Crate4",
+      "enabled": true,
+      "tags": [
+        "toy"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          520,
+          40,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            28,
+            28
+          ],
+          "tint": "#88c0d0"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "dynamic",
+          "bounce": 0.3,
+          "fixedRotation": false,
+          "friction": 0.6
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            28,
+            28
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "ball0000",
+      "name": "Ball",
+      "enabled": true,
+      "tags": [
+        "toy"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          150,
+          20,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/circle.png",
+          "size": [
+            30,
+            30
+          ],
+          "tint": "#bf616a"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "dynamic",
+          "bounce": 0.8,
+          "fixedRotation": false
+        },
+        {
+          "type": "collider",
+          "shape": "circle",
+          "radius": 15
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "info0000",
+      "name": "Info",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          320,
+          24,
+          50
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "text",
+          "text": "Click or press Space to drop a box \u00b7 R resets",
+          "size": 18,
+          "color": "#d8dee9"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "counter0",
+      "name": "Counter",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          90,
+          52,
+          50
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "text",
+          "text": "Toys: 6",
+          "size": 18,
+          "color": "#ebcb8b"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "game0000",
+      "name": "Game",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [
+        {
+          "path": "toys",
+          "attributes": {
+            "maxToys": 60
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+[package]
+name = "nord-runtime-wasm"
+version = "0.0.1"
+edition = "2021"
+authors = ["Crowelian 2026 + Sonnet"]
+license = "MIT"
+description = "Nord Engine Rust/WASM game runtime: macroquad rendering + rapier2d physics + scene JSON + Script trait"
+
+# Not a member of the main workspace (macroquad needs wasm32 or native GL/audio libs); build it with
+#   cargo check --manifest-path crates/nord-runtime-wasm/Cargo.toml --target wasm32-unknown-unknown
+[workspace]
+
+[features]
+default = ["ui"]
+ui = ["dep:egui-macroquad"]
+
+[dependencies]
+macroquad = { version = "0.4", features = ["audio"] }
+rapier2d = "0.22"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+egui-macroquad = { version = "0.17", optional = true }
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+panic = "abort"
