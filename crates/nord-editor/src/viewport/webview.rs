@@ -113,18 +113,18 @@ impl WebPanes {
                 offset: o,
                 fit,
             }) => {
-                let k = (size.x / f.x).min(size.y / f.y);
+                // the offset shrinks the area the view may use (it starts that many pixels from the edge), so the view
+                // moves and keeps its aspect ratio instead of being cropped
+                let area = egui::Rect::from_min_max(
+                    full.min + egui::vec2(o[0].max(0.0), o[1].max(0.0)),
+                    full.max + egui::vec2(o[0].min(0.0), o[1].min(0.0)),
+                );
+                let asz = area.size().max(Vec2::splat(10.0));
+                let k = (asz.x / f.x).min(asz.y / f.y);
                 let k = if fit { k } else { k.min(1.0) }; // Fit also scales up
                 let f = (f * k).max(Vec2::splat(10.0));
-                let free = (size - f).max(Vec2::ZERO);
-                let min = full.min + egui::vec2(free.x * a[0] + o[0], free.y * a[1] + o[1]);
-                // the offset may push the view past the panel edge: crop to the panel (never over other panels)
-                let r = egui::Rect::from_min_size(min, f).intersect(full);
-                if r.is_positive() {
-                    r
-                } else {
-                    egui::Rect::from_min_size(full.min, Vec2::splat(1.0))
-                }
+                let free = (asz - f).max(Vec2::ZERO);
+                egui::Rect::from_min_size(area.min + egui::vec2(free.x * a[0], free.y * a[1]), f)
             }
             None => full,
         };
