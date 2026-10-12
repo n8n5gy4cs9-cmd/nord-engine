@@ -1,0 +1,38 @@
+{
+  "start": "a",
+  "nodes": {
+    "a": {
+      "speaker": "Mira",
+      "text": "You finally made it. The lighthouse has been dark for three nights.",
+      "next": "b"
+    },
+    "b": {
+      "speaker": "Mira",
+      "text": "Do you want to go up and light it, or check the cellar first?",
+      "choices": [
+        {
+          "text": "Light the lamp",
+          "next": "lamp"
+        },
+        {
+          "text": "Check the cellar",
+          "next": "cellar"
+        }
+      ]
+    },
+    "lamp": {
+      "speaker": "You",
+      "text": "The lamp flares to life. Far out at sea, a ship answers with a horn.",
+      "next": "end"
+    },
+    "cellar": {
+      "speaker": "You",
+      "text": "Down below, the old generator hums. Someone has been here recently...",
+      "next": "end"
+    },
+    "end": {
+      "speaker": "Narrator",
+      "text": "To be continued. Edit assets/story.json to write your own story."
+    }
+  }
+}

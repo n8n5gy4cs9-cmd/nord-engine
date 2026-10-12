@@ -98,6 +98,7 @@ export function writeProject(spec, outDir, srcDir) {
     fs.mkdirSync(path.join(outDir, 'scripts'), { recursive: true });
     fs.writeFileSync(path.join(outDir, 'scripts/mk.js'), MK_JS);
     for (const n of spec.lib ?? []) copy(path.join(ROOT, 'library/scripts', `${n}.js`), path.join(outDir, 'scripts', `${n}.js`));
+    for (const [to, content] of Object.entries(spec.files ?? {})) { fs.mkdirSync(path.dirname(path.join(outDir, to)), { recursive: true }); fs.writeFileSync(path.join(outDir, to), typeof content === 'string' ? content : JSON.stringify(content, null, 2) + '\n'); }
     for (const a of spec.assets ?? []) { const [from, to] = typeof a === 'string' ? [a, a] : [a.from, a.to]; const src = path.join(ROOT, from); if (!fs.existsSync(src)) throw new Error(`${spec.id}: missing asset ${from}`); copy(src, path.join(outDir, to)); if (fs.existsSync(src + '.meta.json')) copy(src + '.meta.json', path.join(outDir, to + '.meta.json')); }
   }
   wj(path.join(outDir, 'nord.project.json'), spec.project);
