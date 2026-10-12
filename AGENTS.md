@@ -1,0 +1,35 @@
+# AGENTS.md — start here (for any AI continuing Nord Engine)
+
+Nord Engine = personal Rust-based game/app engine + editor that exports static HTML web games and a Mac app.
+Owner: Crowelian. Credit: **Crowelian 2026 + Sonnet**. Keep it **pragmatic, not over-engineered**; **reuse/clone existing code**.
+
+## Read in this order
+1. `task.md` — what is done / undone (generated; truth = `PRD.json`)
+2. `docs/PRD.md` — goals, requirements, principles
+3. `docs/ARCHITECTURE.md` + `docs/DECISIONS.md` — how it fits, why
+4. Spec for the area you touch: `PROJECT_FORMAT.md`, `SCRIPTING_API.md`, `EXPORT_TARGETS.md`, `EDITOR_UI.md`, `LIBRARY_PLAN.md`, `MANUAL_PLAN.md`
+5. `docs/UPSTREAM.md` + `THIRD_PARTY.md` before copying any external code
+6. `ASSETS.md` before touching art/audio; `docs/KNOWN_ISSUES.md` for open bugs
+
+## Rules
+- **Always update tracking**: `node tools/tasks.mjs done <ID> [<ID>…]` (updates `PRD.json` + regenerates `task.md`), add a line to `docs/CHANGELOG.md`. New work not in the list → `node tools/tasks.mjs add <milestone> "<title>"`.
+- Update the relevant `docs/*.md` when behaviour/specs change; record big choices as a new ADR in `docs/DECISIONS.md`.
+- **Offline**: never reference CDNs. Add libs via `tools/vendor.mjs` (pinned + sha256) and `THIRD_PARTY.md`.
+- Placeholder art/audio only via `tools/gen_assets.py` (re-runnable) or added manually + documented in `ASSETS.md`.
+- Branch: develop on the branch given by the session; commit small, descriptive messages; do not open PRs unless asked.
+- Don't add frameworks/abstractions "just in case". Prefer deleting code.
+- Verify before ticking: build/test/run (see `docs/TESTING.md`). Be honest in `KNOWN_ISSUES.md` about what is unverified (e.g. macOS-only parts).
+
+## Environment notes (cloud sandbox)
+Linux only; Rust 1.9x, Node 22, Python3+PIL/numpy, ffmpeg, Chromium via Playwright. `git clone` of GitHub works; npm + crates.io work.
+macOS-only things (Tauri window, codesign, dmg) cannot be run here → must be verified by CI `macos-14` or the owner.
+
+## Quick commands
+```
+node tools/tasks.mjs status            # progress by milestone
+node tools/tasks.mjs next              # next undone tasks
+node tools/vendor.mjs [--verify]       # (re)install vendored libs
+tools/fetch-upstreams.sh [name…]       # shallow clones into third_party/
+python3 tools/gen_assets.py            # regenerate all placeholder assets
+cargo build --workspace
+```
