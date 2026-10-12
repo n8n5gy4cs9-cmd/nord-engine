@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 86/126 tasks (68%)** · updated 2026-10-12
+**Overall: 88/126 tasks (70%)** · updated 2026-10-12
 
 | Milestone | Progress |
 |---|---|
@@ -13,7 +13,7 @@
 | M3 Editor | 23/25 (92%) |
 | M4 Export | 8/11 (73%) |
 | M5 Rust/WASM | 0/9 (0%) |
-| M6 Library | 12/18 (67%) |
+| M6 Library | 14/18 (78%) |
 | M7 Docs | 0/12 (0%) |
 | M8 Polish & portability | 0/8 (0%) |
 
@@ -152,11 +152,11 @@ _snippets, controllers, systems, asset packs, examples_
 - [x] **M6-11** FX (particle presets, shake, flash, hitstop, slow-mo, trail, post-fx, parallax) + shaders
 - [x] **M6-12** App kits (todo, notes, kanban, dashboard+charts, calculator, paint, audio player, json viewer, router/state)
 - [ ] **M6-13** Templates for New Project (>= 12, see LIBRARY_PLAN J)
-- [ ] **M6-14** Example games 2D (>= 10)
+- [x] **M6-14** Example games 2D (>= 10)
 - [ ] **M6-15** Example games 3D (>= 4)
 - [ ] **M6-16** Example apps (>= 6) + Rust samples (>= 3)
 - [ ] **M6-17** Optional CC0 asset packs (Kenney etc.) replacing placeholders; update ASSETS.md
-- [ ] **M6-18** tools/smoke-examples.mjs headless smoke test for every example
+- [x] **M6-18** tools/smoke-examples.mjs headless smoke test for every example
 
 ## M7 — Docs
 _manual, guides, tutorials, in-editor docs_

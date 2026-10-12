@@ -104,11 +104,11 @@ export class HavokAdapter {
     }
   }
   /** Entity transform was set from script: push it into Havok for the next step (pre-step sync is off by default), zeroing velocity for dynamic bodies. */
-  teleported(e) {
+  teleported(e, keepVelocity = false) {
     const r = this.bodies.get(e); if (!r) return;
     r.body.disablePreStep = false;
     this.scene.onAfterPhysicsObservable.addOnce(() => { r.body.disablePreStep = true; });
-    if (r.cfg.mode === 'dynamic') { r.body.setLinearVelocity(this.B.Vector3.Zero()); r.body.setAngularVelocity(this.B.Vector3.Zero()); }
+    if (r.cfg.mode === 'dynamic') { const v = keepVelocity ? r.body.getLinearVelocity() : this.B.Vector3.Zero(); r.body.setLinearVelocity(v); r.body.setAngularVelocity(this.B.Vector3.Zero()); }
   }
 
   setVelocity(e, x, y, z) {

@@ -107,7 +107,7 @@ export class Backend {
     n.rotationQuaternion = B.Quaternion.RotationYawPitchRoll(t.rot[1] * D2R, t.rot[0] * D2R, t.rot[2] * D2R);
     n.scaling.set(t.scale[0], t.scale[1], t.scale[2]);
   }
-  syncTransform(e) { if (e.native) { this.#apply(e); e.native.computeWorldMatrix(true); this.physics?.teleported(e); } }
+  syncTransform(e, what) { if (e.native) { this.#apply(e); e.native.computeWorldMatrix(true); this.physics?.teleported(e, what === 'rot'); } } // rotating a body from a script keeps its linear velocity (FPS yaw, vehicle steering); moving it zeroes velocity (teleport)
   setEnabled(e, on) { for (const x of e.all()) { x.native?.setEnabled(x.enabled); this.physics?.enable(x, x.enabled); } }
   destroyNative(e) { this.physics?.forget(e); e.native?.dispose(false, false); e.native = null; }
   step(dt) { this.physics?.step(dt); }

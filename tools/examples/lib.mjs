@@ -115,3 +115,20 @@ export const label = (scene, ...a) => scene.spawnData(textData(...a));
 export const aabb = (a, b) => Math.abs(a.pos[0] - b.pos[0]) * 2 < a.w + b.w && Math.abs(a.pos[1] - b.pos[1]) * 2 < a.h + b.h;
 `;
 export const SQUARE = [{ from: 'assets/particles/square.png', to: 'assets/sprites/square.png' }, { from: 'assets/particles/circle.png', to: 'assets/sprites/circle.png' }];
+
+// ---- 3D helpers ----
+export const env3 = (sky = 'day') => [
+  E('Sun', { pos: [0, 10, 0], rot: [50, -30, 0], c: [{ type: 'light', kind: 'directional', intensity: 1.4, castShadows: true, color: '#fff4e0' }] }),
+  E('Ambient', { c: [{ type: 'light', kind: 'hemispheric', intensity: 0.55, color: '#b0c0ff' }] }),
+  E('Sky', { c: [{ type: 'skybox', path: `assets/skybox/${sky}` }] }),
+];
+export const SKY = (n) => ['px', 'py', 'pz', 'nx', 'ny', 'nz'].map((f) => `assets/skybox/${n}/${f}.png`);
+/** Static (or dynamic) box with a colour or texture material and a matching collider. */
+export const box3 = (name, [x, y, z], [w, h, d], o = {}) => E(name, { pos: [x, y, z], rot: o.rot, tags: o.tags, s: o.s, c: [
+  { type: 'mesh', shape: o.shape ?? 'box', size: [w, h, d] },
+  { type: 'material', ...(o.texture ? { texture: o.texture, uvScale: o.uv ?? [Math.max(1, w / 2), Math.max(1, d / 2)] } : { color: o.color ?? '#c8ccd4' }), roughness: o.rough ?? 0.8, metallic: o.metal ?? 0 },
+  ...(o.body === false ? [] : [{ type: 'rigidbody', mode: o.body ?? 'static', mass: o.mass ?? 1, bounce: o.bounce ?? 0, fixedRotation: !!o.fixedRotation }, { type: 'collider', shape: o.colShape ?? (o.shape === 'sphere' ? 'sphere' : 'box'), size: o.colSize ?? [w, h, d], trigger: !!o.trigger }]),
+  ...(o.c ?? [])] });
+export const ground3 = (size = 60, tex = 'assets/textures/grass.png') => E('Ground', { c: [{ type: 'mesh', shape: 'ground', size: [size, 0.2, size] }, { type: 'material', texture: tex, uvScale: [size / 4, size / 4], roughness: 1 }, { type: 'rigidbody', mode: 'static' }, { type: 'collider', shape: 'box', size: [size, 0.2, size], offset: [0, -0.1, 0] }] });
+export const hud3 = (name, x, y, t, size = 22) => E(name, { c: [{ type: 'uiLabel', text: t, x, y, size }] });
+export const tex3 = (names) => names.map((n) => `assets/textures/${n}.png`);

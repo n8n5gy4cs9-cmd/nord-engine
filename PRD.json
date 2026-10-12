@@ -921,7 +921,7 @@
       "id": "M6-14",
       "milestone": "M6",
       "title": "Example games 2D (>= 10)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M6-15",
@@ -945,7 +945,7 @@
       "id": "M6-18",
       "milestone": "M6",
       "title": "tools/smoke-examples.mjs headless smoke test for every example",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M7-01",

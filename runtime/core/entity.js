@@ -37,12 +37,12 @@ export class Entity {
   get pos() { return this.t.pos; }
   set pos(v) { this.t.pos = [...v]; this.#sync(); }
   get rot() { return this.t.rot; }
-  set rot(v) { this.t.rot = [...v]; this.#sync(); }
+  set rot(v) { this.t.rot = [...v]; this.#sync('rot'); }
   get scale() { return this.t.scale; }
   set scale(v) { this.t.scale = [...v]; this.#sync(); }
   /** Call after mutating pos/rot/scale arrays in place (e.g. `e.pos[0] += 1; e.touch()`). */
   touch() { this.#sync(); }
-  #sync() { this.scene.backend?.syncTransform?.(this); }
+  #sync(what) { this.scene.backend?.syncTransform?.(this, what); }
 
   /** World position: parent chain applied with scale + translation only (rotation is applied by the backend natively). */
   get worldPos() {
