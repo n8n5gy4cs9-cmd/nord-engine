@@ -1,0 +1,7 @@
+{
+  "type": "bitmapfont",
+  "cellWidth": 6,
+  "cellHeight": 8,
+  "filter": "nearest",
+  "note": "white glyphs, tinted at runtime; upper-case only"
+}

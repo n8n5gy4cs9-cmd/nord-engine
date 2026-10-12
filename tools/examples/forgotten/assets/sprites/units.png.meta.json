@@ -1,0 +1,22 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 16,
+  "frameHeight": 16,
+  "filter": "nearest",
+  "framesPerRow": 16,
+  "note": "rows: ember, cobalt · per row: for each unit [A,B] idle frames",
+  "units": [
+    "infantry",
+    "mech",
+    "recon",
+    "tank",
+    "mdtank",
+    "artillery",
+    "antiair",
+    "copter"
+  ],
+  "teams": [
+    "ember",
+    "cobalt"
+  ]
+}

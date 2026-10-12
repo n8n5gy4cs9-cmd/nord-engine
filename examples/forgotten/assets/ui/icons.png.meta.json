@@ -1,0 +1,12 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 16,
+  "frameHeight": 16,
+  "filter": "nearest",
+  "frames": {
+    "coin": 0,
+    "star": 1,
+    "flag": 2,
+    "heart": 3
+  }
+}

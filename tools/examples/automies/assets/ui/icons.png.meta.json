@@ -1,0 +1,16 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 16,
+  "frameHeight": 16,
+  "filter": "nearest",
+  "frames": {
+    "damage": 0,
+    "felony": 1,
+    "flag": 2,
+    "clock": 3,
+    "siren": 4,
+    "arrow": 5,
+    "car": 6,
+    "gear": 7
+  }
+}

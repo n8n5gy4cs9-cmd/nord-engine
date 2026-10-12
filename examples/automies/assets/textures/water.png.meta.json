@@ -1,0 +1,6 @@
+{
+  "type": "texture",
+  "filter": "nearest",
+  "wrap": "repeat",
+  "note": "32x32 seamless, scrolls"
+}

@@ -1,0 +1,29 @@
+@ title: The Crossing
+@ note: 20x14. Ember Legion (left, orange) vs Cobalt Pact (right, blue). Characters: see assets.md. Rows must all be the same length.
+U ember infantry 3 5
+U ember infantry 3 8
+U ember mech 3 6
+U ember recon 4 7
+U ember tank 4 4
+U ember artillery 2 5
+U cobalt infantry 16 5
+U cobalt infantry 16 8
+U cobalt mech 16 6
+U cobalt recon 15 7
+U cobalt tank 15 4
+U cobalt artillery 17 5
+---
+mmf..c.ffrrff.c..fmm
+mf...=.f.rr.f.=...fm
+f.e..=...rr...=..x.f
+..a======bb======z..
+..=...f..rr..f...=..
+.f=.m.f..rr..f.m.=f.
+.A=..mm..rr..mm..=Z.
+.a=..mff.ss.ffm..=z.
+.f=....f.rr.f....=f.
+..=c.=...rr...=.c=..
+..e======bb======x..
+f.....m.frrf.m.....f
+mf.f..mm.rr.mm..f.fm
+mmf..k..frrf..k..fmm

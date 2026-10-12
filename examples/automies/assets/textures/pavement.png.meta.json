@@ -1,0 +1,6 @@
+{
+  "type": "texture",
+  "filter": "nearest",
+  "wrap": "repeat",
+  "note": "16x16 seamless, 4 m per repeat"
+}

@@ -1,0 +1,57 @@
+{
+  "format": 1,
+  "name": "Automies",
+  "id": "com.crowelian.automies",
+  "type": "3d",
+  "engineVersion": "0.1.0",
+  "startScene": "scenes/main.scene.json",
+  "display": {
+    "width": 1280,
+    "height": 720,
+    "scale": "fit",
+    "pixelArt": false,
+    "background": "#2e3440"
+  },
+  "physics": {
+    "engine": "none",
+    "gravity": [
+      0,
+      0,
+      0
+    ]
+  },
+  "input": {
+    "actions": {
+      "left": [
+        "KeyA",
+        "ArrowLeft"
+      ],
+      "right": [
+        "KeyD",
+        "ArrowRight"
+      ],
+      "up": [
+        "KeyW",
+        "ArrowUp"
+      ],
+      "down": [
+        "KeyS",
+        "ArrowDown"
+      ],
+      "handbrake": [
+        "Space"
+      ],
+      "confirm": [
+        "Enter"
+      ]
+    }
+  },
+  "plugins": [
+    "ui",
+    "audio"
+  ],
+  "ui": {
+    "skin": "cyber",
+    "theme": "nord"
+  }
+}
