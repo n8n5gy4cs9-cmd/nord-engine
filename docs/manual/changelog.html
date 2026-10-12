@@ -16,6 +16,10 @@
 <p>Newest first. One line per notable change. Credit: Crowelian 2026 + Sonnet.</p>
 <h2 id="unreleased">Unreleased<a class="anchor" href="#unreleased">#</a></h2>
 <ul>
+<li><p><strong>Editor storage locations:</strong> manual documents exact macOS, Windows and Linux settings/saved-example paths, <code>NORD_CONFIG_DIR</code>, Windows&#39;s working-directory fallback when <code>HOME</code> is unset, and project thumbnail/autosave/lock locations.</p>
+</li>
+<li><p><strong>macOS project-lock fix:</strong> check process existence with <code>ps</code> instead of treating <code>kill -0</code> permission failures as a dead process; the existing pid-1 exclusivity regression now passes.</p>
+</li>
 <li><p><strong>M8-16 current editor content / BUG-001:</strong> Settings → <strong>USE CACHED CONTENT</strong> defaults OFF. Examples/Tutorials open current checkout/bundle files; old saved-copy Recent/launch paths resolve to the current example. ON opts into persistent private copies for testing. Webviews use temporary storage by default and recreate on mode changes; script attributes bypass caching when OFF. HTTP project files already use <code>no-store</code> (now regression-tested with changed bytes at the same URL). Docs/manual updated.</p>
 </li>
 <li><p><strong>M6-20 RetroPaxDungeons art redraw:</strong> all eleven tile, hero/monster, inventory, effect, HUD and font sheets refreshed with original retro dungeon pixel art (built-in ImageGen + hand-drawn effects/shared dungeon font). Frame layouts and animation/item IDs preserved; reviewed raster masters + prompts re-pack offline from <code>tools/art/rpd/redrawn/</code>. Verified 66 regions, font layout, transparency, baselines, repeating terrain edges, distinct idle frames, exact regeneration, 40-seed simulation, web export and live browser movement with no reported errors. Attribution URLs moved from JS comments to documentation so offline export passes.</p>

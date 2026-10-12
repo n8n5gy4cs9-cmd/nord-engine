@@ -46,6 +46,86 @@
 <p><strong>Settings → USE CACHED CONTENT</strong> is <strong>OFF by default</strong>. Examples and Tutorials open the current files from your checkout or rebuilt app bundle. Old Recent entries for saved example copies also resolve to the current bundled example. Save edits to a separate project if you want your own version: editing an example with this setting OFF changes its current source files.</p>
 <p>Turn the setting <strong>ON</strong> to test saved example content: the editor creates/reuses a private copy under <code>~/.config/nord/examples/</code>. Rebuilding the app leaves those copies as they were. Reopen the example after changing this setting to switch its source.</p>
 <p>OFF also uses temporary embedded-browser storage and reads script attributes fresh. ON permits persistent embedded-browser storage. Changing the mode recreates webviews; game saves in temporary browser storage last only for that view. The dev server always reads requested files from disk and sends <code>Cache-Control: no-store</code>.</p>
+<h2 id="where-the-editor-saves-files">Where the editor saves files<a class="anchor" href="#where-the-editor-saves-files">#</a></h2>
+<p>The editor&#39;s settings folder contains saved example/tutorial copies as well as your preferences. <strong>Rebuilding or replacing the app does not remove this folder.</strong> <code>NORD_CONFIG_DIR</code>, when set before launching the editor, overrides the entire folder on every platform.</p>
+<table>
+<thead>
+<tr>
+<th>Platform</th>
+<th>Settings folder without <code>NORD_CONFIG_DIR</code></th>
+<th>Saved example/tutorial copies</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>macOS</td>
+<td><code>$HOME/.config/nord/</code>, normally <code>/Users/&lt;user&gt;/.config/nord/</code></td>
+<td><code>/Users/&lt;user&gt;/.config/nord/examples/&lt;example-name&gt;/</code></td>
+</tr>
+<tr>
+<td>Linux</td>
+<td><code>$HOME/.config/nord/</code>, normally <code>/home/&lt;user&gt;/.config/nord/</code></td>
+<td><code>/home/&lt;user&gt;/.config/nord/examples/&lt;example-name&gt;/</code></td>
+</tr>
+<tr>
+<td>Windows, with <code>HOME</code> set</td>
+<td><code>%HOME%\.config\nord\</code></td>
+<td><code>%HOME%\.config\nord\examples\&lt;example-name&gt;\</code></td>
+</tr>
+<tr>
+<td>Windows, with <code>HOME</code> unset</td>
+<td><code>.config\nord\</code> under the editor&#39;s launch working directory</td>
+<td><code>.config\nord\examples\&lt;example-name&gt;\</code> under that directory</td>
+</tr>
+</tbody></table>
+<p>The current editor does not automatically select Windows <code>%APPDATA%</code> or <code>%USERPROFILE%</code>, macOS <code>~/Library/Application Support</code>, or Linux <code>$XDG_CONFIG_HOME</code>. For a predictable Windows location, set <code>NORD_CONFIG_DIR</code> to an absolute path such as <code>C:\Users\&lt;user&gt;\AppData\Roaming\NordEngine</code> before launching the editor. If <code>HOME</code> is unset on macOS or Linux, the same working-directory fallback applies.</p>
+<p>Inside the settings folder:</p>
+<table>
+<thead>
+<tr>
+<th>File or folder</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>examples/&lt;example-name&gt;/</code></td>
+<td>Complete saved project copies, including sprites, textures and scripts. Created/reused when <strong>USE CACHED CONTENT</strong> is ON; old copies can remain from earlier editor versions.</td>
+</tr>
+<tr>
+<td><code>editor.json</code></td>
+<td>Editor settings, including <code>use_cached_content</code>.</td>
+</tr>
+<tr>
+<td><code>layout.json</code></td>
+<td>Panel layout.</td>
+</tr>
+<tr>
+<td><code>recent.json</code></td>
+<td>Recent project paths.</td>
+</tr>
+</tbody></table>
+<p>On macOS, open Finder → <strong>Go → Go to Folder…</strong> (<code>Cmd+Shift+G</code>) and enter <code>~/.config/nord/</code>. On Linux, enter <code>~/.config/nord/</code> in your file manager; <code>Ctrl+H</code> usually shows hidden folders. On Windows, paste the resolved path into File Explorer&#39;s address bar.</p>
+<p>Every opened project can also contain these folders, on all three platforms:</p>
+<table>
+<thead>
+<tr>
+<th>Project-relative path</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>.nord-cache/thumbs/</code></td>
+<td>Generated asset thumbnails, keyed by source hash. These are previews, not copies used to run the game.</td>
+</tr>
+<tr>
+<td><code>.nord-cache/autosave/</code></td>
+<td>Scene autosaves for crash recovery.</td>
+</tr>
+<tr>
+<td><code>.nord-cache/lock</code></td>
+<td>Running editor&#39;s project lock; normally removed when the project closes.</td>
+</tr>
+</tbody></table>
+<p>With <strong>USE CACHED CONTENT OFF</strong>, existing saved example copies are bypassed; you do not need to delete them to see current art. To remove a saved copy, close that project and back up any edits before removing its <code>examples/&lt;example-name&gt;/</code> folder. Removing <code>editor.json</code>, <code>layout.json</code> or <code>recent.json</code> resets the corresponding preferences/history; removing autosaves loses crash-recovery data.</p>
 
 <footer>Crowelian 2026 + Sonnet · <a href="https://github.com/n8n5gy4cs9-cmd/nord-engine">source</a> · generated by <code>tools/build-manual.mjs</code></footer></main></div>
 <script type="module" src="assets/manual.js"></script></body></html>

@@ -49,3 +49,37 @@ Settings → *Skin* (fonts) and *Theme* (colours). The same skins/themes exist f
 Turn the setting **ON** to test saved example content: the editor creates/reuses a private copy under `~/.config/nord/examples/`. Rebuilding the app leaves those copies as they were. Reopen the example after changing this setting to switch its source.
 
 OFF also uses temporary embedded-browser storage and reads script attributes fresh. ON permits persistent embedded-browser storage. Changing the mode recreates webviews; game saves in temporary browser storage last only for that view. The dev server always reads requested files from disk and sends `Cache-Control: no-store`.
+
+## Where the editor saves files
+
+The editor's settings folder contains saved example/tutorial copies as well as your preferences. **Rebuilding or replacing the app does not remove this folder.** `NORD_CONFIG_DIR`, when set before launching the editor, overrides the entire folder on every platform.
+
+| Platform | Settings folder without `NORD_CONFIG_DIR` | Saved example/tutorial copies |
+|---|---|---|
+| macOS | `$HOME/.config/nord/`, normally `/Users/<user>/.config/nord/` | `/Users/<user>/.config/nord/examples/<example-name>/` |
+| Linux | `$HOME/.config/nord/`, normally `/home/<user>/.config/nord/` | `/home/<user>/.config/nord/examples/<example-name>/` |
+| Windows, with `HOME` set | `%HOME%\.config\nord\` | `%HOME%\.config\nord\examples\<example-name>\` |
+| Windows, with `HOME` unset | `.config\nord\` under the editor's launch working directory | `.config\nord\examples\<example-name>\` under that directory |
+
+The current editor does not automatically select Windows `%APPDATA%` or `%USERPROFILE%`, macOS `~/Library/Application Support`, or Linux `$XDG_CONFIG_HOME`. For a predictable Windows location, set `NORD_CONFIG_DIR` to an absolute path such as `C:\Users\<user>\AppData\Roaming\NordEngine` before launching the editor. If `HOME` is unset on macOS or Linux, the same working-directory fallback applies.
+
+Inside the settings folder:
+
+| File or folder | Contents |
+|---|---|
+| `examples/<example-name>/` | Complete saved project copies, including sprites, textures and scripts. Created/reused when **USE CACHED CONTENT** is ON; old copies can remain from earlier editor versions. |
+| `editor.json` | Editor settings, including `use_cached_content`. |
+| `layout.json` | Panel layout. |
+| `recent.json` | Recent project paths. |
+
+On macOS, open Finder → **Go → Go to Folder…** (`Cmd+Shift+G`) and enter `~/.config/nord/`. On Linux, enter `~/.config/nord/` in your file manager; `Ctrl+H` usually shows hidden folders. On Windows, paste the resolved path into File Explorer's address bar.
+
+Every opened project can also contain these folders, on all three platforms:
+
+| Project-relative path | Contents |
+|---|---|
+| `.nord-cache/thumbs/` | Generated asset thumbnails, keyed by source hash. These are previews, not copies used to run the game. |
+| `.nord-cache/autosave/` | Scene autosaves for crash recovery. |
+| `.nord-cache/lock` | Running editor's project lock; normally removed when the project closes. |
+
+With **USE CACHED CONTENT OFF**, existing saved example copies are bypassed; you do not need to delete them to see current art. To remove a saved copy, close that project and back up any edits before removing its `examples/<example-name>/` folder. Removing `editor.json`, `layout.json` or `recent.json` resets the corresponding preferences/history; removing autosaves loses crash-recovery data.

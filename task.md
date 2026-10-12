@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 142/154 tasks (92%)** · updated 2026-10-12
+**Overall: 143/155 tasks (92%)** · updated 2026-10-12
 
 | Milestone | Progress |
 |---|---|
@@ -14,7 +14,7 @@
 | M4 Export | 8/11 (73%) |
 | M5 Rust/WASM | 9/9 (100%) |
 | M6 Library | 20/20 (100%) |
-| M7 Docs | 12/12 (100%) |
+| M7 Docs | 13/13 (100%) |
 | M8 Polish & portability | 10/17 (59%) |
 | M9 Desktop apps | 16/16 (100%) |
 
@@ -177,6 +177,7 @@ _manual, guides, tutorials, in-editor docs_
 - [x] **M7-10** Per-feature guides & cheat sheets (shortcuts, nord.js, export)
 - [x] **M7-11** Full engine API docs: everything Phaser/Babylon offer, documented in Nord format (components, NordScript, game.*/physics/camera/gui namespaces) — no raw Phaser/Babylon API needed; searchable HTML reference generated from JSDoc + component schemas
 - [x] **M7-12** HTML manual/guide/tutorials 'complete edition': every feature, per-component pages, cookbook, plus 'For dummies' info boxes (hidden by default, global toggle persisted in localStorage)
+- [x] **M7-13** Document editor saved-copy, settings and project-cache locations on macOS, Windows and Linux
 
 ## M8 — Polish & portability
 _dmg, CI, Windows, Linux, perf_

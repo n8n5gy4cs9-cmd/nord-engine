@@ -1139,6 +1139,12 @@
       "status": "done"
     },
     {
+      "id": "M7-13",
+      "milestone": "M7",
+      "title": "Document editor saved-copy, settings and project-cache locations on macOS, Windows and Linux",
+      "status": "done"
+    },
+    {
       "id": "M8-01",
       "milestone": "M8",
       "title": ".dmg packaging + notarisation notes",

@@ -18,6 +18,7 @@
 <p><em>(none yet)</em></p>
 <h2 id="fixed">Fixed<a class="anchor" href="#fixed">#</a></h2>
 <ul>
+<li>BUG-002 [fixed] macOS project locks misidentified live foreign-user processes as stale because <code>kill -0</code> returned EPERM. The macOS check now reads <code>ps -p PID -o pid=</code>; the existing exclusivity regression covers pid 1.</li>
 <li>BUG-001 [fixed] Rebuilt app examples showed old art/code — the hub reused persistent private copies under <code>~/.config/nord/examples/</code>. <code>USE CACHED CONTENT</code> now defaults OFF: current example files open directly and old Recent/launch paths resolve to the current bundle. Opt-in ON retains saved copies for testing. Regression replaces an example asset then reopens it and verifies the new bytes; server regression verifies <code>no-store</code> and new bytes at the same URL.</li>
 </ul>
 <h2 id="unverified-risks">Unverified / risks<a class="anchor" href="#unverified-risks">#</a></h2>
