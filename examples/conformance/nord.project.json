@@ -1,0 +1,33 @@
+{
+  "format": 1,
+  "name": "Conformance (shared scene)",
+  "id": "com.crowelian.conformance",
+  "type": "2d",
+  "engineVersion": "0.1.0",
+  "startScene": "scenes/main.scene.json",
+  "display": {
+    "width": 640,
+    "height": 360,
+    "scale": "fit",
+    "pixelArt": true,
+    "background": "#2e3440"
+  },
+  "ui": {
+    "skin": "modern",
+    "theme": "nord"
+  },
+  "physics": {
+    "engine": "none",
+    "gravity": [
+      0,
+      0,
+      0
+    ]
+  },
+  "input": {
+    "actions": {}
+  },
+  "plugins": [
+    "ui"
+  ]
+}

@@ -42,9 +42,11 @@ cargo build --workspace && cargo test --workspace && cargo clippy --workspace --
 ## Current status (update every session)
 - **M0 + M1 done** (core model/schemas/assets/thumbs/IO, CLI `new/doctor/thumbs/check/serve/check-offline/vendor`, CI). Work was done on the session branch
   `claude/friendly-knuth-qv79yh` (cloud harness designated it) — merge to `main` when convenient.
-- **M2 partly done**: `runtime/core` finished (M2-01..06, tests: `node --test runtime/core/core.test.mjs`).
-  **Next: M2-07** audio manager, **M2-08** DOM UI layer, then backends M2-09+ (`runtime/phaser`, `runtime/babylon`: register components via `registerComponent`,
-  supply `backend` {createNative, syncTransform, setEnabled, destroyNative, step} to `Game`), hot reload, conformance scene, e2e harness (`tools/e2e.mjs`, Playwright).
-  Then M3 editor (spike M3-07 first), M4 export, M5 Rust/WASM, M6 library, M7 docs, M8 polish.
+- **M2 done** (runtime/core incl. audio/UI/themes, runtime/phaser, runtime/babylon, hot reload, runtime/lite, e2e). Tests: `node --test runtime/core/*.test.mjs`
+  and `node tools/e2e.mjs` (Playwright; suites in tools/e2e/*.mjs, screenshots in target/e2e/). Examples: `examples/conformance{,-2d,-3d}`, `examples/html-lite`.
+  Skins/themes: `assets/themes/themes.json` → `node tools/gen_themes.mjs` → `runtime/core/themes.js`.
+  **Next: M3 editor** — spike M3-07 first (wry webview in egui, macOS only — verify on CI/owner), then M3-01.. . M3-23 = apply skins/themes in editor + code editor.
+  Docs tasks M7-11/12 (complete Nord-format API docs + manual with "for dummies" toggle boxes) are owner requests — don't drop them.
+  Then M4 export, M5 Rust/WASM, M6 library, M7 docs, M8 polish.
 - Vendored: Phaser 4.2.1, Babylon 9.30.0 (+Havok 1.3.14), PlayCanvas 2.23.2 (optional), CodeMirror bundle, marked, fonts, Lucide.
 - Known risks: `docs/KNOWN_ISSUES.md`.

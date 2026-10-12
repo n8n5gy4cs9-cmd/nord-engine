@@ -549,19 +549,19 @@
       "id": "M2-16",
       "milestone": "M2",
       "title": "Conformance example scene runs on Phaser and Babylon (screenshot test)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M2-17",
       "milestone": "M2",
       "title": "Plain `html` tier helper (nord-lite.js) + sample",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M2-18",
       "milestone": "M2",
       "title": "Unit tests for core (node --test) + Playwright e2e harness tools/e2e.mjs",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M2-19",

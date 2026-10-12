@@ -18,7 +18,16 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - run: node tools/tasks.mjs check
       - run: node tools/vendor.mjs --verify
-      - run: node --test runtime/core/core.test.mjs
+      - run: node --test runtime/core/*.test.mjs
       - run: cargo fmt --all --check
       - run: cargo clippy --workspace --all-targets -- -D warnings
       - run: cargo test --workspace
+  js-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm i --no-save --no-package-lock playwright@1.56.1
+      - run: npx playwright install --with-deps chromium
+      - run: node tools/e2e.mjs

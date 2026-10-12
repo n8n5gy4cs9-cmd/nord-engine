@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Nord Lite — Clicker</title>
+<style>html,body{margin:0;height:100%;background:#2e3440;color:#eceff4;font:16px system-ui,sans-serif}</style></head>
+<body>
+<!-- Works from file:// — no modules, no fetch of local files except sounds (optional). -->
+<script src="nord-lite.js"></script>
+<script>
+  const { ctx, w, h } = Nord.canvas(480, 270);
+  const save = Nord.save('html-lite-clicker');
+  const rng = Nord.Rng(1234);
+  const state = { score: 0, best: save.get('best', 0), r: 30 };
+  Nord.Input.map({ hit: ['Space', 'Mouse0'] });
+  Nord.loop(() => {
+    if (Nord.Input.pressed('hit')) {
+      state.score++; state.best = Math.max(state.best, state.score); save.set('best', state.best);
+      state.r = 30; Nord.tween(state, { r: 44 }, { duration: 0.12, ease: 'backOut' });
+    }
+    ctx.fillStyle = '#2e3440'; ctx.fillRect(0, 0, w, h);
+    ctx.fillStyle = '#88c0d0'; ctx.beginPath(); ctx.arc(w / 2, h / 2, state.r, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#eceff4'; ctx.font = '20px system-ui'; ctx.textAlign = 'center';
+    ctx.fillText(`Click or press Space — score ${state.score} (best ${state.best})`, w / 2, 40);
+    window.__lite = state;
+  });
+</script></body></html>

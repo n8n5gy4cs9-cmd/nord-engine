@@ -1,0 +1,56 @@
+{
+  "format": 1,
+  "root": {
+    "id": "orb00001",
+    "name": "Orb",
+    "enabled": true,
+    "tags": [
+      "orb"
+    ],
+    "layer": 0,
+    "transform": {
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    "components": [
+      {
+        "type": "sprite",
+        "texture": "assets/sprites/coin.png",
+        "frame": 1,
+        "size": [
+          16,
+          16
+        ]
+      },
+      {
+        "type": "mesh",
+        "shape": "box",
+        "size": [
+          0.3,
+          0.3,
+          0.3
+        ]
+      }
+    ],
+    "scripts": [
+      {
+        "path": "scripts/orb.js"
+      }
+    ],
+    "children": [],
+    "prefab": null
+  }
+}
