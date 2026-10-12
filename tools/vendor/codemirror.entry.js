@@ -22,3 +22,21 @@ import { toml } from '@codemirror/legacy-modes/mode/toml';
 import { StreamLanguage } from '@codemirror/language';
 export const glsl = () => StreamLanguage.define(shader);
 export const tomlLang = () => StreamLanguage.define(toml);
+// More languages for the desktop code editor example (PHP, Python, XML/SVG, SQL + legacy stream modes)
+export { php } from '@codemirror/lang-php';
+export { python } from '@codemirror/lang-python';
+export { xml } from '@codemirror/lang-xml';
+export { sql } from '@codemirror/lang-sql';
+import { c, cpp, csharp, java, kotlin, scala, objectiveC, dart } from '@codemirror/legacy-modes/mode/clike';
+import { go } from '@codemirror/legacy-modes/mode/go';
+import { shell } from '@codemirror/legacy-modes/mode/shell';
+import { ruby } from '@codemirror/legacy-modes/mode/ruby';
+import { lua } from '@codemirror/legacy-modes/mode/lua';
+import { swift } from '@codemirror/legacy-modes/mode/swift';
+import { yaml } from '@codemirror/legacy-modes/mode/yaml';
+import { perl } from '@codemirror/legacy-modes/mode/perl';
+import { dockerFile } from '@codemirror/legacy-modes/mode/dockerfile';
+import { diff } from '@codemirror/legacy-modes/mode/diff';
+const S = (m) => () => StreamLanguage.define(m);
+export const legacy = { c: S(c), cpp: S(cpp), csharp: S(csharp), java: S(java), kotlin: S(kotlin), scala: S(scala), objc: S(objectiveC), dart: S(dart),
+  go: S(go), shell: S(shell), ruby: S(ruby), lua: S(lua), swift: S(swift), yaml: S(yaml), perl: S(perl), dockerfile: S(dockerFile), diff: S(diff) };

@@ -178,10 +178,10 @@ impl App {
             if i.consume_key(cmd, Key::K) {
                 st.push(Action::Palette);
             }
-            if i.consume_key(cmd, Key::R) {
-                st.push(Action::Play);
-            }
-            if i.consume_key(cmd, Key::Period) {
+            let (run, stop) = (st.settings.key(true), st.settings.key(false));
+            if i.consume_key(cmd, run) {
+                st.push(if st.play.is_some() { Action::Stop } else { Action::Play });
+            } else if i.consume_key(cmd, stop) {
                 st.push(Action::Stop);
             }
             if i.consume_key(cmd, Key::Comma) {
@@ -533,8 +533,9 @@ impl App {
                 act(ui, "Settings…", Action::Settings, st);
             });
             ui.menu_button("Project", |ui| {
-                act(ui, "Play  (Cmd+R)", Action::Play, st);
-                act(ui, "Stop  (Cmd+.)", Action::Stop, st);
+                let (rk, sk) = (st.settings.key_label(true), st.settings.key_label(false));
+                act(ui, &format!("Play / stop  ({rk})"), Action::Play, st);
+                act(ui, &format!("Stop  ({sk})"), Action::Stop, st);
                 act(ui, "Validate", Action::Build("validate".into()), st);
                 if is_rust(st) {
                     act(ui, "Build Rust", Action::Build("rust build".into()), st);
@@ -794,6 +795,10 @@ pub fn game_tab(
         {
             st.game_full = !st.game_full;
         }
+        if st.play.is_some() && ui.button("■ Stop").on_hover_text("Stop the game and return to editing").clicked() {
+            st.push(Action::Stop);
+            st.game_full = false;
+        }
         if let Some(p) = &st.play {
             if ui.button("Open in browser").clicked() {
                 open_in_browser(&format!("http://127.0.0.1:{}/", p.port));
@@ -825,7 +830,7 @@ pub fn game_tab(
         } else {
             ui.add_space(30.0);
             ui.vertical_centered(|ui| {
-                ui.weak("Press ▶ Play (Cmd+R) to run the game here");
+                ui.weak(format!("Press ▶ Play ({}) to run the game here", st.settings.key_label(true)));
             });
         }
     });
