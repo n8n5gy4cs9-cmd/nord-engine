@@ -3,11 +3,11 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 4/119 tasks (3%)** · updated 2026-10-12
+**Overall: 5/119 tasks (4%)** · updated 2026-10-12
 
 | Milestone | Progress |
 |---|---|
-| M0 Planning, identity, assets, vendoring | 4/13 (31%) |
+| M0 Planning, identity, assets, vendoring | 5/13 (38%) |
 | M1 Foundation | 0/11 (0%) |
 | M2 JS runtimes | 0/18 (0%) |
 | M3 Editor | 0/22 (0%) |
@@ -37,7 +37,7 @@ _Plans, brand, placeholder assets, vendored libs, workspace skeleton_
 - [ ] **M0-08** Generate placeholder sfx + music loops (tools/gen_assets.py) + icon set (Lucide subset)
 - [ ] **M0-09** Generate docs/manual graphics (banner, section icons, favicon)
 - [ ] **M0-10** ASSETS.md catalogue + replacement guide
-- [ ] **M0-11** tools/vendor.mjs + vendor Phaser, Babylon (+loaders/gui/materials/Havok), CodeMirror bundle (manual only), Lucide, marked, fonts; VENDOR.json + THIRD_PARTY.md
+- [x] **M0-11** tools/vendor.mjs + vendor Phaser, Babylon (+loaders/gui/materials/Havok), CodeMirror bundle (manual only), Lucide, marked, fonts; VENDOR.json + THIRD_PARTY.md
 - [ ] **M0-12** Cargo workspace skeleton (nord-core, nord-cli) compiles; wasm32 target check
 - [ ] **M0-13** Commit + push M0 to branch
 

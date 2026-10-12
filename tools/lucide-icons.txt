@@ -1,0 +1,17 @@
+folder folder-open folder-plus file file-text file-code file-json file-image file-audio file-video file-plus file-cog file-box
+box boxes cuboid cylinder cone circle square triangle shapes layers layers-2 group ungroup
+camera video lightbulb sun moon sparkles sparkle flame wind droplet cloud snowflake zap
+image images music music-2 volume-2 volume-x mic film clapperboard gamepad-2 gamepad joystick dices puzzle swords sword shield heart skull ghost bomb trophy crown gem coins key lock unlock
+play pause square-play skip-forward skip-back rotate-cw rotate-ccw refresh-cw repeat stop-circle octagon-x
+move move-3d rotate-3d scale scaling maximize minimize maximize-2 minimize-2 crosshair target focus mouse-pointer mouse-pointer-2 hand grab
+eye eye-off search zoom-in zoom-out settings settings-2 sliders-horizontal wrench hammer cog palette paintbrush pipette brush eraser pen pencil scissors
+plus minus x check trash trash-2 copy clipboard clipboard-paste undo redo undo-2 redo-2 save download upload external-link link unlink
+chevron-down chevron-up chevron-left chevron-right chevrons-down chevrons-up arrow-up arrow-down arrow-left arrow-right more-horizontal more-vertical menu grip-vertical list list-tree
+terminal code code-xml braces bug package package-open puzzle blocks component workflow network git-branch variable function-square
+info alert-triangle alert-circle circle-help help-circle bell book book-open library graduation-cap notebook-pen
+home globe monitor smartphone tablet laptop cpu hard-drive database server
+grid-3x3 grid-2x2 layout-grid layout-dashboard layout-template panel-left panel-right panel-bottom panel-top columns-2 rows-2 table
+type text heading bold italic align-left align-center align-right map map-pin route spline waypoints milestone flag
+user users user-plus smile star bookmark tag tags clock timer hourglass calendar activity bar-chart-3 line-chart pie-chart gauge
+rocket car plane tree-pine trees mountain waves castle tent
+wand-2 wand magnet anchor

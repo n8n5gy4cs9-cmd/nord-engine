@@ -375,7 +375,7 @@
       "id": "M0-11",
       "milestone": "M0",
       "title": "tools/vendor.mjs + vendor Phaser, Babylon (+loaders/gui/materials/Havok), CodeMirror bundle (manual only), Lucide, marked, fonts; VENDOR.json + THIRD_PARTY.md",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M0-12",

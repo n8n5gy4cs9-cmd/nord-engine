@@ -3,8 +3,8 @@ export { EditorState, Compartment, StateEffect, StateField, Prec, Annotation } f
 export { EditorView, keymap, lineNumbers, highlightActiveLine, highlightActiveLineGutter, drawSelection,
   dropCursor, rectangularSelection, crosshairCursor, highlightSpecialChars, placeholder, tooltips, hoverTooltip,
   gutter, GutterMarker, Decoration, ViewPlugin, WidgetType } from '@codemirror/view';
-export { defaultKeymap, history, historyKeymap, indentWithTab, undo, redo, toggleComment, selectNextOccurrence } from '@codemirror/commands';
-export { searchKeymap, highlightSelectionMatches, openSearchPanel } from '@codemirror/search';
+export { defaultKeymap, history, historyKeymap, indentWithTab, undo, redo, toggleComment } from '@codemirror/commands';
+export { searchKeymap, highlightSelectionMatches, openSearchPanel, selectNextOccurrence } from '@codemirror/search';
 export { autocompletion, completionKeymap, closeBrackets, closeBracketsKeymap, completeFromList, snippetCompletion } from '@codemirror/autocomplete';
 export { lintGutter, linter, lintKeymap, setDiagnostics } from '@codemirror/lint';
 export { syntaxHighlighting, defaultHighlightStyle, HighlightStyle, indentOnInput, bracketMatching, foldGutter,
