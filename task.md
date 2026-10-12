@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 95/127 tasks (75%)** · updated 2026-10-12
+**Overall: 96/127 tasks (76%)** · updated 2026-10-12
 
 | Milestone | Progress |
 |---|---|
@@ -12,7 +12,7 @@
 | M2 JS runtimes | 19/19 (100%) |
 | M3 Editor | 24/26 (92%) |
 | M4 Export | 8/11 (73%) |
-| M5 Rust/WASM | 4/9 (44%) |
+| M5 Rust/WASM | 5/9 (56%) |
 | M6 Library | 16/18 (89%) |
 | M7 Docs | 0/12 (0%) |
 | M8 Polish & portability | 0/8 (0%) |
@@ -131,7 +131,7 @@ _macroquad+rapier game runtime, egui app runtime_
 - [x] **M5-02** rapier2d integration, colliders/rigidbodies from scene components
 - [x] **M5-03** Rust Script trait + registry + sample scripts (player, enemy)
 - [x] **M5-04** Audio, input actions, tilemap, particles, UI (egui-macroquad) in Rust runtime
-- [ ] **M5-05** Export `web-wasm-game` (cargo build + wasm-opt if present + index.html + mq_js_bundle)
+- [x] **M5-05** Export `web-wasm-game` (cargo build + wasm-opt if present + index.html + mq_js_bundle)
 - [ ] **M5-06** nord-app-wasm: eframe app template -> web export (trunk-free: wasm-bindgen CLI)
 - [ ] **M5-07** Templates: rust-2d-game, rust-egui-app; examples (asteroids, physics toys, JSON tool)
 - [ ] **M5-08** Port selected raylib/macroquad/bevy examples

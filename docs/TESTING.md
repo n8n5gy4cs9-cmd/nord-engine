@@ -3,7 +3,7 @@
 | Layer | How | When |
 |---|---|---|
 | Rust crates | `cargo test --workspace` , `cargo clippy --workspace -- -D warnings`, `cargo fmt --check` | every Rust change |
-| Wasm build | `cargo build -p nord-runtime-wasm --target wasm32-unknown-unknown` | M5+ |
+| Wasm build | `cargo check --manifest-path crates/nord-runtime-wasm/Cargo.toml --target wasm32-unknown-unknown`; examples: `node tools/e2e.mjs rust-platformer rust-physics-toys` (exports + runs them in Chromium) | M5+ |
 | Runtime JS | `node --test runtime/**/*.test.mjs` (core is engine-agnostic → unit-testable) | M2+ |
 | Runtimes + viewport JS in browser | Playwright (chromium at `/opt/pw-browsers`) screenshots + console-error assertions: `node tools/e2e.mjs` (incl. `/__edit`) | M2+ |
 | Editor UI (egui) | `cargo test -p nord-editor` — unit tests + `tests/ui.rs` (egui_kittest, headless: panels, undo, inspector, code-editor typing, palette, autosave recovery, anim/tile editors). Real-window smoke: `xvfb-run -a -s "-screen 0 2000x1300x24" target/debug/nord-editor <project>` + `import -window root x.png` (needs libxkbcommon-x11, mesa; software GL) | M3+ |

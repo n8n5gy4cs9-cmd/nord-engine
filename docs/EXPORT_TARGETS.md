@@ -14,7 +14,7 @@
 
 ## Implemented (M4)
 `nord build <project> [-t auto|html|web-2d|web-3d] [-o dir] [--minify] [--single-file] [--optimize] [--zip]` (alias `nord export`), crate `nord-export`;
-editor: **Project → Export…**. `web-wasm-*` arrive with M5. `--minify`/`--single-file` run `tools/export-bundle.mjs` (Node + vendored `esbuild-wasm`).
+editor: **Project → Export…**. `web-wasm-game` (M5-05, verified) builds the Rust project with `cargo build --release --target wasm32-unknown-unknown` (flags: `--allow-undefined` via `--config`), copies `game.wasm`, the vendored `mq_js_bundle.js` and project data/assets, writes a relative `index.html`; `--optimize` runs `wasm-opt -Oz` if installed. `web-wasm-app` (M5-06) uses `wasm-bindgen --target web`. Rust-tier scripts are registry names (no file check in validation); audio must be .wav/.ogg. `--minify`/`--single-file` run `tools/export-bundle.mjs` (Node + vendored `esbuild-wasm`).
 `nord bundle-mac <project|dist> [--player nord-player|NordPlayer.app] [--name] [-o dir] [--icon png] [--dmg]` assembles `<Name>.app`
 (`Contents/Resources/game/` + Info.plist + generated AppIcon.icns, ad-hoc codesign on macOS); the player is `crates/nord-player` (wry+tao, `--features shell`, macOS-only to build). Hosting: HOSTING.md.
 Not done: texture-atlas packing and lossy PNG quantisation (M4-11).

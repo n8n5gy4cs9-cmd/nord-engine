@@ -819,7 +819,7 @@
       "id": "M5-05",
       "milestone": "M5",
       "title": "Export `web-wasm-game` (cargo build + wasm-opt if present + index.html + mq_js_bundle)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M5-06",

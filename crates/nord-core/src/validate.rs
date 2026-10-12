@@ -56,7 +56,10 @@ pub fn validate_scene(root: &Path, file: &str, s: &Scene) -> Vec<Issue> {
             refs(&Value::Object(c.fields.clone()), &mut r);
         }
         for sc in &e.scripts {
-            r.push(sc.path.clone());
+            // Rust-tier scripts are registry names (`player` or `scripts/player`): only paths with a file extension must exist
+            if std::path::Path::new(&sc.path).extension().is_some() {
+                r.push(sc.path.clone());
+            }
             refs(&Value::Object(sc.attributes.clone()), &mut r);
         }
         if let Some(p) = &e.prefab {
