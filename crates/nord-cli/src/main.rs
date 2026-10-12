@@ -94,6 +94,26 @@ enum Cmd {
         #[arg(long)]
         dmg: bool,
     },
+    /// Wrap a web build (or project) into a Windows / Linux desktop bundle (folder + zip / tar.gz) with the prebuilt nord-player
+    BundlePortable {
+        #[arg(default_value = ".")]
+        input: PathBuf,
+        /// windows | linux
+        #[arg(long)]
+        os: String,
+        #[arg(long)]
+        name: Option<String>,
+        #[arg(short, long, default_value = ".")]
+        out: PathBuf,
+        /// nord-player binary for the target OS (default: auto-detect)
+        #[arg(long)]
+        player: Option<PathBuf>,
+        #[arg(long)]
+        icon: Option<PathBuf>,
+        /// Skip the .zip / .tar.gz
+        #[arg(long)]
+        no_archive: bool,
+    },
     /// Fail if a directory (build output or project) references external http(s) hosts
     CheckOffline {
         #[arg(default_value = ".")]
@@ -292,7 +312,8 @@ fn main() -> anyhow::Result<()> {
                     &engine,
                     &nord_export::Opts {
                         out: Some(tmp),
-                        minify: true,
+                        minify: nord_core::io::load_project(&input)
+                            .is_ok_and(|p| p.kind != nord_core::ProjectType::Html),
                         ..Default::default()
                     },
                 )?;
@@ -312,6 +333,55 @@ fn main() -> anyhow::Result<()> {
                 },
             )?;
             println!("App: {}", app.display());
+        }
+        Cmd::BundlePortable {
+            input,
+            os,
+            name,
+            out,
+            player,
+            icon,
+            no_archive,
+        } => {
+            let os = match os.as_str() {
+                "windows" | "win" => nord_export::portable::Os::Windows,
+                "linux" => nord_export::portable::Os::Linux,
+                o => bail!("--os must be windows or linux (got '{o}'); macOS uses bundle-mac"),
+            };
+            let engine =
+                nord_serve::engine_root().context("engine root not found (set NORD_ROOT)")?;
+            let is_dist = input.join("nord.json").exists() && input.join("index.html").exists();
+            let dist = if is_dist {
+                input.clone()
+            } else {
+                let tmp = std::env::temp_dir().join(format!("nord-bundle-{}", std::process::id()));
+                let r = nord_export::build(
+                    &input,
+                    &engine,
+                    &nord_export::Opts {
+                        out: Some(tmp),
+                        minify: nord_core::io::load_project(&input)
+                            .is_ok_and(|p| p.kind != nord_core::ProjectType::Html),
+                        ..Default::default()
+                    },
+                )?;
+                print!("{}", r.summary());
+                r.out
+            };
+            std::fs::create_dir_all(&out)?;
+            let f = nord_export::portable::bundle(
+                &dist,
+                &engine,
+                &nord_export::portable::Opts {
+                    os,
+                    name,
+                    out_dir: out,
+                    player,
+                    icon,
+                    archive: !no_archive,
+                },
+            )?;
+            println!("Bundle: {}", f.display());
         }
         Cmd::CheckOffline { dir, allow } => {
             let f = offline::scan_dir(&dir, &allow);

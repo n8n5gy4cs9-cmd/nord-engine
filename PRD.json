@@ -386,7 +386,7 @@
       "id": "M9-12",
       "milestone": "M9",
       "title": "Permissions/capabilities manifest in nord.project.json (desktop.permissions) + first-run prompts + editor UI to review; least-privilege defaults; audit log",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M9-13",

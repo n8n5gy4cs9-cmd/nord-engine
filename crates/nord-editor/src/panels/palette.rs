@@ -108,6 +108,9 @@ pub const COMMANDS: &[(&str, CmdFn)] = &[
     ("Project: Validate", || Action::Build("validate".into())),
     ("Editor: Settings", || Action::Settings),
     ("Project: Export…", || Action::Export),
+    ("Project: Desktop app permissions…", || {
+        Action::DesktopSettings
+    }),
     ("Editor: About", || Action::About),
 ];
 

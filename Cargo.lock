@@ -3337,6 +3337,7 @@ dependencies = [
  "egui_kittest",
  "image",
  "nord-core",
+ "nord-desktop",
  "nord-export",
  "nord-serve",
  "regex",

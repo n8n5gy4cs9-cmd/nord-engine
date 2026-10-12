@@ -16,9 +16,9 @@ const parentOf = (p) => { const i = Math.max(p.lastIndexOf('/'), p.lastIndexOf('
 const SKIP = new Set(['node_modules', '.git', 'target', 'dist', '.DS_Store', '.nord-cache']);
 
 const CSS = `
-.ce{--bg:#1e2128;--panel:#252932;--panel2:#2c313c;--fg:#d8dee9;--mut:#8a93a5;--acc:#88c0d0;--bd:#3a404d;--sel:#3b4252;--dirty:#ebcb8b;--err:#bf616a;
+.ce{color-scheme:dark;--bg:#1e2128;--panel:#252932;--panel2:#2c313c;--fg:#d8dee9;--mut:#8a93a5;--acc:#88c0d0;--bd:#3a404d;--sel:#3b4252;--dirty:#ebcb8b;--err:#bf616a;
  display:flex;flex-direction:column;height:100%;font:13px/1.4 system-ui,sans-serif;background:var(--bg);color:var(--fg);position:relative}
-.ce[data-theme=light]{--bg:#fafafa;--panel:#f0f0f2;--panel2:#e6e7ea;--fg:#24292f;--mut:#6b7280;--acc:#0969da;--bd:#d0d4da;--sel:#dbe7f7;--dirty:#b7791f;--err:#cf222e}
+.ce[data-theme=light]{color-scheme:light;--bg:#fafafa;--panel:#f0f0f2;--panel2:#e6e7ea;--fg:#24292f;--mut:#6b7280;--acc:#0969da;--bd:#d0d4da;--sel:#dbe7f7;--dirty:#b7791f;--err:#cf222e}
 .ce *{box-sizing:border-box}.ce button{font:inherit;color:inherit;background:transparent;border:1px solid transparent;border-radius:5px;padding:3px 8px;cursor:pointer}
 .ce button:hover{background:var(--panel2)}.ce button:disabled{opacity:.4;cursor:default}
 .ce .bar{display:flex;gap:2px;align-items:center;padding:4px 6px;background:var(--panel);border-bottom:1px solid var(--bd);flex-wrap:wrap}

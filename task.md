@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 125/146 tasks (86%)** · updated 2026-10-12
+**Overall: 126/146 tasks (86%)** · updated 2026-10-12
 
 | Milestone | Progress |
 |---|---|
@@ -16,14 +16,14 @@
 | M6 Library | 18/18 (100%) |
 | M7 Docs | 12/12 (100%) |
 | M8 Polish & portability | 1/11 (9%) |
-| M9 Desktop apps | 10/16 (63%) |
+| M9 Desktop apps | 11/16 (69%) |
 
 ## Next up
 - **M9-07** Clipboard (text/image/files), drag & drop in/out, open-with / file associations / custom URL scheme (deep links), single-instance + argv handling
-- **M9-12** Permissions/capabilities manifest in nord.project.json (desktop.permissions) + first-run prompts + editor UI to review; least-privilege defaults; audit log
 - **M9-13** Packaging: macOS .app/.dmg (sign + notarise docs), Windows installer/portable exe, Linux AppImage/deb; icons, version metadata, auto-update strategy (optional, opt-in)
 - **M9-14** Accessibility & real-app UX: IME/text input, high-DPI, dark mode follow, keyboard navigation, undo/redo helpers, i18n (locale/formatting), drag-reorder lists, virtualised tables
 - **M9-15** Templates + examples: desktop notes app (files+store+notifications), file organiser (fs+dialogs), clipboard manager (tray+global shortcut), markdown editor — JS and Rust variants; e2e where headless-possible
+- **M9-16** Tests & CI: capability unit tests, fs sandbox escape tests, per-OS CI matrix (macos-14, windows, ubuntu) building/launching sample apps headless; document unverified parts honestly
 
 ## M0 — Planning, identity, assets, vendoring
 _Plans, brand, placeholder assets, vendored libs, workspace skeleton_
@@ -205,7 +205,7 @@ _real native desktop apps (Rust backend): files, dialogs, notifications, tray, w
 - [x] **M9-09** Background work: threads/async tasks API, timers, process spawn (sandboxed allow-list), HTTP client with permission prompt, optional local server; app lifecycle (suspend, quit confirm, autostart/login item)
 - [x] **M9-10** JS bridge: window.nord.desktop.* (fs, dialogs, notify, clipboard, store, window, menu, tray) over wry IPC with capability checks; typed d.ts + docs; same API in dev (editor Play) and exported apps
 - [x] **M9-11** Rust desktop API in nord-app-wasm/nord-runtime: native path = direct crates, web path = graceful fallbacks (File System Access API, Notifications API, localStorage/IndexedDB); one cfg-free app API
-- [ ] **M9-12** Permissions/capabilities manifest in nord.project.json (desktop.permissions) + first-run prompts + editor UI to review; least-privilege defaults; audit log
+- [x] **M9-12** Permissions/capabilities manifest in nord.project.json (desktop.permissions) + first-run prompts + editor UI to review; least-privilege defaults; audit log
 - [ ] **M9-13** Packaging: macOS .app/.dmg (sign + notarise docs), Windows installer/portable exe, Linux AppImage/deb; icons, version metadata, auto-update strategy (optional, opt-in)
 - [ ] **M9-14** Accessibility & real-app UX: IME/text input, high-DPI, dark mode follow, keyboard navigation, undo/redo helpers, i18n (locale/formatting), drag-reorder lists, virtualised tables
 - [ ] **M9-15** Templates + examples: desktop notes app (files+store+notifications), file organiser (fs+dialogs), clipboard manager (tray+global shortcut), markdown editor — JS and Rust variants; e2e where headless-possible

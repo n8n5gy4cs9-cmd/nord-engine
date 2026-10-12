@@ -81,6 +81,85 @@ pub fn validate_scene(root: &Path, file: &str, s: &Scene) -> Vec<Issue> {
     v
 }
 
+/// Shape check of the `desktop` manifest (the authoritative parser is `nord-desktop`, which nord-core does not depend on).
+fn validate_desktop(d: &serde_json::Map<String, serde_json::Value>, v: &mut Vec<Issue>) {
+    if d.is_empty() {
+        return;
+    }
+    let mut bad = |m: String| push(v, io::PROJECT_FILE, format!("desktop: {m}"));
+    for k in d.keys() {
+        if ![
+            "permissions",
+            "singleInstance",
+            "schemes",
+            "fileTypes",
+            "menu",
+            "tray",
+            "icon",
+        ]
+        .contains(&k.as_str())
+        {
+            bad(format!("unknown key '{k}'"));
+        }
+    }
+    let Some(p) = d.get("permissions").and_then(|p| p.as_object()) else {
+        return bad("permissions must be an object".into());
+    };
+    const BOOLS: [&str; 8] = [
+        "dialogs",
+        "notifications",
+        "storage",
+        "tray",
+        "globalShortcuts",
+        "windows",
+        "server",
+        "prompt",
+    ];
+    for (k, val) in p {
+        match k.as_str() {
+            k if BOOLS.contains(&k) => {
+                if !val.is_boolean() {
+                    bad(format!("permissions.{k} must be true/false"));
+                }
+            }
+            "clipboard" => {
+                if !matches!(val.as_str(), Some("none" | "write" | "read")) {
+                    bad("permissions.clipboard must be \"none\", \"write\" or \"read\"".into());
+                }
+            }
+            "fs" => {
+                for r in val["roots"].as_array().into_iter().flatten() {
+                    if !matches!(
+                        r.as_str(),
+                        Some("documents" | "downloads" | "temp" | "picked")
+                    ) {
+                        bad(format!(
+                            "permissions.fs.roots: unknown root {r} (appData is always allowed)"
+                        ));
+                    }
+                }
+            }
+            "net" | "process" => {}
+            _ => bad(format!("unknown permission '{k}'")),
+        }
+    }
+    for prog in p
+        .get("process")
+        .and_then(|x| x.as_array())
+        .into_iter()
+        .flatten()
+    {
+        if prog
+            .as_str()
+            .is_none_or(|s| s.is_empty() || s.contains(['/', '\\']))
+        {
+            bad(format!(
+                "permissions.process: {prog} must be a bare program name"
+            ));
+        }
+    }
+}
+
 /// Validate project file, start scene and every `scenes/*.scene.json`.
 pub fn validate_project(root: &Path) -> Vec<Issue> {
     let mut v = vec![];
@@ -106,6 +185,7 @@ pub fn validate_project(root: &Path) -> Vec<Issue> {
             format!("id '{}' must be reverse-DNS style ([A-Za-z0-9._-])", p.id),
         );
     }
+    validate_desktop(&p.desktop, &mut v);
     if p.kind != crate::ProjectType::Html && !root.join(&p.start_scene).exists() {
         push(
             &mut v,
@@ -157,5 +237,27 @@ mod tests {
             .any(|i| i.msg.contains("missing file 'assets/nope.png'")));
         assert!(issues.iter().any(|i| i.msg.contains("duplicate id")));
         assert_eq!(issues.len(), 2);
+    }
+}
+
+#[cfg(test)]
+mod desktop_tests {
+    use super::*;
+    use serde_json::json;
+
+    fn issues(v: serde_json::Value) -> Vec<String> {
+        let mut out = vec![];
+        validate_desktop(v.as_object().unwrap(), &mut out);
+        out.into_iter().map(|i| i.msg).collect()
+    }
+    #[test]
+    fn desktop_manifest_is_checked() {
+        assert!(issues(json!({})).is_empty());
+        assert!(issues(json!({"permissions": {"fs": {"roots": ["documents", "picked"], "write": true}, "clipboard": "write", "net": {"hosts": ["a.com"]}, "process": ["git"], "server": true}, "singleInstance": true})).is_empty());
+        let bad = issues(
+            json!({"permissions": {"clipboard": "all", "tray": "yes", "fs": {"roots": ["home"]}, "process": ["/bin/ls"], "magic": 1}, "oops": 1}),
+        );
+        assert_eq!(bad.len(), 6, "{bad:?}");
+        assert_eq!(issues(json!({"permissions": 3})).len(), 1);
     }
 }

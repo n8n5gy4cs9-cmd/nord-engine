@@ -337,6 +337,7 @@ impl App {
             }
             Action::Settings => st.settings_open = true,
             Action::Export => st.export_ui.open = true,
+            Action::DesktopSettings => st.desktop_ui.open = true,
             Action::About => st.about_open = true,
             Action::OpenFile(p, line) => {
                 let root = st.root.clone();
@@ -461,6 +462,7 @@ impl App {
                     act(ui, "Build Rust", Action::Build("rust build".into()), st);
                 }
                 act(ui, "Export…", Action::Export, st);
+                act(ui, "Desktop app permissions…", Action::DesktopSettings, st);
             });
             ui.menu_button("Help", |ui| {
                 act(ui, "Documentation", Action::ShowTab(Tab::Docs), st);
@@ -867,6 +869,7 @@ impl App {
         panels::palette::window(&mut self.st, ctx);
         panels::settings::window(&mut self.st, ctx);
         panels::export::window(&mut self.st, ctx);
+        panels::desktop::window(&mut self.st, ctx);
         if self.st.recover.is_some() && self.st.project.is_some() {
             egui::Window::new("Recover unsaved work?").collapsible(false).resizable(false).anchor(egui::Align2::CENTER_CENTER, [0.0, 0.0]).show(ctx, |ui| {
                 ui.label("An autosave newer than the saved scene was found (the editor may have crashed).");
