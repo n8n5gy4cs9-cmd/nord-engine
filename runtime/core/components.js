@@ -20,6 +20,17 @@ export function registerCoreComponents(game) {
     update(comp) { comp.h.el.hidden = !comp.entity.enabled; },
   });
 
+  registerComponent('audioSource', {
+    create(e, d, comp) {
+      comp.play = (o = {}) => { comp.handle?.stop(); comp.handle = game.audio.play(d.clip, { volume: d.volume ?? 1, loop: !!d.loop, bus: d.bus ?? 'sfx', ...o }); return comp.handle; };
+      comp.stop = () => comp.handle?.stop();
+      if (d.autoplay) comp.play();
+    },
+    destroy(comp) { if (comp.data.loop) comp.stop(); },
+  });
+
+  registerComponent('audioListener', {});
+
   // spawner: periodically spawns a prefab at the entity's position. data: { prefab, interval, max, offset:[x,y,z], autostart, jitter }
   registerComponent('spawner', {
     create(e, d, comp) {

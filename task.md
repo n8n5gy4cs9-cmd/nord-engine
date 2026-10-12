@@ -3,13 +3,13 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 35/119 tasks (29%)** · updated 2026-10-12
+**Overall: 38/119 tasks (32%)** · updated 2026-10-12
 
 | Milestone | Progress |
 |---|---|
 | M0 Planning, identity, assets, vendoring | 13/13 (100%) |
 | M1 Foundation | 11/11 (100%) |
-| M2 JS runtimes | 11/18 (61%) |
+| M2 JS runtimes | 14/18 (78%) |
 | M3 Editor | 0/22 (0%) |
 | M4 Export | 0/10 (0%) |
 | M5 Rust/WASM | 0/9 (0%) |
@@ -18,11 +18,11 @@
 | M8 Polish & portability | 0/8 (0%) |
 
 ## Next up
-- **M2-12** runtime/babylon: boot, mesh/model(glTF)/material/light/camera/skybox components
-- **M2-13** runtime/babylon: Havok physics, collisions, triggers, raycast helpers
-- **M2-14** runtime/babylon: animation, particles, post-process pipeline, Babylon GUI bridge
 - **M2-15** Script hot-reload (hotReloadScript) + error overlay
 - **M2-16** Conformance example scene runs on Phaser and Babylon (screenshot test)
+- **M2-17** Plain `html` tier helper (nord-lite.js) + sample
+- **M2-18** Unit tests for core (node --test) + Playwright e2e harness tools/e2e.mjs
+- **M3-01** nord-editor crate: eframe (wgpu) app, theme (Nord palette), bundled fonts (Inter/JetBrains Mono TTF), egui_dock layout, menu bar
 
 ## M0 — Planning, identity, assets, vendoring
 _Plans, brand, placeholder assets, vendored libs, workspace skeleton_
@@ -70,9 +70,9 @@ _nord.js core + Phaser 2D + Babylon 3D adapters_
 - [x] **M2-09** runtime/phaser: boot, sprite/animatedSprite/text/tilemap/particles/camera components
 - [x] **M2-10** runtime/phaser: arcade + matter physics components, collisions, triggers, events to scripts
 - [x] **M2-11** runtime/phaser: parallax, lights 2D, pixel-art mode, scale modes
-- [ ] **M2-12** runtime/babylon: boot, mesh/model(glTF)/material/light/camera/skybox components
-- [ ] **M2-13** runtime/babylon: Havok physics, collisions, triggers, raycast helpers
-- [ ] **M2-14** runtime/babylon: animation, particles, post-process pipeline, Babylon GUI bridge
+- [x] **M2-12** runtime/babylon: boot, mesh/model(glTF)/material/light/camera/skybox components
+- [x] **M2-13** runtime/babylon: Havok physics, collisions, triggers, raycast helpers
+- [x] **M2-14** runtime/babylon: animation, particles, post-process pipeline, Babylon GUI bridge
 - [ ] **M2-15** Script hot-reload (hotReloadScript) + error overlay
 - [ ] **M2-16** Conformance example scene runs on Phaser and Babylon (screenshot test)
 - [ ] **M2-17** Plain `html` tier helper (nord-lite.js) + sample

@@ -190,16 +190,6 @@ export function registerPhaserComponents(backend) {
     destroy(comp) { backend.scene.lights.removeLight(comp.light); },
   });
 
-  registerComponent('audioSource', {
-    create(e, d, comp) {
-      comp.play = (o = {}) => { comp.handle?.stop(); comp.handle = backend.game.audio.play(d.clip, { volume: d.volume ?? 1, loop: !!d.loop, bus: d.bus ?? 'sfx', ...o }); return comp.handle; };
-      comp.stop = () => comp.handle?.stop();
-      if (d.autoplay) comp.play();
-    },
-    destroy(comp) { if (comp.data.loop) comp.stop(); },
-  });
-  registerComponent('audioListener', {});
-
   // physics components create/refresh the body on the entity container
   const phys = (e) => { if (backend.physics) backend.physics.build(e); };
   registerComponent('rigidbody', { create: phys, destroy: (c) => backend.physics?.forget(c.entity) });

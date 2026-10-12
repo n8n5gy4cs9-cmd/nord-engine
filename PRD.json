@@ -525,19 +525,19 @@
       "id": "M2-12",
       "milestone": "M2",
       "title": "runtime/babylon: boot, mesh/model(glTF)/material/light/camera/skybox components",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M2-13",
       "milestone": "M2",
       "title": "runtime/babylon: Havok physics, collisions, triggers, raycast helpers",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M2-14",
       "milestone": "M2",
       "title": "runtime/babylon: animation, particles, post-process pipeline, Babylon GUI bridge",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M2-15",

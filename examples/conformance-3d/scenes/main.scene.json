@@ -1,0 +1,454 @@
+{
+  "format": 1,
+  "name": "main",
+  "settings": {},
+  "entities": [
+    {
+      "id": "cam00001",
+      "name": "Camera",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          4,
+          -9
+        ],
+        "rot": [
+          18,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "camera",
+          "fov": 60
+        },
+        {
+          "type": "postProcess",
+          "bloom": true,
+          "bloomThreshold": 0.9,
+          "fxaa": true,
+          "vignette": 0.4,
+          "tonemap": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "sun00001",
+      "name": "Sun",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          10,
+          0
+        ],
+        "rot": [
+          50,
+          -30,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "light",
+          "kind": "directional",
+          "intensity": 1.4,
+          "castShadows": true,
+          "color": "#fff4e0"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "amb00001",
+      "name": "Ambient",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "light",
+          "kind": "hemispheric",
+          "intensity": 0.5,
+          "color": "#b0c0ff"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "sky00001",
+      "name": "Sky",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "skybox",
+          "path": "assets/skybox/day"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "gnd00001",
+      "name": "Ground",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "ground",
+          "size": [
+            40,
+            0.2,
+            40
+          ]
+        },
+        {
+          "type": "material",
+          "texture": "assets/textures/grass.png",
+          "uvScale": [
+            8,
+            8
+          ],
+          "roughness": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            40,
+            0.2,
+            40
+          ],
+          "offset": [
+            0,
+            -0.1,
+            0
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "ball0001",
+      "name": "Ball",
+      "enabled": true,
+      "tags": [
+        "ball"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          6,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "sphere",
+          "size": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "type": "material",
+          "color": "#bf616a",
+          "metallic": 0.3,
+          "roughness": 0.4
+        },
+        {
+          "type": "rigidbody",
+          "mode": "dynamic",
+          "mass": 1,
+          "bounce": 0.5
+        },
+        {
+          "type": "collider",
+          "shape": "sphere",
+          "radius": 0.5
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/ball.js"
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "box00001",
+      "name": "Crate",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          3,
+          0.5,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "box",
+          "size": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "type": "material",
+          "texture": "assets/textures/brick.png"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "zone0001",
+      "name": "Zone",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          -3,
+          1,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "trigger",
+          "shape": "box",
+          "size": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/zone.js"
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "mdl00001",
+      "name": "Model",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          1.5,
+          3
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/cube_spin.glb",
+          "animation": "spin"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "fx000001",
+      "name": "Fire",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0.2,
+          5
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "particles",
+          "texture": "assets/particles/soft.png",
+          "rate": 80,
+          "color1": "#ff9040",
+          "color2": "#ff3010",
+          "size": [
+            0.2,
+            0.5
+          ],
+          "gravity": [
+            0,
+            0.5,
+            0
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    }
+  ]
+}
