@@ -10,7 +10,7 @@ const findEntity = (scene, ref) => (ref ? scene.findById(ref) ?? scene.find(ref)
 
 export function registerPhaserComponents(backend) {
   const { scene: ps } = backend; // Phaser.Scene
-  const track = (comp, obj) => { (comp.visuals ??= []).push(obj); if (backend.lightsOn) obj.setLighting?.(true); return obj; };
+  const track = (comp, obj) => { (comp.visuals ??= []).push(obj); backend.visuals.add(obj); if (backend.lightsOn) obj.setLighting?.(true); return obj; };
 
   registerComponent('sprite', {
     create(e, d, comp) {

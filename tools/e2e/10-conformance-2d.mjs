@@ -4,7 +4,7 @@ import { suites, withPage, waitReady, nonBlank, ROOT } from '../e2e-lib.mjs';
 const dir = `${ROOT}/examples/conformance-2d`;
 fs.mkdirSync(`${ROOT}/target/e2e`, { recursive: true });
 
-suites['conformance-2d'] = async () => {
+const run = (query) => async () => {
   const { errors, result } = await withPage(dir, async (page) => {
     await waitReady(page);
     if (await page.evaluate(() => window.__nord_error)) throw new Error(await page.evaluate(() => window.__nord_error));
@@ -18,9 +18,9 @@ suites['conformance-2d'] = async () => {
     await page.evaluate(() => { const g = window.__nord; g.scene.find('Hero').pos = g.scene.find('Coin').pos.map((v, i) => (i === 2 ? 1 : v)); });
     await page.waitForTimeout(400);
     const coin = await page.evaluate(() => ({ left: window.__nord.scene.findByTag('coin').length, score: window.__nord.scene.find('Score').getComponent('uiLabel').h.el.textContent }));
-    const shot = await page.screenshot({ path: `${ROOT}/target/e2e/conformance-2d.png` });
+    const shot = await page.screenshot({ path: `${ROOT}/target/e2e/conformance-2d${query.replace(/\W/g, '')}.png` });
     return { info, moved, coin, colors: await nonBlank(page, shot) };
-  });
+  }, { path: `/${query}` });
   console.log(JSON.stringify(result));
   if (errors.length) throw new Error(errors.join('\n'));
   if (result.info.errs) throw new Error('script errors');
@@ -29,3 +29,6 @@ suites['conformance-2d'] = async () => {
   if (result.coin.left !== 0 || result.coin.score !== 'Score: 1') throw new Error(`trigger/coin failed: ${JSON.stringify(result.coin)}`);
   if (result.colors < 12) throw new Error('canvas looks blank');
 };
+
+suites['conformance-2d'] = run('');
+suites['conformance-2d-matter'] = run('?physics=matter');

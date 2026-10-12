@@ -11,7 +11,11 @@ class Base {
     this.bodies = new Map();            // entity → { go, mode, trigger, cfg }
     this.touching = new Map();          // pair key → { a, b, trigger, seen }
     this.layers = [];                   // collidable tilemap layers
+    this.dirty = new Set();             // entities whose body must be (re)built — components arrive one at a time
   }
+  build(entity) { this.dirty.add(entity); }
+  /** Build bodies for entities whose rigidbody/collider components changed. Called before every step and by accessors. */
+  flushDirty() { for (const e of [...this.dirty]) { this.dirty.delete(e); if (!e.destroyed && e.native) this.create(e); } }
   game() { return this.backend.game; }
   cfg(entity) {
     const rb = entity.getComponent('rigidbody')?.data ?? null, col = entity.getComponent('collider')?.data ?? null;
@@ -58,7 +62,7 @@ class Base {
     }
   }
   tilemap(layer) { this.layers.push(layer); }
-  forget(entity) { this.bodies.delete(entity); for (const [k, p] of this.touching) if (p.a === entity || p.b === entity) this.touching.delete(k); }
+  forget(entity) { this.dirty.delete(entity); this.bodies.delete(entity); for (const [k, p] of this.touching) if (p.a === entity || p.b === entity) this.touching.delete(k); }
 }
 
 export class ArcadeAdapter extends Base {
@@ -73,7 +77,7 @@ export class ArcadeAdapter extends Base {
     scene.events.off('postupdate', w.postUpdate, w);
     w.isPaused = false; w.fixedStep = false;
   }
-  build(entity) {
+  create(entity) {
     const go = entity.native, cfg = this.cfg(entity);
     this.forget(entity);
     if (go.body) { try { this.world.remove(go.body); } catch { /* ignore */ } go.body = null; }
@@ -96,6 +100,7 @@ export class ArcadeAdapter extends Base {
     go.__nordEntity = entity;
   }
   step(dt) {
+    this.flushDirty();
     const solids = [], trig = [], all = [];
     for (const [e, b] of this.bodies) {
       if (!b.go.body?.enable || !e.enabled) continue;
@@ -113,7 +118,7 @@ export class ArcadeAdapter extends Base {
     this.writeBack();
     this.flush(hits);
   }
-  body(e) { return this.bodies.get(e)?.go.body ?? null; }
+  body(e) { if (this.dirty.has(e)) this.flushDirty(); return this.bodies.get(e)?.go.body ?? null; }
   setVelocity(e, vx, vy) { const b = this.body(e); if (b) { if (vx !== null) b.velocity.x = vx; if (vy !== null) b.velocity.y = vy; } }
   velocity(e) { const b = this.body(e); return b ? [b.velocity.x, b.velocity.y] : [0, 0]; }
   applyImpulse(e, ix, iy) { const b = this.body(e); if (b) { b.velocity.x += ix / b.mass; b.velocity.y += iy / b.mass; } }
@@ -136,17 +141,21 @@ export class MatterAdapter extends Base {
     const g = settings.gravity ?? [0, 0, 0];
     this.world.engine.gravity.x = g[0] / 1000; this.world.engine.gravity.y = g[1] / 1000;
     this.world.autoUpdate = false;
-    this.hits = [];
+    this.hits = []; this.groundFrame = new Map(); this.frame = 0;
     this.world.on('collisionactive', (ev) => this.#pairs(ev));
     this.world.on('collisionstart', (ev) => this.#pairs(ev));
   }
   #pairs(ev) {
     for (const p of ev.pairs) {
       const a = p.bodyA.gameObject?.__nordEntity, b = p.bodyB.gameObject?.__nordEntity;
+      if (!a !== !b) { // contact with a non-entity body (tilemap): remember "ground below" for isGrounded()
+        const me = a ?? b, mine = a ? p.bodyA : p.bodyB, other = a ? p.bodyB : p.bodyA;
+        if (!p.bodyA.isSensor && !p.bodyB.isSensor && other.position.y > mine.position.y) this.groundFrame.set(me, this.frame);
+      }
       if (a && b) this.hits.push([a, b, p.bodyA.isSensor || p.bodyB.isSensor, { normal: [p.collision?.normal?.x ?? 0, p.collision?.normal?.y ?? 0] }]);
     }
   }
-  build(entity) {
+  create(entity) {
     const go = entity.native, cfg = this.cfg(entity);
     this.forget(entity);
     if (go.body) { this.scene.matter.world.remove(go.body); go.body = null; }
@@ -161,24 +170,27 @@ export class MatterAdapter extends Base {
     this.bodies.set(entity, { go, mode: cfg.mode, trigger: cfg.trigger, cfg });
   }
   step(dt) {
-    this.hits = [];
+    this.flushDirty();
+    this.hits = []; this.frame++;
     for (const [e, b] of this.bodies) if (b.mode === 'kinematic' && b.go.body) this.#moveKinematic(e, b, dt);
     this.world.step(dt * 1000);
     this.writeBack();
     // 'collisionactive' only reports after the first step; de-dup within frame is handled by the pair key in flush()
     this.flush(this.hits);
   }
+  rec(e) { if (this.dirty.has(e)) this.flushDirty(); return this.bodies.get(e); }
   #moveKinematic(e, b, dt) { const v = b.kv; if (v) b.go.setPosition(b.go.x + v[0] * dt, b.go.y + v[1] * dt); }
   setVelocity(e, vx, vy) {
-    const b = this.bodies.get(e); if (!b) return;
+    const b = this.rec(e); if (!b) return;
     if (b.mode === 'kinematic') { b.kv = [vx ?? b.kv?.[0] ?? 0, vy ?? b.kv?.[1] ?? 0]; return; }
     const cur = b.go.body.velocity;
     b.go.setVelocity(vx === null ? cur.x : vx / 60, vy === null ? cur.y : vy / 60);
   }
-  velocity(e) { const b = this.bodies.get(e); if (!b) return [0, 0]; if (b.mode === 'kinematic') return b.kv ?? [0, 0]; return [b.go.body.velocity.x * 60, b.go.body.velocity.y * 60]; }
-  applyImpulse(e, ix, iy) { const b = this.bodies.get(e); if (b && b.mode === 'dynamic') b.go.setVelocity(b.go.body.velocity.x + ix / b.cfg.mass / 60, b.go.body.velocity.y + iy / b.cfg.mass / 60); }
+  velocity(e) { const b = this.rec(e); if (!b) return [0, 0]; if (b.mode === 'kinematic') return b.kv ?? [0, 0]; return [b.go.body.velocity.x * 60, b.go.body.velocity.y * 60]; }
+  applyImpulse(e, ix, iy) { const b = this.rec(e); if (b && b.mode === 'dynamic') b.go.setVelocity(b.go.body.velocity.x + ix / b.cfg.mass / 60, b.go.body.velocity.y + iy / b.cfg.mass / 60); }
   isGrounded(e) {
-    const b = this.bodies.get(e); if (!b) return false;
+    const b = this.rec(e); if (!b) return false;
+    if (this.frame - (this.groundFrame.get(e) ?? -9) <= 1) return true;
     for (const p of this.touching.values()) if (!p.trigger && (p.a === e || p.b === e)) {
       const o = p.a === e ? p.b : p.a; const ob = this.bodies.get(o);
       if (ob && ob.go.y > b.go.y && Math.abs(ob.go.x - b.go.x) < (ob.cfg.size[0] + b.cfg.size[0]) / 2) return true;
@@ -194,6 +206,6 @@ export class MatterAdapter extends Base {
     }
     return out;
   }
-  enable(e, on) { const b = this.bodies.get(e); if (b) b.go.body.isSensor = !on || b.trigger; }
-  teleport(e, x, y) { const b = this.bodies.get(e); if (b) b.go.setPosition(x, y); }
+  enable(e, on) { const b = this.rec(e); if (b) b.go.body.isSensor = !on || b.trigger; }
+  teleport(e, x, y) { const b = this.rec(e); if (b) b.go.setPosition(x, y); }
 }

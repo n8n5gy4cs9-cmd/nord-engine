@@ -495,31 +495,31 @@
       "id": "M2-07",
       "milestone": "M2",
       "title": "runtime/core: audio manager (buses, unlock, music crossfade)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M2-08",
       "milestone": "M2",
       "title": "runtime/core: DOM UI layer (HUD/menu primitives, CSS theme)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M2-09",
       "milestone": "M2",
       "title": "runtime/phaser: boot, sprite/animatedSprite/text/tilemap/particles/camera components",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M2-10",
       "milestone": "M2",
       "title": "runtime/phaser: arcade + matter physics components, collisions, triggers, events to scripts",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M2-11",
       "milestone": "M2",
       "title": "runtime/phaser: parallax, lights 2D, pixel-art mode, scale modes",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M2-12",

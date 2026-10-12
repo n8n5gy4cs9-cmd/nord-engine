@@ -75,7 +75,7 @@ export async function boot(project, opts = {}) {
 }
 
 class Backend {
-  constructor(game, project) { this.game = game; this.project = project; this.lightsOn = false; this.maps = new Map(); this.physics = null; this.cameraComp = null; this._q = Promise.resolve(); }
+  constructor(game, project) { this.game = game; this.project = project; this.lightsOn = false; this.visuals = new Set(); this.maps = new Map(); this.physics = null; this.cameraComp = null; this._q = Promise.resolve(); }
   init() { /* hook for subclasses/tests */ }
   texKey(path) { return path; }
   mapKey(path) { return `map:${path}`; }
@@ -134,7 +134,7 @@ class Backend {
     if (this.lightsOn) return;
     this.lightsOn = true;
     this.scene.lights.enable().setAmbientColor(parseInt((this.game.scene?.settings?.ambient ?? '#555566').slice(1, 7), 16));
-    for (const e of this.game.scene?.all() ?? []) for (const c of e.components) for (const v of c.visuals ?? []) v.setLighting?.(true);
+    for (const v of this.visuals) if (v.scene) v.setLighting?.(true);
   }
 
   // ---- entity <-> native -----------------------------------------------
@@ -169,6 +169,7 @@ class Backend {
   frame(dt) {
     const g = this.game;
     for (const pad of navigator.getGamepads?.() ?? []) if (pad) { g.input.pollGamepad(pad); break; }
+    this.physics?.flushDirty();
     g.tick(dt);
   }
 

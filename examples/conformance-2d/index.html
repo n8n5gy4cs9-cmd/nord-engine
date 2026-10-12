@@ -8,6 +8,7 @@
 import { boot } from '/runtime/phaser/index.js';
 try {
   const project = await (await fetch('nord.project.json')).json();
+  const q = new URLSearchParams(location.search).get('physics'); if (q) project.physics.engine = q; // e2e: ?physics=matter
   await boot(project, { container: document.getElementById('stage') });
   window.__nord_ready = true;
 } catch (e) { console.error(e); window.__nord_error = String(e); }
