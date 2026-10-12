@@ -333,7 +333,7 @@
       "id": "M0-04",
       "milestone": "M0",
       "title": "tools/fetch-upstreams.sh + UPSTREAM.lock.json (godot, playcanvas engine/editor/pcui, macroquad, bevy, raylib, defold, egui, phaser-examples)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M0-05",

@@ -1,0 +1,92 @@
+{
+  "godot": {
+    "repo": "godotengine/godot",
+    "sha": "232e6b14abf6e590b41d60f11704e42de22bff72",
+    "licenceFile": "LICENSE.txt",
+    "licenceHead": "Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). Copyright"
+  },
+  "godot-demo": {
+    "repo": "godotengine/godot-demo-projects",
+    "sha": "b761b4cd5718a7118f2c95eb55f181d0a5f004f1",
+    "licenceFile": "",
+    "licenceHead": ""
+  },
+  "playcanvas-engine": {
+    "repo": "playcanvas/engine",
+    "sha": "3e1e7c35f00692f3bb8aad105406b6a6d7896b7c",
+    "licenceFile": "LICENSE",
+    "licenceHead": "Copyright (c) 2011-2026 PlayCanvas Ltd.  Permission is hereby granted, free of c"
+  },
+  "playcanvas-editor": {
+    "repo": "playcanvas/editor",
+    "sha": "d7cf2ceb57e92487bdcedc18b16e10f978a57be4",
+    "licenceFile": "LICENSE",
+    "licenceHead": "Copyright (c) 2011-2026 PlayCanvas Ltd.  Permission is hereby granted, free of c"
+  },
+  "pcui": {
+    "repo": "playcanvas/pcui",
+    "sha": "77ed2b8ba8660c9644049b0d1942652721e7a6c4",
+    "licenceFile": "LICENSE",
+    "licenceHead": "Copyright (c) 2011-2026 PlayCanvas Ltd.  Permission is hereby granted, free of c"
+  },
+  "macroquad": {
+    "repo": "not-fl3/macroquad",
+    "sha": "8d602d3f8ebb8a3a582ee15d92983bbb81ee3ef6",
+    "licenceFile": "LICENSE-APACHE",
+    "licenceHead": "                              Apache License                         Version 2.0"
+  },
+  "miniquad": {
+    "repo": "not-fl3/miniquad",
+    "sha": "39c928fb7e09fd44e45f37fe9a98503968bca412",
+    "licenceFile": "LICENSE-APACHE",
+    "licenceHead": "                              Apache License                         Version 2.0"
+  },
+  "bevy": {
+    "repo": "bevyengine/bevy",
+    "sha": "c9c21c2b7af92a396b5f93ecfa1536a8a2afcc68",
+    "licenceFile": "LICENSE-APACHE",
+    "licenceHead": "                                 Apache License                            Versi"
+  },
+  "raylib": {
+    "repo": "raysan5/raylib",
+    "sha": "fdc8b37391b52fdc8cc62af37d02235c9ec59daa",
+    "licenceFile": "LICENSE",
+    "licenceHead": "Copyright (c) 2013-2026 Ramon Santamaria (@raysan5)  This software is provided _"
+  },
+  "raylib-rs": {
+    "repo": "raylib-rs/raylib-rs",
+    "sha": "50847c931ba40debd470a7e7a43d7885c254e8a6",
+    "licenceFile": "",
+    "licenceHead": ""
+  },
+  "defold": {
+    "repo": "defold/defold",
+    "sha": "9b87db0cc62de01deb844e27ef33988c1072b1e8",
+    "licenceFile": "LICENSE.txt",
+    "licenceHead": "Defold License Version 1.0, May 2020 https://www.defold.com/opensource "
+  },
+  "egui": {
+    "repo": "emilk/egui",
+    "sha": "13ec593014e6c3874e65c76e032df359a2282b5c",
+    "licenceFile": "LICENSE-APACHE",
+    "licenceHead": "                              Apache License                         Version 2.0"
+  },
+  "eframe-template": {
+    "repo": "emilk/eframe_template",
+    "sha": "f108546a2b9f2fc6a82543ceae1625a3893305cb",
+    "licenceFile": "LICENSE-APACHE",
+    "licenceHead": "                              Apache License                         Version 2.0"
+  },
+  "phaser3-examples": {
+    "repo": "phaserjs/examples",
+    "sha": "68140eca72525d5034b783a262270715ddc17b78",
+    "licenceFile": "",
+    "licenceHead": ""
+  },
+  "rapier": {
+    "repo": "dimforge/rapier",
+    "sha": "475caa3ff4646fd9a796b67d14116256f4962bc7",
+    "licenceFile": "LICENSE",
+    "licenceHead": "                                 Apache License                            Versi"
+  }
+}

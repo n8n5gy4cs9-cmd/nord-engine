@@ -3,11 +3,11 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 3/118 tasks (3%)** · updated 2026-10-12
+**Overall: 4/118 tasks (3%)** · updated 2026-10-12
 
 | Milestone | Progress |
 |---|---|
-| M0 Planning, identity, assets, vendoring | 3/13 (23%) |
+| M0 Planning, identity, assets, vendoring | 4/13 (31%) |
 | M1 Foundation | 0/11 (0%) |
 | M2 JS runtimes | 0/18 (0%) |
 | M3 Editor | 0/21 (0%) |
@@ -18,11 +18,11 @@
 | M8 Polish & portability | 0/8 (0%) |
 
 ## Next up
-- **M0-04** tools/fetch-upstreams.sh + UPSTREAM.lock.json (godot, playcanvas engine/editor/pcui, macroquad, bevy, raylib, defold, egui, phaser-examples)
 - **M0-05** Brand assets: logo (svg/png), wordmark, splash 2s image, app icons (icns/ico/png), palette
 - **M0-06** Generate placeholder textures (tileable), skyboxes, particle sprites
 - **M0-07** Generate placeholder pixel-art sprites/spritesheets/tileset + UI kit
 - **M0-08** Generate placeholder sfx + music loops (tools/gen_assets.py) + icon set (Lucide subset)
+- **M0-09** Generate docs/manual graphics (banner, section icons, favicon)
 
 ## M0 — Planning, identity, assets, vendoring
 _Plans, brand, placeholder assets, vendored libs, workspace skeleton_
@@ -30,7 +30,7 @@ _Plans, brand, placeholder assets, vendored libs, workspace skeleton_
 - [x] **M0-01** Write PRD.md, ARCHITECTURE, DECISIONS, specs (format, scripting, export, editor UI)
 - [x] **M0-02** Write library plan, manual plan, testing plan, AGENTS.md handoff guide
 - [x] **M0-03** PRD.json + generated task.md + tools/tasks.mjs
-- [ ] **M0-04** tools/fetch-upstreams.sh + UPSTREAM.lock.json (godot, playcanvas engine/editor/pcui, macroquad, bevy, raylib, defold, egui, phaser-examples)
+- [x] **M0-04** tools/fetch-upstreams.sh + UPSTREAM.lock.json (godot, playcanvas engine/editor/pcui, macroquad, bevy, raylib, defold, egui, phaser-examples)
 - [ ] **M0-05** Brand assets: logo (svg/png), wordmark, splash 2s image, app icons (icns/ico/png), palette
 - [ ] **M0-06** Generate placeholder textures (tileable), skyboxes, particle sprites
 - [ ] **M0-07** Generate placeholder pixel-art sprites/spritesheets/tileset + UI kit
