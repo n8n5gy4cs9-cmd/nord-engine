@@ -1,0 +1,8 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Audio Visualiser</title>
+<style>html,body{margin:0;height:100%;background:#2e3440}#app{height:100vh}</style></head>
+<body><div id="app"></div>
+<script type="module">
+import { mount } from './app.js';
+try { mount(document.getElementById('app'), { tracks: [{"title":"menu chill","src":"audio/music_menu_chill.mp3"},{"title":"adventure","src":"audio/music_adventure.mp3"},{"title":"ambient space","src":"audio/music_ambient_space.mp3"},{"title":"action","src":"audio/music_action.mp3"}] }); window.__nord_ready = true; } catch (e) { console.error(e); window.__nord_error = String(e); }
+</script></body></html>

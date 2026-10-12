@@ -132,3 +132,11 @@ export const box3 = (name, [x, y, z], [w, h, d], o = {}) => E(name, { pos: [x, y
 export const ground3 = (size = 60, tex = 'assets/textures/grass.png') => E('Ground', { c: [{ type: 'mesh', shape: 'ground', size: [size, 0.2, size] }, { type: 'material', texture: tex, uvScale: [size / 4, size / 4], roughness: 1 }, { type: 'rigidbody', mode: 'static' }, { type: 'collider', shape: 'box', size: [size, 0.2, size], offset: [0, -0.1, 0] }] });
 export const hud3 = (name, x, y, t, size = 22) => E(name, { c: [{ type: 'uiLabel', text: t, x, y, size }] });
 export const tex3 = (names) => names.map((n) => `assets/textures/${n}.png`);
+
+/** Plain-HTML example/template that mounts one of library/apps/*.js (no engine runtime needed). */
+export const appSpec = (id, name, kit, o = {}) => ({
+  name, project: { ...project(id, name, 'html', {}), startScene: '' },
+  html: { module: 'app.js', bootJs: o.bootJs, files: [{ from: `library/apps/${kit}.js`, to: 'app.js' }, { from: 'library/apps/_kit.js', to: '_kit.js' }, ...(o.files ?? [])] },
+  readme: `# ${name}\nPlain HTML + ES modules, no build step and no engine runtime. The app is \`library/apps/${kit}.js\` (copied to \`app.js\`): \`mount(rootElement)\`.\nOpen with \`nord serve .\` or export with \`nord export . --target html\`.\n${o.note ?? ''}`,
+  template: o.template, example: o.example,
+});
