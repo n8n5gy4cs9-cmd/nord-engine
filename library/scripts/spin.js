@@ -1,3 +1,4 @@
+// @nord {"id": "util.spin", "title": "Spin", "category": "utilities", "tier": ["2d", "3d"], "tags": ["rotate", "simple"], "description": "Rotates the entity continuously around one axis.", "requires": []}
 // Spin — rotates the entity continuously. Works in 2D (z axis) and 3D (y axis).
 import { NordScript } from 'nord';
 

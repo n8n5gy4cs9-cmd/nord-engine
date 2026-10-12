@@ -1,0 +1,222 @@
+[
+  {
+    "id": "prefab.marker",
+    "title": "Marker (text prefab)",
+    "kind": "prefab",
+    "category": "utilities",
+    "tags": [
+      "debug"
+    ],
+    "tier": [
+      "2d",
+      "3d"
+    ],
+    "file": "library/prefabs/marker.prefab.json",
+    "description": "A labelled marker entity, handy for level layout.",
+    "attributes": [],
+    "requires": [],
+    "demo": "",
+    "source": "original"
+  },
+  {
+    "id": "shader.toon",
+    "title": "Toon (cel) shading",
+    "kind": "shader",
+    "category": "shaders",
+    "tags": [
+      "toon",
+      "lighting"
+    ],
+    "tier": [
+      "3d"
+    ],
+    "file": "library/shaders/toon.glsl",
+    "description": "Babylon ShaderMaterial: banded diffuse lighting from a light direction uniform.",
+    "attributes": [],
+    "requires": [],
+    "demo": "",
+    "source": "original"
+  },
+  {
+    "id": "shader.hologram",
+    "title": "Hologram",
+    "kind": "shader",
+    "category": "shaders",
+    "tags": [
+      "hologram",
+      "scanline",
+      "fresnel"
+    ],
+    "tier": [
+      "3d"
+    ],
+    "file": "library/shaders/hologram.glsl",
+    "description": "Fresnel rim + moving scanlines with additive-looking alpha.",
+    "attributes": [],
+    "requires": [],
+    "demo": "",
+    "source": "original"
+  },
+  {
+    "id": "shader.dissolve",
+    "title": "Dissolve",
+    "kind": "shader",
+    "category": "shaders",
+    "tags": [
+      "dissolve",
+      "noise",
+      "alpha"
+    ],
+    "tier": [
+      "2d",
+      "3d"
+    ],
+    "file": "library/shaders/dissolve.glsl",
+    "description": "Alpha-clips by a noise threshold with a glowing edge. Animate uniform \"amount\" 0\u21921.",
+    "attributes": [],
+    "requires": [],
+    "demo": "",
+    "source": "original"
+  },
+  {
+    "id": "shader.water",
+    "title": "Water (animated)",
+    "kind": "shader",
+    "category": "shaders",
+    "tags": [
+      "water",
+      "waves",
+      "uv"
+    ],
+    "tier": [
+      "2d",
+      "3d"
+    ],
+    "file": "library/shaders/water.glsl",
+    "description": "Scrolling distortion + highlight bands for a top-down or side water plane.",
+    "attributes": [],
+    "requires": [],
+    "demo": "",
+    "source": "original"
+  },
+  {
+    "id": "shader.triplanar",
+    "title": "Triplanar terrain",
+    "kind": "shader",
+    "category": "shaders",
+    "tags": [
+      "triplanar",
+      "terrain",
+      "texture"
+    ],
+    "tier": [
+      "3d"
+    ],
+    "file": "library/shaders/triplanar.glsl",
+    "description": "Projects a tileable texture on three axes, blended by normal; no UVs needed.",
+    "attributes": [],
+    "requires": [],
+    "demo": "",
+    "source": "original"
+  },
+  {
+    "id": "shader.fresnel-rim",
+    "title": "Fresnel rim light",
+    "kind": "shader",
+    "category": "shaders",
+    "tags": [
+      "fresnel",
+      "rim",
+      "glow"
+    ],
+    "tier": [
+      "3d"
+    ],
+    "file": "library/shaders/fresnel-rim.glsl",
+    "description": "Adds a coloured rim that strengthens at grazing angles.",
+    "attributes": [],
+    "requires": [],
+    "demo": "",
+    "source": "original"
+  },
+  {
+    "id": "shader.scroll-uv",
+    "title": "Scrolling UV",
+    "kind": "shader",
+    "category": "shaders",
+    "tags": [
+      "scroll",
+      "conveyor",
+      "uv"
+    ],
+    "tier": [
+      "2d",
+      "3d"
+    ],
+    "file": "library/shaders/scroll-uv.glsl",
+    "description": "Scrolls a texture by (speed.x, speed.y) per second \u2014 conveyors, waterfalls, energy beams.",
+    "attributes": [],
+    "requires": [],
+    "demo": "",
+    "source": "original"
+  },
+  {
+    "id": "shader.wind-sway",
+    "title": "Wind sway (foliage)",
+    "kind": "shader",
+    "category": "shaders",
+    "tags": [
+      "wind",
+      "vertex",
+      "grass"
+    ],
+    "tier": [
+      "3d"
+    ],
+    "file": "library/shaders/wind-sway.glsl",
+    "description": "Vertex shader bends geometry more with height; pair with any fragment colour/texture.",
+    "attributes": [],
+    "requires": [],
+    "demo": "",
+    "source": "original"
+  },
+  {
+    "id": "shader.outline",
+    "title": "Outline (inverted hull)",
+    "kind": "shader",
+    "category": "shaders",
+    "tags": [
+      "outline",
+      "toon"
+    ],
+    "tier": [
+      "3d"
+    ],
+    "file": "library/shaders/outline.glsl",
+    "description": "Render a slightly inflated back-face copy of the mesh with this material for a solid outline.",
+    "attributes": [],
+    "requires": [],
+    "demo": "",
+    "source": "original"
+  },
+  {
+    "id": "shader.crt",
+    "title": "CRT post effect",
+    "kind": "shader",
+    "category": "shaders",
+    "tags": [
+      "crt",
+      "postprocess",
+      "retro"
+    ],
+    "tier": [
+      "2d"
+    ],
+    "file": "library/shaders/crt.glsl",
+    "description": "Fullscreen fragment shader (Phaser PostFX / Babylon PostProcess): barrel distortion, scanlines, RGB shift.",
+    "attributes": [],
+    "requires": [],
+    "demo": "",
+    "source": "original"
+  }
+]

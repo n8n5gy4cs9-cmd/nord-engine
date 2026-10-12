@@ -1,3 +1,4 @@
+// @nord {"id": "controller.follow-pointer", "title": "Follow pointer", "category": "controllers", "tier": ["2d"], "tags": ["mouse", "touch", "simple"], "description": "Moves the entity toward the pointer at a maximum speed.", "requires": []}
 // Follow pointer (2D) — moves the entity toward the mouse/touch position in world space.
 import { NordScript } from 'nord';
 
