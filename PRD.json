@@ -1251,6 +1251,12 @@
       "milestone": "M8",
       "title": "Editor UI uplift: charcoal theme, polished workspace and hub, reliable toolbar and dialogs",
       "status": "done"
+    },
+    {
+      "id": "M8-19",
+      "milestone": "M8",
+      "title": "Fix Assets folder divider resizing and staircase thumbnail grid",
+      "status": "done"
     }
   ]
 }

@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 144/156 tasks (92%)** · updated 2026-10-12
+**Overall: 145/157 tasks (92%)** · updated 2026-10-12
 
 | Milestone | Progress |
 |---|---|
@@ -15,7 +15,7 @@
 | M5 Rust/WASM | 9/9 (100%) |
 | M6 Library | 20/20 (100%) |
 | M7 Docs | 13/13 (100%) |
-| M8 Polish & portability | 11/18 (61%) |
+| M8 Polish & portability | 12/19 (63%) |
 | M9 Desktop apps | 16/16 (100%) |
 
 ## Next up
@@ -200,6 +200,7 @@ _dmg, CI, Windows, Linux, perf_
 - [ ] **M8-16** Open current example content by default; add opt-in cached-content testing setting
 - [ ] **M8-17** Fix macOS project-lock live-process detection
 - [x] **M8-18** Editor UI uplift: charcoal theme, polished workspace and hub, reliable toolbar and dialogs
+- [x] **M8-19** Fix Assets folder divider resizing and staircase thumbnail grid
 
 ## M9 — Desktop apps
 _real native desktop apps (Rust backend): files, dialogs, notifications, tray, windows, storage, packaging_

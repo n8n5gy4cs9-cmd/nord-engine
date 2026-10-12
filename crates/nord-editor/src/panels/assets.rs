@@ -302,13 +302,15 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         .resizable(true)
         .default_width(140.0)
         .show_inside(ui, |ui| {
-            egui::ScrollArea::both().show(ui, |ui| {
-                let sel = st.assets_ui.dir.is_empty();
-                if ui.selectable_label(sel, "📁 (project)").clicked() {
-                    st.assets_ui.dir.clear();
-                }
-                tree(st, ui, "", 0);
-            });
+            egui::ScrollArea::both()
+                .auto_shrink([false; 2])
+                .show(ui, |ui| {
+                    let sel = st.assets_ui.dir.is_empty();
+                    if ui.selectable_label(sel, "📁 (project)").clicked() {
+                        st.assets_ui.dir.clear();
+                    }
+                    tree(st, ui, "", 0);
+                });
         });
 
     let search = st.assets_ui.search.to_lowercase();
@@ -569,7 +571,9 @@ fn draw_thumb(st: &mut EditorState, ui: &mut Ui, root: &Path, e: &Entry, rect: e
         match st.assets_ui.thumbs.get(&e.rel) {
             Some(Some(p)) => {
                 let uri = format!("file://{}", p.display());
-                ui.put(rect, egui::Image::new(uri).fit_to_exact_size(rect.size()));
+                egui::Image::new(uri)
+                    .fit_to_exact_size(rect.size())
+                    .paint_at(ui, rect);
                 if e.kind == AssetType::Spritesheet {
                     ui.painter().text(
                         rect.right_top(),
@@ -607,5 +611,7 @@ fn draw_thumb(st: &mut EditorState, ui: &mut Ui, root: &Path, e: &Entry, rect: e
     }
     let c = ui.visuals().weak_text_color();
     let r = egui::Rect::from_center_size(rect.center(), Vec2::splat(rect.width() * 0.55));
-    ui.put(r, icons::icon(kind_icon(e.kind, e.is_dir), r.width(), c));
+    // The cell already owns its layout space. `ui.put` would advance the wrapped
+    // row's cursor again, pushing each following tile down into a staircase.
+    icons::icon(kind_icon(e.kind, e.is_dir), r.width(), c).paint_at(ui, r);
 }

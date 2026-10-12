@@ -511,9 +511,113 @@ fn assets_panel_lists_imports_and_renames() {
         .map(|r| r.count())
         .unwrap_or(0);
     assert!(cached > 0, "lazy thumbnails generated");
+    let coin = asset_label_rect(&h, "coin.png");
+    let extra = asset_label_rect(&h, "extra.png");
+    assert!(
+        (coin.top() - extra.top()).abs() < 0.5,
+        "loaded thumbnails must stay aligned: {coin:?}, {extra:?}"
+    );
     // search mode and filters render without panicking
     h.state_mut().assets_ui.search = "tileset".into();
     h.run_steps(3);
+}
+
+fn asset_label_rect(h: &Harness<'_, EditorState>, name: &str) -> egui::Rect {
+    fn find(shape: &egui::Shape, name: &str) -> Option<egui::Rect> {
+        match shape {
+            egui::Shape::Text(t) if t.galley.job.text == name => {
+                Some(egui::Rect::from_min_size(t.pos, t.galley.size()))
+            }
+            egui::Shape::Vec(shapes) => shapes.iter().find_map(|s| find(s, name)),
+            _ => None,
+        }
+    }
+    h.output()
+        .shapes
+        .iter()
+        .find_map(|s| find(&s.shape, name))
+        .unwrap()
+}
+
+fn asset_layout_harness(name: &str, size: egui::Vec2) -> Harness<'static, EditorState> {
+    let mut st = state_with_scene(name);
+    for i in 0..12 {
+        std::fs::write(
+            st.root.as_ref().unwrap().join(format!("assets/f{i:02}.js")),
+            "",
+        )
+        .unwrap();
+    }
+    st.assets_ui.dir = "assets".into();
+    let mut h = Harness::builder()
+        .with_size(size)
+        .build_ui_state(|ui, st: &mut EditorState| panels::assets::ui(st, ui), st);
+    loaders(&h);
+    h.run_steps(4);
+    h
+}
+
+#[test]
+fn assets_grid_aligns_tiles_and_wraps_into_rows() {
+    let mut h = asset_layout_harness("asset-grid-layout", egui::vec2(720.0, 1200.0));
+    for size in [48.0, 84.0, 160.0] {
+        h.state_mut().assets_ui.size = size;
+        h.run_steps(3);
+        let first = asset_label_rect(&h, "f00.js");
+        let second = asset_label_rect(&h, "f01.js");
+        assert!(
+            (first.top() - second.top()).abs() < 0.5,
+            "tiles in the same row must align at size {size}: {first:?}, {second:?}"
+        );
+        let rects: Vec<_> = (0..12)
+            .map(|i| asset_label_rect(&h, &format!("f{i:02}.js")))
+            .collect();
+        let wrapped = rects.iter().find(|r| r.top() > first.top() + 1.0).unwrap();
+        assert!(
+            (wrapped.center().x - first.center().x).abs() < 0.5,
+            "wrapped row must restart in the first column"
+        );
+    }
+}
+
+#[test]
+fn assets_folder_divider_can_widen_and_keep_its_width() {
+    let mut h = asset_layout_harness("asset-tree-resize", egui::vec2(1000.0, 500.0));
+    let panel_id = egui::Id::new("asset-tree");
+    let before = egui::containers::panel::PanelState::load(&h.ctx, panel_id)
+        .unwrap()
+        .rect;
+    let start = egui::pos2(before.right(), before.center().y);
+    h.input_mut().events.push(egui::Event::PointerMoved(start));
+    h.run_steps(1);
+    h.input_mut().events.push(egui::Event::PointerButton {
+        pos: start,
+        button: egui::PointerButton::Primary,
+        pressed: true,
+        modifiers: Default::default(),
+    });
+    h.run_steps(1);
+    let end = start + egui::vec2(240.0, 0.0);
+    h.input_mut().events.push(egui::Event::PointerMoved(end));
+    h.run_steps(3);
+    h.input_mut().events.push(egui::Event::PointerButton {
+        pos: end,
+        button: egui::PointerButton::Primary,
+        pressed: false,
+        modifiers: Default::default(),
+    });
+    h.run_steps(4);
+    let after = egui::containers::panel::PanelState::load(&h.ctx, panel_id)
+        .unwrap()
+        .rect;
+    assert!(
+        after.width() > before.width() + 200.0,
+        "folder tree must retain dragged width: {before:?} -> {after:?}"
+    );
+    assert!(
+        asset_label_rect(&h, "f00.js").left() >= after.right(),
+        "files must start to the right of the widened tree"
+    );
 }
 
 #[test]

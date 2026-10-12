@@ -6,6 +6,7 @@ Format: `BUG-nnn [open|fixed] title — repro / notes`. Unverified-but-plausible
 _(none yet)_
 
 ## Fixed
+- BUG-009 [fixed] Assets folder tree snapped back to a narrow width and file tiles descended in a staircase. Disabled tree scroll-area auto-shrink; paint thumbnails/icons without advancing the already allocated cell's layout cursor. Headless regressions verify retained divider width and aligned/wrapped rows at 48/84/160 px. Native pointer interaction in the rebuilt app remains unverified.
 - BUG-007 [fixed] macOS child webviews were vertically mirrored, covering the game header/console. wry 0.50 assumes an unflipped NSView but winit 0.30 supplies a flipped view; bounds now compensate. Reproduced and verified in the packaged editor with Noom on macOS, plus geometry regression at multiple zooms.
 - BUG-008 [fixed] Selecting an entity silently inserted missing component/script defaults and dirtied the scene. Inspector now displays defaults locally and writes only fields the user edits; regression opens Noom and verifies an unchanged scene/undo stack.
 - BUG-003 [fixed] Toolbar Export was permanently disabled despite the implemented export dialog; click regression now dispatches Export.
@@ -17,6 +18,9 @@ _(none yet)_
 
 ## Verification for M8-18
 Workspace tests pass with the editor webview feature (42 editor unit tests + 27 headless UI tests), Clippy all targets, formatting, task consistency, manual checks, and signed macOS app build. Native macOS checks: Graphite hub/workspace, packaged starter catalog, Noom Play/Stop, unchanged blue play tint, Settings above the webview, Export from the toolbar, and corrected viewport placement above the Console. Other native OS-specific paths and the broader owner checklist below remain unverified.
+
+## Verification for M8-19
+Assets regressions pass for divider dragging, row alignment/wrapping at 48/84/160 px and loaded thumbnails. Workspace tests with webview pass with `hub_search_opens_examples_and_docs_without_a_project` run separately: the shared Recent history can otherwise give its existing `noom` label query two matching buttons. All-targets Clippy, formatting, manual checks and the signed macOS bundle build pass. Native Assets pointer interaction remains unverified.
 
 ## Unverified / risks
 - RISK-010 (M9, owner action) Desktop shell parts that are **not verified on macOS/Windows**: native menu bar, tray icon, global shortcuts, dock badge/taskbar progress (`HostCommand::Badge/Progress`: badge macOS only, progress via tao), context menus on Windows/Linux (only macOS popup is wired), `app.autostart` (LaunchAgent/registry/.desktop writers), file-association/URL-scheme registration (Info.plist keys generated; Windows `register.reg` needs the install path edited), `rfd`/`notify-rust`/`arboard` backends. Linux (webkit2gtk under Xvfb) runs the IPC/files/store/server smoke test in CI; Windows `cargo check` of the shell passes, macOS cannot be checked here. CI runs `tools/player-smoke.mjs` on macOS/Windows as non-blocking steps. Wayland: tray/global shortcuts compositor-dependent.

@@ -19,6 +19,8 @@ Newest first. One line per notable change. Credit: Crowelian 2026 + Sonnet.</li>
 </ul>
 <h2 id="unreleased">Unreleased<a class="anchor" href="#unreleased">#</a></h2>
 <ul>
+<li><p><strong>M8-19 Assets layout:</strong> folder-tree divider keeps the dragged width instead of shrinking back to its labels; thumbnails and file/folder icons paint inside their allocated cells so the grid forms aligned rows instead of a staircase. Headless regressions cover divider dragging and three thumbnail sizes.</p>
+</li>
 <li><p><strong>Editor storage locations:</strong> manual documents exact macOS, Windows and Linux settings/saved-example paths, <code>NORD_CONFIG_DIR</code>, Windows&#39;s working-directory fallback when <code>HOME</code> is unset, and project thumbnail/autosave/lock locations.</p>
 </li>
 <li><p><strong>macOS project-lock fix:</strong> check process existence with <code>ps</code> instead of treating <code>kill -0</code> permission failures as a dead process; the existing pid-1 exclusivity regression now passes.</p>

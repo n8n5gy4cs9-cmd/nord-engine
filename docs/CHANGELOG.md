@@ -3,6 +3,7 @@
 Newest first. One line per notable change. Credit: Crowelian 2026 + Sonnet.
 
 ## Unreleased
+- **M8-19 Assets layout:** folder-tree divider keeps the dragged width instead of shrinking back to its labels; thumbnails and file/folder icons paint inside their allocated cells so the grid forms aligned rows instead of a staircase. Headless regressions cover divider dragging and three thumbnail sizes.
 - **Editor storage locations:** manual documents exact macOS, Windows and Linux settings/saved-example paths, `NORD_CONFIG_DIR`, Windows's working-directory fallback when `HOME` is unset, and project thumbnail/autosave/lock locations.
 - **macOS project-lock fix:** check process existence with `ps` instead of treating `kill -0` permission failures as a dead process; the existing pid-1 exclusivity regression now passes.
 - **M8-16 current editor content / BUG-001:** Settings → **USE CACHED CONTENT** defaults OFF. Examples/Tutorials open current checkout/bundle files; old saved-copy Recent/launch paths resolve to the current example. ON opts into persistent private copies for testing. Webviews use temporary storage by default and recreate on mode changes; script attributes bypass caching when OFF. HTTP project files already use `no-store` (now regression-tested with changed bytes at the same URL). Docs/manual updated.
