@@ -72,6 +72,12 @@ export class Entity {
     impl?.create?.(this, comp.data, comp);
     return comp;
   }
+  /** Change a component field at runtime (`e.set('sprite','tint','#f00')`); components without a `set` just store the value. */
+  set(type, key, value) {
+    const c = this.getComponent(type);
+    if (!c) return;
+    if (c.impl?.set) c.impl.set(c, key, value); else c.data[key] = value;
+  }
   getScript(Class) { return this.scripts.find((s) => s instanceof Class) ?? null; }
   addScript(Class, attrs = {}) {
     const s = new Class(this, resolveAttributes(Class, attrs));

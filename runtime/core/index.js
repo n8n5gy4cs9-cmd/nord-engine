@@ -10,3 +10,5 @@ export { Rng, Scheduler, Pool, ease, clamp, lerp, remap, deg2rad, rad2deg, angle
 export { Loader, safePath } from './loader.js';
 export { Audio, BUSES } from './audio.js';
 export { UI, THEME_CSS } from './ui.js';
+export { createGame, makeStage, errorOverlay } from './boot.js';
+export { registerCoreComponents } from './components.js';

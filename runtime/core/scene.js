@@ -52,6 +52,7 @@ export class Scene {
 
   async #make(data, parent, { regenIds = false } = {}) {
     if (data.prefab?.path) data = await this.#expandPrefab(data);
+    await this.backend?.prepare?.(data); // backend preloads textures/models referenced by this entity's components
     const e = new Entity({ ...data, id: regenIds || !data.id ? rid() : data.id }, this, parent);
     this.backend?.createNative?.(e);
     for (const c of e._compData) {

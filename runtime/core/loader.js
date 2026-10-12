@@ -29,6 +29,12 @@ export class Loader {
   json(path) { return this.#get(path, 'json'); }
   text(path) { return this.#get(path, 'text'); }
   binary(path) { return this.#get(path, 'binary'); }
+  /** Optional sidecar `<asset>.meta.json` (spritesheet frames, anims, filter…). Resolves to null when absent. */
+  async meta(path) {
+    const key = `meta:${path}`;
+    if (!this.cache.has(key)) this.cache.set(key, this.#get(`${path}.meta.json`, 'json').catch(() => null));
+    return this.cache.get(key);
+  }
   /** Load many `{path, kind}` (kind: json|text|binary); calls onProgress(done, total, path). Rejects with all failures listed. */
   async loadAll(list, onProgress = () => {}) {
     let done = 0;
