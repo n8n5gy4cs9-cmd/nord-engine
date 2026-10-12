@@ -36,5 +36,5 @@ for the `--single-file` or `file-safe` mode (inline JSON + scripts, no `fetch` o
 - Tool/editor/dashboard in Rust → `web-wasm-app`
 
 ## Mac wrapper
-See ARCHITECTURE §7. `NordPlayer` = Tauri shell, no devtools in release, window config from `nord.json.display`,
+See ARCHITECTURE §7. `NordPlayer` = wry+tao shell, no devtools in release, window config from `nord.json.display`,
 fullscreen toggle (Cmd+Ctrl+F), persistent localStorage in app data dir.

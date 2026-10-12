@@ -2,7 +2,7 @@
 
 Append new decisions at the bottom. Format: context → decision → consequences. Status: accepted | superseded.
 
-## ADR-001 Editor = Tauri v2 + web UI (PCUI), not egui — accepted
+## ADR-001 Editor = Tauri v2 + web UI (PCUI), not egui — SUPERSEDED by ADR-013
 **Context.** Owner asked "egui as engine or copy from examples, if better" and "use some better UI",
 plus a *full code editor with CodeMirror, vendored*, thumbnails, docs with live code.
 **Decision.** Editor UI is HTML/JS (PCUI from PlayCanvas editor, CodeMirror 6, Lucide icons) inside a
@@ -35,7 +35,7 @@ run `node tools/tasks.mjs check` to detect drift.
 ES modules + import maps. Only exception: one-off bundles (CodeMirror) produced by `tools/vendor.mjs` with esbuild and committed.
 
 ## ADR-008 Mac wrapper via prebuilt player shell — accepted
-Prebuilt `NordPlayer.app` + resource swap (ARCHITECTURE §7). Avoids needing Xcode/Rust on the user's machine per game.
+Prebuilt `NordPlayer.app` (wry+tao) + resource swap (ARCHITECTURE §7). Avoids needing Xcode/Rust on the user's machine per game.
 
 ## ADR-009 Physics choices — accepted
 2D: Phaser Arcade (fast, simple) + Matter (rich). 3D: Havok (`@babylonjs/havok`, wasm). Rust: rapier2d (rapier3d later).
@@ -52,3 +52,14 @@ with extra terms) → inspiration only until reviewed. Re-verify each `LICENSE` 
 ## ADR-012 Platform strategy — accepted
 Develop for aarch64-apple-darwin; use `camino`/`dirs`/`std::path` correctly, no hard-coded `/`. CI: `macos-14` (Apple Silicon) first;
 Windows/Linux jobs added in M8 (allowed to fail until then).
+
+## ADR-013 Editor = native Rust egui (eframe + egui_dock) + embedded wry viewport; no Tauri — accepted (owner decision)
+**Context.** Owner prefers a native, lightweight Rust editor over a webview app, and asked for a full code editor.
+Games are JS (Phaser/Babylon) so a webview is needed for viewport/preview regardless; Tauri only added a web UI shell.
+**Decision.** `nord-editor` = eframe (wgpu/Metal) + egui_dock + egui_extras (images, SVG icons, syntect). The central viewport/Play/Docs
+panel hosts a `wry` child webview (edit mode of the vendored runtimes), synced with egui over IPC (ARCHITECTURE §4). Code editor is native
+(syntect highlighting + our own editing features); CodeMirror remains vendored only for the HTML manual's live examples.
+Mac wrapper uses a minimal `wry`+`tao` `nord-player`.
+**Consequences.** + fast, single Rust binary, native look, no web UI framework, easy cross-platform. − Must build a code editor on egui
+(no multi-cursor/LSP initially); − wry-in-egui embedding quirks (spike in M3-07; fallback = separate wry window);
+− editor UI tested via egui_kittest not Playwright. PCUI no longer vendored.

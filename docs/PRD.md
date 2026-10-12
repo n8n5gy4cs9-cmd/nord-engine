@@ -16,7 +16,7 @@ built-in full code editor, a huge library of ready-made scripts/assets/examples,
 
 ## 2. Principles (read before changing anything)
 
-1. **Reuse, don't reinvent.** Clone/vendor proven code (Phaser, Babylon, PCUI, CodeMirror,
+1. **Reuse, don't reinvent.** Clone/vendor proven code (Phaser, Babylon, egui, CodeMirror,
    macroquad, rapier, egui…). Write glue, not engines.
 2. **Do not over-engineer.** Single user. Prefer the boring option. No plugin frameworks,
    no ECS-from-scratch in JS, no custom renderers.
@@ -35,24 +35,25 @@ built-in full code editor, a huge library of ready-made scripts/assets/examples,
 
 | Target | Status goal | Notes |
 |---|---|---|
-| macOS arm64 (M1 Max) editor + player | **Primary** | Tauri v2 (WKWebView), `.app`/`.dmg`, CI on `macos-14` |
+| macOS arm64 (M1 Max) editor + player | **Primary** | native Rust (eframe/egui on wgpu→Metal), `.app`/`.dmg`, CI on `macos-14` |
 | Web export (static HTML, any server) | **Primary** | Phaser / Babylon / Rust-WASM |
-| Windows x64 editor | Later (M8) | Tauri/WebView2 — keep code portable |
-| Linux x64 editor | Optional (M8) | Tauri/WebKitGTK |
+| Windows x64 editor | Later (M8) | same eframe code; wry→WebView2 for viewport |
+| Linux x64 editor | Optional (M8) | same eframe code; wry→WebKitGTK |
 | macOS x64, mobile | Out of scope | web export works on mobile browsers |
 
 ## 4. Product pieces
 
-1. **Editor** (`editor/` web UI + `crates/nord-editor` Tauri shell) — PCUI-based panels:
-   hierarchy, inspector, viewport (2D/3D with gizmos), asset browser w/ thumbnails,
-   CodeMirror code editor, console, play/stop, library browser, docs/tutorial viewer.
+1. **Editor** (`crates/nord-editor`, **native Rust: eframe/egui + egui_dock**) — hierarchy, inspector,
+   asset browser w/ thumbnails, native code editor (syntect highlighting), console, library browser,
+   docs viewer. The 2D/3D **viewport + Play preview** is the vendored Phaser/Babylon runtime shown in an
+   embedded `wry` webview panel (JS games need a JS engine anyway), synced with egui over IPC.
 2. **Core + CLI** (`crates/nord-core`, `crates/nord-cli`) — project format, asset pipeline
    (thumbnails, atlas, import), build/export, dev server, offline check, bundle for mac.
 3. **Runtimes** (what ships inside games):
    - `runtime/` **nord.js** + Phaser adapter (2D) + Babylon adapter (3D) — JS scripts.
    - `crates/nord-runtime-wasm` — Rust game runtime → wasm32 (macroquad + rapier2d).
    - `crates/nord-app-wasm` — Rust **app** runtime → wasm32 (eframe/egui).
-4. **Player** (`crates/nord-player`) — prebuilt Tauri/wry shell used as the Mac wrapper for
+4. **Player** (`crates/nord-player`) — tiny prebuilt `wry`+`tao` shell used as the Mac wrapper for
    exported games (`.app`), content swapped in, no per-game compile.
 5. **Library** (`library/`) — snippets, controllers, physics, UI, AI, systems, templates,
    example games + apps, asset packs. Big. Game-ready, not toy.
@@ -87,22 +88,24 @@ IDs match `PRD.json → features[]`.
   in-world, egui in Rust). Ready UI screens in library.
 
 ### Editor
-- **FR-20 Editor shell** — Tauri v2 app; **splash screen shown ≥2 s** on start; native menus;
+- **FR-20 Editor shell** — eframe/egui app; **splash screen shown ≥2 s** on start; native menu bar;
   project open/new/recent; settings; dark theme (+ light optional).
 - **FR-21 Hierarchy + inspector** — tree w/ drag-drop reparent, add/delete/duplicate, undo/redo,
-  inspector auto-generated from component/script attribute schemas.
-- **FR-22 Viewport** — 2D (Phaser) and 3D (Babylon) editing, gizmos (move/rotate/scale),
+  inspector auto-generated from component/script attribute schemas (egui widgets), dockable panels (egui_dock).
+- **FR-22 Viewport** — 2D (Phaser) and 3D (Babylon) editing in an embedded webview (edit mode of the runtime), gizmos (move/rotate/scale),
   grid, snap, camera nav, selection, play-in-viewport.
 - **FR-23 Asset browser** — folder tree, **thumbnails** (image, sprite sheet, audio waveform,
   glTF render, script/code icon), search, filter, drag into viewport/inspector, import,
   rename/move/delete, metadata.
-- **FR-24 Code editor** — full CodeMirror 6: tabs, syntax (JS/TS/Rust/HTML/CSS/JSON/MD/GLSL/WGSL),
-  autocomplete for nord.js API, find/replace, multi-cursor, themes, lint, format, save,
-  hot-reload script in running game.
+- **FR-24 Code editor** — full native code editor in egui: tabs, line numbers, syntax highlight (syntect:
+  JS/TS/Rust/HTML/CSS/JSON/MD/GLSL/WGSL/TOML), autocomplete popup for nord.js API + snippets, find/replace
+  (regex), auto-indent, bracket match/auto-close, comment toggle, multi-file search, goto line, minimap-free,
+  themes, format (prettier-less simple / rustfmt), save, hot-reload script in running game. Multi-cursor + LSP = stretch.
+  (CodeMirror stays vendored for the HTML manual's live examples; optional webview code panel if native falls short.)
 - **FR-25 Library browser** — browse/search/insert snippets, scripts, prefabs, templates, asset packs.
-- **FR-26 Play/Preview** — Play button runs project in embedded iframe via dev server; console
+- **FR-26 Play/Preview** — Play button runs project in the embedded webview via dev server; console
   panel captures logs/errors; reload on save.
-- **FR-27 Docs viewer** — manual + tutorials inside the editor (offline).
+- **FR-27 Docs viewer** — manual + tutorials inside the editor (offline; webview tab rendering the HTML manual).
 - **FR-28 Export dialog** — Web (static), Web (single file zip), Mac app, Rust-WASM, pick
   tier, run offline check, open output folder.
 
@@ -127,9 +130,9 @@ IDs match `PRD.json → features[]`.
 - **Offline**, **fast start** (<1.5 s to editor after splash), exports small (tree-shake what
   is used: Babylon modules/Phaser plugins optional), smooth 60 fps viewport on M1 Max.
 - **Stability**: autosave + crash-safe writes (write temp → rename); undo stack.
-- **Maintainability**: small modules, no build step for editor/runtime JS (ES modules +
-  import map) except one-time bundles (CodeMirror via esbuild, committed).
-- **Security**: editor serves only project dir on localhost; no remote code.
+- **Maintainability**: small modules; runtime JS has no build step (ES modules + import map);
+  only one-time bundles (CodeMirror for the manual, via esbuild, committed).
+- **Security**: dev server binds 127.0.0.1 and serves only the project dir; no remote code.
 
 ## 7. Milestones (detail in `task.md`)
 
@@ -138,7 +141,7 @@ IDs match `PRD.json → features[]`.
 | M0 | Planning, identity, assets, vendoring | Plans, brand, placeholder assets, vendored libs, workspace skeleton |
 | M1 | Foundation | nord-core, CLI, project format, dev server, thumbnails, offline check |
 | M2 | JS runtimes | nord.js + Phaser + Babylon adapters, scripts, physics, UI, audio |
-| M3 | Editor | Tauri shell, splash, hierarchy/inspector/viewport/assets/code editor |
+| M3 | Editor | native egui shell, splash, hierarchy/inspector/viewport/assets/code editor |
 | M4 | Export | web static, single file, mac wrapper app, offline check |
 | M5 | Rust/WASM | macroquad+rapier runtime, egui app runtime, wasm export |
 | M6 | Library | snippets, controllers, systems, asset packs, examples |
@@ -155,12 +158,13 @@ updated, `CHANGELOG.md` line added.
 |---|---|
 | Scope is huge | Strict milestone order; core loop first; library last |
 | Three runtimes drift | One scene JSON + conformance examples run on each |
-| Tauri unverifiable on Linux sandbox | Editor UI is plain web → testable in Chromium; native shell checked on macOS CI |
+| egui + wry child-webview embedding (z-order, focus, popups over webview) | Viewport is a rectangular panel; egui popups avoid it; fallback = preview in separate wry window; spike early (M3-07) |
+| Native editor can't be GUI-tested in Linux sandbox | `egui_kittest` headless snapshot tests; logic lives in nord-core; macOS CI for the rest |
 | Upstream licences (Defold, Godot icons CC-BY) | Tracked in `docs/UPSTREAM.md`; Defold = inspiration only |
 | Babylon bundle size | Use per-package UMD builds, export only needed packages |
 | Browser audio autoplay | nord.js unlock-on-first-input helper |
 
 ## 10. Open questions (owner can veto the defaults)
-1. Editor shell defaulted to **Tauri + PCUI** instead of egui (ADR-001). egui kept for Rust apps.
+1. ~~Tauri vs egui~~ → **decided by owner: native egui, no Tauri** (ADR-013).
 2. Scripting default = **JavaScript** (TS optional later). Rust scripts only in wasm tier.
 3. Bevy: reference only; macroquad is the wasm default (smaller). A Bevy template may be added in M8.

@@ -3,19 +3,20 @@
 ## 1. Big picture
 
 ```
-┌─────────────────────────── Nord Editor (Tauri v2, macOS arm64) ───────────────────────────┐
-│  Web UI (editor/, PCUI + CodeMirror + Lucide, vendored, no build step)                      │
-│  hierarchy | inspector | viewport (Babylon/Phaser) | assets+thumbs | code | console | docs │
-│            ▲ invoke() / fetch                                                              │
-│  Rust shell crates/nord-editor ── uses ──► nord-core (project model, assets, thumbs, build)│
-└───────────────────────────────┬────────────────────────────────────────────────────────────┘
-                                │ same code, also callable as CLI / dev server
+┌──────────────────────── Nord Editor (native Rust: eframe/egui, wgpu→Metal on M1) ───────────────────────┐
+│ egui_dock panels: hierarchy | inspector | assets+thumbnails | code editor (syntect) | console | library │
+│ ┌───────────────────────────── Viewport / Play / Docs panel ─────────────────────────────────────────┐ │
+│ │  wry child webview → `nord serve` → vendored Phaser / Babylon runtime in EDIT or PLAY mode          │ │
+│ └──────────────▲──────────────────────────────────────────────────────────────────────────────────────┘ │
+│        IPC (wry ipc_handler ⇄ evaluate_script): selection, transforms, logs                               │
+│ links nord-core directly (project model, assets, thumbs, build) — no RPC layer                           │
+└───────────────────────────────┬────────────────────────────────────────────────────────────────────────┘
                          nord-cli  (new | serve | build | export | thumbs | check-offline | bundle-mac)
                                 │
          ┌──────────────────────┼──────────────────────────┬────────────────────────┐
          ▼                      ▼                          ▼                        ▼
   Web-2D export          Web-3D export              Web-WASM export           Mac app export
-  nord.js + Phaser       nord.js + Babylon (+Havok)  nord-runtime-wasm         nord-player.app
+  nord.js + Phaser       nord.js + Babylon (+Havok)  nord-runtime-wasm         nord-player.app (wry)
   (static folder)        (static folder)             (macroquad+rapier2d)      + game folder
                                                       nord-app-wasm (egui)
 ```
@@ -32,12 +33,12 @@ nord-engine/
 ├─ crates/
 │  ├─ nord-core/         project model, scene schema, asset index, thumbnails, offline scan
 │  ├─ nord-cli/          `nord` binary (clap): new/serve/build/export/thumbs/check-offline/…
-│  ├─ nord-editor/       Tauri v2 shell (M3); exposes nord-core as commands, splash window
-│  ├─ nord-player/       Tauri/wry runtime shell for Mac wrapper (M4)
+│  ├─ nord-editor/       native eframe/egui editor (M3): panels, code editor, wry viewport, splash
+│  ├─ nord-player/       tiny wry+tao shell for the Mac wrapper (M4)
 │  ├─ nord-runtime-wasm/ macroquad+rapier2d game runtime (M5)
 │  └─ nord-app-wasm/     eframe/egui app runtime (M5)
 ├─ runtime/              nord.js (ES modules): core/, phaser/, babylon/, ui/, util/
-├─ editor/               editor web UI (index.html, src/*.js, css, panels)
+├─ editor/viewport/      JS side of the editor viewport (edit-mode glue loaded into the webview: gizmos, picking, IPC)
 ├─ vendor/               pinned third-party JS/wasm (+ VENDOR.json manifest) — committed
 ├─ library/              snippets/, controllers/, systems/, ui/, ai/, fx/, apps/, templates/, INDEX.json
 ├─ examples/             complete runnable games + apps (each is a full nord project)
@@ -61,12 +62,13 @@ nord-engine/
 - **Dev server**: `nord serve` (axum) serves project + vendor + runtime with live reload (SSE);
   the editor's Play iframe and browser preview both use it.
 
-## 4. Editor ⇄ backend contract
-Editor UI talks to Rust through a tiny adapter `editor/src/backend.js`:
-- inside Tauri → `window.__TAURI__.core.invoke(cmd,args)`
-- in a plain browser (dev/test/CI) → `fetch('/api/<cmd>')` against `nord serve --editor`
-Same command set both ways (`list_dir, read_file, write_file, new_project, thumbs, build, …`).
-This makes the whole editor testable with Playwright/Chromium on Linux CI.
+## 4. Editor ⇄ viewport contract
+The editor (egui) owns all state (project, selection, undo). The viewport webview is a *dumb renderer*:
+- egui → web: `webview.evaluate_script("nordEdit.apply(<json patch>)")` (scene patches, selection, tool mode, camera).
+- web → egui: `window.ipc.postMessage(json)` → `ipc_handler` (pick, drag-transform preview, commit, log lines).
+- Web side is plain JS in `editor/viewport/` reusing `runtime/` adapters in edit mode; also loadable in any
+  browser at `http://127.0.0.1:PORT/__edit` for debugging/tests (Playwright can drive it without egui).
+- Fallback if embedding is troublesome on a platform: open the viewport in its own `wry` window.
 
 ## 5. Build tiers (when to use what)
 | Tier | Use when | Size | Needs |
@@ -86,16 +88,18 @@ Editor + runtimes reference `vendor/...` only. `nord check-offline <dir>` greps 
 absolute `http(s)://`/`//cdn` loads (excluding allowlisted namespace URIs like `http://www.w3.org`).
 
 ## 7. Mac wrapper
-`nord bundle-mac <dist> --name X` copies prebuilt `NordPlayer.app` (built once by CI), places the
-game dist into `Contents/Resources/game/`, patches `Info.plist` (name, bundle id, icon) and ad-hoc
-`codesign`s. Player loads `tauri://localhost/game/index.html` — no network, no per-game compile.
+`nord bundle-mac <dist> --name X` copies prebuilt `NordPlayer.app` (built once by CI; tiny `wry`+`tao`
+shell), places the game dist into `Contents/Resources/game/`, patches `Info.plist` (name, bundle id, icon) and
+ad-hoc `codesign`s. Player serves `game/` through a wry custom protocol (`nord://game/index.html`) — no network,
+no per-game compile.
 
 ## 8. Data flow: Play
-Editor save → `write_file` → dev server FS watcher → SSE `reload` → iframe reloads (or script
+Editor save → file written (tmp+rename) → dev server FS watcher → SSE `reload` → webview reloads (or script
 hot-swap: `NordRuntime.hotReloadScript(path)` keeps scene state).
 
 ## 9. Coding conventions
 - Rust 2021, `anyhow` in bins, `thiserror` in libs, `serde`/`serde_json`, `clap`, `axum`, `image`.
-- JS: ES modules, no transpile, JSDoc types, 2-space indent, no frameworks beyond PCUI.
+- Editor crates: `eframe` (wgpu), `egui_dock`, `egui_extras` (images, SVG icons, syntect), `rfd` (dialogs), `notify` (fs watch), `wry`+`tao`/raw-window-handle (webview), `egui_kittest` (tests).
+- JS: ES modules, no transpile, JSDoc types, 2-space indent, no frameworks.
 - File names kebab-case; entity ids = 8-char base36; JSON stable key order (serde `preserve_order`).
 - One responsibility per file; < 500 lines preferred.

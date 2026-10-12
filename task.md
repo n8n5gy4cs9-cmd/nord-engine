@@ -3,14 +3,14 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 4/118 tasks (3%)** · updated 2026-10-12
+**Overall: 4/119 tasks (3%)** · updated 2026-10-12
 
 | Milestone | Progress |
 |---|---|
 | M0 Planning, identity, assets, vendoring | 4/13 (31%) |
 | M1 Foundation | 0/11 (0%) |
 | M2 JS runtimes | 0/18 (0%) |
-| M3 Editor | 0/21 (0%) |
+| M3 Editor | 0/22 (0%) |
 | M4 Export | 0/10 (0%) |
 | M5 Rust/WASM | 0/9 (0%) |
 | M6 Library | 0/18 (0%) |
@@ -37,7 +37,7 @@ _Plans, brand, placeholder assets, vendored libs, workspace skeleton_
 - [ ] **M0-08** Generate placeholder sfx + music loops (tools/gen_assets.py) + icon set (Lucide subset)
 - [ ] **M0-09** Generate docs/manual graphics (banner, section icons, favicon)
 - [ ] **M0-10** ASSETS.md catalogue + replacement guide
-- [ ] **M0-11** tools/vendor.mjs + vendor Phaser, Babylon (+loaders/gui/materials/Havok), CodeMirror bundle, PCUI, Lucide, marked, fonts; VENDOR.json + THIRD_PARTY.md
+- [ ] **M0-11** tools/vendor.mjs + vendor Phaser, Babylon (+loaders/gui/materials/Havok), CodeMirror bundle (manual only), Lucide, marked, fonts; VENDOR.json + THIRD_PARTY.md
 - [ ] **M0-12** Cargo workspace skeleton (nord-core, nord-cli) compiles; wasm32 target check
 - [ ] **M0-13** Commit + push M0 to branch
 
@@ -79,29 +79,30 @@ _nord.js core + Phaser 2D + Babylon 3D adapters_
 - [ ] **M2-18** Unit tests for core (node --test) + Playwright e2e harness tools/e2e.mjs
 
 ## M3 — Editor
-_Tauri shell + PCUI web UI_
+_Native egui editor + wry viewport + code editor_
 
-- [ ] **M3-01** editor/ skeleton: index.html, import map, theme CSS (Nord palette), vendored fonts, PCUI layout
-- [ ] **M3-02** backend.js adapter (Tauri invoke / HTTP fallback) + nord serve --editor API
-- [ ] **M3-03** Project hub: new (templates), open, recent, examples, tutorials
-- [ ] **M3-04** Hierarchy panel: tree, drag-reparent, add/delete/duplicate, search, icons
-- [ ] **M3-05** Inspector: generated from component/script schemas (all attribute types)
-- [ ] **M3-06** Undo/redo system + copy/paste/duplicate + autosave
-- [ ] **M3-07** 3D viewport (Babylon): orbit/fly cam, grid, selection, move/rotate/scale gizmos, snap
-- [ ] **M3-08** 2D viewport (Phaser): pan/zoom, grid, selection, move/rotate/scale handles, snap
-- [ ] **M3-09** Asset browser: folder tree, thumbnail grid (size slider), search/filter, drag&drop, import, rename/move/delete
-- [ ] **M3-10** Thumbnails: image/spritesheet/audio waveform via CLI; models rendered via Babylon offscreen
-- [ ] **M3-11** Code editor: CodeMirror 6 tabs, JS/TS/Rust/HTML/CSS/JSON/MD/GLSL, autocomplete for nord.js API, find/replace, themes, format
-- [ ] **M3-12** Quick open (Cmd+P), command palette (Cmd+K), shortcuts map
-- [ ] **M3-13** Play/Stop/Reload: iframe preview via dev server, hot-reload on save
-- [ ] **M3-14** Console panel: logs/errors from game, build output, click-to-open file:line
-- [ ] **M3-15** Library browser: search, preview, insert snippet/prefab/script
-- [ ] **M3-16** Docs viewer panel (offline manual/tutorials)
-- [ ] **M3-17** Tauri v2 shell crate nord-editor: commands, menus, file dialogs, window state
-- [ ] **M3-18** Splash window shows assets/brand/splash.png for >= 2000 ms then opens main window
-- [ ] **M3-19** Settings (theme, fonts, editor prefs, recent), About dialog (credit Crowelian 2026 + Sonnet)
-- [ ] **M3-20** Animation editor (spritesheet anims) + tilemap painter (Tiled JSON) basics
-- [ ] **M3-21** Material/particle preview panels
+- [ ] **M3-01** nord-editor crate: eframe (wgpu) app, theme (Nord palette), bundled fonts (Inter/JetBrains Mono TTF), egui_dock layout, menu bar
+- [ ] **M3-02** Splash: borderless window with assets/brand/splash.png shown >= 2000 ms, then main window
+- [ ] **M3-03** Project hub: new (templates), open (rfd dialog), recent, examples, tutorials
+- [ ] **M3-04** Hierarchy panel: tree, drag-reparent, add/delete/duplicate, search, Lucide icons
+- [ ] **M3-05** Inspector: generated from component/script schemas (all attribute types) as egui widgets
+- [ ] **M3-06** Undo/redo Command system + copy/paste/duplicate + autosave (crash-safe)
+- [ ] **M3-07** SPIKE: wry child webview embedded in egui panel on macOS (resize, HiDPI, focus, IPC both ways); fallback separate window
+- [ ] **M3-08** 3D viewport (Babylon edit mode in webview): orbit/fly cam, grid, picking, move/rotate/scale gizmos, snap, IPC sync
+- [ ] **M3-09** 2D viewport (Phaser edit mode): pan/zoom, grid, picking, move/rotate/scale handles, snap, IPC sync
+- [ ] **M3-10** Asset browser: folder tree, thumbnail grid (size slider, lazy), search/filter, drag&drop, import, rename/move/delete
+- [ ] **M3-11** Thumbnails: images/spritesheets/audio waveform via nord-core; models rendered via Babylon offscreen in webview
+- [ ] **M3-12** Code editor v1: tabs, line numbers, syntect highlighting (JS/TS/Rust/HTML/CSS/JSON/MD/GLSL/WGSL/TOML), auto-indent, brackets, comment toggle, save
+- [ ] **M3-13** Code editor v2: find/replace (regex), goto line, project search, autocomplete (nord.js API + snippets), error squiggles, format
+- [ ] **M3-14** Code editor v3 (stretch): multi-cursor, minimap, split view; evaluate egui_code_editor reuse / CodeMirror-webview fallback
+- [ ] **M3-15** Quick open (Cmd+P), command palette (Cmd+K), shortcuts map
+- [ ] **M3-16** Play/Stop/Reload in webview via nord serve; hot-reload on save
+- [ ] **M3-17** Console panel: logs/errors from game (IPC) + build output; click error -> open file:line
+- [ ] **M3-18** Library browser: search, preview, insert snippet/prefab/script
+- [ ] **M3-19** Docs viewer tab (offline HTML manual in webview)
+- [ ] **M3-20** Settings (theme, fonts, editor prefs), About dialog (credit Crowelian 2026 + Sonnet), window state persistence
+- [ ] **M3-21** Animation editor (spritesheet anims) + tilemap painter (Tiled JSON) basics
+- [ ] **M3-22** egui_kittest headless tests for panels + CI job
 
 ## M4 — Export
 _web static, single-file, mac wrapper_
@@ -197,7 +198,7 @@ _dmg, CI, Windows, Linux, perf_
 | FR-21 | Hierarchy + inspector + undo | M3 | critical | todo |
 | FR-22 | Viewport 2D/3D with gizmos | M3 | critical | todo |
 | FR-23 | Asset browser with thumbnails | M3 | critical | todo |
-| FR-24 | Full code editor (CodeMirror) | M3 | critical | todo |
+| FR-24 | Full native code editor (egui + syntect) | M3 | critical | todo |
 | FR-25 | Library browser | M3 | high | todo |
 | FR-26 | Play/preview + console | M3 | critical | todo |
 | FR-27 | Docs viewer | M3 | medium | todo |

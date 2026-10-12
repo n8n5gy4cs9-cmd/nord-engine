@@ -1,7 +1,8 @@
 # Editor UI design
 
-Visual model: PlayCanvas editor (PCUI) with Defold-style clean toolbars. Dark theme default, accent = Nord blue `#4FA3FF`
-(palette in `assets/brand/palette.json`). Fonts: Inter (UI) + JetBrains Mono (code), vendored.
+Native **egui** editor (eframe, wgpu→Metal) with `egui_dock` panels. Visual model: PlayCanvas editor with Defold-style clean toolbars.
+Dark theme default, accent = Nord blue `#4FA3FF` (palette in `assets/brand/palette.json`). Fonts: Inter (UI) + JetBrains Mono (code) as TTF,
+bundled via `include_bytes!`. Icons: Lucide SVGs (`assets/icons/lucide`) via `egui_extras` SVG loader.
 
 ```
 ┌ Toolbar: [Nord logo] Project ▾  | ▶ Play ■ Stop ⟳ | Move Rotate Scale | 2D/3D | Snap Grid | Export ▾ | Docs ───────┐
@@ -25,8 +26,18 @@ Panels are dockable/resizable (simple splitter layout first; drag-dock in M8 onl
 - Library tab: search → preview → "Insert" (adds script/prefab/component to selection or project).
 - Shortcuts (mac): Cmd+P quick open, Cmd+S save, Cmd+R play, Cmd+. stop, W/E/R gizmos, Cmd+1/2/3 panels.
 
+## Code editor (native, in `crates/nord-editor/src/code/`)
+Built on `egui::TextEdit::multiline` + custom `layouter` using `egui_extras::syntax_highlighting` (syntect; bundle extra
+`.sublime-syntax` for GLSL/WGSL/TOML if missing). Added on top: tabs + dirty markers, line-number gutter, current-line highlight,
+auto-indent, bracket match + auto-close, Tab/Shift-Tab indent, Cmd+/ comment toggle, find/replace (regex, Cmd+F/Cmd+Opt+F),
+goto line, project-wide search, autocomplete popup (nord.js API list + library snippets + words in file), error squiggles
+from `node --check`/`cargo check` output, big-file safe (virtualised via galley rows). Evaluate `egui_code_editor` crate for
+reuse first; if too limited, keep our own. Monaco/CodeMirror-in-webview is the escape hatch (not the default).
+
 ## Implementation notes
-- `editor/index.html` + `editor/src/{app,backend,state,undo}.js` + `editor/src/panels/*.js` + `editor/css/*`.
-- State = one plain object store (`state.js`) with change events; commands go through `undo.js` (do/undo pairs).
-- Viewports live in `editor/src/viewport/{babylon,phaser}.js`, reusing `runtime/` adapters in "edit mode".
-- Never block UI: file ops async via backend.
+- `crates/nord-editor/src/{main,app,state,undo,theme}.rs`, `panels/{hierarchy,inspector,assets,console,library,docs,toolbar}.rs`,
+  `viewport/{webview,ipc}.rs`, `code/*`. Viewport JS lives in `editor/viewport/`.
+- State = one `EditorState` struct; every mutation is a `Command` (do/undo) pushed to the undo stack. Panels are pure `fn ui(&mut EditorState, &mut Ui)`.
+- Thumbnails: `nord-core` produces PNGs in `.nord-cache/thumbs`; assets panel loads via `egui_extras` image loaders (lazy, visible rows only).
+- Never block UI: file ops/builds on worker threads (`std::thread` + channel), repaint via `ctx.request_repaint()`.
+- Splash: first frame shows `assets/brand/splash.png` in a borderless window; main window created after >= 2000 ms.

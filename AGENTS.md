@@ -16,13 +16,13 @@ Owner: Crowelian. Credit: **Crowelian 2026 + Sonnet**. Keep it **pragmatic, not 
 - Update the relevant `docs/*.md` when behaviour/specs change; record big choices as a new ADR in `docs/DECISIONS.md`.
 - **Offline**: never reference CDNs. Add libs via `tools/vendor.mjs` (pinned + sha256) and `THIRD_PARTY.md`.
 - Placeholder art/audio only via `tools/gen_assets.py` (re-runnable) or added manually + documented in `ASSETS.md`.
-- Branch: develop on the branch given by the session; commit small, descriptive messages; do not open PRs unless asked.
+- Branch: **always commit and push to `main`** (owner instruction); commit small, descriptive messages; no PRs unless asked.
 - Don't add frameworks/abstractions "just in case". Prefer deleting code.
 - Verify before ticking: build/test/run (see `docs/TESTING.md`). Be honest in `KNOWN_ISSUES.md` about what is unverified (e.g. macOS-only parts).
 
 ## Environment notes (cloud sandbox)
 Linux only; Rust 1.9x, Node 22, Python3+PIL/numpy, ffmpeg, Chromium via Playwright. `git clone` of GitHub works; npm + crates.io work.
-macOS-only things (Tauri window, codesign, dmg) cannot be run here → must be verified by CI `macos-14` or the owner.
+macOS-only things (egui window + wry child webview, codesign, dmg) cannot be run here → must be verified by CI `macos-14` or the owner.
 
 ## Quick commands
 ```

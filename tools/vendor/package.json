@@ -1,7 +1,7 @@
 {
   "name": "nord-vendor-build",
   "private": true,
-  "description": "Build-time only: bundles CodeMirror + PCUI into vendor/. Run via tools/vendor.mjs",
+  "description": "Build-time only: bundles CodeMirror (for the HTML manual live examples) into vendor/. Run via tools/vendor.mjs",
   "type": "module",
   "dependencies": {
     "@codemirror/autocomplete": "6.18.6",
@@ -20,7 +20,6 @@
     "@codemirror/theme-one-dark": "6.1.2",
     "@codemirror/view": "6.37.2",
     "@lezer/highlight": "1.2.1",
-    "@playcanvas/pcui": "6.1.4",
     "esbuild": "0.25.5"
   }
 }
