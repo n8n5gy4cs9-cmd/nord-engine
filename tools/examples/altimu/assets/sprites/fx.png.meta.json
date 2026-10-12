@@ -1,0 +1,15 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 16,
+  "frameHeight": 16,
+  "filter": "nearest",
+  "frames": {
+    "slash": 0,
+    "arrow": 1,
+    "spark": 2,
+    "hit": 3,
+    "miss": 4,
+    "cursor": 5,
+    "bolt": 6
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 16,
+  "frameHeight": 16,
+  "filter": "nearest",
+  "framesPerRow": 6,
+  "note": "one row per person: front A,B · back A,B · side A,B (side faces right; the game mirrors it for left)",
+  "rows": {
+    "avatar": 0,
+    "iolo": 1,
+    "shamino": 2,
+    "dupre": 3,
+    "finnigan": 4,
+    "spark": 5,
+    "klog": 6,
+    "ellen": 7,
+    "guard": 8,
+    "weston": 9,
+    "villager": 10,
+    "villagerf": 11,
+    "elder": 12,
+    "innkeeper": 13,
+    "jaana": 14,
+    "merchant": 15,
+    "bandit": 16,
+    "chief": 17
+  }
+}

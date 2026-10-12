@@ -1,0 +1,14 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 16,
+  "frameHeight": 16,
+  "filter": "nearest",
+  "frames": {
+    "wolf1": 0,
+    "wolf2": 1,
+    "spider1": 2,
+    "spider2": 3,
+    "corpse_smith": 4,
+    "corpse_gargoyle": 5
+  }
+}

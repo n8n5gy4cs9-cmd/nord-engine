@@ -1,0 +1,104 @@
+# Altimu 5.7 — Trinsic and the surrounding forest. Hand-editable: one character = one tile.
+# @ <char> <base tile> <top tile or -> [flags]   flags: solid door gate water chest search sign anim
+@ . grass1 -
+@ , grass2 -
+@ " grass3 -
+@ f forestfloor -
+@ T grass1 tree solid
+@ P grass1 pine solid
+@ b grass1 bush solid
+@ r grass1 rock solid
+@ s grass1 stump solid
+@ ~ water1 - water anim
+@ = deep - water
+@ : sand -
+@ _ dock -
+@ # wallStone - solid
+@ G gateClosed - solid door gate
+@ g gateOpen - gate
+@ o cobble -
+@ p path -
+@ W wallPlaster - solid
+@ w wallWindow - solid
+@ D doorClosed - solid door
+@ d doorOpen - door
+@ F woodfloor -
+@ S stonefloor -
+@ R rug -
+@ t woodfloor table solid
+@ c woodfloor chair solid
+@ B woodfloor bed solid
+@ K stonefloor bookshelf solid
+@ A stonefloor anvil solid
+@ V stonefloor forge solid
+@ C woodfloor counter solid
+@ X woodfloor crate solid
+@ Y woodfloor barrel solid
+@ Q woodfloor chestClosed solid chest
+@ O grass1 chestClosed solid chest
+@ q grass1 grave solid search
+@ L cobble lamp solid
+@ N grass1 sign solid sign
+@ E cobble well solid
+@ M cobble stall solid
+@ Z woodfloor stable solid
+@ h woodfloor hay -
+@ k woodfloor blood - search
+@ n grass1 tent solid
+@ x grass1 campfire1 solid anim
+@ U roofRed - solid
+@ e roofRedEdge - solid
+@ a thatch - solid
+---
+TTTTTTTbTPT,sTfPfrTPfTbTPTPrPrTTbPfPTTfTTPs.frPTT.TPPT.TTTTTPTTPf,PfTPfT
+TTT.P.....n.......T.TTfPPPTTPfPPfPTTT,TTPfPTTTfT.rTP.TPfPrTPfTPTPTPPTTff
+fTTPb..n....,..n..PTTPPTPPTTbPTTTTPTPTTTPPbTTTTTTfTrPTfT.......TTrPfTPPT
+T.TTT...O.........TPP..TbT.TTTTrTPTTbrT.PPTrTTT.PP"PbTTT......PTTTPrT.PP
+fTTTT.....,ppp......ffTrP..TTbffP..T.TTbfTrPfTPTPTf.PT.P......,TTTPPTPfP
+PPfTTb.....pxp..,.p.........TPTTfT.P.TPT,TTTrT.T.T.T..T.......TT.PTTTbT.
+TTPbT...,.........ppppppppp.........PPrTTPTPfTfT..PTTTTT......PfTfP.TPPP
+fPrPP.YX......,.b.ppppppppppppppppppppppppPsTTTTTTTTPffTfPP,TT,T.fPTPfTs
+TfPTP........,....fffffff.........ppppp.pp.TTPTT.sTTfPTPTTPbPTTTbfTPTTTb
+PTTTT,............bTT......,,.....,...pppp.,........,......."..Pb.TPTPTT
+TrPPTPTfTfTTT.TfTPT.b...,............,..pp...,......,,...........bTTTrTT
+fPTfTbTTTTb.fTbPTTb.....................pp.......................TP.rTPP
+TTTTPbPTbT.TPPTTTTP.,,..................pp...........,......"....TrTTbf.
+TPP.PPPTPTP.TPbTrTPb..##################GG####################...TfTPTPT
+.TfbPTTbbbPPTrTTfPs.b.#.WWwWWwWWwWWWW...oo....WWwWWwWWwWWwWW.#..UUUUU...
+TPTTPPP.fTbrrfTTPPb...#.WKFFFFFFFFFKW..LooL...WFZFZFFFZFZFFW.#..UUUUU.TT
+T.TfPPPTTT.PbTPsTPT...#.WKFFFctcFFFKW...oo....WFFFFFFFFFFFFW.#..UUUUU..P
+TT.TfTT.TPrT.TTPPPP...#.WFFRRRRRRRFFW...oo....WXXFFFFFFFFFYW.#..eeeee.TT
+TTTb,PTTffTfsPsTTT,...#.WFFRRRRRRRFFW...oo....WFFFFFFFFFFFFW.#....N...TT
+TTbTTTTTPPT.ss.TP,.,..#.WFFRRRRRRRFFW...oo..E.WFFFFkFFFFFFFW.#..........
+TfbT.TTTTT......PTr...#.WYFFFFFFFFFBW...oo....WhhhFFkkFFhhhW.#...TTTTrfb
+TTfT.PT,PP......PPT...#.WQFFFFFFFFFBW...oo....WhhhFFFFFFhhhW.#...f.bTTTT
+T,PfTTbTPT......bTr.,.#.WWwWWwDWwWWWW...oo....WWwWWwDWwWWwWW.#...bPTTTPP
+.T..sPTTff......PfP.,.#ooooooNoooooooooooooooooooNooooooooooo#.b.TTTTPP.
+TsP.PPPPbTaaaaTPTfT...#oooooooooMoMoMoooooooooooooooooooooooo#...P,PTTfb
+TbTT.PPTTbaaaaTTbff".,#oooooooooooooooooooooMoMoMoooooooooooo#...PPTPfff
+bPTfTbTPTPeeeebTPfT..,#ooooooNoooooooooooooooooooooNooooooooo#..,TPPPb.P
+TTTfT.TbsTTTPTfP.fs...#.WWwWWwDWwWWwWW.LooL.WWwWWwDWwWWwWW...#..,fPTsTbT
+T,T.PTrT.fTTfT,TTrf,..#.WYFFFFFFFFFFFW..oo..WSSSRRRRRSSSSW...#..........
+PTTTTTT.PfT.TPTTTTT.."#.WFCCCCCFFctcFW..oo..WSSSSStSSSSSSW...#.........T
+TbTP.TPTbbPPfffPTTT..,#.WFFFFFFFFFFFFW..oo..WSScccccccSSSW...#...q.q.q.P
+fPPsTTTf.TTTTPTTTTr,.,#.WFFFFFFFFctcYW..oo..WSSSSSSSSSSSSW...#.........P
+PPPTTTTsTTT..TP"TT....#.WBFBFBFFFFFFYW..oo..WLScccccccSSLW...#,..q.q....
+TPPTPTTsTTTb.TPTPbT,,.#.WWwWWwWWwWWwWW..oo..WWwWWwWWwWWwWW...#.........P
+PPrTTTPTPfsTPTT,Tff...#.................oo...................#,........P
+PfsTPTTPTPT.ffTPTPT...#.WWwDWwWW.WWwDWWWoo..WWwWDwWWW.WWwDWWW#,..TbTPTPT
+b.f.fb..bTPTTTTT.TP...#.WBBSSSKW.WXXFFYWoo..WVNSSSASW.WXFFFYW#..,TTTPTbT
+rsTTTPPTsTTfPPTf.T..,.#.WSSSSSKW.WFFFFFWoo..WSSSSSSSW.WFFFFFW#.,.TPTTfTT
+TTfbfTT.ffTPTfTTPTf...#.WSSSStSW.WtFFFFLooL.WYSSSSXSW.WtFFCCW#...PTTTP.T
+TPrT.TTPTTTTPTTTPf....#.WWWWWWWW.WWWWWWWoo..WWWWWWWWW.WWWWWWW#"..PTTTPTT
+fTPTf.frTrTrrbfPbTf..,##################gg####################.".PbPTTPP
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::N:::::::::::::::
+::::::::::::::::::::::::::::::::::::::::__::::::::::::::::::::::::::::::
+~:~::~:~~:~::~:~~:~::~:~~:~::~:~~:~::~:~__~::~:~~:~::~:~~:~::~:~~:~::~:~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~__~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~__~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~__~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+========================================================================
+========================================================================
+========================================================================
+========================================================================
