@@ -1,0 +1,8 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="nord-app-id" content="com.crowelian.appwebserver"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Nord Web Server</title>
+<style>html,body{margin:0;height:100%;background:#2e3440}#app{height:100vh}</style></head>
+<body><div id="app"></div>
+<script type="module">
+import { mount } from './app.js';
+try { await mount(document.getElementById('app')); window.__nord_ready = true; } catch (e) { console.error(e); window.__nord_error = String(e); }
+</script></body></html>

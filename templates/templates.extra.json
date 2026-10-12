@@ -1,4 +1,20 @@
 [
-  { "id": "rust-2d-game", "title": "Rust 2D game", "description": "macroquad + rapier2d runtime, scenes in JSON, scripts in Rust (builds to WebAssembly).", "type": "wasm-game" },
-  { "id": "rust-egui-app", "title": "Rust egui app", "description": "eframe/egui app that runs natively and in the browser (wasm-bindgen, no trunk).", "type": "wasm-app" }
+  {
+    "id": "rust-2d-game",
+    "title": "Rust 2D game",
+    "description": "macroquad + rapier2d runtime, scenes in JSON, scripts in Rust (builds to WebAssembly).",
+    "type": "wasm-game"
+  },
+  {
+    "id": "rust-egui-app",
+    "title": "Rust egui app",
+    "description": "eframe/egui app that runs natively and in the browser (wasm-bindgen, no trunk).",
+    "type": "wasm-app"
+  },
+  {
+    "id": "rust-desktop-notes",
+    "title": "Rust desktop app: notes",
+    "description": "egui notes app using nord_app_wasm::desktop \u2014 files in app data, settings store, notifications, native dialogs, clipboard; same code runs in the browser with fallbacks.",
+    "type": "wasm-app"
+  }
 ]

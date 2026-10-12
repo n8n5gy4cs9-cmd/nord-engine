@@ -1,7 +1,7 @@
 //! eframe App: splash → hub/dock layout, global shortcuts, action dispatch, viewport sync.
 use crate::{
     panels::{self, palette::Mode as PMode},
-    state::{Action, EditorState, LogLevel, Tool},
+    state::{Action, EditorState, LogLevel, Tint, Tool},
     viewport::webview::{open_in_browser, WebPanes},
 };
 use egui::{Context, Key, Modifiers};
@@ -223,10 +223,64 @@ impl App {
         self.show_tab(Tab::Game);
     }
 
+    /// Unity-style play-mode colour: while compiling (amber) or playing (blue) the whole editor chrome is tinted, so it is obvious the
+    /// editor is busy / in play mode. Restores the theme's own colours afterwards.
+    fn apply_tint(&mut self, ctx: &Context) {
+        let st = &mut self.st;
+        let want = if st.settings.tint {
+            st.activity().0
+        } else {
+            None
+        };
+        let rgb = |t| {
+            if t == Tint::Playing {
+                st.settings.play_tint
+            } else {
+                st.settings.build_tint
+            }
+        };
+        let want_key = want.map(|t| (t, rgb(t)));
+        if want_key == st.tint_applied {
+            return;
+        }
+        match want_key {
+            None => {
+                if let Some(v) = st.base_visuals.take() {
+                    ctx.set_visuals(v);
+                }
+            }
+            Some((_, c)) => {
+                let base = st
+                    .base_visuals
+                    .get_or_insert_with(|| ctx.style().visuals.clone())
+                    .clone();
+                let tint = egui::Color32::from_rgb(c[0], c[1], c[2]);
+                let mix = |a: egui::Color32, k: f32| {
+                    let f = |x: u8, y: u8| (x as f32 * (1.0 - k) + y as f32 * k) as u8;
+                    egui::Color32::from_rgb(
+                        f(a.r(), tint.r()),
+                        f(a.g(), tint.g()),
+                        f(a.b(), tint.b()),
+                    )
+                };
+                let mut v = base;
+                v.panel_fill = mix(v.panel_fill, 0.9);
+                v.window_fill = mix(v.window_fill, 0.8);
+                v.faint_bg_color = mix(v.faint_bg_color, 0.7);
+                v.extreme_bg_color = mix(v.extreme_bg_color, 0.55);
+                ctx.set_visuals(v);
+            }
+        }
+        st.tint_applied = want_key;
+        ctx.request_repaint();
+    }
+
     /// Poll the background Rust build; start the game when a Play-triggered build succeeded.
     fn poll_rust_build(&mut self, ctx: &Context) {
         use std::sync::atomic::Ordering::SeqCst;
-        let Some(job) = self.st.rust_job.clone() else { return };
+        let Some(job) = self.st.rust_job.clone() else {
+            return;
+        };
         if !job.done.load(SeqCst) {
             ctx.request_repaint_after(Duration::from_millis(150));
             return;
@@ -335,6 +389,7 @@ impl App {
             }
             Action::Settings => st.settings_open = true,
             Action::Export => st.export_ui.open = true,
+            Action::DesktopSettings => st.desktop_ui.open = true,
             Action::About => st.about_open = true,
             Action::OpenFile(p, line) => {
                 let root = st.root.clone();
@@ -459,6 +514,7 @@ impl App {
                     act(ui, "Build Rust", Action::Build("rust build".into()), st);
                 }
                 act(ui, "Export…", Action::Export, st);
+                act(ui, "Desktop app permissions…", Action::DesktopSettings, st);
             });
             ui.menu_button("Help", |ui| {
                 act(ui, "Documentation", Action::ShowTab(Tab::Docs), st);
@@ -495,13 +551,25 @@ fn start_rust_build(st: &mut EditorState, play_after: bool) {
     if st.dirty {
         st.save();
     }
-    st.log(LogLevel::Build, "$ nord build-rust (cargo build --target wasm32-unknown-unknown)");
+    st.log(
+        LogLevel::Build,
+        "$ nord build-rust (cargo build --target wasm32-unknown-unknown)",
+    );
+    st.log(
+        LogLevel::Info,
+        "The first Rust build compiles every dependency (macroquad, rapier…) and can take several minutes; later builds are fast.",
+    );
     let job = Arc::new(crate::state::RustJob {
         done: AtomicBool::new(false),
         ok: AtomicBool::new(false),
         play_after,
+        started: Instant::now(),
+        phase: Default::default(),
+        crates: Default::default(),
     });
+    st.status_msg = None;
     st.rust_job = Some(job.clone());
+    let job_cb = job.clone();
     std::thread::spawn(move || {
         let push = |level: &str, text: String| {
             hub.logs.lock().unwrap().push(nord_serve::LogEntry {
@@ -510,6 +578,21 @@ fn start_rust_build(st: &mut EditorState, play_after: bool) {
             });
         };
         let res = nord_export::rust::dev_build(&root, false, &mut |l| {
+            let t = l.trim_start();
+            if let Some(r) = t.strip_prefix("Compiling ") {
+                if let Ok(mut p) = job_cb.phase.lock() {
+                    *p = r.to_string();
+                }
+                job_cb.crates.fetch_add(1, SeqCst);
+            } else if t.starts_with("Finished") {
+                if let Ok(mut p) = job_cb.phase.lock() {
+                    *p = "packaging for the web (wasm-bindgen)".into();
+                }
+            } else if t.starts_with("Downloading") || t.starts_with("Updating") {
+                if let Ok(mut p) = job_cb.phase.lock() {
+                    *p = t.to_string();
+                }
+            }
             let level = if l.starts_with("error")
                 || nord_export::rust::parse_diagnostic(l).is_some_and(|d| d.3)
             {
@@ -647,19 +730,39 @@ pub fn game_tab(
     overlay: bool,
 ) {
     ui.horizontal_wrapped(|ui| {
-        if crate::icons::button(ui, "terminal", "Show/hide console under the game", st.game_console).clicked() {
+        if crate::icons::button(
+            ui,
+            "terminal",
+            "Show/hide console under the game",
+            st.game_console,
+        )
+        .clicked()
+        {
             st.game_console = !st.game_console;
         }
         ui.separator();
         ui.weak("Size");
-        for (label, v) in [("Fit", 0.0_f32), ("50%", 0.5), ("100%", 1.0), ("150%", 1.5), ("200%", 2.0)] {
-            if ui.selectable_label((st.game_scale - v).abs() < f32::EPSILON, label).clicked() {
+        for (label, v) in [
+            ("Fit", 0.0_f32),
+            ("50%", 0.5),
+            ("100%", 1.0),
+            ("150%", 1.5),
+            ("200%", 2.0),
+        ] {
+            if ui
+                .selectable_label((st.game_scale - v).abs() < f32::EPSILON, label)
+                .clicked()
+            {
                 st.game_scale = v;
             }
         }
         ui.separator();
         if ui
-            .button(if st.game_full { "Exit fullscreen (Esc)" } else { "Fullscreen" })
+            .button(if st.game_full {
+                "Exit fullscreen (Esc)"
+            } else {
+                "Fullscreen"
+            })
             .on_hover_text("Maximise the game over the whole window (Esc leaves)")
             .clicked()
         {
@@ -685,7 +788,11 @@ pub fn game_tab(
             let base = st.ensure_server().unwrap_or_default();
             let url = format!("{base}/?n={}", st.game_nonce);
             let fixed = (st.game_scale > 0.0).then(|| {
-                let d = st.project.as_ref().map(|p| (p.display.width as f32, p.display.height as f32)).unwrap_or((1280.0, 720.0));
+                let d = st
+                    .project
+                    .as_ref()
+                    .map(|p| (p.display.width as f32, p.display.height as f32))
+                    .unwrap_or((1280.0, 720.0));
                 egui::vec2(d.0 * st.game_scale, d.1 * st.game_scale)
             });
             web.show_sized(ui, frame, "game", &url, overlay, fixed);
@@ -698,9 +805,14 @@ pub fn game_tab(
     });
     if console_h > 0.0 {
         let (handle, resp) = ui.allocate_exact_size(egui::vec2(total.x, 8.0), egui::Sense::drag());
-        ui.painter().rect_filled(handle.shrink2(egui::vec2(0.0, 2.0)), 2.0, ui.visuals().widgets.noninteractive.bg_stroke.color);
+        ui.painter().rect_filled(
+            handle.shrink2(egui::vec2(0.0, 2.0)),
+            2.0,
+            ui.visuals().widgets.noninteractive.bg_stroke.color,
+        );
         if resp.dragged() {
-            st.game_console_h = (st.game_console_h - resp.drag_delta().y).clamp(60.0, (total.y - 80.0).max(60.0));
+            st.game_console_h =
+                (st.game_console_h - resp.drag_delta().y).clamp(60.0, (total.y - 80.0).max(60.0));
         }
         if resp.hovered() || resp.dragged() {
             ui.ctx().set_cursor_icon(egui::CursorIcon::ResizeVertical);
@@ -759,6 +871,7 @@ impl App {
         self.run_actions(ctx);
         self.poll_rust_build(ctx);
         self.st.autosave_tick();
+        self.apply_tint(ctx);
         self.sync_viewport();
 
         if let Some(r) = ctx.input(|i| i.viewport().outer_rect) {
@@ -781,7 +894,11 @@ impl App {
         let game_full = self.st.game_full && self.st.project.is_some();
         if !game_full {
             egui::TopBottomPanel::top("menu").show(ctx, |ui| self.menu(ui));
-            egui::TopBottomPanel::top("toolbar").show(ctx, |ui| panels::toolbar::ui(&mut self.st, ui));
+            egui::TopBottomPanel::top("toolbar")
+                .show(ctx, |ui| panels::toolbar::ui(&mut self.st, ui));
+            if self.st.project.is_some() {
+                egui::TopBottomPanel::bottom("status").show(ctx, |ui| status_bar(&mut self.st, ui));
+            }
         }
         let overlay = ctx.memory(|m| m.any_popup_open())
             || self.st.palette.mode != PMode::Closed
@@ -795,9 +912,11 @@ impl App {
         if self.st.project.is_none() {
             egui::CentralPanel::default().show(ctx, |ui| panels::hub::ui(&mut self.st, ui));
         } else if game_full {
-            egui::CentralPanel::default().frame(egui::Frame::NONE).show(ctx, |ui| {
-                game_tab(&mut self.st, ui, &mut self.web, frame, overlay);
-            });
+            egui::CentralPanel::default()
+                .frame(egui::Frame::NONE)
+                .show(ctx, |ui| {
+                    game_tab(&mut self.st, ui, &mut self.web, frame, overlay);
+                });
         } else {
             let mut style = Style::from_egui(ctx.style().as_ref());
             style.tab_bar.fill_tab_bar = true;
@@ -825,6 +944,7 @@ impl App {
         panels::palette::window(&mut self.st, ctx);
         panels::settings::window(&mut self.st, ctx);
         panels::export::window(&mut self.st, ctx);
+        panels::desktop::window(&mut self.st, ctx);
         if self.st.recover.is_some() && self.st.project.is_some() {
             egui::Window::new("Recover unsaved work?").collapsible(false).resizable(false).anchor(egui::Align2::CENTER_CENTER, [0.0, 0.0]).show(ctx, |ui| {
                 ui.label("An autosave newer than the saved scene was found (the editor may have crashed).");
@@ -879,4 +999,34 @@ impl App {
             ctx.request_repaint_after(Duration::from_millis(100));
         }
     }
+}
+
+/// Bottom status bar: a coloured dot + one sentence about what the editor is doing.
+fn status_bar(st: &mut EditorState, ui: &mut egui::Ui) {
+    let (tint, text) = st.activity();
+    ui.horizontal(|ui| {
+        let (dot, busy) = match tint {
+            Some(Tint::Building) => (egui::Color32::from_rgb(235, 180, 60), true),
+            Some(Tint::Playing) => (egui::Color32::from_rgb(110, 170, 255), false),
+            None => (egui::Color32::from_rgb(120, 190, 130), false),
+        };
+        if busy {
+            ui.spinner();
+        } else {
+            ui.colored_label(dot, "●");
+        }
+        ui.label(text);
+        ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+            if let Some(p) = &st.project {
+                ui.weak(format!("{} · {}", p.name, p.kind.as_str()));
+            }
+        });
+    });
+    if busy_repaint(st) {
+        ui.ctx().request_repaint_after(Duration::from_millis(250));
+    }
+}
+
+fn busy_repaint(st: &EditorState) -> bool {
+    st.activity().0 == Some(Tint::Building)
 }

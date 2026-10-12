@@ -320,97 +320,97 @@
       "id": "M9-01",
       "milestone": "M9",
       "title": "PLAN: docs/DESKTOP_APPS.md — desktop target architecture (ADR): reuse nord-player/wry shell vs native egui apps; capability model, API surface per tier (JS via IPC bridge, Rust direct); permissions/sandbox; what real apps need (checklist)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M9-02",
       "milestone": "M9",
       "title": "nord-desktop crate: shared Rust backend services behind one trait set (fs, dialogs, notifications, clipboard, shell/open, paths, app lifecycle) used by JS bridge and Rust apps",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M9-03",
       "milestone": "M9",
       "title": "Files & folders: scoped fs API (read/write/list/watch/stat/mkdir/remove/rename), per-app allowed roots (app data, documents, user-picked via dialog), path traversal protection, macOS sandbox/security-scoped bookmarks",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M9-04",
       "milestone": "M9",
       "title": "Native dialogs: open/save file, pick folder, message/confirm, with remembered recent locations (rfd)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M9-05",
       "milestone": "M9",
       "title": "System notifications (local), badges, dock/taskbar progress; macOS/Windows/Linux backends",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M9-06",
       "milestone": "M9",
       "title": "Persistent app storage: key-value + structured (sqlite or sled), settings file, app data dir, migrations; secure secrets via OS keychain",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M9-07",
       "milestone": "M9",
       "title": "Clipboard (text/image/files), drag & drop in/out, open-with / file associations / custom URL scheme (deep links), single-instance + argv handling",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M9-08",
       "milestone": "M9",
       "title": "Windows & menus: multi-window, native menu bar + context menus, global shortcuts, tray/menu-bar icon, always-on-top/frameless/transparent, fullscreen, window state persistence",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M9-09",
       "milestone": "M9",
       "title": "Background work: threads/async tasks API, timers, process spawn (sandboxed allow-list), HTTP client with permission prompt, optional local server; app lifecycle (suspend, quit confirm, autostart/login item)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M9-10",
       "milestone": "M9",
       "title": "JS bridge: window.nord.desktop.* (fs, dialogs, notify, clipboard, store, window, menu, tray) over wry IPC with capability checks; typed d.ts + docs; same API in dev (editor Play) and exported apps",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M9-11",
       "milestone": "M9",
       "title": "Rust desktop API in nord-app-wasm/nord-runtime: native path = direct crates, web path = graceful fallbacks (File System Access API, Notifications API, localStorage/IndexedDB); one cfg-free app API",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M9-12",
       "milestone": "M9",
       "title": "Permissions/capabilities manifest in nord.project.json (desktop.permissions) + first-run prompts + editor UI to review; least-privilege defaults; audit log",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M9-13",
       "milestone": "M9",
       "title": "Packaging: macOS .app/.dmg (sign + notarise docs), Windows installer/portable exe, Linux AppImage/deb; icons, version metadata, auto-update strategy (optional, opt-in)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M9-14",
       "milestone": "M9",
       "title": "Accessibility & real-app UX: IME/text input, high-DPI, dark mode follow, keyboard navigation, undo/redo helpers, i18n (locale/formatting), drag-reorder lists, virtualised tables",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M9-15",
       "milestone": "M9",
       "title": "Templates + examples: desktop notes app (files+store+notifications), file organiser (fs+dialogs), clipboard manager (tray+global shortcut), markdown editor — JS and Rust variants; e2e where headless-possible",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M9-16",
       "milestone": "M9",
       "title": "Tests & CI: capability unit tests, fs sandbox escape tests, per-OS CI matrix (macos-14, windows, ubuntu) building/launching sample apps headless; document unverified parts honestly",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M0-01",
@@ -1130,7 +1130,7 @@
       "id": "M8-01",
       "milestone": "M8",
       "title": ".dmg packaging + notarisation notes",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M8-02",
@@ -1142,7 +1142,7 @@
       "id": "M8-03",
       "milestone": "M8",
       "title": "Linux build (WebKitGTK) + AppImage/deb",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M8-04",
@@ -1184,7 +1184,19 @@
       "id": "M8-10",
       "milestone": "M8",
       "title": "build.sh: Linux build into dist/linux/ (tar.gz/AppImage)",
-      "status": "todo"
+      "status": "done"
+    },
+    {
+      "id": "M8-11",
+      "milestone": "M8",
+      "title": "Fix hub scrolling + templates for webview: kanban pointer drag, mouse-capture script (lock+hide, Esc), fps/third-person/fly-cam use it",
+      "status": "done"
+    },
+    {
+      "id": "M8-12",
+      "milestone": "M8",
+      "title": "Play-mode tint + status bar (one-sentence activity, compile progress) + hub per-column scroll",
+      "status": "done"
     }
   ]
 }

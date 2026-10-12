@@ -16,7 +16,8 @@ webview = ["dep:wry"]
 
 [dependencies]
 nord-core = { path = "../nord-core" }
-nord-serve = { path = "../nord-serve" }
+nord-desktop = { path = "../nord-desktop" }
+nord-serve = { path = "../nord-serve", features = ["native"] }
 nord-export = { path = "../nord-export" }
 regex = "1"
 serde.workspace = true

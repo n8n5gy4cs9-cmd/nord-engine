@@ -7,7 +7,6 @@ export default class ThirdPerson3D extends NordScript {
     jumpSpeed: { type: 'number', default: 6.5, min: 0 },
     turnSpeed: { type: 'number', default: 12, min: 0 },
     sensitivity: { type: 'number', default: 0.3, min: 0 },
-    lockPointer: { type: 'bool', default: false },
     cameraName: { type: 'string', default: 'Camera' },
   };
   start() {
@@ -17,12 +16,12 @@ export default class ThirdPerson3D extends NordScript {
   }
   #look(on) {
     this.dx = 0; this.dy = 0;
-    this.mm = (e) => { if (document.pointerLockElement || e.buttons) { this.dx += e.movementX; this.dy += e.movementY; } };
-    this.click = () => { if (this.attrs.lockPointer) document.querySelector("canvas")?.requestPointerLock?.(); };
-    window.addEventListener("mousemove", this.mm); window.addEventListener("pointerdown", this.click);
+    this.mm = (e) => { if (!window.nordMouse && e.buttons) { this.dx += e.movementX; this.dy += e.movementY; } };
+    window.addEventListener("mousemove", this.mm);
   }
-  onDestroy() { window.removeEventListener("mousemove", this.mm); window.removeEventListener("pointerdown", this.click); }
+  onDestroy() { window.removeEventListener("mousemove", this.mm); }
   update() {
+    const mc = window.nordMouse?.consume(); if (mc) { this.dx += mc.dx; this.dy += mc.dy; }
     if (this.cam?.alpha !== undefined) { this.cam.alpha -= this.dx * this.attrs.sensitivity * 0.02; this.cam.beta = Math.max(0.2, Math.min(1.5, this.cam.beta - this.dy * this.attrs.sensitivity * 0.02)); }
     this.dx = this.dy = 0;
   }

@@ -8,11 +8,15 @@ license.workspace = true
 [features]
 default = []
 # the actual window (wry/tao). Off by default so the workspace builds on Linux CI without webkit2gtk; macOS CI + `build.sh` enable it.
-shell = ["dep:wry", "dep:tao"]
+shell = ["dep:wry", "dep:tao", "dep:tray-icon", "dep:global-hotkey", "dep:image"]
 
 [dependencies]
 anyhow.workspace = true
 serde_json.workspace = true
+nord-desktop = { path = "../nord-desktop", features = ["native"] }
 mime_guess = "2"
 wry = { version = "0.50", optional = true }
 tao = { version = "0.33", optional = true }
+tray-icon = { version = "0.19", optional = true }
+global-hotkey = { version = "0.6", optional = true }
+image = { version = "0.25", default-features = false, features = ["png"], optional = true }

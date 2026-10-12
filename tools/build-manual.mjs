@@ -71,6 +71,8 @@ const EXTERNAL = [
   ['docs/RUST_TIER.md', 'rust-tier-spec.html', 'Rust tier spec', 'Reference', 40, 'Detailed Rust/WASM reference.'],
   ['docs/EXPORT_TARGETS.md', 'export-targets-spec.html', 'Export targets spec', 'Reference', 41, 'Export targets and layout.'],
   ['docs/HOSTING.md', 'hosting-spec.html', 'Hosting notes', 'Reference', 42, 'Where to host a build.'],
+  ['docs/DESKTOP_APPS.md', 'desktop-apps-spec.html', 'Desktop apps spec', 'Reference', 43, 'Desktop backend design, capability model, bridge.'],
+  ['docs/PACKAGING.md', 'packaging.html', 'Packaging', 'Reference', 44, 'macOS/Windows/Linux bundles, signing, notarisation, file types.'],
 ];
 for (const [src, file, title, section, order, summary, extra] of EXTERNAL) {
   let md = read(src).replace(/^# .*\n/, '');

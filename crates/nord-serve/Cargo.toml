@@ -5,8 +5,14 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 
+[features]
+default = []
+# real dialogs/clipboard/notifications for the dev `/__desktop` bridge (headless stubs otherwise)
+native = ["nord-desktop/native"]
+
 [dependencies]
 nord-core = { path = "../nord-core" }
+nord-desktop = { path = "../nord-desktop" }
 anyhow.workspace = true
 serde.workspace = true
 serde_json.workspace = true

@@ -107,3 +107,13 @@ rapier2d is pinned to **0.22** (0.3x switched to glam and reshuffled the API; re
 Rendering is a thin manual world→screen transform (design size letterboxed into the canvas) rather than `Camera2D`, so pointer picking is trivial.
 Apps use eframe 0.31 + the **wasm-bindgen CLI** (trunk-free); dev builds land in `<project>/target/web/` and the project's `index.html` loads them.
 Audio: macroquad's audio supports only .wav/.ogg (no mp3). Known harmless JS error in macroquad's bundle (`register_plugin`, quad_net section).
+
+## ADR-020 Desktop apps: wry shell for JS apps, native egui for Rust apps, one `nord-desktop` backend with a capability manifest (M9, 2026-10-12)
+**Context.** M9 wants real desktop apps (files, dialogs, notifications, tray, storage) from both tiers. **Decision.** All OS services live in one crate
+`nord-desktop` (Rust, no UI toolkit dependency). JS apps run in the existing `nord-player` wry+tao shell and reach it through a promise-based IPC bridge
+`window.nord.desktop.*` (origin-restricted to `nord://game/`; in the editor's Play the same API goes over `nord-serve`). Rust apps run as *native* eframe
+(not wasm-in-webview) and call a `Desktop` handle on `Ctx`; the wasm/web build falls back to browser APIs or returns `Unsupported`. Permissions are a
+least-privilege manifest (`desktop.permissions` in `nord.project.json`, baked into `nord.json`), enforced in `nord-desktop` so both tiers share one check;
+sensitive grants prompt on first use and are audit-logged. Tauri stays rejected (ADR-013). **Consequences.** + one implementation to test; + JS/Rust parity;
+− caps are an application-level guard, not an OS sandbox (macOS App Sandbox/bookmarks optional, M9-03); − macOS/Windows backends unverifiable in the
+Linux sandbox (CI matrix + owner). Details and checklist: `docs/DESKTOP_APPS.md`. Status: **accepted & implemented** (owner asked to proceed; defaults for the open questions: plain DOM apps, JSON KV store + optional SQLite, portable zip/tar.gz first, caps are not an OS sandbox).

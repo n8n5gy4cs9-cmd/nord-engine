@@ -1,4 +1,4 @@
-// @nord {"id":"controller3d.fps","title":"FPS controller","category":"controllers","tier":["3d"],"tags":["fps","first-person","mouse-look"],"requires":["rigidbody","collider"],"description":"First-person: WASD (left/right/up/down actions), mouse look (click for pointer lock), jump, sprint, crouch and head-bob. Put a camera entity as a child of this entity (at eye height) — it is pitched by this script."}
+// @nord {"id":"controller3d.fps","title":"FPS controller","category":"controllers","tier":["3d"],"tags":["fps","first-person","mouse-look"],"requires":["rigidbody","collider"],"description":"First-person: WASD (left/right/up/down actions), mouse look (add the util.mouse-capture script to lock + hide the cursor; without it: drag), jump, sprint, crouch and head-bob. Put a camera entity as a child of this entity (at eye height) — it is pitched by this script."}
 import { NordScript } from 'nord';
 
 export default class FPS3D extends NordScript {
@@ -10,19 +10,17 @@ export default class FPS3D extends NordScript {
     sensitivity: { type: 'number', default: 0.12, min: 0, label: 'Mouse deg/px' },
     bob: { type: 'number', default: 0.04, min: 0, label: 'Head-bob amplitude (m)' },
     eyeHeight: { type: 'number', default: 0.7, label: 'Camera local y' },
-    lockPointer: { type: 'bool', default: true },
     cameraName: { type: 'string', default: 'Camera' },
   };
   start() { this.yaw = this.entity.rot[1]; this.pitch = 0; this.bobT = 0; this.cam = this.entity.find(this.attrs.cameraName); this.#look(); }
   #look(on) {
     this.dx = 0; this.dy = 0;
-    this.mm = (e) => { if (document.pointerLockElement || e.buttons) { this.dx += e.movementX; this.dy += e.movementY; } };
-    this.click = () => { if (this.attrs.lockPointer) document.querySelector("canvas")?.requestPointerLock?.(); };
-    window.addEventListener("mousemove", this.mm); window.addEventListener("pointerdown", this.click);
+    this.mm = (e) => { if (!window.nordMouse && e.buttons) { this.dx += e.movementX; this.dy += e.movementY; } };
+    window.addEventListener("mousemove", this.mm);
   }
-  onDestroy() { window.removeEventListener("mousemove", this.mm); window.removeEventListener("pointerdown", this.click); }
+  onDestroy() { window.removeEventListener("mousemove", this.mm); }
   update(dt) {
-    const a = this.attrs;
+    const a = this.attrs, mc = window.nordMouse?.consume(); if (mc) { this.dx += mc.dx; this.dy += mc.dy; }
     this.yaw += this.dx * a.sensitivity; this.pitch = Math.max(-89, Math.min(89, this.pitch + this.dy * a.sensitivity)); this.dx = this.dy = 0;
     this.entity.rot = [0, this.yaw, 0];
     const [mx, mz] = this.input.vec('left', 'right', 'down', 'up');

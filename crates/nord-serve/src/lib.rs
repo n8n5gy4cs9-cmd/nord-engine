@@ -49,6 +49,7 @@ struct Since {
 
 #[derive(Clone)]
 struct App {
+    desktop: Arc<std::sync::OnceLock<Option<Arc<nord_desktop::bridge::Bridge>>>>,
     project: Arc<PathBuf>,
     engine: Arc<PathBuf>,
     tx: broadcast::Sender<Vec<String>>,
@@ -190,6 +191,57 @@ async fn edit_cmd(
     }
     let _ = a.hub.edit_tx.send(body);
     StatusCode::NO_CONTENT
+}
+
+/// Dev-time desktop bridge (ADR-020): same JSON API as the wry IPC in `nord-player`, permissions from the project's `desktop.permissions`.
+/// `NORD_DESKTOP_BASE=<dir>` redirects appData/documents/… (tests, sandboxes).
+fn desktop_bridge(a: &App) -> Option<Arc<nord_desktop::bridge::Bridge>> {
+    a.desktop
+        .get_or_init(|| {
+            let p = nord_core::io::load_project(&a.project).ok()?;
+            let perms = nord_desktop::caps::Permissions::from_json(
+                p.desktop
+                    .get("permissions")
+                    .unwrap_or(&serde_json::Value::Null),
+            )
+            .ok()?;
+            let base = std::env::var_os("NORD_DESKTOP_BASE").map(PathBuf::from);
+            let d = nord_desktop::Desktop::new(&p.id, perms, base).ok()?;
+            Some(Arc::new(nord_desktop::bridge::Bridge::new(
+                d,
+                &p.name,
+                &p.engine_version,
+            )))
+        })
+        .clone()
+}
+
+async fn desktop_call(
+    State(a): State<App>,
+    headers: axum::http::HeaderMap,
+    Json(req): Json<serde_json::Value>,
+) -> Response {
+    if !has_nord_header(&headers) {
+        return StatusCode::FORBIDDEN.into_response();
+    }
+    let Some(b) = desktop_bridge(&a) else {
+        return Json(serde_json::json!({"error": {"code": "unsupported", "message": "project has no valid desktop.permissions"}})).into_response();
+    };
+    let method = req["method"].as_str().unwrap_or("").to_string();
+    // blocking calls (dialogs, process) must not stall the async runtime
+    let params = req["params"].clone();
+    match tokio::task::spawn_blocking(move || b.call_json(&method, &params)).await {
+        Ok(v) => Json(v).into_response(),
+        Err(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
+    }
+}
+
+async fn desktop_events(State(a): State<App>) -> Json<Vec<serde_json::Value>> {
+    Json(
+        desktop_bridge(&a)
+            .map(|b| b.take_events())
+            .unwrap_or_default(),
+    )
 }
 
 /// Model thumbnails rendered by the 3D edit viewport arrive as a PNG data URL; stored where nord-core caches thumbs.
@@ -356,6 +408,7 @@ pub fn router(project: PathBuf, engine: PathBuf) -> (Router, Arc<Hub>) {
         reload_tx: tx.clone(),
     });
     let app = App {
+        desktop: Arc::default(),
         project: Arc::new(project),
         engine: Arc::new(engine),
         tx,
@@ -372,6 +425,8 @@ pub fn router(project: PathBuf, engine: PathBuf) -> (Router, Arc<Hub>) {
         .route("/api/ipc", get(ipc_get).post(ipc_post))
         .route("/__edit/events", get(edit_events))
         .route("/__edit/cmd", post(edit_cmd))
+        .route("/__desktop/call", post(desktop_call))
+        .route("/__desktop/events", get(desktop_events))
         .fallback(static_files)
         .layer(axum::middleware::from_fn(local_host_only))
         .with_state(app);

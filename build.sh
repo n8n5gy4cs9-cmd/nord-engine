@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 # Builds the full editor + everything it needs into ./dist  (gitignored):
 #   dist/Nord Engine.app          macOS app bundle (+ optional .dmg)          <- implemented
-#   dist/windows/                 Windows build                               <- planned, goes here (see TODO below)
-#   dist/linux/                   Linux build                                 <- planned, goes here (see TODO below)
+#   dist/windows/NordEngine/ (+ .zip)       Windows build (run from Git Bash/MSYS on Windows)   <- implemented, CI-built, unverified by owner
+#   dist/linux/nord-engine/ (+ .tar.gz)     Linux build                                         <- implemented
 # Step 1 always regenerates the offline manual (node tools/build-manual.mjs) so docs/manual is fresh inside the bundle.
 #
 #   ./build.sh                 # native arch (Apple Silicon -> arm64), ad-hoc signed
 #   ./build.sh --universal     # arm64 + x86_64 (rustup adds the missing target)
 #   ./build.sh --dmg           # also create dist/Nord-Engine.dmg
-#   ./build.sh --no-webview    # build without the embedded webview
+#   ./build.sh --no-webview    # build without the embedded webview / player shell
+#   (Windows/Linux: same script, output goes to dist/windows or dist/linux; the editor there uses the Open-in-browser viewport)
 #   ./build.sh --open          # launch the app afterwards
 #
 # The bundle is self-contained: Contents/Resources holds vendor/, runtime/, editor/, docs/, library/, examples/
@@ -24,7 +25,7 @@ for a in "$@"; do
     --dmg) DMG=1 ;;
     --no-webview) WEBVIEW=0 ;;
     --open) OPEN=1 ;;
-    -h|--help) sed -n '2,17p' "$0"; exit 0 ;;
+    -h|--help) sed -n '2,19p' "$0"; exit 0 ;;
     *) echo "unknown option: $a" >&2; exit 2 ;;
   esac
 done
@@ -35,21 +36,66 @@ echo "==> building the manual (node tools/build-manual.mjs)"
 node tools/build-manual.mjs
 
 OS="$(uname -s)"
-# TODO(windows): on Windows (Git Bash/MSYS) or cross-built: cargo build --release -p nord-editor -p nord-cli -p nord-player,
-#   assemble dist/windows/NordEngine/{nord-editor.exe,nord.exe,nord-player.exe,vendor,runtime,editor,docs,library,examples}, zip it
-#   (and optionally an installer). WebView2 replaces WKWebView for the wry features. Not implemented yet.
-# TODO(linux): cargo build --release (webkit2gtk + gtk dev packages for the `webview`/`shell` features), assemble dist/linux/nord-engine/
-#   with the same resource folders, produce a .tar.gz (and optionally an AppImage). Not implemented yet.
-if [ "$OS" != "Darwin" ] && [ "${NORD_BUILD_ALLOW_NON_MAC:-0}" != 1 ]; then
-  echo "build.sh currently builds the macOS .app and must run on a Mac." >&2
-  echo "Windows and Linux builds are planned (output: dist/windows/ and dist/linux/) but not implemented yet." >&2
-  echo "(NORD_BUILD_ALLOW_NON_MAC=1 assembles the bundle layout elsewhere for testing; no signing/lipo.)" >&2
-  exit 1
-fi
 command -v cargo >/dev/null || { echo "cargo not found. Install Rust: https://rustup.rs" >&2; exit 1; }
+VERSION="$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -1)"
+
+# copy the resource folders the editor/player find via nord_serve::engine_root()
+copy_resources() { # $1 = destination dir
+  local RES="$1"; mkdir -p "$RES"
+  for d in vendor runtime editor docs library examples; do
+    [ -d "$d" ] && cp -R "$d" "$RES/"
+  done
+  find "$RES" \( -name '.nord-cache' -o -name 'dist' -o -name '.DS_Store' \) -prune -exec rm -rf {} + 2>/dev/null || true
+  # drop optional/large things the editor does not need at runtime
+  rm -rf "$RES/vendor/playcanvas" 2>/dev/null || true
+  cp LICENSE THIRD_PARTY.md "$RES/" 2>/dev/null || true
+}
+
+# ---- Windows / Linux (portable folder + archive). No codesign/notarisation; see docs/PACKAGING.md ----------------------
+if [ "$OS" != "Darwin" ]; then
+  case "$OS" in
+    MINGW*|MSYS*|CYGWIN*) PLAT=windows; EXE=.exe; OUTDIR="dist/windows/NordEngine" ;;
+    Linux) PLAT=linux; EXE=; OUTDIR="dist/linux/nord-engine" ;;
+    *) echo "unsupported OS: $OS" >&2; exit 1 ;;
+  esac
+  # the player shell (wry+tao): WebView2 on Windows (always available), webkit2gtk-4.1 on Linux (only if installed)
+  PSHELL=""
+  if [ "$WEBVIEW" = 1 ]; then
+    if [ "$PLAT" = windows ]; then PSHELL="--features shell"
+    elif command -v pkg-config >/dev/null && pkg-config --exists webkit2gtk-4.1 gtk+-3.0 2>/dev/null; then PSHELL="--features shell"
+    else echo "note: webkit2gtk-4.1/gtk3 dev packages not found -> nord-player built without its window shell"; fi
+  fi
+  echo "==> cargo build --release (nord-editor, nord-cli, nord-player $PSHELL)"
+  cargo build --release -p nord-editor -p nord-cli
+  # shellcheck disable=SC2086
+  cargo build --release -p nord-player $PSHELL
+  rm -rf "$OUTDIR"; mkdir -p "$OUTDIR"
+  for b in nord-editor nord nord-player; do cp "target/release/$b$EXE" "$OUTDIR/"; done
+  echo "==> assembling resources"
+  copy_resources "$OUTDIR"
+  [ -f assets/brand/logo-256.png ] && cp assets/brand/logo-256.png "$OUTDIR/icon.png"; [ -f assets/brand/icon.ico ] && cp assets/brand/icon.ico "$OUTDIR/icon.ico"
+  if [ "$PLAT" = windows ]; then
+    printf '@echo off\r\nstart "" "%%~dp0nord-editor.exe" %%*\r\n' > "$OUTDIR/NordEngine.cmd"
+    ARCHIVE="dist/windows/NordEngine-$VERSION-windows.zip"; rm -f "$ARCHIVE"
+    if command -v zip >/dev/null; then (cd dist/windows && zip -qr "$(basename "$ARCHIVE")" NordEngine)
+    else powershell -NoProfile -Command "Compress-Archive -Path '$OUTDIR' -DestinationPath '$ARCHIVE'"; fi
+  else
+    cat > "$OUTDIR/nord-engine.desktop" <<DESK
+[Desktop Entry]
+Type=Application
+Name=Nord Engine
+Exec=nord-editor
+Icon=icon
+Categories=Development;
+DESK
+    ARCHIVE="dist/linux/nord-engine-$VERSION-linux-$(uname -m).tar.gz"; rm -f "$ARCHIVE"
+    tar -C dist/linux -czf "$ARCHIVE" nord-engine
+  fi
+  echo; echo "Built: $OUTDIR  (v$VERSION)"; echo "Archive: $ARCHIVE"
+  exit 0
+fi
 
 NAME="Nord Engine"
-VERSION="$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -1)"
 OUT="dist/$NAME.app"
 FEATURES=""; FEATURES_PLAYER=""
 if [ "$OS" = "Darwin" ] && [ "$WEBVIEW" = 1 ]; then FEATURES="--features webview"; FEATURES_PLAYER="--features shell"; fi
@@ -84,15 +130,8 @@ fi
 
 echo "==> assembling resources"
 RES="$OUT/Contents/Resources"
-for d in vendor runtime editor docs library examples; do
-  [ -d "$d" ] && cp -R "$d" "$RES/"
-done
-find "$RES" \( -name '.nord-cache' -o -name 'dist' -o -name '.DS_Store' \) -prune -exec rm -rf {} + 2>/dev/null || true
-# drop optional/large things the editor does not need at runtime
-rm -rf "$RES/vendor/playcanvas" 2>/dev/null || true
+copy_resources "$RES"
 [ -f assets/brand/icon.icns ] && cp assets/brand/icon.icns "$RES/AppIcon.icns"
-cp LICENSE THIRD_PARTY.md "$RES/" 2>/dev/null || true
-
 cat > "$OUT/Contents/Info.plist" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">

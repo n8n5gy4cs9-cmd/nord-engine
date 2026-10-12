@@ -2,17 +2,16 @@
 import { NordScript } from 'nord';
 
 export default class FlyCam extends NordScript {
-  static attributes = { speed: { type: 'number', default: 8, min: 0 }, sprintFactor: { type: 'number', default: 3, min: 1 }, sensitivity: { type: 'number', default: 0.15, min: 0 }, lockPointer: { type: 'bool', default: false } };
+  static attributes = { speed: { type: 'number', default: 8, min: 0 }, sprintFactor: { type: 'number', default: 3, min: 1 }, sensitivity: { type: 'number', default: 0.15, min: 0 } };
   start() { this.yaw = this.entity.rot[1]; this.pitch = this.entity.rot[0]; this.#look(); }
   #look(on) {
     this.dx = 0; this.dy = 0;
-    this.mm = (e) => { if (document.pointerLockElement || e.buttons) { this.dx += e.movementX; this.dy += e.movementY; } };
-    this.click = () => { if (this.attrs.lockPointer) document.querySelector("canvas")?.requestPointerLock?.(); };
-    window.addEventListener("mousemove", this.mm); window.addEventListener("pointerdown", this.click);
+    this.mm = (e) => { if (!window.nordMouse && e.buttons) { this.dx += e.movementX; this.dy += e.movementY; } };
+    window.addEventListener("mousemove", this.mm);
   }
-  onDestroy() { window.removeEventListener("mousemove", this.mm); window.removeEventListener("pointerdown", this.click); }
+  onDestroy() { window.removeEventListener("mousemove", this.mm); }
   update(dt) {
-    const a = this.attrs;
+    const a = this.attrs, mc = window.nordMouse?.consume(); if (mc) { this.dx += mc.dx; this.dy += mc.dy; }
     this.yaw += this.dx * a.sensitivity; this.pitch = Math.max(-89, Math.min(89, this.pitch + this.dy * a.sensitivity)); this.dx = this.dy = 0;
     const [mx, mz] = this.input.vec('left', 'right', 'down', 'up'), my = this.input.axis('descend', 'ascend');
     const yr = (this.yaw * Math.PI) / 180, pr = (this.pitch * Math.PI) / 180, s = a.speed * dt * (this.input.down('sprint') ? a.sprintFactor : 1);

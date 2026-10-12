@@ -62,6 +62,6 @@ sprite, animatedSprite, text, tilemap (+ collider runs), parallax, particles (CP
 * macroquad's JS bundle logs a harmless `register_plugin is not defined` error.
 * The page must serve `nord.project.json`, scenes and assets next to `index.html` (the export does).
 
-::: todo
-Desktop apps in Rust (milestone **M9**): native windows, file system access, dialogs, notifications, tray/menus, storage and packaging, available to both JS (through a bridge) and Rust apps — design is not written yet. See [Desktop apps](desktop-apps.html).
+::: tip
+Desktop apps in Rust: `nord_app_wasm::desktop::Desktop` gives files, dialogs, notifications, clipboard, storage with the same permission manifest as JS apps (web builds fall back gracefully). See [Desktop apps](desktop-apps.html).
 :::

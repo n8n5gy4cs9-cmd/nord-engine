@@ -65,13 +65,13 @@ try {
 } catch (e) { console.error(e); window.__nord_error = String(e); }
 </script></body></html>
 `;
-const PAGEHTML = (name, mod, bootJs) => `<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${name}</title>
+const PAGEHTML = (name, mod, bootJs, id) => `<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="nord-app-id" content="${id}"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${name}</title>
 <style>html,body{margin:0;height:100%;background:#2e3440}#app{height:100vh}</style></head>
 <body><div id="app"></div>
 <script type="module">
 import { mount } from './${mod}';
-try { mount(document.getElementById('app')${bootJs ?? ''}); window.__nord_ready = true; } catch (e) { console.error(e); window.__nord_error = String(e); }
+try { await mount(document.getElementById('app')${bootJs ?? ''}); window.__nord_ready = true; } catch (e) { console.error(e); window.__nord_error = String(e); }
 </script></body></html>
 `;
 
@@ -87,7 +87,7 @@ export function writeProject(spec, outDir, srcDir) {
   fs.mkdirSync(outDir, { recursive: true });
   const t = spec.project.type;
   if (t === 'html') {
-    fs.writeFileSync(path.join(outDir, 'index.html'), PAGEHTML(spec.name, spec.html.module, spec.html.bootJs));
+    fs.writeFileSync(path.join(outDir, 'index.html'), PAGEHTML(spec.name, spec.html.module, spec.html.bootJs, spec.project.id));
     for (const m of spec.html.files) copy(path.join(ROOT, m.from), path.join(outDir, m.to));
   } else {
     fs.writeFileSync(path.join(outDir, 'index.html'), (t === '3d' ? PAGE3D : PAGE2D)(spec.name));
@@ -140,3 +140,16 @@ export const appSpec = (id, name, kit, o = {}) => ({
   readme: `# ${name}\nPlain HTML + ES modules, no build step and no engine runtime. The app is \`library/apps/${kit}.js\` (copied to \`app.js\`): \`mount(rootElement)\`.\nOpen with \`nord serve .\` or export with \`nord export . --target html\`.\n${o.note ?? ''}`,
   template: o.template, example: o.example,
 });
+
+/** Desktop app (M9): an `appSpec` plus the desktop client, CodeMirror bundle (if asked) and a `desktop.permissions` manifest. */
+export const desktopAppSpec = (id, name, kit, { permissions, cm = false, ux = false, marked = false, singleInstance = false, fileTypes, schemes, bootJs, template, example, note } = {}) => {
+  const s = appSpec(id, name, kit, { template, example, bootJs, note });
+  s.html.files.push({ from: 'runtime/desktop/nord-desktop.js', to: 'nord-desktop.js' }, { from: 'runtime/desktop/nord-desktop.d.ts', to: 'nord-desktop.d.ts' });
+  if (cm) s.html.files.push({ from: 'vendor/codemirror/cm.bundle.js', to: 'cm.bundle.js' });
+  if (ux) s.html.files.push({ from: 'library/apps/_ux.js', to: '_ux.js' });
+  if (marked) s.html.files.push({ from: 'vendor/marked/marked.umd.js', to: 'marked.umd.js' });
+  s.project.desktop = { permissions, singleInstance, ...(schemes ? { schemes } : {}), ...(fileTypes ? { fileTypes } : {}) };
+  s.project.display = { ...s.project.display, width: 1100, height: 700 };
+  s.readme = `# ${name}\nA Nord **desktop app**: plain HTML + ES modules using \`window.nord.desktop\` (files, dialogs, menus, ...). Permissions are declared in \`nord.project.json\` → \`desktop.permissions\` (least privilege; see docs/DESKTOP_APPS.md).\n\n- Develop: \`nord serve .\` (open the URL; the dev server provides the same desktop API with the same permission checks).\n- Native window: \`nord export . --target html\`, then run the player: \`nord-player <export folder>\` (\`nord bundle-mac\` makes a .app).\n- In a plain browser the app falls back to browser storage where it can.\n${note ?? ''}`;
+  return s;
+};

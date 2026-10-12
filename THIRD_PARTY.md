@@ -16,7 +16,7 @@ Exact versions + sha256: `vendor/VENDOR.json` (reinstall/verify with `node tools
 | Lucide icons (subset) | 1.55.0 | ISC | assets/icons/lucide | editor + manual icons |
 | macroquad JS loader (`mq_js_bundle.js`) | 0.4.16 | MIT OR Apache-2.0 | vendor/macroquad | Rust/WASM game export |
 
-Rust crates (egui/eframe/egui_extras/egui_dock/egui_kittest, rfd, wry (optional `webview` feature), regex, axum, tokio, image, macroquad, rapier, …): see `Cargo.lock`; all MIT/Apache-2.0 class licences.
+Rust crates (egui/eframe/egui_extras/egui_dock/egui_kittest, rfd, arboard, notify-rust, opener, keyring, rusqlite (bundled SQLite), ureq, mime_guess, muda/tray-icon, global-hotkey, wayland-sys (dlopen), wry (optional `webview` feature), regex, axum, tokio, image, macroquad, rapier, …): see `Cargo.lock`; all MIT/Apache-2.0 class licences.
 Editor fonts converted from the vendored woff2 to TTF (`tools/woff2_to_ttf.py` → `assets/fonts/skins/`) keep their OFL-1.1 licences; Inter/DejaVu TTFs in `assets/fonts/` are placeholders from M0.
 
 Harvested/ported code from upstream repos (godot-demo-projects, playcanvas, raylib, bevy, macroquad, …) is listed here when added,

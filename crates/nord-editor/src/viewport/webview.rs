@@ -95,11 +95,14 @@ impl WebPanes {
         let size = ui.available_size().max(Vec2::splat(10.0));
         let (full, _) = ui.allocate_exact_size(size, egui::Sense::hover());
         let rect = match fixed {
-            Some(f) => egui::Rect::from_center_size(full.center(), f.min(size).max(Vec2::splat(10.0))),
+            Some(f) => {
+                egui::Rect::from_center_size(full.center(), f.min(size).max(Vec2::splat(10.0)))
+            }
             None => full,
         };
         if fixed.is_some() {
-            ui.painter().rect_filled(full, 0.0, ui.visuals().extreme_bg_color);
+            ui.painter()
+                .rect_filled(full, 0.0, ui.visuals().extreme_bg_color);
         }
         self.shown.insert(key.to_string());
         #[cfg(feature = "webview")]

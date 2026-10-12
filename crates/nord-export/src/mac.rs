@@ -78,6 +78,43 @@ fn xml(s: &str) -> String {
         .replace('>', "&gt;")
 }
 
+/// `desktop.schemes` → CFBundleURLTypes, `desktop.fileTypes` (`[{name, ext:[..]}]`) → CFBundleDocumentTypes, microphone etc. are not requested.
+pub fn plist_extras(desktop: &serde_json::Value) -> String {
+    let mut o = String::new();
+    let schemes: Vec<&str> = desktop["schemes"]
+        .as_array()
+        .map(|a| a.iter().filter_map(|x| x.as_str()).collect())
+        .unwrap_or_default();
+    if !schemes.is_empty() {
+        o.push_str("\n  <key>CFBundleURLTypes</key><array><dict><key>CFBundleURLName</key><string>Nord app link</string><key>CFBundleURLSchemes</key><array>");
+        for s in schemes {
+            o.push_str(&format!("<string>{}</string>", xml(s)));
+        }
+        o.push_str("</array></dict></array>");
+    }
+    let types = desktop["fileTypes"].as_array().cloned().unwrap_or_default();
+    if !types.is_empty() {
+        o.push_str("\n  <key>CFBundleDocumentTypes</key><array>");
+        for t in types {
+            let exts: Vec<String> = t["ext"]
+                .as_array()
+                .map(|a| {
+                    a.iter()
+                        .filter_map(|x| {
+                            x.as_str().map(|e| {
+                                format!("<string>{}</string>", xml(e.trim_start_matches('.')))
+                            })
+                        })
+                        .collect()
+                })
+                .unwrap_or_default();
+            o.push_str(&format!("<dict><key>CFBundleTypeName</key><string>{}</string><key>CFBundleTypeRole</key><string>Editor</string><key>LSHandlerRank</key><string>Alternate</string><key>CFBundleTypeExtensions</key><array>{}</array></dict>", xml(t["name"].as_str().unwrap_or("Document")), exts.concat()));
+        }
+        o.push_str("</array>");
+    }
+    o
+}
+
 fn bundle_id(id: &str) -> String {
     let s: String = id
         .chars()
@@ -157,7 +194,11 @@ pub fn bundle_mac(dist: &Path, engine: &Path, o: &BundleOpts) -> Result<PathBuf>
     if let Some(i) = icon_src {
         fs::write(res.join("AppIcon.icns"), make_icns(&i)?)?;
     }
-    let version = env!("CARGO_PKG_VERSION");
+    let version = m["version"]
+        .as_str()
+        .filter(|v| !v.is_empty())
+        .unwrap_or(env!("CARGO_PKG_VERSION"));
+    let extra = plist_extras(&m["desktop"]);
     let plist = format!(
         r#"<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -173,13 +214,14 @@ pub fn bundle_mac(dist: &Path, engine: &Path, o: &BundleOpts) -> Result<PathBuf>
   <key>LSMinimumSystemVersion</key><string>11.0</string>
   <key>NSHighResolutionCapable</key><true/>
   <key>LSApplicationCategoryType</key><string>public.app-category.games</string>
-  <key>NSHumanReadableCopyright</key><string>Made with Nord Engine (Crowelian 2026 + Sonnet)</string>
+  <key>NSHumanReadableCopyright</key><string>Made with Nord Engine (Crowelian 2026 + Sonnet)</string>{extra}
 </dict></plist>
 "#,
         n = xml(&name),
         id = xml(&bundle_id(m["id"].as_str().unwrap_or(""))),
         exe = xml(&exe_name),
-        v = version
+        v = xml(version),
+        extra = extra
     );
     fs::write(app.join("Contents/Info.plist"), plist)?;
 
@@ -222,6 +264,18 @@ pub fn bundle_mac(dist: &Path, engine: &Path, o: &BundleOpts) -> Result<PathBuf>
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn plist_extras_for_schemes_and_file_types() {
+        let e = plist_extras(
+            &serde_json::json!({"schemes":["nordnotes"],"fileTypes":[{"name":"Markdown","ext":["md",".txt"]}]}),
+        );
+        assert!(
+            e.contains("<key>CFBundleURLSchemes</key><array><string>nordnotes</string>")
+                && e.contains("<string>md</string><string>txt</string>")
+        );
+        assert!(plist_extras(&serde_json::Value::Null).is_empty());
+    }
 
     #[test]
     fn bundle_layout_from_a_web_build() {
