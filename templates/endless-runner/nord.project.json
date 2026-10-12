@@ -1,0 +1,41 @@
+{
+  "format": 1,
+  "name": "Flappy",
+  "id": "com.crowelian.flappy",
+  "type": "2d",
+  "engineVersion": "0.1.0",
+  "startScene": "scenes/main.scene.json",
+  "display": {
+    "width": 640,
+    "height": 360,
+    "scale": "fit",
+    "pixelArt": false,
+    "background": "#4a90b0"
+  },
+  "physics": {
+    "engine": "none",
+    "gravity": [
+      0,
+      0,
+      0
+    ]
+  },
+  "input": {
+    "actions": {
+      "jump": [
+        "Space",
+        "ArrowUp",
+        "KeyW",
+        "Mouse0"
+      ]
+    }
+  },
+  "plugins": [
+    "ui",
+    "audio"
+  ],
+  "ui": {
+    "skin": "cyber",
+    "theme": "nord"
+  }
+}

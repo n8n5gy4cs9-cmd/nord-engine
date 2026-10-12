@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 74/126 tasks (59%)** · updated 2026-10-12
+**Overall: 86/126 tasks (68%)** · updated 2026-10-12
 
 | Milestone | Progress |
 |---|---|
@@ -13,7 +13,7 @@
 | M3 Editor | 23/25 (92%) |
 | M4 Export | 8/11 (73%) |
 | M5 Rust/WASM | 0/9 (0%) |
-| M6 Library | 0/18 (0%) |
+| M6 Library | 12/18 (67%) |
 | M7 Docs | 0/12 (0%) |
 | M8 Polish & portability | 0/8 (0%) |
 
@@ -139,18 +139,18 @@ _macroquad+rapier game runtime, egui app runtime_
 ## M6 — Library
 _snippets, controllers, systems, asset packs, examples_
 
-- [ ] **M6-01** tools/build-library-index.mjs + header format + library browser data
-- [ ] **M6-02** Controllers 2D (platformer, top-down, twin-stick, click-move, tank, car, runner, flappy, grid, ladder)
-- [ ] **M6-03** Controllers 3D (FPS, third-person, fly/orbit/RTS cam, vehicle, spaceship, marble)
-- [ ] **M6-04** Camera scripts (follow, look-ahead, shake, zoom, bounds, cinematic)
-- [ ] **M6-05** Physics helpers (spawn, drag, pickup, one-way, moving platform, conveyor, bounce, triggers, buoyancy, rope, explosion)
-- [ ] **M6-06** Gameplay systems A (health, inventory, dialogue, quests, save slots, score/combo, timers, checkpoints, doors/keys)
-- [ ] **M6-07** Gameplay systems B (wave spawner, enemy AI patrol/chase/shooter/flock/boss, FSM, behaviour tree, A*, pickups, powerups, status effects, loot, XP)
-- [ ] **M6-08** Procedural (dungeon BSP/cellular, autotile, fog of war, minimap, day-night, weather)
-- [ ] **M6-09** UI kit (HUD, menus, pause, settings, dialogue, inventory UI, toasts, joystick, loading, level select, damage numbers)
-- [ ] **M6-10** Utilities (tween, pool, noise, grid, localisation, gamepad map, debug overlay, recorder, jsfxr-style sfx, console)
-- [ ] **M6-11** FX (particle presets, shake, flash, hitstop, slow-mo, trail, post-fx, parallax) + shaders
-- [ ] **M6-12** App kits (todo, notes, kanban, dashboard+charts, calculator, paint, audio player, json viewer, router/state)
+- [x] **M6-01** tools/build-library-index.mjs + header format + library browser data
+- [x] **M6-02** Controllers 2D (platformer, top-down, twin-stick, click-move, tank, car, runner, flappy, grid, ladder)
+- [x] **M6-03** Controllers 3D (FPS, third-person, fly/orbit/RTS cam, vehicle, spaceship, marble)
+- [x] **M6-04** Camera scripts (follow, look-ahead, shake, zoom, bounds, cinematic)
+- [x] **M6-05** Physics helpers (spawn, drag, pickup, one-way, moving platform, conveyor, bounce, triggers, buoyancy, rope, explosion)
+- [x] **M6-06** Gameplay systems A (health, inventory, dialogue, quests, save slots, score/combo, timers, checkpoints, doors/keys)
+- [x] **M6-07** Gameplay systems B (wave spawner, enemy AI patrol/chase/shooter/flock/boss, FSM, behaviour tree, A*, pickups, powerups, status effects, loot, XP)
+- [x] **M6-08** Procedural (dungeon BSP/cellular, autotile, fog of war, minimap, day-night, weather)
+- [x] **M6-09** UI kit (HUD, menus, pause, settings, dialogue, inventory UI, toasts, joystick, loading, level select, damage numbers)
+- [x] **M6-10** Utilities (tween, pool, noise, grid, localisation, gamepad map, debug overlay, recorder, jsfxr-style sfx, console)
+- [x] **M6-11** FX (particle presets, shake, flash, hitstop, slow-mo, trail, post-fx, parallax) + shaders
+- [x] **M6-12** App kits (todo, notes, kanban, dashboard+charts, calculator, paint, audio player, json viewer, router/state)
 - [ ] **M6-13** Templates for New Project (>= 12, see LIBRARY_PLAN J)
 - [ ] **M6-14** Example games 2D (>= 10)
 - [ ] **M6-15** Example games 3D (>= 4)

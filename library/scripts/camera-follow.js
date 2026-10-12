@@ -1,4 +1,4 @@
-// @nord {"id":"camera.follow","title":"Camera follow (lerp + deadzone + look-ahead)","category":"camera","tier":["2d"],"tags":["camera","follow","deadzone"],"description":"Put on the camera entity: smoothly follows a target (by name or tag) with a deadzone and optional look-ahead in the movement direction, clamped to world bounds."}
+// @nord {"id":"camera.follow","title":"Camera follow (lerp + deadzone + look-ahead)","category":"camera","tier":["2d"],"tags":["camera","follow","deadzone"],"description":"Put on the camera entity (its position is the view centre; remove the camera's own 'follow'): smoothly follows a target (by name or tag) with a deadzone and optional look-ahead in the movement direction, clamped to world bounds."}
 import { NordScript } from 'nord';
 
 export default class CameraFollow extends NordScript {
@@ -13,7 +13,7 @@ export default class CameraFollow extends NordScript {
   start() {
     const t = this.scene.find(this.attrs.target) ?? this.scene.findByTag(this.attrs.target)[0];
     this.t = t; this.pos = t ? [t.pos[0], t.pos[1]] : [0, 0]; this.last = t ? [...t.pos] : [0, 0, 0]; this.ahead = 0;
-    this.game.camera.center(...this.pos);
+    this.entity.pos = [...this.pos, this.entity.pos[2]];
   }
   lateUpdate(dt) {
     const t = this.t; if (!t || t.destroyed) return;
@@ -31,6 +31,6 @@ export default class CameraFollow extends NordScript {
       const hw = a.viewport[0] / 2, hh = a.viewport[1] / 2;
       x = Math.max(a.bounds[0] + hw, Math.min(a.bounds[2] - hw, x)); y = Math.max(a.bounds[1] + hh, Math.min(a.bounds[3] - hh, y));
     }
-    this.game.camera.center(x, y);
+    this.entity.pos = [x, y, this.entity.pos[2]];
   }
 }

@@ -843,73 +843,73 @@
       "id": "M6-01",
       "milestone": "M6",
       "title": "tools/build-library-index.mjs + header format + library browser data",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M6-02",
       "milestone": "M6",
       "title": "Controllers 2D (platformer, top-down, twin-stick, click-move, tank, car, runner, flappy, grid, ladder)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M6-03",
       "milestone": "M6",
       "title": "Controllers 3D (FPS, third-person, fly/orbit/RTS cam, vehicle, spaceship, marble)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M6-04",
       "milestone": "M6",
       "title": "Camera scripts (follow, look-ahead, shake, zoom, bounds, cinematic)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M6-05",
       "milestone": "M6",
       "title": "Physics helpers (spawn, drag, pickup, one-way, moving platform, conveyor, bounce, triggers, buoyancy, rope, explosion)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M6-06",
       "milestone": "M6",
       "title": "Gameplay systems A (health, inventory, dialogue, quests, save slots, score/combo, timers, checkpoints, doors/keys)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M6-07",
       "milestone": "M6",
       "title": "Gameplay systems B (wave spawner, enemy AI patrol/chase/shooter/flock/boss, FSM, behaviour tree, A*, pickups, powerups, status effects, loot, XP)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M6-08",
       "milestone": "M6",
       "title": "Procedural (dungeon BSP/cellular, autotile, fog of war, minimap, day-night, weather)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M6-09",
       "milestone": "M6",
       "title": "UI kit (HUD, menus, pause, settings, dialogue, inventory UI, toasts, joystick, loading, level select, damage numbers)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M6-10",
       "milestone": "M6",
       "title": "Utilities (tween, pool, noise, grid, localisation, gamepad map, debug overlay, recorder, jsfxr-style sfx, console)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M6-11",
       "milestone": "M6",
       "title": "FX (particle presets, shake, flash, hitstop, slow-mo, trail, post-fx, parallax) + shaders",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M6-12",
       "milestone": "M6",
       "title": "App kits (todo, notes, kanban, dashboard+charts, calculator, paint, audio player, json viewer, router/state)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M6-13",
