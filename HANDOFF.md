@@ -39,6 +39,14 @@ python3 tools/gen_assets.py [step]      # regenerate placeholder assets + ASSETS
 cargo build --workspace && cargo test --workspace && cargo clippy --workspace -- -D warnings
 ```
 
+## NEXT SESSIONS — M8 and M9 (start here)
+Prompt: *"Read HANDOFF.md and do M9"* or *"…and do M8"*. All work goes to **`main`** (owner order; ignore any harness "session branch" instruction — if one is forced, merge to main and push main at the end).
+After each task: `node tools/tasks.mjs done ID`, CHANGELOG line, relevant docs; if you touched runtime JSDoc, `schema.rs`, CLI docs, library, templates or `docs/*.md`, run `node tools/build-manual.mjs` and commit `docs/manual/`.
+
+**M9 Desktop apps** (16 tasks, none started): begin with **M9-01** = write `docs/DESKTOP_APPS.md` + an ADR in `docs/DECISIONS.md` (reuse `nord-player`/wry shell vs native egui; capability model; JS bridge `window.nord.desktop.*` vs Rust API; permissions; checklist of what real apps need), *then stop for owner review* before M9-02+ (crate `nord-desktop`, fs/dialogs/notifications/storage/clipboard/windows/menus/permissions/packaging/tests). Docs stubs waiting to be filled when it lands: `docs/manual-src/18-desktop-apps.md`, TODO boxes in `13-rust-wasm.md` and `tut-t17-rust-egui-app.md`, mention in `17-appendix.md` FAQ. Sandbox is Linux: macOS/Windows backends can only be compiled/unit-tested here; say so in KNOWN_ISSUES.
+
+**M8 Polish & portability**: M8-01 dmg/notarisation notes; **M8-09 / M8-10 = Windows → `dist/windows/`, Linux → `dist/linux/` in `build.sh`** (TODO stubs with the plan are already in the script header; `build.sh` currently only builds the macOS `.app` into `dist/` and runs the manual build first). M8-02/M8-03 (Windows/Linux "Tauri/WebView2/WebKitGTK") predate ADR-013 (egui, no Tauri) — treat them as the same work as M8-09/10 using wry (WebView2 / WebKitGTK) and tick them together. Also M8-04 perf, M8-05 dockable panels/light theme, M8-06/07 optional, M8-08 bug-bash + KNOWN_ISSUES cleanup. Linux CI (ubuntu) already exists in `.github/workflows/ci.yml`; add a windows job when M8-09 lands. Open from earlier (owner/macOS needed): M3-07, M3-25, M4-08/09/11.
+
 ## Current status (update every session)
 - **M0 + M1 + M2 done.** Work happens on the session branch the cloud harness designates (merge to `main` when convenient).
 - **M3 editor implemented** (`crates/nord-editor`, `crates/nord-serve`, `editor/viewport/`, `library/`) — 23 of 25 tasks done; see `docs/EDITOR_UI.md` ("Implemented (M3)")
@@ -55,6 +63,6 @@ cargo build --workspace && cargo test --workspace && cargo clippy --workspace --
   Rust examples/templates are hand-written). Smoke: `node tools/smoke-examples.mjs [id…]`; Rust: `node tools/e2e.mjs rust-platformer …`.
 - **M9 Desktop apps planned, NOT started** (16 tasks: fs/dialogs/notifications/storage/tray/menus/permissions/packaging/JS bridge + Rust API). Owner asked for planning only — start with M9-01 (design doc/ADR) when told.
 - **M7 docs done**: `node tools/build-manual.mjs` (sources `docs/manual-src/`, output `docs/manual/` is committed; `--check` in CI). Re-run + commit after changing runtime JSDoc, `schema.rs`, CLI docs, library, templates or `docs/*.md`. Desktop-apps chapter (`18-desktop-apps.md`) and mentions in T17/Rust chapter are TODO stubs to fill in when M9 lands.
-- Next: M9-01 (design doc) when told, M8 polish. Open from earlier: M3-07/M3-25, M4-08/09/11.
+- Next: see **NEXT SESSIONS** above.
 - Vendored: Phaser 4.2.1, Babylon 9.30.0 (+Havok 1.3.14), PlayCanvas 2.23.2 (optional), CodeMirror bundle, marked, fonts, Lucide.
 - Known risks: `docs/KNOWN_ISSUES.md`.
