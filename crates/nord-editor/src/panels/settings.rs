@@ -1,4 +1,4 @@
-use crate::state::EditorState;
+use crate::state::{Action, EditorState};
 use egui::Context;
 
 pub const SHORTCUTS: &[(&str, &str)] = &[
@@ -85,6 +85,15 @@ pub fn window(st: &mut EditorState, ctx: &Context) {
                 "Ligatures ({}) apply to the web-based UI; the native code editor draws without ligatures (egui has no text shaping).",
                 if skin.ligatures { "on in this skin" } else { "off in this skin" }
             ));
+            ui.add_space(6.0);
+            ui.horizontal(|ui| {
+                if ui.button("Reset panel layout").clicked() {
+                    st.push(Action::ResetLayout);
+                }
+                if ui.button("Reset all settings to defaults").on_hover_text("Theme, skin, keys, game view position, tint… and the panel layout (window size is kept)").clicked() {
+                    st.push(Action::ResetSettings);
+                }
+            });
             ui.separator();
             ui.strong("Shortcuts");
             egui::Grid::new("shortcuts").num_columns(2).show(ui, |ui| {

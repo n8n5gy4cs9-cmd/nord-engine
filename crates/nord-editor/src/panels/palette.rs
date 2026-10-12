@@ -107,6 +107,10 @@ pub const COMMANDS: &[(&str, CmdFn)] = &[
     ("Run: Reload", || Action::Reload),
     ("Project: Validate", || Action::Build("validate".into())),
     ("Editor: Settings", || Action::Settings),
+    ("View: Reset panel layout", || Action::ResetLayout),
+    ("Editor: Reset settings + layout to defaults", || {
+        Action::ResetSettings
+    }),
     ("Project: Export…", || Action::Export),
     ("Project: Desktop app permissions…", || {
         Action::DesktopSettings

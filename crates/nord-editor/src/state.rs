@@ -136,6 +136,8 @@ pub enum Action {
     QuickOpen,
     Palette,
     Settings,
+    ResetLayout,
+    ResetSettings,
     Export,
     DesktopSettings,
     About,

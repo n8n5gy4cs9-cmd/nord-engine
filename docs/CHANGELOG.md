@@ -2,6 +2,7 @@
 Newest first. One line per notable change. Credit: Crowelian 2026 + Sonnet.
 
 ## Unreleased
+- **Docs tab no longer embeds the HTML manual** (the native webview floated above all panels): it shows an "Open the manual in your browser" button plus the Markdown spec reader. **Reset:** View ▸ Reset layout, palette entries, and Settings ▸ "Reset panel layout" / "Reset all settings to defaults" (keeps window size). Test `reset_settings_and_layout_restore_defaults`.
 - **Game view offset = real move:** x/y translate the view by exactly that many pixels with its size unchanged (anchor picks the start in the free space; only the window edge limits it, so it may overlap neighbouring panels when you push it). Replaces the shrink/crop behaviour.
 - **Game view offset moves instead of cropping:** x/y offsets now set where the view starts (the free area shrinks by the offset, the game is scaled to fit it with its aspect kept) — no more cut-off. Test `game_view_y_offset_moves_not_crops`.
 - **Game view position works in Fit mode:** Fit now scales the game to the largest aspect-correct size inside the panel (was: fill the panel, leaving no room to move), so Position/offsets take effect; offsets push the view and it is cropped at the panel edge. Vertical Top/Middle/Bottom only differ when the view is shorter than the panel (pick 50–100 % or a wide game). Tests `game_view_offset_moves_in_fit_mode`.

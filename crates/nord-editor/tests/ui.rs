@@ -724,3 +724,24 @@ fn game_view_y_offset_moves_not_crops() {
         "view was resized, not moved: {a:?} {b:?}"
     );
 }
+
+#[test]
+fn reset_settings_and_layout_restore_defaults() {
+    use nord_editor::state::Action;
+    let mut h = Harness::builder().with_size(egui::vec2(1400.0, 900.0)).build_state(
+        |ctx, app: &mut App| {
+            app.frame_ui(ctx, None);
+        },
+        App::new(false),
+    );
+    h.run_steps(3);
+    h.state_mut().st.settings.theme = "github-light".into();
+    h.state_mut().st.settings.run_key = "F5".into();
+    h.state_mut().dock = egui_dock::DockState::new(vec![nord_editor::app::Tab::Code]);
+    h.state_mut().st.push(Action::ResetSettings);
+    h.run_steps(3);
+    let app = h.state();
+    assert_eq!(app.st.settings.theme, "nord");
+    assert_eq!(app.st.settings.run_key, "R");
+    assert!(app.dock.iter_all_tabs().count() > 4, "layout not reset");
+}

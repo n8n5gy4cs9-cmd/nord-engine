@@ -419,6 +419,20 @@ impl App {
                 st.palette.query.clear();
             }
             Action::Settings => st.settings_open = true,
+            Action::ResetLayout => {
+                self.dock = default_dock();
+                st.toast("Panel layout reset");
+            }
+            Action::ResetSettings => {
+                let window = st.settings.window;
+                st.settings = crate::state::Settings {
+                    window,
+                    ..Default::default()
+                };
+                st.apply_theme = true;
+                self.dock = default_dock();
+                st.toast("Settings and layout reset to defaults");
+            }
             Action::Export => st.export_ui.open = true,
             Action::DesktopSettings => st.desktop_ui.open = true,
             Action::About => st.about_open = true,
@@ -531,10 +545,7 @@ impl App {
                     act(ui, t.title(), Action::ShowTab(t), st);
                 }
                 ui.separator();
-                if ui.button("Reset layout").clicked() {
-                    self.dock = default_dock();
-                    ui.close_menu();
-                }
+                act(ui, "Reset layout", Action::ResetLayout, st);
                 act(ui, "Settings…", Action::Settings, st);
             });
             ui.menu_button("Project", |ui| {
@@ -731,8 +742,16 @@ impl TabViewer for Viewer<'_> {
             Tab::Code => crate::code::ui(st, ui),
             Tab::Animation => panels::animation::ui(st, ui),
             Tab::Docs => match panels::docs::manual_url(st) {
+                // the embedded native webview floats above every panel, so the HTML manual opens in the browser instead
                 Some(u) => {
-                    self.web.show(ui, self.frame, "docs", &u, self.overlay);
+                    ui.horizontal(|ui| {
+                        if ui.button("Open the manual in your browser").clicked() {
+                            crate::viewport::webview::open_in_browser(&u);
+                        }
+                        ui.weak("(HTML manual, searchable) — the specs below are the same pages as Markdown");
+                    });
+                    ui.separator();
+                    panels::docs::markdown_ui(st, ui);
                 }
                 None => panels::docs::markdown_ui(st, ui),
             },
