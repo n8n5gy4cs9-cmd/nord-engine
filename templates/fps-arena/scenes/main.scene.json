@@ -688,8 +688,7 @@
         {
           "path": "scripts/fps3d.js",
           "attributes": {
-            "speed": 6,
-            "lockPointer": true
+            "speed": 6
           }
         },
         {
@@ -699,6 +698,10 @@
             "rate": 5,
             "range": 80
           }
+        },
+        {
+          "path": "scripts/mouse-capture.js",
+          "attributes": {}
         },
         {
           "path": "scripts/arena.js",

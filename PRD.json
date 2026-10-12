@@ -1185,6 +1185,12 @@
       "milestone": "M8",
       "title": "build.sh: Linux build into dist/linux/ (tar.gz/AppImage)",
       "status": "todo"
+    },
+    {
+      "id": "M8-11",
+      "milestone": "M8",
+      "title": "Fix hub scrolling + templates for webview: kanban pointer drag, mouse-capture script (lock+hide, Esc), fps/third-person/fly-cam use it",
+      "status": "done"
     }
   ]
 }

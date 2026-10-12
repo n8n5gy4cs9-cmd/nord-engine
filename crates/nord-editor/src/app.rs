@@ -226,7 +226,9 @@ impl App {
     /// Poll the background Rust build; start the game when a Play-triggered build succeeded.
     fn poll_rust_build(&mut self, ctx: &Context) {
         use std::sync::atomic::Ordering::SeqCst;
-        let Some(job) = self.st.rust_job.clone() else { return };
+        let Some(job) = self.st.rust_job.clone() else {
+            return;
+        };
         if !job.done.load(SeqCst) {
             ctx.request_repaint_after(Duration::from_millis(150));
             return;
@@ -495,7 +497,10 @@ fn start_rust_build(st: &mut EditorState, play_after: bool) {
     if st.dirty {
         st.save();
     }
-    st.log(LogLevel::Build, "$ nord build-rust (cargo build --target wasm32-unknown-unknown)");
+    st.log(
+        LogLevel::Build,
+        "$ nord build-rust (cargo build --target wasm32-unknown-unknown)",
+    );
     let job = Arc::new(crate::state::RustJob {
         done: AtomicBool::new(false),
         ok: AtomicBool::new(false),
@@ -647,19 +652,39 @@ pub fn game_tab(
     overlay: bool,
 ) {
     ui.horizontal_wrapped(|ui| {
-        if crate::icons::button(ui, "terminal", "Show/hide console under the game", st.game_console).clicked() {
+        if crate::icons::button(
+            ui,
+            "terminal",
+            "Show/hide console under the game",
+            st.game_console,
+        )
+        .clicked()
+        {
             st.game_console = !st.game_console;
         }
         ui.separator();
         ui.weak("Size");
-        for (label, v) in [("Fit", 0.0_f32), ("50%", 0.5), ("100%", 1.0), ("150%", 1.5), ("200%", 2.0)] {
-            if ui.selectable_label((st.game_scale - v).abs() < f32::EPSILON, label).clicked() {
+        for (label, v) in [
+            ("Fit", 0.0_f32),
+            ("50%", 0.5),
+            ("100%", 1.0),
+            ("150%", 1.5),
+            ("200%", 2.0),
+        ] {
+            if ui
+                .selectable_label((st.game_scale - v).abs() < f32::EPSILON, label)
+                .clicked()
+            {
                 st.game_scale = v;
             }
         }
         ui.separator();
         if ui
-            .button(if st.game_full { "Exit fullscreen (Esc)" } else { "Fullscreen" })
+            .button(if st.game_full {
+                "Exit fullscreen (Esc)"
+            } else {
+                "Fullscreen"
+            })
             .on_hover_text("Maximise the game over the whole window (Esc leaves)")
             .clicked()
         {
@@ -685,7 +710,11 @@ pub fn game_tab(
             let base = st.ensure_server().unwrap_or_default();
             let url = format!("{base}/?n={}", st.game_nonce);
             let fixed = (st.game_scale > 0.0).then(|| {
-                let d = st.project.as_ref().map(|p| (p.display.width as f32, p.display.height as f32)).unwrap_or((1280.0, 720.0));
+                let d = st
+                    .project
+                    .as_ref()
+                    .map(|p| (p.display.width as f32, p.display.height as f32))
+                    .unwrap_or((1280.0, 720.0));
                 egui::vec2(d.0 * st.game_scale, d.1 * st.game_scale)
             });
             web.show_sized(ui, frame, "game", &url, overlay, fixed);
@@ -698,9 +727,14 @@ pub fn game_tab(
     });
     if console_h > 0.0 {
         let (handle, resp) = ui.allocate_exact_size(egui::vec2(total.x, 8.0), egui::Sense::drag());
-        ui.painter().rect_filled(handle.shrink2(egui::vec2(0.0, 2.0)), 2.0, ui.visuals().widgets.noninteractive.bg_stroke.color);
+        ui.painter().rect_filled(
+            handle.shrink2(egui::vec2(0.0, 2.0)),
+            2.0,
+            ui.visuals().widgets.noninteractive.bg_stroke.color,
+        );
         if resp.dragged() {
-            st.game_console_h = (st.game_console_h - resp.drag_delta().y).clamp(60.0, (total.y - 80.0).max(60.0));
+            st.game_console_h =
+                (st.game_console_h - resp.drag_delta().y).clamp(60.0, (total.y - 80.0).max(60.0));
         }
         if resp.hovered() || resp.dragged() {
             ui.ctx().set_cursor_icon(egui::CursorIcon::ResizeVertical);
@@ -781,7 +815,8 @@ impl App {
         let game_full = self.st.game_full && self.st.project.is_some();
         if !game_full {
             egui::TopBottomPanel::top("menu").show(ctx, |ui| self.menu(ui));
-            egui::TopBottomPanel::top("toolbar").show(ctx, |ui| panels::toolbar::ui(&mut self.st, ui));
+            egui::TopBottomPanel::top("toolbar")
+                .show(ctx, |ui| panels::toolbar::ui(&mut self.st, ui));
         }
         let overlay = ctx.memory(|m| m.any_popup_open())
             || self.st.palette.mode != PMode::Closed
@@ -793,11 +828,18 @@ impl App {
             || self.st.code.confirm_close.is_some();
         self.web.begin_frame();
         if self.st.project.is_none() {
-            egui::CentralPanel::default().show(ctx, |ui| panels::hub::ui(&mut self.st, ui));
-        } else if game_full {
-            egui::CentralPanel::default().frame(egui::Frame::NONE).show(ctx, |ui| {
-                game_tab(&mut self.st, ui, &mut self.web, frame, overlay);
+            egui::CentralPanel::default().show(ctx, |ui| {
+                egui::ScrollArea::vertical()
+                    .id_salt("hub")
+                    .auto_shrink([false, false])
+                    .show(ui, |ui| panels::hub::ui(&mut self.st, ui));
             });
+        } else if game_full {
+            egui::CentralPanel::default()
+                .frame(egui::Frame::NONE)
+                .show(ctx, |ui| {
+                    game_tab(&mut self.st, ui, &mut self.web, frame, overlay);
+                });
         } else {
             let mut style = Style::from_egui(ctx.style().as_ref());
             style.tab_bar.fill_tab_bar = true;

@@ -213,7 +213,11 @@ fn main() -> anyhow::Result<()> {
         }
         Cmd::BuildRust { project, release } => {
             let out = nord_export::rust::dev_build(&project, release, &mut |l| eprintln!("{l}"))?;
-            println!("Built {} — run `nord serve {}`", out.display(), project.display());
+            println!(
+                "Built {} — run `nord serve {}`",
+                out.display(),
+                project.display()
+            );
         }
         Cmd::Doctor => doctor(),
         Cmd::Thumbs { project } => {

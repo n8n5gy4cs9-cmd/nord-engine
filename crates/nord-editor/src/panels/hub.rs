@@ -199,21 +199,19 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         if !rows.is_empty() {
             ui.add_space(6.0);
             ui.label(RichText::new("Starter templates").strong());
-            egui::ScrollArea::vertical()
-                .id_salt("starters")
-                .max_height(190.0)
-                .show(ui, |ui| {
-                    for (id, title, desc, ty) in &rows {
-                        let sel = st.hub.starter.as_deref() == Some(id.as_str());
-                        if ui
-                            .selectable_label(sel, format!("{title}  ·  {ty}"))
-                            .on_hover_text(desc)
-                            .clicked()
-                        {
-                            st.hub.starter = Some(id.clone());
-                        }
-                    }
-                });
+            for (id, title, desc, ty) in &rows {
+                let sel = st.hub.starter.as_deref() == Some(id.as_str());
+                if ui
+                    .selectable_label(sel, format!("{title}  ·  {ty}"))
+                    .on_hover_text(desc)
+                    .clicked()
+                {
+                    st.hub.starter = Some(id.clone());
+                }
+                if sel {
+                    ui.indent(id, |ui| ui.weak(desc));
+                }
+            }
         }
         if ui.button("Create project").clicked() {
             let parent = st.hub.parent.clone();

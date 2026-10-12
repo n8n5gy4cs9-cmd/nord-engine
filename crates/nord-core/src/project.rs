@@ -233,10 +233,11 @@ mod tests {
     #[test]
     fn creates_from_template_folder() {
         let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../templates");
-        let Some(src) = std::fs::read_dir(&root)
-            .ok()
-            .and_then(|d| d.flatten().map(|e| e.path()).find(|p| p.join("nord.project.json").exists()))
-        else {
+        let Some(src) = std::fs::read_dir(&root).ok().and_then(|d| {
+            d.flatten()
+                .map(|e| e.path())
+                .find(|p| p.join("nord.project.json").exists())
+        }) else {
             return; // engine ships no starter templates (yet)
         };
         let dst = std::env::temp_dir().join(format!("nord-tpl-{}/My Starter", std::process::id()));

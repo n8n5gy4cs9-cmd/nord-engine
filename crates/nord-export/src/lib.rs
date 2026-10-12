@@ -472,13 +472,20 @@ pub fn build(project: &Path, engine: &Path, o: &Opts) -> Result<Report> {
 
     if matches!(target, Target::WasmGame | Target::WasmApp) {
         if !matches!(proj.kind, ProjectType::WasmGame | ProjectType::WasmApp) {
-            bail!("target {} needs a wasm-game / wasm-app (Rust) project, this is a {} project", target.as_str(), proj.kind.as_str());
+            bail!(
+                "target {} needs a wasm-game / wasm-app (Rust) project, this is a {} project",
+                target.as_str(),
+                proj.kind.as_str()
+            );
         }
         if o.single_file || o.minify {
             bail!("--single-file/--minify do not apply to Rust/WASM targets (use --optimize for wasm-opt)");
         }
     } else if matches!(proj.kind, ProjectType::WasmGame | ProjectType::WasmApp) {
-        bail!("a {} project exports with --target web-wasm-game / web-wasm-app", proj.kind.as_str());
+        bail!(
+            "a {} project exports with --target web-wasm-game / web-wasm-app",
+            proj.kind.as_str()
+        );
     }
 
     // output dir: refuse to wipe anything that is not an earlier build
@@ -663,7 +670,14 @@ pub fn build(project: &Path, engine: &Path, o: &Opts) -> Result<Report> {
 }
 
 /// web-wasm-game / web-wasm-app: cargo build (release) → stage data + loader → offline check → zip.
-fn build_rust(project: &Path, engine: &Path, out: &Path, proj: &nord_core::Project, target: Target, o: &Opts) -> Result<Report> {
+fn build_rust(
+    project: &Path,
+    engine: &Path,
+    out: &Path,
+    proj: &nord_core::Project,
+    target: Target,
+    o: &Opts,
+) -> Result<Report> {
     let mut notes = vec![];
     let wasm = rust::cargo_build(project, true, &mut |l| eprintln!("{l}"))?;
     let name = css_safe(&proj.display.background);
@@ -671,7 +685,9 @@ fn build_rust(project: &Path, engine: &Path, out: &Path, proj: &nord_core::Proje
     // project data + assets (no sources, no dev page)
     copy_tree(project, out, &|r| {
         let n = r.rsplit('/').next().unwrap_or(r);
-        skip_name(n) || matches!(r, "Cargo.toml" | "Cargo.lock" | "index.html") || r.starts_with("src/")
+        skip_name(n)
+            || matches!(r, "Cargo.toml" | "Cargo.lock" | "index.html")
+            || r.starts_with("src/")
     })?;
     match target {
         Target::WasmGame => {
@@ -681,14 +697,20 @@ fn build_rust(project: &Path, engine: &Path, out: &Path, proj: &nord_core::Proje
             }
             copy_to(&bundle, &out.join("mq_js_bundle.js"))?;
             copy_to(&wasm, &out.join("game.wasm"))?;
-            io::write_atomic(&out.join("index.html"), rust::game_index_html(&title, &name).as_bytes())?;
+            io::write_atomic(
+                &out.join("index.html"),
+                rust::game_index_html(&title, &name).as_bytes(),
+            )?;
             if o.optimize {
                 notes.push(rust::optimize_wasm(&out.join("game.wasm")));
             }
         }
         _ => {
             rust::bindgen(&wasm, out)?;
-            io::write_atomic(&out.join("index.html"), rust::app_index_html(&title, &name).as_bytes())?;
+            io::write_atomic(
+                &out.join("index.html"),
+                rust::app_index_html(&title, &name).as_bytes(),
+            )?;
             if o.optimize {
                 notes.push(rust::optimize_wasm(&out.join("app_bg.wasm")));
             }
@@ -697,20 +719,38 @@ fn build_rust(project: &Path, engine: &Path, out: &Path, proj: &nord_core::Proje
     // offline guarantee on our own files (the JS loader / wasm are third-party binaries)
     let ext: Vec<_> = offline::scan_dir(out, &[])
         .into_iter()
-        .filter(|f| !matches!(f.file.as_str(), "mq_js_bundle.js" | "app.js") && !f.file.ends_with(".wasm"))
+        .filter(|f| {
+            !matches!(f.file.as_str(), "mq_js_bundle.js" | "app.js") && !f.file.ends_with(".wasm")
+        })
         .collect();
     if !ext.is_empty() {
         bail!(
             "build references external hosts (offline guarantee):\n{}",
-            ext.iter().map(|f| format!("  {}:{}: {}", f.file, f.line, f.url)).collect::<Vec<_>>().join("\n")
+            ext.iter()
+                .map(|f| format!("  {}:{}: {}", f.file, f.line, f.url))
+                .collect::<Vec<_>>()
+                .join("\n")
         );
     }
     let mut files = vec![];
     walk(out, "", &mut files, &|_| false);
-    let mut sizes: Vec<(String, u64)> = files.iter().map(|(p, r)| (r.clone(), fs::metadata(p).map_or(0, |m| m.len()))).collect();
+    let mut sizes: Vec<(String, u64)> = files
+        .iter()
+        .map(|(p, r)| (r.clone(), fs::metadata(p).map_or(0, |m| m.len())))
+        .collect();
     sizes.sort_by(|a, b| b.1.cmp(&a.1).then(a.0.cmp(&b.0)));
-    let zip = if o.zip { Some(write_zip(out, &files)?) } else { None };
-    Ok(Report { target, out: out.to_path_buf(), files: sizes, zip, notes })
+    let zip = if o.zip {
+        Some(write_zip(out, &files)?)
+    } else {
+        None
+    };
+    Ok(Report {
+        target,
+        out: out.to_path_buf(),
+        files: sizes,
+        zip,
+        notes,
+    })
 }
 
 fn html_escape(s: &str) -> String {

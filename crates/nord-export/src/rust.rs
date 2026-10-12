@@ -12,7 +12,8 @@ use std::{
 };
 
 /// Rust ≥ 1.93 no longer links wasm32 with `--allow-undefined`; macroquad's audio/GL imports are provided by the JS bundle.
-const WASM_FLAGS: &str = r#"target.wasm32-unknown-unknown.rustflags=["-C","link-arg=--allow-undefined"]"#;
+const WASM_FLAGS: &str =
+    r#"target.wasm32-unknown-unknown.rustflags=["-C","link-arg=--allow-undefined"]"#;
 
 fn tool_exists(name: &str, arg: &str) -> bool {
     Command::new(name)
@@ -34,9 +35,16 @@ fn wasm_target_installed() -> bool {
 
 /// Run `cargo build` for the wasm32 target in `project`, streaming each output line (short, colour-free diagnostics) to `on_line`.
 /// Returns the path of the produced `.wasm` (inside `target/wasm32-unknown-unknown/<profile>/`).
-pub fn cargo_build(project: &Path, release: bool, on_line: &mut dyn FnMut(&str)) -> Result<PathBuf> {
+pub fn cargo_build(
+    project: &Path,
+    release: bool,
+    on_line: &mut dyn FnMut(&str),
+) -> Result<PathBuf> {
     if !project.join("Cargo.toml").exists() {
-        bail!("{} has no Cargo.toml (not a Rust project)", project.display());
+        bail!(
+            "{} has no Cargo.toml (not a Rust project)",
+            project.display()
+        );
     }
     if !tool_exists("cargo", "--version") {
         bail!("cargo not found — install Rust from https://rustup.rs");
@@ -46,7 +54,17 @@ pub fn cargo_build(project: &Path, release: bool, on_line: &mut dyn FnMut(&str))
     }
     let mut cmd = Command::new("cargo");
     cmd.current_dir(project)
-        .args(["build", "--target", "wasm32-unknown-unknown", "--color", "never", "--message-format", "short", "--config", WASM_FLAGS])
+        .args([
+            "build",
+            "--target",
+            "wasm32-unknown-unknown",
+            "--color",
+            "never",
+            "--message-format",
+            "short",
+            "--config",
+            WASM_FLAGS,
+        ])
         .stdout(Stdio::null())
         .stderr(Stdio::piped());
     if release {
@@ -71,7 +89,9 @@ pub fn cargo_build(project: &Path, release: bool, on_line: &mut dyn FnMut(&str))
 }
 
 fn find_wasm(project: &Path, release: bool) -> Result<PathBuf> {
-    let dir = project.join("target/wasm32-unknown-unknown").join(if release { "release" } else { "debug" });
+    let dir = project
+        .join("target/wasm32-unknown-unknown")
+        .join(if release { "release" } else { "debug" });
     let mut found: Vec<(std::time::SystemTime, PathBuf)> = fs::read_dir(&dir)
         .with_context(|| format!("reading {}", dir.display()))?
         .flatten()
@@ -79,7 +99,7 @@ fn find_wasm(project: &Path, release: bool) -> Result<PathBuf> {
         .filter(|p| p.extension().is_some_and(|x| x == "wasm"))
         .filter_map(|p| Some((fs::metadata(&p).ok()?.modified().ok()?, p)))
         .collect();
-    found.sort_by(|a, b| b.0.cmp(&a.0));
+    found.sort_by_key(|b| std::cmp::Reverse(b.0));
     // prefer the conventional bin name
     found
         .iter()
@@ -131,7 +151,11 @@ pub fn optimize_wasm(wasm: &Path) -> String {
         .status()
         .is_ok_and(|s| s.success());
     if ok && fs::rename(&tmp, wasm).is_ok() {
-        format!("wasm-opt: {} KB → {} KB", before / 1024, fs::metadata(wasm).map_or(0, |m| m.len()) / 1024)
+        format!(
+            "wasm-opt: {} KB → {} KB",
+            before / 1024,
+            fs::metadata(wasm).map_or(0, |m| m.len()) / 1024
+        )
     } else {
         let _ = fs::remove_file(&tmp);
         "wasm-opt failed (kept the unoptimised .wasm)".into()
@@ -156,7 +180,14 @@ pub fn bindgen(wasm: &Path, out: &Path) -> Result<()> {
         bail!("wasm-bindgen CLI not found: `cargo install wasm-bindgen-cli --version <the wasm-bindgen version in your Cargo.lock>`");
     }
     let st = Command::new("wasm-bindgen")
-        .args(["--target", "web", "--no-typescript", "--out-name", "app", "--out-dir"])
+        .args([
+            "--target",
+            "web",
+            "--no-typescript",
+            "--out-name",
+            "app",
+            "--out-dir",
+        ])
         .arg(out)
         .arg(wasm)
         .status()
@@ -177,7 +208,10 @@ mod tests {
             parse_diagnostic("src/main.rs:12:5: error[E0308]: mismatched types"),
             Some(("src/main.rs".into(), 12, 5, true))
         );
-        assert_eq!(parse_diagnostic("src/lib.rs:3:1: warning: unused import: `x`"), Some(("src/lib.rs".into(), 3, 1, false)));
+        assert_eq!(
+            parse_diagnostic("src/lib.rs:3:1: warning: unused import: `x`"),
+            Some(("src/lib.rs".into(), 3, 1, false))
+        );
         assert_eq!(parse_diagnostic("   Compiling foo v0.1.0 (/x/y)"), None);
     }
 
