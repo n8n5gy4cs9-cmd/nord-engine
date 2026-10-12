@@ -789,6 +789,7 @@ fn write_manifest(out: &Path, p: &nord_core::Project, target: Target, pl: &Plan)
         "backend": pl.backend,
         "startScene": p.start_scene,
         "display": p.display,
+        "desktop": p.desktop,
         "files": list,
     });
     io::write_atomic(

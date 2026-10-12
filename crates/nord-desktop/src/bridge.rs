@@ -15,6 +15,7 @@ pub struct Bridge {
     pub d: Desktop,
     grants: Grants,
     host: Mutex<Vec<HostCommand>>,
+    events: Mutex<Vec<(String, Value)>>,
     watchers: Mutex<(u32, HashMap<u32, Watcher>)>,
     pub launch: Mutex<Launch>,
     pub name: String,
@@ -69,6 +70,7 @@ impl Bridge {
             d,
             grants,
             host: Mutex::new(vec![]),
+            events: Mutex::new(vec![]),
             watchers: Mutex::new((0, HashMap::new())),
             launch: Mutex::new(Launch {
                 files: vec![],
@@ -81,6 +83,16 @@ impl Bridge {
     /// Commands for the shell (windows, menus, tray, …) accumulated since the last call.
     pub fn take_host_commands(&self) -> Vec<HostCommand> {
         std::mem::take(&mut *self.host.lock().unwrap_or_else(|e| e.into_inner()))
+    }
+    /// Shell → page events (`menu`, `tray`, `shortcut`, `drop`, `open` (file/deep link), `quit-requested`, …), drained by [`Bridge::take_events`].
+    pub fn emit(&self, name: &str, payload: Value) {
+        let mut e = self.events.lock().unwrap_or_else(|e| e.into_inner());
+        if e.len() < 1000 {
+            e.push((name.into(), payload));
+        }
+    }
+    pub fn take_events(&self) -> Vec<Value> {
+        std::mem::take(&mut *self.events.lock().unwrap_or_else(|e| e.into_inner())).into_iter().map(|(n, p)| json!({"name": n, "payload": p})).collect()
     }
     fn push(&self, c: HostCommand) {
         self.host.lock().unwrap_or_else(|e| e.into_inner()).push(c);

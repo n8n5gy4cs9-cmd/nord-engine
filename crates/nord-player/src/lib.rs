@@ -7,6 +7,10 @@ pub struct Manifest {
     pub name: String,
     pub width: u32,
     pub height: u32,
+    pub id: String,
+    pub version: String,
+    /// `desktop` object of nord.json (`permissions`, `singleInstance`, `schemes`, `menu`, `tray`, …); `Null` for plain games
+    pub desktop: serde_json::Value,
 }
 
 /// Where the game files are: `$NORD_GAME_DIR`, the first CLI argument, `<exe>/../Resources/game` (inside an .app), or `<exe dir>/game`.
@@ -38,6 +42,9 @@ pub fn read_manifest(game: &Path) -> Manifest {
         name: v["name"].as_str().unwrap_or("Nord Game").to_string(),
         width: n("width", 1280).clamp(320, 7680),
         height: n("height", 720).clamp(200, 4320),
+        id: v["id"].as_str().unwrap_or("nord-game").to_string(),
+        version: v["version"].as_str().or(v["engine"].as_str()).unwrap_or("").to_string(),
+        desktop: v["desktop"].clone(),
     }
 }
 
@@ -111,7 +118,10 @@ mod tests {
             Manifest {
                 name: "Demo".into(),
                 width: 640,
-                height: 360
+                height: 360,
+                id: "nord-game".into(),
+                version: String::new(),
+                desktop: serde_json::Value::Null,
             }
         );
         assert_eq!(read_manifest(&g.join("assets")).name, "Nord Game");

@@ -98,6 +98,9 @@ pub struct Project {
     /// Export settings are kept free-form (`web`, `mac`, …) so unknown keys survive round trips.
     #[serde(default)]
     pub export: Map<String, Value>,
+    /// Desktop-app settings (M9): `{ "permissions": {…}, "menu"?, … }`; see docs/DESKTOP_APPS.md. Free-form here, parsed by `nord-desktop`.
+    #[serde(default, skip_serializing_if = "Map::is_empty")]
+    pub desktop: Map<String, Value>,
 }
 
 fn default_engine_version() -> String {
@@ -119,6 +122,7 @@ impl Project {
             ui: Map::new(),
             plugins: vec![],
             export: Map::new(),
+            desktop: Map::new(),
         }
     }
 }
