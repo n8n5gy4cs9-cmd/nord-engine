@@ -3,13 +3,13 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 24/119 tasks (20%)** · updated 2026-10-12
+**Overall: 30/119 tasks (25%)** · updated 2026-10-12
 
 | Milestone | Progress |
 |---|---|
 | M0 Planning, identity, assets, vendoring | 13/13 (100%) |
 | M1 Foundation | 11/11 (100%) |
-| M2 JS runtimes | 0/18 (0%) |
+| M2 JS runtimes | 6/18 (33%) |
 | M3 Editor | 0/22 (0%) |
 | M4 Export | 0/10 (0%) |
 | M5 Rust/WASM | 0/9 (0%) |
@@ -18,11 +18,11 @@
 | M8 Polish & portability | 0/8 (0%) |
 
 ## Next up
-- **M2-01** runtime/core: Entity tree, component registry, NordScript lifecycle, attributes
-- **M2-02** runtime/core: events bus, timers, tween/easing, rng, math, object pool
-- **M2-03** runtime/core: input actions (kbd/mouse/touch/gamepad) + virtual joystick
-- **M2-04** runtime/core: asset loader w/ progress + offline-safe paths + file:// safe mode
-- **M2-05** runtime/core: scene loader/prefab instantiate/overrides + scene switching
+- **M2-07** runtime/core: audio manager (buses, unlock, music crossfade)
+- **M2-08** runtime/core: DOM UI layer (HUD/menu primitives, CSS theme)
+- **M2-09** runtime/phaser: boot, sprite/animatedSprite/text/tilemap/particles/camera components
+- **M2-10** runtime/phaser: arcade + matter physics components, collisions, triggers, events to scripts
+- **M2-11** runtime/phaser: parallax, lights 2D, pixel-art mode, scale modes
 
 ## M0 — Planning, identity, assets, vendoring
 _Plans, brand, placeholder assets, vendored libs, workspace skeleton_
@@ -59,12 +59,12 @@ _nord-core, CLI, project format, dev server, thumbnails, offline check_
 ## M2 — JS runtimes
 _nord.js core + Phaser 2D + Babylon 3D adapters_
 
-- [ ] **M2-01** runtime/core: Entity tree, component registry, NordScript lifecycle, attributes
-- [ ] **M2-02** runtime/core: events bus, timers, tween/easing, rng, math, object pool
-- [ ] **M2-03** runtime/core: input actions (kbd/mouse/touch/gamepad) + virtual joystick
-- [ ] **M2-04** runtime/core: asset loader w/ progress + offline-safe paths + file:// safe mode
-- [ ] **M2-05** runtime/core: scene loader/prefab instantiate/overrides + scene switching
-- [ ] **M2-06** runtime/core: save/load (localStorage slots, versioned)
+- [x] **M2-01** runtime/core: Entity tree, component registry, NordScript lifecycle, attributes
+- [x] **M2-02** runtime/core: events bus, timers, tween/easing, rng, math, object pool
+- [x] **M2-03** runtime/core: input actions (kbd/mouse/touch/gamepad) + virtual joystick
+- [x] **M2-04** runtime/core: asset loader w/ progress + offline-safe paths + file:// safe mode
+- [x] **M2-05** runtime/core: scene loader/prefab instantiate/overrides + scene switching
+- [x] **M2-06** runtime/core: save/load (localStorage slots, versioned)
 - [ ] **M2-07** runtime/core: audio manager (buses, unlock, music crossfade)
 - [ ] **M2-08** runtime/core: DOM UI layer (HUD/menu primitives, CSS theme)
 - [ ] **M2-09** runtime/phaser: boot, sprite/animatedSprite/text/tilemap/particles/camera components

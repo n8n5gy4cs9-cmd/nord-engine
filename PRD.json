@@ -459,37 +459,37 @@
       "id": "M2-01",
       "milestone": "M2",
       "title": "runtime/core: Entity tree, component registry, NordScript lifecycle, attributes",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M2-02",
       "milestone": "M2",
       "title": "runtime/core: events bus, timers, tween/easing, rng, math, object pool",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M2-03",
       "milestone": "M2",
       "title": "runtime/core: input actions (kbd/mouse/touch/gamepad) + virtual joystick",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M2-04",
       "milestone": "M2",
       "title": "runtime/core: asset loader w/ progress + offline-safe paths + file:// safe mode",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M2-05",
       "milestone": "M2",
       "title": "runtime/core: scene loader/prefab instantiate/overrides + scene switching",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M2-06",
       "milestone": "M2",
       "title": "runtime/core: save/load (localStorage slots, versioned)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M2-07",
