@@ -543,7 +543,7 @@
       "id": "M2-15",
       "milestone": "M2",
       "title": "Script hot-reload (hotReloadScript) + error overlay",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M2-16",
