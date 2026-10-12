@@ -1058,73 +1058,73 @@
       "id": "M7-01",
       "milestone": "M7",
       "title": "tools/build-manual.mjs (marked + CodeMirror readonly + nord-live blocks)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M7-02",
       "milestone": "M7",
       "title": "Manual chapters 1-4 (welcome, editor tour, projects, scripting)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M7-03",
       "milestone": "M7",
       "title": "Manual chapters 5-8 (2D, 3D, physics, audio)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M7-04",
       "milestone": "M7",
       "title": "Manual chapters 9-12 (UI, input, assets, library)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M7-05",
       "milestone": "M7",
       "title": "Manual chapters 13-17 (Rust/WASM, export, perf, reference, appendix)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M7-06",
       "milestone": "M7",
       "title": "Tutorials T01-T09 with runnable projects",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M7-07",
       "milestone": "M7",
       "title": "Tutorials T10-T18 with runnable projects",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M7-08",
       "milestone": "M7",
       "title": "API reference generated from JSDoc + component schemas + CLI help",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M7-09",
       "milestone": "M7",
       "title": "Embed manual in editor (Docs tab) + offline search index",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M7-10",
       "milestone": "M7",
       "title": "Per-feature guides & cheat sheets (shortcuts, nord.js, export)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M7-11",
       "milestone": "M7",
       "title": "Full engine API docs: everything Phaser/Babylon offer, documented in Nord format (components, NordScript, game.*/physics/camera/gui namespaces) — no raw Phaser/Babylon API needed; searchable HTML reference generated from JSDoc + component schemas",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M7-12",
       "milestone": "M7",
       "title": "HTML manual/guide/tutorials 'complete edition': every feature, per-component pages, cookbook, plus 'For dummies' info boxes (hidden by default, global toggle persisted in localStorage)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M8-01",

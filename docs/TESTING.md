@@ -12,6 +12,7 @@
 | Offline guarantee | `nord check-offline dist/` ; headless run with network blocked (`route.abort` for non-localhost) | every export |
 | Vendor integrity | `node tools/vendor.mjs --verify` (sha256 vs VENDOR.json) | CI |
 | Task consistency | `node tools/tasks.mjs check` | CI |
+| Manual | `node tools/build-manual.mjs --check` (links, anchors, offline, runs `nord-live` snippets) — in CI | M7 |
 | Native / mac | GitHub Actions `macos-14` builds `nord-editor`, `nord-player`; manual smoke on M1 Max | M3+ |
 
 Sandbox limits (Linux cloud container): no macOS, no display/WKWebView. egui renders headless via kittest; viewport JS tested in Chromium; the rest via macOS CI.

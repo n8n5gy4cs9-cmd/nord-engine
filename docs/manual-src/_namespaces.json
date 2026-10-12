@@ -1,0 +1,30 @@
+[
+ {"name":"this (inside a NordScript)","summary":"Every script gets these. They are shortcuts to the objects below.","items":[
+  ["this.entity","The entity the script is attached to."],["this.scene","The running scene (spawn, find)."],["this.game","The game: loadScene, restart, pause, camera, physics, ui…"],
+  ["this.attrs","Resolved attribute values (defaults merged with scene overrides, clamped)."],["this.input","Action-based input."],["this.audio","Sounds and music."],["this.time","{ delta, elapsed } in seconds (scaled by timeScale)."],
+  ["this.events","Global event bus."],["this.ui","DOM HUD/menu layer."],["this.physics","Physics adapter for the project's engine."],["this.save","Save slots."],["this.rng","Seedable random numbers."],
+  ["this.tween(target, to, opts)","Animate numeric properties of an object or array. opts: duration, delay, ease, yoyo, repeat, onUpdate, onComplete. Returns cancel()."],
+  ["this.after(sec, fn)","Run once later. Returns cancel()."],["this.every(sec, fn)","Run repeatedly. Returns cancel()."]]},
+ {"name":"game","summary":"The Game object (`this.game`).","items":[
+  ["game.loadScene(path)","Load a scene file (default: project startScene). Destroys the current scene."],["game.restart()","Reload the current scene."],["game.pause() / resume()","Pause the update loop (emits 'pause'/'resume')."],
+  ["game.timeScale","Number; 0.5 = slow motion. Applies to dt, timers and tweens."],["game.paused","Boolean."],["game.project","Parsed nord.project.json."],["game.events","Global bus. Built-in events: sceneLoad, sceneUnload, pause, resume, error, hotReload."],
+  ["game.preload(paths)","Load textures/models ahead of time."],["game.errors","Errors caught from scripts so far."]]},
+ {"name":"game.camera","summary":"Camera effects.","items":[
+  ["camera.shake(ms=250, intensity=0.01)","Screen shake.","2D"],["camera.flash(ms=250, color='#ffffff')","Flash overlay.","2D"],["camera.fade(ms=500, color='#000000')","Fade out to a colour.","2D"],["camera.fadeIn(ms=500)","Fade back in.","2D"],
+  ["camera.zoom(z, ms=0)","Set or tween the zoom.","2D"],["camera.follow(entity, lerp)","Follow an entity (smoothing 0..1).","2D"],["camera.center(x, y)","Jump to a point.","2D"],["camera.native","The Phaser camera (escape hatch).","2D"],
+  ["3D camera","Use a `camera` component (free/orbit); `getComponent('camera').activate()` switches the current one. Effects: add a `postProcess` component.","3D"]]},
+ {"name":"game.physics","summary":"Physics adapter. Methods differ slightly by engine; see the adapter pages.","items":[
+  ["physics.setVelocity(entity, vx, vy[, vz])","Set velocity (2D px/s, 3D m/s). 2D: pass null to keep an axis."],["physics.velocity(entity)","Current velocity array."],["physics.applyImpulse(entity, ix, iy[, iz])","Instant push."],
+  ["physics.setGravity(x, y[, z])","Change world gravity."],["physics.isGrounded(entity)","Standing on something? (2D: touching a body below; 3D: short ray down.)"],["physics.overlapBox(x, y, w, h)","Entities overlapping a box (2D)","2D"],
+  ["physics.raycast(from, to, {ignore})","First hit {entity, point, normal, distance} or null.","3D"],["physics.teleport(entity, ...pos)","Move a body without keeping velocity."]]},
+ {"name":"game.ui","summary":"DOM UI layer drawn over the canvas (see the UI chapter). Works in 2D and 3D.","items":[
+  ["ui.label / button / panel / image / bar / menu","Create widgets. Each returns a handle with `el`, `remove()` and (label/bar) `set(value)`."],["ui.show / hide / toggle(screen)","Show a named screen (layer). 'hud' is always created and shown."],["ui.setTheme({skin, theme})","Switch fonts and colours at runtime."],["ui.theme({accent: '#…'})","Override single colour variables."]]},
+ {"name":"game.gui","summary":"Babylon GUI bridge (3D only; null if the GUI library is not loaded).","items":[
+  ["gui.label / button / bar","Screen-space controls (Babylon GUI)."],["gui.worldLabel(entity, text)","Label that floats above an entity."],["gui.attach(control, entity)","Link any control to an entity."],["gui.remove(control)","Dispose a control."]]},
+ {"name":"game.audio","summary":"Audio manager (see the Audio chapter).","items":[
+  ["audio.play(path, {volume, loop, rate, bus, pan})","One-shot or loop. Returns {stop()}."],["audio.music(path, {fade, volume})","Crossfade to a looping track."],["audio.stopMusic({fade})","Fade out the music."],["audio.volume(bus, v)","Get/set a bus volume (master, music, sfx, ui). Persisted."],["audio.mute(bus, on)","Mute a bus."],["audio.preload(paths)","Decode ahead of time."]]},
+ {"name":"game.save","summary":"Persistent key/value storage in slots (localStorage; versioned).","items":[
+  ["save.get(key, default)","Read."],["save.set(key, value)","Write (JSON-serialisable)."],["save.slot(n)","Select a slot (chainable)."],["save.has(n) / delete(n) / all()","Slot management."]]},
+ {"name":"entity.native","summary":"Escape hatch: the underlying engine object. Only reach for it when Nord has no wrapper.","items":[
+  ["entity.native (2D)","Phaser Container holding the visuals."],["entity.native (3D)","Babylon TransformNode."],["component.obj / .mesh / .light / .camera / .ps","Raw engine objects on many runtime components."]]}
+]

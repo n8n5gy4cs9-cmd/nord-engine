@@ -34,4 +34,5 @@ node tools/vendor.mjs [--verify]       # (re)install vendored libs
 tools/fetch-upstreams.sh [name…]       # shallow clones into third_party/
 python3 tools/gen_assets.py            # regenerate all placeholder assets
 cargo build --workspace
+node tools/build-manual.mjs            # rebuild docs/manual (commit it); --check = verify only
 ```

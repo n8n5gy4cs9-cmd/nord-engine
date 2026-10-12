@@ -1,5 +1,7 @@
 # Manual, guides & tutorials plan (M7)
 
+**Status: implemented.** `node tools/build-manual.mjs` builds `docs/manual/` (committed, so the editor Docs tab works without a build) from `docs/manual-src/*.md` (+ `_namespaces.json`, `tools/manual/components-data.mjs`) and the repo sources (runtime JSDoc/comments, `schema.rs`, CLI doc comments, `library/INDEX.json`, templates/examples, shortcuts, `docs/*.md`). `--check` builds to a temp dir, runs every `nord-live` snippet against the real core runtime, and fails on broken links/anchors or external URLs. Markdown extras: `::: dummies|tip|warn|todo` boxes, ```` ```nord-live ````, heading ids `{#id}`. After changing any source above, rebuild and commit `docs/manual/`. Desktop-apps chapter is a TODO stub until M9.
+
 Output: `docs/manual/` — static HTML, offline, built by `tools/build-manual.mjs` from Markdown in `docs/manual-src/`
 (vendored `marked`; syntax via CodeMirror in read-only mode; "Run" buttons for live examples using the vendored runtime).
 Visual: `assets/docs/` graphics (banner, section icons, diagrams). Same viewer embedded in the editor (Docs tab).

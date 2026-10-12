@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Export targets spec — Nord Engine</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')==='1')document.documentElement.classList.add('dummies-on')}catch(e){}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><header><a class="brand" href="index.html"><img src="assets/logo.png" alt="" width="28" height="28">Nord Engine <span class="muted">Manual</span></a>
+<input id="q" type="search" placeholder="Search docs…" autocomplete="off"><div id="results" hidden></div>
+<button id="dummies-toggle" title="Show plain-language 'For dummies' boxes" aria-pressed="false">For dummies: <b>off</b></button></header>
+<div class="layout"><nav><details class="nav-sec"><summary>Manual</summary><a href="welcome.html">Welcome</a><a href="editor-tour.html">Editor tour</a><a href="projects-scenes.html">Projects &amp; scenes</a><a href="scripting.html">Scripting</a><a href="2d.html">2D games</a><a href="3d.html">3D games</a><a href="physics.html">Physics</a><a href="audio.html">Audio</a><a href="ui.html">UI &amp; HUD</a><a href="input.html">Input</a><a href="assets.html">Assets</a><a href="library.html">The library</a><a href="rust-wasm.html">Rust / WASM</a><a href="export.html">Export &amp; hosting</a><a href="performance.html">Performance &amp; debugging</a><a href="reference.html">Reference overview</a><a href="desktop-apps.html">Desktop apps</a><a href="_project-format-extra.html">_project-format-extra.md</a></details>
+<details class="nav-sec"><summary>Tutorials</summary><a href="tut-t01-hello-nord.html">T01 Hello Nord</a><a href="tut-t02-sprite-movement.html">T02 Sprite &amp; movement</a><a href="tut-t03-first-script.html">T03 Your first script</a><a href="tut-t04-platformer.html">T04 Platformer from template</a><a href="tut-t05-physics.html">T05 Physics &amp; collisions</a><a href="tut-t06-tilemaps.html">T06 Tilemaps</a><a href="tut-t07-animation-juice.html">T07 Animation &amp; juice</a><a href="tut-t08-ui-hud.html">T08 UI &amp; HUD</a><a href="tut-t09-audio.html">T09 Audio</a><a href="tut-t10-3d-scene.html">T10 3D scene &amp; camera</a><a href="tut-t11-3d-physics.html">T11 3D physics (FPS)</a><a href="tut-t12-enemy-ai.html">T12 Enemy AI</a><a href="tut-t13-save-load.html">T13 Save &amp; load</a><a href="tut-t14-export-host.html">T14 Export to web &amp; host it</a><a href="tut-t15-mac-app.html">T15 Mac app</a><a href="tut-t16-rust-game.html">T16 Rust/WASM game</a><a href="tut-t17-rust-egui-app.html">T17 Rust egui app</a><a href="tut-t18-library-snippets.html">T18 Writing library snippets</a></details>
+<details class="nav-sec"><summary>Guides</summary><a href="cookbook.html">Cookbook</a><a href="cheat-sheet-nordjs.html">Cheat sheet — nord.js</a><a href="cheat-sheet-export.html">Cheat sheet — export</a><a href="glossary.html">Glossary</a><a href="shortcuts.html">Keyboard shortcuts</a></details>
+<details class="nav-sec"><summary>API</summary><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a></details>
+<details class="nav-sec"><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details>
+<details class="nav-sec" open><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html" class="cur">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a></details>
+<details class="nav-sec"><summary>Appendix</summary><a href="appendix.html">Appendix</a><a href="decisions.html">Design decisions</a><a href="known-issues.html">Known issues</a><a href="changelog.html">Changelog</a></details></nav><main><div class="crumb">Reference</div><h1>Export targets spec</h1>
+<p><code>nord export &lt;project&gt; --target &lt;t&gt; [--out dist/] [--minify] [--single-file]</code></p>
+<table>
+<thead>
+<tr>
+<th>Target</th>
+<th>Output</th>
+<th>Runtime shipped</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>html</code></td>
+<td>folder</td>
+<td>none (your own HTML/JS)</td>
+<td>simple games/apps; optional <code>nord-lite.js</code> helpers</td>
+</tr>
+<tr>
+<td><code>web-2d</code></td>
+<td>folder</td>
+<td>nord.js + Phaser (+ chosen plugins)</td>
+<td><code>lib/phaser.min.js</code>, assets copied/atlased</td>
+</tr>
+<tr>
+<td><code>web-3d</code></td>
+<td>folder</td>
+<td>nord.js + Babylon packages + Havok wasm</td>
+<td>only packages used by scene are copied</td>
+</tr>
+<tr>
+<td><code>web-wasm-game</code></td>
+<td>folder</td>
+<td><code>nord_game.wasm</code> + <code>mq_js_bundle.js</code> + <code>index.html</code></td>
+<td>built with <code>cargo build --release --target wasm32-unknown-unknown</code> + <code>wasm-opt -Oz</code> if present</td>
+</tr>
+<tr>
+<td><code>web-wasm-app</code></td>
+<td>folder</td>
+<td>eframe wasm (+ JS glue via <code>wasm-bindgen</code>)</td>
+<td></td>
+</tr>
+<tr>
+<td><code>mac-app</code></td>
+<td><code>Name.app</code> (+ optional <code>.dmg</code>)</td>
+<td>NordPlayer + any of the above</td>
+<td>uses prebuilt player; ad-hoc signed</td>
+</tr>
+<tr>
+<td><code>zip</code></td>
+<td><code>name.zip</code></td>
+<td>any web target zipped</td>
+<td>for itch.io-style upload</td>
+</tr>
+</tbody></table>
+<h2 id="implemented-m4">Implemented (M4)<a class="anchor" href="#implemented-m4">#</a></h2>
+<p><code>nord build &lt;project&gt; [-t auto|html|web-2d|web-3d] [-o dir] [--minify] [--single-file] [--optimize] [--zip]</code> (alias <code>nord export</code>), crate <code>nord-export</code>;
+editor: <strong>Project → Export…</strong>. <code>web-wasm-game</code> (M5-05, verified) builds the Rust project with <code>cargo build --release --target wasm32-unknown-unknown</code> (flags: <code>--allow-undefined</code> via <code>--config</code>), copies <code>game.wasm</code>, the vendored <code>mq_js_bundle.js</code> and project data/assets, writes a relative <code>index.html</code>; <code>--optimize</code> runs <code>wasm-opt -Oz</code> if installed. <code>web-wasm-app</code> (M5-06) uses <code>wasm-bindgen --target web</code>. Rust-tier scripts are registry names (no file check in validation); audio must be .wav/.ogg. <code>--minify</code>/<code>--single-file</code> run <code>tools/export-bundle.mjs</code> (Node + vendored <code>esbuild-wasm</code>).
+<code>nord bundle-mac &lt;project|dist&gt; [--player nord-player|NordPlayer.app] [--name] [-o dir] [--icon png] [--dmg]</code> assembles <code>&lt;Name&gt;.app</code>
+(<code>Contents/Resources/game/</code> + Info.plist + generated AppIcon.icns, ad-hoc codesign on macOS); the player is <code>crates/nord-player</code> (wry+tao, <code>--features shell</code>, macOS-only to build). Hosting: HOSTING.md.
+Not done: texture-atlas packing and lossy PNG quantisation (M4-11).</p>
+<h2 id="output-layout-web">Output layout (web)<a class="anchor" href="#output-layout-web">#</a></h2>
+<pre class="code" data-lang=""><code>dist/
+├─ index.html          # loads lib/*, nord.json, boots runtime; no network except same-origin
+├─ nord.json           # resolved manifest (project + scenes list + asset list + hashes)
+├─ scenes/ prefabs/ scripts/ assets/
+└─ lib/                # vendored runtime libs (versioned file names)</code></pre>
+<p>Must work from: any static server, <code>python3 -m http.server</code>, Netlify/itch/GitHub Pages, <strong>and</strong> <code>file://</code>
+for the <code>--single-file</code> or <code>file-safe</code> mode (inline JSON + scripts, no <code>fetch</code> of local files).</p>
+<h2 id="build-steps-web-2d-3d">Build steps (web-2d/3d)<a class="anchor" href="#build-steps-web-2d-3d">#</a></h2>
+<ol>
+<li>Load project, validate (nord-core). 2. Resolve used components → libs. 3. Optimise assets (optional: png quantise, audio→ogg/mp3).</li>
+<li>Emit <code>nord.json</code> + copy files. 5. Generate <code>index.html</code> from <code>runtime/templates/*.html</code>. 6. Minify JS (optional, vendored esbuild-wasm or none).</li>
+<li><code>check-offline</code>. 8. Report sizes.</li>
+</ol>
+<h2 id="tier-auto-recommendation-nord-doctor">Tier auto-recommendation (<code>nord doctor</code>)<a class="anchor" href="#tier-auto-recommendation-nord-doctor">#</a></h2>
+<ul>
+<li>Only DOM/canvas, &lt; 3 scenes, no physics → <code>html</code></li>
+<li>2D with sprites/physics/tilemaps → <code>web-2d</code></li>
+<li>Any 3D → <code>web-3d</code></li>
+<li>User picked Rust, or needs &gt; ~5k active physics bodies/CPU heavy sims → <code>web-wasm-game</code></li>
+<li>Tool/editor/dashboard in Rust → <code>web-wasm-app</code></li>
+</ul>
+<h2 id="mac-wrapper">Mac wrapper<a class="anchor" href="#mac-wrapper">#</a></h2>
+<p>See ARCHITECTURE §7. <code>NordPlayer</code> = wry+tao shell, no devtools in release, window config from <code>nord.json.display</code>,
+fullscreen toggle (Cmd+Ctrl+F), persistent localStorage in app data dir.</p>
+
+<footer>Crowelian 2026 + Sonnet · <a href="https://github.com/n8n5gy4cs9-cmd/nord-engine">source</a> · generated by <code>tools/build-manual.mjs</code></footer></main></div>
+<script type="module" src="assets/manual.js"></script></body></html>

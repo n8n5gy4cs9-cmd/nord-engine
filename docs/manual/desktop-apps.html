@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Desktop apps — Nord Engine</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')==='1')document.documentElement.classList.add('dummies-on')}catch(e){}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><header><a class="brand" href="index.html"><img src="assets/logo.png" alt="" width="28" height="28">Nord Engine <span class="muted">Manual</span></a>
+<input id="q" type="search" placeholder="Search docs…" autocomplete="off"><div id="results" hidden></div>
+<button id="dummies-toggle" title="Show plain-language 'For dummies' boxes" aria-pressed="false">For dummies: <b>off</b></button></header>
+<div class="layout"><nav><details class="nav-sec" open><summary>Manual</summary><a href="welcome.html">Welcome</a><a href="editor-tour.html">Editor tour</a><a href="projects-scenes.html">Projects &amp; scenes</a><a href="scripting.html">Scripting</a><a href="2d.html">2D games</a><a href="3d.html">3D games</a><a href="physics.html">Physics</a><a href="audio.html">Audio</a><a href="ui.html">UI &amp; HUD</a><a href="input.html">Input</a><a href="assets.html">Assets</a><a href="library.html">The library</a><a href="rust-wasm.html">Rust / WASM</a><a href="export.html">Export &amp; hosting</a><a href="performance.html">Performance &amp; debugging</a><a href="reference.html">Reference overview</a><a href="desktop-apps.html" class="cur">Desktop apps</a><a href="_project-format-extra.html">_project-format-extra.md</a></details>
+<details class="nav-sec"><summary>Tutorials</summary><a href="tut-t01-hello-nord.html">T01 Hello Nord</a><a href="tut-t02-sprite-movement.html">T02 Sprite &amp; movement</a><a href="tut-t03-first-script.html">T03 Your first script</a><a href="tut-t04-platformer.html">T04 Platformer from template</a><a href="tut-t05-physics.html">T05 Physics &amp; collisions</a><a href="tut-t06-tilemaps.html">T06 Tilemaps</a><a href="tut-t07-animation-juice.html">T07 Animation &amp; juice</a><a href="tut-t08-ui-hud.html">T08 UI &amp; HUD</a><a href="tut-t09-audio.html">T09 Audio</a><a href="tut-t10-3d-scene.html">T10 3D scene &amp; camera</a><a href="tut-t11-3d-physics.html">T11 3D physics (FPS)</a><a href="tut-t12-enemy-ai.html">T12 Enemy AI</a><a href="tut-t13-save-load.html">T13 Save &amp; load</a><a href="tut-t14-export-host.html">T14 Export to web &amp; host it</a><a href="tut-t15-mac-app.html">T15 Mac app</a><a href="tut-t16-rust-game.html">T16 Rust/WASM game</a><a href="tut-t17-rust-egui-app.html">T17 Rust egui app</a><a href="tut-t18-library-snippets.html">T18 Writing library snippets</a></details>
+<details class="nav-sec"><summary>Guides</summary><a href="cookbook.html">Cookbook</a><a href="cheat-sheet-nordjs.html">Cheat sheet — nord.js</a><a href="cheat-sheet-export.html">Cheat sheet — export</a><a href="glossary.html">Glossary</a><a href="shortcuts.html">Keyboard shortcuts</a></details>
+<details class="nav-sec"><summary>API</summary><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a></details>
+<details class="nav-sec"><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details>
+<details class="nav-sec"><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a></details>
+<details class="nav-sec"><summary>Appendix</summary><a href="appendix.html">Appendix</a><a href="decisions.html">Design decisions</a><a href="known-issues.html">Known issues</a><a href="changelog.html">Changelog</a></details></nav><main><div class="crumb">Manual</div><h1>Desktop apps</h1>
+<aside class="box todo"><div class="box-title">TODO (planned)</div><p><strong>This chapter is intentionally a stub.</strong> Milestone <strong>M9 &quot;Desktop apps&quot;</strong> (16 tasks) is planned but not started; the design document (M9-01) comes first. Nothing on this page is implemented.</p>
+</aside><h2 id="what-is-planned">What is planned<a class="anchor" href="#what-is-planned">#</a></h2>
+<p>A way to build <em>real</em> desktop apps — not just games in a window — from the same projects, using a shared Rust backend (<code>nord-desktop</code>) exposed two ways: to <strong>JavaScript</strong> through an IPC bridge and to <strong>Rust apps</strong> directly.</p>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Planned capability</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Files &amp; folders</td>
+<td>scoped read/write/list/watch with per-app allowed roots and path-traversal protection</td>
+</tr>
+<tr>
+<td>Dialogs</td>
+<td>open/save file, pick folder, message/confirm, recent locations</td>
+</tr>
+<tr>
+<td>Notifications</td>
+<td>system notifications, badges, dock/taskbar progress</td>
+</tr>
+<tr>
+<td>Storage</td>
+<td>key-value + structured data, settings, OS keychain secrets</td>
+</tr>
+<tr>
+<td>Clipboard &amp; integration</td>
+<td>clipboard, drag &amp; drop, file associations, deep links, single instance</td>
+</tr>
+<tr>
+<td>Windows &amp; menus</td>
+<td>multi-window, native menu bar, context menus, global shortcuts, tray icon, frameless/transparent windows</td>
+</tr>
+<tr>
+<td>Permissions &amp; packaging</td>
+<td>capability model, sandboxing, signed bundles</td>
+</tr>
+</tbody></table>
+<aside class="box todo"><div class="box-title">TODO (planned)</div><p>TODO (fill in when M9 lands): API reference for the JS bridge (<code>nord.desktop.*</code>), the Rust <code>Ctx</code>/service traits, the permission manifest format, packaging per platform, and a &quot;your first desktop app&quot; tutorial.</p>
+</aside><p>Progress is tracked in <code>task.md</code> (M9-01…M9-16). Until then, use the web export or the Mac app wrapper (<a href="export.html">Export</a>).</p>
+
+<footer>Crowelian 2026 + Sonnet · <a href="https://github.com/n8n5gy4cs9-cmd/nord-engine">source</a> · generated by <code>tools/build-manual.mjs</code></footer></main></div>
+<script type="module" src="assets/manual.js"></script></body></html>

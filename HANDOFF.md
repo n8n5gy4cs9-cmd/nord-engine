@@ -54,6 +54,7 @@ cargo build --workspace && cargo test --workspace && cargo clippy --workspace --
   17 starter templates — all generated from `tools/examples/<id>/` by `node tools/gen_examples.mjs` (never edit `examples/`/`templates/` JS projects by hand;
   Rust examples/templates are hand-written). Smoke: `node tools/smoke-examples.mjs [id…]`; Rust: `node tools/e2e.mjs rust-platformer …`.
 - **M9 Desktop apps planned, NOT started** (16 tasks: fs/dialogs/notifications/storage/tray/menus/permissions/packaging/JS bridge + Rust API). Owner asked for planning only — start with M9-01 (design doc/ADR) when told.
-- Next: M7 docs (API reference + manual with "for dummies" boxes), M8 polish. Open from earlier: M3-07/M3-25, M4-08/09/11.
+- **M7 docs done**: `node tools/build-manual.mjs` (sources `docs/manual-src/`, output `docs/manual/` is committed; `--check` in CI). Re-run + commit after changing runtime JSDoc, `schema.rs`, CLI docs, library, templates or `docs/*.md`. Desktop-apps chapter (`18-desktop-apps.md`) and mentions in T17/Rust chapter are TODO stubs to fill in when M9 lands.
+- Next: M9-01 (design doc) when told, M8 polish. Open from earlier: M3-07/M3-25, M4-08/09/11.
 - Vendored: Phaser 4.2.1, Babylon 9.30.0 (+Havok 1.3.14), PlayCanvas 2.23.2 (optional), CodeMirror bundle, marked, fonts, Lucide.
 - Known risks: `docs/KNOWN_ISSUES.md`.

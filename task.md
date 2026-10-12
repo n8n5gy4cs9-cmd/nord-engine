@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 102/143 tasks (71%)** · updated 2026-10-12
+**Overall: 114/143 tasks (80%)** · updated 2026-10-12
 
 | Milestone | Progress |
 |---|---|
@@ -14,7 +14,7 @@
 | M4 Export | 8/11 (73%) |
 | M5 Rust/WASM | 9/9 (100%) |
 | M6 Library | 18/18 (100%) |
-| M7 Docs | 0/12 (0%) |
+| M7 Docs | 12/12 (100%) |
 | M8 Polish & portability | 0/8 (0%) |
 | M9 Desktop apps | 0/16 (0%) |
 
@@ -163,18 +163,18 @@ _snippets, controllers, systems, asset packs, examples_
 ## M7 — Docs
 _manual, guides, tutorials, in-editor docs_
 
-- [ ] **M7-01** tools/build-manual.mjs (marked + CodeMirror readonly + nord-live blocks)
-- [ ] **M7-02** Manual chapters 1-4 (welcome, editor tour, projects, scripting)
-- [ ] **M7-03** Manual chapters 5-8 (2D, 3D, physics, audio)
-- [ ] **M7-04** Manual chapters 9-12 (UI, input, assets, library)
-- [ ] **M7-05** Manual chapters 13-17 (Rust/WASM, export, perf, reference, appendix)
-- [ ] **M7-06** Tutorials T01-T09 with runnable projects
-- [ ] **M7-07** Tutorials T10-T18 with runnable projects
-- [ ] **M7-08** API reference generated from JSDoc + component schemas + CLI help
-- [ ] **M7-09** Embed manual in editor (Docs tab) + offline search index
-- [ ] **M7-10** Per-feature guides & cheat sheets (shortcuts, nord.js, export)
-- [ ] **M7-11** Full engine API docs: everything Phaser/Babylon offer, documented in Nord format (components, NordScript, game.*/physics/camera/gui namespaces) — no raw Phaser/Babylon API needed; searchable HTML reference generated from JSDoc + component schemas
-- [ ] **M7-12** HTML manual/guide/tutorials 'complete edition': every feature, per-component pages, cookbook, plus 'For dummies' info boxes (hidden by default, global toggle persisted in localStorage)
+- [x] **M7-01** tools/build-manual.mjs (marked + CodeMirror readonly + nord-live blocks)
+- [x] **M7-02** Manual chapters 1-4 (welcome, editor tour, projects, scripting)
+- [x] **M7-03** Manual chapters 5-8 (2D, 3D, physics, audio)
+- [x] **M7-04** Manual chapters 9-12 (UI, input, assets, library)
+- [x] **M7-05** Manual chapters 13-17 (Rust/WASM, export, perf, reference, appendix)
+- [x] **M7-06** Tutorials T01-T09 with runnable projects
+- [x] **M7-07** Tutorials T10-T18 with runnable projects
+- [x] **M7-08** API reference generated from JSDoc + component schemas + CLI help
+- [x] **M7-09** Embed manual in editor (Docs tab) + offline search index
+- [x] **M7-10** Per-feature guides & cheat sheets (shortcuts, nord.js, export)
+- [x] **M7-11** Full engine API docs: everything Phaser/Babylon offer, documented in Nord format (components, NordScript, game.*/physics/camera/gui namespaces) — no raw Phaser/Babylon API needed; searchable HTML reference generated from JSDoc + component schemas
+- [x] **M7-12** HTML manual/guide/tutorials 'complete edition': every feature, per-component pages, cookbook, plus 'For dummies' info boxes (hidden by default, global toggle persisted in localStorage)
 
 ## M8 — Polish & portability
 _dmg, CI, Windows, Linux, perf_
