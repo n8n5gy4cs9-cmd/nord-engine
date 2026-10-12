@@ -23,7 +23,7 @@ for (const id of ids) {
       const shot = await page.screenshot({ path: `${ROOT}/target/smoke/${id}.png` });
       return { scriptErrors, colors: await nonBlank(page, shot) };
     }, { viewport: { width: 800, height: 450 } });
-    const problems = [...errors, ...result.scriptErrors.map((s) => `script: ${s}`)];
+    const problems = [...new Set(errors.map((e) => e.split("\n")[0]))].slice(0, 5).concat([...result.scriptErrors.map((s) => `script: ${s}`)]);
     if (result.colors < 6) problems.push(`looks blank (${result.colors} colours)`);
     console.log(`${problems.length ? 'FAIL' : 'ok  '} ${id} (${result.colors} colours)`);
     for (const p of problems) console.log('     ' + p);

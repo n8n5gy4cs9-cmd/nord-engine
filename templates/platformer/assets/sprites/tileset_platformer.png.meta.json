@@ -1,0 +1,8 @@
+{
+  "type": "tileset",
+  "tileWidth": 16,
+  "tileHeight": 16,
+  "filter": "nearest",
+  "columns": 8,
+  "layout": "cols: top, top-left, top-right, mid, left, right, bottom, platform; rows: grass, stone, sand, snow"
+}

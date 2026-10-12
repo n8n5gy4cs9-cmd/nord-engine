@@ -40,7 +40,7 @@ export default class Platformer2D extends NordScript {
     } else if (this.jumping && vy < 0 && !this.input.down('jump')) { p.setVelocity(e, null, vy * a.cutJump); this.jumping = false; }
     if (grounded) this.jumping = false;
     if (a.wallSlide && !grounded && dir && vy > a.wallSlideSpeed) {
-      const w = p.overlapBox?.(e.pos[0] + dir * 10, e.pos[1], 4, 12) ?? [];
+      const w = p.overlapBox?.(e.pos[0] + dir * 10, e.pos[1], 4, 12)?.filter((o) => o !== e) ?? [];
       if (w.some?.((o) => o !== e && !o.getComponent?.('collider')?.data.trigger)) {
         p.setVelocity(e, null, a.wallSlideSpeed);
         if (this.input.pressed('jump')) { p.setVelocity(e, -dir * a.speed, -a.jumpForce); this.facing = -dir; }

@@ -1,0 +1,1679 @@
+{
+  "format": 1,
+  "name": "main",
+  "settings": {
+    "ambient": "#ffffff"
+  },
+  "entities": [
+    {
+      "id": "eeeeeee1",
+      "name": "Sky",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          -100
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "parallax",
+          "texture": "assets/sprites/bg_sky.png",
+          "factor": [
+            0,
+            0
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeee2",
+      "name": "Hills",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          -90
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "parallax",
+          "texture": "assets/sprites/bg_hills_far.png",
+          "factor": [
+            0.3,
+            0
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeee3",
+      "name": "Level",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          -1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "tilemap",
+          "map": "assets/maps/level.tilemap.json",
+          "tileset": "assets/sprites/tileset_platformer.png"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeee4",
+      "name": "Hero",
+      "enabled": true,
+      "tags": [
+        "player"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          48,
+          250,
+          2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "animatedSprite",
+          "texture": "assets/sprites/hero.png",
+          "anim": "idle"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "dynamic",
+          "mass": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            14,
+            28
+          ],
+          "offset": [
+            9,
+            4
+          ]
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/platformer2d.js",
+          "attributes": {
+            "speed": 130,
+            "jumpForce": 340,
+            "wallSlide": false,
+            "dash": true,
+            "dashSpeed": 280
+          }
+        },
+        {
+          "path": "scripts/health.js",
+          "attributes": {
+            "max": 3,
+            "deathEvent": "died",
+            "invulnTime": 1
+          }
+        },
+        {
+          "path": "scripts/hero-fx.js",
+          "attributes": {}
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeee5",
+      "name": "Coin0",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          230,
+          260,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "animatedSprite",
+          "texture": "assets/sprites/coin.png",
+          "anim": "spin"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            12,
+            12
+          ],
+          "trigger": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/pickup.js",
+          "attributes": {
+            "kind": "score",
+            "value": 10,
+            "bob": 0,
+            "sfx": "assets/audio/sfx/coin.wav"
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeee6",
+      "name": "Coin1",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          262,
+          215,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "animatedSprite",
+          "texture": "assets/sprites/coin.png",
+          "anim": "spin"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            12,
+            12
+          ],
+          "trigger": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/pickup.js",
+          "attributes": {
+            "kind": "score",
+            "value": 10,
+            "bob": 0,
+            "sfx": "assets/audio/sfx/coin.wav"
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeee7",
+      "name": "Coin2",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          298,
+          215,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "animatedSprite",
+          "texture": "assets/sprites/coin.png",
+          "anim": "spin"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            12,
+            12
+          ],
+          "trigger": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/pickup.js",
+          "attributes": {
+            "kind": "score",
+            "value": 10,
+            "bob": 0,
+            "sfx": "assets/audio/sfx/coin.wav"
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeee8",
+      "name": "Coin3",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          334,
+          215,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "animatedSprite",
+          "texture": "assets/sprites/coin.png",
+          "anim": "spin"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            12,
+            12
+          ],
+          "trigger": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/pickup.js",
+          "attributes": {
+            "kind": "score",
+            "value": 10,
+            "bob": 0,
+            "sfx": "assets/audio/sfx/coin.wav"
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeee9",
+      "name": "Coin4",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          500,
+          180,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "animatedSprite",
+          "texture": "assets/sprites/coin.png",
+          "anim": "spin"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            12,
+            12
+          ],
+          "trigger": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/pickup.js",
+          "attributes": {
+            "kind": "score",
+            "value": 10,
+            "bob": 0,
+            "sfx": "assets/audio/sfx/coin.wav"
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeea",
+      "name": "Coin5",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          540,
+          180,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "animatedSprite",
+          "texture": "assets/sprites/coin.png",
+          "anim": "spin"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            12,
+            12
+          ],
+          "trigger": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/pickup.js",
+          "attributes": {
+            "kind": "score",
+            "value": 10,
+            "bob": 0,
+            "sfx": "assets/audio/sfx/coin.wav"
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeeb",
+      "name": "Coin6",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          580,
+          180,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "animatedSprite",
+          "texture": "assets/sprites/coin.png",
+          "anim": "spin"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            12,
+            12
+          ],
+          "trigger": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/pickup.js",
+          "attributes": {
+            "kind": "score",
+            "value": 10,
+            "bob": 0,
+            "sfx": "assets/audio/sfx/coin.wav"
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeec",
+      "name": "Coin7",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          640,
+          196,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "animatedSprite",
+          "texture": "assets/sprites/coin.png",
+          "anim": "spin"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            12,
+            12
+          ],
+          "trigger": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/pickup.js",
+          "attributes": {
+            "kind": "score",
+            "value": 10,
+            "bob": 0,
+            "sfx": "assets/audio/sfx/coin.wav"
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeed",
+      "name": "Coin8",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          700,
+          196,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "animatedSprite",
+          "texture": "assets/sprites/coin.png",
+          "anim": "spin"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            12,
+            12
+          ],
+          "trigger": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/pickup.js",
+          "attributes": {
+            "kind": "score",
+            "value": 10,
+            "bob": 0,
+            "sfx": "assets/audio/sfx/coin.wav"
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeee",
+      "name": "Coin9",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          960,
+          215,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "animatedSprite",
+          "texture": "assets/sprites/coin.png",
+          "anim": "spin"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            12,
+            12
+          ],
+          "trigger": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/pickup.js",
+          "attributes": {
+            "kind": "score",
+            "value": 10,
+            "bob": 0,
+            "sfx": "assets/audio/sfx/coin.wav"
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeef",
+      "name": "Coin10",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          1000,
+          215,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "animatedSprite",
+          "texture": "assets/sprites/coin.png",
+          "anim": "spin"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            12,
+            12
+          ],
+          "trigger": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/pickup.js",
+          "attributes": {
+            "kind": "score",
+            "value": 10,
+            "bob": 0,
+            "sfx": "assets/audio/sfx/coin.wav"
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeeg",
+      "name": "Coin11",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          1040,
+          180,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "animatedSprite",
+          "texture": "assets/sprites/coin.png",
+          "anim": "spin"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            12,
+            12
+          ],
+          "trigger": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/pickup.js",
+          "attributes": {
+            "kind": "score",
+            "value": 10,
+            "bob": 0,
+            "sfx": "assets/audio/sfx/coin.wav"
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeeh",
+      "name": "Coin12",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          1130,
+          260,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "animatedSprite",
+          "texture": "assets/sprites/coin.png",
+          "anim": "spin"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            12,
+            12
+          ],
+          "trigger": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/pickup.js",
+          "attributes": {
+            "kind": "score",
+            "value": 10,
+            "bob": 0,
+            "sfx": "assets/audio/sfx/coin.wav"
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeei",
+      "name": "Coin13",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          1170,
+          260,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "animatedSprite",
+          "texture": "assets/sprites/coin.png",
+          "anim": "spin"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            12,
+            12
+          ],
+          "trigger": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/pickup.js",
+          "attributes": {
+            "kind": "score",
+            "value": 10,
+            "bob": 0,
+            "sfx": "assets/audio/sfx/coin.wav"
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeej",
+      "name": "Coin14",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          1250,
+          196,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "animatedSprite",
+          "texture": "assets/sprites/coin.png",
+          "anim": "spin"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            12,
+            12
+          ],
+          "trigger": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/pickup.js",
+          "attributes": {
+            "kind": "score",
+            "value": 10,
+            "bob": 0,
+            "sfx": "assets/audio/sfx/coin.wav"
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeek",
+      "name": "Coin15",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          1300,
+          156,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "animatedSprite",
+          "texture": "assets/sprites/coin.png",
+          "anim": "spin"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            12,
+            12
+          ],
+          "trigger": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/pickup.js",
+          "attributes": {
+            "kind": "score",
+            "value": 10,
+            "bob": 0,
+            "sfx": "assets/audio/sfx/coin.wav"
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeel",
+      "name": "Slime",
+      "enabled": true,
+      "tags": [
+        "enemy"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          300,
+          268,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "animatedSprite",
+          "texture": "assets/sprites/enemy_slime.png",
+          "anim": "idle"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "dynamic",
+          "fixedRotation": true
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            20,
+            14
+          ],
+          "offset": [
+            6,
+            14
+          ]
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/ai-patrol.js",
+          "attributes": {
+            "speed": 35,
+            "distance": 90
+          }
+        },
+        {
+          "path": "scripts/enemy.js",
+          "attributes": {}
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeem",
+      "name": "Slime",
+      "enabled": true,
+      "tags": [
+        "enemy"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          520,
+          268,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "animatedSprite",
+          "texture": "assets/sprites/enemy_slime.png",
+          "anim": "idle"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "dynamic",
+          "fixedRotation": true
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            20,
+            14
+          ],
+          "offset": [
+            6,
+            14
+          ]
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/ai-patrol.js",
+          "attributes": {
+            "speed": 35,
+            "distance": 90
+          }
+        },
+        {
+          "path": "scripts/enemy.js",
+          "attributes": {}
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeen",
+      "name": "Slime",
+      "enabled": true,
+      "tags": [
+        "enemy"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          760,
+          268,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "animatedSprite",
+          "texture": "assets/sprites/enemy_slime.png",
+          "anim": "idle"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "dynamic",
+          "fixedRotation": true
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            20,
+            14
+          ],
+          "offset": [
+            6,
+            14
+          ]
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/ai-patrol.js",
+          "attributes": {
+            "speed": 35,
+            "distance": 90
+          }
+        },
+        {
+          "path": "scripts/enemy.js",
+          "attributes": {}
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeeo",
+      "name": "Slime",
+      "enabled": true,
+      "tags": [
+        "enemy"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          1100,
+          268,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "animatedSprite",
+          "texture": "assets/sprites/enemy_slime.png",
+          "anim": "idle"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "dynamic",
+          "fixedRotation": true
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            20,
+            14
+          ],
+          "offset": [
+            6,
+            14
+          ]
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/ai-patrol.js",
+          "attributes": {
+            "speed": 35,
+            "distance": 90
+          }
+        },
+        {
+          "path": "scripts/enemy.js",
+          "attributes": {}
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeep",
+      "name": "Boss",
+      "enabled": true,
+      "tags": [
+        "enemy"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          1380,
+          268,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          2,
+          2,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "animatedSprite",
+          "texture": "assets/sprites/enemy_slime.png",
+          "anim": "idle"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "dynamic",
+          "fixedRotation": true
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            20,
+            14
+          ],
+          "offset": [
+            6,
+            14
+          ]
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/ai-patrol.js",
+          "attributes": {
+            "speed": 40,
+            "distance": 120
+          }
+        },
+        {
+          "path": "scripts/boss.js",
+          "attributes": {}
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeeq",
+      "name": "Checkpoint",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          720,
+          256,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "animatedSprite",
+          "texture": "assets/sprites/flag.png",
+          "anim": "wave"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            16,
+            32
+          ],
+          "trigger": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/checkpoint.js",
+          "attributes": {
+            "killY": 400
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeer",
+      "name": "Checkpoint",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          1290,
+          256,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "animatedSprite",
+          "texture": "assets/sprites/flag.png",
+          "anim": "wave"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            16,
+            32
+          ],
+          "trigger": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/checkpoint.js",
+          "attributes": {
+            "killY": 400
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeees",
+      "name": "Camera",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          320,
+          180,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "camera",
+          "zoom": 1,
+          "bounds": [
+            0,
+            0,
+            1600,
+            368
+          ]
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/camera-follow.js",
+          "attributes": {
+            "target": "Hero",
+            "smoothing": 7,
+            "bounds": [
+              0,
+              0,
+              1600,
+              368
+            ],
+            "lookAhead": 24
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeet",
+      "name": "Systems",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [
+        {
+          "path": "scripts/ui-hud.js",
+          "attributes": {
+            "target": "Hero",
+            "style": "hearts",
+            "coins": false
+          }
+        },
+        {
+          "path": "scripts/score.js",
+          "attributes": {
+            "y": 40
+          }
+        },
+        {
+          "path": "scripts/ui-gameover.js",
+          "attributes": {}
+        },
+        {
+          "path": "scripts/util-sfx.js",
+          "attributes": {}
+        },
+        {
+          "path": "scripts/fx-hitstop.js",
+          "attributes": {}
+        }
+      ],
+      "children": [],
+      "prefab": null
+    }
+  ]
+}

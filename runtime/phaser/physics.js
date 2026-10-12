@@ -124,9 +124,12 @@ export class ArcadeAdapter extends Base {
   applyImpulse(e, ix, iy) { const b = this.body(e); if (b) { b.velocity.x += ix / b.mass; b.velocity.y += iy / b.mass; } }
   isGrounded(e) { const b = this.body(e); return !!b && (b.blocked.down || b.touching.down); }
   setGravity(x, y) { this.world.gravity.set(x, y); }
+  /** Things overlapping the box centred at (x, y) with size w×h (world px): entities with bodies, plus `{ tile: true }` markers for solid tilemap tiles. */
   overlapBox(x, y, w, h) {
-    const out = [];
-    for (const b of this.world.overlapRect(x, y, w, h, true, true)) { const e = b.gameObject?.__nordEntity; if (e && !out.includes(e)) out.push(e); }
+    const out = [], l = x - w / 2, t = y - h / 2;
+    this.flushDirty();
+    for (const [e, b] of this.bodies) { const bd = b.go.body; if (bd && bd.enable !== false && bd.x < l + w && bd.x + bd.width > l && bd.y < t + h && bd.y + bd.height > t) out.push(e); }
+    for (const layer of this.layers) for (const tile of layer.getTilesWithinWorldXY(l, t, w, h)) if (tile.collides) { out.push({ tile: true, getComponent: () => null, hasTag: () => false }); break; }
     return out;
   }
   enable(e, on) { const b = this.body(e); if (b) b.enable = on; }
@@ -198,11 +201,12 @@ export class MatterAdapter extends Base {
     return false;
   }
   setGravity(x, y) { this.world.engine.gravity.x = x / 1000; this.world.engine.gravity.y = y / 1000; }
+  /** Entities whose bodies overlap the box centred at (x, y) with size w×h (world px). */
   overlapBox(x, y, w, h) {
-    const out = [];
+    const out = [], l = x - w / 2, t = y - h / 2;
     for (const [e, b] of this.bodies) {
       const bd = b.go.body; if (!bd) continue;
-      if (bd.bounds.max.x >= x && bd.bounds.min.x <= x + w && bd.bounds.max.y >= y && bd.bounds.min.y <= y + h) out.push(e);
+      if (bd.bounds.max.x >= l && bd.bounds.min.x <= l + w && bd.bounds.max.y >= t && bd.bounds.min.y <= t + h) out.push(e);
     }
     return out;
   }

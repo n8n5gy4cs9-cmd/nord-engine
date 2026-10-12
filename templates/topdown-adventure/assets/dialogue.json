@@ -1,0 +1,18 @@
+{
+  "start": "elder",
+  "nodes": {
+    "elder": {
+      "speaker": "Elder",
+      "text": "Brave one! A rusty key lies in the east room. It opens the door in the middle wall — the chest beyond holds the treasure.",
+      "next": "hint"
+    },
+    "hint": {
+      "speaker": "Elder",
+      "text": "Beware the bats. Press I to open your inventory."
+    },
+    "chest": {
+      "speaker": "Chest",
+      "text": "You found the treasure! The adventure is complete."
+    }
+  }
+}

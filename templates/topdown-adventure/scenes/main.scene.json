@@ -1,0 +1,1179 @@
+{
+  "format": 1,
+  "name": "main",
+  "settings": {},
+  "entities": [
+    {
+      "id": "eeeeeee1",
+      "name": "Camera",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          320,
+          180,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "camera",
+          "zoom": 1
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/camera-follow.js",
+          "attributes": {
+            "target": "Hero",
+            "smoothing": 8,
+            "bounds": [
+              0,
+              0,
+              960,
+              540
+            ],
+            "viewport": [
+              640,
+              360
+            ]
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeee2",
+      "name": "Floor",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          480,
+          270,
+          -5
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            960,
+            540
+          ],
+          "tint": "#3e5a3e",
+          "alpha": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeee3",
+      "name": "WallTop",
+      "enabled": true,
+      "tags": [
+        "solid"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          480,
+          8,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            960,
+            16
+          ],
+          "tint": "#4c566a",
+          "alpha": 1
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            960,
+            16
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeee4",
+      "name": "WallBottom",
+      "enabled": true,
+      "tags": [
+        "solid"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          480,
+          532,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            960,
+            16
+          ],
+          "tint": "#4c566a",
+          "alpha": 1
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            960,
+            16
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeee5",
+      "name": "WallLeft",
+      "enabled": true,
+      "tags": [
+        "solid"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          8,
+          270,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            16,
+            540
+          ],
+          "tint": "#4c566a",
+          "alpha": 1
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            16,
+            540
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeee6",
+      "name": "WallRight",
+      "enabled": true,
+      "tags": [
+        "solid"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          952,
+          270,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            16,
+            540
+          ],
+          "tint": "#4c566a",
+          "alpha": 1
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            16,
+            540
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeee7",
+      "name": "Divider1",
+      "enabled": true,
+      "tags": [
+        "solid"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          600,
+          130,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            16,
+            260
+          ],
+          "tint": "#4c566a",
+          "alpha": 1
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            16,
+            260
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeee8",
+      "name": "Divider2",
+      "enabled": true,
+      "tags": [
+        "solid"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          600,
+          450,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            16,
+            180
+          ],
+          "tint": "#4c566a",
+          "alpha": 1
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            16,
+            180
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeee9",
+      "name": "DoorWall",
+      "enabled": true,
+      "tags": [
+        "solid"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          600,
+          330,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            16,
+            60
+          ],
+          "tint": "#8b5e3c",
+          "alpha": 1
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            16,
+            60
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeea",
+      "name": "DoorSensor",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          600,
+          330,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            60,
+            90
+          ],
+          "trigger": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/key-door.js",
+          "attributes": {
+            "mode": "door",
+            "key": "key",
+            "blockers": [
+              "DoorWall"
+            ]
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeeb",
+      "name": "Hero",
+      "enabled": true,
+      "tags": [
+        "player"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          80,
+          100,
+          3
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "animatedSprite",
+          "texture": "assets/sprites/hero.png",
+          "anim": "idle"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "dynamic",
+          "gravityScale": 0,
+          "fixedRotation": true
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            14,
+            14
+          ],
+          "offset": [
+            9,
+            14
+          ]
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/topdown.js",
+          "attributes": {
+            "speed": 120
+          }
+        },
+        {
+          "path": "scripts/health.js",
+          "attributes": {
+            "max": 5,
+            "deathEvent": "died"
+          }
+        },
+        {
+          "path": "scripts/inventory.js",
+          "attributes": {
+            "slots": 12
+          }
+        },
+        {
+          "path": "scripts/hero-anim.js",
+          "attributes": {}
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeec",
+      "name": "Elder",
+      "enabled": true,
+      "tags": [
+        "npc"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          200,
+          180,
+          2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/torch.png",
+          "size": [
+            24,
+            36
+          ],
+          "tint": "#ebcb8b"
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/npc.js",
+          "attributes": {
+            "node": "elder"
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeed",
+      "name": "Key",
+      "enabled": true,
+      "tags": [
+        "item"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          760,
+          100,
+          2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/items/key.png"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            16,
+            16
+          ],
+          "trigger": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/item.js",
+          "attributes": {
+            "id": "key",
+            "name": "Rusty key",
+            "icon": "🔑"
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeee",
+      "name": "Gem0",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          300,
+          400,
+          2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/items/gem_blue.png"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            14,
+            14
+          ],
+          "trigger": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/pickup.js",
+          "attributes": {
+            "kind": "score",
+            "value": 25,
+            "sfx": "assets/audio/sfx/coin.wav"
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeef",
+      "name": "Gem1",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          420,
+          300,
+          2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/items/gem_blue.png"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            14,
+            14
+          ],
+          "trigger": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/pickup.js",
+          "attributes": {
+            "kind": "score",
+            "value": 25,
+            "sfx": "assets/audio/sfx/coin.wav"
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeeg",
+      "name": "Gem2",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          800,
+          440,
+          2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/items/gem_blue.png"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            14,
+            14
+          ],
+          "trigger": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/pickup.js",
+          "attributes": {
+            "kind": "score",
+            "value": 25,
+            "sfx": "assets/audio/sfx/coin.wav"
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeeh",
+      "name": "Potion",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          880,
+          80,
+          2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/items/potion_red.png"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            14,
+            14
+          ],
+          "trigger": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/pickup.js",
+          "attributes": {
+            "kind": "heal",
+            "value": 3,
+            "sfx": "assets/audio/sfx/heal.wav"
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeei",
+      "name": "Bat0",
+      "enabled": true,
+      "tags": [
+        "enemy"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          680,
+          400,
+          3
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "animatedSprite",
+          "texture": "assets/sprites/enemy_bat.png",
+          "anim": "fly"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "dynamic",
+          "gravityScale": 0,
+          "fixedRotation": true
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            16,
+            12
+          ],
+          "offset": [
+            8,
+            10
+          ]
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/ai-chase.js",
+          "attributes": {
+            "speed": 55,
+            "sight": 160,
+            "contactDamage": 1
+          }
+        },
+        {
+          "path": "scripts/enemy-hp.js",
+          "attributes": {}
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeej",
+      "name": "Bat1",
+      "enabled": true,
+      "tags": [
+        "enemy"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          800,
+          300,
+          3
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "animatedSprite",
+          "texture": "assets/sprites/enemy_bat.png",
+          "anim": "fly"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "dynamic",
+          "gravityScale": 0,
+          "fixedRotation": true
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            16,
+            12
+          ],
+          "offset": [
+            8,
+            10
+          ]
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/ai-chase.js",
+          "attributes": {
+            "speed": 55,
+            "sight": 160,
+            "contactDamage": 1
+          }
+        },
+        {
+          "path": "scripts/enemy-hp.js",
+          "attributes": {}
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeek",
+      "name": "Chest",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          900,
+          480,
+          2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/items/chest_closed.png"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            40,
+            40
+          ],
+          "trigger": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/chest.js",
+          "attributes": {}
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeel",
+      "name": "Systems",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [
+        {
+          "path": "scripts/ui-hud.js",
+          "attributes": {
+            "target": "Hero",
+            "style": "hearts",
+            "coins": false
+          }
+        },
+        {
+          "path": "scripts/score.js",
+          "attributes": {
+            "y": 40
+          }
+        },
+        {
+          "path": "scripts/dialogue.js",
+          "attributes": {
+            "file": "assets/dialogue.json"
+          }
+        },
+        {
+          "path": "scripts/ui-inventory.js",
+          "attributes": {}
+        },
+        {
+          "path": "scripts/ui-toasts.js",
+          "attributes": {}
+        },
+        {
+          "path": "scripts/ui-gameover.js",
+          "attributes": {}
+        },
+        {
+          "path": "scripts/util-sfx.js",
+          "attributes": {}
+        }
+      ],
+      "children": [],
+      "prefab": null
+    }
+  ]
+}
