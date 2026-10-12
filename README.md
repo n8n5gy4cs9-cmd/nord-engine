@@ -8,6 +8,6 @@ Personal Rust-based game & app engine + editor. Builds **static HTML web games**
 - Plan & status: [`task.md`](task.md) · [`PRD.json`](PRD.json) · [`docs/PRD.md`](docs/PRD.md)
 - Architecture: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · decisions: [`docs/DECISIONS.md`](docs/DECISIONS.md)
 - Assets (all replaceable placeholders): [`ASSETS.md`](ASSETS.md)
-- AI/contributor handoff: [`AGENTS.md`](AGENTS.md)
+- **AI handoff (start here): [`HANDOFF.md`](HANDOFF.md)** · [`AGENTS.md`](AGENTS.md)
 
 Status: **M0 done** (plans, vendored libs, placeholder assets, workspace skeleton). Next: **M1 foundation** (see task.md).

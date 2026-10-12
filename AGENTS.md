@@ -3,6 +3,8 @@
 Nord Engine = personal Rust-based game/app engine + editor that exports static HTML web games and a Mac app.
 Owner: Crowelian. Credit: **Crowelian 2026 + Sonnet**. Keep it **pragmatic, not over-engineered**; **reuse/clone existing code**.
 
+> **New session? Read `HANDOFF.md` first.**
+
 ## Read in this order
 1. `task.md` — what is done / undone (generated; truth = `PRD.json`)
 2. `docs/PRD.md` — goals, requirements, principles
