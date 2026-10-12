@@ -1,0 +1,2 @@
+{ "format": 1, "id": "e2e-phaser", "name": "e2e", "startScene": "tests/e2e/phaser/main.scene.json",
+  "display": { "width": 480, "height": 270, "scale": "fit", "pixelArt": true, "background": "#202838" }, "input": { "actions": {} } }

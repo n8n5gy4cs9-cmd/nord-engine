@@ -1,0 +1,8 @@
+{ "name": "main", "entities": [
+  { "id": "cam", "name": "Camera", "components": [{ "type": "camera", "zoom": 1 }] },
+  { "id": "hero", "name": "Hero", "transform": { "pos": [100, 100, 1] },
+    "components": [{ "type": "animatedSprite", "image": "assets/sprites/hero.png", "anim": "walk" }],
+    "scripts": [{ "path": "tests/e2e/phaser/scripts/mover.js" }] },
+  { "id": "c", "name": "Coin", "transform": { "pos": [200, 100, 0], "scale": [2, 2, 1] }, "components": [{ "type": "sprite", "image": "assets/sprites/coin.png" }] },
+  { "id": "t", "name": "Label", "transform": { "pos": [10, 10, 5] }, "components": [{ "type": "text", "text": "Nord", "size": 20, "color": "#ffd34d" }] }
+] }

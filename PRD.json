@@ -507,7 +507,7 @@
       "id": "M2-09",
       "milestone": "M2",
       "title": "runtime/phaser: boot, sprite/animatedSprite/text/tilemap/particles/camera components",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M2-10",

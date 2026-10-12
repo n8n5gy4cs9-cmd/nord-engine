@@ -3,13 +3,13 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 32/119 tasks (27%)** · updated 2026-10-12
+**Overall: 33/119 tasks (28%)** · updated 2026-10-12
 
 | Milestone | Progress |
 |---|---|
 | M0 Planning, identity, assets, vendoring | 13/13 (100%) |
 | M1 Foundation | 11/11 (100%) |
-| M2 JS runtimes | 8/18 (44%) |
+| M2 JS runtimes | 9/18 (50%) |
 | M3 Editor | 0/22 (0%) |
 | M4 Export | 0/10 (0%) |
 | M5 Rust/WASM | 0/9 (0%) |
@@ -18,11 +18,11 @@
 | M8 Polish & portability | 0/8 (0%) |
 
 ## Next up
-- **M2-09** runtime/phaser: boot, sprite/animatedSprite/text/tilemap/particles/camera components
 - **M2-10** runtime/phaser: arcade + matter physics components, collisions, triggers, events to scripts
 - **M2-11** runtime/phaser: parallax, lights 2D, pixel-art mode, scale modes
 - **M2-12** runtime/babylon: boot, mesh/model(glTF)/material/light/camera/skybox components
 - **M2-13** runtime/babylon: Havok physics, collisions, triggers, raycast helpers
+- **M2-14** runtime/babylon: animation, particles, post-process pipeline, Babylon GUI bridge
 
 ## M0 — Planning, identity, assets, vendoring
 _Plans, brand, placeholder assets, vendored libs, workspace skeleton_
@@ -67,7 +67,7 @@ _nord.js core + Phaser 2D + Babylon 3D adapters_
 - [x] **M2-06** runtime/core: save/load (localStorage slots, versioned)
 - [x] **M2-07** runtime/core: audio manager (buses, unlock, music crossfade)
 - [x] **M2-08** runtime/core: DOM UI layer (HUD/menu primitives, CSS theme)
-- [ ] **M2-09** runtime/phaser: boot, sprite/animatedSprite/text/tilemap/particles/camera components
+- [x] **M2-09** runtime/phaser: boot, sprite/animatedSprite/text/tilemap/particles/camera components
 - [ ] **M2-10** runtime/phaser: arcade + matter physics components, collisions, triggers, events to scripts
 - [ ] **M2-11** runtime/phaser: parallax, lights 2D, pixel-art mode, scale modes
 - [ ] **M2-12** runtime/babylon: boot, mesh/model(glTF)/material/light/camera/skybox components
