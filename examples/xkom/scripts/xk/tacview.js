@@ -21,7 +21,7 @@ export class TacView {
     for (const u of s.units) this.addSprite(u);
     this.cursor = h.img('tui', 0, 0, 0, 3000, [0.5, 0]); this.objs.push(this.cursor);
     this.ovl = []; this.buildHud(); this.refresh(); this.select(live(s, 'x')[0]); this.focus(this.sel, true);
-    h.music('music_game', 0.22, { offset: 0, restart: true }); this.msg(`MISSION START - ${s.aliensTotal} HOSTILES DETECTED`);
+    h.music('music_game', 0.22, { offset: h.musicConfig?.tacticalStartSeconds ?? 0, restart: true }); this.msg(`MISSION START - ${s.aliensTotal} HOSTILES DETECTED`);
     this.timer = ps.time.addEvent({ delay: 380, loop: true, callback: () => { this.anim++; this.idle(); } });
   }
   destroy() { if (!this.s) return; this.timer?.remove(); this.msgT?.remove(); for (const o of [...this.objs, ...this.ovl, ...this.fxs, ...this.preview]) o.destroy?.(); for (const e of this.spr.values()) e.sp.destroy(); this.spr.clear(); this.h.hud.removeAll(true); this.s = null; }

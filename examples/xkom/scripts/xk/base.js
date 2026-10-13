@@ -82,7 +82,7 @@ export class XkBase extends NordScript {
     return [x < margin ? -1 : x >= width - margin ? 1 : 0, y < margin ? -1 : y >= height - margin ? 1 : 0];
   }
   sfx(n, v = 0.5, r = 1) { this.game.audio.play(`assets/audio/sfx/${n}.wav`, { volume: v, rate: r }); }
-  music(n, v = 0.25, options = {}) { this.game.audio.music(`assets/audio/music/${n}.mp3`, { volume: v, ...options }); }
+  music(n, v = 0.25, options = {}) { this.game.audio.music(`assets/audio/music/${n}.mp3`, { volume: v, fade: this.musicConfig?.fadeInSeconds ?? 1, ...options }); }
   wait(ms) { return new Promise((r) => this.ps.time.delayedCall(Math.max(1, ms), r)); }
   tw(cfg) { return new Promise((r) => this.ps.tweens.add({ ...cfg, onComplete: r })); }
   /** pixel text; inHud=true → child of the fixed HUD container (coordinates are screen-local) */

@@ -5,21 +5,27 @@ import { withPage, waitReady, ROOT } from './e2e-lib.mjs';
 const dir = process.argv[2] ?? `${ROOT}/examples/xkom`;
 assert.deepEqual(fs.readdirSync(`${dir}/assets/audio/music`).sort(), ['music_base.mp3', 'music_game.mp3', 'music_title.mp3']);
 const { errors, result } = await withPage(dir, async page => {
-  await waitReady(page); await page.waitForFunction(() => window.__xk?.mode === 'title');
-  const track = async name => {
-    await page.waitForFunction(n => { const a = window.__nord.audio; return a.musicPath === `assets/audio/music/music_${n}.mp3` && a._music?.src?.buffer && a.ctx.state === 'running'; }, name);
-    const r = await page.evaluate(() => { const m = window.__nord.audio._music, data = m.src.buffer.getChannelData(0); let peak = 0; for (let i = 0; i < data.length; i += 97) peak = Math.max(peak, Math.abs(data[i])); return { loop: m.src.loop, seconds: m.src.buffer.duration, peak }; });
-    assert.equal(r.loop, true); assert.ok(r.seconds > 20); assert.ok(r.peak > 0.05); return r;
-  };
-  await page.mouse.click(480, 300); await track('title'); assert.equal(await page.evaluate(() => window.__xk.mode), 'title');
-  await page.screenshot({ path: `${ROOT}/docs/screenshots/xkom-title.png` });
-  await page.keyboard.press('Enter'); await track('base'); await page.evaluate(() => { window.__baseAudioSource = window.__nord.audio._music.src; });
-  await page.keyboard.press('b'); await page.waitForFunction(() => window.__xk.mode === 'base'); await track('base');
-  assert.equal(await page.evaluate(() => window.__nord.audio._music.src === window.__baseAudioSource), true);
-  await page.evaluate(() => {
+  // Nonzero offsets for every role exercise config wiring, not only default-zero playback.
+  await page.route('**/scripts/music-config.js', route => route.fulfill({ contentType: 'text/javascript', body: 'export const MUSIC_CONFIG = ' + JSON.stringify({ fadeInSeconds: 0.35, titleStartSeconds: 2, baseStartSeconds: 3, interceptStartSeconds: 91, tacticalStartSeconds: 4, rtsStartSeconds: 5 }) + ';' }));
+  await page.addInitScript(() => {
+    const set = AudioParam.prototype.setValueAtTime, ramp = AudioParam.prototype.linearRampToValueAtTime;
+    AudioParam.prototype.setValueAtTime = function(value, time) { this.__testSetTime = time; return set.call(this, value, time); };
+    AudioParam.prototype.linearRampToValueAtTime = function(value, time) { this.__testFade = time - this.__testSetTime; return ramp.call(this, value, time); };
     const start = AudioBufferSourceNode.prototype.start;
     AudioBufferSourceNode.prototype.start = function(when, offset = 0, ...rest) { this.__testOffset = offset; return start.call(this, when, offset, ...rest); };
   });
+  await page.reload();
+  await waitReady(page); await page.waitForFunction(() => window.__xk?.mode === 'title');
+  const track = async name => {
+    await page.waitForFunction(n => { const a = window.__nord.audio; return a.musicPath === `assets/audio/music/music_${n}.mp3` && a._music?.src?.buffer && a.ctx.state === 'running'; }, name);
+    const r = await page.evaluate(() => { const m = window.__nord.audio._music, data = m.src.buffer.getChannelData(0); let peak = 0; for (let i = 0; i < data.length; i += 97) peak = Math.max(peak, Math.abs(data[i])); return { loop: m.src.loop, seconds: m.src.buffer.duration, peak, fadeSeconds: m.gain.gain.__testFade }; });
+    assert.ok(Math.abs(r.fadeSeconds - 0.35) < 0.001, `music fade-in: ${r.fadeSeconds}`); assert.equal(r.loop, true); assert.ok(r.seconds > 20); assert.ok(r.peak > 0.05); return r;
+  };
+  await page.mouse.click(480, 300); await track('title'); assert.equal(await page.evaluate(() => window.__xk.mode), 'title');
+  assert.equal(await page.evaluate(() => window.__nord.audio._music.src.__testOffset), 2);
+  await page.keyboard.press('Enter'); await track('base'); assert.equal(await page.evaluate(() => window.__nord.audio._music.src.__testOffset), 3); await page.evaluate(() => { window.__baseAudioSource = window.__nord.audio._music.src; });
+  await page.keyboard.press('b'); await page.waitForFunction(() => window.__xk.mode === 'base'); await track('base');
+  assert.equal(await page.evaluate(() => window.__nord.audio._music.src === window.__baseAudioSource), true);
   await page.keyboard.press('b'); await page.keyboard.press('1'); await page.waitForFunction(() => window.__xk.mode === 'air'); await track('game');
   assert.equal(await page.evaluate(async () => window.__nord.audio._music.src.__testOffset === (await import('/scripts/music-config.js')).MUSIC_CONFIG.interceptStartSeconds), true);
   await page.evaluate(() => { window.__gameAudioSource = window.__nord.audio._music.src; });
@@ -27,16 +33,17 @@ const { errors, result } = await withPage(dir, async page => {
   assert.equal(await page.evaluate(() => window.__nord.audio._music.src === window.__gameAudioSource), true);
   await page.keyboard.press('d'); await page.waitForFunction(() => window.__xk.mode === 'tac'); await track('game');
   assert.equal(await page.evaluate(() => window.__nord.audio._music.src === window.__gameAudioSource), false);
-  assert.equal(await page.evaluate(() => window.__nord.audio._music.src.__testOffset), 0);
+  assert.equal(await page.evaluate(() => window.__nord.audio._music.src.__testOffset), 4);
   await page.evaluate(() => { window.__tacAudioSource = window.__nord.audio._music.src; });
   await page.evaluate(() => { window.__xk.tac.destroy(); window.__xk.startRts(); }); await track('game');
   assert.equal(await page.evaluate(() => window.__nord.audio._music.src === window.__tacAudioSource), false);
-  assert.equal(await page.evaluate(() => window.__nord.audio._music.src.__testOffset), 0);
+  assert.equal(await page.evaluate(() => window.__nord.audio._music.src.__testOffset), 5);
   await page.evaluate(() => { window.__xk.rts.destroy(); window.__xk.ending(true); }); await track('base');
+  assert.equal(await page.evaluate(() => window.__nord.audio._music.src.__testOffset), 3);
   const sfx = fs.readdirSync(`${dir}/assets/audio/sfx`).filter(f => f.endsWith('.wav')).sort(); assert.equal(sfx.length, 21);
   const decoded = await page.evaluate(async names => { const a = window.__nord.audio, out = []; for (const n of names) { const b = await a.load(`assets/audio/sfx/${n}`); out.push({ name: n, seconds: b?.duration ?? 0 }); } return out; }, sfx);
   for (const f of decoded) assert.ok(f.seconds > 0, `${f.name} decodes`);
   return await page.evaluate(() => window.__nord.errors.map(e => e.err?.message));
 }, { path: '/?seed=42', viewport: { width: 960, height: 600 } });
 assert.deepEqual(errors, []); assert.deepEqual(result, []);
-console.log('PASS: exactly 3 music files; audible looping WebAudio buffers; title unlock; title/base/game scene routing; configured radar offset, continuous shooter playback, tactical/RTS restart at zero; all 21 SFX decode.');
+console.log('PASS: exactly 3 music files; audible looping WebAudio buffers; title unlock; title/base/game scene routing; fast configured fade-in, nonzero configured offsets for all songs, continuous radar/shooter and base playback, tactical/RTS restart at configured offsets; all 21 SFX decode.');

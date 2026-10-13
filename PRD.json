@@ -1145,6 +1145,12 @@
       "status": "done"
     },
     {
+      "id": "M6-34",
+      "milestone": "M6",
+      "title": "Configurable start offsets for every X-KOM music role",
+      "status": "done"
+    },
+    {
       "id": "M7-01",
       "milestone": "M7",
       "title": "tools/build-manual.mjs (marked + CodeMirror readonly + nord-live blocks)",

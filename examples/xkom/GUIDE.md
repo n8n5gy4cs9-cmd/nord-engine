@@ -49,6 +49,9 @@ Strategic saves retain the seed, funds, squad experience, intel, mission counts,
 ## URL helpers (testing)
 `?start=geo|base|air|tac|rts` jump to a screen · `?seed=123` fixed campaign seed. Inspector attributes: seed, goal (intel required to locate the source), presence (start %).
 
+## Music tuning
+Edit `tools/examples/xkom/scripts/music-config.js` for title/base/interception/tactical/RTS start offsets in seconds (decimals work) and `fadeInSeconds` (default 0.35 for a quick fade-in/crossfade). Regenerate with `node tools/gen_examples.mjs xkom redfront`, then reload. Radar-to-shooter and globe-to-base playback continues; tactical/RTS missions restart at their configured offsets. Songs loop the whole track.
+
 ## UI font tuning
 Edit **`tools/examples/xkom/scripts/xk/ui-config.js`**, then run `node tools/gen_examples.mjs xkom redfront` and reload. `FONT_SIZES` owns body, button, heading, title, bitmap fallback/RTS, pause, note and console sizes, plus Red Front defaults. Canvas sizes are logical pixels (3× display zoom); DOM pause/console sizes are screen pixels. Existing per-label scales multiply the configured base size. Button labels center their visible pixels, so font ascent/descent padding cannot push the label up or down. Tactical TU/HP bars remain inside the inset status panel.
 
