@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 160/172 tasks (93%)** · updated 2026-10-13
+**Overall: 161/173 tasks (93%)** · updated 2026-10-13
 
 | Milestone | Progress |
 |---|---|
@@ -13,7 +13,7 @@
 | M3 Editor | 24/26 (92%) |
 | M4 Export | 8/11 (73%) |
 | M5 Rust/WASM | 9/9 (100%) |
-| M6 Library | 35/35 (100%) |
+| M6 Library | 36/36 (100%) |
 | M7 Docs | 13/13 (100%) |
 | M8 Polish & portability | 12/19 (63%) |
 | M9 Desktop apps | 16/16 (100%) |
@@ -176,6 +176,7 @@ _snippets, controllers, systems, asset packs, examples_
 - [x] **M6-33** Fix X-KOM UI text alignment, centralize font sizes and add portable checkpoint export/import
 - [x] **M6-34** Configurable start offsets for every X-KOM music role
 - [x] **M6-35** WASD tactical/RTS scrolling and globe rotation with conflict-free RTS commands
+- [x] **M6-36** Seeded tactical mission structures/deployments and simple safe RTS battlefield variation
 
 ## M7 — Docs
 _manual, guides, tutorials, in-editor docs_

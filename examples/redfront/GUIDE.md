@@ -27,3 +27,6 @@ Red Alert-style skirmish on a **procedural map** (new seed every launch, `?seed=
 Costs, HP, speeds and ranges adapted from OpenRA's Red Alert rules (GPL-3, `mods/ra/rules`); pathfinding follows OpenRA's grid A*; rules reference: EA CnC Remastered source (GPL-3). No art/sound from those projects — new hand-pixelled sprites, synthesized audio. See `THIRD_PARTY.md`.
 ## Honest limits
 No fog of war, no base building (pre-built bases), no naval/air units, units face left/right only. Headless-verified only.
+
+## Battlefield variation
+The shared RTS generator shifts the two bases slightly, chooses compact/spread player-base arrangements and mirrors the map across either axis. Buildings, starting forces, costs, cash and AI stay the same. Roads, clear base areas and nearby ore retain reachable routes. The same seed reproduces a battlefield.

@@ -22,6 +22,7 @@ REPOS=(
 "eframe-template|emilk/eframe_template|"
 "phaser3-examples|phaserjs/examples|public/src"
 "rapier|dimforge/rapier|examples2d examples3d LICENSE"
+"openxcom|OpenXcom/OpenXcom|bin/standard/xcom1 src/Battlescape LICENSE.txt"
 "aw2bhr|Eebit/aw2bhr|"
 "redriver2|OpenDriver2/REDRIVER2|src_rebuild/Game/C src_rebuild/Game/dr2types.h LICENSE README.md"
 )

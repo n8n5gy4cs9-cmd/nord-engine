@@ -33,20 +33,20 @@ export function newRts({ seed = 1, mode = 'xkom', bonus = 0, w = 44, h = 44, dif
     credits: { p: 2500 + (mods?.credits ?? 0), e: 1500 }, ai: { t: 0, wave: 5, timer: 40, sent: 0 }, lowPower: { p: false, e: false } };
   const blob = (kind, n, rmin, rmax) => { for (let i = 0; i < n; i++) { const cx = r() * w, cy = r() * h, rad = rmin + r() * (rmax - rmin); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if ((x - cx) ** 2 + (y - cy) ** 2 < rad * rad * (0.7 + r() * 0.5)) tiles[y * w + x] = kind; } };
   blob(TILE.DIRT, 6, 2, 4); blob(TILE.WATER, 4, 2, 4.5); blob(TILE.TREE, 10, 1.2, 3); blob(TILE.ROCK, 8, 0.8, 1.6);
-  const P = { x: 4, y: 30 }, E = mode === 'xkom' ? { x: 31, y: 4 } : { x: 28, y: 4 };
+  const jitter = () => ((r() * 5) | 0) - 2;
+  const P = { x: 4 + jitter(), y: 30 + jitter() }, E = { x: (mode === 'xkom' ? 31 : 28) + jitter(), y: 4 + jitter() }, spread = r() < 0.5;
   // carve a winding road between the bases + clear both base areas
   let cx = P.x + 6, cy = P.y; const tx = E.x + 3, ty = E.y + 5;
   while (Math.abs(cx - tx) + Math.abs(cy - ty) > 2) { for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const x = cx + dx, y = cy + dy; if (x >= 0 && y >= 0 && x < w && y < h) tiles[y * w + x] = TILE.DIRT; } if (r() < 0.5 && cx !== tx) cx += cx < tx ? 1 : -1; else if (cy !== ty) cy += cy < ty ? 1 : -1; else cx += cx < tx ? 1 : -1; }
   for (const o of [{ x: P.x + 6, y: P.y + 4 }, { x: E.x + 6, y: E.y + 5 }]) for (let y = o.y - 9; y <= o.y + 9; y++) for (let x = o.x - 11; x <= o.x + 11; x++) if (x >= 0 && y >= 0 && x < w && y < h && tiles[y * w + x] !== TILE.DIRT) tiles[y * w + x] = TILE.GRASS;
   const field = (fx, fy, rad) => { for (let y = fy - rad; y <= fy + rad; y++) for (let x = fx - rad; x <= fx + rad; x++) if (x >= 0 && y >= 0 && x < w && y < h && (x - fx) ** 2 + (y - fy) ** 2 <= rad * rad && tiles[y * w + x] !== TILE.WATER) { tiles[y * w + x] = TILE.DIRT; ore[y * w + x] = 300 + ((r() * 500) | 0); } };
   field(P.x + 14, P.y + 7, 3); field(P.x + 10, P.y - 8, 2); field(22, 22, 3); field(E.x - 8, E.y + 10, 2);
-  const mul = diff;
   if (mode === 'xkom') { // player: classic base. enemy: hive nest
-    addB(s, 'fact', 'p', P.x, P.y); addB(s, 'powr', 'p', P.x + 4, P.y); addB(s, 'barr', 'p', P.x, P.y + 4); addB(s, 'weap', 'p', P.x + 3, P.y + 4); addB(s, 'proc', 'p', P.x + 7, P.y + 2); addB(s, 'gun', 'p', P.x + 10, P.y + 1); addB(s, 'gun', 'p', P.x + 3, P.y - 1);
-    addB(s, 'hive', 'e', E.x, E.y); addB(s, 'brood', 'e', E.x - 4, E.y + 3); addB(s, 'brood', 'e', E.x + 4, E.y + 4); addB(s, 'tower', 'e', E.x - 1, E.y + 4); addB(s, 'tower', 'e', E.x + 3, E.y + 5); addB(s, 'tower', 'e', E.x - 2, E.y - 1);
+    addB(s, 'fact', 'p', P.x, P.y); addB(s, 'powr', 'p', P.x + 4, P.y + (spread ? 1 : 0)); addB(s, 'barr', 'p', P.x, P.y + (spread ? 5 : 4)); addB(s, 'weap', 'p', P.x + (spread ? 4 : 3), P.y + (spread ? 5 : 4)); addB(s, 'proc', 'p', P.x + 7, P.y + (spread ? 1 : 2)); addB(s, 'gun', 'p', P.x + 10, P.y + 1); addB(s, 'gun', 'p', P.x + 3, P.y - 1);
+    addB(s, 'hive', 'e', E.x, E.y); addB(s, 'brood', 'e', E.x - 4, E.y + (spread ? 5 : 3)); addB(s, 'brood', 'e', E.x + 4, E.y + (spread ? 1 : 4)); addB(s, 'tower', 'e', E.x - 1, E.y + 4); addB(s, 'tower', 'e', E.x + 3, E.y + 5); addB(s, 'tower', 'e', E.x - 2, E.y - 1);
     for (let i = 0; i < 6; i++) addU(s, i % 3 === 2 ? 'spitter' : 'warrior', 'e', E.x + i * 0.8, E.y + 5.5);
   } else {
-    addB(s, 'fact', 'p', P.x, P.y); addB(s, 'powr', 'p', P.x + 4, P.y); addB(s, 'barr', 'p', P.x, P.y + 4); addB(s, 'weap', 'p', P.x + 3, P.y + 4); addB(s, 'proc', 'p', P.x + 7, P.y + 2); addB(s, 'gun', 'p', P.x + 10, P.y + 1);
+    addB(s, 'fact', 'p', P.x, P.y); addB(s, 'powr', 'p', P.x + 4, P.y + (spread ? 1 : 0)); addB(s, 'barr', 'p', P.x, P.y + (spread ? 5 : 4)); addB(s, 'weap', 'p', P.x + (spread ? 4 : 3), P.y + (spread ? 5 : 4)); addB(s, 'proc', 'p', P.x + 7, P.y + (spread ? 1 : 2)); addB(s, 'gun', 'p', P.x + 10, P.y + 1);
     addB(s, 'fact', 'e', E.x + 5, E.y); addB(s, 'powr', 'e', E.x + 1, E.y); addB(s, 'powr', 'e', E.x + 1, E.y + 2); addB(s, 'barr', 'e', E.x + 5, E.y + 4); addB(s, 'weap', 'e', E.x + 2, E.y + 5); addB(s, 'proc', 'e', E.x - 3, E.y + 3);
     addB(s, 'gun', 'e', E.x - 1, E.y + 6); addB(s, 'gun', 'e', E.x + 4, E.y + 7); addB(s, 'gun', 'e', E.x - 1, E.y + 1);
     s.credits.e = 2500;
@@ -56,7 +56,23 @@ export function newRts({ seed = 1, mode = 'xkom', bonus = 0, w = 44, h = 44, dif
   addU(s, 'ltank', 'p', P.x + 6, P.y + 7.5); addU(s, 'ltank', 'p', P.x + 7.5, P.y + 8);
   for (let i = 0; i < bonus; i++) addU(s, 'rifle', 'p', P.x + 1 + i * 0.6, P.y + 9); // surviving X-KOM squad joins the operation
   if (mode !== 'xkom') for (let i = 0; i < 5; i++) addU(s, i % 3 === 2 ? 'rocket' : 'rifle', 'e', E.x + 3 + i * 0.7, E.y + 9);
-  void mul; return s;
+  // Mirror the whole battlefield, including footprints/ore; keep building counts and economy unchanged.
+  const flipX = r() < 0.5, flipY = r() < 0.5;
+  s.layout = `${spread ? 'SPREAD' : 'COMPACT'} / ${flipY ? 'N' : 'S'}${flipX ? 'E' : 'W'}`;
+  const ti = tiles.slice(), oi = ore.slice(); s.occ.fill(0);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const k = (flipY ? h - 1 - y : y) * w + (flipX ? w - 1 - x : x); tiles[k] = ti[y * w + x]; ore[k] = oi[y * w + x]; }
+  for (const b of s.blds) { if (flipX) b.tx = w - b.tx - b.w; if (flipY) b.ty = h - b.ty - b.h; for (let y = b.ty; y < b.ty + b.h; y++) for (let x = b.tx; x < b.tx + b.w; x++) { s.occ[y * w + x] = b.id; ore[y * w + x] = 0; } }
+  for (const u of s.units) {
+    if (flipX) u.x = w - u.x; if (flipY) u.y = h - u.y;
+    if (blocked(s, Math.floor(u.x), Math.floor(u.y))) {
+      let found = false;
+      for (let radius = 1; radius <= 5 && !found; radius++) for (let dy = -radius; dy <= radius && !found; dy++) for (let dx = -radius; dx <= radius && !found; dx++) {
+        const x = Math.floor(u.x) + dx, y = Math.floor(u.y) + dy;
+        if (!blocked(s, x, y)) { u.x = x + 0.5; u.y = y + 0.5; found = true; }
+      }
+    }
+  }
+  return s;
 }
 function addB(s, type, team, tx, ty) {
   const [fw, fh] = FP[type], b = { id: s.nextId++, type, team, tx, ty, w: fw, h: fh, hp: B[type].hp, max: B[type].hp, cd: 0, q: [], prog: 0, rally: null, flash: 0 };

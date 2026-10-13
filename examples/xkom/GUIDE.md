@@ -20,7 +20,14 @@ The clock runs only on **Geoscape/HQ map and Base/research**, while the page is 
 
 Contacts persist when you switch between globe and Base. Initial contacts expire after **4, 5 and 6 waiting days** (first occupation after about six minutes). Ignoring a contact lets aliens occupy its town: **−$200 and +8 threat**. Occupied towns then cost **$50 and +1 extra threat per waiting day**; ordinary background pressure adds +1 threat/day. Ignored occupied-town raids reinforce aliens (+3 threat). Fresh contacts refill the three slots, and squad sizes grow with mission count and waiting days (capped at 20). Win a mission at an occupied town to liberate it. Research advances with waiting days as well as mission rewards. Mission-calendar jumps do not consume waiting deadlines.
 
-At 100 threat, Hive Strike begins. A successful Hive Strike resets threat to 20%; town occupation remains until liberated. These towns are abstract campaign states on the existing world map; tactical maps remain procedural farm/UFO battlefields.
+At 100 threat, Hive Strike begins. A successful Hive Strike resets threat to 20%; town occupation remains until liberated. These towns are abstract campaign states on the existing world map; tactical maps choose seeded farmland, settlement, depot or woodland structures.
+
+## Mission variation
+Tactical missions select **farmland** (barn + UFO), **settlement** (three buildings and crossing roads), **depot** (two warehouses and an alien power source), or **woodland** (denser trees, supply crates and a smaller UFO). Rotations/mirrors and a shifted landing formation vary the approach edge. Aliens occupy connected rooms and outdoor cover, initially outside squad sight range; doors stay open and all spawns are reachable. Art, combat stats, squad/alien counts, fog and kill-all objectives are unchanged. The mission's style appears in its opening message.
+
+RTS uses two compact/spread base arrangements, small base-position shifts and horizontal/vertical mirroring. Starting buildings, forces, cash and enemy AI are unchanged. The existing cleared base areas and connecting road remain; units spawn on walkable tiles and both bases remain accessible. X-KOM and Red Front share this generator.
+
+The same mission seed reproduces the same battlefield (including a checkpoint restart); different missions/campaigns choose different seeds. No original X-COM map files are shipped. The block approach was studied in OpenXcom's terrain rules and BattlescapeGenerator; these layouts use Nord's existing art and original geometry.
 
 ## Save, load and pause
 **P / Esc** opens pause in the map, Base, radar/shooter, tactical and RTS modes. Resume, Save campaign, Load campaign, Export save, Import save, strategic-clock toggle and Return to title are available. The simulation, scene timers and walking tweens freeze while paused. Escape closes help/console first when one is open.

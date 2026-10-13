@@ -32,28 +32,51 @@ export function newMission({ seed = 1, squad, aliens = 5, mods = null } = {}) {
 }
 function gen(seed, squad, nAliens) {
   const r = rng(seed), W = 24, H = 24, g = new Array(W * H).fill('grass'), o = new Array(W * H).fill(null), I = (x, y) => y * W + x;
-  const inb = (x, y) => x >= 0 && y >= 0 && x < W && y < H;
+  const layout = ['FARMLAND', 'SETTLEMENT', 'DEPOT', 'WOODLAND'][(r() * 4) | 0], targets = new Set();
+  // Original blocks, inspired by OpenXcom terrain/map-script assembly (see THIRD_PARTY.md).
   const patch = (kind, n, rw, rh) => { for (let i = 0; i < n; i++) { const x0 = (r() * (W - rw)) | 0, y0 = (r() * (H - rh)) | 0; for (let y = y0; y < y0 + rh; y++) for (let x = x0; x < x0 + rw; x++) g[I(x, y)] = kind; } };
-  patch('dirt', 5, 4, 3); patch('field', 3, 7, 5);
-  const roadY = 13 + ((r() * 3) | 0); for (let x = 0; x < W; x++) { g[I(x, roadY)] = 'road'; g[I(x, roadY + 1)] = 'road'; }
-  // barn (west-middle): wooden walls, two doors
-  const bx = 5 + ((r() * 4) | 0), by = 4 + ((r() * 3) | 0), bw = 6, bh = 5;
-  for (let y = by; y < by + bh; y++) for (let x = bx; x < bx + bw; x++) { g[I(x, y)] = 'dirt'; if (x === bx || y === by || x === bx + bw - 1 || y === by + bh - 1) o[I(x, y)] = 'wood'; }
-  o[I(bx + 2, by + bh - 1)] = null; o[I(bx + bw - 1, by + 2)] = null; o[I(bx + 3, by + 2)] = 'crate';
-  // UFO (north-east): hull ring, metal floor, power source
-  const ux = 16 + ((r() * 2) | 0), uy = 5 + ((r() * 2) | 0), rad = 4.4;
-  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const d = Math.hypot((x - ux) / 1.15, (y - uy)); if (d <= rad) g[I(x, y)] = 'metal'; if (d <= rad && d > rad - 1.1) o[I(x, y)] = 'hull'; else if (d <= rad) o[I(x, y)] = null; }
-  for (let k = -1; k <= 1; k++) { o[I(ux + k, uy + 4)] = null; o[I(ux - 5, uy + k)] = null; o[I(ux - 4, uy + k)] = null; o[I(ux + k, uy + 3)] = null; }
-  o[I(ux, uy)] = 'power';
-  // trees
-  for (let i = 0; i < 28; i++) { const x = (r() * W) | 0, y = (r() * H) | 0; if (g[I(x, y)] === 'grass' || g[I(x, y)] === 'dirt') if (!o[I(x, y)] && !(x < 7 && y > 15) && Math.hypot(x - ux, y - uy) > rad + 1) o[I(x, y)] = 'tree'; }
-  for (let y = 16; y < 24; y++) for (let x = 0; x < 8; x++) if (o[I(x, y)] === 'tree') o[I(x, y)] = null;
-  const s = { w: W, h: H, g, o, units: [], turn: 1, side: 'x', nextId: 1, rnd: r, result: null, kills: 0, log: [], aliensTotal: nAliens, alert: false, ufo: { x: ux, y: uy } };
-  squad.forEach((m, i) => { const x = 2 + (i % 3), y = 20 + ((i / 3) | 0) * 1; addUnit(s, 'soldier', 'x', x, y, m); });
-  const metal = []; for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (g[I(x, y)] === 'metal' && !o[I(x, y)] && Math.hypot(x - ux, y - uy) > 1) metal.push([x, y]);
-  for (let i = 0; i < nAliens && metal.length; i++) { const [x, y] = metal.splice((r() * metal.length) | 0, 1)[0]; addUnit(s, i % 4 === 3 ? 'muton' : 'sectoid', 'a', x, y); }
-  // reachability: a soldier must be able to walk to the UFO door
-  const reach0 = reach(s, s.units[0]); if (!reach0.has(key(ux, uy + 5)) && !reach0.has(key(ux - 6, uy))) return null;
+  patch('dirt', 5, 4, 3); if (layout === 'FARMLAND') patch('field', 4, 7, 5);
+  const roadY = 11 + ((r() * 4) | 0); for (let x = 0; x < W; x++) for (let dy = 0; dy < 2; dy++) g[I(x, roadY + dy)] = 'road';
+  if (layout === 'SETTLEMENT') for (let y = 0; y < H; y++) for (let x = 10; x < 12; x++) g[I(x, y)] = 'road';
+  const room = (x0, y0, w, h, wall = 'wood', floor = 'dirt') => {
+    for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) {
+      g[I(x, y)] = floor; const edge = x === x0 || y === y0 || x === x0 + w - 1 || y === y0 + h - 1;
+      o[I(x, y)] = edge ? wall : null; if (!edge) targets.add(I(x, y));
+    }
+    for (let k = 0; k < 2; k++) { o[I(x0 + 2 + k, y0 + h - 1)] = null; o[I(x0 + w - 1, y0 + 1 + k)] = null; }
+    o[I(x0 + 2, y0 + 2)] = 'crate';
+  };
+  let ufo = null;
+  if (layout === 'FARMLAND' || layout === 'WOODLAND') {
+    if (layout === 'FARMLAND') room(4 + ((r() * 3) | 0), 4 + ((r() * 3) | 0), 5 + ((r() * 2) | 0), 5);
+    const ux = 16 + ((r() * 2) | 0), uy = 5 + ((r() * 3) | 0), rad = layout === 'WOODLAND' ? 3.4 : 4.4; ufo = { x: ux, y: uy };
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const d = Math.hypot((x - ux) / 1.15, y - uy); if (d <= rad) { g[I(x, y)] = 'metal'; o[I(x, y)] = d > rad - 1.1 ? 'hull' : null; if (!o[I(x, y)]) targets.add(I(x, y)); } }
+    for (let y = uy; y <= uy + Math.ceil(rad); y++) for (let x = ux - 1; x <= ux + 1; x++) o[I(x, y)] = null;
+    o[I(ux, uy)] = 'power';
+    if (layout === 'WOODLAND') for (let i = 0; i < 5; i++) o[I(6 + i, 8 + i % 2)] = 'crate';
+  } else if (layout === 'SETTLEMENT') {
+    room(3, 3, 6, 5); room(14, 2, 7, 6); room(14, 12, 6, 5);
+  } else {
+    room(3, 3, 8, 6, 'wood', 'metal'); room(16, 3, 6, 11, 'hull', 'metal'); o[I(18, 8)] = 'power';
+  }
+  // Preserve a clear landing zone; tree density varies by mission style.
+  for (let i = 0; i < (layout === 'WOODLAND' ? 65 : 22); i++) { const x = (r() * W) | 0, y = (r() * H) | 0; if (!o[I(x, y)] && g[I(x, y)] === 'grass' && !(x < 8 && y >= 17)) o[I(x, y)] = 'tree'; }
+  const sx = 2 + ((r() * 3) | 0), sy = 19 + ((r() * 3) | 0);
+  const s = { w: W, h: H, g, o, layout, units: [], turn: 1, side: 'x', nextId: 1, rnd: r, result: null, kills: 0, log: [], aliensTotal: nAliens, alert: false, ufo };
+  // Flood without units: deploy every alien in the same walkable component as the squad.
+  const connected = new Set([I(sx, sy)]), queue = [[sx, sy]];
+  for (let i = 0; i < queue.length; i++) { const [x, y] = queue[i]; for (const [dx, dy] of [[1,0],[-1,0],[0,1],[0,-1]]) { const nx = x + dx, ny = y + dy, k = I(nx, ny); if (nx >= 0 && ny >= 0 && nx < W && ny < H && !o[k] && !connected.has(k)) { connected.add(k); queue.push([nx, ny]); } } }
+  const inside = [], outside = [];
+  for (const k of connected) if (squad.every((_, i) => Math.hypot(k % W - (sx + i % 3), Math.floor(k / W) - (sy + Math.floor(i / 3))) >= 15)) (targets.has(k) ? inside : outside).push(k);
+  if (inside.length + outside.length < nAliens) return null;
+  squad.forEach((m, i) => addUnit(s, 'soldier', 'x', sx + i % 3, sy + Math.floor(i / 3), m));
+  for (let i = 0; i < nAliens; i++) { const pool = ((i % 3 === 2 && outside.length > 0) || !inside.length) ? outside : inside; const k = pool.splice((r() * pool.length) | 0, 1)[0]; addUnit(s, i % 4 === 3 ? 'muton' : 'sectoid', 'a', k % W, Math.floor(k / W)); }
+  // Eight orientations change the approach/deployment edge without risking disconnected geometry.
+  const orientation = (r() * 8) | 0, point = (x, y) => { if (orientation & 4) x = W - 1 - x; for (let i = 0; i < (orientation & 3); i++) [x, y] = [W - 1 - y, x]; return [x, y]; };
+  s.g = new Array(W * H); s.o = new Array(W * H);
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const [nx, ny] = point(x, y); s.g[I(nx, ny)] = g[I(x, y)]; s.o[I(nx, ny)] = o[I(x, y)]; }
+  for (const u of s.units) [u.x, u.y] = point(u.x, u.y);
+  if (ufo) [ufo.x, ufo.y] = point(ufo.x, ufo.y);
   refill(s); computeSeen(s); return s;
 }
 function addUnit(s, race, side, x, y, m) {

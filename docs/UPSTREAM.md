@@ -40,3 +40,5 @@ Recorded SHAs + licences: `UPSTREAM.lock.json`. **Copy only what is needed; add 
 | openxcom | OpenXcom/OpenXcom (sparse `bin/standard/xcom1`, `src/Battlescape`) | GPL-3.0 | Rules numbers + TU/reaction-fire logic → X-KOM 2026 (`examples/xkom/scripts/xk/tactical.js`) | Art/sounds/maps (need original game data, not in the repo) |
 | openra | OpenRA/OpenRA (sparse `mods/ra/rules`, `OpenRA.Mods.Common/Pathfinder`) | GPL-3.0 | RA unit/building stats, A* idea → `examples/xkom/scripts/xk/rts.js` (X-KOM 2026 + Red Front 2026) | Assets, C# code verbatim |
 | cnc-remastered | electronicarts/CnC_Remastered_Collection (sparse `REDALERT`) | GPL-3.0 | Rules reference only | Everything else |
+
+M6-36: `tools/fetch-upstreams.sh openxcom` now fetches the documented sparse source. Read `bin/standard/xcom1/terrains.rul` and `src/Battlescape/BattlescapeGenerator.cpp` (`generateMap`, `selectPosition`, `addBlock`) for block assembly, roads and deployments. X-KOM uses four original small layouts and existing sprites; no upstream map/terrain data was copied.

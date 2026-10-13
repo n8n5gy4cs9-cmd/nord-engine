@@ -88,5 +88,11 @@
     "sha": "475caa3ff4646fd9a796b67d14116256f4962bc7",
     "licenceFile": "LICENSE",
     "licenceHead": "                                 Apache License                            Versi"
+  },
+  "openxcom": {
+    "repo": "OpenXcom/OpenXcom",
+    "sha": "4a4bae5fa2e5a09282928e84943fc84b093e34ff",
+    "licenceFile": "LICENSE.txt",
+    "licenceHead": "                    GNU GENERAL PUBLIC LICENSE                        Version 3,"
   }
 }
