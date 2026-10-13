@@ -9,7 +9,7 @@ const server = await serve(path.join(ENGINE, 'examples/vallout')); // same mappi
 const browser = await chromium.launch({ args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader', '--autoplay-policy=no-user-gesture-required'] });
 const page = await browser.newPage({ viewport: { width: 960, height: 720 } }); const errors = [];
 page.on('pageerror', (e) => errors.push(e.stack ?? String(e))); page.on('console', (m) => { if (m.type() === 'error' || m.type() === 'warning') errors.push(`${m.type()}: ${m.text()}`); });
-await page.goto(server.url + '/'); await page.waitForFunction(() => window.__valout?.ready || window.__nord_error, null, { timeout: 20000 });
+await page.goto(server.url + '/?nogate'); await page.waitForFunction(() => window.__valout?.ready || window.__nord_error, null, { timeout: 20000 });
 const wait = (ms) => page.waitForTimeout(ms), shot = async (n) => { await page.screenshot({ path: path.join(OUT, `vallout-${n}.png`) }); console.log('shot', n); };
 const S = () => page.evaluate(() => window.__valout.screens), ev = (fn, arg) => page.evaluate(fn, arg);
 await wait(800); if (on('title')) await shot('01-title');

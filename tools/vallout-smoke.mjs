@@ -6,7 +6,7 @@ const { chromium } = loadPlaywright();
 const server = await serve(path.join(ENGINE, 'examples/vallout')); // same mapping as `nord serve`
 const browser = await chromium.launch({ args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader'] }); const page = await browser.newPage({ viewport: { width: 640, height: 480 } });
 const errors = []; page.on('pageerror', (e) => errors.push(e.stack ?? String(e))); page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
-await page.goto(server.url + '/'); await page.waitForFunction(() => window.__valout?.ready, null, { timeout: 20000 });
+await page.goto(server.url + '/?nogate'); await page.waitForFunction(() => window.__valout?.ready, null, { timeout: 20000 });
 const ev = (f, a) => page.evaluate(f, a), wait = (ms) => page.waitForTimeout(ms); let fails = 0;
 const ok = (c, m) => { console.log(c ? 'PASS' : 'FAIL', m); if (!c) fails++; };
 await ev(() => { window.__valout.screens.create(); window.__valout.screens.start(); }); await wait(1500);

@@ -1,6 +1,6 @@
 // @nord {"id":"valout2.game","title":"Vallout 2: New Kerava","category":"games","tier":["2d"],"tags":["rpg","fallout","isometric","turn-based","comedy"],"description":"A comic Fallout-2-style RPG in alien-fallout Kerava, Finland. Classic turn-based and modern WASD+mouse control modes."}
 // Vallout 2: New Kerava — controller. Owns global state (G), shared services (ctx) and screen flow. Crowelian 2026 + Sonnet.
-import { NordScript } from 'nord';
+import { NordScript, touchToStart } from 'nord';
 import { PixelFont, PText } from './v/pixeltext.js';
 import { Layer, COL, ascii } from './v/ui.js';
 import { Hud } from './v/hud.js';
@@ -85,6 +85,7 @@ export default class Valout extends NordScript {
     });
     window.__valout = this; this.ready = true; window.__nord_ready = true;
     this.screens.title();
+    if (!new URLSearchParams(location.search).has('nogate')) this.startGate = touchToStart(g, { title: 'VALLOUT 2: NEW KERAVA', label: 'TOUCH / CLICK TO ENABLE AUDIO' }); // ?nogate skips it (tests)
   }
-  onDestroy() { this.off?.(); this.dev?.destroy(); delete window.__valout; }
+  onDestroy() { this.off?.(); this.dev?.destroy(); this.startGate?.destroy(); delete window.__valout; }
 }
