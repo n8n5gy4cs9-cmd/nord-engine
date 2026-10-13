@@ -98,3 +98,11 @@ Runtime PNGs: `examples/altimu/assets/{tiles,sprites,ui}/`; sources `tools/examp
 ## Harrison's Command assets
 Generated low-poly glTF (carrier, Walrus, Manta, tower, mortar, 3 islands): `node tools/gen_harrison_models.mjs`. Hand-pixelled 32x32 seamless textures + map icons: `node tools/pixelart.mjs harrison --preview`.
 Kenney Starter-Kit models/sounds (MIT) in `examples/harrison/assets/{models/kenney,audio/kenney}/`. Inventory + how to replace: `examples/harrison/assets.md`.
+
+## Forgotten Wars artwork
+Hand-pixelled 16x16 terrain (roads/rivers composed from drawn arm pieces into 16 neighbour masks), properties, 8 units × 2 armies × 2 idle frames, cursor/range tiles, explosion FX, icons (typed in `tools/art/forgotten/*.mjs`; letters D/M/L/H are the army colour ramps).
+Runtime PNGs: `examples/forgotten/assets/{tiles,sprites,ui}/`; sources `tools/examples/forgotten/assets/`. Re-pack: `node tools/pixelart.mjs forgotten --preview`, then `node tools/gen_examples.mjs forgotten`. Map: `assets/maps/crossing.map` (text). Inventory + how to replace: `examples/forgotten/assets.md`.
+
+## Automies assets
+Generated low-poly glTF (5 cars with steerable wheel nodes, 4 towers, bank/warehouse/safehouse, street props): `node tools/gen_automies_models.mjs`. Hand-pixelled 16x16 / 32x32 seamless textures (4 facades, roof, pavement, concrete, metal, marble, container, water) + HUD icons: `node tools/pixelart.mjs automies --preview`.
+Kenney City + Racing kit models and engine/skid/impact/ambience sounds (MIT): `tools/fetch-automies-assets.sh` → `examples/automies/assets/{models/kenney,audio/kenney}/`. Map: `assets/maps/haven.map`. Inventory + how to replace: `examples/automies/assets.md`.

@@ -1,0 +1,15 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 16,
+  "frameHeight": 16,
+  "filter": "nearest",
+  "frames": {
+    "cursorA": 0,
+    "cursorB": 1,
+    "move": 2,
+    "attack": 3,
+    "pathdot": 4,
+    "target": 5,
+    "done": 6
+  }
+}

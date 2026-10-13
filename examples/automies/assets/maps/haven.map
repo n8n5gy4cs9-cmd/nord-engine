@@ -1,0 +1,51 @@
+@ title: Haven Bay
+@ note: 25x21 tiles of 18 m. x = east, y = south (world +Z). Legend in assets.md. Lines: C = checkpoint (cell x y), P = player start (slot cellX cellY yawDeg offsetX offsetZ metres), K = cop spawn cell, W = roadworks (barrier across the right lane + cones) on a road cell.
+C 5 9
+C 1 9
+C 1 17
+C 9 17
+C 9 13
+C 17 13
+C 17 5
+C 21 5
+C 21 13
+C 21 17
+C 13 17
+C 13 9
+C 9 5
+C 9 1
+C 17 3
+P 1 5 2 0 2.7 0
+P 2 5 2 0 -2.7 0
+K 1 1
+W 19 9
+W 21 3
+W 7 13
+W 3 5
+K 21 1
+K 1 17
+K 21 17
+K 13 13
+K 9 9
+---
+aydadyayycccbdaddaccaaycd
+c+++++++++++++++++++++cgd
+y+bag+dda+gab+dyg+yda+aad
+b+aBy+db1+dbd+y12+bSd+cga
+g+bgb+bdb+4cb+bcy+bya+aac
+d+++++++++++++++++++++ccd
+b+db4+2bb+433+ggg+242+acc
+a+yHa+db3+413+gfg+dda+gda
+a+d42+d32+432+ggg+bcy+acd
+d+++++++++++++++++++++bgc
+a+aa4+413+ggg+434+bd4+cgb
+b+bab+b12+gfg+324+b1b+gbc
+b+dd1+414+ggg+343+d4d+byy
+d+++++++++++++++++++++daa
+b+ybb+2yd+221+11d+ad1+gcc
+c+dyc+aHd+aHb+dHc+a2c+gcd
+c+cdg+db1+bby+21y+dca+acg
+b+++++++++++++++++++++adc
+~~~~.~~~.~~~.~~~.~~~~~~~~
+~~~~.~~~.~~~.~~~.~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -1,0 +1,59 @@
+{
+  "format": 1,
+  "name": "Forgotten Wars",
+  "id": "com.crowelian.forgotten",
+  "type": "2d",
+  "engineVersion": "0.1.0",
+  "startScene": "scenes/main.scene.json",
+  "display": {
+    "width": 640,
+    "height": 512,
+    "scale": "fit",
+    "pixelArt": true,
+    "background": "#0c1020"
+  },
+  "physics": {
+    "engine": "none",
+    "gravity": [
+      0,
+      0,
+      0
+    ]
+  },
+  "input": {
+    "actions": {
+      "left": [
+        "ArrowLeft",
+        "KeyA"
+      ],
+      "right": [
+        "ArrowRight",
+        "KeyD"
+      ],
+      "up": [
+        "ArrowUp",
+        "KeyW"
+      ],
+      "down": [
+        "ArrowDown",
+        "KeyS"
+      ],
+      "confirm": [
+        "Enter",
+        "KeyZ"
+      ],
+      "cancel": [
+        "Escape",
+        "KeyX"
+      ]
+    }
+  },
+  "plugins": [
+    "ui",
+    "audio"
+  ],
+  "ui": {
+    "skin": "cyber",
+    "theme": "nord"
+  }
+}

@@ -34,3 +34,5 @@ Recorded SHAs + licences: `UPSTREAM.lock.json`. **Copy only what is needed; add 
 - Defold: secondary inspiration (clean outline/properties panes, build/run toolbar).
 
 | spd / barony / doom | 00-Evan/shattered-pixel-dungeon, TurningWheel/Barony, id-software/doom | GPL-3 / GPL-3 / GPL-2 | Logic ported into the RetroPaxDungeons and Noom examples (see THIRD_PARTY.md) | Assets (SPD/Barony art not copied) |
+| aw2bhr | Eebit/aw2bhr | (decompilation; no data shipped) | Studied for Forgotten Wars: assembly only, tables not decoded — nothing copied | Everything (needs the owner's ROM) |
+| redriver2 | OpenDriver2/REDRIVER2 | GPL-2.0 | Handling/gears/camera constants ported into the Automies example (`examples/automies/scripts/am/car.js`) | Game data, models, sounds (not in the repo) |

@@ -1079,6 +1079,18 @@
       "status": "done"
     },
     {
+      "id": "M6-23",
+      "milestone": "M6",
+      "title": "Example game Forgotten Wars (Advance Wars 2-style tactics PoC, 1 level, player vs AI, hand-pixelled sprites, assets.md + GUIDE.md)",
+      "status": "done"
+    },
+    {
+      "id": "M6-24",
+      "milestone": "M6",
+      "title": "Example game Automies (Driver 2-style 3D driving PoC, REDRIVER2 handling port, Kenney city + sfx, 2-player split-screen, assets.md + GUIDE.md)",
+      "status": "done"
+    },
+    {
       "id": "M7-01",
       "milestone": "M7",
       "title": "tools/build-manual.mjs (marked + CodeMirror readonly + nord-live blocks)",
