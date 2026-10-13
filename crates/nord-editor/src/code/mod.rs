@@ -420,6 +420,7 @@ fn body(st: &mut EditorState, cs: &mut CodeState, ui: &mut Ui) {
 
     let th = st.themes.theme(&st.settings.theme).clone();
     let (fsz, tab) = (st.settings.code_font_size, st.settings.tab_width.max(1));
+    let metrics = (st.settings.code_word_wrap, st.settings.code_line_height.clamp(1.0, 2.2), st.settings.code_letter_spacing.clamp(0.0, 2.0));
     let split = cs.split.filter(|s| *s < cs.docs.len());
     let status = {
         let d = &cs.docs[cs.active];
@@ -460,6 +461,7 @@ fn body(st: &mut EditorState, cs: &mut CodeState, ui: &mut Ui) {
                     &th,
                     fsz,
                     tab,
+                    metrics,
                     &mut clicked_problem,
                 );
                 pane(
@@ -470,11 +472,12 @@ fn body(st: &mut EditorState, cs: &mut CodeState, ui: &mut Ui) {
                     &th,
                     fsz,
                     tab,
+                    metrics,
                     &mut clicked_problem,
                 );
             });
         }
-        None => pane(cs, ui, cs.active, "L", &th, fsz, tab, &mut clicked_problem),
+        None => pane(cs, ui, cs.active, "L", &th, fsz, tab, metrics, &mut clicked_problem),
     }
 }
 
@@ -526,6 +529,9 @@ fn toolbar(st: &mut EditorState, cs: &mut CodeState, ui: &mut Ui) {
                     _ => {}
                 }
             }
+        }
+        if ui.checkbox(&mut st.settings.code_word_wrap, "Word wrap").changed() {
+            st.settings.save();
         }
         ui.checkbox(&mut cs.minimap, "Minimap");
         let mut sp = cs.split.is_some();
@@ -806,11 +812,13 @@ fn pane(
     th: &crate::theme::Theme,
     fsz: f32,
     tab: usize,
+    metrics: (bool, f32, f32),
     _clicked: &mut Option<usize>,
 ) {
     let pal = highlight::Palette::new(&th.code);
     let font = egui::FontId::monospace(fsz);
-    let row_h = ui.fonts(|f| f.row_height(&font));
+    let (word_wrap, line_height, letter_spacing) = metrics;
+    let row_h = fsz * line_height;
     let bg = hex(&th.code.bg);
     let gutter_c = hex(&th.code.gutter);
     let theme_id = th.id.clone();
@@ -857,10 +865,12 @@ fn pane(
     }
 
     let doc = &mut cs.docs[idx];
-    let hkey = hash_of(&doc.text, doc.lang, &theme_id);
+    let hkey = hash_of(&doc.text, doc.lang, &format!("{theme_id}:{fsz}"));
     if doc.hl.as_ref().is_none_or(|(h, _)| *h != hkey) {
         let job = if doc.text.len() > MAX_HIGHLIGHT {
-            highlight::layout_job("", Lang::Plain, &pal, font.clone())
+            let mut job = egui::text::LayoutJob::default();
+            job.append(&doc.text, 0.0, egui::TextFormat::simple(font.clone(), pal.fg));
+            job
         } else {
             highlight::layout_job(&doc.text, doc.lang, &pal, font.clone())
         };
@@ -885,7 +895,7 @@ fn pane(
         ui.allocate_ui(Vec2::new(editor_w, avail.y), |ui| {
             frame.show(ui, |ui| {
                 ui.set_min_size(Vec2::new(editor_w - 8.0, avail.y - 8.0));
-                let mut sa = egui::ScrollArea::both()
+                let mut sa = egui::ScrollArea::new([!word_wrap, true])
                     .id_salt(("codescroll", idx, side))
                     .auto_shrink([false; 2]);
                 if let Some(y) = ui
@@ -896,22 +906,42 @@ fn pane(
                 }
                 let out = sa.show(ui, |ui| {
                     ui.horizontal_top(|ui| {
-                        // gutter
+                        // Use the same wrapped galley for layout and the logical-line gutter.
                         let digits = nlines.to_string().len().max(3);
-                        let (grect, gresp) = ui.allocate_exact_size(
-                            Vec2::new(digits as f32 * fsz * 0.62 + 16.0, row_h * nlines as f32),
+                        let gutter_w = digits as f32 * (fsz * 0.62 + letter_spacing) + 16.0;
+                        let text_w = (editor_w - gutter_w - 24.0).max(40.0);
+                        let mut display_job = (*job).clone();
+                        display_job.wrap.max_width = if word_wrap { text_w } else { f32::INFINITY };
+                        if display_job.sections.is_empty() {
+                            display_job.append("", 0.0, egui::TextFormat::simple(font.clone(), pal.fg));
+                        }
+                        for section in &mut display_job.sections {
+                            section.format.line_height = Some(row_h);
+                            section.format.extra_letter_spacing = letter_spacing;
+                        }
+                        let content_h = ui.fonts(|f| f.layout_job(display_job.clone()).size().y);
+                        let (grect, _) = ui.allocate_exact_size(
+                            Vec2::new(gutter_w, content_h.max(row_h * 10.0)),
                             Sense::hover(),
                         );
-                        let _ = gresp;
                         let doc = &mut cs.docs[idx];
-                        let mut layouter = |ui: &Ui, _s: &str, _w: f32| {
-                            if big {
-                                ui.fonts(|f| {
-                                    f.layout(doc_text_hint(), font.clone(), pal.fg, f32::INFINITY)
-                                })
+                        let lang = doc.lang;
+                        let mut layouter = |ui: &Ui, source: &str, width: f32| {
+                            let mut layout = if source == display_job.text {
+                                display_job.clone()
+                            } else if big {
+                                let mut layout = egui::text::LayoutJob::default();
+                                layout.append(source, 0.0, egui::TextFormat::simple(font.clone(), pal.fg));
+                                layout
                             } else {
-                                ui.fonts(|f| f.layout_job((*job).clone()))
+                                highlight::layout_job(source, lang, &pal, font.clone())
+                            };
+                            layout.wrap.max_width = if word_wrap { width } else { f32::INFINITY };
+                            for section in &mut layout.sections {
+                                section.format.line_height = Some(row_h);
+                                section.format.extra_letter_spacing = letter_spacing;
                             }
+                            ui.fonts(|f| f.layout_job(layout))
                         };
                         if !ui.input(|i| i.pointer.any_down()) {
                             doc.prev_primary = egui::TextEdit::load_state(ui.ctx(), id)
@@ -925,13 +955,11 @@ fn pane(
                             .id(id)
                             .font(font.clone())
                             .frame(false)
-                            .desired_width(f32::INFINITY)
+                            .desired_width(if word_wrap { text_w } else { f32::INFINITY })
                             .desired_rows(nlines.max(10))
                             .lock_focus(true)
                             .text_color(pal.fg);
-                        if !big {
-                            te = te.layouter(&mut layouter);
-                        }
+                        te = te.layouter(&mut layouter);
                         let mut out = te.show(ui);
                         // Alt+click adds a cursor (the old primary becomes secondary); a plain click drops extras.
                         if out.response.clicked() || out.response.drag_started() {
@@ -998,8 +1026,14 @@ fn pane(
                         let cur_line = out
                             .cursor_range
                             .map(|c| edit::line_of(&doc.text, c.primary.ccursor.index));
-                        for l in 0..nlines {
-                            let y = out.galley_pos.y + row_h * l as f32;
+                        let line_ranges = edit::line_ranges(&doc.text);
+                        let line_rects: Vec<Rect> = line_ranges.iter().map(|(start, end)| {
+                            let a = out.galley.pos_from_ccursor(CCursor::new(*start));
+                            let b = out.galley.pos_from_ccursor(CCursor::new(*end));
+                            Rect::from_min_max(a.min, Pos2::new(b.max.x.max(a.max.x), b.max.y))
+                        }).collect();
+                        for (l, line_rect) in line_rects.iter().enumerate() {
+                            let y = out.galley_pos.y + line_rect.min.y;
                             if !ui.is_rect_visible(Rect::from_min_size(
                                 Pos2::new(grect.left(), y),
                                 Vec2::new(10.0, row_h),
@@ -1026,13 +1060,14 @@ fn pane(
                             );
                         }
                         if let Some(cl) = cur_line {
-                            let y = out.galley_pos.y + row_h * cl as f32;
+                            let line_rect = line_rects[cl.min(line_rects.len() - 1)];
+                            let y = out.galley_pos.y + line_rect.min.y;
                             p.rect_filled(
                                 Rect::from_min_size(
                                     Pos2::new(out.galley_pos.x, y),
                                     Vec2::new(
                                         out.response.rect.width().max(ui.clip_rect().width()),
-                                        row_h,
+                                        line_rect.height(),
                                     ),
                                 ),
                                 0.0,
@@ -1087,45 +1122,28 @@ fn pane(
                                 d.insert_temp(Id::new("cursor_pos"), (line + 1, ci - ls + 1))
                             });
                         }
-                        // error squiggles under the problem line
+                        // Squiggles follow every visual row of a wrapped logical line.
                         for pr in &doc.problems {
-                            let y = out.galley_pos.y + row_h * (pr.line + 1) as f32 - 2.0;
-                            let x0 = out.galley_pos.x;
-                            let x1 = x0
-                                + (doc
-                                    .text
-                                    .split('\n')
-                                    .nth(pr.line)
-                                    .map_or(0, |l| l.chars().count())
-                                    as f32
-                                    * fsz
-                                    * 0.6)
-                                    .max(20.0);
-                            let mut pts = vec![];
-                            let mut x = x0;
-                            let mut up = false;
-                            while x < x1 {
-                                pts.push(Pos2::new(x, y + if up { -2.0 } else { 0.0 }));
-                                x += 3.0;
-                                up = !up;
-                            }
-                            p.add(egui::Shape::line(
-                                pts,
-                                Stroke::new(1.0_f32, hex(&th.ui.bad)),
-                            ));
-                            let hover = Rect::from_min_max(
-                                Pos2::new(x0, y - row_h),
-                                Pos2::new(x1, y + 2.0),
-                            );
-                            if ui.rect_contains_pointer(hover) {
-                                egui::show_tooltip_at_pointer(
-                                    ui.ctx(),
-                                    ui.layer_id(),
-                                    Id::new(("prob", pr.line)),
-                                    |ui| {
+                            let Some((start, end)) = line_ranges.get(pr.line) else { continue; };
+                            let first = out.galley.from_ccursor(CCursor::new(*start)).rcursor.row;
+                            let last = out.galley.from_ccursor(CCursor::new(*end)).rcursor.row;
+                            for row in &out.galley.rows[first..=last] {
+                                let rect = row.rect.translate(out.galley_pos.to_vec2());
+                                let y = rect.bottom() - 2.0;
+                                let mut pts = vec![];
+                                let mut x = rect.left();
+                                let mut up = false;
+                                while x < rect.right().max(rect.left() + 20.0) {
+                                    pts.push(Pos2::new(x, y + if up { -2.0 } else { 0.0 }));
+                                    x += 3.0;
+                                    up = !up;
+                                }
+                                p.add(egui::Shape::line(pts, Stroke::new(1.0_f32, hex(&th.ui.bad))));
+                                if ui.rect_contains_pointer(rect) {
+                                    egui::show_tooltip_at_pointer(ui.ctx(), ui.layer_id(), Id::new(("prob", pr.line)), |ui| {
                                         ui.colored_label(hex(&th.ui.bad), &pr.msg);
-                                    },
-                                );
+                                    });
+                                }
                             }
                         }
                         // autocomplete trigger
@@ -1246,10 +1264,6 @@ fn pane(
             .data_mut(|d| d.insert_temp(Id::new(("mm_scroll", idx, side)), y));
         ui.ctx().request_repaint();
     }
-}
-
-fn doc_text_hint() -> String {
-    String::new()
 }
 
 /// Apply editor key behaviours (indent, comment, auto-indent, auto-close, completion accept) to the focused document.

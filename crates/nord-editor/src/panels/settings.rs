@@ -49,6 +49,17 @@ pub fn window(st: &mut EditorState, ctx: &Context) {
                 ui.label("Code font size");
                 ui.add(egui::Slider::new(&mut s.code_font_size, 9.0..=24.0));
                 ui.end_row();
+                ui.label("Code word wrap");
+                ui.checkbox(&mut s.code_word_wrap, "Wrap long lines")
+                    .on_hover_text("Display-only wrapping; saved source files keep their original lines.");
+                ui.end_row();
+                ui.label("Code line height");
+                ui.add(egui::Slider::new(&mut s.code_line_height, 1.0..=2.2).step_by(0.05))
+                    .on_hover_text("Multiplier of the font size. Default: 1.6.");
+                ui.end_row();
+                ui.label("Code letter spacing");
+                ui.add(egui::Slider::new(&mut s.code_letter_spacing, 0.0..=2.0).step_by(0.1).suffix(" pt"));
+                ui.end_row();
                 ui.label("Tab width");
                 ui.add(egui::Slider::new(&mut s.tab_width, 1..=8));
                 ui.end_row();

@@ -1,0 +1,79 @@
+{
+  "format": 1,
+  "name": "Star-Not",
+  "id": "com.crowelian.starnot",
+  "type": "2d",
+  "engineVersion": "0.1.0",
+  "startScene": "scenes/main.scene.json",
+  "display": {
+    "width": 1024,
+    "height": 720,
+    "scale": "fit",
+    "pixelArt": false,
+    "background": "#091923"
+  },
+  "physics": {
+    "engine": "none",
+    "gravity": [
+      0,
+      0,
+      0
+    ]
+  },
+  "input": {
+    "actions": {
+      "p1Left": [
+        "ArrowLeft"
+      ],
+      "p1Right": [
+        "ArrowRight"
+      ],
+      "p1Thrust": [
+        "ArrowUp"
+      ],
+      "p1Brake": [
+        "ArrowDown"
+      ],
+      "p1Fire": [
+        "Space"
+      ],
+      "p1Shield": [
+        "ShiftLeft",
+        "ShiftRight"
+      ],
+      "p2Left": [
+        "KeyA"
+      ],
+      "p2Right": [
+        "KeyD"
+      ],
+      "p2Thrust": [
+        "KeyW"
+      ],
+      "p2Brake": [
+        "KeyS"
+      ],
+      "p2Fire": [
+        "KeyF"
+      ],
+      "p2Shield": [
+        "KeyG"
+      ],
+      "pause": [
+        "Escape",
+        "KeyP"
+      ],
+      "select": [
+        "Mouse0"
+      ]
+    }
+  },
+  "plugins": [
+    "ui",
+    "audio"
+  ],
+  "ui": {
+    "skin": "cyber",
+    "theme": "nord"
+  }
+}

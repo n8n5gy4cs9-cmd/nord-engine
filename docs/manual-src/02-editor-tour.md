@@ -90,3 +90,8 @@ Every opened project can also contain these folders, on all three platforms:
 | `.nord-cache/lock` | Running editor's project lock; normally removed when the project closes. |
 
 With **USE CACHED CONTENT OFF**, existing saved example copies are bypassed; you do not need to delete them to see current art. To remove a saved copy, close that project and back up any edits before removing its `examples/<example-name>/` folder. Removing `editor.json`, `layout.json` or `recent.json` resets the corresponding preferences/history; removing autosaves loses crash-recovery data.
+
+## Code wrapping and spacing
+The Code toolbar has a **Word wrap** toggle. It wraps the view without inserting newlines into your file. **Settings** exposes code font size, word wrap, **line height** (default **1.6 × font size**), **letter spacing** (default 0 points), and tab width. These preferences are saved with the editor settings. Wrapped lines keep their original line number; the gutter and error markers follow their displayed positions.
+
+Manual code previews have their own **Wrap: on/off** button and 1.6 line height. That preference belongs to this browser/manual, separately from the native editor settings.

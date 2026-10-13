@@ -84,3 +84,6 @@ crates/nord-serve/      dev server + Hub (shared by `nord serve` and the editor)
 - Splash: the same window starts borderless 640×360 showing `assets/brand/splash-640x360.png` and becomes the main window after ≥ 2000 ms (ADR-018).
 - Text styles referencing the "bold" family are applied one frame after `set_fonts` (egui panics on an unbound family).
 - `egui::Button::image` must not be used for icon buttons before the image loads (it sizes to all remaining space): `icons::button` paints its own.
+
+## Code view wrapping and typography (2026-10-13)
+The Code toolbar has persisted **Word wrap** on/off; wrapping changes display only. Settings adds `code_word_wrap` (default false), `code_line_height` (default 1.6 × code font size, slider 1.0–2.2), and `code_letter_spacing` (default 0 points, slider 0–2). Existing settings load their defaults through serde. Highlight cache keys include font size; layout applies spacing to highlighted/plain large-file jobs. Wrapped gutters, current-line shading and error squiggles use the laid-out galley rather than logical-line × font-height guesses. No native build/tests run at owner request; native interaction/compile verification remains unperformed.

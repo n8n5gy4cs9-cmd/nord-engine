@@ -29,3 +29,10 @@ No coding experience? Read [Programming for dummy developers](developer-basics.h
 ::: dummies
 A tutorial is a guided exercise. The **Manual** explains a feature in more depth. The **API** is a dictionary of exact names and settings. You do not need to read the dictionary from beginning to end.
 :::
+
+## Build complete examples
+[Notepaint: notes and paint from a blank folder](tut-t19-notepaint.html) · [Star-Not: a small space adventure with co-op](tut-t20-star-not.html) · [Plan a bigger project](tut-t21-project-design.html)
+
+These guides include the shipped source files, explain each construction step, and show where to find reusable artwork/audio. The larger-project guide is a text-only game design and folder example.
+
+[Shader Terrain Lab: render a shader, add audio and drop a cube](tut-t22-shader-terrain.html) · [Mobile/touch joystick and buttons](mobile-controls.html)

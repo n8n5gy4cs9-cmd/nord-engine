@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 164/176 tasks (93%)** · updated 2026-10-13
+**Overall: 172/184 tasks (93%)** · updated 2026-10-13
 
 | Milestone | Progress |
 |---|---|
@@ -13,9 +13,9 @@
 | M3 Editor | 24/26 (92%) |
 | M4 Export | 8/11 (73%) |
 | M5 Rust/WASM | 9/9 (100%) |
-| M6 Library | 38/38 (100%) |
-| M7 Docs | 14/14 (100%) |
-| M8 Polish & portability | 12/19 (63%) |
+| M6 Library | 41/41 (100%) |
+| M7 Docs | 18/18 (100%) |
+| M8 Polish & portability | 13/20 (65%) |
 | M9 Desktop apps | 16/16 (100%) |
 
 ## Next up
@@ -179,6 +179,9 @@ _snippets, controllers, systems, asset packs, examples_
 - [x] **M6-36** Seeded tactical mission structures/deployments and simple safe RTS battlefield variation
 - [x] **M6-37** Example game: Vallout 2 New Kerava
 - [x] **M6-38** Remake all Vallout sprites and menus for a Fallout-inspired quarantined Kerava
+- [x] **M6-39** Notepaint full offline notes + paint app with original UI sprites
+- [x] **M6-40** Star-Not solar-system adventure with three races, original sprites, music and SFX
+- [x] **M6-41** Interactive pasted terrain shader example with falling cube and original audio
 
 ## M7 — Docs
 _manual, guides, tutorials, in-editor docs_
@@ -197,6 +200,10 @@ _manual, guides, tutorials, in-editor docs_
 - [x] **M7-12** HTML manual/guide/tutorials 'complete edition': every feature, per-component pages, cookbook, plus 'For dummies' info boxes (hidden by default, global toggle persisted in localStorage)
 - [x] **M7-13** Document editor saved-copy, settings and project-cache locations on macOS, Windows and Linux
 - [x] **M7-14** Redesign offline HTML manual with beginner paths, screenshots and complete versioned Nord/Phaser/Babylon references
+- [x] **M7-15** Complete step-by-step Notepaint and Star-Not tutorials with reusable asset inventories
+- [x] **M7-16** Manual code-preview wrapping and 1.6 line-height defaults
+- [x] **M7-17** Short terrain shader app tutorial covering Play, export and interaction
+- [x] **M7-18** Visible mobile touch-control guide and reusable Star-Not joystick/buttons
 
 ## M8 — Polish & portability
 _dmg, CI, Windows, Linux, perf_
@@ -220,6 +227,7 @@ _dmg, CI, Windows, Linux, perf_
 - [ ] **M8-17** Fix macOS project-lock live-process detection
 - [x] **M8-18** Editor UI uplift: charcoal theme, polished workspace and hub, reliable toolbar and dialogs
 - [x] **M8-19** Fix Assets folder divider resizing and staircase thumbnail grid
+- [x] **M8-20** Code editor word wrap and configurable line height/letter spacing
 
 ## M9 — Desktop apps
 _real native desktop apps (Rust backend): files, dialogs, notifications, tray, windows, storage, packaging_

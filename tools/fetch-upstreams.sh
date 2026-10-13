@@ -23,6 +23,7 @@ REPOS=(
 "phaser3-examples|phaserjs/examples|public/src"
 "rapier|dimforge/rapier|examples2d examples3d LICENSE"
 "openxcom|OpenXcom/OpenXcom|bin/standard/xcom1 src/Battlescape LICENSE.txt"
+"sc2-uqm|0xDEC0DE/sc2-uqm|sc2/src/uqm/ship.c sc2/src/uqm/velocity.c sc2/COPYING"
 "aw2bhr|Eebit/aw2bhr|"
 "redriver2|OpenDriver2/REDRIVER2|src_rebuild/Game/C src_rebuild/Game/dr2types.h LICENSE README.md"
 )
@@ -39,7 +40,11 @@ for entry in "${REPOS[@]}"; do
   if [ ! -d "$dir/.git" ]; then
     echo "==> $name ($repo)"
     if [ -n "$paths" ]; then
-      git clone -q --depth 1 --filter=blob:none --sparse "https://github.com/$repo.git" "$dir"
+      if [ "$name" = "sc2-uqm" ]; then
+        git clone -q --depth 1 --branch uqm-ee --filter=blob:none --sparse "https://github.com/$repo.git" "$dir"
+      else
+        git clone -q --depth 1 --filter=blob:none --sparse "https://github.com/$repo.git" "$dir"
+      fi
       (cd "$dir" && git sparse-checkout set --no-cone $paths >/dev/null 2>&1 || git sparse-checkout set $paths)
     else
       git clone -q --depth 1 "https://github.com/$repo.git" "$dir"

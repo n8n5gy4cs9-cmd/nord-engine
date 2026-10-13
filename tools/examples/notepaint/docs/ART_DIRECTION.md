@@ -1,0 +1,5 @@
+# notepaint artwork
+Built-in ImageGen tool, transparent PNG; source image copied unchanged into the project. Do not use the engine's general placeholder generator to replace this artwork.
+
+## Exact prompt
+Use case: stylized-concept. Production asset for Notepaint, an offline notepad + painting app. Generate one perfectly regular 4 by 4 sprite atlas on transparent background, square image. Exactly 16 individual centered illustrated UI icons, equal cells, each comfortably within its cell, ample transparent gutters, no text, no labels, no grid lines, no shadows crossing cells. Soft crisp handcrafted enamel-and-paper editorial style, coral orange, mint teal, cream and dark ink accents, readable at 24 px. Reading order row1: new document (paper plus), open folder, save floppy disk, export/download arrow. Row2: pencil, paintbrush, eraser, paint bucket. Row3: straight line, outlined rectangle, outlined circle, eyedropper. Row4: undo curved arrow, redo curved arrow, trash bin, note-and-paint app emblem (paper with colourful brush stroke). No duplicate icons. This is a usable icon sprite sheet, not an app screenshot.

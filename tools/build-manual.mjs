@@ -30,6 +30,11 @@ const { marked } = require(path.join(root, 'vendor/marked/marked.umd.js'));
 const LIVE = [];
 const BOX_TITLES = { dummies: 'For dummy developers', tip: 'Tip', warn: 'Careful', todo: 'TODO (planned)' };
 function renderMd(md, options = {}) {
+  // Tutorials embed the exact shipped files so a reader can reconstruct the project.
+  md = md.replace(/^::: example-code ((?:examples\/(?:notepaint|star-not|shader-terrain)\/|tools\/gen_star_not_audio\.mjs)[\w./-]*) ([\w-]+)\s*$/gm, (_, file, lang) => {
+    if (file.split('/').includes('..')) throw new Error('Unsafe tutorial source path');
+    return `<pre class="code" data-lang="${esc(lang)}"><code>${esc(read(file))}</code></pre>`;
+  });
   md = md.replace(/^:::\s*(dummies|tip|warn|todo)\s*\n([\s\S]*?)^:::\s*$/gm, (_, k, body) =>
     `\n<aside class="box ${k}"><div class="box-title">${BOX_TITLES[k]}</div>\n\n${body.trim()}\n\n</aside>\n`);
   const r = new marked.Renderer();
@@ -388,6 +393,8 @@ for (const [source, name] of [['inter/inter-latin-400-normal.woff2', 'inter.woff
 fs.cpSync(path.join(root, 'vendor/engine-docs'), path.join(OUT, 'assets/engine-docs'), { recursive: true });
 fs.mkdirSync(path.join(OUT, 'assets/screenshots'), { recursive: true });
 for (const file of ['vallout-03-classic-explore.png', 'automies-2-drive.png', 'xkom-tactical.png', 'manual-hello-nord.png']) fs.copyFileSync(path.join(root, 'docs/screenshots', file), path.join(OUT, 'assets/screenshots', file));
+fs.mkdirSync(path.join(OUT, 'assets/tutorials'), { recursive: true });
+for (const [source, name] of [['notepaint/assets/ui/tools.png', 'notepaint-tools.png'], ['star-not/assets/sprites/space.png', 'star-not-space.png'], ['star-not/assets/ui/portraits.png', 'star-not-ui.png']]) fs.copyFileSync(path.join(root, 'examples', source), path.join(OUT, 'assets/tutorials', name));
 // The vendored bundle is standalone ESM. Expose its exact exports as a classic-script global
 // so syntax highlighting also works when the user double-clicks the offline HTML file.
 const cmSource = read('vendor/codemirror/cm.bundle.js');

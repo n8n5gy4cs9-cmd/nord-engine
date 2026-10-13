@@ -1175,6 +1175,24 @@
       "status": "done"
     },
     {
+      "id": "M6-39",
+      "milestone": "M6",
+      "title": "Notepaint full offline notes + paint app with original UI sprites",
+      "status": "done"
+    },
+    {
+      "id": "M6-40",
+      "milestone": "M6",
+      "title": "Star-Not solar-system adventure with three races, original sprites, music and SFX",
+      "status": "done"
+    },
+    {
+      "id": "M6-41",
+      "milestone": "M6",
+      "title": "Interactive pasted terrain shader example with falling cube and original audio",
+      "status": "done"
+    },
+    {
       "id": "M7-01",
       "milestone": "M7",
       "title": "tools/build-manual.mjs (marked + CodeMirror readonly + nord-live blocks)",
@@ -1256,6 +1274,30 @@
       "id": "M7-14",
       "milestone": "M7",
       "title": "Redesign offline HTML manual with beginner paths, screenshots and complete versioned Nord/Phaser/Babylon references",
+      "status": "done"
+    },
+    {
+      "id": "M7-15",
+      "milestone": "M7",
+      "title": "Complete step-by-step Notepaint and Star-Not tutorials with reusable asset inventories",
+      "status": "done"
+    },
+    {
+      "id": "M7-16",
+      "milestone": "M7",
+      "title": "Manual code-preview wrapping and 1.6 line-height defaults",
+      "status": "done"
+    },
+    {
+      "id": "M7-17",
+      "milestone": "M7",
+      "title": "Short terrain shader app tutorial covering Play, export and interaction",
+      "status": "done"
+    },
+    {
+      "id": "M7-18",
+      "milestone": "M7",
+      "title": "Visible mobile touch-control guide and reusable Star-Not joystick/buttons",
       "status": "done"
     },
     {
@@ -1370,6 +1412,12 @@
       "id": "M8-19",
       "milestone": "M8",
       "title": "Fix Assets folder divider resizing and staircase thumbnail grid",
+      "status": "done"
+    },
+    {
+      "id": "M8-20",
+      "milestone": "M8",
+      "title": "Code editor word wrap and configurable line height/letter spacing",
       "status": "done"
     }
   ]

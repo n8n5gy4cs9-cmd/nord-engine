@@ -1,0 +1,4 @@
+# Shader Terrain Lab
+The owner-provided synthwave terrain GLSL rendered with a small WebGL2 host in Nord’s HTML tier. Press Play in NordEditor, or `nord serve examples/shader-terrain`; export using the HTML target. Click ground or Drop cube: the shader freezes, matching GPU terrain probes provide a contact height, and a cube falls onto that height. Enable audio starts an original local ambient loop.
+
+See GUIDE.md and the short manual tutorial. Sources: `tools/examples/shader-terrain/`. No external dependencies. This is a height-probe interaction demonstration, not an automatic full physics mesh. Original shader author/licence not supplied; original text preserved. Crowelian 2026 + Sonnet host/audio.

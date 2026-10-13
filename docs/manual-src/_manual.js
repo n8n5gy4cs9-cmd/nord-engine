@@ -34,6 +34,16 @@ const highlightStyle = cm?.HighlightStyle.define([
   { tag: cm.tags.comment, color: 'var(--muted)', fontStyle: 'italic' }, { tag: cm.tags.function(cm.tags.variableName), color: 'var(--accent)' },
   { tag: [cm.tags.typeName, cm.tags.className], color: 'var(--good)' }, { tag: cm.tags.propertyName, color: 'var(--fg)' }
 ]);
+function codeWrap(frame, bar) {
+  let on = LS.get('nord.manual.wrap') !== '0', view = null;
+  const compartment = cm ? new cm.Compartment() : null;
+  const button = document.createElement('button');
+  const paint = () => { frame.classList.toggle('wrap-code', on); button.textContent = `Wrap: ${on ? 'on' : 'off'}`; button.setAttribute('aria-pressed', String(on)); };
+  button.setAttribute('aria-label', 'Toggle code word wrap');
+  button.onclick = () => { on = !on; LS.set('nord.manual.wrap', on ? '1' : '0'); if (view) view.dispatch({ effects: compartment.reconfigure(on ? cm.EditorView.lineWrapping : []) }); paint(); };
+  bar.append(button); paint();
+  return { extension: () => compartment.of(on ? cm.EditorView.lineWrapping : []), attach(editor) { view = editor; } };
+}
 const codeViews = new Map();
 const observer = new IntersectionObserver(items => { for (const item of items) if (item.isIntersecting) { codeViews.get(item.target)?.(); codeViews.delete(item.target); observer.unobserve(item.target); } }, { rootMargin: '200px' });
 for (const pre of document.querySelectorAll('pre.code')) {
@@ -43,10 +53,11 @@ for (const pre of document.querySelectorAll('pre.code')) {
   const label = document.createElement('span'); label.textContent = lang;
   const copy = document.createElement('button'); copy.textContent = 'Copy'; copy.setAttribute('aria-label', 'Copy code example'); copy.onclick = () => copyCode(copy, code);
   bar.append(label, copy); pre.before(frame); frame.append(bar, pre);
+  const wrap = codeWrap(frame, bar);
   const language = languages[lang] ? cm?.[languages[lang]]?.(lang === 'ts' ? { typescript: true } : {}) : ['bash', 'sh', 'shell'].includes(lang) ? cm?.legacy.shell() : lang === 'yaml' ? cm?.legacy.yaml() : null;
   if (cm && language) {
     const host = document.createElement('div'); pre.replaceWith(host);
-    codeViews.set(host, () => { pre.remove(); return new cm.EditorView({ parent: host, doc: code, extensions: [cm.lineNumbers(), language, cm.syntaxHighlighting(highlightStyle), cm.EditorState.readOnly.of(true), cm.EditorView.editable.of(false), cm.EditorView.contentAttributes.of({ 'aria-label': `${lang} code example` })] }); });
+    codeViews.set(host, () => { pre.remove(); const view = new cm.EditorView({ parent: host, doc: code, extensions: [wrap.extension(), cm.lineNumbers(), language, cm.syntaxHighlighting(highlightStyle), cm.EditorState.readOnly.of(true), cm.EditorView.editable.of(false), cm.EditorView.contentAttributes.of({ 'aria-label': `${lang} code example` })] }); wrap.attach(view); return view; });
     host.append(pre); observer.observe(host);
   }
 }
@@ -81,14 +92,16 @@ if (lives.length) {
   const core = new URL('runtime/core/index.js', location.href).href;
   for (const box of lives) {
     const pre = box.querySelector('.live-src'), code = pre.textContent;
+    const bar = document.createElement('div'); bar.className = 'live-bar';
+    bar.innerHTML = '<button>▶ Run</button><button class="ghost">Copy</button>';
+    const wrap = codeWrap(box, bar);
     let get;
     if (cm) {
       const host = document.createElement('div'); pre.replaceWith(host);
-      const view = new cm.EditorView({ parent: host, doc: code, extensions: [cm.lineNumbers(), cm.history(), cm.drawSelection(), cm.bracketMatching(), cm.closeBrackets(), cm.keymap.of([...cm.defaultKeymap, ...cm.historyKeymap, ...cm.closeBracketsKeymap, cm.indentWithTab]), cm.javascript(), cm.syntaxHighlighting(highlightStyle), cm.EditorView.theme({ '&': { fontSize: '13px' } })] });
-      get = () => view.state.doc.toString();
+      const view = new cm.EditorView({ parent: host, doc: code, extensions: [wrap.extension(), cm.lineNumbers(), cm.history(), cm.drawSelection(), cm.bracketMatching(), cm.closeBrackets(), cm.keymap.of([...cm.defaultKeymap, ...cm.historyKeymap, ...cm.closeBracketsKeymap, cm.indentWithTab]), cm.javascript(), cm.syntaxHighlighting(highlightStyle), cm.EditorView.theme({ '&': { fontSize: '13px' } })] });
+      wrap.attach(view); get = () => view.state.doc.toString();
     } else { const ta = document.createElement('textarea'); ta.value = code; ta.rows = code.split('\n').length + 1; ta.style.cssText = 'width:100%;font:13px monospace;background:var(--code);color:var(--fg);border:0;padding:12px'; pre.replaceWith(ta); get = () => ta.value; }
-    const bar = document.createElement('div'); bar.className = 'live-bar';
-    bar.innerHTML = '<button>▶ Run</button><button class="ghost">Copy</button><span class="muted">Runs in a sandbox with <code>nord</code> (the core runtime) and <code>log()</code></span>';
+    const hint = document.createElement('span'); hint.className = 'muted'; hint.textContent = 'Core runtime + log()'; bar.append(hint);
     const out = document.createElement('pre'); out.className = 'live-out'; out.textContent = '(output)';
     box.append(bar, out);
     bar.children[1].onclick = () => copyCode(bar.children[1], get());

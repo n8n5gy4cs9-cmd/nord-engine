@@ -21,6 +21,11 @@ pub struct Settings {
     pub appearance_version: u8,
     pub ui_scale: f32,
     pub code_font_size: f32,
+    pub code_word_wrap: bool,
+    /// Line-height multiplier relative to the code font size.
+    pub code_line_height: f32,
+    /// Extra spacing between code characters, in points.
+    pub code_letter_spacing: f32,
     pub tab_width: usize,
     pub autosave_secs: u64,
     /// Opt-in saved example copies and persistent embedded-browser storage for testing.
@@ -54,6 +59,9 @@ impl Default for Settings {
             appearance_version: 1,
             ui_scale: 1.0,
             code_font_size: 13.0,
+            code_word_wrap: false,
+            code_line_height: 1.6,
+            code_letter_spacing: 0.0,
             tab_width: 2,
             autosave_secs: 30,
             use_cached_content: false,

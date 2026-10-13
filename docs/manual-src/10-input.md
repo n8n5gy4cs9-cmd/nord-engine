@@ -50,3 +50,6 @@ Pointer events cover touch (`input.pointer`). Add a virtual joystick and on-scre
 ::: tip
 Use `fixedUpdate` for physics-related input (jumping) and `update` for everything else; `pressed` is evaluated once per rendered frame, so read it in `update` if you must not miss a tap.
 :::
+
+## Mobile and on-screen controls
+For a complete code-drawn joystick plus hold buttons, see **[Mobile and on-screen touch controls](mobile-controls.html)**. It includes the existing virtual joystick, reusable button code, action mapping, pointer cancellation/cleanup, desktop pointer testing, and the Star-Not touch example.

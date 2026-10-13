@@ -1,0 +1,108 @@
+{
+  "format": 1,
+  "name": "main",
+  "settings": {},
+  "entities": [
+    {
+      "id": "eeeeeee1",
+      "name": "Camera",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          512,
+          360,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "camera",
+          "zoom": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeee2",
+      "name": "Atlas source",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          -999,
+          -999,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/space.png",
+          "frame": 0,
+          "alpha": 0
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeee3",
+      "name": "Expedition",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [
+        {
+          "path": "scripts/star-not.js",
+          "attributes": {}
+        }
+      ],
+      "children": [],
+      "prefab": null
+    }
+  ]
+}

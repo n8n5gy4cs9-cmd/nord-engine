@@ -94,5 +94,12 @@
     "sha": "4a4bae5fa2e5a09282928e84943fc84b093e34ff",
     "licenceFile": "LICENSE.txt",
     "licenceHead": "                    GNU GENERAL PUBLIC LICENSE                        Version 3,"
+  },
+  "sc2-uqm": {
+    "repo": "0xDEC0DE/sc2-uqm",
+    "branch": "uqm-ee",
+    "sha": "d0f959d013b52c275f27d944039073d066dc8c93",
+    "licenceFile": "sc2/COPYING",
+    "licenceHead": "GPL-2.0-or-later code; CC-BY-NC-SA-2.5 upstream content (no content copied)"
   }
 }
