@@ -1163,6 +1163,12 @@
       "status": "done"
     },
     {
+      "id": "M6-37",
+      "milestone": "M6",
+      "title": "Example game: Vallout 2 New Kerava",
+      "status": "done"
+    },
+    {
       "id": "M7-01",
       "milestone": "M7",
       "title": "tools/build-manual.mjs (marked + CodeMirror readonly + nord-live blocks)",

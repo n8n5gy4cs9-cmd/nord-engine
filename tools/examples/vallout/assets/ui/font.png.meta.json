@@ -1,0 +1,8 @@
+{
+  "type": "bitmapfont",
+  "cellWidth": 6,
+  "cellHeight": 8,
+  "chars": " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_",
+  "charsPerRow": 16,
+  "note": "white glyphs, tinted at runtime; upper-case only"
+}

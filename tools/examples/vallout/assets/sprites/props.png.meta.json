@@ -1,0 +1,29 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 48,
+  "frameHeight": 48,
+  "filter": "nearest",
+  "frames": {
+    "pine": 0,
+    "birch": 1,
+    "bush": 2,
+    "lamp": 3,
+    "bench": 4,
+    "barrel_a": 5,
+    "barrel_b": 6,
+    "bin": 7,
+    "car_se": 8,
+    "car_sw": 9,
+    "kiosk": 10,
+    "crate": 11,
+    "moped": 12,
+    "ufo_big": 13,
+    "grave": 14,
+    "loot": 15,
+    "exit": 16,
+    "sign": 17,
+    "car2_se": 18,
+    "car2_sw": 19
+  },
+  "framesPerRow": 5
+}

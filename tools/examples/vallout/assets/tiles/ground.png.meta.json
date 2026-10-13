@@ -1,0 +1,25 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 32,
+  "frameHeight": 16,
+  "filter": "nearest",
+  "frames": {
+    "sand1": 0,
+    "sand2": 1,
+    "sand3": 2,
+    "asphalt": 3,
+    "asphalt_x": 4,
+    "asphalt_y": 5,
+    "asphaltc": 6,
+    "pave": 7,
+    "concrete": 8,
+    "grass": 9,
+    "rubble": 10,
+    "goo": 11,
+    "rail_x": 12,
+    "rail_y": 13,
+    "platform": 14,
+    "floor": 15
+  },
+  "framesPerRow": 8
+}

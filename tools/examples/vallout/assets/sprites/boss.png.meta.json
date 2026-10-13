@@ -1,0 +1,20 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 48,
+  "frameHeight": 64,
+  "filter": "nearest",
+  "frames": {
+    "stand_f": 0,
+    "walkA_f": 1,
+    "walkB_f": 2,
+    "shoot_f": 3,
+    "kick_f": 4,
+    "stand_b": 5,
+    "walkA_b": 6,
+    "walkB_b": 7,
+    "shoot_b": 8,
+    "kick_b": 9,
+    "dead": 10
+  },
+  "framesPerRow": 11
+}
