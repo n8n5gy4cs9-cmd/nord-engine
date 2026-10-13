@@ -1,0 +1,22 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 32,
+  "frameHeight": 72,
+  "filter": "nearest",
+  "frames": {
+    "apt24": 0,
+    "apt40": 1,
+    "apt56": 2,
+    "brick24": 3,
+    "brick40": 4,
+    "wood24": 5,
+    "shop24": 6,
+    "train28": 7,
+    "conc12": 8,
+    "apt_ruin40": 9,
+    "brick_ruin24": 10,
+    "wood_ruin24": 11,
+    "shop_ruin24": 12
+  },
+  "framesPerRow": 7
+}

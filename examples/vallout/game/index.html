@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Vallout 2: New Kerava</title>
+<style>html,body{margin:0;height:100%;background:#050403;overflow:hidden}#stage{position:relative;width:100vw;height:100vh}canvas{image-rendering:pixelated}</style>
+<script type="importmap">{"imports":{"nord":"../engine/runtime/core/index.js"}}</script></head>
+<body><div id="stage"></div>
+<script src="../engine/vendor/phaser/phaser.min.js"></script>
+<script type="module">
+import { boot } from '../engine/runtime/phaser/index.js';
+try {
+  const project = await (await fetch('nord.project.json')).json();
+  await boot(project, { container: document.getElementById('stage') });
+  window.__nord_ready = true;
+} catch (e) { console.error(e); window.__nord_error = String(e); }
+</script></body></html>

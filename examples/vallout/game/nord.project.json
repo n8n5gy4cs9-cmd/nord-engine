@@ -1,0 +1,13 @@
+{
+  "format": 1,
+  "name": "Vallout 2: New Kerava",
+  "id": "com.crowelian.valout2",
+  "type": "2d",
+  "engineVersion": "0.1.0",
+  "startScene": "scenes/main.scene.json",
+  "display": { "width": 640, "height": 480, "scale": "fit", "pixelArt": true, "background": "#050403" },
+  "physics": { "engine": "none", "gravity": [0, 0, 0] },
+  "input": { "actions": { "left": ["ArrowLeft", "KeyA"], "right": ["ArrowRight", "KeyD"], "up": ["ArrowUp", "KeyW"], "down": ["ArrowDown", "KeyS"], "confirm": ["Enter"], "cancel": ["Escape"] } },
+  "plugins": ["ui", "audio"],
+  "ui": { "skin": "cyber", "theme": "nord" }
+}
