@@ -33,7 +33,7 @@ tools/vallout-shots.mjs        headless Chromium screenshots
 - **Two control modes** (toggle F10 / title menu): **Classic F2** (turn-based, AP, cursor modes, default) and **Modern** (WASD move, mouse aim + shoot, dodge, quick slots, real-time).
 - 5 locations on a world map: Keravan asema → Kauppakaari/Karuselli → Sampola/Ahjo → Keravanjoki nest → Klaukkala gate.
 - Main quest, 4 side quests, drunks, wall-kicking minigame (Saku & Möttönen, Rane), green fuzzy dice as the key item.
-- Ending: kill quota (25 aliens) collapses the hive, **or** hit Klaukkala with the dice-fitted moped (2 endings).
+- Ending: kill quota (30 aliens) collapses the hive, **or** hit Klaukkala with the dice-fitted moped (2 endings).
 ## Milestones
 M0 scaffold+docs · M1 pixel art · M2 rules+data+mapgen · M3 area view (classic) · M4 combat · M5 UI/HUD/panels · M6 dialogue+quests+world map · M7 modern controls · M8 audio · M9 test+screenshots+polish.
 See `tasks.md`.

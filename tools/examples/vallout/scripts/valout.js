@@ -9,6 +9,7 @@ import './v/classic.js';
 import './v/modern.js';
 import { ITEMS, LOCS, QUESTS, START_ITEMS } from './v/data.js';
 import { Screens } from './v/screens.js';
+import { DevConsole } from './v/devconsole.js';
 import * as R from './v/rules.js';
 
 const A = (p) => `assets/${p}`;
@@ -69,6 +70,7 @@ export default class Valout extends NordScript {
     let hintStr = '', hintCol = COL.amber; const hintT = new PText(ps, font, { x: 0, y: 0, text: ' ', color: COL.amber, scale: 1, origin: [0, 0] }); hintT.setDepth(19999); hintT.img.setScrollFactor(0);
     this.screens = new Screens(ctx); ctx.openDialog = (n) => this.screens.dialog(n); ctx.openInventory = () => this.screens.inventory(); ctx.openChar = () => this.screens.character(); ctx.openNokia = () => this.screens.nokia(); ctx.openOptions = () => this.screens.options(); ctx.openWorld = () => this.screens.world();
     ctx.leaveArea = () => this.screens.leaveArea(); ctx.endGame = (k) => this.screens.ending(k);
+    this.dev = new DevConsole(ctx);
     // input
     const kd = (e) => { keys[e.code] = true; if (['Tab', 'Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'F10', 'F5', 'F9'].includes(e.code)) e.preventDefault(); this.screens.key(e); };
     const ku = (e) => { keys[e.code] = false; }; window.addEventListener('keydown', kd); window.addEventListener('keyup', ku); window.addEventListener('blur', () => { for (const k in keys) keys[k] = false; });
@@ -84,5 +86,5 @@ export default class Valout extends NordScript {
     window.__valout = this; this.ready = true; window.__nord_ready = true;
     this.screens.title();
   }
-  onDestroy() { this.off?.(); delete window.__valout; }
+  onDestroy() { this.off?.(); this.dev?.destroy(); delete window.__valout; }
 }

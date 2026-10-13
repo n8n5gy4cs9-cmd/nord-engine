@@ -5,3 +5,4 @@
 - Damage: roll weapon range (+melee bonus), subtract DT, apply DR%; critical = ×2 ignoring armour; crit chance = LK (+25 aimed). Miss with roll ≥96 may fumble (lose AP).
 - Modern mode: same stats, but the mouse aim decides: spread from skill/movement/aiming, projectiles, AC = dodge chance (max 40%), dodge roll i-frames.
 - Not ported: perks, traits, hit locations, ammo types, hex grid.
+- Console: press F2 or backtick (`) for the developer console (settings + cheats); type `help` there.

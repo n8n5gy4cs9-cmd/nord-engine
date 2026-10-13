@@ -19,11 +19,11 @@
 | The Green Fuzzy Dice | Rane | Find the dice on a wreck in Sampola | 200 |
 | Spark Plug Hunt | Seppo (kiosk) | Do him a favour, get the plug | 120 |
 | Rangers: Sweep the Pits | Capt. Lehtonen, Uusimaa Republic Rangers | Clear 4 aliens from the sand pits (reward: vest) | 250 |
-| Pest Control | — | Kill 25 aliens: the hive collapses by itself | — |
+| Pest Control | — | Kill 30 aliens: the hive collapses by itself | — |
 
 ## Endings
 - **Escape** — ride into Klaukkala on Rane's moped with the dice on the mirror ("Asiaa."). Walking in without the moped gives the sausage variant.
-- **Victory (Kerava Liberated)** — the 25th alien drops, the hive shrieks, the mothership folds into the sky.
+- **Victory (Kerava Liberated)** — the 30th alien drops, the hive shrieks, the mothership folds into the sky.
 - **Death** — "Hei hei."
 
 Source of truth for all text: `scripts/v/data.js` (INTRO, QUESTS, DIALOG, ENDINGS). Rules: `GUIDE.md`. Design/plan: `PLAN.md`, `PRD.md`, `TASKS.md`.

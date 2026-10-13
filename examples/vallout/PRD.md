@@ -14,7 +14,7 @@
 - FR6 Dialogue trees with skill checks (Speech, Luck) and quest flags.
 - FR7 Quests: main chain + sides; quest log in NOKIA panel.
 - FR8 Modern mode: WASD, mouse aim, LMB shoot, RMB alt/kick, Space dodge, 1–3 quick items, E interact, Shift sprint.
-- FR9 Ending when ≥25 aliens killed or Klaukkala reached; end screens with stats.
+- FR9 Ending when ≥30 aliens killed or Klaukkala reached; end screens with stats.
 - FR10 Save/load (engine `save`), SFX + 3 music tracks.
 ## Non-goals
 Full F2 content, hex grid, perks, party system, real F2 assets (all art original).
