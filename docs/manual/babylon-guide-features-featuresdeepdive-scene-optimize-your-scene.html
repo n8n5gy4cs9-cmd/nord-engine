@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Optimizing Your Scene — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Optimizing Your Scene</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="how-to-optimize-your-scene">How To Optimize Your Scene<a class="anchor" href="#how-to-optimize-your-scene">#</a></h2>
+<p>This tutorial will help you find links and information on how to improve your scene&#39;s rendering performance.</p>
+<h2 id="use-transformnode-instead-of-abstractmesh-or-empty-meshes">Use TransformNode instead of AbstractMesh or empty meshes<a class="anchor" href="#use-transformnode-instead-of-abstractmesh-or-empty-meshes">#</a></h2>
+<p>If you need node containers or transform nodes, do not use meshes but TransformNode instead. Use meshes only when associated with content to render.</p>
+<p>The meshes need to go through an evaluation process where the camera checks if they are in the frustum. This is an expensive process so reducing the number of candidates by using TransformNode when possible is a good practice.</p>
+<h2 id="reducing-shaders-overhead">Reducing Shaders Overhead<a class="anchor" href="#reducing-shaders-overhead">#</a></h2>
+<p>Babylon.js uses an advanced, automatic shader engine. This system will keep shaders up to date regarding material options. If you are using a static material (ie. an immutable material), you can let Babylon.js know by using the following code:</p>
+<pre class="code" data-lang=""><code>material.freeze();</code></pre>
+<p>Once frozen, the shader will remain unchanged even if you change a material&#39;s properties. You will have to unfreeze it to update the inner shader:</p>
+<pre class="code" data-lang=""><code>material.unfreeze();</code></pre>
+<h2 id="reducing-world-matrices-computation">Reducing World Matrices Computation<a class="anchor" href="#reducing-world-matrices-computation">#</a></h2>
+<p>Every mesh has a world matrix to specify its position / rotation / scaling. This matrix is evaluated on every frame. You can improve performance by freezing this matrix. Any subsequent changes to position / rotation / scaling will then be ignored:</p>
+<pre class="code" data-lang=""><code>mesh.freezeWorldMatrix();</code></pre>
+<p>You can unfreeze a mesh with:</p>
+<pre class="code" data-lang=""><code>mesh.unfreezeWorldMatrix();</code></pre>
+<h2 id="freezing-the-active-meshes">Freezing the active meshes<a class="anchor" href="#freezing-the-active-meshes">#</a></h2>
+<p>If you are CPU-bound, you can decide to keep the list of active meshes unchanged and free the CPU time spent determining active meshes:</p>
+<pre class="code" data-lang=""><code>scene.freezeActiveMeshes();</code></pre>
+<p>You can unfreeze the active meshes with:</p>
+<pre class="code" data-lang=""><code>scene.unfreezeActiveMeshes();</code></pre>
+<p>Note that you can force a mesh to be in the active meshes before freezing the list with <code>mesh.alwaysSelectAsActiveMesh = true</code>.</p>
+<p>Freezing the active meshes list may cause some things in the scene to stop updating. One example is <a href="babylon-guide-features-featuresdeepdive-postprocesses-rendertargettexturemultipass.html">RenderTargetTexture</a>, if it&#39;s used by mesh materials. In that case, the RTT needs to be explicitly added to the list of the active camera&#39;s custom render targets, which will guarantee that it ends up in the render list of the scene:</p>
+<pre class="code" data-lang="javascript"><code>camera.customRenderTargets.push(renderTargetTexture);</code></pre>
+<h2 id="not-updating-the-bounding-info">Not updating the bounding info<a class="anchor" href="#not-updating-the-bounding-info">#</a></h2>
+<p>In conjunction with <code>mesh.alwaysSelectAsActiveMesh</code> you can also decide to turn off bounding info synchronization. This way the world matrix computation will be faster as the bounding info will not be updated (this could be a problem if you want to use picking or collisions):</p>
+<pre class="code" data-lang=""><code>mesh.doNotSyncBoundingInfo = true;</code></pre>
+<h2 id="not-picking-the-scene-on-pointer-move">Not picking the scene on pointer move<a class="anchor" href="#not-picking-the-scene-on-pointer-move">#</a></h2>
+<p>On every pointer move, the scene browses the list of meshes to see if a mesh under the pointer may need to have an associated action / event raised.
+To avoid this process, you can set <code>scene.skipPointerMovePicking = true</code>.</p>
+<p>Please note that by doing so, you will have no event over any mesh when the pointer moves (and <code>scene.meshUnderPointer</code> will not be updated even if <code>scene.constantlyUpdateMeshUnderPointer === true</code>).</p>
+<h2 id="reducing-draw-calls">Reducing draw calls<a class="anchor" href="#reducing-draw-calls">#</a></h2>
+<p>Whenever possible, please use <a href="babylon-guide-features-featuresdeepdive-mesh-copies-instances.html">instances</a> as they are drawn with a single draw call.</p>
+<p>If sharing the same material is a problem, you can use clones, which share the same geometry, with <code>mesh.clone(&quot;newName&quot;)</code>.</p>
+<p>One remark regarding instances: If one of the instances has a world matrix with a different determinant (e.g. one instance has a negative scale while others don&#39;t), Babylon.js will be forced to remove back-face culling from their material.</p>
+<h2 id="reducing-calls-to-gl-clear">Reducing calls to gl.clear()<a class="anchor" href="#reducing-calls-to-gl-clear">#</a></h2>
+<p>By default, Babylon.js automatically clears the color, depth, and stencil buffers before rendering the scene. It also clears the depth and stencil buffers after switching to a new camera and before rendering a new RenderingGroup. On systems with poor fill rates, these can add up quickly and have a significant impact on performance.</p>
+<p>If your scene is set up in such a way that the viewport is always 100% filled with opaque geometry (if you&#39;re always inside a skybox, for instance), you can disable the default scene clearing behavior with:</p>
+<pre class="code" data-lang=""><code>scene.autoClear = false; // Color buffer
+scene.autoClearDepthAndStencil = false; // Depth and stencil, obviously</code></pre>
+<p>If you know that the geometry in a particular RenderingGroup will always be positioned in front of geometry from other groups, you can disable buffer clearing for that group with the following:</p>
+<pre class="code" data-lang=""><code>scene.setRenderingAutoClearDepthStencil(renderingGroupIdx, autoClear, depth, stencil);</code></pre>
+<p><code>autoClear</code>: <code>true</code> to enable auto clearing. If <code>false</code>, overrides <code>depth</code> and <code>stencil</code></p>
+<p><code>depth</code>: Defaults to <code>true</code> to enable clearing of the depth buffer</p>
+<p><code>stencil</code>: Defaults to <code>true</code> to enable clearing of the stencil buffer</p>
+<p>Go ahead and be aggressive with these settings. You&#39;ll know if it&#39;s not appropriate for your application if you see any smearing!</p>
+<h2 id="using-depth-pre-pass">Using depth pre-pass<a class="anchor" href="#using-depth-pre-pass">#</a></h2>
+<p>When dealing with complex scenes, it could be useful to use a depth pre-pass. This technique will render designated meshes only in the depth buffer to leverage early depth test rejection. This could be used, for instance, when a scene contains meshes with advanced shaders.
+To enable a depth pre-pass for a mesh, just call <code>mesh.material.needDepthPrePass = true</code>.</p>
+<h2 id="using-unindexed-meshes">Using unindexed meshes<a class="anchor" href="#using-unindexed-meshes">#</a></h2>
+<p>By default Babylon.js uses indexed meshes where vertices can be reused by faces. When vertex reuse is low and when vertex structure is fairly simple (like just a position and a normal) then you may want to unfold your vertices and stop using indices:</p>
+<pre class="code" data-lang=""><code>mesh.convertToUnIndexedMesh();</code></pre>
+<p>For example this works very well for a cube where it is more efficient to send 32 positions instead of 24 positions and 32 indices.</p>
+<h2 id="turning-adapttodeviceratio-off-on">Turning AdaptToDeviceRatio Off/On<a class="anchor" href="#turning-adapttodeviceratio-off-on">#</a></h2>
+<p>By default, Babylon.js no longer adapts to device ratio. It now focuses on performance rather than quality after many community requests.</p>
+<p>The drawback is that this can look low-res. You can turn it on with the fourth parameter of the Engine constructor:</p>
+<pre class="code" data-lang=""><code>var engine = new BABYLON.Engine(canvas, antialiasing, null, true);</code></pre>
+<h2 id="blocking-the-dirty-mechanism">Blocking the dirty mechanism<a class="anchor" href="#blocking-the-dirty-mechanism">#</a></h2>
+<p>By default, the scene will keep all materials up to date when you change a property that could potentially impact them (alpha, texture update, etc.). To do so, the scene needs to go through all materials and flag them as dirty. This could be a potential bottleneck if you have a lot of materials.</p>
+<p>To prevent this automatic update, you can execute:</p>
+<pre class="code" data-lang=""><code>scene.blockMaterialDirtyMechanism = true;</code></pre>
+<p>Do not forget to restore it to false when you are done with your batch changes.</p>
+<h2 id="using-animation-ratio">Using Animation Ratio<a class="anchor" href="#using-animation-ratio">#</a></h2>
+<p>Babylon.js processes speed depending on the current frame rate.</p>
+<p>On low-end devices, animations or camera movement may differ from what you see on high-end devices. To compensate, you can use:</p>
+<pre class="code" data-lang=""><code>scene.getAnimationRatio();</code></pre>
+<p>The return value is higher on low frame rates.</p>
+<h2 id="handling-webgl-context-lost">Handling WebGL context lost<a class="anchor" href="#handling-webgl-context-lost">#</a></h2>
+<p>Starting with version 3.1, Babylon.js can handle the <span>WebGL context lost event</span>. This event is raised by the browser when the GPU needs to be taken away from your code. This can happen, for instance, when using WebVR in a hybrid scenario (with multiple GPUs). In this case, Babylon.js has to recreate ALL low-level resources (including textures, shaders, programs, buffers, etc.). The process is entirely transparent and handled under the hood by Babylon.js.</p>
+<p>As a developer, you should not be concerned with this mechanism. However, to support this scenario, Babylon.js may need additional memory to keep track of resource creation. If you do not need to support the WebGL context lost event, you can turn off the tracking by instantiating your engine with the doNotHandleContextLost option set to true.</p>
+<p>If you created resources that need to be rebuilt (like vertex buffers or index buffers), you can use the <code>engine.onContextLostObservable</code> and <code>engine.onContextRestoredObservable</code> observables to keep track of the context lost and context restored events.</p>
+<h2 id="scene-with-large-number-of-meshes">Scene with large number of meshes<a class="anchor" href="#scene-with-large-number-of-meshes">#</a></h2>
+<p>If you have a large number of meshes in a scene and need to reduce the time spent adding or removing those meshes, there are several <code>Scene</code> constructor options that can help:</p>
+<ul>
+<li>Setting the option <code>useGeometryUniqueIdsMap</code> to <code>true</code> will speed-up the addition and removal of <code>Geometry</code> in the scene.</li>
+<li>Setting the option <code>useMaterialMeshMap</code> to <code>true</code> will speed up disposing of <code>Material</code> by reducing the time spent looking for bound meshes.</li>
+<li>Setting the option <code>useClonedMeshMap</code> to <code>true</code> will speed up disposing of <code>Mesh</code> by reducing the time spent looking for associated cloned meshes.</li>
+</ul>
+<p>For each of these options that is turned on, Babylon.js will need an additional amount of memory.</p>
+<p>Also, if you are disposing of a large number of meshes in a row, you can save unnecessary computation by setting the scene property <code>blockfreeActiveMeshesAndRenderingGroups</code> to true just before disposing the meshes, and setting it back to <code>false</code> just after, like this:</p>
+<pre class="code" data-lang="javascript"><code>
+scene.blockfreeActiveMeshesAndRenderingGroups = true;
+/*
+ * Dispose all the meshes in a row here
+ */
+scene.blockfreeActiveMeshesAndRenderingGroups = false;
+</code></pre>
+<h2 id="changing-mesh-culling-strategy">Changing Mesh Culling Strategy<a class="anchor" href="#changing-mesh-culling-strategy">#</a></h2>
+<p>Culling is the process of selecting whether a mesh must be passed to the GPU to be rendered or not. It&#39;s done on the CPU side.
+If a mesh intersects the camera frustum in some way then it&#39;s passed to the GPU.
+Depending on its accuracy (checking mesh bounding boxes or bounding spheres only, trying to include or exclude the mesh from the frustum quickly), this process can be time-consuming.
+On the other hand, reducing this process&#39;s accuracy to make it faster can lead to some false positives: some meshes are passed to the GPU, are computed there, and still won&#39;t be visible in the viewport.
+By default, Babylon.js applies the &quot;Bounding Sphere Only&quot; exclusion test to check if a mesh is in the camera frustum.
+You can change this behavior for any mesh in your scene at any time (and change it back later, if needed) through the <code>mesh.cullingStrategy</code> property.</p>
+<pre class="code" data-lang="javascript"><code>/**
+* Possible values :
+         * - BABYLON.AbstractMesh.CULLINGSTRATEGY_STANDARD
+         * - BABYLON.AbstractMesh.CULLINGSTRATEGY_BOUNDINGSPHERE_ONLY
+         * - BABYLON.AbstractMesh.CULLINGSTRATEGY_OPTIMISTIC_INCLUSION
+         * - BABYLON.AbstractMesh.CULLINGSTRATEGY_OPTIMISTIC_INCLUSION_THEN_BSPHERE_ONLY
+*/
+
+mesh.cullingStrategy = oneOfThePossibleValues;</code></pre>
+<ul>
+<li>Standard : the most accurate and standard one. This is an exclusion test. The test order is:<ul>
+<li>Is the bounding sphere outside the frustum ?</li>
+<li>If not, are the bounding box vertices outside the frustum ?</li>
+<li>If not, then the cullable object is in the frustum.</li>
+</ul>
+</li>
+<li>Bounding Sphere Only : faster but less accurate. This is an exclusion test. It&#39;s faster than the standard strategy because the bounding box is not tested. It&#39;s also less accurate than the standard because some invisible objects can still be selected. The test order is:<ul>
+<li>Is the bounding sphere outside the frustum ?</li>
+<li>If not, then the cullable object is in the frustum.</li>
+</ul>
+</li>
+<li>Optimistic Inclusion : This is an inclusion test first, then the standard exclusion test. This can be faster when a cullable object is expected to be almost always in the camera frustum. This could also be a little slower than the standard test when the tested object&#39;s center is not in the frustum but one of its bounding box vertices is still inside. Anyway, it&#39;s as accurate as the standard strategy. The test order is:<ul>
+<li>Is the cullable object bounding sphere center in the frustum ?</li>
+<li>If not, apply the default culling strategy.</li>
+</ul>
+</li>
+<li>Optimistic Inclusion Then Bounding Sphere Only : This is an inclusion test first, then the bounding-sphere-only exclusion test. This can be the fastest test when a cullable object is expected to be almost always in the camera frustum. This could also be a little slower than the BoundingSphereOnly strategy when the tested object&#39;s center is not in the frustum but its bounding sphere still intersects it. It&#39;s less accurate than the standard strategy and as accurate as the BoundingSphereOnly strategy. The test order is:<ul>
+<li>Is the cullable object bounding sphere center in the frustum ?</li>
+<li>If not, apply the Bounding Sphere Only strategy. No Bounding Box is tested here.</li>
+</ul>
+</li>
+</ul>
+<p>Optimistic Inclusion modes provide a small gain. They keep the same accuracy as the base mode to which they are applied (standard or bSphereOnly).
+BoundingSphereOnly modes, because they reduce accuracy significantly, provide a good performance gain. These should not be used with high-poly meshes, because sending false positives to the GPU has a real rendering cost. These can be very interesting for numerous low-poly meshes instead. <strong>Really useful if you are CPU-bound.</strong></p>
+<h2 id="performance-priority-modes">Performance Priority Modes<a class="anchor" href="#performance-priority-modes">#</a></h2>
+<p>Starting with Babylon.js 5.22, you can now change how the scene prioritizes performance, backward compatibility, and ease of use.</p>
+<h3 id="backward-compatibility-mode-default">Backward compatibility mode (default)<a class="anchor" href="#backward-compatibility-mode-default">#</a></h3>
+<p>By default, <code>scene.performancePriority</code> is set to <code>BABYLON.ScenePerformancePriority.BackwardCompatible</code>. In this mode, there is simply no change. The scene will keep prioritizing ease of use and backward compatibility.</p>
+<h3 id="intermediate-mode">Intermediate mode<a class="anchor" href="#intermediate-mode">#</a></h3>
+<p>If you switch the <code>performancePriority</code> to <code>BABYLON.ScenePerformancePriority.Intermediate</code>, the scene will automatically:</p>
+<ul>
+<li>Freeze materials when they are ready. If you need to change something on a material, you will have to call <code>material.markDirty(true)</code> after making your changes</li>
+<li>New meshes will have their <code>alwaysSelectAsActiveMesh</code> property set to true. The system will then skip frustum clipping for the mesh and always set it to active (saving complex CPU operations). Keep in mind that you should turn it off if your scene is GPU-bound</li>
+<li>New meshes will have their <code>isPickable </code> property set to false. Picking and action managers will not work anymore. You can always turn that property back on if you need picking for a specific mesh</li>
+<li><code>scene.skipPointerMovePicking </code> will be turned on (meaning that there will be no OnPointerMove events)</li>
+<li><code>scene.autoClear</code> will be turned off</li>
+</ul>
+<h3 id="aggressive-mode">Aggressive mode<a class="anchor" href="#aggressive-mode">#</a></h3>
+<p>If you switch the <code>performancePriority</code> to <code>BABYLON.ScenePerformancePriority.Aggressive</code>, the scene will automatically:</p>
+<ul>
+<li>Enable all features of the <code>Intermediate</code> mode</li>
+<li>The scene will skip all the frustum clipping phase entirely (<code>scene.skipFrustumClipping</code> will be set to true)</li>
+<li>New meshes will have their <code>doNotSyncBoundingInfo</code> set to true</li>
+<li>The manager will not reset between frames (<code>scene.renderingManager.maintainStateBetweenFrames</code> is set to true). This means that if a mesh becomes invisible or transparent, it will not be visible until this boolean is set to false again</li>
+</ul>
+<p><strong>Please note that the <code>Intermediate</code> and <code>Aggressive</code> modes are not backward compatible, which means that we will probably add more performance-first features to these modes in the future.</strong></p>
+<p>Here is an example: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="instrumentation">Instrumentation<a class="anchor" href="#instrumentation">#</a></h2>
+<p>Instrumentation is a key tool when you want to optimize a scene. It will help you figure out where the bottlenecks are so you can optimize what needs to be optimized.</p>
+<h3 id="engineinstrumentation">EngineInstrumentation<a class="anchor" href="#engineinstrumentation">#</a></h3>
+<p>The EngineInstrumentation class allows you to get the following counters:</p>
+<ul>
+<li><em>gpuFrameTimeCounter</em>: Time (in nanoseconds) spent by the GPU to render a single frame. Must be turned on with <code>instrumentation.captureGPUFrameTime = true</code>.</li>
+<li><em>shaderCompilationTimeCounter</em>: Time (in milliseconds) spent by the CPU to compile all shaders. Must be turned on with <code>instrumentation.captureShaderCompilationTime = true</code>.</li>
+</ul>
+<p>Here is an example of how to use engine instrumentation:
+<span class="muted">Online playground (not embedded offline)</span></p>
+<p>Please note that each counter is a <em>PerfCounter</em> object, which can provide multiple properties like average, total, min, max, count, etc.</p>
+<p>The GPU timer requires a special extension (EXT_DISJOINT_TIMER_QUERY - also sometimes reported with the _webgl2 prefix in WebGL2 context) in order to work. This extension had been disabled due to Spectre and Meltdown on all major browsers, but some have added it back, like Chrome and Edge. You can check if your browser supports this extension on the <span>Khronos SDK test page</span> or on <span>WebGL report</span>.</p>
+<ul>
+<li>Note: On Chrome mobile, this extension can be enabled at <code>chrome://flags#enable-webgl-developer-extensions</code>, followed by a browser restart.</li>
+</ul>
+<h3 id="sceneinstrumentation">SceneInstrumentation<a class="anchor" href="#sceneinstrumentation">#</a></h3>
+<p>The SceneInstrumentation class allows you to get the following counters (per scene):</p>
+<ul>
+<li><em>activeMeshesEvaluationTimeCounter</em>: Time (in milliseconds) spent to evaluate active meshes (based on active camera frustum). Must be turned on with <code>instrumentation.captureActiveMeshesEvaluationTime = true</code>.</li>
+<li><em>renderTargetsRenderTimeCounter</em>: Time (in milliseconds) spent to render all render target textures. Must be turned on with <code>instrumentation.captureRenderTargetsRenderTime = true</code>.</li>
+<li><em>drawCallsCounter</em>: Number of draw calls (actual calls to engine.draw) per frame. A good guideline is to keep this number as small as possible.</li>
+<li><em>frameTimeCounter</em>: Time (in milliseconds) spent to process an entire frame (including animations, physics, render targets, special fx, etc.). Must be turned on with <code>instrumentation.captureFrameTime = true</code>.</li>
+<li><em>renderTimeCounter</em>: Time (in milliseconds) spent to render a frame. Must be turned on with <code>instrumentation.captureRenderTime = true</code>.</li>
+<li><em>interFrameTimeCounter</em>: Time (in milliseconds) spent between two frames. Must be turned on with <code>instrumentation.captureInterFrameTime = true</code>.</li>
+<li><em>particlesRenderTimeCounter</em>: Time (in milliseconds) spent rendering particles (including animations). Must be turned on with <code>instrumentation.captureParticlesRenderTime = true</code>.</li>
+<li><em>spritesRenderTimeCounter</em>: Time (in milliseconds) spent rendering sprites. Must be turned on with <code>instrumentation.captureSpritesRenderTime = true</code>.</li>
+<li><em>physicsTimeCounter</em>: Time (in milliseconds) spent simulating physics. Must be turned on with <code>instrumentation.capturePhysicsTime = true</code>.</li>
+<li><em>cameraRenderTimeCounter</em>: Time (in milliseconds) spent to render a camera. Must be turned on with <code>instrumentation.captureCameraRenderTime = true</code>.</li>
+</ul>
+<p>Those counters are all reset to 0 at the beginning of each frame. Therefore, it is easier to access them in the <code>onAfterRender</code> callback or observable.</p>
+<h2 id="inspector">Inspector<a class="anchor" href="#inspector">#</a></h2>
+<p>Starting with Babylon.js v4.0 you can use the Inspector to <span>analyze your scene</span> or turn on/off features or <span>debugging tools</span>.</p>
+<h2 id="vr-xr-scenarios">VR/XR scenarios<a class="anchor" href="#vr-xr-scenarios">#</a></h2>
+<p>When using Babylon.js with WebVR or WebXR, enabling <a href="babylon-guide-features-featuresdeepdive-cameras-multiviewspart1.html">Multiview</a> is a quick way to almost double the rendering speed.</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#how-to-optimize-your-scene">How To Optimize Your Scene </a><a href="#use-transformnode-instead-of-abstractmesh-or-empty-meshes">Use TransformNode instead of AbstractMesh or empty meshes </a><a href="#reducing-shaders-overhead">Reducing Shaders Overhead </a><a href="#reducing-world-matrices-computation">Reducing World Matrices Computation </a><a href="#freezing-the-active-meshes">Freezing the active meshes </a><a href="#not-updating-the-bounding-info">Not updating the bounding info </a><a href="#not-picking-the-scene-on-pointer-move">Not picking the scene on pointer move </a><a href="#reducing-draw-calls">Reducing draw calls </a><a href="#reducing-calls-to-gl-clear">Reducing calls to gl.clear() </a><a href="#using-depth-pre-pass">Using depth pre-pass </a><a href="#using-unindexed-meshes">Using unindexed meshes </a><a href="#turning-adapttodeviceratio-off-on">Turning AdaptToDeviceRatio Off/On </a><a href="#blocking-the-dirty-mechanism">Blocking the dirty mechanism </a><a href="#using-animation-ratio">Using Animation Ratio </a><a href="#handling-webgl-context-lost">Handling WebGL context lost </a><a href="#scene-with-large-number-of-meshes">Scene with large number of meshes </a><a href="#changing-mesh-culling-strategy">Changing Mesh Culling Strategy </a><a href="#performance-priority-modes">Performance Priority Modes </a><a href="#instrumentation">Instrumentation </a><a href="#inspector">Inspector </a><a href="#vr-xr-scenarios">VR/XR scenarios </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

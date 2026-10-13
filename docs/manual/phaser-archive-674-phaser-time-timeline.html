@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phaser archive: Phaser.Time.Timeline — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Phaser archive: Phaser.Time.Timeline</h1>
+<p><span class="badge">Phaser 4.1.0 archive</span> · <a href="phaser-api-index.html">Matching 4.2.1 API</a></p><p>A Timeline is a way to schedule events to happen at specific times in the future.</p>
+<p>You can think of it as an event sequencer for your game, allowing you to schedule the
+running of callbacks, events and other actions at specific times in the future.</p>
+<p>A Timeline is a Scene level system, meaning you can have as many Timelines as you like, each
+belonging to a different Scene. You can also have multiple Timelines running at the same time.</p>
+<p>If the Scene is paused, the Timeline will also pause. If the Scene is destroyed, the Timeline
+will be automatically destroyed. However, you can control the Timeline directly, pausing,
+resuming and stopping it at any time.</p>
+<p>Create an instance of a Timeline via the Game Object Factory:</p>
+<pre class="code" data-lang="js"><code>const timeline = this.add.timeline();</code></pre>
+<p>The Timeline always starts paused. You must call <code>play</code> on it to start it running.</p>
+<p>You can also pass in a configuration object on creation, or an array of them:</p>
+<pre class="code" data-lang="js"><code>const timeline = this.add.timeline({
+    at: 1000,
+    run: () =&gt; {
+        this.add.sprite(400, 300, 'logo');
+    }
+});
+
+timeline.play();</code></pre>
+<p>In this example we sequence a few different events:</p>
+<pre class="code" data-lang="js"><code>const timeline = this.add.timeline([
+    {
+        at: 1000,
+        run: () =&gt; { this.logo = this.add.sprite(400, 300, 'logo'); },
+        sound: 'TitleMusic'
+    },
+    {
+        at: 2500,
+        tween: {
+            targets: this.logo,
+            y: 600,
+            yoyo: true
+        },
+        sound: 'Explode'
+    },
+    {
+        at: 8000,
+        event: 'HURRY_PLAYER',
+        target: this.background,
+        set: {
+            tint: 0xff0000
+        }
+    }
+]);
+
+timeline.play();</code></pre>
+<p>The Timeline can also be looped with the repeat method:</p>
+<pre class="code" data-lang="js"><code>timeline.repeat().play();</code></pre>
+<p>There are lots of options available to you via the configuration object. See the
+Phaser.Types.Time.TimelineEventConfig typedef for more details.</p>
+<h2 id="constructor">Constructor</h2><pre class="code" data-lang="ts"><code>Timeline(scene, config?)</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>scene</code></td><td><code>Phaser.Scene</code></td><td>The Scene which owns this Timeline.</td></tr><tr><td><code>config</code></td><td><code>Phaser.Types.Time.TimelineEventConfig | Array.&lt;Phaser.Types.Time.TimelineEventConfig&gt;</code></td><td>Optional. The configuration object for this Timeline Event, or an array of them.</td></tr></tbody></table><h2 id="members">members</h2><h3 id="members-0">complete</h3><pre class="code" data-lang="ts"><code>complete</code></pre><p>Whether the Timeline is complete (<code>true</code>) or not (<code>false</code>).</p>
+<p>A Timeline is considered complete when all of its events have been run.</p>
+<p>If you wish to reset a Timeline after it has completed, you can do so
+by calling the <code>Timeline.reset</code> method.</p>
+<p>You can also use the <code>Timeline.stop</code> method to stop a running Timeline,
+at any point, without resetting it.</p>
+<h3 id="members-1">elapsed</h3><pre class="code" data-lang="ts"><code>elapsed</code></pre><p>The elapsed time counter.</p>
+<p>Treat this as read-only.</p>
+<h3 id="members-2">events</h3><pre class="code" data-lang="ts"><code>events</code></pre><p>An array of all the Timeline Events.</p>
+<h3 id="members-3">iteration</h3><pre class="code" data-lang="ts"><code>iteration</code></pre><p>The number of times this Timeline has looped.</p>
+<p>This value is incremented each loop if looping is enabled.</p>
+<h3 id="members-4">loop</h3><pre class="code" data-lang="ts"><code>loop</code></pre><p>The number of times this timeline should loop.</p>
+<p>If this value is -1 or any negative number, this Timeline will loop indefinitely.</p>
+<h3 id="members-5">paused</h3><pre class="code" data-lang="ts"><code>paused</code></pre><p>Whether the Timeline is paused (<code>true</code>) or active (<code>false</code>).</p>
+<p>When paused, the Timeline will not run any of its actions.</p>
+<p>By default a Timeline is always paused and should be started by
+calling the <code>Timeline.play</code> method.</p>
+<p>You can use the <code>Timeline.pause</code> and <code>Timeline.resume</code> methods to control
+this value in a chainable way.</p>
+<h3 id="members-6">scene</h3><pre class="code" data-lang="ts"><code>scene</code></pre><p>The Scene to which this Timeline belongs.</p>
+<h3 id="members-7">systems</h3><pre class="code" data-lang="ts"><code>systems</code></pre><p>A reference to the Scene Systems.</p>
+<h3 id="members-8">timeScale</h3><pre class="code" data-lang="ts"><code>timeScale</code></pre><p>The Timeline&#39;s delta time scale.</p>
+<p>Values higher than 1 increase the speed of time, while values smaller than 1 decrease it.
+A value of 0 freezes time and is effectively equivalent to pausing the Timeline.</p>
+<p>This doesn&#39;t affect the delta time scale of any Tweens created by the Timeline.
+You will have to set the <code>timeScale</code> of each Tween or the Tween Manager if you want them to match.</p>
+<h3 id="members-9">totalComplete</h3><pre class="code" data-lang="ts"><code>totalComplete</code></pre><p>The total number of events that have been run.</p>
+<p>This value is reset to zero if the Timeline is restarted.</p>
+<p>Treat this as read-only.</p>
+<h2 id="methods">methods</h2><h3 id="methods-0">add</h3><pre class="code" data-lang="ts"><code>add(config)</code></pre><p>Adds one or more events to this Timeline.</p>
+<p>You can pass in a single configuration object, or an array of them:</p>
+<pre class="code" data-lang="js"><code>const timeline = this.add.timeline({
+    at: 1000,
+    run: () =&gt; {
+        this.add.sprite(400, 300, 'logo');
+    }
+});</code></pre>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>config</code></td><td><code>Phaser.Types.Time.TimelineEventConfig | Array.&lt;Phaser.Types.Time.TimelineEventConfig&gt;</code></td><td>The configuration object for this Timeline Event, or an array of them.</td></tr></tbody></table><p>Returns: <code>Phaser.Time.Timeline</code> This Timeline instance.</p><h3 id="methods-1">addListener</h3><pre class="code" data-lang="ts"><code>addListener(event, fn, context?)</code></pre><p>Add a listener for a given event.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>event</code></td><td><code>string | symbol</code></td><td>The event name.</td></tr><tr><td><code>fn</code></td><td><code>function</code></td><td>The listener function.</td></tr><tr><td><code>context</code></td><td><code>*</code></td><td>Optional. The context to invoke the listener with. Default: <code>this</code></td></tr></tbody></table><p>Returns: <code>Phaser.Time.Timeline</code> `this`.</p><h3 id="methods-2">clear</h3><pre class="code" data-lang="ts"><code>clear()</code></pre><p>Removes all events from this Timeline, resets the elapsed time to zero
+and pauses the Timeline.</p>
+<p>Any Tweens that were currently running as a result of this Timeline will be stopped.</p>
+<p>Returns: <code>Phaser.Time.Timeline</code> This Timeline instance.</p><h3 id="methods-3">destroy</h3><pre class="code" data-lang="ts"><code>destroy()</code></pre><p>Destroys this Timeline.</p>
+<p>This will remove all events from the Timeline and stop it from processing.</p>
+<p>Any Tweens that were currently running as a result of this Timeline will be stopped.</p>
+<p>This method is called automatically when the Scene shuts down, but you may
+also call it directly should you need to destroy the Timeline earlier.</p>
+<h3 id="methods-4">emit</h3><pre class="code" data-lang="ts"><code>emit(event, ...args?)</code></pre><p>Calls each of the listeners registered for a given event.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>event</code></td><td><code>string | symbol</code></td><td>The event name.</td></tr><tr><td><code>args</code></td><td><code>*</code></td><td>Optional. Additional arguments that will be passed to the event handler.</td></tr></tbody></table><p>Returns: <code>boolean</code> `true` if the event had listeners, else `false`.</p><h3 id="methods-5">eventNames</h3><pre class="code" data-lang="ts"><code>eventNames()</code></pre><p>Return an array listing the events for which the emitter has registered listeners.</p>
+<p>Returns: <code>Array.&lt;(string|symbol)&gt;</code> </p><h3 id="methods-6">getProgress</h3><pre class="code" data-lang="ts"><code>getProgress()</code></pre><p>Returns a number between 0 and 1 representing the progress of this Timeline.</p>
+<p>A value of 0 means the Timeline has just started, 0.5 means it&#39;s half way through,
+and 1 means it&#39;s complete.</p>
+<p>If the Timeline has no events, or all events have been removed, this will return <code>NaN</code>.</p>
+<p>If the Timeline is paused, this will return the progress value at the time it was paused.</p>
+<p>Note that the value returned is based on the number of events that have been completed,
+not the &#39;duration&#39; of the events (as this is unknown to the Timeline).</p>
+<p>Returns: <code>number</code> A number between 0 and 1 representing the progress of this Timeline.</p><h3 id="methods-7">isPlaying</h3><pre class="code" data-lang="ts"><code>isPlaying()</code></pre><p>Returns <code>true</code> if this Timeline is currently playing.</p>
+<p>A Timeline is playing if it is not paused and not complete.</p>
+<p>Returns: <code>boolean</code> `true` if this Timeline is playing, otherwise `false`.</p><h3 id="methods-8">listenerCount</h3><pre class="code" data-lang="ts"><code>listenerCount(event)</code></pre><p>Return the number of listeners listening to a given event.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>event</code></td><td><code>string | symbol</code></td><td>The event name.</td></tr></tbody></table><p>Returns: <code>number</code> The number of listeners.</p><h3 id="methods-9">listeners</h3><pre class="code" data-lang="ts"><code>listeners(event)</code></pre><p>Return the listeners registered for a given event.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>event</code></td><td><code>string | symbol</code></td><td>The event name.</td></tr></tbody></table><p>Returns: <code>Array.&lt;function()&gt;</code> The registered listeners.</p><h3 id="methods-10">off</h3><pre class="code" data-lang="ts"><code>off(event, fn?, context?, once?)</code></pre><p>Remove the listeners of a given event.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>event</code></td><td><code>string | symbol</code></td><td>The event name.</td></tr><tr><td><code>fn</code></td><td><code>function</code></td><td>Optional. Only remove the listeners that match this function.</td></tr><tr><td><code>context</code></td><td><code>*</code></td><td>Optional. Only remove the listeners that have this context.</td></tr><tr><td><code>once</code></td><td><code>boolean</code></td><td>Optional. Only remove one-time listeners.</td></tr></tbody></table><p>Returns: <code>Phaser.Time.Timeline</code> `this`.</p><h3 id="methods-11">on</h3><pre class="code" data-lang="ts"><code>on(event, fn, context?)</code></pre><p>Add a listener for a given event.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>event</code></td><td><code>string | symbol</code></td><td>The event name.</td></tr><tr><td><code>fn</code></td><td><code>function</code></td><td>The listener function.</td></tr><tr><td><code>context</code></td><td><code>*</code></td><td>Optional. The context to invoke the listener with. Default: <code>this</code></td></tr></tbody></table><p>Returns: <code>Phaser.Time.Timeline</code> `this`.</p><h3 id="methods-12">once</h3><pre class="code" data-lang="ts"><code>once(event, fn, context?)</code></pre><p>Add a one-time listener for a given event. The listener is automatically removed
+the first time the event is emitted, so it will never be called more than once.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>event</code></td><td><code>string | symbol</code></td><td>The event name.</td></tr><tr><td><code>fn</code></td><td><code>function</code></td><td>The listener function.</td></tr><tr><td><code>context</code></td><td><code>*</code></td><td>Optional. The context to invoke the listener with. Default: <code>this</code></td></tr></tbody></table><p>Returns: <code>Phaser.Time.Timeline</code> `this`.</p><h3 id="methods-13">pause</h3><pre class="code" data-lang="ts"><code>pause()</code></pre><p>Pauses this Timeline.</p>
+<p>To resume it again, call the <code>Timeline.resume</code> method or set the <code>Timeline.paused</code> property to <code>false</code>.</p>
+<p>If the Timeline is paused while processing the current game step, then it
+will carry on with all events that are due to run during that step and pause
+from the next game step.</p>
+<p>Note that if any Tweens have been started prior to calling this method, they will <strong>not</strong> be paused as well.</p>
+<p>Returns: <code>Phaser.Time.Timeline</code> This Timeline instance.</p><h3 id="methods-14">play</h3><pre class="code" data-lang="ts"><code>play(fromStart?)</code></pre><p>Starts this Timeline running.</p>
+<p>If the Timeline is already running and the <code>fromStart</code> parameter is <code>true</code>,
+then calling this method will reset the Timeline events as incomplete.</p>
+<p>If you wish to resume a paused Timeline, then use the <code>Timeline.resume</code> method instead.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>fromStart</code></td><td><code>boolean</code></td><td>Optional. Reset this Timeline back to the start before playing. Default: <code>true</code></td></tr></tbody></table><p>Returns: <code>Phaser.Time.Timeline</code> This Timeline instance.</p><h3 id="methods-15">preUpdate</h3><pre class="code" data-lang="ts"><code>preUpdate(time, delta)</code></pre><p>Updates the elapsed time counter, if this Timeline is not paused.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>time</code></td><td><code>number</code></td><td>The current time. Either a High Resolution Timer value if it comes from Request Animation Frame, or Date.now if using SetTimeout.</td></tr><tr><td><code>delta</code></td><td><code>number</code></td><td>The delta time in ms since the last frame. This is a smoothed and capped value based on the FPS rate.</td></tr></tbody></table><h3 id="methods-16">removeAllListeners</h3><pre class="code" data-lang="ts"><code>removeAllListeners(event?)</code></pre><p>Remove all listeners, or those of the specified event.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>event</code></td><td><code>string | symbol</code></td><td>Optional. The event name.</td></tr></tbody></table><p>Returns: <code>Phaser.Time.Timeline</code> `this`.</p><h3 id="methods-17">removeListener</h3><pre class="code" data-lang="ts"><code>removeListener(event, fn?, context?, once?)</code></pre><p>Remove the listeners of a given event.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>event</code></td><td><code>string | symbol</code></td><td>The event name.</td></tr><tr><td><code>fn</code></td><td><code>function</code></td><td>Optional. Only remove the listeners that match this function.</td></tr><tr><td><code>context</code></td><td><code>*</code></td><td>Optional. Only remove the listeners that have this context.</td></tr><tr><td><code>once</code></td><td><code>boolean</code></td><td>Optional. Only remove one-time listeners.</td></tr></tbody></table><p>Returns: <code>Phaser.Time.Timeline</code> `this`.</p><h3 id="methods-18">repeat</h3><pre class="code" data-lang="ts"><code>repeat(amount?)</code></pre><p>Repeats this Timeline.</p>
+<p>If the value for <code>amount</code> is positive, the Timeline will repeat that many additional times.
+For example a value of 1 will actually run this Timeline twice.</p>
+<p>Passing <code>false</code> is equivalent to 0 (no additional repeats). Passing <code>true</code>, <code>undefined</code>, or a negative number will repeat indefinitely.</p>
+<p>If this Timeline had any events set to <code>once</code> that have already been removed,
+they will <strong>not</strong> be repeated each loop.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>amount</code></td><td><code>number | boolean</code></td><td>Optional. Amount of times to repeat, if `true` or negative it will be infinite. Default: <code>-1</code></td></tr></tbody></table><p>Returns: <code>Phaser.Time.Timeline</code> This Timeline instance.</p><h3 id="methods-19">reset</h3><pre class="code" data-lang="ts"><code>reset(loop?)</code></pre><p>Resets this Timeline back to the start.</p>
+<p>This will set the elapsed time to zero and set all events to be incomplete.</p>
+<p>If the Timeline had any events that were set to <code>once</code> that have already
+been removed, they will <strong>not</strong> be present again after calling this method.</p>
+<p>If the Timeline isn&#39;t currently running (i.e. it&#39;s paused or complete) then
+calling this method resets those states, the same as calling <code>Timeline.play(true)</code>.</p>
+<p>Any Tweens that were currently running as a result of this Timeline will be stopped.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>loop</code></td><td><code>boolean</code></td><td>Optional. Set to `true` to preserve the loop iteration counters. Used internally when the Timeline auto-repeats. Leave as `false` to perform a full reset. Default: <code>false</code></td></tr></tbody></table><p>Returns: <code>Phaser.Time.Timeline</code> This Timeline instance.</p><h3 id="methods-20">resume</h3><pre class="code" data-lang="ts"><code>resume()</code></pre><p>Resumes this Timeline from a paused state.</p>
+<p>The Timeline will carry on from where it left off.</p>
+<p>If you need to reset the Timeline to the start, then call the <code>Timeline.reset</code> method.</p>
+<p>Returns: <code>Phaser.Time.Timeline</code> This Timeline instance.</p><h3 id="methods-21">shutdown</h3><pre class="code" data-lang="ts"><code>shutdown()</code></pre><p>Removes all listeners from this EventEmitter. This method is called automatically
+by the Scene Systems when the parent Scene shuts down, ensuring that all event
+bindings are cleared and no stale references remain.</p>
+<h3 id="methods-22">stop</h3><pre class="code" data-lang="ts"><code>stop()</code></pre><p>Stops this Timeline.</p>
+<p>This will set the <code>paused</code> and <code>complete</code> properties to <code>true</code>.</p>
+<p>If you wish to reset the Timeline to the start, then call the <code>Timeline.reset</code> method.</p>
+<p>Returns: <code>Phaser.Time.Timeline</code> This Timeline instance.</p><h3 id="methods-23">update</h3><pre class="code" data-lang="ts"><code>update(time, delta)</code></pre><p>Called automatically by the Scene update step.</p>
+<p>Iterates through all of the Timeline Events and checks to see if they should be run.</p>
+<p>If they should be run, then the event&#39;s callbacks and actions are invoked.</p>
+<p>If the <code>TimelineEvent.once</code> property is <code>true</code> then the event is removed from the Timeline.</p>
+<p>If the <code>TimelineEvent.event</code> property is set then the Timeline emits that event.</p>
+<p>If the <code>TimelineEvent.run</code> property is set then the Timeline invokes that method.</p>
+<p>If the <code>TimelineEvent.loop</code> property is set then the Timeline invokes that method when repeated.</p>
+<p>If the <code>TimelineEvent.target</code> property is set then the Timeline invokes the <code>run</code> method on that target.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>time</code></td><td><code>number</code></td><td>The current time. Either a High Resolution Timer value if it comes from Request Animation Frame, or Date.now if using SetTimeout.</td></tr><tr><td><code>delta</code></td><td><code>number</code></td><td>The delta time in ms since the last frame. This is a smoothed and capped value based on the FPS rate.</td></tr></tbody></table><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#constructor">Constructor</a><a href="#members">members</a><a href="#methods">methods</a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

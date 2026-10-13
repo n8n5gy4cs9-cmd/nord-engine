@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Progressively Load .glTF Files — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Progressively Load .glTF Files</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="introduction">Introduction<a class="anchor" href="#introduction">#</a></h2>
+<p>Downloading large assets is often slow even with a decent internet connection. Progressively loading discrete levels of detail (LODs) is one technique to combat this. The idea is to store multiple LODs in the asset and progressively load them from low to high quality. This method improves the time to first render since the lowest quality LOD is often dramatically smaller than the highest quality LOD.</p>
+<span class="muted">Online playground (not embedded offline)</span><p>This demo playground loads a glTF binary (a.k.a. GLB) asset, which is stored as a single file on the server. It uses HTTP range requests to partially download parts of the GLB. The glTF loader minimizes the number of HTTP requests sent to the server for optimal efficiency. It also shows the progress of each stage of the download. Console logging is enabled to show what the glTF loader is doing.</p>
+<h2 id="about-msft-lod">About MSFT_lod<a class="anchor" href="#about-msft-lod">#</a></h2>
+<p><span>MSFT_lod</span> is a Microsoft glTF extension for discrete LODs. It has support for both node and material LODs. Babylon.js currently supports progressively loading these LODs only for the purpose of reducing the time to first render. LODs that switch based on rendering distance or screen coverage are not currently supported.</p>
+<p>There are not many tools that can create assets with MSFT_lod at the moment. The car asset in the first demo above is exported from <span>Adobe Dimension</span> for sharing on the web. There is also <span>glTF-Toolkit</span> for Windows Mixed Reality which unfortunately is not well suited for Babylon.js, but perhaps it can be modified to work better. Otherwise, it might be best to manually add the extension with a tool like <span>Visual Studio Code</span> with the <span>glTF Tools for Visual Studio Code extension</span>.</p>
+<h2 id="using-http-range-requests">Using HTTP Range Requests<a class="anchor" href="#using-http-range-requests">#</a></h2>
+<p>A glTF asset can be either loose files or packed together into a glTF binary (GLB). Serving files as GLB on a server is typically not a good idea except when using <span>HTTP range requests</span>. Using range requests will enable the loader to partially download a range of the asset instead of all at once. The glTF loader in Babylon.js supports range requests. It can be enabled like this:</p>
+<pre class="code" data-lang="javascript"><code>BABYLON.SceneLoader.OnPluginActivatedObservable.addOnce(function (loader) {
+  if (loader.name === &quot;gltf&quot;) {
+    loader.useRangeRequests = true;
+  }
+});</code></pre>
+<h2 id="caveats">Caveats<a class="anchor" href="#caveats">#</a></h2>
+<ul>
+<li>The HTTP server hosting the asset must support range requests.</li>
+<li>The LODs in the GLB should be authored with a contiguous range per LOD for maximum efficiency.</li>
+</ul>
+<h2 id="showing-progress">Showing Progress<a class="anchor" href="#showing-progress">#</a></h2>
+<p>When loading large assets either using loose files or with range requests, it is useful to show the download progress. Progress is supported through the progress callback of <code>BABYLON.SceneLoader</code> methods which is a small subset of the HTTP request <span>progress event</span>. Here is an example from the demo above:</p>
+<pre class="code" data-lang="javascript"><code>BABYLON.AppendSceneAsync(url, scene, {
+  pluginExtension: &quot;.glb&quot;,
+  onProgress: function (event) {
+    // Compute the percentage for each stage unless the length is not computable.
+    // The lengthComputable is often false when serving content that is gzipped.
+    const percentage = event.lengthComputable ? &quot; &quot; + Math.floor((event.loaded / event.total) * 100) + &quot;%&quot; : &quot;&quot;;
+
+    // Check if an LOD is loading yet.
+    if (lodNext === null) {
+      // Ignore GLB header progress.
+      if (event.total === 20) return;
+
+      // Show that the glTF is downloading.
+      bottomLine.text = &quot;Loading glTF...&quot; + percentage;
+    } else {
+      // Show that the LOD is downloading.
+      bottomLine.text = &quot;Loading '&quot; + lodNames[lodNext] + &quot;' LOD...&quot; + percentage;
+    }
+  },
+});</code></pre>
+<h2 id="key-notes">Key Notes<a class="anchor" href="#key-notes">#</a></h2>
+<ul>
+<li>Gzipped content hosted on a server often results in <code>lengthComputable</code> being <code>false</code>, which in turn causes the <code>total</code> to be zero. When this happens, the only choices are to not show the progress or to show the number of bytes downloaded instead.</li>
+<li>When using HTTP range requests with a GLB, the first thing that is downloaded is the GLB header which downloads very quickly and is almost always 20 bytes loaded and 20 bytes total when the progress event fires. Ignore it by checking when <code>total</code> is exactly 20.</li>
+</ul>
+<h2 id="debugging-lods">Debugging LODs<a class="anchor" href="#debugging-lods">#</a></h2>
+<p>It is useful to stop at a specific LOD to inspect the results. This can be achieved by setting the <code>maxLODsToLoad</code> property on the MSFT_lod loader extension:</p>
+<pre class="code" data-lang="javascript"><code>BABYLON.SceneLoader.OnPluginActivatedObservable.addOnce(function (loader) {
+  if (loader.name === &quot;gltf&quot;) {
+    loader.onExtensionLoadedObservable.add(function (extension) {
+      if (extension.name === &quot;MSFT_lod&quot;) {
+        // Stop at the first LOD.
+        extension.maxLODsToLoad = 1;
+      }
+    });
+  }
+});</code></pre>
+<h2 id="enabling-logging">Enabling Logging<a class="anchor" href="#enabling-logging">#</a></h2>
+<p>Enabling logging is often useful to understand and debug the loading of a glTF asset. This is especially true for MSFT_lod assets. Logging can be enabled like this:</p>
+<pre class="code" data-lang="javascript"><code>BABYLON.SceneLoader.OnPluginActivatedObservable.addOnce(function (loader) {
+  if (loader.name === &quot;gltf&quot;) {
+    loader.loggingEnabled = true;
+  }
+});</code></pre>
+<p>Here is an example console log from the demo above:</p>
+<pre class="code" data-lang=""><code>BJS - [16:31:29]: Binary version: 2
+BJS - [16:31:29]: JSON length: 59200
+BJS - [16:31:29]: Loading 0
+BJS - [16:31:29]: Asset version: 2.0
+BJS - [16:31:29]: Asset generator: Adobe Dimension - 9ce31d2be91132df879a9b9136f9df4ef7b7fa2c
+BJS - [16:31:29]: LOADING
+BJS - [16:31:29]: /scenes/0 scene
+BJS - [16:31:29]:   /nodes/0 render_camera_n3d
+BJS - [16:31:29]:     /cameras/0 render_camera
+BJS - [16:31:29]:   /nodes/1 ground_plane_n3d
+BJS - [16:31:29]:   /nodes/2 sportsCar_4K
+BJS - [16:31:29]:     /nodes/3 car_lores.obj
+BJS - [16:31:29]:       /nodes/4 g car_lores_gt_lores_lowdetails group1
+BJS - [16:31:29]:         /nodes/5 car_lores_gt_lores_lowdetails group1
+BJS - [16:31:29]:           /meshes/0 car_lores_gt_lores_lowdetails group1
+BJS - [16:31:29]:             /meshes/0/primitives/0
+BJS - [16:31:29]:               deferred
+BJS - [16:31:30]:               /materials/12/extensions/MSFT_lod
+BJS - [16:31:30]:                 /materials/0 details_lod2
+BJS - [16:31:30]:                   /materials/0/normalTexture
+BJS - [16:31:30]:                     /textures/2 tmp_image_pie_10f1_2c55_943e
+BJS - [16:31:30]:                       /images/2 normal
+BJS - [16:31:30]:                         deferred
+BJS - [16:31:30]:                   /materials/0/occlusionTexture
+BJS - [16:31:30]:                     /textures/1 ambient_roughness_metallic
+BJS - [16:31:30]:                       /images/1 ambient_roughness_metallic
+BJS - [16:31:30]:                         deferred
+...
+BJS - [16:31:32]: Loading buffer range [0-4864522]
+BJS - [16:31:37]: READY
+BJS - [16:31:37]: Loading buffer range [4864523-8856965]
+BJS - [16:31:39]: Loaded material LOD 1
+BJS - [16:31:39]: Loading buffer range [8856966-67953580]
+BJS - [16:32:00]: Loaded material LOD 2
+BJS - [16:32:00]: COMPLETE</code></pre>
+<p>Note the <code>deferred</code> message when loading primitives and images. The loader defers the download until it has determined which ranges of the GLB are necessary for the LODs. Once the ranges are determined, the loader loads the range for the first LOD before the state changes to <code>READY</code>, which indicates the asset is ready for viewing. It then loads the remaining LODs in sequence until they are all loaded, at which point the state changes to <code>COMPLETE</code>, indicating that the asset is fully loaded.</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#introduction">Introduction </a><a href="#about-msft-lod">About MSFT_lod </a><a href="#using-http-range-requests">Using HTTP Range Requests </a><a href="#caveats">Caveats </a><a href="#showing-progress">Showing Progress </a><a href="#key-notes">Key Notes </a><a href="#debugging-lods">Debugging LODs </a><a href="#enabling-logging">Enabling Logging </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

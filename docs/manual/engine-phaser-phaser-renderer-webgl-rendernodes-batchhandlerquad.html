@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phaser.Renderer.WebGL.RenderNodes.BatchHandlerQuad — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Phaser.Renderer.WebGL.RenderNodes.BatchHandlerQuad</h1>
+<p><span class="badge">Underlying Phaser 4.2.1 API</span> <span class="badge">Class</span></p><p class="muted">Official public declarations and JSDoc from <code>phaser</code>. Use with engine objects, not directly on a Nord entity.</p><aside class="box tip"><div class="box-title">The Nord way</div><p><a href="2d.html">2D manual</a> · <a href="component-sprite.html">sprite</a> · <a href="component-animatedSprite.html">animatedSprite</a> · <a href="physics.html">physics</a>. Access raw objects only when the Nord wrapper does not cover your feature. <a href="reference.html#escape-hatch">How escape hatches work</a>.</p></aside><h3 id="declaration">BatchHandlerQuad <a class="anchor" href="#declaration">#</a></h3><pre class="code" data-lang="ts"><code>class BatchHandlerQuad extends Phaser.Renderer.WebGL.RenderNodes.BatchHandler</code></pre><p>The primary batch rendering node in Phaser&#39;s WebGL pipeline. It draws
+textured quads (used by Image, Sprite, BitmapText, TileSprite, and other
+Game Objects) in large batches for performance. Supports multi-texturing,
+normal-map-based lighting, and smooth pixel art rendering. Game Objects are
+accumulated into a vertex buffer and flushed to the GPU in a single draw
+call whenever possible.</p>
+<h2 id="members">Public members (15)</h2><p>Private, protected and explicitly internal declarations are excluded. Inherited members belong to the base type listed in the declaration.</p><h3 id="member-constructor-0">constructor <a class="anchor" href="#member-constructor-0">#</a></h3><pre class="code" data-lang="ts"><code>constructor(manager: Phaser.Renderer.WebGL.RenderNodes.RenderNodeManager, config?: Phaser.Types.Renderer.WebGL.RenderNodes.BatchHandlerConfig);</code></pre><p><strong>param</strong>  manager The manager that owns this RenderNode.
+<strong>param</strong>  config The configuration object for this handler.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>manager</code></td><td><code>Phaser.Renderer.WebGL.RenderNodes.RenderNodeManager</code></td><td>Required</td></tr><tr><td><code>config</code></td><td><code>Phaser.Types.Renderer.WebGL.RenderNodes.BatchHandlerConfig</code></td><td>Optional</td></tr></tbody></table><h3 id="member-renderoptions-1">renderOptions <a class="anchor" href="#member-renderoptions-1">#</a></h3><pre class="code" data-lang="ts"><code>renderOptions: Phaser.Types.Renderer.WebGL.RenderNodes.BatchHandlerQuadRenderOptions;</code></pre><p>The current render options to which the batch is built.
+These help define the shader.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.Renderer.WebGL.RenderNodes.BatchHandlerQuadRenderOptions</code></p><h3 id="member-nextrenderoptions-2">nextRenderOptions <a class="anchor" href="#member-nextrenderoptions-2">#</a></h3><pre class="code" data-lang="ts"><code>nextRenderOptions: Phaser.Types.Renderer.WebGL.RenderNodes.BatchHandlerQuadRenderOptions;</code></pre><p>The render options currently being built.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.Renderer.WebGL.RenderNodes.BatchHandlerQuadRenderOptions</code></p><h3 id="member-defaultconfig-3">defaultConfig <a class="anchor" href="#member-defaultconfig-3">#</a></h3><pre class="code" data-lang="ts"><code>defaultConfig: Phaser.Types.Renderer.WebGL.RenderNodes.BatchHandlerConfig;</code></pre><p>The default configuration object for this handler.
+This is merged with the <code>config</code> object passed in the constructor.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.Renderer.WebGL.RenderNodes.BatchHandlerConfig</code></p><h3 id="member-updatetexturecount-4">updateTextureCount <a class="anchor" href="#member-updatetexturecount-4">#</a></h3><pre class="code" data-lang="ts"><code>updateTextureCount(count?: number): void;</code></pre><p>Update the maximum number of textures per batch.
+This rebuilds the shader program with the new texture count.
+The minimum number of textures is 1, and the maximum is the number of
+texture units defined in the renderer.
+Rebuilding the shader may be expensive, so use this sparingly.</p>
+<p>If this runs during a batch, and the new count is less than the number of
+textures in the current batch entry, the batch will be flushed before the
+shader program is rebuilt, so none of the textures are skipped.</p>
+<p>This is usually called automatically by a listener
+for the <code>Phaser.Renderer.Events.SET_PARALLEL_TEXTURE_UNITS</code> event,
+triggered by the RenderNodeManager.
+<strong>param</strong>  count The new maximum number of textures per batch. If undefined, the maximum number of texture units is used.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>count</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-setupuniforms-5">setupUniforms <a class="anchor" href="#member-setupuniforms-5">#</a></h3><pre class="code" data-lang="ts"><code>setupUniforms(drawingContext: Phaser.Renderer.WebGL.DrawingContext): void;</code></pre><p>Update the uniforms for the current shader program.</p>
+<p>This method is called automatically when the batch is run.
+<strong>param</strong>  drawingContext The current drawing context.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>drawingContext</code></td><td><code>Phaser.Renderer.WebGL.DrawingContext</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-setuptextureuniforms-6">setupTextureUniforms <a class="anchor" href="#member-setuptextureuniforms-6">#</a></h3><pre class="code" data-lang="ts"><code>setupTextureUniforms(textures: Phaser.Renderer.WebGL.Wrappers.WebGLTextureWrapper[]): void;</code></pre><p>Set the texture resolution uniforms for the current shader program.
+Specifically, this sets the <code>uMainResolution</code> uniform with the pixel
+dimensions of each bound texture. This information is required by shader
+features such as smooth pixel art rendering.</p>
+<p>This method is called automatically when the batch is run and the
+<code>texRes</code> render option is enabled.
+<strong>param</strong>  textures The textures to render.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>textures</code></td><td><code>Phaser.Renderer.WebGL.Wrappers.WebGLTextureWrapper[]</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-finalizetexturecount-7">finalizeTextureCount <a class="anchor" href="#member-finalizetexturecount-7">#</a></h3><pre class="code" data-lang="ts"><code>finalizeTextureCount(count: number): void;</code></pre><p>Finalize the texture count for the current sub-batch.
+This is called automatically when the render is run.
+It requests a shader program with the necessary number of textures,
+if that is less than the maximum allowed.
+This reduces the number of textures the GPU must handle,
+which can improve performance.
+<strong>param</strong>  count The total number of textures in the batch.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>count</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-updaterenderoptions-8">updateRenderOptions <a class="anchor" href="#member-updaterenderoptions-8">#</a></h3><pre class="code" data-lang="ts"><code>updateRenderOptions(renderOptions: Phaser.Types.Renderer.WebGL.RenderNodes.BatchHandlerQuadRenderOptions): void;</code></pre><p>Compare the incoming render options against the currently active options
+and stage any differences into <code>nextRenderOptions</code>. Sets
+<code>_renderOptionsChanged</code> to <code>true</code> if any option has changed, signalling
+that the current batch should be flushed and the shader rebuilt via
+<code>updateShaderConfig</code> before the next draw.
+<strong>param</strong>  renderOptions The new render options.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>renderOptions</code></td><td><code>Phaser.Types.Renderer.WebGL.RenderNodes.BatchHandlerQuadRenderOptions</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-updateshaderconfig-9">updateShaderConfig <a class="anchor" href="#member-updateshaderconfig-9">#</a></h3><pre class="code" data-lang="ts"><code>updateShaderConfig(): void;</code></pre><p>Update the shader configuration based on render options.
+This is called automatically when the render options change.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="member-run-10">run <a class="anchor" href="#member-run-10">#</a></h3><pre class="code" data-lang="ts"><code>run(drawingContext: Phaser.Renderer.WebGL.DrawingContext): void;</code></pre><p>Draw then empty the current batch.</p>
+<p>This method is called automatically, by either this node or the manager,
+when the batch is full, or when something else needs to be rendered.
+<strong>param</strong>  drawingContext The current drawing context.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>drawingContext</code></td><td><code>Phaser.Renderer.WebGL.DrawingContext</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-batch-11">batch <a class="anchor" href="#member-batch-11">#</a></h3><pre class="code" data-lang="ts"><code>batch(currentContext: Phaser.Renderer.WebGL.DrawingContext, glTexture: Phaser.Renderer.WebGL.Wrappers.WebGLTextureWrapper, x0: number, y0: number, x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, texX: number, texY: number, texWidth: number, texHeight: number, tintMode: number, tintTL: number, tintBL: number, tintTR: number, tintBR: number, renderOptions: Phaser.Types.Renderer.WebGL.RenderNodes.BatchHandlerQuadRenderOptions, tint2TL?: number, tint2BL?: number, tint2TR?: number, tint2BR?: number, ...args: any[]): void;</code></pre><p>Add a quad to the batch.</p>
+<p>For compatibility with TRIANGLE_STRIP rendering,
+the vertices are written into the buffer in the order:</p>
+<ul>
+<li>Bottom-left</li>
+<li>Top-left</li>
+<li>Bottom-right</li>
+<li>Top-right
+<strong>param</strong>  currentContext The current drawing context.
+<strong>param</strong>  glTexture The texture to render.
+<strong>param</strong>  x0 The x coordinate of the top-left corner.
+<strong>param</strong>  y0 The y coordinate of the top-left corner.
+<strong>param</strong>  x1 The x coordinate of the bottom-left corner.
+<strong>param</strong>  y1 The y coordinate of the bottom-left corner.
+<strong>param</strong>  x2 The x coordinate of the top-right corner.
+<strong>param</strong>  y2 The y coordinate of the top-right corner.
+<strong>param</strong>  x3 The x coordinate of the bottom-right corner.
+<strong>param</strong>  y3 The y coordinate of the bottom-right corner.
+<strong>param</strong>  texX The left u coordinate (0-1).
+<strong>param</strong>  texY The top v coordinate (0-1).
+<strong>param</strong>  texWidth The width of the texture (0-1).
+<strong>param</strong>  texHeight The height of the texture (0-1).
+<strong>param</strong>  tintMode The tint mode to use.
+<strong>param</strong>  tintTL The top-left tint color.
+<strong>param</strong>  tintBL The bottom-left tint color.
+<strong>param</strong>  tintTR The top-right tint color.
+<strong>param</strong>  tintBR The bottom-right tint color.
+<strong>param</strong>  renderOptions Optional render features.
+<strong>param</strong>  tint2TL The secondary tint color for the top-left corner.
+<strong>param</strong>  tint2BL The secondary tint color for the bottom-left corner.
+<strong>param</strong>  tint2TR The secondary tint color for the top-right corner.
+<strong>param</strong>  tint2BR The secondary tint color for the bottom-right corner.
+<strong>param</strong>  args Additional arguments for subclasses.</li>
+</ul>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>currentContext</code></td><td><code>Phaser.Renderer.WebGL.DrawingContext</code></td><td>Required</td></tr><tr><td><code>glTexture</code></td><td><code>Phaser.Renderer.WebGL.Wrappers.WebGLTextureWrapper</code></td><td>Required</td></tr><tr><td><code>x0</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y0</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>x1</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y1</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>x2</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y2</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>x3</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y3</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>texX</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>texY</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>texWidth</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>texHeight</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>tintMode</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>tintTL</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>tintBL</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>tintTR</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>tintBR</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>renderOptions</code></td><td><code>Phaser.Types.Renderer.WebGL.RenderNodes.BatchHandlerQuadRenderOptions</code></td><td>Required</td></tr><tr><td><code>tint2TL</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>tint2BL</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>tint2TR</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>tint2BR</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>...args</code></td><td><code>any[]</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-batchwithuv-12">batchWithUV <a class="anchor" href="#member-batchwithuv-12">#</a></h3><pre class="code" data-lang="ts"><code>batchWithUV(currentContext: Phaser.Renderer.WebGL.DrawingContext, glTexture: Phaser.Renderer.WebGL.Wrappers.WebGLTextureWrapper, x0: number, y0: number, x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, u0: number, v0: number, u1: number, v1: number, u2: number, v2: number, u3: number, v3: number, tintMode: number, tintTL: number, tintBL: number, tintTR: number, tintBR: number, renderOptions: Phaser.Types.Renderer.WebGL.RenderNodes.BatchHandlerQuadRenderOptions, tint2TL?: number, tint2BL?: number, tint2TR?: number, tint2BR?: number, ...args: any[]): void;</code></pre><p>Add a quad to the batch, using explicit UV coordinates.
+This is intended for compatibility with mesh rendering.</p>
+<p>For compatibility with TRIANGLE_STRIP rendering,
+the vertices are written into the buffer in the order:</p>
+<ul>
+<li>Bottom-left</li>
+<li>Top-left</li>
+<li>Bottom-right</li>
+<li>Top-right
+<strong>param</strong>  currentContext The current drawing context.
+<strong>param</strong>  glTexture The texture to render.
+<strong>param</strong>  x0 The x coordinate of the top-left corner.
+<strong>param</strong>  y0 The y coordinate of the top-left corner.
+<strong>param</strong>  x1 The x coordinate of the bottom-left corner.
+<strong>param</strong>  y1 The y coordinate of the bottom-left corner.
+<strong>param</strong>  x2 The x coordinate of the top-right corner.
+<strong>param</strong>  y2 The y coordinate of the top-right corner.
+<strong>param</strong>  x3 The x coordinate of the bottom-right corner.
+<strong>param</strong>  y3 The y coordinate of the bottom-right corner.
+<strong>param</strong>  u0 The u coordinate of the top-left corner.
+<strong>param</strong>  v0 The v coordinate of the top-left corner.
+<strong>param</strong>  u1 The u coordinate of the bottom-left corner.
+<strong>param</strong>  v1 The v coordinate of the bottom-left corner.
+<strong>param</strong>  u2 The u coordinate of the top-right corner.
+<strong>param</strong>  v2 The v coordinate of the top-right corner.
+<strong>param</strong>  u3 The u coordinate of the bottom-right corner.
+<strong>param</strong>  v3 The v coordinate of the bottom-right corner.
+<strong>param</strong>  tintMode The tint mode to use.
+<strong>param</strong>  tintTL The tint color for the top-left corner.
+<strong>param</strong>  tintBL The tint color for the bottom-left corner.
+<strong>param</strong>  tintTR The tint color for the top-right corner.
+<strong>param</strong>  tintBR The tint color for the bottom-right corner.
+<strong>param</strong>  renderOptions Optional render features.
+<strong>param</strong>  tint2TL The secondary tint color for the top-left corner.
+<strong>param</strong>  tint2BL The secondary tint color for the bottom-left corner.
+<strong>param</strong>  tint2TR The secondary tint color for the top-right corner.
+<strong>param</strong>  tint2BR The secondary tint color for the bottom-right corner.
+<strong>param</strong>  args Additional arguments for subclasses.</li>
+</ul>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>currentContext</code></td><td><code>Phaser.Renderer.WebGL.DrawingContext</code></td><td>Required</td></tr><tr><td><code>glTexture</code></td><td><code>Phaser.Renderer.WebGL.Wrappers.WebGLTextureWrapper</code></td><td>Required</td></tr><tr><td><code>x0</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y0</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>x1</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y1</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>x2</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y2</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>x3</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y3</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>u0</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>v0</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>u1</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>v1</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>u2</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>v2</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>u3</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>v3</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>tintMode</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>tintTL</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>tintBL</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>tintTR</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>tintBR</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>renderOptions</code></td><td><code>Phaser.Types.Renderer.WebGL.RenderNodes.BatchHandlerQuadRenderOptions</code></td><td>Required</td></tr><tr><td><code>tint2TL</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>tint2BL</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>tint2TR</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>tint2BR</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>...args</code></td><td><code>any[]</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-batchtextures-13">batchTextures <a class="anchor" href="#member-batchtextures-13">#</a></h3><pre class="code" data-lang="ts"><code>batchTextures(glTexture: Phaser.Renderer.WebGL.Wrappers.WebGLTextureWrapper, renderOptions: object): number;</code></pre><p>Process textures for batching.
+This method is called automatically by the <code>batch</code> method.
+It returns a piece of data used for various texture tasks,
+depending on the render options.</p>
+<p>The texture datum may be used for texture ID or normal map rotation.
+<strong>param</strong>  glTexture The texture to render.
+<strong>param</strong>  renderOptions The current render options.
+<strong>returns</strong>  The texture datum.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>glTexture</code></td><td><code>Phaser.Renderer.WebGL.Wrappers.WebGLTextureWrapper</code></td><td>Required</td></tr><tr><td><code>renderOptions</code></td><td><code>object</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>number</code></p><h3 id="member-pushcurrentbatchentry-14">pushCurrentBatchEntry <a class="anchor" href="#member-pushcurrentbatchentry-14">#</a></h3><pre class="code" data-lang="ts"><code>pushCurrentBatchEntry(): void;</code></pre><p>Push the current batch entry to the batch entry list,
+and create a new batch entry for future use.</p>
+<p><b>Type / return:</b> <code>void</code></p><h2 id="base-types">Base types</h2><p><a href="engine-phaser-phaser-renderer-webgl-rendernodes-batchhandler.html">Phaser.Renderer.WebGL.RenderNodes.BatchHandler</a></p><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#members">Public members (15)</a><a href="#base-types">Base types</a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

@@ -4,6 +4,13 @@ section: Manual
 order: 8
 summary: Sound effects, music, buses, autoplay rules.
 ---
+
+Add short sounds for actions and music for atmosphere. Keep the files in your project, choose a volume, and let the player enable audio with a click or tap.
+
+::: dummies
+If sound is silent on first load, click the game once. Browsers require a player gesture. Try one short sound before setting up looping music or crossfades.
+:::
+
 `this.audio` is a WebAudio manager with four **buses**: `master → music / sfx / ui`. Calls made before the player's first click/key are **queued and replayed** (browsers block audio until a gesture).
 Missing or blocked audio never throws into game code.
 

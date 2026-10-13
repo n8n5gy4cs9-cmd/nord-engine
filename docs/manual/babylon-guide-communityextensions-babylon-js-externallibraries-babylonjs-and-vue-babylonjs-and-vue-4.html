@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: How to use BabylonJS with Vue - messages driven scene — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: How to use BabylonJS with Vue - messages driven scene</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="prerequisites">Prerequisites<a class="anchor" href="#prerequisites">#</a></h2>
+<p>Clone the repo at <span>https://github.com/RolandCsibrei/babylonjs-vue-messages-driven-scene</span> and install it. Instructions can be found on the repo&#39;s home page.</p>
+<p>You can also check the application running at <span>https://babylonjs.nascor.tech/scene-director/</span></p>
+<h2 id="the-problem">The problem<a class="anchor" href="#the-problem">#</a></h2>
+<p>If you expose BabylonJS objects and manipulate them directly with Vue, you will sooner or later end up with very low FPS caused by multiple redraws of the scene. The reason is that you interfere with Vue&#39;s reactivity and things get called repeatedly.</p>
+<h2 id="the-solution">The solution<a class="anchor" href="#the-solution">#</a></h2>
+<p>Do not expose BabylonJS objects, and always send a copy of your objects in your methods, or simply use <code>JSON</code> for your data.</p>
+<h2 id="choosing-json">Choosing JSON?<a class="anchor" href="#choosing-json">#</a></h2>
+<p>So do you have to <code>JSON.stringify</code> and <code>JSON.parse</code> every piece of data you are passing between Vue and BabylonJS? <strong>Yes</strong>, but we can write a class which will help us to do so with minimal effort.</p>
+<p>Having everything in JSON opens up new possibilities, so we can leverage a messaging bus for easy data passing between the two frameworks.</p>
+<h2 id="the-idea-behind-messaging">The idea behind messaging<a class="anchor" href="#the-idea-behind-messaging">#</a></h2>
+<p>We don&#39;t want our Vue code to know about BabylonJS implementation details. We want methods we can call that ensure the required tasks are done. Let&#39;s jump to the example project; it will be easier to follow how the data is passed and received.</p>
+<h2 id="the-marble-example">The Marble example<a class="anchor" href="#the-marble-example">#</a></h2>
+<p>This example uses the Mitt bus (<span>https://github.com/developit/mitt</span>), but you can use any messaging bus. In Vue 2, you can use <code>new Vue()</code> to create a bus.</p>
+<p><p class="muted">Upstream illustration: image (media not bundled).</p></p>
+<p><code>assets</code> - you all know
+<code>bus</code> - the Mitt bus wrappers
+<code>components</code> - our Vue component which displays the BabylonJS scene
+<code>director</code> - our layer between Vue and BabylonJS
+<code>scenes</code> - our BabylonJS scene
+<code>utils</code> - some utility methods</p>
+<h2 id="the-bus">The Bus<a class="anchor" href="#the-bus">#</a></h2>
+<p>Now that we can use messaging to communicate between Vue and BabylonJS, how about making this communication <code>async</code>, so that, for example, a method called by Vue can <code>await</code> a method running in BabylonJS code? We can simply create an async wrapper around the synchronous bus.</p>
+<p>Let&#39;s introduce an interface for our message bus. I will show you only the <code>AsyncBus</code> implementation. The synchronous bus is pretty much the same. This interface must be implemented by our bus.</p>
+<p><p class="muted">Upstream illustration: image (media not bundled).</p></p>
+<p>as seen in <code>AsyncBus.ts</code> it implements this interface.</p>
+<p><p class="muted">Upstream illustration: image (media not bundled).</p></p>
+<p><code>AsyncBus</code> is just a facade and uses the Mitt bus under the hood, but adds asynchronicity to our messaging.</p>
+<h2 id="the-scene-director">The Scene Director<a class="anchor" href="#the-scene-director">#</a></h2>
+<p>The Scene Director is a simple method-call-to-message converter. Your Vue code calls methods on the <code>SceneDirector</code>, which creates messages and sends them using our <code>AsyncBus</code>. As long as our BabylonJS scene is interested in a message (that is, it is subscribed to process a particular message—basically, this calls <code>Mitt.$on(messageType, callback)</code> at a low level), it gets executed. When execution finishes, the BabylonJS scene has to notify the Scene Director that it has finished. The Scene Director <code>awaits</code> every sent message by listening for a response with the specific message type <code>SceneDirectorEventBusMessages.SceneDirectorCommandFinished</code>, along with additional information about the executed command, including the return value in <code>payload</code>. Don&#39;t worry—there are helper methods, and the usage is very easy.</p>
+<p>Let&#39;s jump to Vue!</p>
+<h2 id="vue-page">Vue page<a class="anchor" href="#vue-page">#</a></h2>
+<p>This example uses <code>App.vue</code> for the whole UI, but you should not put everything here and it is a good idea to have a <code>router</code> at hand and of course use pages/layouts/views/components for better modularity of your project.</p>
+<p><p class="muted">Upstream illustration: image (media not bundled).</p></p>
+<p>First of all, you have to import our <code>SceneDirector</code> class and create an instance so you can call its methods.</p>
+<p><p class="muted">Upstream illustration: image (media not bundled).</p></p>
+<p>The example application comes with three methods. As you can see, all methods are <code>async</code>. I marked some methods as <code>void</code> because I just don&#39;t want to <code>await</code> methods returning <code>void</code> for now. However, the <code>getMeshnames</code> method has a return type of <code>string[]</code>, and I am interested in the result, so I must use <code>await</code> here.</p>
+<h2 id="scene-director-methods">Scene Director methods<a class="anchor" href="#scene-director-methods">#</a></h2>
+<p>OK, so let&#39;s see our method implementation in the Scene Director.
+<p class="muted">Upstream illustration: image (media not bundled).</p></p>
+<p>All we do here is call a helper method called <code>asyncCommand</code>.</p>
+<p><p class="muted">Upstream illustration: image (media not bundled).</p></p>
+<p>where we need to specify the message type and, if we have something to send, the <code>payload</code>.</p>
+<h2 id="message-types">Message types<a class="anchor" href="#message-types">#</a></h2>
+<p>We have to specify what messages we are going to send through our bus, so we have this:</p>
+<p><p class="muted">Upstream illustration: image (media not bundled).</p></p>
+<p>There are two types of messages. This is just for better readability—you can put them under one enum if you like. <code>SceneDirectorEventBusMessages</code> are sent from Vue to BabylonJS, and obviously the second one moves from BabylonJS toward Vue.</p>
+<p>It is a good idea not to create a message type for every single action. For example, you are not going to create a <code>LookLeft</code> message and a <code>LookRight</code> message. Instead, you will create a <code>LookAt</code> message and call it with a parameter. However, in your <code>SceneDirector</code> you can still have two separate methods, so Vue just calls <code>LookLeft</code> or <code>LookRight</code>, and the <code>SceneDirector</code> sends a <code>LookAt</code> message with a parameter like { rot: - Math.PI / 2 } or { rot: Math.PI / 2 }, which will set the camera&#39;s <code>alpha</code>, for example.</p>
+<h2 id="babylonjs-scene">BabylonJS scene<a class="anchor" href="#babylonjs-scene">#</a></h2>
+<p>You simply register your message subscriptions by modifying this method:
+<p class="muted">Upstream illustration: image (media not bundled).</p>
+So it maps message types to functions.</p>
+<p>Let&#39;s have a look at the functions:
+<code>addMarble</code> adds a new marble (maybe atoms should be a better name, just look at the page screenshot below)</p>
+<p><p class="muted">Upstream illustration: image (media not bundled).</p>
+As seen on the screenshot above, every mapped method receives a command. The <code>payload</code> stuff has to be clear for all of you, if not, you can access the <code>payload</code> sent by the <code>SceneDirector</code> here, in our case the <code>name</code> of the marble.</p>
+<p><code>addMarbleByName</code> just does this:</p>
+<p><p class="muted">Upstream illustration: image (media not bundled).</p></p>
+<p>The very important thing here is to call <code>this.commandFinished(sceneDirectorCommand)</code> after your method has finished. If you started an animation and want to wait for it, no problem—just call <code>this.commandFinished(sceneDirectorCommand)</code> in your animation end callback.</p>
+<p>If you want to send a message towards Vue, you can use</p>
+<p><p class="muted">Upstream illustration: image (media not bundled).</p></p>
+<p>where <code>this.emitCommand</code> is just a helper method.</p>
+<p><p class="muted">Upstream illustration: image (media not bundled).</p></p>
+<p>and don&#39;t forget to register your message in <code>SceneDirector</code> (<code>MySceneDirector</code> in our example)</p>
+<p><p class="muted">Upstream illustration: image (media not bundled).</p></p>
+<p>Unregistering events is also a must :) Just take your time :slight_smile:</p>
+<h2 id="vue-ref">Vue ref<a class="anchor" href="#vue-ref">#</a></h2>
+<p>In <code>App.vue</code> we can <code>use</code> some data from the <code>SceneDirector</code></p>
+<p><p class="muted">Upstream illustration: image (media not bundled).</p></p>
+<p>what is a simple <code>ref</code>:</p>
+<p><p class="muted">Upstream illustration: image (media not bundled).</p></p>
+<p>and whenever a <code>MarbleSelected</code> message arrives, we just set the ref&#39;s <code>value</code>.</p>
+<p><p class="muted">Upstream illustration: image (media not bundled).</p></p>
+<p><strong>You should always prefer a loosely coupled architecture for your solution, so you would rather use a callback instead of a ref and avoid referencing any Vue object in SceneDirector</strong>. That way, you could replace Vue with any other framework and would not have to rewrite any BJS-related method. The Vue <code>ref</code> is used here only as an example of how to use refs. However, if you are going to stick with Vue, <code>ref</code> is the way to go.</p>
+<h2 id="the-example-app">The example app<a class="anchor" href="#the-example-app">#</a></h2>
+<p><p class="muted">Upstream illustration: image (media not bundled).</p></p>
+<p>The app creates 40 marbles on startup. You can add a marble by entering its name in the text input and clicking Add marble. The Remove marbles button will remove some of the marbles with each click. The last button will query the scene for all mesh names and print them to the console. The methods are described above in the ##Vue page## section.</p>
+<h2 id="webworkers">WebWorkers<a class="anchor" href="#webworkers">#</a></h2>
+<p>So we have a message-driven scene?! You can easily move your BabylonJS scene to a WebWorker!! Or you can control your scene with external messages—for example, light sensors can deliver messages for controlling <code>light.intensity</code> on BabylonJS lights...</p>
+<h2 id="message-flow-logged-in-the-console">Message flow logged in the console<a class="anchor" href="#message-flow-logged-in-the-console">#</a></h2>
+<p>Example of a <code>getMeshNames</code> message flow from the <code>SceneDirector</code> to <code>MarbleScene</code> and back to <code>SceneDirector</code>, where it finally gets <code>console.logged</code> in <code>App.vue</code>:</p>
+<p><p class="muted">Upstream illustration: image (media not bundled).</p></p>
+<h2 id="links">Links<a class="anchor" href="#links">#</a></h2>
+<p>You can find a quick prototype using this technique running here <span>https://babylonjs.nascor.tech/scene-director/</span></p>
+<p>Source code repository using Vue3 is at <span>https://github.com/RolandCsibrei/babylonjs-vue-messages-driven-scene</span></p>
+<p><a href="babylon-guide-communityextensions-babylon-js-externallibraries-babylonjs-and-vue-babylonjs-and-vue-0.html">All links from this tutorial at one place</a></p>
+<p><a href="babylon-guide-communityextensions-babylon-js-externallibraries-babylonjs-and-vue-babylonjs-and-vue-1.html">Part 1</a> of this tutorial</p>
+<p><a href="babylon-guide-communityextensions-babylon-js-externallibraries-babylonjs-and-vue-babylonjs-and-vue-2.html">Part 2</a> of this tutorial</p>
+<p><a href="babylon-guide-communityextensions-babylon-js-externallibraries-babylonjs-and-vue-babylonjs-and-vue-3.html">Part 3</a> of this tutorial</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#prerequisites">Prerequisites </a><a href="#the-problem">The problem </a><a href="#the-solution">The solution </a><a href="#choosing-json">Choosing JSON? </a><a href="#the-idea-behind-messaging">The idea behind messaging </a><a href="#the-marble-example">The Marble example </a><a href="#the-bus">The Bus </a><a href="#the-scene-director">The Scene Director </a><a href="#vue-page">Vue page </a><a href="#scene-director-methods">Scene Director methods </a><a href="#message-types">Message types </a><a href="#babylonjs-scene">BabylonJS scene </a><a href="#vue-ref">Vue ref </a><a href="#the-example-app">The example app </a><a href="#webworkers">WebWorkers </a><a href="#message-flow-logged-in-the-console">Message flow logged in the console </a><a href="#links">Links </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

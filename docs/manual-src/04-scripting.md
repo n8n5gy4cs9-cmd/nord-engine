@@ -4,6 +4,13 @@ section: Manual
 order: 4
 summary: NordScript lifecycle, attributes, events, timers, tweens, hot reload, debugging.
 ---
+
+A script adds behavior to an entity: movement, a reaction to a button, or rules for your game. New to code? Read [Programming for dummy developers](developer-basics.html) first.
+
+::: dummies
+Attach the Spinner example below to an entity with a visible picture, press Play, and watch it turn. Change speed in the Inspector to try a different speed. Attributes are settings, not a second script.
+:::
+
 Scripts are ES modules whose default export extends `NordScript`. The one import is `nord`:
 
 ```js

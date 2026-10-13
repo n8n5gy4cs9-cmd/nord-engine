@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Introduction To Sprites — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Introduction To Sprites</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="sprites">Sprites<a class="anchor" href="#sprites">#</a></h2>
+<p><p class="muted">Upstream illustration: Elements (media not bundled).</p></p>
+<p>Babylon.js has three ways of managing sprites, the <em>SpriteManager</em>, the <em>SpritePackedManager</em> and the <em>SpriteMap</em>. The first manages a single image file or, for animation, a spritesheet (also called a sprite atlas) of multiple sprite images all of the same size. The second is for a packed spritesheet of different sized sprite images. The third uses a packed spritesheet to form a 2D (or 2.5D) grid of possibly thousands of sprites.</p>
+<p>The separate images in a spritesheet of either type are in what are called cells.</p>
+<p>The brief overviews on this page are further detailed within this section.</p>
+<h2 id="sprite-manager">Sprite Manager<a class="anchor" href="#sprite-manager">#</a></h2>
+<p>For a single sprite image or uniform spritesheet you create a sprite manager.</p>
+<pre class="code" data-lang="javascript"><code>const mySpriteManagerTrees = new BABYLON.SpriteManager(name, url, capacity, size, scene); //scene is optional and defaults to the current scene</code></pre>
+<ul>
+<li><em>name</em> - (<em>string</em>) manager name;</li>
+<li><em>url</em> - (<em>string</em>) path to the image/spritesheet url;</li>
+<li><em>capacity</em> (<em>number</em>) maximum number of sprite instances in this manager;</li>
+<li><em>size</em> (<em>{width: number, height: number} | number</em>), width and height or size of a sprite or a cell within a spritesheet;</li>
+<li><em>scene</em> (<em>scene</em>) optional</li>
+</ul>
+<h2 id="sprite-packed-manager">Sprite Packed Manager<a class="anchor" href="#sprite-packed-manager">#</a></h2>
+<p><em>Available from BJS version 4.1</em></p>
+<p>When your sprite images are of varying sizes you need a packed spritesheet file and a JSON file containing the positional data of the individual sprites within the packed spritesheet. The packed spritesheet file and the JSON file should have the same name and be in the same folder, for example, pack1.png and pack1.json. You can then create a sprite packed manager by either</p>
+<p>referencing just the packed spritesheet file</p>
+<pre class="code" data-lang="javascript"><code>const mySpritePackedManager = new BABYLON.SpritePackedManager(name, spritesheet url, capacity, scene); //scene is optional and defaults to the current scene</code></pre>
+<p>or a packed spritesheet file and an appropriate JSON object</p>
+<pre class="code" data-lang="javascript"><code>const spm = new BABYLON.SpritePackedManager(name, spritesheet url, capacity, scene, atlasJSON);</code></pre>
+<ul>
+<li><em>name</em> - (<em>string</em>) manager name;</li>
+<li><em>url</em> - (<em>string</em>) path to the spritesheet url;</li>
+<li><em>capacity</em> (<em>number</em>) maximum number of sprite instances in this manager;</li>
+<li><em>scene</em> (<em>scene</em>) optional unless the following parameter is used</li>
+<li><em>JSONpack</em> (<em>JSON object</em>) optional</li>
+</ul>
+<p>Currently the sprite packed manager only uses the cell positional and cell size data from the packed spritesheet.</p>
+<h2 id="sprite-map">Sprite Map<a class="anchor" href="#sprite-map">#</a></h2>
+<p><em>Available from BJS version 4.1</em></p>
+<p>When creating a 2D or 2.5D game you often need to render thousands of animated sprites on screen fast. This is beyond the capabilities of either of the sprite managers. The Babylon.js <em>SpriteMap</em> was made for use in this situation. The only current limitation of this sprite mapping system is that sprite positions are fixed to a specific grid dictated by the SpriteMap&#39;s initialization parameters.</p>
+<p><strong>Note:</strong> <em>SpriteMap</em> uses a different JSON format from <em>SpritePackedManager</em>, so their files are not interchangeable. Also, you need to create a texture from the packed spritesheet and pass this rather than a direct path to its URL.</p>
+<p>Creating a SpriteMap is simple:</p>
+<pre class="code" data-lang="javascript"><code>const mySpriteMap = new BABYLON.SpriteMap(name, atlasJSON, spriteSheetTexture, options, scene);</code></pre>
+<ul>
+<li><em>name</em> - (<em>string</em>) manager name;</li>
+<li><em>atlasJSON</em> (<em>JSON object</em>) referencing the packed spritesheet;</li>
+<li><em>spriteTexture</em> - (<em>texture</em>) a texture created from a packed spritesheet;</li>
+<li><em>options</em> (<em>number</em>) initializing options;</li>
+<li><em>scene</em> (<em>scene</em>) <em>REQUIRED</em></li>
+</ul>
+<p>The initializing options set up the data buffers in memory and get the system prepared for display. When making changes to any of the options it is recommended that you dispose the map and re-initialize with the correct options.</p>
+<h2 id="pixel-perfection">Pixel perfection<a class="anchor" href="#pixel-perfection">#</a></h2>
+<p>You can use the <code>options</code> object to set options for both sprite managers:</p>
+<pre class="code" data-lang="typescript"><code>export interface SpriteManagerOptions {
+    spriteRendererOptions: SpriteRendererOptions;
+}</code></pre>
+<p>This way you can set options for the sprite renderer:</p>
+<pre class="code" data-lang="typescript"><code>export interface SpriteRendererOptions {
+    pixelPerfect?: boolean;
+}</code></pre>
+<p>Setting <code>pixelPerfect</code> to true instantiates the sprite renderer in pixel-perfect mode. Creating the renderer in pixel-perfect mode is faster than creating it in non-pixel-perfect mode and setting its <code>pixelPerfect</code> property to <code>true</code>.</p>
+<h3 id="example">Example:<a class="anchor" href="#example">#</a></h3>
+<pre class="code" data-lang="javascript"><code>const spriteManagerPlayer = new BABYLON.SpriteManager(
+    &quot;playerManager&quot;,
+    &quot;sprite_url.png&quot;,
+    3,
+    {
+        width: 32,
+        height: 32,
+    },
+    scene,
+    0.003,
+    undefined,
+    undefined,
+    undefined,
+    {
+        spriteRendererOptions: {
+            pixelPerfect: true
+        }
+    }
+);</code></pre>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#sprites">Sprites </a><a href="#sprite-manager">Sprite Manager </a><a href="#sprite-packed-manager">Sprite Packed Manager </a><a href="#sprite-map">Sprite Map </a><a href="#pixel-perfection">Pixel perfection </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

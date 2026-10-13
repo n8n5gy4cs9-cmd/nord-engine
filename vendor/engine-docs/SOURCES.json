@@ -1,0 +1,71 @@
+{
+  "parser": "typescript@5.9.3",
+  "sources": [
+    {
+      "package": "phaser",
+      "version": "4.2.1",
+      "source": "https://registry.npmjs.org/phaser/-/phaser-4.2.1.tgz",
+      "declaration": "phaser.d.ts.gz",
+      "license": "MIT"
+    },
+    {
+      "package": "babylonjs",
+      "version": "9.30.0",
+      "source": "https://registry.npmjs.org/babylonjs/-/babylonjs-9.30.0.tgz",
+      "declaration": "babylonjs.d.ts.gz",
+      "license": "Apache-2.0"
+    },
+    {
+      "package": "babylonjs-gui",
+      "version": "9.30.0",
+      "source": "https://registry.npmjs.org/babylonjs-gui/-/babylonjs-gui-9.30.0.tgz",
+      "declaration": "babylonjs-gui.d.ts.gz",
+      "license": "Apache-2.0"
+    },
+    {
+      "package": "babylonjs-loaders",
+      "version": "9.30.0",
+      "source": "https://registry.npmjs.org/babylonjs-loaders/-/babylonjs-loaders-9.30.0.tgz",
+      "declaration": "babylonjs-loaders.d.ts.gz",
+      "license": "Apache-2.0"
+    },
+    {
+      "package": "babylonjs-materials",
+      "version": "9.30.0",
+      "source": "https://registry.npmjs.org/babylonjs-materials/-/babylonjs-materials-9.30.0.tgz",
+      "declaration": "babylonjs-materials.d.ts.gz",
+      "license": "Apache-2.0"
+    },
+    {
+      "package": "babylonjs-post-process",
+      "version": "9.30.0",
+      "source": "https://registry.npmjs.org/babylonjs-post-process/-/babylonjs-post-process-9.30.0.tgz",
+      "declaration": "babylonjs-post-process.d.ts.gz",
+      "license": "Apache-2.0"
+    },
+    {
+      "package": "babylonjs-procedural-textures",
+      "version": "9.30.0",
+      "source": "https://registry.npmjs.org/babylonjs-procedural-textures/-/babylonjs-procedural-textures-9.30.0.tgz",
+      "declaration": "babylonjs-procedural-textures.d.ts.gz",
+      "license": "Apache-2.0"
+    },
+    {
+      "package": "babylonjs-serializers",
+      "version": "9.30.0",
+      "source": "https://registry.npmjs.org/babylonjs-serializers/-/babylonjs-serializers-9.30.0.tgz",
+      "declaration": "babylonjs-serializers.d.ts.gz",
+      "license": "Apache-2.0"
+    },
+    {
+      "package": "BabylonJS/Documentation",
+      "commit": "0222ae2cf8d566cc939d70d8fa12aa8d30174a50",
+      "source": "https://github.com/BabylonJS/Documentation",
+      "license": "Apache-2.0",
+      "pages": 816,
+      "note": "Prose snapshot may describe newer features; API declarations match Nord 9.30.0. Online playgrounds/videos are not bundled."
+    }
+  ],
+  "declarations": 7653,
+  "phaserSnapshot": "Owner-supplied 4.1.0 documentation; not current API truth."
+}

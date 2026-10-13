@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: WebXR Features Manager — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: WebXR Features Manager</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="why-is-it-needed">Why is it needed<a class="anchor" href="#why-is-it-needed">#</a></h2>
+<p>The Features Manager, our XR plugin system, was born out of a simple need: stay backward compatible while still delivering cutting-edge APIs in a production system.</p>
+<p>Since APIs like <span>Hit Test</span> and <span>anchors</span> are constantly changing, and currently still have different support in different browser versions, there was a need for the “versioning” of the current development to keep up with API modifications over time.</p>
+<p>If you are a bit impatient, you can check the <a href="babylon-guide-features-featuresdeepdive-webxr-webxrselectedfeatures.html">selected WebXR features</a> section, but it is recommended that you at least read this section quickly.</p>
+<h2 id="how-to-use">How to use<a class="anchor" href="#how-to-use">#</a></h2>
+<h3 id="construct-a-new-features-manager">Construct a new features manager<a class="anchor" href="#construct-a-new-features-manager">#</a></h3>
+<p>If you are using the <a href="babylon-guide-features-featuresdeepdive-webxr-webxrexperiencehelpers.html">base WebXR experience helper</a>, a features manager will be created for you and will be available in <code>xrBaseHelper.featuresManager</code>. If not, you only need to provide an XR session manager object to initialize a new one:</p>
+<pre class="code" data-lang="javascript"><code>const fm = new FeaturesManager(xrSessionManager);</code></pre>
+<p>Note that even before creating the features manager, you can call its static methods (check availability, register a new feature, etc.).</p>
+<h3 id="what-is-available">What is available<a class="anchor" href="#what-is-available">#</a></h3>
+<p>To check what feature is available, use the features manager&#39;s static <code>GetAvailableFeatures</code> function, which will return an array of strings corresponding to specific features:</p>
+<pre class="code" data-lang="javascript"><code>const availableFeatures = WebXRFeaturesManager.GetAvailableFeatures(); // in plain JS, use BABYLON.WebXRFeaturesManager
+
+// availableFeatures = [&quot;xr-hit-test&quot;, &quot;xr-pointer-selection&quot;, ...]</code></pre>
+<p>To find out whether a specific feature is available, use this code:</p>
+<pre class="code" data-lang="javascript"><code>const availableFeatures = WebXRFeaturesManager.GetAvailableFeatures();
+// using indexOf, but you can use any other method - includes, find, findIndex, in, etc'
+if (availableFeatures.indexOf(WebXRFeatureName.POINTER_SELECTION) !== -1) {
+    // Pointer selection is available
+}</code></pre>
+<p><code>WebXRFeatureName</code> will always contain the list of possible features.</p>
+<p>When using ES6, make sure to import the feature you want to use, otherwise it won&#39;t be registered:</p>
+<pre class="code" data-lang="javascript"><code>import {
+    WebXRControllerPhysics
+} from '@babylonjs/core/XR/features/WebXRControllerPhysics';
+
+// The physics controller support will now be available and can be enabled:
+
+fm.enableFeature(WebXRControllerPhysics.Name, &quot;latest&quot;);</code></pre>
+<h3 id="versioning">Versioning<a class="anchor" href="#versioning">#</a></h3>
+<p>Just like any plugin system, the features are versioned numerically. The version is a number. The higher the number, the newer the version.</p>
+<p>Two extra definitions are available: <code>stable</code> for the latest stable version of a feature, and <code>latest</code>, which is always updated to the plugin with the highest version number. Keep in mind that <code>latest</code> will always be available, but <code>stable</code> might not be for features that are not yet considered stable.</p>
+<p>To get the available versions use the <code>GetAvailableVersions</code> static method. It will return an array of available versions, for example:</p>
+<pre class="code" data-lang="javascript"><code>const availableVersions = featuresManager.GetAvailableVersions(WebXRFeatureName.POINTER_SELECTION);
+
+// availableVersions = [&quot;latest&quot;, &quot;stable&quot;, &quot;1&quot;, &quot;2&quot;];</code></pre>
+<p>This means that you can ask for version 1, but also for the stable version, which will be either &quot;1&quot; or &quot;2&quot; depending on our definition. The &quot;latest&quot; version will load &quot;2&quot;.</p>
+<h3 id="enable-and-disable-a-feature">Enable and disable a feature<a class="anchor" href="#enable-and-disable-a-feature">#</a></h3>
+<p>Enabling a feature means that the feature is ready to be used in a working session. When a feature is enabled, it is ready to be attached, which technically means it can actively influence the scene.</p>
+<p>As an example, <strong>enabling</strong> the teleportation feature will register the <code>onControllerAdded</code> and <code>onControllerRemoved</code> observers. <strong>Attaching</strong> this feature will register all observers required for each controller to work properly, while <strong>detaching</strong> it will remove such observers. Furthermore, <strong>disabling</strong> the teleportation feature will make sure that the meshes are invisible and the <code>onControllerAdded</code> and <code>onControllerRemoved</code> observers will be removed. Finally, <strong>disposing</strong> of the feature will release everything, including all associated meshes.</p>
+<p>To enable a feature, use a constructed features manager&#39;s <code>enableFeature</code> function with the name and version you wish to load:</p>
+<pre class="code" data-lang="javascript"><code>// get the features manager
+const fm = xr.baseExperience.featuresManager;
+
+// disable an already-enabled feature
+fm.disableFeature(WebXRFeatureName.POINTER_SELECTION);
+
+// enable the latest version of the &quot;Hit Test&quot; feature
+const xrHitTestLatest = fm.enableFeature(WebXRFeatureName.HIT_TEST, &quot;latest&quot;);
+
+// enable the specific version of the &quot;Hit Test&quot; feature. This will disable an older implementation and enable the new one
+const xrHitTest1 = fm.enableFeature(WebXRFeatureName.HIT_TES, 1);</code></pre>
+<h3 id="configuring-the-feature">Configuring the feature<a class="anchor" href="#configuring-the-feature">#</a></h3>
+<p>Every feature currently has a different configuration options object that can be provided when enabling the feature. Each feature has an options interface. For example, version &quot;1&quot; of the &quot;Hit Test&quot; feature has the following options available:</p>
+<pre class="code" data-lang="javascript"><code>interface IWebXRHitTestOptions {
+    /**
+     * Only test when user interacted with the scene. Default - hit test every frame
+     */
+    testOnPointerDownOnly ? : boolean;
+    /**
+     * The node to use to transform the local results to world coordinates
+     */
+    worldParentNode ? : TransformNode;
+}</code></pre>
+<p>To use it:</p>
+<pre class="code" data-lang="javascript"><code>// get the features manager
+const fm = xr.baseExperience.featuresManager;
+
+// enable the latest version of the &quot;Hit Test&quot; feature with a configuration object. The old &quot;enabled&quot; version will be disposed of
+const xrHitTestLatest = fm.enableFeature(WebXRFeatureName.HIT_TEST, &quot;latest&quot;, {
+    testOnPointerDownOnly: true
+});
+
+// enable the specific version of the &quot;Hit Test&quot; feature with default configuration. The old config will be lost
+const xrHitTest1 = fm.enableFeature(WebXRFeatureName.HIT_TES, 1);</code></pre>
+<h3 id="attach-and-detach-a-feature">Attach and detach a feature<a class="anchor" href="#attach-and-detach-a-feature">#</a></h3>
+<p>Once you have a feature enabled, you can synchronously attach (or detach) it to the scene:</p>
+<pre class="code" data-lang="javascript"><code>// enable version &quot;1&quot; of the &quot;Hit Test&quot; feature
+// Feature will be auto-attached once the session starts
+const xrHitTest1 = fm.enableFeature(BABYLON.WebXRFeatureName.HIT_TEST, 1);
+
+// detach the feature, but keep it enabled (for reattachment). This also disables auto-attach, if not already attached
+xrHitTest1.detach();
+
+// re-attach
+xrHitTest1.attach();</code></pre>
+<p>Enabling a feature will attach it automatically when an XR session starts. If you want to only enable but not attach a feature (so you have full control of when it starts working), set the <code>attachIfPossible</code> argument to <code>false</code> (defaults to <code>true</code>):</p>
+<pre class="code" data-lang="javascript"><code>// get the features manager
+const fm = xr.baseExperience.featuresManager;
+const xrHitTestLatest = fm.enableFeature(WebXRFeatureName.HIT_TEST, &quot;latest&quot;, {
+    testOnPointerDownOnly: true
+}, false /* prevent attaching automatically */ );</code></pre>
+<h2 id="es6-passive-loader">ES6 passive loader<a class="anchor" href="#es6-passive-loader">#</a></h2>
+<p>When using the ES6 module loader, you will notice that no features apart from teleportation and pointer selection are available. You&#39;ll have to import other features (and their versions) yourself. This ensures that the resulting bundle includes only the code your experience actually needs to load, when it needs it. Wonderful for tree shaking!</p>
+<p>So this won&#39;t work in ES6</p>
+<pre class="code" data-lang="javascript"><code>const featuresManager = giveMeMyFeaturesManagerSomehow();
+// The &quot;Hit Test&quot; feature is not available
+const xrHitTest1 = featuresManager.enableFeature(&quot;xr-hit-test&quot;, 1);
+// Error thrown, &quot;feature not found&quot;</code></pre>
+<p>Adding an import will make it work:</p>
+<pre class="code" data-lang="javascript"><code>// other imports...
+import {
+    WebXRHitTestLegacy
+} from &quot;@babylonjs/core/Cameras/xr/features/WebXRHitTestLegacy&quot;;
+
+const featuresManager = giveMeMyFeaturesManagerSomehow();
+// feature will now be enabled
+const xrHitTest1 = featuresManager.enableFeature(WebXRFeatureName.HIT_TEST /* Same as &quot;xr-hit-test&quot; */ , 1);</code></pre>
+<h2 id="writing-a-new-feature">Writing a new feature<a class="anchor" href="#writing-a-new-feature">#</a></h2>
+<p>If you want to add your own feature, here are a few guidelines:</p>
+<h3 id="iwebxrfeature">IWebXRFeature<a class="anchor" href="#iwebxrfeature">#</a></h3>
+<p>The feature should implement the <code>IWebXRFeature</code> interface, which looks like this:</p>
+<pre class="code" data-lang="javascript"><code>interface IWebXRFeature extends IDisposable {
+    /**
+     * Is this feature attached
+     */
+    attached: boolean;
+    /**
+     * Should auto-attach be disabled?
+     */
+    disableAutoAttach: boolean;
+    /**
+     * Attach the feature to the session
+     * Will usually be called by the features manager
+     *
+     * @param force should attachment be forced (even when already attached)
+     * @returns true if successful.
+     */
+    attach(force ? : boolean): boolean;
+    /**
+     * Detach the feature from the session
+     * Will usually be called by the features manager
+     *
+     * @returns true if successful.
+     */
+    detach(): boolean;
+}</code></pre>
+<p>To make this process easier, you can instead extend the <code>WebXRAbstractFeature</code>, which has a few extra helper functions and implements most functions needed for a working feature.</p>
+<p>After creating the feature, you will need to register it with the features manager, so it can be enabled.</p>
+<p>To register it, use the static <code>AddWebXRFeature</code> function:</p>
+<pre class="code" data-lang="javascript"><code>const nameOfFeature = &quot;awesome-name&quot;;
+const version = 1;
+const isTheFeatureStable = true
+WebXRFeaturesManager.AddWebXRFeature(nameOfFeature, (xrSessionManager, options) =&gt; {
+    return () =&gt; new MyNewFeature(xrSessionManager, options);
+}, version, isTheFeatureStable);</code></pre>
+<p>This way you can enable the feature using its name whenever you wish to use it.</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#why-is-it-needed">Why is it needed </a><a href="#how-to-use">How to use </a><a href="#es6-passive-loader">ES6 passive loader </a><a href="#writing-a-new-feature">Writing a new feature </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Node Material — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Node Material</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="node-material">Node Material<a class="anchor" href="#node-material">#</a></h2>
+<p>The Node Material is a simple, highly customizable material that you can build yourself piece by piece. Combined with the powerful node-based editor, you can easily create stunning custom GPU shaders and FX for your Babylon.js scenes.</p>
+<p>The Node Material allows you to avoid writing complicated shader language code by replacing it with simpler workflows: either using a UI (the Node Material Editor) or creating and connecting node blocks in your scene code (the Node Material blocks).</p>
+<p>To get started, it&#39;s important to understand how the Node Material works under the hood, starting with how to create a Node Material using code.</p>
+<h3 id="creating-a-node-material-using-code">Creating a Node Material using code<a class="anchor" href="#creating-a-node-material-using-code">#</a></h3>
+<h4 id="initial-steps">Initial steps<a class="anchor" href="#initial-steps">#</a></h4>
+<p>If you are interested in learning how to create node materials through code, you might consider starting with the video below as it goes over 3 important tips to help you get started:</p>
+<span class="muted">&lt;Youtube id=&quot;GrmVObi6caQ&quot;/&gt;</span><p>To start using the Node Material, you just need to instantiate one:</p>
+<pre class="code" data-lang="javascript"><code>const nodeMaterial = new BABYLON.NodeMaterial(&quot;node material&quot;, scene, { emitComments: true });</code></pre>
+<p>Please note that the third parameter can contain optional values that let you configure how the material builds its shader:</p>
+<ul>
+<li><code>emitComments</code>: Set this value to true if you want the blocks to emit comments in the shader code</li>
+<li><code>shaderLanguage</code>: By default, the node material will generate GLSL shaders but if you set that parameter to <code>BABYLON.ShaderLanguage.WGSL</code>, it will generate shaders for WebGPU (without needing to cross-compile them from GLSL to WGSL)</li>
+</ul>
+<h4 id="adding-blocks">Adding blocks<a class="anchor" href="#adding-blocks">#</a></h4>
+<p>Blocks can be added by just instantiating them:</p>
+<pre class="code" data-lang="javascript"><code>const morphTargets = new BABYLON.MorphTargetsBlock(&quot;morphTargets&quot;);</code></pre>
+<p>For input blocks, you can then define either their value or the source of the value:</p>
+<pre class="code" data-lang="javascript"><code>const timeInput = new BABYLON.InputBlock(&quot;time&quot;);
+timeInput.value = 0;</code></pre>
+<p>or</p>
+<pre class="code" data-lang="javascript"><code>const viewProjectionInput = new BABYLON.InputBlock(&quot;viewProjection&quot;);
+viewProjectionInput.setAsSystemValue(BABYLON.NodeMaterialSystemValues.ViewProjection);</code></pre>
+<p>System values can be:</p>
+<ul>
+<li>BABYLON.NodeMaterialSystemValues.World</li>
+<li>BABYLON.NodeMaterialSystemValues.View</li>
+<li>BABYLON.NodeMaterialSystemValues.WorldView</li>
+<li>BABYLON.NodeMaterialSystemValues.Projection</li>
+<li>BABYLON.NodeMaterialSystemValues.ViewProjection</li>
+<li>BABYLON.NodeMaterialSystemValues.WorldViewProjection</li>
+<li>BABYLON.NodeMaterialSystemValues.CameraPosition</li>
+<li>BABYLON.NodeMaterialSystemValues.FogColor</li>
+<li>BABYLON.NodeMaterialSystemValues.DeltaTime</li>
+</ul>
+<p>Input blocks can also take their value from a mesh attribute:</p>
+<pre class="code" data-lang="javascript"><code>let positionInput = new BABYLON.InputBlock(&quot;position&quot;);
+positionInput.setAsAttribute(&quot;position&quot;);</code></pre>
+<p>Attributes can be:</p>
+<ul>
+<li>position</li>
+<li>normal</li>
+<li>tangent</li>
+<li>uv</li>
+<li>uv2</li>
+<li>matricesIndices</li>
+<li>matricesWeights</li>
+<li>matricesIndicesExtra</li>
+<li>matricesWeightsExtra</li>
+</ul>
+<p>When you manually set the value of an InputNode, you can flag it as <code>node.isConstant</code> to indicate that the value will not be dynamically updated and thus the node material will be able to optimize the block by not generating a uniform for this value.</p>
+<p>The following functions will let you get information about your InputNode:</p>
+<ul>
+<li><code>isSystemValue</code></li>
+<li><code>isAttribute</code></li>
+<li><code>isUniform</code></li>
+<li><code>isConstant</code></li>
+</ul>
+<p>When an InputNode is a uniform (e.g. a manual value that will be sent to the shader) and not a constant, you can set <code>inputNode.visibleInInspector</code> to true so users can visually control the value of the node using the Babylon.js Inspector.</p>
+<p>You can even customize the look and feel of the Inspector UI by defining <code>inputNode.min</code> and <code>inputNode.max</code> to get a slider instead of an input text box.</p>
+<h4 id="connecting-blocks">Connecting blocks<a class="anchor" href="#connecting-blocks">#</a></h4>
+<p>By default, calling <code>block.connectTo(otherBlock)</code> will try to establish a connection by picking an output from the first block and connecting it to an available input in the second one:</p>
+<pre class="code" data-lang="javascript"><code>const positionInput = new BABYLON.InputBlock(&quot;position&quot;);
+positionInput.setAsAttribute(&quot;position&quot;);
+
+const worldInput = new BABYLON.InputBlock(&quot;world&quot;);
+worldInput.setAsSystemValue(BABYLON.NodeMaterialSystemValues.World);
+
+const worldPos = new BABYLON.TransformBlock(&quot;worldPos&quot;);
+positionInput.connectTo(worldPos);
+worldInput.connectTo(worldPos);</code></pre>
+<p>If you do not want to use the automatic connection you can then pick the output and the input you want to connect directly:</p>
+<pre class="code" data-lang="javascript"><code>worldInput.output.connectTo(boneBlock.world);</code></pre>
+<p>You can check if two connection points can connect with</p>
+<pre class="code" data-lang="javascript"><code>if (worldInput.output.canConnectTo(boneBlock.world)) {
+    ...
+}</code></pre>
+<p>The system will throw an exception if you try to connect two incompatible connection points.</p>
+<p>When connected, two connection points can be disconnected with:</p>
+<pre class="code" data-lang="javascript"><code>worldInput.output.disconnectFrom(boneBlock.world);</code></pre>
+<h4 id="getting-blocks">Getting blocks<a class="anchor" href="#getting-blocks">#</a></h4>
+<p>Once a graph is built inside a NodeMaterial, you can use the following API to get a specific node by name:</p>
+<pre class="code" data-lang="javascript"><code>let block = nodeMaterial.getBlockByName(&quot;MyBlock&quot;);</code></pre>
+<p>You can also get a block using a predicate:</p>
+<pre class="code" data-lang="javascript"><code>let block = nodeMaterial.getBlockByPredicate((b) =&gt; b.getClassName() === &quot;AddBlock&quot; &amp;&amp; b.name === &quot;foo&quot;);</code></pre>
+<p>You can also use this API to get an InputNode and use it to set its value if the node is set to a manual value:</p>
+<pre class="code" data-lang="javascript"><code>let block = nodeMaterial.getInputBlockByPredicate((b) =&gt; b.name === &quot;foo&quot;);
+block.value = 10;</code></pre>
+<p>Note that while this API generically works for all input blocks, not all input blocks have a &quot;value&quot; attribute. For example, texture blocks would have <code>block.texture</code> instead of <code>block.value</code>. Be sure to check the <a href="engine-babylonjs-babylon-nodematerial.html">API documentation</a> for details.</p>
+<p>You can access the list of InputBlocks with:</p>
+<pre class="code" data-lang="javascript"><code>nodeMaterial.getInputBlocks();</code></pre>
+<p>Or you can get all blocks registered with a node material with:</p>
+<pre class="code" data-lang="javascript"><code>nodeMaterial.attachedBlocks;</code></pre>
+<p>Be sure to also check out the full <a href="engine-babylonjs-babylon-nodematerial.html">API documentation.</a></p>
+<h4 id="building-the-node-material">Building the Node Material<a class="anchor" href="#building-the-node-material">#</a></h4>
+<p>Once set up, you can ask the Node Material to build its internal shaders (vertex and fragment) by calling <code>nodeMaterial.build(true)</code>. You can set the boolean parameter to true to get a log of the final shaders in the console.</p>
+<p>The build function will throw an exception if the shaders cannot be compiled:</p>
+<pre class="code" data-lang="javascript"><code>try {
+  nodeMaterial.build(true);
+} catch (err) {
+  console.log(&quot;Unable to compile because &quot; + err);
+}</code></pre>
+<p>Once successfully built, you can use the Node Material like any other material:</p>
+<pre class="code" data-lang="javascript"><code>myMesh.material = nodeMaterial;</code></pre>
+<h4 id="example">Example<a class="anchor" href="#example">#</a></h4>
+<p>Here is one of the simplest code examples using the Node Material:</p>
+<pre class="code" data-lang="javascript"><code>const nodeMaterial = new BABYLON.NodeMaterial(&quot;node material&quot;, scene, { emitComments: true });
+const positionInput = new BABYLON.InputBlock(&quot;position&quot;);
+positionInput.setAsAttribute(&quot;position&quot;);
+
+const worldInput = new BABYLON.InputBlock(&quot;world&quot;);
+worldInput.setAsSystemValue(BABYLON.NodeMaterialSystemValues.World);
+
+const worldPos = new BABYLON.TransformBlock(&quot;worldPos&quot;);
+positionInput.connectTo(worldPos);
+worldInput.connectTo(worldPos);
+
+const viewProjectionInput = new BABYLON.InputBlock(&quot;viewProjection&quot;);
+viewProjectionInput.setAsSystemValue(BABYLON.NodeMaterialSystemValues.ViewProjection);
+
+const worldPosdMultipliedByViewProjection = new BABYLON.TransformBlock(&quot;worldPos * viewProjectionTransform&quot;);
+worldPos.connectTo(worldPosdMultipliedByViewProjection);
+viewProjectionInput.connectTo(worldPosdMultipliedByViewProjection);
+
+const vertexOutput = new BABYLON.VertexOutputBlock(&quot;vertexOutput&quot;);
+worldPosdMultipliedByViewProjection.connectTo(vertexOutput);
+
+// Pixel
+const pixelColor = new BABYLON.InputBlock(&quot;color&quot;);
+pixelColor.value = new BABYLON.Color4(0.8, 0.8, 0.8, 1);
+
+const fragmentOutput = new BABYLON.FragmentOutputBlock(&quot;fragmentOutput&quot;);
+pixelColor.connectTo(fragmentOutput);
+
+// Add to nodes
+nodeMaterial.addOutputNode(vertexOutput);
+nodeMaterial.addOutputNode(fragmentOutput);</code></pre>
+<p>Please note that this code is equivalent to:</p>
+<pre class="code" data-lang="javascript"><code>const nodeMaterial = new BABYLON.NodeMaterial(&quot;node material&quot;, scene, { emitComments: true });
+nodeMaterial.setToDefault();</code></pre>
+<p>Here&#39;s an advanced and fantastic example of creating an impressive Node Material manually.
+<span class="muted">Online playground (not embedded offline)</span></p>
+<h3 id="using-the-node-material-editor">Using the Node Material Editor<a class="anchor" href="#using-the-node-material-editor">#</a></h3>
+<p>Now that you&#39;ve learned how the system works and understand how you can use it to create complex shaders more quickly than learning a new shader language, you should probably know that it can actually get even easier!</p>
+<p>The <a href="babylon-guide-toolsandresources-nme.html">Node Material Editor</a> is an incredibly powerful tool that allows you to create and connect blocks in a simple visual editor.</p>
+<p><p class="muted">Upstream illustration: NME (media not bundled).</p></p>
+<p>To invoke the editor you can call <code>nodematerial.edit()</code> but this code must be called inside a user interaction (like a click event). You can also call it through the Inspector:</p>
+<pre class="code" data-lang="javascript"><code>scene.debugLayer.show();
+scene.debugLayer.select(nodeMaterial);</code></pre>
+<p>When selected in the Inspector, you can find an edit button in the Node Material property pane.</p>
+<p>You can also use a standalone version of the editor here: <span class="muted">&lt;NME id=&quot;&quot; title=&quot;Node Material Editor&quot; description=&quot;The starting basic template for creating Node Materials.&quot; image=&quot;/img/playgroundsAndNMEs/nmeDefault.webp&quot;/&gt;</span></p>
+<p>Learn more about the <a href="babylon-guide-toolsandresources-nme.html">Node Material Editor here</a>.</p>
+<h3 id="using-node-material-with-webgl-and-webgpu">Using Node Material With WebGL and WebGPU<a class="anchor" href="#using-node-material-with-webgl-and-webgpu">#</a></h3>
+<p>Node materials are now able to render with either the popular WebGL API or the newer <a href="babylon-guide-setup-support-webgpu.html">WebGPU API</a>, which allows node materials to leverage a device&#39;s graphics processing unit (GPU). To define which API should be used by a node material, you can set up that option in the constructor or simply set the <code>nodeMaterial.shaderLanguage</code> parameter to <code>BABYLON.ShaderLanguage.WGSL</code>.</p>
+<p>Inside the Node Material Editor, you have an option to choose which engine to use during creation time:
+<p class="muted">Upstream illustration: Engine toggle for WebGL and WebGPU (media not bundled).</p></p>
+<p>The assigned engine parameter will NOT be saved in the node material&#39;s JSON file, allowing you to still choose the correct version at runtime.</p>
+<h3 id="recreating-the-standardmaterial">Recreating the StandardMaterial<a class="anchor" href="#recreating-the-standardmaterial">#</a></h3>
+<p>As a training exercise and to show what is possible to do with the Node Material Editor, the <code>StandardMaterial</code> has been recreated in the NME:</p>
+<ul>
+<li><span class="muted">&lt;NME id=&quot;#AT7YY5#6&quot; title=&quot;Full Standard Material NME&quot; description=&quot;A Node Material Editor setup of the full standard material.&quot; image=&quot;/img/playgroundsAndNMEs/NMEfullStandardMaterial.webp&quot;/&gt;</span></li>
+<li><span class="muted">&lt;NME id=&quot;#AT7YY5#7&quot; title=&quot;Standard Material Without Alpha NME&quot; description=&quot;A Node Material Editor setup of the standard material without alpha support.&quot; image=&quot;/img/playgroundsAndNMEs/NMEstandardMaterialNoAlpha.webp&quot;/&gt;</span></li>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<p>Note that the only difference between the full material and the material without alpha support is that nothing is wired to the <code>fragmentOutput.a</code> input. If you don&#39;t need alpha support, you should use the &quot;non alpha&quot; node material, as alpha-based materials have some constraints:</p>
+<ul>
+<li>they don&#39;t write to the zbuffer and are only sorted among themselves, so some sorting rendering artifacts can arise</li>
+<li>they need the <code>transparencyShadow</code> property to be <code>true</code> for shadow rendering</li>
+</ul>
+<p>Let&#39;s see how the material has been created and how to use it.</p>
+<h4 id="main-building-frames">Main building frames<a class="anchor" href="#main-building-frames">#</a></h4>
+<p>The material is divided into several frames, mirroring the main features of the standard material:</p>
+<ul>
+<li>Instances</li>
+<li>Morphs and bones</li>
+<li>Ambient</li>
+<li>Diffuse</li>
+<li>Specular</li>
+<li>Reflection</li>
+<li>Emissive</li>
+<li>Bump (normal map)</li>
+<li>Opacity</li>
+<li>Lightmap</li>
+<li>Vertex color</li>
+<li>Fog</li>
+</ul>
+<p>In each of these frames, you generally find a boolean float node that enables or disables the feature, and possibly some other properties to fine-tune it. Most of these properties are <strong>Constant</strong> properties, meaning they won&#39;t consume a <em>uniform</em> in the shaders and won&#39;t be visible in the Inspector / be updatable in JavaScript: you must change their value directly in the material (they correspond to the <code>#define</code> values you can find in the standard material shader code).</p>
+<p>Note that you won&#39;t find this enable/disable property in the <strong>Instances</strong>, <strong>Morphs and bones</strong> and <strong>Fog</strong> frames: they are always enabled. That&#39;s because they depend on the mesh geometry / settings (or on a scene setting for <strong>Fog</strong>): those frames will be a simple &quot;pass-through&quot; if the corresponding feature doesn&#39;t exist on the mesh / scene, so no need to explicitly disable it in that case.</p>
+<h4 id="additional-building-frames">Additional building frames<a class="anchor" href="#additional-building-frames">#</a></h4>
+<p>There are a number of additional frames that help organizing the graph more cleanly:</p>
+<ul>
+<li>Final normal. This frame takes the output from the <strong>Bump</strong> frame and builds the final world normal used in subsequent computations (<strong>Reflection</strong> and <strong>Lights</strong>). You can change the <code>TWOSIDEDLIGHTING</code> boolean if you want the lighting to be applied regardless of which side of the triangle is facing you.</li>
+<li>Final diffuse computation. It is the frame responsible for computing the final diffuse component, taking into account the ambient, emissive and vertex color components. Here you can modify the <code>LINKEMISSIVEWITHDIFFUSE</code> and <code>EMISSIVEASILLUMINATION</code> booleans to change the way the diffuse value is computed.</li>
+<li>Final color computation. Everything is brought together to compute the final rgb color: ambient (texture), specular, reflection and emissive.</li>
+<li>Final alpha computation. After the opacity (alpha) is generated from the <strong>Opacity</strong> frame, a number of additional computations are performed to produce the final alpha value. You can step through this computation by means of two booleans, <code>REFLECTIONOVERALPHA</code> and <code>SPECULAROVERALPHA</code>.</li>
+<li>Premultiply alpha to color. This one does what its title says and is enabled by the <code>PREMULTIPLYALPHA</code> boolean.</li>
+</ul>
+<h4 id="construction-notes">Construction notes<a class="anchor" href="#construction-notes">#</a></h4>
+<p>The material itself is not so complicated as each feature is generally restricted to its own frame and has few connections with other frames. That helps to keep each building block manageable and easily understandable.</p>
+<p>Below are a few things of note.</p>
+<h4 id="working-without-a-if-statement">Working without a <code>if</code> statement<a class="anchor" href="#working-without-a-if-statement">#</a></h4>
+<p>As you may know, there&#39;s no <code>if</code> statement / block in the node material editor, so you must be creative to work around this. Luckily, the standard material does not use this statement heavily (as it&#39;s better to avoid it for performance reasons), so it is easy enough to deal with. Most of the time, it is something like <code>if boolean is true, use this value in subsequent computation, else use that other value instead</code>. A <strong>Lerp</strong> block is the tool to use:</p>
+<pre class="code" data-lang=""><code>Lerp(a, b, gradient)</code></pre>
+<p><code>gradient</code> is the boolean: if it is 0.0, <code>a</code> is the output, if it is 1.0, <code>b</code> is the output. Then use the output in subsequent computation.</p>
+<p>Example:</p>
+<p><p class="muted">Upstream illustration: Emissive (media not bundled).</p></p>
+<p>If <code>EMISSIVE</code> is set to 0, the output is <code>vEmissiveColor</code>, else it is the color from the emissive map. In effect, the <code>EMISSIVE</code> boolean lets you choose to use either the constant <code>vEmissiveColor</code> color or the color from the texture map as the emissive color.</p>
+<p>The <strong>Lerp</strong> block will also accept more than a numerical value for <code>gradient</code>. The <code>gradient</code> input also accepts textures - either single channel or RGB - to determine which output is passed for each pixel. A <code>gradient</code> pixel with value 0.0 passes the corresponding pixel from <code>a</code> where a value of 0.0 would pass the corresponding pixel from <code>b</code>. A value between 0.0 and 1.0 will pass a blend of the values of the corresponding pixel from <code>a</code> and <code>b</code> mixed at the ratio of the value in <code>gradient</code>. If the texture is a single channel texture, each of the RGB channels from <code>a</code> and <code>b</code> are mixed at the same amount. If the texture in <code>gradient</code> is an RGB texture, each of the RGB channels of <code>a</code> and <code>b</code> will be mixed at the ratio of the corresponding <code>gradient</code> channel. In other words, the red channel of <code>gradient</code> will determine the mix of the pixels in the red channels of <code>a</code> and <code>b</code>.</p>
+<p><p class="muted">Upstream illustration: Texture Blending (media not bundled).</p></p>
+<p>The <strong>Lerp</strong> node is often used for techniques like blending tiling textures to hide repeated patterns or to &quot;splat&quot; textures in specific areas of a mesh. This can also be helpful for creating terrain meshes where it is desirable to scatter patches of dirt or grass on a ground plane in a randomly generated procedural method.</p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<h4 id="discarding-the-fragment-based-on-alpha-cutoff-value">Discarding the fragment based on alpha cutoff value<a class="anchor" href="#discarding-the-fragment-based-on-alpha-cutoff-value">#</a></h4>
+<p>This construct is meant to discard the fragment if alpha testing is enabled and if the alpha value is below some threshold value (cutoff value). It looks like this:</p>
+<p><p class="muted">Upstream illustration: Discard (media not bundled).</p></p>
+<p>As you can see, the <code>alphaCutOff</code> node is not directly connected to the <code>cutoff</code> input of <strong>Discard</strong> (the <strong>Discard</strong> block will discard the fragment if the <code>value</code> input is lower than the <code>cutoff</code> input). That&#39;s because we need to let the user enable or disable this feature.</p>
+<p>What it does instead is comparing the alpha value from the diffuse texture to <code>ALPHATEST - 1 + alphaCutOff</code>, <code>ALPHATEST</code> being the boolean value that lets the user enable (1) or disable (0) the feature.</p>
+<p>If <code>ALPHATEST = 1</code>, the computed value is <code>alphaCutOff</code>, which is the expected input for <code>Discard.cutoff</code> in that case (alpha testing is enabled).</p>
+<p>If <code>ALPHATEST = 0</code>, the computed value is <code>-1 + alphaCutOff</code>. As <code>alphaCutOff</code> is a value between 0 and 1, <code>-1 + alphaCutOff</code> will always be lower or equal to 0. So, <code>Discard.cutoff</code> &lt;= 0 in that case, meaning the fragment will never be discarded (which is the expected result when alpha testing is disabled).</p>
+<p>You could also have used <code>Lerp(0, alphaCutOff, ALPHATEST)</code> as the input for <code>Discard.cutoff</code>, but it&#39;s likely that the addition + subtraction used above is faster than a <code>Lerp</code> on GPUs (would need some benchmarking to be sure), even if it&#39;s by a small (negligible) margin.</p>
+<h4 id="using-loops">Using loops<a class="anchor" href="#using-loops">#</a></h4>
+<p>Loops are always a complicated discussion within a shader as they can easily kill the performance. With Babylon v8.0, we are introducing a new node named <code>Loop</code>. The goal of that node is to allow the user to aggregate a value through multiple iterations (think, for instance, about a texture blur).</p>
+<p>To do so you will need to drop a `Loop&quot; block and connect an input value. That value will be the initial value of the aggregated variable. Once computed that value will be available on the output port of the block.</p>
+<p>To aggregate the value you will need to wire a <code>StorageRead</code> and <code>StorageWrite</code> block to the loopID port of the <code>Loop</code> block. These 2 blocks will give you access to the running value of the aggregated variable.</p>
+<p>Here is an example where the loop is simply adding a shade of red to a black color 10 times:
+<span class="muted">&lt;NME id=&quot;#N2ROVF&quot; title=&quot;Node Material Editor Simple Loop Example&quot; description=&quot;Using a loop block to accumlate a color&quot; image=&quot;/img/playgroundsAndNMEs/simple-loop.webp&quot;/&gt;</span></p>
+<p>Of course you can do far more like a texture blur:
+<span class="muted">&lt;NME id=&quot;#OXJ1ND&quot; title=&quot;Node Material Editor Loop Example&quot; description=&quot;Using a loop block to blur a texture&quot; image=&quot;/img/playgroundsAndNMEs/texture-blur.webp&quot;/&gt;</span></p>
+<p>Please keep in mind that loops have to be used cautiously as they can add a lot of computations to your shaders.</p>
+<h4 id="shader-promotion-optimization">Shader Promotion Optimization<a class="anchor" href="#shader-promotion-optimization">#</a></h4>
+<p>The Node Material features a default performance optimization where some nodes in the fragment shader are &quot;promoted&quot; to being evaluated in the vertex shader. This optimization ensures the fastest possible shader evaluation. There may be times when this optimization does NOT provide the desired outcome when creating a Node Material. You can change this behavior by setting the &quot;Target&quot; property of any given node to either &quot;Fragment&quot; or &quot;Vertex.&quot; By default, this property is set to &quot;Neutral,&quot; which allows the optimization to occur. Setting this property to &quot;Fragment&quot; or &quot;Vertex&quot; will force the system to evaluate that node in that specific part of the shader.</p>
+<p><p class="muted">Upstream illustration: Emissive (media not bundled).</p></p>
+<h3 id="loading-from-a-file-saved-from-the-node-material-editor">Loading from a file saved from the Node Material Editor<a class="anchor" href="#loading-from-a-file-saved-from-the-node-material-editor">#</a></h3>
+<p>You can directly set up a Node Material from a file saved from the Node Material Editor.</p>
+<p>Here is the code to use:</p>
+<pre class="code" data-lang="javascript"><code>let nodeMaterial = await BABYLON.NodeMaterial.ParseFromFileAsync(&quot;Name For Your Shader&quot;, &quot;URL To Your Saved Shader&quot;, scene);</code></pre>
+<p>Here&#39;s an example of how to load a saved shader file and apply it to a mesh.</p>
+<span class="muted">Online playground (not embedded offline)</span><h3 id="sharing-unique-urls">Sharing unique URLs<a class="anchor" href="#sharing-unique-urls">#</a></h3>
+<p>When using the <span class="muted">&lt;NME id=&quot;&quot; title=&quot;Node Material Editor&quot; description=&quot;The starting basic template for creating Node Materials.&quot; image=&quot;/img/playgroundsAndNMEs/nmeDefault.webp&quot;/&gt;</span>, you also have the option to save your work using a unique URL (like the Playground, for instance). You can then share these URLs (which are immutable).</p>
+<p>Example: <span class="muted">&lt;NME id=&quot;#2F999G&quot; title=&quot;Node Material Editor Unique URL Example&quot; description=&quot;Example Node Material Editor saved with a unique URL.&quot; image=&quot;/img/playgroundsAndNMEs/NMEsnippetServerSaveExample.webp&quot;/&gt;</span></p>
+<h3 id="loading-from-a-snippet-unique-url">Loading from a snippet (unique URL)<a class="anchor" href="#loading-from-a-snippet-unique-url">#</a></h3>
+<p>You can use the following code to load a saved node material from a unique URL:</p>
+<pre class="code" data-lang="javascript"><code>BABYLON.NodeMaterial.ParseFromSnippetAsync(&quot;2F999G&quot;, scene).then((nodeMaterial) =&gt; {
+  sphere.material = nodeMaterial;
+});</code></pre>
+<p>When using NME within the Playground, you can edit your material with the Inspector and let the Playground update your snippet ID automatically (each time NME saves a new snippet ID, it informs the Playground so it can also change the ID in your code).</p>
+<p>And to begin with you can simply call this code to start a new Node Material from scratch:</p>
+<pre class="code" data-lang="javascript"><code>BABYLON.NodeMaterial.ParseFromSnippetAsync(&quot;_BLANK&quot;, scene).then((nodeMaterial) =&gt; {
+  sphere.material = nodeMaterial;
+});</code></pre>
+<p>Note:</p>
+<ul>
+<li>There is a use case where you may want to load a node material but ignore any embedded or linked textures stored in the JSON. This could be because you are going to supply new textures in code and don&#39;t want to incur the cost of loading the old textures, or because you are reusing a node material from an old project where only the textures need to be updated. To do this, place this static property in your code before creating or loading your node materials:</li>
+</ul>
+<pre class="code" data-lang="javascript"><code>BABYLON.NodeMaterial.IgnoreTexturesAtLoadTime = true;</code></pre>
+<p>From there, you could use the Inspector to edit it (the Inspector can replace the __BLANK with the right ID later on).</p>
+<h3 id="node-material-examples">Node material examples<a class="anchor" href="#node-material-examples">#</a></h3>
+<p>Here are some node material examples that you can use &quot;as is&quot; or extend with the NME:</p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+<li><span class="muted">&lt;NME id=&quot;#I4DJ9Z&quot; title=&quot;GridMaterial Recreated in the Node Material Editor&quot; description=&quot;Example Node Material Recreation of the GridMaterial.&quot; image=&quot;/img/playgroundsAndNMEs/NMEgridMaterial.webp&quot; isMain={true} category=&quot;Materials&quot;/&gt;</span></li>
+<li><span class="muted">&lt;NME id=&quot;#YDGZCJ&quot; title=&quot;'Mist' Post Process in the Node Material Editor&quot; description=&quot;Example Node Material 'Mist' Post Process Effect.&quot; image=&quot;/img/playgroundsAndNMEs/NMEmistPostProcess.webp&quot;/&gt;</span></li>
+<li><span class="muted">&lt;NME id=&quot;#D0USYC&quot; title=&quot;'Dissolve' Post Process in the Node Material Editor&quot; description=&quot;Example Node Material 'Dissolve' Post Process Effect.&quot; image=&quot;/img/playgroundsAndNMEs/NMEdissolvePostProcess.webp&quot;/&gt;</span></li>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#node-material">Node Material </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

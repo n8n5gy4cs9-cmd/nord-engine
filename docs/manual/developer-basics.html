@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Programming for dummy developers — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html" class="active" aria-current="page">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">Start here</div><a href="getting-started.html">Getting started</a><a href="how-nord-works.html">How Nord works</a><a href="developer-basics.html" class="cur" aria-current="page">Programming for dummy developers</a></nav><main id="content"><div class="crumb">Start here / Nord Engine</div><h1>Programming for dummy developers</h1>
+<p>You can use templates before writing code. When you want your own behavior, learn a few pieces at a time. This page assumes you have never written a game script.</p>
+<h2 id="what-the-code-is-saying">What the code is saying<a class="anchor" href="#what-the-code-is-saying">#</a></h2>
+<p>Save this as <code>scripts/spinner.js</code>, then attach it to a visible entity through <strong>Inspector → Add script</strong>. The script file is a complete JavaScript module:</p>
+<pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
+
+export default class Spinner extends NordScript {
+  update(dt) {
+    this.entity.rot[2] += 90 * dt;
+    this.entity.touch();
+  }
+}</code></pre>
+<p>Press Play. The entity rotates 90 degrees per second around its Z axis. In a 2D project, that is a turn on the screen. If nothing turns, check that the script is attached to the entity with the picture, and read Console for errors.</p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>import { NordScript } from &#39;nord&#39;</code></td>
+<td>Bring in Nord&#39;s base script class. <code>nord</code> is the import name provided by the project.</td>
+</tr>
+<tr>
+<td><code>export default class Spinner extends NordScript</code></td>
+<td>Give Nord a script named Spinner. The braces contain its behavior.</td>
+</tr>
+<tr>
+<td><code>update(dt)</code></td>
+<td>Nord calls this every frame. <code>dt</code> is the number of seconds since the previous frame.</td>
+</tr>
+<tr>
+<td><code>this.entity</code></td>
+<td>The entity this script belongs to.</td>
+</tr>
+<tr>
+<td><code>rot[2]</code></td>
+<td>The third number in its rotation array: Z. Arrays count from zero.</td>
+</tr>
+<tr>
+<td><code>+= 90 * dt</code></td>
+<td>Add a small turn. Multiplying by seconds keeps the speed similar on different computers.</td>
+</tr>
+<tr>
+<td><code>touch()</code></td>
+<td>Tell Nord you changed numbers inside a transform array, so the picture updates.</td>
+</tr>
+</tbody></table>
+<h2 id="values-names-and-functions">Values, names and functions<a class="anchor" href="#values-names-and-functions">#</a></h2>
+<p>A <strong>value</strong> is data: <code>90</code> is a number, <code>&#39;Player&#39;</code> is text, and <code>true</code> is yes. A <strong>variable</strong> gives a value a name:</p>
+<pre class="code" data-lang="js"><code>const speed = 90;
+const message = 'Hello Nord';
+console.log(message);</code></pre>
+<p>A <strong>function call</strong> asks something to do work. In <code>console.log(message)</code>, the parentheses hold the input. The Console displays <code>Hello Nord</code>.</p>
+<p>A <strong>property</strong> stores a value on an object: <code>this.entity.name</code>. A <strong>method</strong> is a function on an object: <code>this.entity.touch()</code>. The parentheses are the useful clue.</p>
+<h2 id="arrays-and-objects">Arrays and objects<a class="anchor" href="#arrays-and-objects">#</a></h2>
+<p>An <strong>array</strong> is an ordered list. Nord positions use <code>[x, y, z]</code>:</p>
+<pre class="code" data-lang="js"><code>this.entity.pos = [100, 80, 0];</code></pre>
+<p>An <strong>object</strong> names its values. Scene component settings use objects:</p>
+<pre class="code" data-lang="json"><code>{ &quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;Hello Nord&quot;, &quot;size&quot;: 32 }</code></pre>
+<p>JSON is a file format for data. It uses double quotes and does not allow JavaScript comments or functions. JavaScript is the language that runs your behavior.</p>
+<h2 id="when-to-use-start-and-update">When to use start and update<a class="anchor" href="#when-to-use-start-and-update">#</a></h2>
+<p>Use <code>start()</code> for something that should happen once. Use <code>update(dt)</code> for something that changes while the game runs.</p>
+<pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
+
+export default class Greeting extends NordScript {
+  start() {
+    console.log('The scene is ready!');
+  }
+}</code></pre>
+<p>Do not print a message in <code>update</code> unless you want it repeated every frame. <a href="scripting.html#lifecycle">The lifecycle table</a> lists the other moments Nord can call your script.</p>
+<h2 id="make-a-setting-editable">Make a setting editable<a class="anchor" href="#make-a-setting-editable">#</a></h2>
+<p>An <strong>attribute</strong> is a script setting shown in the Inspector. In <a href="tut-t03-first-script.html">T03: Your first script</a>, attributes let you change the size and speed of a pulse. The code reads these settings from <code>this.attrs</code>.</p>
+<p>Scene overrides can replace defaults in the file. If changing a default does not change an existing entity, check its value in the Inspector.</p>
+<h2 id="read-an-error-without-panicking">Read an error without panicking<a class="anchor" href="#read-an-error-without-panicking">#</a></h2>
+<ol>
+<li>Read the <strong>first</strong> error in Console. Later errors may be caused by it.</li>
+<li>Open its file and line number.</li>
+<li>Check spelling, missing brackets, quotes and commas.</li>
+<li>Save and try again. If you changed an imported helper file, restart Play.</li>
+</ol>
+<p><code>undefined</code> means a value is missing. For example, a wrong entity name can make a lookup return no entity; a missing component can make <code>getComponent(...)</code> return no handle. Check that the thing exists before using it.</p>
+<p>Next: <a href="tut-t03-first-script.html">T03: Your first script</a>. Keep <a href="api-nordscript.html">NordScript</a> nearby when you want the complete method list.</p>
+<div class="pager"><a href="how-nord-works.html"><small>← Previous</small>How Nord works</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#what-the-code-is-saying">What the code is saying </a><a href="#values-names-and-functions">Values, names and functions </a><a href="#arrays-and-objects">Arrays and objects </a><a href="#when-to-use-start-and-update">When to use start and update </a><a href="#make-a-setting-editable">Make a setting editable </a><a href="#read-an-error-without-panicking">Read an error without panicking </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

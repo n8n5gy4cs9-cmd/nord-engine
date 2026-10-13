@@ -8,21 +8,66 @@ const paint = () => { const on = html.classList.contains('dummies-on'); tog.setA
 tog.addEventListener('click', () => { html.classList.toggle('dummies-on'); LS.set('nord.manual.dummies', html.classList.contains('dummies-on') ? '1' : '0'); paint(); });
 paint();
 
+// ---- navigation and appearance
+const headerSize = new ResizeObserver(() => html.style.setProperty('--header-height', document.querySelector('header').offsetHeight + 'px'));
+headerSize.observe(document.querySelector('header'));
+const menu = document.getElementById('nav-toggle');
+menu.addEventListener('click', () => { const open = document.body.classList.toggle('nav-open'); menu.setAttribute('aria-expanded', String(open)); });
+const themeButton = document.getElementById('theme-toggle');
+themeButton.addEventListener('click', () => { html.dataset.theme = html.dataset.theme === 'light' ? 'dark' : 'light'; LS.set('nord.manual.theme', html.dataset.theme); themeButton.textContent = html.dataset.theme === 'light' ? 'Dark mode' : 'Light mode'; });
+themeButton.textContent = html.dataset.theme === 'light' ? 'Dark mode' : 'Light mode';
+async function copyCode(button, code) {
+  try {
+    if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(code);
+    else { const area = document.createElement('textarea'); area.value = code; document.body.append(area); area.select(); if (!document.execCommand('copy')) throw new Error('copy'); area.remove(); }
+    button.textContent = 'Copied!';
+  } catch { button.textContent = 'Select to copy'; }
+  setTimeout(() => { button.textContent = 'Copy'; }, 1800);
+}
+
+// ---- all examples use the existing offline CodeMirror bundle
+const cm = window.NORD_CM ?? null;
+const languages = { js: 'javascript', javascript: 'javascript', ts: 'javascript', json: 'json', html: 'html', css: 'css', rust: 'rust', toml: 'tomlLang', python: 'python', php: 'php', sql: 'sql', xml: 'xml', md: 'markdown', glsl: 'glsl' };
+const highlightStyle = cm?.HighlightStyle.define([
+  { tag: cm.tags.keyword, color: 'var(--purple)' }, { tag: [cm.tags.string, cm.tags.regexp], color: 'var(--good)' },
+  { tag: [cm.tags.number, cm.tags.bool, cm.tags.null], color: 'var(--warn)' },
+  { tag: cm.tags.comment, color: 'var(--muted)', fontStyle: 'italic' }, { tag: cm.tags.function(cm.tags.variableName), color: 'var(--accent)' },
+  { tag: [cm.tags.typeName, cm.tags.className], color: 'var(--good)' }, { tag: cm.tags.propertyName, color: 'var(--fg)' }
+]);
+const codeViews = new Map();
+const observer = new IntersectionObserver(items => { for (const item of items) if (item.isIntersecting) { codeViews.get(item.target)?.(); codeViews.delete(item.target); observer.unobserve(item.target); } }, { rootMargin: '200px' });
+for (const pre of document.querySelectorAll('pre.code')) {
+  const code = pre.textContent, lang = pre.dataset.lang || 'text';
+  const frame = document.createElement('div'); frame.className = 'code-frame';
+  const bar = document.createElement('div'); bar.className = 'code-bar';
+  const label = document.createElement('span'); label.textContent = lang;
+  const copy = document.createElement('button'); copy.textContent = 'Copy'; copy.setAttribute('aria-label', 'Copy code example'); copy.onclick = () => copyCode(copy, code);
+  bar.append(label, copy); pre.before(frame); frame.append(bar, pre);
+  const language = languages[lang] ? cm?.[languages[lang]]?.(lang === 'ts' ? { typescript: true } : {}) : ['bash', 'sh', 'shell'].includes(lang) ? cm?.legacy.shell() : lang === 'yaml' ? cm?.legacy.yaml() : null;
+  if (cm && language) {
+    const host = document.createElement('div'); pre.replaceWith(host);
+    codeViews.set(host, () => { pre.remove(); return new cm.EditorView({ parent: host, doc: code, extensions: [cm.lineNumbers(), language, cm.syntaxHighlighting(highlightStyle), cm.EditorState.readOnly.of(true), cm.EditorView.editable.of(false), cm.EditorView.contentAttributes.of({ 'aria-label': `${lang} code example` })] }); });
+    host.append(pre); observer.observe(host);
+  }
+}
+
 // ---- search (index is a plain script so it works from file:// and the editor webview)
 const q = document.getElementById('q'), res = document.getElementById('results');
 let idx = null;
 const loadIdx = () => idx ?? (idx = new Promise((ok) => { const s = document.createElement('script'); s.src = 'assets/search-index.js'; s.onload = () => ok(window.NORD_SEARCH); s.onerror = () => ok([]); document.head.append(s); }));
 const esc = (s) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
 q.addEventListener('input', async () => {
-  const terms = q.value.toLowerCase().split(/\s+/).filter(Boolean);
+  const query = q.value;
+  const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
   if (!terms.length) { res.hidden = true; return; }
   const hits = [];
   for (const p of await loadIdx()) {
     const t = p.t.toLowerCase(), x = p.x.toLowerCase();
     let score = 0;
     for (const w of terms) { const a = t.includes(w) ? 10 + (t.startsWith(w) ? 5 : 0) : 0, b = x.includes(w) ? 1 : 0; if (!a && !b) { score = 0; break; } score += a + b; }
-    if (score) hits.push([score, p]);
+    if (score) hits.push([score + (p.s === 'Engine docs' ? 0 : 4), p]);
   }
+  if (q.value !== query) return;
   hits.sort((a, b) => b[0] - a[0]);
   res.innerHTML = hits.slice(0, 12).map(([, p]) => { const i = p.x.toLowerCase().indexOf(terms[0]); const snip = i >= 0 ? p.x.slice(Math.max(0, i - 40), i + 100) : p.x.slice(0, 100); return `<a href="${p.f}"><b>${esc(p.t)}</b> <small>${p.s}</small><small>${esc(snip)}…</small></a>`; }).join('') || '<a>No results</a>';
   res.hidden = false;
@@ -33,23 +78,22 @@ document.addEventListener('keydown', (e) => { if (e.key === '/' && document.acti
 // ---- runnable snippets: CodeMirror (vendored) editor + sandboxed iframe running the real core runtime
 const lives = document.querySelectorAll('.live');
 if (lives.length) {
-  let cm = null;
-  try { cm = await import('./cm.bundle.js'); } catch { /* fall back to a textarea */ }
   const core = new URL('runtime/core/index.js', location.href).href;
   for (const box of lives) {
     const pre = box.querySelector('.live-src'), code = pre.textContent;
     let get;
     if (cm) {
       const host = document.createElement('div'); pre.replaceWith(host);
-      const view = new cm.EditorView({ parent: host, doc: code, extensions: [cm.lineNumbers(), cm.history(), cm.drawSelection(), cm.bracketMatching(), cm.closeBrackets(), cm.keymap.of([...cm.defaultKeymap, ...cm.historyKeymap, ...cm.closeBracketsKeymap, cm.indentWithTab]), cm.javascript(), cm.oneDark, cm.EditorView.theme({ '&': { fontSize: '13px' } })] });
+      const view = new cm.EditorView({ parent: host, doc: code, extensions: [cm.lineNumbers(), cm.history(), cm.drawSelection(), cm.bracketMatching(), cm.closeBrackets(), cm.keymap.of([...cm.defaultKeymap, ...cm.historyKeymap, ...cm.closeBracketsKeymap, cm.indentWithTab]), cm.javascript(), cm.syntaxHighlighting(highlightStyle), cm.EditorView.theme({ '&': { fontSize: '13px' } })] });
       get = () => view.state.doc.toString();
     } else { const ta = document.createElement('textarea'); ta.value = code; ta.rows = code.split('\n').length + 1; ta.style.cssText = 'width:100%;font:13px monospace;background:var(--code);color:var(--fg);border:0;padding:12px'; pre.replaceWith(ta); get = () => ta.value; }
     const bar = document.createElement('div'); bar.className = 'live-bar';
     bar.innerHTML = '<button>▶ Run</button><button class="ghost">Copy</button><span class="muted">Runs in a sandbox with <code>nord</code> (the core runtime) and <code>log()</code></span>';
     const out = document.createElement('pre'); out.className = 'live-out'; out.textContent = '(output)';
     box.append(bar, out);
-    bar.children[1].onclick = () => navigator.clipboard?.writeText(get());
+    bar.children[1].onclick = () => copyCode(bar.children[1], get());
     bar.children[0].onclick = () => {
+      if (location.protocol === 'file:') { out.textContent = 'To run this example, open Docs in NordEditor or serve this manual with a local web server. Reading, search and highlighting work here offline.'; return; }
       out.textContent = '';
       const f = document.createElement('iframe'); f.hidden = true; f.sandbox = 'allow-scripts allow-same-origin';
       const onMsg = (e) => { if (e.source !== f.contentWindow) return; const s = document.createElement('span'); if (e.data.err) s.className = 'err'; s.textContent = e.data.line + '\n'; out.append(s); if (e.data.done) { removeEventListener('message', onMsg); f.remove(); } };

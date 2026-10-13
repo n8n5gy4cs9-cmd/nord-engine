@@ -4,6 +4,13 @@ section: Manual
 order: 13
 summary: Rust game runtime (macroquad + rapier) and Rust apps (egui), building and limits.
 ---
+
+Choose a Rust tier when you want to write the game or app in Rust. Nord builds that Rust program into WebAssembly so a browser can run it.
+
+::: dummies
+JavaScript NordScript examples do not paste into a Rust project. Start from a Rust template and follow its Rust entry point. Compiling is the step that turns Rust source into a runnable program.
+:::
+
 Two Rust project types sit beside the JS tiers. Both run natively (`cargo run`) **and** in the browser as WebAssembly. Design record: ADR-019.
 
 * **`wasm-game`** — macroquad + rapier2d; uses the *same scene JSON, prefabs and assets* as the JS 2D tier.

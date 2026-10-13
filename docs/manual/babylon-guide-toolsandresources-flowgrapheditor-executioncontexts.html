@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Execution Contexts — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Execution Contexts</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="what-an-execution-context-is">What An Execution Context Is<a class="anchor" href="#what-an-execution-context-is">#</a></h2>
+<p>An execution context is one independent run of the same flow graph.</p>
+<p>That means a single graph definition can be executed more than once, with each execution context keeping its own variable state. This is useful when the same behavior should be reused across multiple entities or multiple logical runs without duplicating the graph itself.</p>
+<p>If your goal is to keep several separate graph definitions open in the same editor session, that is a different feature. See <a href="babylon-guide-toolsandresources-flowgrapheditor-multiplegraphs.html">Multiple Graphs In One Editor</a>.</p>
+<p>Examples include:</p>
+<ul>
+<li>The same interaction logic applied to several meshes</li>
+<li>The same animation trigger graph with different per-instance state</li>
+<li>Several independent runs of the same gameplay behavior in one scene</li>
+</ul>
+<h2 id="scene-context-versus-execution-contexts">Scene Context Versus Execution Contexts<a class="anchor" href="#scene-context-versus-execution-contexts">#</a></h2>
+<p>It is important to separate two ideas that sound similar:</p>
+<ul>
+<li>The <strong>scene context</strong> is the loaded preview scene and its available meshes, lights, cameras, materials, animation groups, and other scene objects.</li>
+<li>An <strong>execution context</strong> is one runtime instance of the graph, including its own variables and runtime state.</li>
+</ul>
+<p>In the current implementation, execution contexts do <strong>not</strong> provide separate scene-asset bindings. They share the scene context for now, while keeping separate variable state.</p>
+<p>So the overall picture is:</p>
+<ul>
+<li>One loaded scene context for asset lookup and scene-aware pickers</li>
+<li>Many graph tabs for separate graph definitions</li>
+<li>Many execution contexts for independent graph state</li>
+</ul>
+<h2 id="toolbar-controls">Toolbar Controls<a class="anchor" href="#toolbar-controls">#</a></h2>
+<p>Execution contexts are managed from the toolbar.</p>
+<p>The editor exposes a <code>Ctx</code> dropdown plus three controls:</p>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Ctx</code> dropdown</td>
+<td>Select the active execution context</td>
+</tr>
+<tr>
+<td><code>+</code></td>
+<td>Create a new execution context</td>
+</tr>
+<tr>
+<td><code>−</code></td>
+<td>Remove the selected execution context</td>
+</tr>
+<tr>
+<td><code>✎</code></td>
+<td>Rename the selected execution context</td>
+</tr>
+</tbody></table>
+<p>By default, the graph starts with one context, typically named <code>Context 0</code>.</p>
+<h3 id="selecting-a-context">Selecting A Context<a class="anchor" href="#selecting-a-context">#</a></h3>
+<p>The selected context becomes the active runtime view for the editor.</p>
+<p>That means the selected context controls what you inspect in places such as:</p>
+<ul>
+<li>Debug highlighting</li>
+<li>Breakpoints and stepping</li>
+<li>Variable values shown in the Variables panel</li>
+</ul>
+<h3 id="creating-a-context">Creating A Context<a class="anchor" href="#creating-a-context">#</a></h3>
+<p>Use <code>+</code> to create a new execution context.</p>
+<p>Each newly created context starts as a separate runtime instance of the same graph logic. It does not clone the graph; it adds another execution container for the existing graph.</p>
+<h3 id="removing-a-context">Removing A Context<a class="anchor" href="#removing-a-context">#</a></h3>
+<p>Use <code>−</code> to remove the selected context.</p>
+<p>The editor keeps at least one context available, so removal is disabled when only one context remains.</p>
+<h3 id="renaming-a-context">Renaming A Context<a class="anchor" href="#renaming-a-context">#</a></h3>
+<p>Use <code>✎</code> to rename the selected context.</p>
+<p>Renaming is especially useful once a graph has more than a couple of contexts and generic names like <code>Context 0</code> or <code>Context 1</code> stop being meaningful.</p>
+<h2 id="variables-are-per-context">Variables Are Per Context<a class="anchor" href="#variables-are-per-context">#</a></h2>
+<p>The most important practical effect of execution contexts is that user variables are stored per context.</p>
+<p>This means:</p>
+<ul>
+<li>Two contexts can run the same graph with different variable values.</li>
+<li>Switching contexts changes which variable values you see in the Variables panel.</li>
+<li>Adding or inspecting a variable happens against the currently selected context.</li>
+</ul>
+<p>This is the core reason execution contexts matter: they let one graph definition behave independently in several runtime instances.</p>
+<h2 id="debugging-the-selected-context">Debugging The Selected Context<a class="anchor" href="#debugging-the-selected-context">#</a></h2>
+<p>Debugging tools in the editor follow the currently selected execution context.</p>
+<p>When you switch contexts, the editor&#39;s debugging view follows that context&#39;s runtime state. In practice, this means that highlights, breakpoint inspection, and variable observation should be interpreted as belonging to the active context, not to the graph globally.</p>
+<p>This is especially important when the same graph is running more than once at the same time.</p>
+<h2 id="saving-and-restoring">Saving And Restoring<a class="anchor" href="#saving-and-restoring">#</a></h2>
+<p>Execution contexts are not editor-only state.</p>
+<p>The current implementation preserves:</p>
+<ul>
+<li>Context names</li>
+<li>Per-context variable values</li>
+</ul>
+<p>when the graph is saved and later reopened.</p>
+<p>That means saving and loading a graph does not merge everything back into a single unnamed run.</p>
+<h2 id="current-limitation">Current Limitation<a class="anchor" href="#current-limitation">#</a></h2>
+<p>The current feature is about <strong>multiple execution contexts</strong>, not full per-context asset binding.</p>
+<p>At this stage, all contexts still share the same scene context for asset resolution. So while contexts can hold different variable state, they do not yet provide separate per-context mesh sets, animation groups, or other scene-asset bindings.</p>
+<p>That distinction matters for documentation because it prevents overpromising what the feature currently does.</p>
+<h2 id="when-to-use-execution-contexts">When To Use Execution Contexts<a class="anchor" href="#when-to-use-execution-contexts">#</a></h2>
+<p>Execution contexts are a good fit when:</p>
+<ul>
+<li>You want to reuse one graph definition without copying it</li>
+<li>The important difference between instances is the variable values rather than the shape of the graph itself</li>
+<li>You need to inspect or debug one runtime instance at a time</li>
+</ul>
+<p>They are not yet the right tool if your primary need is separate per-context asset assignment.</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#what-an-execution-context-is">What An Execution Context Is </a><a href="#scene-context-versus-execution-contexts">Scene Context Versus Execution Contexts </a><a href="#toolbar-controls">Toolbar Controls </a><a href="#variables-are-per-context">Variables Are Per Context </a><a href="#debugging-the-selected-context">Debugging The Selected Context </a><a href="#saving-and-restoring">Saving And Restoring </a><a href="#current-limitation">Current Limitation </a><a href="#when-to-use-execution-contexts">When To Use Execution Contexts </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

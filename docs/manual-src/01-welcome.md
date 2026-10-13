@@ -12,6 +12,8 @@ Think of Nord as a workshop. The **editor** is the workbench where you arrange t
 your game move when it is played. **Export** packs everything into one folder you can put on any website.
 :::
 
+New here? Start with [Getting started](getting-started.html) and [How Nord works](how-nord-works.html).
+
 ## The tiers
 
 You pick a tier per project (`type` in `nord.project.json`). All tiers share the same project folder layout and scene format.
@@ -24,7 +26,7 @@ You pick a tier per project (`type` in `nord.project.json`). All tiers share the
 | Rust game | `wasm-game` | macroquad + rapier2d compiled to WebAssembly | CPU-heavy 2D sims, Rust-only logic |
 | Rust app | `wasm-app` | eframe/egui compiled to WebAssembly | tools, dashboards, native-feeling apps |
 
-`nord doctor` checks your toolchain and recommends a tier. You never write Phaser or Babylon code: scripts use **Nord's own API**
+`nord doctor` checks your toolchain and recommends a tier. Start with **Nord's own API**
 (`NordScript`, `entity.*`, `game.*`). Raw engine objects are only reachable through the `entity.native` escape hatch.
 
 ## Install and first launch (macOS)
@@ -48,9 +50,9 @@ The whole manual is offline and also lives inside the editor's **Docs** tab. Pre
 * **Manual** — chapters 1–17, read in order or jump around.
 * **Tutorials** — T01–T18, each builds something and points to a runnable project.
 * **Guides** — cheat sheets, cookbook, glossary, shortcuts.
-* **API / Components / Reference** — generated from the source, so they cannot drift: JS classes, every component, the CLI, the library catalog.
+* **API / Components / Reference** — generated from public source contracts, with curated usage notes: JS classes, every component, the CLI, the library catalog.
 
 ::: dummies
-Every concept page can hide a purple **For dummies** box like this one. Flip the switch in the top bar if you want plain-language
-explanations and analogies; leave it off once you know the ropes.
+Every concept page can hide a purple **For dummies** box like this one. Plain-language
+explanations are shown by default; the top-bar switch hides them once you know the ropes.
 :::

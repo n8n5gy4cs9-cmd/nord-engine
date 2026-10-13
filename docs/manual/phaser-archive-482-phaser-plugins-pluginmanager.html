@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phaser archive: Phaser.Plugins.PluginManager — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Phaser archive: Phaser.Plugins.PluginManager</h1>
+<p><span class="badge">Phaser 4.1.0 archive</span> · <a href="phaser-api-index.html">Matching 4.2.1 API</a></p><p>The PluginManager is responsible for installing and adding plugins to Phaser.</p>
+<p>It is a global system and therefore belongs to the Game instance, not a specific Scene.</p>
+<p>It works in conjunction with the PluginCache. Core internal plugins automatically register themselves
+with the Cache, but it&#39;s the Plugin Manager that is responsible for injecting them into the Scenes.</p>
+<p>There are two types of plugin:</p>
+<ol>
+<li>A Global Plugin</li>
+<li>A Scene Plugin</li>
+</ol>
+<p>A Global Plugin is a plugin that lives within the Plugin Manager rather than a Scene. You can get
+access to it by calling <code>PluginManager.get</code> and providing a key. Any Scene that requests a plugin in
+this way will get access to the same plugin instance, allowing you to use a single plugin across
+multiple Scenes.</p>
+<p>A Scene Plugin is a plugin dedicated to running within a Scene. These are different to Global Plugins
+in that their instances do not live within the Plugin Manager, but within the Scene Systems class instead.
+Also, every Scene created is given its own unique instance of a Scene Plugin. Examples of core Scene
+Plugins include the Input Plugin, the Tween Plugin and the physics Plugins.</p>
+<p>You can add a plugin to Phaser in three different ways:</p>
+<ol>
+<li>Preload it</li>
+<li>Include it in your source code and install it via the Game Config</li>
+<li>Include it in your source code and install it within a Scene</li>
+</ol>
+<p>For examples of all of these approaches please see the Phaser 3 Examples Repo <code>plugins</code> folder.</p>
+<p>For information on creating your own plugin please see the Phaser 3 Plugin Template.</p>
+<h2 id="constructor">Constructor</h2><pre class="code" data-lang="ts"><code>PluginManager(game)</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>game</code></td><td><code>Phaser.Game</code></td><td>The game instance that owns this Plugin Manager.</td></tr></tbody></table><h2 id="members">members</h2><h3 id="members-0">game</h3><pre class="code" data-lang="ts"><code>game</code></pre><p>The game instance that owns this Plugin Manager.</p>
+<h3 id="members-1">plugins</h3><pre class="code" data-lang="ts"><code>plugins</code></pre><p>The global plugins currently running and managed by this Plugin Manager.
+A plugin must have been started at least once in order to appear in this list.</p>
+<h3 id="members-2">scenePlugins</h3><pre class="code" data-lang="ts"><code>scenePlugins</code></pre><p>A list of plugin keys that should be installed into Scenes as well as the Core Plugins.</p>
+<h2 id="methods">methods</h2><h3 id="methods-0">addToScene</h3><pre class="code" data-lang="ts"><code>addToScene(sys, globalPlugins, scenePlugins)</code></pre><p>Called by the Scene Systems class. Tells the plugin manager to install all Scene plugins into it.</p>
+<p>First it will install global references, i.e. references from the Game systems into the Scene Systems (and Scene if mapped.)
+Then it will install Core Scene Plugins followed by Scene Plugins registered with the PluginManager.
+Finally it will install any references to Global Plugins that have a Scene mapping property into the Scene itself.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>sys</code></td><td><code>Phaser.Scenes.Systems</code></td><td>The Scene Systems class to install all the plugins in to.</td></tr><tr><td><code>globalPlugins</code></td><td><code>array</code></td><td>An array of global plugins to install.</td></tr><tr><td><code>scenePlugins</code></td><td><code>array</code></td><td>An array of scene plugins to install.</td></tr></tbody></table><h3 id="methods-1">boot</h3><pre class="code" data-lang="ts"><code>boot()</code></pre><p>Runs once the game has booted and installs all of the plugins configured in the Game Config.</p>
+<h3 id="methods-2">destroy</h3><pre class="code" data-lang="ts"><code>destroy()</code></pre><p>Destroys this Plugin Manager and all associated plugins.
+It will iterate all plugins found and call their <code>destroy</code> methods.</p>
+<p>The PluginCache will remove all custom plugins.</p>
+<h3 id="methods-3">get</h3><pre class="code" data-lang="ts"><code>get(key, autoStart?)</code></pre><p>Gets a global plugin from the Plugin Manager based on the given key and returns it.</p>
+<p>If it cannot find an active plugin based on the key, but there is one in the Plugin Cache with the same key,
+then it will create a new instance of the cached plugin and return that.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>The key of the plugin to get.</td></tr><tr><td><code>autoStart</code></td><td><code>boolean</code></td><td>Optional. Automatically start a new instance of the plugin if found in the cache, but not actively running. Default: <code>true</code></td></tr></tbody></table><p>Returns: <code>Phaser.Plugins.BasePlugin | function</code> The plugin, or `null` if no plugin was found matching the key.</p><h3 id="methods-4">getClass</h3><pre class="code" data-lang="ts"><code>getClass(key)</code></pre><p>Returns the plugin class from the cache.
+Used internally by the Plugin Manager.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>The key of the plugin to get.</td></tr></tbody></table><p>Returns: <code>Phaser.Plugins.BasePlugin</code> A Plugin object</p><h3 id="methods-5">getDefaultScenePlugins</h3><pre class="code" data-lang="ts"><code>getDefaultScenePlugins()</code></pre><p>Called by the Scene Systems class. Returns a list of plugins to be installed.</p>
+<p>Returns: <code>Array.&lt;string&gt;</code> A list of keys of all the Scene Plugins to install.</p><h3 id="methods-6">getEntry</h3><pre class="code" data-lang="ts"><code>getEntry(key)</code></pre><p>Gets a global plugin based on the given key.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>The unique plugin key.</td></tr></tbody></table><p>Returns: <code>Phaser.Types.Plugins.GlobalPlugin</code> The plugin entry.</p><h3 id="methods-7">getIndex</h3><pre class="code" data-lang="ts"><code>getIndex(key)</code></pre><p>Gets an index of a global plugin based on the given key.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>The unique plugin key.</td></tr></tbody></table><p>Returns: <code>number</code> The index of the plugin within the plugins array.</p><h3 id="methods-8">install</h3><pre class="code" data-lang="ts"><code>install(key, plugin, start?, mapping?, data?)</code></pre><p>Installs a new Global Plugin into the Plugin Manager and optionally starts it running.
+A global plugin belongs to the Plugin Manager, rather than a specific Scene, and can be accessed
+and used by all Scenes in your game.</p>
+<p>The <code>key</code> property is what you use to access this plugin from the Plugin Manager.</p>
+<pre class="code" data-lang="javascript"><code>this.plugins.install('powerupsPlugin', pluginCode);
+
+// and from within the scene:
+this.plugins.get('powerupsPlugin');</code></pre>
+<p>This method is called automatically by Phaser if you install your plugins using either the
+Game Configuration object, or by preloading them via the Loader.</p>
+<p>The same plugin can be installed multiple times into the Plugin Manager by simply giving each
+instance its own unique key.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>The unique handle given to this plugin within the Plugin Manager.</td></tr><tr><td><code>plugin</code></td><td><code>function</code></td><td>The plugin code. This should be the non-instantiated version.</td></tr><tr><td><code>start</code></td><td><code>boolean</code></td><td>Optional. Automatically start the plugin running? This is always `true` if you provide a mapping value. Default: <code>false</code></td></tr><tr><td><code>mapping</code></td><td><code>string</code></td><td>Optional. If this plugin is injected into the Phaser.Scene class, this is the property key to use.</td></tr><tr><td><code>data</code></td><td><code>any</code></td><td>Optional. A value passed to the plugin's `init` method.</td></tr></tbody></table><p>Returns: <code>Phaser.Plugins.BasePlugin</code> The plugin that was started, or `null` if `start` was false, or game isn't yet booted.</p><h3 id="methods-9">installScenePlugin</h3><pre class="code" data-lang="ts"><code>installScenePlugin(key, plugin, mapping?, addToScene?, fromLoader?)</code></pre><p>Installs a new Scene Plugin into the Plugin Manager and optionally adds it
+to the given Scene as well. A Scene Plugin added to the manager in this way
+will be automatically installed into all new Scenes using the key and mapping given.</p>
+<p>The <code>key</code> property is what the plugin is injected into Scene.Systems as.
+The <code>mapping</code> property is optional, and if specified is what the plugin is installed into
+the Scene as. For example:</p>
+<pre class="code" data-lang="javascript"><code>this.plugins.installScenePlugin('powerupsPlugin', pluginCode, 'powerups');
+
+// and from within the scene:
+this.sys.powerupsPlugin; // key value
+this.powerups; // mapping value</code></pre>
+<p>This method is called automatically by Phaser if you install your plugins using either the
+Game Configuration object, or by preloading them via the Loader.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>The property key that will be used to add this plugin to Scene.Systems.</td></tr><tr><td><code>plugin</code></td><td><code>function</code></td><td>The plugin code. This should be the non-instantiated version.</td></tr><tr><td><code>mapping</code></td><td><code>string</code></td><td>Optional. If this plugin is injected into the Phaser.Scene class, this is the property key to use.</td></tr><tr><td><code>addToScene</code></td><td><code>Phaser.Scene</code></td><td>Optional. Optionally automatically add this plugin to the given Scene.</td></tr><tr><td><code>fromLoader</code></td><td><code>boolean</code></td><td>Optional. Is this being called by the Loader? Default: <code>false</code></td></tr></tbody></table><h3 id="methods-10">isActive</h3><pre class="code" data-lang="ts"><code>isActive(key)</code></pre><p>Checks if the given global plugin, based on its key, is active or not.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>The unique plugin key.</td></tr></tbody></table><p>Returns: <code>boolean</code> `true` if the plugin is active, otherwise `false`.</p><h3 id="methods-11">registerFileType</h3><pre class="code" data-lang="ts"><code>registerFileType(key, callback, addToScene?)</code></pre><p>Registers a new file type with the global File Types Manager, making it available to all Loader
+Plugins created after this.</p>
+<p>This is usually called from within your Plugin code and is a helpful short-cut for creating
+new loader file types.</p>
+<p>The key is the property that will be injected into the Loader Plugin and used to load the
+files. For example:</p>
+<pre class="code" data-lang="javascript"><code>this.plugins.registerFileType('wad', doomWadLoaderCallback);
+// later in your preload code:
+this.load.wad();</code></pre>
+<p>The callback is what is called when the loader tries to load a file matching the given key.
+It&#39;s important to understand that the callback is invoked within
+the context of the LoaderPlugin. In this context there are several properties / methods available
+to use:</p>
+<p>this.addFile - A method to add the new file to the load queue.
+this.scene - The Scene that owns the Loader Plugin instance.</p>
+<p>See the LoaderPlugin class for more details. Any public property or method listed is available from
+your callback under <code>this</code>.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>The key of the file type to register with the Loader Plugin, i.e. `wad`, `atlas`.</td></tr><tr><td><code>callback</code></td><td><code>function</code></td><td>The callback to invoke when the Loader Plugin tries to load a file of this type.</td></tr><tr><td><code>addToScene</code></td><td><code>Phaser.Scene</code></td><td>Optional. Optionally add this file type into the Loader Plugin owned by the given Scene.</td></tr></tbody></table><h3 id="methods-12">registerGameObject</h3><pre class="code" data-lang="ts"><code>registerGameObject(key, factoryCallback?, creatorCallback?)</code></pre><p>Registers a new type of Game Object with the global Game Object Factory and / or Creator.
+This is usually called from within your Plugin code and is a helpful short-cut for creating
+new Game Objects.</p>
+<p>The key is the property that will be injected into the factories and used to create the
+Game Object. For example:</p>
+<pre class="code" data-lang="javascript"><code>this.plugins.registerGameObject('clown', clownFactoryCallback, clownCreatorCallback);
+// later in your game code:
+this.add.clown();
+this.make.clown();</code></pre>
+<p>The callbacks are what are called when the factories try to create a Game Object
+matching the given key. It&#39;s important to understand that the callbacks are invoked within
+the context of the GameObjectFactory. In this context there are several properties available
+to use:</p>
+<p>this.scene - A reference to the Scene that owns the GameObjectFactory.
+this.displayList - A reference to the Display List the Scene owns.
+this.updateList - A reference to the Update List the Scene owns.</p>
+<p>See the GameObjectFactory and GameObjectCreator classes for more details.
+Any public property or method listed is available from your callbacks under <code>this</code>.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>The key of the Game Object that the given callbacks will create, i.e. `image`, `sprite`.</td></tr><tr><td><code>factoryCallback</code></td><td><code>function</code></td><td>Optional. The callback to invoke when the Game Object Factory is called.</td></tr><tr><td><code>creatorCallback</code></td><td><code>function</code></td><td>Optional. The callback to invoke when the Game Object Creator is called.</td></tr></tbody></table><h3 id="methods-13">removeGameObject</h3><pre class="code" data-lang="ts"><code>removeGameObject(key, removeFromFactory?, removeFromCreator?)</code></pre><p>Removes a previously registered Game Object from the global Game Object Factory and / or Creator.
+This is usually called from within your Plugin destruction code to help clean-up after your plugin has been removed.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>The key of the Game Object to be removed from the factories.</td></tr><tr><td><code>removeFromFactory</code></td><td><code>boolean</code></td><td>Optional. Should the Game Object be removed from the Game Object Factory? Default: <code>true</code></td></tr><tr><td><code>removeFromCreator</code></td><td><code>boolean</code></td><td>Optional. Should the Game Object be removed from the Game Object Creator? Default: <code>true</code></td></tr></tbody></table><h3 id="methods-14">removeGlobalPlugin</h3><pre class="code" data-lang="ts"><code>removeGlobalPlugin(key)</code></pre><p>Removes a global plugin from the Plugin Manager and Plugin Cache.</p>
+<p>It is up to you to remove all references to this plugin that you may hold within your game code.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>The key of the plugin to remove.</td></tr></tbody></table><h3 id="methods-15">removeScenePlugin</h3><pre class="code" data-lang="ts"><code>removeScenePlugin(key)</code></pre><p>Removes a scene plugin from the Plugin Manager and Plugin Cache.</p>
+<p>This will not remove the plugin from any active Scenes that are already using it.</p>
+<p>It is up to you to remove all references to this plugin that you may hold within your game code.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>The key of the plugin to remove.</td></tr></tbody></table><h3 id="methods-16">start</h3><pre class="code" data-lang="ts"><code>start(key, runAs?)</code></pre><p>Starts a global plugin running.</p>
+<p>If the plugin was previously active then calling <code>start</code> will reset it to an active state and then
+call its <code>start</code> method.</p>
+<p>If the plugin has never been run before a new instance of it will be created within the Plugin Manager,
+its active state set and then both of its <code>init</code> and <code>start</code> methods called, in that order.</p>
+<p>If the plugin is already running under the given key then nothing happens.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>The key of the plugin to start.</td></tr><tr><td><code>runAs</code></td><td><code>string</code></td><td>Optional. Run the plugin under a new key. This allows you to run one plugin multiple times.</td></tr></tbody></table><p>Returns: <code>Phaser.Plugins.BasePlugin</code> The plugin that was started, or `null` if invalid key given or plugin is already stopped.</p><h3 id="methods-17">stop</h3><pre class="code" data-lang="ts"><code>stop(key)</code></pre><p>Stops a global plugin from running.</p>
+<p>If the plugin is active then its active state will be set to false and the plugins <code>stop</code> method
+will be called.</p>
+<p>If the plugin is not already running, nothing will happen.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>The key of the plugin to stop.</td></tr></tbody></table><p>Returns: <code>Phaser.Plugins.PluginManager</code> The Plugin Manager.</p><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#constructor">Constructor</a><a href="#members">members</a><a href="#methods">methods</a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

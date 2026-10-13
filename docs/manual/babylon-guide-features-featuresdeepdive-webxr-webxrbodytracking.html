@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: WebXR Body Tracking Feature — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: WebXR Body Tracking Feature</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="body-tracking">Body Tracking<a class="anchor" href="#body-tracking">#</a></h2>
+<p>Some XR devices can track the full pose of the user&#39;s body — not just their hands and head — and expose that data via the <span>WebXR Body Tracking specification</span>. Babylon.js provides a <code>WebXRBodyTracking</code> feature that consumes this data and, optionally, uses it to drive a rigged humanoid mesh so users can see their own avatar move with them in real time.</p>
+<p>Up to <strong>83 body joints</strong> are tracked each frame, covering the full skeleton from the hips and spine up through the head, arms, and hands, and down through the legs and feet.</p>
+<span class="muted">Online playground (not embedded offline)</span><h3 id="device-and-browser-support">Device and browser support<a class="anchor" href="#device-and-browser-support">#</a></h3>
+<p>Body tracking is currently available on:</p>
+<ul>
+<li><strong>Meta Quest</strong> devices (Quest 2, Quest Pro, Quest 3, Quest 3S) using the Meta Quest Browser.</li>
+</ul>
+<p>Check the <span>WebXR Body Tracking specification</span> for the latest platform support information. The feature degrades gracefully — if the runtime does not provide body data, the feature stays inactive and fires no errors.</p>
+<h3 id="getting-started">Getting started<a class="anchor" href="#getting-started">#</a></h3>
+<p>Enable the feature on the features manager after creating the default XR experience:</p>
+<pre class="code" data-lang="javascript"><code>const xr = await scene.createDefaultXRExperienceAsync();
+
+const bodyTracking = xr.baseExperience.featuresManager.enableFeature(
+  BABYLON.WebXRFeatureName.BODY_TRACKING,
+  &quot;latest&quot;,
+  {
+    // optional: attach a rigged body mesh immediately
+    bodyMesh: myRiggedMesh,
+  }
+);</code></pre>
+<p>At this point the feature creates 83 <code>TransformNode</code> objects (one per joint) and updates them every frame with the poses reported by the XR runtime. If you provided a <code>bodyMesh</code> with a skeleton, the skeleton bones are automatically linked to those transform nodes, so the mesh animates with the user.</p>
+<h3 id="the-83-tracked-body-joints">The 83 tracked body joints<a class="anchor" href="#the-83-tracked-body-joints">#</a></h3>
+<p>The joints correspond to the names defined by the <span>WebXR Body Tracking spec</span>. They are exposed as the <code>WebXRBodyJoint</code> string enum:</p>
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Joints</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Torso / Spine</strong></td>
+<td><code>hips</code>, <code>spine-lower</code>, <code>spine-middle</code>, <code>spine-upper</code>, <code>chest</code>, <code>neck</code>, <code>head</code></td>
+</tr>
+<tr>
+<td><strong>Left Arm</strong></td>
+<td><code>left-shoulder</code>, <code>left-scapula</code>, <code>left-arm-upper</code>, <code>left-arm-lower</code>, <code>left-hand-wrist-twist</code></td>
+</tr>
+<tr>
+<td><strong>Right Arm</strong></td>
+<td><code>right-shoulder</code>, <code>right-scapula</code>, <code>right-arm-upper</code>, <code>right-arm-lower</code>, <code>right-hand-wrist-twist</code></td>
+</tr>
+<tr>
+<td><strong>Left Hand</strong></td>
+<td><code>left-hand-palm</code>, <code>left-hand-wrist</code>, plus all 5 fingers (metacarpal → tip)</td>
+</tr>
+<tr>
+<td><strong>Right Hand</strong></td>
+<td><code>right-hand-palm</code>, <code>right-hand-wrist</code>, plus all 5 fingers (metacarpal → tip)</td>
+</tr>
+<tr>
+<td><strong>Left Leg</strong></td>
+<td><code>left-upper-leg</code>, <code>left-lower-leg</code>, <code>left-foot-ankle-twist</code>, <code>left-foot-ankle</code>, <code>left-foot-subtalar</code>, <code>left-foot-transverse</code>, <code>left-foot-ball</code></td>
+</tr>
+<tr>
+<td><strong>Right Leg</strong></td>
+<td><code>right-upper-leg</code>, <code>right-lower-leg</code>, <code>right-foot-ankle-twist</code>, <code>right-foot-ankle</code>, <code>right-foot-subtalar</code>, <code>right-foot-transverse</code>, <code>right-foot-ball</code></td>
+</tr>
+</tbody></table>
+<p>You can iterate over the complete ordered list with <code>WebXRBodyTracking.AllBodyJoints</code>.</p>
+<h3 id="observables">Observables<a class="anchor" href="#observables">#</a></h3>
+<p>The feature exposes three observables for reacting to body tracking events:</p>
+<pre class="code" data-lang="javascript"><code>// Fired once when the runtime first delivers valid body data.
+bodyTracking.onBodyTrackingStartedObservable.add((trackedBody) =&gt; {
+  console.log(&quot;Body tracking started!&quot;);
+});
+
+// Fired every frame while body tracking is active.
+bodyTracking.onBodyTrackingFrameUpdateObservable.add((trackedBody) =&gt; {
+  // All joint TransformNodes are already up-to-date at this point.
+  const hipsTransform = trackedBody.getJointTransform(BABYLON.WebXRBodyJoint.HIPS);
+  console.log(&quot;Hips position:&quot;, hipsTransform.position);
+});
+
+// Fired when the runtime stops delivering body data.
+bodyTracking.onBodyTrackingEndedObservable.add(() =&gt; {
+  console.log(&quot;Body tracking lost.&quot;);
+});</code></pre>
+<p>Use <code>bodyTracking.isTracking</code> to poll the current tracking state without subscribing to an observable.</p>
+<h3 id="accessing-joint-data">Accessing joint data<a class="anchor" href="#accessing-joint-data">#</a></h3>
+<p>The <code>WebXRTrackedBody</code> object (received from the observables above, or via <code>bodyTracking.trackedBody</code>) provides helpers for reading individual joints or whole body parts:</p>
+<pre class="code" data-lang="javascript"><code>// Get the TransformNode for a single joint.
+const headTransform = trackedBody.getJointTransform(BABYLON.WebXRBodyJoint.HEAD);
+
+// Get all TransformNodes for one body part.
+const leftArmTransforms = trackedBody.getBodyPartTransforms(BABYLON.BodyPart.LEFT_ARM);
+
+// Or iterate the raw array (index matches WebXRBodyTracking.AllBodyJoints order).
+const allTransforms = trackedBody.jointTransforms;</code></pre>
+<p>The available <code>BodyPart</code> values are: <code>TORSO</code>, <code>LEFT_ARM</code>, <code>RIGHT_ARM</code>, <code>LEFT_HAND</code>, <code>RIGHT_HAND</code>, <code>LEFT_LEG</code>, <code>RIGHT_LEG</code>.</p>
+<h3 id="attaching-a-rigged-body-mesh">Attaching a rigged body mesh<a class="anchor" href="#attaching-a-rigged-body-mesh">#</a></h3>
+<p>Any humanoid mesh with a skeleton can be driven by body tracking. You tell the feature how to map the 83 XR joint names to your skeleton&#39;s bone names using a <strong>rig mapping</strong> object.</p>
+<h4 id="mixamo-models">Mixamo models<a class="anchor" href="#mixamo-models">#</a></h4>
+<p>For meshes exported from <span>Mixamo</span> (the most common source for humanoid characters), use the built-in <code>isMixamoModel</code> shortcut:</p>
+<pre class="code" data-lang="javascript"><code>const bodyTracking = xr.baseExperience.featuresManager.enableFeature(
+  BABYLON.WebXRFeatureName.BODY_TRACKING,
+  &quot;latest&quot;,
+  {
+    bodyMesh: myMixamoMesh,
+    isMixamoModel: true,
+  }
+);</code></pre>
+<p>Setting <code>isMixamoModel: true</code> automatically:</p>
+<ul>
+<li>Applies the built-in <code>MixamoRigMapping</code> (which covers hips, spine, head, shoulders, arms, legs, and feet).</li>
+<li>Enables <code>useBoneOrientationOffsets</code> for cleaner retargeting of the torso and wrist joints.</li>
+<li>Detects and handles the <code>mixamorig:</code> bone-name prefix automatically, so the same setting works for both prefixed and un-prefixed Mixamo exports.</li>
+</ul>
+<h4 id="custom-rig-mapping">Custom rig mapping<a class="anchor" href="#custom-rig-mapping">#</a></h4>
+<p>For other skeletons, supply a <code>rigMapping</code> object whose keys are <code>WebXRBodyJoint</code> names and whose values are the corresponding bone names in your skeleton:</p>
+<pre class="code" data-lang="javascript"><code>const bodyTracking = xr.baseExperience.featuresManager.enableFeature(
+  BABYLON.WebXRFeatureName.BODY_TRACKING,
+  &quot;latest&quot;,
+  {
+    bodyMesh: myMesh,
+    rigMapping: {
+      &quot;hips&quot;: &quot;Bip01_Pelvis&quot;,
+      &quot;spine-lower&quot;: &quot;Bip01_Spine&quot;,
+      &quot;spine-upper&quot;: &quot;Bip01_Spine2&quot;,
+      &quot;neck&quot;: &quot;Bip01_Neck&quot;,
+      &quot;head&quot;: &quot;Bip01_Head&quot;,
+      &quot;left-shoulder&quot;: &quot;Bip01_L_Clavicle&quot;,
+      &quot;left-arm-upper&quot;: &quot;Bip01_L_UpperArm&quot;,
+      &quot;left-arm-lower&quot;: &quot;Bip01_L_Forearm&quot;,
+      &quot;left-hand-wrist&quot;: &quot;Bip01_L_Hand&quot;,
+      &quot;right-shoulder&quot;: &quot;Bip01_R_Clavicle&quot;,
+      &quot;right-arm-upper&quot;: &quot;Bip01_R_UpperArm&quot;,
+      &quot;right-arm-lower&quot;: &quot;Bip01_R_Forearm&quot;,
+      &quot;right-hand-wrist&quot;: &quot;Bip01_R_Hand&quot;,
+      &quot;left-upper-leg&quot;: &quot;Bip01_L_Thigh&quot;,
+      &quot;left-lower-leg&quot;: &quot;Bip01_L_Calf&quot;,
+      &quot;left-foot-ankle&quot;: &quot;Bip01_L_Foot&quot;,
+      &quot;right-upper-leg&quot;: &quot;Bip01_R_Thigh&quot;,
+      &quot;right-lower-leg&quot;: &quot;Bip01_R_Calf&quot;,
+      &quot;right-foot-ankle&quot;: &quot;Bip01_R_Foot&quot;,
+      // … add more joints as needed
+    },
+  }
+);</code></pre>
+<p>You do not need to map every joint — only the bones you want to animate.</p>
+<h4 id="attaching-a-mesh-after-the-feature-is-enabled">Attaching a mesh after the feature is enabled<a class="anchor" href="#attaching-a-mesh-after-the-feature-is-enabled">#</a></h4>
+<p>You can attach (or replace) a body mesh at any time with the <code>setBodyMesh</code> method:</p>
+<pre class="code" data-lang="javascript"><code>// Load a mesh later and attach it to the running feature.
+const result = await BABYLON.SceneLoader.ImportMeshAsync(&quot;&quot;, &quot;/models/&quot;, &quot;avatar.glb&quot;, scene);
+const avatarMesh = result.meshes[0];
+
+bodyTracking.setBodyMesh(avatarMesh, {
+  &quot;hips&quot;: &quot;Hips&quot;,
+  // … rest of mapping …
+});</code></pre>
+<p>The <code>onBodyMeshSetObservable</code> fires whenever a mesh is attached this way.</p>
+<h3 id="configuration-options">Configuration options<a class="anchor" href="#configuration-options">#</a></h3>
+<p>All options are passed in the third argument to <code>enableFeature</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>bodyMesh</code></td>
+<td><code>AbstractMesh</code></td>
+<td>—</td>
+<td>A rigged body mesh to drive with tracked joint poses.</td>
+</tr>
+<tr>
+<td><code>rigMapping</code></td>
+<td><code>XRBodyMeshRigMapping</code></td>
+<td>—</td>
+<td>Maps each <code>WebXRBodyJoint</code> name to a bone name in the mesh skeleton.</td>
+</tr>
+<tr>
+<td><code>isMixamoModel</code></td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Apply the built-in Mixamo mapping and sensible defaults automatically.</td>
+</tr>
+<tr>
+<td><code>jointScaleFactor</code></td>
+<td><code>number</code></td>
+<td><code>1.0</code></td>
+<td>Uniformly scales local joint offsets to fit avatars of different proportions. Values &gt; 1 stretch the skeleton; values &lt; 1 compress it. Does not affect the root (hips) position.</td>
+</tr>
+<tr>
+<td><code>preserveBindPoseBonePositions</code></td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>When <code>true</code>, mapped bones keep their bind-pose local translations and only rotations are retargeted. Useful for driving avatar rigs that have different proportions from the user without distorting segment lengths.</td>
+</tr>
+<tr>
+<td><code>useBoneOrientationOffsets</code></td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Applies a per-bone orientation correction using each bone&#39;s bind-space child axis direction, compensating for rigs whose local axes don&#39;t match the XR joint convention. Automatically enabled when <code>isMixamoModel</code> is <code>true</code>.</td>
+</tr>
+<tr>
+<td><code>aimChildOverrides</code></td>
+<td><code>Partial&lt;Record&lt;WebXRBodyJoint, WebXRBodyJoint&gt;&gt;</code></td>
+<td>—</td>
+<td>Per-joint override of the &quot;aim child&quot; joint used when <code>useBoneOrientationOffsets</code> is enabled. Redirect noisy short segments (e.g. the very short hips→spine-lower segment) to a farther, more stable joint.</td>
+</tr>
+<tr>
+<td><code>jointLocalRotationOffset</code></td>
+<td><code>Quaternion</code></td>
+<td>—</td>
+<td>A rotation applied in each tracked joint&#39;s local frame before retargeting, for runtimes that emit joint data with non-standard axis conventions.</td>
+</tr>
+</tbody></table>
+<h4 id="example-fitting-an-oversized-avatar">Example: fitting an oversized avatar<a class="anchor" href="#example-fitting-an-oversized-avatar">#</a></h4>
+<pre class="code" data-lang="javascript"><code>xr.baseExperience.featuresManager.enableFeature(
+  BABYLON.WebXRFeatureName.BODY_TRACKING,
+  &quot;latest&quot;,
+  {
+    bodyMesh: giantAvatarMesh,
+    isMixamoModel: true,
+    preserveBindPoseBonePositions: true, // keep the avatar's own bone lengths
+    jointScaleFactor: 1.5,              // stretch root offsets to match a taller user
+  }
+);</code></pre>
+<h4 id="example-adjusting-the-scale-at-runtime">Example: adjusting the scale at runtime<a class="anchor" href="#example-adjusting-the-scale-at-runtime">#</a></h4>
+<p>The <code>jointScaleFactor</code> can also be changed at any time after the feature is enabled:</p>
+<pre class="code" data-lang="javascript"><code>// Make the skeleton larger dynamically
+bodyTracking.trackedBody.jointScaleFactor = 1.2;</code></pre>
+<h3 id="coordinate-system">Coordinate system<a class="anchor" href="#coordinate-system">#</a></h3>
+<p>WebXR delivers body pose data in a <strong>right-handed</strong> coordinate system. Babylon.js defaults to <strong>left-handed</strong>. The <code>WebXRBodyTracking</code> feature handles this conversion automatically:</p>
+<ul>
+<li>Joint matrices are converted in-place (Z-axis negation) before being written to the <code>TransformNode</code>s.</li>
+<li>For meshes authored in a right-handed tool (glTF, Blender exports), bone data is un-flipped so the skeleton interprets poses correctly.</li>
+<li>If you have set <code>scene.useRightHandedSystem = true</code>, no conversion is applied.</li>
+</ul>
+<p>You do not need to do anything special — this is handled transparently.</p>
+<h3 id="further-reading">Further reading<a class="anchor" href="#further-reading">#</a></h3>
+<ul>
+<li><span>WebXR Body Tracking Specification</span></li>
+<li><span>WebXR Hand Tracking</span></li>
+<li><a href="babylon-guide-features-featuresdeepdive-webxr-webxrfeaturesmanager.html">WebXR Features Manager</a></li>
+<li><span>Source code: WebXRBodyTracking.ts</span></li>
+</ul>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#body-tracking">Body Tracking </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

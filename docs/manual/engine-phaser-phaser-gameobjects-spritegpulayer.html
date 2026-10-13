@@ -1,0 +1,698 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phaser.GameObjects.SpriteGPULayer — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Phaser.GameObjects.SpriteGPULayer</h1>
+<p><span class="badge">Underlying Phaser 4.2.1 API</span> <span class="badge">Class</span></p><p class="muted">Official public declarations and JSDoc from <code>phaser</code>. Use with engine objects, not directly on a Nord entity.</p><aside class="box tip"><div class="box-title">The Nord way</div><p><a href="2d.html">2D manual</a> · <a href="component-sprite.html">sprite</a> · <a href="component-animatedSprite.html">animatedSprite</a> · <a href="physics.html">physics</a>. Access raw objects only when the Nord wrapper does not cover your feature. <a href="reference.html#escape-hatch">How escape hatches work</a>.</p></aside><h3 id="declaration">SpriteGPULayer <a class="anchor" href="#declaration">#</a></h3><pre class="code" data-lang="ts"><code>class SpriteGPULayer extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.ElapseTimer, Phaser.GameObjects.Components.Lighting, Phaser.GameObjects.Components.RenderNodes, Phaser.GameObjects.Components.TextureCrop, Phaser.GameObjects.Components.Visible</code></pre><p>A SpriteGPULayer GameObject. This is a WebGL only GameObject.
+It is optimized for rendering very large numbers of quads
+following simple tween animations.
+It is suited to complex backgrounds with animation.</p>
+<p>A SpriteGPULayer is a composite object that contains a collection of
+Member objects. It stores the rendering data for these
+objects in a GPU buffer, and renders them in a single draw call.
+Because it only updates the GPU buffer when necessary,
+it is up to 100 times faster than rendering the objects individually.
+Avoid changing the contents of the SpriteGPULayer frequently, as this
+requires the whole buffer to be updated.</p>
+<p>The layer can generally perform well with a million small quads.
+The exact performance will depend on the device and the size of the quads.
+If the quads are large, the layer will be fill-rate limited.
+Avoid drawing more than a few million pixels per frame.</p>
+<p>When populating the SpriteGPULayer, use <code>addMember</code> to add a new member
+to the top of the layer. You should populate the layer all at once,
+and leave it unchanged, rather than frequently adding and removing members,
+because it is expensive to update the buffer.</p>
+<p>Rather than create a new <code>SpriteGPULayer.Member</code> object for each <code>addMember</code> call,
+you can reuse the same object. This is more efficient,
+because creating millions of objects has a major performance cost
+and may cause garbage collection issues.</p>
+<p>Notes on modifying the SpriteGPULayer:</p>
+<p>The following operations are expensive. They require some or all of the
+buffer to be updated:</p>
+<ul>
+<li><code>addData</code></li>
+<li><code>addMember</code></li>
+<li><code>editMember</code></li>
+<li><code>patchMember</code></li>
+<li><code>resize</code></li>
+<li><code>removeMembers</code></li>
+</ul>
+<p>Members are added at the end of the buffer. Removed members are spliced out
+of the buffer, causing the whole buffer to be updated.
+The index of later members will change if you remove an earlier member.
+If you need to maintain a structure, such as a grid of tiles,
+it&#39;s best to &quot;remove&quot; a member by setting its scaleX, scaleY, and alpha to 0.
+It is still rendered, but it does not fill any pixels.</p>
+<p>Changes to a small segment of the buffer are less expensive.
+The buffer is split into several segments, and each segment can be updated
+independently. Editing and patching members will only update the segments
+that contain the members being edited.
+Updating occurs at render time, so edits all happen at once.
+This can reduce the amount of data that needs to be updated,
+but it is still more expensive than not updating the buffer at all.
+If you&#39;re updating a large number of segments, it may be more efficient
+to call <code>setAllSegmentsNeedUpdate</code> and update the whole buffer at once
+rather than make several segment updates in a row.</p>
+<p>The animations in the initial member data are used to compile the shader
+and <code>frameDataTexture</code>. If you add new animations after the initial
+compilation, the shader and texture will be rebuilt, which is expensive.</p>
+<p>Notes on textures:</p>
+<p>This layer gains much of its speed from inflexibility. It can only use one
+texture, and that texture must be a single image.
+It cannot use multi-atlas textures.</p>
+<p>Further, if the texture is not a power of two in size,
+some texture seaming may occur if you line up sprites exactly.
+This is because the GPU precision is limited by binary logic,
+and texture coordinates will only be perfectly accurate for power of two textures.
+This can be avoided by adding/extruding a pixel of padding around each frame
+in the texture, or by using a power of two texture.</p>
+<p>Which should you use?</p>
+<ul>
+<li>If you are using pixel art mode or round pixels,
+you should aim to use a power of two texture.</li>
+<li>If you are using smooth mode, you can use a non-power of two texture,
+but you should add padding around each frame to avoid seaming.</li>
+<li>If you are using a single image, or none of the frames in the texture
+need to tile, it doesn&#39;t matter.</li>
+</ul>
+<h2 id="members">Public members (100)</h2><p>Private, protected and explicitly internal declarations are excluded. Inherited members belong to the base type listed in the declaration.</p><h3 id="member-constructor-0">constructor <a class="anchor" href="#member-constructor-0">#</a></h3><pre class="code" data-lang="ts"><code>constructor(scene: Phaser.Scene, texture: Phaser.Textures.Texture, size: number);</code></pre><p><strong>param</strong>  scene The Scene to which this SpriteGPULayer belongs.
+<strong>param</strong>  texture The texture that will be used to render the SpriteGPULayer. This must be sourced from a single image; a multi atlas will not work.
+<strong>param</strong>  size The maximum number of quads that this SpriteGPULayer will hold. This can be increased later if necessary.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>scene</code></td><td><code>Phaser.Scene</code></td><td>Required</td></tr><tr><td><code>texture</code></td><td><code>Phaser.Textures.Texture</code></td><td>Required</td></tr><tr><td><code>size</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><h3 id="member-membercount-1">memberCount <a class="anchor" href="#member-membercount-1">#</a></h3><pre class="code" data-lang="ts"><code>memberCount: number;</code></pre><p>The number of quad members in the SpriteGPULayer.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-size-2">size <a class="anchor" href="#member-size-2">#</a></h3><pre class="code" data-lang="ts"><code>readonly size: number;</code></pre><p>The maximum number of quad members that can be in the SpriteGPULayer.
+This value is read-only. Change buffer size with <code>resize</code>.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-max-buffer-update-segments-full-3">MAX_BUFFER_UPDATE_SEGMENTS_FULL <a class="anchor" href="#member-max-buffer-update-segments-full-3">#</a></h3><pre class="code" data-lang="ts"><code>readonly MAX_BUFFER_UPDATE_SEGMENTS_FULL: number;</code></pre><p>The state of <code>bufferUpdateSegments</code> when it&#39;s full.
+This is a constant value and should not be altered.
+If you do, all hell will break loose.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-bufferupdatesegments-4">bufferUpdateSegments <a class="anchor" href="#member-bufferupdatesegments-4">#</a></h3><pre class="code" data-lang="ts"><code>bufferUpdateSegments: number;</code></pre><p>Which segments of the buffer require updates.
+This is a bitfield with segments equal to <code>_segments</code>.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-bufferupdatesegmentsize-5">bufferUpdateSegmentSize <a class="anchor" href="#member-bufferupdatesegmentsize-5">#</a></h3><pre class="code" data-lang="ts"><code>bufferUpdateSegmentSize: number;</code></pre><p>The size of each segment of the buffer that requires updates.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-gravity-6">gravity <a class="anchor" href="#member-gravity-6">#</a></h3><pre class="code" data-lang="ts"><code>gravity: number;</code></pre><p>The gravity used by member animations in &#39;Gravity&#39; mode.
+This is the acceleration in pixels per second squared.
+The default is 1024 pixels per second squared.</p>
+<p>Any animation can be set to <code>ease: &#39;Gravity&#39;</code> to use this value.
+Instead of <code>amplitude</code>, the animation takes
+<code>velocity</code> (a number of pixels) and
+<code>gravityFactor</code> (-1 to 1) parameters.
+Note that a <code>gravityFactor</code> of 0 is assumed to be a mistake,
+and will be converted to 1.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-ease-7">EASE <a class="anchor" href="#member-ease-7">#</a></h3><pre class="code" data-lang="ts"><code>readonly EASE: object;</code></pre><p>Strings for valid easing functions that can be assigned to
+the <code>ease</code> property of an SpriteGPULayerMemberAnimation.
+This is the reverse mapping of <code>this.EASE_CODES</code>.</p>
+<p><b>Type / return:</b> <code>object</code></p><h3 id="member-ease-codes-8">EASE_CODES <a class="anchor" href="#member-ease-codes-8">#</a></h3><pre class="code" data-lang="ts"><code>readonly EASE_CODES: object;</code></pre><p>Codes for valid easing functions that can be assigned to
+the <code>ease</code> property of an SpriteGPULayerMemberAnimation.
+This is the reverse mapping of <code>this.EASE</code>.</p>
+<p><b>Type / return:</b> <code>object</code></p><h3 id="member-framedatatexture-9">frameDataTexture <a class="anchor" href="#member-framedatatexture-9">#</a></h3><pre class="code" data-lang="ts"><code>frameDataTexture: Phaser.Renderer.WebGL.Wrappers.WebGLTextureWrapper;</code></pre><p>A texture containing the frame data for the SpriteGPULayer.
+This is used by the vertex shader.</p>
+<p>The texture is composed of pixel strides, where each stride
+is interpreted as 6 16-bit unsigned integers,
+representing the x, y, width, height, and origin x and y of a frame.
+The texture will be up to 4096 pixels wide and as tall as necessary.</p>
+<p>There are two sets of data in the texture: frames and animations.
+Frames are taken from the <code>texture</code>.
+Animations are defined by calling <code>setAnimations</code>,
+and consist of runs of frames suited to shader animation.
+Although the texture will be regenerated by <code>setAnimations</code>,
+the frames are stored first, so their indices won&#39;t change.</p>
+<p>If you change the <code>texture</code> of this layer, you will need to
+regenerate this by calling <code>generateFrameDataTexture</code>.</p>
+<p><b>Type / return:</b> <code>Phaser.Renderer.WebGL.Wrappers.WebGLTextureWrapper</code></p><h3 id="member-framedataindices-10">frameDataIndices <a class="anchor" href="#member-framedataindices-10">#</a></h3><pre class="code" data-lang="ts"><code>frameDataIndices: object;</code></pre><p>A map of frame names to indices in the frame data texture.
+This is used to convert frame names to indices for the vertex shader.</p>
+<p><b>Type / return:</b> <code>object</code></p><h3 id="member-framedataindicesinv-11">frameDataIndicesInv <a class="anchor" href="#member-framedataindicesinv-11">#</a></h3><pre class="code" data-lang="ts"><code>frameDataIndicesInv: object;</code></pre><p>A map of indices to frame names in the frame data texture.
+This is used to convert frame indices back to names for debugging.</p>
+<p><b>Type / return:</b> <code>object</code></p><h3 id="member-animationdata-12">animationData <a class="anchor" href="#member-animationdata-12">#</a></h3><pre class="code" data-lang="ts"><code>animationData: object[];</code></pre><p>An ordered list of animations in the frame data texture.</p>
+<p><b>Type / return:</b> <code>object[]</code></p><h3 id="member-animationdatanames-13">animationDataNames <a class="anchor" href="#member-animationdatanames-13">#</a></h3><pre class="code" data-lang="ts"><code>animationDataNames: object;</code></pre><p>A map of animation names to animation parameters in
+the frame data texture.
+This is used to convert animation names to indices and durations
+for the vertex shader.</p>
+<p><b>Type / return:</b> <code>object</code></p><h3 id="member-animationdataindices-14">animationDataIndices <a class="anchor" href="#member-animationdataindices-14">#</a></h3><pre class="code" data-lang="ts"><code>animationDataIndices: object;</code></pre><p>A map of frame indices to animation parameters in
+the frame data texture.
+These are the starting frame indices used by the vertex shader.
+They can be used to map back to names in <code>animationDataIndices</code>.</p>
+<p><b>Type / return:</b> <code>object</code></p><h3 id="member-submitternode-15">submitterNode <a class="anchor" href="#member-submitternode-15">#</a></h3><pre class="code" data-lang="ts"><code>submitterNode: Phaser.Renderer.WebGL.RenderNodes.SubmitterSpriteGPULayer;</code></pre><p>The SubmitterSpriteGPULayer RenderNode for this SpriteGPULayer.</p>
+<p>This handles rendering the SpriteGPULayer to the GPU.
+It is created automatically when the SpriteGPULayer is initialized.
+Most RenderNodes are singletons stored in the RenderNodeManager,
+but because this one holds very specific data,
+it is stored in the SpriteGPULayer itself.</p>
+<p><b>Type / return:</b> <code>Phaser.Renderer.WebGL.RenderNodes.SubmitterSpriteGPULayer</code></p><h3 id="member-nextmember-16">nextMember <a class="anchor" href="#member-nextmember-16">#</a></h3><pre class="code" data-lang="ts"><code>nextMember: ArrayBuffer;</code></pre><p>The next member buffer, used to store member data
+before it is added to the GPU buffer.</p>
+<p><b>Type / return:</b> <code>ArrayBuffer</code></p><h3 id="member-nextmemberf32-17">nextMemberF32 <a class="anchor" href="#member-nextmemberf32-17">#</a></h3><pre class="code" data-lang="ts"><code>nextMemberF32: Float32Array;</code></pre><p>A Float32Array view of the next member buffer.</p>
+<p><b>Type / return:</b> <code>Float32Array</code></p><h3 id="member-nextmemberu32-18">nextMemberU32 <a class="anchor" href="#member-nextmemberu32-18">#</a></h3><pre class="code" data-lang="ts"><code>nextMemberU32: Uint32Array;</code></pre><p>A Uint32Array view of the next member buffer.
+This is used to write 32-bit integer data to the buffer.
+It is used for color data.</p>
+<p><b>Type / return:</b> <code>Uint32Array</code></p><h3 id="member-addedtoscene-19">addedToScene <a class="anchor" href="#member-addedtoscene-19">#</a></h3><pre class="code" data-lang="ts"><code>addedToScene(): void;</code></pre><p>Called when this SpriteGPULayer is added to a Scene.
+Registers it with the Scene&#39;s update list so it receives <code>preUpdate</code> calls each frame.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="member-removedfromscene-20">removedFromScene <a class="anchor" href="#member-removedfromscene-20">#</a></h3><pre class="code" data-lang="ts"><code>removedFromScene(): void;</code></pre><p>Called when this SpriteGPULayer is removed from a Scene.
+Deregisters it from the Scene&#39;s update list so it no longer receives <code>preUpdate</code> calls.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="member-preupdate-21">preUpdate <a class="anchor" href="#member-preupdate-21">#</a></h3><pre class="code" data-lang="ts"><code>preUpdate(time: number, delta: number): void;</code></pre><p>The update step for this SpriteGPULayer, called each frame by the Scene.
+Advances the internal elapsed timer used for member animations.
+<strong>param</strong>  time The current timestamp, as generated by the Request Animation Frame or SetTimeout.
+<strong>param</strong>  delta The delta time, in milliseconds, elapsed since the last frame.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>time</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>delta</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-getdatabytesize-22">getDataByteSize <a class="anchor" href="#member-getdatabytesize-22">#</a></h3><pre class="code" data-lang="ts"><code>getDataByteSize(): number;</code></pre><p>Get the number of bytes used to define a member.
+If you are directly editing the buffer, you will need this value
+as a &#39;stride&#39; to move through the buffer.undefined
+<strong>returns</strong>  The number of bytes used for each member.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-getshaderfeatures-23">getShaderFeatures <a class="anchor" href="#member-getshaderfeatures-23">#</a></h3><pre class="code" data-lang="ts"><code>getShaderFeatures(): string[];</code></pre><p>Return a list of features to enable in the shader program.
+This is used when the shader program is compiled.undefined
+<strong>returns</strong>  An array of features to enable in the shader program.</p>
+<p><b>Type / return:</b> <code>string[]</code></p><h3 id="member-setanimations-24">setAnimations <a class="anchor" href="#member-setanimations-24">#</a></h3><pre class="code" data-lang="ts"><code>setAnimations(animations: Phaser.Animations.Animation[] | Phaser.Types.GameObjects.SpriteGPULayer.SetAnimation[]): this;</code></pre><p>Set the animations available to the SpriteGPULayer.
+This will call <code>generateFrameDataTexture</code> to regenerate
+<code>frameDataTexture</code>.</p>
+<p>Each animation can be either an Animation object, or an object
+containing a name, duration, and an array of frame names/numbers.
+If an Animation is used, it will be converted to the object form,
+discarding any custom individual frame durations
+and using the animation&#39;s duration as default.</p>
+<p>This is not a Phaser Animation. It is intended to cycle automatically
+on the GPU without supervision or interaction. It will not emit events,
+allow you to pause the animation, set number of repeats, etc.
+<strong>param</strong>  animations An array of animations to set.
+<strong>returns</strong>  This SpriteGPULayer object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>animations</code></td><td><code>Phaser.Animations.Animation[] | Phaser.Types.GameObjects.SpriteGPULayer.SetAnimation[]</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-generateframedatatexture-25">generateFrameDataTexture <a class="anchor" href="#member-generateframedatatexture-25">#</a></h3><pre class="code" data-lang="ts"><code>generateFrameDataTexture(): void;</code></pre><p>Generate <code>frameDataTexture</code> for the SpriteGPULayer.
+This is used by the vertex shader to access frame data.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="member-resize-26">resize <a class="anchor" href="#member-resize-26">#</a></h3><pre class="code" data-lang="ts"><code>resize(count: number, clear?: boolean): this;</code></pre><p>Resizes the SpriteGPULayer buffer to a new size.
+Optionally, clears the buffer.</p>
+<p>This is an expensive operation, as it requires the whole buffer to be updated.
+It can take many frames to complete.
+<strong>param</strong>  count The new number of members in the SpriteGPULayer.
+<strong>param</strong>  clear Whether to clear the buffer. Default false.
+<strong>returns</strong>  This SpriteGPULayer object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>count</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>clear</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setsegmentneedsupdate-27">setSegmentNeedsUpdate <a class="anchor" href="#member-setsegmentneedsupdate-27">#</a></h3><pre class="code" data-lang="ts"><code>setSegmentNeedsUpdate(index: number): void;</code></pre><p>Sets a segment of the buffer to require an update.
+<strong>param</strong>  index The index at which an update occurred, which requires the segment to be updated.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>index</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-setallsegmentsneedupdate-28">setAllSegmentsNeedUpdate <a class="anchor" href="#member-setallsegmentsneedupdate-28">#</a></h3><pre class="code" data-lang="ts"><code>setAllSegmentsNeedUpdate(): void;</code></pre><p>Sets all segments of the buffer to require an update.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="member-clearallsegmentsneedupdate-29">clearAllSegmentsNeedUpdate <a class="anchor" href="#member-clearallsegmentsneedupdate-29">#</a></h3><pre class="code" data-lang="ts"><code>clearAllSegmentsNeedUpdate(): void;</code></pre><p>Clears all segments of the buffer that require an update.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="member-adddata-30">addData <a class="anchor" href="#member-adddata-30">#</a></h3><pre class="code" data-lang="ts"><code>addData(member: Float32Array): this;</code></pre><p>Adds data to the SpriteGPULayer buffer.
+It is inserted at the end of the buffer.</p>
+<p>This is mostly used internally by the SpriteGPULayer.
+It takes raw data as a buffer, which is very efficient,
+but <code>addMember</code> is easier to use.</p>
+<p>Note that, if you add a member with an animation,
+the animation must either already be enabled,
+or you must enable it with <code>setAnimationEnabled</code>,
+e.g. <code>layer.setAnimationEnabled(&#39;Linear&#39;, true)</code> or
+<code>layer.setAnimationEnabled(layer.EASE_CODES[layer.EASE.Linear], true)</code>.</p>
+<p>This is a buffer modification, and is expensive.
+<strong>param</strong>  member The raw data to add to the buffer.
+<strong>returns</strong>  This SpriteGPULayer object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>member</code></td><td><code>Float32Array</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-addmember-31">addMember <a class="anchor" href="#member-addmember-31">#</a></h3><pre class="code" data-lang="ts"><code>addMember(member?: Partial&lt;Phaser.Types.GameObjects.SpriteGPULayer.Member&gt;): this;</code></pre><p>Adds a member to the SpriteGPULayer.
+This is the easiest way to add a member to the SpriteGPULayer.</p>
+<p>This is a buffer modification, and is expensive.
+<strong>param</strong>  member The member to add to the SpriteGPULayer.
+<strong>returns</strong>  This SpriteGPULayer object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>member</code></td><td><code>Partial&lt;Phaser.Types.GameObjects.SpriteGPULayer.Member&gt;</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-editmember-32">editMember <a class="anchor" href="#member-editmember-32">#</a></h3><pre class="code" data-lang="ts"><code>editMember(index: number, member: Partial&lt;Phaser.Types.GameObjects.SpriteGPULayer.Member&gt;): this;</code></pre><p>Edits a member of the SpriteGPULayer.
+This will update the member&#39;s data in the GPU buffer.
+Only the buffer segment containing the target member will be marked for update,
+making this less expensive than a full buffer update.
+<strong>param</strong>  index The index of the member to edit.
+<strong>param</strong>  member The new member data.
+<strong>returns</strong>  This SpriteGPULayer object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>index</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>member</code></td><td><code>Partial&lt;Phaser.Types.GameObjects.SpriteGPULayer.Member&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-patchmember-33">patchMember <a class="anchor" href="#member-patchmember-33">#</a></h3><pre class="code" data-lang="ts"><code>patchMember(index: number, member: Uint32Array, mask?: number[]): void;</code></pre><p>Update a member of the SpriteGPULayer with raw data.
+This will update the member&#39;s data in the GPU buffer.
+Only the buffer segment containing the target member will be marked for update,
+making this less expensive than a full buffer update.</p>
+<p>You can supply a mask to control which properties are updated.
+This can be useful for updating only a subset of properties.
+Try using <code>getMemberData</code> to copy an existing member&#39;s data,
+then modify the data you want to change.</p>
+<p>The data must be passed in as an Uint32Array.
+This will preserve data that other TypedArrays would not.
+As it uses an underlying ArrayBuffer, you can work on the data
+with any TypedArray view before submitting it.
+<strong>param</strong>  index The index of the member to patch.
+<strong>param</strong>  member The new member data.
+<strong>param</strong>  mask The mask to apply to the member data. A value of 1 will update the member data, a value of 0 will keep the existing member data.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>index</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>member</code></td><td><code>Uint32Array</code></td><td>Required</td></tr><tr><td><code>mask</code></td><td><code>number[]</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-getmember-34">getMember <a class="anchor" href="#member-getmember-34">#</a></h3><pre class="code" data-lang="ts"><code>getMember(index: number): Phaser.Types.GameObjects.SpriteGPULayer.Member | null;</code></pre><p>Returns a member of the SpriteGPULayer.</p>
+<p>This returns an object copied from the buffer.
+Editing it will not change anything in the SpriteGPULayer.
+The object will be functionally identical to the data used to
+create the buffer, but some values may be different.</p>
+<ul>
+<li>Properties that support animation, but have no amplitude or duration or have easing &#39;None&#39; (0), will be presented as numbers.</li>
+<li>Animation easing values will be presented as numbers (the values
+in <code>this.EASE</code>).</li>
+<li>Animation delay values will be normalized to the duration,
+e.g. a delay of 150 with a duration of 100 will return 50.</li>
+<li>Some rounding may occur due to floating point precision.
+<strong>param</strong>  index The index of the member to get.
+<strong>returns</strong>  The member data, or null if the index is out of bounds.</li>
+</ul>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>index</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Types.GameObjects.SpriteGPULayer.Member | null</code></p><h3 id="member-getmemberdata-35">getMemberData <a class="anchor" href="#member-getmemberdata-35">#</a></h3><pre class="code" data-lang="ts"><code>getMemberData(index: number, out?: Uint32Array): Uint32Array | null;</code></pre><p>Returns the raw data of a member of the SpriteGPULayer.
+This can be useful as the base of efficient editing operations,
+including calls to <code>addData</code> and <code>patchMember</code>,
+so no data has to be converted.</p>
+<p>This returns an Uint32Array copied from the buffer.
+Editing it will not change anything in the SpriteGPULayer.
+The array will be functionally identical to the data used to
+create the buffer.</p>
+<p>By default, the data is copied into <code>this.nextMember</code>.
+You can use the views <code>this.nextMemberF32</code> and <code>this.nextMemberU32</code>
+to access the data in different formats.
+If you provide an <code>out</code> parameter, the data will be copied to that array,
+and you must construct your own views.</p>
+<p>The primary data view is a 42-element array of 32-bit floats.
+Some values are grouped to form animations, of the form:</p>
+<ul>
+<li>0: base value</li>
+<li>1: amplitude</li>
+<li>2: duration (if negative, the animation will yoyo)</li>
+<li>3: delay (the integer part is the easing, the decimal part is the delay divided by 2 * duration; if negative, the animation will not loop)</li>
+</ul>
+<p>The overall structure is thus:</p>
+<ul>
+<li>0-3: x (animation)</li>
+<li>4-7: y (animation)</li>
+<li>8-11: rotation (animation)</li>
+<li>12-15: scaleX (animation)</li>
+<li>16-19: scaleY (animation)</li>
+<li>20-23: alpha (animation)</li>
+<li>24-27: frame index (animation)</li>
+<li>28-31: tintBlend (animation)</li>
+<li>32-35: no data</li>
+<li>36: originX</li>
+<li>37: originY</li>
+<li>38: tintMode</li>
+<li>39: creationTime</li>
+<li>40: scrollFactorX</li>
+<li>41: scrollFactorY</li>
+</ul>
+<p>Elements 32-35 are only visible in the Uint32Array view.
+They store 32-bit RGBA values for the four corners of the tint:</p>
+<ul>
+<li>32: bottom-left</li>
+<li>33: top-left</li>
+<li>34: bottom-right</li>
+<li>35: top-right</li>
+</ul>
+<p>If the ease for an animation is &#39;Gravity&#39;, the amplitude is replaced
+with a two-part value: the integer part is the <code>velocity</code>,
+and the fractional part is the remapped <code>gravityFactor</code>.
+To get the true <code>gravityFactor</code>, use <code>gravityFactor * 2 - 1</code> to map from [0,1] to [-1,1].
+An output <code>gravityFactor</code> of 0 actually means 1.
+<strong>param</strong>  index The index of the member to get.
+<strong>param</strong>  out An optional array to copy the data to. If not provided, <code>this.nextMember</code> will be populated, and <code>nextMemberU32</code> will be returned.
+<strong>returns</strong>  The member data, or null if the index is out of bounds.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>index</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>out</code></td><td><code>Uint32Array</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Uint32Array | null</code></p><h3 id="member-removemembers-36">removeMembers <a class="anchor" href="#member-removemembers-36">#</a></h3><pre class="code" data-lang="ts"><code>removeMembers(index: number, count?: number): this;</code></pre><p>Removes a member or a number of members from the SpriteGPULayer.
+This will update the GPU buffer.
+This is an expensive operation, as it requires the whole buffer to be updated.</p>
+<p>The buffer is not resized.
+<strong>param</strong>  index The index of the member to remove.
+<strong>param</strong>  count The number of members to remove, default 1. Default 1.
+<strong>returns</strong>  This SpriteGPULayer object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>index</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>count</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-insertmembers-37">insertMembers <a class="anchor" href="#member-insertmembers-37">#</a></h3><pre class="code" data-lang="ts"><code>insertMembers(index: number, members: Phaser.Types.GameObjects.SpriteGPULayer.Member | Phaser.Types.GameObjects.SpriteGPULayer.Member[]): this;</code></pre><p>Inserts members into the SpriteGPULayer.
+This will update the GPU buffer.
+This is an expensive operation, as it requires the whole buffer to be
+updated after the insertion point.
+<strong>param</strong>  index The index at which to insert members.
+<strong>param</strong>  members The members to insert.
+<strong>returns</strong>  This SpriteGPULayer object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>index</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>members</code></td><td><code>Phaser.Types.GameObjects.SpriteGPULayer.Member | Phaser.Types.GameObjects.SpriteGPULayer.Member[]</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-insertmembersdata-38">insertMembersData <a class="anchor" href="#member-insertmembersdata-38">#</a></h3><pre class="code" data-lang="ts"><code>insertMembersData(index: number, data: Uint32Array): this;</code></pre><p>Inserts raw data into the SpriteGPULayer.
+This will update the GPU buffer.
+This is an expensive operation, as it requires the whole buffer to be
+updated after the insertion point.</p>
+<p>The data must be passed in as a Uint32Array.
+This will preserve data that other TypedArrays would not.
+As it uses an underlying ArrayBuffer, you can work on the data
+with any TypedArray view before submitting it.</p>
+<p>The buffer can contain 1 or more members.
+Ensure that the buffer is the correct size for the number of members.
+See <code>getMemberData</code> for the structure of the data.</p>
+<p>Note that, if you add a member with an animation,
+the animation must either already be enabled,
+or you must enable it with <code>setAnimationEnabled</code>,
+e.g. <code>layer.setAnimationEnabled(&#39;Linear&#39;, true)</code> or
+<code>layer.setAnimationEnabled(layer.EASE_CODES[layer.EASE.Linear], true)</code>.
+<strong>param</strong>  index The index at which to insert members.
+<strong>param</strong>  data The members to insert.
+<strong>returns</strong>  This SpriteGPULayer object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>index</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>data</code></td><td><code>Uint32Array</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setanimationenabled-39">setAnimationEnabled <a class="anchor" href="#member-setanimationenabled-39">#</a></h3><pre class="code" data-lang="ts"><code>setAnimationEnabled(name: string, enabled: boolean): this;</code></pre><p>Set the enabled state of an animation.
+This will enable or disable the animation in the shader program.
+This method is called automatically when animations are added with
+<code>addMember</code>, so you should not need to call it manually.</p>
+<p>Every enabled animation has a cost in the shader program.
+In particular, low-end devices may be unable to compile a large number
+of animations, so be careful when enabling many animations.</p>
+<p>Note that animations are not disabled automatically,
+even if they are not used by any members.
+There are probably too many members for this to be efficient.
+<strong>param</strong>  name The name of the animation to enable or disable.
+<strong>param</strong>  enabled Whether to enable or disable the animation.
+<strong>returns</strong>  This SpriteGPULayer object</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>name</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>enabled</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-filtercamera-40">filterCamera <a class="anchor" href="#member-filtercamera-40">#</a></h3><pre class="code" data-lang="ts"><code>filterCamera: Phaser.Cameras.Scene2D.Camera;</code></pre><p>The Camera used for filters.
+You can use this to alter the perspective of filters.
+It is not necessary to use this camera for ordinary rendering.</p>
+<p>This is only available if you use the <code>enableFilters</code> method.</p>
+<p><b>Type / return:</b> <code>Phaser.Cameras.Scene2D.Camera</code></p><h3 id="member-filters-41">filters <a class="anchor" href="#member-filters-41">#</a></h3><pre class="code" data-lang="ts"><code>readonly filters: Phaser.Types.GameObjects.FiltersInternalExternal | null;</code></pre><p>The filter lists for this Game Object.
+This is an object with <code>internal</code> and <code>external</code> properties.
+Each list is a Phaser.GameObjects.Components.FilterList object.</p>
+<p>This is only available if you use the <code>enableFilters</code> method.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.FiltersInternalExternal | null</code></p><h3 id="member-renderfilters-42">renderFilters <a class="anchor" href="#member-renderfilters-42">#</a></h3><pre class="code" data-lang="ts"><code>renderFilters: boolean;</code></pre><p>Whether any filters should be rendered on this Game Object.
+This is <code>true</code> by default, even if there are no filters yet.
+Disable this to skip filter rendering.</p>
+<p>Use <code>willRenderFilters()</code> to see if there are any active filters.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-maxfiltersize-43">maxFilterSize <a class="anchor" href="#member-maxfiltersize-43">#</a></h3><pre class="code" data-lang="ts"><code>maxFilterSize: Phaser.Math.Vector2;</code></pre><p>The maximum size of the base filter texture.
+Filters may use a larger texture after the base texture is rendered.
+The maximum texture size is at least 4096 in WebGL, based on the hardware.
+You may set this lower to save memory or prevent resizing.</p>
+<p><b>Type / return:</b> <code>Phaser.Math.Vector2</code></p><h3 id="member-filtersautofocus-44">filtersAutoFocus <a class="anchor" href="#member-filtersautofocus-44">#</a></h3><pre class="code" data-lang="ts"><code>filtersAutoFocus: boolean;</code></pre><p>Whether <code>filterCamera</code> should update every frame
+to focus on the Game Object.
+Disable this if you want to manually control the camera.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-filtersfocuscontext-45">filtersFocusContext <a class="anchor" href="#member-filtersfocuscontext-45">#</a></h3><pre class="code" data-lang="ts"><code>filtersFocusContext: boolean;</code></pre><p>Whether the filters should focus on the context,
+rather than attempt to focus on the Game Object.
+This is enabled automatically when enabling filters on objects
+which don&#39;t have well-defined bounds.</p>
+<p>This effectively sets the internal filters to render the same way
+as the external filters.</p>
+<p>This is only used if <code>filtersAutoFocus</code> is enabled.</p>
+<p>The &quot;context&quot; is the framebuffer to which the Game Object is rendered.
+This is usually the main framebuffer, but might be another framebuffer.
+It can even be several different framebuffers if the Game Object is
+rendered multiple times.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-filtersforcecomposite-46">filtersForceComposite <a class="anchor" href="#member-filtersforcecomposite-46">#</a></h3><pre class="code" data-lang="ts"><code>filtersForceComposite: boolean;</code></pre><p>Whether the Filters component should always draw to a framebuffer,
+even if there are no active filters.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-willrenderfilters-47">willRenderFilters <a class="anchor" href="#member-willrenderfilters-47">#</a></h3><pre class="code" data-lang="ts"><code>willRenderFilters(): boolean;</code></pre><p>Whether this Game Object will render filters.
+This is true if it has active filters,
+and if the <code>renderFilters</code> property is also true.undefined
+<strong>returns</strong>  Whether the Game Object will render filters.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-enablefilters-48">enableFilters <a class="anchor" href="#member-enablefilters-48">#</a></h3><pre class="code" data-lang="ts"><code>enableFilters(): this;</code></pre><p>Enable this Game Object to have filters.</p>
+<p>You need to call this method if you want to use the <code>filterCamera</code>
+and <code>filters</code> properties. It sets up the necessary data structures.
+You may disable filter rendering with the <code>renderFilters</code> property.</p>
+<p>This is a WebGL only feature. It will return early if not available.undefined
+<strong>returns</strong>  undefined</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-renderwebglfilters-49">renderWebGLFilters <a class="anchor" href="#member-renderwebglfilters-49">#</a></h3><pre class="code" data-lang="ts"><code>renderWebGLFilters(renderer: Phaser.Renderer.WebGL.WebGLRenderer, gameObject: Phaser.GameObjects.GameObject, drawingContext: Phaser.Renderer.WebGL.DrawingContext, parentMatrix?: Phaser.GameObjects.Components.TransformMatrix, renderStep?: number): Phaser.Types.GameObjects.RenderWebGLStep;</code></pre><p>Render this object using filters.</p>
+<p>This function&#39;s scope is not guaranteed, so it doesn&#39;t refer to <code>this</code>.
+<strong>param</strong>  renderer The WebGL Renderer instance to render with.
+<strong>param</strong>  gameObject The Game Object being rendered.
+<strong>param</strong>  drawingContext The current drawing context.
+<strong>param</strong>  parentMatrix The parent matrix of the Game Object, if it has one.
+<strong>param</strong>  renderStep The index of this function in the Game Object&#39;s list of render processes. Used to support multiple rendering functions. Default 0.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>renderer</code></td><td><code>Phaser.Renderer.WebGL.WebGLRenderer</code></td><td>Required</td></tr><tr><td><code>gameObject</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr><tr><td><code>drawingContext</code></td><td><code>Phaser.Renderer.WebGL.DrawingContext</code></td><td>Required</td></tr><tr><td><code>parentMatrix</code></td><td><code>Phaser.GameObjects.Components.TransformMatrix</code></td><td>Optional</td></tr><tr><td><code>renderStep</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Types.GameObjects.RenderWebGLStep</code></p><h3 id="member-focusfilters-50">focusFilters <a class="anchor" href="#member-focusfilters-50">#</a></h3><pre class="code" data-lang="ts"><code>focusFilters(): this;</code></pre><p>Focus the filter camera.
+This sets the size and position of the filter camera to match the GameObject.
+This is called automatically on render if <code>filtersAutoFocus</code> is enabled.</p>
+<p>This will focus on the GameObject&#39;s raw dimensions if available.
+If the GameObject has no dimensions, this will focus on the context:
+the camera belonging to the DrawingContext used to render the GameObject.
+Context focus occurs during rendering,
+as the context is not known until then.undefined
+<strong>returns</strong>  undefined</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-focusfiltersoncamera-51">focusFiltersOnCamera <a class="anchor" href="#member-focusfiltersoncamera-51">#</a></h3><pre class="code" data-lang="ts"><code>focusFiltersOnCamera(camera: Phaser.Cameras.Scene2D.Camera): this;</code></pre><p>Focus the filter camera on a specific camera.
+This is used internally when <code>filtersFocusContext</code> is enabled.
+<strong>param</strong>  camera The camera to focus on.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>camera</code></td><td><code>Phaser.Cameras.Scene2D.Camera</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-focusfiltersoverride-52">focusFiltersOverride <a class="anchor" href="#member-focusfiltersoverride-52">#</a></h3><pre class="code" data-lang="ts"><code>focusFiltersOverride(x?: number, y?: number, width?: number, height?: number): this;</code></pre><p>Manually override the focus of the filter camera.
+This allows you to set the size and position of the filter camera manually.
+It deactivates <code>filtersAutoFocus</code> when called.</p>
+<p>The camera will set scroll to place the game object at the
+given position within a rectangle of the given width and height.
+For example, calling <code>focusFiltersOverride(400, 200, 800, 600)</code>
+will focus the camera to place the object&#39;s center
+100 pixels above the center of the camera (which is at 400x300).
+<strong>param</strong>  x The x-coordinate of the focus point, relative to the filter size. Default is the center.
+<strong>param</strong>  y The y-coordinate of the focus point, relative to the filter size. Default is the center.
+<strong>param</strong>  width The width of the focus area. Default is the filter width.
+<strong>param</strong>  height The height of the focus area. Default is the filter height.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>width</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setfiltersize-53">setFilterSize <a class="anchor" href="#member-setfiltersize-53">#</a></h3><pre class="code" data-lang="ts"><code>setFilterSize(width: number, height: number): this;</code></pre><p>Set the base size of the filter camera.
+This is the size of the texture that internal filters will be drawn to.
+External filters are drawn to the size of the context (usually the game canvas).</p>
+<p>This is typically the size of the GameObject.
+It is set automatically when the Game Object is rendered
+and <code>filtersAutoFocus</code> is enabled.
+Turn off auto focus to set it manually.</p>
+<p>Technically, larger framebuffers may be used to provide padding.
+This is the size of the final framebuffer used for &quot;internal&quot; rendering.
+<strong>param</strong>  width Base width of the filter texture.
+<strong>param</strong>  height Base height of the filter texture.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>width</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setfiltersautofocus-54">setFiltersAutoFocus <a class="anchor" href="#member-setfiltersautofocus-54">#</a></h3><pre class="code" data-lang="ts"><code>setFiltersAutoFocus(value: boolean): this;</code></pre><p>Sets whether the filter camera should automatically re-focus on the Game Object every frame.
+Sets the <code>filtersAutoFocus</code> property.
+<strong>param</strong>  value Whether filters should be updated every frame.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setfiltersfocuscontext-55">setFiltersFocusContext <a class="anchor" href="#member-setfiltersfocuscontext-55">#</a></h3><pre class="code" data-lang="ts"><code>setFiltersFocusContext(value: boolean): this;</code></pre><p>Set whether the filters should focus on the context.
+Sets the <code>filtersFocusContext</code> property.
+<strong>param</strong>  value Whether the filters should focus on the context.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setfiltersforcecomposite-56">setFiltersForceComposite <a class="anchor" href="#member-setfiltersforcecomposite-56">#</a></h3><pre class="code" data-lang="ts"><code>setFiltersForceComposite(value: boolean): this;</code></pre><p>Set whether the filters should always draw to a framebuffer.
+Sets the <code>filtersForceComposite</code> property.
+<strong>param</strong>  value Whether the object should always draw to a framebuffer, even if there are no active filters.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setrenderfilters-57">setRenderFilters <a class="anchor" href="#member-setrenderfilters-57">#</a></h3><pre class="code" data-lang="ts"><code>setRenderFilters(value: boolean): this;</code></pre><p>Set whether the filters should be rendered.
+Sets the <code>renderFilters</code> property.
+<strong>param</strong>  value Whether the filters should be rendered.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-renderwebglstep-58">renderWebGLStep <a class="anchor" href="#member-renderwebglstep-58">#</a></h3><pre class="code" data-lang="ts"><code>renderWebGLStep(renderer: Phaser.Renderer.WebGL.WebGLRenderer, gameObject: Phaser.GameObjects.GameObject, drawingContext: Phaser.Renderer.WebGL.DrawingContext, parentMatrix?: Phaser.GameObjects.Components.TransformMatrix, renderStep?: number, displayList?: Phaser.GameObjects.GameObject[], displayListIndex?: number): void;</code></pre><p>Run a step in the render process.
+This is called automatically by the Render module.</p>
+<p>In most cases, it just runs the <code>renderWebGL</code> function.</p>
+<p>When <code>_renderSteps</code> has more than one entry,
+such as when Filters are enabled for this object,
+it allows those processes to defer <code>renderWebGL</code>
+and otherwise manage the flow of rendering.
+<strong>param</strong>  renderer The WebGL Renderer instance to render with.
+<strong>param</strong>  gameObject The Game Object being rendered.
+<strong>param</strong>  drawingContext The current drawing context.
+<strong>param</strong>  parentMatrix The parent matrix of the Game Object, if it has one.
+<strong>param</strong>  renderStep Which step of the rendering process should be run? Default 0.
+<strong>param</strong>  displayList The display list which is currently being rendered. If not provided, it will be created with the Game Object.
+<strong>param</strong>  displayListIndex The index of the Game Object within the display list. Default 0.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>renderer</code></td><td><code>Phaser.Renderer.WebGL.WebGLRenderer</code></td><td>Required</td></tr><tr><td><code>gameObject</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr><tr><td><code>drawingContext</code></td><td><code>Phaser.Renderer.WebGL.DrawingContext</code></td><td>Required</td></tr><tr><td><code>parentMatrix</code></td><td><code>Phaser.GameObjects.Components.TransformMatrix</code></td><td>Optional</td></tr><tr><td><code>renderStep</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>displayList</code></td><td><code>Phaser.GameObjects.GameObject[]</code></td><td>Optional</td></tr><tr><td><code>displayListIndex</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-addrenderstep-59">addRenderStep <a class="anchor" href="#member-addrenderstep-59">#</a></h3><pre class="code" data-lang="ts"><code>addRenderStep(fn: Phaser.Types.GameObjects.RenderWebGLStep, index?: number): this;</code></pre><p>Adds a render step function to this Game Object&#39;s WebGL render pipeline.</p>
+<p>The first render step in <code>_renderSteps</code> is run first.
+It should call the next render step in the list.
+This allows render steps to control the rendering flow.
+<strong>param</strong>  fn The render step function to add.
+<strong>param</strong>  index The index in the render list to add the step to. Omit to add to the end.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>fn</code></td><td><code>Phaser.Types.GameObjects.RenderWebGLStep</code></td><td>Required</td></tr><tr><td><code>index</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-clearalpha-60">clearAlpha <a class="anchor" href="#member-clearalpha-60">#</a></h3><pre class="code" data-lang="ts"><code>clearAlpha(): this;</code></pre><p>Clears all alpha values associated with this Game Object.</p>
+<p>Immediately sets the alpha levels back to 1 (fully opaque).undefined
+<strong>returns</strong>  This Game Object instance.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-setalpha-61">setAlpha <a class="anchor" href="#member-setalpha-61">#</a></h3><pre class="code" data-lang="ts"><code>setAlpha(topLeft?: number, topRight?: number, bottomLeft?: number, bottomRight?: number): this;</code></pre><p>Set the Alpha level of this Game Object. The alpha controls the opacity of the Game Object as it renders.
+Alpha values are provided as a float between 0, fully transparent, and 1, fully opaque.</p>
+<p>If your game is running under WebGL you can optionally specify four different alpha values, each of which
+correspond to the four corners of the Game Object. Under Canvas only the <code>topLeft</code> value given is used.
+<strong>param</strong>  topLeft The alpha value used for the top-left of the Game Object. If this is the only value given it&#39;s applied across the whole Game Object. Default 1.
+<strong>param</strong>  topRight The alpha value used for the top-right of the Game Object. WebGL only.
+<strong>param</strong>  bottomLeft The alpha value used for the bottom-left of the Game Object. WebGL only.
+<strong>param</strong>  bottomRight The alpha value used for the bottom-right of the Game Object. WebGL only.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>topLeft</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>topRight</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>bottomLeft</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>bottomRight</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-alpha-62">alpha <a class="anchor" href="#member-alpha-62">#</a></h3><pre class="code" data-lang="ts"><code>alpha: number;</code></pre><p>The alpha value of the Game Object, between 0 (fully transparent) and 1 (fully opaque).</p>
+<p>This is a global value that impacts the entire Game Object. Setting it also updates
+all four corner alpha values (<code>alphaTopLeft</code>, <code>alphaTopRight</code>, <code>alphaBottomLeft</code>,
+<code>alphaBottomRight</code>) to the same value. The input is clamped to the range [0, 1].</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-alphatopleft-63">alphaTopLeft <a class="anchor" href="#member-alphatopleft-63">#</a></h3><pre class="code" data-lang="ts"><code>alphaTopLeft: number;</code></pre><p>The alpha value starting from the top-left of the Game Object.
+This value is interpolated from the corner to the center of the Game Object.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-alphatopright-64">alphaTopRight <a class="anchor" href="#member-alphatopright-64">#</a></h3><pre class="code" data-lang="ts"><code>alphaTopRight: number;</code></pre><p>The alpha value starting from the top-right of the Game Object.
+This value is interpolated from the corner to the center of the Game Object.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-alphabottomleft-65">alphaBottomLeft <a class="anchor" href="#member-alphabottomleft-65">#</a></h3><pre class="code" data-lang="ts"><code>alphaBottomLeft: number;</code></pre><p>The alpha value starting from the bottom-left of the Game Object.
+This value is interpolated from the corner to the center of the Game Object.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-alphabottomright-66">alphaBottomRight <a class="anchor" href="#member-alphabottomright-66">#</a></h3><pre class="code" data-lang="ts"><code>alphaBottomRight: number;</code></pre><p>The alpha value starting from the bottom-right of the Game Object.
+This value is interpolated from the corner to the center of the Game Object.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-blendmode-67">blendMode <a class="anchor" href="#member-blendmode-67">#</a></h3><pre class="code" data-lang="ts"><code>blendMode: Phaser.BlendModes | string | number;</code></pre><p>Sets the Blend Mode being used by this Game Object.</p>
+<p>This can be a const, such as <code>Phaser.BlendModes.SCREEN</code>, or an integer, such as 4 (for Overlay)</p>
+<p>Under WebGL only the following Blend Modes are available:</p>
+<ul>
+<li>NORMAL</li>
+<li>ADD</li>
+<li>MULTIPLY</li>
+<li>SCREEN</li>
+<li>ERASE</li>
+</ul>
+<p>Canvas has more available depending on browser support.</p>
+<p>You can also create your own custom Blend Modes in WebGL.</p>
+<p>Blend modes have different effects under Canvas and WebGL, and from browser to browser, depending
+on support. Blend Modes also cause a WebGL batch flush should it encounter a new blend mode. For these
+reasons try to be careful about the construction of your Scene and the frequency with which blend modes
+are used.</p>
+<p><b>Type / return:</b> <code>Phaser.BlendModes | string | number</code></p><h3 id="member-setblendmode-68">setBlendMode <a class="anchor" href="#member-setblendmode-68">#</a></h3><pre class="code" data-lang="ts"><code>setBlendMode(value: string | Phaser.BlendModes | number): this;</code></pre><p>Sets the Blend Mode being used by this Game Object.</p>
+<p>This can be a const, such as <code>Phaser.BlendModes.SCREEN</code>, or an integer, such as 4 (for Overlay)</p>
+<p>Under WebGL only the following Blend Modes are available:</p>
+<ul>
+<li>NORMAL</li>
+<li>ADD</li>
+<li>MULTIPLY</li>
+<li>SCREEN</li>
+<li>ERASE (only works when rendering to a framebuffer, like a Render Texture)</li>
+</ul>
+<p>Canvas has more available depending on browser support.</p>
+<p>You can also create your own custom Blend Modes in WebGL.</p>
+<p>Blend modes have different effects under Canvas and WebGL, and from browser to browser, depending
+on support. Blend Modes also cause a WebGL batch flush should it encounter a new blend mode. For these
+reasons try to be careful about the construction of your Scene and the frequency with which blend modes
+are used.
+<strong>param</strong>  value The BlendMode value. Either a string, a CONST or a number.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>string | Phaser.BlendModes | number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-depth-69">depth <a class="anchor" href="#member-depth-69">#</a></h3><pre class="code" data-lang="ts"><code>depth: number;</code></pre><p>The depth of this Game Object within the Scene. Ensure this value is only ever set to a number data-type.</p>
+<p>The depth is also known as the &#39;z-index&#39; in some environments, and allows you to change the rendering order
+of Game Objects, without actually moving their position in the display list.</p>
+<p>The default depth is zero. A Game Object with a higher depth
+value will always render in front of one with a lower value.</p>
+<p>Setting the depth will queue a depth sort event within the Scene.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-setdepth-70">setDepth <a class="anchor" href="#member-setdepth-70">#</a></h3><pre class="code" data-lang="ts"><code>setDepth(value: number): this;</code></pre><p>Sets the depth of this Game Object. If the <code>value</code> argument is not provided, the depth defaults to <code>0</code>.</p>
+<p>The depth is also known as the &#39;z-index&#39; in some environments, and allows you to change the rendering order
+of Game Objects, without actually moving their position in the display list.</p>
+<p>A Game Object with a higher depth value will always render in front of one with a lower value.</p>
+<p>Setting the depth will queue a depth sort event within the Scene.
+<strong>param</strong>  value The depth of this Game Object. Ensure this value is only ever a number data-type.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-settotop-71">setToTop <a class="anchor" href="#member-settotop-71">#</a></h3><pre class="code" data-lang="ts"><code>setToTop(): this;</code></pre><p>Sets this Game Object to be at the top of the display list, or the top of its parent container.</p>
+<p>Being at the top means it will render on top of everything else.</p>
+<p>This method does not change this Game Objects <code>depth</code> value, it simply alters its list position.undefined
+<strong>returns</strong>  This Game Object instance.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-settoback-72">setToBack <a class="anchor" href="#member-settoback-72">#</a></h3><pre class="code" data-lang="ts"><code>setToBack(): this;</code></pre><p>Sets this Game Object to the back of the display list, or the back of its parent container.</p>
+<p>Being at the back means it will render below everything else.</p>
+<p>This method does not change this Game Objects <code>depth</code> value, it simply alters its list position.undefined
+<strong>returns</strong>  This Game Object instance.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-setabove-73">setAbove <a class="anchor" href="#member-setabove-73">#</a></h3><pre class="code" data-lang="ts"><code>setAbove(gameObject: Phaser.GameObjects.GameObject): this;</code></pre><p>Move this Game Object so that it appears above the given Game Object.</p>
+<p>This means it will render immediately after the other object in the display list.</p>
+<p>Both objects must belong to the same display list, or parent container.</p>
+<p>This method does not change this Game Objects <code>depth</code> value, it simply alters its list position.
+<strong>param</strong>  gameObject The Game Object that this Game Object will be moved to be above.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>gameObject</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setbelow-74">setBelow <a class="anchor" href="#member-setbelow-74">#</a></h3><pre class="code" data-lang="ts"><code>setBelow(gameObject: Phaser.GameObjects.GameObject): this;</code></pre><p>Move this Game Object so that it appears below the given Game Object.</p>
+<p>This means it will render immediately under the other object in the display list.</p>
+<p>Both objects must belong to the same display list, or parent container.</p>
+<p>This method does not change this Game Objects <code>depth</code> value, it simply alters its list position.
+<strong>param</strong>  gameObject The Game Object that this Game Object will be moved to be below.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>gameObject</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-timeelapsed-75">timeElapsed <a class="anchor" href="#member-timeelapsed-75">#</a></h3><pre class="code" data-lang="ts"><code>timeElapsed: number;</code></pre><p>The time elapsed since timer initialization, in milliseconds.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-timeelapsedresetperiod-76">timeElapsedResetPeriod <a class="anchor" href="#member-timeelapsedresetperiod-76">#</a></h3><pre class="code" data-lang="ts"><code>timeElapsedResetPeriod: number;</code></pre><p>The time after which <code>timeElapsed</code> will reset, in milliseconds.
+By default, this is 1 hour.
+If you use the timer for animations, you can set this to a period
+that matches the animation durations.</p>
+<p>This is necessary for the timer to avoid floating-point precision issues
+in shaders.
+A float32 can represent a few hours of milliseconds accurately,
+but the precision decreases as the value increases.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-timepaused-77">timePaused <a class="anchor" href="#member-timepaused-77">#</a></h3><pre class="code" data-lang="ts"><code>timePaused: boolean;</code></pre><p>Whether the elapse timer is paused.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-settimerresetperiod-78">setTimerResetPeriod <a class="anchor" href="#member-settimerresetperiod-78">#</a></h3><pre class="code" data-lang="ts"><code>setTimerResetPeriod(period: number): this;</code></pre><p>Set the reset period for the elapse timer for this game object.
+<strong>param</strong>  period The time after which <code>timeElapsed</code> will reset, in milliseconds.
+<strong>returns</strong>  This game object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>period</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-settimerpaused-79">setTimerPaused <a class="anchor" href="#member-settimerpaused-79">#</a></h3><pre class="code" data-lang="ts"><code>setTimerPaused(paused?: boolean): this;</code></pre><p>Pauses or resumes the elapse timer for this game object.
+<strong>param</strong>  paused Pause state (<code>true</code> to pause, <code>false</code> to unpause). If not specified, the timer will unpause.
+<strong>returns</strong>  This game object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>paused</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-resettimer-80">resetTimer <a class="anchor" href="#member-resettimer-80">#</a></h3><pre class="code" data-lang="ts"><code>resetTimer(ms?: number): this;</code></pre><p>Reset the elapse timer for this game object.
+<strong>param</strong>  ms The time to reset the timer to, in milliseconds. Default 0.
+<strong>returns</strong>  This game object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>ms</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-updatetimer-81">updateTimer <a class="anchor" href="#member-updatetimer-81">#</a></h3><pre class="code" data-lang="ts"><code>updateTimer(time: number, delta: number): this;</code></pre><p>Update the elapse timer for this game object.
+This should be called automatically by the preUpdate method.</p>
+<p>Override this method to create more advanced time management,
+or set it to a NOOP function to disable the timer update.
+If you want to control animations with a tween or input system,
+disabling the timer update could be useful.
+<strong>param</strong>  time The current time in milliseconds.
+<strong>param</strong>  delta The time since the last update, in milliseconds.
+<strong>returns</strong>  This game object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>time</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>delta</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-lighting-82">lighting <a class="anchor" href="#member-lighting-82">#</a></h3><pre class="code" data-lang="ts"><code>readonly lighting: boolean;</code></pre><p>Controls whether this Game Object participates in the WebGL lighting system.
+When <code>true</code>, the object will respond to dynamic lights added via the Lights plugin,
+using normal maps to calculate per-pixel diffuse lighting.</p>
+<p>This flag is used to select the appropriate WebGL shader at render time.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-selfshadow-83">selfShadow <a class="anchor" href="#member-selfshadow-83">#</a></h3><pre class="code" data-lang="ts"><code>selfShadow: Object;</code></pre><p>Configuration object controlling self-shadowing for this Game Object.
+Self-shadowing causes surfaces to cast contact shadows on themselves based on
+the normal map, giving the appearance of depth. It is only active when
+<code>lighting</code> is also enabled.</p>
+<p>If <code>enabled</code> is <code>null</code>, the value from the game config option <code>render.selfShadow</code>
+is used instead.</p>
+<p>This object is used to select and configure the appropriate WebGL shader at render time.</p>
+<p><b>Type / return:</b> <code>Object</code></p><h3 id="member-setlighting-84">setLighting <a class="anchor" href="#member-setlighting-84">#</a></h3><pre class="code" data-lang="ts"><code>setLighting(enable: boolean): this;</code></pre><p>Enables or disables WebGL-based per-pixel lighting for this Game Object.
+When enabled, the object will respond to dynamic lights added to the scene
+via the Lights plugin, using a normal map for lighting calculations.
+Disabling lighting restores the standard unlit rendering path.
+<strong>param</strong>  enable <code>true</code> to use lighting, or <code>false</code> to disable it.
+<strong>returns</strong>  This GameObject instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>enable</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setselfshadow-85">setSelfShadow <a class="anchor" href="#member-setselfshadow-85">#</a></h3><pre class="code" data-lang="ts"><code>setSelfShadow(enabled?: boolean | undefined, penumbra?: number, diffuseFlatThreshold?: number): this;</code></pre><p>Configures the self-shadowing properties of this Game Object.
+Self-shadowing uses the normal map to cast contact shadows on the surface itself,
+giving the impression of depth and raised detail. It is only active when
+<code>lighting</code> is also enabled on this Game Object.</p>
+<p>Parameters that are <code>undefined</code> are left unchanged, allowing partial updates.
+<strong>param</strong>  enabled <code>true</code> to use self-shadowing, <code>false</code> to disable it, <code>null</code> to use the game default from <code>config.render.selfShadow</code>, or <code>undefined</code> to keep the setting.
+<strong>param</strong>  penumbra The penumbra value for the shadow. Lower is sharper but more jagged. Default is 0.5.
+<strong>param</strong>  diffuseFlatThreshold The texture brightness threshold at which the diffuse lighting will be considered flat. Range is 0-1. Default is 1/3.
+<strong>returns</strong>  This GameObject instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>enabled</code></td><td><code>boolean | undefined</code></td><td>Optional</td></tr><tr><td><code>penumbra</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>diffuseFlatThreshold</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-customrendernodes-86">customRenderNodes <a class="anchor" href="#member-customrendernodes-86">#</a></h3><pre class="code" data-lang="ts"><code>customRenderNodes: object;</code></pre><p>Customized WebGL render nodes of this Game Object.
+RenderNodes are responsible for managing the rendering process of this Game Object.
+A default set of RenderNodes is coded into the engine,
+but the renderer will check this object first to see if a custom node has been set.</p>
+<p><b>Type / return:</b> <code>object</code></p><h3 id="member-defaultrendernodes-87">defaultRenderNodes <a class="anchor" href="#member-defaultrendernodes-87">#</a></h3><pre class="code" data-lang="ts"><code>defaultRenderNodes: object;</code></pre><p>The default RenderNodes for this Game Object.
+RenderNodes are responsible for managing the rendering process of this Game Object.
+These are the nodes that are used if no custom ones are set.</p>
+<p>RenderNodes are identified by a unique key for their role.</p>
+<p>Common role keys include:</p>
+<ul>
+<li>&#39;Submitter&#39;: responsible for running other node roles for each element.</li>
+<li>&#39;Transformer&#39;: responsible for providing vertex coordinates for an element.</li>
+<li>&#39;Texturer&#39;: responsible for handling textures for an element.</li>
+</ul>
+<p><b>Type / return:</b> <code>object</code></p><h3 id="member-rendernodedata-88">renderNodeData <a class="anchor" href="#member-rendernodedata-88">#</a></h3><pre class="code" data-lang="ts"><code>renderNodeData: object;</code></pre><p>An object to store render node specific data in, to be read by the render nodes this Game Object uses.</p>
+<p>Render nodes store their data under their own name, not their role.</p>
+<p><b>Type / return:</b> <code>object</code></p><h3 id="member-initrendernodes-89">initRenderNodes <a class="anchor" href="#member-initrendernodes-89">#</a></h3><pre class="code" data-lang="ts"><code>initRenderNodes(defaultNodes: Map&lt;string, string&gt;): void;</code></pre><p>Initializes the render nodes for this Game Object.</p>
+<p>This method is called when the Game Object is added to the Scene.
+It is responsible for setting up the default render nodes
+this Game Object will use.
+<strong>param</strong>  defaultNodes The default render nodes to set for this Game Object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>defaultNodes</code></td><td><code>Map&lt;string, string&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-setrendernoderole-90">setRenderNodeRole <a class="anchor" href="#member-setrendernoderole-90">#</a></h3><pre class="code" data-lang="ts"><code>setRenderNodeRole(key: string, renderNode: string | Phaser.Renderer.WebGL.RenderNodes.RenderNode | null, renderNodeData?: object, copyData?: boolean): this;</code></pre><p>Sets the RenderNode for a given role.</p>
+<p>Also sets the relevant render node data object, if specified.</p>
+<p>If the node cannot be set, no changes are made.
+<strong>param</strong>  key The key of the role to set the render node for.
+<strong>param</strong>  renderNode The render node to set on this Game Object. Either a string, or a RenderNode instance. If <code>null</code>, the render node is removed, along with its data.
+<strong>param</strong>  renderNodeData An object to store render node specific data in, to be read by the render nodes this Game Object uses.
+<strong>param</strong>  copyData Should the data be copied from the <code>renderNodeData</code> object? Default false.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>renderNode</code></td><td><code>string | Phaser.Renderer.WebGL.RenderNodes.RenderNode | null</code></td><td>Required</td></tr><tr><td><code>renderNodeData</code></td><td><code>object</code></td><td>Optional</td></tr><tr><td><code>copyData</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setrendernodedata-91">setRenderNodeData <a class="anchor" href="#member-setrendernodedata-91">#</a></h3><pre class="code" data-lang="ts"><code>setRenderNodeData(renderNode: string | Phaser.Renderer.WebGL.RenderNodes.RenderNode, key: string, value: any): this;</code></pre><p>Sets or removes a property in the data object for a specific render node within <code>renderNodeData</code>.</p>
+<p>If <code>key</code> is not set, it is created. If it is set, it is updated.</p>
+<p>If <code>value</code> is undefined and <code>key</code> exists, the key is removed.
+<strong>param</strong>  renderNode The render node to set the data for. If a string, it should be the name of the render node.
+<strong>param</strong>  key The key of the property to set.
+<strong>param</strong>  value The value to set the property to.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>renderNode</code></td><td><code>string | Phaser.Renderer.WebGL.RenderNodes.RenderNode</code></td><td>Required</td></tr><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>value</code></td><td><code>any</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-texture-92">texture <a class="anchor" href="#member-texture-92">#</a></h3><pre class="code" data-lang="ts"><code>texture: Phaser.Textures.Texture | Phaser.Textures.CanvasTexture;</code></pre><p>The Texture this Game Object is using to render with.</p>
+<p><b>Type / return:</b> <code>Phaser.Textures.Texture | Phaser.Textures.CanvasTexture</code></p><h3 id="member-frame-93">frame <a class="anchor" href="#member-frame-93">#</a></h3><pre class="code" data-lang="ts"><code>frame: Phaser.Textures.Frame;</code></pre><p>The Texture Frame this Game Object is using to render with.</p>
+<p><b>Type / return:</b> <code>Phaser.Textures.Frame</code></p><h3 id="member-iscropped-94">isCropped <a class="anchor" href="#member-iscropped-94">#</a></h3><pre class="code" data-lang="ts"><code>isCropped: boolean;</code></pre><p>A boolean flag indicating if this Game Object is being cropped or not.
+You can toggle this at any time after <code>setCrop</code> has been called, to turn cropping on or off.
+Equally, calling <code>setCrop</code> with no arguments will reset the crop and disable it.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-setcrop-95">setCrop <a class="anchor" href="#member-setcrop-95">#</a></h3><pre class="code" data-lang="ts"><code>setCrop(x?: number | Phaser.Geom.Rectangle, y?: number, width?: number, height?: number): this;</code></pre><p>Applies a crop to a texture based Game Object, such as a Sprite or Image.</p>
+<p>The crop is a rectangle that limits the area of the texture frame that is visible during rendering.</p>
+<p>Cropping a Game Object does not change its size, dimensions, physics body or hit area, it just
+changes what is shown when rendered.</p>
+<p>The crop size as well as coordinates can not exceed the size of the texture frame.</p>
+<p>The crop coordinates are relative to the texture frame, not the Game Object, meaning 0 x 0 is the top-left.</p>
+<p>Therefore, if you had a Game Object that had an 800x600 sized texture, and you wanted to show only the left
+half of it, you could call <code>setCrop(0, 0, 400, 600)</code>.</p>
+<p>It is also scaled to match the Game Object scale automatically. Therefore a crop rectangle of 100x50 would crop
+an area of 200x100 when applied to a Game Object that had a scale factor of 2.</p>
+<p>You can either pass in numeric values directly, or you can provide a single Rectangle object as the first argument.</p>
+<p>Call this method with no arguments at all to reset the crop, or toggle the property <code>isCropped</code> to <code>false</code>.</p>
+<p>You should do this if the crop rectangle becomes the same size as the frame itself, as it will allow
+the renderer to skip several internal calculations.
+<strong>param</strong>  x The x coordinate to start the crop from. Cannot be negative or exceed the Frame width. Or a Phaser.Geom.Rectangle object, in which case the rest of the arguments are ignored.
+<strong>param</strong>  y The y coordinate to start the crop from. Cannot be negative or exceed the Frame height.
+<strong>param</strong>  width The width of the crop rectangle in pixels. Cannot exceed the Frame width.
+<strong>param</strong>  height The height of the crop rectangle in pixels. Cannot exceed the Frame height.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number | Phaser.Geom.Rectangle</code></td><td>Optional</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>width</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-settexture-96">setTexture <a class="anchor" href="#member-settexture-96">#</a></h3><pre class="code" data-lang="ts"><code>setTexture(key: string, frame?: string | number): this;</code></pre><p>Sets the texture and frame this Game Object will use to render with.</p>
+<p>Textures are referenced by their string-based keys, as stored in the Texture Manager.
+<strong>param</strong>  key The key of the texture to be used, as stored in the Texture Manager.
+<strong>param</strong>  frame The name or index of the frame within the Texture.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>frame</code></td><td><code>string | number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setframe-97">setFrame <a class="anchor" href="#member-setframe-97">#</a></h3><pre class="code" data-lang="ts"><code>setFrame(frame: string | number | Phaser.Textures.Frame, updateSize?: boolean, updateOrigin?: boolean): this;</code></pre><p>Sets the frame this Game Object will use to render with.</p>
+<p>If you pass a string or index then the Frame has to belong to the current Texture being used
+by this Game Object.</p>
+<p>If you pass a Frame instance, then the Texture being used by this Game Object will also be updated.</p>
+<p>Calling <code>setFrame</code> will modify the <code>width</code> and <code>height</code> properties of your Game Object.</p>
+<p>It will also change the <code>origin</code> if the Frame has a custom pivot point, as exported from packages like Texture Packer.
+<strong>param</strong>  frame The name or index of the frame within the Texture, or a Frame instance.
+<strong>param</strong>  updateSize Should this call adjust the size of the Game Object? Default true.
+<strong>param</strong>  updateOrigin Should this call adjust the origin of the Game Object? Default true.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>frame</code></td><td><code>string | number | Phaser.Textures.Frame</code></td><td>Required</td></tr><tr><td><code>updateSize</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>updateOrigin</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-visible-98">visible <a class="anchor" href="#member-visible-98">#</a></h3><pre class="code" data-lang="ts"><code>visible: boolean;</code></pre><p>The visible state of the Game Object.</p>
+<p>An invisible Game Object will skip rendering, but will still process update logic.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-setvisible-99">setVisible <a class="anchor" href="#member-setvisible-99">#</a></h3><pre class="code" data-lang="ts"><code>setVisible(value: boolean): this;</code></pre><p>Sets the visibility of this Game Object.</p>
+<p>An invisible Game Object will skip rendering, but will still process update logic.
+<strong>param</strong>  value The visible state of the Game Object.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h2 id="base-types">Base types</h2><p><a href="engine-phaser-phaser-gameobjects-gameobject.html">Phaser.GameObjects.GameObject</a> · <a href="engine-phaser-phaser-gameobjects-components-alpha.html">Phaser.GameObjects.Components.Alpha</a> · <a href="engine-phaser-phaser-gameobjects-components-blendmode.html">Phaser.GameObjects.Components.BlendMode</a> · <a href="engine-phaser-phaser-gameobjects-components-depth.html">Phaser.GameObjects.Components.Depth</a> · <a href="engine-phaser-phaser-gameobjects-components-elapsetimer.html">Phaser.GameObjects.Components.ElapseTimer</a> · <a href="engine-phaser-phaser-gameobjects-components-lighting.html">Phaser.GameObjects.Components.Lighting</a> · <a href="engine-phaser-phaser-gameobjects-components-rendernodes.html">Phaser.GameObjects.Components.RenderNodes</a> · <a href="engine-phaser-phaser-gameobjects-components-texturecrop.html">Phaser.GameObjects.Components.TextureCrop</a> · <a href="engine-phaser-phaser-gameobjects-components-visible.html">Phaser.GameObjects.Components.Visible</a></p><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#members">Public members (100)</a><a href="#base-types">Base types</a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Game GUI — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Game GUI</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="summary">Summary<a class="anchor" href="#summary">#</a></h2>
+<p>By the end of this section, the topics we&#39;ve gone over should have equipped you well with the knowledge needed to implement core mechanics for a game! The next few sections will cover adding more to the game in terms of features you can use to enhance its visuals (including animation and sounds).</p>
+<p>The Babylon GUI has a ton to offer, and the babylonjs <a href="babylon-guide-features-featuresdeepdive-gui-gui.html">gui</a> documentation is extremely thorough in explaining how to use the different controls and components. For this tutorial, I&#39;ll just be going over features that were specific to my game or involved a little bit of logic to accompany it.</p>
+<h2 id="game-ui">Game UI<a class="anchor" href="#game-ui">#</a></h2>
+<p>The most important use of the GUI for my game had to be the <span>Hud class</span>. This was actually the first thing that I focused on when I started working with the GUI library. What I learned from working with this alone, I applied to all of my other states!</p>
+<p><p class="muted">Upstream illustration: gameui (media not bundled).</p></p>
+<h3 id="hud">HUD<a class="anchor" href="#hud">#</a></h3>
+<p>The ui.ts file contains everything necessary for the game state&#39;s UI. Just like how we set up an AdvancedDynamicTexture in goToGame for our <a href="babylon-guide-guidedlearning-createagame-statemachine.html">state machine setup</a>, we want to start with this as the foundation of our Hud class.</p>
+<p>In goToGame:</p>
+<ol>
+<li>Create a Hud</li>
+</ol>
+<pre class="code" data-lang="javascript"><code>const ui = new Hud(scene);
+this._ui = ui;</code></pre>
+<p>This will replace the default UI setup we had.</p>
+<ol start="2">
+<li>Add the ui to our PlayerInput class</li>
+</ol>
+<pre class="code" data-lang="javascript"><code>this._input = new PlayerInput(scene, this._ui);</code></pre>
+<p>This is important for when we add controls for mobile.</p>
+<p>The first thing I set out to do was to set up:</p>
+<ol>
+<li>The game timer</li>
+<li>The sparkler timer</li>
+</ol>
+<p>Each of these timers needed some sort of visual display. I decided to go with text for the game timer and sprite animation for the sparkler timer (however, I did of course start off with text in order to test out the timing).</p>
+<h3 id="game-timer">Game Timer<a class="anchor" href="#game-timer">#</a></h3>
+<p>The game timer is just a simple TextBlock called <span><em>clockTime</em></span> that&#39;s updated in <span>updateHud</span>:</p>
+<pre class="code" data-lang="javascript"><code>if (!this._stopTimer &amp;&amp; this._startTime != null) {
+    let curTime = Math.floor((new Date().getTime() - this._startTime) / 1000) + this._prevTime;
+    this.time = curTime;
+    this._clockTime.text = this._formatTime(curTime);
+}</code></pre>
+<p>What this does is:</p>
+<ol>
+<li>Calculates the amount of time in milliseconds that has passed since the start time, then divides by 1000 to convert it into seconds. Then it adds whatever <em>_prevTime</em> is.<ul>
+<li><em>_prevTime</em> is initialized to 0 and only updates when the game is paused and when it resumes</li>
+<li><em>_startTime</em> is updated to the current time so that the next time <strong>updateHud</strong> is called, we account for the time we spent paused (the difference in time will be the same as it left off).</li>
+</ul>
+</li>
+<li>Stores the total time elapsed in seconds</li>
+<li>Formats the time to match our game&#39;s world time</li>
+</ol>
+<h4 id="format-time">Format Time<a class="anchor" href="#format-time">#</a></h4>
+<p>The <span>formatting</span> of the time is: <strong>4 minutes of real time = 1 hour of game time</strong></p>
+<pre class="code" data-lang="javascript"><code>let minsPassed = Math.floor(time / 60);
+let secPassed = time % 240; // goes back to 0 after 4mins/240sec
+// 4sec = 1min game time
+if (secPassed % 4 == 0) {
+    this._mString = Math.floor(minsPassed / 4) + 11;
+    this._sString = (secPassed / 4 &lt; 10 ? &quot;0&quot; : &quot;&quot;) + secPassed / 4;
+}
+let day = this._mString == 11 ? &quot; PM&quot; : &quot; AM&quot;;
+return this._mString + &quot;:&quot; + this._sString + day;</code></pre>
+<p>The game&#39;s time starts at 11:00 PM and goes until 12:00 AM. We want to convert our time into minutes and seconds so that we can calculate the hours and minutes of the game.</p>
+<ul>
+<li><em>_mString</em> will only update when 4 minutes have passed; otherwise, it will stay at 11.</li>
+<li><em>_sString</em> updates every 4 seconds.</li>
+</ul>
+<h4 id="start-stop">Start/Stop<a class="anchor" href="#start-stop">#</a></h4>
+<p>Now that we know how to update the timer, how do we start and stop it?</p>
+<pre class="code" data-lang="javascript"><code>//---- Game Timer ----
+public startTimer(): void {
+    this._startTime = new Date().getTime(); //get the time when we started
+    this._stopTimer = false;
+}
+public stopTimer(): void {
+    this._stopTimer = true; //controls the update of our timer
+}</code></pre>
+<h4 id="using-the-game-timer">Using the Game Timer<a class="anchor" href="#using-the-game-timer">#</a></h4>
+<ol>
+<li><p>Start the game timer AFTER the <span>scene is ready</span> in app.ts.</p>
+<pre class="code" data-lang="javascript"><code>this._ui.startTimer();</code></pre>
+</li>
+<li><p>In _initializeGameAsync:</p>
+<pre class="code" data-lang="javascript"><code>scene.onBeforeRenderObservable.add(() =&gt; {
+    // when the game isn't paused, update the timer
+    if (!this._ui.gamePaused) {
+        this._ui.updateHud();
+    }
+});</code></pre>
+<p> We start setting up the game loop.</p>
+</li>
+<li><p>In main&#39;s <strong>State.Game</strong>:</p>
+<pre class="code" data-lang="javascript"><code>// once the timer reaches 240 seconds, take us to the lose state
+if (this._ui.time &gt;= 240 &amp;&amp; !this._player.win) {
+    this._goToLose();
+    this._ui.stopTimer();
+}</code></pre>
+</li>
+</ol>
+<p>We can go ahead and remove the <a href="babylon-guide-guidedlearning-createagame-statemachine.html">temporary button</a> we had that went to the lose state since now we have an actual condition that takes us there.</p>
+<p>Now we have a complete game timer! Once the game starts, the timer will begin and update until 4 minutes have passed, then it will take the player to the lose state.</p>
+<h3 id="sparkler-timer">Sparkler Timer<a class="anchor" href="#sparkler-timer">#</a></h3>
+<h4 id="start-sparkler-timer">Start Sparkler Timer<a class="anchor" href="#start-sparkler-timer">#</a></h4>
+<p><span>startSparklerTimer</span> takes a different approach to timing since it&#39;s hooked up to an animation. I did this by setting intervals for both the time-related animation and the visual-effect animation once the sparkler starts.</p>
+<pre class="code" data-lang="javascript"><code>this.stopSpark = false;
+this._sparklerLife.cellId = 0;
+this._spark.cellId = 0;
+if (this._handle) {
+    clearInterval(this._handle);
+}
+if (this._sparkhandle) {
+    clearInterval(this._sparkhandle);
+}</code></pre>
+<p>Every time we start the sparkler, we want to make sure everything is reset, including the previous intervals, if any.</p>
+<pre class="code" data-lang="javascript"><code>this._scene.getLightByName(&quot;sparklight&quot;).intensity = 35;</code></pre>
+<p>Have the actual sparkler object&#39;s light visible again by increasing its intensity.</p>
+<pre class="code" data-lang="javascript"><code>this._handle = setInterval(() =&gt; {
+    if (!this.gamePaused) {
+        if (this._sparklerLife.cellId &lt; 10) {
+            this._sparklerLife.cellId++;
+        }
+        if (this._sparklerLife.cellId == 10) {
+            this.stopSpark = true;
+            clearInterval(this._handle);
+        }
+    }
+}, 2000);</code></pre>
+<p>This interval controls the actual sparkler&#39;s lifetime. The sparkler has 10 energy bars, and every 2 seconds we update the animation. Once we reach the last frame, we stop the sparkler and clear the interval.</p>
+<p><p class="muted">Upstream illustration: sparklerBar (media not bundled).</p></p>
+<pre class="code" data-lang="javascript"><code>this._sparkhandle = setInterval(() =&gt; {
+    if (!this.gamePaused) {
+        if (this._sparklerLife.cellId &lt; 10 &amp;&amp; this._spark.cellId &lt; 5) {
+            this._spark.cellId++;
+        } else if (this._sparklerLife.cellId &lt; 10 &amp;&amp; this._spark.cellId &gt;= 5) {
+            this._spark.cellId = 0;
+        } else {
+            this._spark.cellId = 0;
+            clearInterval(this._sparkhandle);
+        }
+    }
+}, 185);</code></pre>
+<p>This interval controls the little spark animation for the sparkler part of the bar. It will just keep looping for as long as the sparkler still has energy.</p>
+<p><p class="muted">Upstream illustration: spark (media not bundled).</p></p>
+<p>Both of these are affected by whether the game is paused.</p>
+<h4 id="stop-sparkler-timer">Stop Sparkler Timer<a class="anchor" href="#stop-sparkler-timer">#</a></h4>
+<p>When we <span>stop the sparkler</span>, we decrease the intensity of the light to 0 so that it&#39;s not visible.</p>
+<pre class="code" data-lang="javascript"><code>this.stopSpark = true;
+this._scene.getLightByName(&quot;sparklight&quot;).intensity = 0;</code></pre>
+<h4 id="using-the-sparkler-timer">Using the Sparkler Timer<a class="anchor" href="#using-the-sparkler-timer">#</a></h4>
+<ol>
+<li>Just like how we did with the game timer, we need to start the timer AFTER the <span>scene is ready</span> in app.ts.</li>
+</ol>
+<pre class="code" data-lang="javascript"><code>this._ui.startSparklerTimer();</code></pre>
+<p><strong>Note: the sparkler timers in the file links actually pass in a particle system, but since we haven&#39;t gone over how to make those yet, you can just ignore that part</strong></p>
+<p>Now that the start and stop functions are set up, how do we know when to use them?</p>
+<p>In the <a href="babylon-guide-guidedlearning-createagame.html">game loop</a>, we want to be checking:</p>
+<pre class="code" data-lang="javascript"><code>//reset the sparkler timer
+if (this._player.sparkReset) {
+    this._ui.startSparklerTimer();
+    this._player.sparkReset = false;
+}
+//stop the sparkler timer after 20 seconds
+else if (this._ui.stopSpark &amp;&amp; this._player.sparkLit) {
+    this._ui.stopSparklerTimer();
+    this._player.sparkLit = false;
+}</code></pre>
+<p>Recall that we set <strong>sparkReset</strong> and <strong>sparkLit</strong> to true on <a href="babylon-guide-guidedlearning-createagame-lanterns.html">collision with a lantern</a>.</p>
+<h2 id="cutscene-animation">Cutscene Animation<a class="anchor" href="#cutscene-animation">#</a></h2>
+<p>The cutscene is the last GUI implementation that I focused on since it was more of a polish element to give the game a backstory and give the player instructions on what to do. Ideally, the animation portion would be a single animation file, but because of Procreate limitations, I had to break it up into different portions and sequence them together.</p>
+<p>Things I noticed during this process:</p>
+<ol>
+<li>I had to make sure that all of these image files were loaded before starting the animation, or else you&#39;d only see the files that managed to load fast enough.</li>
+<li>The files take a while to load since they&#39;re pretty large even after exporting for the web, so a loading screen and a condition before displaying the scene were necessary.</li>
+</ol>
+<h3 id="animation">Animation<a class="anchor" href="#animation">#</a></h3>
+<p>In order to achieve the cutscene that I ended up with—animation plus dialogue—I had to:</p>
+<ol>
+<li>Keep track of when all the animation files were loaded.
+I created a variable <strong>anims_loaded</strong> to keep track of how many animations have loaded. Then, for each image animation I added an <code>onImageLoadedObservable</code>, for example:</li>
+</ol>
+<pre class="code" data-lang="javascript"><code>beginning_anim.onImageLoadedObservable.add(() =&gt; {
+    anims_loaded++;
+});</code></pre>
+<ol start="2">
+<li>Start the interval timers for the animation once <span>everything was loaded</span>.
+I used a switch statement to help with transitioning to the next animation since I thought it would be the best way to manage all of the different parts. It is a bit hardcoded because there isn&#39;t a consistent number of frames for the animations. Additionally, I had to separate it into two different intervals to get the timing right because in some parts I wanted the animations to last a bit longer, which is why you&#39;ll see an <strong>animTimer</strong> and <strong>anim2Timer</strong>.</li>
+</ol>
+<h3 id="dialogue">Dialogue<a class="anchor" href="#dialogue">#</a></h3>
+<p>The dialogue text doesn&#39;t automatically progress, but instead waits for input from the player. When the player presses the <span>next</span> button, we use <strong>transition</strong> to keep track of which dialogue we&#39;re on, then progress the dialogue to the next frame.</p>
+<pre class="code" data-lang="javascript"><code>next.onPointerUpObservable.add(() =&gt; {
+    if (transition == 8) {
+        //once we reach the last dialogue frame, goToGame
+        this._cutScene.detachControl();
+        this._engine.displayLoadingUI(); //if the game hasn't loaded yet, we'll see a loading screen
+        transition = 0; //since we only want to go through this block once
+        canplay = true; //signals that we can progress to the game since we've completed the dialogue sequence
+    } else if (transition &lt; 8) {
+        // 8 frames of dialogue
+        transition++;
+        dialogue.cellId++;
+    }
+});</code></pre>
+<p>In addition, the dialogue has a background animation that just keeps looping:</p>
+<pre class="code" data-lang="javascript"><code>let dialogueTimer = setInterval(() =&gt; {
+    if (finished_anim &amp;&amp; dialogueBg.cellId &lt; 3) {
+        dialogueBg.cellId++;
+    } else {
+        dialogueBg.cellId = 0;
+    }
+}, 250);</code></pre>
+<h2 id="menu-popup">Menu Popup<a class="anchor" href="#menu-popup">#</a></h2>
+<h3 id="pause-menu">Pause Menu<a class="anchor" href="#pause-menu">#</a></h3>
+<p>I used a <span>popup menu</span> for my pause state that included a page for controls. In order to keep all of the elements together in case of screen resizing, I placed everything in a <code>Rectangle</code> control.</p>
+<pre class="code" data-lang="javascript"><code>pauseBtn.onPointerDownObservable.add(() =&gt; {
+    this._pauseMenu.isVisible = true;
+    playerUI.addControl(this._pauseMenu);
+    this.pauseBtn.isHitTestVisible = false;
+
+    //when game is paused, make sure that the next start time is the time it was when paused
+    this.gamePaused = true;
+    this._prevTime = this.time;
+});</code></pre>
+<p>There are a few things to consider when implementing this:</p>
+<ol>
+<li>When you pause the game, the menu needs to become visible.</li>
+<li>You need to add the control to the menu.</li>
+<li>You need to set the pause button to not detect any pointer events. This is specifically because I had a resume button rather than using the pause button to toggle the menu on/off.</li>
+</ol>
+<p>Similarly, you need to make sure that you do the opposite when you press the resume button.</p>
+<pre class="code" data-lang="javascript"><code>resumeBtn.onPointerDownObservable.add(() =&gt; {
+    this._pauseMenu.isVisible = false;
+    this._playerUI.removeControl(pauseMenu);
+    this.pauseBtn.isHitTestVisible = true;
+
+    //game unpaused, our time is now reset
+    this.gamePaused = false;
+    this._startTime = new Date().getTime();
+});</code></pre>
+<h3 id="controls-menu">Controls Menu<a class="anchor" href="#controls-menu">#</a></h3>
+<p>The controls menu uses the same structure as the pause menu. It&#39;s a <code>Rectangle</code> control with an image. In order to toggle between the two, all you need to do is swap the visibility of the menus like so:</p>
+<pre class="code" data-lang="javascript"><code>//open controls screen
+this._controls.isVisible = true;
+this._pauseMenu.isVisible = false;</code></pre>
+<h2 id="pausing-the-game">Pausing the Game<a class="anchor" href="#pausing-the-game">#</a></h2>
+<p>Another important topic worth mentioning is the process of pausing the game. Because the pause &quot;state&quot; is not its own scene, I had to approach this by having a variable, <em>gamePaused</em>, keep track of whether we were paused or not. This flag is used throughout the game and even for more than just showing the pause menu.</p>
+<p>When the game is paused we:</p>
+<ol>
+<li>Don&#39;t update the game timer and animations associated with the sparkler. (app.ts)</li>
+<li>Don&#39;t allow for player movement. (inputController.ts)</li>
+</ol>
+<p>When I actually implemented this, the different files needed to know about <em>_ui.gamePaused</em>. However, this was useful because I could also use it to stop movement in the &quot;win&quot; state. The win state would then essentially lock the player in a position where they&#39;d be able to see the fireworks.</p>
+<p>Now, we have a timed 3D platformer that takes you to the lose state when 4 minutes have passed and has an animated cutscene in the beginning!</p>
+<h2 id="resources">Resources<a class="anchor" href="#resources">#</a></h2>
+<p><strong>Files Used:</strong></p>
+<ul>
+<li><span>ui.ts</span></li>
+<li><span>app.ts</span></li>
+<li><span>inputController.ts</span></li>
+</ul>
+<p><strong>Follow Along:</strong></p>
+<ul>
+<li><span>ui.ts</span></li>
+<li><span>app.ts</span></li>
+<li><span>all necessary images</span></li>
+</ul>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#summary">Summary </a><a href="#game-ui">Game UI </a><a href="#cutscene-animation">Cutscene Animation </a><a href="#menu-popup">Menu Popup </a><a href="#pausing-the-game">Pausing the Game </a><a href="#resources">Resources </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phaser.Display.ColorBand — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Phaser.Display.ColorBand</h1>
+<p><span class="badge">Underlying Phaser 4.2.1 API</span> <span class="badge">Class</span></p><p class="muted">Official public declarations and JSDoc from <code>phaser</code>. Use with engine objects, not directly on a Nord entity.</p><aside class="box tip"><div class="box-title">The Nord way</div><p><a href="2d.html">2D manual</a> · <a href="component-sprite.html">sprite</a> · <a href="component-animatedSprite.html">animatedSprite</a> · <a href="physics.html">physics</a>. Access raw objects only when the Nord wrapper does not cover your feature. <a href="reference.html#escape-hatch">How escape hatches work</a>.</p></aside><h3 id="declaration">ColorBand <a class="anchor" href="#declaration">#</a></h3><pre class="code" data-lang="ts"><code>class ColorBand</code></pre><p>The ColorBand class represents a transition from one color to another.
+It is used in a {@see Phaser.Display.ColorRamp}, and forms the basis
+of a {@see Phaser.GameObjects.Gradient}.</p>
+<p>ColorBand can control the transition by setting a middle point,
+a color space for blending, and an interpolation style.</p>
+<p>This class also records <code>start</code> and <code>end</code> points for use in a ramp.
+These indicate its position within the ramp.</p>
+<p>Colors are handled unpremultiplied, so RGB values may be larger than alpha.</p>
+<h2 id="members">Public members (11)</h2><p>Private, protected and explicitly internal declarations are excluded. Inherited members belong to the base type listed in the declaration.</p><h3 id="member-constructor-0">constructor <a class="anchor" href="#member-constructor-0">#</a></h3><pre class="code" data-lang="ts"><code>constructor(config?: Phaser.Types.Display.ColorBandConfig);</code></pre><p><strong>param</strong>  config The configuration to use for the band.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>config</code></td><td><code>Phaser.Types.Display.ColorBandConfig</code></td><td>Optional</td></tr></tbody></table><h3 id="member-iscolorband-1">isColorBand <a class="anchor" href="#member-iscolorband-1">#</a></h3><pre class="code" data-lang="ts"><code>readonly isColorBand: boolean;</code></pre><p>Identifies this object as a ColorBand.
+This property is read-only and must not be modified.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-colorstart-2">colorStart <a class="anchor" href="#member-colorstart-2">#</a></h3><pre class="code" data-lang="ts"><code>colorStart: Phaser.Display.Color;</code></pre><p>The color at the start of the color band.</p>
+<p><b>Type / return:</b> <code>Phaser.Display.Color</code></p><h3 id="member-colorend-3">colorEnd <a class="anchor" href="#member-colorend-3">#</a></h3><pre class="code" data-lang="ts"><code>colorEnd: Phaser.Display.Color;</code></pre><p>The color at the end of the color band.</p>
+<p><b>Type / return:</b> <code>Phaser.Display.Color</code></p><h3 id="member-start-4">start <a class="anchor" href="#member-start-4">#</a></h3><pre class="code" data-lang="ts"><code>start: number;</code></pre><p>The start point of this band within a ColorRamp.
+This value should be normalized within the ramp,
+between 0 (ramp start) and 1 (ramp end).</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-middle-5">middle <a class="anchor" href="#member-middle-5">#</a></h3><pre class="code" data-lang="ts"><code>middle: number;</code></pre><p>The middle point of this band within a ColorRamp.
+This value should be normalized within the band,
+between 0 (band start) and 1 (band end).
+Middle point alters the shape of the color interpolation.</p>
+<p>Mathematically, the gradient should be 0.5 at the middle.
+We use a gamma curve to adjust the gradient.
+Thus, <code>0.5 = middle^gamma</code>.
+By the properties of logarithms, therefore,
+<code>gamma = log base middle of 0.5</code>.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-end-6">end <a class="anchor" href="#member-end-6">#</a></h3><pre class="code" data-lang="ts"><code>end: number;</code></pre><p>The end point of this band within a ColorRamp.
+This value should be normalized within the ramp,
+between 0 (ramp start) and 1 (ramp end).</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-interpolation-7">interpolation <a class="anchor" href="#member-interpolation-7">#</a></h3><pre class="code" data-lang="ts"><code>interpolation: number;</code></pre><p>The color interpolation.
+This can be one of the following codes:</p>
+<ul>
+<li>0: LINEAR - a straight blend.</li>
+<li>1: CURVED - color changes quickly at start and end,
+flattening in the middle. Good for convex surfaces.</li>
+<li>2: SINUSOIDAL - color changes quickly in the middle,
+flattening at start and end. Good for smooth transitions.</li>
+<li>3: CURVE_START - color changes quickly at the start,
+flattening at the end.</li>
+<li>4: CURVE_END - color changes quickly at the end,
+flattening at the start.</li>
+</ul>
+<p>Modes 2, 3, and 4 use the circular easing function directly.
+Mode 1 uses a related custom formula based on the unit circle.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-colorspace-8">colorSpace <a class="anchor" href="#member-colorspace-8">#</a></h3><pre class="code" data-lang="ts"><code>colorSpace: number;</code></pre><p>The color space where interpolation should be done.
+This can be one of the following codes:</p>
+<ul>
+<li>0: RGBA - channels are blended directly.
+This can produce perceptually inaccurate results, as blending
+in RGB space does not account for how humans perceive color.</li>
+<li>1: HSVA_NEAREST - colors are blended in HSVA space,
+better preserving saturation and lightness.
+The hue is blended with the shortest angle, e.g. red and blue
+blend via purple, not green.</li>
+<li>2: HSVA_PLUS - as HSVA_NEAREST, but hue angle always increases.</li>
+<li>3: HSVA_MINUS - as HSVA_NEAREST, but hue angle always decreases.</li>
+</ul>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-setcolors-9">setColors <a class="anchor" href="#member-setcolors-9">#</a></h3><pre class="code" data-lang="ts"><code>setColors(start?: number | string | number[] | Phaser.Display.Color, end?: number | string | number[] | Phaser.Display.Color): this;</code></pre><p>Set the colors of the band, from a variety of color formats.</p>
+<ul>
+<li>A number is expected to be a 24 or 32 bit RGB or ARGB value.</li>
+<li>A string is expected to be a hex code.</li>
+<li>An array of numbers is expected to be RGB or RGBA in the range 0-1.</li>
+<li>A Color object can be used.
+<strong>param</strong>  start The color at the start of the band. Default 0x000000.
+<strong>param</strong>  end The color at the end of the band. If not specified, equals <code>start</code>.
+<strong>returns</strong>  This ColorBand.</li>
+</ul>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>start</code></td><td><code>number | string | number[] | Phaser.Display.Color</code></td><td>Optional</td></tr><tr><td><code>end</code></td><td><code>number | string | number[] | Phaser.Display.Color</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-getcolor-10">getColor <a class="anchor" href="#member-getcolor-10">#</a></h3><pre class="code" data-lang="ts"><code>getColor(index: number): Phaser.Types.Display.ColorObject;</code></pre><p>Returns the blended color at a normalized position within this band.
+The middle point gamma curve, interpolation mode, and color space are
+all applied before blending between <code>colorStart</code> and <code>colorEnd</code>.
+<strong>param</strong>  index The normalized position within the band, where 0 is the band start and 1 is the band end.
+<strong>returns</strong>  The blended color at that position.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>index</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Types.Display.ColorObject</code></p><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#members">Public members (11)</a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

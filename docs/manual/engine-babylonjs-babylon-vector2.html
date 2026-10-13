@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BABYLON.Vector2 — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>BABYLON.Vector2</h1>
+<p><span class="badge">Underlying Babylon 9.30.0 API</span> <span class="badge">Class</span></p><p class="muted">Official public declarations and JSDoc from <code>babylonjs</code>. Use with engine objects, not directly on a Nord entity.</p><aside class="box tip"><div class="box-title">The Nord way</div><p><a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a>. Access raw objects only when the Nord wrapper does not cover your feature. <a href="reference.html#escape-hatch">How escape hatches work</a>.</p></aside><h3 id="declaration">Vector2 <a class="anchor" href="#declaration">#</a></h3><pre class="code" data-lang="ts"><code>export class Vector2 implements Vector&lt;Tuple&lt;number, 2&gt;, IVector2Like&gt;, IVector2Like</code></pre><p>Class representing a vector containing 2 coordinates
+Example Playground - Overview -  (online reference)</p>
+<h2 id="members">Public members (89)</h2><p>Private, protected and explicitly internal declarations are excluded. Inherited members belong to the base type listed in the declaration.</p><h3 id="member-x-0">x <a class="anchor" href="#member-x-0">#</a></h3><pre class="code" data-lang="ts"><code>x: number;</code></pre><p>[0] defines the first coordinate</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-y-1">y <a class="anchor" href="#member-y-1">#</a></h3><pre class="code" data-lang="ts"><code>y: number;</code></pre><p>[0] defines the second coordinate</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-dimension-2">dimension <a class="anchor" href="#member-dimension-2">#</a></h3><pre class="code" data-lang="ts"><code>readonly dimension: Readonly&lt;[2]&gt;;</code></pre><p><strong>see</strong>  Tensor.dimension</p>
+<p><b>Type / return:</b> <code>Readonly&lt;[2]&gt;</code></p><h3 id="member-rank-3">rank <a class="anchor" href="#member-rank-3">#</a></h3><pre class="code" data-lang="ts"><code>readonly rank: 1;</code></pre><p><strong>see</strong>  Tensor.rank</p>
+<p><b>Type / return:</b> <code>1</code></p><h3 id="member-constructor-4">constructor <a class="anchor" href="#member-constructor-4">#</a></h3><pre class="code" data-lang="ts"><code>constructor(
+        /** [0] defines the first coordinate */
+        x?: number, 
+        /** [0] defines the second coordinate */
+        y?: number);</code></pre><p>Creates a new Vector2 from the given x and y coordinates
+<strong>param</strong>  x defines the first coordinate
+<strong>param</strong>  y defines the second coordinate</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><h3 id="member-tostring-5">toString <a class="anchor" href="#member-tostring-5">#</a></h3><pre class="code" data-lang="ts"><code>toString(): string;</code></pre><p>Gets a string with the Vector2 coordinates
+<strong>returns</strong>  a string with the Vector2 coordinates</p>
+<p><b>Type / return:</b> <code>string</code></p><h3 id="member-getclassname-6">getClassName <a class="anchor" href="#member-getclassname-6">#</a></h3><pre class="code" data-lang="ts"><code>getClassName(): string;</code></pre><p>Gets class name
+<strong>returns</strong>  the string &quot;Vector2&quot;</p>
+<p><b>Type / return:</b> <code>string</code></p><h3 id="member-gethashcode-7">getHashCode <a class="anchor" href="#member-gethashcode-7">#</a></h3><pre class="code" data-lang="ts"><code>getHashCode(): number;</code></pre><p>Gets current vector hash code
+<strong>returns</strong>  the Vector2 hash code as a number</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-toarray-8">toArray <a class="anchor" href="#member-toarray-8">#</a></h3><pre class="code" data-lang="ts"><code>toArray(array: FloatArray, index?: number): this;</code></pre><p>Sets the Vector2 coordinates in the given array or Float32Array from the given index.
+Example Playground (online reference)
+<strong>param</strong>  array defines the source array
+<strong>param</strong>  index defines the offset in source array
+<strong>returns</strong>  the current Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>array</code></td><td><code>FloatArray</code></td><td>Required</td></tr><tr><td><code>index</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-fromarray-9">fromArray <a class="anchor" href="#member-fromarray-9">#</a></h3><pre class="code" data-lang="ts"><code>fromArray(array: FloatArray, offset?: number): this;</code></pre><p>Update the current vector from an array
+Example Playground (online reference)
+<strong>param</strong>  array defines the destination array
+<strong>param</strong>  offset defines the offset in the destination array
+<strong>returns</strong>  the current Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>array</code></td><td><code>FloatArray</code></td><td>Required</td></tr><tr><td><code>offset</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-asarray-10">asArray <a class="anchor" href="#member-asarray-10">#</a></h3><pre class="code" data-lang="ts"><code>asArray(): [number, number];</code></pre><p>Copy the current vector to an array
+Example Playground (online reference)
+<strong>returns</strong>  a new array with 2 elements: the Vector2 coordinates.</p>
+<p><b>Type / return:</b> <code>[number, number]</code></p><h3 id="member-copyfrom-11">copyFrom <a class="anchor" href="#member-copyfrom-11">#</a></h3><pre class="code" data-lang="ts"><code>copyFrom(source: DeepImmutable&lt;IVector2Like&gt;): this;</code></pre><p>Sets the Vector2 coordinates with the given Vector2 coordinates
+Example Playground (online reference)
+<strong>param</strong>  source defines the source Vector2
+<strong>returns</strong>  the current updated Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>source</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-copyfromfloats-12">copyFromFloats <a class="anchor" href="#member-copyfromfloats-12">#</a></h3><pre class="code" data-lang="ts"><code>copyFromFloats(x: number, y: number): this;</code></pre><p>Sets the Vector2 coordinates with the given floats
+Example Playground (online reference)
+<strong>param</strong>  x defines the first coordinate
+<strong>param</strong>  y defines the second coordinate
+<strong>returns</strong>  the current updated Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-set-13">set <a class="anchor" href="#member-set-13">#</a></h3><pre class="code" data-lang="ts"><code>set(x: number, y: number): this;</code></pre><p>Sets the Vector2 coordinates with the given floats
+Example Playground (online reference)
+<strong>param</strong>  x defines the first coordinate
+<strong>param</strong>  y defines the second coordinate
+<strong>returns</strong>  the current updated Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setall-14">setAll <a class="anchor" href="#member-setall-14">#</a></h3><pre class="code" data-lang="ts"><code>setAll(v: number): this;</code></pre><p>Copies the given float to the current Vector2 coordinates
+<strong>param</strong>  v defines the x and y coordinates of the operand
+<strong>returns</strong>  the current updated Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>v</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-add-15">add <a class="anchor" href="#member-add-15">#</a></h3><pre class="code" data-lang="ts"><code>add(otherVector: DeepImmutable&lt;IVector2Like&gt;): Vector2;</code></pre><p>Add another vector with the current one
+Example Playground (online reference)
+<strong>param</strong>  otherVector defines the other vector
+<strong>returns</strong>  a new Vector2 set with the addition of the current Vector2 and the given one coordinates</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>otherVector</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Vector2</code></p><h3 id="member-addtoref-16">addToRef <a class="anchor" href="#member-addtoref-16">#</a></h3><pre class="code" data-lang="ts"><code>addToRef&lt;T extends IVector2Like&gt;(otherVector: DeepImmutable&lt;IVector2Like&gt;, result: T): T;</code></pre><p>Sets the &quot;result&quot; coordinates with the addition of the current Vector2 and the given one coordinates
+Example Playground (online reference)
+<strong>param</strong>  otherVector defines the other vector
+<strong>param</strong>  result defines the target vector
+<strong>returns</strong>  result input</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>otherVector</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-addinplace-17">addInPlace <a class="anchor" href="#member-addinplace-17">#</a></h3><pre class="code" data-lang="ts"><code>addInPlace(otherVector: DeepImmutable&lt;IVector2Like&gt;): this;</code></pre><p>Set the Vector2 coordinates by adding the given Vector2 coordinates
+Example Playground (online reference)
+<strong>param</strong>  otherVector defines the other vector
+<strong>returns</strong>  the current updated Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>otherVector</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-addinplacefromfloats-18">addInPlaceFromFloats <a class="anchor" href="#member-addinplacefromfloats-18">#</a></h3><pre class="code" data-lang="ts"><code>addInPlaceFromFloats(x: number, y: number): this;</code></pre><p>Adds the given coordinates to the current Vector2
+<strong>param</strong>  x defines the x coordinate of the operand
+<strong>param</strong>  y defines the y coordinate of the operand
+<strong>returns</strong>  the current updated Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-addvector3-19">addVector3 <a class="anchor" href="#member-addvector3-19">#</a></h3><pre class="code" data-lang="ts"><code>addVector3(otherVector: IVector3Like): Vector2;</code></pre><p>Gets a new Vector2 by adding the current Vector2 coordinates to the given Vector3 x, y coordinates
+Example Playground (online reference)
+<strong>param</strong>  otherVector defines the other vector
+<strong>returns</strong>  a new Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>otherVector</code></td><td><code>IVector3Like</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Vector2</code></p><h3 id="member-subtract-20">subtract <a class="anchor" href="#member-subtract-20">#</a></h3><pre class="code" data-lang="ts"><code>subtract(otherVector: DeepImmutable&lt;IVector2Like&gt;): Vector2;</code></pre><p>Gets a new Vector2 set with the subtracted coordinates of the given one from the current Vector2
+Example Playground (online reference)
+<strong>param</strong>  otherVector defines the other vector
+<strong>returns</strong>  a new Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>otherVector</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Vector2</code></p><h3 id="member-subtracttoref-21">subtractToRef <a class="anchor" href="#member-subtracttoref-21">#</a></h3><pre class="code" data-lang="ts"><code>subtractToRef&lt;T extends IVector2Like&gt;(otherVector: DeepImmutable&lt;IVector2Like&gt;, result: T): T;</code></pre><p>Sets the &quot;result&quot; coordinates with the subtraction of the given one from the current Vector2 coordinates.
+Example Playground (online reference)
+<strong>param</strong>  otherVector defines the other vector
+<strong>param</strong>  result defines the target vector
+<strong>returns</strong>  result input</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>otherVector</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-subtractinplace-22">subtractInPlace <a class="anchor" href="#member-subtractinplace-22">#</a></h3><pre class="code" data-lang="ts"><code>subtractInPlace(otherVector: DeepImmutable&lt;IVector2Like&gt;): this;</code></pre><p>Sets the current Vector2 coordinates by subtracting from it the given one coordinates
+Example Playground (online reference)
+<strong>param</strong>  otherVector defines the other vector
+<strong>returns</strong>  the current updated Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>otherVector</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-multiplyinplace-23">multiplyInPlace <a class="anchor" href="#member-multiplyinplace-23">#</a></h3><pre class="code" data-lang="ts"><code>multiplyInPlace(otherVector: DeepImmutable&lt;IVector2Like&gt;): this;</code></pre><p>Multiplies in place the current Vector2 coordinates by the given ones
+Example Playground (online reference)
+<strong>param</strong>  otherVector defines the other vector
+<strong>returns</strong>  the current updated Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>otherVector</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-multiply-24">multiply <a class="anchor" href="#member-multiply-24">#</a></h3><pre class="code" data-lang="ts"><code>multiply(otherVector: DeepImmutable&lt;IVector2Like&gt;): Vector2;</code></pre><p>Returns a new Vector2 set with the multiplication of the current Vector2 and the given one coordinates
+Example Playground (online reference)
+<strong>param</strong>  otherVector defines the other vector
+<strong>returns</strong>  a new Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>otherVector</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Vector2</code></p><h3 id="member-multiplytoref-25">multiplyToRef <a class="anchor" href="#member-multiplytoref-25">#</a></h3><pre class="code" data-lang="ts"><code>multiplyToRef&lt;T extends IVector2Like&gt;(otherVector: DeepImmutable&lt;IVector2Like&gt;, result: T): T;</code></pre><p>Sets &quot;result&quot; coordinates with the multiplication of the current Vector2 and the given one coordinates
+Example Playground (online reference)
+<strong>param</strong>  otherVector defines the other vector
+<strong>param</strong>  result defines the target vector
+<strong>returns</strong>  result input</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>otherVector</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-multiplybyfloats-26">multiplyByFloats <a class="anchor" href="#member-multiplybyfloats-26">#</a></h3><pre class="code" data-lang="ts"><code>multiplyByFloats(x: number, y: number): Vector2;</code></pre><p>Gets a new Vector2 set with the Vector2 coordinates multiplied by the given floats
+Example Playground (online reference)
+<strong>param</strong>  x defines the first coordinate
+<strong>param</strong>  y defines the second coordinate
+<strong>returns</strong>  a new Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Vector2</code></p><h3 id="member-divide-27">divide <a class="anchor" href="#member-divide-27">#</a></h3><pre class="code" data-lang="ts"><code>divide(otherVector: DeepImmutable&lt;IVector2Like&gt;): Vector2;</code></pre><p>Returns a new Vector2 set with the Vector2 coordinates divided by the given one coordinates
+Example Playground (online reference)
+<strong>param</strong>  otherVector defines the other vector
+<strong>returns</strong>  a new Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>otherVector</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Vector2</code></p><h3 id="member-dividetoref-28">divideToRef <a class="anchor" href="#member-dividetoref-28">#</a></h3><pre class="code" data-lang="ts"><code>divideToRef&lt;T extends IVector2Like&gt;(otherVector: DeepImmutable&lt;IVector2Like&gt;, result: T): T;</code></pre><p>Sets the &quot;result&quot; coordinates with the Vector2 divided by the given one coordinates
+Example Playground (online reference)
+<strong>param</strong>  otherVector defines the other vector
+<strong>param</strong>  result defines the target vector
+<strong>returns</strong>  result input</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>otherVector</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-divideinplace-29">divideInPlace <a class="anchor" href="#member-divideinplace-29">#</a></h3><pre class="code" data-lang="ts"><code>divideInPlace(otherVector: DeepImmutable&lt;IVector2Like&gt;): this;</code></pre><p>Divides the current Vector2 coordinates by the given ones
+Example Playground (online reference)
+<strong>param</strong>  otherVector defines the other vector
+<strong>returns</strong>  the current updated Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>otherVector</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-minimizeinplace-30">minimizeInPlace <a class="anchor" href="#member-minimizeinplace-30">#</a></h3><pre class="code" data-lang="ts"><code>minimizeInPlace(other: DeepImmutable&lt;IVector2Like&gt;): this;</code></pre><p>Updates the current Vector2 with the minimal coordinate values between its and the given vector ones
+<strong>param</strong>  other defines the second operand
+<strong>returns</strong>  the current updated Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>other</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-maximizeinplace-31">maximizeInPlace <a class="anchor" href="#member-maximizeinplace-31">#</a></h3><pre class="code" data-lang="ts"><code>maximizeInPlace(other: DeepImmutable&lt;IVector2Like&gt;): this;</code></pre><p>Updates the current Vector2 with the maximal coordinate values between its and the given vector ones.
+<strong>param</strong>  other defines the second operand
+<strong>returns</strong>  the current updated Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>other</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-minimizeinplacefromfloats-32">minimizeInPlaceFromFloats <a class="anchor" href="#member-minimizeinplacefromfloats-32">#</a></h3><pre class="code" data-lang="ts"><code>minimizeInPlaceFromFloats(x: number, y: number): this;</code></pre><p>Updates the current Vector2 with the minimal coordinate values between its and the given coordinates
+<strong>param</strong>  x defines the x coordinate of the operand
+<strong>param</strong>  y defines the y coordinate of the operand
+<strong>returns</strong>  the current updated Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-maximizeinplacefromfloats-33">maximizeInPlaceFromFloats <a class="anchor" href="#member-maximizeinplacefromfloats-33">#</a></h3><pre class="code" data-lang="ts"><code>maximizeInPlaceFromFloats(x: number, y: number): this;</code></pre><p>Updates the current Vector2 with the maximal coordinate values between its and the given coordinates.
+<strong>param</strong>  x defines the x coordinate of the operand
+<strong>param</strong>  y defines the y coordinate of the operand
+<strong>returns</strong>  the current updated Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-subtractfromfloats-34">subtractFromFloats <a class="anchor" href="#member-subtractfromfloats-34">#</a></h3><pre class="code" data-lang="ts"><code>subtractFromFloats(x: number, y: number): Vector2;</code></pre><p>Returns a new Vector2 set with the subtraction of the given floats from the current Vector2 coordinates
+<strong>param</strong>  x defines the x coordinate of the operand
+<strong>param</strong>  y defines the y coordinate of the operand
+<strong>returns</strong>  the resulting Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Vector2</code></p><h3 id="member-subtractfromfloatstoref-35">subtractFromFloatsToRef <a class="anchor" href="#member-subtractfromfloatstoref-35">#</a></h3><pre class="code" data-lang="ts"><code>subtractFromFloatsToRef&lt;T extends IVector2Like&gt;(x: number, y: number, result: T): T;</code></pre><p>Subtracts the given floats from the current Vector2 coordinates and set the given vector &quot;result&quot; with this result
+<strong>param</strong>  x defines the x coordinate of the operand
+<strong>param</strong>  y defines the y coordinate of the operand
+<strong>param</strong>  result defines the Vector2 object where to store the result
+<strong>returns</strong>  the result</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-negate-36">negate <a class="anchor" href="#member-negate-36">#</a></h3><pre class="code" data-lang="ts"><code>negate(): Vector2;</code></pre><p>Gets a new Vector2 with current Vector2 negated coordinates
+<strong>returns</strong>  a new Vector2</p>
+<p><b>Type / return:</b> <code>Vector2</code></p><h3 id="member-negateinplace-37">negateInPlace <a class="anchor" href="#member-negateinplace-37">#</a></h3><pre class="code" data-lang="ts"><code>negateInPlace(): this;</code></pre><p>Negate this vector in place
+Example Playground (online reference)
+<strong>returns</strong>  this</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-negatetoref-38">negateToRef <a class="anchor" href="#member-negatetoref-38">#</a></h3><pre class="code" data-lang="ts"><code>negateToRef&lt;T extends IVector2Like&gt;(result: T): T;</code></pre><p>Negate the current Vector2 and stores the result in the given vector &quot;result&quot; coordinates
+Example Playground (online reference)
+<strong>param</strong>  result defines the Vector2 object where to store the result
+<strong>returns</strong>  the result</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-scaleinplace-39">scaleInPlace <a class="anchor" href="#member-scaleinplace-39">#</a></h3><pre class="code" data-lang="ts"><code>scaleInPlace(scale: number): this;</code></pre><p>Multiply the Vector2 coordinates by
+Example Playground (online reference)
+<strong>param</strong>  scale defines the scaling factor
+<strong>returns</strong>  the current updated Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>scale</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-scale-40">scale <a class="anchor" href="#member-scale-40">#</a></h3><pre class="code" data-lang="ts"><code>scale(scale: number): Vector2;</code></pre><p>Returns a new Vector2 scaled by &quot;scale&quot; from the current Vector2
+Example Playground (online reference)
+<strong>param</strong>  scale defines the scaling factor
+<strong>returns</strong>  a new Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>scale</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Vector2</code></p><h3 id="member-scaletoref-41">scaleToRef <a class="anchor" href="#member-scaletoref-41">#</a></h3><pre class="code" data-lang="ts"><code>scaleToRef&lt;T extends IVector2Like&gt;(scale: number, result: T): T;</code></pre><p>Scale the current Vector2 values by a factor to a given Vector2
+Example Playground (online reference)
+<strong>param</strong>  scale defines the scale factor
+<strong>param</strong>  result defines the Vector2 object where to store the result
+<strong>returns</strong>  result input</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>scale</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-scaleandaddtoref-42">scaleAndAddToRef <a class="anchor" href="#member-scaleandaddtoref-42">#</a></h3><pre class="code" data-lang="ts"><code>scaleAndAddToRef&lt;T extends IVector2Like&gt;(scale: number, result: T): T;</code></pre><p>Scale the current Vector2 values by a factor and add the result to a given Vector2
+Example Playground (online reference)
+<strong>param</strong>  scale defines the scale factor
+<strong>param</strong>  result defines the Vector2 object where to store the result
+<strong>returns</strong>  result input</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>scale</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-equals-43">equals <a class="anchor" href="#member-equals-43">#</a></h3><pre class="code" data-lang="ts"><code>equals(otherVector: DeepImmutable&lt;IVector2Like&gt;): boolean;</code></pre><p>Gets a boolean if two vectors are equals
+Example Playground (online reference)
+<strong>param</strong>  otherVector defines the other vector
+<strong>returns</strong>  true if the given vector coordinates strictly equal the current Vector2 ones</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>otherVector</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-equalswithepsilon-44">equalsWithEpsilon <a class="anchor" href="#member-equalswithepsilon-44">#</a></h3><pre class="code" data-lang="ts"><code>equalsWithEpsilon(otherVector: DeepImmutable&lt;IVector2Like&gt;, epsilon?: number): boolean;</code></pre><p>Gets a boolean if two vectors are equals (using an epsilon value)
+Example Playground (online reference)
+<strong>param</strong>  otherVector defines the other vector
+<strong>param</strong>  epsilon defines the minimal distance to consider equality
+<strong>returns</strong>  true if the given vector coordinates are close to the current ones by a distance of epsilon.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>otherVector</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>epsilon</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-equalstofloats-45">equalsToFloats <a class="anchor" href="#member-equalstofloats-45">#</a></h3><pre class="code" data-lang="ts"><code>equalsToFloats(x: number, y: number): boolean;</code></pre><p>Returns true if the current Vector2 coordinates equals the given floats
+<strong>param</strong>  x defines the x coordinate of the operand
+<strong>param</strong>  y defines the y coordinate of the operand
+<strong>returns</strong>  true if both vectors are equal</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-floor-46">floor <a class="anchor" href="#member-floor-46">#</a></h3><pre class="code" data-lang="ts"><code>floor(): Vector2;</code></pre><p>Gets a new Vector2 from current Vector2 floored values
+Example Playground (online reference)
+eg (1.2, 2.31) returns (1, 2)
+<strong>returns</strong>  a new Vector2</p>
+<p><b>Type / return:</b> <code>Vector2</code></p><h3 id="member-floortoref-47">floorToRef <a class="anchor" href="#member-floortoref-47">#</a></h3><pre class="code" data-lang="ts"><code>floorToRef&lt;T extends IVector2Like&gt;(result: T): T;</code></pre><p>Gets the current Vector2&#39;s floored values and stores them in result
+<strong>param</strong>  result the Vector2 to store the result in
+<strong>returns</strong>  the result Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-fract-48">fract <a class="anchor" href="#member-fract-48">#</a></h3><pre class="code" data-lang="ts"><code>fract(): Vector2;</code></pre><p>Gets a new Vector2 from current Vector2 fractional values
+Example Playground (online reference)
+eg (1.2, 2.31) returns (0.2, 0.31)
+<strong>returns</strong>  a new Vector2</p>
+<p><b>Type / return:</b> <code>Vector2</code></p><h3 id="member-fracttoref-49">fractToRef <a class="anchor" href="#member-fracttoref-49">#</a></h3><pre class="code" data-lang="ts"><code>fractToRef&lt;T extends IVector2Like&gt;(result: T): T;</code></pre><p>Gets the current Vector2&#39;s fractional values and stores them in result
+<strong>param</strong>  result the Vector2 to store the result in
+<strong>returns</strong>  the result Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-rotate-50">rotate <a class="anchor" href="#member-rotate-50">#</a></h3><pre class="code" data-lang="ts"><code>rotate(angle: number): Vector2;</code></pre><p>Gets a new Vector2 rotated by the given angle
+<strong>param</strong>  angle defines the rotation angle
+<strong>returns</strong>  a new Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>angle</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Vector2</code></p><h3 id="member-rotatetoref-51">rotateToRef <a class="anchor" href="#member-rotatetoref-51">#</a></h3><pre class="code" data-lang="ts"><code>rotateToRef&lt;T extends IVector2Like&gt;(angle: number, result: T): T;</code></pre><p>Rotate the current vector into a given result vector
+Example Playground (online reference)
+<strong>param</strong>  angle defines the rotation angle
+<strong>param</strong>  result defines the result vector where to store the rotated vector
+<strong>returns</strong>  result input</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>angle</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-length-52">length <a class="anchor" href="#member-length-52">#</a></h3><pre class="code" data-lang="ts"><code>length(): number;</code></pre><p>Gets the length of the vector
+<strong>returns</strong>  the vector length (float)</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-lengthsquared-53">lengthSquared <a class="anchor" href="#member-lengthsquared-53">#</a></h3><pre class="code" data-lang="ts"><code>lengthSquared(): number;</code></pre><p>Gets the vector squared length
+<strong>returns</strong>  the vector squared length (float)</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-normalize-54">normalize <a class="anchor" href="#member-normalize-54">#</a></h3><pre class="code" data-lang="ts"><code>normalize(): this;</code></pre><p>Normalize the vector
+Example Playground (online reference)
+<strong>returns</strong>  the current updated Vector2</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-normalizefromlength-55">normalizeFromLength <a class="anchor" href="#member-normalizefromlength-55">#</a></h3><pre class="code" data-lang="ts"><code>normalizeFromLength(len: number): this;</code></pre><p>Normalize the current Vector2 with the given input length.
+Please note that this is an in place operation.
+<strong>param</strong>  len the length of the vector
+<strong>returns</strong>  the current updated Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>len</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-normalizetonew-56">normalizeToNew <a class="anchor" href="#member-normalizetonew-56">#</a></h3><pre class="code" data-lang="ts"><code>normalizeToNew(): Vector2;</code></pre><p>Normalize the current Vector2 to a new vector
+<strong>returns</strong>  the new Vector2</p>
+<p><b>Type / return:</b> <code>Vector2</code></p><h3 id="member-normalizetoref-57">normalizeToRef <a class="anchor" href="#member-normalizetoref-57">#</a></h3><pre class="code" data-lang="ts"><code>normalizeToRef&lt;T extends IVector2Like&gt;(result: T): T;</code></pre><p>Normalize the current Vector2 to the reference
+<strong>param</strong>  result define the Vector to update
+<strong>returns</strong>  the updated Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-clone-58">clone <a class="anchor" href="#member-clone-58">#</a></h3><pre class="code" data-lang="ts"><code>clone(): Vector2;</code></pre><p>Gets a new Vector2 copied from the Vector2
+Example Playground (online reference)
+<strong>returns</strong>  a new Vector2</p>
+<p><b>Type / return:</b> <code>Vector2</code></p><h3 id="member-dot-59">dot <a class="anchor" href="#member-dot-59">#</a></h3><pre class="code" data-lang="ts"><code>dot(otherVector: DeepImmutable&lt;IVector2Like&gt;): number;</code></pre><p>Gets the dot product of the current vector and the vector &quot;otherVector&quot;
+<strong>param</strong>  otherVector defines second vector
+<strong>returns</strong>  the dot product (float)</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>otherVector</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>number</code></p><h3 id="member-zero-60">Zero <a class="anchor" href="#member-zero-60">#</a></h3><pre class="code" data-lang="ts"><code>static Zero(): Vector2;</code></pre><p>Gets a new Vector2(0, 0)
+<strong>returns</strong>  a new Vector2</p>
+<p><b>Type / return:</b> <code>Vector2</code></p><h3 id="member-one-61">One <a class="anchor" href="#member-one-61">#</a></h3><pre class="code" data-lang="ts"><code>static One(): Vector2;</code></pre><p>Gets a new Vector2(1, 1)
+<strong>returns</strong>  a new Vector2</p>
+<p><b>Type / return:</b> <code>Vector2</code></p><h3 id="member-random-62">Random <a class="anchor" href="#member-random-62">#</a></h3><pre class="code" data-lang="ts"><code>static Random(min?: number, max?: number): Vector2;</code></pre><p>Returns a new Vector2 with random values between min and max
+<strong>param</strong>  min the minimum random value
+<strong>param</strong>  max the maximum random value
+<strong>returns</strong>  a Vector2 with random values between min and max</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>min</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>max</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Vector2</code></p><h3 id="member-randomtoref-63">RandomToRef <a class="anchor" href="#member-randomtoref-63">#</a></h3><pre class="code" data-lang="ts"><code>static RandomToRef&lt;T extends Vector2&gt;(min: number | undefined, max: number | undefined, ref: T): T;</code></pre><p>Sets a Vector2 with random values between min and max
+<strong>param</strong>  min the minimum random value
+<strong>param</strong>  max the maximum random value
+<strong>param</strong>  ref the ref to store the values in
+<strong>returns</strong>  the ref with random values between min and max</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>min</code></td><td><code>number | undefined</code></td><td>Required</td></tr><tr><td><code>max</code></td><td><code>number | undefined</code></td><td>Required</td></tr><tr><td><code>ref</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-zeroreadonly-64">ZeroReadOnly <a class="anchor" href="#member-zeroreadonly-64">#</a></h3><pre class="code" data-lang="ts"><code>static get ZeroReadOnly(): DeepImmutable&lt;Vector2&gt;;</code></pre><p>Gets a zero Vector2 that must not be updated</p>
+<p><b>Type / return:</b> <code>DeepImmutable&lt;Vector2&gt;</code></p><h3 id="member-fromarray-65">FromArray <a class="anchor" href="#member-fromarray-65">#</a></h3><pre class="code" data-lang="ts"><code>static FromArray(array: DeepImmutable&lt;ArrayLike&lt;number&gt;&gt;, offset?: number): Vector2;</code></pre><p>Gets a new Vector2 set from the given index element of the given array
+Example Playground (online reference)
+<strong>param</strong>  array defines the data source
+<strong>param</strong>  offset defines the offset in the data source
+<strong>returns</strong>  a new Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>array</code></td><td><code>DeepImmutable&lt;ArrayLike&lt;number&gt;&gt;</code></td><td>Required</td></tr><tr><td><code>offset</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Vector2</code></p><h3 id="member-fromarraytoref-66">FromArrayToRef <a class="anchor" href="#member-fromarraytoref-66">#</a></h3><pre class="code" data-lang="ts"><code>static FromArrayToRef&lt;T extends Vector2&gt;(array: DeepImmutable&lt;ArrayLike&lt;number&gt;&gt;, offset: number, result: T): T;</code></pre><p>Sets &quot;result&quot; from the given index element of the given array
+Example Playground (online reference)
+<strong>param</strong>  array defines the data source
+<strong>param</strong>  offset defines the offset in the data source
+<strong>param</strong>  result defines the target vector
+<strong>returns</strong>  result input</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>array</code></td><td><code>DeepImmutable&lt;ArrayLike&lt;number&gt;&gt;</code></td><td>Required</td></tr><tr><td><code>offset</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-fromfloatstoref-67">FromFloatsToRef <a class="anchor" href="#member-fromfloatstoref-67">#</a></h3><pre class="code" data-lang="ts"><code>static FromFloatsToRef&lt;T extends Vector2&gt;(x: number, y: number, result: T): T;</code></pre><p>Sets the given vector &quot;result&quot; with the given floats.
+<strong>param</strong>  x defines the x coordinate of the source
+<strong>param</strong>  y defines the y coordinate of the source
+<strong>param</strong>  result defines the Vector2 where to store the result
+<strong>returns</strong>  the result vector</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-catmullrom-68">CatmullRom <a class="anchor" href="#member-catmullrom-68">#</a></h3><pre class="code" data-lang="ts"><code>static CatmullRom(value1: DeepImmutable&lt;IVector2Like&gt;, value2: DeepImmutable&lt;IVector2Like&gt;, value3: DeepImmutable&lt;IVector2Like&gt;, value4: DeepImmutable&lt;IVector2Like&gt;, amount: number): Vector2;</code></pre><p>Gets a new Vector2 located for &quot;amount&quot; (float) on the CatmullRom spline defined by the given four Vector2
+Example Playground (online reference)
+<strong>param</strong>  value1 defines 1st point of control
+<strong>param</strong>  value2 defines 2nd point of control
+<strong>param</strong>  value3 defines 3rd point of control
+<strong>param</strong>  value4 defines 4th point of control
+<strong>param</strong>  amount defines the interpolation factor
+<strong>returns</strong>  a new Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value1</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>value2</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>value3</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>value4</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>amount</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Vector2</code></p><h3 id="member-clamptoref-69">ClampToRef <a class="anchor" href="#member-clamptoref-69">#</a></h3><pre class="code" data-lang="ts"><code>static ClampToRef&lt;T extends Vector2&gt;(value: DeepImmutable&lt;IVector2Like&gt;, min: DeepImmutable&lt;IVector2Like&gt;, max: DeepImmutable&lt;IVector2Like&gt;, ref: T): T;</code></pre><p>Sets reference with same the coordinates than &quot;value&quot; ones if the vector &quot;value&quot; is in the square defined by &quot;min&quot; and &quot;max&quot;.
+If a coordinate of &quot;value&quot; is lower than &quot;min&quot; coordinates, the returned Vector2 is given this &quot;min&quot; coordinate.
+If a coordinate of &quot;value&quot; is greater than &quot;max&quot; coordinates, the returned Vector2 is given this &quot;max&quot; coordinate
+<strong>param</strong>  value defines the value to clamp
+<strong>param</strong>  min defines the lower limit
+<strong>param</strong>  max defines the upper limit
+<strong>param</strong>  ref the reference
+<strong>returns</strong>  the reference</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>min</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>max</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>ref</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-clamp-70">Clamp <a class="anchor" href="#member-clamp-70">#</a></h3><pre class="code" data-lang="ts"><code>static Clamp(value: DeepImmutable&lt;IVector2Like&gt;, min: DeepImmutable&lt;IVector2Like&gt;, max: DeepImmutable&lt;IVector2Like&gt;): Vector2;</code></pre><p>Returns a new Vector2 set with same the coordinates than &quot;value&quot; ones if the vector &quot;value&quot; is in the square defined by &quot;min&quot; and &quot;max&quot;.
+If a coordinate of &quot;value&quot; is lower than &quot;min&quot; coordinates, the returned Vector2 is given this &quot;min&quot; coordinate.
+If a coordinate of &quot;value&quot; is greater than &quot;max&quot; coordinates, the returned Vector2 is given this &quot;max&quot; coordinate
+Example Playground (online reference)
+<strong>param</strong>  value defines the value to clamp
+<strong>param</strong>  min defines the lower limit
+<strong>param</strong>  max defines the upper limit
+<strong>returns</strong>  a new Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>min</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>max</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Vector2</code></p><h3 id="member-hermite-71">Hermite <a class="anchor" href="#member-hermite-71">#</a></h3><pre class="code" data-lang="ts"><code>static Hermite(value1: DeepImmutable&lt;IVector2Like&gt;, tangent1: DeepImmutable&lt;IVector2Like&gt;, value2: DeepImmutable&lt;IVector2Like&gt;, tangent2: DeepImmutable&lt;IVector2Like&gt;, amount: number): Vector2;</code></pre><p>Returns a new Vector2 located for &quot;amount&quot; (float) on the Hermite spline defined by the vectors &quot;value1&quot;, &quot;value2&quot;, &quot;tangent1&quot;, &quot;tangent2&quot;
+Example Playground (online reference)
+<strong>param</strong>  value1 defines the 1st control point
+<strong>param</strong>  tangent1 defines the outgoing tangent
+<strong>param</strong>  value2 defines the 2nd control point
+<strong>param</strong>  tangent2 defines the incoming tangent
+<strong>param</strong>  amount defines the interpolation factor
+<strong>returns</strong>  a new Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value1</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>tangent1</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>value2</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>tangent2</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>amount</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Vector2</code></p><h3 id="member-hermite1stderivative-72">Hermite1stDerivative <a class="anchor" href="#member-hermite1stderivative-72">#</a></h3><pre class="code" data-lang="ts"><code>static Hermite1stDerivative(value1: DeepImmutable&lt;IVector2Like&gt;, tangent1: DeepImmutable&lt;IVector2Like&gt;, value2: DeepImmutable&lt;IVector2Like&gt;, tangent2: DeepImmutable&lt;IVector2Like&gt;, time: number): Vector2;</code></pre><p>Returns a new Vector2 which is the 1st derivative of the Hermite spline defined by the vectors &quot;value1&quot;, &quot;value2&quot;, &quot;tangent1&quot;, &quot;tangent2&quot;.
+Example Playground (online reference)
+<strong>param</strong>  value1 defines the first control point
+<strong>param</strong>  tangent1 defines the first tangent
+<strong>param</strong>  value2 defines the second control point
+<strong>param</strong>  tangent2 defines the second tangent
+<strong>param</strong>  time define where the derivative must be done
+<strong>returns</strong>  1st derivative</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value1</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>tangent1</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>value2</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>tangent2</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>time</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Vector2</code></p><h3 id="member-hermite1stderivativetoref-73">Hermite1stDerivativeToRef <a class="anchor" href="#member-hermite1stderivativetoref-73">#</a></h3><pre class="code" data-lang="ts"><code>static Hermite1stDerivativeToRef&lt;T extends Vector2&gt;(value1: DeepImmutable&lt;IVector2Like&gt;, tangent1: DeepImmutable&lt;IVector2Like&gt;, value2: DeepImmutable&lt;IVector2Like&gt;, tangent2: DeepImmutable&lt;IVector2Like&gt;, time: number, result: T): T;</code></pre><p>Returns a new Vector2 which is the 1st derivative of the Hermite spline defined by the vectors &quot;value1&quot;, &quot;value2&quot;, &quot;tangent1&quot;, &quot;tangent2&quot;.
+Example Playground (online reference)
+<strong>param</strong>  value1 defines the first control point
+<strong>param</strong>  tangent1 defines the first tangent
+<strong>param</strong>  value2 defines the second control point
+<strong>param</strong>  tangent2 defines the second tangent
+<strong>param</strong>  time define where the derivative must be done
+<strong>param</strong>  result define where the derivative will be stored
+<strong>returns</strong>  result input</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value1</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>tangent1</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>value2</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>tangent2</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>time</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-lerp-74">Lerp <a class="anchor" href="#member-lerp-74">#</a></h3><pre class="code" data-lang="ts"><code>static Lerp(start: DeepImmutable&lt;IVector2Like&gt;, end: DeepImmutable&lt;IVector2Like&gt;, amount: number): Vector2;</code></pre><p>Returns a new Vector2 located for &quot;amount&quot; (float) on the linear interpolation between the vector &quot;start&quot; adn the vector &quot;end&quot;.
+Example Playground (online reference)
+<strong>param</strong>  start defines the start vector
+<strong>param</strong>  end defines the end vector
+<strong>param</strong>  amount defines the interpolation factor
+<strong>returns</strong>  a new Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>start</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>end</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>amount</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Vector2</code></p><h3 id="member-lerptoref-75">LerpToRef <a class="anchor" href="#member-lerptoref-75">#</a></h3><pre class="code" data-lang="ts"><code>static LerpToRef(start: DeepImmutable&lt;IVector2Like&gt;, end: DeepImmutable&lt;IVector2Like&gt;, amount: number, result: Vector2): Vector2;</code></pre><p>Sets the given vector &quot;result&quot; with the result of the linear interpolation from the vector &quot;start&quot; for &quot;amount&quot; to the vector &quot;end&quot;
+<strong>param</strong>  start defines the start value
+<strong>param</strong>  end defines the end value
+<strong>param</strong>  amount max defines amount between both (between 0 and 1)
+<strong>param</strong>  result defines the Vector2 where to store the result
+<strong>returns</strong>  result input</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>start</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>end</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>amount</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>Vector2</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Vector2</code></p><h3 id="member-dot-76">Dot <a class="anchor" href="#member-dot-76">#</a></h3><pre class="code" data-lang="ts"><code>static Dot(left: DeepImmutable&lt;IVector2Like&gt;, right: DeepImmutable&lt;IVector2Like&gt;): number;</code></pre><p>Gets the dot product of the vector &quot;left&quot; and the vector &quot;right&quot;
+Example Playground (online reference)
+<strong>param</strong>  left defines first vector
+<strong>param</strong>  right defines second vector
+<strong>returns</strong>  the dot product (float)</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>left</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>right</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>number</code></p><h3 id="member-normalize-77">Normalize <a class="anchor" href="#member-normalize-77">#</a></h3><pre class="code" data-lang="ts"><code>static Normalize(vector: DeepImmutable&lt;Vector2&gt;): Vector2;</code></pre><p>Returns a new Vector2 equal to the normalized given vector
+Example Playground (online reference)
+<strong>param</strong>  vector defines the vector to normalize
+<strong>returns</strong>  a new Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>vector</code></td><td><code>DeepImmutable&lt;Vector2&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Vector2</code></p><h3 id="member-normalizetoref-78">NormalizeToRef <a class="anchor" href="#member-normalizetoref-78">#</a></h3><pre class="code" data-lang="ts"><code>static NormalizeToRef&lt;T extends Vector2&gt;(vector: DeepImmutable&lt;Vector2&gt;, result: T): T;</code></pre><p>Normalize a given vector into a second one
+Example Playground (online reference)
+<strong>param</strong>  vector defines the vector to normalize
+<strong>param</strong>  result defines the vector where to store the result
+<strong>returns</strong>  result input</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>vector</code></td><td><code>DeepImmutable&lt;Vector2&gt;</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-minimize-79">Minimize <a class="anchor" href="#member-minimize-79">#</a></h3><pre class="code" data-lang="ts"><code>static Minimize(left: DeepImmutable&lt;IVector2Like&gt;, right: DeepImmutable&lt;IVector2Like&gt;): Vector2;</code></pre><p>Gets a new Vector2 set with the minimal coordinate values from the &quot;left&quot; and &quot;right&quot; vectors
+Example Playground (online reference)
+<strong>param</strong>  left defines 1st vector
+<strong>param</strong>  right defines 2nd vector
+<strong>returns</strong>  a new Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>left</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>right</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Vector2</code></p><h3 id="member-maximize-80">Maximize <a class="anchor" href="#member-maximize-80">#</a></h3><pre class="code" data-lang="ts"><code>static Maximize(left: DeepImmutable&lt;IVector2Like&gt;, right: DeepImmutable&lt;IVector2Like&gt;): Vector2;</code></pre><p>Gets a new Vector2 set with the maximal coordinate values from the &quot;left&quot; and &quot;right&quot; vectors
+Example Playground (online reference)
+<strong>param</strong>  left defines 1st vector
+<strong>param</strong>  right defines 2nd vector
+<strong>returns</strong>  a new Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>left</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>right</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Vector2</code></p><h3 id="member-transform-81">Transform <a class="anchor" href="#member-transform-81">#</a></h3><pre class="code" data-lang="ts"><code>static Transform(vector: DeepImmutable&lt;IVector2Like&gt;, transformation: DeepImmutable&lt;Matrix&gt;): Vector2;</code></pre><p>Gets a new Vector2 set with the transformed coordinates of the given vector by the given transformation matrix
+Example Playground (online reference)
+<strong>param</strong>  vector defines the vector to transform
+<strong>param</strong>  transformation defines the matrix to apply
+<strong>returns</strong>  a new Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>vector</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>transformation</code></td><td><code>DeepImmutable&lt;Matrix&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Vector2</code></p><h3 id="member-transformtoref-82">TransformToRef <a class="anchor" href="#member-transformtoref-82">#</a></h3><pre class="code" data-lang="ts"><code>static TransformToRef&lt;T extends Vector2&gt;(vector: DeepImmutable&lt;IVector2Like&gt;, transformation: DeepImmutable&lt;Matrix&gt;, result: T): T;</code></pre><p>Transforms the given vector coordinates by the given transformation matrix and stores the result in the vector &quot;result&quot; coordinates
+Example Playground (online reference)
+<strong>param</strong>  vector defines the vector to transform
+<strong>param</strong>  transformation defines the matrix to apply
+<strong>param</strong>  result defines the target vector
+<strong>returns</strong>  result input</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>vector</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>transformation</code></td><td><code>DeepImmutable&lt;Matrix&gt;</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-pointintriangle-83">PointInTriangle <a class="anchor" href="#member-pointintriangle-83">#</a></h3><pre class="code" data-lang="ts"><code>static PointInTriangle(p: DeepImmutable&lt;IVector2Like&gt;, p0: DeepImmutable&lt;IVector2Like&gt;, p1: DeepImmutable&lt;IVector2Like&gt;, p2: DeepImmutable&lt;IVector2Like&gt;): boolean;</code></pre><p>Determines if a given vector is included in a triangle
+Example Playground (online reference)
+<strong>param</strong>  p defines the vector to test
+<strong>param</strong>  p0 defines 1st triangle point
+<strong>param</strong>  p1 defines 2nd triangle point
+<strong>param</strong>  p2 defines 3rd triangle point
+<strong>returns</strong>  true if the point &quot;p&quot; is in the triangle defined by the vectors &quot;p0&quot;, &quot;p1&quot;, &quot;p2&quot;</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>p</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>p0</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>p1</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>p2</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-distance-84">Distance <a class="anchor" href="#member-distance-84">#</a></h3><pre class="code" data-lang="ts"><code>static Distance(value1: DeepImmutable&lt;IVector2Like&gt;, value2: DeepImmutable&lt;IVector2Like&gt;): number;</code></pre><p>Gets the distance between the vectors &quot;value1&quot; and &quot;value2&quot;
+Example Playground (online reference)
+<strong>param</strong>  value1 defines first vector
+<strong>param</strong>  value2 defines second vector
+<strong>returns</strong>  the distance between vectors</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value1</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>value2</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>number</code></p><h3 id="member-distancesquared-85">DistanceSquared <a class="anchor" href="#member-distancesquared-85">#</a></h3><pre class="code" data-lang="ts"><code>static DistanceSquared(value1: DeepImmutable&lt;IVector2Like&gt;, value2: DeepImmutable&lt;IVector2Like&gt;): number;</code></pre><p>Returns the squared distance between the vectors &quot;value1&quot; and &quot;value2&quot;
+Example Playground (online reference)
+<strong>param</strong>  value1 defines first vector
+<strong>param</strong>  value2 defines second vector
+<strong>returns</strong>  the squared distance between vectors</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value1</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>value2</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>number</code></p><h3 id="member-center-86">Center <a class="anchor" href="#member-center-86">#</a></h3><pre class="code" data-lang="ts"><code>static Center(value1: DeepImmutable&lt;IVector2Like&gt;, value2: DeepImmutable&lt;IVector2Like&gt;): Vector2;</code></pre><p>Gets a new Vector2 located at the center of the vectors &quot;value1&quot; and &quot;value2&quot;
+Example Playground (online reference)
+Example Playground (online reference)
+<strong>param</strong>  value1 defines first vector
+<strong>param</strong>  value2 defines second vector
+<strong>returns</strong>  a new Vector2</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value1</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>value2</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Vector2</code></p><h3 id="member-centertoref-87">CenterToRef <a class="anchor" href="#member-centertoref-87">#</a></h3><pre class="code" data-lang="ts"><code>static CenterToRef&lt;T extends Vector2&gt;(value1: DeepImmutable&lt;IVector2Like&gt;, value2: DeepImmutable&lt;IVector2Like&gt;, ref: T): T;</code></pre><p>Gets the center of the vectors &quot;value1&quot; and &quot;value2&quot; and stores the result in the vector &quot;ref&quot;
+Example Playground (online reference)
+<strong>param</strong>  value1 defines first vector
+<strong>param</strong>  value2 defines second vector
+<strong>param</strong>  ref defines third vector
+<strong>returns</strong>  ref</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value1</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>value2</code></td><td><code>DeepImmutable&lt;IVector2Like&gt;</code></td><td>Required</td></tr><tr><td><code>ref</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-distanceofpointfromsegment-88">DistanceOfPointFromSegment <a class="anchor" href="#member-distanceofpointfromsegment-88">#</a></h3><pre class="code" data-lang="ts"><code>static DistanceOfPointFromSegment(p: DeepImmutable&lt;Vector2&gt;, segA: DeepImmutable&lt;Vector2&gt;, segB: DeepImmutable&lt;Vector2&gt;): number;</code></pre><p>Gets the shortest distance (float) between the point &quot;p&quot; and the segment defined by the two points &quot;segA&quot; and &quot;segB&quot;.
+Example Playground (online reference)
+<strong>param</strong>  p defines the middle point
+<strong>param</strong>  segA defines one point of the segment
+<strong>param</strong>  segB defines the other point of the segment
+<strong>returns</strong>  the shortest distance</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>p</code></td><td><code>DeepImmutable&lt;Vector2&gt;</code></td><td>Required</td></tr><tr><td><code>segA</code></td><td><code>DeepImmutable&lt;Vector2&gt;</code></td><td>Required</td></tr><tr><td><code>segB</code></td><td><code>DeepImmutable&lt;Vector2&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>number</code></p><h2 id="base-types">Base types</h2><p><a href="engine-babylonjs-babylon-vector.html">Vector</a> · <code>IVector2Like&gt;</code> · <code>IVector2Like</code></p><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#members">Public members (89)</a><a href="#base-types">Base types</a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

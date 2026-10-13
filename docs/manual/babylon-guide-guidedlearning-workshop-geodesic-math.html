@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Geodesic and Goldberg Polyhedra Mathematics — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Geodesic and Goldberg Polyhedra Mathematics</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="overview">Overview<a class="anchor" href="#overview">#</a></h2>
+<p>In this design, we restrict both polyhedra to ones built from an icosahedron base. A Geodesic polyhedron is built from a number of equilateral triangles. A Goldberg polyhedron is the dual of a Geodesic one, and vice versa. A dual of a polyhedron swaps faces for vertices and vertices for faces.</p>
+<p><p class="muted">Upstream illustration: Dual (media not bundled).</p><br>Fig 1 Icosahedron and its Dual</p>
+<p>The simplest class of Geodesic polyhedra splits each face of an icosahedron into equilateral triangles.</p>
+<p><p class="muted">Upstream illustration: Geodesic (media not bundled).</p><br>Fig 2 Geodesic Polyhedron</p>
+<p><p class="muted">Upstream illustration: Geodesic Sphere (media not bundled).</p><br>Fig 3 Geodesic Polyhedron mapped to Sphere</p>
+<p>More complex classes are formed by rotating, with restrictions, the isometric grid formed by the equilateral triangles that split each face.</p>
+<h2 id="geodesic-classes">Geodesic Classes<a class="anchor" href="#geodesic-classes">#</a></h2>
+<p>A regular icosahedron is formed from 20 primary equilateral triangles. Rather than rotating the underlying grid we demonstrate the classes by rotating a primary triangle on a fixed isometric grid.</p>
+<p>Rotations are formed by applying two positive integers m and n. From a fixed point O (0, 0) on the isometric grid form a point A (m, n) which is m horizontal units from O and n units along the positive gradient line. The primary triangle is formed with a point B such that OAB is an equilateral triangle. The Geodesic polyhedron so formed will be noted as GD(m, n) and its dual, the Goldberg polyhedron, as GP(m, n).</p>
+<p><p class="muted">Upstream illustration: primary 1 (media not bundled).</p><br>Fig 4 Creating a GD(5, 2) on Isometric Grid</p>
+<p><p class="muted">Upstream illustration: primary 2 (media not bundled).</p><br>Fig 5 Primary Triangle Grid Rotation 5, 2</p>
+<p>There are three classes of these polyhedra:</p>
+<ul>
+<li>Class I GD(m, 0)  </li>
+<li>Class II GD(m, m)  </li>
+<li>Class III GD(m, n) m &ne; n</li>
+</ul>
+<p>For Class III GD(m, n) and GD(n, m) are reflections of each other as are GP(m, n) and GP(n, m). We only consider Class III GD(m, n) where m &gt; n.</p>
+<h2 id="geodesic-nets">Geodesic Nets<a class="anchor" href="#geodesic-nets">#</a></h2>
+<p><p class="muted">Upstream illustration: net 1 (media not bundled).</p><br>Fig 6 Net of Icosahedron for GD(5, 2)</p>
+<p>From the net we can see that while some of the triangular faces that will make up the Geodesic mesh lie in the plane of a primary triangle, others will lie across adjacent primary triangles.</p>
+<p><p class="muted">Upstream illustration: net 2 (media not bundled).</p><br>Fig 7 Vertices of some triangular faces lie across adjacent primary triangles.</p>
+<p>When the icosahedron is formed from the net, these faces will not lie in the plane of any primary triangle.</p>
+<h2 id="building-the-geodesic-polyhedron">Building the Geodesic Polyhedron<a class="anchor" href="#building-the-geodesic-polyhedron">#</a></h2>
+<p>There are two main steps to this:</p>
+<ol>
+<li>Grouping the vertices into three to form each face of the Geodesic polyhedron</li>
+<li>Positioning the vertices in 3D space</li>
+</ol>
+<p>In order to achieve both of these, we need to understand transformations on an isometric grid and how to match three facet vertices across the edges of a primary triangle. Using Fig 7 as a basis, we can then label each GD(m, n) vertex in a primary triangle using an isometric coordinate system and then use 60<span class="muted">&lt;sup&gt;</span>o<span class="muted">&lt;/sup&gt;</span> rotations of a primary triangle to match up vertices to form the triangular facets of an adjacent primary triangle.</p>
+<h3 id="transformations-on-an-isomorphic-grid">Transformations on an Isomorphic Grid<a class="anchor" href="#transformations-on-an-isomorphic-grid">#</a></h3>
+<p>In terms of the net, all the GD(m, n) vertices lie on an isometric grid, and we will need to rotate them 60<span class="muted">&lt;sup&gt;</span>o<span class="muted">&lt;/sup&gt;</span> about given points. To understand how this is achieved, we consider isometric vectors and their transformations.</p>
+<p>The <em>x</em> axis is horizontal and the angle between the <em>x</em> axis and the <em>y</em> axis is 60<span class="muted">&lt;sup&gt;</span>o<span class="muted">&lt;/sup&gt;</span> </p>
+<p><p class="muted">Upstream illustration: axis (media not bundled).</p><br>Fig 8 Isometric Axis</p>
+<p>The unit vector along the <em>x</em> axis is <em>i</em>⃗ and along the <em>y</em> axis is <em>j</em>⃗; the unit vector k⃗ = -<em>i</em>⃗ + <em>j</em>⃗, which lies along the third line of an isometric grid, is also useful.</p>
+<p><p class="muted">Upstream illustration: unit vectors (media not bundled).</p><br>Fig 9 Unit Vectors</p>
+<p>Consider the position vector <em>xi</em>⃗ + <em>yj</em>⃗ its length |<em>xi</em>⃗ + <em>yj</em>⃗| = &radic;(<em>x<span class="muted">&lt;sup&gt;</span>2<span class="muted">&lt;/sup&gt;</span></em> + <em>y<span class="muted">&lt;sup&gt;</span>2<span class="muted">&lt;/sup&gt;</span></em> + <em>xy</em>);. This is the result of applying the cosine rule to the triangle in Fig 10 </p>
+<p>|<em>xi</em>⃗ + <em>yj</em>⃗| = &radic;(<em>x<span class="muted">&lt;sup&gt;</span>2<span class="muted">&lt;/sup&gt;</span></em> + <em>y<span class="muted">&lt;sup&gt;</span>2<span class="muted">&lt;/sup&gt;</span></em> - 2<em>xy</em>cos(120<span class="muted">&lt;sup&gt;</span>o<span class="muted">&lt;/sup&gt;</span>)); and cos(120<span class="muted">&lt;sup&gt;</span>o<span class="muted">&lt;/sup&gt;</span>) = -0.5</p>
+<p><p class="muted">Upstream illustration: length (media not bundled).</p><br>Fig 10 Unit Vectors</p>
+<p>Vector additions still hold <em>xi</em>⃗ + <em>yj</em>⃗ + <em>ai</em>⃗ + <em>bj</em>⃗ = (<em>x</em> + <em>a</em>)<em>i</em>⃗ + (<em>y</em> + <em>b</em>)<em>j</em>⃗</p>
+<p>Luckily, our application needs only integer values for the vectors and only rotations by multiples of 60<span class="muted">&lt;sup&gt;</span>o<span class="muted">&lt;/sup&gt;</span>.</p>
+<p>Consider the rotation of the position vector <em>xi</em>⃗ + <em>yj</em>⃗ 60<span class="muted">&lt;sup&gt;</span>o<span class="muted">&lt;/sup&gt;</span> about the origin O, where x and y are integers. The rotation about the origin can be R<span class="muted">&lt;sup&gt;</span>+<span class="muted">&lt;/sup&gt;</span> (counter-clockwise purple to red) or R<span class="muted">&lt;sup&gt;</span>-<span class="muted">&lt;/sup&gt;</span> (clockwise purple to blue) as in Fig 11</p>
+<p><p class="muted">Upstream illustration: rotation (media not bundled).</p><br>Fig 11 Rotation about the origin</p>
+<p>R<span class="muted">&lt;sup&gt;</span>+<span class="muted">&lt;/sup&gt;</span>(<em>xi</em>⃗ + <em>yj</em>⃗) = <em>yk</em>⃗ + <em>xj</em>⃗ = <em>y</em>(-<em>i</em>⃗ + <em>j</em>⃗) + <em>xj</em>⃗<br>= -<em>yi</em>⃗ + (<em>x</em> + <em>y</em>)<em>j</em>⃗</p>
+<p>R<span class="muted">&lt;sup&gt;</span>-<span class="muted">&lt;/sup&gt;</span>(<em>xi</em>⃗ + <em>yj</em>⃗) = <em>yi</em>⃗ - <em>xk</em>⃗ = <em>yi</em>⃗ - <em>x</em>(-<em>i</em>⃗ + <em>j</em>⃗);<br>= (<em>x</em> + <em>y</em>)*⃗ - <em>xj</em>⃗</p>
+<p>Where S<span class="muted">&lt;sup&gt;</span>+<span class="muted">&lt;/sup&gt;</span> and S<span class="muted">&lt;sup&gt;</span>-<span class="muted">&lt;/sup&gt;</span> are respectively counter-clockwise and clockwise rotations of <em>xi</em>⃗ + <em>yj</em>⃗ 60<span class="muted">&lt;sup&gt;</span>o<span class="muted">&lt;/sup&gt;</span> about a point <em>ai</em>⃗ + <em>bj</em>⃗</p>
+<p>S<span class="muted">&lt;sup&gt;</span>+<span class="muted">&lt;/sup&gt;</span>(<em>xi</em>⃗ + <em>yj</em>⃗, <em>ai</em>⃗ + <em>bj</em>⃗)<br>= R<span class="muted">&lt;sup&gt;</span>+<span class="muted">&lt;/sup&gt;</span>((<em>xi</em>⃗ + <em>yj</em>⃗) - (<em>ai</em>⃗ + <em>bj</em>⃗)) + <em>ai</em>⃗ + <em>bj</em>⃗<br>= R<span class="muted">&lt;sup&gt;</span>+<span class="muted">&lt;/sup&gt;</span>((<em>x</em> - <em>a</em>)<em>i</em>⃗) + (<em>y</em> - <em>b</em>)<em>j</em>⃗) + <em>ai</em>⃗ + <em>bj</em>⃗<br>= -(<em>y</em> - <em>b</em>)<em>i</em>⃗ + ((<em>x</em> - <em>a</em>) + (<em>y</em> - <em>b</em>))<em>j</em>⃗ + <em>ai</em>⃗ + <em>bj</em>⃗<br>= (<em>a</em> + <em>b</em> - *y)<em>i</em>⃗ + (<em>x</em> + <em>y</em> - <em>a</em>)<em>j</em>⃗</p>
+<p>S<span class="muted">&lt;sup&gt;</span>-<span class="muted">&lt;/sup&gt;</span>(<em>xi</em>⃗ + <em>yj</em>⃗, <em>ai</em>⃗ + <em>bj</em>⃗)<br>= R<span class="muted">&lt;sup&gt;</span>-<span class="muted">&lt;/sup&gt;</span>((<em>xi</em>⃗ + <em>yj</em>⃗) - (<em>ai</em>⃗ + <em>bj</em>⃗)) + <em>ai</em>⃗ + <em>bj</em>⃗<br>= R<span class="muted">&lt;sup&gt;</span>-<span class="muted">&lt;/sup&gt;</span>((<em>x</em> - <em>a</em>)<em>i</em>⃗ + (<em>y</em> - <em>b</em>)<em>j</em>⃗) + <em>ai</em>⃗ + <em>bj</em>⃗<br>= (<em>x</em> - <em>a</em> + <em>y</em> - <em>b</em>)<em>i</em>⃗ - (<em>x</em> - <em>a</em>)<em>j</em>⃗ + <em>ai</em>⃗ + <em>bj</em>⃗<br>= (<em>x</em> + <em>y</em> - <em>b</em>)<em>i</em>⃗ + (<em>a</em> + <em>b</em> - <em>x</em>)<em>j</em>⃗</p>
+<p><p class="muted">Upstream illustration: rotation center (media not bundled).</p><br>Fig 12 Symmetry Rotations 0 <span class="muted">&lt;sup&gt;</span>o<span class="muted">&lt;/sup&gt;</span>, 120<span class="muted">&lt;sup&gt;</span>o<span class="muted">&lt;/sup&gt;</span>, -120<span class="muted">&lt;sup&gt;</span>o<span class="muted">&lt;/sup&gt;</span></p>
+<p>We also need to consider rotations 120<span class="muted">&lt;sup&gt;</span>o<span class="muted">&lt;/sup&gt;</span> and -120<span class="muted">&lt;sup&gt;</span>o<span class="muted">&lt;/sup&gt;</span> about the center of the triangle OAB.</p>
+<p>Let P have position vector <em>xi</em>⃗ + <em>yj</em>⃗ which after a rotation of 120<span class="muted">&lt;sup&gt;</span>o<span class="muted">&lt;/sup&gt;</span> maps to P<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span> and after a rotation of -120<span class="muted">&lt;sup&gt;</span>o<span class="muted">&lt;/sup&gt;</span> maps to P<span class="muted">&lt;sup&gt;</span>2<span class="muted">&lt;/sup&gt;</span></p>
+<p>P<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span> = m<em>i</em>⃗ + n<em>j</em>⃗ - <em>yi</em>⃗ + <em>xk</em>⃗<br>= m<em>i</em>⃗ + n<em>j</em>⃗ - <em>yi</em>⃗ - <em>xi</em>⃗ + <em>xj</em>⃗<br>= (m - <em>x</em> - <em>y</em>)<em>i</em>⃗ + (n + <em>x</em>)j*⃗ </p>
+<p>P<span class="muted">&lt;sup&gt;</span>2<span class="muted">&lt;/sup&gt;</span> =  -n<em>i</em>⃗ + (m + n)<em>j</em>⃗ - <em>yk</em>⃗ - <em>xj</em>⃗<br>= -n<em>i</em>⃗ + (m + n)<em>j</em>⃗ + <em>yi</em>⃗ - <em>yj</em>⃗ - <em>xj</em>⃗<br>= (<em>y</em> - n)<em>i</em>⃗ + (m + n - <em>x</em> - <em>y</em>)<em>j</em>⃗</p>
+<p>Where R<span class="muted">&lt;sup&gt;</span>C+<span class="muted">&lt;/sup&gt;</span> is a rotation of 120<span class="muted">&lt;sup&gt;</span>o<span class="muted">&lt;/sup&gt;</span> and R<span class="muted">&lt;sup&gt;</span>C-<span class="muted">&lt;/sup&gt;</span> is a rotation of -120<span class="muted">&lt;sup&gt;</span>o<span class="muted">&lt;/sup&gt;</span> about the center of OAB</p>
+<p>R<span class="muted">&lt;sup&gt;</span>C+<span class="muted">&lt;/sup&gt;</span>(<em>xi</em>⃗ + <em>yj</em>⃗) = (m - <em>x</em> - <em>y</em>)<em>i</em>⃗ + (n + <em>x</em>)j*⃗<br>R<span class="muted">&lt;sup&gt;</span>C-<span class="muted">&lt;/sup&gt;</span>(<em>xi</em>⃗ + <em>yj</em>⃗) = (<em>y</em> - n)<em>i</em>⃗ + (m + n - <em>x</em> - <em>y</em>)j*⃗</p>
+<h3 id="match-vertices-across-edges-of-a-primary-face">Match Vertices Across Edges of a Primary Face<a class="anchor" href="#match-vertices-across-edges-of-a-primary-face">#</a></h3>
+<p>We can label the face and vertices for each primary triangle as shown in the net for Fig 13. Taking OA as the base, OB as the left edge, and AB as the right edge of each face, every face has a face on its left, F<span class="muted">&lt;sub&gt;</span>L<span class="muted">&lt;/sub&gt;</span>, right, F<span class="muted">&lt;sub&gt;</span>R<span class="muted">&lt;/sub&gt;</span>, and base, F<span class="muted">&lt;sub&gt;</span>B<span class="muted">&lt;/sub&gt;</span>.</p>
+<p><p class="muted">Upstream illustration: net 2 (media not bundled).</p><br>Fig 13 Labelled Net</p>
+<p>Depending on the position of the face the vertex alignment differs as can be seen in Fig 14.</p>
+<p><p class="muted">Upstream illustration: map 1 (media not bundled).</p><br>Fig 14 Face and Edge Relationships </p>
+<p>Since F shares edges with F<span class="muted">&lt;sub&gt;</span>R<span class="muted">&lt;/sub&gt;</span>, F<span class="muted">&lt;sub&gt;</span>L<span class="muted">&lt;/sub&gt;</span> and F<span class="muted">&lt;sub&gt;</span>B<span class="muted">&lt;/sub&gt;</span> any matching of GD(m, n) vertices across the edges of F can be dealt with by considering the counter-clockwise rotations of various permutations of F, F<span class="muted">&lt;sub&gt;</span>R<span class="muted">&lt;/sub&gt;</span>, F<span class="muted">&lt;sub&gt;</span>L<span class="muted">&lt;/sub&gt;</span> or F<span class="muted">&lt;sub&gt;</span>B<span class="muted">&lt;/sub&gt;</span> around the vertices, O, A or B,  as shown in red in Fig 14. The 30 possible edges are all covered by the table below.</p>
+<table>
+<thead>
+<tr>
+<th>From Face</th>
+<th>To Face</th>
+<th>About</th>
+<th></th>
+<th>From Face</th>
+<th>To Face</th>
+<th>About</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>1</td>
+<td>B</td>
+<td></td>
+<td>10</td>
+<td>0</td>
+<td>O</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2</td>
+<td>B</td>
+<td></td>
+<td>11</td>
+<td>1</td>
+<td>O</td>
+</tr>
+<tr>
+<td>2</td>
+<td>3</td>
+<td>B</td>
+<td></td>
+<td>12</td>
+<td>2</td>
+<td>O</td>
+</tr>
+<tr>
+<td>3</td>
+<td>4</td>
+<td>B</td>
+<td></td>
+<td>13</td>
+<td>3</td>
+<td>O</td>
+</tr>
+<tr>
+<td>4</td>
+<td>0</td>
+<td>B</td>
+<td></td>
+<td>14</td>
+<td>4</td>
+<td>O</td>
+</tr>
+<tr>
+<td>5</td>
+<td>10</td>
+<td>O</td>
+<td></td>
+<td>15</td>
+<td>19</td>
+<td>B</td>
+</tr>
+<tr>
+<td>5</td>
+<td>14</td>
+<td>A</td>
+<td></td>
+<td>15</td>
+<td>5</td>
+<td>A</td>
+</tr>
+<tr>
+<td>6</td>
+<td>11</td>
+<td>O</td>
+<td></td>
+<td>16</td>
+<td>15</td>
+<td>B</td>
+</tr>
+<tr>
+<td>6</td>
+<td>10</td>
+<td>A</td>
+<td></td>
+<td>16</td>
+<td>6</td>
+<td>A</td>
+</tr>
+<tr>
+<td>7</td>
+<td>12</td>
+<td>O</td>
+<td></td>
+<td>17</td>
+<td>16</td>
+<td>B</td>
+</tr>
+<tr>
+<td>7</td>
+<td>11</td>
+<td>A</td>
+<td></td>
+<td>17</td>
+<td>7</td>
+<td>A</td>
+</tr>
+<tr>
+<td>8</td>
+<td>13</td>
+<td>O</td>
+<td></td>
+<td>18</td>
+<td>17</td>
+<td>B</td>
+</tr>
+<tr>
+<td>8</td>
+<td>12</td>
+<td>A</td>
+<td></td>
+<td>18</td>
+<td>8</td>
+<td>A</td>
+</tr>
+<tr>
+<td>9</td>
+<td>14</td>
+<td>O</td>
+<td></td>
+<td>19</td>
+<td>18</td>
+<td>B</td>
+</tr>
+<tr>
+<td>9</td>
+<td>13</td>
+<td>A</td>
+<td></td>
+<td>19</td>
+<td>9</td>
+<td>A</td>
+</tr>
+</tbody></table>
+<p>Table 1  </p>
+<p>&amp;nbsp<br>&nbsp;  </p>
+<p>We can see that a rotation about B aligns edge AB and OB, a rotation about O aligns edge OB and OA, and a rotation about A aligns OA and BA. </p>
+<p>We now consider obtaining the three vertices for the edge overlapping facets in more detail. We start with a rotation about B</p>
+<p><p class="muted">Upstream illustration: primary triangle (media not bundled).</p><br>Fig 15 Rotation of Primary Triangle about the B for - Left GD(5, 2), Right (GD(6, 3))</p>
+<p>Consider a primary triangle OAB as in Fig 15. For triangle OAB take O as the origin of the isometric axes then each vertex (red sphere) can be given (x, y) coordinates. For each y there is a minimum (blue marker) and maximum (green) value of x that belong to OAB. Rotating OAB 60<span class="muted">&lt;sup&gt;</span>o<span class="muted">&lt;/sup&gt;</span> counter-clockwise about B the minimum x map to the orange markers in the rotation. As you can see in Fig 15 example there is overlap of maximum and minimum markers at the primary triangle vertices. For GD(m, n) when n is a factor of m then the maximum x (green) of OAB coincide with the rotated minimum x (orange) for some facet vertices as well as at the primary triangle vertices.</p>
+<p>We can also see that rows contain either one or two rotated minimums. </p>
+<p><p class="muted">Upstream illustration: overlaps (media not bundled).</p><br>Fig 16 Facet Overlap Vertices</p>
+<p>In Fig 16 we can see that there are three types of rotated minimum vertices, 0, 1, and 2, that produce facets that overlap the edge. Each of these points can be associated with two facet triangles, one that is up (light grey) and one down (dark grey).</p>
+<p>For all facet vertices <em>xi</em>⃗ + <em>yj</em>⃗ of a primary triangle OAB of GD(m, n) let M<span class="muted">&lt;sup&gt;</span>max<span class="muted">&lt;/sup&gt;</span>(<em>y</em>) be the point with maximum x value and M<span class="muted">&lt;sup&gt;</span>min<span class="muted">&lt;/sup&gt;</span>(<em>y</em>) the point with minimum x value for row <em>y</em>.</p>
+<p>Let <em>P</em> = <em>x<span class="muted">&lt;sub&gt;</span>p<span class="muted">&lt;/sub&gt;</span>i</em>⃗ + <em>y<span class="muted">&lt;sub&gt;</span>p<span class="muted">&lt;/sub&gt;</span>j</em>⃗ be the position vector of a rotated minimum <em>xi</em>⃗ + <em>yj</em>⃗ =  M<span class="muted">&lt;sup&gt;</span>min<span class="muted">&lt;/sup&gt;</span>(<em>y</em>). </p>
+<p>When <em>P</em> = M<span class="muted">&lt;sup&gt;</span>max<span class="muted">&lt;/sup&gt;</span>(<em>y<span class="muted">&lt;sub&gt;</span>p<span class="muted">&lt;/sub&gt;</span></em>) the up and down facets lie inside the primary triangle are thus ignored in creating overlapping facets.</p>
+<p>For an up facet
+When <em>P</em> is of type 0 and 1 the facet (light grey) has vertices <em>P</em>, M<span class="muted">&lt;sup&gt;</span>max<span class="muted">&lt;/sup&gt;</span>(<em>y<span class="muted">&lt;sub&gt;</span>p<span class="muted">&lt;/sub&gt;</span></em> - 1), <em>P</em> + <em>i</em>⃗ - <em>j</em>⃗</p>
+<p>When <em>P</em> is of type 2 the facet (light grey) has vertices <em>P</em>, M<span class="muted">&lt;sup&gt;</span>max<span class="muted">&lt;/sup&gt;</span>(<em>y<span class="muted">&lt;sub&gt;</span>p<span class="muted">&lt;/sub&gt;</span></em> - 1) - <em>i</em>⃗, M<span class="muted">&lt;sup&gt;</span>max<span class="muted">&lt;/sup&gt;</span>(<em>y<span class="muted">&lt;sub&gt;</span>p<span class="muted">&lt;/sub&gt;</span></em> - 1)</p>
+<p>For a down facet
+When <em>P</em> is of type 0 the facet (dark grey) has vertices <em>P</em>, M<span class="muted">&lt;sup&gt;</span>max<span class="muted">&lt;/sup&gt;</span>(<em>y<span class="muted">&lt;sub&gt;</span>p<span class="muted">&lt;/sub&gt;</span></em>), M<span class="muted">&lt;sup&gt;</span>max<span class="muted">&lt;/sup&gt;</span>(<em>y<span class="muted">&lt;sub&gt;</span>p<span class="muted">&lt;/sub&gt;</span></em> - 1)</p>
+<p>When <em>P</em> is of type 1 the facet (dark grey) has vertices <em>P</em>, <em>P</em> - <em>i</em>⃗, M<span class="muted">&lt;sup&gt;</span>max<span class="muted">&lt;/sup&gt;</span>(<em>y<span class="muted">&lt;sub&gt;</span>p<span class="muted">&lt;/sub&gt;</span></em> - 1)</p>
+<p>When <em>P</em> is of type 2 the facet (dark grey) has vertices <em>P</em>, M<span class="muted">&lt;sup&gt;</span>max<span class="muted">&lt;/sup&gt;</span>(<em>y<span class="muted">&lt;sub&gt;</span>p<span class="muted">&lt;/sub&gt;</span></em>), M<span class="muted">&lt;sup&gt;</span>max<span class="muted">&lt;/sup&gt;</span>(<em>y<span class="muted">&lt;sub&gt;</span>p<span class="muted">&lt;/sub&gt;</span></em> - 1) - <em>i</em>⃗</p>
+<p>This range of vertex triples forms all the overlapping facets.</p>
+<p>Considering Fig 15, these position vectors are all relative to the origin O of primary triangle F. However, for facet vertices in F<span class="muted">&lt;sub&gt;</span>R<span class="muted">&lt;/sub&gt;</span>, we need the position vectors of these vertices to be relative to the origin O of F<span class="muted">&lt;sub&gt;</span>R<span class="muted">&lt;/sub&gt;</span>. Rotating F<span class="muted">&lt;sub&gt;</span>R<span class="muted">&lt;/sub&gt;</span> 60<span class="muted">&lt;sup&gt;</span>o<span class="muted">&lt;/sup&gt;</span> clockwise will return F<span class="muted">&lt;sub&gt;</span>R<span class="muted">&lt;/sub&gt;</span> to the primary triangle&#39;s position as in Fig 4.</p>
+<p>For each vertex in the triples based on <em>P</em> we just need to apply S<span class="muted">&lt;sup&gt;</span>-<span class="muted">&lt;/sup&gt;</span>.  Since S<span class="muted">&lt;sup&gt;</span>-<span class="muted">&lt;/sup&gt;</span>(S<span class="muted">&lt;sup&gt;</span>+<span class="muted">&lt;/sup&gt;</span>) is the identity S<span class="muted">&lt;sup&gt;</span>-<span class="muted">&lt;/sup&gt;</span>(<em>P</em>, B) = <em>xi</em>⃗ + <em>yj</em>⃗</p>
+<p>For <em>xi</em>⃗ + <em>yj</em>⃗<br>Type 1 occurs when <em>P</em>.<em>j</em>&amp;#8407 = S<span class="muted">&lt;sup&gt;</span>+<span class="muted">&lt;/sup&gt;</span>(M<span class="muted">&lt;sup&gt;</span>min<span class="muted">&lt;/sup&gt;</span>(<em>y</em> + 1);, B).<em>j</em>&amp;#8407<br>Type 2 occurs when <em>P</em> - <em>j</em>⃗ &ne;  M<span class="muted">&lt;sup&gt;</span>max<span class="muted">&lt;/sup&gt;</span>(<em>y<span class="muted">&lt;sub&gt;</span>p<span class="muted">&lt;/sub&gt;</span></em> - 1)<br>Otherwise <em>P</em> is of type 0.</p>
+<p><em>P</em> = S<span class="muted">&lt;sup&gt;</span>+<span class="muted">&lt;/sup&gt;</span>(<em>xi</em>⃗ + <em>yj</em>⃗, B)<br>= S<span class="muted">&lt;sup&gt;</span>+<span class="muted">&lt;/sup&gt;</span>(<em>xi</em>⃗ + <em>yj</em>⃗, -n<em>i</em>⃗ + (m + n)<em>j</em>⃗)<br>= (-n + m + n - <em>y</em>)<em>i</em>⃗ + (<em>x</em> + <em>y</em> + <em>n</em>)<em>j</em>⃗<br>= (m - <em>y</em>)<em>i</em>⃗ + (<em>x</em> + <em>y</em> + n)<em>j</em>⃗  </p>
+<p><em>P</em> + <em>i</em>⃗ - <em>j</em>⃗ = (m - <em>y</em>)<em>i</em>⃗ + (<em>x</em> + <em>y</em> + n)<em>j</em>⃗ + <em>i</em>⃗ - <em>j</em>⃗<br>= (m - (<em>y</em> - 1))<em>i</em>⃗ + (<em>x</em> + (<em>y</em> - 1) + n)<em>j</em>⃗
+= S<span class="muted">&lt;sup&gt;</span>+<span class="muted">&lt;/sup&gt;</span>(<em>xi</em>⃗ + (<em>y</em> - 1)j*⃗, B);</p>
+<p><em>P</em> - <em>i</em>⃗ = (m - <em>y</em>)<em>i</em>⃗ + (<em>x</em> + <em>y</em> + n)<em>j</em>⃗ - <em>i</em>⃗<br>= (m - (<em>y</em> + 1))<em>i</em>⃗ + (<em>x</em> - 1 + (<em>y</em> + 1) + n)<em>j</em>⃗
+= S<span class="muted">&lt;sup&gt;</span>+<span class="muted">&lt;/sup&gt;</span>((<em>x</em> - 1)i*⃗ + (<em>y</em> + 1)j*⃗, B);</p>
+<p>It follows that the overlapping facet vertex triples are given by</p>
+<table>
+<thead>
+<tr>
+<th><em>P</em> Type</th>
+<th>Triangle</th>
+<th>Vertex Triple</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0, 1</td>
+<td>Up</td>
+<td>M<span class="muted">&lt;sub&gt;</span>F<span class="muted">&lt;sub&gt;</span>R<span class="muted">&lt;/sub&gt;</span><span class="muted">&lt;/sub&gt;</span><span class="muted">&lt;sup&gt;</span>min<span class="muted">&lt;/sup&gt;</span>(<em>y</em>), M<span class="muted">&lt;sub&gt;</span>F<span class="muted">&lt;/sub&gt;</span><span class="muted">&lt;sup&gt;</span>max<span class="muted">&lt;/sup&gt;</span>(<em>y<span class="muted">&lt;sub&gt;</span>p<span class="muted">&lt;/sub&gt;</span></em> - 1), M<span class="muted">&lt;sub&gt;</span>F<span class="muted">&lt;sub&gt;</span>R<span class="muted">&lt;/sub&gt;</span><span class="muted">&lt;/sub&gt;</span><span class="muted">&lt;sup&gt;</span>min<span class="muted">&lt;/sup&gt;</span>(<em>y</em> - 1)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Up</td>
+<td>M<span class="muted">&lt;sub&gt;</span>F<span class="muted">&lt;sub&gt;</span>R<span class="muted">&lt;/sub&gt;</span><span class="muted">&lt;/sub&gt;</span><span class="muted">&lt;sup&gt;</span>min<span class="muted">&lt;/sup&gt;</span>(<em>y</em>), M<span class="muted">&lt;sub&gt;</span>F<span class="muted">&lt;/sub&gt;</span><span class="muted">&lt;sup&gt;</span>max<span class="muted">&lt;/sup&gt;</span>(<em>y<span class="muted">&lt;sub&gt;</span>p<span class="muted">&lt;/sub&gt;</span></em> - 1) - <em>i</em>⃗, M<span class="muted">&lt;sub&gt;</span>F<span class="muted">&lt;/sub&gt;</span><span class="muted">&lt;sup&gt;</span>max<span class="muted">&lt;/sup&gt;</span>(<em>y<span class="muted">&lt;sub&gt;</span>p<span class="muted">&lt;/sub&gt;</span></em> - 1)</td>
+</tr>
+<tr>
+<td>0</td>
+<td>Down</td>
+<td>M<span class="muted">&lt;sub&gt;</span>F<span class="muted">&lt;sub&gt;</span>R<span class="muted">&lt;/sub&gt;</span><span class="muted">&lt;/sub&gt;</span><span class="muted">&lt;sup&gt;</span>min<span class="muted">&lt;/sup&gt;</span>(<em>y</em>), M<span class="muted">&lt;sub&gt;</span>F<span class="muted">&lt;/sub&gt;</span><span class="muted">&lt;sup&gt;</span>max<span class="muted">&lt;/sup&gt;</span>(<em>y<span class="muted">&lt;sub&gt;</span>p<span class="muted">&lt;/sub&gt;</span></em>), M<span class="muted">&lt;sub&gt;</span>F<span class="muted">&lt;/sub&gt;</span><span class="muted">&lt;sup&gt;</span>max<span class="muted">&lt;/sup&gt;</span>(<em>y<span class="muted">&lt;sub&gt;</span>p<span class="muted">&lt;/sub&gt;</span></em> - 1)</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Down</td>
+<td>M<span class="muted">&lt;sub&gt;</span>F<span class="muted">&lt;sub&gt;</span>R<span class="muted">&lt;/sub&gt;</span><span class="muted">&lt;/sub&gt;</span><span class="muted">&lt;sup&gt;</span>min<span class="muted">&lt;/sup&gt;</span>(<em>y</em>), M<span class="muted">&lt;sub&gt;</span>F<span class="muted">&lt;sub&gt;</span>R<span class="muted">&lt;/sub&gt;</span><span class="muted">&lt;/sub&gt;</span><span class="muted">&lt;sup&gt;</span>min<span class="muted">&lt;/sup&gt;</span>(<em>y</em> + 1), M<span class="muted">&lt;sup&gt;</span>max<span class="muted">&lt;/sup&gt;</span>(<em>y<span class="muted">&lt;sub&gt;</span>p<span class="muted">&lt;/sub&gt;</span></em> - 1)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Down</td>
+<td>M<span class="muted">&lt;sub&gt;</span>F<span class="muted">&lt;sub&gt;</span>R<span class="muted">&lt;/sub&gt;</span><span class="muted">&lt;/sub&gt;</span><span class="muted">&lt;sup&gt;</span>min<span class="muted">&lt;/sup&gt;</span>(<em>y</em>), M<span class="muted">&lt;sub&gt;</span>F<span class="muted">&lt;/sub&gt;</span><span class="muted">&lt;sup&gt;</span>max<span class="muted">&lt;/sup&gt;</span>(<em>y<span class="muted">&lt;sub&gt;</span>p<span class="muted">&lt;/sub&gt;</span></em>), M<span class="muted">&lt;sub&gt;</span>F<span class="muted">&lt;/sub&gt;</span><span class="muted">&lt;sup&gt;</span>max<span class="muted">&lt;/sup&gt;</span>(<em>y<span class="muted">&lt;sub&gt;</span>p<span class="muted">&lt;/sub&gt;</span></em> - 1) - <em>i</em>⃗</td>
+</tr>
+</tbody></table>
+<p>Table 2</p>
+<p>&nbsp;  </p>
+<p>A rotation about O is as in Fig 17.</p>
+<p><p class="muted">Upstream illustration: rotation O (media not bundled).</p><br>Fig 17 Rotation OAB 60<span class="muted">&lt;sup&gt;</span>o<span class="muted">&lt;/sup&gt;</span> about O</p>
+<p>This can also be achieved by rotating the diagrams in Fig 15 120<span class="muted">&lt;sup&gt;</span>o<span class="muted">&lt;/sup&gt;</span> counter-clockwise as in Fig 18.</p>
+<p><p class="muted">Upstream illustration: rotation A (media not bundled).</p><br>Fig 18 Rotation Fig 15 120<span class="muted">&lt;sup&gt;</span>o<span class="muted">&lt;/sup&gt;</span> about O</p>
+<p>Hence, applying a rotation of 120<span class="muted">&lt;sup&gt;</span>o<span class="muted">&lt;/sup&gt;</span> to the values in Table 2 will produce the correct vertex isometric positions for the overlapping facets of edges OA and OB.</p>
+<p>A rotation about A is as in Fig 19</p>
+<p><p class="muted">Upstream illustration: rotation O (media not bundled).</p><br>Fig 19 Rotation OAB 60<span class="muted">&lt;sup&gt;</span>o<span class="muted">&lt;/sup&gt;</span> about A and translation</p>
+<p>This can also be achieved by rotating the diagrams in Fig 15 -120<span class="muted">&lt;sup&gt;</span>o<span class="muted">&lt;/sup&gt;</span> counter-clockwise and translating -m<em>i</em>&amp;#8407 - n<em>j</em>⃗ as in Fig 20.</p>
+<p><p class="muted">Upstream illustration: rotation A (media not bundled).</p><br>Fig 20 Rotation Fig 15 -120<span class="muted">&lt;sup&gt;</span>o<span class="muted">&lt;/sup&gt;</span> about A and translation</p>
+<p>Hence, applying a rotation of -120<span class="muted">&lt;sup&gt;</span>o<span class="muted">&lt;/sup&gt;</span> about A to the values in Table 2, followed by a translation of -m<em>i</em>&amp;#8407 - n<em>j</em>⃗, will produce the correct vertex isometric positions for the overlapping facets of edges OA and AB.</p>
+<h3 id="facet-isometric-coordinates">Facet Isometric Coordinates<a class="anchor" href="#facet-isometric-coordinates">#</a></h3>
+<p>For each facet vertex that lies within the primary triangle, we determine the isometric coordinates (x, y). When constructing the primary triangle for GD(m, n), O is (0, 0), A is (m, n), and B is (-n, m + n); these are the white vertices in Fig 21.</p>
+<p><p class="muted">Upstream illustration: facet vertices (media not bundled).</p><br>Fig 21 Internal Facet Vertices</p>
+<p>The red vertices lie on the maximum equilateral triangle CDE, that can be drawn wholly inside OAB along grid lines. The bottom left red vertex lies on the intersection of the y axis and the line through A parallel to the x axis and so has iso-coordinates (0, n). </p>
+<p><p class="muted">Upstream illustration: Rotational Symmetry (media not bundled).</p><br>Fig 22 Rotating (x, y) 0, 120<span class="muted">&lt;sup&gt;</span>o<span class="muted">&lt;/sup&gt;</span>, -120<span class="muted">&lt;sup&gt;</span>o<span class="muted">&lt;/sup&gt;</span></p>
+<p>Therefore by rotational symmetry </p>
+<p>D = R<span class="muted">&lt;sup&gt;</span>C+<span class="muted">&lt;/sup&gt;</span>(0, n) = (m - n, n) and<br>E = R<span class="muted">&lt;sup&gt;</span>C-<span class="muted">&lt;/sup&gt;</span>(0, n) = (0, m)</p>
+<p>Now consider the green vertices. They all lie on triangles similar to OCA, as in Fig 23, and note that OA = n and CA = m.</p>
+<p><p class="muted">Upstream illustration: Green Vertices (media not bundled).</p><br>Fig 23 Green Vertices</p>
+<p>Let F be the point (0, y) with y &lt; n and G the point (x, y). Let H be the point where the extended line through FG meets OA. It follows that x &le; FH. Note that </p>
+<p><p class="muted">Upstream illustration: Similar Triangles (media not bundled).</p><br>Fig 24 Similar Triangles</p>
+<p>Triangles OCA and OFH are similar and so</p>
+<p><span class="muted">&lt;ins&gt;</span>FH<span class="muted">&lt;/ins&gt;</span> = <span class="muted">&lt;ins&gt;</span>OF<span class="muted">&lt;/ins&gt;</span>     </p>
+<p>CA &nbsp; OC</p>
+<p>and so</p>
+<p>FH = y * (m / n)  and since x &le; FH<br>x &le; y * (m / n);</p>
+<p>The green vertices all lie on the iso-grid and so are all points (x, y) with integer values for x and y, where</p>
+<p>0 &lt; y &amp;lt n and 0 &le; x &le; y * (m / n);
+Using rotation symmetry and rotating about the center of OAB 120<span class="muted">&lt;sup&gt;</span>o<span class="muted">&lt;/sup&gt;</span> and -120<span class="muted">&lt;sup&gt;</span>o<span class="muted">&lt;/sup&gt;</span> gives the yellow and blue vertices.</p>
+<p><p class="muted">Upstream illustration: Along edge (media not bundled).</p><br>Fig 25 Facet vertices along edges when m and n &ne; 0 have factors in common and n &ne; 0</p>
+<p>Any facet vertices lying on an edge of a primary triangle will have the same position as that on a matched edge.</p>
+<p>When n = 0, there is no rotation and there are m - 1 shared positions along each edge between the vertices.</p>
+<p>When n &ne; 0, let g be the HCF (highest common factor) of m and n. When n = 1 there are no shared positions along each edge between vertices. When n &gt; 1 let m<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span> and n<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span> be such that m = gm<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span> and n = gn<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span> then the number of shared positions between the vertices along one edge is g - 1.</p>
+<p>Along OA they occur at  m<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span><em>i</em>⃗ + n<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span>j*⃗, 2m<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span><em>i</em>⃗ + 2n<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span>j*⃗, ......, (g - 1)m<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span><em>i</em>⃗ + (g - 1)n<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span>j*⃗.</p>
+<p>Along AB at R<span class="muted">&lt;sup&gt;</span>C+<span class="muted">&lt;/sup&gt;</span>(m<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span><em>i</em>⃗ + n<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span>j*⃗), R<span class="muted">&lt;sup&gt;</span>C+<span class="muted">&lt;/sup&gt;</span>(2m<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span><em>i</em>⃗ + 2n<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span>j*&amp;#8407);, ......, R<span class="muted">&lt;sup&gt;</span>C+<span class="muted">&lt;/sup&gt;</span>((g - 1)m<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span><em>i</em>⃗ + (g - 1)n<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span>j*⃗).</p>
+<p>Along BO at R<span class="muted">&lt;sup&gt;</span>C-<span class="muted">&lt;/sup&gt;</span>(m<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span><em>i</em>⃗ + n<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span>j*⃗), R<span class="muted">&lt;sup&gt;</span>C-<span class="muted">&lt;/sup&gt;</span>(2m<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span><em>i</em>⃗ + 2n<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span>j*&amp;#8407);, ......, R<span class="muted">&lt;sup&gt;</span>C-<span class="muted">&lt;/sup&gt;</span>((g - 1)m<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span><em>i</em>⃗ + (g - 1)n<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span>j*⃗).</p>
+<h3 id="cartesian-coordinates">Cartesian Coordinates<a class="anchor" href="#cartesian-coordinates">#</a></h3>
+<p><p class="muted">Upstream illustration: Carteian (media not bundled).</p><br>Fig 26 Cartesian Coordinates</p>
+<p>Fig 26 shows that the cartesian coordinates of a point with position iso-vector <em>xi</em>⃗ + <em>yj</em>⃗<br>has cartesian coordinates (<em>x</em> + 0.5<em>y</em>, 0.5&radic;3y)</p>
+<h3 id="mapping-primary-triangle-to-icosahedron-face">Mapping Primary Triangle to Icosahedron Face<a class="anchor" href="#mapping-primary-triangle-to-icosahedron-face">#</a></h3>
+<p><p class="muted">Upstream illustration: Primary Map (media not bundled).</p><br>Fig 27 Primary Triangle Mapping to Icosahedron Face</p>
+<p>Let OAB be an equilateral triangle with a Cartesian frame of reference with unit vectors <em>u</em>&amp;#8407 and <em>v</em>&amp;#8407 along the <em>X</em> and <em>Y</em> axes respectively, and <em>i</em>⃗ and <em>j</em>⃗ the usual iso-vectors. O<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span>A<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span>B<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span> and the frame of reference <em>X<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span>Y<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span></em> are formed by a rotation and scaling of OAB and <em>XY</em> in 3D space, with <em>u<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span></em>&amp;#8407 and <em>v<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span></em>&amp;#8407, and <em>i<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span></em>⃗ and <em>j<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span></em>⃗, as the corresponding Cartesian and iso vectors.</p>
+<p>Let P be any point with cartesian position vector <em>xu</em>⃗ + <em>yv</em>⃗. Let <em>d</em> be the scaling of O<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span>A<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span>B<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span> to OAB. The corresponding point P<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span> to P will have position vector <em>xdu⃗<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span></em> + <em>ydv</em>⃗<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span>. </p>
+<p>In iso_vectors OA = m<em>i</em>⃗ + n<em>j</em>⃗ and OB = -n<em>i</em>⃗ + (m + n)<em>j</em>⃗ and so in Cartesian vectors</p>
+<p>OA = (m + 0.5n)<em>u</em>⃗ + 0.5&radic;3n<em>v</em>⃗ and </p>
+<p>OB = (0.5(m + n) - n)<em>u</em>⃗ + 0.5&radic;3(m + n)<em>v</em>⃗ = 0.5(m - n)<em>u</em>⃗ + 0.5&radic;3(m + n)<em>v</em>⃗</p>
+<p>(m + 0.5n)OB = (m + 0.5n)(0.5(m - n))<em>u</em>⃗ + 0.5&radic;3(m + n)(m + 0.5n)*uv⃗</p>
+<p>(0.5(m - n))OA = (m + 0.5)(0.5(m - n))<em>u</em>⃗ + 0.5&radic;3n(0.5(m - n))<em>v</em>⃗</p>
+<p>(m + 0.5n)OB - (0.5(m - n))OA = 0.5&radic;3((m + n)(m + 0.5n) - n(0.5(m - n)))<em>v</em>⃗</p>
+<p>(2m + n)OB - (m - n)OA = &radic;3(m<span class="muted">&lt;sup&gt;</span>2<span class="muted">&lt;/sup&gt;</span> + 0.5n<span class="muted">&lt;sup&gt;</span>2<span class="muted">&lt;/sup&gt;</span> + mn + 0.5mn - 0.5mn + 0.5n<span class="muted">&lt;sup&gt;</span>2<span class="muted">&lt;/sup&gt;</span>)<em>v</em>⃗</p>
+<p>(2m + n)OB - (m - n)OA = &radic;3(m<span class="muted">&lt;sup&gt;</span>2<span class="muted">&lt;/sup&gt;</span> + n<span class="muted">&lt;sup&gt;</span>2<span class="muted">&lt;/sup&gt;</span> + mn)<em>v</em>⃗</p>
+<p>from which we can find <em>v</em>⃗ and then <em>u</em>⃗ in terms of OA and OB. </p>
+<p>Since O<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span>A<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span> = md<em>i<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span></em>⃗ + nd<em>j<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span></em>⃗ and<br>O<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span>B<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span> = -nd<em>i<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span></em>⃗ + (m + n)d<em>j<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span></em>⃗</p>
+<p>we can use this method to find <em>v<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span></em>⃗ and then <em>u<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span></em>⃗ in terms of O<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span>A<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span> and O<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span>B<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span> so that we can determine P<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span>. </p>
+<p>For example when finding <em>v<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span></em>⃗ the coefficient of O<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span>B<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span> will be </p>
+<p><span class="muted">&lt;ins&gt;</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;d(m + n)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="muted">&lt;/ins&gt;</span><br>&nbsp;  </p>
+<p>d<span class="muted">&lt;sup&gt;</span>2<span class="muted">&lt;/sup&gt;</span>&radic;3(m<span class="muted">&lt;sup&gt;</span>2<span class="muted">&lt;/sup&gt;</span> + n<span class="muted">&lt;sup&gt;</span>2<span class="muted">&lt;/sup&gt;</span> + mn)</p>
+<p>=</p>
+<p><span class="muted">&lt;ins&gt;</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(m + n)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="muted">&lt;/ins&gt;</span><br>&nbsp;  </p>
+<p>d&radic;3(m<span class="muted">&lt;sup&gt;</span>2<span class="muted">&lt;/sup&gt;</span> + n<span class="muted">&lt;sup&gt;</span>2<span class="muted">&lt;/sup&gt;</span> + mn)</p>
+<p>We also note that m<span class="muted">&lt;sup&gt;</span>2<span class="muted">&lt;/sup&gt;</span> + n<span class="muted">&lt;sup&gt;</span>2<span class="muted">&lt;/sup&gt;</span> + mn = l<span class="muted">&lt;sup&gt;</span>2<span class="muted">&lt;/sup&gt;</span>, where l is the length of OA. </p>
+<p>Doing the calculations for <em>v<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span></em>⃗ and for <em>u<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span></em>⃗ the coefficients of O<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span>A<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span> and of  O<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span>B<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span> all contain the common multiplier 1 / dl<span class="muted">&lt;sup&gt;</span>2<span class="muted">&lt;/sup&gt;</span>.</p>
+<p>Since <em>xu</em>⃗ + <em>yv</em>⃗ in OAB maps to  <em>xdu⃗<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span></em> + <em>ydv</em>⃗<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span> in O<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span>A<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span>O<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span>B<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span> and d / dl<span class="muted">&lt;sup&gt;</span>2<span class="muted">&lt;/sup&gt;</span> = 1 / l<span class="muted">&lt;sup&gt;</span>2<span class="muted">&lt;/sup&gt;</span> when it comes to coding we can calculate constant coefficients just once and rather than calculating <em>u</em>⃗ and <em>v</em>⃗ as unit vectors calculate them as vectors scaled by d, for example</p>
+<p><em>v</em>⃗ = ((2m + n)O<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span>B<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span> - (m - n)O<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span>A<span class="muted">&lt;sub&gt;</span>1<span class="muted">&lt;/sub&gt;</span>) / l<span class="muted">&lt;sup&gt;</span>2<span class="muted">&lt;/sup&gt;</span>&radic;3</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#overview">Overview </a><a href="#geodesic-classes">Geodesic Classes </a><a href="#geodesic-nets">Geodesic Nets </a><a href="#building-the-geodesic-polyhedron">Building the Geodesic Polyhedron </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

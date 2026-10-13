@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Transparent Rendering — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Transparent Rendering</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><p>This article was written to help you understand how things are drawn on screen, and how transparency is handled in Babylon.js. Feel free to contribute in whatever way seems appropriate to you!</p>
+<h2 id="general-considerations">General Considerations<a class="anchor" href="#general-considerations">#</a></h2>
+<p>A general rule of thumb in real-time 3D rendering is that drawing several overlapping opaque objects is always easier than non-opaque ones. This is due to the fact that opaque objects are compatible with the use of a depth buffer, and thus no specific order is required when rendering them.</p>
+<p>A depth buffer is a surface with the same dimensions as the screen, storing the following information for every pixel: how far from the camera the last pixel drawn there was. With this information, we can draw as many objects as we want and always be sure that we will never draw something that was supposed to be hidden by another object. Babylon.js offers access to this information with a special DepthRenderer object.</p>
+<p>Rendering objects without a depth buffer would require resorting to an old-school technique called <span><em>Painter&#39;s Algorithm</em></span>, which is extremely simple: draw farther objects first. Sky, then backdrop, etc., all the way to foreground objects. This is basically ordering objects by distance from the camera (a.k.a. depth), and it is clearly not enough for most cases.</p>
+<p>Testing against a depth buffer during rendering is a very common technique. It is simple to implement and inexpensive in terms of performance. However, things get more complicated for non-opaque objects, as a depth buffer can&#39;t be used anymore (since these objects don&#39;t completely hide what&#39;s behind them).</p>
+<p>This is what a depth buffer looks like for a scene which contains only opaque meshes:
+<p class="muted">Upstream illustration: Opaque only meshes (media not bundled).</p></p>
+<h2 id="rendering-order">Rendering Order<a class="anchor" href="#rendering-order">#</a></h2>
+<h2 id="general-order">General Order<a class="anchor" href="#general-order">#</a></h2>
+<p>Before actually drawing meshes on the screen, Babylon.js puts them in the following categories, which are presented in the order in which they are drawn:</p>
+<ol>
+<li><p><strong>Depth pre-pass meshes</strong></p>
+</li>
+<li><p><strong>Opaque meshes</strong></p>
+</li>
+<li><p><strong>Alpha tested meshes</strong></p>
+</li>
+<li><p><strong>Sprites</strong> (handled by SpriteManager)</p>
+</li>
+<li><p><strong>Particles</strong> (handled by ParticleSystem)</p>
+</li>
+<li><p><strong>Alpha blended meshes</strong>, sorted by depth (= distance to camera)</p>
+</li>
+</ol>
+<p>Categories 4 and 5 should be self-explanatory, so we won&#39;t discuss them further.</p>
+<h2 id="rendering-groups">Rendering Groups<a class="anchor" href="#rendering-groups">#</a></h2>
+<p>Renderable objects can be organized into rendering groups, which act as layers. Layers are rendered in ascending order by ID, starting with the default one (which has the ID of 0). Within each rendering group, the &quot;General Order&quot; above will also be used.</p>
+<p>To use rendering groups, you simply need to set the property <code>.renderingGroupId</code> on the objects you want to put in other layers than the default one.</p>
+<p>This property exists on meshes, particle systems and sprite managers.</p>
+<p>By default, there are 4 rendering groups in total, meaning that the only valid IDs are 0, 1, 2, and 3. This can be increased by setting the static property <code>BABYLON.RenderingManager.MAX_RENDERINGGROUPS</code> to the maximum number of groups you want (for example, set it to 8 to support 8 rendering groups).</p>
+<h2 id="alpha-index">Alpha Index<a class="anchor" href="#alpha-index">#</a></h2>
+<p>Meshes have another property that influences the rendering order: <code>.alphaIndex</code>.</p>
+<p>By default, this property is set to <code>Number.MAX_VALUE</code>, which is the highest value that a numerical variable can hold (around 1.79E+308).</p>
+<p>Unlike opaque and alpha-tested meshes, the Babylon.js rendering engine sorts alpha-blended meshes by depth before drawing them on screen (see below). The <code>.alphaIndex</code> property allows you to override this sorting, as one mesh that has a lower alpha index than another will <em>always</em> be rendered before it, regardless of their respective depth.</p>
+<p>To phrase it more simply: <strong>alpha-blended meshes are sorted <em>first</em> by alpha index, and <em>then</em> by depth (distance to camera).</strong></p>
+<p>Keep in mind that this property works only for alpha-blended meshes, and has absolutely no effect on opaque and alpha-tested ones.</p>
+<p><em>Note: this property can be manually set on meshes in 3DS Max with the Babylon.js exporter plugin.</em></p>
+<h2 id="opaque-or-transparent">Opaque or Transparent?<a class="anchor" href="#opaque-or-transparent">#</a></h2>
+<p>How your meshes are categorized may be very important for the final appearance of your scene. Let&#39;s take a closer look at the way categories 1 to 4 are defined.</p>
+<h2 id="depth-pre-pass-meshes">Depth pre-pass meshes<a class="anchor" href="#depth-pre-pass-meshes">#</a></h2>
+<p>Depth pre-pass meshes define an additional rendering pass for meshes. During this pass, meshes are rendered only to the depth buffer. Depth pre-pass meshes are not exclusive. A mesh can have a depth pre-pass and an opaque or alpha-blend pass. To enable the depth pre-pass for a mesh, just set <code>mesh.material.needDepthPrePass = true</code>.
+The goal is either to optimize the scene by rendering meshes to the depth buffer to reduce overdraw or to help reduce alpha-blending sorting issues.</p>
+<h2 id="opaque-meshes">Opaque Meshes<a class="anchor" href="#opaque-meshes">#</a></h2>
+<p>These will be the easiest to render: their polygons are fully drawn on screen with their colors and textures. A depth buffer will be used to make sure nothing is drawn over something that is closer to the camera.</p>
+<h2 id="alpha-tested-meshes">Alpha Tested Meshes<a class="anchor" href="#alpha-tested-meshes">#</a></h2>
+<p>These are the same as opaque meshes, except that some parts of the meshes can be defined as completely transparent. Alpha test means that each pixel of the mesh can be either opaque (and then drawn on screen and in the depth buffer) or transparent, which means the pixel is completely discarded. Although very efficient, this type of rendering usually produces aliased borders and does not allow for smooth transparency effects.</p>
+<p>By default, a pixel is considered transparent if its alpha value is &lt; 0.4, and opaque if not. For the <code>StandardMaterial</code> and <code>PBR</code> materials, you can change the <code>0.4</code> value by updating the <code>mesh.material.alphaCutOff</code> property.</p>
+<h2 id="alpha-blended-meshes">Alpha Blended Meshes<a class="anchor" href="#alpha-blended-meshes">#</a></h2>
+<p>These meshes have translucent parts that may have an alpha value of 0.0 (completely transparent) to 1.0 (completely opaque). Their color is blended with what&#39;s behind them to reflect that. These meshes are sorted by depth, based on the center of their bounding sphere. This does not prevent some problems when several alpha-blended meshes overlap.</p>
+<p>Also, note that backface culling is pretty much obligatory for alpha-blended meshes; otherwise, polygons from the front and the back of the objects will be garbled (unless you use a depth pre-pass).</p>
+<p>This is what a depth buffer looks like for a scene that contains each of those types of meshes:
+<p class="muted">Upstream illustration: All kinds of meshes (media not bundled).</p></p>
+<p><em>In this scene, the sphere is alpha tested, the base blocks are opaque and the pillars are alpha blended. As you can see, the alpha blended meshes are <strong>not</strong> written to the depth buffer!</em></p>
+<h2 id="categorizing-meshes">Categorizing meshes<a class="anchor" href="#categorizing-meshes">#</a></h2>
+<p>The following list will help you understand which categories your meshes will be put into. For more information on each of the properties mentioned here, take a look at the <a href="babylon-guide-features-introductiontofeatures-chap2-face-material.html">Materials tutorial</a>.</p>
+<p><strong>Alpha blended meshes:</strong></p>
+<ul>
+<li>Any mesh that either has:<ul>
+<li>the property <code>hasVertexAlpha</code> set to true (automatically set for exported meshes if vertices have individual alpha (transparency) values)</li>
+<li><code>mesh.visibility</code> value &lt; 1</li>
+</ul>
+</li>
+<li>In case of a mesh using <code>StandardMaterial</code>, if it either has:<ul>
+<li><code>material.alpha</code> property &lt; 1</li>
+<li>an opacity texture defined</li>
+<li>the opacity Fresnel effect active</li>
+<li>a diffuse texture with <code>hasAlpha = true</code> and <code>useAlphaFromDiffuseTexture = true</code></li>
+</ul>
+</li>
+<li>In case of a mesh using a PBR material, if it either has:<ul>
+<li><code>material.alpha</code> property &lt; 1</li>
+<li>an opacity texture defined</li>
+<li>an albedo texture with <code>hasAlpha = true</code> and <code>useAlphaFromAlbedoTexture = true</code></li>
+</ul>
+</li>
+<li>In case of another type of material, if the material&#39;s <code>.needAlphaBlending()</code> function returns <code>true</code></li>
+</ul>
+<p><strong>Alpha tested meshes:</strong></p>
+<ul>
+<li>In case of a mesh using <code>StandardMaterial</code>, if it has:<ul>
+<li>a diffuse texture with the property <code>.hasAlpha</code> set to <code>true</code></li>
+</ul>
+</li>
+<li>In case of a mesh using a <code>PBR</code> material, if:<ul>
+<li>the sub surface module does not disable alpha blending</li>
+<li>AND an albedo texture is defined with the property <code>.hasAlpha</code> set to <code>true</code></li>
+</ul>
+</li>
+<li>In case of another type of material, if the material&#39;s <code>.needAlphaTesting()</code> function returns <code>true</code></li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li>alpha testing is linked to the diffuse/albedo texture: to enable it, you must set the <code>.hasAlpha</code> property of the diffuse/albedo texture to <code>true</code> even if all you are interested in is to apply alpha testing to the opacity texture for eg. Alternatively, you can override the <code>Material.needAlphaTesting()</code> method and return <code>true</code> if you want alpha testing to be enabled:<ul>
+<li><code>myMat.needAlphaTesting = () =&gt; myMat.opacityTexture !== null;</code></li>
+</ul>
+</li>
+<li>for the standard material:<ul>
+<li>if <code>transparencyMode</code> (see next section for details about this property) is <code>null</code>, the alpha test is applied only on the alpha value read from the diffuse texture</li>
+<li>if <code>transparencyMode</code> is not <code>null</code>, the alpha test is applied near the end of the pipeline, when all alpha contributions have been taken into account (vertex alpha, opacity texture alpha, fresnel alpha). Note however that the computation is applied <strong>BEFORE</strong> the visibility property of the mesh is factored in!</li>
+</ul>
+</li>
+<li>for the PBR material:<ul>
+<li>the alpha test is applied after the contributions from the albedo / vertex alpha / opacity texture have been factored in</li>
+</ul>
+</li>
+</ul>
+<p><strong>Opaque meshes:</strong></p>
+<ul>
+<li>Any mesh that does not fit into one of the above categories</li>
+</ul>
+<p>Occasionally, you may have some of your meshes falling into the wrong category, e.g. an alpha-tested mesh unnecessarily marked as alpha-blended, or a mesh staying opaque when it shouldn&#39;t. This will give you strange glitches, which can sometimes be very annoying. You should refer to this article to check how your meshes and material properties are set.</p>
+<p>You&#39;re welcome to use this example to experiment on the different things explained here: <span class="muted">Online playground (not embedded offline)</span> Pressing F9 will switch between normal render and depth buffer render.</p>
+<p>It&#39;s important to note that these categories are evaluated from top to bottom, so if a mesh is considered an alpha-blended mesh, it can&#39;t be alpha-tested at the same time, which is something you may still need or want to do! Enter the <code>transparencyMode</code> property.</p>
+<h2 id="the-transparencymode-property">The transparencyMode property<a class="anchor" href="#the-transparencymode-property">#</a></h2>
+<p>This is a property on <code>StandardMaterial</code> and <code>PBR</code> materials. It exists for PBR materials since they were introduced, and since v4.1 for <code>StandardMaterial</code>.</p>
+<p>As you may have seen above, categorizing a mesh depends on a number of properties, and it is not always easy to infer the right category. The <code>transparencyMode</code> property can help in that regard, as well as enable alpha-test and alpha-blend modes simultaneously.</p>
+<p>By default, it is <code>null</code> and everything works as described above. The other values it can take are:</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Material.MATERIAL_OPAQUE</td>
+<td>No transparency mode, Alpha channel is not used</td>
+</tr>
+<tr>
+<td>Material.MATERIAL_ALPHATEST</td>
+<td>Alpha Test mode, pixels are discarded below a certain threshold defined by the alpha cutoff value</td>
+</tr>
+<tr>
+<td>Material.MATERIAL_ALPHABLEND</td>
+<td>Pixels are blended (according to the alpha mode) with the already drawn pixels in the current frame buffer</td>
+</tr>
+<tr>
+<td>Material.MATERIAL_ALPHATESTANDBLEND</td>
+<td>Pixels are blended (according to the alpha mode) with the already drawn pixels in the current frame buffer. They are also discarded below the alpha cutoff threshold to improve performance</td>
+</tr>
+</tbody></table>
+<p>If <code>transparencyMode</code> equals:</p>
+<ul>
+<li>Material.MATERIAL_OPAQUE. Mesh will always be opaque, there will be no alpha blending nor alpha testing whatever the other properties you modify, <strong>EXCEPT</strong> if you set <code>mesh.visibility</code> &lt; 1, in which case alpha blending is automatically turned on.</li>
+<li>Material.MATERIAL_ALPHATEST. Mesh will only be alpha tested (as long as you set the <code>hasAlpha</code> property of the diffuse/albedo texture to <code>true</code>), not alpha blended whatever the other properties you modify, <strong>EXCEPT</strong> if you set <code>mesh.visibility</code> &lt; 1, in which case alpha blending is automatically turned on <strong>AND</strong> alpha testing is disabled<ul>
+<li>a difference between standard and PBR materials is that for PBR materials the alpha channel of the albedo texture is still used even if <code>useAlphaFromAlbedoTexture</code> is set to <code>false</code>, which is different from the standard material where the alpha channel of the diffuse texture is not used if <code>useAlphaFromDiffuseTexture</code> is set to <code>false</code></li>
+</ul>
+</li>
+<li>Material.MATERIAL_ALPHABLEND. Mesh will only be alpha blended and not alpha tested</li>
+<li>Material.MATERIAL_ALPHATESTANDBLEND. Mesh will be both alpha tested and alpha blended<ul>
+<li>a difference between standard and PBR materials is that for PBR materials the alpha channel of the albedo texture is still used even if <code>useAlphaFromAlbedoTexture</code> is set to <code>false</code>, which is different from the standard material where the alpha channel of the diffuse texture is not used if <code>useAlphaFromDiffuseTexture</code> is set to <code>false</code></li>
+</ul>
+</li>
+</ul>
+<p>You&#39;re welcome to use this example to experiment on the different values of <code>transparencyMode</code> for both the standard and PBR materials: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="things-to-do-and-not-to-do">Things To Do And Not To Do<a class="anchor" href="#things-to-do-and-not-to-do">#</a></h2>
+<ul>
+<li>Make sure your alpha blended meshes do not intersect, as this will inevitably lead to render glitches.</li>
+<li>Avoid having heavily stretched alpha-blended meshes (i.e. large planes); since the center of their bounding sphere is used for depth sorting, doing this may result in a mesh being sorted as far away from the camera while actually being closer to many other meshes.</li>
+<li>Use alpha test as much as possible; this may look perfect for a pixel art style, or if the transparent parts boundaries are straight horizontal or vertical lines.</li>
+<li>To get rid of jagged edges on your alpha tested meshes, use anti-aliasing for your scene (<a href="babylon-guide-features-featuresdeepdive-postprocesses-usepostprocesses.html">FxaaPostProcess</a>); when using anti-aliasing, you can even disable the built-in smoothing of WebGL when creating the engine object:</li>
+</ul>
+<pre class="code" data-lang="javascript"><code>engine = new BABYLON.Engine(canvas, false); // built-in smoothing will be disabled</code></pre>
+<p>This may help you with visible seams between meshes and other similar issues.</p>
+<ul>
+<li>Do not forget to enable backface culling with alpha blended meshes!</li>
+<li>Use rendering groups to have better control over the order in which your meshes are displayed. These are especially useful if you know that some meshes will be above others 100% of the time (for example, an overlayed UI drawn on top of the scene).</li>
+<li>A mesh&#39;s <code>alphaIndex</code> property can be very useful as well, since it allows you to override the depth sorting of alpha-blended meshes. Also, this property does not suffer from the same limitation as Rendering Groups (4 layers at most), and it only affects alpha-blended meshes.</li>
+<li>You can rely on <code>needDepthPrePass</code> to help fix issues with self-transparency.</li>
+<li>You can also use <code>separateCullingPass</code> on materials to force the engine to render the transparent objects in 2 passes: first the back faces and then the front faces. This can help a lot with self transparency.</li>
+<li><code>twoSidedLighting</code> will not take effect if <code>separateCullingPass</code> is enabled. For double-sided, transparent PBR materials, you can instead use <code>forceNormalForward = true</code>, which will in practice result in the same effect. If used, you can set <code>twoSidedLighting = false</code> and <code>backfaceCulling = true</code> to slightly improve shader performance.</li>
+<li>To avoid the cost of either <code>needDepthPrePass</code> or <code>separateCullingPass</code> when the sum of your alpha stays below 1.0, you can change the alphaMode of the material to either <code>Engine.ALPHA_PREMULTIPLIED</code> or <code>Engine.ALPHA_PREMULTIPLIED_PORTERDUFF</code>, which prevent the need to order the triangles.</li>
+</ul>
+<h2 id="concave-meshes-and-transparency">Concave meshes and transparency<a class="anchor" href="#concave-meshes-and-transparency">#</a></h2>
+<p>Transparent concave meshes obviously render according to the same rules as explained before: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>For some reasons (for example, a camera flying from outside to inside a sphere), you may want to remove backface culling in order to also render the back side of the mesh: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>As you can notice, the transparency rendering rules may lead to some strange results that make parts of the mesh geometry visible.<br>In this case, an acceptable workaround is to enable backface culling but build the meshes as double-sided, with the parameter <code>sideOrientation</code> set to <code>BABYLON.Mesh.DOUBLESIDE</code>: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>Another option is to rely on depth pre-pass: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>Finally, if you are willing to spend some CPU cycles to get correct self-transparency, you can use the FacetData feature and enable <a href="babylon-guide-features-featuresdeepdive-mesh-facetdata.html">facet depth sort</a>.</p>
+<p>Example, depth sorted on the left, standard on the right: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="order-independent-transparency">Order Independent Transparency<a class="anchor" href="#order-independent-transparency">#</a></h2>
+<h3 id="generality">Generality<a class="anchor" href="#generality">#</a></h3>
+<p>As of 5.0.0, we introduced a new feature on the scene that allows correct transparency, without any of the considerations above. You don&#39;t need to sort your meshes or use alpha test; OIT handles everything in the rendering process!
+You can just add this simple line:</p>
+<pre class="code" data-lang="javascript"><code>scene.useOrderIndependentTransparency = true;</code></pre>
+<p>Of course, the trade-off is that, under the hood, the engine will render transparent meshes many more times, effectively consuming more CPU (and GPU, to a lesser extent).</p>
+<p>This is using the dual depth peeling method and the renderer can be accessed by <code>scene.depthPeelingRenderer</code>.</p>
+<p>To avoid some internal state switching, you can set <code>backFaceCulling = false</code> on the materials used by the transparent meshes, which may save some tiny bits of performance.</p>
+<p>You can change the number of passes that the depth peeling renderer performs by updating <code>scene.depthPeelingRenderer.passCount</code>, which is 5 by default, meaning that at most 10 layers of transparency are displayed. If your scene has a lot of transparency layers, meaning many transparent objects stacked on top of one another, you may have to raise this value if you want the scene to be rendered correctly. However, at some point, you won&#39;t see the difference when stacking a lot of layers, so capping the value at a small number will save some performance.</p>
+<p><strong>Important notice</strong>: As the feature is still in beta, it will not work in some cases. You might encounter problems if you combine order-independent transparency with post processes or custom materials. Try it out and see if it works for your case! If it doesn&#39;t, report it to the forum and we will see what can be done about it.</p>
+<p>This effect is only compatible with WebGL 2 and WebGPU.</p>
+<h3 id="known-limitations">Known limitations<a class="anchor" href="#known-limitations">#</a></h3>
+<ul>
+<li>Due to the way rendering groups work currently, to display an AxesViewer in a scene with order independent transparency, you&#39;ll need to force it to use the rendering group 0: <span class="muted">Online playground (not embedded offline)</span></li>
+<li>OIT won&#39;t work with refraction textures as the technique just blends pixels at the same location.</li>
+<li>Post processes where OIT is confirmed to not work:<ul>
+<li>Anti-aliasing</li>
+</ul>
+</li>
+</ul>
+<h3 id="support-in-webgpu">Support in WebGPU<a class="anchor" href="#support-in-webgpu">#</a></h3>
+<p>Regarding WebGPU, as of this writing (2021/10/26), the <code>RG32Float</code> format is not blendable, meaning we can&#39;t use it for our depth buffers. So, we must use <code>RG16Float</code> instead, which has less precision and in turn leads to some visual artefacts: try to browse the PG given above in WebGPU, and you will see some artefacts across the whole rendering.</p>
+<p>Fortunately, enabling the reverse depth buffer feature will get rid of those artefacts: just set <code>engine.useReverseDepthBuffer = true;</code> at scene creation time.</p>
+<p>In WebGPU, you can get better performance by setting <code>scene.depthPeelingRenderer.useRenderPasses = true</code> and <code>engine.compatibilityMode = false</code>: see the doc page for the <code>compatibilityMode</code> property for more information.</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#general-considerations">General Considerations </a><a href="#rendering-order">Rendering Order </a><a href="#general-order">General Order </a><a href="#rendering-groups">Rendering Groups </a><a href="#alpha-index">Alpha Index </a><a href="#opaque-or-transparent">Opaque or Transparent? </a><a href="#depth-pre-pass-meshes">Depth pre-pass meshes </a><a href="#opaque-meshes">Opaque Meshes </a><a href="#alpha-tested-meshes">Alpha Tested Meshes </a><a href="#alpha-blended-meshes">Alpha Blended Meshes </a><a href="#categorizing-meshes">Categorizing meshes </a><a href="#the-transparencymode-property">The transparencyMode property </a><a href="#things-to-do-and-not-to-do">Things To Do And Not To Do </a><a href="#concave-meshes-and-transparency">Concave meshes and transparency </a><a href="#order-independent-transparency">Order Independent Transparency </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Multiple Graphs In One Editor — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Multiple Graphs In One Editor</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="what-multiple-graphs-means">What Multiple Graphs Means<a class="anchor" href="#what-multiple-graphs-means">#</a></h2>
+<p>The Flow Graph Editor can now keep more than one graph open in the same editor session.</p>
+<p>Each graph is a separate flow-graph definition, shown as its own tab at the top of the editor. Switching tabs changes which graph you are editing, validating, running, and saving as the active graph.</p>
+<p>This is different from execution contexts:</p>
+<ul>
+<li><strong>Multiple graphs</strong> means multiple graph definitions in one editor session.</li>
+<li><strong>Execution contexts</strong> means multiple runtime instances of one selected graph.</li>
+</ul>
+<p>So the overall picture is:</p>
+<ul>
+<li>One loaded scene context for asset lookup and preview</li>
+<li>Many graph tabs for separate graph definitions</li>
+<li>Many execution contexts inside each graph when you need separate runtime state</li>
+</ul>
+<h2 id="graph-tabs">Graph Tabs<a class="anchor" href="#graph-tabs">#</a></h2>
+<p>The graph tab strip lives above the main toolbar.</p>
+<p><p class="muted">Upstream illustration: Flow Graph Editor graph tabs (media not bundled).</p></p>
+<p>By default, the editor starts with one graph tab. Once you add another graph, each tab gets its own label and close button.</p>
+<h3 id="switching-graphs">Switching Graphs<a class="anchor" href="#switching-graphs">#</a></h3>
+<p>Click a tab to make that graph active.</p>
+<p>The active tab controls:</p>
+<ul>
+<li>The graph shown on the canvas</li>
+<li>The graph targeted by the run, pause, stop, and reset controls</li>
+<li>The graph shown in validation results</li>
+<li>The variables and execution contexts you inspect for that graph</li>
+</ul>
+<h3 id="adding-a-graph">Adding A Graph<a class="anchor" href="#adding-a-graph">#</a></h3>
+<p>Use the <code>+</code> button in the tab strip to create a new graph.</p>
+<p>Each new graph starts empty and becomes the active tab immediately. Because it starts empty, it is normal for validation to report issues until you add an event block or other valid graph structure.</p>
+<h3 id="renaming-a-graph">Renaming A Graph<a class="anchor" href="#renaming-a-graph">#</a></h3>
+<p>Double-click a tab name to rename it.</p>
+<p>Renaming matters quickly once a session contains more than a couple of graphs, because generic names like <code>Graph 1</code> and <code>Graph 2</code> stop being useful.</p>
+<h3 id="closing-a-graph">Closing A Graph<a class="anchor" href="#closing-a-graph">#</a></h3>
+<p>When more than one graph exists, each tab shows an <code>×</code> close button.</p>
+<p>The editor keeps at least one graph available, so the last remaining graph cannot be removed.</p>
+<h2 id="tabs-and-toolbar-workflow">Tabs And Toolbar Workflow<a class="anchor" href="#tabs-and-toolbar-workflow">#</a></h2>
+<p>Multiple graphs are integrated directly into the main editing workflow rather than living in a separate dialog.</p>
+<p><p class="muted">Upstream illustration: Flow Graph Editor multi-graph session (media not bundled).</p></p>
+<p>In practice, this means you can:</p>
+<ul>
+<li>Keep related graphs together while reusing the same loaded scene</li>
+<li>Switch between graph definitions without reloading the editor</li>
+<li>Run and debug one selected graph at a time</li>
+</ul>
+<h2 id="saving-loading-and-reopening">Saving, Loading, And Reopening<a class="anchor" href="#saving-loading-and-reopening">#</a></h2>
+<p>Multiple graphs are not editor-only UI state.</p>
+<p>When the editor saves a session, it preserves:</p>
+<ul>
+<li>The full list of graphs in the session</li>
+<li>The active graph index</li>
+<li>The serialized data for each graph</li>
+<li>The editor layout data for each graph</li>
+</ul>
+<p>That means saving to a file or the snippet server does not merge the session back into a single graph.</p>
+<p>Loading older single-graph content still works. In that case, the editor opens it as a one-graph session.</p>
+<h2 id="scene-context-versus-graph-tabs">Scene Context Versus Graph Tabs<a class="anchor" href="#scene-context-versus-graph-tabs">#</a></h2>
+<p>Graph tabs do not create separate scene contexts.</p>
+<p>All graphs in the current editor session share the same loaded preview scene for asset lookup. Mesh pickers, animation-group pickers, and other scene-aware controls still resolve against that one scene context.</p>
+<p>This is useful because it lets you build several related graph definitions against the same scene without reloading assets each time.</p>
+<h2 id="multiple-graphs-versus-execution-contexts">Multiple Graphs Versus Execution Contexts<a class="anchor" href="#multiple-graphs-versus-execution-contexts">#</a></h2>
+<p>These two features solve different problems and should not be mixed up.</p>
+<p>Use <strong>multiple graphs</strong> when you want:</p>
+<ul>
+<li>Separate graph definitions</li>
+<li>Separate tabbed canvases</li>
+<li>Different interaction flows kept together in one editor session</li>
+</ul>
+<p>Use <strong>execution contexts</strong> when you want:</p>
+<ul>
+<li>The same graph logic to run more than once</li>
+<li>Separate variable state for each run</li>
+<li>One graph definition reused across several runtime instances</li>
+</ul>
+<p>For the runtime-state feature, see <a href="babylon-guide-toolsandresources-flowgrapheditor-executioncontexts.html">Execution Contexts</a>.</p>
+<h2 id="when-to-use-multiple-graphs">When To Use Multiple Graphs<a class="anchor" href="#when-to-use-multiple-graphs">#</a></h2>
+<p>Multiple graphs are a good fit when:</p>
+<ul>
+<li>You want to organize several related behaviors in one editor session</li>
+<li>You want to compare or iterate on graph variants without reloading the scene</li>
+<li>You want one tab per interaction or subsystem instead of one very large canvas</li>
+</ul>
+<p>They are not a replacement for execution contexts, which still handle repeated runtime execution of a single graph definition.</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#what-multiple-graphs-means">What Multiple Graphs Means </a><a href="#graph-tabs">Graph Tabs </a><a href="#tabs-and-toolbar-workflow">Tabs And Toolbar Workflow </a><a href="#saving-loading-and-reopening">Saving, Loading, And Reopening </a><a href="#scene-context-versus-graph-tabs">Scene Context Versus Graph Tabs </a><a href="#multiple-graphs-versus-execution-contexts">Multiple Graphs Versus Execution Contexts </a><a href="#when-to-use-multiple-graphs">When To Use Multiple Graphs </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

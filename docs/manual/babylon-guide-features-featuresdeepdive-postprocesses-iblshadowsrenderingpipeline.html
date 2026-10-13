@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Image-based Lighting Shadows Rendering Pipeline — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Image-based Lighting Shadows Rendering Pipeline</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="introduction">Introduction<a class="anchor" href="#introduction">#</a></h2>
+<p>In real-time rendering, shadows are commonly rendered using <span>shadow maps</span> but these are most practical for punctual lights (i.e. directional, point and spot lights). When it comes to image-based lighting (IBL), generating accurate shadows becomes much more difficult because light is coming from all directions.
+The IBL Shadows pipeline does what the name implies; it renders shadows cast by image-based lighting (i.e. <span>HDR environment lights</span>) and allows you to then apply the shadows to PBR and standard materials. It does this by generating a voxel grid for all objects that will cast shadows and then traces rays through the voxel grid to determine which pixels will be shadowed.</p>
+<p>Here is a comparison of the rendering with and without the IBL Shadows pipeline enabled:</p>
+<table>
+<thead>
+<tr>
+<th>With Shadows</th>
+<th>Without Shadows</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><p class="muted">Upstream illustration: With Shadows (media not bundled).</p></td>
+<td><p class="muted">Upstream illustration: Without Shadows (media not bundled).</p></td>
+</tr>
+</tbody></table>
+<p>Here is the playground that generated the above images:</p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<h2 id="important-usage-notes">Important Usage Notes<a class="anchor" href="#important-usage-notes">#</a></h2>
+<p>In its current implementation, this technique is only practical for static shadow-casting scenes, i.e. scenes where shadow-casting objects are not animated. This is because moving shadow-casters requires updating the voxel grid, and this is too slow for real-time animation (improvements are planned for WebGPU). Moving shadow-receivers, moving the camera, and changing the IBL direction, intensity, etc. will work fine.</p>
+<h2 id="prerequisites">Prerequisites<a class="anchor" href="#prerequisites">#</a></h2>
+<p>The IBL Shadows Pipeline requires either WebGL 2.0 or WebGPU and, currently, can only be applied to <span>PBR materials</span> and <span>Standard materials</span>.</p>
+<p>The IBL shadow pipeline relies on the <span>Geometry Buffer Renderer</span> so this should be kept in mind if combined with other pipelines. For example, if using the <span>SSR pipeline</span>, make sure you force it to also use the geometry buffer instead of the prepass renderer to save memory.</p>
+<h2 id="using-the-ibl-shadows-rendering-pipeline">Using the IBL shadows rendering pipeline<a class="anchor" href="#using-the-ibl-shadows-rendering-pipeline">#</a></h2>
+<h3 id="create-the-pipeline">Create the Pipeline<a class="anchor" href="#create-the-pipeline">#</a></h3>
+<p>Start by creating an instance of <code>BABYLON.IblShadowsRenderPipeline</code>:</p>
+<pre class="code" data-lang="javascript"><code>const shadowPipeline = new BABYLON.IblShadowsRenderPipeline(
+  &quot;ibl shadows&quot;, // The name of the pipeline
+  scene, // The scene to which the pipeline belongs
+  options, // The options for the pipeline
+  [scene.activeCamera], // The list of cameras to attach the pipeline to
+);</code></pre>
+<p><code>options</code> is of type <code>BABYLON.IblShadowsSettings</code> which contains many <span>properties</span> to control the look of the shadows.</p>
+<h3 id="configure-the-shadows">Configure the Shadows<a class="anchor" href="#configure-the-shadows">#</a></h3>
+<ol>
+<li>Add shadow-casters. You must explicitly add any mesh that you want to cast shadows to the pipeline with <code>shadowPipeline.addShadowCastingMesh(mesh | meshes[])</code>. This will cause it to render to the voxel grid when the grid is re-rendered. Having control over which meshes cast shadows can be important for several reasons:<ol>
+<li>It allows you to filter out objects like skyboxes or ground planes that you may not want casting shadows on your scene.</li>
+<li>Since the voxel grid&#39;s resolution is limited, it allows you to constrain the size of the shadow-casting part of the world to only the most important objects.</li>
+<li>Rendering to the voxel grid can be expensive so it might be good to limit the shadow-casting objects. For example, if you have many blades of grass, you may choose to have them receive shadows but not cast them.</li>
+</ol>
+</li>
+<li>Add shadow-receivers. You must also explicitly add any material that you want receiving shadows with <code>shadowPipeline.addShadowReceivingMaterial(material | materials[])</code>. If you call this function without an argument, it will add all materials in the scene.</li>
+<li>Update scene bounds. Once you&#39;ve added all the shadow-casters to the pipeline, call <code>shadowPipeline.updateSceneBounds()</code> to recalculate the size of the portion of the scene that the voxel grid will cover.</li>
+<li>Update the voxel grid. Call <code>shadowPipeline.updateVoxelization()</code> to cause the shadow-casters to be rendered into the voxel grid. Once this is done, the shadows should automatically appear in the scene.</li>
+<li>The IBL used for shadows will be whatever is assigned to <code>scene.environmentTexture</code>. This can be either a cubemap or equirectangular environment texture. HDR textures work best.</li>
+</ol>
+<p>You can easily enable/disable the shadows by calling the <code>toggleShadow(enabled: boolean)</code> method of the pipeline.</p>
+<h2 id="how-the-ibl-shadows-pipeline-works">How the IBL Shadows pipeline works<a class="anchor" href="#how-the-ibl-shadows-pipeline-works">#</a></h2>
+<p>A basic understanding of the algorithm will help you understand how to configure the shadow pipeline for best results.</p>
+<h3 id="when-the-ibl-map-changes">When the IBL map changes<a class="anchor" href="#when-the-ibl-map-changes">#</a></h3>
+<p>When a new IBL texture is assigned to <code>scene.environmentTexture</code>, various CDF (cumulative distribution function) maps are generated internally that will be used to importance-sample the IBL during shadow computation. In short, this allows the brightest (i.e. most relevant) areas of the IBL to be sampled more, resulting in more accurate shadows with fewer samples.</p>
+<h3 id="when-the-scene-changes">When the scene changes<a class="anchor" href="#when-the-scene-changes">#</a></h3>
+<p>The voxel grid will need to be regenerated whenever the shadow-casting scene changes so that new or moved shadow-casters will be included in the shadows. The voxel grid is a low-resolution (256^3 or less), 3D texture, that contains all the shadow-casting geometry of the scene.</p>
+<ol>
+<li>The scene is rendered to the voxel grid, layer by layer, as it&#39;s not possible to render to the entire 3D texture at once in WebGL. The voxelization uses the maximum number of draw buffers to render several layers in each render pass. The higher the voxel grid resolution, the more passes will be necessary and the slower the voxelization will be.</li>
+<li>If <code>triPlanarVoxelization</code> is enabled (the default), the voxelization will be done three times, once along each axis. The purpose of this is to avoid missing triangles that are parallel to the camera&#39;s line-of-sight. Disabling <code>triPlanarVoxelization</code> will speed up voxelization time but can often result in missing geometry.</li>
+<li>After the voxel grid is generated, the hierarchical mips need to be generated for it. These are successively smaller and smaller textures that are used by the voxel tracing algorithm to efficiently traverse the voxel grid and find ray-geometry intersections, something like an octree.</li>
+</ol>
+<h3 id="each-frame">Each Frame<a class="anchor" href="#each-frame">#</a></h3>
+<p>Once the CDF maps and voxel grid are created, there are several fullscreen passes that happen every frame to render the shadows. These all happen before your scene is rendered with full materials and lighting.</p>
+<ol>
+<li>The <span>Geometry Buffer Renderer</span> renders the entire scene into several render target textures needed by the shadow pipeline. These include world-space normals, screen-space depth, world-space positions and motion vectors. These targets may also be shared by other pipelines that need them.</li>
+<li>A &quot;Voxel-tracing&quot; pass will use the CDF maps and voxel grid to produce a shadow value for every pixel.<ol>
+<li>Several samples of the IBL can be taken (controlled using the <code>sampleDirections</code> property). For each sample:<ol>
+<li>A light direction is generated using the CDF maps. The direction is randomly selected based on the intensity of the light in that direction. i.e. the probability that a particular direction will be chosen is relative to the brightness of the IBL in that direction.</li>
+<li>The voxel grid is traversed in this direction to see if it will intersect any geometry. The mips of the voxel grid are key to traversing the grid efficiently.</li>
+<li>A screen-space shadow sample (see <span>below</span>) is also taken using this light direction and is combined with the voxel sample.</li>
+<li>Two shadow values are then generated. The first is the simple accumulation of the shadow amount from each sample. The second is scaled by a view-dependent factor to approximate shadowing of specular lighting from the sampled direction.</li>
+</ol>
+</li>
+<li>The total shadow contribution of both diffuse shadowing and specular shadowing is divided by the number of samples to get the amount of raw shadowing for this frame. Taking more samples per frame will decrease the noise in the image but is more expensive to compute.</li>
+</ol>
+</li>
+<li>A blur pass then blurs the shadows to help remove some of the noise.</li>
+<li>An accumulation pass will then combine the new shadow frame with shadows generated in previous frames. This has the effect of building up a smooth image of the shadows over several frames. The speed at which this happens can be adjusted using the <code>shadowRemanence</code> property.</li>
+<li>The accumulated shadows are then applied to a mesh&#39;s material using Babylon&#39;s <span>material plugin system</span>. The diffuse shadows are applied directly to the diffuse component of the material, leaving emissive light unaffected. Specular shadows are applied to specular lighting, but this is a bit more complex because the view-dependence of specular lighting depends on the roughness of the surface. We blend between diffuse and specular shadow factors based on the roughness of the surface. Highly smooth surfaces get the specular shadows, and rough surfaces (which are essentially non-directional) get the diffuse shadows.</li>
+</ol>
+<h2 id="screen-space-shadows">Screen-space Shadows<a class="anchor" href="#screen-space-shadows">#</a></h2>
+<p>Screen-space shadows complement voxel shadows very nicely as they are great for rendering tiny shadow detail, where shadow-casters and shadow-receivers are very close together. As the name suggests, this technique works in screen-space, using the render targets output by the geometry buffer renderer. For each pixel, we trace a ray back to the light, taking samples as we step along the ray. At each step, if the depth of the pixel is less than the depth of the ray, the original pixel is assumed to be shadowed.</p>
+<table>
+<thead>
+<tr>
+<th>No SS Shadows</th>
+<th>With SS Shadows</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><p class="muted">Upstream illustration: No SS Shadows (media not bundled).</p></td>
+<td><p class="muted">Upstream illustration: SS Shadows (media not bundled).</p></td>
+</tr>
+</tbody></table>
+<h2 id="limitations">Limitations<a class="anchor" href="#limitations">#</a></h2>
+<ol>
+<li>This technique is currently only practical for static shadow-casters. Voxelization is very slow and needs to be done whenever a shadow-casting object moves or is animated.</li>
+<li>The resulting shadows are greyscale. That is, they don&#39;t account for the colour of light in the IBL.</li>
+<li>The resolution of the voxel grid can currently only go up to 256x256x256 so the sharpness of shadows in large scenes is limited. This is why we combine screen-space shadows with the voxel-tracing as it handles small geometry details well.</li>
+<li>Rather than actually blocking light, this technique approximates the percentage of light that will hit the surface and then modulates the light that&#39;s already applied, darkening the surface. This can result in over-darkening parts of a surface, particularly surfaces facing away from bright, compact lights (e.g. the Sun) when only 1 or 2 sample directions are used.</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>1 Sample</th>
+<th>4 Samples</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><p class="muted">Upstream illustration: 1-Sample (media not bundled).</p></td>
+<td><p class="muted">Upstream illustration: 4-Samples (media not bundled).</p></td>
+</tr>
+</tbody></table>
+<p>Note that the over-bright side of the sphere, facing away from the sun is an artifact of Babylon&#39;s use of spherical harmonics for diffuse IBL lighting.</p>
+<h2 id="properties">Properties<a class="anchor" href="#properties">#</a></h2>
+<p>The following properties can be set on the pipeline (or passed in the constructor on initialization)</p>
+<h3 id="general-properties">General Properties<a class="anchor" href="#general-properties">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>shadowOpacity</td>
+<td>How dark the shadows are. 1.0 is full opacity, 0.0 is no shadows.</td>
+</tr>
+<tr>
+<td>sampleDirections</td>
+<td>The number of different directions to sample during the voxel-tracing pass. Higher values will result in better quality and more stable shadows but will also be more expensive to compute each frame. Since shadows are accumulated from frame to frame, increasing this value doesn&#39;t help much when the camera isn&#39;t moving.</td>
+</tr>
+<tr>
+<td>shadowRemanence</td>
+<td>A factor that controls how long the shadows remain in the scene. 0.0 is no persistence, 1.0 is full persistence. This value applies only while the camera is moving. Once stationary, the pipeline increases remanence automatically to help the shadows converge.</td>
+</tr>
+<tr>
+<td>shadowRenderSizeFactor</td>
+<td>A size multiplier for the internal shadow render targets (default 1.0). A value of 1.0 represents full resolution. Scaling this below 1.0 will result in blurry shadows and potentially more artifacts, but it could help increase performance on less powerful GPUs.</td>
+</tr>
+</tbody></table>
+<h3 id="voxel-properties">Voxel Properties<a class="anchor" href="#voxel-properties">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>resolutionExp</td>
+<td>The exponent of the resolution of the voxel shadow grid. Higher resolutions will result in sharper shadows but are more expensive to compute and require more memory. The resolution is calculated as 2 to the power of this number. e.g. a value of 6 results in a voxel grid that is 64x64x64</td>
+</tr>
+<tr>
+<td>triPlanarVoxelization</td>
+<td>Render the voxel grid from 3 different axis. This will result in better quality shadows with fewer bits of missing geometry.</td>
+</tr>
+</tbody></table>
+<h3 id="screen-space-shadow-properties">Screen-space Shadow Properties<a class="anchor" href="#screen-space-shadow-properties">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ssShadowsEnabled</td>
+<td>Include screen-space shadows in the IBL shadow pipeline. This complements the voxel shadows by adding shadows for small geometry detail close to a shadow-casting object.</td>
+</tr>
+<tr>
+<td>ssShadowSampleCount</td>
+<td>The number of samples used in the screen space shadow pass.</td>
+</tr>
+<tr>
+<td>ssShadowStride</td>
+<td>This controls the distance between samples in pixels.</td>
+</tr>
+<tr>
+<td>ssShadowDistanceScale</td>
+<td>A scale for the maximum distance a screen-space shadow can be cast in world space. The maximum distance that screen-space shadows cast is derived from the voxel size and this value, so it shouldn&#39;t need to change if you scale your scene.</td>
+</tr>
+<tr>
+<td>ssShadowThicknessScale</td>
+<td>This value controls the assumed thickness of on-screen surfaces in world space. It scales with the size of the shadow-casting region, so it shouldn&#39;t need to change if you scale your scene.</td>
+</tr>
+</tbody></table>
+<h2 id="functions">Functions<a class="anchor" href="#functions">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>toggleShadow</td>
+<td>Turn the shadows on or off</td>
+</tr>
+<tr>
+<td>updateSceneBounds</td>
+<td>Trigger the scene bounds of shadow-casters to be calculated. This is the world size that the voxel grid will cover and will always be a cube.</td>
+</tr>
+<tr>
+<td>updateVoxelization</td>
+<td>Trigger the scene to be re-voxelized. This should be run when any shadow-casters have been added, removed or moved.</td>
+</tr>
+<tr>
+<td>resetAccumulation</td>
+<td>Reset the shadow accumulation. This has a similar effect to lowering the remanence for a single frame. This is useful when making a sudden change to the IBL.</td>
+</tr>
+<tr>
+<td>addShadowCastingMesh</td>
+<td>Add a mesh to be used for shadow-casting in the IBL shadow pipeline. These meshes will be written to the voxel grid.</td>
+</tr>
+<tr>
+<td>removeShadowCastingMesh</td>
+<td>Remove a mesh from the shadow-casting list. The mesh will no longer be written to the voxel grid and will not cast shadows.</td>
+</tr>
+<tr>
+<td>addShadowReceivingMaterial</td>
+<td>Apply the shadows to a material or array of materials. If no material is provided, all materials in the scene will be added.</td>
+</tr>
+<tr>
+<td>removeShadowReceivingMaterial</td>
+<td>Remove a material from the list of materials that receive shadows. If no material is provided, all materials in the scene will be removed.</td>
+</tr>
+</tbody></table>
+<h2 id="debugging-shadows">Debugging Shadows<a class="anchor" href="#debugging-shadows">#</a></h2>
+<p>The IBL Shadows Pipeline has a few debug modes to help in diagnosing issues. To enable these, you must first set <code>allowDebugPasses</code> to <code>true</code>. Once that is enabled, you can toggle the other debug modes on/off. If multiple are enabled at the same time, they will all attempt to display in different parts of the screen.</p>
+<pre class="code" data-lang="javascript"><code>shadowPipeline.allowDebugPasses = true;</code></pre>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+<th>Image</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>gbufferDebugEnabled</td>
+<td>This will display only the targets of the g-buffer that are used by the shadow pipeline.</td>
+<td><p class="muted">Upstream illustration: G-Buffer (media not bundled).</p></td>
+</tr>
+<tr>
+<td>cdfDebugEnabled</td>
+<td>This displays the IBL and the CDF maps used for importance sampling.</td>
+<td><p class="muted">Upstream illustration: G-Buffer (media not bundled).</p></td>
+</tr>
+<tr>
+<td>voxelDebugEnabled</td>
+<td>This displays the voxel grid in slices spread across the screen. It also displays what slices of geometry are stored in each layer of the voxel grid. Each stripe represents one layer of the grid and each full gradient (from bright red to black) represents the layers rendered in a single draw call.</td>
+<td><p class="muted">Upstream illustration: G-Buffer (media not bundled).</p></td>
+</tr>
+<tr>
+<td>voxelDebugAxis</td>
+<td>When using tri-planar voxelization (the default), this value can be used to display only the voxelization result for that axis. <code>0</code> -&gt; z-axis, <code>1</code> -&gt; y-axis, <code>2</code> -&gt; x-axis, <code>undefined</code> -&gt; all axes combined</td>
+<td><p class="muted">Upstream illustration: Y-axis Voxelization (media not bundled).</p></td>
+</tr>
+<tr>
+<td>voxelDebugDisplayMip</td>
+<td>Displays a given mip of the voxel grid. <code>voxelDebugAxis</code> must be <code>undefined</code> in this case because we only generate mips for the combined voxel grid.</td>
+<td><p class="muted">Upstream illustration: Voxel Grid Mip 3 (media not bundled).</p></td>
+</tr>
+<tr>
+<td>voxelTracingDebugEnabled</td>
+<td>Displays just the shadow samples taken this frame.</td>
+<td><p class="muted">Upstream illustration: Voxel Tracing (media not bundled).</p></td>
+</tr>
+<tr>
+<td>spatialBlurPassDebugEnabled</td>
+<td>Display the shadow samples taken this frame, spatially blurred.</td>
+<td><p class="muted">Upstream illustration: G-Buffer (media not bundled).</p></td>
+</tr>
+<tr>
+<td>accumulationPassDebugEnabled</td>
+<td>Display the debug view for the shadows accumulated over time.</td>
+<td><p class="muted">Upstream illustration: G-Buffer (media not bundled).</p></td>
+</tr>
+</tbody></table>
+<h2 id="performance-notes">Performance Notes<a class="anchor" href="#performance-notes">#</a></h2>
+<h3 id="voxelization-performance">Voxelization Performance<a class="anchor" href="#voxelization-performance">#</a></h3>
+<p>Voxelization performance depends on voxel resolution, shadow-caster complexity, and whether <code>triPlanarVoxelization</code> is enabled. WebGPU will generally be faster than WebGL.</p>
+<h3 id="per-frame-shadow-rendering">Per-frame Shadow Rendering<a class="anchor" href="#per-frame-shadow-rendering">#</a></h3>
+<p>Each frame, the time taken to compute shadows is primarily affected by two things.</p>
+<ul>
+<li><p><code>sampleDirections</code> - The number of sample directions determines the number of voxel traces and the number of screen-space traces done for shadows. These are the primary computations done each frame so lowering this number will help performance.</p>
+</li>
+<li><p><code>shadowRenderSizeFactor</code> - Since the shadow computations are done per fragment, lowering the resolution of the shadow buffers can have a significant impact on performance. Try setting <code>shadowRenderSizeFactor</code> below 1.0.</p>
+</li>
+</ul>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#introduction">Introduction </a><a href="#important-usage-notes">Important Usage Notes </a><a href="#prerequisites">Prerequisites </a><a href="#using-the-ibl-shadows-rendering-pipeline">Using the IBL shadows rendering pipeline </a><a href="#how-the-ibl-shadows-pipeline-works">How the IBL Shadows pipeline works </a><a href="#screen-space-shadows">Screen-space Shadows </a><a href="#limitations">Limitations </a><a href="#properties">Properties </a><a href="#functions">Functions </a><a href="#debugging-shadows">Debugging Shadows </a><a href="#performance-notes">Performance Notes </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

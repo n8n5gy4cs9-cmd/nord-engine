@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phaser.Physics.Arcade.Body — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Phaser.Physics.Arcade.Body</h1>
+<p><span class="badge">Underlying Phaser 4.2.1 API</span> <span class="badge">Class</span></p><p class="muted">Official public declarations and JSDoc from <code>phaser</code>. Use with engine objects, not directly on a Nord entity.</p><aside class="box tip"><div class="box-title">The Nord way</div><p><a href="2d.html">2D manual</a> · <a href="component-sprite.html">sprite</a> · <a href="component-animatedSprite.html">animatedSprite</a> · <a href="physics.html">physics</a>. Access raw objects only when the Nord wrapper does not cover your feature. <a href="reference.html#escape-hatch">How escape hatches work</a>.</p></aside><h3 id="declaration">Body <a class="anchor" href="#declaration">#</a></h3><pre class="code" data-lang="ts"><code>class Body implements Phaser.Physics.Arcade.Components.Collision</code></pre><p>A Dynamic Arcade Body. This body type can move, accelerate, collide with other bodies,
+and bounce off surfaces. It supports rectangular and circular collision shapes, and
+provides velocity, acceleration, drag (with optional damping mode), friction, gravity,
+bounce, and world bounds collision. Dynamic bodies are the most common physics body type,
+used for players, enemies, projectiles, and other moving game entities.</p>
+<p>Its static counterpart is Phaser.Physics.Arcade.StaticBody.</p>
+<h2 id="members">Public members (150)</h2><p>Private, protected and explicitly internal declarations are excluded. Inherited members belong to the base type listed in the declaration.</p><h3 id="member-constructor-0">constructor <a class="anchor" href="#member-constructor-0">#</a></h3><pre class="code" data-lang="ts"><code>constructor(world: Phaser.Physics.Arcade.World, gameObject?: Phaser.GameObjects.GameObject);</code></pre><p><strong>param</strong>  world The Arcade Physics simulation this Body belongs to.
+<strong>param</strong>  gameObject The Game Object this Body belongs to. As of Phaser 3.60 this is now optional.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>world</code></td><td><code>Phaser.Physics.Arcade.World</code></td><td>Required</td></tr><tr><td><code>gameObject</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Optional</td></tr></tbody></table><h3 id="member-world-1">world <a class="anchor" href="#member-world-1">#</a></h3><pre class="code" data-lang="ts"><code>world: Phaser.Physics.Arcade.World;</code></pre><p>The Arcade Physics simulation this Body belongs to.</p>
+<p><b>Type / return:</b> <code>Phaser.Physics.Arcade.World</code></p><h3 id="member-gameobject-2">gameObject <a class="anchor" href="#member-gameobject-2">#</a></h3><pre class="code" data-lang="ts"><code>gameObject: Phaser.GameObjects.GameObject;</code></pre><p>The Game Object this Body belongs to.</p>
+<p>As of Phaser 3.60 this is now optional and can be undefined.</p>
+<p><b>Type / return:</b> <code>Phaser.GameObjects.GameObject</code></p><h3 id="member-isbody-3">isBody <a class="anchor" href="#member-isbody-3">#</a></h3><pre class="code" data-lang="ts"><code>readonly isBody: boolean;</code></pre><p>A quick-test flag that signifies this is a Body, used in the World collision handler.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-transform-4">transform <a class="anchor" href="#member-transform-4">#</a></h3><pre class="code" data-lang="ts"><code>transform: object;</code></pre><p>Transformations applied to this Body.</p>
+<p><b>Type / return:</b> <code>object</code></p><h3 id="member-debugshowbody-5">debugShowBody <a class="anchor" href="#member-debugshowbody-5">#</a></h3><pre class="code" data-lang="ts"><code>debugShowBody: boolean;</code></pre><p>Whether the Body is drawn to the debug display.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-debugshowvelocity-6">debugShowVelocity <a class="anchor" href="#member-debugshowvelocity-6">#</a></h3><pre class="code" data-lang="ts"><code>debugShowVelocity: boolean;</code></pre><p>Whether the Body&#39;s velocity is drawn to the debug display.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-debugbodycolor-7">debugBodyColor <a class="anchor" href="#member-debugbodycolor-7">#</a></h3><pre class="code" data-lang="ts"><code>debugBodyColor: number;</code></pre><p>The color of this Body on the debug display.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-enable-8">enable <a class="anchor" href="#member-enable-8">#</a></h3><pre class="code" data-lang="ts"><code>enable: boolean;</code></pre><p>Whether this Body is updated by the physics simulation.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-iscircle-9">isCircle <a class="anchor" href="#member-iscircle-9">#</a></h3><pre class="code" data-lang="ts"><code>isCircle: boolean;</code></pre><p>Whether this Body is circular (true) or rectangular (false).</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-radius-10">radius <a class="anchor" href="#member-radius-10">#</a></h3><pre class="code" data-lang="ts"><code>radius: number;</code></pre><p>If this Body is circular, this is the unscaled radius of the Body, as set by setCircle(), in source pixels.
+The true radius is equal to <code>halfWidth</code>.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-offset-11">offset <a class="anchor" href="#member-offset-11">#</a></h3><pre class="code" data-lang="ts"><code>offset: Phaser.Math.Vector2;</code></pre><p>The offset of this Body&#39;s position from its Game Object&#39;s position, in source pixels.</p>
+<p><b>Type / return:</b> <code>Phaser.Math.Vector2</code></p><h3 id="member-position-12">position <a class="anchor" href="#member-position-12">#</a></h3><pre class="code" data-lang="ts"><code>position: Phaser.Math.Vector2;</code></pre><p>The position of this Body within the simulation.</p>
+<p><b>Type / return:</b> <code>Phaser.Math.Vector2</code></p><h3 id="member-prev-13">prev <a class="anchor" href="#member-prev-13">#</a></h3><pre class="code" data-lang="ts"><code>prev: Phaser.Math.Vector2;</code></pre><p>The position of this Body during the previous step.</p>
+<p><b>Type / return:</b> <code>Phaser.Math.Vector2</code></p><h3 id="member-prevframe-14">prevFrame <a class="anchor" href="#member-prevframe-14">#</a></h3><pre class="code" data-lang="ts"><code>prevFrame: Phaser.Math.Vector2;</code></pre><p>The position of this Body during the previous frame.</p>
+<p><b>Type / return:</b> <code>Phaser.Math.Vector2</code></p><h3 id="member-allowrotation-15">allowRotation <a class="anchor" href="#member-allowrotation-15">#</a></h3><pre class="code" data-lang="ts"><code>allowRotation: boolean;</code></pre><p>Whether this Body&#39;s <code>rotation</code> is affected by its angular acceleration and angular velocity.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-rotation-16">rotation <a class="anchor" href="#member-rotation-16">#</a></h3><pre class="code" data-lang="ts"><code>rotation: number;</code></pre><p>This body&#39;s rotation, in degrees, based on its angular acceleration and angular velocity.
+The Body&#39;s rotation controls the <code>angle</code> of its Game Object.
+It doesn&#39;t rotate the Body&#39;s own geometry, which is always an axis-aligned rectangle or a circle.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-prerotation-17">preRotation <a class="anchor" href="#member-prerotation-17">#</a></h3><pre class="code" data-lang="ts"><code>preRotation: number;</code></pre><p>The Body rotation, in degrees, during the previous step.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-width-18">width <a class="anchor" href="#member-width-18">#</a></h3><pre class="code" data-lang="ts"><code>readonly width: number;</code></pre><p>The width of the Body, in pixels.
+If the Body is circular, this is also the diameter.
+If you wish to change the width use the <code>Body.setSize</code> method.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-height-19">height <a class="anchor" href="#member-height-19">#</a></h3><pre class="code" data-lang="ts"><code>readonly height: number;</code></pre><p>The height of the Body, in pixels.
+If the Body is circular, this is also the diameter.
+If you wish to change the height use the <code>Body.setSize</code> method.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-sourcewidth-20">sourceWidth <a class="anchor" href="#member-sourcewidth-20">#</a></h3><pre class="code" data-lang="ts"><code>sourceWidth: number;</code></pre><p>The unscaled width of the Body, in source pixels, as set by setSize().
+The default is the width of the Body&#39;s Game Object&#39;s texture frame.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-sourceheight-21">sourceHeight <a class="anchor" href="#member-sourceheight-21">#</a></h3><pre class="code" data-lang="ts"><code>sourceHeight: number;</code></pre><p>The unscaled height of the Body, in source pixels, as set by setSize().
+The default is the height of the Body&#39;s Game Object&#39;s texture frame.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-halfwidth-22">halfWidth <a class="anchor" href="#member-halfwidth-22">#</a></h3><pre class="code" data-lang="ts"><code>halfWidth: number;</code></pre><p>Half the Body&#39;s width, in pixels.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-halfheight-23">halfHeight <a class="anchor" href="#member-halfheight-23">#</a></h3><pre class="code" data-lang="ts"><code>halfHeight: number;</code></pre><p>Half the Body&#39;s height, in pixels.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-center-24">center <a class="anchor" href="#member-center-24">#</a></h3><pre class="code" data-lang="ts"><code>center: Phaser.Math.Vector2;</code></pre><p>The center of the Body.
+The midpoint of its <code>position</code> (top-left corner) and its bottom-right corner.</p>
+<p><b>Type / return:</b> <code>Phaser.Math.Vector2</code></p><h3 id="member-velocity-25">velocity <a class="anchor" href="#member-velocity-25">#</a></h3><pre class="code" data-lang="ts"><code>velocity: Phaser.Math.Vector2;</code></pre><p>The Body&#39;s velocity, in pixels per second.</p>
+<p><b>Type / return:</b> <code>Phaser.Math.Vector2</code></p><h3 id="member-newvelocity-26">newVelocity <a class="anchor" href="#member-newvelocity-26">#</a></h3><pre class="code" data-lang="ts"><code>readonly newVelocity: Phaser.Math.Vector2;</code></pre><p>The Body&#39;s change in position (due to velocity) at the last step, in pixels.</p>
+<p>The size of this value depends on the simulation&#39;s step rate.</p>
+<p><b>Type / return:</b> <code>Phaser.Math.Vector2</code></p><h3 id="member-deltamax-27">deltaMax <a class="anchor" href="#member-deltamax-27">#</a></h3><pre class="code" data-lang="ts"><code>deltaMax: Phaser.Math.Vector2;</code></pre><p>The Body&#39;s absolute maximum change in position, in pixels per step.</p>
+<p><b>Type / return:</b> <code>Phaser.Math.Vector2</code></p><h3 id="member-acceleration-28">acceleration <a class="anchor" href="#member-acceleration-28">#</a></h3><pre class="code" data-lang="ts"><code>acceleration: Phaser.Math.Vector2;</code></pre><p>The Body&#39;s change in velocity, in pixels per second squared.</p>
+<p><b>Type / return:</b> <code>Phaser.Math.Vector2</code></p><h3 id="member-allowdrag-29">allowDrag <a class="anchor" href="#member-allowdrag-29">#</a></h3><pre class="code" data-lang="ts"><code>allowDrag: boolean;</code></pre><p>Whether this Body&#39;s velocity is affected by its <code>drag</code>.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-drag-30">drag <a class="anchor" href="#member-drag-30">#</a></h3><pre class="code" data-lang="ts"><code>drag: Phaser.Math.Vector2;</code></pre><p>When <code>useDamping</code> is false (the default), this is absolute loss of velocity due to movement, in pixels per second squared.</p>
+<p>When <code>useDamping</code> is true, this is a damping multiplier between 0 and 1.</p>
+<p>A value of 0 means the Body stops instantly.
+A value of 0.01 mean the Body keeps 1% of its velocity per second, losing 99%.
+A value of 0.1 means the Body keeps 10% of its velocity per second, losing 90%.
+A value of 1 means the Body loses no velocity.
+You can use very small values (e.g., 0.001) to stop the Body quickly.</p>
+<p>The x and y components are applied separately.</p>
+<p>Drag is applied only when <code>acceleration</code> is zero.</p>
+<p><b>Type / return:</b> <code>Phaser.Math.Vector2</code></p><h3 id="member-allowgravity-31">allowGravity <a class="anchor" href="#member-allowgravity-31">#</a></h3><pre class="code" data-lang="ts"><code>allowGravity: boolean;</code></pre><p>Whether this Body&#39;s position is affected by gravity (local or world).</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-gravity-32">gravity <a class="anchor" href="#member-gravity-32">#</a></h3><pre class="code" data-lang="ts"><code>gravity: Phaser.Math.Vector2;</code></pre><p>Acceleration due to gravity (specific to this Body), in pixels per second squared.
+Total gravity is the sum of this vector and the simulation&#39;s <code>gravity</code>.</p>
+<p><b>Type / return:</b> <code>Phaser.Math.Vector2</code></p><h3 id="member-bounce-33">bounce <a class="anchor" href="#member-bounce-33">#</a></h3><pre class="code" data-lang="ts"><code>bounce: Phaser.Math.Vector2;</code></pre><p>Rebound following a collision, relative to 1.</p>
+<p><b>Type / return:</b> <code>Phaser.Math.Vector2</code></p><h3 id="member-worldbounce-34">worldBounce <a class="anchor" href="#member-worldbounce-34">#</a></h3><pre class="code" data-lang="ts"><code>worldBounce: Phaser.Math.Vector2 | null;</code></pre><p>Rebound following a collision with the world boundary, relative to 1.
+If null, <code>bounce</code> is used instead.</p>
+<p><b>Type / return:</b> <code>Phaser.Math.Vector2 | null</code></p><h3 id="member-customboundsrectangle-35">customBoundsRectangle <a class="anchor" href="#member-customboundsrectangle-35">#</a></h3><pre class="code" data-lang="ts"><code>customBoundsRectangle: Phaser.Geom.Rectangle;</code></pre><p>The rectangle used for world boundary collisions.</p>
+<p>By default it is set to the world boundary rectangle. Or, if this Body was
+created by a Physics Group, then whatever rectangle that Group defined.</p>
+<p>You can also change it by using the <code>Body.setBoundsRectangle</code> method.</p>
+<p><b>Type / return:</b> <code>Phaser.Geom.Rectangle</code></p><h3 id="member-onworldbounds-36">onWorldBounds <a class="anchor" href="#member-onworldbounds-36">#</a></h3><pre class="code" data-lang="ts"><code>onWorldBounds: boolean;</code></pre><p>Whether the simulation emits a <code>worldbounds</code> event when this Body collides with the world boundary
+(and <code>collideWorldBounds</code> is also true).</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-oncollide-37">onCollide <a class="anchor" href="#member-oncollide-37">#</a></h3><pre class="code" data-lang="ts"><code>onCollide: boolean;</code></pre><p>Whether the simulation emits a <code>collide</code> event when this Body collides with another.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-onoverlap-38">onOverlap <a class="anchor" href="#member-onoverlap-38">#</a></h3><pre class="code" data-lang="ts"><code>onOverlap: boolean;</code></pre><p>Whether the simulation emits an <code>overlap</code> event when this Body overlaps with another.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-maxvelocity-39">maxVelocity <a class="anchor" href="#member-maxvelocity-39">#</a></h3><pre class="code" data-lang="ts"><code>maxVelocity: Phaser.Math.Vector2;</code></pre><p>The absolute maximum velocity of this body, in pixels per second.
+The horizontal and vertical components are applied separately.</p>
+<p><b>Type / return:</b> <code>Phaser.Math.Vector2</code></p><h3 id="member-maxspeed-40">maxSpeed <a class="anchor" href="#member-maxspeed-40">#</a></h3><pre class="code" data-lang="ts"><code>maxSpeed: number;</code></pre><p>The maximum speed this Body is allowed to reach, in pixels per second.</p>
+<p>If not negative it limits the scalar value of speed.</p>
+<p>Any negative value means no maximum is being applied (the default).</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-friction-41">friction <a class="anchor" href="#member-friction-41">#</a></h3><pre class="code" data-lang="ts"><code>friction: Phaser.Math.Vector2;</code></pre><p>If this Body is <code>immovable</code> and in motion, <code>friction</code> is the proportion of this Body&#39;s motion received by the riding Body on each axis, relative to 1.
+The horizontal component (x) is applied only when two colliding Bodies are separated vertically.
+The vertical component (y) is applied only when two colliding Bodies are separated horizontally.
+The default value (1, 0) moves the riding Body horizontally in equal proportion to this Body and vertically not at all.</p>
+<p><b>Type / return:</b> <code>Phaser.Math.Vector2</code></p><h3 id="member-usedamping-42">useDamping <a class="anchor" href="#member-usedamping-42">#</a></h3><pre class="code" data-lang="ts"><code>useDamping: boolean;</code></pre><p>If this Body is using <code>drag</code> for deceleration this property controls how the drag is applied.
+If set to <code>true</code> drag will use a damping effect rather than a linear approach. If you are
+creating a game where the Body moves freely at any angle (i.e. like the way the ship moves in
+the game Asteroids) then you will get a far smoother and more visually correct deceleration
+by using damping, avoiding the axis-drift that is prone with linear deceleration.</p>
+<p>If you enable this property then you should use far smaller <code>drag</code> values than with linear, as
+they are used as a multiplier on the velocity. Values such as 0.95 will give a nice slow
+deceleration.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-angularvelocity-43">angularVelocity <a class="anchor" href="#member-angularvelocity-43">#</a></h3><pre class="code" data-lang="ts"><code>angularVelocity: number;</code></pre><p>The rate of change of this Body&#39;s <code>rotation</code>, in degrees per second.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-angularacceleration-44">angularAcceleration <a class="anchor" href="#member-angularacceleration-44">#</a></h3><pre class="code" data-lang="ts"><code>angularAcceleration: number;</code></pre><p>The Body&#39;s angular acceleration (change in angular velocity), in degrees per second squared.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-angulardrag-45">angularDrag <a class="anchor" href="#member-angulardrag-45">#</a></h3><pre class="code" data-lang="ts"><code>angularDrag: number;</code></pre><p>Loss of angular velocity due to angular movement, in degrees per second.</p>
+<p>Angular drag is applied only when angular acceleration is zero.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-maxangular-46">maxAngular <a class="anchor" href="#member-maxangular-46">#</a></h3><pre class="code" data-lang="ts"><code>maxAngular: number;</code></pre><p>The Body&#39;s maximum angular velocity, in degrees per second.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-mass-47">mass <a class="anchor" href="#member-mass-47">#</a></h3><pre class="code" data-lang="ts"><code>mass: number;</code></pre><p>The Body&#39;s inertia, relative to a default unit (1).
+With <code>bounce</code>, this affects the exchange of momentum (velocities) during collisions.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-angle-48">angle <a class="anchor" href="#member-angle-48">#</a></h3><pre class="code" data-lang="ts"><code>angle: number;</code></pre><p>The calculated angle of this Body&#39;s velocity vector, in radians, during the last step.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-speed-49">speed <a class="anchor" href="#member-speed-49">#</a></h3><pre class="code" data-lang="ts"><code>speed: number;</code></pre><p>The calculated magnitude of the Body&#39;s velocity, in pixels per second, during the last step.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-facing-50">facing <a class="anchor" href="#member-facing-50">#</a></h3><pre class="code" data-lang="ts"><code>facing: number;</code></pre><p>The direction of the Body&#39;s velocity, as calculated during the last step.
+This is a numeric constant value (FACING_UP, FACING_DOWN, FACING_LEFT, FACING_RIGHT).
+If the Body is moving on both axes, this describes motion on the vertical axis only.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-immovable-51">immovable <a class="anchor" href="#member-immovable-51">#</a></h3><pre class="code" data-lang="ts"><code>immovable: boolean;</code></pre><p>Whether this Body can be moved by collisions with another Body.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-pushable-52">pushable <a class="anchor" href="#member-pushable-52">#</a></h3><pre class="code" data-lang="ts"><code>pushable: boolean;</code></pre><p>Sets if this Body can be pushed by another Body.</p>
+<p>A body that cannot be pushed will reflect back all of the velocity it is given to the
+colliding body. If that body is also not pushable, then the separation will be split
+between them evenly.</p>
+<p>If you want your body to never move or separate at all, see the <code>setImmovable</code> method.</p>
+<p>By default, Dynamic Bodies are always pushable.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-slidefactor-53">slideFactor <a class="anchor" href="#member-slidefactor-53">#</a></h3><pre class="code" data-lang="ts"><code>slideFactor: Phaser.Math.Vector2;</code></pre><p>The Slide Factor of this Body.</p>
+<p>The Slide Factor controls how much velocity is preserved when
+this Body is pushed by another Body.</p>
+<p>The default value is 1, which means that it will take on all
+velocity given in the push. You can adjust this value to control
+how much velocity is retained by this Body when the push ends.</p>
+<p>A value of 0, for example, will allow this Body to be pushed
+but then remain completely still after the push ends, such as
+you see in a game like Sokoban.</p>
+<p>Or you can set a mid-point, such as 0.25 which will allow it
+to keep 25% of the original velocity when the push ends. You
+can combine this with the <code>setDrag()</code> method to create deceleration.</p>
+<p><b>Type / return:</b> <code>Phaser.Math.Vector2</code></p><h3 id="member-moves-54">moves <a class="anchor" href="#member-moves-54">#</a></h3><pre class="code" data-lang="ts"><code>moves: boolean;</code></pre><p>Whether the Body&#39;s position and rotation are affected by its velocity, acceleration, drag, and gravity.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-customseparatex-55">customSeparateX <a class="anchor" href="#member-customseparatex-55">#</a></h3><pre class="code" data-lang="ts"><code>customSeparateX: boolean;</code></pre><p>A flag disabling the default horizontal separation of colliding bodies.
+Pass your own <code>collideCallback</code> to the collider.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-customseparatey-56">customSeparateY <a class="anchor" href="#member-customseparatey-56">#</a></h3><pre class="code" data-lang="ts"><code>customSeparateY: boolean;</code></pre><p>A flag disabling the default vertical separation of colliding bodies.
+Pass your own <code>collideCallback</code> to the collider.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-overlapx-57">overlapX <a class="anchor" href="#member-overlapx-57">#</a></h3><pre class="code" data-lang="ts"><code>overlapX: number;</code></pre><p>The amount of horizontal overlap (before separation), if this Body is colliding with another.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-overlapy-58">overlapY <a class="anchor" href="#member-overlapy-58">#</a></h3><pre class="code" data-lang="ts"><code>overlapY: number;</code></pre><p>The amount of vertical overlap (before separation), if this Body is colliding with another.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-overlapr-59">overlapR <a class="anchor" href="#member-overlapr-59">#</a></h3><pre class="code" data-lang="ts"><code>overlapR: number;</code></pre><p>The amount of overlap (before separation), if this Body is circular and colliding with another circular body.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-embedded-60">embedded <a class="anchor" href="#member-embedded-60">#</a></h3><pre class="code" data-lang="ts"><code>embedded: boolean;</code></pre><p>Whether this Body is overlapped with another and both are not moving, on at least one axis.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-collideworldbounds-61">collideWorldBounds <a class="anchor" href="#member-collideworldbounds-61">#</a></h3><pre class="code" data-lang="ts"><code>collideWorldBounds: boolean;</code></pre><p>Whether this Body interacts with the world boundary.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-checkcollision-62">checkCollision <a class="anchor" href="#member-checkcollision-62">#</a></h3><pre class="code" data-lang="ts"><code>checkCollision: Phaser.Types.Physics.Arcade.ArcadeBodyCollision;</code></pre><p>Whether this Body is checked for collisions and for which directions.
+You can set <code>checkCollision.none = true</code> to disable collision checks.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.Physics.Arcade.ArcadeBodyCollision</code></p><h3 id="member-touching-63">touching <a class="anchor" href="#member-touching-63">#</a></h3><pre class="code" data-lang="ts"><code>touching: Phaser.Types.Physics.Arcade.ArcadeBodyCollision;</code></pre><p>Whether this Body is colliding with a Body or Static Body and in which direction.
+In a collision where both bodies have zero velocity, <code>embedded</code> will be set instead.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.Physics.Arcade.ArcadeBodyCollision</code></p><h3 id="member-wastouching-64">wasTouching <a class="anchor" href="#member-wastouching-64">#</a></h3><pre class="code" data-lang="ts"><code>wasTouching: Phaser.Types.Physics.Arcade.ArcadeBodyCollision;</code></pre><p>This Body&#39;s <code>touching</code> value during the previous step.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.Physics.Arcade.ArcadeBodyCollision</code></p><h3 id="member-blocked-65">blocked <a class="anchor" href="#member-blocked-65">#</a></h3><pre class="code" data-lang="ts"><code>blocked: Phaser.Types.Physics.Arcade.ArcadeBodyCollision;</code></pre><p>Whether this Body is colliding with a Static Body, a tile, or the world boundary.
+In a collision with a Static Body, if this Body has zero velocity then <code>embedded</code> will be set instead.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.Physics.Arcade.ArcadeBodyCollision</code></p><h3 id="member-syncbounds-66">syncBounds <a class="anchor" href="#member-syncbounds-66">#</a></h3><pre class="code" data-lang="ts"><code>syncBounds: boolean;</code></pre><p>Whether to automatically synchronize this Body&#39;s dimensions to the dimensions of its Game Object&#39;s visual bounds.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-physicstype-67">physicsType <a class="anchor" href="#member-physicstype-67">#</a></h3><pre class="code" data-lang="ts"><code>readonly physicsType: number;</code></pre><p>The Body&#39;s physics type (dynamic or static).</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-collisioncategory-68">collisionCategory <a class="anchor" href="#member-collisioncategory-68">#</a></h3><pre class="code" data-lang="ts"><code>collisionCategory: number;</code></pre><p>The Arcade Physics Body Collision Category.</p>
+<p>This can be set to any valid collision bitfield value.</p>
+<p>See the <code>setCollisionCategory</code> method for more details.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-collisionmask-69">collisionMask <a class="anchor" href="#member-collisionmask-69">#</a></h3><pre class="code" data-lang="ts"><code>collisionMask: number;</code></pre><p>The Arcade Physics Body Collision Mask.</p>
+<p>See the <code>setCollidesWith</code> method for more details.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-directcontrol-70">directControl <a class="anchor" href="#member-directcontrol-70">#</a></h3><pre class="code" data-lang="ts"><code>directControl: boolean;</code></pre><p>Is this Body under direct control, outside of the physics engine? For example,
+are you trying to move it via a Tween? Or have it follow a path? If so then
+you can enable this boolean so that the Body will calculate its velocity based
+purely on its change in position each frame. This allows you to then tween
+the position and still have it collide with other objects. However, setting
+the velocity will have no impact on this Body while this is set.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-updatebounds-71">updateBounds <a class="anchor" href="#member-updatebounds-71">#</a></h3><pre class="code" data-lang="ts"><code>updateBounds(): void;</code></pre><p>Updates the Body&#39;s <code>transform</code>, <code>width</code>, <code>height</code>, and <code>center</code> from its Game Object.
+The Body&#39;s <code>position</code> isn&#39;t changed.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="member-updatecenter-72">updateCenter <a class="anchor" href="#member-updatecenter-72">#</a></h3><pre class="code" data-lang="ts"><code>updateCenter(): void;</code></pre><p>Updates the Body&#39;s <code>center</code> from its <code>position</code>, <code>width</code>, and <code>height</code>.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="member-updatefromgameobject-73">updateFromGameObject <a class="anchor" href="#member-updatefromgameobject-73">#</a></h3><pre class="code" data-lang="ts"><code>updateFromGameObject(): void;</code></pre><p>Updates the Body&#39;s <code>position</code>, <code>width</code>, <code>height</code>, and <code>center</code> from its Game Object and <code>offset</code>.</p>
+<p>You don&#39;t need to call this for Dynamic Bodies, as it happens automatically during the physics step.
+But you could use it if you have modified the Body offset or Game Object transform and need to immediately
+read the Body&#39;s new <code>position</code> or <code>center</code>.</p>
+<p>To resynchronize the Body with its Game Object, use <code>reset()</code> instead.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="member-resetflags-74">resetFlags <a class="anchor" href="#member-resetflags-74">#</a></h3><pre class="code" data-lang="ts"><code>resetFlags(clear?: boolean): void;</code></pre><p>Prepares the Body for a physics step by resetting the <code>wasTouching</code>, <code>touching</code> and <code>blocked</code> states.</p>
+<p>This method is only called if the physics world is going to run a step this frame.
+<strong>param</strong>  clear Set the <code>wasTouching</code> values to their defaults. Default false.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>clear</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-preupdate-75">preUpdate <a class="anchor" href="#member-preupdate-75">#</a></h3><pre class="code" data-lang="ts"><code>preUpdate(willStep: boolean, delta: number): void;</code></pre><p>Syncs the Body&#39;s position with the parent Game Object.</p>
+<p>This method is called every game frame, regardless if the world steps or not.
+<strong>param</strong>  willStep Will this Body run an update as well?
+<strong>param</strong>  delta The delta time, in seconds, elapsed since the last frame.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>willStep</code></td><td><code>boolean</code></td><td>Required</td></tr><tr><td><code>delta</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-update-76">update <a class="anchor" href="#member-update-76">#</a></h3><pre class="code" data-lang="ts"><code>update(delta: number): void;</code></pre><p>Performs a single physics step and updates the body velocity, angle, speed and other properties.</p>
+<p>This method can be called multiple times per game frame, depending on the physics step rate.</p>
+<p>The results are synced back to the Game Object in <code>postUpdate</code>.
+<strong>param</strong>  delta The delta time, in seconds, elapsed since the last frame.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>delta</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-postupdate-77">postUpdate <a class="anchor" href="#member-postupdate-77">#</a></h3><pre class="code" data-lang="ts"><code>postUpdate(): void;</code></pre><p>Feeds the Body results back into the parent Game Object.</p>
+<p>This method is called every game frame, regardless if the world steps or not.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="member-setboundsrectangle-78">setBoundsRectangle <a class="anchor" href="#member-setboundsrectangle-78">#</a></h3><pre class="code" data-lang="ts"><code>setBoundsRectangle(bounds?: Phaser.Geom.Rectangle | undefined): this;</code></pre><p>Sets a custom collision boundary rectangle. Use if you want to have a custom
+boundary instead of the world boundaries.
+<strong>param</strong>  bounds The new boundary rectangle. Pass <code>null</code> to use the World bounds.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>bounds</code></td><td><code>Phaser.Geom.Rectangle | undefined</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-checkworldbounds-79">checkWorldBounds <a class="anchor" href="#member-checkworldbounds-79">#</a></h3><pre class="code" data-lang="ts"><code>checkWorldBounds(): boolean;</code></pre><p>Checks for collisions between this Body and the world boundary and separates them.undefined
+<strong>returns</strong>  True if this Body is colliding with the world boundary.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-setoffset-80">setOffset <a class="anchor" href="#member-setoffset-80">#</a></h3><pre class="code" data-lang="ts"><code>setOffset(x: number, y?: number): Phaser.Physics.Arcade.Body;</code></pre><p>Sets the offset of the Body&#39;s position from its Game Object&#39;s position.
+The Body&#39;s <code>position</code> isn&#39;t changed until the next <code>preUpdate</code>.
+<strong>param</strong>  x The horizontal offset, in source pixels.
+<strong>param</strong>  y The vertical offset, in source pixels. Default x.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setgameobject-81">setGameObject <a class="anchor" href="#member-setgameobject-81">#</a></h3><pre class="code" data-lang="ts"><code>setGameObject(gameObject: Phaser.GameObjects.GameObject, enable?: boolean): Phaser.Physics.Arcade.Body;</code></pre><p>Assign this Body to a new Game Object.</p>
+<p>Removes this body from the Physics World, assigns to the new Game Object, calls <code>setSize</code> and then
+adds this body back into the World again, setting it enabled, unless the <code>enable</code> argument is set to <code>false</code>.</p>
+<p>If this body already has a Game Object, then it will remove itself from that Game Object first.</p>
+<p>If the given <code>gameObject</code> doesn&#39;t have a <code>body</code> property, it is created and this Body is assigned to it.
+<strong>param</strong>  gameObject The Game Object to assign this Body to.
+<strong>param</strong>  enable Automatically enable this Body for physics. Default true.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>gameObject</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr><tr><td><code>enable</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setsize-82">setSize <a class="anchor" href="#member-setsize-82">#</a></h3><pre class="code" data-lang="ts"><code>setSize(width?: number, height?: number, center?: boolean): Phaser.Physics.Arcade.Body;</code></pre><p>Sizes and positions this Body, as a rectangle.
+Modifies the Body <code>offset</code> if <code>center</code> is true (the default).
+Resets the width and height to match current frame, if no width and height provided and a frame is found.
+<strong>param</strong>  width The width of the Body in pixels. Cannot be zero. If not given, and the parent Game Object has a frame, it will use the frame width.
+<strong>param</strong>  height The height of the Body in pixels. Cannot be zero. If not given, and the parent Game Object has a frame, it will use the frame height.
+<strong>param</strong>  center Modify the Body&#39;s <code>offset</code>, placing the Body&#39;s center on its Game Object&#39;s center. Only works if the Game Object has the <code>getCenter</code> method. Default true.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>width</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>center</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setcircle-83">setCircle <a class="anchor" href="#member-setcircle-83">#</a></h3><pre class="code" data-lang="ts"><code>setCircle(radius: number, offsetX?: number, offsetY?: number): Phaser.Physics.Arcade.Body;</code></pre><p>Sizes and positions this Body, as a circle.
+<strong>param</strong>  radius The radius of the Body, in source pixels.
+<strong>param</strong>  offsetX The horizontal offset of the Body from its Game Object, in source pixels.
+<strong>param</strong>  offsetY The vertical offset of the Body from its Game Object, in source pixels.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>radius</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>offsetX</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>offsetY</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-reset-84">reset <a class="anchor" href="#member-reset-84">#</a></h3><pre class="code" data-lang="ts"><code>reset(x: number, y: number): void;</code></pre><p>Sets this Body&#39;s parent Game Object to the given coordinates and resets this Body at the new coordinates.
+If the Body had any velocity or acceleration it is lost as a result of calling this.
+<strong>param</strong>  x The horizontal position to place the Game Object.
+<strong>param</strong>  y The vertical position to place the Game Object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-stop-85">stop <a class="anchor" href="#member-stop-85">#</a></h3><pre class="code" data-lang="ts"><code>stop(): Phaser.Physics.Arcade.Body;</code></pre><p>Sets acceleration, velocity, and speed to zero.undefined
+<strong>returns</strong>  This Body object.</p>
+<p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-getbounds-86">getBounds <a class="anchor" href="#member-getbounds-86">#</a></h3><pre class="code" data-lang="ts"><code>getBounds(obj: Phaser.Types.Physics.Arcade.ArcadeBodyBounds): Phaser.Types.Physics.Arcade.ArcadeBodyBounds;</code></pre><p>Copies the coordinates of this Body&#39;s edges into an object.
+<strong>param</strong>  obj An object to copy the values into.
+<strong>returns</strong>  - An object with {x, y, right, bottom}.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>obj</code></td><td><code>Phaser.Types.Physics.Arcade.ArcadeBodyBounds</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Types.Physics.Arcade.ArcadeBodyBounds</code></p><h3 id="member-hittest-87">hitTest <a class="anchor" href="#member-hittest-87">#</a></h3><pre class="code" data-lang="ts"><code>hitTest(x: number, y: number): boolean;</code></pre><p>Tests if the coordinates are within this Body.
+<strong>param</strong>  x The horizontal coordinate.
+<strong>param</strong>  y The vertical coordinate.
+<strong>returns</strong>  True if (x, y) is within this Body.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-onfloor-88">onFloor <a class="anchor" href="#member-onfloor-88">#</a></h3><pre class="code" data-lang="ts"><code>onFloor(): boolean;</code></pre><p>Whether this Body is touching a tile or the world boundary while moving down.undefined
+<strong>returns</strong>  True if touching.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-onceiling-89">onCeiling <a class="anchor" href="#member-onceiling-89">#</a></h3><pre class="code" data-lang="ts"><code>onCeiling(): boolean;</code></pre><p>Whether this Body is touching a tile or the world boundary while moving up.undefined
+<strong>returns</strong>  True if touching.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-onwall-90">onWall <a class="anchor" href="#member-onwall-90">#</a></h3><pre class="code" data-lang="ts"><code>onWall(): boolean;</code></pre><p>Whether this Body is touching a tile or the world boundary while moving left or right.undefined
+<strong>returns</strong>  True if touching.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-deltaabsx-91">deltaAbsX <a class="anchor" href="#member-deltaabsx-91">#</a></h3><pre class="code" data-lang="ts"><code>deltaAbsX(): number;</code></pre><p>The absolute (non-negative) change in this Body&#39;s horizontal position from the previous step.undefined
+<strong>returns</strong>  The absolute change in horizontal position since the last step, in pixels.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-deltaabsy-92">deltaAbsY <a class="anchor" href="#member-deltaabsy-92">#</a></h3><pre class="code" data-lang="ts"><code>deltaAbsY(): number;</code></pre><p>The absolute (non-negative) change in this Body&#39;s vertical position from the previous step.undefined
+<strong>returns</strong>  The absolute change in vertical position since the last step, in pixels.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-deltax-93">deltaX <a class="anchor" href="#member-deltax-93">#</a></h3><pre class="code" data-lang="ts"><code>deltaX(): number;</code></pre><p>The change in this Body&#39;s horizontal position from the previous step.
+This value is set during the Body&#39;s update phase.</p>
+<p>As a Body can update multiple times per step this may not hold the final
+delta value for the Body. In this case, please see the <code>deltaXFinal</code> method.undefined
+<strong>returns</strong>  The change in horizontal position since the last step, in pixels.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-deltay-94">deltaY <a class="anchor" href="#member-deltay-94">#</a></h3><pre class="code" data-lang="ts"><code>deltaY(): number;</code></pre><p>The change in this Body&#39;s vertical position from the previous step.
+This value is set during the Body&#39;s update phase.</p>
+<p>As a Body can update multiple times per step this may not hold the final
+delta value for the Body. In this case, please see the <code>deltaYFinal</code> method.undefined
+<strong>returns</strong>  The change in vertical position since the last step, in pixels.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-deltaxfinal-95">deltaXFinal <a class="anchor" href="#member-deltaxfinal-95">#</a></h3><pre class="code" data-lang="ts"><code>deltaXFinal(): number;</code></pre><p>The change in this Body&#39;s horizontal position from the previous game update.</p>
+<p>This value is set during the <code>postUpdate</code> phase and takes into account the
+<code>deltaMax</code> and final position of the Body.</p>
+<p>Because this value is not calculated until <code>postUpdate</code>, you must listen for it
+during a Scene <code>POST_UPDATE</code> or <code>RENDER</code> event, and not in <code>update</code>, as it will
+not be calculated by that point. If you <em>do</em> use these values in <code>update</code> they
+will represent the delta from the <em>previous</em> game frame.undefined
+<strong>returns</strong>  The final delta x value.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-deltayfinal-96">deltaYFinal <a class="anchor" href="#member-deltayfinal-96">#</a></h3><pre class="code" data-lang="ts"><code>deltaYFinal(): number;</code></pre><p>The change in this Body&#39;s vertical position from the previous game update.</p>
+<p>This value is set during the <code>postUpdate</code> phase and takes into account the
+<code>deltaMax</code> and final position of the Body.</p>
+<p>Because this value is not calculated until <code>postUpdate</code>, you must listen for it
+during a Scene <code>POST_UPDATE</code> or <code>RENDER</code> event, and not in <code>update</code>, as it will
+not be calculated by that point. If you <em>do</em> use these values in <code>update</code> they
+will represent the delta from the <em>previous</em> game frame.undefined
+<strong>returns</strong>  The final delta y value.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-deltaz-97">deltaZ <a class="anchor" href="#member-deltaz-97">#</a></h3><pre class="code" data-lang="ts"><code>deltaZ(): number;</code></pre><p>The change in this Body&#39;s rotation from the previous step, in degrees.undefined
+<strong>returns</strong>  The change in rotation since the last step, in degrees.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-destroy-98">destroy <a class="anchor" href="#member-destroy-98">#</a></h3><pre class="code" data-lang="ts"><code>destroy(): void;</code></pre><p>Disables this Body and marks it for deletion by the simulation.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="member-drawdebug-99">drawDebug <a class="anchor" href="#member-drawdebug-99">#</a></h3><pre class="code" data-lang="ts"><code>drawDebug(graphic: Phaser.GameObjects.Graphics): void;</code></pre><p>Draws this Body and its velocity, if enabled.
+<strong>param</strong>  graphic The Graphics object to draw on.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>graphic</code></td><td><code>Phaser.GameObjects.Graphics</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-willdrawdebug-100">willDrawDebug <a class="anchor" href="#member-willdrawdebug-100">#</a></h3><pre class="code" data-lang="ts"><code>willDrawDebug(): boolean;</code></pre><p>Whether this Body will be drawn to the debug display.undefined
+<strong>returns</strong>  True if either <code>debugShowBody</code> or <code>debugShowVelocity</code> are enabled.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-setdirectcontrol-101">setDirectControl <a class="anchor" href="#member-setdirectcontrol-101">#</a></h3><pre class="code" data-lang="ts"><code>setDirectControl(value?: boolean): Phaser.Physics.Arcade.Body;</code></pre><p>Sets whether this Body should calculate its velocity based on its change in
+position every frame. The default, which is to not do this, means that you
+make this Body move by setting the velocity directly. However, if you are
+trying to move this Body via a Tween, or have it follow a Path, then you
+should enable this instead. This will allow it to still collide with other
+bodies, something that isn&#39;t possible if you&#39;re just changing its position directly.
+<strong>param</strong>  value <code>true</code> if the Body calculate velocity based on changes in position, otherwise <code>false</code>. Default true.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setcollideworldbounds-102">setCollideWorldBounds <a class="anchor" href="#member-setcollideworldbounds-102">#</a></h3><pre class="code" data-lang="ts"><code>setCollideWorldBounds(value?: boolean, bounceX?: number, bounceY?: number, onWorldBounds?: boolean): Phaser.Physics.Arcade.Body;</code></pre><p>Sets whether this Body collides with the world boundary.</p>
+<p>Optionally also sets the World Bounce and <code>onWorldBounds</code> values.
+<strong>param</strong>  value <code>true</code> if the Body should collide with the world bounds, otherwise <code>false</code>. Default true.
+<strong>param</strong>  bounceX If given this replaces the Body&#39;s <code>worldBounce.x</code> value.
+<strong>param</strong>  bounceY If given this replaces the Body&#39;s <code>worldBounce.y</code> value.
+<strong>param</strong>  onWorldBounds If given this replaces the Body&#39;s <code>onWorldBounds</code> value.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>bounceX</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>bounceY</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>onWorldBounds</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setvelocity-103">setVelocity <a class="anchor" href="#member-setvelocity-103">#</a></h3><pre class="code" data-lang="ts"><code>setVelocity(x: number, y?: number): Phaser.Physics.Arcade.Body;</code></pre><p>Sets the Body&#39;s velocity.
+<strong>param</strong>  x The horizontal velocity, in pixels per second.
+<strong>param</strong>  y The vertical velocity, in pixels per second. Default x.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setvelocityx-104">setVelocityX <a class="anchor" href="#member-setvelocityx-104">#</a></h3><pre class="code" data-lang="ts"><code>setVelocityX(value: number): Phaser.Physics.Arcade.Body;</code></pre><p>Sets the Body&#39;s horizontal velocity.
+<strong>param</strong>  value The velocity, in pixels per second.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setvelocityy-105">setVelocityY <a class="anchor" href="#member-setvelocityy-105">#</a></h3><pre class="code" data-lang="ts"><code>setVelocityY(value: number): Phaser.Physics.Arcade.Body;</code></pre><p>Sets the Body&#39;s vertical velocity.
+<strong>param</strong>  value The velocity, in pixels per second.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setmaxvelocity-106">setMaxVelocity <a class="anchor" href="#member-setmaxvelocity-106">#</a></h3><pre class="code" data-lang="ts"><code>setMaxVelocity(x: number, y?: number): Phaser.Physics.Arcade.Body;</code></pre><p>Sets the Body&#39;s maximum velocity.
+<strong>param</strong>  x The horizontal velocity, in pixels per second.
+<strong>param</strong>  y The vertical velocity, in pixels per second. Default x.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setmaxvelocityx-107">setMaxVelocityX <a class="anchor" href="#member-setmaxvelocityx-107">#</a></h3><pre class="code" data-lang="ts"><code>setMaxVelocityX(value: number): Phaser.Physics.Arcade.Body;</code></pre><p>Sets the Body&#39;s maximum horizontal velocity.
+<strong>param</strong>  value The maximum horizontal velocity, in pixels per second.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setmaxvelocityy-108">setMaxVelocityY <a class="anchor" href="#member-setmaxvelocityy-108">#</a></h3><pre class="code" data-lang="ts"><code>setMaxVelocityY(value: number): Phaser.Physics.Arcade.Body;</code></pre><p>Sets the Body&#39;s maximum vertical velocity.
+<strong>param</strong>  value The maximum vertical velocity, in pixels per second.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setmaxspeed-109">setMaxSpeed <a class="anchor" href="#member-setmaxspeed-109">#</a></h3><pre class="code" data-lang="ts"><code>setMaxSpeed(value: number): Phaser.Physics.Arcade.Body;</code></pre><p>Sets the maximum speed the Body can move.
+<strong>param</strong>  value The maximum speed value, in pixels per second. Set to a negative value to disable.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setslidefactor-110">setSlideFactor <a class="anchor" href="#member-setslidefactor-110">#</a></h3><pre class="code" data-lang="ts"><code>setSlideFactor(x: number, y?: number): Phaser.Physics.Arcade.Body;</code></pre><p>Sets the Slide Factor of this Body.</p>
+<p>The Slide Factor controls how much velocity is preserved when
+this Body is pushed by another Body.</p>
+<p>The default value is 1, which means that it will take on all
+velocity given in the push. You can adjust this value to control
+how much velocity is retained by this Body when the push ends.</p>
+<p>A value of 0, for example, will allow this Body to be pushed
+but then remain completely still after the push ends, such as
+you see in a game like Sokoban.</p>
+<p>Or you can set a mid-point, such as 0.25 which will allow it
+to keep 25% of the original velocity when the push ends. You
+can combine this with the <code>setDrag()</code> method to create deceleration.
+<strong>param</strong>  x The horizontal slide factor. A value between 0 and 1.
+<strong>param</strong>  y The vertical slide factor. A value between 0 and 1. Default x.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setbounce-111">setBounce <a class="anchor" href="#member-setbounce-111">#</a></h3><pre class="code" data-lang="ts"><code>setBounce(x: number, y?: number): Phaser.Physics.Arcade.Body;</code></pre><p>Sets the Body&#39;s bounce.
+<strong>param</strong>  x The horizontal bounce, relative to 1.
+<strong>param</strong>  y The vertical bounce, relative to 1. Default x.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setbouncex-112">setBounceX <a class="anchor" href="#member-setbouncex-112">#</a></h3><pre class="code" data-lang="ts"><code>setBounceX(value: number): Phaser.Physics.Arcade.Body;</code></pre><p>Sets the Body&#39;s horizontal bounce.
+<strong>param</strong>  value The bounce, relative to 1.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setbouncey-113">setBounceY <a class="anchor" href="#member-setbouncey-113">#</a></h3><pre class="code" data-lang="ts"><code>setBounceY(value: number): Phaser.Physics.Arcade.Body;</code></pre><p>Sets the Body&#39;s vertical bounce.
+<strong>param</strong>  value The bounce, relative to 1.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setacceleration-114">setAcceleration <a class="anchor" href="#member-setacceleration-114">#</a></h3><pre class="code" data-lang="ts"><code>setAcceleration(x: number, y?: number): Phaser.Physics.Arcade.Body;</code></pre><p>Sets the Body&#39;s acceleration.
+<strong>param</strong>  x The horizontal component, in pixels per second squared.
+<strong>param</strong>  y The vertical component, in pixels per second squared. Default x.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setaccelerationx-115">setAccelerationX <a class="anchor" href="#member-setaccelerationx-115">#</a></h3><pre class="code" data-lang="ts"><code>setAccelerationX(value: number): Phaser.Physics.Arcade.Body;</code></pre><p>Sets the Body&#39;s horizontal acceleration.
+<strong>param</strong>  value The acceleration, in pixels per second squared.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setaccelerationy-116">setAccelerationY <a class="anchor" href="#member-setaccelerationy-116">#</a></h3><pre class="code" data-lang="ts"><code>setAccelerationY(value: number): Phaser.Physics.Arcade.Body;</code></pre><p>Sets the Body&#39;s vertical acceleration.
+<strong>param</strong>  value The acceleration, in pixels per second squared.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setallowdrag-117">setAllowDrag <a class="anchor" href="#member-setallowdrag-117">#</a></h3><pre class="code" data-lang="ts"><code>setAllowDrag(value?: boolean): Phaser.Physics.Arcade.Body;</code></pre><p>Enables or disables drag.
+<strong>param</strong>  value <code>true</code> to allow drag on this body, or <code>false</code> to disable it. Default true.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setallowgravity-118">setAllowGravity <a class="anchor" href="#member-setallowgravity-118">#</a></h3><pre class="code" data-lang="ts"><code>setAllowGravity(value?: boolean): Phaser.Physics.Arcade.Body;</code></pre><p>Enables or disables gravity&#39;s effect on this Body.
+<strong>param</strong>  value <code>true</code> to allow gravity on this body, or <code>false</code> to disable it. Default true.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setallowrotation-119">setAllowRotation <a class="anchor" href="#member-setallowrotation-119">#</a></h3><pre class="code" data-lang="ts"><code>setAllowRotation(value?: boolean): Phaser.Physics.Arcade.Body;</code></pre><p>Enables or disables rotation.
+<strong>param</strong>  value <code>true</code> to allow rotation on this body, or <code>false</code> to disable it. Default true.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setdrag-120">setDrag <a class="anchor" href="#member-setdrag-120">#</a></h3><pre class="code" data-lang="ts"><code>setDrag(x: number, y?: number): Phaser.Physics.Arcade.Body;</code></pre><p>Sets the Body&#39;s drag.
+<strong>param</strong>  x The horizontal component, in pixels per second squared.
+<strong>param</strong>  y The vertical component, in pixels per second squared. Default x.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setdamping-121">setDamping <a class="anchor" href="#member-setdamping-121">#</a></h3><pre class="code" data-lang="ts"><code>setDamping(value: boolean): Phaser.Physics.Arcade.Body;</code></pre><p>If this Body is using <code>drag</code> for deceleration this property controls how the drag is applied.
+If set to <code>true</code> drag will use a damping effect rather than a linear approach. If you are
+creating a game where the Body moves freely at any angle (i.e. like the way the ship moves in
+the game Asteroids) then you will get a far smoother and more visually correct deceleration
+by using damping, avoiding the axis-drift that is prone with linear deceleration.</p>
+<p>If you enable this property then you should use far smaller <code>drag</code> values than with linear, as
+they are used as a multiplier on the velocity. Values such as 0.95 will give a nice slow
+deceleration, where-as smaller values, such as 0.5 will stop an object almost immediately.
+<strong>param</strong>  value <code>true</code> to use damping, or <code>false</code> to use drag.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setdragx-122">setDragX <a class="anchor" href="#member-setdragx-122">#</a></h3><pre class="code" data-lang="ts"><code>setDragX(value: number): Phaser.Physics.Arcade.Body;</code></pre><p>Sets the Body&#39;s horizontal drag.
+<strong>param</strong>  value The drag, in pixels per second squared.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setdragy-123">setDragY <a class="anchor" href="#member-setdragy-123">#</a></h3><pre class="code" data-lang="ts"><code>setDragY(value: number): Phaser.Physics.Arcade.Body;</code></pre><p>Sets the Body&#39;s vertical drag.
+<strong>param</strong>  value The drag, in pixels per second squared.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setgravity-124">setGravity <a class="anchor" href="#member-setgravity-124">#</a></h3><pre class="code" data-lang="ts"><code>setGravity(x: number, y?: number): Phaser.Physics.Arcade.Body;</code></pre><p>Sets the Body&#39;s gravity.
+<strong>param</strong>  x The horizontal component, in pixels per second squared.
+<strong>param</strong>  y The vertical component, in pixels per second squared. Default x.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setgravityx-125">setGravityX <a class="anchor" href="#member-setgravityx-125">#</a></h3><pre class="code" data-lang="ts"><code>setGravityX(value: number): Phaser.Physics.Arcade.Body;</code></pre><p>Sets the Body&#39;s horizontal gravity.
+<strong>param</strong>  value The gravity, in pixels per second squared.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setgravityy-126">setGravityY <a class="anchor" href="#member-setgravityy-126">#</a></h3><pre class="code" data-lang="ts"><code>setGravityY(value: number): Phaser.Physics.Arcade.Body;</code></pre><p>Sets the Body&#39;s vertical gravity.
+<strong>param</strong>  value The gravity, in pixels per second squared.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setfriction-127">setFriction <a class="anchor" href="#member-setfriction-127">#</a></h3><pre class="code" data-lang="ts"><code>setFriction(x: number, y?: number): Phaser.Physics.Arcade.Body;</code></pre><p>Sets the Body&#39;s friction.
+<strong>param</strong>  x The horizontal component, relative to 1.
+<strong>param</strong>  y The vertical component, relative to 1. Default x.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setfrictionx-128">setFrictionX <a class="anchor" href="#member-setfrictionx-128">#</a></h3><pre class="code" data-lang="ts"><code>setFrictionX(value: number): Phaser.Physics.Arcade.Body;</code></pre><p>Sets the Body&#39;s horizontal friction.
+<strong>param</strong>  value The friction value, relative to 1.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setfrictiony-129">setFrictionY <a class="anchor" href="#member-setfrictiony-129">#</a></h3><pre class="code" data-lang="ts"><code>setFrictionY(value: number): Phaser.Physics.Arcade.Body;</code></pre><p>Sets the Body&#39;s vertical friction.
+<strong>param</strong>  value The friction value, relative to 1.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setangularvelocity-130">setAngularVelocity <a class="anchor" href="#member-setangularvelocity-130">#</a></h3><pre class="code" data-lang="ts"><code>setAngularVelocity(value: number): Phaser.Physics.Arcade.Body;</code></pre><p>Sets the Body&#39;s angular velocity.
+<strong>param</strong>  value The velocity, in degrees per second.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setangularacceleration-131">setAngularAcceleration <a class="anchor" href="#member-setangularacceleration-131">#</a></h3><pre class="code" data-lang="ts"><code>setAngularAcceleration(value: number): Phaser.Physics.Arcade.Body;</code></pre><p>Sets the Body&#39;s angular acceleration.
+<strong>param</strong>  value The acceleration, in degrees per second squared.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setangulardrag-132">setAngularDrag <a class="anchor" href="#member-setangulardrag-132">#</a></h3><pre class="code" data-lang="ts"><code>setAngularDrag(value: number): Phaser.Physics.Arcade.Body;</code></pre><p>Sets the Body&#39;s angular drag.
+<strong>param</strong>  value The drag, in degrees per second squared.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setmass-133">setMass <a class="anchor" href="#member-setmass-133">#</a></h3><pre class="code" data-lang="ts"><code>setMass(value: number): Phaser.Physics.Arcade.Body;</code></pre><p>Sets the Body&#39;s mass.
+<strong>param</strong>  value The mass value, relative to 1.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setimmovable-134">setImmovable <a class="anchor" href="#member-setimmovable-134">#</a></h3><pre class="code" data-lang="ts"><code>setImmovable(value?: boolean): Phaser.Physics.Arcade.Body;</code></pre><p>Sets the Body&#39;s <code>immovable</code> property.
+<strong>param</strong>  value The value to assign to <code>immovable</code>. Default true.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-setenable-135">setEnable <a class="anchor" href="#member-setenable-135">#</a></h3><pre class="code" data-lang="ts"><code>setEnable(value?: boolean): Phaser.Physics.Arcade.Body;</code></pre><p>Sets the Body&#39;s <code>enable</code> property.
+<strong>param</strong>  value The value to assign to <code>enable</code>. Default true.
+<strong>returns</strong>  This Body object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body</code></p><h3 id="member-processx-136">processX <a class="anchor" href="#member-processx-136">#</a></h3><pre class="code" data-lang="ts"><code>processX(x: number, vx?: number, left?: boolean, right?: boolean): void;</code></pre><p>This is an internal handler, called by the <code>ProcessX</code> function as part
+of the collision step. You should almost never call this directly.
+<strong>param</strong>  x The amount to add to the Body position.
+<strong>param</strong>  vx The amount to add to the Body velocity.
+<strong>param</strong>  left Set the blocked.left value?
+<strong>param</strong>  right Set the blocked.right value?</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>vx</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>left</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>right</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-processy-137">processY <a class="anchor" href="#member-processy-137">#</a></h3><pre class="code" data-lang="ts"><code>processY(y: number, vy?: number, up?: boolean, down?: boolean): void;</code></pre><p>This is an internal handler, called by the <code>ProcessY</code> function as part
+of the collision step. You should almost never call this directly.
+<strong>param</strong>  y The amount to add to the Body position.
+<strong>param</strong>  vy The amount to add to the Body velocity.
+<strong>param</strong>  up Set the blocked.up value?
+<strong>param</strong>  down Set the blocked.down value?</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>vy</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>up</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>down</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-x-138">x <a class="anchor" href="#member-x-138">#</a></h3><pre class="code" data-lang="ts"><code>x: number;</code></pre><p>The Body&#39;s horizontal position (left edge).</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-y-139">y <a class="anchor" href="#member-y-139">#</a></h3><pre class="code" data-lang="ts"><code>y: number;</code></pre><p>The Body&#39;s vertical position (top edge).</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-left-140">left <a class="anchor" href="#member-left-140">#</a></h3><pre class="code" data-lang="ts"><code>readonly left: number;</code></pre><p>The left edge of the Body. Identical to x.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-right-141">right <a class="anchor" href="#member-right-141">#</a></h3><pre class="code" data-lang="ts"><code>readonly right: number;</code></pre><p>The right edge of the Body.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-top-142">top <a class="anchor" href="#member-top-142">#</a></h3><pre class="code" data-lang="ts"><code>readonly top: number;</code></pre><p>The top edge of the Body. Identical to y.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-bottom-143">bottom <a class="anchor" href="#member-bottom-143">#</a></h3><pre class="code" data-lang="ts"><code>readonly bottom: number;</code></pre><p>The bottom edge of this Body.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-setcollisioncategory-144">setCollisionCategory <a class="anchor" href="#member-setcollisioncategory-144">#</a></h3><pre class="code" data-lang="ts"><code>setCollisionCategory(category: number): this;</code></pre><p>Sets the Collision Category that this Arcade Physics Body
+will use in order to determine what it can collide with.</p>
+<p>It can only have one single category assigned to it.</p>
+<p>If you wish to reset the collision category and mask, call
+the <code>resetCollisionCategory</code> method.
+<strong>param</strong>  category The collision category to assign to this body. Typically a power of 2, such as 1, 2, 4, 8, and so on.
+<strong>returns</strong>  This Game Object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>category</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-willcollidewith-145">willCollideWith <a class="anchor" href="#member-willcollidewith-145">#</a></h3><pre class="code" data-lang="ts"><code>willCollideWith(category: number): boolean;</code></pre><p>Checks to see if the given Collision Category will collide with
+this Arcade Physics object or not.
+<strong>param</strong>  category Collision category value to test.
+<strong>returns</strong>  <code>true</code> if the given category will collide with this object, otherwise <code>false</code>.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>category</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-addcollideswith-146">addCollidesWith <a class="anchor" href="#member-addcollideswith-146">#</a></h3><pre class="code" data-lang="ts"><code>addCollidesWith(category: number): this;</code></pre><p>Adds the given Collision Category to the list of those that this
+Arcade Physics Body will collide with.
+<strong>param</strong>  category The collision category to add to this body&#39;s collision mask.
+<strong>returns</strong>  This Game Object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>category</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-removecollideswith-147">removeCollidesWith <a class="anchor" href="#member-removecollideswith-147">#</a></h3><pre class="code" data-lang="ts"><code>removeCollidesWith(category: number): this;</code></pre><p>Removes the given Collision Category from the list of those that this
+Arcade Physics Body will collide with.
+<strong>param</strong>  category The collision category to remove from this body&#39;s collision mask.
+<strong>returns</strong>  This Game Object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>category</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setcollideswith-148">setCollidesWith <a class="anchor" href="#member-setcollideswith-148">#</a></h3><pre class="code" data-lang="ts"><code>setCollidesWith(categories: number | number[]): this;</code></pre><p>Sets all of the Collision Categories that this Arcade Physics Body
+will collide with. You can either pass a single category value, or
+an array of them.</p>
+<p>Calling this method will reset all of the collision categories,
+so only those passed to this method are enabled.</p>
+<p>If you wish to add a new category to the existing mask, call
+the <code>addCollidesWith</code> method.</p>
+<p>If you wish to reset the collision category and mask, call
+the <code>resetCollisionCategory</code> method.
+<strong>param</strong>  categories The collision category to collide with, or an array of them.
+<strong>returns</strong>  This Game Object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>categories</code></td><td><code>number | number[]</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-resetcollisioncategory-149">resetCollisionCategory <a class="anchor" href="#member-resetcollisioncategory-149">#</a></h3><pre class="code" data-lang="ts"><code>resetCollisionCategory(): this;</code></pre><p>Resets the Collision Category and Mask back to the defaults,
+which means the body will belong to category 1 and will collide with all other categories.undefined
+<strong>returns</strong>  This Game Object.</p>
+<p><b>Type / return:</b> <code>this</code></p><h2 id="base-types">Base types</h2><p><a href="engine-phaser-phaser-physics-arcade-components-collision.html">Phaser.Physics.Arcade.Components.Collision</a></p><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#members">Public members (150)</a><a href="#base-types">Base types</a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

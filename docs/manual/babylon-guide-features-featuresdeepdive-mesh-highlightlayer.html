@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Highlighting Meshes — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Highlighting Meshes</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="how-to-highlight-a-mesh">How To Highlight a Mesh<a class="anchor" href="#how-to-highlight-a-mesh">#</a></h2>
+<p>How often have you wanted to highlight some of your meshes in a scene? It sounds easy at first, but it quickly becomes an issue when dealing with edges, blur, and antialiasing.</p>
+<p>If you ever needed it, this tutorial is made for you.</p>
+<p><p class="muted">Upstream illustration: illustration (media not bundled).</p></p>
+<h2 id="how-to-use">How to use?<a class="anchor" href="#how-to-use">#</a></h2>
+<p>Before anything else, you must ensure that your engine was created with the stencil buffer enabled:</p>
+<pre class="code" data-lang="javascript"><code>const engine = new BABYLON.Engine(canvas, true, { stencil: true });</code></pre>
+<p>The HighlightLayer relies on stencil to determine which part of the image it needs to paint.</p>
+<h3 id="default-use-case">Default Use Case<a class="anchor" href="#default-use-case">#</a></h3>
+<p>In the most basic case, you only need to instantiate one highlight layer in your scene and add the meshes you want to highlight to it.</p>
+<pre class="code" data-lang="javascript"><code>// Add the highlight layer.
+const hl = new BABYLON.HighlightLayer(&quot;hl1&quot;, scene);
+hl.addMesh(sphere, BABYLON.Color3.Green());</code></pre>
+<p>The highlight color is driven by the second parameter of the <code>addMesh</code> method:</p>
+<span class="muted">Online playground (not embedded offline)</span><h3 id="stop-highlighting-a-mesh">Stop highlighting a Mesh<a class="anchor" href="#stop-highlighting-a-mesh">#</a></h3>
+<p>If one highlighted mesh no longer needs highlighting, you can simply remove it from the layer:</p>
+<pre class="code" data-lang="javascript"><code>// Add the highlight layer.
+const hl = new BABYLON.HighlightLayer(&quot;hl1&quot;, scene);
+hl.addMesh(sphere, BABYLON.Color3.Green());
+hl.removeMesh(sphere);</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><h3 id="emissive-input">Emissive Input<a class="anchor" href="#emissive-input">#</a></h3>
+<p>If you wish, you can also use the emissive texture as a source for the highlight color. Simply pass <code>true</code> as the third parameter of the <code>addMesh</code> method.</p>
+<pre class="code" data-lang="javascript"><code>hl1.addMesh(sphere, BABYLON.Color3.Black(), true);</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><p>You can notice here that one side of the sphere is glowing in yellow, whereas the other is gray. The color is not uniform.</p>
+<h2 id="going-further">Going further<a class="anchor" href="#going-further">#</a></h2>
+<h3 id="overlapping-highlights">Overlapping Highlights<a class="anchor" href="#overlapping-highlights">#</a></h3>
+<p>The first thing you will probably notice is that overlapping highlighted meshes do not show highlights in shared areas.</p>
+<pre class="code" data-lang="javascript"><code>// Add the highlight layer.
+const hl = new BABYLON.HighlightLayer(&quot;hl1&quot;, scene);
+hl.addMesh(sphere, BABYLON.Color3.Green());
+hl.addMesh(ground, BABYLON.Color3.Red());</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><p>This is the default behavior, optimized for performance. If you are running your scenes on a fast enough machine, you can create several highlight layers to work around the issue:</p>
+<pre class="code" data-lang="javascript"><code>// Add the highlight layer.
+const hl1 = new BABYLON.HighlightLayer(&quot;hl1&quot;, scene);
+hl1.addMesh(sphere, BABYLON.Color3.White());
+const hl2 = new BABYLON.HighlightLayer(&quot;hl2&quot;, scene);
+hl2.addMesh(ground, BABYLON.Color3.Red());</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><h3 id="blur-size">Blur Size<a class="anchor" href="#blur-size">#</a></h3>
+<p>The next question you will probably have is whether you can animate the blur size of the highlight. You can dynamically change it at runtime through the blur size properties of the layer:</p>
+<pre class="code" data-lang="javascript"><code>// Add the highlight layer.
+const hl2 = new BABYLON.HighlightLayer(&quot;hl2&quot;, scene);
+hl2.addMesh(ground, BABYLON.Color3.Red());
+
+const alpha = 0;
+scene.registerBeforeRender(() =&gt; {
+  alpha += 0.06;
+
+  hl2.blurHorizontalSize = 0.3 + Math.cos(alpha) * 0.6 + 0.6;
+  hl2.blurVerticalSize = 0.3 + Math.sin(alpha / 3) * 0.6 + 0.6;
+});</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><h3 id="inner-vs-outer-glow">Inner vs Outer Glow<a class="anchor" href="#inner-vs-outer-glow">#</a></h3>
+<p>Finally, you can easily enable/disable inner and outer glow on the highlight layer.</p>
+<pre class="code" data-lang="javascript"><code>// Add the highlight layer.
+const hl1 = new BABYLON.HighlightLayer(&quot;hl1&quot;, scene);
+hl1.addMesh(sphere, BABYLON.Color3.White());
+hl1.outerGlow = false;
+
+const hl2 = new BABYLON.HighlightLayer(&quot;hl2&quot;, scene);
+hl2.addMesh(ground, BABYLON.Color3.Red());
+hl2.innerGlow = false;</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><p>In the previous scene, you can notice the white glow only inside the sphere and the red glow only outside the plane.</p>
+<h3 id="exclude-mesh">Exclude mesh<a class="anchor" href="#exclude-mesh">#</a></h3>
+<p>Depending on your scene, transparent meshes may not render correctly with other highlighted meshes:</p>
+<span class="muted">Online playground (not embedded offline)</span><p>In that case, try to exclude them from the highlight generation process in order to fix this:</p>
+<pre class="code" data-lang="javascript"><code>hl.addExcludedMesh(skybox1);</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><h3 id="multi-camera">Multi Camera<a class="anchor" href="#multi-camera">#</a></h3>
+<p>By default, the highlight layer applies to all active cameras, but this creates extra processing on cameras where it is not needed.</p>
+<p>You can easily specify what camera your highlights are related to in the options:</p>
+<pre class="code" data-lang="javascript"><code>const hl1 = new BABYLON.HighlightLayer(&quot;hl1&quot;, scene, { camera: camera });
+hl1.addMesh(sphere, BABYLON.Color3.Green());</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><h3 id="rendering-groups">Rendering Groups<a class="anchor" href="#rendering-groups">#</a></h3>
+<p>If you rely on rendering groups in your application, be mindful that highlights require stencil and depth information from your scene to work accurately.</p>
+<p>So you could disable the clear between rendering groups with the command: <code>scene.setRenderingAutoClearDepthStencil(1, false, false)</code> where the first parameter is the rendering group id, the second to prevent automatically clearing depth between groups and the last to prevent automatically clearing stencil information between groups.</p>
+<h2 id="options">Options<a class="anchor" href="#options">#</a></h2>
+<p>The available members of the option object are:</p>
+<ul>
+<li>mainTextureRatio?: number - Multiplication factor applied to the canvas size to compute the render target size used to generate the glowing objects (the smaller, the faster).</li>
+<li>mainTextureFixedSize?: number - Enforces a fixed size texture to ensure resize independent blur.</li>
+<li>blurTextureSizeRatio?: number - Multiplication factor applied to the main texture size in the first step of the blur to reduce the size of the picture to blur (the smaller, the faster).</li>
+<li>blurVerticalSize?: number - How big in texel of the blur texture is the vertical blur.</li>
+<li>blurHorizontalSize?: number - How big in texel of the blur texture is the horizontal blur.</li>
+<li>alphaBlendingMode?: number - Alpha blending mode used to apply the blur. Default is combine.</li>
+<li>camera?: Camera - The camera attached to the layer (only this camera can see the highlights).</li>
+<li>isStroke?: boolean - Should we display highlight as a solid stroke?</li>
+</ul>
+<p>You can pass them during the construction of the highlight layer:</p>
+<pre class="code" data-lang="javascript"><code>const hl1 = new BABYLON.HighlightLayer(&quot;hl1&quot;, scene, { camera: myCamera });</code></pre>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#how-to-highlight-a-mesh">How To Highlight a Mesh </a><a href="#how-to-use">How to use? </a><a href="#going-further">Going further </a><a href="#options">Options </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

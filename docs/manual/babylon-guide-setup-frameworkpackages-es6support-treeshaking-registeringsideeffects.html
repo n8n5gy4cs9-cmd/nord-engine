@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Registering Side Effects — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Registering Side Effects</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="what-are-side-effects">What Are Side Effects?<a class="anchor" href="#what-are-side-effects">#</a></h2>
+<p>In the context of tree-shaking, a side effect is any code that runs automatically when a file is imported, changing global state. Babylon.js has several categories:</p>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Purpose</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>RegisterClass</code></td>
+<td>Let the engine recreate objects by name when loading saved scenes</td>
+<td><code>RegisterClass(&quot;BABYLON.Camera&quot;, Camera)</code></td>
+</tr>
+<tr>
+<td>Prototype augmentation</td>
+<td>Attach optional methods to existing classes</td>
+<td><code>Scene.prototype.enablePhysics = ...</code></td>
+</tr>
+<tr>
+<td>Shader registration</td>
+<td>Store shader source code for GPU compilation</td>
+<td><code>ShaderStore[&quot;default&quot;] = &quot;...&quot;</code></td>
+</tr>
+<tr>
+<td>Feature registration</td>
+<td>Make features available by name</td>
+<td>WebXR feature registration</td>
+</tr>
+<tr>
+<td>Node constructor</td>
+<td>Enable node-based editor blocks</td>
+<td><code>AddNodeConstructor(&quot;Block&quot;, ...)</code></td>
+</tr>
+</tbody></table>
+<p>When using pure imports, these side effects do not run automatically. You turn them on by calling the corresponding <code>RegisterXxx()</code> function.</p>
+<h2 id="finding-registration-functions">Finding Registration Functions<a class="anchor" href="#finding-registration-functions">#</a></h2>
+<p>All registration functions follow the naming pattern <code>Register</code> plus the PascalCase file name:</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Registration Function</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>standardMaterial.pure.ts</code></td>
+<td><code>RegisterStandardMaterial()</code></td>
+</tr>
+<tr>
+<td><code>joinedPhysicsEngineComponent.pure.ts</code></td>
+<td><code>RegisterJoinedPhysicsEngineComponent()</code></td>
+</tr>
+<tr>
+<td><code>engine.multiRender.pure.ts</code></td>
+<td><code>RegisterEngineMultiRender()</code></td>
+</tr>
+<tr>
+<td><code>depthRendererSceneComponent.pure.ts</code></td>
+<td><code>RegisterDepthRendererSceneComponent()</code></td>
+</tr>
+<tr>
+<td><code>boundingBoxRenderer.pure.ts</code></td>
+<td><code>RegisterBoundingBoxRenderer()</code></td>
+</tr>
+</tbody></table>
+<p>Type <code>Register</code> in your IDE and autocomplete will list available registration functions. The names map directly to the Babylon.js module paths you already know.</p>
+<h2 id="categories-of-registration">Categories of Registration<a class="anchor" href="#categories-of-registration">#</a></h2>
+<h3 id="material-and-serialization-registration">Material and Serialization Registration<a class="anchor" href="#material-and-serialization-registration">#</a></h3>
+<p>Serialized content needs class and parser registration so Babylon.js can recreate objects by class name:</p>
+<pre class="code" data-lang="typescript"><code>import { RegisterStandardMaterial, RegisterPBRMaterial, RegisterImageProcessingConfiguration, RegisterTexture, RegisterFresnelParameters } from &quot;@babylonjs/core/pure&quot;;
+
+RegisterStandardMaterial();
+RegisterPBRMaterial();
+RegisterImageProcessingConfiguration(); // Also registers ColorCurves automatically
+RegisterTexture();
+RegisterFresnelParameters();</code></pre>
+<p>Register these when loading <code>.babylon</code> files, snippets, or other serialized content that may contain those types.</p>
+<h3 id="scene-component-registration">Scene Component Registration<a class="anchor" href="#scene-component-registration">#</a></h3>
+<p>Some features add methods to existing classes such as <code>Scene</code>, <code>Engine</code>, <code>Mesh</code>, or <code>Camera</code>:</p>
+<pre class="code" data-lang="typescript"><code>// Physics
+import { RegisterJoinedPhysicsEngineComponent } from &quot;@babylonjs/core/pure&quot;;
+import &quot;@babylonjs/core/Physics/joinedPhysicsEngineComponent.types&quot;;
+
+RegisterJoinedPhysicsEngineComponent();
+// Now scene.enablePhysics(), scene.getPhysicsEngine(), etc. are available</code></pre>
+<p>After registration, methods such as <code>scene.enablePhysics()</code> are available at runtime. The <code>.types</code> import makes TypeScript aware of the same methods.</p>
+<p>Other common scene component registrations include:</p>
+<pre class="code" data-lang="typescript"><code>import { RegisterRay, RegisterDepthRendererSceneComponent, RegisterBoundingBoxRenderer } from &quot;@babylonjs/core/pure&quot;;
+
+RegisterRay();
+RegisterDepthRendererSceneComponent();
+RegisterBoundingBoxRenderer();</code></pre>
+<h3 id="engine-extension-registration">Engine Extension Registration<a class="anchor" href="#engine-extension-registration">#</a></h3>
+<p>Engine extensions add capabilities like texture loading, alpha blending, multi-render targets, and uniform buffers. Three tiered helpers let you register groups of extensions at once:</p>
+<pre class="code" data-lang="typescript"><code>import { RegisterCoreEngineExtensions, RegisterStandardEngineExtensions, RegisterFullEngineExtensions } from &quot;@babylonjs/core/pure&quot;;
+
+RegisterCoreEngineExtensions(); // Minimum: DOM, render passes, GPU states, stencil
+RegisterStandardEngineExtensions(); // Most apps: Core + textures, file loading, alpha, render targets, uniform buffers
+RegisterFullEngineExtensions(); // Everything: Standard + cube/raw/dynamic textures, multi-render, multiview, queries, compute, video, debugging</code></pre>
+<p>For most applications, <code>RegisterStandardEngineExtensions()</code> is the right choice. All tiers are safe to call multiple times or in combination. Calling a higher tier after a lower one just adds the missing pieces.</p>
+<p>You can also register individual extensions if you need fine-grained control:</p>
+<pre class="code" data-lang="typescript"><code>import { RegisterEnginesExtensionsEngineMultiRender, RegisterEngineTransformFeedback } from &quot;@babylonjs/core/pure&quot;;
+
+RegisterEnginesExtensionsEngineMultiRender();
+RegisterEngineTransformFeedback();</code></pre>
+<h3 id="node-editor-block-registration">Node Editor Block Registration<a class="anchor" href="#node-editor-block-registration">#</a></h3>
+<p>Node Material, Node Geometry, Node Particle, Flow Graph, and Node Render Graph systems need block registration for deserialization and editor workflows.</p>
+<p>Register all blocks for a system:</p>
+<pre class="code" data-lang="typescript"><code>import { RegisterAllNodeMaterialBlocks } from &quot;@babylonjs/core/pure&quot;;
+
+RegisterAllNodeMaterialBlocks();</code></pre>
+<p>Or register only selected categories:</p>
+<pre class="code" data-lang="typescript"><code>import { RegisterNodeMaterialPBRBlocks, RegisterNodeMaterialMathBlocks, RegisterNodeMaterialVertexBlocks } from &quot;@babylonjs/core/pure&quot;;
+
+RegisterNodeMaterialPBRBlocks();
+RegisterNodeMaterialMathBlocks();
+RegisterNodeMaterialVertexBlocks();</code></pre>
+<p>Bulk registrations include:</p>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>System</th>
+<th>Blocks</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>RegisterAllNodeMaterialBlocks()</code></td>
+<td>Node Material Editor</td>
+<td>~108</td>
+</tr>
+<tr>
+<td><code>RegisterAllNodeGeometryBlocks()</code></td>
+<td>Node Geometry Editor</td>
+<td>~80</td>
+</tr>
+<tr>
+<td><code>RegisterAllNodeParticleBlocks()</code></td>
+<td>Node Particle Editor</td>
+<td>~49</td>
+</tr>
+<tr>
+<td><code>RegisterAllFlowGraphBlocks()</code></td>
+<td>Flow Graph</td>
+<td>~47</td>
+</tr>
+<tr>
+<td><code>RegisterAllNodeRenderGraphBlocks()</code></td>
+<td>Node Render Graph Editor</td>
+<td>~44</td>
+</tr>
+</tbody></table>
+<h3 id="xr-feature-registration">XR Feature Registration<a class="anchor" href="#xr-feature-registration">#</a></h3>
+<pre class="code" data-lang="typescript"><code>import { RegisterWebXRDefaultExperience, RegisterWebXRHandTracking, RegisterWebXRAnchorSystem, RegisterWebXRHitTest } from &quot;@babylonjs/core/pure&quot;;
+
+RegisterWebXRDefaultExperience();
+RegisterWebXRHandTracking();
+RegisterWebXRAnchorSystem();
+RegisterWebXRHitTest();</code></pre>
+<h2 id="automatic-dependencies">Automatic Dependencies<a class="anchor" href="#automatic-dependencies">#</a></h2>
+<p>Some registration functions automatically register the features they depend on. For example:</p>
+<ul>
+<li><code>RegisterImageProcessingConfiguration()</code> automatically calls <code>RegisterColorCurves()</code>.</li>
+<li><code>RegisterStandardMaterial()</code> registers the class and its parser.</li>
+</ul>
+<p>You do not need to manually register dependencies that are already handled this way. If you are unsure, calling a registration function multiple times is harmless.</p>
+<h2 id="the-checkmissingimports-diagnostic">The <code>CheckMissingImports</code> Diagnostic<a class="anchor" href="#the-checkmissingimports-diagnostic">#</a></h2>
+<p>If you&#39;re unsure which registrations your app needs, use the diagnostic utility:</p>
+<pre class="code" data-lang="typescript"><code>import { CheckMissingImports } from &quot;@babylonjs/core/Misc/checkMissingImports&quot;;
+
+// Call after all your imports but before scene logic
+const missing = CheckMissingImports();</code></pre>
+<p>This scans all known placeholders (stubs) and reports which features haven&#39;t been registered:</p>
+<pre class="code" data-lang=""><code>[Babylon.js] The following side-effect modules have not been imported:
+  - Ray
+  - ImageProcessingConfiguration
+  - Texture
+Note: These are only required if your application uses the corresponding features.
+If you do use them, import the modules or their parent packages to avoid runtime errors.
+See: https://doc.babylonjs.com/setup/treeshaking</code></pre>
+<p><strong>Important</strong>: <code>CheckMissingImports</code> reports ALL unregistered stubs, even ones your app may never hit. Not every reported module needs to be imported — only the ones your code actually uses.</p>
+<p>This utility is intended for <strong>development only</strong>. It imports several core modules to test their stubs, so don&#39;t include it in production builds.</p>
+<h2 id="runtime-stub-warning-diagnostics">Runtime Stub Warning Diagnostics<a class="anchor" href="#runtime-stub-warning-diagnostics">#</a></h2>
+<p><code>CheckMissingImports()</code> reports all known unregistered stubs, including features your app may never use. If you want to debug only the missing side-effect registrations that are actually called at runtime, enable one-time stub warnings:</p>
+<pre class="code" data-lang="typescript"><code>import { SetMissingSideEffectWarningsEnabled } from &quot;@babylonjs/core/Misc/devTools&quot;;
+
+SetMissingSideEffectWarningsEnabled(true);</code></pre>
+<p>Missing side-effect stubs are quiet by default because Babylon internals may probe optional augmented APIs. When warnings are enabled, each missing <code>Class.method</code> logs at most once. For code that intentionally probes optional APIs, suppress warnings around the synchronous probe:</p>
+<pre class="code" data-lang="typescript"><code>import { SuppressMissingSideEffectWarnings } from &quot;@babylonjs/core/Misc/devTools&quot;;
+
+SuppressMissingSideEffectWarnings(() =&gt; {
+  scene.getPhysicsEngine?.();
+});</code></pre>
+<p>Keep runtime stub warnings as a development diagnostic unless your application intentionally wants this logging in production.</p>
+<h2 id="safe-to-call-multiple-times">Safe to Call Multiple Times<a class="anchor" href="#safe-to-call-multiple-times">#</a></h2>
+<p>All registration functions are safe to call more than once. Only the first call actually does anything:</p>
+<pre class="code" data-lang="typescript"><code>RegisterStandardMaterial();
+RegisterStandardMaterial(); // No-op, already registered
+RegisterStandardMaterial(); // No-op</code></pre>
+<p>This means:</p>
+<ul>
+<li>You can safely call registration functions from multiple modules.</li>
+<li>Libraries can register what they need without worrying about duplicate calls.</li>
+<li>The order of registration usually does not matter, except for dependencies that must exist before use.</li>
+</ul>
+<h2 id="migration-from-existing-side-effect-imports">Migration from Existing Side-Effect Imports<a class="anchor" href="#migration-from-existing-side-effect-imports">#</a></h2>
+<p>To migrate an existing side-effect import:</p>
+<pre class="code" data-lang="typescript"><code>// Before:
+import &quot;@babylonjs/core/Physics/joinedPhysicsEngineComponent&quot;;
+
+// After:
+import { RegisterJoinedPhysicsEngineComponent } from &quot;@babylonjs/core/pure&quot;;
+RegisterJoinedPhysicsEngineComponent();</code></pre>
+<p>The mapping is straightforward:</p>
+<ol>
+<li>Take the side-effect import path.</li>
+<li>Add <code>.pure</code> before the extension.</li>
+<li>Import the matching <code>RegisterXxx</code> function from <code>@babylonjs/core/pure</code>, where <code>Xxx</code> is the PascalCase filename.</li>
+<li>Call it before using the feature.</li>
+<li>Add the <code>.types</code> import when the feature augments TypeScript types.</li>
+</ol>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#what-are-side-effects">What Are Side Effects? </a><a href="#finding-registration-functions">Finding Registration Functions </a><a href="#categories-of-registration">Categories of Registration </a><a href="#automatic-dependencies">Automatic Dependencies </a><a href="#the-checkmissingimports-diagnostic">The CheckMissingImports Diagnostic </a><a href="#runtime-stub-warning-diagnostics">Runtime Stub Warning Diagnostics </a><a href="#safe-to-call-multiple-times">Safe to Call Multiple Times </a><a href="#migration-from-existing-side-effect-imports">Migration from Existing Side-Effect Imports </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

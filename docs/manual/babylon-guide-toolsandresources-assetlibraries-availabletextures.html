@@ -1,0 +1,1062 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: The Texture Library — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: The Texture Library</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="textures-available-in-the-playground">Textures Available in the Playground<a class="anchor" href="#textures-available-in-the-playground">#</a></h2>
+<p>These files are in the <span>textures folder</span> of the Playground and can be loaded as Textures, CubeTextures, HDRCubeTextures, or EXRCubeTextures.</p>
+<h2 id="diffuse-albedo-maps">Diffuse / Albedo maps<a class="anchor" href="#diffuse-albedo-maps">#</a></h2>
+<p>In the Playground, use</p>
+<pre class="code" data-lang="javascript"><code>new BABYLON.Texture(&quot;textures/filename&quot;, scene);</code></pre>
+<table>
+<thead>
+<tr>
+<th align="center">Overview</th>
+<th>Filename</th>
+<th>Size</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>albedo.png</td>
+<td>590 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/amiga.jpg' width='64' height='64'/&gt;</span></td>
+<td>amiga.jpg</td>
+<td>2 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/BJS-logo_v3.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39;  style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>BJS-logo_v3.png <span class="muted">&lt;br/&gt;</span><a href="babylon-guide-features-featuresdeepdive-materials-advanced-mutliplattextures.html">(ktx available)</a></td>
+<td>39 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/bloc.jpg' width='64' height='64'/&gt;</span></td>
+<td>bloc.jpg</td>
+<td>3 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/checkerBJS.png' width='64' height='64'/&gt;</span></td>
+<td>checkerBJS.png <span class="muted">&lt;br/&gt;</span><a href="babylon-guide-features-featuresdeepdive-materials-advanced-mutliplattextures.html">(ktx available)</a></td>
+<td>38 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/cloud.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>cloud.png</td>
+<td>58 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/lava/cloud.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>lava/cloud.png</td>
+<td>81 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/co.png' width='64' height='64'/&gt;</span></td>
+<td>co.png</td>
+<td>2 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/crate.png' width='64' height='64'/&gt;</span></td>
+<td>crate.png</td>
+<td>80 KB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>earth.jpg</td>
+<td>261KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/fire.png' width='64' height='64'/&gt;</span></td>
+<td>fire.png</td>
+<td>44 KB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>floor.png</td>
+<td>509 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/fur.jpg' width='64' height='64'/&gt;</span></td>
+<td>fur.jpg</td>
+<td>140 KB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>grass.jpg</td>
+<td>750 KB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>grass.dds</td>
+<td>43 KB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>grass.png</td>
+<td>620 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/ground.jpg' width='64' height='64'/&gt;</span></td>
+<td>ground.jpg</td>
+<td>506 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/lava/lavatile.jpg' width='64' height='64'/&gt;</span></td>
+<td><code>lava/lavatile.jpg</code></td>
+<td>546 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/leopard_fur.JPG' width='64' height='64'/&gt;</span></td>
+<td>leopard_fur.JPG</td>
+<td>9 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/Logo.png' width='64' height='32' /&gt;</span></td>
+<td>Logo.png</td>
+<td>12 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/mercator.jpg' width='128' height='64'/&gt;</span></td>
+<td>mercator.jpg</td>
+<td>977 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/mercator2.jpg' width='128' height='64'/&gt;</span></td>
+<td>mercator2.jpg</td>
+<td>87 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/palm.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>palm.png</td>
+<td>392 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/rock.png' width='64' height='64'/&gt;</span></td>
+<td>rock.png</td>
+<td>260 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/sand.jpg' width='64' height='64'/&gt;</span></td>
+<td>sand.jpg</td>
+<td>496 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/speckles.jpg' width='64' height='64'/&gt;</span></td>
+<td>speckles.jpg</td>
+<td>7 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/stars.png' width='64' height='32'/&gt;</span></td>
+<td>stars.png</td>
+<td>188 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/sun.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>sun.png</td>
+<td>7 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;/img/resources/textures_thumbs/SunDiffuse.webp&#39; width=&#39;128&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>SunDiffuse.png</td>
+<td>799 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/tree.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>tree.png</td>
+<td>304 KB</td>
+</tr>
+</tbody></table>
+<h2 id="height-maps">Height maps<a class="anchor" href="#height-maps">#</a></h2>
+<table>
+<thead>
+<tr>
+<th align="center">Overview</th>
+<th>Filename</th>
+<th>Size</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/distortion.png' width='64' height='64'/&gt;</span></td>
+<td>distortion.png</td>
+<td>42 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/heightMap.png' width='64' height='64'/&gt;</span></td>
+<td>heightMap.png</td>
+<td>39 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/heightMapTriPlanar.png' width='64' height='64'/&gt;</span></td>
+<td>heightMapTriPlanar.png</td>
+<td>44 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/worldHeightMap.jpg' width='64' height='32'/&gt;</span></td>
+<td>worldHeightMap.jpg</td>
+<td>92 KB</td>
+</tr>
+</tbody></table>
+<h2 id="metallic-maps">Metallic maps<a class="anchor" href="#metallic-maps">#</a></h2>
+<table>
+<thead>
+<tr>
+<th align="center">Overview</th>
+<th>Filename</th>
+<th>Size</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/reflectivity.png' width='64' height='64'/&gt;</span></td>
+<td>reflectivity.png</td>
+<td>92 KB</td>
+</tr>
+</tbody></table>
+<h2 id="normal-maps">Normal maps<a class="anchor" href="#normal-maps">#</a></h2>
+<table>
+<thead>
+<tr>
+<th align="center">Overview</th>
+<th>Filename</th>
+<th>Size</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/floor_bump.PNG' width='64' height='64'/&gt;</span></td>
+<td>floor_bump.PNG</td>
+<td>329 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/grassn.png' width='64' height='64'/&gt;</span></td>
+<td>grassn.png</td>
+<td>156 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/normal.png' width='64' height='64'/&gt;</span></td>
+<td>normal.png</td>
+<td>695 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/normalMap.jpg' width='64' height='64'/&gt;</span></td>
+<td>normalMap.jpg</td>
+<td>68 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/rockn.png' width='64' height='64'/&gt;</span></td>
+<td>rockn.png</td>
+<td>700 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/waterbump.png' width='64' height='64'/&gt;</span></td>
+<td>waterbump.png</td>
+<td>68 KB</td>
+</tr>
+</tbody></table>
+<h2 id="opacity-alpha-maps">Opacity / Alpha maps<a class="anchor" href="#opacity-alpha-maps">#</a></h2>
+<table>
+<thead>
+<tr>
+<th align="center">Overview</th>
+<th>Filename</th>
+<th>Size</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/candleopacity.png' width='64' height='64'/&gt;</span></td>
+<td>candleopacity.png</td>
+<td>18 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/opacity.png' width='64' height='64'/&gt;</span></td>
+<td>opacity.png</td>
+<td>26 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/WhiteTransarentRamp.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>WhiteTransarentRamp.png</td>
+<td>223 KB</td>
+</tr>
+</tbody></table>
+<h2 id="sphere-maps">Sphere maps<a class="anchor" href="#sphere-maps">#</a></h2>
+<table>
+<thead>
+<tr>
+<th align="center">Overview</th>
+<th>Filename</th>
+<th>Size</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/sphereMap.png' width='64' height='64'/&gt;</span></td>
+<td>sphereMap.png</td>
+<td>340 KB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>test2D.dds</td>
+<td>2 MB</td>
+</tr>
+</tbody></table>
+<h2 id="360-equirectangular-maps-for-photodome">360° Equirectangular maps (for PhotoDome)<a class="anchor" href="#360-equirectangular-maps-for-photodome">#</a></h2>
+<p>In the Playground, use</p>
+<pre class="code" data-lang="javascript"><code>new BABYLON.PhotoDome(&quot;textureName&quot;, &quot;textures/filename&quot;, { resolution: 32, size: 1000 }, scene);</code></pre>
+<table>
+<thead>
+<tr>
+<th align="center">Overview</th>
+<th>Filename</th>
+<th>Viewer</th>
+<th>Size</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>360photo.jpg</td>
+<td><span class="muted">Online playground (not embedded offline)</span></td>
+<td>2.5 MB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>equirectangular.jpg</td>
+<td><span class="muted">Online playground (not embedded offline)</span></td>
+<td>279 KB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>GatonaParkWalkway1_Panorama_4Kx2K.jpg</td>
+<td><span class="muted">Online playground (not embedded offline)</span></td>
+<td>5.5 MB</td>
+</tr>
+</tbody></table>
+<h2 id="cubetextures">CubeTextures<a class="anchor" href="#cubetextures">#</a></h2>
+<h3 id="standard">Standard<a class="anchor" href="#standard">#</a></h3>
+<p>CubeTextures come in groups of six, one for each side of the cube, and each group starts with a common name.</p>
+<p>In the Playground, use</p>
+<pre class="code" data-lang="javascript"><code>new BABYLON.CubeTexture(&quot;textures/common part of filenames&quot;, scene);
+//e.g.: new BABYLON.CubeTexture(&quot;textures/skykox2&quot;, scene);</code></pre>
+<table>
+<thead>
+<tr>
+<th align="center">Overview</th>
+<th>Filename</th>
+<th>Viewer</th>
+<th>Size</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>cubemapDebug/ <span class="muted">&lt;br/&gt;</span><a href="babylon-guide-features-featuresdeepdive-materials-advanced-mutliplattextures.html">(ktx available)</a></td>
+<td><span class="muted">Online playground (not embedded offline)</span></td>
+<td>6 x 80 KB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>skybox</td>
+<td><span class="muted">Online playground (not embedded offline)</span></td>
+<td>6 x 20 KB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>skybox2</td>
+<td><span class="muted">Online playground (not embedded offline)</span></td>
+<td>6 x 400 KB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>skybox3</td>
+<td><span class="muted">Online playground (not embedded offline)</span></td>
+<td>6 x 150 KB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>skybox4</td>
+<td><span class="muted">Online playground (not embedded offline)</span></td>
+<td>6 x 150 KB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>skyboxBlack</td>
+<td><span class="muted">Online playground (not embedded offline)</span></td>
+<td>6 x 7 KB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>space</td>
+<td><span>take a look</span></td>
+<td>6 x 200 KB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>TropicalSunnyDay</td>
+<td><span>take a look</span></td>
+<td>6 x 600 KB</td>
+</tr>
+</tbody></table>
+<h3 id="hdr">HDR<a class="anchor" href="#hdr">#</a></h3>
+<p>In the Playground, use</p>
+<pre class="code" data-lang="javascript"><code>new BABYLON.HDRCubeTexture(&quot;textures/filename&quot;, scene);</code></pre>
+<table>
+<thead>
+<tr>
+<th align="center">Overview</th>
+<th>Filename</th>
+<th>Viewer</th>
+<th>Size</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>country.hdr</td>
+<td><span>take a look</span></td>
+<td>5.8 MB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>environment.hdr</td>
+<td><span>take a look</span></td>
+<td>5.8 MB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>forest.hdr</td>
+<td><span>take a look</span></td>
+<td>7.2 MB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>night.hdr</td>
+<td><span>take a look</span></td>
+<td>5.6 MB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>parking.hdr</td>
+<td><span>take a look</span></td>
+<td>6.1 MB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>room.hdr</td>
+<td><span>take a look</span></td>
+<td>5.7 MB</td>
+</tr>
+</tbody></table>
+<h3 id="hdr-as-dds">HDR as .dds<a class="anchor" href="#hdr-as-dds">#</a></h3>
+<p>In the Playground, use</p>
+<pre class="code" data-lang="javascript"><code>new BABYLON.CubeTexture.CreateFromPrefilteredData(&quot;textures/filename&quot;, scene);</code></pre>
+<table>
+<thead>
+<tr>
+<th align="center">Overview</th>
+<th>Filename</th>
+<th>Viewer</th>
+<th>Size</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>country.dds</td>
+<td><span>take a look</span></td>
+<td>32.77 MB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>environment.dds</td>
+<td><span>take a look</span></td>
+<td>1 MB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>forest.dds</td>
+<td><span>take a look</span></td>
+<td>32.77 MB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>night.dds</td>
+<td><span>take a look</span></td>
+<td>32.77 MB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>parking.dds</td>
+<td><span>take a look</span></td>
+<td>32.77 MB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>room.dds</td>
+<td><span>take a look</span></td>
+<td>32.77 MB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>Runyon_Canyon_A_2k_cube_specular.dds</td>
+<td><span>take a look</span></td>
+<td>8 MB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>SpecularHDR.dds</td>
+<td><span>take a look</span></td>
+<td>16 MB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>Studio_Softbox_2Umbrellas_cube_specular.dds</td>
+<td><span>take a look</span></td>
+<td>8 MB</td>
+</tr>
+</tbody></table>
+<p>In the Playground, use</p>
+<pre class="code" data-lang="javascript"><code>myMaterial.environmentBRDFTexture = new BABYLON.Texture(&quot;https://assets.babylonjs.com/environments/filename&quot;, scene, true, false);</code></pre>
+<table>
+<thead>
+<tr>
+<th align="center">Overview</th>
+<th>Filename</th>
+<th>Viewer</th>
+<th>Size</th>
+<th>Comment</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>fullFloatEnvironmentBrdf.dds</td>
+<td><span>take a look</span></td>
+<td>1.25 MB</td>
+<td><span>32 bit version</span> of the environment.dds file</td>
+</tr>
+</tbody></table>
+<h3 id="hdr-as-env">HDR as .env<a class="anchor" href="#hdr-as-env">#</a></h3>
+<p>In the Playground, use</p>
+<pre class="code" data-lang="javascript"><code>new BABYLON.CubeTexture(&quot;textures/filename&quot;, scene);</code></pre>
+<table>
+<thead>
+<tr>
+<th align="center">Overview</th>
+<th>Filename</th>
+<th>Viewer</th>
+<th>Size</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>country.env</td>
+<td><span>take a look</span></td>
+<td>3.72 MB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>environment.env</td>
+<td><span>take a look</span></td>
+<td>350 KB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>forest.env</td>
+<td><span>take a look</span></td>
+<td>5.81 MB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>night.env</td>
+<td><span>take a look</span></td>
+<td>2.74 MB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>parking.env</td>
+<td><span>take a look</span></td>
+<td>3.45 MB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>room.env</td>
+<td><span>take a look</span></td>
+<td>4.92 MB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>Runyon_Canyon_A_2k_cube_specular.env</td>
+<td><span>take a look</span></td>
+<td>992 KB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>SpecularHDR.env</td>
+<td><span>take a look</span></td>
+<td>6.12 MB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>Studio_Softbox_2Umbrellas_cube_specular.env</td>
+<td><span>take a look</span></td>
+<td>203 KB</td>
+</tr>
+</tbody></table>
+<h2 id="videos">Videos<a class="anchor" href="#videos">#</a></h2>
+<p>In the Playground, use</p>
+<pre class="code" data-lang="javascript"><code>new BABYLON.VideoTexture(&quot;name&quot;, &quot;textures/video.ext&quot;, scene);</code></pre>
+<table>
+<thead>
+<tr>
+<th align="center">Overview</th>
+<th>Filename</th>
+<th>Size</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>babylonjs.mp4</td>
+<td>21 MB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>babylonjs.webm</td>
+<td>28.3 MB</td>
+</tr>
+<tr>
+<td align="center"><p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td>big_buck_bunny.mp4</td>
+<td>5.9 MB</td>
+</tr>
+</tbody></table>
+<h2 id="gui">GUI<a class="anchor" href="#gui">#</a></h2>
+<h3 id="icons">Icons<a class="anchor" href="#icons">#</a></h3>
+<p>Textures are stored in the <code>textures/icons/</code> folder.</p>
+<table>
+<thead>
+<tr>
+<th align="center">Overview</th>
+<th>Filename</th>
+<th>Size</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/icons/Back.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>Back.png</td>
+<td>820 B</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/icons/Crop.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>Crop.png</td>
+<td>820 B</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/icons/Delete.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>Delete.png</td>
+<td>800 B</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/icons/Dot.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>Dot.png</td>
+<td>5.2 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/icons/Download.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>Download.png</td>
+<td>780 B</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/icons/Edit.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>Edit.png</td>
+<td>1.25 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/icons/GearIcon.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>GearIcon.png</td>
+<td>7.16 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/icons/Icon_Fullscreen.svg</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>Icon_Fullscreen.svg</td>
+<td>303 B</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/icons/Open.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>Open.png</td>
+<td>1 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/icons/Pause.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>Pause.png</td>
+<td>480 B</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/icons/Play.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>Play.png</td>
+<td>1 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/icons/Redo.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>Redo.png</td>
+<td>1.25 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/icons/Refresh.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>Refresh.png</td>
+<td>1.7 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/icons/Save.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>Save.png</td>
+<td>780 B</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/icons/Settings.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>Settings.png</td>
+<td>2.3 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/icons/Share.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>Share.png</td>
+<td>1.2 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/icons/Undo.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>Undo.png</td>
+<td>1.2 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/icons/Upload.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>Upload.png</td>
+<td>780 B</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/icons/Zoom.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>Zoom.png</td>
+<td>1.5 KB</td>
+</tr>
+</tbody></table>
+<h3 id="misc">Misc<a class="anchor" href="#misc">#</a></h3>
+<p>Textures are stored in the <code>textures/gui/</code> folder.</p>
+<table>
+<thead>
+<tr>
+<th align="center">Overview</th>
+<th>Filename</th>
+<th>Size</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/gui/backgroundImage.png</span>&#39; width=&#39;128&#39; height=&#39;16&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>backgroundImage.png</td>
+<td>3.1 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/gui/backgroundImage-vertical.png</span>&#39; width=&#39;16&#39; height=&#39;128&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>backgroundImage-vertical.png</td>
+<td>3.5 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/gui/thumb.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>thumb.png</td>
+<td>4.6 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/gui/valueImage.png</span>&#39; width=&#39;128&#39; height=&#39;16&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>valueImage.png</td>
+<td>1.3 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/gui/valueImage-vertical.png</span>&#39; width=&#39;16&#39; height=&#39;128&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>valueImage-vertical.png</td>
+<td>2.1 KB</td>
+</tr>
+</tbody></table>
+<h2 id="fx">FX<a class="anchor" href="#fx">#</a></h2>
+<h3 id="decals">Decals<a class="anchor" href="#decals">#</a></h3>
+<table>
+<thead>
+<tr>
+<th align="center">Overview</th>
+<th>Filename</th>
+<th>Size</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/impact.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>impact.png</td>
+<td>4 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/nba.png</span>&#39; width=&#39;32&#39; height=&#39;128&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>nba.png</td>
+<td>268 KB</td>
+</tr>
+</tbody></table>
+<h3 id="lensflares">LensFlares<a class="anchor" href="#lensflares">#</a></h3>
+<table>
+<thead>
+<tr>
+<th align="center">Overview</th>
+<th>Filename</th>
+<th>Size</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/flare.png' width='64' height='64'/&gt;</span></td>
+<td>flare.png</td>
+<td>15 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/lenscolor.png' width='128' height='8'/&gt;</span></td>
+<td>lenscolor.png</td>
+<td>4 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/lensdirt.jpg' width='64' height='64'/&gt;</span></td>
+<td>lensdirt.jpg</td>
+<td>19 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/lensflaredirt.png' width='64' height='64'/&gt;</span></td>
+<td>lensflaredirt.png</td>
+<td>355 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/lensstar.png' width='64' height='64'/&gt;</span></td>
+<td>lensstar.png</td>
+<td>384 KB</td>
+</tr>
+</tbody></table>
+<h3 id="lut">LUT<a class="anchor" href="#lut">#</a></h3>
+<p>In the Playground, use</p>
+<pre class="code" data-lang="javascript"><code>var LUTTexture = new BABYLON.Texture(&quot;textures/filename&quot;, scene);
+var postProcess = new BABYLON.ColorCorrectionPostProcess(&quot;color_correction&quot;, LUTTexture, 1.0, universalCamera);</code></pre>
+<table>
+<thead>
+<tr>
+<th align="center">Overview</th>
+<th>Filename</th>
+<th>Size</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/colorGrade.png' width='64' height='8'/&gt;</span></td>
+<td>colorGrade.png</td>
+<td>1 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/colorGrade-highContrast.png' width='64' height='8'/&gt;</span></td>
+<td>colorGrade-highContrast.png</td>
+<td>6 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/colorGrade-inverted.png' width='64' height='8'/&gt;</span></td>
+<td>colorGrade-inverted.png</td>
+<td>4 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/colorGrade-posterize.png' width='64' height='8'/&gt;</span></td>
+<td>colorGrade-posterize.png</td>
+<td>2 KB</td>
+</tr>
+</tbody></table>
+<h3 id="particles">Particles<a class="anchor" href="#particles">#</a></h3>
+<table>
+<thead>
+<tr>
+<th align="center">Overview</th>
+<th>Filename</th>
+<th>Size</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/Dot.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>Dot.png</td>
+<td>5.2 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/fire.png' width='64' height='64'/&gt;</span></td>
+<td>fire.jpg</td>
+<td>44 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/Fire_SpriteSheet_8x8.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>Fire_SpriteSheet_8x8.png</td>
+<td>170.5 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/Fire_SpriteSheet1_8x8.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>Fire_SpriteSheet1_8x8.png</td>
+<td>248.6 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/Fire_SpriteSheet2_8x8.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>Fire_SpriteSheet2_8x8.png</td>
+<td>220.7 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/Fire_SpriteSheet3_8x8.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>Fire_SpriteSheet3_8x8.png</td>
+<td>240.8 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/FlashParticle.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>FlashParticle.png</td>
+<td>5 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/particle.png' width='64' height='64'/&gt;</span></td>
+<td>particle.png</td>
+<td>12 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/Rain.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>Rain.png</td>
+<td>11 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/Spark.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>Spark.png</td>
+<td>5.5 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/sparkle.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>sparkle.png</td>
+<td>93 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/sparkle2.jpg' width='64' height='64'/&gt;</span></td>
+<td>sparkle2.jpg</td>
+<td>70 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/sparkStretched.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>sparkStretched.png</td>
+<td>6.6 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/sparks.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>sparks.png</td>
+<td>85.8 KB</td>
+</tr>
+</tbody></table>
+<h3 id="sprites">Sprites<a class="anchor" href="#sprites">#</a></h3>
+<table>
+<thead>
+<tr>
+<th align="center">Overview</th>
+<th>Filename</th>
+<th>Viewer</th>
+<th>Size</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/player.png' width='256' height='32'/&gt;</span></td>
+<td>player.png</td>
+<td><span>take a look</span></td>
+<td>138 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/Smoke_SpriteSheet_8x8.png' width='64' height='64'/&gt;</span></td>
+<td>Smoke_SpriteSheet_8x8.png</td>
+<td><span>take a look</span></td>
+<td>763 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/walk.png' width='64' height='64'/&gt;</span></td>
+<td>walk.png</td>
+<td><span>take a look</span></td>
+<td>33 KB</td>
+</tr>
+</tbody></table>
+<h2 id="misc">Misc<a class="anchor" href="#misc">#</a></h2>
+<table>
+<thead>
+<tr>
+<th align="center">Overview</th>
+<th>Filename</th>
+<th>Size</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">&lt;img src=&#39;<span>https://assets.babylonjs.com/environments/backgroundGround.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>backgroundGround.png</td>
+<td></td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/DemageFont.png' width='64' height='64'/&gt;</span></td>
+<td>DemageFont.png</td>
+<td>7 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/invmask.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>invmask.png</td>
+<td>5 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/mask.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>mask.png</td>
+<td>4 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/misc.jpg' width='64' height='64'/&gt;</span></td>
+<td>misc.jpg</td>
+<td>49 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/mixMap.png' width='64' height='64'/&gt;</span></td>
+<td>mixMap.png</td>
+<td>131 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/mr.jpg' width='64' height='64'/&gt;</span></td>
+<td>mr.jpg</td>
+<td>22 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/orient.jpg' width='64' height='64'/&gt;</span></td>
+<td>orient.jpg</td>
+<td>86 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/roundMask.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>roundMask.png</td>
+<td>8 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/sg.png' width='64' height='64'/&gt;</span></td>
+<td>sg.png</td>
+<td>643 KB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;/img/resources/textures_thumbs/specmap.webp&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>specmap.png</td>
+<td>4.7 MB</td>
+</tr>
+<tr>
+<td align="center">&lt;img src=&#39;<span>https://www.babylonjs-playground.com/textures/spectorjsLayer.png</span>&#39; width=&#39;64&#39; height=&#39;64&#39; style={{backgroundImage:&#39;url(/img/resources/textures_thumbs/alphaBgd.webp)&#39;}}/&gt;</td>
+<td>spectorjsLayer.png</td>
+<td>30 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/specularglossymap.png' width='64' height='64'/&gt;</span></td>
+<td>specularglossymap.png</td>
+<td>162 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/xStrip.jpg' width='64' height='16'/&gt;</span></td>
+<td>xStrip.jpg</td>
+<td>28 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/yStrip.jpg' width='16' height='64'/&gt;</span></td>
+<td>yStrip.jpg</td>
+<td>17 KB</td>
+</tr>
+<tr>
+<td align="center"><span class="muted">&lt;img src='https://www.babylonjs-playground.com/textures/zStrip.jpg' width='64' height='16'/&gt;</span></td>
+<td>zStrip.jpg</td>
+<td>25 KB</td>
+</tr>
+</tbody></table>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#textures-available-in-the-playground">Textures Available in the Playground </a><a href="#diffuse-albedo-maps">Diffuse / Albedo maps </a><a href="#height-maps">Height maps </a><a href="#metallic-maps">Metallic maps </a><a href="#normal-maps">Normal maps </a><a href="#opacity-alpha-maps">Opacity / Alpha maps </a><a href="#sphere-maps">Sphere maps </a><a href="#360-equirectangular-maps-for-photodome">360° Equirectangular maps (for PhotoDome) </a><a href="#cubetextures">CubeTextures </a><a href="#videos">Videos </a><a href="#gui">GUI </a><a href="#fx">FX </a><a href="#misc">Misc </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

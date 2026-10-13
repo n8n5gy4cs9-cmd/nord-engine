@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Introduction To Materials — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Introduction To Materials</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><p>Materials allow you to cover your meshes in color and texture. How a material appears depends on the light or lights used in the scene and how it is set to react.</p>
+<h2 id="reactions-to-light">Reactions to light<a class="anchor" href="#reactions-to-light">#</a></h2>
+<p>There are four possible ways that a material can react to light.</p>
+<ol>
+<li>Diffuse - the basic color or texture of the material as viewed under a light;</li>
+<li>Specular - the highlight given to the material by a light;</li>
+<li>Emissive - the color or texture of the material as if self lit;</li>
+<li>Ambient - the color or texture of the material lit by the environmental background lighting.</li>
+</ol>
+<p>Diffuse and Specular materials require a <a href="babylon-guide-features-featuresdeepdive-lights-lights-introduction.html">light source</a> to be created.<br>Ambient color requires the ambient color of the scene to be set, giving the environmental background lighting.</p>
+<pre class="code" data-lang="javascript"><code>scene.ambientColor = new BABYLON.Color3(1, 1, 1);</code></pre>
+<h2 id="color">Color<a class="anchor" href="#color">#</a></h2>
+<p>Create a material using</p>
+<pre class="code" data-lang="javascript"><code>const myMaterial = new BABYLON.StandardMaterial(&quot;myMaterial&quot;, scene);</code></pre>
+<p>Set the material color using one, some, or all of <em>diffuseColor</em>, <em>specularColor</em>, <em>emissiveColor</em>, and <em>ambientColor</em>. Remember that <em>ambientColor</em>
+will only apply if the scene ambient color has been set.</p>
+<pre class="code" data-lang="javascript"><code>const myMaterial = new BABYLON.StandardMaterial(&quot;myMaterial&quot;, scene);
+
+myMaterial.diffuseColor = new BABYLON.Color3(1, 0, 1);
+myMaterial.specularColor = new BABYLON.Color3(0.5, 0.6, 0.87);
+myMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
+myMaterial.ambientColor = new BABYLON.Color3(0.23, 0.98, 0.53);
+
+mesh.material = myMaterial;</code></pre>
+<h2 id="diffuse-color-example">Diffuse Color Example<a class="anchor" href="#diffuse-color-example">#</a></h2>
+<p>To give an idea of how the material&#39;s diffuse color reacts to the diffuse light color, the following Playground example shows how different material colors react to white, red, green, and blue diffuse spot lights.</p>
+<span class="muted">Online playground (not embedded offline)</span><p>The following materials also show this reaction to white, red, green, and blue diffuse spot lights:</p>
+<ul>
+<li>Yellow Material</li>
+<li>Purple Material</li>
+<li>Cyan Material</li>
+<li>White Material</li>
+</ul>
+<p><p class="muted">Upstream illustration:  Spot Light (media not bundled).</p></p>
+<h2 id="ambient-color-example">Ambient Color Example<a class="anchor" href="#ambient-color-example">#</a></h2>
+<p>In the image below, all spheres are lit by the same hemispheric light, with <em>diffuse</em> red and <em>groundColor</em> green. The first sphere has no ambient color, the middle has red ambient color defined on its material, and the one on the right has a material with green ambient color. The scene ambient color, which must be present, is white.</p>
+<p>When a scene ambient color component is set to 0, for example red, then whatever the value for red in the material ambient color, it will have no effect.</p>
+<p><p class="muted">Upstream illustration: Ambient (media not bundled).</p></p>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="transparent-color-example">Transparent Color Example<a class="anchor" href="#transparent-color-example">#</a></h2>
+<p>Transparency is achieved by setting a material&#39;s <em>alpha</em> property from 0 (invisible) to 1 (opaque).</p>
+<pre class="code" data-lang="javascript"><code>myMaterial.alpha = 0.5;</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="texture">Texture<a class="anchor" href="#texture">#</a></h2>
+<p>Textures are formed using a saved image.</p>
+<p>Create a material using</p>
+<pre class="code" data-lang="javascript"><code>const myMaterial = new BABYLON.StandardMaterial(&quot;myMaterial&quot;, scene);</code></pre>
+<p>Set the material texture using one, some, or all of <em>diffuseTexture</em>, <em>specularTexture</em>, <em>emissiveTexture</em>, and <em>ambientTexture</em>.
+Notice that <em>ambientTexture</em> is applied without the scene ambient color having been set.</p>
+<pre class="code" data-lang="javascript"><code>const myMaterial = new BABYLON.StandardMaterial(&quot;myMaterial&quot;, scene);
+
+myMaterial.diffuseTexture = new BABYLON.Texture(&quot;PATH TO IMAGE&quot;, scene);
+myMaterial.specularTexture = new BABYLON.Texture(&quot;PATH TO IMAGE&quot;, scene);
+myMaterial.emissiveTexture = new BABYLON.Texture(&quot;PATH TO IMAGE&quot;, scene);
+myMaterial.ambientTexture = new BABYLON.Texture(&quot;PATH TO IMAGE&quot;, scene);
+
+mesh.material = myMaterial;</code></pre>
+<p>Note: When no normals are specified, Babylon&#39;s standard material will compute the normals.</p>
+<h2 id="texture-example">Texture Example<a class="anchor" href="#texture-example">#</a></h2>
+<p>In this image, all spheres are lit by the same hemispheric light, with <em>diffuse</em> red and <em>groundColor</em> green. The first sphere has a diffuse texture, the middle has an emissive texture, and the one on the right has a material with red diffuse color and an ambient texture.</p>
+<p><p class="muted">Upstream illustration: Texture (media not bundled).</p></p>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="transparent-texture-examples">Transparent Texture Examples<a class="anchor" href="#transparent-texture-examples">#</a></h2>
+<p>For colors, transparency is achieved by setting a material&#39;s <em>alpha</em> property from 0 (invisible) to 1 (opaque).</p>
+<pre class="code" data-lang="javascript"><code>myMaterial.alpha = 0.5;</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><p>In addition, the image used for the texture might already have a transparency setting, such as this picture of a dog from Wikimedia Commons,
+which has a transparent background:</p>
+<p><p class="muted">Upstream illustration: A dog (media not bundled).</p></p>
+<p>In this case we set the <em>hasAlpha</em> property of the <strong>texture</strong> to true.</p>
+<pre class="code" data-lang="javascript"><code>myMaterial.diffuseTexture.hasAlpha = true;</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><p>For the back faces of the cube to be visible through the transparent areas of the front faces we have to deal with back-face culling.</p>
+<h2 id="texture-packer">Texture Packer<a class="anchor" href="#texture-packer">#</a></h2>
+<p>Some complex scenes will require a large amount of textures for just one material. In this case it can be convenient to package the textures. The advantage of using the texture packer has to be weighed against limitations such as fixed size scaling.</p>
+<p><a href="babylon-guide-features-featuresdeepdive-materials-advanced-texturepackage.html">More on creating a texture package</a></p>
+<h2 id="back-face-culling">Back-Face Culling<a class="anchor" href="#back-face-culling">#</a></h2>
+<p>This is a method for efficiently drawing the 2D rendering of the 3D model. Usually there is no need to draw the back face of a cube or other object,
+as it will be hidden by the front face. In Babylon.js the default setting is, as you might expect, set to true. In most cases, this is helpful in maintaining the highest possible performance.</p>
+<p>Looking at the images below, when the material property <em>backFaceCulling</em> is true you can see that the transparent areas around the
+dog are still transparent, you can see the background through them. However, you cannot see the images on the back faces as they have been culled (or removed).
+When <em>backFaceCulling</em> is false the back faces are not removed during rendering, so they can be seen through the transparent areas of the front faces.</p>
+<table>
+<thead>
+<tr>
+<th>Back Face Culling True</th>
+<th>Back Face Culling False</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><p class="muted">Upstream illustration: BFC True (media not bundled).</p></td>
+<td><p class="muted">Upstream illustration: BFC False (media not bundled).</p></td>
+</tr>
+</tbody></table>
+<span class="muted">Online playground (not embedded offline)</span><p>Note that backface culling is one aspect of face culling: you can also perform frontface culling if you wish! Backface culling is much more commonly used than frontface culling, but in some cases you may want to enable frontface culling. To do so, set the material property <em>cullBackFaces</em> to <strong>false</strong>. Note that you must always set <em>backFaceCulling</em> to <strong>true</strong> to enable culling! <em>backFaceCulling</em> is misnamed for historical reasons, and in order to maintain backward compatibility, we cannot rename it to <em>faceCulling</em>.</p>
+<h2 id="wireframe">WireFrame<a class="anchor" href="#wireframe">#</a></h2>
+<p>Every material can be displayed as a wireframe by setting the wireframe accessor of the material to true.</p>
+<pre class="code" data-lang="javascript"><code>materialSphere1.wireframe = true;</code></pre>
+<p>The output of enabling wireframe mode on the material is to display the wireframe using a line renderer, while still displaying the specific properties defined by the material including color, specularity, and alpha. Note that wireframe mode ignores the value for <em>backFaceCulling</em> on the material because there is no backface any longer. Instead, lines are rendered on mesh edges and the concept of &quot;back face&quot; is no longer applicable. </p>
+<p><p class="muted">Upstream illustration: wireframe mode on a sphere (media not bundled).</p></p>
+<span class="muted">Online playground (not embedded offline)</span><p>This will work with any material available in Babylon.js such as <em>StandardMaterial</em>, <em>PBRMaterial</em>, and even <em>NodeMaterial</em>. This is because the accessor is inherited from the <em>Material</em> class, enabling every material in the engine to take advantage of it. Controlling the appearance of the wireframe is done through the material&#39;s parameters. </p>
+<p><p class="muted">Upstream illustration: Making the wireframe red and emissive (media not bundled).</p>
+<span class="muted">Online playground (not embedded offline)</span></p>
+<p>However, the thickness of the line is predetermined by the line renderer in screen space which renders the line at the same thickness regardless of the distance from the line to the camera. This means that the wireframe will dynamically update the thickness so that it won&#39;t cease to render if the camera gets too far away.</p>
+<h3 id="rendering-wireframe-over-material">Rendering WireFrame Over Material<a class="anchor" href="#rendering-wireframe-over-material">#</a></h3>
+<p>If it is necessary to render a wireframe over an existing material, the way to achieve this is by cloning the mesh and assigning a material to it that has <em>wireframe</em> enabled. Since the wireframe renders in screen space, depth sorting is not an issue and the wireframe will always render on top of the visible parts of the mesh. The wireframe can be occluded by other meshes in the scene, but will not be occluded by an identical mesh that shares the same world position as the wireframe mesh.</p>
+<p>This enables scenarios where blending materials and wireframes is necessary. In the example below, two <em>NodeMaterials</em> are used to create the layer effect blending between wireframe over a solid color to the material&#39;s base color. The gradient for the interpolation is based on the distance from a pixel to the world origin and the same value is passed to both the <em>NodeMaterial</em> for the mesh and the <em>NodeMaterial</em> for the wireframe. In the case of the wireframe, this gradient is setting the alpha value of the material rather than interpolating between two different colors, which makes the wireframe appear to blend into the original material base color. This is the power of leveraging <em>NodeMaterial</em> to drive the look of the wireframe of a mesh.</p>
+<p><p class="muted">Upstream illustration: Blending wireframe with material color (media not bundled).</p></p>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="local-file-access">Local File Access<a class="anchor" href="#local-file-access">#</a></h2>
+<p>An important thing to remember is that, for security reasons, web browsers don&#39;t allow local files to be accessed from web pages. This includes any texture files you are using. You can use a local server or an image hosting service that is CORS enabled.</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#reactions-to-light">Reactions to light </a><a href="#color">Color </a><a href="#diffuse-color-example">Diffuse Color Example </a><a href="#ambient-color-example">Ambient Color Example </a><a href="#transparent-color-example">Transparent Color Example </a><a href="#texture">Texture </a><a href="#texture-example">Texture Example </a><a href="#transparent-texture-examples">Transparent Texture Examples </a><a href="#texture-packer">Texture Packer </a><a href="#back-face-culling">Back-Face Culling </a><a href="#wireframe">WireFrame </a><a href="#local-file-access">Local File Access </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

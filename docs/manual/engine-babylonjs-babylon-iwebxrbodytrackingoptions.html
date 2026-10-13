@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BABYLON.IWebXRBodyTrackingOptions — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>BABYLON.IWebXRBodyTrackingOptions</h1>
+<p><span class="badge">Underlying Babylon 9.30.0 API</span> <span class="badge">Interface</span></p><p class="muted">Official public declarations and JSDoc from <code>babylonjs</code>. Use with engine objects, not directly on a Nord entity.</p><aside class="box tip"><div class="box-title">The Nord way</div><p><a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a>. Access raw objects only when the Nord wrapper does not cover your feature. <a href="reference.html#escape-hatch">How escape hatches work</a>.</p></aside><h3 id="declaration">IWebXRBodyTrackingOptions <a class="anchor" href="#declaration">#</a></h3><pre class="code" data-lang="ts"><code>export interface IWebXRBodyTrackingOptions</code></pre><p>Configuration options for the WebXR body tracking feature.</p>
+<h2 id="members">Public members (8)</h2><p>Private, protected and explicitly internal declarations are excluded. Inherited members belong to the base type listed in the declaration.</p><h3 id="member-bodymesh-0">bodyMesh <a class="anchor" href="#member-bodymesh-0">#</a></h3><pre class="code" data-lang="ts"><code>bodyMesh?: AbstractMesh;</code></pre><p>A pre-existing rigged body mesh to drive with tracked joint poses.
+If provided, skeleton bones will be linked to tracked joints automatically.
+The mesh should contain a skeleton whose bones can be mapped via <code>rigMapping</code>.</p>
+<p><b>Type / return:</b> <code>AbstractMesh</code></p><h3 id="member-rigmapping-1">rigMapping <a class="anchor" href="#member-rigmapping-1">#</a></h3><pre class="code" data-lang="ts"><code>rigMapping?: XRBodyMeshRigMapping;</code></pre><p>A mapping from WebXRBodyJoint names to skeleton bone names.
+Required when the skeleton&#39;s bone names do not match the WebXR joint names.
+If omitted and a body mesh is provided, the feature assumes bones are
+named identically to the WebXR joint names (e.g. <code>&quot;hips&quot;</code>, <code>&quot;left-arm-upper&quot;</code>, etc.).</p>
+<p><b>Type / return:</b> <code>XRBodyMeshRigMapping</code></p><h3 id="member-jointscalefactor-2">jointScaleFactor <a class="anchor" href="#member-jointscalefactor-2">#</a></h3><pre class="code" data-lang="ts"><code>jointScaleFactor?: number;</code></pre><p>Scale factor applied to the local-space position of every joint.</p>
+<p>This uniformly scales the distances between parent and child joints,
+allowing you to fit XR body tracking data to meshes that are larger or
+smaller than the tracked user.</p>
+<ul>
+<li><code>1.0</code> (default): no scaling — real-world proportions.</li>
+<li><code>&gt; 1.0</code>: stretches the skeleton (makes it taller / wider).</li>
+<li><code>&lt; 1.0</code>: compresses the skeleton.</li>
+</ul>
+<p>Only affects local joint offsets, not the root (hips) position.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-preservebindposebonepositions-3">preserveBindPoseBonePositions <a class="anchor" href="#member-preservebindposebonepositions-3">#</a></h3><pre class="code" data-lang="ts"><code>preserveBindPoseBonePositions?: boolean;</code></pre><p>Preserve bind-pose local translations for mapped bones and only retarget rotations.</p>
+<p>When <code>false</code> (default), mapped bones are translated directly to the tracked joint
+positions. This reproduces the tracked skeleton exactly, but can distort avatars whose
+proportions differ from the tracked user.</p>
+<p>When <code>true</code>, mapped child bones keep their bind-pose local translation offsets while
+still using the tracked joint rotations. This is the typical retargeting mode for
+driving arbitrary skinned characters without forcing them to the tracked skeleton&#39;s
+segment lengths.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-useboneorientationoffsets-4">useBoneOrientationOffsets <a class="anchor" href="#member-useboneorientationoffsets-4">#</a></h3><pre class="code" data-lang="ts"><code>useBoneOrientationOffsets?: boolean;</code></pre><p>Apply a per-bone orientation offset so the avatar bone basis matches the XR joint basis.</p>
+<p>When enabled, WebXR joint rotations are corrected using the bone&#39;s bind-space child axis.
+This is useful for rigs whose bone local axes do not match the anatomical axes used by
+the WebXR body-tracking joint orientations.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-jointlocalrotationoffset-5">jointLocalRotationOffset <a class="anchor" href="#member-jointlocalrotationoffset-5">#</a></h3><pre class="code" data-lang="ts"><code>jointLocalRotationOffset?: Quaternion;</code></pre><p>Rotation applied in each tracked joint&#39;s local frame to re-base the
+XR joint axes. Some runtimes (e.g., some Meta Quest builds) emit body
+joint poses whose +Z axis points along the bone (parent → child), while
+most avatar rigs expect +Y along the bone. Setting this to
+<code>Quaternion.RotationAxis(Vector3.Right(), -Math.PI / 2)</code> converts
+&quot;+Z-along-bone&quot; joint data to &quot;+Y-along-bone&quot; before retargeting.</p>
+<p>Applied as a pre-multiply on each joint&#39;s world matrix:
+<code>M&#39; = R × M</code>, which, under Babylon&#39;s row-vector convention
+(<code>v_world = v_local × M</code>), effectively re-bases the joint-local axes.</p>
+<p>Default <code>undefined</code> = identity (no re-basing).</p>
+<p><b>Type / return:</b> <code>Quaternion</code></p><h3 id="member-aimchildoverrides-6">aimChildOverrides <a class="anchor" href="#member-aimchildoverrides-6">#</a></h3><pre class="code" data-lang="ts"><code>aimChildOverrides?: Partial&lt;Record&lt;WebXRBodyJoint, WebXRBodyJoint&gt;&gt;;</code></pre><p>Per–XR-joint override for the &quot;aim child&quot; joint used when
+useBoneOrientationOffsets is enabled.</p>
+<p>By default the aim direction for a mapped bone is computed against its
+nearest mapped descendant in the skeleton. For rigs whose XR-mapped
+spine chain has very short segments (e.g. WebXR&#39;s <code>hips</code>→<code>spine-lower</code>
+is typically only ~1 cm), the aim direction becomes noise-dominated and
+can produce a large incorrect rotation for the parent bone.</p>
+<p>Use this map to redirect a specific XR joint&#39;s aim target to a farther
+XR joint whose relative position is stable. Both the source and target
+joint must be present in rigMapping (i.e. mapped to a bone on the
+skeleton).</p>
+<p>Example for a Mixamo-style rig where hips, spine, spine1, spine2 and
+neck are all mapped:</p>
+<pre class="code" data-lang="ts"><code>aimChildOverrides: {
+  [WebXRBodyJoint.HIPS]: WebXRBodyJoint.SPINE_UPPER,   // skip spine-lower/middle
+  [WebXRBodyJoint.SPINE_LOWER]: WebXRBodyJoint.NECK,   // long stable segment
+  [WebXRBodyJoint.SPINE_MIDDLE]: WebXRBodyJoint.NECK,
+}</code></pre>
+<p><b>Type / return:</b> <code>Partial&lt;Record&lt;WebXRBodyJoint, WebXRBodyJoint&gt;&gt;</code></p><h3 id="member-ismixamomodel-7">isMixamoModel <a class="anchor" href="#member-ismixamomodel-7">#</a></h3><pre class="code" data-lang="ts"><code>isMixamoModel?: boolean;</code></pre><p>Convenience flag for Mixamo-rigged characters.</p>
+<p>When set to <code>true</code>, the feature automatically applies:</p>
+<ul>
+<li>MixamoRigMapping as the <code>rigMapping</code> (skipping any explicit
+<code>rigMapping</code> you provide).</li>
+<li>MixamoAimChildOverrides as <code>aimChildOverrides</code> (skipping any
+explicit <code>aimChildOverrides</code> you provide).</li>
+<li>Turns on useBoneOrientationOffsets by default (you can still
+override to <code>false</code>).</li>
+</ul>
+<p>The Mixamo <code>mixamorig:</code> bone-name prefix is detected automatically by
+inspecting the skeleton, so the same mapping works regardless of whether
+the bones have been renamed to strip the prefix (common when re-exporting).</p>
+<p><b>Type / return:</b> <code>boolean</code></p><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#members">Public members (8)</a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

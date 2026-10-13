@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Introduction to Shaders — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Introduction to Shaders</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="introduction-to-shaders-in-babylon-js">Introduction to Shaders in Babylon.js<a class="anchor" href="#introduction-to-shaders-in-babylon-js">#</a></h2>
+<p>A shader is a program processed by the Graphical Processing Unit (GPU) to produce a screen image by manipulating data to
+produce individual pixels. The GPU is optimised, through parallel processing, to deal with these thousands of operations
+in an extremely fast way.</p>
+<h2 id="suggested-pre-reading">Suggested Pre-Reading<a class="anchor" href="#suggested-pre-reading">#</a></h2>
+<ul>
+<li>How To:<ul>
+<li><a href="babylon-guide-features-featuresdeepdive-mesh-creation-custom-custom.html">Custom Meshes</a></li>
+<li><a href="babylon-guide-features-featuresdeepdive-mesh-creation-custom-updatingvertices.html">Updating Vertices</a></li>
+</ul>
+</li>
+<li>Resources:<ul>
+<li><a href="babylon-guide-features-featuresdeepdive-mesh-creation-custom-vertexnormals.html">Normals in BJS</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="an-overview">An Overview<a class="anchor" href="#an-overview">#</a></h2>
+<h3 id="basic">Basic<a class="anchor" href="#basic">#</a></h3>
+<p>To produce a Babylon.js scene, code is written in JavaScript, which the Babylon.js Engine processes and displays on screen.
+The scene can change through updates to the meshes, the lights, or the camera position. To show these changes in a timely way, the screen
+display (frame) is re-drawn up to 60 frames per second.</p>
+<p>Simplified, the process is:</p>
+<ul>
+<li>Scene code is processed by the CPU through the BJS engine code to produce a virtual 3D model.</li>
+<li>The virtual 3D model is processed by the CPU through the BJS engine code to produce shader GPU code.</li>
+<li>The shader GPU code is processed by the GPU to produce the screen image.</li>
+</ul>
+<p>For example, the Babylon.js Engine takes this code</p>
+<pre class="code" data-lang="javascript"><code>const box = BABYLON.MeshBuilder.CreateBox(&quot;box&quot;, {}, scene);</code></pre>
+<p>and turns it into vertex data including positions, colors and normals.</p>
+<p>The Babylon.js Engine creates shader code for this data and passes it to the GPU.</p>
+<h3 id="custom">Custom<a class="anchor" href="#custom">#</a></h3>
+<p>In addition to scene code, you can write your own shader code so that the process becomes:</p>
+<ul>
+<li>Scene code is processed by the CPU through the BJS engine code to produce a virtual 3D model.</li>
+<li>The virtual 3D model and user shader code are processed by the CPU through the BJS engine code to produce the shader GPU code.</li>
+<li>The shader GPU code is processed by the GPU to produce the screen image.</li>
+</ul>
+<h2 id="types-of-shader">Types of Shader<a class="anchor" href="#types-of-shader">#</a></h2>
+<p>Shaders are written in Graphics Library Shader Language (GLSL) and come in two parts:</p>
+<ol>
+<li><p>Vertex Shader: this takes the data for each vertex and determines where on the screen the pixel for it will be displayed and its color.</p>
+</li>
+<li><p>Fragment Shader: this uses data from the Vertex Shader to determine the position and color of the pixels to represent each facet of the mesh.</p>
+</li>
+</ol>
+<p>Fragment Shaders are sometimes referred to as Pixel Shaders.</p>
+<p><p class="muted">Upstream illustration: Shaders (media not bundled).</p></p>
+<h2 id="passing-variables">Passing Variables<a class="anchor" href="#passing-variables">#</a></h2>
+<p>The vertex data for position, normal, and uv coordinates are passed to the Vertex Shader as attribute variables.
+User data can be passed to both the Vertex Shader and the Fragment Shader as uniform variables.
+Data can be passed from the Vertex Shader to the Fragment Shader using varying variables.</p>
+<p>A vital uniform variable to declare in the Vertex Shader is <code>worldViewProjection</code>, as the Babylon.js Engine uses this to
+pass scene 3D - 2D projection data to the Vertex Shader.</p>
+<p><p class="muted">Upstream illustration: Pass Variables (media not bundled).</p></p>
+<h2 id="variable-types">Variable types<a class="anchor" href="#variable-types">#</a></h2>
+<p>All variables used in both shaders must be given a type and any numbers assigned to the variable must be consistent with its type.</p>
+<p>For example:</p>
+<pre class="code" data-lang="glsl"><code>int n = 2;
+float r = 2.0;</code></pre>
+<p>The following example will throw an error:</p>
+<pre class="code" data-lang="glsl"><code>float r = 2;</code></pre>
+<p>Some examples of types are:</p>
+<ul>
+<li><code>vec2</code>: a two-dimensional vector of floating-point numbers</li>
+<li><code>vec3</code>: a three-dimensional vector of floating-point numbers</li>
+<li><code>mat4</code>: a matrix with 4 columns and 4 rows of floating-point numbers</li>
+<li><code>sampler2D</code>: a 2D texture image</li>
+</ul>
+<p>Since vertex positions need to be as accurate as possible, all floating-point numbers should be set to high precision.
+This is done at the start of the code for each shader using:</p>
+<pre class="code" data-lang="glsl"><code>precision highp float</code></pre>
+<h2 id="built-in-variables">Built In Variables<a class="anchor" href="#built-in-variables">#</a></h2>
+<p>The <span>GLSL</span> language has a number of built-in variables. Two are vital to the operation of the two shaders and are always necessary:</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>gl_Position</td>
+<td>provides positional data for screen coordinates</td>
+</tr>
+<tr>
+<td>gl_FragColor</td>
+<td>provides color data for the representation of a facet on screen</td>
+</tr>
+</tbody></table>
+<h2 id="built-in-inputs">Built In Inputs<a class="anchor" href="#built-in-inputs">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>position</td>
+<td>vec3</td>
+<td>pixel: vertex position / fragment: face pixel position</td>
+</tr>
+<tr>
+<td>normal</td>
+<td>vec3</td>
+<td>pixel: vertex normal / fragment: face pixel normal</td>
+</tr>
+<tr>
+<td>uv</td>
+<td>vec2</td>
+<td>texture coordinate</td>
+</tr>
+</tbody></table>
+<p>&nbsp;</p>
+<table>
+<thead>
+<tr>
+<th>Uniform</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>world</td>
+<td>mat4</td>
+<td>mesh global transforming state (move + rotate + scale)</td>
+</tr>
+<tr>
+<td>worldView</td>
+<td>mat4</td>
+<td>global view part of mesh</td>
+</tr>
+<tr>
+<td>worldViewProjection</td>
+<td>mat4</td>
+<td>global camera</td>
+</tr>
+<tr>
+<td>view</td>
+<td>mat4</td>
+<td>mesh local view part</td>
+</tr>
+<tr>
+<td>projection</td>
+<td>mat4</td>
+<td>local camera</td>
+</tr>
+<tr>
+<td>time</td>
+<td>float</td>
+<td>per each frame</td>
+</tr>
+</tbody></table>
+<h2 id="functions">Functions<a class="anchor" href="#functions">#</a></h2>
+<p>Functions need types, as do their parameters, and have the form:</p>
+<pre class="code" data-lang="glsl"><code>float NAME(typed parameters) {
+	*code*
+}</code></pre>
+<h2 id="running-shader-code">Running Shader Code<a class="anchor" href="#running-shader-code">#</a></h2>
+<p>Both the Vertex Shader and the Fragment Shader are run from a function that must be called <code>main</code> and be of type <code>void</code>, since it returns
+no result. The empty parameter list must also be typed as <code>void</code>:</p>
+<pre class="code" data-lang="glsl"><code>void main(void) {
+	*code*
+}</code></pre>
+<p><p class="muted">Upstream illustration: Shader Code (media not bundled).</p></p>
+<h2 id="putting-shader-code-in-babylon-js">Putting Shader Code in Babylon.js<a class="anchor" href="#putting-shader-code-in-babylon-js">#</a></h2>
+<p>Here are four ways of putting shader code into your scene:</p>
+<ol>
+<li>Use <span>BabylonJS Create Your Own Shader (CYOS)</span> and download a zip file</li>
+<li>Write the Vertex and Fragment Shader Code into <code>&lt;script&gt;</code> tags</li>
+<li>Write, save and import a Vertex and Fragment Shader file of type <em>.fx</em> into your code</li>
+</ol>
+<p>More details on this can be found below.</p>
+<h2 id="further-reading">Further Reading<a class="anchor" href="#further-reading">#</a></h2>
+<h2 id="how-to">How To<a class="anchor" href="#how-to">#</a></h2>
+<ul>
+<li><a href="babylon-guide-features-featuresdeepdive-materials-shaders-shadercodeinbjs.html">Putting Shader Code in Babylon.js</a></li>
+<li><a href="babylon-guide-features-featuresdeepdive-materials-shaders-shadermaterial.html">ShaderMaterial Object</a></li>
+</ul>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#introduction-to-shaders-in-babylon-js">Introduction to Shaders in Babylon.js </a><a href="#suggested-pre-reading">Suggested Pre-Reading </a><a href="#an-overview">An Overview </a><a href="#types-of-shader">Types of Shader </a><a href="#passing-variables">Passing Variables </a><a href="#variable-types">Variable types </a><a href="#built-in-variables">Built In Variables </a><a href="#built-in-inputs">Built In Inputs </a><a href="#functions">Functions </a><a href="#running-shader-code">Running Shader Code </a><a href="#putting-shader-code-in-babylon-js">Putting Shader Code in Babylon.js </a><a href="#further-reading">Further Reading </a><a href="#how-to">How To </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

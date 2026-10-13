@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phaser.Types.Physics.Matter.MatterBodyConfig — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Phaser.Types.Physics.Matter.MatterBodyConfig</h1>
+<p><span class="badge">Underlying Phaser 4.2.1 API</span> <span class="badge">TypeAlias</span></p><p class="muted">Official public declarations and JSDoc from <code>phaser</code>. Use with engine objects, not directly on a Nord entity.</p><aside class="box tip"><div class="box-title">The Nord way</div><p><a href="2d.html">2D manual</a> · <a href="component-sprite.html">sprite</a> · <a href="component-animatedSprite.html">animatedSprite</a> · <a href="physics.html">physics</a>. Access raw objects only when the Nord wrapper does not cover your feature. <a href="reference.html#escape-hatch">How escape hatches work</a>.</p></aside><h3 id="declaration">MatterBodyConfig <a class="anchor" href="#declaration">#</a></h3><pre class="code" data-lang="ts"><code>type MatterBodyConfig = {
+                    /**
+                     * An arbitrary string-based name to help identify this body.
+                     */
+                    label?: string;
+                    /**
+                     * Set this Game Object to create and use a new Body based on the configuration object given.
+                     */
+                    shape?: string | Phaser.Types.Physics.Matter.MatterSetBodyConfig;
+                    /**
+                     * An array of bodies that make up this body. The first body in the array must always be a self reference to the current body instance. All bodies in the `parts` array together form a single rigid compound body.
+                     */
+                    parts?: MatterJS.BodyType[];
+                    /**
+                     * An object reserved for storing plugin-specific properties.
+                     */
+                    plugin?: any;
+                    /**
+                     * An object for storing wrap boundaries.
+                     */
+                    wrapBounds?: any;
+                    /**
+                     * A number specifying the angle of the body, in radians.
+                     */
+                    angle?: number;
+                    /**
+                     * An array of `Vector` objects that specify the convex hull of the rigid body. These should be provided about the origin `(0, 0)`.
+                     */
+                    vertices?: Phaser.Types.Math.Vector2Like[];
+                    /**
+                     * A `Vector` that specifies the current world-space position of the body.
+                     */
+                    position?: Phaser.Types.Math.Vector2Like;
+                    /**
+                     * A `Vector` that specifies the force to apply in the current step. It is zeroed after every `Body.update`. See also `Body.applyForce`.
+                     */
+                    force?: Phaser.Types.Math.Vector2Like;
+                    /**
+                     * A `Number` that specifies the torque (turning force) to apply in the current step. It is zeroed after every `Body.update`.
+                     */
+                    torque?: number;
+                    /**
+                     * A flag that indicates whether a body is a sensor. Sensor triggers collision events, but doesn't react with colliding body physically.
+                     */
+                    isSensor?: boolean;
+                    /**
+                     * A flag that indicates whether a body is considered static. A static body can never change position or angle and is completely fixed.
+                     */
+                    isStatic?: boolean;
+                    /**
+                     * A `Number` that defines the number of updates in which this body must have near-zero velocity before it is set as sleeping by the `Matter.Sleeping` module (if sleeping is enabled by the engine).
+                     */
+                    sleepThreshold?: number;
+                    /**
+                     * A `Number` that defines the density of the body, that is its mass per unit area. If you pass the density via `Body.create` the `mass` property is automatically calculated for you based on the size (area) of the object. This is generally preferable to simply setting mass and allows for more intuitive definition of materials (e.g. rock has a higher density than wood).
+                     */
+                    density?: number;
+                    /**
+                     * A `Number` that defines the restitution (elasticity) of the body. The value is always positive and is in the range `(0, 1)`.
+                     */
+                    restitution?: number;
+                    /**
+                     * A `Number` that defines the friction of the body. The value is always positive and is in the range `(0, 1)`. A value of `0` means that the body may slide indefinitely. A value of `1` means the body may come to a stop almost instantly after a force is applied.
+                     */
+                    friction?: number;
+                    /**
+                     * A `Number` that defines the static friction of the body (in the Coulomb friction model). A value of `0` means the body will never 'stick' when it is nearly stationary and only dynamic `friction` is used. The higher the value (e.g. `10`), the more force it will take to initially get the body moving when nearly stationary. This value is multiplied with the `friction` property to make it easier to change `friction` and maintain an appropriate amount of static friction.
+                     */
+                    frictionStatic?: number;
+                    /**
+                     * A `Number` that defines the air friction of the body (air resistance). A value of `0` means the body will never slow as it moves through space. The higher the value, the faster a body slows when moving through space.
+                     */
+                    frictionAir?: number;
+                    /**
+                     * An `Object` that specifies the collision filtering properties of this body.
+                     */
+                    collisionFilter?: Phaser.Types.Physics.Matter.MatterCollisionFilter;
+                    /**
+                     * A `Number` that specifies a tolerance on how far a body is allowed to 'sink' or rotate into other bodies. Avoid changing this value unless you understand the purpose of `slop` in physics engines. The default should generally suffice, although very large bodies may require larger values for stable stacking.
+                     */
+                    slop?: number;
+                    /**
+                     * A `Number` that allows per-body time scaling, e.g. a force-field where bodies inside are in slow-motion, while others are at full speed.
+                     */
+                    timeScale?: number;
+                    /**
+                     * A number, or array of numbers, to chamfer the vertices of the body, or a full Chamfer configuration object.
+                     */
+                    chamfer?: number | number[] | Phaser.Types.Physics.Matter.MatterChamferConfig;
+                    /**
+                     * The radius of this body if a circle.
+                     */
+                    circleRadius?: number;
+                    /**
+                     * A `Number` that defines the mass of the body, although it may be more appropriate to specify the `density` property instead. If you modify this value, you must also modify the `body.inverseMass` property (`1 / mass`).
+                     */
+                    mass?: number;
+                    /**
+                     * A `Number` that defines the inverse mass of the body (`1 / mass`). If you modify this value, you must also modify the `body.mass` property.
+                     */
+                    inverseMass?: number;
+                    /**
+                     * A `Vector` that specifies the initial scale of the body.
+                     */
+                    scale?: Phaser.Types.Math.Vector2Like;
+                    /**
+                     * A `Vector` that scales the influence of World gravity when applied to this body.
+                     */
+                    gravityScale?: Phaser.Types.Math.Vector2Like;
+                    /**
+                     * A boolean that toggles if this body should ignore world gravity or not.
+                     */
+                    ignoreGravity?: boolean;
+                    /**
+                     * A boolean that toggles if this body should ignore pointer / mouse constraints or not.
+                     */
+                    ignorePointer?: boolean;
+                    /**
+                     * The Debug Render configuration object for this body.
+                     */
+                    render?: Phaser.Types.Physics.Matter.MatterBodyRenderConfig;
+                    /**
+                     * A callback that is invoked when this Body starts colliding with any other Body. You can register callbacks by providing a function of type `( pair: Matter.Pair) =&gt; void`.
+                     */
+                    onCollideCallback?: Function;
+                    /**
+                     * A callback that is invoked when this Body stops colliding with any other Body. You can register callbacks by providing a function of type `( pair: Matter.Pair) =&gt; void`.
+                     */
+                    onCollideEndCallback?: Function;
+                    /**
+                     * A callback that is invoked for the duration that this Body is colliding with any other Body. You can register callbacks by providing a function of type `( pair: Matter.Pair) =&gt; void`.
+                     */
+                    onCollideActiveCallback?: Function;
+                    /**
+                     * A collision callback dictionary used by the `Body.setOnCollideWith` function.
+                     */
+                    onCollideWith?: any;
+                };</code></pre><p><b>Type / return:</b> <code>{
+                    /**
+                     * An arbitrary string-based name to help identify this body.
+                     */
+                    label?: string;
+                    /**
+                     * Set this Game Object to create and use a new Body based on the configuration object given.
+                     */
+                    shape?: string | Phaser.Types.Physics.Matter.MatterSetBodyConfig;
+                    /**
+                     * An array of bodies that make up this body. The first body in the array must always be a self reference to the current body instance. All bodies in the `parts` array together form a single rigid compound body.
+                     */
+                    parts?: MatterJS.BodyType[];
+                    /**
+                     * An object reserved for storing plugin-specific properties.
+                     */
+                    plugin?: any;
+                    /**
+                     * An object for storing wrap boundaries.
+                     */
+                    wrapBounds?: any;
+                    /**
+                     * A number specifying the angle of the body, in radians.
+                     */
+                    angle?: number;
+                    /**
+                     * An array of `Vector` objects that specify the convex hull of the rigid body. These should be provided about the origin `(0, 0)`.
+                     */
+                    vertices?: Phaser.Types.Math.Vector2Like[];
+                    /**
+                     * A `Vector` that specifies the current world-space position of the body.
+                     */
+                    position?: Phaser.Types.Math.Vector2Like;
+                    /**
+                     * A `Vector` that specifies the force to apply in the current step. It is zeroed after every `Body.update`. See also `Body.applyForce`.
+                     */
+                    force?: Phaser.Types.Math.Vector2Like;
+                    /**
+                     * A `Number` that specifies the torque (turning force) to apply in the current step. It is zeroed after every `Body.update`.
+                     */
+                    torque?: number;
+                    /**
+                     * A flag that indicates whether a body is a sensor. Sensor triggers collision events, but doesn't react with colliding body physically.
+                     */
+                    isSensor?: boolean;
+                    /**
+                     * A flag that indicates whether a body is considered static. A static body can never change position or angle and is completely fixed.
+                     */
+                    isStatic?: boolean;
+                    /**
+                     * A `Number` that defines the number of updates in which this body must have near-zero velocity before it is set as sleeping by the `Matter.Sleeping` module (if sleeping is enabled by the engine).
+                     */
+                    sleepThreshold?: number;
+                    /**
+                     * A `Number` that defines the density of the body, that is its mass per unit area. If you pass the density via `Body.create` the `mass` property is automatically calculated for you based on the size (area) of the object. This is generally preferable to simply setting mass and allows for more intuitive definition of materials (e.g. rock has a higher density than wood).
+                     */
+                    density?: number;
+                    /**
+                     * A `Number` that defines the restitution (elasticity) of the body. The value is always positive and is in the range `(0, 1)`.
+                     */
+                    restitution?: number;
+                    /**
+                     * A `Number` that defines the friction of the body. The value is always positive and is in the range `(0, 1)`. A value of `0` means that the body may slide indefinitely. A value of `1` means the body may come to a stop almost instantly after a force is applied.
+                     */
+                    friction?: number;
+                    /**
+                     * A `Number` that defines the static friction of the body (in the Coulomb friction model). A value of `0` means the body will never 'stick' when it is nearly stationary and only dynamic `friction` is used. The higher the value (e.g. `10`), the more force it will take to initially get the body moving when nearly stationary. This value is multiplied with the `friction` property to make it easier to change `friction` and maintain an appropriate amount of static friction.
+                     */
+                    frictionStatic?: number;
+                    /**
+                     * A `Number` that defines the air friction of the body (air resistance). A value of `0` means the body will never slow as it moves through space. The higher the value, the faster a body slows when moving through space.
+                     */
+                    frictionAir?: number;
+                    /**
+                     * An `Object` that specifies the collision filtering properties of this body.
+                     */
+                    collisionFilter?: Phaser.Types.Physics.Matter.MatterCollisionFilter;
+                    /**
+                     * A `Number` that specifies a tolerance on how far a body is allowed to 'sink' or rotate into other bodies. Avoid changing this value unless you understand the purpose of `slop` in physics engines. The default should generally suffice, although very large bodies may require larger values for stable stacking.
+                     */
+                    slop?: number;
+                    /**
+                     * A `Number` that allows per-body time scaling, e.g. a force-field where bodies inside are in slow-motion, while others are at full speed.
+                     */
+                    timeScale?: number;
+                    /**
+                     * A number, or array of numbers, to chamfer the vertices of the body, or a full Chamfer configuration object.
+                     */
+                    chamfer?: number | number[] | Phaser.Types.Physics.Matter.MatterChamferConfig;
+                    /**
+                     * The radius of this body if a circle.
+                     */
+                    circleRadius?: number;
+                    /**
+                     * A `Number` that defines the mass of the body, although it may be more appropriate to specify the `density` property instead. If you modify this value, you must also modify the `body.inverseMass` property (`1 / mass`).
+                     */
+                    mass?: number;
+                    /**
+                     * A `Number` that defines the inverse mass of the body (`1 / mass`). If you modify this value, you must also modify the `body.mass` property.
+                     */
+                    inverseMass?: number;
+                    /**
+                     * A `Vector` that specifies the initial scale of the body.
+                     */
+                    scale?: Phaser.Types.Math.Vector2Like;
+                    /**
+                     * A `Vector` that scales the influence of World gravity when applied to this body.
+                     */
+                    gravityScale?: Phaser.Types.Math.Vector2Like;
+                    /**
+                     * A boolean that toggles if this body should ignore world gravity or not.
+                     */
+                    ignoreGravity?: boolean;
+                    /**
+                     * A boolean that toggles if this body should ignore pointer / mouse constraints or not.
+                     */
+                    ignorePointer?: boolean;
+                    /**
+                     * The Debug Render configuration object for this body.
+                     */
+                    render?: Phaser.Types.Physics.Matter.MatterBodyRenderConfig;
+                    /**
+                     * A callback that is invoked when this Body starts colliding with any other Body. You can register callbacks by providing a function of type `( pair: Matter.Pair) =&gt; void`.
+                     */
+                    onCollideCallback?: Function;
+                    /**
+                     * A callback that is invoked when this Body stops colliding with any other Body. You can register callbacks by providing a function of type `( pair: Matter.Pair) =&gt; void`.
+                     */
+                    onCollideEndCallback?: Function;
+                    /**
+                     * A callback that is invoked for the duration that this Body is colliding with any other Body. You can register callbacks by providing a function of type `( pair: Matter.Pair) =&gt; void`.
+                     */
+                    onCollideActiveCallback?: Function;
+                    /**
+                     * A collision callback dictionary used by the `Body.setOnCollideWith` function.
+                     */
+                    onCollideWith?: any;
+                }</code></p><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BABYLON.GaussianSplattingDebugger — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>BABYLON.GaussianSplattingDebugger</h1>
+<p><span class="badge">Underlying Babylon 9.30.0 API</span> <span class="badge">Class</span></p><p class="muted">Official public declarations and JSDoc from <code>babylonjs</code>. Use with engine objects, not directly on a Nord entity.</p><aside class="box tip"><div class="box-title">The Nord way</div><p><a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a>. Access raw objects only when the Nord wrapper does not cover your feature. <a href="reference.html#escape-hatch">How escape hatches work</a>.</p></aside><h3 id="declaration">GaussianSplattingDebugger <a class="anchor" href="#declaration">#</a></h3><pre class="code" data-lang="ts"><code>export class GaussianSplattingDebugger</code></pre><p>Re-exports pure implementation and applies runtime side effects.
+Import gaussianSplattingMesh.pure for tree-shakeable, side-effect-free usage.</p>
+<p> This file must only contain pure code and pure imports 
+Manages debug rendering options across a set of Gaussian splat meshes.
+Create one instance, add meshes via addMesh(), then set options to apply
+them to every registered mesh simultaneously.</p>
+<p>All options default to their &quot;off&quot; states so there is no rendering cost
+until a feature is explicitly enabled.</p>
+<p><strong>example</strong> </p>
+<pre class="code" data-lang="ts"><code>// Global options — applied to every registered mesh
+const gsDebugger = new GaussianSplattingDebugger();
+gsDebugger.addMesh(mesh1);
+gsDebugger.addMesh(compoundMesh); // compound mesh with multiple parts
+gsDebugger.clippingBox = { min: new Vector3(-2, -2, -2), max: new Vector3(2, 2, 2) };
+gsDebugger.shOrder1 = false;
+
+// Per-part override — saturate opacity on part 0 of the compound mesh only,
+// leaving all other parts (and mesh1) unaffected
+gsDebugger.setPartOptions(compoundMesh, 0, { opacitySaturate: true });
+// Later, restore part 0 to the global setting
+gsDebugger.clearPartOptions(compoundMesh, 0);</code></pre>
+<h2 id="members">Public members (26)</h2><p>Private, protected and explicitly internal declarations are excluded. Inherited members belong to the base type listed in the declaration.</p><h3 id="member-addmesh-0">addMesh <a class="anchor" href="#member-addmesh-0">#</a></h3><pre class="code" data-lang="ts"><code>addMesh(mesh: GaussianSplattingMeshBase): void;</code></pre><p>Adds a mesh to the debugger, attaching a debug plugin to its material.
+The mesh must already have a GaussianSplattingMaterial assigned (i.e., data
+must have been loaded at least once). Current option values are applied immediately.
+The mesh is automatically unregistered if it is disposed.
+<strong>param</strong>  mesh The mesh to register.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>mesh</code></td><td><code>GaussianSplattingMeshBase</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-removemesh-1">removeMesh <a class="anchor" href="#member-removemesh-1">#</a></h3><pre class="code" data-lang="ts"><code>removeMesh(mesh: GaussianSplattingMeshBase): void;</code></pre><p>Removes a mesh and disposes its debug plugin.
+<strong>param</strong>  mesh The mesh to unregister.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>mesh</code></td><td><code>GaussianSplattingMeshBase</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-dispose-2">dispose <a class="anchor" href="#member-dispose-2">#</a></h3><pre class="code" data-lang="ts"><code>dispose(): void;</code></pre><p>Disposes all debug plugins and clears the mesh list.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="member-getsplatsizerange-3">GetSplatSizeRange <a class="anchor" href="#member-getsplatsizerange-3">#</a></h3><pre class="code" data-lang="ts"><code>static GetSplatSizeRange(mesh: GaussianSplattingMeshBase): Nullable&lt;{
+            min: number;
+            max: number;
+        }&gt;;</code></pre><p>Returns the min/max size range of splats in a mesh.
+Convenience wrapper for GaussianSplattingMeshBase.splatSizeRange.
+<strong>param</strong>  mesh The mesh to query.
+<strong>returns</strong>  the splat size range, or null if not yet computed.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>mesh</code></td><td><code>GaussianSplattingMeshBase</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Nullable&lt;{
+            min: number;
+            max: number;
+        }&gt;</code></p><h3 id="member-clippingbox-4">clippingBox <a class="anchor" href="#member-clippingbox-4">#</a></h3><pre class="code" data-lang="ts"><code>get clippingBox(): Nullable&lt;{
+            min: Vector3;
+            max: Vector3;
+        }&gt;;</code></pre><p>World-space axis-aligned clipping box. Splats outside are not rendered.
+Set to null to disable.</p>
+<p><b>Type / return:</b> <code>Nullable&lt;{
+            min: Vector3;
+            max: Vector3;
+        }&gt;</code></p><h3 id="member-clippingbox-5">clippingBox <a class="anchor" href="#member-clippingbox-5">#</a></h3><pre class="code" data-lang="ts"><code>set clippingBox(value: Nullable&lt;{
+            min: Vector3;
+            max: Vector3;
+        }&gt;);</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>Nullable&lt;{
+            min: Vector3;
+            max: Vector3;
+        }&gt;</code></td><td>Required</td></tr></tbody></table><h3 id="member-opacityculling-6">opacityCulling <a class="anchor" href="#member-opacityculling-6">#</a></h3><pre class="code" data-lang="ts"><code>get opacityCulling(): Nullable&lt;{
+            min: number;
+            max: number;
+        }&gt;;</code></pre><p>Opacity culling range [0..1]. Splats outside this range are not rendered.
+Set to null to disable.</p>
+<p><b>Type / return:</b> <code>Nullable&lt;{
+            min: number;
+            max: number;
+        }&gt;</code></p><h3 id="member-opacityculling-7">opacityCulling <a class="anchor" href="#member-opacityculling-7">#</a></h3><pre class="code" data-lang="ts"><code>set opacityCulling(value: Nullable&lt;{
+            min: number;
+            max: number;
+        }&gt;);</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>Nullable&lt;{
+            min: number;
+            max: number;
+        }&gt;</code></td><td>Required</td></tr></tbody></table><h3 id="member-sizeculling-8">sizeCulling <a class="anchor" href="#member-sizeculling-8">#</a></h3><pre class="code" data-lang="ts"><code>get sizeCulling(): Nullable&lt;{
+            min: number;
+            max: number;
+        }&gt;;</code></pre><p>Size culling range. Size is pow(|det(Σ)|, 1/6) of the 3D covariance matrix,
+equal to the geometric mean of the principal radii. Splats outside this range are not rendered.
+Use GaussianSplattingDebugger.GetSplatSizeRange(mesh) to find an asset&#39;s range.
+Set to null to disable.</p>
+<p><b>Type / return:</b> <code>Nullable&lt;{
+            min: number;
+            max: number;
+        }&gt;</code></p><h3 id="member-sizeculling-9">sizeCulling <a class="anchor" href="#member-sizeculling-9">#</a></h3><pre class="code" data-lang="ts"><code>set sizeCulling(value: Nullable&lt;{
+            min: number;
+            max: number;
+        }&gt;);</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>Nullable&lt;{
+            min: number;
+            max: number;
+        }&gt;</code></td><td>Required</td></tr></tbody></table><h3 id="member-opacityscale-10">opacityScale <a class="anchor" href="#member-opacityscale-10">#</a></h3><pre class="code" data-lang="ts"><code>get opacityScale(): number;</code></pre><p>Scalar multiplier applied to every splat&#39;s opacity. 1.0 = no change.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-opacityscale-11">opacityScale <a class="anchor" href="#member-opacityscale-11">#</a></h3><pre class="code" data-lang="ts"><code>set opacityScale(value: number);</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><h3 id="member-opacitysaturate-12">opacitySaturate <a class="anchor" href="#member-opacitysaturate-12">#</a></h3><pre class="code" data-lang="ts"><code>get opacitySaturate(): boolean;</code></pre><p>When true, replaces the Gaussian spatial falloff with a flat uniform opacity,
+showing each splat as a solid disk.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-opacitysaturate-13">opacitySaturate <a class="anchor" href="#member-opacitysaturate-13">#</a></h3><pre class="code" data-lang="ts"><code>set opacitySaturate(value: boolean);</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><h3 id="member-shdc-14">shDc <a class="anchor" href="#member-shdc-14">#</a></h3><pre class="code" data-lang="ts"><code>get shDc(): boolean;</code></pre><p>Include the DC (base) color from colorsTexture. Default: true.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-shdc-15">shDc <a class="anchor" href="#member-shdc-15">#</a></h3><pre class="code" data-lang="ts"><code>set shDc(value: boolean);</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><h3 id="member-shorder1-16">shOrder1 <a class="anchor" href="#member-shorder1-16">#</a></h3><pre class="code" data-lang="ts"><code>get shOrder1(): boolean;</code></pre><p>Include SH band 1 contribution. Default: true.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-shorder1-17">shOrder1 <a class="anchor" href="#member-shorder1-17">#</a></h3><pre class="code" data-lang="ts"><code>set shOrder1(value: boolean);</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><h3 id="member-shorder2-18">shOrder2 <a class="anchor" href="#member-shorder2-18">#</a></h3><pre class="code" data-lang="ts"><code>get shOrder2(): boolean;</code></pre><p>Include SH band 2 contribution. Default: true.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-shorder2-19">shOrder2 <a class="anchor" href="#member-shorder2-19">#</a></h3><pre class="code" data-lang="ts"><code>set shOrder2(value: boolean);</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><h3 id="member-shorder3-20">shOrder3 <a class="anchor" href="#member-shorder3-20">#</a></h3><pre class="code" data-lang="ts"><code>get shOrder3(): boolean;</code></pre><p>Include SH band 3 contribution. Default: true.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-shorder3-21">shOrder3 <a class="anchor" href="#member-shorder3-21">#</a></h3><pre class="code" data-lang="ts"><code>set shOrder3(value: boolean);</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><h3 id="member-shorder4-22">shOrder4 <a class="anchor" href="#member-shorder4-22">#</a></h3><pre class="code" data-lang="ts"><code>get shOrder4(): boolean;</code></pre><p>Include SH band 4 contribution. Default: true.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-shorder4-23">shOrder4 <a class="anchor" href="#member-shorder4-23">#</a></h3><pre class="code" data-lang="ts"><code>set shOrder4(value: boolean);</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><h3 id="member-setpartoptions-24">setPartOptions <a class="anchor" href="#member-setpartoptions-24">#</a></h3><pre class="code" data-lang="ts"><code>setPartOptions(mesh: GaussianSplattingMeshBase, partIndex: number, options: Partial&lt;IGaussianSplattingDebugOptions&gt;): void;</code></pre><p>Sets per-part debug overrides for a specific part of a compound mesh.
+The mesh must already be registered via addMesh(). Logs an error if the mesh
+is not compound (partCount is 0).
+<strong>param</strong>  mesh The compound mesh.
+<strong>param</strong>  partIndex The zero-based part index.
+<strong>param</strong>  options Partial set of debug options to override for this part.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>mesh</code></td><td><code>GaussianSplattingMeshBase</code></td><td>Required</td></tr><tr><td><code>partIndex</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>options</code></td><td><code>Partial&lt;IGaussianSplattingDebugOptions&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-clearpartoptions-25">clearPartOptions <a class="anchor" href="#member-clearpartoptions-25">#</a></h3><pre class="code" data-lang="ts"><code>clearPartOptions(mesh: GaussianSplattingMeshBase, partIndex: number): void;</code></pre><p>Clears all per-part debug overrides for a specific part, falling back to global settings.
+<strong>param</strong>  mesh The compound mesh.
+<strong>param</strong>  partIndex The zero-based part index.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>mesh</code></td><td><code>GaussianSplattingMeshBase</code></td><td>Required</td></tr><tr><td><code>partIndex</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#members">Public members (26)</a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

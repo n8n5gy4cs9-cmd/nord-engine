@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Smart Filter Editor — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Smart Filter Editor</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="what-is-smart-filter-editor">What Is Smart Filter Editor?<a class="anchor" href="#what-is-smart-filter-editor">#</a></h2>
+<p>The Smart Filter Editor (SFE) is a visual tool, much like the Node Material Editor, designed to make it easy to rapidly build and preview Smart Filters.</p>
+<p>It is available at <span>https://sfe.babylonjs.com</span>, and you can run it locally if you clone the <span>BabylonJS/Babylon.js</span> repo, then:</p>
+<ul>
+<li>Run <code>npm install</code></li>
+<li>Choose one of these approaches to build the Smart Filter Editor:<ul>
+<li>Select <code>Smart Filter Editor development (Edge)</code> or <code>Smart Filter Editor development (Chrome)</code> in Visual Studio Code&#39;s <code>Run and Debug</code> menu then hit F5</li>
+<li>Run <code>npm run watch:assets:smart-filters</code> in a terminal, then <code>npm run watch:source:smart-filters</code> in another terminal, and finally <code>npm run serve -w @tools/smart-filters-editor</code> in a third terminal</li>
+</ul>
+</li>
+</ul>
+<p>It includes the blocks from the @babylonjs/smart-filters-blocks package (also in the <span>BabylonJS/Babylon.js</span>) repo, and can also use custom blocks you upload as JSON or GLSL files. These custom blocks are persisted in local storage, so you can load your own blocks once, then make use of them each time you return to SFE.</p>
+<p>You can save the Smart Filters you create with SFE as local JSON files or as custom URLs you can share with others.</p>
+<span class="muted">&lt;Alert severity=&quot;Info&quot;&gt;
+Note that if you share a Smart Filter that uses custom assets or blocks, the person you are sharing it with will need to load those custom assets and blocks before loading your Smart Filter.
+&lt;/Alert&gt;</span><h2 id="navigating-sfe">Navigating SFE<a class="anchor" href="#navigating-sfe">#</a></h2>
+<p><p class="muted">Upstream illustration: LAYOUT (media not bundled).</p></p>
+<ol>
+<li>The Block Library is on the left<ul>
+<li>Click &quot;Add...&quot; in &quot;Custom Blocks&quot; to add a custom block to the library (see <em>Custom Blocks</em> below for details)</li>
+<li>Drag a block you&#39;d like to use onto the canvas in the middle to create an instance of it</li>
+</ul>
+</li>
+<li>The canvas is in the middle of the tool, and shows your current Smart Filter visually<ul>
+<li>Drag from one connection point to another to form connections</li>
+<li>You can zoom in/out with the mouse scroll wheel</li>
+<li>Click on the background of the canvas to see Smart Filter level properties and actions in the right pane</li>
+</ul>
+</li>
+<li>The right pane contains properties and actions relevant to the selected block (or the whole Smart Filter if nothing is selected), as well as a real-time preview of the Smart Filter output<ul>
+<li>When no block is selected, you can choose to Load a Smart Filter from a local JSON file, Save to a local JSON file, or save to a unique URL<ul>
+<li>If you save to a unique URL, the URL in your address bar will update to that new unique URL which you can use in the future to load this Smart Filter from any browser</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>The console at the bottom shows timestamped status messages, including helpful details if an error occurs (such as a required connection isn&#39;t made)</li>
+</ol>
+<h2 id="custom-blocks">Custom Blocks<a class="anchor" href="#custom-blocks">#</a></h2>
+<p>By default, SFE populates the block library with the blocks found in the @babylonjs/smart-filters-blocks package. You can add your own custom blocks to SFE without building it yourself by clicking the &quot;Add...&quot; button in the &quot;Custom Blocks&quot; section.</p>
+<p>Custom blocks are saved in local storage, so you don&#39;t have to add them each time you visit SFE, but you will need to add them again if you need to open a Smart Filter that uses them in another browser or another computer.</p>
+<p>There are 3 types of custom blocks that SFE supports adding:</p>
+<ol>
+<li>Annotated GLSL block definitions</li>
+<li>JSON block definitions</li>
+<li>JSON aggregate block definitions (saved Smart Filters themselves)</li>
+</ol>
+<h3 id="annotated-glsl-block-definitions">Annotated GLSL block definitions<a class="anchor" href="#annotated-glsl-block-definitions">#</a></h3>
+<p>These are fragment shaders defined in GLSL files with certain annotations in them to be loaded as Smart Filter blocks.</p>
+<p>For example:</p>
+<pre class="code" data-lang="annotated-GLSL"><code>// { &quot;smartFilterBlockType&quot;: &quot;AnnotatedGlslTintBlock&quot; }
+
+uniform sampler2D input;
+// { &quot;default&quot;: { &quot;r&quot;: 1, &quot;g&quot;: 0, &quot;b&quot;: 0 } }
+uniform vec3 tint;
+// { &quot;default&quot;: 0.25 }
+uniform float amount;
+
+vec4 mainImage(vec2 vUV) { // main
+    vec4 color = texture2D(input, vUV);
+    vec3 tinted = mix(color.rgb, tint, amount);
+    return vec4(tinted, color.a);
+}</code></pre>
+<p>See <a href="babylon-guide-features-featuresdeepdive-smartfilters-creatingnewblocks.html">Creating New Blocks</a> for details of the annotation format.</p>
+<h3 id="json-block-definitions">JSON block definitions<a class="anchor" href="#json-block-definitions">#</a></h3>
+<p>Block definitions can be serialized <code>SerializedShaderBlockDefinition</code> objects, such as this example:</p>
+<pre class="code" data-lang="JSON"><code>{
+    &quot;format&quot;: &quot;shaderBlockDefinition&quot;,
+    &quot;formatVersion&quot;: 1,
+    &quot;blockType&quot;: &quot;JSONTintBlock&quot;,
+    &quot;namespace&quot;: &quot;Babylon.Demo.Effects&quot;,
+    &quot;shaderProgram&quot;: {
+        &quot;fragment&quot;: {
+            &quot;uniform&quot;: &quot;
+               uniform sampler2D _input_;
+               uniform vec3 _tint_;
+               uniform float _amount_;&quot;,
+            &quot;mainFunctionName&quot;: &quot;_mainImage_&quot;,
+            &quot;functions&quot;: [
+                {
+                    &quot;name&quot;: &quot;_mainImage_&quot;,
+                    &quot;code&quot;: &quot;
+                        vec4 _mainImage_(vec2 vUV) {
+                            vec4 color = texture2D(_input_, vUV);
+                            vec3 tinted = mix(color.rgb, _tint_, _amount_);
+                            return vec4(tinted, color.a);
+                        }&quot;
+                }
+            ]
+        }
+    },
+    &quot;inputConnectionPoints&quot;: [
+        {
+            &quot;name&quot;: &quot;input&quot;,
+            &quot;type&quot;: 2
+        },
+        {
+            &quot;name&quot;: &quot;tint&quot;,
+            &quot;type&quot;: 3,
+            &quot;defaultValue&quot;: {
+                &quot;r&quot;: 1,
+                &quot;g&quot;: 0,
+                &quot;b&quot;: 0
+            }
+        },
+        {
+            &quot;name&quot;: &quot;amount&quot;,
+            &quot;type&quot;: 1,
+            &quot;defaultValue&quot;: 0.25
+        }
+    ],
+    &quot;disableOptimization&quot;: false
+}</code></pre>
+<h3 id="json-aggregate-block-definitions">JSON aggregate block definitions<a class="anchor" href="#json-aggregate-block-definitions">#</a></h3>
+<p>Entire Smart Filters themselves can be imported into other Smart Filters as custom aggregate blocks! Try saving a Smart Filter to a local JSON file, then add it as a custom block to SFE.</p>
+<p>Notes:</p>
+<ol>
+<li>The input blocks in the imported Smart Filter will become input connection points on the custom aggregate block</li>
+<li>The name and namespace of the Smart Filter (see the top right of SFE when no block is selected) becomes the block name and namespace of the custom aggregate block</li>
+</ol>
+<h2 id="special-input-blocks">Special Input Blocks<a class="anchor" href="#special-input-blocks">#</a></h2>
+<p>SFE contains some special input blocks for testing your Smart Filters:</p>
+<ol>
+<li>WebCamBlock<ul>
+<li>This is really a texture InputBlock which SFE automatically connects to your webcam as an easy way to preview live video in your Smart Filter</li>
+<li>Note that when integrating a Smart Filter that uses a WebCamBlock into an application, that application will need to supply a texture for that InputBlock, which could come from a webcam or any other source</li>
+</ul>
+</li>
+<li>TimeBlock<ul>
+<li>This is really a float InputBlock which SFE automatically increments as a simple animation</li>
+<li>Like with the WebCamBlock, when integrated into an application, this will behave as a regular InputBlock (this one of type float) whose value could be animated by the hosting application</li>
+</ul>
+</li>
+</ol>
+<h2 id="assets">Assets<a class="anchor" href="#assets">#</a></h2>
+<p>SFE contains some built-in assets for testing your Smart Filters, which you will see in the properties panel on the right when a texture InputBlock is selected.</p>
+<p>You can use those built-in assets, or:</p>
+<ol>
+<li>Upload your own image asset, which will be base64 encoded and saved in the Smart Filter for SFE to use later</li>
+<li>Enter a URL to an image or video asset you&#39;d like to use</li>
+</ol>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#what-is-smart-filter-editor">What Is Smart Filter Editor? </a><a href="#navigating-sfe">Navigating SFE </a><a href="#custom-blocks">Custom Blocks </a><a href="#special-input-blocks">Special Input Blocks </a><a href="#assets">Assets </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Project Files (.babylonproj) — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Project Files (.babylonproj)</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="overview">Overview<a class="anchor" href="#overview">#</a></h2>
+<p>A <code>.babylonproj</code> file is a single-file project bundle for a Babylon scene. It packages three layers in one zip:</p>
+<ol>
+<li>A <strong>Smart Asset map</strong> — the registry of external assets the scene references (<a href="babylon-guide-features-featuresdeepdive-importers-smartassets.html">Smart Assets</a>).</li>
+<li>The <strong>Override Manager</strong> state — declarative property diffs applied after load (<a href="babylon-guide-toolsandresources-inspector-v2-overridemanager.html">Override Manager</a>).</li>
+<li>A <strong>companion <code>.babylon</code></strong> — meshes, lights, cameras, transform nodes, and materials that are <em>not</em> tracked by any smart asset (i.e. user-created scene content), plus a small side table mapping material texture slots back to SAM-tracked textures.</li>
+</ol>
+<p>Together these three layers let a project capture both <em>external content</em> (glTF models, environment maps, textures) and <em>local authoring</em> (a sphere the user built, a PBR material, a camera placement) in a portable, declarative bundle. Reopening the project rebuilds the scene from the same external sources and reapplies the captured overrides on top.</p>
+<p><code>.babylonproj</code> is the save format produced by the <strong>Project Authoring</strong> pane in Inspector V2.</p>
+<h2 id="working-with-project-files-in-the-inspector">Working with project files in the Inspector<a class="anchor" href="#working-with-project-files-in-the-inspector">#</a></h2>
+<p>Open Inspector V2 against any scene and look for the <strong>Project Authoring</strong> pane in the right-hand pane toolbar (cube icon). It contains three sections:</p>
+<ul>
+<li><strong>Project File</strong> — Save the current scene as <code>scene.babylonproj</code>, or load an existing one.</li>
+<li><strong>Assets</strong> — The Smart Asset list. Drop glTFs, OBJs, <code>.babylon</code> files, or textures here to register and load them under stable keys. Each row supports reload, unload, and remove.</li>
+<li><strong>Override Summary</strong> — A live list of every property override currently in the <a href="babylon-guide-toolsandresources-inspector-v2-overridemanager.html">Override Manager</a> registry.</li>
+</ul>
+<p>The authoring loop is:</p>
+<ol>
+<li>Drag external assets into the <strong>Assets</strong> section (or call <code>RegisterSmartAsset</code> / <code>LoadSmartAssetAsync</code> from code).</li>
+<li>Build any user content directly in the scene — code, <code>MeshBuilder</code>, materials you author yourself, cameras and lights you place.</li>
+<li>Tweak properties through the <strong>Properties</strong> pane. Each edit is captured as an <a href="babylon-guide-toolsandresources-inspector-v2-overridemanager.html">override</a>.</li>
+<li>Click <strong>Save Project (.babylonproj)</strong> to download the bundle.</li>
+<li>Reopen it later with <strong>Load Project (.babylonproj)</strong> in any session — the assets reload from their original URLs, your local content comes back from the companion <code>.babylon</code>, and your overrides reapply on top.</li>
+</ol>
+<h2 id="file-format">File format<a class="anchor" href="#file-format">#</a></h2>
+<p>A <code>.babylonproj</code> is a standard zip archive with the following layout:</p>
+<pre class="code" data-lang=""><code>project.json
+__project_locals__.babylon          (only if the scene has user-created objects)
+assets/&lt;key&gt;.&lt;ext&gt;                  (bundled local blobs, e.g. user-dragged files)</code></pre>
+<h3 id="project-json"><code>project.json</code><a class="anchor" href="#project-json">#</a></h3>
+<pre class="code" data-lang="jsonc"><code>{
+    &quot;version&quot;: 2,
+    &quot;assets&quot;: {
+        &quot;boombox&quot;: { &quot;url&quot;: &quot;BoomBox/BoomBox.gltf&quot; },
+        &quot;albedo&quot;:  { &quot;url&quot;: &quot;assets/albedo.png&quot;, &quot;type&quot;: &quot;texture&quot; },
+        &quot;__project_locals__&quot;: { &quot;url&quot;: &quot;__project_locals__.babylon&quot; }
+    },
+    &quot;overrides&quot;: [
+        { &quot;targetType&quot;: &quot;materials&quot;, &quot;targetName&quot;: &quot;paintMat&quot;,
+          &quot;targetIndex&quot;: 0, &quot;propertyPath&quot;: &quot;albedoColor&quot;, &quot;value&quot;: [1, 0, 0] }
+    ],
+    &quot;companionBindings&quot;: {
+        &quot;paintMat&quot;: { &quot;albedoTexture&quot;: &quot;albedo&quot; }
+    }
+}</code></pre>
+<ul>
+<li><strong><code>assets</code></strong> is the <a href="babylon-guide-features-featuresdeepdive-importers-smartassets.html">Smart Asset map</a>, extended with one reserved key (<code>__project_locals__</code>) that points at the companion <code>.babylon</code> inside the zip.</li>
+<li><strong><code>overrides</code></strong> is the serialized <a href="babylon-guide-toolsandresources-inspector-v2-overridemanager.html">Override Manager</a> registry.</li>
+<li><strong><code>companionBindings</code></strong> records which texture slot on which user-authored material should be reattached to which SAM-tracked texture after load. This is what lets a <code>PBRMaterial</code> the user built reference a SAM texture without embedding texture bytes inside the companion <code>.babylon</code>.</li>
+</ul>
+<p>Remote URLs (<code>http://</code>, <code>https://</code>) in the asset map are stored as references and <strong>not</strong> bundled into the zip. Local content (<code>blob:</code> and <code>data:</code> URIs — typically files the user dragged in) is fetched, written into <code>assets/</code>, and the entry&#39;s URL is rewritten to a relative path. On load, the loader recreates blob URLs for each bundled file and feeds them back through the Smart Asset Manager.</p>
+<h3 id="companion-babylon-and-texture-bindings">Companion <code>.babylon</code> and texture bindings<a class="anchor" href="#companion-babylon-and-texture-bindings">#</a></h3>
+<p>The companion <code>.babylon</code> is generated by <code>SceneSerializer.SerializeMesh</code> from the subset of scene content that is <strong>not</strong> owned by any external smart asset — every user-created <code>Mesh</code>, <code>Light</code>, <code>Camera</code>, <code>TransformNode</code>, and standalone <code>Material</code>.</p>
+<p>Before the companion is written, every serialized material is walked for <code>*Texture</code> slots that resolve to a SAM-tracked texture. Each such slot is removed from the serialized material data and recorded in <code>companionBindings</code> instead. After the companion loads on the next open, the project loader walks <code>companionBindings</code> and reattaches each slot to the SAM texture by key — without ever needing to embed texture bytes or refer to a now-defunct <code>blob:</code> URL.</p>
+<p>If there are no user-created objects at all, the companion <code>.babylon</code> is omitted and the <code>__project_locals__</code> entry is not added to the asset map.</p>
+<h2 id="code-api">Code API<a class="anchor" href="#code-api">#</a></h2>
+<p>The same operations the Project Authoring pane performs are available as exported functions on <code>@babylonjs/inspector-v2/projects/projectFile</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>SaveProjectFileAsync(scene)</code></td>
+<td>Produces a <code>Blob</code> containing the <code>.babylonproj</code> zip.</td>
+</tr>
+<tr>
+<td><code>LoadProjectFileAsync(scene, file)</code></td>
+<td>Loads a <code>.babylonproj</code> zip into the scene.</td>
+</tr>
+<tr>
+<td><code>SerializeProject(scene, baseUrl?)</code></td>
+<td>Lower-level: returns an <code>IProjectBundle</code> (the JSON document + an optional companion blob), useful for serving the JSON over a network without zipping.</td>
+</tr>
+<tr>
+<td><code>LoadProjectAsync(scene, source, rootUrl?)</code></td>
+<td>Lower-level: load from a URL, <code>File</code>, or pre-parsed <code>ISerializedProject</code> JSON object.</td>
+</tr>
+<tr>
+<td><code>DeserializeProject(data)</code></td>
+<td>Validate a parsed JSON document against the v2 schema.</td>
+</tr>
+</tbody></table>
+<p>The zip layer uses <span>fflate</span>, loaded via dynamic <code>import()</code> so the dependency stays out of the main inspector bundle and zip/unzip runs in a Web Worker instead of blocking the UI thread.</p>
+<pre class="code" data-lang="ts"><code>import { SaveProjectFileAsync, LoadProjectFileAsync } from &quot;@babylonjs/inspector-v2/projects/projectFile&quot;;
+import { Tools } from &quot;@babylonjs/core&quot;;
+
+// Save
+const blob = await SaveProjectFileAsync(scene);
+Tools.Download(blob, &quot;scene.babylonproj&quot;);
+
+// Load
+await LoadProjectFileAsync(scene, fileFromInputElement);</code></pre>
+<p><code>LoadProjectAsync</code> and <code>LoadProjectFileAsync</code> both follow the same sequence: clear the existing smart-asset registry and dispose user-owned scene content, register every asset entry, <code>LoadAllSmartAssetsAsync</code>, then load the companion <code>.babylon</code> (so its bindings can find the now-loaded textures), then apply overrides. The active render loop is paused for the duration of the swap so disposing the camera mid-frame can&#39;t kill the loop with a &quot;No camera defined&quot; exception.</p>
+<h2 id="what-round-trips-and-what-doesn-39-t">What round-trips, and what doesn&#39;t<a class="anchor" href="#what-round-trips-and-what-doesn-39-t">#</a></h2>
+<p>Anything tracked by <a href="babylon-guide-features-featuresdeepdive-importers-smartassets.html">Smart Assets</a> round-trips by URL (or, for local files, by being bundled into the zip). User-created <code>Mesh</code> geometry, <code>Material</code>s (Standard / PBR / Multi / Node), texture-slot bindings to SAM textures, <code>Light</code>s, <code>Camera</code>s, <code>TransformNode</code>s, and scene/material image processing all round-trip via the companion <code>.babylon</code>. Property overrides on any of the above are reapplied last.</p>
+<p>Things that <strong>don&#39;t</strong> round-trip today:</p>
+<ul>
+<li><code>PostProcess</code> attachments to cameras (post-processes attach to a specific camera instance, which is disposed and recreated on load).</li>
+<li><code>AdvancedDynamicTexture</code> GUI controls (not part of the <code>.babylon</code> format).</li>
+<li>Audio (<code>Sound</code> / <code>AudioEngine</code> state).</li>
+<li>Particle systems with live runtime state and baked vertex animations.</li>
+<li>Complex shader-driven content like Gaussian Splatting (the mesh round-trips, but its companion utility materials get duplicated on each load cycle).</li>
+<li>Skeleton animation playback state.</li>
+</ul>
+<p>If a scene &quot;looks different after load,&quot; it is almost always one of the items above rather than camera or mesh state drift.</p>
+<h2 id="related">Related<a class="anchor" href="#related">#</a></h2>
+<ul>
+<li><a href="babylon-guide-features-featuresdeepdive-importers-smartassets.html">Smart Assets</a> — the registry of external assets that the project&#39;s <code>assets</code> layer is built on.</li>
+<li><a href="babylon-guide-toolsandresources-inspector-v2-overridemanager.html">Override Manager</a> — the property-diff registry that the project&#39;s <code>overrides</code> layer is built on.</li>
+</ul>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#overview">Overview </a><a href="#working-with-project-files-in-the-inspector">Working with project files in the Inspector </a><a href="#file-format">File format </a><a href="#code-api">Code API </a><a href="#what-round-trips-and-what-doesn-39-t">What round-trips, and what doesn&amp;#39;t </a><a href="#related">Related </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

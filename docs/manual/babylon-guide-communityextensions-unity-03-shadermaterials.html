@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Shader Materials — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Shader Materials</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><p>There is a close relationship between <strong>Materials</strong>, <strong>Shaders</strong> and <strong>Textures</strong> within a game engine render pipeline:</p>
+<ul>
+<li><p><strong>Materials</strong> are definitions of how a surface should be rendered, including references to textures used, tiling information, color tints and more. The available options for a material depend on which shader the material is using.</p>
+</li>
+<li><p><strong>Shaders</strong> are small scripts that contain the mathematical calculations and algorithms for calculating the color of each pixel rendered, based on the lighting input and the Material configuration.</p>
+</li>
+<li><p><strong>Textures</strong> are bitmap images. A Material may contain references to textures, so that the Material’s shader can use the textures while calculating the surface color of an object. In addition to basic color (albedo) of an object’s surface, textures can represent many other aspects of a material’s surface such as its reflectivity or roughness.</p>
+</li>
+</ul>
+<p>A material specifies one specific shader to use, and the shader used determines which options are available in the material. A shader specifies one or more texture variables that it expects to use, and the Material Inspector in Unity allows you to assign your own texture assets to these texture variables.</p>
+<p>For most normal rendering - by which we mean characters, scenery, environments, solid and transparent objects, hard and soft surfaces etc., the Standard Shader is usually the best choice. This is a highly customisable shader which is capable of rendering many types of surface in a highly realistic way. You may choose the <strong>Babylon Standard Material</strong> shader for a legacy diffuse workflow.</p>
+<p>Please refer to the <span>Unity Material</span> documentation for details.</p>
+<h2 id="creating-and-using-shader-materials">Creating And Using Shader Materials<a class="anchor" href="#creating-and-using-shader-materials">#</a></h2>
+<p>To create a new Material, use <strong>Assets &gt; Create &gt; Material</strong> from the main menu or the Project View context menu.</p>
+<p>By default, new materials are assigned the <strong>Standard Shader</strong>, with all map properties empty, like this:</p>
+<p><p class="muted">Upstream illustration: Standard Shader (media not bundled).</p></p>
+<p>Once the Material has been created, you can apply it to an object and tweak all of its properties in the Inspector. To apply it to an object, just drag it from the Project View to any object in the Scene or Hierarchy.</p>
+<h2 id="set-shader-material-properties">Set Shader Material Properties<a class="anchor" href="#set-shader-material-properties">#</a></h2>
+<p>You can select which Shader you want any particular Material to use. Simply expand the Shader drop-down in the Inspector, and choose your new Shader. The Shader you choose will dictate the available properties to change. The properties can be colors, sliders, textures, numbers, or vectors. If you have applied the Material to an active object in the Scene, you will see your property changes applied to the object in real-time.</p>
+<p>There are two ways to apply a Texture to a property.</p>
+<ul>
+<li><p>Drag it from the Project View on top of the Texture square</p>
+</li>
+<li><p>Click the Select button, and choose the texture from the drop-down list that appears</p>
+</li>
+</ul>
+<h2 id="unity-shader-technical-details">Unity Shader Technical Details<a class="anchor" href="#unity-shader-technical-details">#</a></h2>
+<p>A Shader is a script which contains mathematical calculations and algorithms for how the pixels on the surface of a model should look. The standard shader performs complex and realistic lighting calculations. Other shaders may use simpler or different calculations to show different results. Within any given Shader are a number of properties that can be given values by a Material using that shader. These properties can be numbers, color definitions, or textures, which appear in the inspector when viewing a Material. Materials are then used by Renderer components attached to Game Objects to render each Game Object’s mesh.</p>
+<p>It is possible and often desirable to have several different Materials which may reference the same textures. These materials may also use the same or different shaders, depending on the requirements.</p>
+<p>Below is an example of a possible set-up combination using three materials, two shaders and one texture.</p>
+<p><p class="muted">Upstream illustration: Material Diagram (media not bundled).</p></p>
+<p>In the diagram we have a red car and a blue car. Both models use a separate material for the bodywork, “Red car material” and “Blue car material” respectively.</p>
+<p>Both these bodywork materials use the same custom shader, “Carbody Shader”. A custom shader may be used because the shader adds extra features specifically for the cars, such as metallic sparkly rendering, or perhaps has a custom damage masking feature.</p>
+<p>Each car body material has a reference to the “Car Texture”, which is a texture map containing all the details of the bodywork, without a specific paint color.</p>
+<p>The Carbody shader also accepts a tint color, which is set to a different color for the red and blue cars, giving each car a different look while using a single texture for both of them.</p>
+<p>The car wheel models use a separate material again, but this time both cars share the same material for their wheels, as the wheels do not differ between the cars. The wheel material uses the Standard Shader and also has a reference to the Car Texture.</p>
+<p>Notice how the car texture contains details for the bodywork and wheels - this is a texture atlas, meaning different parts of the texture image are explicitly mapped to different parts of the model.</p>
+<p>Even though the bodywork materials are using a texture that also contains the wheel image, the wheel does not appear on the body because that part of the texture is not mapped to the bodywork geometry.</p>
+<p>Similarly, the wheel material is using the same texture, which has bodywork detail in it. The bodywork detail does not appear on the wheel, because only the portion of the texture showing the wheel detail is mapped to the wheel geometry.</p>
+<p>This mapping is done by the 3D artist in an external 3D application and is called “UV mapping”.</p>
+<p>To be more specific, a Shader defines:</p>
+<p>The method to render an object. This includes code and mathematical calculations that may include the angles of light sources, the viewing angle, and any other relevant calculations. Shaders can also specify different methods depending on the graphics hardware of the end user.
+The parameters that can be customised in the material inspector, such as texture maps, colors and numeric values.
+A Material defines:</p>
+<p>Which shader to use for rendering this material.
+The specific values for the shader’s parameters - such as which texture maps, the color and numeric values to use.
+Custom Shaders are meant to be written by graphics programmers. They are created using the <span>GLSL</span> shader language, which is quite simple. However, getting a shader to work well on a variety of graphics cards is an involved job and requires a fairly comprehensive knowledge of how graphics cards work.</p>
+<h2 id="babylon-shader-material-pipeline">Babylon Shader Material Pipeline<a class="anchor" href="#babylon-shader-material-pipeline">#</a></h2>
+<h2 id="physical-based-rendering">Physical Based Rendering<a class="anchor" href="#physical-based-rendering">#</a></h2>
+<p>The <strong>BABYLON.PBRMaterial</strong> is the default shader material that will be used for <strong>all</strong> materials using <strong>Unity Standard Shader</strong> pipeline properties. These include the built-in Standard, Standard Roughness, Standard Specular and <strong>any</strong> other shader that uses <strong>Metallic Type</strong> properties (IE: _Metallic).</p>
+<h2 id="diffuse-shader-materials">Diffuse Shader Materials<a class="anchor" href="#diffuse-shader-materials">#</a></h2>
+<p>The <strong>BABYLON.StandardMaterial</strong> is used as the base shader for <strong>all non</strong> physical based rendering shaders. During exportation, the toolkit will <strong>scrape</strong> all materials looking for standard shader properties like <strong>_MainTex</strong> and assign them to the standard diffuse shader pipeline.</p>
+<h2 id="custom-shader-materials">Custom Shader Materials<a class="anchor" href="#custom-shader-materials">#</a></h2>
+<p>Custom shader materials create a custom Unity shader (<code>.shader</code>) program for use as the design-time shader. You can change the content of the Unity design-time shader, as it is used only for design-time _ <strong>WYSIWYG</strong> _ display purposes. The actual <strong>Shader Controller</strong> class defines the native Babylon shader material class to control the material export.</p>
+<p>You can create a custom shader material from the <strong>Create</strong> menu at the top left of the Project panel or by selecting <strong>Assets &gt; Create &gt; Babylon &gt; Custom Shader Material</strong> from the main menu.</p>
+<p>Example library <strong>Water Material</strong> shader asset:</p>
+<pre class="code" data-lang=""><code>    Shader &quot;Babylon/Library Materials/Water Material&quot;
+    {
+        Properties {
+            _WaterColor(&quot;Main Color&quot;, Color) = (0.1, 0.1, 0.6,1.0)
+            _BumpMap(&quot;Normal Map&quot;, 2D) = &quot;bump&quot; {}
+            _TagIndex(&quot;Tag Index&quot;, Int) = 0
+            _WindForce(&quot;Wind Force&quot;, Float) = 6
+            _WaveSpeed(&quot;Wave Speed&quot;, Float) = 1.0
+            _WaveLength(&quot;Wave Length&quot;, Float) = 0.1
+            _WaveHeight(&quot;Wave Height&quot;, Float) = 0.4
+            _BumpHeight(&quot;Bump Height&quot;, Float) = 0.4
+            _ColorBlendFactor(&quot;Blend Factor&quot;, Float) = 0.2
+            _SecondBlendFactor(&quot;Second Factor&quot;, Float) = 0.2
+            _WindDirectionX(&quot;Wind Direction X&quot;, Float) = 0.0
+            _WindDirectionY(&quot;Wind Direction Y&quot;, Float) = 1.0
+            _SecondColor(&quot;Secondary Color&quot;, Color) = (0.1, 0.1, 0.6,1.0)
+            _SpecColor(&quot;Specular Color&quot;, Color) = (0.0,0.0,0.0,1.0)
+            _Shininess(&quot;Specular Power&quot;, Range(0.0, 1.0)) = 0.5
+            _Color(&quot;Diffuse Color&quot;, Color) = (1.0,1.0,1.0,1.0)
+
+            [ToggleOff] _Wireframe(&quot;Show Wireframe&quot;, Int) = 0
+            [ToggleOff] _BackFaceCulling(&quot;Back Face Culling&quot;, Int) = 1
+            [ToggleOff] _DisableLighting(&quot;Disable Surface Lighting&quot;, Int) = 0
+            _MaxSimultaneousLights(&quot;Max Simultaneous Lights&quot;, Int) = 4
+
+            [HideInInspector] _MainTex (&quot;Base (RGB)&quot;, 2D) = &quot;white&quot; {}
+        }
+
+        CGINCLUDE
+        #ifdef BABYLON_INFO
+            controller: &quot;BABYLON.WaterMaterialController&quot;
+        #endif //BABYLON_INFO_END
+        ENDCG
+
+        SubShader {
+            Tags { &quot;RenderType&quot;=&quot;Opaque&quot; }
+            LOD 300
+
+            CGPROGRAM
+            #pragma surface surf Lambert
+
+            sampler2D _MainTex;
+            sampler2D _BumpMap;
+            fixed4 _WaterColor;
+
+            struct Input {
+                float2 uv_MainTex;
+                float2 uv_BumpMap;
+            };
+
+            void surf (Input IN, inout SurfaceOutput o) {
+                o.Albedo = _WaterColor.rgb;
+                o.Alpha = _WaterColor.a;
+                o.Normal = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap));
+            }
+            ENDCG
+        }
+        FallBack &quot;Legacy Shaders/Diffuse&quot;
+    }</code></pre>
+<p>The <strong>CGINCLUDE</strong> section defines the native <strong>BABYLON.PushMaterial</strong> shader controller subclass:</p>
+<pre class="code" data-lang=""><code> CGINCLUDE #ifdef BABYLON_INFO controller: &quot;BABYLON.WaterMaterialController&quot; #endif //BABYLON_INFO_END ENDCG`
+</code></pre>
+<h2 id="shader-controller-scripts">Shader Controller Scripts<a class="anchor" href="#shader-controller-scripts">#</a></h2>
+<p>The shader controller class is used to interface between the Unity Material inspector properties and the native <strong>BABYLON.PushMaterial</strong> subclass properties. The controller class uses the shader properties specified in the custom shader material (.shader) asset. It reads the properties from the material inspector properties and assigns them to the native shader material properties.</p>
+<p>You can create a custom shader controller script from the <strong>Create</strong> menu at the top left of the Project panel or by selecting <strong>Assets &gt; Create &gt; Babylon &gt; Babylon TypeScript &gt; Shader Controller</strong> from the main menu.</p>
+<p>Example library <strong>Water Material</strong> shader controller with life cycle:</p>
+<pre class="code" data-lang="javascript no-code-variants"><code>module BABYLON {
+    export class WaterMaterialController extends BABYLON.WaterMaterial {
+        constructor(name: string, scene: Scene, public renderTargetSize: Vector2 = new Vector2(512, 512)) {
+            super(name, scene, renderTargetSize);
+            this.initializeInstance();
+        }
+
+        protected start() :void {
+            const meshes:BABYLON.Mesh[] = this.getScene().getMeshesByTags(this.getWaterTagLabel());
+            if (meshes != null &amp;&amp; meshes.length &gt; 0) {
+                meshes.forEach(mesh =&gt; {
+                    this.addToRenderList(mesh);
+                });
+            }
+        }
+
+        /* Shader Material Water Tag Functions */
+
+        private _waterTagLabel:string = &quot;WATER_TAG_0&quot;;
+        protected getWaterTagLabel():string {
+            return this._waterTagLabel;
+        }
+        protected setWaterTagIndex(index:number) : void {
+            const tagIndex = (index &gt;= 0) ? index : 0;
+            this._waterTagLabel = &quot;WATER_TAG_&quot; + tagIndex.toString();
+        }
+
+        /* Shader Material Factory Class Functions */
+
+        public clone(name: string): BABYLON.WaterMaterialController {
+            return BABYLON.SerializationHelper.Clone(() =&gt; new BABYLON.WaterMaterialController(name, this.getScene()), this);
+        }
+
+        public serialize(): any {
+            const serializationObject = BABYLON.SerializationHelper.Serialize(this);
+            serializationObject.customType = &quot;BABYLON.WaterMaterialController&quot;;
+            return serializationObject;
+        }
+
+        public static Parse(source: any, scene: BABYLON.Scene, rootUrl: string): BABYLON.WaterMaterialController {
+            const material =  BABYLON.SerializationHelper.Parse(() =&gt; new BABYLON.WaterMaterialController(source.name, scene), source, scene, rootUrl);
+            const property = &quot;_Properties&quot;;
+            // Parse custom shader properties
+            if (source.vectors4) {
+                property = &quot;_WaterColor&quot;;
+                if (source.vectors4[property]) {
+                    material.waterColor = BABYLON.Color3.FromArray(source.vectors4[property]);
+                }
+                property = &quot;_SecondColor&quot;;
+                if (source.vectors4[property]) {
+                    material.waterColor2 = BABYLON.Color3.FromArray(source.vectors4[property]);
+                }
+            }
+            if (source.floats) {
+                const tagIndex:number = 0;
+                property = &quot;_TagIndex&quot;;
+                if (source.floats[property]) {
+                    tagIndex = source.floats[property];
+                }
+                if (tagIndex &lt;= 0) tagIndex = 0;
+                material.setWaterTagIndex(tagIndex);
+
+                property = &quot;_WindForce&quot;;
+                if (source.floats[property]) {
+                    material.windForce = source.floats[property];
+                }
+                property = &quot;_WaveSpeed&quot;;
+                if (source.floats[property]) {
+                    material.waveSpeed = source.floats[property];
+                }
+                property = &quot;_WaveLength&quot;;
+                if (source.floats[property]) {
+                    material.waveLength = source.floats[property];
+                }
+                property = &quot;_WaveHeight&quot;;
+                if (source.floats[property]) {
+                    material.waveHeight = source.floats[property];
+                }
+                property = &quot;_BumpHeight&quot;;
+                if (source.floats[property]) {
+                    material.bumpHeight = source.floats[property];
+                }
+                property = &quot;_ColorBlendFactor&quot;;
+                if (source.floats[property]) {
+                    material.colorBlendFactor = source.floats[property];
+                }
+                property = &quot;_SecondBlendFactor&quot;;
+                if (source.floats[property]) {
+                    material.colorBlendFactor2 = source.floats[property];
+                }
+
+                const windDirX:number = 0.0;
+                const windDirY:number = 1.0;
+                property = &quot;_WindDirectionX&quot;;
+                if (source.floats[property]) {
+                    windDirX = source.floats[property];
+                }
+                property = &quot;_WindDirectionY&quot;;
+                if (source.floats[property]) {
+                    windDirY = source.floats[property];
+                }
+                material.windDirection = new BABYLON.Vector2(windDirX, windDirY);
+            }
+            return material;
+        }
+    }
+}</code></pre>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#creating-and-using-shader-materials">Creating And Using Shader Materials </a><a href="#set-shader-material-properties">Set Shader Material Properties </a><a href="#unity-shader-technical-details">Unity Shader Technical Details </a><a href="#babylon-shader-material-pipeline">Babylon Shader Material Pipeline </a><a href="#physical-based-rendering">Physical Based Rendering </a><a href="#diffuse-shader-materials">Diffuse Shader Materials </a><a href="#custom-shader-materials">Custom Shader Materials </a><a href="#shader-controller-scripts">Shader Controller Scripts </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

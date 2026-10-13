@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Procedural Textures — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Procedural Textures</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="what-are-they">What Are They?<a class="anchor" href="#what-are-they">#</a></h2>
+<p>In classic texturing, we use 2D images, often pictures that have been shaped specifically to match an object. Let’s imagine you are creating a medieval fantasy game and working on a dwarf pub with multiple large, &quot;old school&quot; wooden tables. With classic 2D texturing, you have three choices:</p>
+<ul>
+<li><p>Create a single texture and use it on all of the tables (but every table is going to look the same)</p>
+</li>
+<li><p>Create a collection of various wood textures and apply them randomly to each table</p>
+</li>
+<li><p>Create a separate texture for each table, ensuring that they each look different</p>
+</li>
+</ul>
+<p>None of these choices seems ideal.</p>
+<p>Enter <strong>procedural textures</strong>.</p>
+<p>Procedural texturing is a way to programmatically create a texture. There are two types of procedural textures: code-only, and code that references some classic 2D images, sometimes called &#39;refMaps&#39; or &#39;sampler&#39; images.</p>
+<p>One main advantage of procedural textures is that they are written using a fragment shader (using <span>GLSL</span> in the case of Babylon.js). That means the code generating the texture is executed by the GPU, not the CPU (that is to say, not in JavaScript code). This has a strongly positive performance impact.</p>
+<p>Procedural textures can be generated:</p>
+<ul>
+<li><p>Only once, to create a texture that is then cached</p>
+</li>
+<li><p>Every 1, 2, 3, 4, or more frames to create an animated texture (like fire)</p>
+</li>
+</ul>
+<p>See more about &#39;refresh rate&#39; in the Custom Procedural Textures section... far below.</p>
+<h2 id="procedural-textures-in-babylon-js">Procedural Textures in Babylon.js<a class="anchor" href="#procedural-textures-in-babylon-js">#</a></h2>
+<p><strong>Babylon.js</strong> offers you an easy out-of-the-box way to use this kind of texture. The engine itself provides you with standard default textures that you can use right now. It also gives you the ability to create custom procedural textures and package them in a simple way.</p>
+<h2 id="using-a-procedural-texture">Using a Procedural Texture<a class="anchor" href="#using-a-procedural-texture">#</a></h2>
+<p>Applying a procedural texture is the same as using a classic one. Let’s start with a simple mesh (a cylinder in this case) and attach it to your scene:</p>
+<pre class="code" data-lang="javascript"><code>const cylinder = BABYLON.MeshBuilder.CreateCylinder(&quot;mycylinder&quot;, { height: 7, diameterTop: 2, diameterBottom: 2, tessellation: 12, subdivisions: 1 }, scene);</code></pre>
+<p>Then, you need to create a StandardMaterial:</p>
+<pre class="code" data-lang="javascript"><code>const material = new BABYLON.StandardMaterial(&quot;material&quot;, scene);</code></pre>
+<p>Now create a WoodProceduralTexture object, passing a name, the size of the generated texture, and the scene.</p>
+<pre class="code" data-lang="javascript"><code>const texture = new BABYLON.WoodProceduralTexture(&quot;texture&quot;, 1024, scene);</code></pre>
+<p>You are almost set! All you need to do now is associate the texture with the material as a diffuseTexture, for instance (or emissiveTexture, specularTexture, or any other texture), and then apply the material to the mesh.</p>
+<pre class="code" data-lang="javascript"><code>material.diffuseTexture = texture;
+cylinder.material = material;</code></pre>
+<p>You can optionally change the values of special default properties. Here is an example of setting two properties for the WoodProceduralTexture:</p>
+<pre class="code" data-lang="javascript"><code>texture.woodColor = new BABYLON.Color3(0.49, 0.25, 0);
+texture.ampScale = new BABYLON.Vector2(1.0, 1.0);</code></pre>
+<h2 id="noise-procedural-texture">Noise Procedural Texture<a class="anchor" href="#noise-procedural-texture">#</a></h2>
+<p>The NoiseProceduralTexture is available out of the box with the core Babylon.js engine.</p>
+<p>You can create one with the following code:</p>
+<pre class="code" data-lang="javascript"><code>const noiseTexture = new BABYLON.NoiseProceduralTexture(&quot;perlin&quot;, 256, scene);</code></pre>
+<p>The NoiseProceduralTexture exposes the following properties:</p>
+<ul>
+<li>brightness: Gets or sets a value between 0 and 1 indicating the overall brightness of the texture (default is 0.2)</li>
+<li>octaves: Defines the number of octaves to process (default is 3)</li>
+<li>persistence: Defines the level of persistence (0.8 by default)</li>
+<li>animationSpeedFactor: Gets or sets animation speed factor (default is 1)</li>
+</ul>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="using-standard-procedural-textures">Using Standard Procedural Textures<a class="anchor" href="#using-standard-procedural-textures">#</a></h2>
+<p>Babylon.js also has a number of pre-built procedural textures that are gathered in the Procedural Texture library: <span>https://github.com/BabylonJS/Babylon.js/tree/master/packages/dev/proceduralTextures</span></p>
+<p>You can use them in your project:</p>
+<ul>
+<li>Using npm with <code>npm install --save @babylonjs/procedural-textures</code></li>
+<li>With a direct reference to: <span>https://cdn.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js</span></li>
+</ul>
+<span class="muted">&lt;Alert severity=&quot;warning&quot; title=&quot;Warning&quot; description=&quot;The CDN should not be used in production environments. The purpose of our CDN is to serve Babylon packages to users learning how to use the platform or running small experiments. Once you've built an application and are ready to share it with the world at large, you should serve all packages from your own CDN.&quot;/&gt;</span><p>All standard procedural textures can be used in the same way, but they each have specific properties:</p>
+<ul>
+<li><span>BrickProceduralTexture</span></li>
+<li><span>CloudProceduralTexture</span></li>
+<li><span>FireProceduralTexture</span></li>
+<li><span>GrassProceduralTexture</span></li>
+<li><span>MarbleProceduralTexture</span></li>
+<li><span>RoadProceduralTexture</span></li>
+<li><span>WoodProceduralTexture</span></li>
+</ul>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#what-are-they">What Are They? </a><a href="#procedural-textures-in-babylon-js">Procedural Textures in Babylon.js </a><a href="#using-a-procedural-texture">Using a Procedural Texture </a><a href="#noise-procedural-texture">Noise Procedural Texture </a><a href="#using-standard-procedural-textures">Using Standard Procedural Textures </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

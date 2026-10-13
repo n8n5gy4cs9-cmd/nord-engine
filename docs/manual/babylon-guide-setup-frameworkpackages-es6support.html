@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Babylon.js ES6 support with Tree Shaking — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Babylon.js ES6 support with Tree Shaking</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="introduction">Introduction<a class="anchor" href="#introduction">#</a></h2>
+<p>The NPM package manager is one of the best ways to define and organize your project&#39;s dependencies. Compared to traditional JavaScript development (including a script in a &#39;script&#39; HTML Tag), using npm packages allows you to use tools like Webpack or Browserify to pack your project and (continuously) deliver it.</p>
+<p>We now officially support our npm ES6 packages and will continue updating the npm repository with new versions as they are developed.</p>
+<p>Please note that by using ES6 packages, you will need to rely on extra tooling to bundle and test your library but on the bright side you will be able to tree shake your application and reduce its final size.</p>
+<p>All the Babylon.js ES6 packages are available within the npm scope @babylonjs.</p>
+<h2 id="available-packages">Available packages<a class="anchor" href="#available-packages">#</a></h2>
+<p>We offer Babylon.js core and its modules as npm packages. The following are available:</p>
+<ul>
+<li><span>@babylonjs/core</span> - Babylon&#39;s core.</li>
+<li><span>@babylonjs/materials</span> - A collection of Babylon-supported advanced materials.</li>
+<li><span>@babylonjs/loaders</span> - All of Babylon&#39;s official loaders (OBJ, STL, glTF).</li>
+<li><span>@babylonjs/post-processes</span> - Babylon&#39;s post processes.</li>
+<li><span>@babylonjs/procedural-textures</span> - Officially supported procedural textures.</li>
+<li><span>@babylonjs/serializers</span> - Scene / mesh serializers.</li>
+<li><span>@babylonjs/gui</span> - Babylon.js GUI module.</li>
+<li><span>@babylonjs/viewer</span> - The stand-alone Babylon.js Viewer.</li>
+<li><span>@babylonjs/inspector</span> - The Babylon.js Inspector for visual debugging.</li>
+<li><span>@babylonjs/ktx2decoder</span> - Babylon&#39;s KTX2 Decoder module.</li>
+</ul>
+<h2 id="basic-example">Basic Example<a class="anchor" href="#basic-example">#</a></h2>
+<p>A boilerplate project with a few examples on how to use the ES6 modules can be found here - <span>Babylon.js, Webpack and ES6 modules</span> on GitHub. It is a project skeleton, based on TypeScript, Webpack and our ES6 modules. The different scenes (Asset loading, physics, simple scene) to show the different aspects of module-loading and Babylon.js.</p>
+<h2 id="basic-usage">Basic usage<a class="anchor" href="#basic-usage">#</a></h2>
+<p>As the ES6 version is composed of many separate files the usual way to consume such packages is through Webpack or other bundlers. The following examples will be done with Webpack but you could rely on any of the tools you are familiar with.</p>
+<h3 id="application-creation-summary">Application Creation Summary<a class="anchor" href="#application-creation-summary">#</a></h3>
+<ol>
+<li>Create new folder <strong>MyAwesomeApp</strong></li>
+<li>Open <strong>GitBash</strong> (or similar) for <strong>MyAwesomeApp</strong></li>
+<li>Run <code>npm init</code></li>
+<li>Run <code>npm install webpack webpack-cli webpack-dev-server --save-dev</code></li>
+<li>Run <code>npm install @babylonjs/core @babylonjs/materials</code></li>
+<li>Create Folder <strong>public</strong> in MyAwesomeApp and create <strong>index.html</strong> file in public as described in First App Section below</li>
+<li>Create Folder <strong>src</strong> in <strong>MyAwesomeApp</strong></li>
+<li>Create <strong>index.js</strong> file in <strong>src</strong> as described in <code>First App Section</code> below</li>
+<li>Run <code>npx webpack serve</code> to check result in <code>http://localhost:8080/</code></li>
+<li>Run <code>npx webpack</code> to create dist folder</li>
+</ol>
+<p>Read all the following sections for full description.</p>
+<h3 id="using-webpack">Using Webpack<a class="anchor" href="#using-webpack">#</a></h3>
+<p>First create a new folder where you will develop your app: <code>mkdir MyAwesomeApp</code> .</p>
+<p>Then navigate to the folder <code>cd MyAwesomeApp</code> and initialize npm with the command <code>npm init</code>. Simply fill out the requested questions or leave the defaults if you prefer.</p>
+<p>You can then install Webpack like this: <code>`npm install webpack webpack-cli webpack-dev-server --save-dev`</code>. This will also install a local dev server, which is pretty handy for local development.</p>
+<p>Following the default Webpack convention, you do not even need a configuration file.</p>
+<h3 id="installing-babylon-js">Installing Babylon.js<a class="anchor" href="#installing-babylon-js">#</a></h3>
+<p>To install the latest Babylon.js ES6 version, use:</p>
+<pre class="code" data-lang="bash"><code>npm install @babylonjs/core</code></pre>
+<p>This will install Babylon.js&#39;s JavaScript files and will also include a TypeScript declaration file.</p>
+<p>To include the whole of Babylon in a javascript or typescript file, use:</p>
+<pre class="code" data-lang="javascript"><code>import * as BABYLON from &quot;@babylonjs/core/Legacy/legacy.js&quot;;</code></pre>
+<p>This will work exactly like the non-ES6 version and the entire library will be included as a dependency.</p>
+<p>You can also load specific classes to help with your code:</p>
+<pre class="code" data-lang="javascript"><code>import { Engine, Scene } from &quot;@babylonjs/core&quot;;</code></pre>
+<p><strong>NOTE:</strong> Some of the modules work through side effects, so you might need to <code>`import &quot;@babylonjs/core/Meshes/meshBuilder.js&quot;`</code> for side effects only in order to rely on any of the Mesh creation static methods like <code>`MeshBuilder.CreateBox`</code> for instance. This was the best way to deliver our ES6 version without breaking backward compatibility of the bundled version.</p>
+<h3 id="installing-other-babylon-modules">Installing other Babylon modules<a class="anchor" href="#installing-other-babylon-modules">#</a></h3>
+<p>After including <code>`@babylonjs/core`</code> you can add Babylon&#39;s extra modules using npm as follows:</p>
+<pre class="code" data-lang="bash"><code>npm install --save-dev @babylonjs/materials [other packages]</code></pre>
+<p>As with Babylon.js, this will install the JavaScript files and a declaration file.</p>
+<p>To import the dependencies, you simply need to import the library (without giving it a namespace):</p>
+<pre class="code" data-lang="javascript"><code>import {
+    GridMaterial
+} from '@babylonjs/materials';
+
+let gridMaterial = new GridMaterial(.....)</code></pre>
+<h3 id="creating-our-first-js-app">Creating our first JS App<a class="anchor" href="#creating-our-first-js-app">#</a></h3>
+<p>Now we have all the dependencies created, create an <em>index.html</em> file in the public folder and fill it with the following code:</p>
+<pre class="code" data-lang="html"><code>&lt;!DOCTYPE html&gt;
+&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+  &lt;head&gt;
+    &lt;title&gt;Local Development&lt;/title&gt;
+
+    &lt;script src=&quot;https://code.jquery.com/pep/0.4.2/pep.min.js&quot;&gt;&lt;/script&gt;
+
+    &lt;style&gt;
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+      }
+
+      #renderCanvas {
+        width: 100%;
+        height: 100%;
+        display: block;
+        font-size: 0;
+      }
+    &lt;/style&gt;
+  &lt;/head&gt;
+
+  &lt;body&gt;
+    &lt;canvas id=&quot;renderCanvas&quot; touch-action=&quot;none&quot;&gt;&lt;/canvas&gt;
+
+    &lt;script src=&quot;main.js&quot;&gt;&lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p>This will only have a fullscreen canvas as well as a reference to our application file (by default webpack output during development is &quot;main.js&quot;);</p>
+<p>Once done you can create a <code>src</code> folder containing an index.js file with the following content:</p>
+<pre class="code" data-lang="javascript"><code>import { FreeCamera } from &quot;@babylonjs/core/Cameras/freeCamera.js&quot;;
+import { Engine } from &quot;@babylonjs/core/Engines/engine.js&quot;;
+import { HemisphericLight } from &quot;@babylonjs/core/Lights/hemisphericLight.js&quot;;
+import { Vector3 } from &quot;@babylonjs/core/Maths/math.vector.js&quot;;
+import { CreateGround } from &quot;@babylonjs/core/Meshes/Builders/groundBuilder.js&quot;;
+import { CreateSphere } from &quot;@babylonjs/core/Meshes/Builders/sphereBuilder.js&quot;;
+import { Scene } from &quot;@babylonjs/core/scene.js&quot;;
+
+import { GridMaterial } from &quot;@babylonjs/materials/grid/gridMaterial.js&quot;;
+
+// Get the canvas element from the DOM.
+const canvas = document.getElementById(&quot;renderCanvas&quot;);
+
+// Associate a Babylon Engine to it.
+const engine = new Engine(canvas);
+
+// Create our first scene.
+const scene = new Scene(engine);
+
+// This creates and positions a free camera (non-mesh)
+const camera = new FreeCamera(&quot;camera1&quot;, new Vector3(0, 5, -10), scene);
+
+// This targets the camera to scene origin
+camera.setTarget(Vector3.Zero());
+
+// This attaches the camera to the canvas
+camera.attachControl(canvas, true);
+
+// This creates a light, aiming 0,1,0 - to the sky (non-mesh)
+const light = new HemisphericLight(&quot;light1&quot;, new Vector3(0, 1, 0), scene);
+
+// Default intensity is 1. Let's dim the light a small amount
+light.intensity = 0.7;
+
+// Create a grid material
+const material = new GridMaterial(&quot;grid&quot;, scene);
+
+// Our built-in 'sphere' shape.
+const sphere = CreateSphere(&quot;sphere1&quot;, { segments: 16, diameter: 2 }, scene);
+
+// Move the sphere upward 1/2 its height
+sphere.position.y = 2;
+
+// Affect a material
+sphere.material = material;
+
+// Our built-in 'ground' shape.
+const ground = CreateGround(&quot;ground1&quot;, { width: 6, height: 6, subdivisions: 2 }, scene);
+
+// Affect a material
+ground.material = material;
+
+// Render every frame
+engine.runRenderLoop(() =&gt; {
+  scene.render();
+});</code></pre>
+<p>Finally, you can run the local dev environment with the command <code>npx webpack serve</code>.</p>
+<p>Open the browser and navigate to the URL <code>http://localhost:8080/</code>. You should see a sphere and a plane using the Grid Material.</p>
+<p>To create the distribution folder <code>dist</code> use the command <code>npx webpack</code></p>
+<p>You may have noticed that we did our imports from files instead of the base modules. This is to ensure we get the full benefit of Tree Shaking. For more information, see the <strong>Side Effects</strong> section below.</p>
+<h2 id="typescript">TypeScript<a class="anchor" href="#typescript">#</a></h2>
+<p>Switching the project to TypeScript is pretty straightforward. First, in the <code>MyAwesomeApp</code> folder from the previous example, we need to install TypeScript and one of the modules that allows its use in Webpack: <code>npm install typescript ts-loader --save-dev</code></p>
+<p>Once that is done, we can replace our previous index.js with its TypeScript equivalent, index.ts:</p>
+<pre class="code" data-lang="javascript"><code>import { FreeCamera } from &quot;@babylonjs/core/Cameras/freeCamera.js&quot;;
+import { Engine } from &quot;@babylonjs/core/Engines/engine.js&quot;;
+import { HemisphericLight } from &quot;@babylonjs/core/Lights/hemisphericLight.js&quot;;
+import { Vector3 } from &quot;@babylonjs/core/Maths/math.vector.js&quot;;
+import { CreateGround } from &quot;@babylonjs/core/Meshes/Builders/groundBuilder.js&quot;;
+import { CreateSphere } from &quot;@babylonjs/core/Meshes/Builders/sphereBuilder.js&quot;;
+import { Scene } from &quot;@babylonjs/core/scene.js&quot;;
+
+import { GridMaterial } from &quot;@babylonjs/materials/grid/gridMaterial.js&quot;;
+
+// Get the canvas element from the DOM.
+const canvas = document.getElementById(&quot;renderCanvas&quot;) as HTMLCanvasElement;
+
+// Associate a Babylon Engine to it.
+const engine = new Engine(canvas);
+
+// Create our first scene.
+const scene = new Scene(engine);
+
+// This creates and positions a free camera (non-mesh)
+const camera = new FreeCamera(&quot;camera1&quot;, new Vector3(0, 5, -10), scene);
+
+// This targets the camera to scene origin
+camera.setTarget(Vector3.Zero());
+
+// This attaches the camera to the canvas
+camera.attachControl(canvas, true);
+
+// This creates a light, aiming 0,1,0 - to the sky (non-mesh)
+const light = new HemisphericLight(&quot;light1&quot;, new Vector3(0, 1, 0), scene);
+
+// Default intensity is 1. Let's dim the light a small amount
+light.intensity = 0.7;
+
+// Create a grid material
+const material = new GridMaterial(&quot;grid&quot;, scene);
+
+// Our built-in 'sphere' shape.
+const sphere = CreateSphere('sphere1', { segments: 16, diameter: 2 }, scene);
+
+// Move the sphere upward 1/2 its height
+sphere.position.y = 2;
+
+// Affect a material
+sphere.material = material;
+
+// Our built-in 'ground' shape.
+const ground = CreateGround('ground1', { width: 6, height: 6, subdivisions: 2 }, scene);
+
+// Affect a material
+ground.material = material;
+
+// Render every frame
+engine.runRenderLoop(() =&gt; {
+  scene.render();
+});</code></pre>
+<p>The only change is the addition of <code>as HTMLCanvasElement</code> on the canvas element.</p>
+<p>With that done, we need to configure Webpack to allow the use of TypeScript. Add a <code>webpack.config.js</code> at the root of your project containing the following:</p>
+<pre class="code" data-lang="javascript"><code>module.exports = {
+  resolve: {
+    extensions: [&quot;.ts&quot;, &quot;.js&quot;],
+  },
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/,
+        loader: &quot;ts-loader&quot;,
+      },
+    ],
+  },
+};</code></pre>
+<p>We also need to configure TypeScript in the application folder. The simplest is to add a tsconfig.json file at the root of the project containing:</p>
+<pre class="code" data-lang="javascript"><code>{
+    &quot;compilerOptions&quot;: {
+        &quot;module&quot;: &quot;esNext&quot;,
+        &quot;target&quot;: &quot;es5&quot;,
+        &quot;moduleResolution&quot;: &quot;node&quot;,
+    }
+}</code></pre>
+<p>This will ensure our Babylon.js module can be loaded and used in your application.</p>
+<p>It is time to run again with the command <code>npx webpack serve</code> and open your browser at <code>http://localhost:8080/</code>. You should see a sphere and a plane using the Grid Material exactly as in JavaScript. You are now fully ready to use the Babylon.js ES6 packages in TypeScript.</p>
+<p>As in the <strong>Creating our first js APP</strong> section above, we did our imports from files instead of the base modules. This is to ensure we get the full benefit of Tree Shaking. For more information, see the <strong>Side Effects</strong> section below.</p>
+<h2 id="tree-shaking">Tree Shaking<a class="anchor" href="#tree-shaking">#</a></h2>
+<p>From the beginning you could wonder why using these ES6 packages vs the default bundled ones. Besides being more &quot;modern,&quot; which is not a valuable enough argument on its own to make the switch, you can now fully benefit from <span>tree shaking</span>.</p>
+<p>This means the previous example now requires about 700Kb versus 2.3Mb before.</p>
+<p><strong>Please note we are continuing to improve our min package size by decoupling a bit more our packages so if you spot any unnecessary dependency, please, do not hesitate to create an issue on <span>GitHub</span>.</strong></p>
+<p><strong>As you will see in the next paragraph, you also need to target individual files to fully benefit from tree shaking in your app.</strong></p>
+<p>Babylon.js also provides a pure import system that lets you import from a single barrel while preserving tree-shaking. See <a href="babylon-guide-setup-frameworkpackages-es6support-treeshaking.html">Tree-Shaking with Pure Imports</a> for the pure barrel workflow.</p>
+<h2 id="side-effects">Side Effects<a class="anchor" href="#side-effects">#</a></h2>
+<p>Due to our attachment to backward compatibility, we had to make a hard choice between the APIs and the side effects. Actually whilst not working with modules, it is easy to not worry about side effects and we relied on this pattern a lot to create a friendlier API surface. For instance, you can directly use the Mesh class to create basic shapes like cubes, spheres and so on. Despite being convenient, this means that the full MeshBuilder constructs are then a dependency of Mesh. But what if you are not using any of them? Why should they be part of the final package?</p>
+<p>Easy call, we could move those functions elsewhere and we did exactly this by creating smaller builder modules dedicated to construct only one type of shapes. But now quid of back compat? Yup, it is lost so to ensure you could use the same code in both UMD bundle and ES6, when the builder files are being parsed, they are swapping the MeshBuilder methods. This implies a <strong>side effect</strong> A module executing code whilst being parsed. This is the tradeoff we had to make, valuing back compatibility and API consistency vs side effect free code.</p>
+<p>As a result, it is impossible for Webpack and the other bundlers to determine if imports are safe to be removed when not used so if you import directly from index, all the imports will be followed and included in your packages.</p>
+<p>The solution, even if a bit annoying, is simple: you need to import manually only from the modules you need. This will force you to target your imports on the dedicated modules (vs index ones) if you want to fully benefit from tree shaking. The folder structure should be natural enough and in case you are finding some modules in not intuitive locations, do not hesitate to file an issue on <span>GitHub</span> and we will be more than happy to document it here.</p>
+<h3 id="faq">FAQ<a class="anchor" href="#faq">#</a></h3>
+<p><em>How do I efficiently use the <code>Mesh.Create...</code> methods?</em></p>
+<p>The simplest is to load only the builder corresponding to your construction method. If you wish to use the <code>CreateBox</code> method, you can simply <code>import &quot;@babylonjs/core/Meshes/Builders/boxBuilder.js&quot;;</code> to ensure that the dependant modules have been loaded.<strong>Except if you are relying on all the MeshBuilder methods, we would recommend to not use it directly but favor the smaller builders</strong>.</p>
+<p><em>Why using the default material is not working?</em>
+By default, any mesh in a scene are using the scene defaultMaterial. With tree shaking you might not need this material so we do not force it as a dependency in the code. That said, would you need to use it, you can simply <code>`import &quot;@babylonjs/core/Materials/standardMaterial.js&quot;;`</code> to ensure that the default material would be operational.</p>
+<p><em>How does deserialization work?</em></p>
+<p>When you deserialize a Babylon.js object like a Material or Light, it is impossible for the framework to know beforehand what kind of entity is enclosed in your file. For instance, are you relying on Standard vs PBRMaterial. We again rely on side effect here and the deserialization will only be able to load the kind of entity you have imported in your app. This means if you know you will need to deserialize a PBRMaterial, you can <code>import &quot;@babylonjs/core/Materials/PBR/pbrMaterial.js&quot;;</code> beforehand.</p>
+<p><em>How do I know if I am importing a folder or a file?</em></p>
+<p>By convention and to simplify the discovery, all folders start with an upper-case character, whereas files start with a lower-case one.</p>
+<p><em>How to find what module contains the entity I am trying to import?</em></p>
+<p>This is actually a pretty good question. It should be intuitive enough and if not, do not hesitate to ping us so we can add it to the documentation.</p>
+<p><em>The intellisense does not propose the method I normally use in the bundled version and an undefined error is raised at runtime?</em></p>
+<p>Your IDE may not be able to discover methods defined by module augmentation. This means that as long as you are not importing the parent modules, the methods will not even be discoverable. This is the case for all our scene components. For enabling physics on the scene you need <code>import &quot;@babylonjs\core\Physics\physicsEngineComponent.js&quot;</code> to populate the <code>scene.enablePhysics</code> function. </p>
+<p>Please find below the list of those components for their augmented methods (note that all imports of files must include the extension):</p>
+<ul>
+<li>scene.&quot;animationRelatedMethods&quot; like beginAnimation and so on... &quot; are available in the <code>Animations/animatable.js</code> module.</li>
+<li>scene.&quot;audioRelatedMethods&quot; are available in the <code>Audio/audioSceneComponent.js</code> and <code>Audio/audioEngine.js</code> module.</li>
+<li>Octree functions can be found in the <code>Culling/Octrees/octreeSceneComponent.js</code> module.</li>
+<li>Ray and Picking functions can be found in the <code>Culling/ray.js</code> module.</li>
+<li>Debug Layer functions can be found in the <code>Debug/debugLayer.js</code> module.</li>
+<li>Occlusion Queries can be found in the <code>Engines/Extensions/engine.query.js</code> module.</li>
+<li>Transform Feedback can be found in the <code>Engines/Extensions/engine.transformFeedback.js</code> module.</li>
+<li>Gamepad support can be found in the <code>Gamepad/gamepadSceneComponent.js</code> module.</li>
+<li>Scene Helpers like createDefaultCamera, createDefaultXXX can be found in the <code>Helpers/sceneHelpers.js</code> module.</li>
+<li>Mesh Simplification functions can be found in the <code>Meshes/meshSimplicationSceneComponent.js</code> .</li>
+<li>DDS Loader support can be installed from the <code>Materials/Textures/Loaders/ddsTextureLoader.js</code> and you will also need <code>core/Misc/dds.js</code> module.</li>
+<li>Env Loader support can be installed from the <code>Materials/Textures/Loaders/envTextureLoader.js</code> .</li>
+<li>KTX Loader support can be installed from the <code>Materials/Textures/Loaders/ktxTextureLoader.js</code> .</li>
+<li>TGA Loader support can be installed from the <code>Materials/Textures/Loaders/tgaTextureLoader.js</code> .</li>
+<li>Particle support can be found in the <code>Particles/particleSystemComponent.js</code> .</li>
+<li>For GPUParticleSystem, WebGL2 support can be found in <code>Particles/webgl2ParticleSystem.js</code> and WebGPU support in <code>Particles/computeShaderParticleSystem.js</code></li>
+<li>Physics Engine support can be found in the <code>Physics/physicsEngineComponent.js</code> .</li>
+<li>.babylon file support can be found in the <code>Loading/Plugins/babylonFileLoader.js</code> .</li>
+<li>shadowGenerator support can be found in the <code>Lights/Shadows/shadowGeneratorSceneComponent.js</code> .</li>
+<li>depthRendering support can be found in the <code>Rendering/depthRendererSceneComponent.js</code> .</li>
+<li>screenshot support can be found in the <code>Misc/screenshotTools.js</code> .</li>
+<li>boundingBox support can be found in the <code>Rendering/boundingBoxRenderer.js</code> .</li>
+<li>Screen surface reflection postprocess (<code>scene.enablePrePassRender</code>) can be found in the <code>Rendering/prePassRendererSceneComponent.js</code> .</li>
+<li>Decal Map support is enabled by importing <code>Materials/material.decalMap.js</code>. If you only want to enable support at the mesh level and not the material level, use <code>Meshes/abstractMesh.decalMap.js</code> instead. See <a href="babylon-guide-features-featuresdeepdive-mesh-decals.html">here</a> for why you want to do this.</li>
+</ul>
+<p><em>Why do I have a TypeError in the console telling me that something is not a function, even though my IDE shows it via intellisense?</em></p>
+<p>Some methods are added via module augmentation. While some IDEs cannot detect these methods at all, others – like VSCode – seem to be able to find them even when they are not actually available. You will need to import the correct module to add that method. If your issue is with a missing <code>scene</code> method, see the previous question.</p>
+<p><em>Why do I have an error in the console inviting me to import some other modules?</em></p>
+<p>This might happen on some modules where we are heavily relying on side effects and where we can automatically detect the absence of the dependency.</p>
+<h2 id="almighty-inspector">Almighty Inspector<a class="anchor" href="#almighty-inspector">#</a></h2>
+<p>Due to the module names changing and other ES6 module differences, the UMD and CDN inspector version is not compatible with ES6. Nevertheless, you can install the ES6 version of the inspector and import it for side effect only in your code. Then the debug layer would work as usual.</p>
+<p>First install the inspector package:</p>
+<pre class="code" data-lang="bash"><code>npm install --save-dev @babylonjs/inspector</code></pre>
+<p>And then in your code:</p>
+<pre class="code" data-lang="javascript"><code>import &quot;@babylonjs/core/Debug/debugLayer.js&quot;; // Augments the scene with the debug methods
+import &quot;@babylonjs/inspector&quot;; // Injects a local ES6 version of the inspector to prevent automatically relying on the non-compatible version
+...
+scene.debugLayer.show();</code></pre>
+<h2 id="earcut-oimo-canon">Earcut/Oimo/Canon<a class="anchor" href="#earcut-oimo-canon">#</a></h2>
+<p>As we do not want to force our users to include any dependencies by default, we have extended the way users could rely on external dependencies for ES6.</p>
+<p>For each of the external dependencies Babylon.js is relying upon, if you are planning on relying on them, you can provide them as global variables in your bundler. For instance if you are willing to use the <code>PolygonMeshBuilder</code> class in your app you can add earcut in Webpack like this:</p>
+<pre class="code" data-lang="javascript"><code>module.exports = {
+    context: __dirname,
+    ...
+    plugins: [
+        new webpack.ProvidePlugin({
+            'earcut': 'earcut'
+        })
+    ]
+}</code></pre>
+<p>Or if you do not want to use a global var for earcut, you could simply pass the dependency to the PolygonMeshBuilder class like this:</p>
+<pre class="code" data-lang="javascript"><code>import * as MyEarcut from &quot;earcut&quot;;
+...
+new PolygonMeshBuilder(&quot;polytri&quot;, corners, scene, MyEarcut);</code></pre>
+<p>It would be the same for the physics plugin, where you can either provide the underlying engine as a variable or inject it in the constructor of the Babylon.js respective plugin.</p>
+<h2 id="havok-physics">Havok Physics<a class="anchor" href="#havok-physics">#</a></h2>
+<p>The recommended physics engine for Babylon.js is <span>Havok</span>. To use Havok with ES6/npm, install it:</p>
+<pre class="code" data-lang="bash"><code>npm install @babylonjs/havok</code></pre>
+<p>Then in your code:</p>
+<pre class="code" data-lang="javascript"><code>import HavokPhysics from &quot;@babylonjs/havok&quot;;
+import { HavokPlugin } from &quot;@babylonjs/core/Physics/v2/Plugins/havokPlugin.js&quot;;
+
+const havokInstance = await HavokPhysics();
+const havokPlugin = new HavokPlugin(true, havokInstance);
+scene.enablePhysics(new Vector3(0, -9.81, 0), havokPlugin);</code></pre>
+<span class="muted">&lt;Alert severity=&quot;warning&quot; title=&quot;Deprecated: Ammo.js&quot; description=&quot;AmmoJSPlugin, CannonJSPlugin, and OimoJSPlugin are legacy Physics V1 plugins and have been deprecated in favor of HavokPlugin (Physics V2). See the migration guide at /features/featuresDeepDive/physics/v2/migrateFromV1.&quot;/&gt;</span><h2 id="loaders">Loaders<a class="anchor" href="#loaders">#</a></h2>
+<p>In Babylon.js the loaders you can install from <code>@babylonjs/loaders</code> are actually plugins of the main <code>SceneLoader</code> module. In order to use for instance the obj loader in your app, you simply need to import it for side effects only: <code>import &quot;@babylonjs/loaders/OBJ.js&quot;;</code> . It would be exactly the same for glTF: <code>import &quot;@babylonjs/loaders/glTF.js&quot;;</code> .</p>
+<h2 id="ktx2-decoder-packages">KTX2 Decoder packages<a class="anchor" href="#ktx2-decoder-packages">#</a></h2>
+<p>The ES6 KTX2 decoder module includes all of the decoders and their corresponding WASM files and wrappers so users can use them locally and deploy them as part of their build. The KTX2 decoder module is available in the npm scope <code>@babylonjs/ktx2decoder</code>.</p>
+<p>To use the KTX2 decoder module, install it as follows:</p>
+<pre class="code" data-lang="bash"><code>npm install --save-dev @babylonjs/ktx2decoder</code></pre>
+<p>Then, you need to decide if you want to use workers or decode the KTX2 files on the main thread. The difference is in the way you will initialize the module.</p>
+<p>If you want to use workers, you will need to generate the worker file that will be used to decode the textures and pass a worker pool. The example below uses the MSC decoder, but the same process can be used to initialize any other type of decoder.</p>
+<p>First let&#39;s create a worker file. We will call it worker.js (note - typescript will work the same):</p>
+<pre class="code" data-lang="javascript"><code>// worker.js
+import * as KTX2Decoder from &quot;@babylonjs/ktx2decoder&quot;;
+import { workerFunction } from &quot;@babylonjs/core/Misc/khronosTextureContainer2Worker.js&quot;;
+import mscTranscoderJsModule from &quot;@babylonjs/ktx2decoder/wasm/msc_basis_transcoder.js&quot;;
+import { MSCTranscoder as jsMSCTranscoder } from &quot;@babylonjs/ktx2decoder/Transcoders/mscTranscoder.js&quot;;
+// set the globalThis object to make sure the worker can access the global scope
+globalThis.KTX2DECODER = KTX2Decoder;
+// set the msc decoder module
+jsMSCTranscoder.JSModule = mscTranscoderJsModule;
+// Call the worker function, imported from the core module
+workerFunction(KTX2Decoder);</code></pre>
+<p>Then in your main file, you will need to do a few things:</p>
+<ol>
+<li>import the wasm as an arraybuffer</li>
+<li>Create a worker pool</li>
+<li>Initialize the worker pool with the worker file</li>
+<li>Pass the workerpool to the KhronosTextureContainer2 module</li>
+</ol>
+<pre class="code" data-lang="javascript"><code>// mainFile.js
+import { Engine } from &quot;@babylonjs/core/Engines/engine.js&quot;;
+import { Scene } from &quot;@babylonjs/core/scene.js&quot;;
+import { Texture } from &quot;@babylonjs/core/Materials/Textures/texture.js&quot;;
+import wasmMSCTranscoder from &quot;@babylonjs/ktx2decoder/wasm/msc_basis_transcoder.wasm&quot;; // make sure the import is an arraybuffer
+import { KhronosTextureContainer2 } from &quot;@babylonjs/core/Misc/khronosTextureContainer2.js&quot;;
+import { AutoReleaseWorkerPool } from &quot;@babylonjs/core/Misc/workerPool.js&quot;;
+import { initializeWebWorker } from &quot;@babylonjs/core/Misc/khronosTextureContainer2Worker.js&quot;;
+import &quot;@babylonjs/core/Materials/Textures/Loaders/ktxTextureLoader.js&quot;;
+
+export function initScene(element) {
+  const engine = new Engine(element);
+  const scene = new Scene(engine);
+
+  // Create a worker pool
+  // This will be used when a new KhronosTextureContainer2 is created
+  KhronosTextureContainer2.WorkerPool = new AutoReleaseWorkerPool(4, () =&gt; {
+    // Create a new worker using the worker.js file we have already created
+    const worker = new Worker(new URL(&quot;./worker.js&quot;, import.meta.url), {
+      type: &quot;module&quot;,
+    });
+    // Initialize the worker with the wasm array buffer
+    return initializeWebWorker(worker, {
+      // pass all arraybuffers here
+      wasmMSCTranscoder,
+    });
+  });
+
+  // decode the texture
+  const texture = new Texture(
+    &quot;./2d_etc1s.ktx2&quot;,
+    scene,
+    false,
+    true,
+    Texture.TRILINEAR_SAMPLINGMODE,
+    () =&gt; {
+      console.log(texture);
+    },
+    (message, exception) =&gt; {
+      console.error(&quot;Can't fetch texture&quot;, message, exception);
+    },
+  );
+}</code></pre>
+<h3 id="how-to-get-the-wasms-as-arraybuffers">How to get the wasms as arraybuffers<a class="anchor" href="#how-to-get-the-wasms-as-arraybuffers">#</a></h3>
+<p>When importing the wasm files, you will need to import them as arraybuffers. As this is non-standard, it depends on your bundler and environment.</p>
+<p>When using webpack you can use the arraybuffer-loader. The way to do that is documented here - <span>https://www.npmjs.com/package/arraybuffer-loader#for-wasm-file</span></p>
+<p>When using vite you can use <code>vite-plugin-arraybuffer</code>, documented here - <span>https://www.npmjs.com/package/vite-plugin-arraybuffer</span>.</p>
+<p>When using node environment, you can just use the fs module to read the file as an arraybuffer.</p>
+<h2 id="providing-your-own-resources-for-draco-compression-and-basis-decoder">Providing your own resources for Draco compression and Basis decoder<a class="anchor" href="#providing-your-own-resources-for-draco-compression-and-basis-decoder">#</a></h2>
+<p>We provide the Draco compression and Basis decoder as part of the ES6 <code>@babylonjs/core</code> package. As recommended, it is always better to serve those resources from your own server. If you want them to be included as part of your build process, you can do so by providing the resources directly to the modules.</p>
+<h3 id="draco-decoder-packages">Draco Decoder packages<a class="anchor" href="#draco-decoder-packages">#</a></h3>
+<p>Just like with the KTX2 decoder, you need to first decide if you use workers or not. For example, in a node environment you will not be able to use workers, but in a web environment it would be recommended to use them.</p>
+<p>If using workers, create a worker file:</p>
+<pre class="code" data-lang="javascript"><code>// worker.js
+import { DecoderWorkerFunction } from &quot;@babylonjs/core/Meshes/Compression/dracoCompressionWorker.js&quot;;
+// will populate globalThis.DracoDecoderModule
+import &quot;@babylonjs/core/assets/Draco/draco_decoder_gltf.js&quot;;
+
+DecoderWorkerFunction();</code></pre>
+<p>And then create a worker pool:</p>
+<pre class="code" data-lang="javascript"><code>// mainFile.js
+// import the wasm as array buffer. see the KTX2 documentation for hints on how to do that
+import wasm from &quot;@babylonjs/core/assets/Draco/draco_decoder_gltf.wasm&quot;;
+import { AutoReleaseWorkerPool } from &quot;@babylonjs/core/Misc/workerPool.js&quot;;
+import { DracoDecoder } from &quot;@babylonjs/core/Meshes/Compression/dracoDecoder.js&quot;;
+import { initializeWebWorker } from &quot;@babylonjs/core/Meshes/Compression/dracoCompressionWorker.js&quot;;
+import { Tools } from &quot;@babylonjs/core/Misc/tools.js&quot;;
+import { VertexBuffer } from &quot;@babylonjs/core/Meshes/buffer.js&quot;;
+
+const workerPool = new AutoReleaseWorkerPool(4, () =&gt; {
+  const worker = new Worker(new URL(&quot;./worker.js&quot;, import.meta.url), {
+    type: &quot;module&quot;,
+  });
+  return initializeWebWorker(worker, wasm);
+});
+
+// set the worker pool
+DracoDecoder.DefaultConfiguration.workerPool = workerPool;
+
+// if you are creating your own version of the draco decoder class you can pass the worker pool in the constructor instead:
+
+const dracoDecoder = new DracoDecoder({
+  workerPool,
+});</code></pre>
+<p>If you are not using workers, you will need to pass the wasm file and its js module directly to the draco decoder configuration:</p>
+<pre class="code" data-lang="javascript"><code>// import the wasm file as an arraybuffer
+import wasm from &quot;@babylonjs/core/assets/Draco/draco_decoder_gltf.wasm&quot;;
+// import the js module
+import &quot;@babylonjs/core/assets/Draco/draco_decoder_gltf.js&quot;;
+DracoDecoder.DefaultConfiguration.wasmBinary = wasm;
+DracoDecoder.DefaultConfiguration.jsModule = globalThis.DracoDecoderModule;</code></pre>
+<h4 id="using-draco-in-node-environment">Using Draco in node environment<a class="anchor" href="#using-draco-in-node-environment">#</a></h4>
+<p>To use the draco decoder in nodejs to decode your own file:</p>
+<pre class="code" data-lang="javascript no-code-variants"><code>const BABYLON = require(&quot;babylonjs&quot;);
+const fs = require(&quot;fs&quot;);
+const xhr = require(&quot;xhr2&quot;);
+require(&quot;babylonjs-loaders&quot;);
+
+// get the resources from the local disk. Note - the resources need to be downloaded manually.
+const Draco = require(&quot;./assets/draco_decoder_gltf.js&quot;);
+const wasm = fs.readFileSync(process.cwd() + &quot;/assets/draco_decoder_gltf.wasm&quot;);
+
+BABYLON.DracoDecoder.DefaultConfiguration.wasmBinary = wasm;
+BABYLON.DracoDecoder.DefaultConfiguration.jsModule = Draco;
+
+globalThis.XMLHttpRequest = xhr.XMLHttpRequest;
+let engine = new BABYLON.NullEngine();
+// create your scene here
+const scene = .....;
+
+BABYLON.ImportMeshAsync(&quot;https://awesomeserver.mine.com/my.glb&quot;, scene).then(() =&gt; {  
+    console.log(&quot;draco worked&quot;);
+  }, (e) =&gt; {
+    console.log(&quot;oh no! something is off&quot;, e);
+  }
+);</code></pre>
+<h3 id="basis-decoder">Basis Decoder<a class="anchor" href="#basis-decoder">#</a></h3>
+<p>The basis decoder doesn&#39;t use a worker pool, but does have a worker that can be initialized.</p>
+<p>To use the basis decoder in your app, you will need to initialize the worker:</p>
+<pre class="code" data-lang="javascript"><code>// worker.js
+import { workerFunction } from &quot;@babylonjs/core/Misc/basisWorker.js&quot;;
+import &quot;@babylonjs/core/assets/Basis/basis_transcoder.js&quot;;
+
+workerFunction();</code></pre>
+<p>Now initialize the webworker on the main thread, and set this worker for basis decoding:</p>
+<pre class="code" data-lang="javascript"><code>// mainFile.js
+import wasm from &quot;@babylonjs/core/assets/Basis/basis_transcoder.wasm&quot;;
+import { initializeWebWorker } from &quot;@babylonjs/core/Misc/basisWorker.js&quot;;
+import { SetBasisTranscoderWorker } from &quot;@babylonjs/core/Misc/basis.js&quot;;
+
+const worker = new Worker(new URL(&quot;./worker.js&quot;, import.meta.url), {
+  type: &quot;module&quot;,
+});
+initializeWebWorker(worker, wasm);
+
+SetBasisTranscoderWorker(worker);</code></pre>
+<h2 id="avoiding-side-effects">Avoiding side-effects<a class="anchor" href="#avoiding-side-effects">#</a></h2>
+<p>Starting with Babylon.js v7.23, we are introducing a new way for ES6 users to import optional features without side effects.
+Depending on how the internal engine works, we have aimed to reduce the number of functions that need to be added at the prototype level. Instead, when possible, we are offering more &#39;pick and choose&#39; public functions.</p>
+<p>For the newer pure-barrel registration model, see <a href="babylon-guide-setup-frameworkpackages-es6support-treeshaking.html">Tree-Shaking with Pure Imports</a> and <a href="babylon-guide-setup-frameworkpackages-es6support-treeshaking-registeringsideeffects.html">Registering Side Effects</a>.</p>
+<h3 id="animations">Animations<a class="anchor" href="#animations">#</a></h3>
+<ul>
+<li>File to import: &quot;core/Animations/animatable.core&quot; (instead of &quot;core/Animations/animatable&quot; which has side-effects)</li>
+<li>Function to import and execute to initialize the module: <code>AddAnimationExtensions(sceneClass, boneClass)</code></li>
+<li>Calling <code>AddAnimationExtensions</code> will populate the following prototype functions:<ul>
+<li>Bone.prototype.copyAnimationRange</li>
+<li>Scene.prototype.beginAnimation</li>
+<li>Scene.prototype.beginDirectAnimation</li>
+<li>Scene.prototype.beginDirectHierarchyAnimation</li>
+<li>Scene.prototype.beginWeightedAnimation</li>
+<li>Scene.prototype.beginHierarchyAnimation</li>
+<li>Scene.prototype.getAllAnimatablesByTarget</li>
+<li>Scene.prototype.getAnimatableByTarget</li>
+<li>Scene.prototype.sortActiveAnimatables</li>
+<li>Scene.prototype.stopAllAnimations</li>
+</ul>
+</li>
+</ul>
+<h3 id="ray">Ray<a class="anchor" href="#ray">#</a></h3>
+<ul>
+<li>File to import: &quot;core/Culling/ray.core&quot; (instead of &quot;core/Culling/ray&quot; which has side-effects)</li>
+<li>Function to import and execute to initialize the module: <code>AddRayExtensions(sceneClass, cameraClass)</code></li>
+<li>Calling <code>AddRayExtensions</code> will populate the following prototype functions:<ul>
+<li>Camera.prototype.getForwardRay</li>
+<li>Camera.prototype.getForwardRayToRef</li>
+<li>Scene.prototype.createPickingRay</li>
+</ul>
+</li>
+<li>The following functions will be available:<ul>
+<li>CreatePickingRay</li>
+<li>CreatePickingRayToRef</li>
+<li>CreatePickingRayInCameraSpace</li>
+<li>CreatePickingRayInCameraSpaceToRef</li>
+<li>Pick</li>
+<li>PickWithRay</li>
+<li>PickWithBoundingInfo</li>
+<li>MultiPick</li>
+<li>MultiPickWithRay</li>
+</ul>
+</li>
+</ul>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#introduction">Introduction </a><a href="#available-packages">Available packages </a><a href="#basic-example">Basic Example </a><a href="#basic-usage">Basic usage </a><a href="#typescript">TypeScript </a><a href="#tree-shaking">Tree Shaking </a><a href="#side-effects">Side Effects </a><a href="#almighty-inspector">Almighty Inspector </a><a href="#earcut-oimo-canon">Earcut/Oimo/Canon </a><a href="#havok-physics">Havok Physics </a><a href="#loaders">Loaders </a><a href="#ktx2-decoder-packages">KTX2 Decoder packages </a><a href="#providing-your-own-resources-for-draco-compression-and-basis-decoder">Providing your own resources for Draco compression and Basis decoder </a><a href="#avoiding-side-effects">Avoiding side-effects </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

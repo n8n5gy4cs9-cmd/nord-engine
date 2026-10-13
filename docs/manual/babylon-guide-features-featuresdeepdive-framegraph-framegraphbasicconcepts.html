@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Frame Graph Basic Concepts and Getting Started — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Frame Graph Basic Concepts and Getting Started</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="frame-graph-introduction">Frame Graph Introduction<a class="anchor" href="#frame-graph-introduction">#</a></h2>
+<h3 id="naming">Naming<a class="anchor" href="#naming">#</a></h3>
+<p>First, a word about the names.</p>
+<p>We used “Frame Graph” as the base name for our main classes (in the <code>src/FrameGraph/</code> directory), because it is the name that their inventor used in the first place (see <span>FrameGraph: Extensible Rendering Architecture in Frostbite</span>), and also because we don&#39;t only have rendering tasks in a frame graph (for example, we also have a culling task).</p>
+<p>However, we have used the name “Render Graph” for the node framework (under the directory <code>src/FrameGraph/Node/</code>), built on top of the frame graph framework. This makes it easy to differentiate the two frameworks (the frame graph framework is autonomous; you don&#39;t have to use the node render graph framework if you don&#39;t want to), and it also gives us a nice acronym (NRG - Node Render Graph) :).</p>
+<h3 id="description">Description<a class="anchor" href="#description">#</a></h3>
+<p>A frame graph is a DAG (Directed Acyclic Graph - a bit like NME / NGE) in which each node (task) represents a render pass, or more generally a task performed when rendering a frame (we have tasks that are not render passes, such as the culling task).</p>
+<p>Each task declares its input and output resources.</p>
+<p>The resources can be textures, lists of renderable meshes, cameras, or lights. As for textures, they are allocated and managed by the frame graph subsystem, not directly by the tasks. This allows us to optimize texture allocation and reuse textures during graph execution, thus saving GPU memory.</p>
+<p>By default, resources do not persist between executions of a render graph, unless a resource is specifically labeled as “persistent” (think of a texture that must be reused from one frame to the next). In our implementation, persistent textures are used to implement “ping-pong” textures, where we change the read and write textures on each frame (used to implement the temporal antialiasing task, for example).</p>
+<p>To clarify the ideas, here is a simple graph:</p>
+<p><p class="muted">Upstream illustration: Basic graph (media not bundled).</p></p>
+<p>The “Color Texture”, “Depth Texture”, “Camera” and “Object List” nodes are input resources (respectively, of the texture, depth texture, camera and object list type). “Clear” and “Main Rendering” are two tasks, the first clears a texture/depth texture and the second renders objects in a texture. “Output” is the output buffer (think of it as the screen output).</p>
+<p>As a user, the process of creating and using a frame graph is as follows:</p>
+<ul>
+<li>Create a frame graph, either by using the <code>FrameGraphXXX</code> classes (see <a href="babylon-guide-features-featuresdeepdive-framegraph-framegraphclassframework.html">Frame Graph Framework Description</a>), or by loading a node render graph (see <a href="babylon-guide-features-featuresdeepdive-framegraph-framegraphblocks.html">Node Render Graph Blocks</a>).</li>
+<li>Build the frame graph (<code>await FrameGraph.buildAsync()</code> or <code>await NodeRenderGraph.buildAsync()</code>). Calling these functions will also wait until the graph is ready to be displayed (it waits until all tasks + all internal states are ready).<span class="muted">&lt;br/&gt;
+At this point, the frame graph can be safely executed: call `FrameGraph.execute()`, or simply set `scene.frameGraph = myFrameGraph`, in which case the scene's rendering loop will call `execute`.</span></li>
+</ul>
+<p>Note that in this scenario, you never have to manage passes: you will only need to create passes when you create your own tasks. As a user, you simply use the existing tasks (see <a href="babylon-guide-features-featuresdeepdive-framegraph-framegraphclassframework-framegraphtasklist.html">Frame Graph Task List</a> for the list of existing tasks in the framework), creating an instance of the task, setting its input parameters to reasonable values, and adding the task to the frame graph. See <a href="babylon-guide-features-featuresdeepdive-framegraph-framegraphclassframework-framegraphclassoverview.html">Introduction to Frame Graph classes</a> for more information.</p>
+<h3 id="benefits">Benefits<a class="anchor" href="#benefits">#</a></h3>
+<p>A frame graph provides high-level knowledge of the whole frame, which:</p>
+<ul>
+<li>simplifies and optimizes resource management</li>
+<li>simplifies the configuration of the rendering pipeline =&gt; Visual Editor!</li>
+<li>simplifies asynchronous computation and resource barriers. This is an advantage for native implementations, but for the web, we don&#39;t (yet?) have asynchronous computation and we don&#39;t have to manage resource barriers ourselves.</li>
+<li>allows for autonomous and efficient rendering modules</li>
+<li>overcomes some of the limitations of our hard-coded pipeline.<span class="muted">&lt;br/&gt;
+The last advantage is particularly important, as it enables things that are not possible in our current fixed pipeline, which can be described as follows (this is what the existing `Scene.render` method does):</span></li>
+</ul>
+<ol>
+<li>Animate</li>
+<li>Update cameras</li>
+<li>Render RTTs declared at the scene level</li>
+<li>For each camera<ol>
+<li>Evaluate and dispatch active meshes for rendering / Animate and dispatch particle systems for rendering</li>
+<li>Software skinning</li>
+<li>Rendering of RTT declared at camera level</li>
+<li>Rendering of active meshes</li>
+<li>Apply post-processing to the camera<span class="muted">&lt;br/&gt;
+We have a number of observables that allow you to inject code between these stages, as well as internal components that add functionality at key points (such as shadows, layers, effect layers, etc.), but the order of tasks is always fixed and strongly centered on the camera, as you can see.</span></li>
+</ol>
+</li>
+</ol>
+<p>With a frame graph, nothing is defined in advance; you simply create tasks and their interconnections. The camera has no particular status; it is a resource that you can use to construct the graph, in the same way that you can use textures or lists of objects.</p>
+<p>Automatic texture management optimizes texture allocation and can lead to substantial GPU memory savings, depending on your graph:</p>
+<p><p class="muted">Upstream illustration: Example of GPU memory saving (media not bundled).</p> <span class="muted">&lt;span url=&quot;https://nrge.babylonjs.com/#DDFRYD#5&quot;/&gt;</span></p>
+<p>In this simple graph, reusing textures saves 25% of the GPU&#39;s memory, but we have already seen savings of 40% or more in other graphs.</p>
+<h2 id="frame-graph-usage">Frame Graph Usage<a class="anchor" href="#frame-graph-usage">#</a></h2>
+<p>There are two different ways to use a frame graph in a scene.</p>
+<h3 id="use-a-frame-graph-instead-of-the-scene-render-loop">Use a frame graph instead of the scene render loop<a class="anchor" href="#use-a-frame-graph-instead-of-the-scene-render-loop">#</a></h3>
+<p>This is the best way to use frame graphs, but because the implementation is not yet fully complete (in particular, a number of rendering tasks are not yet available for frame graphs), it is also possible to use one (or more) frame graph(s) at the same time as the existing scene render loop, which is the subject of the next section.</p>
+<p>In this mode, the execution of a frame graph largely replaces the flow of operations normally performed by <code>Scene.render</code>, as described above. To activate this mode, simply define a frame graph instance in <code>Scene.frameGraph</code>. In this mode:</p>
+<ul>
+<li>There is no longer an active camera! <code>Scene.activeCamera</code> can be defined by a frame graph task if it needs it to run, but it is reset to <code>null</code> once the task is finished. This is logical, because the camera is no longer the central resource that it was when frame graphs were not used. Therefore, you should not rely on <code>Scene.activeCamera</code> always having a non-null value in your code.</li>
+<li>You must define <code>Scene.cameraToUseForPointers</code> for the camera to use for pointer operations. By default, if nothing is defined for this property, <code>Scene.activeCamera</code> is used. But since this property is now <code>null</code> most of the time, pointer operations will not work as expected if you do not define <code>Scene.cameraToUseForPointers</code>.</li>
+<li>You will not be able to define the parameters of a certain number of components via the inspector (such as rendering pipelines, effect layers, post-processing) because these are now simple tasks within a frame graph. As a workaround, if you use a node render graph to generate the frame graph, you will be able to set parameters in the node render graph editor. We will also look at how to update the inspector (when possible), so that we can adjust the settings from this tool.</li>
+<li>Most of the existing observables notified by <code>Scene.render</code> are no longer notified. As explained above, the execution of the frame graph replaces much of <code>Scene.render</code> (see below), so a lot of code is no longer executed.<span class="muted">&lt;br/&gt;
+Regarding the last point, this is what `Scene.render` does when `Scene.frameGraph` is defined:</span></li>
+</ul>
+<ol>
+<li>Notifies <code>Scene.onBeforeAnimationsObservable</code></li>
+<li>Calls <code>Scene.animate</code></li>
+<li>Notifies <code>Scene.onBeforeRenderObservable</code></li>
+<li>Updates the cameras</li>
+<li>Notifies <code>Scene.onBeforeRenderTargetsRenderObservable</code></li>
+<li>Render RTTs declared at the scene level</li>
+<li>Notifies <code>Scene.onAfterRenderTargetsRenderObservable</code></li>
+<li>Updates the world&#39;s mesh matrices</li>
+<li>Animates the particle systems</li>
+<li>Executes the frame graph</li>
+<li>Notifies <code>Scene.onAfterRenderObservable</code><span class="muted">&lt;br/&gt;
+As you can see, only five observables are notified in this case.</span></li>
+</ol>
+<p>Note that the &quot;Render RTTs declared at the scene level&quot; step has been integrated into frame graphs to simplify porting legacy code to frame graphs.</p>
+<h3 id="use-a-frame-graph-in-addition-to-the-existing-scene-render-loop">Use a frame graph in addition to the existing scene render loop<a class="anchor" href="#use-a-frame-graph-in-addition-to-the-existing-scene-render-loop">#</a></h3>
+<p>In some cases, you may want to keep the existing scene rendering loop and use frame graphs as a complement. This may be because some features are still missing in frame graphs (so using a frame graph instead of the render loop is not possible), or because you want to keep your existing code and only need the additional features provided by frame graphs.</p>
+<p>In this mode, you do not assign a value to <code>Scene.frameGraph</code> and you simply execute a frame graph yourself by calling its <code>execute()</code> method. The texture(s) updated by the execution of the frame graph can be retrieved and reused in your own code, or the output of the execution can be directly generated on the screen.</p>
+<p>This is the simplest mode to use: using one (or more!) frame graphs is just another feature you can exploit in your own code.</p>
+<h2 id="examples-of-frame-graphs">Examples of frame graphs<a class="anchor" href="#examples-of-frame-graphs">#</a></h2>
+<p>By way of illustration, below are two examples of the two cases outlined above.</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#frame-graph-introduction">Frame Graph Introduction </a><a href="#frame-graph-usage">Frame Graph Usage </a><a href="#examples-of-frame-graphs">Examples of frame graphs </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phaser.Physics.Arcade.World — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Phaser.Physics.Arcade.World</h1>
+<p><span class="badge">Underlying Phaser 4.2.1 API</span> <span class="badge">Class</span></p><p class="muted">Official public declarations and JSDoc from <code>phaser</code>. Use with engine objects, not directly on a Nord entity.</p><aside class="box tip"><div class="box-title">The Nord way</div><p><a href="2d.html">2D manual</a> · <a href="component-sprite.html">sprite</a> · <a href="component-animatedSprite.html">animatedSprite</a> · <a href="physics.html">physics</a>. Access raw objects only when the Nord wrapper does not cover your feature. <a href="reference.html#escape-hatch">How escape hatches work</a>.</p></aside><h3 id="declaration">World <a class="anchor" href="#declaration">#</a></h3><pre class="code" data-lang="ts"><code>class World extends Phaser.Events.EventEmitter</code></pre><p>The Arcade Physics World.</p>
+<p>The World is responsible for creating, managing, colliding and updating all of the bodies within it.</p>
+<p>An instance of the World belongs to a Phaser.Scene and is accessed via the property <code>physics.world</code>.</p>
+<p>It uses an RTree spatial index for fast broad-phase collision detection and supports
+tilemap collision. The World fires events for collisions, overlaps, world bounds
+contacts, and pause/resume state changes.</p>
+<h2 id="members">Public members (63)</h2><p>Private, protected and explicitly internal declarations are excluded. Inherited members belong to the base type listed in the declaration.</p><h3 id="member-constructor-0">constructor <a class="anchor" href="#member-constructor-0">#</a></h3><pre class="code" data-lang="ts"><code>constructor(scene: Phaser.Scene, config: Phaser.Types.Physics.Arcade.ArcadeWorldConfig);</code></pre><p><strong>param</strong>  scene The Scene to which this World instance belongs.
+<strong>param</strong>  config An Arcade Physics Configuration object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>scene</code></td><td><code>Phaser.Scene</code></td><td>Required</td></tr><tr><td><code>config</code></td><td><code>Phaser.Types.Physics.Arcade.ArcadeWorldConfig</code></td><td>Required</td></tr></tbody></table><h3 id="member-scene-1">scene <a class="anchor" href="#member-scene-1">#</a></h3><pre class="code" data-lang="ts"><code>scene: Phaser.Scene;</code></pre><p>The Scene this simulation belongs to.</p>
+<p><b>Type / return:</b> <code>Phaser.Scene</code></p><h3 id="member-bodies-2">bodies <a class="anchor" href="#member-bodies-2">#</a></h3><pre class="code" data-lang="ts"><code>bodies: Set&lt;Phaser.Physics.Arcade.Body&gt;;</code></pre><p>Dynamic Bodies in this simulation.</p>
+<p><b>Type / return:</b> <code>Set&lt;Phaser.Physics.Arcade.Body&gt;</code></p><h3 id="member-staticbodies-3">staticBodies <a class="anchor" href="#member-staticbodies-3">#</a></h3><pre class="code" data-lang="ts"><code>staticBodies: Set&lt;Phaser.Physics.Arcade.StaticBody&gt;;</code></pre><p>Static Bodies in this simulation.</p>
+<p><b>Type / return:</b> <code>Set&lt;Phaser.Physics.Arcade.StaticBody&gt;</code></p><h3 id="member-pendingdestroy-4">pendingDestroy <a class="anchor" href="#member-pendingdestroy-4">#</a></h3><pre class="code" data-lang="ts"><code>pendingDestroy: Set&lt;(Phaser.Physics.Arcade.Body|Phaser.Physics.Arcade.StaticBody)&gt;;</code></pre><p>Static Bodies marked for deletion.</p>
+<p><b>Type / return:</b> <code>Set&lt;(Phaser.Physics.Arcade.Body|Phaser.Physics.Arcade.StaticBody)&gt;</code></p><h3 id="member-colliders-5">colliders <a class="anchor" href="#member-colliders-5">#</a></h3><pre class="code" data-lang="ts"><code>colliders: Phaser.Structs.ProcessQueue&lt;Phaser.Physics.Arcade.Collider&gt;;</code></pre><p>This simulation&#39;s collision processors.</p>
+<p><b>Type / return:</b> <code>Phaser.Structs.ProcessQueue&lt;Phaser.Physics.Arcade.Collider&gt;</code></p><h3 id="member-gravity-6">gravity <a class="anchor" href="#member-gravity-6">#</a></h3><pre class="code" data-lang="ts"><code>gravity: Phaser.Math.Vector2;</code></pre><p>Acceleration of Bodies due to gravity, in pixels per second.</p>
+<p><b>Type / return:</b> <code>Phaser.Math.Vector2</code></p><h3 id="member-bounds-7">bounds <a class="anchor" href="#member-bounds-7">#</a></h3><pre class="code" data-lang="ts"><code>bounds: Phaser.Geom.Rectangle;</code></pre><p>A boundary constraining Bodies.</p>
+<p><b>Type / return:</b> <code>Phaser.Geom.Rectangle</code></p><h3 id="member-checkcollision-8">checkCollision <a class="anchor" href="#member-checkcollision-8">#</a></h3><pre class="code" data-lang="ts"><code>checkCollision: Phaser.Types.Physics.Arcade.CheckCollisionObject;</code></pre><p>The boundary edges that Bodies can collide with.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.Physics.Arcade.CheckCollisionObject</code></p><h3 id="member-fps-9">fps <a class="anchor" href="#member-fps-9">#</a></h3><pre class="code" data-lang="ts"><code>readonly fps: number;</code></pre><p>The number of physics steps to be taken per second.</p>
+<p>This property is read-only. Use the <code>setFPS</code> method to modify it at run-time.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-fixedstep-10">fixedStep <a class="anchor" href="#member-fixedstep-10">#</a></h3><pre class="code" data-lang="ts"><code>fixedStep: boolean;</code></pre><p>Should Physics use a fixed update time-step (true) or sync to the render fps (false)?.
+False value of this property disables fps and timeScale properties.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-stepslastframe-11">stepsLastFrame <a class="anchor" href="#member-stepslastframe-11">#</a></h3><pre class="code" data-lang="ts"><code>readonly stepsLastFrame: number;</code></pre><p>The number of steps that took place in the last frame.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-timescale-12">timeScale <a class="anchor" href="#member-timescale-12">#</a></h3><pre class="code" data-lang="ts"><code>timeScale: number;</code></pre><p>Scaling factor applied to the frame rate.</p>
+<ul>
+<li>1.0 = normal speed</li>
+<li>2.0 = half speed</li>
+<li>0.5 = double speed</li>
+</ul>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-overlap-bias-13">OVERLAP_BIAS <a class="anchor" href="#member-overlap-bias-13">#</a></h3><pre class="code" data-lang="ts"><code>OVERLAP_BIAS: number;</code></pre><p>The maximum absolute difference of a Body&#39;s per-step velocity and its overlap with another Body that will result in separation on <em>each axis</em>.
+Larger values favor separation.
+Smaller values favor no separation.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-tile-bias-14">TILE_BIAS <a class="anchor" href="#member-tile-bias-14">#</a></h3><pre class="code" data-lang="ts"><code>TILE_BIAS: number;</code></pre><p>The maximum absolute value of a Body&#39;s overlap with a tile that will result in separation on <em>each axis</em>.
+Larger values favor separation.
+Smaller values favor no separation.
+The optimum value may be similar to the tile size.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-forcex-15">forceX <a class="anchor" href="#member-forcex-15">#</a></h3><pre class="code" data-lang="ts"><code>forceX: boolean;</code></pre><p>Always separate overlapping Bodies horizontally before vertically.
+False (the default) means Bodies are first separated on the axis of greater gravity, or the vertical axis if neither is greater.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-ispaused-16">isPaused <a class="anchor" href="#member-ispaused-16">#</a></h3><pre class="code" data-lang="ts"><code>isPaused: boolean;</code></pre><p>Whether the simulation advances with the game loop.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-drawdebug-17">drawDebug <a class="anchor" href="#member-drawdebug-17">#</a></h3><pre class="code" data-lang="ts"><code>drawDebug: boolean;</code></pre><p>Enables the debug display.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-debuggraphic-18">debugGraphic <a class="anchor" href="#member-debuggraphic-18">#</a></h3><pre class="code" data-lang="ts"><code>debugGraphic: Phaser.GameObjects.Graphics;</code></pre><p>The graphics object drawing the debug display.</p>
+<p><b>Type / return:</b> <code>Phaser.GameObjects.Graphics</code></p><h3 id="member-defaults-19">defaults <a class="anchor" href="#member-defaults-19">#</a></h3><pre class="code" data-lang="ts"><code>defaults: Phaser.Types.Physics.Arcade.ArcadeWorldDefaults;</code></pre><p>Default debug display settings for new Bodies.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.Physics.Arcade.ArcadeWorldDefaults</code></p><h3 id="member-maxentries-20">maxEntries <a class="anchor" href="#member-maxentries-20">#</a></h3><pre class="code" data-lang="ts"><code>maxEntries: number;</code></pre><p>The maximum number of items per node on the RTree.</p>
+<p>This is ignored if <code>useTree</code> is <code>false</code>. If you have a large number of bodies in
+your world then you may find search performance improves by increasing this value,
+to allow more items per node and less node division.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-usetree-21">useTree <a class="anchor" href="#member-usetree-21">#</a></h3><pre class="code" data-lang="ts"><code>useTree: boolean;</code></pre><p>Should this Arcade Physics World use an RTree for Dynamic bodies?</p>
+<p>An RTree is a fast way of spatially sorting of all the bodies in the world.
+However, at certain limits, the cost of clearing and inserting the bodies into the
+tree every frame becomes more expensive than the search speed gains it provides.</p>
+<p>If you have a large number of dynamic bodies in your world then it may be best to
+disable the use of the RTree by setting this property to <code>false</code> in the physics config.</p>
+<p>The number it can cope with depends on browser and device, but a conservative estimate
+of around 5,000 bodies should be considered the max before disabling it.</p>
+<p>This only applies to dynamic bodies. Static bodies are always kept in an RTree,
+because they don&#39;t have to be cleared every frame, so you benefit from the
+massive search speeds all the time.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-tree-22">tree <a class="anchor" href="#member-tree-22">#</a></h3><pre class="code" data-lang="ts"><code>tree: Phaser.Structs.RTree;</code></pre><p>The spatial index of Dynamic Bodies.</p>
+<p><b>Type / return:</b> <code>Phaser.Structs.RTree</code></p><h3 id="member-statictree-23">staticTree <a class="anchor" href="#member-statictree-23">#</a></h3><pre class="code" data-lang="ts"><code>staticTree: Phaser.Structs.RTree;</code></pre><p>The spatial index of Static Bodies.</p>
+<p><b>Type / return:</b> <code>Phaser.Structs.RTree</code></p><h3 id="member-treeminmax-24">treeMinMax <a class="anchor" href="#member-treeminmax-24">#</a></h3><pre class="code" data-lang="ts"><code>treeMinMax: Phaser.Types.Physics.Arcade.ArcadeWorldTreeMinMax;</code></pre><p>Recycled input for tree searches.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.Physics.Arcade.ArcadeWorldTreeMinMax</code></p><h3 id="member-tilefilteroptions-25">tileFilterOptions <a class="anchor" href="#member-tilefilteroptions-25">#</a></h3><pre class="code" data-lang="ts"><code>tileFilterOptions: Phaser.Types.Tilemaps.FilteringOptions;</code></pre><p>The Filtering Options passed to <code>GetTilesWithinWorldXY</code> as part of the <code>collideSpriteVsTilemapLayer</code> check.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.Tilemaps.FilteringOptions</code></p><h3 id="member-enable-26">enable <a class="anchor" href="#member-enable-26">#</a></h3><pre class="code" data-lang="ts"><code>enable(object: Phaser.GameObjects.GameObject | Phaser.GameObjects.GameObject[] | Phaser.GameObjects.Group | Phaser.GameObjects.Group[], bodyType?: number): void;</code></pre><p>Adds an Arcade Physics Body to a Game Object, an array of Game Objects, or the children of a Group.</p>
+<p>The difference between this and the <code>enableBody</code> method is that you can pass arrays or Groups
+to this method.</p>
+<p>You can specify if the bodies are to be Dynamic or Static. A dynamic body can move via velocity and
+acceleration. A static body remains fixed in place and as such is able to use an optimized search
+tree, making it ideal for static elements such as level objects. You can still collide and overlap
+with static bodies.</p>
+<p>Normally, rather than calling this method directly, you&#39;d use the helper methods available in the
+Arcade Physics Factory, such as:</p>
+<pre class="code" data-lang="javascript"><code>this.physics.add.image(x, y, textureKey);
+this.physics.add.sprite(x, y, textureKey);</code></pre>
+<p>Calling factory methods encapsulates the creation of a Game Object and the creation of its
+body at the same time. If you are creating custom classes then you can pass them to this
+method to have their bodies created.
+<strong>param</strong>  object The object, or objects, on which to create the bodies.
+<strong>param</strong>  bodyType The type of Body to create. Either <code>DYNAMIC_BODY</code> or <code>STATIC_BODY</code>.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>object</code></td><td><code>Phaser.GameObjects.GameObject | Phaser.GameObjects.GameObject[] | Phaser.GameObjects.Group | Phaser.GameObjects.Group[]</code></td><td>Required</td></tr><tr><td><code>bodyType</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-enablebody-27">enableBody <a class="anchor" href="#member-enablebody-27">#</a></h3><pre class="code" data-lang="ts"><code>enableBody(object: Phaser.GameObjects.GameObject, bodyType?: number): Phaser.GameObjects.GameObject;</code></pre><p>Creates an Arcade Physics Body on a single Game Object.</p>
+<p>If the Game Object already has a body, this method will simply add it back into the simulation.</p>
+<p>You can specify if the body is Dynamic or Static. A dynamic body can move via velocity and
+acceleration. A static body remains fixed in place and as such is able to use an optimized search
+tree, making it ideal for static elements such as level objects. You can still collide and overlap
+with static bodies.</p>
+<p>Normally, rather than calling this method directly, you&#39;d use the helper methods available in the
+Arcade Physics Factory, such as:</p>
+<pre class="code" data-lang="javascript"><code>this.physics.add.image(x, y, textureKey);
+this.physics.add.sprite(x, y, textureKey);</code></pre>
+<p>Calling factory methods encapsulates the creation of a Game Object and the creation of its
+body at the same time. If you are creating custom classes then you can pass them to this
+method to have their bodies created.
+<strong>param</strong>  object The Game Object on which to create the body.
+<strong>param</strong>  bodyType The type of Body to create. Either <code>DYNAMIC_BODY</code> or <code>STATIC_BODY</code>.
+<strong>returns</strong>  The Game Object on which the body was created.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>object</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr><tr><td><code>bodyType</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.GameObjects.GameObject</code></p><h3 id="member-add-28">add <a class="anchor" href="#member-add-28">#</a></h3><pre class="code" data-lang="ts"><code>add(body: Phaser.Physics.Arcade.Body | Phaser.Physics.Arcade.StaticBody): Phaser.Physics.Arcade.Body | Phaser.Physics.Arcade.StaticBody;</code></pre><p>Adds an existing Arcade Physics Body or StaticBody to the simulation.</p>
+<p>The body is enabled and added to the local search trees.
+<strong>param</strong>  body The Body to be added to the simulation.
+<strong>returns</strong>  The Body that was added to the simulation.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>body</code></td><td><code>Phaser.Physics.Arcade.Body | Phaser.Physics.Arcade.StaticBody</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body | Phaser.Physics.Arcade.StaticBody</code></p><h3 id="member-disable-29">disable <a class="anchor" href="#member-disable-29">#</a></h3><pre class="code" data-lang="ts"><code>disable(object: Phaser.GameObjects.GameObject | Phaser.GameObjects.GameObject[] | Phaser.GameObjects.Group | Phaser.GameObjects.Group[]): void;</code></pre><p>Disables the Arcade Physics Body of a Game Object, an array of Game Objects, or the children of a Group.</p>
+<p>The difference between this and the <code>disableBody</code> method is that you can pass arrays or Groups
+to this method.</p>
+<p>The body itself is not deleted, it just has its <code>enable</code> property set to false, which
+means you can re-enable it again at any point by passing it to <code>World.enable</code> or <code>World.add</code>.
+<strong>param</strong>  object The object, or objects, on which to disable the bodies.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>object</code></td><td><code>Phaser.GameObjects.GameObject | Phaser.GameObjects.GameObject[] | Phaser.GameObjects.Group | Phaser.GameObjects.Group[]</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-disablebody-30">disableBody <a class="anchor" href="#member-disablebody-30">#</a></h3><pre class="code" data-lang="ts"><code>disableBody(body: Phaser.Physics.Arcade.Body | Phaser.Physics.Arcade.StaticBody): void;</code></pre><p>Disables an existing Arcade Physics Body or StaticBody and removes it from the simulation.</p>
+<p>The body is disabled and removed from the local search trees.</p>
+<p>The body itself is not deleted, it just has its <code>enable</code> property set to false, which
+means you can re-enable it again at any point by passing it to <code>World.enable</code> or <code>World.add</code>.
+<strong>param</strong>  body The Body to be disabled.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>body</code></td><td><code>Phaser.Physics.Arcade.Body | Phaser.Physics.Arcade.StaticBody</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-remove-31">remove <a class="anchor" href="#member-remove-31">#</a></h3><pre class="code" data-lang="ts"><code>remove(body: Phaser.Physics.Arcade.Body | Phaser.Physics.Arcade.StaticBody): void;</code></pre><p>Removes an existing Arcade Physics Body or StaticBody from the simulation.</p>
+<p>The body is disabled and removed from the local search trees.</p>
+<p>The body itself is not deleted, it just has its <code>enabled</code> property set to false, which
+means you can re-enable it again at any point by passing it to <code>World.enable</code> or <code>World.add</code>.
+<strong>param</strong>  body The body to be removed from the simulation.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>body</code></td><td><code>Phaser.Physics.Arcade.Body | Phaser.Physics.Arcade.StaticBody</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-createdebuggraphic-32">createDebugGraphic <a class="anchor" href="#member-createdebuggraphic-32">#</a></h3><pre class="code" data-lang="ts"><code>createDebugGraphic(): Phaser.GameObjects.Graphics;</code></pre><p>Creates a Graphics Game Object that the world will use to render the debug display to.</p>
+<p>This is called automatically when the World is instantiated if the <code>debug</code> config property
+was set to <code>true</code>. However, you can call it at any point should you need to display the
+debug Graphic from a fixed point.</p>
+<p>You can control which objects are drawn to the Graphics object, and the colors they use,
+by setting the debug properties in the physics config.</p>
+<p>You should not typically use this in a production game. Use it to aid during debugging.undefined
+<strong>returns</strong>  The Graphics object that was created for use by the World.</p>
+<p><b>Type / return:</b> <code>Phaser.GameObjects.Graphics</code></p><h3 id="member-setbounds-33">setBounds <a class="anchor" href="#member-setbounds-33">#</a></h3><pre class="code" data-lang="ts"><code>setBounds(x: number, y: number, width: number, height: number, checkLeft?: boolean, checkRight?: boolean, checkUp?: boolean, checkDown?: boolean): Phaser.Physics.Arcade.World;</code></pre><p>Sets the position, size and properties of the World boundary.</p>
+<p>The World boundary is an invisible rectangle that defines the edges of the World.
+If a Body is set to collide with the world bounds then it will automatically stop
+when it reaches any of the edges. You can optionally set which edges of the boundary
+should be checked against.
+<strong>param</strong>  x The top-left x coordinate of the boundary.
+<strong>param</strong>  y The top-left y coordinate of the boundary.
+<strong>param</strong>  width The width of the boundary.
+<strong>param</strong>  height The height of the boundary.
+<strong>param</strong>  checkLeft Should bodies check against the left edge of the boundary?
+<strong>param</strong>  checkRight Should bodies check against the right edge of the boundary?
+<strong>param</strong>  checkUp Should bodies check against the top edge of the boundary?
+<strong>param</strong>  checkDown Should bodies check against the bottom edge of the boundary?
+<strong>returns</strong>  This World object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>width</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>checkLeft</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>checkRight</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>checkUp</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>checkDown</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.World</code></p><h3 id="member-setboundscollision-34">setBoundsCollision <a class="anchor" href="#member-setboundscollision-34">#</a></h3><pre class="code" data-lang="ts"><code>setBoundsCollision(left?: boolean, right?: boolean, up?: boolean, down?: boolean): Phaser.Physics.Arcade.World;</code></pre><p>Enables or disables collisions on each edge of the World boundary.
+<strong>param</strong>  left Should bodies check against the left edge of the boundary? Default true.
+<strong>param</strong>  right Should bodies check against the right edge of the boundary? Default true.
+<strong>param</strong>  up Should bodies check against the top edge of the boundary? Default true.
+<strong>param</strong>  down Should bodies check against the bottom edge of the boundary? Default true.
+<strong>returns</strong>  This World object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>left</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>right</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>up</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>down</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.World</code></p><h3 id="member-pause-35">pause <a class="anchor" href="#member-pause-35">#</a></h3><pre class="code" data-lang="ts"><code>pause(): Phaser.Physics.Arcade.World;</code></pre><p>Pauses the simulation.</p>
+<p>A paused simulation does not update any existing bodies, or run any Colliders.</p>
+<p>However, you can still enable and disable bodies within it, or manually run collide or overlap
+checks.undefined
+<strong>returns</strong>  This World object.</p>
+<p><b>Type / return:</b> <code>Phaser.Physics.Arcade.World</code></p><h3 id="member-resume-36">resume <a class="anchor" href="#member-resume-36">#</a></h3><pre class="code" data-lang="ts"><code>resume(): Phaser.Physics.Arcade.World;</code></pre><p>Resumes the simulation, if paused.undefined
+<strong>returns</strong>  This World object.</p>
+<p><b>Type / return:</b> <code>Phaser.Physics.Arcade.World</code></p><h3 id="member-addcollider-37">addCollider <a class="anchor" href="#member-addcollider-37">#</a></h3><pre class="code" data-lang="ts"><code>addCollider(object1: Phaser.Types.Physics.Arcade.ArcadeColliderType, object2: Phaser.Types.Physics.Arcade.ArcadeColliderType, collideCallback?: Phaser.Types.Physics.Arcade.ArcadePhysicsCallback, processCallback?: Phaser.Types.Physics.Arcade.ArcadePhysicsCallback, callbackContext?: any): Phaser.Physics.Arcade.Collider;</code></pre><p>Creates a new Collider object and adds it to the simulation.</p>
+<p>A Collider is a way to automatically perform collision checks between two objects,
+calling the collide and process callbacks if they occur.</p>
+<p>Colliders are run as part of the World update, after all of the Bodies have updated.</p>
+<p>By creating a Collider you don&#39;t need to then call <code>World.collide</code> in your <code>update</code> loop,
+as it will be handled for you automatically.
+<strong>param</strong>  object1 The first object to check for collision.
+<strong>param</strong>  object2 The second object to check for collision.
+<strong>param</strong>  collideCallback The callback to invoke when the two objects collide.
+<strong>param</strong>  processCallback The callback to invoke when the two objects collide. Must return a boolean.
+<strong>param</strong>  callbackContext The scope in which to call the callbacks.
+<strong>returns</strong>  The Collider that was created.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>object1</code></td><td><code>Phaser.Types.Physics.Arcade.ArcadeColliderType</code></td><td>Required</td></tr><tr><td><code>object2</code></td><td><code>Phaser.Types.Physics.Arcade.ArcadeColliderType</code></td><td>Required</td></tr><tr><td><code>collideCallback</code></td><td><code>Phaser.Types.Physics.Arcade.ArcadePhysicsCallback</code></td><td>Optional</td></tr><tr><td><code>processCallback</code></td><td><code>Phaser.Types.Physics.Arcade.ArcadePhysicsCallback</code></td><td>Optional</td></tr><tr><td><code>callbackContext</code></td><td><code>any</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Collider</code></p><h3 id="member-addoverlap-38">addOverlap <a class="anchor" href="#member-addoverlap-38">#</a></h3><pre class="code" data-lang="ts"><code>addOverlap(object1: Phaser.Types.Physics.Arcade.ArcadeColliderType, object2: Phaser.Types.Physics.Arcade.ArcadeColliderType, collideCallback?: Phaser.Types.Physics.Arcade.ArcadePhysicsCallback, processCallback?: Phaser.Types.Physics.Arcade.ArcadePhysicsCallback, callbackContext?: any): Phaser.Physics.Arcade.Collider;</code></pre><p>Creates a new Overlap Collider object and adds it to the simulation.</p>
+<p>A Collider is a way to automatically perform overlap checks between two objects,
+calling the collide and process callbacks if they occur.</p>
+<p>Colliders are run as part of the World update, after all of the Bodies have updated.</p>
+<p>By creating a Collider you don&#39;t need to then call <code>World.overlap</code> in your <code>update</code> loop,
+as it will be handled for you automatically.
+<strong>param</strong>  object1 The first object to check for overlap.
+<strong>param</strong>  object2 The second object to check for overlap.
+<strong>param</strong>  collideCallback The callback to invoke when the two objects overlap.
+<strong>param</strong>  processCallback The callback to invoke when the two objects overlap. Must return a boolean.
+<strong>param</strong>  callbackContext The scope in which to call the callbacks.
+<strong>returns</strong>  The Collider that was created.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>object1</code></td><td><code>Phaser.Types.Physics.Arcade.ArcadeColliderType</code></td><td>Required</td></tr><tr><td><code>object2</code></td><td><code>Phaser.Types.Physics.Arcade.ArcadeColliderType</code></td><td>Required</td></tr><tr><td><code>collideCallback</code></td><td><code>Phaser.Types.Physics.Arcade.ArcadePhysicsCallback</code></td><td>Optional</td></tr><tr><td><code>processCallback</code></td><td><code>Phaser.Types.Physics.Arcade.ArcadePhysicsCallback</code></td><td>Optional</td></tr><tr><td><code>callbackContext</code></td><td><code>any</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Collider</code></p><h3 id="member-removecollider-39">removeCollider <a class="anchor" href="#member-removecollider-39">#</a></h3><pre class="code" data-lang="ts"><code>removeCollider(collider: Phaser.Physics.Arcade.Collider): Phaser.Physics.Arcade.World;</code></pre><p>Removes a Collider from the simulation so it is no longer processed.</p>
+<p>This method does not destroy the Collider. If you wish to add it back at a later stage you can call
+<code>World.colliders.add(Collider)</code>.</p>
+<p>If you no longer need the Collider you can call the <code>Collider.destroy</code> method instead, which will
+automatically clear all of its references and then remove it from the World. If you call destroy on
+a Collider you <em>don&#39;t</em> need to pass it to this method too.
+<strong>param</strong>  collider The Collider to remove from the simulation.
+<strong>returns</strong>  This World object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>collider</code></td><td><code>Phaser.Physics.Arcade.Collider</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Arcade.World</code></p><h3 id="member-setfps-40">setFPS <a class="anchor" href="#member-setfps-40">#</a></h3><pre class="code" data-lang="ts"><code>setFPS(framerate: number): this;</code></pre><p>Sets the frame rate to run the simulation at.</p>
+<p>The frame rate value is used to simulate a fixed update time step. This fixed
+time step allows for a straightforward implementation of a deterministic game state.</p>
+<p>This frame rate is independent of the frequency at which the game is rendering. The
+higher you set the fps, the more physics simulation steps will occur per game step.
+Conversely, the lower you set it, the less will take place.</p>
+<p>You can optionally advance the simulation directly yourself by calling the <code>step</code> method.
+<strong>param</strong>  framerate The frame rate to advance the simulation at.
+<strong>returns</strong>  This World object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>framerate</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-update-41">update <a class="anchor" href="#member-update-41">#</a></h3><pre class="code" data-lang="ts"><code>update(time: number, delta: number): void;</code></pre><p>Advances the simulation based on the elapsed time and fps rate.</p>
+<p>This is called automatically by your Scene and does not need to be invoked directly.
+<strong>param</strong>  time The current timestamp as generated by the Request Animation Frame or SetTimeout.
+<strong>param</strong>  delta The delta time, in ms, elapsed since the last frame.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>time</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>delta</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-step-42">step <a class="anchor" href="#member-step-42">#</a></h3><pre class="code" data-lang="ts"><code>step(delta: number): void;</code></pre><p>Advances the simulation by a time increment.
+<strong>param</strong>  delta The delta time amount, in seconds, by which to advance the simulation.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>delta</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-singlestep-43">singleStep <a class="anchor" href="#member-singlestep-43">#</a></h3><pre class="code" data-lang="ts"><code>singleStep(): void;</code></pre><p>Advances the simulation by a single step.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="member-postupdate-44">postUpdate <a class="anchor" href="#member-postupdate-44">#</a></h3><pre class="code" data-lang="ts"><code>postUpdate(): void;</code></pre><p>Updates bodies, draws the debug display, and handles pending queue operations.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="member-updatemotion-45">updateMotion <a class="anchor" href="#member-updatemotion-45">#</a></h3><pre class="code" data-lang="ts"><code>updateMotion(body: Phaser.Physics.Arcade.Body, delta: number): void;</code></pre><p>Calculates a Body&#39;s velocity and updates its position.
+<strong>param</strong>  body The Body to be updated.
+<strong>param</strong>  delta The delta value to be used in the motion calculations, in seconds.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>body</code></td><td><code>Phaser.Physics.Arcade.Body</code></td><td>Required</td></tr><tr><td><code>delta</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-computeangularvelocity-46">computeAngularVelocity <a class="anchor" href="#member-computeangularvelocity-46">#</a></h3><pre class="code" data-lang="ts"><code>computeAngularVelocity(body: Phaser.Physics.Arcade.Body, delta: number): void;</code></pre><p>Calculates a Body&#39;s angular velocity.
+<strong>param</strong>  body The Body to compute the velocity for.
+<strong>param</strong>  delta The delta value to be used in the calculation, in seconds.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>body</code></td><td><code>Phaser.Physics.Arcade.Body</code></td><td>Required</td></tr><tr><td><code>delta</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-computevelocity-47">computeVelocity <a class="anchor" href="#member-computevelocity-47">#</a></h3><pre class="code" data-lang="ts"><code>computeVelocity(body: Phaser.Physics.Arcade.Body, delta: number): void;</code></pre><p>Calculates a Body&#39;s per-axis velocity.
+<strong>param</strong>  body The Body to compute the velocity for.
+<strong>param</strong>  delta The delta value to be used in the calculation, in seconds.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>body</code></td><td><code>Phaser.Physics.Arcade.Body</code></td><td>Required</td></tr><tr><td><code>delta</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-separate-48">separate <a class="anchor" href="#member-separate-48">#</a></h3><pre class="code" data-lang="ts"><code>separate(body1: Phaser.Physics.Arcade.Body, body2: Phaser.Physics.Arcade.Body, processCallback?: Phaser.Types.Physics.Arcade.ArcadePhysicsCallback, callbackContext?: any, overlapOnly?: boolean): boolean;</code></pre><p>Separates two Bodies.
+<strong>param</strong>  body1 The first Body to be separated.
+<strong>param</strong>  body2 The second Body to be separated.
+<strong>param</strong>  processCallback The process callback.
+<strong>param</strong>  callbackContext The context in which to invoke the callback.
+<strong>param</strong>  overlapOnly If this is a collide or overlap check?
+<strong>returns</strong>  True if separation occurred, otherwise false.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>body1</code></td><td><code>Phaser.Physics.Arcade.Body</code></td><td>Required</td></tr><tr><td><code>body2</code></td><td><code>Phaser.Physics.Arcade.Body</code></td><td>Required</td></tr><tr><td><code>processCallback</code></td><td><code>Phaser.Types.Physics.Arcade.ArcadePhysicsCallback</code></td><td>Optional</td></tr><tr><td><code>callbackContext</code></td><td><code>any</code></td><td>Optional</td></tr><tr><td><code>overlapOnly</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-separatecircle-49">separateCircle <a class="anchor" href="#member-separatecircle-49">#</a></h3><pre class="code" data-lang="ts"><code>separateCircle(body1: Phaser.Physics.Arcade.Body, body2: Phaser.Physics.Arcade.Body, overlapOnly?: boolean): boolean;</code></pre><p>Separates two Bodies, when both are circular.
+<strong>param</strong>  body1 The first Body to be separated.
+<strong>param</strong>  body2 The second Body to be separated.
+<strong>param</strong>  overlapOnly If this is a collide or overlap check?
+<strong>returns</strong>  True if separation occurred, otherwise false.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>body1</code></td><td><code>Phaser.Physics.Arcade.Body</code></td><td>Required</td></tr><tr><td><code>body2</code></td><td><code>Phaser.Physics.Arcade.Body</code></td><td>Required</td></tr><tr><td><code>overlapOnly</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-intersects-50">intersects <a class="anchor" href="#member-intersects-50">#</a></h3><pre class="code" data-lang="ts"><code>intersects(body1: Phaser.Physics.Arcade.Body, body2: Phaser.Physics.Arcade.Body): boolean;</code></pre><p>Checks to see if two Bodies intersect at all.
+<strong>param</strong>  body1 The first body to check.
+<strong>param</strong>  body2 The second body to check.
+<strong>returns</strong>  True if the two bodies intersect, otherwise false.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>body1</code></td><td><code>Phaser.Physics.Arcade.Body</code></td><td>Required</td></tr><tr><td><code>body2</code></td><td><code>Phaser.Physics.Arcade.Body</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-circlebodyintersects-51">circleBodyIntersects <a class="anchor" href="#member-circlebodyintersects-51">#</a></h3><pre class="code" data-lang="ts"><code>circleBodyIntersects(circle: Phaser.Physics.Arcade.Body, body: Phaser.Physics.Arcade.Body): boolean;</code></pre><p>Tests if a circular Body intersects with another Body.
+<strong>param</strong>  circle The circular body to test.
+<strong>param</strong>  body The rectangular body to test.
+<strong>returns</strong>  True if the two bodies intersect, otherwise false.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>circle</code></td><td><code>Phaser.Physics.Arcade.Body</code></td><td>Required</td></tr><tr><td><code>body</code></td><td><code>Phaser.Physics.Arcade.Body</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-overlap-52">overlap <a class="anchor" href="#member-overlap-52">#</a></h3><pre class="code" data-lang="ts"><code>overlap(object1: Phaser.Types.Physics.Arcade.ArcadeColliderType, object2?: Phaser.Types.Physics.Arcade.ArcadeColliderType, overlapCallback?: Phaser.Types.Physics.Arcade.ArcadePhysicsCallback, processCallback?: Phaser.Types.Physics.Arcade.ArcadePhysicsCallback, callbackContext?: any): boolean;</code></pre><p>Tests if Game Objects overlap.</p>
+<p>See details in Phaser.Physics.Arcade.World#collide.
+<strong>param</strong>  object1 The first object or array of objects to check.
+<strong>param</strong>  object2 The second object or array of objects to check, or <code>undefined</code>.
+<strong>param</strong>  overlapCallback An optional callback function that is called if the objects overlap.
+<strong>param</strong>  processCallback An optional callback function that lets you perform additional checks against the two objects if they overlap. If this is set then <code>overlapCallback</code> will only be called if this callback returns <code>true</code>.
+<strong>param</strong>  callbackContext The context in which to run the callbacks.
+<strong>returns</strong>  True if at least one Game Object overlaps another.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>object1</code></td><td><code>Phaser.Types.Physics.Arcade.ArcadeColliderType</code></td><td>Required</td></tr><tr><td><code>object2</code></td><td><code>Phaser.Types.Physics.Arcade.ArcadeColliderType</code></td><td>Optional</td></tr><tr><td><code>overlapCallback</code></td><td><code>Phaser.Types.Physics.Arcade.ArcadePhysicsCallback</code></td><td>Optional</td></tr><tr><td><code>processCallback</code></td><td><code>Phaser.Types.Physics.Arcade.ArcadePhysicsCallback</code></td><td>Optional</td></tr><tr><td><code>callbackContext</code></td><td><code>any</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-collide-53">collide <a class="anchor" href="#member-collide-53">#</a></h3><pre class="code" data-lang="ts"><code>collide(object1: Phaser.Types.Physics.Arcade.ArcadeColliderType, object2?: Phaser.Types.Physics.Arcade.ArcadeColliderType, collideCallback?: Phaser.Types.Physics.Arcade.ArcadePhysicsCallback, processCallback?: Phaser.Types.Physics.Arcade.ArcadePhysicsCallback, callbackContext?: any): boolean;</code></pre><p>Performs a collision check and separation between the two physics enabled objects given, which can be single
+Game Objects, arrays of Game Objects, Physics Groups, arrays of Physics Groups or normal Groups.</p>
+<p>If you don&#39;t require separation then use Phaser.Physics.Arcade.World#overlap instead.</p>
+<p>If two Groups or arrays are passed, each member of one will be tested against each member of the other.</p>
+<p>If <strong>only</strong> one Group is passed (as <code>object1</code>), each member of the Group will be collided against the other members.</p>
+<p>If <strong>only</strong> one Array is passed, the array is iterated and every element in it is tested against the others.</p>
+<p>Two callbacks can be provided; they receive the colliding game objects as arguments.
+If an overlap is detected, the <code>processCallback</code> is called first. It can cancel the collision by returning false.
+Next the objects are separated and <code>collideCallback</code> is invoked.</p>
+<p>Arcade Physics uses the Projection Method of collision resolution and separation. While it&#39;s fast and suitable
+for &#39;arcade&#39; style games it lacks stability when multiple objects are in close proximity or resting upon each other.
+The separation that stops two objects penetrating may create a new penetration against a different object. If you
+require a high level of stability please consider using an alternative physics system, such as Matter.js.
+<strong>param</strong>  object1 The first object or array of objects to check.
+<strong>param</strong>  object2 The second object or array of objects to check, or <code>undefined</code>.
+<strong>param</strong>  collideCallback An optional callback function that is called if the objects collide.
+<strong>param</strong>  processCallback An optional callback function that lets you perform additional checks against the two objects if they collide. If this is set then <code>collideCallback</code> will only be called if this callback returns <code>true</code>.
+<strong>param</strong>  callbackContext The context in which to run the callbacks.
+<strong>returns</strong>  <code>true</code> if any overlapping Game Objects were separated, otherwise <code>false</code>.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>object1</code></td><td><code>Phaser.Types.Physics.Arcade.ArcadeColliderType</code></td><td>Required</td></tr><tr><td><code>object2</code></td><td><code>Phaser.Types.Physics.Arcade.ArcadeColliderType</code></td><td>Optional</td></tr><tr><td><code>collideCallback</code></td><td><code>Phaser.Types.Physics.Arcade.ArcadePhysicsCallback</code></td><td>Optional</td></tr><tr><td><code>processCallback</code></td><td><code>Phaser.Types.Physics.Arcade.ArcadePhysicsCallback</code></td><td>Optional</td></tr><tr><td><code>callbackContext</code></td><td><code>any</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-cancollide-54">canCollide <a class="anchor" href="#member-cancollide-54">#</a></h3><pre class="code" data-lang="ts"><code>canCollide(body1: Phaser.Types.Physics.Arcade.ArcadeColliderType, body2: Phaser.Types.Physics.Arcade.ArcadeColliderType): boolean;</code></pre><p>Checks if the two given Arcade Physics bodies will collide, or not,
+based on their collision mask and collision categories.
+<strong>param</strong>  body1 The first body to check.
+<strong>param</strong>  body2 The second body to check.
+<strong>returns</strong>  True if the two bodies will collide, otherwise false.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>body1</code></td><td><code>Phaser.Types.Physics.Arcade.ArcadeColliderType</code></td><td>Required</td></tr><tr><td><code>body2</code></td><td><code>Phaser.Types.Physics.Arcade.ArcadeColliderType</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-collidetiles-55">collideTiles <a class="anchor" href="#member-collidetiles-55">#</a></h3><pre class="code" data-lang="ts"><code>collideTiles(sprite: Phaser.GameObjects.GameObject, tiles: Phaser.Tilemaps.Tile[], collideCallback?: Phaser.Types.Physics.Arcade.ArcadePhysicsCallback, processCallback?: Phaser.Types.Physics.Arcade.ArcadePhysicsCallback, callbackContext?: any): boolean;</code></pre><p>This advanced method is specifically for testing for collision between a single Sprite and an array of Tile objects.</p>
+<p>You should generally use the <code>collide</code> method instead, with a Sprite vs. a Tilemap Layer, as that will perform
+tile filtering and culling for you, as well as handle the interesting face collision automatically.</p>
+<p>This method is offered for those who would like to check for collision with specific Tiles in a layer, without
+having to set any collision attributes on the tiles in question. This allows you to perform quick dynamic collisions
+on small sets of Tiles. As such, no culling or checks are made to the array of Tiles given to this method,
+you should filter them before passing them to this method.</p>
+<p>Important: Use of this method skips the <code>interesting faces</code> system that Tilemap Layers use. This means if you have
+say a row or column of tiles, and you jump into, or walk over them, it&#39;s possible to get stuck on the edges of the
+tiles as the interesting face calculations are skipped. However, for quick-fire small collision set tests on
+dynamic maps, this method can prove very useful.</p>
+<p>This method does not factor in the Collision Mask or Category.
+<strong>param</strong>  sprite The first object to check for collision.
+<strong>param</strong>  tiles An array of Tiles to check for collision against.
+<strong>param</strong>  collideCallback An optional callback function that is called if the objects collide.
+<strong>param</strong>  processCallback An optional callback function that lets you perform additional checks against the two objects if they collide. If this is set then <code>collideCallback</code> will only be called if this callback returns <code>true</code>.
+<strong>param</strong>  callbackContext The context in which to run the callbacks.
+<strong>returns</strong>  True if any overlapping objects were separated, otherwise false.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>sprite</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr><tr><td><code>tiles</code></td><td><code>Phaser.Tilemaps.Tile[]</code></td><td>Required</td></tr><tr><td><code>collideCallback</code></td><td><code>Phaser.Types.Physics.Arcade.ArcadePhysicsCallback</code></td><td>Optional</td></tr><tr><td><code>processCallback</code></td><td><code>Phaser.Types.Physics.Arcade.ArcadePhysicsCallback</code></td><td>Optional</td></tr><tr><td><code>callbackContext</code></td><td><code>any</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-overlaptiles-56">overlapTiles <a class="anchor" href="#member-overlaptiles-56">#</a></h3><pre class="code" data-lang="ts"><code>overlapTiles(sprite: Phaser.GameObjects.GameObject, tiles: Phaser.Tilemaps.Tile[], overlapCallback?: Phaser.Types.Physics.Arcade.ArcadePhysicsCallback, processCallback?: Phaser.Types.Physics.Arcade.ArcadePhysicsCallback, callbackContext?: any): boolean;</code></pre><p>This advanced method is specifically for testing for overlaps between a single Sprite and an array of Tile objects.</p>
+<p>You should generally use the <code>overlap</code> method instead, with a Sprite vs. a Tilemap Layer, as that will perform
+tile filtering and culling for you, as well as handle the interesting face collision automatically.</p>
+<p>This method is offered for those who would like to check for overlaps with specific Tiles in a layer, without
+having to set any collision attributes on the tiles in question. This allows you to perform quick dynamic overlap
+tests on small sets of Tiles. As such, no culling or checks are made to the array of Tiles given to this method,
+you should filter them before passing them to this method.</p>
+<p>This method does not factor in the Collision Mask or Category.
+<strong>param</strong>  sprite The first object to check for collision.
+<strong>param</strong>  tiles An array of Tiles to check for collision against.
+<strong>param</strong>  overlapCallback An optional callback function that is called if the objects overlap.
+<strong>param</strong>  processCallback An optional callback function that lets you perform additional checks against the two objects if they collide. If this is set then <code>overlapCallback</code> will only be called if this callback returns <code>true</code>.
+<strong>param</strong>  callbackContext The context in which to run the callbacks.
+<strong>returns</strong>  True if any objects overlap, otherwise false.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>sprite</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr><tr><td><code>tiles</code></td><td><code>Phaser.Tilemaps.Tile[]</code></td><td>Required</td></tr><tr><td><code>overlapCallback</code></td><td><code>Phaser.Types.Physics.Arcade.ArcadePhysicsCallback</code></td><td>Optional</td></tr><tr><td><code>processCallback</code></td><td><code>Phaser.Types.Physics.Arcade.ArcadePhysicsCallback</code></td><td>Optional</td></tr><tr><td><code>callbackContext</code></td><td><code>any</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-collidespritevstilemaplayer-57">collideSpriteVsTilemapLayer <a class="anchor" href="#member-collidespritevstilemaplayer-57">#</a></h3><pre class="code" data-lang="ts"><code>collideSpriteVsTilemapLayer(sprite: Phaser.GameObjects.GameObject, tilemapLayer: Phaser.Tilemaps.TilemapLayer, collideCallback?: Phaser.Types.Physics.Arcade.ArcadePhysicsCallback, processCallback?: Phaser.Types.Physics.Arcade.ArcadePhysicsCallback, callbackContext?: any, overlapOnly?: boolean): boolean;</code></pre><p>Internal handler for Sprite vs. Tilemap collisions.
+Please use Phaser.Physics.Arcade.World#collide instead.
+<strong>param</strong>  sprite The first object to check for collision.
+<strong>param</strong>  tilemapLayer The second object to check for collision.
+<strong>param</strong>  collideCallback An optional callback function that is called if the objects collide.
+<strong>param</strong>  processCallback An optional callback function that lets you perform additional checks against the two objects if they collide. If this is set then <code>collideCallback</code> will only be called if this callback returns <code>true</code>.
+<strong>param</strong>  callbackContext The context in which to run the callbacks.
+<strong>param</strong>  overlapOnly Whether this is a collision or overlap check.
+<strong>returns</strong>  True if any objects overlap (with <code>overlapOnly</code>); or true if any overlapping objects were separated.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>sprite</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr><tr><td><code>tilemapLayer</code></td><td><code>Phaser.Tilemaps.TilemapLayer</code></td><td>Required</td></tr><tr><td><code>collideCallback</code></td><td><code>Phaser.Types.Physics.Arcade.ArcadePhysicsCallback</code></td><td>Optional</td></tr><tr><td><code>processCallback</code></td><td><code>Phaser.Types.Physics.Arcade.ArcadePhysicsCallback</code></td><td>Optional</td></tr><tr><td><code>callbackContext</code></td><td><code>any</code></td><td>Optional</td></tr><tr><td><code>overlapOnly</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-wrap-58">wrap <a class="anchor" href="#member-wrap-58">#</a></h3><pre class="code" data-lang="ts"><code>wrap(object: any, padding?: number): void;</code></pre><p>Wrap an object&#39;s coordinates (or several objects&#39; coordinates) within Phaser.Physics.Arcade.World#bounds.</p>
+<p>If the object is outside any boundary edge (left, top, right, bottom), it will be moved to the same offset from the opposite edge (the interior).
+<strong>param</strong>  object A Game Object, a Group, an object with <code>x</code> and <code>y</code> coordinates, or an array of such objects.
+<strong>param</strong>  padding An amount added to each boundary edge during the operation. Default 0.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>object</code></td><td><code>any</code></td><td>Required</td></tr><tr><td><code>padding</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-wraparray-59">wrapArray <a class="anchor" href="#member-wraparray-59">#</a></h3><pre class="code" data-lang="ts"><code>wrapArray(objects: any[], padding?: number): void;</code></pre><p>Wrap each object&#39;s coordinates within Phaser.Physics.Arcade.World#bounds.
+<strong>param</strong>  objects An array of objects to be wrapped.
+<strong>param</strong>  padding An amount added to the boundary. Default 0.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>objects</code></td><td><code>any[]</code></td><td>Required</td></tr><tr><td><code>padding</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-wrapobject-60">wrapObject <a class="anchor" href="#member-wrapobject-60">#</a></h3><pre class="code" data-lang="ts"><code>wrapObject(object: any, padding?: number): void;</code></pre><p>Wrap an object&#39;s coordinates within Phaser.Physics.Arcade.World#bounds.
+<strong>param</strong>  object A Game Object, a Physics Body, or any object with <code>x</code> and <code>y</code> coordinates
+<strong>param</strong>  padding An amount added to the boundary. Default 0.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>object</code></td><td><code>any</code></td><td>Required</td></tr><tr><td><code>padding</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-shutdown-61">shutdown <a class="anchor" href="#member-shutdown-61">#</a></h3><pre class="code" data-lang="ts"><code>shutdown(): void;</code></pre><p>Shuts down the simulation, clearing physics data and removing listeners.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="member-destroy-62">destroy <a class="anchor" href="#member-destroy-62">#</a></h3><pre class="code" data-lang="ts"><code>destroy(): void;</code></pre><p>Shuts down the simulation and disconnects it from the current scene.</p>
+<p><b>Type / return:</b> <code>void</code></p><h2 id="base-types">Base types</h2><p><a href="engine-phaser-phaser-events-eventemitter.html">Phaser.Events.EventEmitter</a></p><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#members">Public members (63)</a><a href="#base-types">Base types</a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

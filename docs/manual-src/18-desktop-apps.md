@@ -4,6 +4,13 @@ section: Manual
 order: 18
 summary: Real native apps — files, dialogs, notifications, tray, menus, storage, a local web server — from the same project, in JS or Rust.
 ---
+
+Desktop apps can use native files, dialogs and windows through Nord’s desktop bridge. Begin with a desktop template, then enable only the capabilities your app needs.
+
+::: dummies
+A file picker can be cancelled. Check for a returned path before reading. Native permissions and browser support differ; a capability listed in the API still needs the proper desktop environment.
+:::
+
 A Nord project can be a **desktop app**, not just a game. Add a `desktop` block to `nord.project.json`, call `window.nord.desktop.*` from your JS (or `nord_app_wasm::desktop::Desktop` from Rust) and run it in the native player. Everything goes through one Rust backend, `nord-desktop`, which checks every call against your declared **permissions**.
 
 ::: dummies

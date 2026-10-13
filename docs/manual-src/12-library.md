@@ -4,6 +4,13 @@ section: Manual
 order: 12
 summary: Scripts, prefabs, shaders, apps and templates you can drop in — and how to add your own.
 ---
+
+The Library contains ready-made scripts and pieces you can reuse. Search for a feature, insert it and adjust its Inspector settings before writing a replacement.
+
+::: dummies
+Try a library controller in a small scene first. Read its description and required components. A movement script cannot show a character by itself; the entity also needs a visible component.
+:::
+
 The `library/` folder holds ~125 tested building blocks, indexed by `library/INDEX.json` and browsable in the editor's **Library** tab or the [catalog](library-catalog.html).
 
 | Kind | Where | Example |

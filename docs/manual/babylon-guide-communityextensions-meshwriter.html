@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Mesh Writer — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Mesh Writer</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><p>Generate letters as BABYLON meshes.</p>
+<h2 id="basic-usage">Basic-Usage<a class="anchor" href="#basic-usage">#</a></h2>
+<pre class="code" data-lang="javascript no-code-variants"><code>Writer = BABYLON.MeshWriter(scene, { scale: scale });
+text1 = new Writer(&quot;ABC&quot;, {
+  anchor: &quot;center&quot;,
+  &quot;letter-height&quot;: 50,
+  color: &quot;#1C3870&quot;,
+  position: {
+    z: 20,
+  },
+});</code></pre>
+<p>PG: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="getting-the-code">Getting the code<a class="anchor" href="#getting-the-code">#</a></h2>
+<p>Copy <span>https://github.com/BabylonJS/Extensions/blob/master/MeshWriter/meshwriter.min.js</span> or <span>https://github.com/BabylonJS/Extensions/blob/master/MeshWriter/meshwriter.js</span> and include it in your load sequence.</p>
+<h2 id="if-you-prefer-npm">If you prefer npm<a class="anchor" href="#if-you-prefer-npm">#</a></h2>
+<h3 id="npm-i-meshwriter">npm i meshwriter<a class="anchor" href="#npm-i-meshwriter">#</a></h3>
+<p>Import in your React/Angular component:</p>
+<p><code>import { MeshWriter } from &quot;meshwriter&quot;;</code></p>
+<p>With <strong>meshwriter</strong> you can use MeshWriter directly like this:</p>
+<pre class="code" data-lang="javascript"><code>let Writer = MeshWriter(this.scene, { scale: 0.25, defaultFont: &quot;Arial&quot; });
+let textMesh = new Writer(&quot;Hello World&quot;, {
+  &quot;font-family&quot;: &quot;Arial&quot;,
+  &quot;letter-height&quot;: 30,
+  &quot;letter-thickness&quot;: 12,
+  color: &quot;#1C3870&quot;,
+  anchor: &quot;center&quot;,
+  colors: {
+    diffuse: &quot;#F0F0F0&quot;,
+    specular: &quot;#000000&quot;,
+    ambient: &quot;#F0F0F0&quot;,
+    emissive: &quot;#ff00f0&quot;,
+  },
+  position: {
+    x: 0,
+    y: 10,
+    z: 0,
+  },
+});</code></pre>
+<h2 id="superconstructor-babylon-meshwriter">Superconstructor - BABYLON.MeshWriter()<a class="anchor" href="#superconstructor-babylon-meshwriter">#</a></h2>
+<p>After MeshWriter is loaded, BABYLON.MeshWriter is defined. It is called with one or two parameters.</p>
+<ul>
+<li><p><strong>scene</strong> &nbsp; required</p>
+</li>
+<li><p><strong>preferences</strong> &nbsp; optional &nbsp; The preferences object may specify up to three values</p>
+<pre class="code" data-lang=""><code>  FIELD                 DEFAULT
+default-font           Helvetica
+scale                      1
+letter-origin         &quot;letter-center&quot;</code></pre>
+</li>
+</ul>
+<p>The call to BABYLON.MeshWriter returns a constructor. Call it &quot;<strong>Writer</strong>&quot;.</p>
+<h2 id="constructor-new-writer">Constructor - new Writer()<a class="anchor" href="#constructor-new-writer">#</a></h2>
+<p>new Writer() is called with a string and an (optional) options parameter.&nbsp; The options object conforms to normal Babylon.js structures and terminology.</p>
+<pre class="code" data-lang=""><code>      FIELD                 DEFAULT
+    font-family             default-font
+    anchor                  left
+    letter-height           100
+    letter-thickness        1
+    color                   #808080              # hits emissive only
+    alpha                   1
+    position
+        x                   0
+        y                   0
+        z                   0
+    colors                                       # if you need to control more than just emissive
+        diffuse             #F0F0F0
+        specular            #000000
+        ambient             #F0F0F0
+        emissive            color                # from option field 'color' above</code></pre>
+<p><strong>new Writer()</strong> builds a mesh with material that is inserted into the scene.&nbsp; This is a multi-step process with interim meshes and holes per letter.&nbsp; These meshes are combined into an SPS and then disposed of.&nbsp; At the end, one mesh, one material, and one SPS have been added to the scene.</p>
+<p><strong>new Writer()</strong> also returns a <strong>writer</strong> instance with useful methods.&nbsp; See below.</p>
+<h2 id="instance">Instance<a class="anchor" href="#instance">#</a></h2>
+<p>Each <strong>writer</strong> instance has methods that allow you to retrieve the Babylon.js objects or get/set SPS attributes.</p>
+<pre class="code" data-lang=""><code>   getSPS
+   getMesh
+   getMaterial
+   color                   # sets or gets color but no change to material
+   alpha                   # sets or gets alpha but no change to material
+   setColor                # set emissive color and change color value
+   setAlpha                # change value and material
+   overrideOpac            # change material but not value
+   resetOpac               # sets material to current value
+   dispose</code></pre>
+<h2 id="usage-hints">Usage Hints<a class="anchor" href="#usage-hints">#</a></h2>
+<p>If you wish to do extensive things with position, rotation or animation, retrieve the meshes and materials from the instance using the methods shown above.&nbsp; The output from <strong>new Writer()</strong> is an SPS with one particle for each character.</p>
+<p>Example:
+PG: <span class="muted">Online playground (not embedded offline)</span></p>
+<pre class="code" data-lang="javascript no-code-variants"><code>const SCALE = 0.25;
+const TEXT_SIZE = 35;
+const TEXT_THICKNESS = 10;
+
+Writer = BABYLON.MeshWriter(scene, { scale: SCALE, defaultFont: &quot;Arial&quot; });
+textMesh = new Writer(&quot;BABYLON JS&quot;, {
+  &quot;font-family&quot;: &quot;Arial&quot;,
+  anchor: &quot;center&quot;,
+  &quot;letter-height&quot;: TEXT_SIZE,
+  &quot;letter-thickness&quot;: TEXT_THICKNESS,
+  color: &quot;#1C3870&quot;,
+  colors: {
+    diffuse: &quot;#F0F0F0&quot;,
+    specular: &quot;#000000&quot;,
+    ambient: &quot;#F0F0F0&quot;,
+    emissive: &quot;#ff00f0&quot;,
+  },
+  position: {
+    x: 0,
+    y: 5,
+    z: 70,
+  },
+});
+
+//Text Writer create SPS with Particle for each letter
+SPS = textMesh.getSPS();
+
+//Update animation
+SPS.updateParticle = (particle) =&gt; {
+  particle.rotation.x -= 0.06;
+};
+
+scene.registerBeforeRender(() =&gt; {
+  SPS.setParticles();
+  //sps.mesh.rotation.y = k;
+});</code></pre>
+<p>Colors:&nbsp; With most lighting, it is enough to use the &quot;color&quot; field to specify the letter coloring.&nbsp; However, programmers may specify all four color types by putting a &quot;colors&quot; object in the options object.</p>
+<p>Unless you have a specific need, do not specify a font.&nbsp; The default font, Helvetica, has the most extensive character set and the fewest faces; it will be the most efficient if you have a lot of text.&nbsp; Jura was added because the author likes it for numbers.</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#basic-usage">Basic-Usage </a><a href="#getting-the-code">Getting the code </a><a href="#if-you-prefer-npm">If you prefer npm </a><a href="#superconstructor-babylon-meshwriter">Superconstructor - BABYLON.MeshWriter() </a><a href="#constructor-new-writer">Constructor - new Writer() </a><a href="#instance">Instance </a><a href="#usage-hints">Usage Hints </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Modify the Babylon.js Viewer — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Modify the Babylon.js Viewer</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><p>This tutorial is meant to show only advanced usage of the viewer&#39;s configuration. It explains what can be done and how you can modify the viewer to suit your needs using only HTML.</p>
+<p>The default configuration is already implemented and can be used very easily, by adding <code>extends=&quot;default&quot;</code> to your HTML element. In code, it is a JSON that looks roughly like this (without the HTML and image content):</p>
+<pre class="code" data-lang="javascript"><code>{
+    templates: {
+        main: {
+            html: defaultTemplate,
+            params: {
+                babylonFont: babylonFont,
+                noEscape: true
+            }
+        },
+        fillContainer: {
+            html: fillContainer,
+            params: {
+                disable: false
+            }
+        },
+        loadingScreen: {
+            html: loadingScreen,
+            params: {
+                backgroundColor: &quot;#000000&quot;,
+                loadingImage: images.loading
+            }
+        },
+        viewer: {
+            html: defaultViewer,
+            params: {
+                enableDragAndDrop: false
+            }
+        },
+        navBar: {
+            html: navbar,
+            params: {
+                speedList: {
+                    &quot;0.5x&quot;: &quot;0.5&quot;,
+                    &quot;1.0x&quot;: &quot;1.0&quot;,
+                    &quot;1.5x&quot;: &quot;1.5&quot;,
+                    &quot;2.0x&quot;: &quot;2.0&quot;,
+                },
+                logoImage: images.babylonLogo,
+                logoText: 'BabylonJS',
+                logoLink: 'https://babylonjs.com',
+                hideHelp: true,
+                hideHd: true,
+                hideVr: true,
+                disableOnFullscreen: false,
+                text: {
+                    hdButton: &quot;Toggle HD&quot;,
+                    fullscreenButton: &quot;Fullscreen&quot;,
+                    helpButton: &quot;Help&quot;,
+                    vrButton: &quot;Toggle VR&quot;
+                }
+            },
+            events: {
+                pointerdown: {
+                    '.navbar-control': true,
+                    '.help-button': true
+                },
+                input: {
+                    '.progress-wrapper': true
+                },
+                pointerup: {
+                    '.progress-wrapper': true
+                }
+            }
+        }
+    },
+    camera: {
+        behaviors: {
+            autoRotate: {
+                type: 0
+            },
+            framing: {
+                type: 2,
+                zoomOnBoundingInfo: true,
+                zoomStopsAnimation: false
+            },
+            bouncing: {
+                type: 1
+            }
+        }
+    },
+    skybox: {
+    },
+    ground: {
+        receiveShadows: true
+    },
+    engine: {
+        antialiasing: true
+    }
+}</code></pre>
+<h2 id="html-element-and-viewer-script">HTML element and viewer script<a class="anchor" href="#html-element-and-viewer-script">#</a></h2>
+<p>As a first step, we need to create a basic HTML page and include the viewer script. Since I am creating my own configuration, I will use <code>extends=&quot;none&quot;</code> so that no configuration is included at construction time.</p>
+<pre class="code" data-lang="html"><code>&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Recreating the default configuration for Babylon.js viewer&lt;/title&gt;
+    &lt;style&gt;
+      /* Force the viewer to have a specific size. This can be changed, of course. */
+      babylon {
+        width: 800px;
+        height: 500px;
+      }
+    &lt;/style&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;babylon extends=&quot;none&quot;&gt; &lt;/babylon&gt;
+
+    &lt;script src=&quot;https://preview.babylonjs.com/viewer/babylon.viewer.js&quot;&gt;&lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p>This is the basic foundation of the entire tutorial. From this point on, I will show only the content in the <code>&lt;body&gt;</code> tag.</p>
+<h2 id="engine-and-camera-configuration">Engine and camera configuration<a class="anchor" href="#engine-and-camera-configuration">#</a></h2>
+<p>To add the engine configuration (antialiasing for better image quality), I will add the engine HTML tag to the <code>babylon</code> tag:</p>
+<pre class="code" data-lang="html"><code>&lt;babylon extends=&quot;none&quot;&gt;
+  &lt;!-- enable antialiasing --&gt;
+  &lt;engine antialiasing=&quot;true&quot;&gt;&lt;/engine&gt;
+&lt;/babylon&gt;</code></pre>
+<p>The camera configuration is added afterwards, using the camera HTML tag:</p>
+<pre class="code" data-lang="html"><code>&lt;babylon extends=&quot;none&quot;&gt;
+  &lt;!-- enable antialiasing --&gt;
+  &lt;engine antialiasing=&quot;true&quot;&gt;&lt;/engine&gt;
+  &lt;!-- camera configuration --&gt;
+  &lt;camera&gt;
+    &lt;!-- add camera behaviors --&gt;
+    &lt;behaviors&gt;
+      &lt;!-- enable default auto-rotate behavior --&gt;
+      &lt;auto-rotate type=&quot;0&quot;&gt;&lt;/auto-rotate&gt;
+      &lt;!-- enable and configure the framing behavior --&gt;
+      &lt;framing type=&quot;2&quot; zoom-on-bounding-info=&quot;true&quot; zoom-stops-animation=&quot;false&quot;&gt;&lt;/framing&gt;
+      &lt;!-- enable default bouncing behavior --&gt;
+      &lt;bouncing type=&quot;1&quot;&gt;&lt;/bouncing&gt;
+    &lt;/behaviors&gt;
+  &lt;/camera&gt;
+&lt;/babylon&gt;</code></pre>
+<p>The camera configuration includes camera behavior configuration, which is a native Babylon.js feature. You can read about it in <span>Camera behaviors</span>.</p>
+<h2 id="adding-environment">Adding environment<a class="anchor" href="#adding-environment">#</a></h2>
+<p>To add the environment, we need to enable the ground and the skybox. There are two ways to do that. The first is to enable them in the <code>&lt;babylon&gt;</code> tag. I use this when I do not want to further configure the element I am extending. For example:</p>
+<pre class="code" data-lang="html"><code>&lt;babylon skybox=&quot;true&quot; ground=&quot;true&quot;&gt; &lt;/babylon&gt;</code></pre>
+<p>This will enable the default skybox and ground. Another way, which is the one I will use, is to add the HTML elements:</p>
+<pre class="code" data-lang="html"><code>&lt;babylon extends=&quot;none&quot;&gt;
+  &lt;!-- Ground that receives shadows --&gt;
+  &lt;ground receive-shadows=&quot;true&quot;&gt;&lt;/ground&gt;
+  &lt;!-- Default skybox --&gt;
+  &lt;skybox&gt;&lt;/skybox&gt;
+
+  &lt;!-- enable antialiasing --&gt;
+  &lt;engine antialiasing=&quot;true&quot;&gt;&lt;/engine&gt;
+  &lt;!-- camera configuration --&gt;
+  &lt;camera&gt;
+    &lt;!-- add camera behaviors --&gt;
+    &lt;behaviors&gt;
+      &lt;!-- enable default auto-rotate behavior --&gt;
+      &lt;auto-rotate type=&quot;0&quot;&gt;&lt;/auto-rotate&gt;
+      &lt;!-- enable and configure the framing behavior --&gt;
+      &lt;framing type=&quot;2&quot; zoom-on-bounding-info=&quot;true&quot; zoom-stops-animation=&quot;false&quot;&gt;&lt;/framing&gt;
+      &lt;!-- enable default bouncing behavior --&gt;
+      &lt;bouncing type=&quot;1&quot;&gt;&lt;/bouncing&gt;
+    &lt;/behaviors&gt;
+  &lt;/camera&gt;
+&lt;/babylon&gt;</code></pre>
+<p>The reasons I chose the second way are:</p>
+<ul>
+<li>It is readable and easy to understand</li>
+<li>It is extendible. If I want to change the skybox&#39;s configuration, I need to change the tag rather than add a new one.</li>
+</ul>
+<h2 id="templates-main-template">Templates - Main template<a class="anchor" href="#templates-main-template">#</a></h2>
+<p>An important part of the viewer is the templating system. It takes predefined HTML elements, adds them where needed, and attaches Babylon to the created canvas element and the buttons in the navigation bar. To read about it, visit <span>The templating system</span>.</p>
+<p>The default viewer, which is the viewer we are using when using the <code>&lt;babylon&gt;</code> tag, expects certain templates to have specific elements (like a full screen button in the navigation bar, or a loading screen). If specific templates aren&#39;t included, the viewer will fail silently and will continue rendering the 3D element. The only obligatory template is the main template. Without a main template (which can be a single canvas and that&#39;s it) the viewer will fail.</p>
+<h3 id="adding-a-new-template">Adding a new template<a class="anchor" href="#adding-a-new-template">#</a></h3>
+<p>To add a new template using HTML, I will place each template inside a <code>&lt;script id=&quot;name-of-template&quot; type=&quot;text/x-babylon-viewer-template&quot;&gt;</code>. This template can later be referenced in the viewer configuration using the defined ID.</p>
+<p>For example, this is the main template (copied from <span>https://github.com/BabylonJS/Babylon.js/blob/master/packages/tools/viewer/assets/templates/default/defaultTemplate.html</span>):</p>
+<pre class="code" data-lang="html"><code>&lt;script id=&quot;main-template&quot; type=&quot;text/x-babylon-viewer-template&quot;&gt;
+  &lt;style&gt;
+      @font-face {
+          font-family: 'babylon';
+          src: url('{{babylonFont}}') format('woff');
+          font-weight: normal;
+          font-style: normal;
+      }
+
+      .icon {
+          font-family: &quot;babylon&quot;;
+      }
+  &lt;/style&gt;
+
+  {{#if fillScreen}}
+  &lt;style&gt;
+      html,
+      body {
+          width: 100%;
+          height: 100%;
+
+          margin: 0;
+          padding: 0;
+      }
+  &lt;/style&gt;
+  {{/if}}
+
+  &lt;fill-container&gt;&lt;/fill-container&gt;
+&lt;/script&gt;</code></pre>
+<p>Everything inside the script tag will be sent to <span>handlebars</span>. Since we are using Handlebars, you can add parameters or conditions inside your templates. Looking at the main template, you can see that there are two parameters that the template expects:</p>
+<ul>
+<li>A link to a font file (that includes the icons we will later use in the navigation bar)</li>
+<li>a flag, <code>fillScreen</code> that will add specific style definition if we want the viewer to fill the entire screen</li>
+</ul>
+<p>You can also notice that the main template contains a tag called <code>fill-container</code>. The fill-container tag will be populated using a template with the same name that I will define later. Using custom HTML tags is how you can define your own templating tree and configure a specific part of the viewer without editing the rest of the elements.</p>
+<h3 id="adding-the-template-to-the-viewer">Adding the template to the viewer<a class="anchor" href="#adding-the-template-to-the-viewer">#</a></h3>
+<p>To add the main template to the viewer, we will add the main tag to the <code>babylon</code> tag:</p>
+<pre class="code" data-lang="html"><code>&lt;babylon extends=&quot;none&quot;&gt;
+  &lt;templates&gt;
+    &lt;main location=&quot;#main-template&quot;&gt;
+      &lt;params no-escape=&quot;true&quot; babylon-font=&quot;https://viewer.babylonjs.com/babylon.woff&quot;&gt;&lt;/params&gt;
+    &lt;/main&gt;
+  &lt;/templates&gt;
+
+  &lt;!-- Ground that receives shadows --&gt;
+  &lt;ground receive-shadows=&quot;true&quot;&gt;&lt;/ground&gt;
+  &lt;!-- Default skybox --&gt;
+  &lt;skybox&gt;&lt;/skybox&gt;
+
+  &lt;!-- enable antialiasing --&gt;
+  &lt;engine antialiasing=&quot;true&quot;&gt;&lt;/engine&gt;
+  &lt;!-- camera configuration --&gt;
+  &lt;camera&gt;
+    &lt;!-- add camera behaviors --&gt;
+    &lt;behaviors&gt;
+      &lt;!-- enable default auto-rotate behavior --&gt;
+      &lt;auto-rotate type=&quot;0&quot;&gt;&lt;/auto-rotate&gt;
+      &lt;!-- enable and configure the framing behavior --&gt;
+      &lt;framing type=&quot;2&quot; zoom-on-bounding-info=&quot;true&quot; zoom-stops-animation=&quot;false&quot;&gt;&lt;/framing&gt;
+      &lt;!-- enable default bouncing behavior --&gt;
+      &lt;bouncing type=&quot;1&quot;&gt;&lt;/bouncing&gt;
+    &lt;/behaviors&gt;
+  &lt;/camera&gt;
+&lt;/babylon&gt;</code></pre>
+<p>I&#39;ll dissect the templates tag to explain how it is configured.</p>
+<h4 id="location-parameter">Location parameter<a class="anchor" href="#location-parameter">#</a></h4>
+<pre class="code" data-lang="html"><code>&lt;main location=&quot;#main-template&quot;&gt;&lt;/main&gt;</code></pre>
+<p>This line adds a new template called &quot;main&quot; to the template manager. It will find its HTML source in the script template tag with the ID <code>main-template</code> (which is the one we defined earlier). The location can also be a URL from which the HTML will be downloaded and parsed. For example:</p>
+<pre class="code" data-lang="html"><code>&lt;main location=&quot;https://example.com/templates/main.html&quot;&gt;&lt;/main&gt;</code></pre>
+<h4 id="params-element">params element<a class="anchor" href="#params-element">#</a></h4>
+<p>To pass variables to the template when it is compiled with Handlebars, I pass variables in the params HTML tag. The following tag:</p>
+<pre class="code" data-lang="html"><code>&lt;params no-escape=&quot;true&quot; babylon-font=&quot;https://viewer.babylonjs.com/babylon.woff&quot;&gt;&lt;/params&gt;</code></pre>
+<p>will configure Handlebars not to escape input (<code>noEscape</code>, <span>https://handlebarsjs.com/reference.html</span>) and will pass <code>babylonFont</code> to the template. It will then populate this in the line <code>src: url(&#39;{{babylonFont}}&#39;) format(&#39;woff&#39;);</code> of the main template I previously defined. We could also add the <code>fillScreen</code> flag to allow a fullscreen viewer:</p>
+<pre class="code" data-lang="html"><code>&lt;params no-escape=&quot;true&quot; babylon-font=&quot;https://viewer.babylonjs.com/babylon.woff&quot; fill-screen=&quot;true&quot;&gt;&lt;/params&gt;</code></pre>
+<h2 id="further-templates">Further templates<a class="anchor" href="#further-templates">#</a></h2>
+<p>I continue adding the templates as I added the main template. I will show here two more templates that are important. The one holding the canvas, and the navigation bar - to show how to enable events.</p>
+<h3 id="the-template-holding-the-canvas">The template holding the canvas<a class="anchor" href="#the-template-holding-the-canvas">#</a></h3>
+<p>A canvas is needed for Babylon to work correctly. We need to add one (and only one!) canvas element in one of the included templates.</p>
+<pre class="code" data-lang="html"><code>&lt;script id=&quot;viewer-template&quot; type=&quot;text/x-babylon-viewer-template&quot;&gt;
+  &lt;style&gt;
+      viewer {
+          position: relative;
+          overflow: hidden;
+          /* Start stage */
+          z-index: 1;
+          justify-content: center;
+          align-items: center;
+
+          width: 100%;
+          height: 100%;
+      }
+
+      .babylonjs-canvas {
+          flex: 1;
+          width: 100%;
+          height: 100%;
+          /* enable cross-browser pointer events */
+          touch-action: none;
+      }
+  &lt;/style&gt;
+
+  &lt;canvas class=&quot;babylonjs-canvas&quot; touch-action=&quot;none&quot;&gt;&lt;/canvas&gt;
+
+  &lt;nav-bar&gt;&lt;/nav-bar&gt;
+&lt;/script&gt;</code></pre>
+<p>To get pointer input to work in all browsers, including iOS devices, I add the touch-action parameter to both the canvas element and the CSS definition of the canvas. This is very important. Otherwise, certain browsers will not accept user input.</p>
+<h3 id="the-navigation-bar">The navigation bar<a class="anchor" href="#the-navigation-bar">#</a></h3>
+<p>In the case of the navigation bar, I want to show how to add the navbar&#39;s template and enable JS events on specific elements within it. The navbar&#39;s HTML code can be found here: <span>https://github.com/BabylonJS/Babylon.js/blob/master/packages/tools/viewer/assets/templates/default/navbar.html</span> .</p>
+<p>This is the full <code>templates</code> object, with comments on the navbar definition.</p>
+<pre class="code" data-lang="html"><code>&lt;babylon extends=&quot;none&quot;&gt;
+
+    &lt;templates&gt;
+        &lt;main location=&quot;#main-template&quot;&gt;
+            &lt;params no-escape=&quot;true&quot; babylon-font=&quot;https://viewer.babylonjs.com/babylon.woff&quot;&gt;&lt;/params&gt;
+        &lt;/main&gt;
+        &lt;fill-container location=&quot;#fill-container-template&quot;&gt;
+            &lt;params disable=&quot;false&quot;&gt;&lt;/params&gt;
+        &lt;/fill-container&gt;
+        &lt;loading-screen location=&quot;#loading-screen-template&quot;&gt;
+            &lt;params background-color=&quot;#000000&quot; loading-image=&quot;https://blogs.windows.com/uploads/mswbprod/sites/3/2018/05/b58474ab97a2708346422fe7ce30c15e.png&quot;&gt;&lt;/params&gt;
+        &lt;/loading-screen&gt;
+        &lt;viewer location=&quot;#viewer-template&quot;&gt;
+            &lt;params enable-drag-and-drop=&quot;false&quot;&gt;&lt;/params&gt;
+        &lt;/viewer&gt;
+        &lt;nav-bar location=&quot;#nav-bar-template&quot;&gt;
+            &lt;!-- Configuring the navbar's parameters - hide certain buttons, set the main button's text, link and image --&gt;
+            &lt;params logo-image=&quot;https://blogs.windows.com/uploads/mswbprod/sites/3/2018/05/b58474ab97a2708346422fe7ce30c15e.png&quot; logo-text=&quot;BabylonJS&quot;
+                logo-link=&quot;https://babylonjs.com&quot; hide-help=&quot;true&quot; hide-hd=&quot;true&quot; hide-vr=&quot;true&quot; disable-on-fullscreen=&quot;false&quot;&gt;
+                &lt;!-- define the list of speeds to be shown when a model has animations --&gt;
+                &lt;speed-list &quot;0.5x&quot;=&quot;0.5&quot; &quot;1.0x&quot;=&quot;1.0&quot; &quot;2.0x&quot;=&quot;2.0&quot;&gt;&lt;/speed-list&gt;
+                &lt;!-- I18n --&gt;
+                &lt;text hd-button=&quot;Toggle HD&quot; fullscreen-button=&quot;Fullscreen&quot;&gt;&lt;/text&gt;
+            &lt;/params&gt;
+            &lt;!-- enable events - pointerdown, pointerup and input events will have callbacks if triggered on the navbar element --&gt;
+            &lt;events pointerdown=&quot;true&quot; pointerup=&quot;true&quot; input=&quot;true&quot;&gt;&lt;/events&gt;
+        &lt;/nav-bar&gt;
+    &lt;/templates&gt;
+
+    &lt;!-- Ground that receives shadows --&gt;
+    &lt;ground receive-shadows=&quot;true&quot;&gt;&lt;/ground&gt;
+    &lt;!-- Default skybox --&gt;
+    &lt;skybox&gt;&lt;/skybox&gt;
+
+    &lt;!-- enable antialiasing --&gt;
+    &lt;engine antialiasing=&quot;true&quot;&gt;&lt;/engine&gt;
+    &lt;!-- camera configuration --&gt;
+    &lt;camera&gt;
+        &lt;!-- add camera behaviors --&gt;
+        &lt;behaviors&gt;
+            &lt;!-- enable default auto-rotate behavior --&gt;
+            &lt;auto-rotate type=&quot;0&quot;&gt;&lt;/auto-rotate&gt;
+            &lt;!-- enable and configure the framing behavior --&gt;
+            &lt;framing type=&quot;2&quot; zoom-on-bounding-info=&quot;true&quot; zoom-stops-animation=&quot;false&quot;&gt;&lt;/framing&gt;
+            &lt;!-- enable default bouncing behavior --&gt;
+            &lt;bouncing type=&quot;1&quot;&gt;&lt;/bouncing&gt;
+        &lt;/behaviors&gt;
+        &lt;!-- The 3D model to be viewed --&gt;
+        &lt;model url=&quot;https://models.babylonjs.com/shark.glb&quot;&gt;&lt;/model&gt;
+    &lt;/camera&gt;
+&lt;/babylon&gt;</code></pre>
+<h2 id="viewing-a-model">Viewing a model<a class="anchor" href="#viewing-a-model">#</a></h2>
+<p>Once the Babylon.js viewer is fully configured, you can specify which 3D model you want to view.</p>
+<p>There are two ways to specify a 3D model.</p>
+<ol>
+<li><p>Add a <code>model</code> attribute on the <code>&lt;babylon&gt;</code> tag which can point to a 3D model file.</p>
+<pre class="code" data-lang="html"><code>&lt;babylon extends=&quot;none&quot; model=&quot;https://models.babylonjs.com/shark.glb&quot;&gt;&lt;/babylon&gt;</code></pre>
+</li>
+<li><p>Add a <code>&lt;model&gt;</code> HTML tag and set its <code>url</code> attribute to a 3D model file.
+<code>html &lt;babylon extends=&quot;none&quot;&gt; &lt;model url=&quot;https://models.babylonjs.com/shark.glb&quot;&gt;&lt;/model&gt; &lt;/babylon&gt; </code>
+The examples point to a sample <span>shark glTF model</span>. You can also load other formats including <code>.glTF</code>, <code>.babylon</code>, <code>.obj</code>, and <code>.stl</code>. Note that the model won&#39;t be displayed till the entire configuration is added to the viewer.</p>
+</li>
+</ol>
+<h2 id="the-full-example">The full example<a class="anchor" href="#the-full-example">#</a></h2>
+<span class="muted">&lt;p data-height=&quot;550&quot; data-theme-id=&quot;light&quot; data-slug-hash=&quot;KBXVdw&quot; data-default-tab=&quot;html,result&quot; data-user=&quot;BabylonJS&quot; data-pen-title=&quot;[Babylon.js Viewer] Recreating default configuration&quot; class=&quot;codepen&quot;&gt;See the Pen &lt;a href=&quot;https://codepen.io/BabylonJS/pen/KBXVdw/&quot;&gt;[Babylon.js Viewer] Recreating default configuration&lt;/a&gt; by Babylon.js (&lt;a href=&quot;https://codepen.io/BabylonJS&quot;&gt;@BabylonJS&lt;/a&gt;) on &lt;a href=&quot;https://codepen.io&quot;&gt;CodePen&lt;/a&gt;.&lt;/p&gt;
+&lt;script async src=&quot;https://static.codepen.io/assets/embed/ei.js&quot;&gt;&lt;/script&gt;
+</span><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#html-element-and-viewer-script">HTML element and viewer script </a><a href="#engine-and-camera-configuration">Engine and camera configuration </a><a href="#adding-environment">Adding environment </a><a href="#templates-main-template">Templates - Main template </a><a href="#further-templates">Further templates </a><a href="#viewing-a-model">Viewing a model </a><a href="#the-full-example">The full example </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

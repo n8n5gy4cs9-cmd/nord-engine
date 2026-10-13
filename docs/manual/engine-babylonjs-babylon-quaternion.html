@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BABYLON.Quaternion — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>BABYLON.Quaternion</h1>
+<p><span class="badge">Underlying Babylon 9.30.0 API</span> <span class="badge">Class</span></p><p class="muted">Official public declarations and JSDoc from <code>babylonjs</code>. Use with engine objects, not directly on a Nord entity.</p><aside class="box tip"><div class="box-title">The Nord way</div><p><a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a>. Access raw objects only when the Nord wrapper does not cover your feature. <a href="reference.html#escape-hatch">How escape hatches work</a>.</p></aside><h3 id="declaration">Quaternion <a class="anchor" href="#declaration">#</a></h3><pre class="code" data-lang="ts"><code>export class Quaternion implements Tensor&lt;Tuple&lt;number, 4&gt;, Quaternion&gt;, IQuaternionLike</code></pre><p>Class used to store quaternion data
+Example Playground - Overview - (online reference)
+<strong>see</strong>  (online reference)
+<strong>see</strong>  (online reference)</p>
+<h2 id="members">Public members (110)</h2><p>Private, protected and explicitly internal declarations are excluded. Inherited members belong to the base type listed in the declaration.</p><h3 id="member-x-0">x <a class="anchor" href="#member-x-0">#</a></h3><pre class="code" data-lang="ts"><code>get x(): number;</code></pre><p>Gets or sets the x coordinate</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-x-1">x <a class="anchor" href="#member-x-1">#</a></h3><pre class="code" data-lang="ts"><code>set x(value: number);</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><h3 id="member-y-2">y <a class="anchor" href="#member-y-2">#</a></h3><pre class="code" data-lang="ts"><code>get y(): number;</code></pre><p>Gets or sets the y coordinate</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-y-3">y <a class="anchor" href="#member-y-3">#</a></h3><pre class="code" data-lang="ts"><code>set y(value: number);</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><h3 id="member-z-4">z <a class="anchor" href="#member-z-4">#</a></h3><pre class="code" data-lang="ts"><code>get z(): number;</code></pre><p>Gets or sets the z coordinate</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-z-5">z <a class="anchor" href="#member-z-5">#</a></h3><pre class="code" data-lang="ts"><code>set z(value: number);</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><h3 id="member-w-6">w <a class="anchor" href="#member-w-6">#</a></h3><pre class="code" data-lang="ts"><code>get w(): number;</code></pre><p>Gets or sets the w coordinate</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-w-7">w <a class="anchor" href="#member-w-7">#</a></h3><pre class="code" data-lang="ts"><code>set w(value: number);</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><h3 id="member-dimension-8">dimension <a class="anchor" href="#member-dimension-8">#</a></h3><pre class="code" data-lang="ts"><code>readonly dimension: Readonly&lt;[4]&gt;;</code></pre><p><strong>see</strong>  Tensor.dimension</p>
+<p><b>Type / return:</b> <code>Readonly&lt;[4]&gt;</code></p><h3 id="member-rank-9">rank <a class="anchor" href="#member-rank-9">#</a></h3><pre class="code" data-lang="ts"><code>readonly rank: 1;</code></pre><p><strong>see</strong>  Tensor.rank</p>
+<p><b>Type / return:</b> <code>1</code></p><h3 id="member-constructor-10">constructor <a class="anchor" href="#member-constructor-10">#</a></h3><pre class="code" data-lang="ts"><code>constructor(x?: number, y?: number, z?: number, w?: number);</code></pre><p>Creates a new Quaternion from the given floats
+<strong>param</strong>  x defines the first component (0 by default)
+<strong>param</strong>  y defines the second component (0 by default)
+<strong>param</strong>  z defines the third component (0 by default)
+<strong>param</strong>  w defines the fourth component (1.0 by default)</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>z</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>w</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><h3 id="member-tostring-11">toString <a class="anchor" href="#member-tostring-11">#</a></h3><pre class="code" data-lang="ts"><code>toString(): string;</code></pre><p>Gets a string representation for the current quaternion
+<strong>returns</strong>  a string with the Quaternion coordinates</p>
+<p><b>Type / return:</b> <code>string</code></p><h3 id="member-getclassname-12">getClassName <a class="anchor" href="#member-getclassname-12">#</a></h3><pre class="code" data-lang="ts"><code>getClassName(): string;</code></pre><p>Gets the class name of the quaternion
+<strong>returns</strong>  the string &quot;Quaternion&quot;</p>
+<p><b>Type / return:</b> <code>string</code></p><h3 id="member-gethashcode-13">getHashCode <a class="anchor" href="#member-gethashcode-13">#</a></h3><pre class="code" data-lang="ts"><code>getHashCode(): number;</code></pre><p>Gets a hash code for this quaternion
+<strong>returns</strong>  the quaternion hash code</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-asarray-14">asArray <a class="anchor" href="#member-asarray-14">#</a></h3><pre class="code" data-lang="ts"><code>asArray(): Tuple&lt;number, 4&gt;;</code></pre><p>Copy the quaternion to an array
+Example Playground (online reference)
+<strong>returns</strong>  a new array populated with 4 elements from the quaternion coordinates</p>
+<p><b>Type / return:</b> <code>Tuple&lt;number, 4&gt;</code></p><h3 id="member-toarray-15">toArray <a class="anchor" href="#member-toarray-15">#</a></h3><pre class="code" data-lang="ts"><code>toArray(array: FloatArray, index?: number): this;</code></pre><p>Stores from the starting index in the given array the Quaternion successive values
+Example Playground (online reference)
+<strong>param</strong>  array defines the array where to store the x,y,z,w components
+<strong>param</strong>  index defines an optional index in the target array to define where to start storing values
+<strong>returns</strong>  the current Quaternion object</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>array</code></td><td><code>FloatArray</code></td><td>Required</td></tr><tr><td><code>index</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-fromarray-16">fromArray <a class="anchor" href="#member-fromarray-16">#</a></h3><pre class="code" data-lang="ts"><code>fromArray(array: FloatArray, index?: number): this;</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>array</code></td><td><code>FloatArray</code></td><td>Required</td></tr><tr><td><code>index</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-equals-17">equals <a class="anchor" href="#member-equals-17">#</a></h3><pre class="code" data-lang="ts"><code>equals(otherQuaternion: DeepImmutable&lt;Quaternion&gt;): boolean;</code></pre><p>Check if two quaternions are equals
+Example Playground (online reference)
+<strong>param</strong>  otherQuaternion defines the second operand
+<strong>returns</strong>  true if the current quaternion and the given one coordinates are strictly equals</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>otherQuaternion</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-equalswithepsilon-18">equalsWithEpsilon <a class="anchor" href="#member-equalswithepsilon-18">#</a></h3><pre class="code" data-lang="ts"><code>equalsWithEpsilon(otherQuaternion: DeepImmutable&lt;Quaternion&gt;, epsilon?: number): boolean;</code></pre><p>Gets a boolean if two quaternions are equals (using an epsilon value)
+Example Playground (online reference)
+<strong>param</strong>  otherQuaternion defines the other quaternion
+<strong>param</strong>  epsilon defines the minimal distance to consider equality
+<strong>returns</strong>  true if the given quaternion coordinates are close to the current ones by a distance of epsilon.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>otherQuaternion</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr><tr><td><code>epsilon</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-isapprox-19">isApprox <a class="anchor" href="#member-isapprox-19">#</a></h3><pre class="code" data-lang="ts"><code>isApprox(otherQuaternion: DeepImmutable&lt;Quaternion&gt;, epsilon?: number): boolean;</code></pre><p>Gets a boolean if two quaternions are equals (using an epsilon value), taking care of double cover : (online reference)
+<strong>param</strong>  otherQuaternion defines the other quaternion
+<strong>param</strong>  epsilon defines the minimal distance to consider equality
+<strong>returns</strong>  true if the given quaternion coordinates are close to the current ones by a distance of epsilon.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>otherQuaternion</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr><tr><td><code>epsilon</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-clone-20">clone <a class="anchor" href="#member-clone-20">#</a></h3><pre class="code" data-lang="ts"><code>clone(): Quaternion;</code></pre><p>Clone the current quaternion
+Example Playground (online reference)
+<strong>returns</strong>  a new quaternion copied from the current one</p>
+<p><b>Type / return:</b> <code>Quaternion</code></p><h3 id="member-copyfrom-21">copyFrom <a class="anchor" href="#member-copyfrom-21">#</a></h3><pre class="code" data-lang="ts"><code>copyFrom(other: DeepImmutable&lt;Quaternion&gt;): this;</code></pre><p>Copy a quaternion to the current one
+Example Playground (online reference)
+<strong>param</strong>  other defines the other quaternion
+<strong>returns</strong>  the updated current quaternion</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>other</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-copyfromfloats-22">copyFromFloats <a class="anchor" href="#member-copyfromfloats-22">#</a></h3><pre class="code" data-lang="ts"><code>copyFromFloats(x: number, y: number, z: number, w: number): this;</code></pre><p>Updates the current quaternion with the given float coordinates
+Example Playground (online reference)
+<strong>param</strong>  x defines the x coordinate
+<strong>param</strong>  y defines the y coordinate
+<strong>param</strong>  z defines the z coordinate
+<strong>param</strong>  w defines the w coordinate
+<strong>returns</strong>  the updated current quaternion</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>z</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>w</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-set-23">set <a class="anchor" href="#member-set-23">#</a></h3><pre class="code" data-lang="ts"><code>set(x: number, y: number, z: number, w: number): this;</code></pre><p>Updates the current quaternion from the given float coordinates
+Example Playground (online reference)
+<strong>param</strong>  x defines the x coordinate
+<strong>param</strong>  y defines the y coordinate
+<strong>param</strong>  z defines the z coordinate
+<strong>param</strong>  w defines the w coordinate
+<strong>returns</strong>  the updated current quaternion</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>z</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>w</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setall-24">setAll <a class="anchor" href="#member-setall-24">#</a></h3><pre class="code" data-lang="ts"><code>setAll(value: number): this;</code></pre><p>Sets all the quaternion coordinates to the given value
+<strong>param</strong>  value the value to set
+<strong>returns</strong>  the current updated quaternion</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-add-25">add <a class="anchor" href="#member-add-25">#</a></h3><pre class="code" data-lang="ts"><code>add(other: DeepImmutable&lt;Quaternion&gt;): Quaternion;</code></pre><p>Adds two quaternions
+Example Playground (online reference)
+<strong>param</strong>  other defines the second operand
+<strong>returns</strong>  a new quaternion as the addition result of the given one and the current quaternion</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>other</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Quaternion</code></p><h3 id="member-addinplace-26">addInPlace <a class="anchor" href="#member-addinplace-26">#</a></h3><pre class="code" data-lang="ts"><code>addInPlace(other: DeepImmutable&lt;Quaternion&gt;): this;</code></pre><p>Add a quaternion to the current one
+Example Playground (online reference)
+<strong>param</strong>  other defines the quaternion to add
+<strong>returns</strong>  the current quaternion</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>other</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-addtoref-27">addToRef <a class="anchor" href="#member-addtoref-27">#</a></h3><pre class="code" data-lang="ts"><code>addToRef&lt;T extends Quaternion&gt;(other: DeepImmutable&lt;this&gt;, result: T): T;</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>other</code></td><td><code>DeepImmutable&lt;this&gt;</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-addinplacefromfloats-28">addInPlaceFromFloats <a class="anchor" href="#member-addinplacefromfloats-28">#</a></h3><pre class="code" data-lang="ts"><code>addInPlaceFromFloats(x: number, y: number, z: number, w: number): this;</code></pre><p>Adds in place the given floats to the current quaternion
+<strong>param</strong>  x defines the x coordinate
+<strong>param</strong>  y defines the y coordinate
+<strong>param</strong>  z defines the z coordinate
+<strong>param</strong>  w defines the w coordinate
+<strong>returns</strong>  the current updated quaternion</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>z</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>w</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-subtracttoref-29">subtractToRef <a class="anchor" href="#member-subtracttoref-29">#</a></h3><pre class="code" data-lang="ts"><code>subtractToRef&lt;T extends Quaternion&gt;(other: DeepImmutable&lt;this&gt;, result: T): T;</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>other</code></td><td><code>DeepImmutable&lt;this&gt;</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-subtractfromfloats-30">subtractFromFloats <a class="anchor" href="#member-subtractfromfloats-30">#</a></h3><pre class="code" data-lang="ts"><code>subtractFromFloats(x: number, y: number, z: number, w: number): Quaternion;</code></pre><p>Subtracts the given floats from the current quaternion
+<strong>param</strong>  x defines the x coordinate
+<strong>param</strong>  y defines the y coordinate
+<strong>param</strong>  z defines the z coordinate
+<strong>param</strong>  w defines the w coordinate
+<strong>returns</strong>  a new quaternion as the subtraction result</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>z</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>w</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Quaternion</code></p><h3 id="member-subtractfromfloatstoref-31">subtractFromFloatsToRef <a class="anchor" href="#member-subtractfromfloatstoref-31">#</a></h3><pre class="code" data-lang="ts"><code>subtractFromFloatsToRef&lt;T extends Quaternion&gt;(x: number, y: number, z: number, w: number, result: T): T;</code></pre><p>Subtracts the given floats from the current quaternion and stores the result in the given one
+<strong>param</strong>  x defines the x coordinate
+<strong>param</strong>  y defines the y coordinate
+<strong>param</strong>  z defines the z coordinate
+<strong>param</strong>  w defines the w coordinate
+<strong>param</strong>  result defines the quaternion to store the result
+<strong>returns</strong>  result input</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>z</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>w</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-subtract-32">subtract <a class="anchor" href="#member-subtract-32">#</a></h3><pre class="code" data-lang="ts"><code>subtract(other: DeepImmutable&lt;this&gt;): Quaternion;</code></pre><p>Subtract two quaternions
+Example Playground (online reference)
+<strong>param</strong>  other defines the second operand
+<strong>returns</strong>  a new quaternion as the subtraction result of the given one from the current one</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>other</code></td><td><code>DeepImmutable&lt;this&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Quaternion</code></p><h3 id="member-subtractinplace-33">subtractInPlace <a class="anchor" href="#member-subtractinplace-33">#</a></h3><pre class="code" data-lang="ts"><code>subtractInPlace(other: DeepImmutable&lt;Quaternion&gt;): this;</code></pre><p>Subtract a quaternion to the current one
+Example Playground (online reference)
+<strong>param</strong>  other defines the quaternion to subtract
+<strong>returns</strong>  the current quaternion</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>other</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-scale-34">scale <a class="anchor" href="#member-scale-34">#</a></h3><pre class="code" data-lang="ts"><code>scale(value: number): Quaternion;</code></pre><p>Multiplies the current quaternion by a scale factor
+Example Playground (online reference)
+<strong>param</strong>  value defines the scale factor
+<strong>returns</strong>  a new quaternion set by multiplying the current quaternion coordinates by the float &quot;scale&quot;</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Quaternion</code></p><h3 id="member-scaletoref-35">scaleToRef <a class="anchor" href="#member-scaletoref-35">#</a></h3><pre class="code" data-lang="ts"><code>scaleToRef&lt;T extends Quaternion&gt;(scale: number, result: T): T;</code></pre><p>Scale the current quaternion values by a factor and stores the result to a given quaternion
+Example Playground (online reference)
+<strong>param</strong>  scale defines the scale factor
+<strong>param</strong>  result defines the Quaternion object where to store the result
+<strong>returns</strong>  result input</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>scale</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-scaleinplace-36">scaleInPlace <a class="anchor" href="#member-scaleinplace-36">#</a></h3><pre class="code" data-lang="ts"><code>scaleInPlace(value: number): this;</code></pre><p>Multiplies in place the current quaternion by a scale factor
+Example Playground (online reference)
+<strong>param</strong>  value defines the scale factor
+<strong>returns</strong>  the current modified quaternion</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-scaleandaddtoref-37">scaleAndAddToRef <a class="anchor" href="#member-scaleandaddtoref-37">#</a></h3><pre class="code" data-lang="ts"><code>scaleAndAddToRef&lt;T extends Quaternion&gt;(scale: number, result: T): T;</code></pre><p>Scale the current quaternion values by a factor and add the result to a given quaternion
+Example Playground (online reference)
+<strong>param</strong>  scale defines the scale factor
+<strong>param</strong>  result defines the Quaternion object where to store the result
+<strong>returns</strong>  result input</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>scale</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-multiply-38">multiply <a class="anchor" href="#member-multiply-38">#</a></h3><pre class="code" data-lang="ts"><code>multiply(q1: DeepImmutable&lt;Quaternion&gt;): Quaternion;</code></pre><p>Multiplies two quaternions
+Example Playground (online reference)
+<strong>param</strong>  q1 defines the second operand
+<strong>returns</strong>  a new quaternion set as the multiplication result of the current one with the given one &quot;q1&quot;</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>q1</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Quaternion</code></p><h3 id="member-multiplytoref-39">multiplyToRef <a class="anchor" href="#member-multiplytoref-39">#</a></h3><pre class="code" data-lang="ts"><code>multiplyToRef&lt;T extends Quaternion&gt;(q1: DeepImmutable&lt;Quaternion&gt;, result: T): T;</code></pre><p>Sets the given &quot;result&quot; as the multiplication result of the current one with the given one &quot;q1&quot;
+Example Playground (online reference)
+<strong>param</strong>  q1 defines the second operand
+<strong>param</strong>  result defines the target quaternion
+<strong>returns</strong>  the current quaternion</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>q1</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-multiplyinplace-40">multiplyInPlace <a class="anchor" href="#member-multiplyinplace-40">#</a></h3><pre class="code" data-lang="ts"><code>multiplyInPlace(other: DeepImmutable&lt;Quaternion&gt;): this;</code></pre><p>Updates the current quaternion with the multiplication of itself with the given one &quot;q1&quot;
+Example Playground (online reference)
+<strong>param</strong>  other defines the second operand
+<strong>returns</strong>  the currentupdated quaternion</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>other</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-multiplybyfloats-41">multiplyByFloats <a class="anchor" href="#member-multiplybyfloats-41">#</a></h3><pre class="code" data-lang="ts"><code>multiplyByFloats(x: number, y: number, z: number, w: number): this;</code></pre><p>Multiplies the current quaternion coordinates by the given floats
+<strong>param</strong>  x defines the x coordinate
+<strong>param</strong>  y defines the y coordinate
+<strong>param</strong>  z defines the z coordinate
+<strong>param</strong>  w defines the w coordinate
+<strong>returns</strong>  the current updated quaternion</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>z</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>w</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-negate-42">negate <a class="anchor" href="#member-negate-42">#</a></h3><pre class="code" data-lang="ts"><code>negate(): Quaternion;</code></pre><p><b>Type / return:</b> <code>Quaternion</code></p><h3 id="member-negateinplace-43">negateInPlace <a class="anchor" href="#member-negateinplace-43">#</a></h3><pre class="code" data-lang="ts"><code>negateInPlace(): this;</code></pre><p><b>Type / return:</b> <code>this</code></p><h3 id="member-negatetoref-44">negateToRef <a class="anchor" href="#member-negatetoref-44">#</a></h3><pre class="code" data-lang="ts"><code>negateToRef&lt;T extends Quaternion&gt;(result: T): T;</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-equalstofloats-45">equalsToFloats <a class="anchor" href="#member-equalstofloats-45">#</a></h3><pre class="code" data-lang="ts"><code>equalsToFloats(x: number, y: number, z: number, w: number): boolean;</code></pre><p>Determines if the current quaternion equals the given floats
+<strong>param</strong>  x defines the x coordinate
+<strong>param</strong>  y defines the y coordinate
+<strong>param</strong>  z defines the z coordinate
+<strong>param</strong>  w defines the w coordinate
+<strong>returns</strong>  true if the quaternion coordinates match the given floats</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>z</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>w</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-conjugatetoref-46">conjugateToRef <a class="anchor" href="#member-conjugatetoref-46">#</a></h3><pre class="code" data-lang="ts"><code>conjugateToRef&lt;T extends Quaternion&gt;(ref: T): T;</code></pre><p>Conjugates the current quaternion and stores the result in the given quaternion
+Example Playground (online reference)
+<strong>param</strong>  ref defines the target quaternion
+<strong>returns</strong>  result input</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>ref</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-conjugateinplace-47">conjugateInPlace <a class="anchor" href="#member-conjugateinplace-47">#</a></h3><pre class="code" data-lang="ts"><code>conjugateInPlace(): this;</code></pre><p>Conjugates in place the current quaternion
+Example Playground (online reference)
+<strong>returns</strong>  the current updated quaternion</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-conjugate-48">conjugate <a class="anchor" href="#member-conjugate-48">#</a></h3><pre class="code" data-lang="ts"><code>conjugate(): Quaternion;</code></pre><p>Conjugates (1-q) the current quaternion
+Example Playground (online reference)
+<strong>returns</strong>  a new quaternion</p>
+<p><b>Type / return:</b> <code>Quaternion</code></p><h3 id="member-invert-49">invert <a class="anchor" href="#member-invert-49">#</a></h3><pre class="code" data-lang="ts"><code>invert(): Quaternion;</code></pre><p>Returns the inverse of the current quaternion
+Example Playground (online reference)
+<strong>returns</strong>  a new quaternion</p>
+<p><b>Type / return:</b> <code>Quaternion</code></p><h3 id="member-invertinplace-50">invertInPlace <a class="anchor" href="#member-invertinplace-50">#</a></h3><pre class="code" data-lang="ts"><code>invertInPlace(): this;</code></pre><p>Invert in place the current quaternion
+Example Playground (online reference)
+<strong>returns</strong>  this quaternion</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-lengthsquared-51">lengthSquared <a class="anchor" href="#member-lengthsquared-51">#</a></h3><pre class="code" data-lang="ts"><code>lengthSquared(): number;</code></pre><p>Gets squared length of current quaternion
+Example Playground (online reference)
+<strong>returns</strong>  the quaternion length (float)</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-length-52">length <a class="anchor" href="#member-length-52">#</a></h3><pre class="code" data-lang="ts"><code>length(): number;</code></pre><p>Gets length of current quaternion
+Example Playground (online reference)
+<strong>returns</strong>  the quaternion length (float)</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-normalize-53">normalize <a class="anchor" href="#member-normalize-53">#</a></h3><pre class="code" data-lang="ts"><code>normalize(): this;</code></pre><p>Normalize in place the current quaternion
+Example Playground (online reference)
+<strong>returns</strong>  the current updated quaternion</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-normalizefromlength-54">normalizeFromLength <a class="anchor" href="#member-normalizefromlength-54">#</a></h3><pre class="code" data-lang="ts"><code>normalizeFromLength(len: number): this;</code></pre><p>Normalize the current quaternion with the given input length.
+Please note that this is an in place operation.
+<strong>param</strong>  len the length of the quaternion
+<strong>returns</strong>  the current updated Quaternion</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>len</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-normalizetonew-55">normalizeToNew <a class="anchor" href="#member-normalizetonew-55">#</a></h3><pre class="code" data-lang="ts"><code>normalizeToNew(): Quaternion;</code></pre><p>Normalize a copy of the current quaternion
+Example Playground (online reference)
+<strong>returns</strong>  the normalized quaternion</p>
+<p><b>Type / return:</b> <code>Quaternion</code></p><h3 id="member-normalizetoref-56">normalizeToRef <a class="anchor" href="#member-normalizetoref-56">#</a></h3><pre class="code" data-lang="ts"><code>normalizeToRef&lt;T extends Quaternion&gt;(reference: T): T;</code></pre><p>Normalize the current Quaternion to the reference
+<strong>param</strong>  reference define the Quaternion to update
+<strong>returns</strong>  the updated Quaternion</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>reference</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-toeulerangles-57">toEulerAngles <a class="anchor" href="#member-toeulerangles-57">#</a></h3><pre class="code" data-lang="ts"><code>toEulerAngles(): Vector3;</code></pre><p>Returns a new Vector3 set with the Euler angles translated from the current quaternion
+Example Playground (online reference)
+<strong>returns</strong>  a new Vector3 containing the Euler angles
+<strong>see</strong>  (online reference)</p>
+<p><b>Type / return:</b> <code>Vector3</code></p><h3 id="member-toeuleranglestoref-58">toEulerAnglesToRef <a class="anchor" href="#member-toeuleranglestoref-58">#</a></h3><pre class="code" data-lang="ts"><code>toEulerAnglesToRef&lt;T extends Vector3&gt;(result: T): T;</code></pre><p>Sets the given vector3 &quot;result&quot; with the Euler angles translated from the current quaternion
+Example Playground (online reference)
+<strong>param</strong>  result defines the vector which will be filled with the Euler angles
+<strong>returns</strong>  result input
+<strong>see</strong>  (online reference)</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-toalphabetagammatoref-59">toAlphaBetaGammaToRef <a class="anchor" href="#member-toalphabetagammatoref-59">#</a></h3><pre class="code" data-lang="ts"><code>toAlphaBetaGammaToRef&lt;T extends Vector3&gt;(result: T): T;</code></pre><p>Sets the given vector3 &quot;result&quot; with the Alpha, Beta, Gamma Euler angles translated from the current quaternion
+<strong>param</strong>  result defines the vector which will be filled with the Euler angles
+<strong>returns</strong>  result input
+<strong>see</strong>  (online reference)</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-torotationmatrix-60">toRotationMatrix <a class="anchor" href="#member-torotationmatrix-60">#</a></h3><pre class="code" data-lang="ts"><code>toRotationMatrix&lt;T extends Matrix&gt;(result: T): T;</code></pre><p>Updates the given rotation matrix with the current quaternion values
+Example Playground (online reference)
+<strong>param</strong>  result defines the target matrix
+<strong>returns</strong>  the updated matrix with the rotation</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-fromrotationmatrix-61">fromRotationMatrix <a class="anchor" href="#member-fromrotationmatrix-61">#</a></h3><pre class="code" data-lang="ts"><code>fromRotationMatrix(matrix: DeepImmutable&lt;Matrix&gt;): this;</code></pre><p>Updates the current quaternion from the given rotation matrix values
+Example Playground (online reference)
+<strong>param</strong>  matrix defines the source matrix
+<strong>returns</strong>  the current updated quaternion</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>matrix</code></td><td><code>DeepImmutable&lt;Matrix&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-dot-62">dot <a class="anchor" href="#member-dot-62">#</a></h3><pre class="code" data-lang="ts"><code>dot(other: DeepImmutable&lt;this&gt;): number;</code></pre><p>Returns the dot product (float) between the current quaternions and &quot;other&quot;
+<strong>param</strong>  other defines the right operand
+<strong>returns</strong>  the dot product</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>other</code></td><td><code>DeepImmutable&lt;this&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>number</code></p><h3 id="member-toaxisangle-63">toAxisAngle <a class="anchor" href="#member-toaxisangle-63">#</a></h3><pre class="code" data-lang="ts"><code>toAxisAngle(): {
+            axis: Vector3;
+            angle: number;
+        };</code></pre><p>Converts the current quaternion to an axis angle representation
+<strong>returns</strong>  the axis and angle in radians</p>
+<p><b>Type / return:</b> <code>{
+            axis: Vector3;
+            angle: number;
+        }</code></p><h3 id="member-toaxisangletoref-64">toAxisAngleToRef <a class="anchor" href="#member-toaxisangletoref-64">#</a></h3><pre class="code" data-lang="ts"><code>toAxisAngleToRef&lt;T extends Vector3&gt;(axis: T): number;</code></pre><p>Converts the current quaternion to an axis angle representation
+<strong>param</strong>  axis defines the target axis vector
+<strong>returns</strong>  the angle in radians</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>axis</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>number</code></p><h3 id="member-fromrotationmatrix-65">FromRotationMatrix <a class="anchor" href="#member-fromrotationmatrix-65">#</a></h3><pre class="code" data-lang="ts"><code>static FromRotationMatrix(matrix: DeepImmutable&lt;Matrix&gt;): Quaternion;</code></pre><p>Creates a new quaternion from a rotation matrix
+Example Playground (online reference)
+<strong>param</strong>  matrix defines the source matrix
+<strong>returns</strong>  a new quaternion created from the given rotation matrix values</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>matrix</code></td><td><code>DeepImmutable&lt;Matrix&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Quaternion</code></p><h3 id="member-fromrotationmatrixtoref-66">FromRotationMatrixToRef <a class="anchor" href="#member-fromrotationmatrixtoref-66">#</a></h3><pre class="code" data-lang="ts"><code>static FromRotationMatrixToRef&lt;T extends Quaternion&gt;(matrix: DeepImmutable&lt;Matrix&gt;, result: T): T;</code></pre><p>Updates the given quaternion with the given rotation matrix values
+Example Playground (online reference)
+<strong>param</strong>  matrix defines the source matrix
+<strong>param</strong>  result defines the target quaternion
+<strong>returns</strong>  result input</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>matrix</code></td><td><code>DeepImmutable&lt;Matrix&gt;</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-dot-67">Dot <a class="anchor" href="#member-dot-67">#</a></h3><pre class="code" data-lang="ts"><code>static Dot(left: DeepImmutable&lt;Quaternion&gt;, right: DeepImmutable&lt;Quaternion&gt;): number;</code></pre><p>Returns the dot product (float) between the quaternions &quot;left&quot; and &quot;right&quot;
+Example Playground (online reference)
+<strong>param</strong>  left defines the left operand
+<strong>param</strong>  right defines the right operand
+<strong>returns</strong>  the dot product</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>left</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr><tr><td><code>right</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>number</code></p><h3 id="member-areclose-68">AreClose <a class="anchor" href="#member-areclose-68">#</a></h3><pre class="code" data-lang="ts"><code>static AreClose(quat0: DeepImmutable&lt;Quaternion&gt;, quat1: DeepImmutable&lt;Quaternion&gt;, epsilon?: number): boolean;</code></pre><p>Checks if the orientations of two rotation quaternions are close to each other
+Example Playground (online reference)
+<strong>param</strong>  quat0 defines the first quaternion to check
+<strong>param</strong>  quat1 defines the second quaternion to check
+<strong>param</strong>  epsilon defines closeness, 0 same orientation, 1 PI apart, default 0.1
+<strong>returns</strong>  true if the two quaternions are close to each other within epsilon</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>quat0</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr><tr><td><code>quat1</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr><tr><td><code>epsilon</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-smoothtoref-69">SmoothToRef <a class="anchor" href="#member-smoothtoref-69">#</a></h3><pre class="code" data-lang="ts"><code>static SmoothToRef&lt;T extends Quaternion&gt;(source: Quaternion, goal: Quaternion, deltaTime: number, lerpTime: number, result: T): T;</code></pre><p>Smooth interpolation between two quaternions using Slerp
+Example Playground (online reference)
+<strong>param</strong>  source source quaternion
+<strong>param</strong>  goal goal quaternion
+<strong>param</strong>  deltaTime current interpolation frame
+<strong>param</strong>  lerpTime total interpolation time
+<strong>param</strong>  result the smoothed quaternion
+<strong>returns</strong>  the smoothed quaternion</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>source</code></td><td><code>Quaternion</code></td><td>Required</td></tr><tr><td><code>goal</code></td><td><code>Quaternion</code></td><td>Required</td></tr><tr><td><code>deltaTime</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>lerpTime</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-zero-70">Zero <a class="anchor" href="#member-zero-70">#</a></h3><pre class="code" data-lang="ts"><code>static Zero(): Quaternion;</code></pre><p>Creates an empty quaternion
+<strong>returns</strong>  a new quaternion set to (0.0, 0.0, 0.0)</p>
+<p><b>Type / return:</b> <code>Quaternion</code></p><h3 id="member-inverse-71">Inverse <a class="anchor" href="#member-inverse-71">#</a></h3><pre class="code" data-lang="ts"><code>static Inverse(q: DeepImmutable&lt;Quaternion&gt;): Quaternion;</code></pre><p>Inverse a given quaternion
+Example Playground (online reference)
+<strong>param</strong>  q defines the source quaternion
+<strong>returns</strong>  a new quaternion as the inverted current quaternion</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>q</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Quaternion</code></p><h3 id="member-inversetoref-72">InverseToRef <a class="anchor" href="#member-inversetoref-72">#</a></h3><pre class="code" data-lang="ts"><code>static InverseToRef&lt;T extends Quaternion&gt;(q: Quaternion, result: T): T;</code></pre><p>Inverse a given quaternion
+Example Playground (online reference)
+<strong>param</strong>  q defines the source quaternion
+<strong>param</strong>  result the quaternion the result will be stored in
+<strong>returns</strong>  the result quaternion</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>q</code></td><td><code>Quaternion</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-identity-73">Identity <a class="anchor" href="#member-identity-73">#</a></h3><pre class="code" data-lang="ts"><code>static Identity(): Quaternion;</code></pre><p>Creates an identity quaternion
+<strong>returns</strong>  the identity quaternion</p>
+<p><b>Type / return:</b> <code>Quaternion</code></p><h3 id="member-isidentity-74">IsIdentity <a class="anchor" href="#member-isidentity-74">#</a></h3><pre class="code" data-lang="ts"><code>static IsIdentity(quaternion: DeepImmutable&lt;Quaternion&gt;): boolean;</code></pre><p>Gets a boolean indicating if the given quaternion is identity
+<strong>param</strong>  quaternion defines the quaternion to check
+<strong>returns</strong>  true if the quaternion is identity</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>quaternion</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-rotationaxis-75">RotationAxis <a class="anchor" href="#member-rotationaxis-75">#</a></h3><pre class="code" data-lang="ts"><code>static RotationAxis(axis: DeepImmutable&lt;Vector3&gt;, angle: number): Quaternion;</code></pre><p>Creates a quaternion from a rotation around an axis
+Example Playground (online reference)
+<strong>param</strong>  axis defines the axis to use
+<strong>param</strong>  angle defines the angle to use
+<strong>returns</strong>  a new quaternion created from the given axis (Vector3) and angle in radians (float)</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>axis</code></td><td><code>DeepImmutable&lt;Vector3&gt;</code></td><td>Required</td></tr><tr><td><code>angle</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Quaternion</code></p><h3 id="member-rotationaxistoref-76">RotationAxisToRef <a class="anchor" href="#member-rotationaxistoref-76">#</a></h3><pre class="code" data-lang="ts"><code>static RotationAxisToRef&lt;T extends Quaternion&gt;(axis: DeepImmutable&lt;Vector3&gt;, angle: number, result: T): T;</code></pre><p>Creates a rotation around an axis and stores it into the given quaternion
+Example Playground (online reference)
+<strong>param</strong>  axis defines the axis to use
+<strong>param</strong>  angle defines the angle to use
+<strong>param</strong>  result defines the target quaternion
+<strong>returns</strong>  the target quaternion</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>axis</code></td><td><code>DeepImmutable&lt;Vector3&gt;</code></td><td>Required</td></tr><tr><td><code>angle</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-fromarray-77">FromArray <a class="anchor" href="#member-fromarray-77">#</a></h3><pre class="code" data-lang="ts"><code>static FromArray(array: DeepImmutable&lt;ArrayLike&lt;number&gt;&gt;, offset?: number): Quaternion;</code></pre><p>Creates a new quaternion from data stored into an array
+Example Playground (online reference)
+<strong>param</strong>  array defines the data source
+<strong>param</strong>  offset defines the offset in the source array where the data starts
+<strong>returns</strong>  a new quaternion</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>array</code></td><td><code>DeepImmutable&lt;ArrayLike&lt;number&gt;&gt;</code></td><td>Required</td></tr><tr><td><code>offset</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Quaternion</code></p><h3 id="member-fromarraytoref-78">FromArrayToRef <a class="anchor" href="#member-fromarraytoref-78">#</a></h3><pre class="code" data-lang="ts"><code>static FromArrayToRef&lt;T extends Quaternion&gt;(array: DeepImmutable&lt;ArrayLike&lt;number&gt;&gt;, offset: number, result: T): T;</code></pre><p>Updates the given quaternion &quot;result&quot; from the starting index of the given array.
+Example Playground (online reference)
+<strong>param</strong>  array the array to pull values from
+<strong>param</strong>  offset the offset into the array to start at
+<strong>param</strong>  result the quaternion to store the result in
+<strong>returns</strong>  result input</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>array</code></td><td><code>DeepImmutable&lt;ArrayLike&lt;number&gt;&gt;</code></td><td>Required</td></tr><tr><td><code>offset</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-fromfloatstoref-79">FromFloatsToRef <a class="anchor" href="#member-fromfloatstoref-79">#</a></h3><pre class="code" data-lang="ts"><code>static FromFloatsToRef&lt;T extends Quaternion = Quaternion&gt;(x: number, y: number, z: number, w: number, result: T): T;</code></pre><p>Sets the given quaternion &quot;result&quot; with the given floats.
+<strong>param</strong>  x defines the x coordinate of the source
+<strong>param</strong>  y defines the y coordinate of the source
+<strong>param</strong>  z defines the z coordinate of the source
+<strong>param</strong>  w defines the w coordinate of the source
+<strong>param</strong>  result defines the quaternion where to store the result
+<strong>returns</strong>  the result quaternion</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>z</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>w</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-fromeulerangles-80">FromEulerAngles <a class="anchor" href="#member-fromeulerangles-80">#</a></h3><pre class="code" data-lang="ts"><code>static FromEulerAngles(x: number, y: number, z: number): Quaternion;</code></pre><p>Create a quaternion from Euler rotation angles
+Example Playground (online reference)
+<strong>param</strong>  x Pitch
+<strong>param</strong>  y Yaw
+<strong>param</strong>  z Roll
+<strong>returns</strong>  the new Quaternion</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>z</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Quaternion</code></p><h3 id="member-fromeuleranglestoref-81">FromEulerAnglesToRef <a class="anchor" href="#member-fromeuleranglestoref-81">#</a></h3><pre class="code" data-lang="ts"><code>static FromEulerAnglesToRef&lt;T extends Quaternion&gt;(x: number, y: number, z: number, result: T): T;</code></pre><p>Updates a quaternion from Euler rotation angles
+Example Playground (online reference)
+<strong>param</strong>  x Pitch
+<strong>param</strong>  y Yaw
+<strong>param</strong>  z Roll
+<strong>param</strong>  result the quaternion to store the result
+<strong>returns</strong>  the updated quaternion</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>z</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-fromeulervector-82">FromEulerVector <a class="anchor" href="#member-fromeulervector-82">#</a></h3><pre class="code" data-lang="ts"><code>static FromEulerVector(vec: DeepImmutable&lt;Vector3&gt;): Quaternion;</code></pre><p>Create a quaternion from Euler rotation vector
+Example Playground (online reference)
+<strong>param</strong>  vec the Euler vector (x Pitch, y Yaw, z Roll)
+<strong>returns</strong>  the new Quaternion</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>vec</code></td><td><code>DeepImmutable&lt;Vector3&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Quaternion</code></p><h3 id="member-fromeulervectortoref-83">FromEulerVectorToRef <a class="anchor" href="#member-fromeulervectortoref-83">#</a></h3><pre class="code" data-lang="ts"><code>static FromEulerVectorToRef&lt;T extends Quaternion&gt;(vec: DeepImmutable&lt;Vector3&gt;, result: T): T;</code></pre><p>Updates a quaternion from Euler rotation vector
+Example Playground (online reference)
+<strong>param</strong>  vec the Euler vector (x Pitch, y Yaw, z Roll)
+<strong>param</strong>  result the quaternion to store the result
+<strong>returns</strong>  the updated quaternion</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>vec</code></td><td><code>DeepImmutable&lt;Vector3&gt;</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-fromunitvectorstoref-84">FromUnitVectorsToRef <a class="anchor" href="#member-fromunitvectorstoref-84">#</a></h3><pre class="code" data-lang="ts"><code>static FromUnitVectorsToRef&lt;T extends Quaternion&gt;(vecFrom: DeepImmutable&lt;Vector3&gt;, vecTo: DeepImmutable&lt;Vector3&gt;, result: T, epsilon?: number): T;</code></pre><p>Updates a quaternion so that it rotates vector vecFrom to vector vecTo
+Example Playground - (online reference)
+<strong>param</strong>  vecFrom defines the direction vector from which to rotate
+<strong>param</strong>  vecTo defines the direction vector to which to rotate
+<strong>param</strong>  result the quaternion to store the result
+<strong>param</strong>  epsilon defines the minimal dot value to define vecs as opposite. Default: <code>BABYLON.Epsilon</code>
+<strong>returns</strong>  the updated quaternion</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>vecFrom</code></td><td><code>DeepImmutable&lt;Vector3&gt;</code></td><td>Required</td></tr><tr><td><code>vecTo</code></td><td><code>DeepImmutable&lt;Vector3&gt;</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr><tr><td><code>epsilon</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-rotationyawpitchroll-85">RotationYawPitchRoll <a class="anchor" href="#member-rotationyawpitchroll-85">#</a></h3><pre class="code" data-lang="ts"><code>static RotationYawPitchRoll(yaw: number, pitch: number, roll: number): Quaternion;</code></pre><p>Creates a new quaternion from the given Euler float angles (y, x, z)
+Example Playground (online reference)
+<strong>param</strong>  yaw defines the rotation around Y axis
+<strong>param</strong>  pitch defines the rotation around X axis
+<strong>param</strong>  roll defines the rotation around Z axis
+<strong>returns</strong>  the new quaternion</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>yaw</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>pitch</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>roll</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Quaternion</code></p><h3 id="member-rotationyawpitchrolltoref-86">RotationYawPitchRollToRef <a class="anchor" href="#member-rotationyawpitchrolltoref-86">#</a></h3><pre class="code" data-lang="ts"><code>static RotationYawPitchRollToRef&lt;T extends Quaternion&gt;(yaw: number, pitch: number, roll: number, result: T): T;</code></pre><p>Creates a new rotation from the given Euler float angles (y, x, z) and stores it in the target quaternion
+Example Playground (online reference)
+<strong>param</strong>  yaw defines the rotation around Y axis
+<strong>param</strong>  pitch defines the rotation around X axis
+<strong>param</strong>  roll defines the rotation around Z axis
+<strong>param</strong>  result defines the target quaternion
+<strong>returns</strong>  result input</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>yaw</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>pitch</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>roll</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-rotationalphabetagamma-87">RotationAlphaBetaGamma <a class="anchor" href="#member-rotationalphabetagamma-87">#</a></h3><pre class="code" data-lang="ts"><code>static RotationAlphaBetaGamma(alpha: number, beta: number, gamma: number): Quaternion;</code></pre><p>Creates a new quaternion from the given Euler float angles expressed in z-x-z orientation
+Example Playground (online reference)
+<strong>param</strong>  alpha defines the rotation around first axis
+<strong>param</strong>  beta defines the rotation around second axis
+<strong>param</strong>  gamma defines the rotation around third axis
+<strong>returns</strong>  the new quaternion</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>alpha</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>beta</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>gamma</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Quaternion</code></p><h3 id="member-rotationalphabetagammatoref-88">RotationAlphaBetaGammaToRef <a class="anchor" href="#member-rotationalphabetagammatoref-88">#</a></h3><pre class="code" data-lang="ts"><code>static RotationAlphaBetaGammaToRef&lt;T extends Quaternion&gt;(alpha: number, beta: number, gamma: number, result: T): T;</code></pre><p>Creates a new quaternion from the given Euler float angles expressed in z-x-z orientation and stores it in the target quaternion
+Example Playground (online reference)
+<strong>param</strong>  alpha defines the rotation around first axis
+<strong>param</strong>  beta defines the rotation around second axis
+<strong>param</strong>  gamma defines the rotation around third axis
+<strong>param</strong>  result defines the target quaternion
+<strong>returns</strong>  result input</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>alpha</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>beta</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>gamma</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-rotationquaternionfromaxis-89">RotationQuaternionFromAxis <a class="anchor" href="#member-rotationquaternionfromaxis-89">#</a></h3><pre class="code" data-lang="ts"><code>static RotationQuaternionFromAxis(axis1: DeepImmutable&lt;Vector3&gt;, axis2: DeepImmutable&lt;Vector3&gt;, axis3: DeepImmutable&lt;Vector3&gt;): Quaternion;</code></pre><p>Creates a new quaternion containing the rotation value to reach the target (axis1, axis2, axis3) orientation as a rotated XYZ system (axis1, axis2 and axis3 are normalized during this operation)
+Example Playground (online reference)
+<strong>param</strong>  axis1 defines the first axis
+<strong>param</strong>  axis2 defines the second axis
+<strong>param</strong>  axis3 defines the third axis
+<strong>returns</strong>  the new quaternion</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>axis1</code></td><td><code>DeepImmutable&lt;Vector3&gt;</code></td><td>Required</td></tr><tr><td><code>axis2</code></td><td><code>DeepImmutable&lt;Vector3&gt;</code></td><td>Required</td></tr><tr><td><code>axis3</code></td><td><code>DeepImmutable&lt;Vector3&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Quaternion</code></p><h3 id="member-rotationquaternionfromaxistoref-90">RotationQuaternionFromAxisToRef <a class="anchor" href="#member-rotationquaternionfromaxistoref-90">#</a></h3><pre class="code" data-lang="ts"><code>static RotationQuaternionFromAxisToRef&lt;T extends Quaternion&gt;(axis1: DeepImmutable&lt;Vector3&gt;, axis2: DeepImmutable&lt;Vector3&gt;, axis3: DeepImmutable&lt;Vector3&gt;, ref: T): T;</code></pre><p>Creates a rotation value to reach the target (axis1, axis2, axis3) orientation as a rotated XYZ system (axis1, axis2 and axis3 are normalized during this operation) and stores it in the target quaternion
+Example Playground (online reference)
+<strong>param</strong>  axis1 defines the first axis
+<strong>param</strong>  axis2 defines the second axis
+<strong>param</strong>  axis3 defines the third axis
+<strong>param</strong>  ref defines the target quaternion
+<strong>returns</strong>  result input</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>axis1</code></td><td><code>DeepImmutable&lt;Vector3&gt;</code></td><td>Required</td></tr><tr><td><code>axis2</code></td><td><code>DeepImmutable&lt;Vector3&gt;</code></td><td>Required</td></tr><tr><td><code>axis3</code></td><td><code>DeepImmutable&lt;Vector3&gt;</code></td><td>Required</td></tr><tr><td><code>ref</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-fromlookdirectionlh-91">FromLookDirectionLH <a class="anchor" href="#member-fromlookdirectionlh-91">#</a></h3><pre class="code" data-lang="ts"><code>static FromLookDirectionLH(forward: DeepImmutable&lt;Vector3&gt;, up: DeepImmutable&lt;Vector3&gt;): Quaternion;</code></pre><p>Creates a new rotation value to orient an object to look towards the given forward direction, the up direction being oriented like &quot;up&quot;.
+This function works in left handed mode
+Example Playground (online reference)
+<strong>param</strong>  forward defines the forward direction - Must be normalized and orthogonal to up.
+<strong>param</strong>  up defines the up vector for the entity - Must be normalized and orthogonal to forward.
+<strong>returns</strong>  A new quaternion oriented toward the specified forward and up.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>forward</code></td><td><code>DeepImmutable&lt;Vector3&gt;</code></td><td>Required</td></tr><tr><td><code>up</code></td><td><code>DeepImmutable&lt;Vector3&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Quaternion</code></p><h3 id="member-fromlookdirectionlhtoref-92">FromLookDirectionLHToRef <a class="anchor" href="#member-fromlookdirectionlhtoref-92">#</a></h3><pre class="code" data-lang="ts"><code>static FromLookDirectionLHToRef&lt;T extends Quaternion&gt;(forward: DeepImmutable&lt;Vector3&gt;, up: DeepImmutable&lt;Vector3&gt;, ref: T): T;</code></pre><p>Creates a new rotation value to orient an object to look towards the given forward direction with the up direction being oriented like &quot;up&quot;, and stores it in the target quaternion.
+This function works in left handed mode
+Example Playground (online reference)
+<strong>param</strong>  forward defines the forward direction - Must be normalized and orthogonal to up.
+<strong>param</strong>  up defines the up vector for the entity - Must be normalized and orthogonal to forward.
+<strong>param</strong>  ref defines the target quaternion.
+<strong>returns</strong>  result input</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>forward</code></td><td><code>DeepImmutable&lt;Vector3&gt;</code></td><td>Required</td></tr><tr><td><code>up</code></td><td><code>DeepImmutable&lt;Vector3&gt;</code></td><td>Required</td></tr><tr><td><code>ref</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-fromlookdirectionrh-93">FromLookDirectionRH <a class="anchor" href="#member-fromlookdirectionrh-93">#</a></h3><pre class="code" data-lang="ts"><code>static FromLookDirectionRH(forward: DeepImmutable&lt;Vector3&gt;, up: DeepImmutable&lt;Vector3&gt;): Quaternion;</code></pre><p>Creates a new rotation value to orient an object to look towards the given forward direction, the up direction being oriented like &quot;up&quot;.
+This function works in right handed mode
+Example Playground (online reference)
+<strong>param</strong>  forward defines the forward direction - Must be normalized and orthogonal to up.
+<strong>param</strong>  up defines the up vector for the entity - Must be normalized and orthogonal to forward.
+<strong>returns</strong>  A new quaternion oriented toward the specified forward and up.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>forward</code></td><td><code>DeepImmutable&lt;Vector3&gt;</code></td><td>Required</td></tr><tr><td><code>up</code></td><td><code>DeepImmutable&lt;Vector3&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Quaternion</code></p><h3 id="member-fromlookdirectionrhtoref-94">FromLookDirectionRHToRef <a class="anchor" href="#member-fromlookdirectionrhtoref-94">#</a></h3><pre class="code" data-lang="ts"><code>static FromLookDirectionRHToRef&lt;T extends Quaternion&gt;(forward: DeepImmutable&lt;Vector3&gt;, up: DeepImmutable&lt;Vector3&gt;, ref: T): T;</code></pre><p>Creates a new rotation value to orient an object to look towards the given forward direction with the up direction being oriented like &quot;up&quot;, and stores it in the target quaternion.
+This function works in right handed mode
+Example Playground (online reference)
+<strong>param</strong>  forward defines the forward direction - Must be normalized and orthogonal to up.
+<strong>param</strong>  up defines the up vector for the entity - Must be normalized and orthogonal to forward.
+<strong>param</strong>  ref defines the target quaternion.
+<strong>returns</strong>  result input</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>forward</code></td><td><code>DeepImmutable&lt;Vector3&gt;</code></td><td>Required</td></tr><tr><td><code>up</code></td><td><code>DeepImmutable&lt;Vector3&gt;</code></td><td>Required</td></tr><tr><td><code>ref</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-slerp-95">Slerp <a class="anchor" href="#member-slerp-95">#</a></h3><pre class="code" data-lang="ts"><code>static Slerp(left: DeepImmutable&lt;Quaternion&gt;, right: DeepImmutable&lt;Quaternion&gt;, amount: number): Quaternion;</code></pre><p>Interpolates between two quaternions
+Example Playground (online reference)
+<strong>param</strong>  left defines first quaternion
+<strong>param</strong>  right defines second quaternion
+<strong>param</strong>  amount defines the gradient to use
+<strong>returns</strong>  the new interpolated quaternion</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>left</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr><tr><td><code>right</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr><tr><td><code>amount</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Quaternion</code></p><h3 id="member-slerptoref-96">SlerpToRef <a class="anchor" href="#member-slerptoref-96">#</a></h3><pre class="code" data-lang="ts"><code>static SlerpToRef&lt;T extends Quaternion&gt;(left: DeepImmutable&lt;Quaternion&gt;, right: DeepImmutable&lt;Quaternion&gt;, amount: number, result: T): T;</code></pre><p>Interpolates between two quaternions and stores it into a target quaternion
+Example Playground (online reference)
+<strong>param</strong>  left defines first quaternion
+<strong>param</strong>  right defines second quaternion
+<strong>param</strong>  amount defines the gradient to use
+<strong>param</strong>  result defines the target quaternion
+<strong>returns</strong>  result input</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>left</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr><tr><td><code>right</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr><tr><td><code>amount</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-hermite-97">Hermite <a class="anchor" href="#member-hermite-97">#</a></h3><pre class="code" data-lang="ts"><code>static Hermite(value1: DeepImmutable&lt;Quaternion&gt;, tangent1: DeepImmutable&lt;Quaternion&gt;, value2: DeepImmutable&lt;Quaternion&gt;, tangent2: DeepImmutable&lt;Quaternion&gt;, amount: number): Quaternion;</code></pre><p>Interpolate between two quaternions using Hermite interpolation
+Example Playground (online reference)
+<strong>see</strong>  (online reference)
+<strong>param</strong>  value1 defines first quaternion
+<strong>param</strong>  tangent1 defines the incoming tangent
+<strong>param</strong>  value2 defines second quaternion
+<strong>param</strong>  tangent2 defines the outgoing tangent
+<strong>param</strong>  amount defines the target quaternion
+<strong>returns</strong>  the new interpolated quaternion</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value1</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr><tr><td><code>tangent1</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr><tr><td><code>value2</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr><tr><td><code>tangent2</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr><tr><td><code>amount</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Quaternion</code></p><h3 id="member-hermite1stderivative-98">Hermite1stDerivative <a class="anchor" href="#member-hermite1stderivative-98">#</a></h3><pre class="code" data-lang="ts"><code>static Hermite1stDerivative(value1: DeepImmutable&lt;Quaternion&gt;, tangent1: DeepImmutable&lt;Quaternion&gt;, value2: DeepImmutable&lt;Quaternion&gt;, tangent2: DeepImmutable&lt;Quaternion&gt;, time: number): Quaternion;</code></pre><p>Returns a new Quaternion which is the 1st derivative of the Hermite spline defined by the quaternions &quot;value1&quot;, &quot;value2&quot;, &quot;tangent1&quot;, &quot;tangent2&quot;.
+Example Playground (online reference)
+<strong>param</strong>  value1 defines the first control point
+<strong>param</strong>  tangent1 defines the first tangent
+<strong>param</strong>  value2 defines the second control point
+<strong>param</strong>  tangent2 defines the second tangent
+<strong>param</strong>  time define where the derivative must be done
+<strong>returns</strong>  1st derivative</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value1</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr><tr><td><code>tangent1</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr><tr><td><code>value2</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr><tr><td><code>tangent2</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr><tr><td><code>time</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Quaternion</code></p><h3 id="member-hermite1stderivativetoref-99">Hermite1stDerivativeToRef <a class="anchor" href="#member-hermite1stderivativetoref-99">#</a></h3><pre class="code" data-lang="ts"><code>static Hermite1stDerivativeToRef&lt;T extends Quaternion&gt;(value1: DeepImmutable&lt;Quaternion&gt;, tangent1: DeepImmutable&lt;Quaternion&gt;, value2: DeepImmutable&lt;Quaternion&gt;, tangent2: DeepImmutable&lt;Quaternion&gt;, time: number, result: T): T;</code></pre><p>Update a Quaternion with the 1st derivative of the Hermite spline defined by the quaternions &quot;value1&quot;, &quot;value2&quot;, &quot;tangent1&quot;, &quot;tangent2&quot;.
+Example Playground (online reference)
+<strong>param</strong>  value1 defines the first control point
+<strong>param</strong>  tangent1 defines the first tangent
+<strong>param</strong>  value2 defines the second control point
+<strong>param</strong>  tangent2 defines the second tangent
+<strong>param</strong>  time define where the derivative must be done
+<strong>param</strong>  result define where to store the derivative
+<strong>returns</strong>  result input</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value1</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr><tr><td><code>tangent1</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr><tr><td><code>value2</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr><tr><td><code>tangent2</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr><tr><td><code>time</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-normalize-100">Normalize <a class="anchor" href="#member-normalize-100">#</a></h3><pre class="code" data-lang="ts"><code>static Normalize(quat: DeepImmutable&lt;Quaternion&gt;): Quaternion;</code></pre><p>Returns a new Quaternion as the normalization of the given Quaternion
+<strong>param</strong>  quat defines the Quaternion to normalize
+<strong>returns</strong>  the new Quaternion</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>quat</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Quaternion</code></p><h3 id="member-normalizetoref-101">NormalizeToRef <a class="anchor" href="#member-normalizetoref-101">#</a></h3><pre class="code" data-lang="ts"><code>static NormalizeToRef&lt;T extends Quaternion&gt;(quat: DeepImmutable&lt;Quaternion&gt;, result: T): T;</code></pre><p>Sets the given Quaternion &quot;result&quot; with the normalization of the given first Quaternion
+<strong>param</strong>  quat defines the Quaternion to normalize
+<strong>param</strong>  result defines the Quaternion where to store the result
+<strong>returns</strong>  result input</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>quat</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-clamp-102">Clamp <a class="anchor" href="#member-clamp-102">#</a></h3><pre class="code" data-lang="ts"><code>static Clamp(value: DeepImmutable&lt;Quaternion&gt;, min: DeepImmutable&lt;Quaternion&gt;, max: DeepImmutable&lt;Quaternion&gt;): Quaternion;</code></pre><p>Returns a new Quaternion set with the coordinates of &quot;value&quot;, if the quaternion &quot;value&quot; is in the cube defined by the quaternions &quot;min&quot; and &quot;max&quot;
+If a coordinate value of &quot;value&quot; is lower than one of the &quot;min&quot; coordinate, then this &quot;value&quot; coordinate is set with the &quot;min&quot; one
+If a coordinate value of &quot;value&quot; is greater than one of the &quot;max&quot; coordinate, then this &quot;value&quot; coordinate is set with the &quot;max&quot; one
+<strong>param</strong>  value defines the current value
+<strong>param</strong>  min defines the lower range value
+<strong>param</strong>  max defines the upper range value
+<strong>returns</strong>  the new Quaternion</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr><tr><td><code>min</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr><tr><td><code>max</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Quaternion</code></p><h3 id="member-clamptoref-103">ClampToRef <a class="anchor" href="#member-clamptoref-103">#</a></h3><pre class="code" data-lang="ts"><code>static ClampToRef&lt;T extends Quaternion&gt;(value: DeepImmutable&lt;Quaternion&gt;, min: DeepImmutable&lt;Quaternion&gt;, max: DeepImmutable&lt;Quaternion&gt;, result: T): T;</code></pre><p>Sets the given quaternion &quot;result&quot; with the coordinates of &quot;value&quot;, if the quaternion &quot;value&quot; is in the cube defined by the quaternions &quot;min&quot; and &quot;max&quot;
+If a coordinate value of &quot;value&quot; is lower than one of the &quot;min&quot; coordinate, then this &quot;value&quot; coordinate is set with the &quot;min&quot; one
+If a coordinate value of &quot;value&quot; is greater than one of the &quot;max&quot; coordinate, then this &quot;value&quot; coordinate is set with the &quot;max&quot; one
+<strong>param</strong>  value defines the current value
+<strong>param</strong>  min defines the lower range value
+<strong>param</strong>  max defines the upper range value
+<strong>param</strong>  result defines the Quaternion where to store the result
+<strong>returns</strong>  result input</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr><tr><td><code>min</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr><tr><td><code>max</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr><tr><td><code>result</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-random-104">Random <a class="anchor" href="#member-random-104">#</a></h3><pre class="code" data-lang="ts"><code>static Random(min?: number, max?: number): Quaternion;</code></pre><p>Returns a new Quaternion with random values between min and max
+<strong>param</strong>  min the minimum random value
+<strong>param</strong>  max the maximum random value
+<strong>returns</strong>  a Quaternion with random values between min and max</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>min</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>max</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Quaternion</code></p><h3 id="member-randomtoref-105">RandomToRef <a class="anchor" href="#member-randomtoref-105">#</a></h3><pre class="code" data-lang="ts"><code>static RandomToRef&lt;T extends Quaternion&gt;(min: number | undefined, max: number | undefined, ref: T): T;</code></pre><p>Sets a Quaternion with random values between min and max
+<strong>param</strong>  min the minimum random value
+<strong>param</strong>  max the maximum random value
+<strong>param</strong>  ref the ref to store the values in
+<strong>returns</strong>  the ref with random values between min and max</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>min</code></td><td><code>number | undefined</code></td><td>Required</td></tr><tr><td><code>max</code></td><td><code>number | undefined</code></td><td>Required</td></tr><tr><td><code>ref</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-distance-106">Distance <a class="anchor" href="#member-distance-106">#</a></h3><pre class="code" data-lang="ts"><code>static Distance(value1: DeepImmutable&lt;Quaternion&gt;, value2: DeepImmutable&lt;Quaternion&gt;): number;</code></pre><p>Returns the distance (float) between the quaternions &quot;value1&quot; and &quot;value2&quot;.
+<strong>param</strong>  value1 value to calulate the distance between
+<strong>param</strong>  value2 value to calulate the distance between
+<strong>returns</strong>  the distance between the two quaternions</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value1</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr><tr><td><code>value2</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>number</code></p><h3 id="member-distancesquared-107">DistanceSquared <a class="anchor" href="#member-distancesquared-107">#</a></h3><pre class="code" data-lang="ts"><code>static DistanceSquared(value1: DeepImmutable&lt;Quaternion&gt;, value2: DeepImmutable&lt;Quaternion&gt;): number;</code></pre><p>Returns the squared distance (float) between the quaternions &quot;value1&quot; and &quot;value2&quot;.
+<strong>param</strong>  value1 value to calulate the distance between
+<strong>param</strong>  value2 value to calulate the distance between
+<strong>returns</strong>  the distance between the two quaternions squared</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value1</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr><tr><td><code>value2</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>number</code></p><h3 id="member-center-108">Center <a class="anchor" href="#member-center-108">#</a></h3><pre class="code" data-lang="ts"><code>static Center(value1: DeepImmutable&lt;Quaternion&gt;, value2: DeepImmutable&lt;Quaternion&gt;): Quaternion;</code></pre><p>Returns a new Quaternion located at the center between the quaternions &quot;value1&quot; and &quot;value2&quot;.
+<strong>param</strong>  value1 value to calulate the center between
+<strong>param</strong>  value2 value to calulate the center between
+<strong>returns</strong>  the center between the two quaternions</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value1</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr><tr><td><code>value2</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Quaternion</code></p><h3 id="member-centertoref-109">CenterToRef <a class="anchor" href="#member-centertoref-109">#</a></h3><pre class="code" data-lang="ts"><code>static CenterToRef&lt;T extends Quaternion&gt;(value1: DeepImmutable&lt;Quaternion&gt;, value2: DeepImmutable&lt;Quaternion&gt;, ref: T): T;</code></pre><p>Gets the center of the quaternions &quot;value1&quot; and &quot;value2&quot; and stores the result in the quaternion &quot;ref&quot;
+<strong>param</strong>  value1 defines first quaternion
+<strong>param</strong>  value2 defines second quaternion
+<strong>param</strong>  ref defines third quaternion
+<strong>returns</strong>  ref</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value1</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr><tr><td><code>value2</code></td><td><code>DeepImmutable&lt;Quaternion&gt;</code></td><td>Required</td></tr><tr><td><code>ref</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h2 id="base-types">Base types</h2><p><a href="engine-babylonjs-babylon-tensor.html">Tensor</a> · <code>Quaternion&gt;</code> · <code>IQuaternionLike</code></p><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#members">Public members (110)</a><a href="#base-types">Base types</a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

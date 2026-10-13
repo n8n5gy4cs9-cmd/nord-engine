@@ -1,0 +1,672 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: WebXR Augmented Reality Features — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: WebXR Augmented Reality Features</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="a-bit-about-augmented-reality">A bit about augmented reality<a class="anchor" href="#a-bit-about-augmented-reality">#</a></h2>
+<p>The idea behind augmented reality is simple - show the real world, but add information on top of it. This is different from virtual reality, where you are fully immersed in a different scene and have no actual contact with the real world.</p>
+<h2 id="getting-started-with-augmented-reality">Getting started with Augmented Reality<a class="anchor" href="#getting-started-with-augmented-reality">#</a></h2>
+<h3 id="webxr-and-ar">WebXR and AR<a class="anchor" href="#webxr-and-ar">#</a></h3>
+<p>Augmented reality in Babylon.js relies heavily on WebXR. It&#39;s recommended that you start with the <a href="babylon-guide-features-featuresdeepdive-webxr-introtowebxr.html">getting started with WebXR</a> guide. Most of the information that is valid for immersive VR sessions is also valid for immersive AR sessions. The main differences between the two are explained here.</p>
+<h3 id="supported-devices">Supported devices<a class="anchor" href="#supported-devices">#</a></h3>
+<p>Many devices support immersive AR sessions using WebXR. Most Android devices support it in a Chromium-based browser, HoloLens 2 supports it in its native browser, and Quest devices that support passthrough mode can run an AR session as well. New devices are constantly added to this list. The best way to check is to use the static <code>IsSessionSupported</code> function, available on the WebXR session manager.</p>
+<p>Mobile phones using Android support immersive AR sessions on Chrome (Stable/Canary). Note that you will need to install <span>AR Core</span>, otherwise it will be a very short experience.</p>
+<p>HoloLens 2 supports WebXR and immersive AR/VR sessions when using the native Edge browser.</p>
+<p>The new WebXR emulator supports AR sessions as well, if you want to test your experience on a local browser before trying it on a supporting device.</p>
+<h3 id="simple-scene-in-immersive-ar">Simple scene in immersive AR<a class="anchor" href="#simple-scene-in-immersive-ar">#</a></h3>
+<p>The simplest immersive AR sample is a port of an immersive VR scene:</p>
+<pre class="code" data-lang="javascript"><code>var createScene = async function () {
+  var scene = new BABYLON.Scene(engine);
+  var camera = new BABYLON.FreeCamera(&quot;camera1&quot;, new BABYLON.Vector3(0, 5, -10), scene);
+  camera.setTarget(BABYLON.Vector3.Zero());
+  camera.attachControl(canvas, true);
+  var light = new BABYLON.HemisphericLight(&quot;light1&quot;, new BABYLON.Vector3(0, 1, 0), scene);
+  light.intensity = 0.7;
+  var sphere = BABYLON.MeshBuilder.CreateSphere(&quot;sphere1&quot;, { segments: 16, diameter: 2 }, scene);
+  sphere.position.y = 2;
+  sphere.position.z = 5;
+
+  const xr = await scene.createDefaultXRExperienceAsync({
+    // ask for an ar-session
+    uiOptions: {
+      sessionMode: &quot;immersive-ar&quot;,
+    },
+  });
+
+  return scene;
+};</code></pre>
+<p>Playground for a simple immersive AR scene: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>Notice that no environment was created. As opposed to immersive VR sessions, AR doesn&#39;t require a skybox or ground. If you want to define ground and remove it when entering AR (for example, if you are developing an experience for both desktop and AR), you can use the background remover feature described later on this page.</p>
+<h2 id="features">Features<a class="anchor" href="#features">#</a></h2>
+<p>Some features require the Incubation flag in the latest Chrome Canary. Visit <span>chrome://flags</span> and enable WebXR incubation.</p>
+<p>You will then need to ask WebXR to enable this feature. This can be done using the <code>optionalFeatures</code> parameter in the default experience helper:</p>
+<pre class="code" data-lang="javascript"><code>const xr = await scene.createDefaultXRExperienceAsync({
+  uiOptions: {
+    sessionMode: &quot;immersive-ar&quot;,
+  },
+  optionalFeatures: true,
+});</code></pre>
+<p>This will enable all optional features that we support. You can also add individual features by using an array instead of a boolean value:</p>
+<pre class="code" data-lang="javascript"><code>const xr = await scene.createDefaultXRExperienceAsync({
+  uiOptions: {
+    sessionMode: &quot;immersive-ar&quot;,
+  },
+  optionalFeatures: [&quot;hit-test&quot;, &quot;anchors&quot;],
+});</code></pre>
+<p>The strings in <code>optionalFeatures</code>, such as <code>&quot;anchors&quot;</code>, <code>&quot;plane-detection&quot;</code>, and <code>&quot;mesh-detection&quot;</code>, are native WebXR session feature descriptors. They are different from Babylon feature names such as <code>WebXRFeatureName.ANCHOR_SYSTEM</code>, <code>WebXRFeatureName.PLANE_DETECTION</code>, and <code>WebXRFeatureName.MESH_DETECTION</code>, which are used with Babylon&#39;s features manager.</p>
+<h3 id="hit-test">Hit Test<a class="anchor" href="#hit-test">#</a></h3>
+<p>Hit Test is used to send a ray into the real world and receive information about intersections in space. You can read about it in the <span>Hit Test w3c draft</span>. Think of it as a ray broadcast from your phone&#39;s screen toward the object you are looking for. If the device&#39;s AR capabilities allow it, it will tell you the position and orientation of the point relative to you.</p>
+<p>To enable hit-testing, add this after initializing XR:</p>
+<pre class="code" data-lang="javascript"><code>// featuresManager from the base webxr experience helper
+const hitTest = featuresManager.enableFeature(BABYLON.WebXRHitTest, &quot;latest&quot;);</code></pre>
+<p>In TypeScript, you can also get the type set correctly:</p>
+<pre class="code" data-lang="typescript"><code>// featuresManager from the base webxr experience helper
+const hitTest = featuresManager.enableFeature(BABYLON.WebXRHitTest, &quot;latest&quot;) as BABYLON.WebXRHitTest;</code></pre>
+<p>This will enable the default behavior of hit-testing which is sending a single hit-test ray from the center of the display forward on each frame.</p>
+<p>The options that you can pass are described in the following interface:</p>
+<pre class="code" data-lang="typescript"><code>export interface IWebXRHitTestOptions {
+  /**
+   * Do not create a permanent hit test. Will usually be used when only
+   * transient inputs are needed.
+   */
+  disablePermanentHitTest?: boolean;
+  /**
+   * Enable transient (for example touch-based) hit test inspections
+   */
+  enableTransientHitTest?: boolean;
+  /**
+   * Offset ray for the permanent hit test
+   */
+  offsetRay?: Vector3;
+  /**
+   * Offset ray for the transient hit test
+   */
+  transientOffsetRay?: Vector3;
+  /**
+   * Instead of using viewer space for hit tests, use the reference space defined in the session manager
+   */
+  useReferenceSpace?: boolean;
+}</code></pre>
+<p><code>disablePermanentHitTest</code> will disable constant hit testing, while <code>enableTransientHitTest</code> will enable hit tests when touching the screen. The offsets define the offset from which the ray will be sent (relative to the center of the device&#39;s view).</p>
+<p>After enabling the feature, you can register to get updates using the <code>onHitTestResultObservable</code>:</p>
+<pre class="code" data-lang="javascript"><code>// a dot to show in the found position
+const dot = BABYLON.SphereBuilder.CreateSphere(
+  &quot;dot&quot;,
+  {
+    diameter: 0.05,
+  },
+  scene,
+);
+dot.isVisible = false;
+hitTest.onHitTestResultObservable.add((results) =&gt; {
+  if (results.length) {
+    dot.isVisible = true;
+    results[0].transformationMatrix.decompose(dot.scaling, dot.rotationQuaternion, dot.position);
+  } else {
+    dot.isVisible = false;
+  }
+});</code></pre>
+<p>This will show the dot only if hit-test worked, and will hide it if it didn&#39;t. The dot will be projected to the real world using the information provided by the system.</p>
+<p>A simple example for WebXR hit-test using Babylon.js: <span class="muted">Online playground (not embedded offline)</span>. Open this with your AR device (probably your Android smartphone) and point the device at a textured plane (like your floor or door). The marker will be shown at the right location if/when the system scanned the plane correctly.</p>
+<h3 id="anchors">Anchors<a class="anchor" href="#anchors">#</a></h3>
+<p>Anchors are tracked points in space that the system will constantly update as you continue scanning your environment. The points&#39; transformation will be constantly updated by the underlying system. You can read more about Anchors at the <span>WebXR anchors module</span> w3c proposal.</p>
+<p>Enable the Anchors system using:</p>
+<pre class="code" data-lang="javascript"><code>// featuresManager from the base webxr experience helper
+const anchorSystem = featuresManager.enableFeature(BABYLON.WebXRAnchorSystem.Name, &quot;latest&quot;);</code></pre>
+<p>or for TypeScript:</p>
+<pre class="code" data-lang="typescript"><code>// featuresManager from the base webxr experience helper
+const anchorSystem = featuresManager.enableFeature(BABYLON.WebXRAnchorSystem.Name, &quot;latest&quot;);</code></pre>
+<p>Some options can be passed to the anchor system:</p>
+<pre class="code" data-lang="typescript"><code>export interface IWebXRAnchorSystemOptions {
+  /**
+   * a node that will be used to convert local to world coordinates
+   */
+  worldParentNode?: TransformNode;
+
+  /**
+   * If set to true a reference of the created anchors will be kept until the next session starts
+   * If not defined, anchors will be removed from the array when the feature is detached or the session ended.
+   */
+  doNotRemoveAnchorsOnSessionEnded?: boolean;
+}</code></pre>
+<p>Anchors are session-scoped by default and are removed when exiting the XR session (the anchors are removed, not the meshes attached to them). The <code>doNotRemoveAnchorsOnSessionEnded</code> option only keeps Babylon&#39;s references; it does not make the native anchors usable in a later session. Supporting runtimes can persist anchors by handle as described below.</p>
+<p>If you want to prevent that from happening, use the <code>doNotRemoveAnchorsOnSessionEnded</code> option when initializing the anchor system:</p>
+<pre class="code" data-lang="javascript"><code>const anchorSystem = featuresManager.enableFeature(BABYLON.WebXRAnchorSystem.Name, &quot;latest&quot;, { doNotRemoveAnchorsOnSessionEnded: true });</code></pre>
+<p>The Anchor system works perfectly with the Hit Test feature if you want to add an anchor at a hit-test position. To do that, use the <code>addAnchorPointUsingHitTestResultAsync</code> function:</p>
+<pre class="code" data-lang="javascript"><code>const arTestResult = getMeTheResultINeed();
+const anchorPromise = anchorSystem.addAnchorPointUsingHitTestResultAsync(lastHitTest);</code></pre>
+<p>To add an anchor in any position and rotation in the scene, use the <code>addAnchorAtPositionAndRotationAsync</code> function:</p>
+<pre class="code" data-lang="javascript"><code>const { position, rotationQuaternion } = anyRandomMesh;
+const anchorPromise = anchorSystem.addAnchorAtPositionAndRotationAsync(position, rotationQuaternion);</code></pre>
+<p><code>anchorPromise</code> resolves with an <code>IWebXRAnchor</code>, which contains the native <code>XRAnchor</code> in its <code>xrAnchor</code> property. The same Babylon anchor is also delivered through the anchor module&#39;s observables:</p>
+<pre class="code" data-lang="javascript"><code>anchorSystem.onAnchorAddedObservable.add((anchor) =&gt; {
+  // ... do what you want with the anchor after it was added
+});
+
+anchorSystem.onAnchorRemovedObservable.add((anchor) =&gt; {
+  // ... do what you want with the anchor after it was removed
+});
+
+anchorSystem.onAnchorUpdatedObservable.add((anchor) =&gt; {
+  // ... do what you want with the anchor after it was updated
+});</code></pre>
+<p>The anchor is of type <code>IWebXRAnchor</code>:</p>
+<pre class="code" data-lang="typescript"><code>export interface IWebXRAnchor {
+  /**
+   * A babylon-assigned ID for this anchor
+   */
+  id: number;
+  /**
+   * Transformation matrix to apply to an object attached to this anchor
+   */
+  transformationMatrix: Matrix;
+  /**
+   * The native anchor object
+   */
+  xrAnchor: XRAnchor;
+
+  /**
+   * The persistent handle assigned by the XR runtime, when one was requested or restored
+   */
+  persistentHandle?: string;
+
+  /**
+   * if defined, this object will be constantly updated by the anchor's position and rotation
+   */
+  attachedNode?: TransformNode;
+}</code></pre>
+<p>To attach an anchor to a node (for example, a mesh that you want to always stay in this location in the scene), use the <code>attachedNode</code> variable. This will also update the mesh&#39;s transformation when the anchor is updated:</p>
+<pre class="code" data-lang="javascript"><code>const mesh = anchorSystem.onAnchorAddedObservable.add((anchor) =&gt; {
+  //...
+  anchor.attachedNode = mesh;
+});</code></pre>
+<p>The mesh will now be tracked by the system and will be located at the requested point.</p>
+<p>You might ask why use the anchor system with hit-test results, since hit-test results are returned by the system with a position defined by the device. Setting the mesh at the hit-test location will work just fine. The difference is that the system might later update the information it has about this position—maybe it found out the plane has a different transformation, or maybe it updated its position in space. Using the anchor system keeps the transformation updated as the system updates its understanding of the space.</p>
+<h4 id="persistent-anchors-experimental">Persistent anchors (experimental)<a class="anchor" href="#persistent-anchors-experimental">#</a></h4>
+<p>A session-scoped anchor is valid only in the XR session that created it. A persistent anchor has an origin-scoped string handle that a supporting runtime can use to restore the anchor in a later session. The <span>WebXR Anchors Module</span> marks persistence as experimental, and support is currently found primarily in Meta Quest Browser. Applications must not assume that handles are retained indefinitely: user agents can limit or evict stored anchors, and clearing site data can remove them.</p>
+<p><code>WebXRAnchorSystem</code> exposes the following persistence APIs:</p>
+<table>
+<thead>
+<tr>
+<th>API</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>IWebXRAnchor.persistentHandle?: string</code></td>
+<td>Contains the handle after Babylon requests or restores it.</td>
+</tr>
+<tr>
+<td><code>isPersistentAnchorSupported: boolean</code></td>
+<td>Reports whether the current session exposes enumeration, restoration, and deletion. It does not test handle creation on an individual anchor.</td>
+</tr>
+<tr>
+<td><code>persistentAnchors: ReadonlyArray&lt;string&gt;</code></td>
+<td>Enumerates the origin&#39;s handles known to the current session. The getter throws if enumeration is unavailable.</td>
+</tr>
+<tr>
+<td><code>requestPersistentHandleAsync(anchor: IWebXRAnchor): Promise&lt;string&gt;</code></td>
+<td>Requests a handle for a live anchor and assigns it to <code>anchor.persistentHandle</code>.</td>
+</tr>
+<tr>
+<td><code>restorePersistentAnchorAsync(handle: string): Promise&lt;IWebXRAnchor&gt;</code></td>
+<td>Restores one handle.</td>
+</tr>
+<tr>
+<td><code>restorePersistentAnchorsAsync(): Promise&lt;IWebXRAnchor[]&gt;</code></td>
+<td>Restores every handle currently returned by <code>persistentAnchors</code>.</td>
+</tr>
+<tr>
+<td><code>deletePersistentAnchorAsync(handle: string): Promise&lt;void&gt;</code></td>
+<td>Deletes the handle from native persistent storage.</td>
+</tr>
+</tbody></table>
+<p>Each native operation is feature-detected independently. In particular, check <code>anchor.xrAnchor.requestPersistentHandle</code> before requesting a new handle; <code>isPersistentAnchorSupported</code> does not cover that per-anchor method. Babylon rejects unsupported requests, restores, and deletions. It also rejects restoration while the feature is detached or if tracking is interrupted. Native failures, including invalid-state errors, are passed through, so every operation should handle errors.</p>
+<p>The following abbreviated lifecycle creates and persists an anchor in one session, then restores and deletes it in a later session. The anchor system must be attached to an active XR session before these functions run.</p>
+<pre class="code" data-lang="typescript"><code>const anchorSystem = featuresManager.enableFeature(BABYLON.WebXRAnchorSystem.Name, &quot;latest&quot;);
+const handleStorageKey = &quot;saved-xr-anchor&quot;;
+declare const contentToRestore: BABYLON.TransformNode; // Created during scene setup.
+
+async function createPersistentAnchor(position: BABYLON.Vector3, rotation: BABYLON.Quaternion) {
+  try {
+    const anchor = await anchorSystem.addAnchorAtPositionAndRotationAsync(position, rotation);
+
+    if (typeof anchor.xrAnchor.requestPersistentHandle !== &quot;function&quot;) {
+      throw new Error(&quot;This runtime cannot create persistent anchor handles.&quot;);
+    }
+
+    const handle = await anchorSystem.requestPersistentHandleAsync(anchor);
+    localStorage.setItem(handleStorageKey, handle);
+  } catch (error) {
+    console.error(&quot;Unable to persist the anchor:&quot;, error);
+  }
+}
+
+async function restoreSavedAnchor() {
+  const handle = localStorage.getItem(handleStorageKey);
+  if (!handle) {
+    return;
+  }
+
+  try {
+    const knownHandles = anchorSystem.persistentAnchors;
+    if (!knownHandles.includes(handle)) {
+      localStorage.removeItem(handleStorageKey);
+      return;
+    }
+
+    const restoredAnchor = await anchorSystem.restorePersistentAnchorAsync(handle);
+    restoredAnchor.attachedNode = contentToRestore;
+  } catch (error) {
+    console.error(&quot;Unable to restore the anchor:&quot;, error);
+  }
+}
+
+async function deleteSavedAnchor() {
+  const handle = localStorage.getItem(handleStorageKey);
+  if (!handle) {
+    return;
+  }
+
+  try {
+    await anchorSystem.deletePersistentAnchorAsync(handle);
+    localStorage.removeItem(handleStorageKey);
+  } catch (error) {
+    console.error(&quot;Unable to delete the persistent anchor:&quot;, error);
+  }
+}</code></pre>
+<p>Use <code>restorePersistentAnchorsAsync()</code> instead when every handle returned by the runtime should be restored. Restored anchors are added to <code>anchorSystem.anchors</code> and participate in <code>onAnchorAddedObservable</code>, <code>onAnchorUpdatedObservable</code>, and <code>onAnchorRemovedObservable</code> like newly created anchors. A restore promise resolves after the restored native anchor begins tracking and the added observable has run. Deleting persistence resolves when native storage deletion completes; removal from the live anchor collection and the removed observable occur on a following XR frame.</p>
+<h3 id="plane-detection">Plane detection<a class="anchor" href="#plane-detection">#</a></h3>
+<p>Your device may be capable of detecting plane geometries in the real world. See the <span>WebXR Plane Detection Module</span> for the native API.</p>
+<p>Babylon has an experimental plane detection module that works with the underlying system. To enable it:</p>
+<pre class="code" data-lang="javascript"><code>// featuresManager from the base webxr experience helper
+const planeDetector = featuresManager.enableFeature(BABYLON.WebXRPlaneDetector.Name, &quot;latest&quot;);</code></pre>
+<p>Just like any other module, you can configure it using the options object, which has this type:</p>
+<pre class="code" data-lang="typescript"><code>export interface IWebXRPlaneDetectorOptions {
+  /**
+   * The node to use to transform the local results to world coordinates
+   */
+  worldParentNode?: TransformNode;
+
+  /**
+   * If set to true a reference of the created planes will be kept until the next session starts
+   * If not defined, planes will be removed from the array when the feature is detached or the session ended.
+   */
+  doNotRemovePlanesOnSessionEnded?: boolean;
+}</code></pre>
+<p>Similar to the anchor system, planes do not persist between sessions. If you want to keep the native <code>XRPlane</code> objects, set <code>doNotRemovePlanesOnSessionEnded</code> to true, and Babylon will not delete them.</p>
+<p>The plane detector works automatically and offers three observables for you to use:</p>
+<pre class="code" data-lang="javascript"><code>planeDetector.onPlaneAddedObservable.add((plane) =&gt; {
+  // ... do what you want with the plane after it was added
+});
+
+planeDetector.onPlaneRemovedObservable.add((plane) =&gt; {
+  // ... do what you want with the plane after it was removed
+});
+
+planeDetector.onPlaneUpdatedObservable.add((plane) =&gt; {
+  // ... do what you want with the plane after it was updated
+});</code></pre>
+<p>The plane object is of type <code>IWebXRPlane</code>:</p>
+<pre class="code" data-lang="typescript"><code>export interface IWebXRPlane {
+  /**
+   * a babylon-assigned ID for this polygon
+   */
+  id: number;
+  /**
+   * an array of vector3 points in babylon space. right/left hand system is taken into account.
+   */
+  polygonDefinition: Array&lt;Vector3&gt;;
+  /**
+   * A transformation matrix to apply on the mesh that will be built using the polygonDefinition
+   * Local vs. World are decided if worldParentNode was provided or not in the options when constructing the module
+   */
+  transformationMatrix: Matrix;
+  /**
+   * the native xr-plane object
+   */
+  xrPlane: XRPlane;
+  /**
+   * The semantic classification supplied by the XR runtime
+   */
+  semanticLabel?: string | null;
+}</code></pre>
+<p>To create a Babylon polygon from the plane information do the following:</p>
+<pre class="code" data-lang="javascript"><code>const plane = // a reference to an added plane
+  // add the starting point, so the polygon will close
+  plane.polygonDefinition.push(plane.polygonDefinition[0]);
+// create a polygon mesh builder for the polygons returned from the system
+var polygon_triangulation = new BABYLON.PolygonMeshBuilder(
+  &quot;name&quot;,
+  plane.polygonDefinition.map((p) =&gt; new BABYLON.Vector2(p.x, p.z)),
+  scene,
+);
+// build the plane with specific thickness
+var polygon = polygon_triangulation.build(false, 0.01);</code></pre>
+<p>A simple use case for planes is showing them in your scene using polygons. An example for that can be found at the WebXR Plane Detection demo: <span class="muted">Online playground (not embedded offline)</span></p>
+<h4 id="semantic-labels-for-planes-and-meshes-experimental">Semantic labels for planes and meshes (experimental)<a class="anchor" href="#semantic-labels-for-planes-and-meshes-experimental">#</a></h4>
+<p>Supporting runtimes can classify real-world geometry with semantic labels. Babylon copies <code>XRPlane.semanticLabel</code> to <code>IWebXRPlane.semanticLabel</code> and <code>XRMesh.semanticLabel</code> to <code>IWebXRVertexData.semanticLabel</code>:</p>
+<pre class="code" data-lang="typescript"><code>interface IWebXRPlane {
+  // Other plane data...
+  semanticLabel?: string | null;
+}
+
+interface IWebXRVertexData {
+  // Other mesh data...
+  semanticLabel?: string | null;
+}</code></pre>
+<p>The property is <code>undefined</code> when the runtime does not expose semantic labels and can be <code>null</code> or an empty string when no classification is known. Values come from the runtime. The <span>semantic labels registry</span> defines common labels, but applications must not treat it as a closed TypeScript enumeration or assume that every detected object has a label.</p>
+<p>Babylon reads the label when a plane or mesh is added and refreshes it through the detector&#39;s normal update path when the runtime reports that geometry as changed. Consume both the added and updated observables:</p>
+<pre class="code" data-lang="typescript"><code>const planeDetector = featuresManager.enableFeature(BABYLON.WebXRPlaneDetector.Name, &quot;latest&quot;);
+
+function consumePlaneLabel(plane: BABYLON.IWebXRPlane) {
+  const supportsLabels = &quot;semanticLabel&quot; in plane.xrPlane;
+  const label = plane.semanticLabel;
+
+  if (supportsLabels &amp;&amp; typeof label === &quot;string&quot; &amp;&amp; label.length &gt; 0) {
+    console.log(`Plane ${plane.id}: ${label}`);
+  } else {
+    console.log(`Plane ${plane.id}: unclassified`);
+  }
+}
+
+planeDetector.onPlaneAddedObservable.add(consumePlaneLabel);
+planeDetector.onPlaneUpdatedObservable.add(consumePlaneLabel);</code></pre>
+<p>Mesh labels are available directly on the <code>IWebXRVertexData</code> delivered by the mesh detector; they are not added to a generated Babylon mesh&#39;s metadata.</p>
+<pre class="code" data-lang="typescript"><code>const meshDetector = featuresManager.enableFeature(BABYLON.WebXRMeshDetector.Name, &quot;latest&quot;);
+
+function consumeMeshLabel(vertexData: BABYLON.IWebXRVertexData) {
+  const supportsLabels = &quot;semanticLabel&quot; in vertexData.xrMesh;
+  const label = vertexData.semanticLabel;
+
+  if (supportsLabels &amp;&amp; typeof label === &quot;string&quot; &amp;&amp; label.length &gt; 0) {
+    console.log(`Mesh ${vertexData.id}: ${label}`);
+  } else {
+    console.log(`Mesh ${vertexData.id}: unclassified`);
+  }
+}
+
+meshDetector.onMeshAddedObservable.add(consumeMeshLabel);
+meshDetector.onMeshUpdatedObservable.add(consumeMeshLabel);</code></pre>
+<p>Semantic labels and real-world mesh detection are not broadly supported across browsers. Negotiate the native <code>&quot;plane-detection&quot;</code> or <code>&quot;mesh-detection&quot;</code> session feature as appropriate, then feature-detect <code>semanticLabel</code> on the native <code>XRPlane</code> or <code>XRMesh</code> as shown above. See the <span>Plane Detection Module</span> and <span>Real-World Meshing Module</span> for the native properties.</p>
+<h4 id="room-capture-experimental">Room capture (experimental)<a class="anchor" href="#room-capture-experimental">#</a></h4>
+<p><code>WebXRPlaneDetector.initiateRoomCapture(): Promise&lt;void&gt;</code> asks a supporting runtime to capture or refresh the room layout used by plane detection. Room capture is part of the plane detector, not a separate Babylon WebXR feature, and requires an active XR session with native <code>XRSession.initiateRoomCapture()</code> support. Current support is limited and depends on the browser, device, enabled <code>&quot;plane-detection&quot;</code> session feature, and user permissions.</p>
+<p>The promise follows the native operation and propagates its rejection. Babylon also rejects when there is no active session or the runtime does not expose the method. Feature-detect the native method when working directly with <code>XRSession</code>, or call the Babylon method inside error handling as shown here:</p>
+<pre class="code" data-lang="typescript"><code>const planeDetector = featuresManager.enableFeature(BABYLON.WebXRPlaneDetector.Name, &quot;latest&quot;);
+const detectedPlanes = new Map&lt;number, BABYLON.IWebXRPlane&gt;();
+
+planeDetector.onPlaneAddedObservable.add((plane) =&gt; {
+  detectedPlanes.set(plane.id, plane);
+});
+planeDetector.onPlaneUpdatedObservable.add((plane) =&gt; {
+  detectedPlanes.set(plane.id, plane);
+});
+planeDetector.onPlaneRemovedObservable.add((plane) =&gt; {
+  detectedPlanes.delete(plane.id);
+});
+
+// Run this handler while an immersive XR session is active.
+document.getElementById(&quot;capture-room&quot;)?.addEventListener(&quot;click&quot;, async () =&gt; {
+  try {
+    await planeDetector.initiateRoomCapture();
+  } catch (error) {
+    console.error(&quot;Room capture is unavailable or failed:&quot;, error);
+  }
+});</code></pre>
+<p>The promise does not return planes. Captured results arrive on later XR frames through the existing plane detector observables. The runtime decides whether a new capture replaces or augments previously detected planes. See the native <span><code>initiateRoomCapture()</code> specification</span>.</p>
+<h3 id="background-remover">Background remover<a class="anchor" href="#background-remover">#</a></h3>
+<p>When in AR, you usually want to avoid environment meshes like a skybox and a ground (unless your goal is to keep them). If you are creating a scene that should work on both regular devices and in AR, you will want the ability to disable certain meshes when entering AR and re-enable them when leaving AR. This module does exactly that. It receives a list of meshes and disables or enables them when needed.</p>
+<p>When using the Babylon environment helper, the module can do the work for you automatically. In that case, the skybox and ground will be automatically removed if you enabled the feature.</p>
+<p>To enable it, use:</p>
+<pre class="code" data-lang="javascript"><code>const xrBackgroundRemover = featuresManager.enableFeature(BABYLON.WebXRBackgroundRemover);</code></pre>
+<p>To customize the way the module works, use the following configuration object:</p>
+<pre class="code" data-lang="typescript"><code>export interface IWebXRBackgroundRemoverOptions {
+  /**
+   * Further background meshes to disable when entering AR
+   */
+  backgroundMeshes?: AbstractMesh[];
+  /**
+   * flags to configure the removal of the environment helper.
+   * If not set, the entire background will be removed. If set, flags should be set as well.
+   */
+  environmentHelperRemovalFlags?: {
+    /**
+     * Should the skybox be removed (default false)
+     */
+    skyBox?: boolean;
+    /**
+     * Should the ground be removed (default false)
+     */
+    ground?: boolean;
+  };
+  /**
+   * don't disable the environment helper
+   */
+  ignoreEnvironmentHelper?: boolean;
+}</code></pre>
+<p>For example, if you want the module to remove only the skybox and not the ground when using the environment helper, enable the feature this way:</p>
+<pre class="code" data-lang="javascript"><code>const xrBackgroundRemover = featuresManager.enableFeature(BABYLON.WebXRBackgroundRemover, &quot;latest&quot;, {
+  environmentHelperRemovalFlags: {
+    skyBox: true,
+    ground: false,
+  },
+});</code></pre>
+<h3 id="dom-overlay">DOM Overlay<a class="anchor" href="#dom-overlay">#</a></h3>
+<p>When in AR mode, you may want to show a DOM element.</p>
+<p>When enabling the DOM overlay feature, <code>element</code> is the only required option and can be either a DOM element or a string (using the first element returned when passed to <code>document.querySelector</code>).</p>
+<p>The final parameter of <code>enableFeature</code> may be important to you because it can set this feature as optional.</p>
+<pre class="code" data-lang="javascript"><code>const featuresManager = xr.baseExperience.featuresManager;
+const domOverlayFeature = featuresManager.enableFeature(BABYLON.WebXRDomOverlay, &quot;latest&quot;, { element: &quot;.dom-overlay-container&quot; }, undefined, false);
+
+xr.baseExperience.onStateChangedObservable.add((webXRState) =&gt; {
+  switch (webXRState) {
+    case BABYLON.WebXRState.ENTERING_XR:
+    case BABYLON.WebXRState.IN_XR:
+      // domOverlayType will be null when not supported.
+      console.log(&quot;overlay type:&quot;, domOverlayFeature.domOverlayType);
+      break;
+  }
+});</code></pre>
+<p>Once you have entered AR you can check the feature for the DOM overlay type; <code>domOverlayType</code> will be non-null if the feature is supported in the browser.</p>
+<p>The latest options can be found in the <span>WebXR DOM overlay feature&#39;s source code</span>.</p>
+<h3 id="webxr-light-estimation">WebXR Light estimation<a class="anchor" href="#webxr-light-estimation">#</a></h3>
+<p>When enabling the Light Estimation feature, WebXR will start analyzing the scene and provide the developer with light estimation data that can be used to make the scene look more realistic.</p>
+<p>For example, when placing an element on the floor, it could provide the light direction for more realistic shadows, and the environment map for more realistic reflections.</p>
+<p>The idea is that the underlying system provides us with many details that allow us to “match” the object we are placing with the real world. Light estimation can provide us with:</p>
+<ul>
+<li>Light color (and intensity)</li>
+<li>Light direction</li>
+<li>Reflection cubemap (environment)</li>
+<li>Spherical harmonics coefficients</li>
+<li>Happiness</li>
+</ul>
+<p>The data is provided per frame only if requested by the developer. This helps manage performance on older or slower devices. When enabling light estimation, you can provide the following options:</p>
+<pre class="code" data-lang="typescript"><code>export interface IWebXRLightEstimationOptions {
+  /**
+   * Disable the cube map reflection feature. In this case only light direction and color will be updated
+   */
+  disableCubeMapReflection?: boolean;
+  /**
+   * Should the scene's env texture be set to the cube map reflection texture
+   * Note that this doesn't work is disableCubeMapReflection if set to false
+   */
+  setSceneEnvironmentTexture?: boolean;
+  /**
+   * How often should the cubemap update in ms.
+   * If not set the cubemap will be updated every time the underlying system updates the environment texture.
+   */
+  cubeMapPollInterval?: number;
+  /**
+   * How often should the light estimation properties update in ms.
+   * If not set the light estimation properties will be updated on every frame (depending on the underlying system)
+   */
+  lightEstimationPollInterval?: number;
+  /**
+   * Should a directional light source be created.
+   * If created, this light source will be updated whenever the light estimation values change
+   */
+  createDirectionalLightSource?: boolean;
+  /**
+   * Define the format to be used for the light estimation texture.
+   */
+  reflectionFormat?: XRReflectionFormat;
+  /**
+   * Should the light estimation's needed vectors be constructed on each frame.
+   * Use this when you use those vectors and don't want their values to change outside of the light estimation feature
+   */
+  disableVectorReuse?: boolean;
+
+  /**
+   * disable applying the spherical polynomial to the cube map texture
+   */
+  disableSphericalPolynomial?: boolean;
+}</code></pre>
+<p>Note that all the following demos are expected to work incorrectly when not in AR mode!</p>
+<p>This demo shows how to use the light estimation feature to create a directional light source including shadows and environment map:</p>
+<span class="muted">Online playground (not embedded offline)</span><h4 id="enabling-a-light-source">Enabling a light source<a class="anchor" href="#enabling-a-light-source">#</a></h4>
+<p>To enable the feature with one or more of these options, use (for example):</p>
+<pre class="code" data-lang="javascript"><code>const lightEstimationFeature = featuresManager.enableFeature(BABYLON.WebXRFeatureName.LIGHT_ESTIMATION, &quot;latest&quot;, {
+  createDirectionalLightSource: true,
+});</code></pre>
+<p>This will create a directional light source that will be updated constantly.</p>
+<span class="muted">Online playground (not embedded offline)</span><h4 id="enabling-shadows">Enabling shadows<a class="anchor" href="#enabling-shadows">#</a></h4>
+<p>Since a light source is created for you, you can enable a shadow generator using this light. To do that use the following code after enabling the feature:</p>
+<pre class="code" data-lang="javascript"><code>const le = defaultXRExperience.baseExperience.featuresManager.enableFeature(BABYLON.WebXRFeatureName.LIGHT_ESTIMATION, &quot;latest&quot;, {
+  createDirectionalLightSource: true,
+});
+const shadowGenerator = new BABYLON.ShadowGenerator(512, le.directionalLight);
+shadowGenerator.useBlurExponentialShadowMap = true;
+shadowGenerator.setDarkness(0.1);
+shadowGenerator.getShadowMap().renderList.push(meshesToAdd);</code></pre>
+<h4 id="adjusting-performance">Adjusting performance<a class="anchor" href="#adjusting-performance">#</a></h4>
+<p>Light estimation can be a heavy task to perform on older/slower devices. You can provide an interval in which the data will be polled to improve your scene&#39;s performance:</p>
+<pre class="code" data-lang="javascript"><code>const lightEstimationFeature = featuresManager.enableFeature(BABYLON.WebXRFeatureName.LIGHT_ESTIMATION, &quot;latest&quot;, {
+  lightEstimationPollInterval: 1000,
+  cubeMapPollInterval: 1000,
+});</code></pre>
+<p>This will update both the light data itself and the environment cube map every second (instead of every time the system notifies us that the data has changed).</p>
+<h3 id="depth-sensing">Depth Sensing<a class="anchor" href="#depth-sensing">#</a></h3>
+<p>Depth Sensing can be used to obtain depth information from cameras. If your device has capabilities such as depth estimation, you can access the depth buffer through this feature. For more information, see the <span>WebXR Depth Sensing Module specification</span>.</p>
+<span class="muted">&lt;Alert severity=&quot;warning&quot; title=&quot;Experimental browser support&quot;&gt;
+WebXR depth sensing and its lifecycle controls are experimental. Known support includes Chromium 139+ and Meta Quest Browser 33.3+, but availability still depends on compatible XR hardware and the runtime. Treat the feature as optional and handle unsupported operations.
+&lt;/Alert&gt;</span><p>Enable Depth Sensing:</p>
+<pre class="code" data-lang="javascript"><code>// featuresManager from the base webxr experience helper
+const depthSensing = featureManager.enableFeature(BABYLON.WebXRFeatureName.DEPTH_SENSING, &quot;latest&quot;, {
+  dataFormatPreference: [&quot;ushort&quot;, &quot;float&quot;],
+  usagePreference: [&quot;cpu&quot;, &quot;gpu&quot;],
+});</code></pre>
+<p>or for TypeScript:</p>
+<pre class="code" data-lang="typescript"><code>// featuresManager from the base webxr experience helper
+const depthSensing = featureManager.enableFeature(BABYLON.WebXRFeatureName.DEPTH_SENSING, &quot;latest&quot;, {
+  dataFormatPreference: [&quot;ushort&quot;, &quot;float&quot;],
+  usagePreference: [&quot;cpu&quot;, &quot;gpu&quot;],
+} as BABYLON.IWebXRDepthSensingOptions) as BABYLON.WebXRDepthSensing;</code></pre>
+<p>When you enable the depth sensing feature, you must pass options.
+The options are typed as <code>IWebXRDepthSensingOptions</code>.</p>
+<p>When using ES modules, import the feature module before enabling it so that it is registered with the features manager:</p>
+<pre class="code" data-lang="typescript"><code>import &quot;@babylonjs/core/XR/features/WebXRDepthSensing.js&quot;;</code></pre>
+<p>The Babylon feature name is <code>&quot;xr-depth-sensing&quot;</code> (<code>WebXRFeatureName.DEPTH_SENSING</code>). It requests the native WebXR session feature descriptor <code>&quot;depth-sensing&quot;</code>; these two names are not interchangeable.</p>
+<pre class="code" data-lang="typescript"><code>export type WebXRDepthUsage = &quot;cpu&quot; | &quot;gpu&quot;;
+export type WebXRDepthDataFormat = &quot;ushort&quot; | &quot;float&quot;;
+
+/**
+ * Options for Depth Sensing feature
+ */
+export interface IWebXRDepthSensingOptions {
+    /**
+     *  The desired depth sensing usage for the session
+     */
+    usagePreference: WebXRDepthUsage[];
+    /**
+     * The desired depth sensing data format for the session
+     */
+    dataFormatPreference: WebXRDepthDataFormat[];
+
+    /**
+     * Depth sensing will be enabled on all materials per default, if the GPU variant is enabled.
+     * If you just want to use the texture or the CPU variant instead set this to true.
+     */
+    disableDepthSensingOnMaterials?: boolean;
+
+    /**
+     * If set to true the occluded pixels will not be discarded but the pixel color will be changed based on the occlusion factor
+     * Enabling this will lead to worse performance but slightly better outcome.
+     * It is possible we will change this in the future to look even better.
+     */
+    useToleranceFactorForDepthSensing?: boolean;
+
+    /**
+     * If set to true the texture will be set to be used for visualization.
+     * In this case it will probably NOT work correctly on the materials.
+     * So be aware that, for the time being, you can only use one or the other.
+     */
+    prepareTextureForVisualization?: boolean;
+}</code></pre>
+<p>The depth usage is currently <code>&quot;cpu&quot;</code> or <code>&quot;gpu&quot;</code>. You can specify it when you initialize this feature. If you specify both, one supported on your device will be selected.
+Some information can be accessed only in CPU mode.</p>
+<p>The data format is currently <code>&quot;ushort&quot;</code> or <code>&quot;float&quot;</code>. It describes the data format for buffers and textures.
+As with depth usage, you can specify it when you initialize the feature.</p>
+<p>Enabling this feature will automatically enable all added materials to be hidden behind real-world objects. If you want to disable this feature, you can set <code>disableDepthSensingOnMaterials</code> to <code>true</code>.</p>
+<h4 id="pausing-and-resuming-depth-sensing">Pausing and resuming depth sensing<a class="anchor" href="#pausing-and-resuming-depth-sensing">#</a></h4>
+<p><code>WebXRDepthSensing</code> exposes lifecycle controls for the native depth-sensing process:</p>
+<pre class="code" data-lang="typescript"><code>readonly isDepthSensingActive: boolean;
+pauseDepthSensingAsync(): Promise&lt;void&gt;;
+resumeDepthSensingAsync(): Promise&lt;void&gt;;</code></pre>
+<p><code>isDepthSensingActive</code> reads the current session&#39;s native <code>XRSession.depthActive</code> value directly. It is <code>false</code> when Babylon is not in an XR session, when the browser does not expose the property, or when the native value is not <code>true</code>.</p>
+<p>Pause and resume require an active XR session and the corresponding native <code>XRSession.pauseDepthSensing</code> or <code>XRSession.resumeDepthSensing</code> method. Babylon awaits the native result, so native promise resolution and rejection propagate to the caller; synchronous native exceptions also reject the Babylon async method. Missing support produces an explicit error, so handle each operation:</p>
+<ul>
+<li>Without an active session, the methods reject with <code>Pausing WebXR depth sensing requires an active XR session.</code> or <code>Resuming WebXR depth sensing requires an active XR session.</code></li>
+<li>Without the matching native method, they reject with <code>XRSession.pauseDepthSensing is not supported by this XR runtime.</code> or <code>XRSession.resumeDepthSensing is not supported by this XR runtime.</code></li>
+</ul>
+<pre class="code" data-lang="typescript"><code>async function setDepthSensingPaused(paused: boolean): Promise&lt;void&gt; {
+  try {
+    if (paused) {
+      await depthSensing.pauseDepthSensingAsync();
+    } else {
+      await depthSensing.resumeDepthSensingAsync();
+    }
+
+    console.log(`Depth sensing active: ${depthSensing.isDepthSensingActive}`);
+  } catch (error) {
+    console.warn(&quot;Depth-sensing lifecycle control is unavailable:&quot;, error);
+  }
+}</code></pre>
+<p>These methods control native depth sensing only. They do not replace the depth texture, buffer, <code>getDepthInMeters</code>, or material-occlusion APIs described below, and pausing does not clear Babylon&#39;s cached depth data.</p>
+<p>With this feature, you can access information like this:</p>
+<pre class="code" data-lang="typescript"><code>sessionManager.onXRFrameObservable.add(() =&gt; {
+  const {
+    depthUsage, // &quot;cpu&quot; or &quot;gpu&quot;
+    depthDataFormat, // &quot;ushort&quot; or &quot;float&quot;
+
+    width, // depth image width
+    height, // depth image height
+
+    rawValueToMeters, // operator of obtain depth value in meters
+
+    normDepthBufferFromNormView, // An XRRigidTransform
+
+    latestDepthImageTexture, // RawTexture for depth image
+    latestDepthBuffer, // depth value array (cpu only)
+    latestInternalTexture, // InternalTexture of depth image (gpu only)
+  } = depthSensing;
+
+  // apply depth texture to a material
+  material.diffuseTexture = latestDepthImageTexture;
+});
+
+// observe `getDepthInMeters` is available
+depthSensing.onGetDepthInMetersAvailable.add((getDepthInMeters) =&gt; {
+  // depth value of center point of the screen
+  const meters = getDepthInMeters(0.5, 0.5);
+  console.log(meters);
+});</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><span class="muted">Online playground (not embedded offline)</span><h2 id="demos">Demos<a class="anchor" href="#demos">#</a></h2>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)
+</span><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#a-bit-about-augmented-reality">A bit about augmented reality </a><a href="#getting-started-with-augmented-reality">Getting started with Augmented Reality </a><a href="#features">Features </a><a href="#demos">Demos </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

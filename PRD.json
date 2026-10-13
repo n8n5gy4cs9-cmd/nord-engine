@@ -1253,6 +1253,12 @@
       "status": "done"
     },
     {
+      "id": "M7-14",
+      "milestone": "M7",
+      "title": "Redesign offline HTML manual with beginner paths, screenshots and complete versioned Nord/Phaser/Babylon references",
+      "status": "done"
+    },
+    {
       "id": "M8-01",
       "milestone": "M8",
       "title": ".dmg packaging + notarisation notes",

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: node_particle_editor — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: node_particle_editor</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h1 id="node-particle-editor">Node Particle Editor</h1>
+<p>Starting from Babylon.js v8.14, you can design complex and intricate particle systems using the Node Particle Editor (NPE).</p>
+<p><p class="muted">Upstream illustration: NPE screenshot (media not bundled).</p></p>
+<p><span>Introducing NPE - YouTube</span></p>
+<h2 id="npe">NPE<a class="anchor" href="#npe">#</a></h2>
+<p>NPE lets you define one or more particle systems. It creates a <a href="babylon-guide-features-featuresdeepdive-particles-particle-system-particlehelper.html">ParticleSystemSet</a> that can be used directly.</p>
+<pre class="code" data-lang="javascript"><code>const npe = await BABYLON.NodeParticleSystemSet.ParseFromSnippetAsync(&quot;#8O4BJ2&quot;);
+const particleSystemSet = await npe.buildAsync(scene);
+particleSystemSet.start();</code></pre>
+<p>Here’s a complete example you can try out:</p>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="how-to-use-npe">How To Use NPE<a class="anchor" href="#how-to-use-npe">#</a></h2>
+<p>To use NPE, head to <span>npe.babylonjs.com</span>.</p>
+<p>The default graph for a node particle system contains the minimum required components for the graph to function. These are the core components that every graph has, with varying levels of complexity depending on the needs of the particle system.</p>
+<p><p class="muted">Upstream illustration: NPE screenshot (media not bundled).</p></p>
+<p>To set up a particle system, you’ll need three core components:</p>
+<ul>
+<li>The creation logic, using at least a Create Particle block and an Emitter Shape block</li>
+<li>The update logic</li>
+<li>The particle system itself, defined by a System block</li>
+</ul>
+<p><strong>Note: For now, NPE only generates CPU-based particle systems.</strong></p>
+<h2 id="creation-phase">Creation Phase<a class="anchor" href="#creation-phase">#</a></h2>
+<p>When a particle is created, its parameters are taken from this section of the graph. Depending on how the graph is wired, each particle can draw from the same parameters, or you can use a combination of nodes to evaluate parameters per particle or per system.</p>
+<p><p class="muted">Upstream illustration: NPE screenshot (media not bundled).</p></p>
+<p>In this example, each new particle is given a randomly chosen lifetime between 1 and 2.</p>
+<p>The shape blocks are how you define <a href="babylon-guide-features-featuresdeepdive-particles-particle-system-shape-emitters.html">shape emitters</a>, which describe the volume used to determine the emission position and direction of each particle.</p>
+<h2 id="update-phase">Update Phase<a class="anchor" href="#update-phase">#</a></h2>
+<p>The update logic is executed every frame for each particle. In this example, we update the position by adding the velocity (also known as the scaled direction, i.e., the direction adjusted for frame rate).</p>
+<p><p class="muted">Upstream illustration: NPE screenshot (media not bundled).</p></p>
+<p>To control particle properties such as color, scale, or position, choose the appropriate update block to add to your graph. The manipulation of the values passed to these blocks and even the order in which the update blocks are wired can have a big impact on the look of your particle system.</p>
+<p><p class="muted">Upstream illustration: NPE screenshot (media not bundled).</p></p>
+<p>There are several inputs known as contextual values, such as Position or Scaled Direction. These represent values for each particle at a specific point in its lifetime. For example, on each frame, the Position contextual value changes based on a combination of emission power, gravity, drag, attractors, flow maps, and more. On any given rendered frame of the scene, you may need the particle&#39;s position to change its color or its life to change its alpha value. That is when you would use contextual value input blocks.</p>
+<p>For basic behaviors, we offer direct function blocks so you don&#39;t need to manually wire everything. For example, the earlier logic can be replaced with BasicPositionUpdate:</p>
+<p><p class="muted">Upstream illustration: NPE screenshot (media not bundled).</p></p>
+<h2 id="the-system-block">The System Block<a class="anchor" href="#the-system-block">#</a></h2>
+<p>This block defines the core properties of the system (like <code>capacity</code>) and accepts inputs such as <code>emitRate</code> and <code>texture</code>. You must provide, at a minimum, a particle input and a texture input.</p>
+<h2 id="managing-random-values">Managing Random Values<a class="anchor" href="#managing-random-values">#</a></h2>
+<p>A core feature of any particle system is randomness. To support this, we provide three types of randomization blocks:</p>
+<h3 id="random">Random<a class="anchor" href="#random">#</a></h3>
+<p>The basic block for generating random values. It can generate values per particle, per system, or on every call.
+<p class="muted">Upstream illustration: NPE screenshot (media not bundled).</p></p>
+<h3 id="gradient">Gradient<a class="anchor" href="#gradient">#</a></h3>
+<p>Use this to create value ramps. Based on an input from 0 to 1, the output is determined by the reference values of all attached gradient blocks. The gradient block with the largest reference value that is still less than the input value supplies the output.</p>
+<p><p class="muted">Upstream illustration: NPE screenshot (media not bundled).</p></p>
+<p>In this case, we use the AgeGradient contextual value (representing particle life from 0 to 1) to determine color. The particle is born white and fades to red, reaching full red at 75% of its lifetime.</p>
+<h2 id="triggers">Triggers<a class="anchor" href="#triggers">#</a></h2>
+<p>To add more complex behaviors, you can use triggers to link multiple particle systems — for example, to start a new one when a specific condition is met.</p>
+<p>Here is a <span>pretty complex example</span>. More precisely, in the top-right corner:</p>
+<p><p class="muted">Upstream illustration: NPE screenshot (media not bundled).</p></p>
+<p>Here, we&#39;ve introduced a Trigger block. This block must be connected to another particle system — it&#39;s designed to start a clone of that system when a specific condition is met.
+You can also limit the maximum number of simultaneous systems to avoid overloading the CPU.</p>
+<p>In our example, if a particle from the source system has a <code>position.y</code> greater than a random value between 0.5 and 1.5, it triggers a clone of the target system. However, this trigger will only fire once every 250 ms, and no more than 5 instances can be active at the same time.</p>
+<p>Another option is to use the <code>onStart</code> and <code>onEnd</code> events on each particle system:
+<p class="muted">Upstream illustration: NPE screenshot (media not bundled).</p></p>
+<p>In this example, the &quot;Wave2&quot; particle system will start when the &quot;Wave&quot; system ends. For this to work, &quot;Wave&quot; must have a target duration — otherwise, it would loop endlessly and never emit an <code>onEnd</code> event.</p>
+<p>Also note: &quot;Wave2&quot; is set to not start automatically.</p>
+<h2 id="learn-more">Learn More<a class="anchor" href="#learn-more">#</a></h2>
+<p>For a complete reference of all available blocks and their inputs, outputs, and properties, see the <a href="babylon-guide-toolsandresources-npe-npeblocks.html">Node Particle Editor Blocks</a> page. For details on the editor interface, shortcuts, and organization features, see the <a href="babylon-guide-toolsandresources-npe.html">Node Particle Editor</a> tool page.</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#npe">NPE </a><a href="#how-to-use-npe">How To Use NPE </a><a href="#creation-phase">Creation Phase </a><a href="#update-phase">Update Phase </a><a href="#the-system-block">The System Block </a><a href="#managing-random-values">Managing Random Values </a><a href="#triggers">Triggers </a><a href="#learn-more">Learn More </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

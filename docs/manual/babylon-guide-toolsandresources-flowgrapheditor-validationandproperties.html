@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Validation and Property Editing — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Validation and Property Editing</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="why-this-page-exists">Why This Page Exists<a class="anchor" href="#why-this-page-exists">#</a></h2>
+<p>The Flow Graph Editor does more than let you connect blocks together. It also validates graphs, enforces data-port compatibility, and exposes block-specific configuration through the property panel.</p>
+<p>This page is the reference for those behaviors.</p>
+<h2 id="validation-modes">Validation Modes<a class="anchor" href="#validation-modes">#</a></h2>
+<p>The editor supports both manual and live validation.</p>
+<h3 id="manual-validation">Manual Validation<a class="anchor" href="#manual-validation">#</a></h3>
+<p>Manual validation is useful when you want an explicit check before saving, sharing, or running a larger graph.</p>
+<p>When you trigger validation manually:</p>
+<ul>
+<li>The toolbar shows the number of detected errors and warnings.</li>
+<li>Validation issues can be surfaced individually.</li>
+<li>Selecting an issue can navigate back to the relevant block.</li>
+</ul>
+<p>This mode is useful when you want a controlled review step rather than constant feedback while editing.</p>
+<h3 id="live-validation">Live Validation<a class="anchor" href="#live-validation">#</a></h3>
+<p>Live validation runs automatically as the graph changes.</p>
+<p>The editor debounces these checks to avoid slowing down authoring. This mode is valuable when building quickly because it catches structural and configuration problems close to the moment they are introduced.</p>
+<h3 id="what-validation-reports">What Validation Reports<a class="anchor" href="#what-validation-reports">#</a></h3>
+<p>Validation issues include:</p>
+<ul>
+<li>The affected block</li>
+<li>A severity level such as error or warning</li>
+<li>A message describing the problem</li>
+</ul>
+<h2 id="connection-type-compatibility">Connection Type Compatibility<a class="anchor" href="#connection-type-compatibility">#</a></h2>
+<p>The editor enforces compatibility rules on data connections.</p>
+<p>Each data port carries a rich type, and the editor uses that type information while you drag a connection.</p>
+<h3 id="visual-feedback-while-connecting">Visual Feedback While Connecting<a class="anchor" href="#visual-feedback-while-connecting">#</a></h3>
+<p>During a drag operation:</p>
+<ul>
+<li>Compatible targets are visually emphasized.</li>
+<li>Incompatible targets are dimmed and highlighted as invalid.</li>
+<li>Releasing the connection onto an incompatible port shows a mismatch error instead of creating the link.</li>
+</ul>
+<p>This means many graphing errors are rejected before they become runtime problems.</p>
+<h3 id="compatibility-rules">Compatibility Rules<a class="anchor" href="#compatibility-rules">#</a></h3>
+<p>Current compatibility behavior includes the following rules:</p>
+<table>
+<thead>
+<tr>
+<th>Source Type</th>
+<th>Accepted By</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Any</code></td>
+<td>Any target type</td>
+</tr>
+<tr>
+<td>Same type</td>
+<td>The same type</td>
+</tr>
+<tr>
+<td><code>Number</code></td>
+<td><code>Number</code> or integer-compatible targets</td>
+</tr>
+<tr>
+<td><code>Integer</code></td>
+<td><code>Integer</code> or number-compatible targets</td>
+</tr>
+<tr>
+<td><code>Vector3</code>, <code>Vector4</code>, <code>Matrix</code></td>
+<td>Quaternion-accepting targets through a supported type transformer</td>
+</tr>
+</tbody></table>
+<p>Signal ports do not use this type system. Execution flow connections can connect to any compatible signal input without data-type restrictions.</p>
+<h2 id="property-panel-overview">Property Panel Overview<a class="anchor" href="#property-panel-overview">#</a></h2>
+<p>Selecting a block opens its property surface in the right-side panel.</p>
+<p><p class="muted">Upstream illustration: Flow Graph Editor property panel with a selected Mesh Pick Event (media not bundled).</p></p>
+<p>Depending on the block, the panel can include up to four common sections plus specialized editors.</p>
+<p>The Variables panel is also context-aware. When the graph has multiple execution contexts, variable inspection and editing should be understood relative to the currently selected execution context.</p>
+<h3 id="general">General<a class="anchor" href="#general">#</a></h3>
+<p>The General section holds basic block metadata such as:</p>
+<ul>
+<li>Name</li>
+<li>Type</li>
+<li>Comments</li>
+</ul>
+<p>This is the best place to make a graph easier to read for someone else.</p>
+<h3 id="construction-variables">Construction Variables<a class="anchor" href="#construction-variables">#</a></h3>
+<p>Construction variables control how a block is created and, in some cases, what shape of ports it exposes.</p>
+<p>Examples of construction variables include:</p>
+<ul>
+<li>Numeric mode settings on math blocks</li>
+<li>Keyframe and animation-type settings on interpolation blocks</li>
+<li>Event IDs on custom send and receive event blocks</li>
+<li>Loop parameters on loop-oriented blocks</li>
+<li>Stop-propagation options on pointer and pick events</li>
+</ul>
+<p>Some construction variables affect the block&#39;s structure, not just its runtime values. In those cases, the updated configuration is saved but the block may need to be recreated before the new port layout appears in the graph.</p>
+<h3 id="input-values">Input Values<a class="anchor" href="#input-values">#</a></h3>
+<p>For unconnected data inputs, the property panel can expose editable default values.</p>
+<p>Supported value types currently include:</p>
+<ul>
+<li>Number</li>
+<li>Boolean</li>
+<li>String</li>
+<li>Integer</li>
+<li>Vector2</li>
+<li>Vector3</li>
+<li>Vector4</li>
+<li>Color3</li>
+<li>Color4</li>
+<li>Matrix</li>
+</ul>
+<p>If an input is already connected, the editor treats that input as driven by the graph and shows it as read-only instead of as a local default value.</p>
+<h3 id="properties">Properties<a class="anchor" href="#properties">#</a></h3>
+<p>Some blocks expose additional editable values beyond construction variables and input defaults. These appear in the Properties section when the corresponding block class has registered editable properties.</p>
+<h2 id="specialized-property-panels">Specialized Property Panels<a class="anchor" href="#specialized-property-panels">#</a></h2>
+<p>Some blocks replace the generic editing surface with richer editors tailored to their function.</p>
+<table>
+<thead>
+<tr>
+<th>Block or Block Family</th>
+<th>Specialized Editor</th>
+<th>What It Enables</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>GetAsset</code></td>
+<td>Asset Configuration</td>
+<td>Pick an asset type and then choose a named asset from the loaded scene</td>
+</tr>
+<tr>
+<td>Pointer and mesh-pick events</td>
+<td>Target Mesh</td>
+<td>Restrict the event to a specific mesh from the loaded scene</td>
+</tr>
+<tr>
+<td><code>PlayAnimation</code></td>
+<td>Animation Group</td>
+<td>Pick the animation group to play from the current scene context</td>
+</tr>
+<tr>
+<td><code>Constant</code></td>
+<td>Constant Value</td>
+<td>Choose the constant type and then edit a matching value shape</td>
+</tr>
+<tr>
+<td><code>Switch</code></td>
+<td>Cases</td>
+<td>Add and remove numeric case outputs</td>
+</tr>
+<tr>
+<td><code>DataSwitch</code></td>
+<td>Cases</td>
+<td>Add and remove numeric cases for data routing and configure integer treatment</td>
+</tr>
+<tr>
+<td>Multi-variable <code>SetVariable</code></td>
+<td>Variables</td>
+<td>Add and remove named variable inputs dynamically</td>
+</tr>
+<tr>
+<td>Custom send and receive events</td>
+<td>Event Data Inputs/Outputs</td>
+<td>Define named payload entries and their Flow Graph types</td>
+</tr>
+</tbody></table>
+<p>These specialized editors are important because they make dynamic or scene-aware blocks practical to author without hand-editing graph data.</p>
+<h2 id="scene-dependent-pickers">Scene-Dependent Pickers<a class="anchor" href="#scene-dependent-pickers">#</a></h2>
+<p>Some property editors depend on the current preview scene. For example:</p>
+<ul>
+<li>Mesh pickers need a loaded scene with meshes.</li>
+<li>Animation-group pickers need a loaded scene with animation groups.</li>
+<li>Asset pickers are more useful when the relevant scene assets are already available.</li>
+</ul>
+<p><p class="muted">Upstream illustration: Flow Graph Editor scene context panel (media not bundled).</p></p>
+<p>If the required scene context is not available, the editor shows an informational message rather than pretending the picker can resolve data that is not currently loaded.</p>
+<h2 id="practical-workflow">Practical Workflow<a class="anchor" href="#practical-workflow">#</a></h2>
+<p>When building a larger or more complex graph, a good pattern is:</p>
+<ol>
+<li>Load the scene first so scene-aware editors are useful immediately.</li>
+<li>Connect data ports while watching compatibility feedback.</li>
+<li>Use live validation during active editing.</li>
+<li>Run a manual validation pass before saving or sharing.</li>
+<li>Use names and comments in the General section to make the graph maintainable.</li>
+</ol>
+<p>If the graph uses multiple runtime instances, also verify that the currently selected execution context is the one whose variables and debug state you intend to inspect. For the full behavior, see <a href="babylon-guide-toolsandresources-flowgrapheditor-executioncontexts.html">Execution Contexts</a>.</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#why-this-page-exists">Why This Page Exists </a><a href="#validation-modes">Validation Modes </a><a href="#connection-type-compatibility">Connection Type Compatibility </a><a href="#property-panel-overview">Property Panel Overview </a><a href="#specialized-property-panels">Specialized Property Panels </a><a href="#scene-dependent-pickers">Scene-Dependent Pickers </a><a href="#practical-workflow">Practical Workflow </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

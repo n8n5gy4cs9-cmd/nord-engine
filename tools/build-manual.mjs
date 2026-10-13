@@ -7,6 +7,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
+import { API_HELP } from './manual/api-help.mjs';
+import { engineDocs } from './manual/engine-docs.mjs';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { COMPONENTS, COMPONENT_ORDER } from './manual/components-data.mjs';
@@ -26,8 +28,8 @@ const { marked } = require(path.join(root, 'vendor/marked/marked.umd.js'));
 // ::: dummies  ... :::   -> hidden-by-default plain-language box (toggle in header)
 // ::: tip|warn|todo ... ::: -> callouts.   ```nord-live``` -> editable, runnable snippet.
 const LIVE = [];
-const BOX_TITLES = { dummies: 'For dummies', tip: 'Tip', warn: 'Careful', todo: 'TODO (planned)' };
-function renderMd(md) {
+const BOX_TITLES = { dummies: 'For dummy developers', tip: 'Tip', warn: 'Careful', todo: 'TODO (planned)' };
+function renderMd(md, options = {}) {
   md = md.replace(/^:::\s*(dummies|tip|warn|todo)\s*\n([\s\S]*?)^:::\s*$/gm, (_, k, body) =>
     `\n<aside class="box ${k}"><div class="box-title">${BOX_TITLES[k]}</div>\n\n${body.trim()}\n\n</aside>\n`);
   const r = new marked.Renderer();
@@ -43,6 +45,11 @@ function renderMd(md) {
     if (lang === 'nord-live') return `<div class="live"><pre class="live-src">${esc(text)}</pre></div>\n`;
     return `<pre class="code" data-lang="${esc(lang || '')}"><code>${esc(text)}</code></pre>\n`;
   };
+  if (options.upstream) {
+    r.html = ({ text }) => text.startsWith('<!--') ? '' : `<span class="muted">${esc(text.replace(/<Playground[^>]*>/g, 'Online playground (not embedded offline)'))}</span>`;
+    r.image = ({ text }) => `<p class="muted">Upstream illustration: ${esc(text || 'image')} (media not bundled).</p>`;
+    r.link = function ({ href, tokens }) { const target = options.resolve?.(href); const label = this.parser.parseInline(tokens); return target ? `<a href="${esc(target)}">${label}</a>` : `<span>${label}</span>`; };
+  }
   return marked.parse(md, { renderer: r, gfm: true });
 }
 function frontMatter(src) {
@@ -57,7 +64,7 @@ const plain = (html) => html.replace(/<pre[\s\S]*?<\/pre>/g, ' ').replace(/<[^>]
 const pages = []; // { file, title, section, order, html (body), group }
 const add = (p) => pages.push({ order: 50, ...p });
 
-for (const f of fs.readdirSync(SRC).filter((x) => x.endsWith('.md')).sort()) {
+for (const f of fs.readdirSync(SRC).filter((x) => x.endsWith('.md') && !x.startsWith('_')).sort()) {
   const [meta, body] = frontMatter(fs.readFileSync(path.join(SRC, f), 'utf8'));
   add({ file: f.replace(/^\d+-/, '').replace(/\.md$/, '.html'), title: meta.title ?? f, section: meta.section ?? 'Manual', order: Number(meta.order ?? 50), html: renderMd(body), summary: meta.summary ?? '' });
 }
@@ -140,7 +147,9 @@ const API_FILES = [
   ['UI', 'runtime/core/ui.js', 'DOM HUD/menu layer (`this.ui`).'],
   ['Scheduler', 'runtime/core/util.js', 'Timers and tweens (`this.after/every/tween`).'],
   ['Rng', 'runtime/core/util.js', 'Seedable random numbers (`this.rng`).'],
-  ['Pool', 'runtime/core/util.js', 'Object pool.'],
+  ['Pool', 'runtime/core/util.js', 'Reuse objects instead of allocating a new one each time.'],
+  ['Loader', 'runtime/core/loader.js', 'Load project files safely, with caching and progress reporting.'],
+  ['MemoryStorage', 'runtime/core/save.js', 'In-memory storage for Save when browser storage is unavailable or for isolated runs.'],
   ['ArcadeAdapter', 'runtime/phaser/physics.js', '2D physics (Arcade) — `this.physics` in 2D games.'],
   ['MatterAdapter', 'runtime/phaser/physics.js', '2D physics (Matter) — `this.physics` when `physics.engine` is `matter`.'],
   ['HavokAdapter', 'runtime/babylon/physics.js', '3D physics (Havok) — `this.physics` in 3D games.'],
@@ -166,13 +175,17 @@ function parseClass(file, name) {
   for (let i = start + 1; i < lines.length; i++) {
     if (/^}/.test(lines[i])) break;
     const m = lines[i].match(/^  (static )?(async )?(get |set )?(\*?)([A-Za-z_]\w*)\(([^)]*)\)\s*\{/);
-    if (!m || m[5] === 'constructor' || /^#/.test(m[5])) continue;
+    if (!m || m[5] === 'constructor' || /^[_#]/.test(m[5])) continue;
     const kind = m[3] ? m[3].trim() : 'method';
-    const docs = cmt(i);
-    members.push({ name: m[5], args: m[6].trim(), kind, static: !!m[1], async: !!m[2], gen: !!m[4], doc: docs, inline: (lines[i].match(/\/\/\s*(.+)$/) ?? [])[1] ?? '' });
+    const docs = cmt(i) || API_HELP[name]?.[m[5]] || '';
+    members.push({ name: m[5], args: m[6].trim(), kind, static: !!m[1], async: !!m[2], gen: !!m[4], doc: docs, implementation: lines.slice(i, (() => { let end = i + 1; while (end < lines.length && !/^  (?:(?:static|async|get|set) )*\w+\([^)]*\)\s*\{|^}/.test(lines[end])) end++; return end; })()).join('\n').trim(), inline: (lines[i].match(/\/\/\s*(.+)$/) ?? [])[1] ?? '' });
   }
   const ctor = lines.slice(start, start + 12).find((l) => /^\s+constructor\(/.test(l));
-  return { name, ext, classDoc, members, ctor: ctor ? ctor.trim().replace(/\s*\{$/, '') : '' };
+  const ctorStart = lines.findIndex((l, i) => i > start && /^  constructor\(/.test(l));
+  let ctorEnd = ctorStart + 1; while (ctorEnd < lines.length && !/^  (?:(?:get|set|async|static) )*\w+\(/.test(lines[ctorEnd]) && !/^}/.test(lines[ctorEnd])) ctorEnd++;
+  const fields = ctorStart < 0 ? [] : [...new Set([...lines.slice(ctorStart, ctorEnd).join('\n').matchAll(/this\.([a-zA-Z]\w*)\s*=/g)].map(m => m[1]).filter(n => !n.startsWith('_')))];
+  if (ext === 'Base') { const base = parseClass(file, 'Base'); const own = new Set(members.map(m => m.name)); members.push(...base.members.filter(m => !own.has(m.name)).map(m => ({ ...m, inherited: true }))); }
+  return { name, ext, classDoc, members, fields, ctor: ctor ? ctor.trim().replace(/\s*\{$/, '') : '' };
 }
 const apiDocs = [];
 for (const [name, file, blurb] of API_FILES) {
@@ -184,17 +197,21 @@ for (const [name, file, blurb] of API_FILES) {
     else methods.push(m);
   }
   let h = `<p class="lead">${renderMd(blurb).replace(/^<p>|<\/p>\n?$/g, '')}</p>\n<p class="muted">Source: <code>${file}</code>${c.ext ? ` · extends <code>${c.ext}</code>` : ''}</p>\n`;
+  if (name === 'NordScript') h += `<aside class="box dummies"><div class="box-title">For dummy developers</div><p>Attach your script to an entity. Use <code>start()</code> for setup and <code>update(dt)</code> for ongoing changes. The engine supplies the shortcuts below.</p></aside><p><a href="developer-basics.html">Read your first script</a> · <a href="scripting.html#lifecycle">All lifecycle hooks and their arguments</a></p>`;
   if (c.classDoc) h += `<p>${esc(c.classDoc)}</p>\n`;
   if (c.ctor) h += `<pre class="code" data-lang="js"><code>${esc(c.ctor)}</code></pre>\n`;
+  const fieldHelp = { entity: 'The entity this script belongs to.', attrs: 'Script attributes after resolving defaults and scene overrides.', id: 'The entity’s unique ID.', name: 'The entity or scene name.', tags: 'Text labels used by findByTag().', children: 'Child entities in the scene tree.', parent: 'Parent entity, or null at the root.', native: 'The underlying engine object; see Escape hatch.', components: 'Runtime component handles attached to this entity.', scripts: 'Attached script instances.', scene: 'The containing or current scene.', project: 'Parsed project settings.', backend: 'The current rendering adapter.', events: 'An event bus for messages.', input: 'Input state and named actions.', save: 'Versioned save slots.', rng: 'Seeded random numbers.', time: 'Frame duration and elapsed time in seconds.', timeScale: 'Multiplier for game time; 0.5 is half speed.', paused: 'Whether the game update loop is paused.', errors: 'Errors caught from scripts.', scheduler: 'The scene’s timers and tweens.' };
+  if (c.fields.length) h += `<h2 id="instance-fields">Instance fields</h2><table><thead><tr><th>Field</th><th>Meaning</th></tr></thead><tbody>${c.fields.filter(f => !props.has(f)).map(f => `<tr><td><code>${f}</code></td><td>${fieldHelp[f] ?? `Created by the constructor in ${file}.`}</td></tr>`).join('')}</tbody></table>`;
   if (props.size) h += `<h2 id="properties">Properties</h2>\n<dl class="api">${[...props.values()].map((p) => `<dt id="p-${p.name}"><code>${p.name}</code> <span class="muted">${p.rw === 'r' ? 'read-only' : p.rw === 'w' ? 'write-only' : 'read / write'}</span></dt><dd>${esc(p.doc)}</dd>`).join('')}</dl>\n`;
-  if (methods.length) h += `<h2 id="methods">Methods</h2>\n<dl class="api">${methods.map((m) => `<dt id="m-${m.name}"><code>${m.static ? 'static ' : ''}${m.async ? 'async ' : ''}${m.gen ? '*' : ''}${m.name}(${esc(m.args)})</code></dt><dd>${esc(m.doc || m.inline)}</dd>`).join('')}</dl>\n`;
+  if (methods.length) h += `<h2 id="methods">Methods</h2>\n<dl class="api">${methods.map((m) => `<dt id="m-${m.name}"><a class="member-link" href="#m-${m.name}" aria-label="Link to ${m.name}">#</a><code>${m.static ? 'static ' : ''}${m.async ? 'async ' : ''}${m.gen ? '*' : ''}${m.name}(${esc(m.args)})</code></dt><dd>${m.inherited ? '<p>Inherited from the shared 2D physics adapter.</p>' : ''}${m.doc || m.inline ? esc(m.doc || m.inline) : `<details><summary>How this method works</summary><pre class="code" data-lang="js"><code>${esc(m.implementation)}</code></pre></details>`}</dd>`).join('')}</dl>\n`;
   apiDocs.push({ name, file, h });
   add({ file: `api-${slug(name)}.html`, title: name, section: 'API', order: apiDocs.length, html: h, summary: blurb.replace(/[`]/g, '') });
 }
 // free functions/objects from util.js + input.js
 {
   const util = read('runtime/core/util.js');
-  const fns = [...util.matchAll(/^export const (\w+) = (\([^)]*\)) =>/gm)].map((m) => `<dt><code>${m[1]}${m[2]}</code></dt><dd></dd>`).join('');
+  const helperNotes = { clamp: 'Keep v between a and b. Returns the nearest boundary when v is outside the range.', lerp: 'Blend from a toward b: t=0 gives a, t=1 gives b. Values outside 0–1 extrapolate.', remap: 'Convert v from input range a–b to output range c–d. Do not use an input range with equal endpoints.', deg2rad: 'Convert an angle in degrees to radians.', rad2deg: 'Convert an angle in radians to degrees.', angleDiff: 'Return the shortest signed turn from a to b, in degrees.' };
+  const fns = [...util.matchAll(/^export const (\w+) = (\([^)]*\)) =>/gm)].map((m) => `<dt><code>${m[1]}${m[2]}</code></dt><dd>${helperNotes[m[1]] ?? ''}</dd>`).join('');
   const eases = [...(util.match(/export const ease = \{([\s\S]*?)\n\};/)[1].matchAll(/^\s+(\w+)[:,]/gm))].map((m) => `<code>${m[1]}</code>`).join(', ');
   add({ file: 'api-helpers.html', title: 'Math & helpers', section: 'API', order: 20, summary: 'clamp, lerp, remap, vec, ease…',
     html: `<p class="lead">Small engine-agnostic helpers exported from <code>nord</code> (<code>runtime/core/util.js</code>).</p><pre class="code" data-lang="js"><code>import { clamp, lerp, remap, vec, ease } from 'nord';</code></pre><h2>Functions</h2><dl class="api">${fns}</dl><h2 id="vec"><code>vec</code></h2><p>Array-based vectors (2 or 3 components): <code>vec.add, sub, scale, len, dist, norm, lerp</code>.</p><h2 id="ease">Easing</h2><p>Names for <code>tween({ease})</code>: ${eases}. A function <code>t→t</code> also works.</p>` });
@@ -208,6 +225,48 @@ const NS = read('docs/manual-src/_namespaces.json');
   for (const g of ns) h += `<h2 id="${slug(g.name)}"><code>${esc(g.name)}</code></h2><p>${esc(g.summary)}</p><dl class="api">${g.items.map((i) => `<dt><code>${esc(i[0])}</code>${i[2] ? ` <span class="badge">${esc(i[2])}</span>` : ''}</dt><dd>${esc(i[1])}</dd>`).join('')}</dl>`;
   add({ file: 'api-namespaces.html', title: 'game.* namespaces', section: 'API', order: 0, html: h, summary: 'game.camera, game.physics, game.gui, game.ui, game.audio…' });
 }
+
+// ---- complete public core exports, desktop bridge and Rust contracts
+{
+  const index = read('runtime/core/index.js');
+  const entries = [...index.matchAll(/export \{ ([^}]+) \} from '([^']+)'/g)].flatMap(m => m[1].split(',').map(name => ({ name: name.trim(), file: 'runtime/core/' + m[2].replace('./', '') })));
+  const classNames = new Set(API_FILES.map(([name]) => name));
+  let h = '<p class="lead">Every named export from <code>nord</code>. Classes link to their member reference; helper contracts and implementations appear below.</p><table><thead><tr><th>Import</th><th>Source</th></tr></thead><tbody>';
+  for (const e of entries) h += `<tr><td><a href="${classNames.has(e.name) ? 'api-' + slug(e.name) + '.html' : '#export-' + slug(e.name)}"><code>${esc(e.name)}</code></a></td><td><code>${esc(e.file)}</code></td></tr>`;
+  h += '</tbody></table>';
+  for (const e of entries.filter(e => !classNames.has(e.name))) {
+    const source = read(e.file), lines = source.split('\n'), start = lines.findIndex(l => new RegExp(`^export (?:async )?(?:function|const) ${e.name}\\b`).test(l));
+    let snippet = '', comment = '';
+    if (start >= 0) {
+      let end = start + 1;
+      if (!lines[start].endsWith(';') && !lines[start].trimEnd().endsWith('}')) while (end < lines.length && !/^}\s*;?$/.test(lines[end]) && !/^export /.test(lines[end])) end++;
+      if (/^}/.test(lines[end] ?? '')) end++;
+      snippet = lines.slice(start, end).join('\n');
+      let c = start - 1; while (c >= 0 && (/^\s*\*/.test(lines[c]) || /^\s*\/\//.test(lines[c]) || /^\s*\/\*\*/.test(lines[c]))) c--;
+      comment = lines.slice(c + 1, start).join('\n').replace(/\/\*\*|\*\//g, '').replace(/^\s*(?:\*|\/\/) ?/gm, '').trim();
+    }
+    h += `<h2 id="export-${slug(e.name)}"><code>${esc(e.name)}</code></h2>${comment ? renderMd(comment) : ''}<p class="muted">Import from <code>nord</code>. Definition from <code>${esc(e.file)}</code>; names and defaults below are taken directly from the runtime.</p>${snippet ? `<pre class="code" data-lang="js"><code>${esc(snippet)}</code></pre>` : '<p>Exported value; see the source module.</p>'}`;
+  }
+  add({ file: 'api-exports.html', title: 'All Nord public exports', section: 'API', order: 25, html: h, summary: entries.map(e => e.name).join(', ') });
+  const desktop = read('runtime/desktop/nord-desktop.d.ts');
+  let dh = '<p class="lead">The complete typed contract of <code>window.nord.desktop</code>: files, dialogs, notifications, storage, windows and more.</p><p>Methods return Promises unless their declaration says otherwise. Permissions and native availability vary by capability and platform. <a href="desktop-apps.html">Start with the desktop guide</a>.</p><aside class="box dummies"><div class="box-title">For dummy developers</div><p>Use <code>await</code> to wait for a file or dialog. A cancelled picker can return <code>null</code>; check it before reading. Desktop permissions belong in your project settings.</p></aside>';
+  for (const line of desktop.split('\n').filter(l => l.startsWith('  ') && !l.trim().startsWith('/**') && l.includes(':'))) {
+    const name = line.trim().match(/^(?:readonly )?(\w+)/)?.[1];
+    if (name) dh += `<h2 id="desktop-${slug(name)}">${esc(name)}</h2><pre class="code" data-lang="ts"><code>${esc(line.trim())}</code></pre>`;
+  }
+  dh += `<h2 id="complete-types">Complete bridge and supporting types</h2><pre class="code" data-lang="ts"><code>${esc(desktop)}</code></pre>`;
+  add({ file: 'api-desktop.html', title: 'Desktop bridge', section: 'API', order: 26, html: dh, summary: 'window.nord.desktop: fs dialog app store secret clipboard notify window menu tray shortcut shell process server http' });
+  let rh = '<p class="lead">Public declarations from Nord’s Rust game and app crates. This is a source reference; the JavaScript API does not apply to Rust projects.</p><p><a href="rust-wasm.html">Rust getting started</a> · <a href="rust-tier-spec.html">Supported behavior and export requirements</a></p>';
+  for (const crate of ['nord-runtime-wasm', 'nord-app-wasm']) {
+    const dir = path.join(root, 'crates', crate, 'src');
+    for (const file of fs.readdirSync(dir).filter(f => f.endsWith('.rs')).sort()) {
+      const source = fs.readFileSync(path.join(dir, file), 'utf8'), publicLines = source.split('\n').filter(l => /^\s*pub /.test(l));
+      rh += `<h2 id="${slug(crate + '-' + file)}">${crate} / ${esc(file)}</h2><pre class="code" data-lang="rust"><code>${esc(publicLines.join('\n'))}</code></pre><details><summary>Full module with comments and implementation</summary><pre class="code" data-lang="rust"><code>${esc(source)}</code></pre></details>`;
+    }
+  }
+  add({ file: 'api-rust.html', title: 'Rust public API', section: 'API', order: 27, html: rh, summary: 'Script Ctx World Registry Input assets physics App desktop Rust declarations' });
+}
+engineDocs({ root, add, renderMd, esc, slug });
 
 // ---- generated: CLI from clap doc comments
 {
@@ -267,61 +326,91 @@ const NS = read('docs/manual-src/_namespaces.json');
 }
 
 // ---------- layout --------------------------------------------------------------------------------------------------------
-const SECTION_ORDER = ['Manual', 'Tutorials', 'Guides', 'API', 'Components', 'Reference', 'Appendix'];
+const SECTION_ORDER = ['Start here', 'Manual', 'Tutorials', 'Guides', 'API', 'Components', 'Reference', 'Appendix', 'Engine docs'];
 pages.sort((a, b) => SECTION_ORDER.indexOf(a.section) - SECTION_ORDER.indexOf(b.section) || a.order - b.order || a.title.localeCompare(b.title));
 const bySection = new Map();
 for (const p of pages) { if (!bySection.has(p.section)) bySection.set(p.section, []); bySection.get(p.section).push(p); }
 for (const s of bySection.keys()) if (!SECTION_ORDER.includes(s)) throw new Error(`unknown section '${s}'`);
-
-const nav = (cur) => [...bySection].map(([s, ps]) => `<details class="nav-sec"${ps.some((p) => p === cur) || cur.file === 'index.html' ? ' open' : ''}><summary>${s}</summary>${ps.map((p) => `<a href="${p.file}"${p === cur ? ' class="cur"' : ''}>${esc(p.title)}</a>`).join('')}</details>`).join('\n');
-const layout = (p, body, i) => `<!doctype html>
+const area = p => ['API', 'Components', 'Reference', 'Engine docs'].includes(p.section) ? 'API' : p.section === 'Appendix' ? 'Guides' : p.section;
+const tabs = [['Start here', 'getting-started.html'], ['Manual', 'welcome.html'], ['Tutorials', 'tutorials.html'], ['Guides', 'cookbook.html'], ['API', 'api.html']];
+const nav = cur => {
+  const sections = [...bySection].filter(([s]) => area({ section: s }) === area(cur));
+  return `<a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">${esc(area(cur))}</div>` + sections.map(([s, ps]) => {
+    if (s === 'Engine docs') return '<a href="engine-docs.html">Phaser & Babylon documentation</a>';
+    const links = ps.map(p => `<a href="${p.file}"${p === cur ? ' class="cur" aria-current="page"' : ''}>${esc(p.title)}</a>`).join('');
+    return sections.length > 1 ? `<details${s === cur.section ? ' open' : ''}><summary>${esc(s)}</summary>${links}</details>` : links;
+  }).join('');
+};
+const layout = (p, body) => {
+  const headings = [...body.matchAll(/<h2 id="([^"]+)">([\s\S]*?)<\/h2>/g)].map(m => [m[1], plain(m[2]).replace(/#$/, '')]);
+  const siblings = bySection.get(p.section) ?? [], pos = siblings.indexOf(p);
+  const pager = p.file === 'index.html' || p.section === 'Engine docs' ? '' : `<div class="pager">${[siblings[pos - 1], siblings[pos + 1]].map((n, i) => n ? `<a href="${n.file}"><small>${i ? 'Next →' : '← Previous'}</small>${esc(n.title)}</a>` : '<span></span>').join('')}</div>`;
+  return `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${esc(p.title)} — Nord Engine</title>
-<script>try{if(localStorage.getItem('nord.manual.dummies')==='1')document.documentElement.classList.add('dummies-on')}catch(e){}</script>
+<title>${esc(p.title)} — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
 <link rel="stylesheet" href="assets/manual.css"></head>
-<body><header><a class="brand" href="index.html"><img src="assets/logo.png" alt="" width="28" height="28">Nord Engine <span class="muted">Manual</span></a>
-<input id="q" type="search" placeholder="Search docs…" autocomplete="off"><div id="results" hidden></div>
-<button id="dummies-toggle" title="Show plain-language 'For dummies' boxes" aria-pressed="false">For dummies: <b>off</b></button></header>
-<div class="layout"><nav>${nav(p)}</nav><main><div class="crumb">${esc(p.section)}</div><h1>${esc(p.title)}</h1>
-${body}
-<footer>Crowelian 2026 + Sonnet · <a href="https://github.com/n8n5gy4cs9-cmd/nord-engine">source</a> · generated by <code>tools/build-manual.mjs</code></footer></main></div>
-<script type="module" src="assets/manual.js"></script></body></html>`;
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections">${tabs.map(([name, href]) => `<a href="${href}"${area(p) === name ? ' class="active" aria-current="page"' : ''}>${name}</a>`).join('')}</nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation">${nav(p)}</nav><main id="content"><div class="crumb">${esc(p.section)} / Nord Engine</div><h1>${esc(p.title)}</h1>
+${body}${pager}<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b>${headings.map(([id, title]) => `<a href="#${id}">${esc(title)}</a>`).join('')}</aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>`;
+};
 
 // ---------- write ---------------------------------------------------------------------------------------------------------
+const home = { file: 'index.html', title: 'Make something worth playing.', section: 'Start here', order: 0, summary: '' };
+const homeBody = `<div class="hero"><div class="eyebrow">Your idea. Your game. Your engine.</div><h2>A little engine.<br>A lot to explore.</h2><p class="lead">Build 2D games, 3D worlds and desktop apps. Learn one step at a time, then keep the reference nearby.</p><a class="button-link" href="getting-started.html">Start building →</a><a class="button-link secondary" href="api.html">Browse the API</a></div>
+<ul class="cards"><li><a href="getting-started.html"><div class="path-step">01 · NEW TO NORD?</div><b>Get your first win</b><span>Open a project, press Play, change something. No programming experience needed.</span></a></li><li><a href="how-nord-works.html"><div class="path-step">02 · UNDERSTAND THE PIECES</div><b>How Nord works</b><span>Entities, scripts, Phaser, Babylon, WebGL and WASM in plain English.</span></a></li><li><a href="tutorials.html"><div class="path-step">03 · LEARN BY DOING</div><b>Build along with a tutorial</b><span>Small lessons with a goal, working code and a next step.</span></a></li><li><a href="api.html"><div class="path-step">04 · FIND AN ANSWER</div><b>Keep the reference handy</b><span>Nord classes and components, desktop APIs and the underlying engines.</span></a></li></ul>
+<h2 id="made-with-nord">Made with Nord</h2><p>These are real bundled examples. Open them in the editor to explore their scenes and scripts.</p><div class="shot-grid"><figure class="shot"><img src="assets/screenshots/vallout-03-classic-explore.png" alt="Vallout isometric streets and green game interface" loading="lazy"><figcaption><b>Vallout 2: New Kerava</b> · An isometric RPG. Scenes, dialogue and turn-based rules working together.</figcaption></figure><figure class="shot"><img src="assets/screenshots/automies-2-drive.png" alt="Automies car driving through a 3D city" loading="lazy"><figcaption><b>Automies</b> · A 3D driving game. Babylon renders the world; Nord scripts control the car.</figcaption></figure></div>
+<aside class="box tip"><div class="box-title">A little help, whenever you need it</div><p>Beginner explanations are visible by default. The <b>For dummies</b> button hides or shows the purple boxes. Search works offline; press <kbd>/</kbd> to jump to it.</p></aside>`;
+const all = [home, ...pages];
+if (new Set(all.map(p => p.file)).size !== all.length) throw new Error('Duplicate manual output filenames: ' + [...new Set(all.filter((p,i)=>all.findIndex(q=>q.file===p.file)!==i).map(p=>p.file))].join(', '));
 fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(path.join(OUT, 'assets'), { recursive: true });
-const homeCards = SECTION_ORDER.filter((s) => bySection.has(s)).map((s) => `<h2>${s}</h2><ul class="cards">${bySection.get(s).slice(0, s === 'Components' || s === 'API' ? 40 : 40).map((p) => `<li><a href="${p.file}"><b>${esc(p.title)}</b><span>${esc(p.summary ?? '')}</span></a></li>`).join('')}</ul>`).join('');
-const home = { file: 'index.html', title: 'Nord Engine Manual', section: 'Manual', order: 0, summary: '' };
-const homeBody = `<p class="lead">Nord is a small engine + native editor that exports static HTML games (Phaser 2D, Babylon 3D, Rust/WASM) and a Mac app. This site is the complete, offline manual: guides, tutorials, the full scripting API and every component.</p>
-<aside class="box dummies"><div class="box-title">For dummies</div><p>Plain-language boxes like this one are hidden by default. Use the <b>For dummies</b> switch in the top bar to show them everywhere; the choice is remembered.</p></aside>
-<p>New here? Start with <a href="welcome.html">Welcome</a>, then <a href="tut-t01-hello-nord.html">T01 Hello Nord</a>. Looking something up? Use the search box.</p>${homeCards}`;
-const all = [home, ...pages];
 const search = [];
 for (const p of all) {
   const body = p === home ? homeBody : p.html;
   fs.writeFileSync(path.join(OUT, p.file), layout(p, body));
-  if (p !== home) search.push({ f: p.file, t: p.title, s: p.section, x: plain(body).slice(0, 6000) });
+  if (p !== home) {
+    search.push({ f: p.file, t: p.title, s: p.section, x: plain(body).slice(0, 6000) });
+    for (const m of p.searchMembers ?? []) search.push({ f: p.file + '#' + m.id, t: p.title + '.' + m.name, s: p.section, x: m.text.slice(0, 1200) });
+  }
 }
 fs.writeFileSync(path.join(OUT, 'assets/search-index.js'), `window.NORD_SEARCH=${JSON.stringify(search)};`);
 fs.copyFileSync(path.join(SRC, '_manual.css'), path.join(OUT, 'assets/manual.css'));
 fs.copyFileSync(path.join(SRC, '_manual.js'), path.join(OUT, 'assets/manual.js'));
 fs.copyFileSync(path.join(root, 'assets/brand/logo-256.png'), path.join(OUT, 'assets/logo.png'));
+fs.copyFileSync(path.join(root, 'assets/docs/editor-layout.svg'), path.join(OUT, 'assets/editor-layout.svg'));
 fs.copyFileSync(path.join(root, 'vendor/codemirror/cm.bundle.js'), path.join(OUT, 'assets/cm.bundle.js'));
+for (const [source, name] of [['inter/inter-latin-400-normal.woff2', 'inter.woff2'], ['plus-jakarta-sans/plus-jakarta-sans-latin-700-normal.woff2', 'jakarta.woff2'], ['jetbrains-mono/jetbrains-mono-latin-400-normal.woff2', 'mono.woff2']]) fs.copyFileSync(path.join(root, 'vendor/fonts', source), path.join(OUT, 'assets', name));
+fs.cpSync(path.join(root, 'vendor/engine-docs'), path.join(OUT, 'assets/engine-docs'), { recursive: true });
+fs.mkdirSync(path.join(OUT, 'assets/screenshots'), { recursive: true });
+for (const file of ['vallout-03-classic-explore.png', 'automies-2-drive.png', 'xkom-tactical.png', 'manual-hello-nord.png']) fs.copyFileSync(path.join(root, 'docs/screenshots', file), path.join(OUT, 'assets/screenshots', file));
+// The vendored bundle is standalone ESM. Expose its exact exports as a classic-script global
+// so syntax highlighting also works when the user double-clicks the offline HTML file.
+const cmSource = read('vendor/codemirror/cm.bundle.js');
+const cmExports = cmSource.match(/export\{([^}]+)\};?\s*$/);
+if (!cmExports) throw new Error('CodeMirror bundle export shape changed');
+const cmObject = cmExports[1].split(',').map(s => { const [local, name = local] = s.trim().split(/\s+as\s+/); return `${name}:${local}`; }).join(',');
+fs.writeFileSync(path.join(OUT, 'assets/cm.classic.js'), `(()=>{${cmSource.slice(0, cmExports.index)};window.NORD_CM={${cmObject}};})();`);
 // the runnable snippets import the real core runtime
 fs.cpSync(path.join(root, 'runtime/core'), path.join(OUT, 'runtime/core'), { recursive: true, filter: (s) => !s.endsWith('.test.mjs') });
 
 // ---------- link check ------------------------------------------------------------------------------------------------------
 let bad = 0;
 const files = new Set(fs.readdirSync(OUT));
+const idCache = new Map();
+const ids = f => { if (!idCache.has(f)) idCache.set(f, new Set([...fs.readFileSync(path.join(OUT, f), 'utf8').matchAll(/ id="([^"]+)"/g)].map(m => m[1]))); return idCache.get(f); };
 for (const p of all) {
   const html = fs.readFileSync(path.join(OUT, p.file), 'utf8');
-  const ids = (f) => new Set([...fs.readFileSync(path.join(OUT, f), 'utf8').matchAll(/ id="([^"]+)"/g)].map((m) => m[1]));
   for (const m of html.matchAll(/href="([^"#:]*)(#[^"]*)?"/g)) {
     const [, f, hash] = m;
     if (f && !files.has(f) && !f.startsWith('assets/')) { console.error(`broken link in ${p.file}: ${f}`); bad++; }
     else if (hash && hash.length > 1 && !ids(f || p.file).has(hash.slice(1))) { console.error(`broken anchor in ${p.file}: ${f}${hash}`); bad++; }
   }
-  if (/https?:\/\/(?!github\.com\/n8n5gy4cs9-cmd|localhost)/.test(html.replace(/<pre[\s\S]*?<\/pre>/g, '').replace(/<code>[\s\S]*?<\/code>/g, ''))) { console.error(`external URL in ${p.file} (docs must be offline)`); bad++; }
+  if (p.section !== 'Engine docs' && /https?:\/\/(?!github\.com\/n8n5gy4cs9-cmd|localhost)/.test(html.replace(/<pre[\s\S]*?<\/pre>/g, '').replace(/<code>[\s\S]*?<\/code>/g, ''))) { console.error(`external URL in ${p.file} (docs must be offline)`); bad++; }
 }
 if (check) { // run every nord-live snippet against the real core runtime
   const core = await import(path.join(root, 'runtime/core/index.js'));

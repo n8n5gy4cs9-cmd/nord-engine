@@ -4,6 +4,13 @@ section: Manual
 order: 3
 summary: Folder layout, entities, components, prefabs, tags and layers.
 ---
+
+A project keeps your game’s files together. A scene describes the things in one level or screen; an entity is one of those things.
+
+::: dummies
+Start with one scene. Add one entity, give it a text or sprite component, and save. Use a prefab later when you need several copies of the same object.
+:::
+
 A project is a folder of plain files — everything is JSON, scripts and assets, so it works with git and any text editor.
 
 ```

@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Supported Block Families — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Supported Block Families</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="a-living-map-of-the-editor-palette">A Living Map Of The Editor Palette<a class="anchor" href="#a-living-map-of-the-editor-palette">#</a></h2>
+<p>The Flow Graph Editor is growing quickly, and the node palette changes as new capabilities are added. This page tracks the current block families exposed by the editor so you can understand the shape of the tool without needing to inspect every block one by one.</p>
+<p>Think of this page as a capability map:</p>
+<ul>
+<li>It shows the major authoring areas available today.</li>
+<li>It helps you discover where a new block is likely to live in the palette.</li>
+<li>It gives the documentation a stable place to grow as new categories or subcategories appear.</li>
+</ul>
+<p>For runtime concepts, continue with the <a href="babylon-guide-features-featuresdeepdive-flowgraph.html">Flow Graph deep-dive pages</a>. For editor workflow, see <a href="babylon-guide-toolsandresources-flowgrapheditor-gettingstarted.html">Getting Started With The Flow Graph Editor</a> and <a href="babylon-guide-toolsandresources-flowgrapheditor-authoringanddebugging.html">Authoring, Validation, and Debugging</a>.</p>
+<p>If you want a more concrete list of blocks inside these families, continue with <a href="babylon-guide-toolsandresources-flowgrapheditor-blockreference.html">Block Reference</a>.</p>
+<p><p class="muted">Upstream illustration: Flow Graph Editor node palette (media not bundled).</p></p>
+<h2 id="events">Events<a class="anchor" href="#events">#</a></h2>
+<p>Event blocks are the usual starting points for interactive graphs. They react to scene lifecycle changes, pointer interactions, mesh picking, and custom events.</p>
+<p>Current event-oriented groups include:</p>
+<ul>
+<li>Scene events</li>
+<li>Pointer and pick events</li>
+<li>Custom send and receive events</li>
+</ul>
+<p>Use this family when a graph should begin because something happened in the scene, not because another block explicitly called it.</p>
+<p>For deeper guidance, see <a href="babylon-guide-toolsandresources-flowgrapheditor-eventblocks.html">Event Blocks</a>.</p>
+<h2 id="control-flow">Control Flow<a class="anchor" href="#control-flow">#</a></h2>
+<p>Control flow blocks shape execution order. They decide what runs next, how often it runs, and under which conditions execution continues.</p>
+<p>This family currently covers patterns such as:</p>
+<ul>
+<li>Branching and switching</li>
+<li>Sequences and gates</li>
+<li>Loops</li>
+<li>Delays, throttling, and debouncing</li>
+<li>Execution counters and repetition controls</li>
+</ul>
+<p>If your graph needs timing, ordering, conditional routing, or controlled repetition, start in this family.</p>
+<p>For deeper guidance, see <a href="babylon-guide-toolsandresources-flowgrapheditor-controlflowblocks.html">Control Flow Blocks</a>.</p>
+<h2 id="animation">Animation<a class="anchor" href="#animation">#</a></h2>
+<p>Animation blocks connect flow graphs to animation playback and interpolation logic.</p>
+<p>This family currently includes blocks for:</p>
+<ul>
+<li>Playing animations</li>
+<li>Pausing animations</li>
+<li>Stopping animations</li>
+<li>Interpolating over time</li>
+</ul>
+<p>These blocks are useful when the flow graph is driving scene motion, timeline-based feedback, or transitions between states.</p>
+<p>For deeper guidance, see <a href="babylon-guide-toolsandresources-flowgrapheditor-animationblocks.html">Animation Blocks</a>.</p>
+<h2 id="physics">Physics<a class="anchor" href="#physics">#</a></h2>
+<p>Physics support is currently split into three practical subfamilies.</p>
+<h3 id="physics-events">Physics Events<a class="anchor" href="#physics-events">#</a></h3>
+<p>Physics event blocks react to things that happen in the simulation, such as collisions.</p>
+<h3 id="physics-actions">Physics Actions<a class="anchor" href="#physics-actions">#</a></h3>
+<p>Physics action blocks change the state of physics bodies. Typical operations include:</p>
+<ul>
+<li>Applying forces</li>
+<li>Applying impulses</li>
+<li>Setting linear velocity</li>
+<li>Setting angular velocity</li>
+<li>Changing motion type</li>
+</ul>
+<h3 id="physics-data">Physics Data<a class="anchor" href="#physics-data">#</a></h3>
+<p>Physics data blocks read information from the simulation. Current capabilities include reading:</p>
+<ul>
+<li>Linear velocity</li>
+<li>Angular velocity</li>
+<li>Mass properties</li>
+</ul>
+<p>Use the physics families when your graph needs to respond to or modify Physics V2 behavior inside the preview scene.</p>
+<p>For deeper guidance, see <a href="babylon-guide-toolsandresources-flowgrapheditor-physicsblocks.html">Physics Blocks</a>.</p>
+<h2 id="audio">Audio<a class="anchor" href="#audio">#</a></h2>
+<p>Audio support is also separated into actions, events, and read-only data.</p>
+<h3 id="audio-actions">Audio Actions<a class="anchor" href="#audio-actions">#</a></h3>
+<p>Audio action blocks currently cover common playback control:</p>
+<ul>
+<li>Play sound</li>
+<li>Stop sound</li>
+<li>Pause or resume sound</li>
+<li>Set sound volume</li>
+</ul>
+<h3 id="audio-events">Audio Events<a class="anchor" href="#audio-events">#</a></h3>
+<p>Audio event blocks can react to playback lifecycle changes, such as a sound ending.</p>
+<h3 id="audio-data">Audio Data<a class="anchor" href="#audio-data">#</a></h3>
+<p>Audio data blocks expose sound state for graph logic, including whether a sound is currently playing and what volume it is using.</p>
+<p>Use this family when interactive logic should coordinate with the Babylon.js Audio V2 system.</p>
+<p>For deeper guidance, see <a href="babylon-guide-toolsandresources-flowgrapheditor-audioblocks.html">Audio Blocks</a>.</p>
+<h2 id="math">Math<a class="anchor" href="#math">#</a></h2>
+<p>The editor already includes a broad math toolkit, organized into several subfamilies.</p>
+<h3 id="math-constants">Math Constants<a class="anchor" href="#math-constants">#</a></h3>
+<p>Provides common constants and generated values such as $\pi$, $e$, infinity, NaN, and random values.</p>
+<h3 id="math-arithmetic">Math Arithmetic<a class="anchor" href="#math-arithmetic">#</a></h3>
+<p>Supports arithmetic and scalar operations such as add, subtract, multiply, divide, modulo, power, clamp, saturate, and roots.</p>
+<h3 id="math-rounding">Math Rounding<a class="anchor" href="#math-rounding">#</a></h3>
+<p>Supports floor, ceil, round, truncate, and fractional extraction patterns.</p>
+<h3 id="math-trigonometry">Math Trigonometry<a class="anchor" href="#math-trigonometry">#</a></h3>
+<p>Supports trigonometric, inverse trigonometric, hyperbolic, and degree-radian conversion operations.</p>
+<h3 id="math-logarithmic">Math Logarithmic<a class="anchor" href="#math-logarithmic">#</a></h3>
+<p>Supports exponential and logarithmic operations, including base-2 and base-10 variants.</p>
+<h3 id="math-comparison">Math Comparison<a class="anchor" href="#math-comparison">#</a></h3>
+<p>Supports comparisons, special-value checks, and conditional selection logic.</p>
+<p>These math families are useful both for gameplay-style logic and for any graph that needs procedural values rather than fixed constants.</p>
+<h2 id="vector-and-matrix">Vector And Matrix<a class="anchor" href="#vector-and-matrix">#</a></h2>
+<p>This family focuses on spatial and linear algebra operations. Current capabilities include:</p>
+<ul>
+<li>Length and normalization</li>
+<li>Dot and cross products</li>
+<li>2D and 3D rotation helpers</li>
+<li>Matrix transpose, determinant, inversion, and multiplication</li>
+</ul>
+<p>Use this family when your graph needs to reason about direction, orientation, transforms, or spatial math.</p>
+<h2 id="bitwise">Bitwise<a class="anchor" href="#bitwise">#</a></h2>
+<p>The bitwise family provides low-level integer manipulation blocks. Current operations include:</p>
+<ul>
+<li>AND, OR, XOR, and NOT</li>
+<li>Left and right shifts</li>
+<li>Leading-zero, trailing-zero, and one-bit counting helpers</li>
+</ul>
+<p>These blocks are more specialized, but they are useful when graphs work with packed flags, integer masks, or binary state transformations.</p>
+<h2 id="data-conversion">Data Conversion<a class="anchor" href="#data-conversion">#</a></h2>
+<p>Data conversion blocks reshape values from one representation into another.</p>
+<p>Current categories of conversion include:</p>
+<ul>
+<li>Combining and extracting vectors</li>
+<li>Combining and extracting matrices</li>
+<li>Coordinate and vector transforms</li>
+<li>Quaternion and axis-angle conversions</li>
+<li>Matrix compose and decompose operations</li>
+<li>Boolean, integer, and float conversions</li>
+</ul>
+<p>This family is especially useful at the edges between high-level interaction logic and lower-level math or scene APIs.</p>
+<h2 id="data-access">Data Access<a class="anchor" href="#data-access">#</a></h2>
+<p>Data access blocks bridge the graph to variables, properties, assets, structured data, and indexed collections.</p>
+<p>Current capabilities include:</p>
+<ul>
+<li>Constants</li>
+<li>Property get and set</li>
+<li>Variable get and set</li>
+<li>Asset lookup</li>
+<li>JSON pointer parsing</li>
+<li>Array indexing and index lookup</li>
+<li>Data switching</li>
+</ul>
+<p>If your graph needs to read from or write to scene state, graph state, or structured payloads, this is usually the relevant family.</p>
+<p>For deeper guidance, see <a href="babylon-guide-toolsandresources-flowgrapheditor-dataaccessblocks.html">Data Access Blocks</a>.</p>
+<h2 id="keyboard">Keyboard<a class="anchor" href="#keyboard">#</a></h2>
+<p>Keyboard blocks let graphs read input state directly. The current capability is checking whether a specific key is pressed, which is useful for movement, jump, and other input-driven interactions like the <a href="babylon-guide-toolsandresources-flowgrapheditor-babylonbrosexample.html">Babylon Bros platformer example</a>.</p>
+<h2 id="utility">Utility<a class="anchor" href="#utility">#</a></h2>
+<p>Utility blocks support authoring and diagnostics rather than a single runtime domain.</p>
+<p>Current examples include:</p>
+<ul>
+<li>Console logging</li>
+<li>Easing helpers</li>
+<li>Context access</li>
+<li>Code execution hooks</li>
+<li>Function references</li>
+<li>Debug value probes</li>
+</ul>
+<p>This family is often where workflow-oriented features appear first, especially features that make graphs easier to inspect, prototype, or integrate.</p>
+<p>For deeper guidance, see <a href="babylon-guide-toolsandresources-flowgrapheditor-utilityblocks.html">Utility Blocks</a>.</p>
+<h2 id="how-to-read-this-page-as-the-editor-evolves">How To Read This Page As The Editor Evolves<a class="anchor" href="#how-to-read-this-page-as-the-editor-evolves">#</a></h2>
+<p>This page is intentionally organized by family, not by a frozen list of every block instance in the editor. As the Flow Graph Editor grows, this page should evolve in three ways:</p>
+<ul>
+<li>Add newly introduced families when they become visible in the node palette.</li>
+<li>Expand existing family descriptions when a category becomes meaningfully broader.</li>
+<li>Add dedicated pages for especially large families once they need more than a short overview.</li>
+</ul>
+<p>That structure keeps the documentation stable while still leaving room for frequent editor updates.</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#a-living-map-of-the-editor-palette">A Living Map Of The Editor Palette </a><a href="#events">Events </a><a href="#control-flow">Control Flow </a><a href="#animation">Animation </a><a href="#physics">Physics </a><a href="#audio">Audio </a><a href="#math">Math </a><a href="#vector-and-matrix">Vector And Matrix </a><a href="#bitwise">Bitwise </a><a href="#data-conversion">Data Conversion </a><a href="#data-access">Data Access </a><a href="#keyboard">Keyboard </a><a href="#utility">Utility </a><a href="#how-to-read-this-page-as-the-editor-evolves">How To Read This Page As The Editor Evolves </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

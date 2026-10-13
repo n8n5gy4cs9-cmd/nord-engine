@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Creating a Bowling Scene with the Havok Physics Plugin — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Creating a Bowling Scene with the Havok Physics Plugin</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><p>Have you ever wondered how physics can bring a virtual bowling game to life? Well, you&#39;re in for a treat! In this tutorial, we&#39;ll explore using the Havok Physics engine to create a simple bowling scene which simulates bowling ball movement and pin interactions. If you’re new to using physics with Babylon.js, then this tutorial is for you! We’ll create the scene in the Babylon.js Playground and use assets available in the Asset Librarian. So, let&#39;s lace up our virtual bowling shoes and get started!</p>
+<h2 id="create-the-scene">Create the Scene<a class="anchor" href="#create-the-scene">#</a></h2>
+<p>Let’s first create a new playground. We can get rid of the sphere and ground in the scene since we will add our own assets later. Before moving on to the next step, be sure that your code doesn’t include the sphere or ground.</p>
+<pre class="code" data-lang="javascript"><code>var createScene = function () {
+  // This creates a basic Babylon Scene object (non-mesh)
+  var scene = new BABYLON.Scene(engine);
+
+  // This creates and positions a free camera (non-mesh)
+  var camera = new BABYLON.FreeCamera(&quot;camera1&quot;, new BABYLON.Vector3(0, 5, -10), scene);
+
+  // This targets the camera to scene origin
+  camera.setTarget(BABYLON.Vector3.Zero());
+
+  // This attaches the camera to the canvas
+  camera.attachControl(canvas, true);
+
+  // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
+  var light = new BABYLON.HemisphericLight(&quot;light&quot;, new BABYLON.Vector3(0, 1, 0), scene);
+
+  // Default intensity is 1. Let's dim the light a small amount
+  light.intensity = 0.7;
+
+  return scene;
+};</code></pre>
+<p>Since we’re creating the scene in the Playground, save the scene and copy the URL so that you can save incremental updates throughout the tutorial.</p>
+<h2 id="enable-physics">Enable Physics<a class="anchor" href="#enable-physics">#</a></h2>
+<p>To bring our scene to life with realistic physics, Babylon.js provides a powerful function called <code>enablePhysics</code>. This essential function serves as the gateway to integrating physics into our scene. By invoking <code>enablePhysics</code>, we enable dynamic physics simulation for our objects, allowing them to respond to forces and collisions realistically. This function is necessary for creating a scene with physics because it sets the stage for objects to interact with each other in a lifelike manner. From simulating the movement of a bowling ball as it rolls down the lane to accurately calculating the collision response between the ball and the pins, <code>enablePhysics</code> is the key that unlocks the potential for immersive and interactive experiences.</p>
+<p>Let’s enable the physics engine just below the code for light intensity. The <code>enablePhysics</code> function takes two parameters: <code>gravity</code> and <code>plugin</code>. We create a variable for each parameter and pass them each into the function. For <code>gravity</code>, we use the vector <code>(0, -9.81,0)</code> which reflects real Earth gravity. As for the <code>plugin</code>, we assign the <code>HavokPlugin</code>.</p>
+<pre class="code" data-lang="javascript"><code>var gravityVector = new BABYLON.Vector3(0, -9.81, 0);
+var physicsPlugin = new BABYLON.HavokPlugin();
+scene.enablePhysics(gravityVector, physicsPlugin);</code></pre>
+<p>Now that physics is enabled, let’s create our bowling lane!</p>
+<h2 id="create-bowling-lane">Create Bowling Lane<a class="anchor" href="#create-bowling-lane">#</a></h2>
+<p>The bowling lane is considered the ground in our scene. We want to provide a thin long platform for both the pins to sit and the bowling ball to roll. Using <code>MeshBuilder</code>, we create the lane and assign the width and height parameters, 6 and 20 respectively.</p>
+<pre class="code" data-lang="javascript"><code>const lane = BABYLON.MeshBuilder.CreateGround(&quot;lane&quot;, { width: 6, height: 20 }, scene);</code></pre>
+<p>We also position the lane further ahead on the z-axis by <code>4</code> to provide a fuller view of the lane without moving the camera.</p>
+<pre class="code" data-lang="javascript"><code>lane.position = new BABYLON.Vector3(0, 0, 4);</code></pre>
+<p>Now that we have a bowling lane, we add physics to the lane since both the ball and pins need to collide with the surface. By not adding physics to the lane, our ball and pins would fall through the ground! To add physics, we create an aggregate. The Physics Aggregate is a helper that allows creating all the objects necessary to physicalize the scene in just one call.</p>
+<pre class="code" data-lang="javascript"><code>const laneAggregate = new BABYLON.PhysicsAggregate(lane, BABYLON.PhysicsShapeType.BOX, { mass: 0 }, scene);</code></pre>
+<p>The aggregate contains both a body and a shape. Since we’re adding physics to the lane, the lane is the body. As for the shape, we need to ensure that the shape matches the body. Given the lane closely resembles the shape of a box, we use the BOX shape. We also make use of the PhysicsAggregate Parameter – Mass. Since the lane lies flat against the virtual ground, we assign no mass (or 0). Otherwise, the lane would fall into the abyss of the scene!</p>
+<p><p class="muted">Upstream illustration: Bowling lane (media not bundled).</p></p>
+<h2 id="create-bowling-pins">Create Bowling Pins<a class="anchor" href="#create-bowling-pins">#</a></h2>
+<p>With our bowling lane created and configured with physics, we add pins to sit on top of its surface. A standard bowling lane consists of 10 bowling pins. Rather than write the same code 10 times to create each bowling pin, we create a function <code>createPins</code> which uses the <code>InstancedMesh</code> method to create 10 instances. The <code>InstancedMesh</code> method allows for efficient rendering of multiple instances of the same mesh with varying positions or properties. This is quite the function, so let’s break it down!</p>
+<p>We first start by loading the bowling pin from the Asset Librarian. Once loaded, we set the scaling of the pin to a size that’ll fit well within our lane dimensions but also accommodate 10 pins. Given the lane dimensions, we scale the bowling pin <code>0.3</code>.</p>
+<pre class="code" data-lang="javascript"><code>async function createPins(scene) {
+  const result = await BABYLON.ImportMeshAsync(Assets.meshes.bowlingPinpin_glb.rootUrl + Assets.meshes.bowlingPinpin_glb.filename, scene);
+  const bowlingPin = result.meshes[1];
+  bowlingPin.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
+}
+
+createPins(scene);</code></pre>
+<p><p class="muted">Upstream illustration: Single bowling pin (media not bundled).</p></p>
+<p>Because we’re creating instances of the loaded bowling pin mesh, we disable the initial pin which hides the pin from view.</p>
+<pre class="code" data-lang="javascript"><code>bowlingPin.setEnabled(false);</code></pre>
+<p>Since we can change the position for each instanced pin, we need a way to both store and later reference all positions. To do so, we create an array <code>pinPositions</code> to store all pin positions. The position is based on the scale of the pin. Therefore, if you choose a scale different than `0.3``, adjust the x and z values of the pins accordingly.</p>
+<pre class="code" data-lang="javascript"><code>pinPositions = [
+  new BABYLON.Vector3(0, 0, 5),
+  new BABYLON.Vector3(0.5, 0, 6),
+  new BABYLON.Vector3(-0.5, 0, 6),
+  new BABYLON.Vector3(0, 0, 7),
+  new BABYLON.Vector3(1, 0, 7),
+  new BABYLON.Vector3(-1, 0, 7),
+  new BABYLON.Vector3(-1.5, 0, 8),
+  new BABYLON.Vector3(-0.5, 0, 8),
+  new BABYLON.Vector3(0.5, 0, 8),
+  new BABYLON.Vector3(1.5, 0, 8),
+];</code></pre>
+<p>We now iterate over the <code>pinPositions</code> array using the <code>map()</code> method. For each position in <code>pinPositions</code>, a new <code>bowlingPin</code> instance is created. Each new pin’s name is given the prefix <code>pin</code> followed by the corresponding index. The instanced pin’s position is then assigned based on the corresponding position value from the <code>pinPositions</code> array.</p>
+<pre class="code" data-lang="javascript"><code>return pinPositions.map(function (positionInSpace, idx) {
+  const pin = new BABYLON.InstancedMesh(&quot;pin-&quot; + idx, bowlingPin);
+  pin.position = positionInSpace;
+  return pin;
+});</code></pre>
+<p>Before we return the instanced pin, we need to add physics to the pin. Like adding physics for the bowling lane, we create an aggregate for the pin. However, this time we use the <code>CONVEX_HULL</code> shape, which matches the visual geometry as closely as possible. We assign a mass of <code>1</code> to the pin so that there’s just a bit of weight, but not so much that the pin can’t be knocked down. In addition, we use the <code>restitution</code> parameter, which refers to how bouncy or springy an object is when it collides with another object. Bowling pins are made of wood, and therefore when a pin collides with another object, the pin should “bounce” just a tad, but not so much that it seems to be made of rubber. Therefore, a <code>restitution</code> of <code>.25</code> will suffice!</p>
+<pre class="code" data-lang="javascript"><code>const pinAggregate = new BABYLON.PhysicsAggregate(pin, BABYLON.PhysicsShapeType.CONVEX_HULL, { mass: 1, restitution: 0.25 }, scene);</code></pre>
+<p>With the pin instanced and then returned, we call the <code>createPins()</code> function passing the scene into the function call. At this point, we have 10 pins instanced in the shape of a triangle!</p>
+<p><p class="muted">Upstream illustration: Bowling pins and lane (media not bundled).</p></p>
+<h2 id="create-a-bowling-ball">Create a Bowling Ball<a class="anchor" href="#create-a-bowling-ball">#</a></h2>
+<p>With our bowling lane created and our pins perfectly placed, we’re ready to create the bowling ball! We load the bowling ball from the Asset Librarian and scale it to <code>.2</code>. In addition, we position the ball at <code>(0, 0.5, -5)</code>, which centers the ball at the opposite end of the bowling lane.</p>
+<pre class="code" data-lang="javascript"><code>async function createBall(scene) {
+  const result = await BABYLON.ImportMeshAsync(Assets.meshes.bowlingBall_glb.rootUrl + Assets.meshes.bowlingBall_glb.filename, scene);
+  const bowlingBall = result.meshes[1];
+  bowlingBall.scaling.scaleInPlace(0.2);
+  bowlingBall.position = new BABYLON.Vector3(0, 0.5, -5);
+}
+
+createBall(scene);</code></pre>
+<p><p class="muted">Upstream illustration: Bowling pins and lane (media not bundled).</p></p>
+<p>Now that our bowling ball is in place, we add physics to the ball. However, this time we choose the <code>SPHERE</code> shape given the ball&#39;s rounded shape.</p>
+<pre class="code" data-lang="javascript"><code>const ballAggregate = new BABYLON.PhysicsAggregate(bowlingBall, BABYLON.PhysicsShapeType.SPHERE, { mass: 1, restitution: 0.25 }, scene);</code></pre>
+<p>We’re going to simulate aiming and rolling the ball down the lane later by adding keyboard input. Since both forms of movement are manually initiated by key input, we need to modify default behavior that Babylon.js performs for physics objects.</p>
+<p>Before an actual physics simulation takes place, Babylon.js performs a pre-step computation which handles various tasks such as updating the object’s position and velocity based on external forces, applying constraints, and resolving collisions. These calculations help ensure accurate and stable physics simulations.</p>
+<p>However, we want to manually control the bowling ball’s motion – whereas the bowling ball only moves when a key is pressed. Therefore, we set <code>disablePreStep</code> to <code>false</code>. In doing so, Babylon.js skips the pre-step computation for the bowling ball which allows us to directly manipulate its position and velocity without interference from the built-in calculations.</p>
+<pre class="code" data-lang="javascript"><code>ballAggregate.body.disablePreStep = false;</code></pre>
+<h2 id="add-and-configure-keyboard-input">Add and Configure Keyboard Input<a class="anchor" href="#add-and-configure-keyboard-input">#</a></h2>
+<p>The final step in our tutorial is to add keyboard input to move the bowling ball for optimal aim and roll it down the lane - hopefully for a strike! We add this functionality within the function callback for the bowling ball. Using the <code>onKeyboardObservable</code> method, we check for a <code>KEYDOWN</code> event. Essentially, when the appropriate key is down, an action occurs. Let’s first start with moving the bowling ball’s position left and right.</p>
+<pre class="code" data-lang="javascript"><code>scene.onKeyboardObservable.add((kbInfo) =&gt; {
+  switch (kbInfo.type) {
+    case BABYLON.KeyboardEventTypes.KEYDOWN:
+      switch (kbInfo.event.key.toLowerCase()) {
+      }
+  }
+});</code></pre>
+<p>For typical keyboard gameplay, the A and D keys are used for left and right movement, respectively. Since we’re only moving the bowling ball to the left and right, we change the ball’s <code>x</code> position when the key is pressed. We don’t want to change the position too much per key press, so we decrement and increment <code>0.1</code> on the x-axis.</p>
+<pre class="code" data-lang="javascript"><code>case &quot;a&quot;:
+    bowlingBall.position.x += 0.1;
+    break
+case &quot;d&quot;:
+    bowlingBall.position.x -= 0.1;
+    break</code></pre>
+<p>As for rolling the bowling ball down the lane, we need to apply an impulse to the ball in the direction of the bowling pins. To do so, we use <code>applyImpulse</code> on the body for the ball aggregate that was created when we added physics to the bowling ball. When applying an impulse, we need to provide an impulse vector (or the direction of the impulse) and the location of the impulse. The impulse direction is toward the bowling pins, which are in the positive direction on the Z axis. As for the location of the impulse, we use the absolute position of the bowling ball. Following typical keyboard gameplay conventions, we assign the W key to roll the ball forward down the lane.</p>
+<pre class="code" data-lang="javascript"><code>case &quot;w&quot;:
+    ballAggregate.body.applyImpulse(new BABYLON.Vector3(0, 0, 20), bowlingBall.getAbsolutePosition());
+    break;</code></pre>
+<h2 id="summary">Summary<a class="anchor" href="#summary">#</a></h2>
+<p>Let’s get rolling! Now that we have our bowling lane, pins, and bowling ball set up, we can play our game. Use the A and D keys to move the bowling ball to the left or right, and press the W key to send the ball rolling down the lane. Did you get a strike? We hope so!</p>
+<p>Here&#39;s the complete playground: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>Although this is a simplified version of a bowling game, we encourage you to let your imagination run wild and build upon this sample. If you’re in need of inspiration, consider adding some of the following features:</p>
+<ul>
+<li>Reset the ball to the start position after the initial roll</li>
+<li>Keep score of how many pins fall</li>
+<li>Add advanced manipulations to the ball such as spins</li>
+<li>Reset the pins after rolling the ball</li>
+<li>Swap out the existing assets for your own custom designs</li>
+</ul>
+<h2 id="further-reading">Further Reading<a class="anchor" href="#further-reading">#</a></h2>
+<ul>
+<li><span>Havok Physics Plugin</span></li>
+<li><span>Aggregates</span></li>
+</ul>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#create-the-scene">Create the Scene </a><a href="#enable-physics">Enable Physics </a><a href="#create-bowling-lane">Create Bowling Lane </a><a href="#create-bowling-pins">Create Bowling Pins </a><a href="#create-a-bowling-ball">Create a Bowling Ball </a><a href="#add-and-configure-keyboard-input">Add and Configure Keyboard Input </a><a href="#summary">Summary </a><a href="#further-reading">Further Reading </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

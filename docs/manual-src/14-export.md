@@ -4,6 +4,13 @@ section: Manual
 order: 14
 summary: Static web builds, single-file, Mac app, hosting recipes, offline guarantee.
 ---
+
+Export creates a copy for players. A web build contains HTML, runtime code and assets; a desktop bundle adds the application shell.
+
+::: dummies
+Share the whole output folder, not just index.html. Keep your editable project separately. Most web builds need a local or hosted web server; use the special single-file mode when you need its supported behavior.
+:::
+
 `nord build <project>` (alias `nord export`) writes a **static folder** — default `<project>/dist` — that needs nothing from the internet.
 
 ::: dummies

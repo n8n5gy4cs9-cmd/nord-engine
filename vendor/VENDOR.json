@@ -64,6 +64,10 @@
     "lucide": {
       "version": "1.55.0",
       "license": "ISC"
+    },
+    "engine-docs": {
+      "version": "Phaser 4.2.1 / Babylon 9.30.0",
+      "license": "MIT / Apache-2.0"
     }
   },
   "files": {
@@ -365,6 +369,27 @@
     "assets/icons/lucide/x.svg": "7765fa2b3cbe536e55c55eee09de1fb98e1bbf8b355f9b1accde60adf7257421",
     "assets/icons/lucide/zap.svg": "ba2b1223107c901722f340081ec2a324b6852b3ded5572fa5804c8b5ce5e3b11",
     "assets/icons/lucide/zoom-in.svg": "f08b0739c09730db3a7aaa49c54bd98fe2202c1ad584f5b4b2138bf44e3b5205",
-    "assets/icons/lucide/zoom-out.svg": "0cdb33f1e3f32e8de24a9e9dd083142143eae14cb2f38d777582fb99be0e6c12"
+    "assets/icons/lucide/zoom-out.svg": "0cdb33f1e3f32e8de24a9e9dd083142143eae14cb2f38d777582fb99be0e6c12",
+    "vendor/engine-docs/SOURCES.json": "8d669cd39e2c93385e43e0b0c340ed24fb0d686d7c567545f319731407597175",
+    "vendor/engine-docs/api.json.gz": "024f0b3b66020770e409cc6ddce109eb051898a987c08e427914c58bce5350cd",
+    "vendor/engine-docs/babylon-guides-LICENSE.txt": "9362ea9ea17cb221a20cbbd63f404710834cc273d2a9a7b60314fd68ab702cd6",
+    "vendor/engine-docs/babylon-guides.json.gz": "5e6ad5ec5bcf1bc165215329f822545c894c38c33220a3b8c60a78ec581a947b",
+    "vendor/engine-docs/babylonjs-LICENSE.txt": "9362ea9ea17cb221a20cbbd63f404710834cc273d2a9a7b60314fd68ab702cd6",
+    "vendor/engine-docs/babylonjs-gui-LICENSE.txt": "9362ea9ea17cb221a20cbbd63f404710834cc273d2a9a7b60314fd68ab702cd6",
+    "vendor/engine-docs/babylonjs-gui.d.ts.gz": "48ab9e9fce8097d9f58a4a1270d10ad965a4a09108e5d3b66660f9811b1f14cd",
+    "vendor/engine-docs/babylonjs-loaders-LICENSE.txt": "9362ea9ea17cb221a20cbbd63f404710834cc273d2a9a7b60314fd68ab702cd6",
+    "vendor/engine-docs/babylonjs-loaders.d.ts.gz": "112017db5c6c9a05e032fd72f15b99527298359c51cba278cd9feb7e6765228e",
+    "vendor/engine-docs/babylonjs-materials-LICENSE.txt": "9362ea9ea17cb221a20cbbd63f404710834cc273d2a9a7b60314fd68ab702cd6",
+    "vendor/engine-docs/babylonjs-materials.d.ts.gz": "f6f9fdb3ca1ecc3adb58a94119c7674f62c260b5a6940634b0e4791b7c142410",
+    "vendor/engine-docs/babylonjs-post-process-LICENSE.txt": "9362ea9ea17cb221a20cbbd63f404710834cc273d2a9a7b60314fd68ab702cd6",
+    "vendor/engine-docs/babylonjs-post-process.d.ts.gz": "8f7afb578c7aa73a7982957b13675d9b6c2f2a92905daac02c7da1bc331ada05",
+    "vendor/engine-docs/babylonjs-procedural-textures-LICENSE.txt": "9362ea9ea17cb221a20cbbd63f404710834cc273d2a9a7b60314fd68ab702cd6",
+    "vendor/engine-docs/babylonjs-procedural-textures.d.ts.gz": "04f4c25b8fb16fb1ae9ca9a52ee5a9fadbfbaadda0f6bfb8b9ec928d32fc4c51",
+    "vendor/engine-docs/babylonjs-serializers-LICENSE.txt": "9362ea9ea17cb221a20cbbd63f404710834cc273d2a9a7b60314fd68ab702cd6",
+    "vendor/engine-docs/babylonjs-serializers.d.ts.gz": "7919aee65bd5287a3162951dd86c454edca231c09895e1ab36a36bfab11c5ca4",
+    "vendor/engine-docs/babylonjs.d.ts.gz": "a961b4dd856e2ae2e5504800ef4d4d941e87f5a5a6d1ae43c280cf2ce52086be",
+    "vendor/engine-docs/phaser-LICENSE.txt": "d59c20a9deb5dc240614b428dce5246ae561d15efeeebea0e069d73f0a78fbff",
+    "vendor/engine-docs/phaser-snapshot.json.gz": "eb98bbbf5fb96889048ad837a92745edec5e6f66c8d6605fa2817bd94fe1a920",
+    "vendor/engine-docs/phaser.d.ts.gz": "b7752a4117bf95f1a452e36d715af9cb7b6f1561a4fa493a6b29f4a1d68dc794"
   }
 }

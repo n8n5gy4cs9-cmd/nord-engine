@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Solid Particle System Materials — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Solid Particle System Materials</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="different-materials">Different Materials<a class="anchor" href="#different-materials">#</a></h2>
+<p>The SPS renders all the particles in a single draw call because, so far, you have used only one material, or none, which means a default material is used under the hood.<br>Sometimes, however, you may want to use several materials, for instance to render some glowing particles with the glow layer, some others with a bump texture, and others with a colored standard material. In this case, you may accept a higher draw call count, but you still want to keep it as low as possible.<br>The SPS supports MultiMaterials and provides a mechanism to keep the draw call count to a minimum. You can use them in different ways.</p>
+<h3 id="simple-way">Simple way<a class="anchor" href="#simple-way">#</a></h3>
+<p>The simplest way to set different materials to the particles is to set a different material to each model used to create the particles and to ask the SPS to use these materials at construction time with the optional parameter <code>useModelMaterial</code> set to <code>true</code> (default <code>false</code>).</p>
+<pre class="code" data-lang="javascript"><code>// model1, model2 and model3 are meshes with already set materials at this step
+var sps = new BABYLON.SolidParticleSystem(&quot;sps&quot;, scene, {
+  useModelMaterial: true
+});
+sps.addShape(model1, 300);
+sps.addShape(model2, 300);
+sps.addShape(model3, 300);
+sps.buildMesh();</code></pre>
+<p>This enables MultiMaterial support, copies the model geometries, and automatically creates the SPS MultiMaterial from the model materials, with the following rules:</p>
+<ul>
+<li>if several models share the same material, this material is used only once in the SPS: particles are sorted for this purpose to minimize the number of draw calls,</li>
+<li>if a model has no material, a standard material is created,</li>
+<li>if another following model also has no material, the first rule applies: the newly created standard material is shared among the particles depicting all the models with no material.<br>Example: <span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<p>You can obviously notice that this method associates the model materials with the particles on a per-shape basis: all the particles of a given shape share the same material.<br>You can still change this behavior by assigning materials on a per-particle basis by setting the particle property <code>.materialIndex</code> to the desired material index. The material index is simply the index of the shape material in the order the shapes are created: 0 for the first shape, 1 for the second one, and so on. If set, it overwrites the assigned shape material index.<br>This can be done at creation time in a <code>positionFunction</code> of an immutable SPS, for instance.</p>
+<pre class="code" data-lang="javascript"><code>var initParticle = function(particle, i) {
+  particle.position.x = areaSize * (Math.random() - 0.5);
+  particle.position.y = areaSize * (Math.random() - 0.5);
+  particle.position.z = areaSize * (Math.random() - 0.5);
+  // above a given altitude, it's given the material 1
+  // whatever the initial shape material
+  if (particle.position.y &gt; areaSize * 0.1) {
+    particle.materialIndex = 1;
+  }
+};
+var sps = new BABYLON.SolidParticleSystem(&quot;sps&quot;, scene, {
+  useModelMaterial: true,
+  updatable: false
+});
+sps.addShape(model1, 300, { positionFunction: initFunction });
+sps.addShape(model2, 300, { positionFunction: initFunction });
+sps.addShape(model3, 300, { positionFunction: initFunction });
+sps.buildMesh();</code></pre>
+<p>Example: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>This method can be used to build non-updatable meshes with MultiMaterials by assembling shapes of different materials, even when you know nothing about indices or vertices, as would be required to define a MultiMaterial object by hand: <span>https://doc.babylonjs.com/how_to/multi_materials</span></p>
+<h3 id="intermediate-way">Intermediate way<a class="anchor" href="#intermediate-way">#</a></h3>
+<p>When you set the SPS <code>useModelMaterial</code> property to <code>true</code>, this enables the support for MultiMaterial.<br>You can also enable this support by just setting the property <code>enableMultiMaterial</code> to <code>true</code>.<br>In this case, the difference is that the support is enabled but the model materials aren&#39;t copied at construction time.</p>
+<p>You may then want to use your own set of materials instead of the model ones.
+So, whether the SPS is immutable or not, and whether you are using <code>enableMultiMaterial</code> or <code>useModelMaterial</code>, you can pass your own materials to the SPS once it is built with the method <code>sps.setMultiMaterials(arrayOfMaterials)</code>.</p>
+<pre class="code" data-lang="javascript"><code>var sps = new BABYLON.SolidParticleSystem(&quot;sps&quot;, scene, {
+  enableMultiMaterial: true,
+  updatable: false
+});
+sps.addShape(model1, 300, { positionFunction: initFunction });
+sps.addShape(model2, 300, { positionFunction: initFunction });
+sps.addShape(model3, 300, { positionFunction: initFunction });
+sps.buildMesh();
+
+// mat0, mat1, mat2 are Material objects
+sps.setMultiMaterial([mat0, mat1, mat2]);
+
+// ... later in the code, swap mat0 and mat1
+sps.setMultiMaterial([mat1, mat0, mat2]);</code></pre>
+<p>This method can be called as many times as needed once the SPS mesh is built.<br>It recomputes the underlying MultiMaterial object and the SPS geometry to group the particles by material, so it is probably not a good idea to call it each frame in the render loop.<br>Example: <span class="muted">Online playground (not embedded offline)</span></p>
+<h3 id="advanced-way">Advanced way<a class="anchor" href="#advanced-way">#</a></h3>
+<p>Until now, you have essentially set the particle <code>materialIndex</code> values at construction time and they have not changed; only the materials themselves have.<br>You can still change the particle <code>materialIndex</code> values at any time, for instance in a call to <code>sps.updateParticle()</code> from <code>sps.setParticles()</code>, just as you would do to change particle positions or rotations, or in any other function of your own.<br>The difference from the other particle properties (position, rotation, etc.) is that <code>setParticles()</code> does not compute the materials at all.<br>Indeed, <code>setParticles()</code> is designed to be called each frame in the render loop and to keep garbage collector activity to a minimum by allocating nothing.<br>Applying changes to <code>materialIndex</code> values requires sorting all the particles again, recomputing the whole SPS geometry, and recreating new SubMesh objects from the SPS mesh.<br>Therefore, a dedicated method, <code>sps.computeSubMeshes()</code>, is provided. This method must be called manually after each change to particle <code>materialIndex</code> values for them to be taken into account immediately.<br>Like <code>setMultiMaterials()</code>, it&#39;s probably not a good idea to call it each frame in the render loop.</p>
+<pre class="code" data-lang="javascript"><code>// updatable SPS creation
+var sps = new BABYLON.SolidParticleSystem(&quot;sps&quot;, scene, {
+  enableMultiMaterial: true
+});
+sps.addShape(model1, 300);
+sps.addShape(model2, 300);
+sps.addShape(model3, 300);
+sps.buildMesh();
+
+// mat0, mat1, mat2 are Material objects
+sps.setMultiMaterial([mat0, mat1, mat2]);
+
+// the particle materialIndex are set in the call to updateParticle
+// while the mesh and the multimaterial are already built
+sps.updateParticle = initFunction;
+sps.setParticles(); // updates the particle positions
+sps.computeSubMeshes(); // actually computes the submeshes and materials</code></pre>
+<p>Examples: <span class="muted">Online playground (not embedded offline)</span>
+In this second example, the particles above a given altitude are assigned the next material in turn every 15 frames. <span class="muted">Online playground (not embedded offline)</span></p>
+<p>If you still want to call <code>computeSubMeshes()</code> each time you call <code>setParticles()</code> because your particle materials are updated at the same frequency, you can set the property <code>sps.autoUpdateSubMeshes</code> to <code>true</code> (default <code>false</code>). In this case, there is no need to call <code>sps.computeSubMeshes()</code> manually, as <code>setParticles()</code> will do it for you internally.</p>
+<pre class="code" data-lang="javascript"><code>sps.autoUpdateSubMeshes = true;
+sps.setParticles(); // updates the particle material indexes AND recomputes the subMeshes</code></pre>
+<p>Example: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>If you want to create your own MultiMaterial object by hand, set it on the SPS mesh material property and call <code>sps.computeSubMeshes()</code> to internally build the needed SubMesh objects.</p>
+<pre class="code" data-lang="javascript"><code>var multimat = new BABYLON.MultiMaterial(&quot;multi&quot;, scene);
+multimat.subMaterials.push(material0);
+multimat.subMaterials.push(material1);
+multimat.subMaterials.push(material2);
+
+sps.mesh.material = multimat;
+sps.computeSubMeshes();</code></pre>
+<p><strong>Note 1 :</strong> By default, the particle <code>materialIndex</code> value is <code>null</code>.<br>When MultiMaterial is enabled in the SPS, this value is set to zero for every particle until it is overwritten by the user or automatically set to some model material index by <code>useModelMaterial</code>.<br><strong>Note 2 :</strong> Particle depth sorting does not work with MultiMaterial support because particles cannot be sorted both by their distance to the camera and by material at the same time. So, if you enable both modes, it will not crash, but it can produce odd visible results.<br><strong>Note 3 :</strong> SPS MultiMaterial support also works with an expandable SPS, meaning you can add/store/remove particles with different materials. When <code>sps.buildMesh()</code> is called again, everything is recomputed automatically.</p>
+<h2 id="solid-particle-systems-and-node-materials">Solid Particle Systems and Node Materials<a class="anchor" href="#solid-particle-systems-and-node-materials">#</a></h2>
+<p>As mentioned above, setting <code>useModelMaterial</code> to true in the SPS constructor allows the material assigned to an added mesh to be used with the SPS mesh&#39;s <code>multimaterial</code>. This material can be any type of material defined in the engine, including a node material. Using a node material can give added flexibility to the SPS mesh, as it can be authored to work in concert with the <code>initParticles</code> and <code>updateParticle</code> methods to create a striking render. </p>
+<p><p class="muted">Upstream illustration: Example of node material on SPS showing a series of spheres emitted into a cylindrical area with varying metallic values, random roughness values and colors that range from blue and yellow-orange at the top to purple and red at the bottom (media not bundled).</p></p>
+<p>This render shows a solid particle system using a node material that employs <code>PBRMetallicRoughness</code> nodes, random metallic and roughness values, world position-based base color gradients, and randomized color pairings. Normally, setting <code>useModelMaterial</code> in the SPS constructor is all that is needed, but there are a couple of considerations to keep in mind. </p>
+<ul>
+<li>Cleaning up scene memory by deleting the original mesh added to the SPS is fine, but leaving the original node material in the scene is important. With the node material available, changes can be made to the material&#39;s uniforms to update the node material in real time, and those changes will be reflected in the SPS mesh.</li>
+<li>If the SPS Mesh is taking advantage of <code>particle.color</code> <a href="engine-babylonjs-babylon-solidparticle.html">the property is a nullable Color4</a>, but can be assigned a <code>Color3</code> in code. Node material will be able to access <code>particle.color</code> using the mesh color <code>InputBlock</code>, but it is important to understand what class, <code>Color3</code> or <code>Color4</code>, was assigned in code. If the property was assigned a <code>Color3</code>, then the <code>InputBlock</code> needs to be connected to a <code>ColorSplitterBlock</code> and the <code>Color3</code> output should be used for calculations. If connecting the <code>Color4</code> output to another block is attempted, the type mismatch will cause an unexpected conflict due to the missing channel that will likely result in nothing rendering. Matching the declaration of <code>particle.color</code> to the component channels used in the node graph will ensure the node material renders correctly.</li>
+<li>Not all node material blocks will work with an SPS mesh. For example, SPS meshes do not contain bones or morph targets, so those blocks will not add any benefit to the node material. </li>
+<li>Performance needs to stay top of mind when using node materials with SPS meshes. It is easy to create an SPS mesh that is very dense, depending on the complexity of the original mesh and the number of particles in the SPS mesh. If a node material added to the SPS mesh performs many calculations per vertex or per pixel on a dense SPS mesh, a drop in frame rate is to be expected. Balance is needed when doing something like vertex displacement on an SPS mesh to ensure that the mesh is not too dense, either because the original mesh has too many vertices or because too many particles were added to the SPS mesh.</li>
+</ul>
+<h3 id="sps-and-node-material-example">SPS and Node Material example<a class="anchor" href="#sps-and-node-material-example">#</a></h3>
+<p>The render above is from the following example, which leverages <code>particle.color</code> to randomize PBR parameters while also using world position to drive the color blend of the particles. <code>particle.color</code> could easily have been used as the base color input of the <code>PBRMetallicRoughnessBlock</code>, or even combined with a color uniform in the graph, but instead it is used to help create more contrast in the material by providing up to four random values to work with. </p>
+<p>In this case, the <code>particle.color</code> value uses the red channel to randomly choose between a blue-purple gradient and an orange-red gradient for the particle color. The green channel is used directly as the roughness value, allowing every particle to have a different roughness value. The blue channel is used with a step node to assign either 0.0 or 1.0 to the metallic factor of the particle, so some are metallic and others are dielectric. A fourth value could have been added through the alpha channel if <code>particle.color</code> had been defined as a <code>Color4</code>. </p>
+<p>The other calculation that is being done is a normalized world position on each particle to drive the interpolation between the two colors of either gradient. This results in the particles slowly changing colors as they move along the Y-axis. This is a simple example, but is a good launching point to illustrate how leveraging node materials with SPS meshes is a powerful technique available in Babylon.js.</p>
+<span class="muted">Online playground (not embedded offline)
+</span><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#different-materials">Different Materials </a><a href="#solid-particle-systems-and-node-materials">Solid Particle Systems and Node Materials </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Vertex Normals — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Vertex Normals</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="vertex-normals">Vertex Normals<a class="anchor" href="#vertex-normals">#</a></h2>
+<p>Each triangular facet of a mesh comprises three vertices. Besides a position, each vertex has another important Vector3 called a normal. These vertex normals are used by the <a href="babylon-guide-features-featuresdeepdive-materials-shaders-introtoshaders.html">shader code</a> to calculate how the mesh is lit. Unlike a mathematical normal, they do not need to be set at right angles, and for curved shapes such as a sphere they may not be. In the case of a sphere, they are set as the mathematical normals of the sphere surface rather than of the flat facets of the mesh that create the sphere.</p>
+<p>At first, the vertex normals are calculated as the mathematical normals for the facet. It then depends on whether you want to view the facets as flat surfaces or as part of a curve. For flat surfaces, the vertex normals remain as the mathematical normals. To enhance the curve when viewed under light, where triangular facets share vertices with the same positions, each shared vertex normal is recalculated to be the average of the mathematical normals of the shared facets.</p>
+<p>These effects are explored below.</p>
+<p>In the following two playgrounds see how the changing directions within the normals array affect how it is lit:</p>
+<span class="muted">Online playground (not embedded offline)</span><span class="muted">Online playground (not embedded offline)</span><h2 id="normals-and-minimum-vertices">Normals and Minimum Vertices<a class="anchor" href="#normals-and-minimum-vertices">#</a></h2>
+<p><p class="muted">Upstream illustration: Wireframe (media not bundled).</p></p>
+<p>The box above has 8 vertices. If we want to keep the indices to the minimum they will be 0, 1, 2, 3, 4, 5, 6, 7.</p>
+<p>Facets 0, 3, 7 and 3, 7, 6 and 0, 3, 2 all have vertex 3 in common and vertex 3 can only have one
+entry in the normals array associated with it.</p>
+<p>How does Babylon.js calculate the <code>normal</code> for vertex 3?</p>
+<p>The diagram below shows that the average of the three mathematical normals at each vertex is used:</p>
+<p><p class="muted">Upstream illustration: Normals (media not bundled).</p></p>
+<p>Besides minimising the number of vertices needed there are other advantages as will be seen when creating a sphere.</p>
+<p>Keeping the indices to a minimum the normals at each corner are an average of the mathematical normals of the three faces that meet at that corner. So 8 corners and 8 unique vertex normals.</p>
+<h2 id="table-of-unique-indices-positions-and-normals-for-box-with-minimum-vertices">Table of Unique Indices, Positions and Normals for Box with Minimum Vertices<a class="anchor" href="#table-of-unique-indices-positions-and-normals-for-box-with-minimum-vertices">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>index</th>
+<th>position</th>
+<th>normal</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>( -1 , 1 , -1 )</td>
+<td>( -0.5773502691896258 , 0.5773502691896258 , -0.5773502691896258 )</td>
+</tr>
+<tr>
+<td>1</td>
+<td>( 1 , 1 , -1 )</td>
+<td>( 0.8164965809277261 , 0.4082482904638631 , -0.4082482904638631 )</td>
+</tr>
+<tr>
+<td>2</td>
+<td>( 1 , -1 , -1 )</td>
+<td>( 0.4082482904638631 , -0.4082482904638631 , -0.8164965809277261 )</td>
+</tr>
+<tr>
+<td>3</td>
+<td>( -1 , -1 , -1 )</td>
+<td>( -0.4082482904638631 , -0.8164965809277261 , -0.4082482904638631 )</td>
+</tr>
+<tr>
+<td>4</td>
+<td>( -1 , 1 , 1 )</td>
+<td>( -0.4082482904638631 , 0.4082482904638631 , 0.8164965809277261 )</td>
+</tr>
+<tr>
+<td>5</td>
+<td>( 1 , 1 , 1 )</td>
+<td>( 0.4082482904638631 , 0.8164965809277261 , 0.4082482904638631 )</td>
+</tr>
+<tr>
+<td>6</td>
+<td>( 1 , -1 , 1 )</td>
+<td>( 0.5773502691896258 , -0.5773502691896258 , 0.5773502691896258 )</td>
+</tr>
+<tr>
+<td>7</td>
+<td>( -1 , -1 , 1 )</td>
+<td>( -0.8164965809277261 , -0.4082482904638631 , 0.4082482904638631 )</td>
+</tr>
+</tbody></table>
+<h2 id="normals-and-flat-shaded-meshes">Normals and Flat Shaded Meshes.<a class="anchor" href="#normals-and-flat-shaded-meshes">#</a></h2>
+<p>There are times, such as needing each face of a box to be covered in a <a href="babylon-guide-features-featuresdeepdive-mesh-facetdata.html">different material</a>,
+when it is better to have the box constructed from separate faces, each of which is constructed from two facets, with no two faces
+sharing vertex indices. They will, of course, share vertex positions.</p>
+<p><p class="muted">Upstream illustration: Seperate Faces (media not bundled).</p></p>
+<p>In Babylon.js this can be achieved using the <code>convertToFlatShadedMesh</code> function. The results are shown below:</p>
+<p><p class="muted">Upstream illustration: Flat Shaded Normals (media not bundled).</p></p>
+<p>For a flat-shaded mesh, each of the triangular facets making up a face of the box has mathematical normals as its vertex normals. For simplicity of illustration, we will consider only the six faces making up the box rather than the full range of triangular facets used in the mesh construction. Each face has 4 corners, and each corner has a unique normal at right angles to the face. There are 6 faces on a box, and so 24 unique corner normals.</p>
+<h2 id="table-of-faces-corners-positions-and-normals-for-flat-shaded-box">Table of Faces, Corners, Positions and Normals for Flat Shaded Box<a class="anchor" href="#table-of-faces-corners-positions-and-normals-for-flat-shaded-box">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Face</th>
+<th>corner</th>
+<th>position</th>
+<th>normal</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Front</td>
+<td>0</td>
+<td>( -1 , 1 , -1 )</td>
+<td>( 0 , 0 , -1 )</td>
+</tr>
+<tr>
+<td>Front</td>
+<td>1</td>
+<td>( 1 , -1 , -1 )</td>
+<td>( 0 , 0 , -1 )</td>
+</tr>
+<tr>
+<td>Front</td>
+<td>2</td>
+<td>( 1 , 1 , -1 )</td>
+<td>( 0 , 0 , -1 )</td>
+</tr>
+<tr>
+<td>Front</td>
+<td>3</td>
+<td>( -1 , 1 , -1 )</td>
+<td>( 0 , 0 , -1 )</td>
+</tr>
+<tr>
+<td>Back</td>
+<td>4</td>
+<td>( -1 , 1 , 1 )</td>
+<td>( 0 , 0 , 1 )</td>
+</tr>
+<tr>
+<td>Back</td>
+<td>5</td>
+<td>( 1 , -1 , 1 )</td>
+<td>( 0 , 0 , 1 )</td>
+</tr>
+<tr>
+<td>Back</td>
+<td>6</td>
+<td>( -1 , -1 , 1 )</td>
+<td>( 0 , 0 , 1 )</td>
+</tr>
+<tr>
+<td>Back</td>
+<td>7</td>
+<td>( -1 , 1 , 1 )</td>
+<td>( 0 , 0 , 1 )</td>
+</tr>
+<tr>
+<td>Right</td>
+<td>8</td>
+<td>( 1 , 1 , -1 )</td>
+<td>( 1 , -0 , 0 )</td>
+</tr>
+<tr>
+<td>Right</td>
+<td>9</td>
+<td>( 1 , -1 , 1 )</td>
+<td>( 1 , -0 , 0 )</td>
+</tr>
+<tr>
+<td>Right</td>
+<td>10</td>
+<td>( 1 , 1 , 1 )</td>
+<td>( 1 , -0 , 0 )</td>
+</tr>
+<tr>
+<td>Right</td>
+<td>11</td>
+<td>( 1 , 1 , -1 )</td>
+<td>( 1 , 0 , 0 )</td>
+</tr>
+<tr>
+<td>Left</td>
+<td>12</td>
+<td>( -1 , 1 , -1 )</td>
+<td>( -1 , 0 , 0 )</td>
+</tr>
+<tr>
+<td>Left</td>
+<td>13</td>
+<td>( -1 , -1 , 1 )</td>
+<td>( -1 , 0 , 0 )</td>
+</tr>
+<tr>
+<td>Left</td>
+<td>14</td>
+<td>( -1 , -1 , -1 )</td>
+<td>( -1 , 0 , 0 )</td>
+</tr>
+<tr>
+<td>Left</td>
+<td>15</td>
+<td>( -1 , 1 , -1 )</td>
+<td>( -1 , -0 , -0 )</td>
+</tr>
+<tr>
+<td>Top</td>
+<td>16</td>
+<td>( -1 , 1 , -1 )</td>
+<td>( 0 , 1 , 0 )</td>
+</tr>
+<tr>
+<td>Top</td>
+<td>17</td>
+<td>( 1 , 1 , 1 )</td>
+<td>( 0 , 1 , 0 )</td>
+</tr>
+<tr>
+<td>Top</td>
+<td>18</td>
+<td>( -1 , 1 , 1 )</td>
+<td>( 0 , 1 , 0 )</td>
+</tr>
+<tr>
+<td>Top</td>
+<td>19</td>
+<td>( 1 , 1 , -1 )</td>
+<td>( 0 , 1 , -0 )</td>
+</tr>
+<tr>
+<td>Base</td>
+<td>20</td>
+<td>( -1 , -1 , -1 )</td>
+<td>( 0 , -1 , -0 )</td>
+</tr>
+<tr>
+<td>Base</td>
+<td>21</td>
+<td>( 1 , -1 , 1 )</td>
+<td>( 0 , -1 , -0 )</td>
+</tr>
+<tr>
+<td>Base</td>
+<td>22</td>
+<td>( 1 , -1 , -1 )</td>
+<td>( 0 , -1 , -0 )</td>
+</tr>
+<tr>
+<td>Base</td>
+<td>23</td>
+<td>( -1 , -1 , 1 )</td>
+<td>( 0 , -1 , 0 )</td>
+</tr>
+</tbody></table>
+<h2 id="playground-showing-box-normals">Playground Showing Box Normals<a class="anchor" href="#playground-showing-box-normals">#</a></h2>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="advantage-of-shared-normals">Advantage of Shared Normals<a class="anchor" href="#advantage-of-shared-normals">#</a></h2>
+<p>Sharing normals means that the shader produces a rounder looking sphere since the vertex normals are the mathematical normals of the sphere surface.</p>
+<p>Applying the function <code>converToFlatShadedMesh</code> shows the individual faces making up the sphere. For a flat shaded sphere the normals of each facet are the mathematical normals of the facet.</p>
+<span class="muted">Online playground (not embedded offline)
+</span><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#vertex-normals">Vertex Normals </a><a href="#normals-and-minimum-vertices">Normals and Minimum Vertices </a><a href="#table-of-unique-indices-positions-and-normals-for-box-with-minimum-vertices">Table of Unique Indices, Positions and Normals for Box with Minimum Vertices </a><a href="#normals-and-flat-shaded-meshes">Normals and Flat Shaded Meshes. </a><a href="#table-of-faces-corners-positions-and-normals-for-flat-shaded-box">Table of Faces, Corners, Positions and Normals for Flat Shaded Box </a><a href="#playground-showing-box-normals">Playground Showing Box Normals </a><a href="#advantage-of-shared-normals">Advantage of Shared Normals </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

@@ -22,7 +22,7 @@
  {"name":"game.gui","summary":"Babylon GUI bridge (3D only; null if the GUI library is not loaded).","items":[
   ["gui.label / button / bar","Screen-space controls (Babylon GUI)."],["gui.worldLabel(entity, text)","Label that floats above an entity."],["gui.attach(control, entity)","Link any control to an entity."],["gui.remove(control)","Dispose a control."]]},
  {"name":"game.audio","summary":"Audio manager (see the Audio chapter).","items":[
-  ["audio.play(path, {volume, loop, rate, bus, pan})","One-shot or loop. Returns {stop()}."],["audio.music(path, {fade, volume})","Crossfade to a looping track."],["audio.stopMusic({fade})","Fade out the music."],["audio.volume(bus, v)","Get/set a bus volume (master, music, sfx, ui). Persisted."],["audio.mute(bus, on)","Mute a bus."],["audio.preload(paths)","Decode ahead of time."]]},
+  ["audio.play(path, {volume, loop, rate, bus, pan})","One-shot or loop. Returns {stop()}."],["audio.music(path, {fade, volume, offset, restart})","Crossfade to a looping track. fade and offset are seconds; restart forces the track to restart at offset."],["audio.stopMusic({fade})","Fade out the music."],["audio.volume(bus, v)","Get/set a bus volume (master, music, sfx, ui). Persisted."],["audio.mute(bus, on)","Mute a bus."],["audio.preload(paths)","Decode ahead of time."]]},
  {"name":"game.save","summary":"Persistent key/value storage in slots (localStorage; versioned).","items":[
   ["save.get(key, default)","Read."],["save.set(key, value)","Write (JSON-serialisable)."],["save.slot(n)","Select a slot (chainable)."],["save.has(n) / delete(n) / all()","Slot management."]]},
  {"name":"entity.native","summary":"Escape hatch: the underlying engine object. Only reach for it when Nord has no wrapper.","items":[

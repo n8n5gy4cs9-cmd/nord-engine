@@ -118,3 +118,8 @@ X-KOM command UI follow-up (M6-30/31): radar uses untextured navy/green terminal
 
 ## Vallout 2: New Kerava (example)
 PNG/WAV/MP3 files in `tools/examples/vallout/assets/` are authoritative; no sprite or audio generators. M6-38 replaces all nine PNG sheets with original Fallout-inspired quarantined Kerava art, plus twelve talking-head portraits, sentinel title, municipal survey map and scratched metal casing. Utility sprites/font are pixel-drawn; other raster art uses built-in ImageGen. Exact prompts: `examples/vallout/ART_DIRECTION.md`. Menus/HUD use metal, green CRTs, amber labels and red controls. Copy replacements with `node tools/gen_examples.mjs vallout`; inventory: `examples/vallout/assets.md`. Owner music/SFX preserved.
+
+## HTML manual screenshots (M7-14)
+The manual reuses original project captures `docs/screenshots/{vallout-03-classic-explore,automies-2-drive,xkom-tactical}.png`, with explanatory captions; these are copied to `docs/manual/assets/screenshots/` by the manual builder. `manual-hello-nord.png` is a real 640×360 Nord Phaser-runtime capture of the text entity in T01, not an editor mockup. Documentation preview captures `manual-{home,code,api,mobile}.png` show the redesigned site itself. No new external art, stock photos or audio. Crowelian 2026 + Sonnet.
+
+`assets/docs/editor-layout.svg` is an original vector panel map, explicitly labelled as a diagram, with numbered beginner areas and accessible descriptions. It replaces the manual’s ASCII editor map; no native editor screenshot is implied.

@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Baked Texture Animations — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Baked Texture Animations</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="baked-vertex-animations">Baked vertex animations<a class="anchor" href="#baked-vertex-animations">#</a></h2>
+<p>Animations are computed by the CPU, applying the bone effects to the mesh. This is reasonably slow and for several animated objects can be a bottleneck. One way to optimize this is pre-computing (or baking) the animations, storing them into a texture (usually called Vertex Animation Textures, or VAT) and using it in vertex shaders. This frees the CPU, with the trade-off that you need to perform this initial baking step (which can be done at development time), add a new texture file to your downloads and consume more GPU memory. This trade-off is usually quite good, since the CPU tends to be the bottleneck.</p>
+<p>A limitation of the current VAT implementation is that you cannot <a href="babylon-guide-features-featuresdeepdive-animation-advanced-animations.html">blend animations to play simultaneously</a>. Also, the animations may not be as smooth as when not using BVA because there is no interpolation between frames. The &quot;smoothness&quot; will depend on the number of frames of the animation.</p>
+<h2 id="baking-vertex-texture-animations">Baking Vertex Texture Animations<a class="anchor" href="#baking-vertex-texture-animations">#</a></h2>
+<p>The <code>VertexAnimationBaker</code> class generates a texture for you given the animation.</p>
+<h2 id="new-optimized-methods">New Optimized Methods<a class="anchor" href="#new-optimized-methods">#</a></h2>
+<p>There is a new synchronous method for baking VAT at runtime on <code>VertexAnimationBaker</code> called <code>bakeVertexDataSync</code>
+The existing methods for baking vertex data remain usable, but this method is much more efficient for runtime and offline baking.
+Additionally, for devices that support it, this method can return a <code>HalfFloat</code> which uses half the storage on disk and in memory.</p>
+<p>Here is the new API:</p>
+<pre class="code" data-lang="javascript"><code>const animationRanges = [
+    { from: 0, to: 33 },
+    { from: 33, to: 61 },
+    { from: 63, to: 91 },
+    { from: 93, to: 130 }
+];
+const importResult = await BABYLON.ImportMeshAsync(
+    &quot;https://raw.githubusercontent.com/RaggarDK/Baby/baby/arr.babylon&quot;,
+    scene,
+    undefined
+);
+scene.onReadyObservable.add(() =&gt; {
+    const mesh = importResult.meshes[0];
+    const baker = new BABYLON.VertexAnimationBaker(scene, mesh);
+    // Check engine capabilities to use HalfFloat
+    const canUseFloat16 = engine.getCaps().textureHalfFloat;
+    // Bake the data synchronously
+    // If we can use HalfFloat, this will return a Uint16Array
+    const syncVertexData = baker.bakeVertexDataSync(animationRanges, canUseFloat16);
+    // textureFromBakedVertexData will now infer type from full floats or half floats
+    // and generate a raw texture based on the input
+    const vertexTexture = baker.textureFromBakedVertexData(syncVertexData);
+    const manager = new BABYLON.BakedVertexAnimationManager(scene);
+
+    manager.texture = vertexTexture;
+    manager.animationParameters = new BABYLON.Vector4(
+        animationRanges[0].from,
+        animationRanges[0].to,
+        0,
+        30
+    );
+
+    mesh.bakedVertexAnimationManager = manager;
+    scene.registerBeforeRender(() =&gt; {
+        manager.time += engine.getDeltaTime() / 1000.0;
+    });
+})</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><p>Here is the existing implementation running asynchronously:</p>
+<pre class="code" data-lang="javascript"><code>let baker = null,
+  mesh = null;
+const animationRanges = [{ from: 1, to: 20, name: &quot;My animation&quot; }];
+BABYLON.ImportMeshAsync(&quot;https://raw.githubusercontent.com/RaggarDK/Baby/baby/arr.babylon&quot;, scene, undefined)
+  .then((importResult) =&gt; {
+    mesh = importResult.meshes[0];
+    // create the baker helper, so we can generate the texture
+    baker = new BABYLON.VertexAnimationBaker(scene, mesh);
+    // you can slice the animation here with several animation ranges.
+    return baker.bakeVertexData(ranges);
+  })
+  .then((vertexData) =&gt; {
+    // we got the vertex data. create the texture from it:
+    const vertexTexture = baker.textureFromBakedVertexData(vertexData);
+    // create a manager to store it.
+    const manager = new BABYLON.BakedVertexAnimationManager(scene);
+    // store the texture
+    manager.texture = vertexTexture;
+
+    // set the animation parameters. You can change this at any time.
+    manager.setAnimationParameters(
+      animationRanges[0].from, // initial frame
+      animationRanges[0].to, // last frame
+      0, // offset
+      30, // frames per second
+    );
+
+    // associate the manager with the mesh
+    mesh.bakedVertexAnimationManager = manager;
+
+    // update the time to play the animation
+    scene.registerBeforeRender(() =&gt; {
+      manager.time += engine.getDeltaTime() / 1000.0;
+    });
+  });</code></pre>
+<p>Here&#39;s an example for a single mesh:</p>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="vats-for-instances">VATs for instances<a class="anchor" href="#vats-for-instances">#</a></h2>
+<p>As explained in <a href="babylon-guide-features-featuresdeepdive-mesh-copies-instances.html">How To Use Instances</a>, instances are an excellent way to use hardware-accelerated rendering to draw a huge number of identical meshes. VATs can be used further to handle the animations efficiently. In this case you need to register a buffer to set the animation parameters for each instance.</p>
+<pre class="code" data-lang="javascript"><code>// create the instanced buffer
+mesh.registerInstancedBuffer(&quot;bakedVertexAnimationSettingsInstanced&quot;, 4);
+// set it for the base mesh
+mesh.instancedBuffers.bakedVertexAnimationSettingsInstanced = new BABYLON.Vector4(0, 0, 0, 0);</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="vats-for-thin-instances">VATs for thin instances<a class="anchor" href="#vats-for-thin-instances">#</a></h2>
+<p>VATs can also be used with <a href="babylon-guide-features-featuresdeepdive-mesh-copies-thininstances.html">thin instances</a>. Then you set the parameters for the thin instances:</p>
+<pre class="code" data-lang="javascript"><code>// allocate the parameters
+const animParameters = new Float32Array(numInstances * 4);
+
+// for each instance
+for (let i = 0; i &lt; numInstances; i++) {
+  // generate the animation parameters with your code:
+  // returns a BABYLON.Vector4()
+  const params = setAnimationParameters();
+
+  // store in the base array
+  animParameters.set(params.asArray(), i * 4);
+}
+
+// update the mesh with all settings
+mesh.thinInstanceSetBuffer(&quot;bakedVertexAnimationSettingsInstanced&quot;, animParameters, 4);</code></pre>
+<p>Here&#39;s an example:</p>
+<span class="muted">Online playground (not embedded offline)</span><h3 id="vats-offset">VATs offset<a class="anchor" href="#vats-offset">#</a></h3>
+<p>When using VAT with thin instances, you might expect each instance to start its animation with a specific time offset. However, this is <strong>not guaranteed by default</strong>.</p>
+<p>This is because multiple instances often share the same <code>BakedVertexAnimationManager</code>, which internally handles the
+current animation frame globally. To ensure that a specific instance starts at its intended offset you can manually
+compute the correct offset using the following formula:</p>
+<pre class="code" data-lang="typescript"><code>function computeOffset(
+  fromFrame: number,
+  toFrame: number,
+  time: number,
+  fps: number = 60
+): number {
+  const totalFrames = toFrame - fromFrame + 1;
+  const t = time * fps / totalFrames;
+  const frame = Math.floor((t - Math.floor(t)) * totalFrames);
+  return totalFrames - frame;
+}</code></pre>
+<p>The <code>time</code> parameter can be retrieved directly from the used <code>BakedVertexAnimationManager</code> via <code>manager.time</code>.</p>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="serializing-and-loading-vats">Serializing and loading VATs<a class="anchor" href="#serializing-and-loading-vats">#</a></h2>
+<p>Baking the texture can be a slow process, and will play the entire animation visibly. In order to avoid this during run-time, it&#39;s better to bake the texture data at build time, and just load it at run-time. Here&#39;s a sample script to bake the vertex data and get the JSON file to save locally:</p>
+<pre class="code" data-lang="javascript"><code>let baker = null,
+  mesh = null;
+const animationRanges = [{ from: 1, to: 20, name: &quot;My animation&quot; }];
+BABYLON.ImportMeshAsync(&quot;http://example.com/arr.babylon&quot;, scene, undefined)
+  .then((importResult) =&gt; {
+    mesh = importResult.meshes[0];
+    // create the baker helper, so we can generate the texture
+    baker = new BABYLON.VertexAnimationBaker(scene, mesh);
+    // you can slice the animation here with several animation ranges.
+    return baker.bakeVertexData(ranges);
+  })
+  .then((vertexData) =&gt; {
+    // we got the vertex data. let's serialize it:
+    const vertexDataJSON = baker.serializeBakedVertexDataToJSON(vertexData);
+    // and save it to a local JSON file
+    let a = document.createElement(&quot;a&quot;);
+    a.setAttribute(&quot;href&quot;, &quot;data:text/plain;charset=utf-8,&quot; + encodeURIComponent(vertexDataJSON));
+    a.setAttribute(&quot;download&quot;, &quot;vertexData.json&quot;);
+    a.click();
+  });</code></pre>
+<p>In your application, you can now easily load the JSON file. Here&#39;s a simple example:</p>
+<pre class="code" data-lang="javascript"><code>let baker = null,
+  mesh = null;
+const animationRanges = [{ from: 1, to: 20, name: &quot;My animation&quot; }];
+
+// read your mesh like always
+BABYLON.ImportMeshAsync(&quot;http://example.com/arr.babylon&quot;, scene, undefined)
+  .then((importResult) =&gt; {
+    mesh = importResult.meshes[0];
+    // read the vertex data file.
+    return fetch(&quot;/vertexData.json&quot;);
+  })
+  .then((response) =&gt; {
+    if (!response.ok) {
+      throw new Error(&quot;HTTP error &quot; + response.status);
+    }
+    // convert to json
+    return response.json();
+  })
+  .then((json) =&gt; {
+    // create the baker helper, so we can generate the texture
+    baker = new BABYLON.VertexAnimationBaker(scene, mesh);
+    const vertexData = baker.loadBakedVertexDataFromJSON(json);
+    // we got the vertex data. create the texture from it:
+    const vertexTexture = baker.textureFromBakedVertexData(vertexData);
+
+    // .... and now the same code as above
+  });</code></pre>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#baked-vertex-animations">Baked vertex animations </a><a href="#baking-vertex-texture-animations">Baking Vertex Texture Animations </a><a href="#new-optimized-methods">New Optimized Methods </a><a href="#vats-for-instances">VATs for instances </a><a href="#vats-for-thin-instances">VATs for thin instances </a><a href="#serializing-and-loading-vats">Serializing and loading VATs </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

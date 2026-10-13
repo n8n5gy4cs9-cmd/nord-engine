@@ -1,0 +1,893 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BABYLON.Mesh — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>BABYLON.Mesh</h1>
+<p><span class="badge">Underlying Babylon 9.30.0 API</span> <span class="badge">Interface</span></p><p class="muted">Official public declarations and JSDoc from <code>babylonjs</code>. Use with engine objects, not directly on a Nord entity.</p><aside class="box tip"><div class="box-title">The Nord way</div><p><a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a>. Access raw objects only when the Nord wrapper does not cover your feature. <a href="reference.html#escape-hatch">How escape hatches work</a>.</p></aside><h3 id="declaration">Mesh <a class="anchor" href="#declaration">#</a></h3><pre class="code" data-lang="ts"><code>interface Mesh</code></pre><h2 id="overloads">Overloads</h2><h3 id="overload-0">Mesh <a class="anchor" href="#overload-0">#</a></h3><pre class="code" data-lang="ts"><code>export class Mesh extends AbstractMesh implements IGetSetVerticesData</code></pre><p>Class used to represent renderable models</p>
+<details><summary>Nested members (162)</summary><h3 id="overload-0-0">FRONTSIDE <a class="anchor" href="#overload-0-0">#</a></h3><pre class="code" data-lang="ts"><code>static readonly FRONTSIDE = 0;</code></pre><p>Mesh side orientation : usually the external or front surface</p>
+<h3 id="overload-0-1">BACKSIDE <a class="anchor" href="#overload-0-1">#</a></h3><pre class="code" data-lang="ts"><code>static readonly BACKSIDE = 1;</code></pre><p>Mesh side orientation : usually the internal or back surface</p>
+<h3 id="overload-0-2">DOUBLESIDE <a class="anchor" href="#overload-0-2">#</a></h3><pre class="code" data-lang="ts"><code>static readonly DOUBLESIDE = 2;</code></pre><p>Mesh side orientation : both internal and external or front and back surfaces</p>
+<h3 id="overload-0-3">DEFAULTSIDE <a class="anchor" href="#overload-0-3">#</a></h3><pre class="code" data-lang="ts"><code>static readonly DEFAULTSIDE = 0;</code></pre><p>Mesh side orientation : by default, <code>FRONTSIDE</code></p>
+<h3 id="overload-0-4">NO_CAP <a class="anchor" href="#overload-0-4">#</a></h3><pre class="code" data-lang="ts"><code>static readonly NO_CAP = 0;</code></pre><p>Mesh cap setting : no cap</p>
+<h3 id="overload-0-5">CAP_START <a class="anchor" href="#overload-0-5">#</a></h3><pre class="code" data-lang="ts"><code>static readonly CAP_START = 1;</code></pre><p>Mesh cap setting : one cap at the beginning of the mesh</p>
+<h3 id="overload-0-6">CAP_END <a class="anchor" href="#overload-0-6">#</a></h3><pre class="code" data-lang="ts"><code>static readonly CAP_END = 2;</code></pre><p>Mesh cap setting : one cap at the end of the mesh</p>
+<h3 id="overload-0-7">CAP_ALL <a class="anchor" href="#overload-0-7">#</a></h3><pre class="code" data-lang="ts"><code>static readonly CAP_ALL = 3;</code></pre><p>Mesh cap setting : two caps, one at the beginning  and one at the end of the mesh</p>
+<h3 id="overload-0-8">NO_FLIP <a class="anchor" href="#overload-0-8">#</a></h3><pre class="code" data-lang="ts"><code>static readonly NO_FLIP = 0;</code></pre><p>Mesh pattern setting : no flip or rotate</p>
+<h3 id="overload-0-9">FLIP_TILE <a class="anchor" href="#overload-0-9">#</a></h3><pre class="code" data-lang="ts"><code>static readonly FLIP_TILE = 1;</code></pre><p>Mesh pattern setting : flip (reflect in y axis) alternate tiles on each row or column</p>
+<h3 id="overload-0-10">ROTATE_TILE <a class="anchor" href="#overload-0-10">#</a></h3><pre class="code" data-lang="ts"><code>static readonly ROTATE_TILE = 2;</code></pre><p>Mesh pattern setting : rotate (180degs) alternate tiles on each row or column</p>
+<h3 id="overload-0-11">FLIP_ROW <a class="anchor" href="#overload-0-11">#</a></h3><pre class="code" data-lang="ts"><code>static readonly FLIP_ROW = 3;</code></pre><p>Mesh pattern setting : flip (reflect in y axis) all tiles on alternate rows</p>
+<h3 id="overload-0-12">ROTATE_ROW <a class="anchor" href="#overload-0-12">#</a></h3><pre class="code" data-lang="ts"><code>static readonly ROTATE_ROW = 4;</code></pre><p>Mesh pattern setting : rotate (180degs) all tiles on alternate rows</p>
+<h3 id="overload-0-13">FLIP_N_ROTATE_TILE <a class="anchor" href="#overload-0-13">#</a></h3><pre class="code" data-lang="ts"><code>static readonly FLIP_N_ROTATE_TILE = 5;</code></pre><p>Mesh pattern setting : flip and rotate alternate tiles on each row or column</p>
+<h3 id="overload-0-14">FLIP_N_ROTATE_ROW <a class="anchor" href="#overload-0-14">#</a></h3><pre class="code" data-lang="ts"><code>static readonly FLIP_N_ROTATE_ROW = 6;</code></pre><p>Mesh pattern setting : rotate pattern and rotate</p>
+<h3 id="overload-0-15">CENTER <a class="anchor" href="#overload-0-15">#</a></h3><pre class="code" data-lang="ts"><code>static readonly CENTER = 0;</code></pre><p>Mesh tile positioning : part tiles same on left/right or top/bottom</p>
+<h3 id="overload-0-16">LEFT <a class="anchor" href="#overload-0-16">#</a></h3><pre class="code" data-lang="ts"><code>static readonly LEFT = 1;</code></pre><p>Mesh tile positioning : part tiles on left</p>
+<h3 id="overload-0-17">RIGHT <a class="anchor" href="#overload-0-17">#</a></h3><pre class="code" data-lang="ts"><code>static readonly RIGHT = 2;</code></pre><p>Mesh tile positioning : part tiles on right</p>
+<h3 id="overload-0-18">TOP <a class="anchor" href="#overload-0-18">#</a></h3><pre class="code" data-lang="ts"><code>static readonly TOP = 3;</code></pre><p>Mesh tile positioning : part tiles on top</p>
+<h3 id="overload-0-19">BOTTOM <a class="anchor" href="#overload-0-19">#</a></h3><pre class="code" data-lang="ts"><code>static readonly BOTTOM = 4;</code></pre><p>Mesh tile positioning : part tiles on bottom</p>
+<h3 id="overload-0-20">INSTANCEDMESH_SORT_TRANSPARENT <a class="anchor" href="#overload-0-20">#</a></h3><pre class="code" data-lang="ts"><code>static INSTANCEDMESH_SORT_TRANSPARENT: boolean;</code></pre><p>Indicates that the instanced meshes should be sorted from back to front before rendering if their material is transparent</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="overload-0-21">useLODScreenCoverage <a class="anchor" href="#overload-0-21">#</a></h3><pre class="code" data-lang="ts"><code>get useLODScreenCoverage(): boolean;</code></pre><p>Determines if the LOD levels are intended to be calculated using screen coverage (surface area ratio) instead of distance.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="overload-0-22">useLODScreenCoverage <a class="anchor" href="#overload-0-22">#</a></h3><pre class="code" data-lang="ts"><code>set useLODScreenCoverage(value: boolean);</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><h3 id="overload-0-23">onMeshReadyObservable <a class="anchor" href="#overload-0-23">#</a></h3><pre class="code" data-lang="ts"><code>onMeshReadyObservable: Observable&lt;Mesh&gt;;</code></pre><p>Will notify when the mesh is completely ready, including materials.
+Observers added to this observable will be removed once triggered</p>
+<p><b>Type / return:</b> <code>Observable&lt;Mesh&gt;</code></p><h3 id="overload-0-24">computeBonesUsingShaders <a class="anchor" href="#overload-0-24">#</a></h3><pre class="code" data-lang="ts"><code>get computeBonesUsingShaders(): boolean;</code></pre><p>{@inheritDoc}</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="overload-0-25">computeBonesUsingShaders <a class="anchor" href="#overload-0-25">#</a></h3><pre class="code" data-lang="ts"><code>set computeBonesUsingShaders(value: boolean);</code></pre><p>{@inheritDoc}</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><h3 id="overload-0-26">onBeforeRenderObservable <a class="anchor" href="#overload-0-26">#</a></h3><pre class="code" data-lang="ts"><code>get onBeforeRenderObservable(): Observable&lt;Mesh&gt;;</code></pre><p>An event triggered before rendering the mesh</p>
+<p><b>Type / return:</b> <code>Observable&lt;Mesh&gt;</code></p><h3 id="overload-0-27">onBeforeBindObservable <a class="anchor" href="#overload-0-27">#</a></h3><pre class="code" data-lang="ts"><code>get onBeforeBindObservable(): Observable&lt;Mesh&gt;;</code></pre><p>An event triggered before binding the mesh</p>
+<p><b>Type / return:</b> <code>Observable&lt;Mesh&gt;</code></p><h3 id="overload-0-28">onAfterRenderObservable <a class="anchor" href="#overload-0-28">#</a></h3><pre class="code" data-lang="ts"><code>get onAfterRenderObservable(): Observable&lt;Mesh&gt;;</code></pre><p>An event triggered after rendering the mesh</p>
+<p><b>Type / return:</b> <code>Observable&lt;Mesh&gt;</code></p><h3 id="overload-0-29">onBetweenPassObservable <a class="anchor" href="#overload-0-29">#</a></h3><pre class="code" data-lang="ts"><code>get onBetweenPassObservable(): Observable&lt;SubMesh&gt;;</code></pre><p>An event triggeredbetween rendering pass when using separateCullingPass = true</p>
+<p><b>Type / return:</b> <code>Observable&lt;SubMesh&gt;</code></p><h3 id="overload-0-30">onBeforeDrawObservable <a class="anchor" href="#overload-0-30">#</a></h3><pre class="code" data-lang="ts"><code>get onBeforeDrawObservable(): Observable&lt;Mesh&gt;;</code></pre><p>An event triggered before drawing the mesh</p>
+<p><b>Type / return:</b> <code>Observable&lt;Mesh&gt;</code></p><h3 id="overload-0-31">onBeforeDraw <a class="anchor" href="#overload-0-31">#</a></h3><pre class="code" data-lang="ts"><code>set onBeforeDraw(callback: () =&gt; void);</code></pre><p>Sets a callback to call before drawing the mesh. It is recommended to use onBeforeDrawObservable instead</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>callback</code></td><td><code>() =&gt; void</code></td><td>Required</td></tr></tbody></table><h3 id="overload-0-32">hasInstances <a class="anchor" href="#overload-0-32">#</a></h3><pre class="code" data-lang="ts"><code>get hasInstances(): boolean;</code></pre><p>{@inheritDoc}</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="overload-0-33">hasThinInstances <a class="anchor" href="#overload-0-33">#</a></h3><pre class="code" data-lang="ts"><code>get hasThinInstances(): boolean;</code></pre><p>{@inheritDoc}</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="overload-0-34">delayLoadState <a class="anchor" href="#overload-0-34">#</a></h3><pre class="code" data-lang="ts"><code>delayLoadState: number;</code></pre><p>Gets the delay loading state of the mesh (when delay loading is turned on)
+<strong>see</strong>  (online reference)</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="overload-0-35">instances <a class="anchor" href="#overload-0-35">#</a></h3><pre class="code" data-lang="ts"><code>instances: InstancedMesh[];</code></pre><p>Gets the list of instances created from this mesh
+it is not supposed to be modified manually.
+Note also that the order of the InstancedMesh wihin the array is not significant and might change.
+<strong>see</strong>  (online reference)</p>
+<p><b>Type / return:</b> <code>InstancedMesh[]</code></p><h3 id="overload-0-36">delayLoadingFile <a class="anchor" href="#overload-0-36">#</a></h3><pre class="code" data-lang="ts"><code>delayLoadingFile: string;</code></pre><p>Gets the file containing delay loading data for this mesh</p>
+<p><b>Type / return:</b> <code>string</code></p><h3 id="overload-0-37">onLODLevelSelection <a class="anchor" href="#overload-0-37">#</a></h3><pre class="code" data-lang="ts"><code>onLODLevelSelection: (distance: number, mesh: Mesh, selectedLevel: Nullable&lt;Mesh&gt;) =&gt; void;</code></pre><p>User defined function used to change how LOD level selection is done
+<strong>see</strong>  (online reference)</p>
+<p><b>Type / return:</b> <code>(distance: number, mesh: Mesh, selectedLevel: Nullable&lt;Mesh&gt;) =&gt; void</code></p><h3 id="overload-0-38">forcedInstanceCount <a class="anchor" href="#overload-0-38">#</a></h3><pre class="code" data-lang="ts"><code>get forcedInstanceCount(): number;</code></pre><p>Gets or sets the forced number of instances to display.
+If 0 (default value), the number of instances is not forced and depends on the draw type
+(regular / instance / thin instances mesh)</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="overload-0-39">forcedInstanceCount <a class="anchor" href="#overload-0-39">#</a></h3><pre class="code" data-lang="ts"><code>set forcedInstanceCount(count: number);</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>count</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><h3 id="overload-0-40">sideOrientation <a class="anchor" href="#overload-0-40">#</a></h3><pre class="code" data-lang="ts"><code>get sideOrientation(): number;</code></pre><p>Use this property to change the original side orientation defined at construction time
+Material.sideOrientation will override this value if set
+User will still be able to change the material sideOrientation afterwards if they really need it</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="overload-0-41">sideOrientation <a class="anchor" href="#overload-0-41">#</a></h3><pre class="code" data-lang="ts"><code>set sideOrientation(value: number);</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><h3 id="overload-0-42">overrideMaterialSideOrientation <a class="anchor" href="#overload-0-42">#</a></h3><pre class="code" data-lang="ts"><code>get overrideMaterialSideOrientation(): number;</code></pre><p><strong>deprecated</strong>  Please use sideOrientation instead.
+<strong>see</strong>  (online reference)</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="overload-0-43">overrideMaterialSideOrientation <a class="anchor" href="#overload-0-43">#</a></h3><pre class="code" data-lang="ts"><code>set overrideMaterialSideOrientation(value: number);</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><h3 id="overload-0-44">overrideRenderingFillMode <a class="anchor" href="#overload-0-44">#</a></h3><pre class="code" data-lang="ts"><code>get overrideRenderingFillMode(): Nullable&lt;number&gt;;</code></pre><p>Use this property to override the Material&#39;s fillMode value</p>
+<p><b>Type / return:</b> <code>Nullable&lt;number&gt;</code></p><h3 id="overload-0-45">overrideRenderingFillMode <a class="anchor" href="#overload-0-45">#</a></h3><pre class="code" data-lang="ts"><code>set overrideRenderingFillMode(fillMode: Nullable&lt;number&gt;);</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>fillMode</code></td><td><code>Nullable&lt;number&gt;</code></td><td>Required</td></tr></tbody></table><h3 id="overload-0-46">material <a class="anchor" href="#overload-0-46">#</a></h3><pre class="code" data-lang="ts"><code>get material(): Nullable&lt;Material&gt;;</code></pre><p>{@inheritDoc}</p>
+<p><b>Type / return:</b> <code>Nullable&lt;Material&gt;</code></p><h3 id="overload-0-47">material <a class="anchor" href="#overload-0-47">#</a></h3><pre class="code" data-lang="ts"><code>set material(value: Nullable&lt;Material&gt;);</code></pre><p>{@inheritDoc}</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>Nullable&lt;Material&gt;</code></td><td>Required</td></tr></tbody></table><h3 id="overload-0-48">ignoreCameraMaxZ <a class="anchor" href="#overload-0-48">#</a></h3><pre class="code" data-lang="ts"><code>ignoreCameraMaxZ: boolean;</code></pre><p>Gets or sets a boolean indicating whether to render ignoring the active camera&#39;s max z setting. (false by default)
+You should not mix meshes that have this property set to true with meshes that have it set to false if they all write
+to the depth buffer, because the z-values are not comparable in the two cases and you will get rendering artifacts if you do.
+You can set the property to true for meshes that do not write to the depth buffer, or set the same value (either false or true) otherwise.
+Note this will reduce performance when set to true.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="overload-0-49">source <a class="anchor" href="#overload-0-49">#</a></h3><pre class="code" data-lang="ts"><code>get source(): Nullable&lt;Mesh&gt;;</code></pre><p>Gets the source mesh (the one used to clone this one from)</p>
+<p><b>Type / return:</b> <code>Nullable&lt;Mesh&gt;</code></p><h3 id="overload-0-50">cloneMeshMap <a class="anchor" href="#overload-0-50">#</a></h3><pre class="code" data-lang="ts"><code>get cloneMeshMap(): Nullable&lt;{
+            [id: string]: Mesh | undefined;
+        }&gt;;</code></pre><p>Gets the list of clones of this mesh
+The scene must have been constructed with useClonedMeshMap=true for this to work!
+Note that useClonedMeshMap=true is the default setting</p>
+<p><b>Type / return:</b> <code>Nullable&lt;{
+            [id: string]: Mesh | undefined;
+        }&gt;</code></p><h3 id="overload-0-51">isUnIndexed <a class="anchor" href="#overload-0-51">#</a></h3><pre class="code" data-lang="ts"><code>get isUnIndexed(): boolean;</code></pre><p>Gets or sets a boolean indicating that this mesh does not use index buffer</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="overload-0-52">isUnIndexed <a class="anchor" href="#overload-0-52">#</a></h3><pre class="code" data-lang="ts"><code>set isUnIndexed(value: boolean);</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><h3 id="overload-0-53">worldMatrixInstancedBuffer <a class="anchor" href="#overload-0-53">#</a></h3><pre class="code" data-lang="ts"><code>get worldMatrixInstancedBuffer(): Float32Array;</code></pre><p>Gets the array buffer used to store the instanced buffer used for instances&#39; world matrices</p>
+<p><b>Type / return:</b> <code>Float32Array</code></p><h3 id="overload-0-54">previousWorldMatrixInstancedBuffer <a class="anchor" href="#overload-0-54">#</a></h3><pre class="code" data-lang="ts"><code>get previousWorldMatrixInstancedBuffer(): Float32Array;</code></pre><p>Gets the array buffer used to store the instanced buffer used for instances&#39; previous world matrices</p>
+<p><b>Type / return:</b> <code>Float32Array</code></p><h3 id="overload-0-55">manualUpdateOfWorldMatrixInstancedBuffer <a class="anchor" href="#overload-0-55">#</a></h3><pre class="code" data-lang="ts"><code>get manualUpdateOfWorldMatrixInstancedBuffer(): boolean;</code></pre><p>Gets or sets a boolean indicating that the update of the instance buffer of the world matrices is manual</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="overload-0-56">manualUpdateOfWorldMatrixInstancedBuffer <a class="anchor" href="#overload-0-56">#</a></h3><pre class="code" data-lang="ts"><code>set manualUpdateOfWorldMatrixInstancedBuffer(value: boolean);</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><h3 id="overload-0-57">manualUpdateOfPreviousWorldMatrixInstancedBuffer <a class="anchor" href="#overload-0-57">#</a></h3><pre class="code" data-lang="ts"><code>get manualUpdateOfPreviousWorldMatrixInstancedBuffer(): boolean;</code></pre><p>Gets or sets a boolean indicating that the update of the instance buffer of the world matrices is manual</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="overload-0-58">manualUpdateOfPreviousWorldMatrixInstancedBuffer <a class="anchor" href="#overload-0-58">#</a></h3><pre class="code" data-lang="ts"><code>set manualUpdateOfPreviousWorldMatrixInstancedBuffer(value: boolean);</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><h3 id="overload-0-59">forceWorldMatrixInstancedBufferUpdate <a class="anchor" href="#overload-0-59">#</a></h3><pre class="code" data-lang="ts"><code>get forceWorldMatrixInstancedBufferUpdate(): boolean;</code></pre><p>Gets or sets a boolean indicating that the update of the instance buffer of the world matrices must be performed in all cases (and notably even in frozen mode)</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="overload-0-60">forceWorldMatrixInstancedBufferUpdate <a class="anchor" href="#overload-0-60">#</a></h3><pre class="code" data-lang="ts"><code>set forceWorldMatrixInstancedBufferUpdate(value: boolean);</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><h3 id="overload-0-61">constructor <a class="anchor" href="#overload-0-61">#</a></h3><pre class="code" data-lang="ts"><code>constructor(name: string, scene?: Nullable&lt;Scene&gt;, options?: MeshCreationOptions);</code></pre><p>Constructor
+<strong>param</strong>  name The value used by scene.getMeshByName() to do a lookup.
+<strong>param</strong>  scene The scene to add this mesh to.
+<strong>param</strong>  options Options used to create the mesh</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>name</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>scene</code></td><td><code>Nullable&lt;Scene&gt;</code></td><td>Optional</td></tr><tr><td><code>options</code></td><td><code>MeshCreationOptions</code></td><td>Optional</td></tr></tbody></table><h3 id="overload-0-62">constructor <a class="anchor" href="#overload-0-62">#</a></h3><pre class="code" data-lang="ts"><code>constructor(name: string, scene?: Nullable&lt;Scene&gt;, parent?: Nullable&lt;Node&gt;, source?: Nullable&lt;Mesh&gt;, doNotCloneChildren?: boolean, clonePhysicsImpostor?: boolean);</code></pre><p>Constructor
+<strong>param</strong>  name The value used by scene.getMeshByName() to do a lookup.
+<strong>param</strong>  scene The scene to add this mesh to.
+<strong>param</strong>  parent The parent of this mesh, if it has one
+<strong>param</strong>  source An optional Mesh from which geometry is shared, cloned.
+<strong>param</strong>  doNotCloneChildren When cloning, skip cloning child meshes of source, default False.
+                 When false, achieved by calling a clone(), also passing False.
+                 This will make creation of children, recursive.
+<strong>param</strong>  clonePhysicsImpostor When cloning, include cloning mesh physics impostor, default True.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>name</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>scene</code></td><td><code>Nullable&lt;Scene&gt;</code></td><td>Optional</td></tr><tr><td><code>parent</code></td><td><code>Nullable&lt;Node&gt;</code></td><td>Optional</td></tr><tr><td><code>source</code></td><td><code>Nullable&lt;Mesh&gt;</code></td><td>Optional</td></tr><tr><td><code>doNotCloneChildren</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>clonePhysicsImpostor</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><h3 id="overload-0-63">instantiateHierarchy <a class="anchor" href="#overload-0-63">#</a></h3><pre class="code" data-lang="ts"><code>instantiateHierarchy(newParent?: Nullable&lt;TransformNode&gt;, options?: {
+            doNotInstantiate: boolean | ((node: TransformNode) =&gt; boolean);
+        }, onNewNodeCreated?: (source: TransformNode, clone: TransformNode) =&gt; void): Nullable&lt;TransformNode&gt;;</code></pre><p>Instantiate (when possible) or clone that node with its hierarchy
+<strong>param</strong>  newParent defines the new parent to use for the instance (or clone)
+<strong>param</strong>  options defines options to configure how copy is done
+<strong>param</strong>  onNewNodeCreated defines an option callback to call when a clone or an instance is created
+<strong>returns</strong>  an instance (or a clone) of the current node with its hierarchy</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>newParent</code></td><td><code>Nullable&lt;TransformNode&gt;</code></td><td>Optional</td></tr><tr><td><code>options</code></td><td><code>{
+            doNotInstantiate: boolean | ((node: TransformNode) =&gt; boolean);
+        }</code></td><td>Optional</td></tr><tr><td><code>onNewNodeCreated</code></td><td><code>(source: TransformNode, clone: TransformNode) =&gt; void</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Nullable&lt;TransformNode&gt;</code></p><h3 id="overload-0-64">getClassName <a class="anchor" href="#overload-0-64">#</a></h3><pre class="code" data-lang="ts"><code>getClassName(): string;</code></pre><p>Gets the class name
+<strong>returns</strong>  the string &quot;Mesh&quot;.</p>
+<p><b>Type / return:</b> <code>string</code></p><h3 id="overload-0-65">toString <a class="anchor" href="#overload-0-65">#</a></h3><pre class="code" data-lang="ts"><code>toString(fullDetails?: boolean): string;</code></pre><p>Returns a description of this mesh
+<strong>param</strong>  fullDetails define if full details about this mesh must be used
+<strong>returns</strong>  a descriptive string representing this mesh</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>fullDetails</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>string</code></p><h3 id="overload-0-66">hasLODLevels <a class="anchor" href="#overload-0-66">#</a></h3><pre class="code" data-lang="ts"><code>get hasLODLevels(): boolean;</code></pre><p>Gets a boolean indicating if this mesh has LOD</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="overload-0-67">getLODLevels <a class="anchor" href="#overload-0-67">#</a></h3><pre class="code" data-lang="ts"><code>getLODLevels(): MeshLODLevel[];</code></pre><p>Gets the list of MeshLODLevel associated with the current mesh
+<strong>returns</strong>  an array of MeshLODLevel</p>
+<p><b>Type / return:</b> <code>MeshLODLevel[]</code></p><h3 id="overload-0-68">addLODLevel <a class="anchor" href="#overload-0-68">#</a></h3><pre class="code" data-lang="ts"><code>addLODLevel(distanceOrScreenCoverage: number, mesh: Nullable&lt;Mesh&gt;): Mesh;</code></pre><p>Add a mesh as LOD level triggered at the given distance.
+<strong>see</strong>  (online reference)
+<strong>param</strong>  distanceOrScreenCoverage Either distance from the center of the object to show this level or the screen coverage if <code>useScreenCoverage</code> is set to <code>true</code>.
+If screen coverage, value is a fraction of the screen&#39;s total surface, between 0 and 1.
+Example Playground for distance (online reference)
+Example Playground for screen coverage (online reference)
+<strong>param</strong>  mesh The mesh to be added as LOD level (can be null)
+<strong>returns</strong>  This mesh (for chaining)</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>distanceOrScreenCoverage</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>mesh</code></td><td><code>Nullable&lt;Mesh&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-69">getLODLevelAtDistance <a class="anchor" href="#overload-0-69">#</a></h3><pre class="code" data-lang="ts"><code>getLODLevelAtDistance(distance: number): Nullable&lt;Mesh&gt;;</code></pre><p>Returns the LOD level mesh at the passed distance or null if not found.
+<strong>see</strong>  (online reference)
+<strong>param</strong>  distance The distance from the center of the object to show this level
+<strong>returns</strong>  a Mesh or <code>null</code></p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>distance</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Nullable&lt;Mesh&gt;</code></p><h3 id="overload-0-70">removeLODLevel <a class="anchor" href="#overload-0-70">#</a></h3><pre class="code" data-lang="ts"><code>removeLODLevel(mesh: Nullable&lt;Mesh&gt;): Mesh;</code></pre><p>Remove a mesh from the LOD array
+<strong>see</strong>  (online reference)
+<strong>param</strong>  mesh defines the mesh to be removed
+<strong>returns</strong>  This mesh (for chaining)</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>mesh</code></td><td><code>Nullable&lt;Mesh&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-71">getLOD <a class="anchor" href="#overload-0-71">#</a></h3><pre class="code" data-lang="ts"><code>getLOD(camera: Camera, boundingSphere?: BoundingSphere): Nullable&lt;AbstractMesh&gt;;</code></pre><p>Returns the registered LOD mesh distant from the parameter <code>camera</code> position if any, else returns the current mesh.
+<strong>see</strong>  (online reference)
+<strong>param</strong>  camera defines the camera to use to compute distance
+<strong>param</strong>  boundingSphere defines a custom bounding sphere to use instead of the one from this mesh
+<strong>returns</strong>  This mesh (for chaining)</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>camera</code></td><td><code>Camera</code></td><td>Required</td></tr><tr><td><code>boundingSphere</code></td><td><code>BoundingSphere</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Nullable&lt;AbstractMesh&gt;</code></p><h3 id="overload-0-72">geometry <a class="anchor" href="#overload-0-72">#</a></h3><pre class="code" data-lang="ts"><code>get geometry(): Nullable&lt;Geometry&gt;;</code></pre><p>Gets the mesh internal Geometry object</p>
+<p><b>Type / return:</b> <code>Nullable&lt;Geometry&gt;</code></p><h3 id="overload-0-73">getTotalVertices <a class="anchor" href="#overload-0-73">#</a></h3><pre class="code" data-lang="ts"><code>getTotalVertices(): number;</code></pre><p>Returns the total number of vertices within the mesh geometry or zero if the mesh has no geometry.
+<strong>returns</strong>  the total number of vertices</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="overload-0-74">getVerticesData <a class="anchor" href="#overload-0-74">#</a></h3><pre class="code" data-lang="ts"><code>getVerticesData(kind: string, copyWhenShared?: boolean, forceCopy?: boolean, bypassInstanceData?: boolean): Nullable&lt;FloatArray&gt;;</code></pre><p>Returns the content of an associated vertex buffer
+<strong>param</strong>  kind defines which buffer to read from (positions, indices, normals, etc). Possible <code>kind</code> values :</p>
+<ul>
+<li>VertexBuffer.PositionKind</li>
+<li>VertexBuffer.UVKind</li>
+<li>VertexBuffer.UV2Kind</li>
+<li>VertexBuffer.UV3Kind</li>
+<li>VertexBuffer.UV4Kind</li>
+<li>VertexBuffer.UV5Kind</li>
+<li>VertexBuffer.UV6Kind</li>
+<li>VertexBuffer.ColorKind</li>
+<li>VertexBuffer.MatricesIndicesKind</li>
+<li>VertexBuffer.MatricesIndicesExtraKind</li>
+<li>VertexBuffer.MatricesWeightsKind</li>
+<li>VertexBuffer.MatricesWeightsExtraKind
+<strong>param</strong>  copyWhenShared defines a boolean indicating that if the mesh geometry is shared among some other meshes, the returned array is a copy of the internal one
+<strong>param</strong>  forceCopy defines a boolean forcing the copy of the buffer no matter what the value of copyWhenShared is
+<strong>param</strong>  bypassInstanceData defines a boolean indicating that the function should not take into account the instance data (applies only if the mesh has instances). Default: false
+<strong>returns</strong>  a FloatArray or null if the mesh has no geometry or no vertex buffer for this kind.</li>
+</ul>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>kind</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>copyWhenShared</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>forceCopy</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>bypassInstanceData</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Nullable&lt;FloatArray&gt;</code></p><h3 id="overload-0-75">copyVerticesData <a class="anchor" href="#overload-0-75">#</a></h3><pre class="code" data-lang="ts"><code>copyVerticesData(kind: string, vertexData: {
+            [kind: string]: Float32Array;
+        }): void;</code></pre><p>Copies the requested vertex data kind into the given vertex data map. Float data is constructed if the map doesn&#39;t have the data.
+<strong>param</strong>  kind defines the vertex data kind to use
+<strong>param</strong>  vertexData defines the map that stores the resulting data</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>kind</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>vertexData</code></td><td><code>{
+            [kind: string]: Float32Array;
+        }</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="overload-0-76">getVertexBuffer <a class="anchor" href="#overload-0-76">#</a></h3><pre class="code" data-lang="ts"><code>getVertexBuffer(kind: string, bypassInstanceData?: boolean): Nullable&lt;VertexBuffer&gt;;</code></pre><p>Returns the mesh VertexBuffer object from the requested <code>kind</code>
+<strong>param</strong>  kind defines which buffer to read from (positions, indices, normals, etc). Possible <code>kind</code> values :</p>
+<ul>
+<li>VertexBuffer.PositionKind</li>
+<li>VertexBuffer.NormalKind</li>
+<li>VertexBuffer.UVKind</li>
+<li>VertexBuffer.UV2Kind</li>
+<li>VertexBuffer.UV3Kind</li>
+<li>VertexBuffer.UV4Kind</li>
+<li>VertexBuffer.UV5Kind</li>
+<li>VertexBuffer.UV6Kind</li>
+<li>VertexBuffer.ColorKind</li>
+<li>VertexBuffer.MatricesIndicesKind</li>
+<li>VertexBuffer.MatricesIndicesExtraKind</li>
+<li>VertexBuffer.MatricesWeightsKind</li>
+<li>VertexBuffer.MatricesWeightsExtraKind
+<strong>param</strong>  bypassInstanceData defines a boolean indicating that the function should not take into account the instance data (applies only if the mesh has instances). Default: false
+<strong>returns</strong>  a FloatArray or null if the mesh has no vertex buffer for this kind.</li>
+</ul>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>kind</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>bypassInstanceData</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Nullable&lt;VertexBuffer&gt;</code></p><h3 id="overload-0-77">isVerticesDataPresent <a class="anchor" href="#overload-0-77">#</a></h3><pre class="code" data-lang="ts"><code>isVerticesDataPresent(kind: string, bypassInstanceData?: boolean): boolean;</code></pre><p>Tests if a specific vertex buffer is associated with this mesh
+<strong>param</strong>  kind defines which buffer to check (positions, indices, normals, etc). Possible <code>kind</code> values :</p>
+<ul>
+<li>VertexBuffer.PositionKind</li>
+<li>VertexBuffer.NormalKind</li>
+<li>VertexBuffer.UVKind</li>
+<li>VertexBuffer.UV2Kind</li>
+<li>VertexBuffer.UV3Kind</li>
+<li>VertexBuffer.UV4Kind</li>
+<li>VertexBuffer.UV5Kind</li>
+<li>VertexBuffer.UV6Kind</li>
+<li>VertexBuffer.ColorKind</li>
+<li>VertexBuffer.MatricesIndicesKind</li>
+<li>VertexBuffer.MatricesIndicesExtraKind</li>
+<li>VertexBuffer.MatricesWeightsKind</li>
+<li>VertexBuffer.MatricesWeightsExtraKind
+<strong>param</strong>  bypassInstanceData defines a boolean indicating that the function should not take into account the instance data (applies only if the mesh has instances). Default: false
+<strong>returns</strong>  a boolean</li>
+</ul>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>kind</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>bypassInstanceData</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="overload-0-78">isVertexBufferUpdatable <a class="anchor" href="#overload-0-78">#</a></h3><pre class="code" data-lang="ts"><code>isVertexBufferUpdatable(kind: string, bypassInstanceData?: boolean): boolean;</code></pre><p>Returns a boolean defining if the vertex data for the requested <code>kind</code> is updatable.
+<strong>param</strong>  kind defines which buffer to check (positions, indices, normals, etc). Possible <code>kind</code> values :</p>
+<ul>
+<li>VertexBuffer.PositionKind</li>
+<li>VertexBuffer.UVKind</li>
+<li>VertexBuffer.UV2Kind</li>
+<li>VertexBuffer.UV3Kind</li>
+<li>VertexBuffer.UV4Kind</li>
+<li>VertexBuffer.UV5Kind</li>
+<li>VertexBuffer.UV6Kind</li>
+<li>VertexBuffer.ColorKind</li>
+<li>VertexBuffer.MatricesIndicesKind</li>
+<li>VertexBuffer.MatricesIndicesExtraKind</li>
+<li>VertexBuffer.MatricesWeightsKind</li>
+<li>VertexBuffer.MatricesWeightsExtraKind
+<strong>param</strong>  bypassInstanceData defines a boolean indicating that the function should not take into account the instance data (applies only if the mesh has instances). Default: false
+<strong>returns</strong>  a boolean</li>
+</ul>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>kind</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>bypassInstanceData</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="overload-0-79">getVerticesDataKinds <a class="anchor" href="#overload-0-79">#</a></h3><pre class="code" data-lang="ts"><code>getVerticesDataKinds(bypassInstanceData?: boolean): string[];</code></pre><p>Returns a string which contains the list of existing <code>kinds</code> of Vertex Data associated with this mesh.
+<strong>param</strong>  bypassInstanceData defines a boolean indicating that the function should not take into account the instance data (applies only if the mesh has instances). Default: false
+<strong>returns</strong>  an array of strings</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>bypassInstanceData</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>string[]</code></p><h3 id="overload-0-80">getTotalIndices <a class="anchor" href="#overload-0-80">#</a></h3><pre class="code" data-lang="ts"><code>getTotalIndices(): number;</code></pre><p>Returns a positive integer : the total number of indices in this mesh geometry.
+<strong>returns</strong>  the number of indices or zero if the mesh has no geometry.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="overload-0-81">getIndices <a class="anchor" href="#overload-0-81">#</a></h3><pre class="code" data-lang="ts"><code>getIndices(copyWhenShared?: boolean, forceCopy?: boolean): Nullable&lt;IndicesArray&gt;;</code></pre><p>Returns an array of integers or a typed array (Int32Array, Uint32Array, Uint16Array) populated with the mesh indices.
+<strong>param</strong>  copyWhenShared If true (default false) and and if the mesh geometry is shared among some other meshes, the returned array is a copy of the internal one.
+<strong>param</strong>  forceCopy defines a boolean indicating that the returned array must be cloned upon returning it
+<strong>returns</strong>  the indices array or an empty array if the mesh has no geometry</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>copyWhenShared</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>forceCopy</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Nullable&lt;IndicesArray&gt;</code></p><h3 id="overload-0-82">isBlocked <a class="anchor" href="#overload-0-82">#</a></h3><pre class="code" data-lang="ts"><code>get isBlocked(): boolean;</code></pre><p>{@inheritDoc}</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="overload-0-83">isReady <a class="anchor" href="#overload-0-83">#</a></h3><pre class="code" data-lang="ts"><code>isReady(completeCheck?: boolean, forceInstanceSupport?: boolean): boolean;</code></pre><p>Determine if the current mesh is ready to be rendered
+<strong>param</strong>  completeCheck defines if a complete check (including materials and lights) has to be done (false by default)
+<strong>param</strong>  forceInstanceSupport will check if the mesh will be ready when used with instances (false by default)
+<strong>returns</strong>  true if all associated assets are ready (material, textures, shaders)</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>completeCheck</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>forceInstanceSupport</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="overload-0-84">areNormalsFrozen <a class="anchor" href="#overload-0-84">#</a></h3><pre class="code" data-lang="ts"><code>get areNormalsFrozen(): boolean;</code></pre><p>Gets a boolean indicating if the normals aren&#39;t to be recomputed on next mesh <code>positions</code> array update. This property is pertinent only for updatable parametric shapes.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="overload-0-85">freezeNormals <a class="anchor" href="#overload-0-85">#</a></h3><pre class="code" data-lang="ts"><code>freezeNormals(): Mesh;</code></pre><p>This function affects parametric shapes on vertex position update only : ribbons, tubes, etc. It has no effect at all on other shapes. It prevents the mesh normals from being recomputed on next <code>positions</code> array update.
+<strong>returns</strong>  the current mesh</p>
+<p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-86">unfreezeNormals <a class="anchor" href="#overload-0-86">#</a></h3><pre class="code" data-lang="ts"><code>unfreezeNormals(): Mesh;</code></pre><p>This function affects parametric shapes on vertex position update only : ribbons, tubes, etc. It has no effect at all on other shapes. It reactivates the mesh normals computation if it was previously frozen
+<strong>returns</strong>  the current mesh</p>
+<p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-87">overridenInstanceCount <a class="anchor" href="#overload-0-87">#</a></h3><pre class="code" data-lang="ts"><code>set overridenInstanceCount(count: number);</code></pre><p>Sets a value overriding the instance count. Only applicable when custom instanced InterleavedVertexBuffer are used rather than InstancedMeshs</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>count</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><h3 id="overload-0-88">refreshBoundingInfo <a class="anchor" href="#overload-0-88">#</a></h3><pre class="code" data-lang="ts"><code>refreshBoundingInfo(applySkeletonOrOptions?: boolean | IMeshDataOptions, applyMorph?: boolean): Mesh;</code></pre><p>This method recomputes and sets a new BoundingInfo to the mesh unless it is locked.
+This means the mesh underlying bounding box and sphere are recomputed.
+<strong>param</strong>  applySkeletonOrOptions defines whether to apply the skeleton before computing the bounding info or a set of options
+<strong>param</strong>  applyMorph defines whether to apply the morph target before computing the bounding info
+<strong>returns</strong>  the current mesh</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>applySkeletonOrOptions</code></td><td><code>boolean | IMeshDataOptions</code></td><td>Optional</td></tr><tr><td><code>applyMorph</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-89">subdivide <a class="anchor" href="#overload-0-89">#</a></h3><pre class="code" data-lang="ts"><code>subdivide(count: number): void;</code></pre><p>This function will subdivide the mesh into multiple submeshes
+<strong>param</strong>  count defines the expected number of submeshes</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>count</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="overload-0-90">setVerticesData <a class="anchor" href="#overload-0-90">#</a></h3><pre class="code" data-lang="ts"><code>setVerticesData(kind: string, data: FloatArray, updatable?: boolean, stride?: number): AbstractMesh;</code></pre><p>Copy a FloatArray into a specific associated vertex buffer
+<strong>param</strong>  kind defines which buffer to write to (positions, indices, normals, etc). Possible <code>kind</code> values :</p>
+<ul>
+<li>VertexBuffer.PositionKind</li>
+<li>VertexBuffer.UVKind</li>
+<li>VertexBuffer.UV2Kind</li>
+<li>VertexBuffer.UV3Kind</li>
+<li>VertexBuffer.UV4Kind</li>
+<li>VertexBuffer.UV5Kind</li>
+<li>VertexBuffer.UV6Kind</li>
+<li>VertexBuffer.ColorKind</li>
+<li>VertexBuffer.MatricesIndicesKind</li>
+<li>VertexBuffer.MatricesIndicesExtraKind</li>
+<li>VertexBuffer.MatricesWeightsKind</li>
+<li>VertexBuffer.MatricesWeightsExtraKind
+<strong>param</strong>  data defines the data source
+<strong>param</strong>  updatable defines if the updated vertex buffer must be flagged as updatable
+<strong>param</strong>  stride defines the data stride size (can be null)
+<strong>returns</strong>  the current mesh</li>
+</ul>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>kind</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>data</code></td><td><code>FloatArray</code></td><td>Required</td></tr><tr><td><code>updatable</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>stride</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>AbstractMesh</code></p><h3 id="overload-0-91">removeVerticesData <a class="anchor" href="#overload-0-91">#</a></h3><pre class="code" data-lang="ts"><code>removeVerticesData(kind: string): void;</code></pre><p>Delete a vertex buffer associated with this mesh
+<strong>param</strong>  kind defines which buffer to delete (positions, indices, normals, etc). Possible <code>kind</code> values :</p>
+<ul>
+<li>VertexBuffer.PositionKind</li>
+<li>VertexBuffer.UVKind</li>
+<li>VertexBuffer.UV2Kind</li>
+<li>VertexBuffer.UV3Kind</li>
+<li>VertexBuffer.UV4Kind</li>
+<li>VertexBuffer.UV5Kind</li>
+<li>VertexBuffer.UV6Kind</li>
+<li>VertexBuffer.ColorKind</li>
+<li>VertexBuffer.MatricesIndicesKind</li>
+<li>VertexBuffer.MatricesIndicesExtraKind</li>
+<li>VertexBuffer.MatricesWeightsKind</li>
+<li>VertexBuffer.MatricesWeightsExtraKind</li>
+</ul>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>kind</code></td><td><code>string</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="overload-0-92">markVerticesDataAsUpdatable <a class="anchor" href="#overload-0-92">#</a></h3><pre class="code" data-lang="ts"><code>markVerticesDataAsUpdatable(kind: string, updatable?: boolean): void;</code></pre><p>Flags an associated vertex buffer as updatable
+<strong>param</strong>  kind defines which buffer to use (positions, indices, normals, etc). Possible <code>kind</code> values :</p>
+<ul>
+<li>VertexBuffer.PositionKind</li>
+<li>VertexBuffer.UVKind</li>
+<li>VertexBuffer.UV2Kind</li>
+<li>VertexBuffer.UV3Kind</li>
+<li>VertexBuffer.UV4Kind</li>
+<li>VertexBuffer.UV5Kind</li>
+<li>VertexBuffer.UV6Kind</li>
+<li>VertexBuffer.ColorKind</li>
+<li>VertexBuffer.MatricesIndicesKind</li>
+<li>VertexBuffer.MatricesIndicesExtraKind</li>
+<li>VertexBuffer.MatricesWeightsKind</li>
+<li>VertexBuffer.MatricesWeightsExtraKind
+<strong>param</strong>  updatable defines if the updated vertex buffer must be flagged as updatable</li>
+</ul>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>kind</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>updatable</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="overload-0-93">setVerticesBuffer <a class="anchor" href="#overload-0-93">#</a></h3><pre class="code" data-lang="ts"><code>setVerticesBuffer(buffer: VertexBuffer, disposeExistingBuffer?: boolean, totalVertices?: Nullable&lt;number&gt;): Mesh;</code></pre><p>Sets the mesh global Vertex Buffer
+<strong>param</strong>  buffer defines the buffer to use
+<strong>param</strong>  disposeExistingBuffer disposes the existing buffer, if any (default: true)
+<strong>param</strong>  totalVertices defines the total number of vertices for position kind (could be null)
+<strong>returns</strong>  the current mesh</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>buffer</code></td><td><code>VertexBuffer</code></td><td>Required</td></tr><tr><td><code>disposeExistingBuffer</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>totalVertices</code></td><td><code>Nullable&lt;number&gt;</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-94">updateVerticesData <a class="anchor" href="#overload-0-94">#</a></h3><pre class="code" data-lang="ts"><code>updateVerticesData(kind: string, data: FloatArray, updateExtends?: boolean, makeItUnique?: boolean): AbstractMesh;</code></pre><p>Update a specific associated vertex buffer
+<strong>param</strong>  kind defines which buffer to write to (positions, indices, normals, etc). Possible <code>kind</code> values :</p>
+<ul>
+<li>VertexBuffer.PositionKind</li>
+<li>VertexBuffer.UVKind</li>
+<li>VertexBuffer.UV2Kind</li>
+<li>VertexBuffer.UV3Kind</li>
+<li>VertexBuffer.UV4Kind</li>
+<li>VertexBuffer.UV5Kind</li>
+<li>VertexBuffer.UV6Kind</li>
+<li>VertexBuffer.ColorKind</li>
+<li>VertexBuffer.MatricesIndicesKind</li>
+<li>VertexBuffer.MatricesIndicesExtraKind</li>
+<li>VertexBuffer.MatricesWeightsKind</li>
+<li>VertexBuffer.MatricesWeightsExtraKind
+<strong>param</strong>  data defines the data source
+<strong>param</strong>  updateExtends defines if extends info of the mesh must be updated (can be null). This is mostly useful for &quot;position&quot; kind
+<strong>param</strong>  makeItUnique defines if the geometry associated with the mesh must be cloned to make the change only for this mesh (and not all meshes associated with the same geometry)
+<strong>returns</strong>  the current mesh</li>
+</ul>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>kind</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>data</code></td><td><code>FloatArray</code></td><td>Required</td></tr><tr><td><code>updateExtends</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>makeItUnique</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>AbstractMesh</code></p><h3 id="overload-0-95">updateMeshPositions <a class="anchor" href="#overload-0-95">#</a></h3><pre class="code" data-lang="ts"><code>updateMeshPositions(positionFunction: (data: FloatArray) =&gt; void, computeNormals?: boolean): Mesh;</code></pre><p>This method updates the vertex positions of an updatable mesh according to the <code>positionFunction</code> returned values.
+<strong>see</strong>  (online reference)
+<strong>param</strong>  positionFunction is a simple JS function what is passed the mesh <code>positions</code> array. It doesn&#39;t need to return anything
+<strong>param</strong>  computeNormals is a boolean (default true) to enable/disable the mesh normal recomputation after the vertex position update
+<strong>returns</strong>  the current mesh</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>positionFunction</code></td><td><code>(data: FloatArray) =&gt; void</code></td><td>Required</td></tr><tr><td><code>computeNormals</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-96">makeGeometryUnique <a class="anchor" href="#overload-0-96">#</a></h3><pre class="code" data-lang="ts"><code>makeGeometryUnique(): Mesh;</code></pre><p>Creates a un-shared specific occurence of the geometry for the mesh.
+<strong>returns</strong>  the current mesh</p>
+<p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-97">setIndexBuffer <a class="anchor" href="#overload-0-97">#</a></h3><pre class="code" data-lang="ts"><code>setIndexBuffer(indexBuffer: DataBuffer, totalVertices: number, totalIndices: number, is32Bits?: Nullable&lt;boolean&gt;): void;</code></pre><p>Sets the index buffer of this mesh.
+<strong>param</strong>  indexBuffer Defines the index buffer to use for this mesh
+<strong>param</strong>  totalVertices Defines the total number of vertices used by the buffer
+<strong>param</strong>  totalIndices Defines the total number of indices in the index buffer
+<strong>param</strong>  is32Bits Defines if the indices are 32 bits. If null (default), the value is guessed from the number of vertices</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>indexBuffer</code></td><td><code>DataBuffer</code></td><td>Required</td></tr><tr><td><code>totalVertices</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>totalIndices</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>is32Bits</code></td><td><code>Nullable&lt;boolean&gt;</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="overload-0-98">setIndices <a class="anchor" href="#overload-0-98">#</a></h3><pre class="code" data-lang="ts"><code>setIndices(indices: IndicesArray, totalVertices?: Nullable&lt;number&gt;, updatable?: boolean, dontForceSubMeshRecreation?: boolean): AbstractMesh;</code></pre><p>Set the index buffer of this mesh
+<strong>param</strong>  indices defines the source data
+<strong>param</strong>  totalVertices defines the total number of vertices referenced by this index data (can be null)
+<strong>param</strong>  updatable defines if the updated index buffer must be flagged as updatable (default is false)
+<strong>param</strong>  dontForceSubMeshRecreation defines a boolean indicating that we don&#39;t want to force the recreation of sub-meshes if we don&#39;t have to (false by default)
+<strong>returns</strong>  the current mesh</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>indices</code></td><td><code>IndicesArray</code></td><td>Required</td></tr><tr><td><code>totalVertices</code></td><td><code>Nullable&lt;number&gt;</code></td><td>Optional</td></tr><tr><td><code>updatable</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>dontForceSubMeshRecreation</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>AbstractMesh</code></p><h3 id="overload-0-99">updateIndices <a class="anchor" href="#overload-0-99">#</a></h3><pre class="code" data-lang="ts"><code>updateIndices(indices: IndicesArray, offset?: number, gpuMemoryOnly?: boolean): AbstractMesh;</code></pre><p>Update the current index buffer
+<strong>param</strong>  indices defines the source data
+<strong>param</strong>  offset defines the offset in the index buffer where to store the new data (can be null)
+<strong>param</strong>  gpuMemoryOnly defines a boolean indicating that only the GPU memory must be updated leaving the CPU version of the indices unchanged (false by default)
+<strong>returns</strong>  the current mesh</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>indices</code></td><td><code>IndicesArray</code></td><td>Required</td></tr><tr><td><code>offset</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>gpuMemoryOnly</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>AbstractMesh</code></p><h3 id="overload-0-100">toLeftHanded <a class="anchor" href="#overload-0-100">#</a></h3><pre class="code" data-lang="ts"><code>toLeftHanded(): Mesh;</code></pre><p>Invert the geometry to move from a right handed system to a left handed one.
+<strong>returns</strong>  the current mesh</p>
+<p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-101">registerBeforeRender <a class="anchor" href="#overload-0-101">#</a></h3><pre class="code" data-lang="ts"><code>registerBeforeRender(func: (mesh: AbstractMesh) =&gt; void): Mesh;</code></pre><p>Registers for this mesh a javascript function called just before the rendering process
+<strong>param</strong>  func defines the function to call before rendering this mesh
+<strong>returns</strong>  the current mesh</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>func</code></td><td><code>(mesh: AbstractMesh) =&gt; void</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-102">unregisterBeforeRender <a class="anchor" href="#overload-0-102">#</a></h3><pre class="code" data-lang="ts"><code>unregisterBeforeRender(func: (mesh: AbstractMesh) =&gt; void): Mesh;</code></pre><p>Disposes a previously registered javascript function called before the rendering
+<strong>param</strong>  func defines the function to remove
+<strong>returns</strong>  the current mesh</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>func</code></td><td><code>(mesh: AbstractMesh) =&gt; void</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-103">registerAfterRender <a class="anchor" href="#overload-0-103">#</a></h3><pre class="code" data-lang="ts"><code>registerAfterRender(func: (mesh: AbstractMesh) =&gt; void): Mesh;</code></pre><p>Registers for this mesh a javascript function called just after the rendering is complete
+<strong>param</strong>  func defines the function to call after rendering this mesh
+<strong>returns</strong>  the current mesh</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>func</code></td><td><code>(mesh: AbstractMesh) =&gt; void</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-104">unregisterAfterRender <a class="anchor" href="#overload-0-104">#</a></h3><pre class="code" data-lang="ts"><code>unregisterAfterRender(func: (mesh: AbstractMesh) =&gt; void): Mesh;</code></pre><p>Disposes a previously registered javascript function called after the rendering.
+<strong>param</strong>  func defines the function to remove
+<strong>returns</strong>  the current mesh</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>func</code></td><td><code>(mesh: AbstractMesh) =&gt; void</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-105">renderWithRenderPassId <a class="anchor" href="#overload-0-105">#</a></h3><pre class="code" data-lang="ts"><code>renderWithRenderPassId(renderPassId?: number, enableAlphaMode?: boolean, effectiveMeshReplacement?: AbstractMesh, subMesh?: SubMesh, checkFrustumCulling?: boolean): this;</code></pre><p>Triggers the draw call for the mesh (or a submesh), for a specific render pass id
+<strong>param</strong>  renderPassId defines the render pass id to use to draw the mesh / submesh. If not provided, use the current renderPassId of the engine.
+<strong>param</strong>  enableAlphaMode defines if alpha mode can be changed (default: false)
+<strong>param</strong>  effectiveMeshReplacement defines an optional mesh used to provide info for the rendering (default: undefined)
+<strong>param</strong>  subMesh defines the subMesh to render. If not provided, draw all mesh submeshes (default: undefined)
+<strong>param</strong>  checkFrustumCulling defines if frustum culling must be checked (default: true). If you know the mesh is in the frustum (or if you don&#39;t care!), you can pass false to optimize.
+<strong>returns</strong>  the current mesh</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>renderPassId</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>enableAlphaMode</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>effectiveMeshReplacement</code></td><td><code>AbstractMesh</code></td><td>Optional</td></tr><tr><td><code>subMesh</code></td><td><code>SubMesh</code></td><td>Optional</td></tr><tr><td><code>checkFrustumCulling</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="overload-0-106">directRender <a class="anchor" href="#overload-0-106">#</a></h3><pre class="code" data-lang="ts"><code>directRender(): Mesh;</code></pre><p>Render a complete mesh by going through all submeshes
+<strong>returns</strong>  the current mesh
+<strong>see</strong>  [simple test]((online reference))
+<strong>see</strong>  [perf test]((online reference))</p>
+<p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-107">render <a class="anchor" href="#overload-0-107">#</a></h3><pre class="code" data-lang="ts"><code>render(subMesh: SubMesh, enableAlphaMode: boolean, effectiveMeshReplacement?: AbstractMesh): Mesh;</code></pre><p>Triggers the draw call for the mesh. Usually, you don&#39;t need to call this method by your own because the mesh rendering is handled by the scene rendering manager
+<strong>param</strong>  subMesh defines the subMesh to render
+<strong>param</strong>  enableAlphaMode defines if alpha mode can be changed
+<strong>param</strong>  effectiveMeshReplacement defines an optional mesh used to provide info for the rendering
+<strong>returns</strong>  the current mesh</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>subMesh</code></td><td><code>SubMesh</code></td><td>Required</td></tr><tr><td><code>enableAlphaMode</code></td><td><code>boolean</code></td><td>Required</td></tr><tr><td><code>effectiveMeshReplacement</code></td><td><code>AbstractMesh</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-108">cleanMatrixWeights <a class="anchor" href="#overload-0-108">#</a></h3><pre class="code" data-lang="ts"><code>cleanMatrixWeights(): void;</code></pre><p>Renormalize the mesh and patch it up if there are no weights
+  Similar to normalization by adding the weights compute the reciprocal and multiply all elements, this wil ensure that everything adds to 1.
+  However in the case of zero weights then we set just a single influence to 1.
+  We check in the function for extra&#39;s present and if so we use the normalizeSkinWeightsWithExtras rather than the FourWeights version.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="overload-0-109">validateSkinning <a class="anchor" href="#overload-0-109">#</a></h3><pre class="code" data-lang="ts"><code>validateSkinning(): {
+            skinned: boolean;
+            valid: boolean;
+            report: string;
+        };</code></pre><p>ValidateSkinning is used to determine that a mesh has valid skinning data along with skin metrics, if missing weights,
+or not normalized it is returned as invalid mesh the string can be used for console logs, or on screen messages to let
+the user know there was an issue with importing the mesh
+<strong>returns</strong>  a validation object with skinned, valid and report string</p>
+<p><b>Type / return:</b> <code>{
+            skinned: boolean;
+            valid: boolean;
+            report: string;
+        }</code></p><h3 id="overload-0-110">isInFrustum <a class="anchor" href="#overload-0-110">#</a></h3><pre class="code" data-lang="ts"><code>isInFrustum(frustumPlanes: Plane[]): boolean;</code></pre><p>Returns <code>true</code> if the mesh is within the frustum defined by the passed array of planes.
+A mesh is in the frustum if its bounding box intersects the frustum
+<strong>param</strong>  frustumPlanes defines the frustum to test
+<strong>returns</strong>  true if the mesh is in the frustum planes</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>frustumPlanes</code></td><td><code>Plane[]</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="overload-0-111">setMaterialById <a class="anchor" href="#overload-0-111">#</a></h3><pre class="code" data-lang="ts"><code>setMaterialById(id: string): Mesh;</code></pre><p>Sets the mesh material by the material or multiMaterial <code>id</code> property
+<strong>param</strong>  id is a string identifying the material or the multiMaterial
+<strong>returns</strong>  the current mesh</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>id</code></td><td><code>string</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-112">getAnimatables <a class="anchor" href="#overload-0-112">#</a></h3><pre class="code" data-lang="ts"><code>getAnimatables(): IAnimatable[];</code></pre><p>Returns as a new array populated with the mesh material and/or skeleton, if any.
+<strong>returns</strong>  an array of IAnimatable</p>
+<p><b>Type / return:</b> <code>IAnimatable[]</code></p><h3 id="overload-0-113">bakeTransformIntoVertices <a class="anchor" href="#overload-0-113">#</a></h3><pre class="code" data-lang="ts"><code>bakeTransformIntoVertices(transform: DeepImmutable&lt;Matrix&gt;): Mesh;</code></pre><p>Modifies the mesh geometry according to the passed transformation matrix.
+This method returns nothing, but it really modifies the mesh even if it&#39;s originally not set as updatable.
+The mesh normals are modified using the same transformation.
+Note that, under the hood, this method sets a new VertexBuffer each call.
+<strong>param</strong>  transform defines the transform matrix to use
+<strong>see</strong>  (online reference)
+<strong>returns</strong>  the current mesh</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>transform</code></td><td><code>DeepImmutable&lt;Matrix&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-114">bakeCurrentTransformIntoVertices <a class="anchor" href="#overload-0-114">#</a></h3><pre class="code" data-lang="ts"><code>bakeCurrentTransformIntoVertices(bakeIndependentlyOfChildren?: boolean, forceUnique?: boolean): Mesh;</code></pre><p>Modifies the mesh geometry according to its own current World Matrix.
+The mesh World Matrix is then reset.
+This method returns nothing but really modifies the mesh even if it&#39;s originally not set as updatable.
+Note that, under the hood, this method sets a new VertexBuffer each call.
+<strong>see</strong>  (online reference)
+<strong>param</strong>  bakeIndependentlyOfChildren indicates whether to preserve all child nodes&#39; World Matrix during baking
+<strong>param</strong>  forceUnique indicates whether to force the mesh geometry to be unique
+<strong>returns</strong>  the current mesh</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>bakeIndependentlyOfChildren</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>forceUnique</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-115">clone <a class="anchor" href="#overload-0-115">#</a></h3><pre class="code" data-lang="ts"><code>clone(name?: string, newParent?: Nullable&lt;Node&gt; | MeshCloneOptions, doNotCloneChildren?: boolean, clonePhysicsImpostor?: boolean): Mesh;</code></pre><p>Returns a new Mesh object generated from the current mesh properties.
+This method must not get confused with createInstance()
+<strong>param</strong>  name is a string, the name given to the new mesh
+<strong>param</strong>  newParent can be any Node object (default <code>null</code>) or an instance of MeshCloneOptions. If the latter, doNotCloneChildren and clonePhysicsImpostor are unused.
+<strong>param</strong>  doNotCloneChildren allows/denies the recursive cloning of the original mesh children if any (default <code>false</code>)
+<strong>param</strong>  clonePhysicsImpostor allows/denies the cloning in the same time of the original mesh <code>body</code> used by the physics engine, if any (default <code>true</code>)
+<strong>returns</strong>  a new mesh</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>name</code></td><td><code>string</code></td><td>Optional</td></tr><tr><td><code>newParent</code></td><td><code>Nullable&lt;Node&gt; | MeshCloneOptions</code></td><td>Optional</td></tr><tr><td><code>doNotCloneChildren</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>clonePhysicsImpostor</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-116">dispose <a class="anchor" href="#overload-0-116">#</a></h3><pre class="code" data-lang="ts"><code>dispose(doNotRecurse?: boolean, disposeMaterialAndTextures?: boolean): void;</code></pre><p>Releases resources associated with this mesh.
+<strong>param</strong>  doNotRecurse Set to true to not recurse into each children (recurse into each children by default)
+<strong>param</strong>  disposeMaterialAndTextures Set to true to also dispose referenced materials and textures (false by default)</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>doNotRecurse</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>disposeMaterialAndTextures</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="overload-0-117">applyDisplacementMap <a class="anchor" href="#overload-0-117">#</a></h3><pre class="code" data-lang="ts"><code>applyDisplacementMap(url: string, minHeight: number, maxHeight: number, onSuccess?: (mesh: Mesh) =&gt; void, uvOffset?: Vector2, uvScale?: Vector2, forceUpdate?: boolean, onError?: (message?: string, exception?: any) =&gt; void): Mesh;</code></pre><p>Modifies the mesh geometry according to a displacement map.
+A displacement map is a colored image. Each pixel color value (actually a gradient computed from red, green, blue values) will give the displacement to apply to each mesh vertex.
+The mesh must be set as updatable. Its internal geometry is directly modified, no new buffer are allocated.
+<strong>param</strong>  url is a string, the URL from the image file is to be downloaded.
+<strong>param</strong>  minHeight is the lower limit of the displacement.
+<strong>param</strong>  maxHeight is the upper limit of the displacement.
+<strong>param</strong>  onSuccess is an optional Javascript function to be called just after the mesh is modified. It is passed the modified mesh and must return nothing.
+<strong>param</strong>  uvOffset is an optional vector2 used to offset UV.
+<strong>param</strong>  uvScale is an optional vector2 used to scale UV.
+<strong>param</strong>  forceUpdate defines whether or not to force an update of the generated buffers. This is useful to apply on a deserialized model for instance.
+<strong>param</strong>  onError defines a callback called when an error occurs during the processing of the request.
+<strong>returns</strong>  the Mesh.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>url</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>minHeight</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>maxHeight</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>onSuccess</code></td><td><code>(mesh: Mesh) =&gt; void</code></td><td>Optional</td></tr><tr><td><code>uvOffset</code></td><td><code>Vector2</code></td><td>Optional</td></tr><tr><td><code>uvScale</code></td><td><code>Vector2</code></td><td>Optional</td></tr><tr><td><code>forceUpdate</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>onError</code></td><td><code>(message?: string, exception?: any) =&gt; void</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-118">applyDisplacementMapFromBuffer <a class="anchor" href="#overload-0-118">#</a></h3><pre class="code" data-lang="ts"><code>applyDisplacementMapFromBuffer(buffer: Uint8Array, heightMapWidth: number, heightMapHeight: number, minHeight: number, maxHeight: number, uvOffset?: Vector2, uvScale?: Vector2, forceUpdate?: boolean): Mesh;</code></pre><p>Modifies the mesh geometry according to a displacementMap buffer.
+A displacement map is a colored image. Each pixel color value (actually a gradient computed from red, green, blue values) will give the displacement to apply to each mesh vertex.
+The mesh must be set as updatable. Its internal geometry is directly modified, no new buffer are allocated.
+<strong>param</strong>  buffer is a <code>Uint8Array</code> buffer containing series of <code>Uint8</code> lower than 255, the red, green, blue and alpha values of each successive pixel.
+<strong>param</strong>  heightMapWidth is the width of the buffer image.
+<strong>param</strong>  heightMapHeight is the height of the buffer image.
+<strong>param</strong>  minHeight is the lower limit of the displacement.
+<strong>param</strong>  maxHeight is the upper limit of the displacement.
+<strong>param</strong>  uvOffset is an optional vector2 used to offset UV.
+<strong>param</strong>  uvScale is an optional vector2 used to scale UV.
+<strong>param</strong>  forceUpdate defines whether or not to force an update of the generated buffers. This is useful to apply on a deserialized model for instance.
+<strong>returns</strong>  the Mesh.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>buffer</code></td><td><code>Uint8Array</code></td><td>Required</td></tr><tr><td><code>heightMapWidth</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>heightMapHeight</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>minHeight</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>maxHeight</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>uvOffset</code></td><td><code>Vector2</code></td><td>Optional</td></tr><tr><td><code>uvScale</code></td><td><code>Vector2</code></td><td>Optional</td></tr><tr><td><code>forceUpdate</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-119">convertToFlatShadedMesh <a class="anchor" href="#overload-0-119">#</a></h3><pre class="code" data-lang="ts"><code>convertToFlatShadedMesh(): Mesh;</code></pre><p>Modify the mesh to get a flat shading rendering.
+This means each mesh facet will then have its own normals. Usually new vertices are added in the mesh geometry to get this result.
+Warning : the mesh is really modified even if not set originally as updatable and, under the hood, a new VertexBuffer is allocated.
+<strong>returns</strong>  current mesh</p>
+<p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-120">convertToUnIndexedMesh <a class="anchor" href="#overload-0-120">#</a></h3><pre class="code" data-lang="ts"><code>convertToUnIndexedMesh(): Mesh;</code></pre><p>This method removes all the mesh indices and add new vertices (duplication) in order to unfold facets into buffers.
+In other words, more vertices, no more indices and a single bigger VBO.
+The mesh is really modified even if not set originally as updatable. Under the hood, a new VertexBuffer is allocated.
+<strong>returns</strong>  current mesh</p>
+<p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-121">flipFaces <a class="anchor" href="#overload-0-121">#</a></h3><pre class="code" data-lang="ts"><code>flipFaces(flipNormals?: boolean): Mesh;</code></pre><p>Inverses facet orientations.
+Warning : the mesh is really modified even if not set originally as updatable. A new VertexBuffer is created under the hood each call.
+<strong>param</strong>  flipNormals will also inverts the normals
+<strong>returns</strong>  current mesh</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>flipNormals</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-122">increaseVertices <a class="anchor" href="#overload-0-122">#</a></h3><pre class="code" data-lang="ts"><code>increaseVertices(numberPerEdge?: number): void;</code></pre><p>Increase the number of facets and hence vertices in a mesh
+Vertex normals are interpolated from existing vertex normals
+Warning : the mesh is really modified even if not set originally as updatable. A new VertexBuffer is created under the hood each call.
+<strong>param</strong>  numberPerEdge the number of new vertices to add to each edge of a facet, optional default 1</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>numberPerEdge</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="overload-0-123">forceSharedVertices <a class="anchor" href="#overload-0-123">#</a></h3><pre class="code" data-lang="ts"><code>forceSharedVertices(): void;</code></pre><p>Force adjacent facets to share vertices and remove any facets that have all vertices in a line
+This will undo any application of covertToFlatShadedMesh
+Warning : the mesh is really modified even if not set originally as updatable. A new VertexBuffer is created under the hood each call.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="overload-0-124">createInstance <a class="anchor" href="#overload-0-124">#</a></h3><pre class="code" data-lang="ts"><code>createInstance(name: string): InstancedMesh;</code></pre><p>Creates a new InstancedMesh object from the mesh model.
+<strong>see</strong>  (online reference)
+<strong>param</strong>  name defines the name of the new instance
+<strong>returns</strong>  a new InstancedMesh</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>name</code></td><td><code>string</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>InstancedMesh</code></p><h3 id="overload-0-125">synchronizeInstances <a class="anchor" href="#overload-0-125">#</a></h3><pre class="code" data-lang="ts"><code>synchronizeInstances(): Mesh;</code></pre><p>Synchronises all the mesh instance submeshes to the current mesh submeshes, if any.
+After this call, all the mesh instances have the same submeshes than the current mesh.
+<strong>returns</strong>  the current mesh</p>
+<p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-126">optimizeIndices <a class="anchor" href="#overload-0-126">#</a></h3><pre class="code" data-lang="ts"><code>optimizeIndices(successCallback?: (mesh?: Mesh) =&gt; void): Mesh;</code></pre><p>Optimization of the mesh&#39;s indices, in case a mesh has duplicated vertices.
+The function will only reorder the indices and will not remove unused vertices to avoid problems with submeshes.
+This should be used together with the simplification to avoid disappearing triangles.
+<strong>param</strong>  successCallback an optional success callback to be called after the optimization finished.
+<strong>returns</strong>  the current mesh</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>successCallback</code></td><td><code>(mesh?: Mesh) =&gt; void</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-127">serialize <a class="anchor" href="#overload-0-127">#</a></h3><pre class="code" data-lang="ts"><code>serialize(serializationObject?: any): any;</code></pre><p>Serialize current mesh
+<strong>param</strong>  serializationObject defines the object which will receive the serialization data
+<strong>returns</strong>  the serialized object</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>serializationObject</code></td><td><code>any</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>any</code></p><h3 id="overload-0-128">Parse <a class="anchor" href="#overload-0-128">#</a></h3><pre class="code" data-lang="ts"><code>static Parse(parsedMesh: any, scene: Scene, rootUrl: string): Mesh;</code></pre><p>Returns a new Mesh object parsed from the source provided.
+<strong>param</strong>  parsedMesh is the source
+<strong>param</strong>  scene defines the hosting scene
+<strong>param</strong>  rootUrl is the root URL to prefix the <code>delayLoadingFile</code> property with
+<strong>returns</strong>  a new Mesh</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>parsedMesh</code></td><td><code>any</code></td><td>Required</td></tr><tr><td><code>scene</code></td><td><code>Scene</code></td><td>Required</td></tr><tr><td><code>rootUrl</code></td><td><code>string</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-129">setPositionsForCPUSkinning <a class="anchor" href="#overload-0-129">#</a></h3><pre class="code" data-lang="ts"><code>setPositionsForCPUSkinning(): Nullable&lt;Float32Array&gt;;</code></pre><p>Prepare internal position array for software CPU skinning
+<strong>returns</strong>  original positions used for CPU skinning. Useful for integrating Morphing with skeletons in same mesh</p>
+<p><b>Type / return:</b> <code>Nullable&lt;Float32Array&gt;</code></p><h3 id="overload-0-130">setNormalsForCPUSkinning <a class="anchor" href="#overload-0-130">#</a></h3><pre class="code" data-lang="ts"><code>setNormalsForCPUSkinning(): Nullable&lt;Float32Array&gt;;</code></pre><p>Prepare internal normal array for software CPU skinning
+<strong>returns</strong>  original normals used for CPU skinning. Useful for integrating Morphing with skeletons in same mesh.</p>
+<p><b>Type / return:</b> <code>Nullable&lt;Float32Array&gt;</code></p><h3 id="overload-0-131">applySkeleton <a class="anchor" href="#overload-0-131">#</a></h3><pre class="code" data-lang="ts"><code>applySkeleton(skeleton: Skeleton): Mesh;</code></pre><p>Updates the vertex buffer by applying transformation from the bones
+<strong>param</strong>  skeleton defines the skeleton to apply to current mesh
+<strong>returns</strong>  the current mesh</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>skeleton</code></td><td><code>Skeleton</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-132">MinMax <a class="anchor" href="#overload-0-132">#</a></h3><pre class="code" data-lang="ts"><code>static MinMax(meshes: AbstractMesh[]): {
+            min: Vector3;
+            max: Vector3;
+        };</code></pre><p>Returns an object containing a min and max Vector3 which are the minimum and maximum vectors of each mesh bounding box from the passed array, in the world coordinates
+<strong>param</strong>  meshes defines the list of meshes to scan
+<strong>returns</strong>  an object <code>{min:</code> Vector3<code>, max:</code> Vector3<code>}</code></p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>meshes</code></td><td><code>AbstractMesh[]</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>{
+            min: Vector3;
+            max: Vector3;
+        }</code></p><h3 id="overload-0-133">Center <a class="anchor" href="#overload-0-133">#</a></h3><pre class="code" data-lang="ts"><code>static Center(meshesOrMinMaxVector: {
+            min: Vector3;
+            max: Vector3;
+        } | AbstractMesh[]): Vector3;</code></pre><p>Returns the center of the <code>{min:</code> Vector3<code>, max:</code> Vector3<code>}</code> or the center of MinMax vector3 computed from a mesh array
+<strong>param</strong>  meshesOrMinMaxVector could be an array of meshes or a <code>{min:</code> Vector3<code>, max:</code> Vector3<code>}</code> object
+<strong>returns</strong>  a vector3</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>meshesOrMinMaxVector</code></td><td><code>{
+            min: Vector3;
+            max: Vector3;
+        } | AbstractMesh[]</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Vector3</code></p><h3 id="overload-0-134">MergeMeshes <a class="anchor" href="#overload-0-134">#</a></h3><pre class="code" data-lang="ts"><code>static MergeMeshes(meshes: Array&lt;Mesh&gt;, disposeSource?: boolean, allow32BitsIndices?: boolean, meshSubclass?: Mesh, subdivideWithSubMeshes?: boolean, multiMultiMaterials?: boolean): Nullable&lt;Mesh&gt;;</code></pre><p>Merge the array of meshes into a single mesh for performance reasons.
+<strong>param</strong>  meshes array of meshes with the vertices to merge. Entries cannot be empty meshes.
+<strong>param</strong>  disposeSource when true (default), dispose of the vertices from the source meshes.
+<strong>param</strong>  allow32BitsIndices when the sum of the vertices &gt; 64k, this must be set to true.
+<strong>param</strong>  meshSubclass (optional) can be set to a Mesh where the merged vertices will be inserted.
+<strong>param</strong>  subdivideWithSubMeshes when true (false default), subdivide mesh into subMeshes.
+<strong>param</strong>  multiMultiMaterials when true (false default), subdivide mesh into subMeshes with multiple materials, ignores subdivideWithSubMeshes.
+<strong>returns</strong>  a new mesh</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>meshes</code></td><td><code>Array&lt;Mesh&gt;</code></td><td>Required</td></tr><tr><td><code>disposeSource</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>allow32BitsIndices</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>meshSubclass</code></td><td><code>Mesh</code></td><td>Optional</td></tr><tr><td><code>subdivideWithSubMeshes</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>multiMultiMaterials</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Nullable&lt;Mesh&gt;</code></p><h3 id="overload-0-135">MergeMeshesAsync <a class="anchor" href="#overload-0-135">#</a></h3><pre class="code" data-lang="ts"><code>static MergeMeshesAsync(meshes: Array&lt;Mesh&gt;, disposeSource?: boolean, allow32BitsIndices?: boolean, meshSubclass?: Mesh, subdivideWithSubMeshes?: boolean, multiMultiMaterials?: boolean): Promise&lt;any&gt;;</code></pre><p>Merge the array of meshes into a single mesh for performance reasons.
+<strong>param</strong>  meshes array of meshes with the vertices to merge. Entries cannot be empty meshes.
+<strong>param</strong>  disposeSource when true (default), dispose of the vertices from the source meshes.
+<strong>param</strong>  allow32BitsIndices when the sum of the vertices &gt; 64k, this must be set to true.
+<strong>param</strong>  meshSubclass (optional) can be set to a Mesh where the merged vertices will be inserted.
+<strong>param</strong>  subdivideWithSubMeshes when true (false default), subdivide mesh into subMeshes.
+<strong>param</strong>  multiMultiMaterials when true (false default), subdivide mesh into subMeshes with multiple materials, ignores subdivideWithSubMeshes.
+<strong>returns</strong>  a new mesh</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>meshes</code></td><td><code>Array&lt;Mesh&gt;</code></td><td>Required</td></tr><tr><td><code>disposeSource</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>allow32BitsIndices</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>meshSubclass</code></td><td><code>Mesh</code></td><td>Optional</td></tr><tr><td><code>subdivideWithSubMeshes</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>multiMultiMaterials</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Promise&lt;any&gt;</code></p><h3 id="overload-0-136">setMaterialByID <a class="anchor" href="#overload-0-136">#</a></h3><pre class="code" data-lang="ts"><code>setMaterialByID(id: string): Mesh;</code></pre><p>Sets the mesh material by the material or multiMaterial <code>id</code> property
+<strong>param</strong>  id is a string identifying the material or the multiMaterial
+<strong>returns</strong>  the current mesh
+<strong>deprecated</strong>  Please use MeshBuilder instead Please use setMaterialById instead</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>id</code></td><td><code>string</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-137">CreateRibbon <a class="anchor" href="#overload-0-137">#</a></h3><pre class="code" data-lang="ts"><code>static CreateRibbon(_name: string, _pathArray: Vector3[][], _closeArray: boolean, _closePath: boolean, _offset: number, _scene?: Scene, _updatable?: boolean, _sideOrientation?: number, _instance?: Mesh): Mesh;</code></pre><p>Creates a ribbon mesh.
+<strong>see</strong>  (online reference)
+<strong>param</strong>  _name defines the name of the mesh to create
+<strong>param</strong>  _pathArray is a required array of paths, what are each an array of successive Vector3. The pathArray parameter depicts the ribbon geometry.
+<strong>param</strong>  _closeArray creates a seam between the first and the last paths of the path array (default is false)
+<strong>param</strong>  _closePath creates a seam between the first and the last points of each path of the path array
+<strong>param</strong>  _offset is taken in account only if the <code>pathArray</code> is containing a single path
+<strong>param</strong>  _scene defines the hosting scene
+<strong>param</strong>  _updatable defines if the mesh must be flagged as updatable
+<strong>param</strong>  _sideOrientation defines the mesh side orientation ((online reference))
+<strong>param</strong>  _instance defines an instance of an existing Ribbon object to be updated with the passed <code>pathArray</code> parameter ((online reference))
+<strong>returns</strong>  a new Mesh
+<strong>deprecated</strong>  Please use MeshBuilder instead</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>_name</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>_pathArray</code></td><td><code>Vector3[][]</code></td><td>Required</td></tr><tr><td><code>_closeArray</code></td><td><code>boolean</code></td><td>Required</td></tr><tr><td><code>_closePath</code></td><td><code>boolean</code></td><td>Required</td></tr><tr><td><code>_offset</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_scene</code></td><td><code>Scene</code></td><td>Optional</td></tr><tr><td><code>_updatable</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>_sideOrientation</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>_instance</code></td><td><code>Mesh</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-138">CreateDisc <a class="anchor" href="#overload-0-138">#</a></h3><pre class="code" data-lang="ts"><code>static CreateDisc(_name: string, _radius: number, _tessellation: number, _scene: Nullable&lt;Scene&gt;, _updatable?: boolean, _sideOrientation?: number): Mesh;</code></pre><p>Creates a plane polygonal mesh.  By default, this is a disc.
+<strong>param</strong>  _name defines the name of the mesh to create
+<strong>param</strong>  _radius sets the radius size (float) of the polygon (default 0.5)
+<strong>param</strong>  _tessellation sets the number of polygon sides (positive integer, default 64). So a tessellation valued to 3 will build a triangle, to 4 a square, etc
+<strong>param</strong>  _scene defines the hosting scene
+<strong>param</strong>  _updatable defines if the mesh must be flagged as updatable
+<strong>param</strong>  _sideOrientation defines the mesh side orientation ((online reference))
+<strong>returns</strong>  a new Mesh
+<strong>deprecated</strong>  Please use MeshBuilder instead</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>_name</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>_radius</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_tessellation</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_scene</code></td><td><code>Nullable&lt;Scene&gt;</code></td><td>Required</td></tr><tr><td><code>_updatable</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>_sideOrientation</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-139">CreateBox <a class="anchor" href="#overload-0-139">#</a></h3><pre class="code" data-lang="ts"><code>static CreateBox(_name: string, _size: number, _scene: Nullable&lt;Scene&gt;, _updatable?: boolean, _sideOrientation?: number): Mesh;</code></pre><p>Creates a box mesh.
+<strong>param</strong>  _name defines the name of the mesh to create
+<strong>param</strong>  _size sets the size (float) of each box side (default 1)
+<strong>param</strong>  _scene defines the hosting scene
+<strong>param</strong>  _updatable defines if the mesh must be flagged as updatable
+<strong>param</strong>  _sideOrientation defines the mesh side orientation ((online reference))
+<strong>returns</strong>  a new Mesh
+<strong>deprecated</strong>  Please use MeshBuilder instead</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>_name</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>_size</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_scene</code></td><td><code>Nullable&lt;Scene&gt;</code></td><td>Required</td></tr><tr><td><code>_updatable</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>_sideOrientation</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-140">CreateSphere <a class="anchor" href="#overload-0-140">#</a></h3><pre class="code" data-lang="ts"><code>static CreateSphere(_name: string, _segments: number, _diameter: number, _scene?: Scene, _updatable?: boolean, _sideOrientation?: number): Mesh;</code></pre><p>Creates a sphere mesh.
+<strong>param</strong>  _name defines the name of the mesh to create
+<strong>param</strong>  _segments sets the sphere number of horizontal stripes (positive integer, default 32)
+<strong>param</strong>  _diameter sets the diameter size (float) of the sphere (default 1)
+<strong>param</strong>  _scene defines the hosting scene
+<strong>param</strong>  _updatable defines if the mesh must be flagged as updatable
+<strong>param</strong>  _sideOrientation defines the mesh side orientation ((online reference))
+<strong>returns</strong>  a new Mesh
+<strong>deprecated</strong>  Please use MeshBuilder instead</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>_name</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>_segments</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_diameter</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_scene</code></td><td><code>Scene</code></td><td>Optional</td></tr><tr><td><code>_updatable</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>_sideOrientation</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-141">CreateHemisphere <a class="anchor" href="#overload-0-141">#</a></h3><pre class="code" data-lang="ts"><code>static CreateHemisphere(_name: string, _segments: number, _diameter: number, _scene?: Scene): Mesh;</code></pre><p>Creates a hemisphere mesh.
+<strong>param</strong>  _name defines the name of the mesh to create
+<strong>param</strong>  _segments sets the sphere number of horizontal stripes (positive integer, default 32)
+<strong>param</strong>  _diameter sets the diameter size (float) of the sphere (default 1)
+<strong>param</strong>  _scene defines the hosting scene
+<strong>returns</strong>  a new Mesh
+<strong>deprecated</strong>  Please use MeshBuilder instead</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>_name</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>_segments</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_diameter</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_scene</code></td><td><code>Scene</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-142">CreateCylinder <a class="anchor" href="#overload-0-142">#</a></h3><pre class="code" data-lang="ts"><code>static CreateCylinder(_name: string, _height: number, _diameterTop: number, _diameterBottom: number, _tessellation: number, _subdivisions: any, _scene?: Scene, _updatable?: any, _sideOrientation?: number): Mesh;</code></pre><p>Creates a cylinder or a cone mesh.
+<strong>param</strong>  _name defines the name of the mesh to create
+<strong>param</strong>  _height sets the height size (float) of the cylinder/cone (float, default 2)
+<strong>param</strong>  _diameterTop set the top cap diameter (floats, default 1)
+<strong>param</strong>  _diameterBottom set the bottom cap diameter (floats, default 1). This value can&#39;t be zero
+<strong>param</strong>  _tessellation sets the number of cylinder sides (positive integer, default 24). Set it to 3 to get a prism for instance
+<strong>param</strong>  _subdivisions sets the number of rings along the cylinder height (positive integer, default 1)
+<strong>param</strong>  _scene defines the hosting scene
+<strong>param</strong>  _updatable defines if the mesh must be flagged as updatable
+<strong>param</strong>  _sideOrientation defines the mesh side orientation ((online reference))
+<strong>returns</strong>  a new Mesh
+<strong>deprecated</strong>  Please use MeshBuilder instead</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>_name</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>_height</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_diameterTop</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_diameterBottom</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_tessellation</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_subdivisions</code></td><td><code>any</code></td><td>Required</td></tr><tr><td><code>_scene</code></td><td><code>Scene</code></td><td>Optional</td></tr><tr><td><code>_updatable</code></td><td><code>any</code></td><td>Optional</td></tr><tr><td><code>_sideOrientation</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-143">CreateTorus <a class="anchor" href="#overload-0-143">#</a></h3><pre class="code" data-lang="ts"><code>static CreateTorus(_name: string, _diameter: number, _thickness: number, _tessellation: number, _scene?: Scene, _updatable?: boolean, _sideOrientation?: number): Mesh;</code></pre><p>Creates a torus mesh.
+<strong>param</strong>  _name defines the name of the mesh to create
+<strong>param</strong>  _diameter sets the diameter size (float) of the torus (default 1)
+<strong>param</strong>  _thickness sets the diameter size of the tube of the torus (float, default 0.5)
+<strong>param</strong>  _tessellation sets the number of torus sides (positive integer, default 16)
+<strong>param</strong>  _scene defines the hosting scene
+<strong>param</strong>  _updatable defines if the mesh must be flagged as updatable
+<strong>param</strong>  _sideOrientation defines the mesh side orientation ((online reference))
+<strong>returns</strong>  a new Mesh
+<strong>deprecated</strong>  Please use MeshBuilder instead</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>_name</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>_diameter</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_thickness</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_tessellation</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_scene</code></td><td><code>Scene</code></td><td>Optional</td></tr><tr><td><code>_updatable</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>_sideOrientation</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-144">CreateTorusKnot <a class="anchor" href="#overload-0-144">#</a></h3><pre class="code" data-lang="ts"><code>static CreateTorusKnot(_name: string, _radius: number, _tube: number, _radialSegments: number, _tubularSegments: number, _p: number, _q: number, _scene?: Scene, _updatable?: boolean, _sideOrientation?: number): Mesh;</code></pre><p>Creates a torus knot mesh.
+<strong>param</strong>  _name defines the name of the mesh to create
+<strong>param</strong>  _radius sets the global radius size (float) of the torus knot (default 2)
+<strong>param</strong>  _tube sets the diameter size of the tube of the torus (float, default 0.5)
+<strong>param</strong>  _radialSegments sets the number of sides on each tube segments (positive integer, default 32)
+<strong>param</strong>  _tubularSegments sets the number of tubes to decompose the knot into (positive integer, default 32)
+<strong>param</strong>  _p the number of windings on X axis (positive integers, default 2)
+<strong>param</strong>  _q the number of windings on Y axis (positive integers, default 3)
+<strong>param</strong>  _scene defines the hosting scene
+<strong>param</strong>  _updatable defines if the mesh must be flagged as updatable
+<strong>param</strong>  _sideOrientation defines the mesh side orientation ((online reference))
+<strong>returns</strong>  a new Mesh
+<strong>deprecated</strong>  Please use MeshBuilder instead</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>_name</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>_radius</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_tube</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_radialSegments</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_tubularSegments</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_p</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_q</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_scene</code></td><td><code>Scene</code></td><td>Optional</td></tr><tr><td><code>_updatable</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>_sideOrientation</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-145">CreateLines <a class="anchor" href="#overload-0-145">#</a></h3><pre class="code" data-lang="ts"><code>static CreateLines(_name: string, _points: Vector3[], _scene: Nullable&lt;Scene&gt;, _updatable: boolean, _instance?: Nullable&lt;LinesMesh&gt;): LinesMesh;</code></pre><p>Creates a line mesh..
+<strong>param</strong>  _name defines the name of the mesh to create
+<strong>param</strong>  _points is an array successive Vector3
+<strong>param</strong>  _scene defines the hosting scene
+<strong>param</strong>  _updatable defines if the mesh must be flagged as updatable
+<strong>param</strong>  _instance is an instance of an existing LineMesh object to be updated with the passed <code>points</code> parameter ((online reference)).
+<strong>returns</strong>  a new Mesh
+<strong>deprecated</strong>  Please use MeshBuilder instead</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>_name</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>_points</code></td><td><code>Vector3[]</code></td><td>Required</td></tr><tr><td><code>_scene</code></td><td><code>Nullable&lt;Scene&gt;</code></td><td>Required</td></tr><tr><td><code>_updatable</code></td><td><code>boolean</code></td><td>Required</td></tr><tr><td><code>_instance</code></td><td><code>Nullable&lt;LinesMesh&gt;</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>LinesMesh</code></p><h3 id="overload-0-146">CreateDashedLines <a class="anchor" href="#overload-0-146">#</a></h3><pre class="code" data-lang="ts"><code>static CreateDashedLines(_name: string, _points: Vector3[], _dashSize: number, _gapSize: number, _dashNb: number, _scene: Nullable&lt;Scene&gt;, _updatable?: boolean, _instance?: LinesMesh): LinesMesh;</code></pre><p>Creates a dashed line mesh.
+<strong>param</strong>  _name defines the name of the mesh to create
+<strong>param</strong>  _points is an array successive Vector3
+<strong>param</strong>  _dashSize is the size of the dashes relatively the dash number (positive float, default 3)
+<strong>param</strong>  _gapSize is the size of the gap between two successive dashes relatively the dash number (positive float, default 1)
+<strong>param</strong>  _dashNb is the intended total number of dashes (positive integer, default 200)
+<strong>param</strong>  _scene defines the hosting scene
+<strong>param</strong>  _updatable defines if the mesh must be flagged as updatable
+<strong>param</strong>  _instance is an instance of an existing LineMesh object to be updated with the passed <code>points</code> parameter ((online reference))
+<strong>returns</strong>  a new Mesh
+<strong>deprecated</strong>  Please use MeshBuilder instead</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>_name</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>_points</code></td><td><code>Vector3[]</code></td><td>Required</td></tr><tr><td><code>_dashSize</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_gapSize</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_dashNb</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_scene</code></td><td><code>Nullable&lt;Scene&gt;</code></td><td>Required</td></tr><tr><td><code>_updatable</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>_instance</code></td><td><code>LinesMesh</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>LinesMesh</code></p><h3 id="overload-0-147">CreatePolygon <a class="anchor" href="#overload-0-147">#</a></h3><pre class="code" data-lang="ts"><code>static CreatePolygon(_name: string, _shape: Vector3[], _scene: Scene, _holes?: Vector3[][], _updatable?: boolean, _sideOrientation?: number, _earcutInjection?: any): Mesh;</code></pre><p>Creates a polygon mesh.Please consider using the same method from the MeshBuilder class instead
+The polygon&#39;s shape will depend on the input parameters and is constructed parallel to a ground mesh.
+The parameter <code>shape</code> is a required array of successive Vector3 representing the corners of the polygon in th XoZ plane, that is y = 0 for all vectors.
+You can set the mesh side orientation with the values : Mesh.FRONTSIDE (default), Mesh.BACKSIDE or Mesh.DOUBLESIDE
+The mesh can be set to updatable with the boolean parameter <code>updatable</code> (default false) if its internal geometry is supposed to change once created.
+Remember you can only change the shape positions, not their number when updating a polygon.
+<strong>see</strong>  (online reference)
+<strong>param</strong>  _name defines the name of the mesh to create
+<strong>param</strong>  _shape is a required array of successive Vector3 representing the corners of the polygon in th XoZ plane, that is y = 0 for all vectors
+<strong>param</strong>  _scene defines the hosting scene
+<strong>param</strong>  _holes is a required array of arrays of successive Vector3 used to defines holes in the polygon
+<strong>param</strong>  _updatable defines if the mesh must be flagged as updatable
+<strong>param</strong>  _sideOrientation defines the mesh side orientation ((online reference))
+<strong>param</strong>  _earcutInjection can be used to inject your own earcut reference
+<strong>returns</strong>  a new Mesh
+<strong>deprecated</strong>  Please use MeshBuilder instead</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>_name</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>_shape</code></td><td><code>Vector3[]</code></td><td>Required</td></tr><tr><td><code>_scene</code></td><td><code>Scene</code></td><td>Required</td></tr><tr><td><code>_holes</code></td><td><code>Vector3[][]</code></td><td>Optional</td></tr><tr><td><code>_updatable</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>_sideOrientation</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>_earcutInjection</code></td><td><code>any</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-148">ExtrudePolygon <a class="anchor" href="#overload-0-148">#</a></h3><pre class="code" data-lang="ts"><code>static ExtrudePolygon(_name: string, _shape: Vector3[], _depth: number, _scene: Scene, _holes?: Vector3[][], _updatable?: boolean, _sideOrientation?: number, _earcutInjection?: any): Mesh;</code></pre><p>Creates an extruded polygon mesh, with depth in the Y direction..
+<strong>see</strong>  (online reference)
+<strong>param</strong>  _name defines the name of the mesh to create
+<strong>param</strong>  _shape is a required array of successive Vector3 representing the corners of the polygon in th XoZ plane, that is y = 0 for all vectors
+<strong>param</strong>  _depth defines the height of extrusion
+<strong>param</strong>  _scene defines the hosting scene
+<strong>param</strong>  _holes is a required array of arrays of successive Vector3 used to defines holes in the polygon
+<strong>param</strong>  _updatable defines if the mesh must be flagged as updatable
+<strong>param</strong>  _sideOrientation defines the mesh side orientation ((online reference))
+<strong>param</strong>  _earcutInjection can be used to inject your own earcut reference
+<strong>returns</strong>  a new Mesh
+<strong>deprecated</strong>  Please use MeshBuilder instead</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>_name</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>_shape</code></td><td><code>Vector3[]</code></td><td>Required</td></tr><tr><td><code>_depth</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_scene</code></td><td><code>Scene</code></td><td>Required</td></tr><tr><td><code>_holes</code></td><td><code>Vector3[][]</code></td><td>Optional</td></tr><tr><td><code>_updatable</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>_sideOrientation</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>_earcutInjection</code></td><td><code>any</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-149">ExtrudeShape <a class="anchor" href="#overload-0-149">#</a></h3><pre class="code" data-lang="ts"><code>static ExtrudeShape(_name: string, _shape: Vector3[], _path: Vector3[], _scale: number, _rotation: number, _cap: number, _scene: Nullable&lt;Scene&gt;, _updatable?: boolean, _sideOrientation?: number, _instance?: Mesh): Mesh;</code></pre><p>Creates an extruded shape mesh.
+The extrusion is a parametric shape. It has no predefined shape. Its final shape will depend on the input parameters.
+<strong>see</strong>  (online reference)
+<strong>see</strong>  (online reference)
+<strong>param</strong>  _name defines the name of the mesh to create
+<strong>param</strong>  _shape is a required array of successive Vector3. This array depicts the shape to be extruded in its local space : the shape must be designed in the xOy plane and will be extruded along the Z axis
+<strong>param</strong>  _path is a required array of successive Vector3. This is the axis curve the shape is extruded along
+<strong>param</strong>  _scale is the value to scale the shape
+<strong>param</strong>  _rotation is the angle value to rotate the shape each step (each path point), from the former step (so rotation added each step) along the curve
+<strong>param</strong>  _cap sets the way the extruded shape is capped. Possible values : Mesh.NO_CAP (default), Mesh.CAP_START, Mesh.CAP_END, Mesh.CAP_ALL
+<strong>param</strong>  _scene defines the hosting scene
+<strong>param</strong>  _updatable defines if the mesh must be flagged as updatable
+<strong>param</strong>  _sideOrientation defines the mesh side orientation ((online reference))
+<strong>param</strong>  _instance is an instance of an existing ExtrudedShape object to be updated with the passed <code>shape</code>, <code>path</code>, <code>scale</code> or <code>rotation</code> parameters ((online reference))
+<strong>returns</strong>  a new Mesh
+<strong>deprecated</strong>  Please use MeshBuilder instead</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>_name</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>_shape</code></td><td><code>Vector3[]</code></td><td>Required</td></tr><tr><td><code>_path</code></td><td><code>Vector3[]</code></td><td>Required</td></tr><tr><td><code>_scale</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_rotation</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_cap</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_scene</code></td><td><code>Nullable&lt;Scene&gt;</code></td><td>Required</td></tr><tr><td><code>_updatable</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>_sideOrientation</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>_instance</code></td><td><code>Mesh</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-150">ExtrudeShapeCustom <a class="anchor" href="#overload-0-150">#</a></h3><pre class="code" data-lang="ts"><code>static ExtrudeShapeCustom(_name: string, _shape: Vector3[], _path: Vector3[], _scaleFunction: Nullable&lt;{
+            (i: number, distance: number): number;
+        }&gt;, _rotationFunction: Nullable&lt;{
+            (i: number, distance: number): number;
+        }&gt;, _ribbonCloseArray: boolean, _ribbonClosePath: boolean, _cap: number, _scene: Scene, _updatable?: boolean, _sideOrientation?: number, _instance?: Mesh): Mesh;</code></pre><p>Creates an custom extruded shape mesh.
+The custom extrusion is a parametric shape.
+It has no predefined shape. Its final shape will depend on the input parameters.</p>
+<p><strong>see</strong>  (online reference)
+<strong>param</strong>  _name defines the name of the mesh to create
+<strong>param</strong>  _shape is a required array of successive Vector3. This array depicts the shape to be extruded in its local space : the shape must be designed in the xOy plane and will be extruded along the Z axis
+<strong>param</strong>  _path is a required array of successive Vector3. This is the axis curve the shape is extruded along
+<strong>param</strong>  _scaleFunction is a custom Javascript function called on each path point
+<strong>param</strong>  _rotationFunction is a custom Javascript function called on each path point
+<strong>param</strong>  _ribbonCloseArray forces the extrusion underlying ribbon to close all the paths in its <code>pathArray</code>
+<strong>param</strong>  _ribbonClosePath forces the extrusion underlying ribbon to close its <code>pathArray</code>
+<strong>param</strong>  _cap sets the way the extruded shape is capped. Possible values : Mesh.NO_CAP (default), Mesh.CAP_START, Mesh.CAP_END, Mesh.CAP_ALL
+<strong>param</strong>  _scene defines the hosting scene
+<strong>param</strong>  _updatable defines if the mesh must be flagged as updatable
+<strong>param</strong>  _sideOrientation defines the mesh side orientation ((online reference))
+<strong>param</strong>  _instance is an instance of an existing ExtrudedShape object to be updated with the passed <code>shape</code>, <code>path</code>, <code>scale</code> or <code>rotation</code> parameters ((online reference))
+<strong>returns</strong>  a new Mesh
+<strong>deprecated</strong>  Please use MeshBuilder instead</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>_name</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>_shape</code></td><td><code>Vector3[]</code></td><td>Required</td></tr><tr><td><code>_path</code></td><td><code>Vector3[]</code></td><td>Required</td></tr><tr><td><code>_scaleFunction</code></td><td><code>Nullable&lt;{
+            (i: number, distance: number): number;
+        }&gt;</code></td><td>Required</td></tr><tr><td><code>_rotationFunction</code></td><td><code>Nullable&lt;{
+            (i: number, distance: number): number;
+        }&gt;</code></td><td>Required</td></tr><tr><td><code>_ribbonCloseArray</code></td><td><code>boolean</code></td><td>Required</td></tr><tr><td><code>_ribbonClosePath</code></td><td><code>boolean</code></td><td>Required</td></tr><tr><td><code>_cap</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_scene</code></td><td><code>Scene</code></td><td>Required</td></tr><tr><td><code>_updatable</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>_sideOrientation</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>_instance</code></td><td><code>Mesh</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-151">CreateLathe <a class="anchor" href="#overload-0-151">#</a></h3><pre class="code" data-lang="ts"><code>static CreateLathe(_name: string, _shape: Vector3[], _radius: number, _tessellation: number, _scene: Scene, _updatable?: boolean, _sideOrientation?: number): Mesh;</code></pre><p>Creates lathe mesh.
+The lathe is a shape with a symmetry axis : a 2D model shape is rotated around this axis to design the lathe.
+<strong>param</strong>  _name defines the name of the mesh to create
+<strong>param</strong>  _shape is a required array of successive Vector3. This array depicts the shape to be rotated in its local space : the shape must be designed in the xOy plane and will be rotated around the Y axis. It&#39;s usually a 2D shape, so the Vector3 z coordinates are often set to zero
+<strong>param</strong>  _radius is the radius value of the lathe
+<strong>param</strong>  _tessellation is the side number of the lathe.
+<strong>param</strong>  _scene defines the hosting scene
+<strong>param</strong>  _updatable defines if the mesh must be flagged as updatable
+<strong>param</strong>  _sideOrientation defines the mesh side orientation ((online reference))
+<strong>returns</strong>  a new Mesh
+<strong>deprecated</strong>  Please use MeshBuilder instead</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>_name</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>_shape</code></td><td><code>Vector3[]</code></td><td>Required</td></tr><tr><td><code>_radius</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_tessellation</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_scene</code></td><td><code>Scene</code></td><td>Required</td></tr><tr><td><code>_updatable</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>_sideOrientation</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-152">CreatePlane <a class="anchor" href="#overload-0-152">#</a></h3><pre class="code" data-lang="ts"><code>static CreatePlane(_name: string, _size: number, _scene: Scene, _updatable?: boolean, _sideOrientation?: number): Mesh;</code></pre><p>Creates a plane mesh.
+<strong>param</strong>  _name defines the name of the mesh to create
+<strong>param</strong>  _size sets the size (float) of both sides of the plane at once (default 1)
+<strong>param</strong>  _scene defines the hosting scene
+<strong>param</strong>  _updatable defines if the mesh must be flagged as updatable
+<strong>param</strong>  _sideOrientation defines the mesh side orientation ((online reference))
+<strong>returns</strong>  a new Mesh
+<strong>deprecated</strong>  Please use MeshBuilder instead</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>_name</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>_size</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_scene</code></td><td><code>Scene</code></td><td>Required</td></tr><tr><td><code>_updatable</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>_sideOrientation</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-153">CreateGround <a class="anchor" href="#overload-0-153">#</a></h3><pre class="code" data-lang="ts"><code>static CreateGround(_name: string, _width: number, _height: number, _subdivisions: number, _scene?: Scene, _updatable?: boolean): Mesh;</code></pre><p>Creates a ground mesh.
+<strong>param</strong>  _name defines the name of the mesh to create
+<strong>param</strong>  _width set the width of the ground
+<strong>param</strong>  _height set the height of the ground
+<strong>param</strong>  _subdivisions sets the number of subdivisions per side
+<strong>param</strong>  _scene defines the hosting scene
+<strong>param</strong>  _updatable defines if the mesh must be flagged as updatable
+<strong>returns</strong>  a new Mesh
+<strong>deprecated</strong>  Please use MeshBuilder instead</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>_name</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>_width</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_height</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_subdivisions</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_scene</code></td><td><code>Scene</code></td><td>Optional</td></tr><tr><td><code>_updatable</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-154">CreateTiledGround <a class="anchor" href="#overload-0-154">#</a></h3><pre class="code" data-lang="ts"><code>static CreateTiledGround(_name: string, _xmin: number, _zmin: number, _xmax: number, _zmax: number, _subdivisions: {
+            w: number;
+            h: number;
+        }, _precision: {
+            w: number;
+            h: number;
+        }, _scene: Scene, _updatable?: boolean): Mesh;</code></pre><p>Creates a tiled ground mesh.
+<strong>param</strong>  _name defines the name of the mesh to create
+<strong>param</strong>  _xmin set the ground minimum X coordinate
+<strong>param</strong>  _zmin set the ground minimum Y coordinate
+<strong>param</strong>  _xmax set the ground maximum X coordinate
+<strong>param</strong>  _zmax set the ground maximum Z coordinate
+<strong>param</strong>  _subdivisions is an object <code>{w: positive integer, h: positive integer}</code> (default <code>{w: 6, h: 6}</code>). <code>w</code> and <code>h</code> are the numbers of subdivisions on the ground width and height. Each subdivision is called a tile
+<strong>param</strong>  _precision is an object <code>{w: positive integer, h: positive integer}</code> (default <code>{w: 2, h: 2}</code>). <code>w</code> and <code>h</code> are the numbers of subdivisions on the ground width and height of each tile
+<strong>param</strong>  _scene defines the hosting scene
+<strong>param</strong>  _updatable defines if the mesh must be flagged as updatable
+<strong>returns</strong>  a new Mesh
+<strong>deprecated</strong>  Please use MeshBuilder instead</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>_name</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>_xmin</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_zmin</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_xmax</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_zmax</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_subdivisions</code></td><td><code>{
+            w: number;
+            h: number;
+        }</code></td><td>Required</td></tr><tr><td><code>_precision</code></td><td><code>{
+            w: number;
+            h: number;
+        }</code></td><td>Required</td></tr><tr><td><code>_scene</code></td><td><code>Scene</code></td><td>Required</td></tr><tr><td><code>_updatable</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-155">CreateGroundFromHeightMap <a class="anchor" href="#overload-0-155">#</a></h3><pre class="code" data-lang="ts"><code>static CreateGroundFromHeightMap(_name: string, _url: string, _width: number, _height: number, _subdivisions: number, _minHeight: number, _maxHeight: number, _scene: Scene, _updatable?: boolean, _onReady?: (mesh: GroundMesh) =&gt; void, _alphaFilter?: number): GroundMesh;</code></pre><p>Creates a ground mesh from a height map.
+<strong>see</strong>  (online reference)
+<strong>param</strong>  _name defines the name of the mesh to create
+<strong>param</strong>  _url sets the URL of the height map image resource
+<strong>param</strong>  _width set the ground width size
+<strong>param</strong>  _height set the ground height size
+<strong>param</strong>  _subdivisions sets the number of subdivision per side
+<strong>param</strong>  _minHeight is the minimum altitude on the ground
+<strong>param</strong>  _maxHeight is the maximum altitude on the ground
+<strong>param</strong>  _scene defines the hosting scene
+<strong>param</strong>  _updatable defines if the mesh must be flagged as updatable
+<strong>param</strong>  _onReady  is a callback function that will be called  once the mesh is built (the height map download can last some time)
+<strong>param</strong>  _alphaFilter will filter any data where the alpha channel is below this value, defaults 0 (all data visible)
+<strong>returns</strong>  a new Mesh
+<strong>deprecated</strong>  Please use MeshBuilder instead</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>_name</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>_url</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>_width</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_height</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_subdivisions</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_minHeight</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_maxHeight</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_scene</code></td><td><code>Scene</code></td><td>Required</td></tr><tr><td><code>_updatable</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>_onReady</code></td><td><code>(mesh: GroundMesh) =&gt; void</code></td><td>Optional</td></tr><tr><td><code>_alphaFilter</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>GroundMesh</code></p><h3 id="overload-0-156">CreateTube <a class="anchor" href="#overload-0-156">#</a></h3><pre class="code" data-lang="ts"><code>static CreateTube(_name: string, _path: Vector3[], _radius: number, _tessellation: number, _radiusFunction: {
+            (i: number, distance: number): number;
+        }, _cap: number, _scene: Scene, _updatable?: boolean, _sideOrientation?: number, _instance?: Mesh): Mesh;</code></pre><p>Creates a tube mesh.
+The tube is a parametric shape.
+It has no predefined shape. Its final shape will depend on the input parameters.</p>
+<p><strong>see</strong>  (online reference)
+<strong>param</strong>  _name defines the name of the mesh to create
+<strong>param</strong>  _path is a required array of successive Vector3. It is the curve used as the axis of the tube
+<strong>param</strong>  _radius sets the tube radius size
+<strong>param</strong>  _tessellation is the number of sides on the tubular surface
+<strong>param</strong>  _radiusFunction is a custom function. If it is not null, it overrides the parameter <code>radius</code>. This function is called on each point of the tube path and is passed the index <code>i</code> of the i-th point and the distance of this point from the first point of the path
+<strong>param</strong>  _cap sets the way the extruded shape is capped. Possible values : Mesh.NO_CAP (default), Mesh.CAP_START, Mesh.CAP_END, Mesh.CAP_ALL
+<strong>param</strong>  _scene defines the hosting scene
+<strong>param</strong>  _updatable defines if the mesh must be flagged as updatable
+<strong>param</strong>  _sideOrientation defines the mesh side orientation ((online reference))
+<strong>param</strong>  _instance is an instance of an existing Tube object to be updated with the passed <code>pathArray</code> parameter ((online reference))
+<strong>returns</strong>  a new Mesh
+<strong>deprecated</strong>  Please use MeshBuilder instead</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>_name</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>_path</code></td><td><code>Vector3[]</code></td><td>Required</td></tr><tr><td><code>_radius</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_tessellation</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_radiusFunction</code></td><td><code>{
+            (i: number, distance: number): number;
+        }</code></td><td>Required</td></tr><tr><td><code>_cap</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>_scene</code></td><td><code>Scene</code></td><td>Required</td></tr><tr><td><code>_updatable</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>_sideOrientation</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>_instance</code></td><td><code>Mesh</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-157">CreatePolyhedron <a class="anchor" href="#overload-0-157">#</a></h3><pre class="code" data-lang="ts"><code>static CreatePolyhedron(_name: string, _options: {
+            type?: number;
+            size?: number;
+            sizeX?: number;
+            sizeY?: number;
+            sizeZ?: number;
+            custom?: any;
+            faceUV?: Vector4[];
+            faceColors?: Color4[];
+            updatable?: boolean;
+            sideOrientation?: number;
+        }, _scene: Scene): Mesh;</code></pre><p>Creates a polyhedron mesh.
+.</p>
+<ul>
+<li>The parameter <code>type</code> (positive integer, max 14, default 0) sets the polyhedron type to build among the 15 embedded types. Please refer to the type sheet in the tutorial to choose the wanted type</li>
+<li>The parameter <code>size</code> (positive float, default 1) sets the polygon size</li>
+<li>You can overwrite the <code>size</code> on each dimension bu using the parameters <code>sizeX</code>, <code>sizeY</code> or <code>sizeZ</code> (positive floats, default to <code>size</code> value)</li>
+<li>You can build other polyhedron types than the 15 embbeded ones by setting the parameter <code>custom</code> (<code>polyhedronObject</code>, default null). If you set the parameter <code>custom</code>, this overwrittes the parameter <code>type</code></li>
+<li>A <code>polyhedronObject</code> is a formatted javascript object. You&#39;ll find a full file with pre-set polyhedra here : (online reference)</li>
+<li>You can set the color and the UV of each side of the polyhedron with the parameters <code>faceColors</code> (Color4, default <code>(1, 1, 1, 1)</code>) and faceUV (Vector4, default <code>(0, 0, 1, 1)</code>)</li>
+<li>To understand how to set <code>faceUV</code> or <code>faceColors</code>, please read this by considering the right number of faces of your polyhedron, instead of only 6 for the box : (online reference)</li>
+<li>The parameter <code>flat</code> (boolean, default true). If set to false, it gives the polyhedron a single global face, so less vertices and shared normals. In this case, <code>faceColors</code> and <code>faceUV</code> are ignored</li>
+<li>You can also set the mesh side orientation with the values : Mesh.FRONTSIDE (default), Mesh.BACKSIDE or Mesh.DOUBLESIDE</li>
+<li>If you create a double-sided mesh, you can choose what parts of the texture image to crop and stick respectively on the front and the back sides with the parameters <code>frontUVs</code> and <code>backUVs</code> (Vector4). Detail here : (online reference)</li>
+<li>The mesh can be set to updatable with the boolean parameter <code>updatable</code> (default false) if its internal geometry is supposed to change once created
+<strong>param</strong>  _name defines the name of the mesh to create
+<strong>param</strong>  _options defines the options used to create the mesh
+<strong>param</strong>  _scene defines the hosting scene
+<strong>returns</strong>  a new Mesh
+<strong>deprecated</strong>  Please use MeshBuilder instead</li>
+</ul>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>_name</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>_options</code></td><td><code>{
+            type?: number;
+            size?: number;
+            sizeX?: number;
+            sizeY?: number;
+            sizeZ?: number;
+            custom?: any;
+            faceUV?: Vector4[];
+            faceColors?: Color4[];
+            updatable?: boolean;
+            sideOrientation?: number;
+        }</code></td><td>Required</td></tr><tr><td><code>_scene</code></td><td><code>Scene</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-158">CreateIcoSphere <a class="anchor" href="#overload-0-158">#</a></h3><pre class="code" data-lang="ts"><code>static CreateIcoSphere(_name: string, _options: {
+            radius?: number;
+            flat?: boolean;
+            subdivisions?: number;
+            sideOrientation?: number;
+            updatable?: boolean;
+        }, _scene: Scene): Mesh;</code></pre><p>Creates a sphere based upon an icosahedron with 20 triangular faces which can be subdivided</p>
+<ul>
+<li>The parameter <code>radius</code> sets the radius size (float) of the icosphere (default 1)</li>
+<li>You can set some different icosphere dimensions, for instance to build an ellipsoid, by using the parameters <code>radiusX</code>, <code>radiusY</code> and <code>radiusZ</code> (all by default have the same value than <code>radius</code>)</li>
+<li>The parameter <code>subdivisions</code> sets the number of subdivisions (positive integer, default 4). The more subdivisions, the more faces on the icosphere whatever its size</li>
+<li>The parameter <code>flat</code> (boolean, default true) gives each side its own normals. Set it to false to get a smooth continuous light reflection on the surface</li>
+<li>You can also set the mesh side orientation with the values : Mesh.FRONTSIDE (default), Mesh.BACKSIDE or Mesh.DOUBLESIDE</li>
+<li>If you create a double-sided mesh, you can choose what parts of the texture image to crop and stick respectively on the front and the back sides with the parameters <code>frontUVs</code> and <code>backUVs</code> (Vector4). Detail here : (online reference)</li>
+<li>The mesh can be set to updatable with the boolean parameter <code>updatable</code> (default false) if its internal geometry is supposed to change once created
+<strong>see</strong>  (online reference)
+<strong>param</strong>  _name defines the name of the mesh
+<strong>param</strong>  _options defines the options used to create the mesh
+<strong>param</strong>  _scene defines the hosting scene
+<strong>returns</strong>  a new Mesh
+<strong>deprecated</strong>  Please use MeshBuilder instead</li>
+</ul>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>_name</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>_options</code></td><td><code>{
+            radius?: number;
+            flat?: boolean;
+            subdivisions?: number;
+            sideOrientation?: number;
+            updatable?: boolean;
+        }</code></td><td>Required</td></tr><tr><td><code>_scene</code></td><td><code>Scene</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-159">CreateDecal <a class="anchor" href="#overload-0-159">#</a></h3><pre class="code" data-lang="ts"><code>static CreateDecal(_name: string, _sourceMesh: AbstractMesh, _position: Vector3, _normal: Vector3, _size: Vector3, _angle: number): Mesh;</code></pre><p>Creates a decal mesh.
+.
+A decal is a mesh usually applied as a model onto the surface of another mesh
+<strong>param</strong>  _name  defines the name of the mesh
+<strong>param</strong>  _sourceMesh defines the mesh receiving the decal
+<strong>param</strong>  _position sets the position of the decal in world coordinates
+<strong>param</strong>  _normal sets the normal of the mesh where the decal is applied onto in world coordinates
+<strong>param</strong>  _size sets the decal scaling
+<strong>param</strong>  _angle sets the angle to rotate the decal
+<strong>returns</strong>  a new Mesh
+<strong>deprecated</strong>  Please use MeshBuilder instead</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>_name</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>_sourceMesh</code></td><td><code>AbstractMesh</code></td><td>Required</td></tr><tr><td><code>_position</code></td><td><code>Vector3</code></td><td>Required</td></tr><tr><td><code>_normal</code></td><td><code>Vector3</code></td><td>Required</td></tr><tr><td><code>_size</code></td><td><code>Vector3</code></td><td>Required</td></tr><tr><td><code>_angle</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-160">CreateCapsule <a class="anchor" href="#overload-0-160">#</a></h3><pre class="code" data-lang="ts"><code>static CreateCapsule(_name: string, _options: ICreateCapsuleOptions, _scene: Scene): Mesh;</code></pre><p>Creates a Capsule Mesh
+<strong>param</strong>  _name defines the name of the mesh.
+<strong>param</strong>  _options the constructors options used to shape the mesh.
+<strong>param</strong>  _scene defines the scene the mesh is scoped to.
+<strong>returns</strong>  the capsule mesh
+<strong>see</strong>  (online reference)
+<strong>deprecated</strong>  Please use MeshBuilder instead</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>_name</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>_options</code></td><td><code>ICreateCapsuleOptions</code></td><td>Required</td></tr><tr><td><code>_scene</code></td><td><code>Scene</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p><h3 id="overload-0-161">ExtendToGoldberg <a class="anchor" href="#overload-0-161">#</a></h3><pre class="code" data-lang="ts"><code>static ExtendToGoldberg(_mesh: Mesh): Mesh;</code></pre><p>Extends a mesh to a Goldberg mesh
+Warning  the mesh to convert MUST be an import of a perviously exported Goldberg mesh
+<strong>param</strong>  _mesh the mesh to convert
+<strong>returns</strong>  the extended mesh
+<strong>deprecated</strong>  Please use ExtendMeshToGoldberg instead</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>_mesh</code></td><td><code>Mesh</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Mesh</code></p></details><h2 id="members">Public members (2)</h2><p>Private, protected and explicitly internal declarations are excluded. Inherited members belong to the base type listed in the declaration.</p><h3 id="member-getemittedparticlesystems-0">getEmittedParticleSystems <a class="anchor" href="#member-getemittedparticlesystems-0">#</a></h3><pre class="code" data-lang="ts"><code>getEmittedParticleSystems(): IParticleSystem[];</code></pre><p>Returns an array populated with IParticleSystem objects whose the mesh is the emitter
+<strong>returns</strong>  an array of IParticleSystem</p>
+<p><b>Type / return:</b> <code>IParticleSystem[]</code></p><h3 id="member-gethierarchyemittedparticlesystems-1">getHierarchyEmittedParticleSystems <a class="anchor" href="#member-gethierarchyemittedparticlesystems-1">#</a></h3><pre class="code" data-lang="ts"><code>getHierarchyEmittedParticleSystems(): IParticleSystem[];</code></pre><p>Returns an array populated with IParticleSystem objects whose the mesh or its children are the emitter
+<strong>returns</strong>  an array of IParticleSystem</p>
+<p><b>Type / return:</b> <code>IParticleSystem[]</code></p><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#overloads">Overloads</a><a href="#members">Public members (2)</a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

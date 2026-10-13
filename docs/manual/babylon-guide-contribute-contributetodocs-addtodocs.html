@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Adding Major Changes to the Documentation — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Adding Major Changes to the Documentation</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="major-changes">Major Changes<a class="anchor" href="#major-changes">#</a></h2>
+<p>When a simple page edit is not enough—for example, when you want to add new pages or run the documentation locally on your computer before pushing online to be sure nothing is broken—there are a number of steps to complete.</p>
+<p>Requirements:</p>
+<ul>
+<li><span>GitHub</span> account</li>
+<li><span>git</span></li>
+<li><span>GitHub Desktop</span> (optional, but makes local git repositories easier to use)</li>
+<li><span>node.js</span>, we support node 16 and up.</li>
+<li>An IDE such as VSCode</li>
+</ul>
+<p>You will need to know how to fork the <span>Documentation</span> repository and clone it onto your local system.</p>
+<h3 id="running-and-editing-the-doc-locally">Running and editing the doc locally<a class="anchor" href="#running-and-editing-the-doc-locally">#</a></h3>
+<p>Using a CLI in your local Documentation folder, run:</p>
+<p><code>npm install</code></p>
+<p>This will install the dependencies needed for the project. You can now run:</p>
+<p><code>npm run dev</code></p>
+<p>This will launch the dev server on <span>http://localhost:3000</span></p>
+<p>Open the project using your favorite code editor. This can also be done from GitHub Desktop:</p>
+<p><p class="muted">Upstream illustration: visual studio (media not bundled).</p></p>
+<p>(<em>you may have</em> Open in Atom <em>rather than</em> Open in Visual Studio <em>, that&#39;s not a big deal</em>)</p>
+<p>You can finally start to update the markdown files!</p>
+<p><p class="muted">Upstream illustration: visual studio (media not bundled).</p></p>
+<h3 id="adding-new-images">Adding new images<a class="anchor" href="#adding-new-images">#</a></h3>
+<p>If you need to create new illustrations, you should add them to the GitHub repo in a specific folder: <span><code>Documentation/public/img/</code></span>.</p>
+<p>So on your local fork, go to this <code>img</code> folder. You can see there are already a lot of folders, so try to use existing folders to put your new images if possible.</p>
+<p>Let&#39;s say you just created a new page, linked at <code>https://doc.babylonjs.com/features/divingDeeper/my_very_great_page</code>.</p>
+<p>Here, you can create a <code>my_very_great_page</code> folder inside <code>/img/features/divingDeeper/</code> and put <code>my-wonderful-image.jpg</code> into it.</p>
+<p>Then, on your markdown page, use this link pattern:</p>
+<pre class="code" data-lang="markdown"><code>![quick description (for accessibility)](/img/features/divingDeeper/my_very_great_page/my-wonderful-image.jpg)</code></pre>
+<p>Of course, try to keep the image size as small as you can (while keeping a good visual quality). Our build system will do its best to optimize the image nonetheless.</p>
+<h3 id="adding-new-pages">Adding new pages<a class="anchor" href="#adding-new-pages">#</a></h3>
+<h4 id="page-structure">Page structure<a class="anchor" href="#page-structure">#</a></h4>
+<p>Now that everything is working well, you may want to add new content. To do so, please open <code>/configuration/structure.json</code>.</p>
+<p>This file is a catalog where you can reference new files added to the repo.</p>
+<p>The file is a tree of documents, starting from the root page and going to the different sections. Each page can, but does not have to, have its own children.</p>
+<p>For example, let&#39;s say we want to add this page. We know that our new page will be in the <em>Diving Deeper/Audio</em> section:</p>
+<pre class="code" data-lang="javascript"><code>{
+    &quot;friendlyName&quot;: &quot;Home Page&quot;,
+    &quot;content&quot;: &quot;landing_pages/home&quot;,
+    &quot;children&quot;: {
+    /* [...] */
+    &quot;divingDeeper&quot;: {
+            &quot;friendlyName&quot;: &quot;Diving Deeper&quot;,
+            &quot;children&quot;: {
+              /* [...] */
+              &quot;audio&quot;: {
+                    &quot;friendlyName&quot;: &quot;Audio&quot;,
+                    &quot;children&quot;: {
+                        &quot;playingSoundsMusic&quot;: { &quot;friendlyName&quot;: &quot;Playing Sounds and Music&quot;, &quot;children&quot;: {}, &quot;content&quot;: &quot;How_To/audio/Playing_sounds_and_music&quot; },
+                        // This is the place you will add your document
+                    },
+                    &quot;content&quot;: &quot;landing_pages/features/divingDeeperAudioLandingPage&quot;
+                },
+            }
+    }
+    /* [...] */
+}</code></pre>
+<p>Just add the necessary information about your new page:</p>
+<pre class="code" data-lang="javascript"><code>/* [...] */
+&quot;documentKeyAndUrl&quot;: {
+  &quot;friendlyName&quot;: &quot;A friendly title to your document&quot;,
+  &quot;children&quot;: {/* if any, children will contain the rest of the documents */},
+  &quot;content&quot;: &quot;the markdown file that correlates to this document.&quot;
+},
+/* [...] */</code></pre>
+<p>Notice the object&#39;s key. This will be your new page filename (without the <code>.md</code> extension):
+<p class="muted">Upstream illustration: new content (media not bundled).</p></p>
+<h4 id="page-metadata">Page metadata<a class="anchor" href="#page-metadata">#</a></h4>
+<p>Each page can, but does not have to, have a metadata section that provides further information for the page. This is important if you want the page to be visible in search results.
+The metadata section is YAML added to the top of the page:</p>
+<pre class="code" data-lang="yaml"><code>---
+title: Page title, if you want to override the title from the structure file
+image: A link to an image that will be used as this page's image
+description: A short description for this page
+keywords: comma-separated keywords for this page.
+further-reading: A list of links to add at the end of this page. Can be internal or external links
+video-overview: A youtube video id to show at the beginning of this page
+video-content: a list of videos (youtube or files) to show at the end of the page.
+---</code></pre>
+<p>For example, this is a part of the metadata in the node_material page:</p>
+<pre class="code" data-lang="yaml"><code>---
+title: Node Material
+image: /img/pageImages/nodeMaterial.webp
+description: The Node Material is a simple, highly customizable material that you can build yourself piece by piece. Combined with the powerful node-based editor, you can easily create stunning custom GPU shaders and FX for your Babylon.js scenes.
+keywords: shaders, glsl, node editor, graphics, GPU program, material, NME, Node Material, Node Material Editor
+further-reading:
+  - title: Dedicated NME Forum Examples
+    url: https://forum.babylonjs.com/t/node-materials-examples/6048
+  - title: 3 Tips For Getting Started Building Procedural Node Material Shaders
+    url: https://babylonjs.medium.com/procedural-node-material-shaders-3-tips-for-getting-started-4089c1832dfc
+  - title: Mesh shattering with baked physics
+    url: https://babylonjs.medium.com/mesh-shattering-with-baked-physics-5b3f8f381743
+  - title: Fighting Self-Doubt, with Water
+video-content:
+  - title: Node-Based Procedural Textures
+    url: https://youtu.be/qqMuuSM7GvI
+  - title: Creating Procedural Node Materials Through Code
+    url: https://youtu.be/GrmVObi6caQ
+  - title: Node Material Post Processes
+    url: https://youtu.be/QTuL5raapQQ
+  - title: Node Material Editor Particles!!!!
+    url: https://youtu.be/fZvZMXDoVp4
+  - title: Interactive Hex Tile Series
+    url: https://www.youtube.com/playlist?list=PLsaE__vWcRamMC5oJwhrSj3x3jT9TWOPB
+  - title: Unraveling Advanced Anisotropic Reflections
+---</code></pre>
+<p>Everything in the metadata is optional and serves a different purpose. However, it is always better to add as much information as possible. This will help people find and use the page, and that is the goal here.
+The image provided will be used when sharing this link on sites supporting open graph, such as Facebook, Medium, Twitter, and so on. The default image is the Babylon.js logo.</p>
+<h4 id="internal-links">Internal links<a class="anchor" href="#internal-links">#</a></h4>
+<p>To link to an internal document, use its path from the root without adding the domain. For example:</p>
+<pre class="code" data-lang="markdown"><code>[Post Processes](/features/featuresDeepDive/postProcesses/usePostProcesses)</code></pre>
+<h3 id="adding-examples">Adding examples<a class="anchor" href="#adding-examples">#</a></h3>
+<p>It is always great to provide examples on your documentation page. By using the correct Markdown, you can add playgrounds and NME, and they will be added automatically to the page&#39;s side menu.
+To add a playground, add the following code:</p>
+<pre class="code" data-lang="html"><code>&lt;Playground id=&quot;playgroundId&quot; title=&quot;Playground title&quot; description=&quot;A short description&quot; image=&quot;Optional image url&quot; /&gt;</code></pre>
+<p>The playground ID is the 6-character id, and the version number if needed. For example: <code>#Y642I8#2</code>.
+The same applies to NME examples:</p>
+<pre class="code" data-lang="html"><code>&lt;nme id=&quot;nmeId&quot; title=&quot;NME title&quot; description=&quot;A short description&quot; /&gt;</code></pre>
+<p>This can be either inline or on a new line and will automatically add the external and example link.
+An image will be generated for each playground without an image, so don&#39;t worry about screen-capturing your playground. Please commit those images along with your document!</p>
+<h3 id="adding-media-videos-and-images">Adding media (videos and images)<a class="anchor" href="#adding-media-videos-and-images">#</a></h3>
+<p>To add a YouTube link, use the YouTube markdown tag:</p>
+<pre class="code" data-lang="html"><code>&lt;Youtube id=&quot;qqMuuSM7GvI&quot; /&gt;</code></pre>
+<p>To add an image, you can use the markdown annotation:</p>
+<pre class="code" data-lang="markdown"><code>![Particle choice](/img/how_to/Materials/particleMenu.webp)</code></pre>
+<p>but you can also use the more advanced <code>&lt;img/&gt;</code> tag, which gives you more control over formatting, size, and so on. As always, everything is optional, but very nice to have:</p>
+<pre class="code" data-lang="html"><code>&lt;img src=&quot;internal link to image&quot; title=&quot;Image title&quot; alt=&quot;Similar to title&quot; width=&quot;300&quot; height=&quot;200&quot; caption=&quot;Copyright (or any other) caption that will appear under the image&quot; /&gt;</code></pre>
+<h3 id="sending-pull-request">Sending pull request<a class="anchor" href="#sending-pull-request">#</a></h3>
+<p>A Pull Request (PR) must be made to integrate your modifications into the documentation.
+You will first pull your local modifications into your online fork, then ask to merge your fork into the main repo.
+In GitHub Desktop, you will see all of your modifications. Sometimes a file named <code>babylon.d.ts</code> will automatically be modified, but it is okay to include it in the PR.
+Add an explicit summary into the required field, and click to <em>Commit to master</em>:
+<p class="muted">Upstream illustration: pushing (media not bundled).</p>
+Then, click the <em>Push origin</em> button:
+<p class="muted">Upstream illustration: push (media not bundled).</p>
+Then go to your online GitHub repo. You can use GitHub Desktop for that:
+<p class="muted">Upstream illustration: github (media not bundled).</p>
+At this point, your fork is updated online with your latest modifications.
+Click the <em>New pull request</em> button:
+<p class="muted">Upstream illustration: github pull (media not bundled).</p>
+If there are no conflicts, you will be able to follow the same steps as we saw above in the <a href="babylon-guide-contribute-contributetodocs-easydoc.html">easy way</a> section.
+Congratulations again, you&#39;re now a documentation master!</p>
+<h2 id="good-practices">Good Practices<a class="anchor" href="#good-practices">#</a></h2>
+<h3 id="general">General<a class="anchor" href="#general">#</a></h3>
+<ul>
+<li>if you&#39;re not familiar with Markdown, you can read this short <span>GitHub guide</span></li>
+<li>even if you&#39;re seeing just a tiny typo, feel free to do a pull request dedicated to it</li>
+<li>do one commit per task; a pull request can include multiple commits if needed<ul>
+<li>example: if you have two pages to modify, once the first page is edited, do a commit</li>
+</ul>
+</li>
+<li>tables can be a great help for readability</li>
+<li>avoid the use of first person</li>
+<li>pay attention to spelling, grammar, and punctuation</li>
+<li>when you&#39;re not sure about a point, ask for proofreading</li>
+</ul>
+<h3 id="images">Images<a class="anchor" href="#images">#</a></h3>
+<ul>
+<li>use and store images from the documentation FTP as much as possible; read <a href="babylon-guide-contribute-contributetodocs-addtodocs.html">Adding new images</a></li>
+<li>be careful about image size (tip: Photoshop has a &quot;Save for the web&quot; export)</li>
+</ul>
+<h3 id="code">Code<a class="anchor" href="#code">#</a></h3>
+<ul>
+<li><p>when showing a block of JavaScript or TypeScript, include the language name after the opening code block backticks to ensure syntax highlighting:
+<p class="muted">Upstream illustration: markdown code (media not bundled).</p></p>
+</li>
+<li><p>JavaScript and TypeScript fences that use the <code>BABYLON</code> namespace are automatically displayed with <strong>ES6</strong>, <strong>ES6 pure</strong> (when supported), and <strong>UMD</strong> tabs. Keep only the UMD form in the Markdown so the variants cannot drift apart.</p>
+</li>
+<li><p>Pure imports do not register engine extensions, loaders, serializers, or prototype augmentations automatically. Examples can assume application-level setup, but pages that teach setup should show the relevant explicit registration.</p>
+</li>
+<li><p>Add <code>no-code-variants</code> after the fence language only when the snippet uses a community extension, removed API, or illustrative placeholder that has no ES module equivalent:</p>
+<pre class="code" data-lang="markdown"><code>```javascript no-code-variants
+const terrain = new BABYLON.DynamicTerrain(...);
+```</code></pre>
+</li>
+<li><p>when quoting a property in a sentence, you can use single <em>`</em> char (<span class="muted">&lt;kbd&gt;</span>Alt<span class="muted">&lt;/kbd&gt;</span> + numpad <span class="muted">&lt;kbd&gt;</span>96<span class="muted">&lt;/kbd&gt;</span>)</p>
+<ul>
+<li>example: You can set the <code>roughness</code> of a PBR material to 1.</li>
+</ul>
+</li>
+</ul>
+<h3 id="links">Links<a class="anchor" href="#links">#</a></h3>
+<p>For links to other parts of the Babylon.js documentation and API, use relative links.
+For example, use <code>[Load Files with Assets Manager](/contribute/contributeToDocs)</code> rather than <code>[Load Files with Assets Manager](https://doc.babylonjs.com/contribute/contributeToDocs)</code></p>
+<h2 id="further-reading">Further Reading<a class="anchor" href="#further-reading">#</a></h2>
+<p>Any articles, URLs, documents, and links that you&#39;d like the reader to have as a reference on the page should go into the &quot;further reading&quot; metadata section at the top of the page. See <a href="babylon-guide-contribute-contributetodocs.html">Page Metadata</a> for more detail.</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#major-changes">Major Changes </a><a href="#good-practices">Good Practices </a><a href="#further-reading">Further Reading </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

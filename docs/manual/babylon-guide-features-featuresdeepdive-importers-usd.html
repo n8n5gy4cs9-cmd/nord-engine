@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: OpenUSD File Loader Plugin — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: OpenUSD File Loader Plugin</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="overview">Overview<a class="anchor" href="#overview">#</a></h2>
+<p>The OpenUSD file loader imports <code>.usd</code>, <code>.usda</code>, <code>.usdc</code>, and <code>.usdz</code> stages. A WebAssembly build of <span>OpenUSD</span> composes and extracts the stage in a Web Worker, then Babylon.js creates the scene objects from transferable binary buffers. No intermediate glTF or <code>.babylon</code> file is created.</p>
+<p>The loader supports:</p>
+<ul>
+<li>OpenUSD composition, including sublayers, references, and payloads, when all dependencies are supplied to the loader</li>
+<li>Transform hierarchies, stage units, up-axis conversion, and visibility</li>
+<li>Polygon meshes, normals, UVs, display colors, geometric subsets, and analytic cube, sphere, cylinder, and cone primitives</li>
+<li><code>UsdPreviewSurface</code> materials and <code>UsdUVTexture</code> textures</li>
+<li>Native instances and <code>UsdGeomPointInstancer</code> batches backed by Babylon.js thin instances</li>
+<li><code>UsdSkel</code> skeletons, skinning, and animation</li>
+<li>Blend shapes, in-between shapes, and animated morph influences</li>
+</ul>
+<h2 id="setup">Setup<a class="anchor" href="#setup">#</a></h2>
+<p>The recommended setup for an NPM application is the dynamic loader registration function. It loads the USD implementation only when a USD file is first requested.</p>
+<pre class="code" data-lang="typescript"><code>import { registerBuiltInLoaders } from &quot;@babylonjs/loaders/dynamic&quot;;
+
+registerBuiltInLoaders();</code></pre>
+<p>You can instead register the USD loader statically:</p>
+<pre class="code" data-lang="typescript"><code>import &quot;@babylonjs/loaders/USD/usdFileLoader&quot;;</code></pre>
+<p>For a script-based experiment, load the complete loader bundle after Babylon.js:</p>
+<span class="muted">&lt;Alert severity=&quot;warning&quot; title=&quot;Warning&quot; description=&quot;The Babylon.js CDN should not be used in production environments. Serve Babylon.js, the loader bundle, and the OpenUSD runtime assets from your own CDN when deploying an application.&quot; /&gt;</span><pre class="code" data-lang="html"><code>&lt;script src=&quot;https://cdn.babylonjs.com/babylon.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js&quot;&gt;&lt;/script&gt;</code></pre>
+<p>The loader downloads its OpenUSD worker, WebAssembly module, JavaScript glue, and data bundle when it is first used. Browsers can cache those assets for subsequent imports.</p>
+<h2 id="loading-a-usd-file">Loading a USD File<a class="anchor" href="#loading-a-usd-file">#</a></h2>
+<p>After registering the plugin, use any of the standard scene loader functions:</p>
+<pre class="code" data-lang="typescript"><code>await AppendSceneAsync(&quot;https://example.com/assets/model.usdz&quot;, scene);</code></pre>
+<p>Use <code>LoadAssetContainerAsync</code> when the imported objects should not be added to the scene immediately:</p>
+<pre class="code" data-lang="typescript"><code>const container = await LoadAssetContainerAsync(&quot;https://example.com/assets/model.usda&quot;, scene);
+container.addAllToScene();</code></pre>
+<p>See a complete example here: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="loading-a-stage-with-sublayers-and-references">Loading a Stage with Sublayers and References<a class="anchor" href="#loading-a-stage-with-sublayers-and-references">#</a></h2>
+<p>OpenUSD stages often consist of a root layer plus other layers, payloads, and textures. The browser loader stages those files in a virtual filesystem before OpenUSD opens the root layer.</p>
+<span class="muted">&lt;Alert severity=&quot;info&quot; title=&quot;Supply every dependency&quot; description=&quot;Loading the root layer from a URL does not make its dependencies available automatically. Fetch each external layer, payload, and texture, then pass its bytes through pluginOptions.usd.files. A USDZ package that contains all of its dependencies normally needs only the package itself.&quot; /&gt;</span><p>Virtual paths must preserve the directory structure used by the authored asset paths. For example, assume the root layer is staged as <code>Package/Scenes/Main.usda</code>:</p>
+<pre class="code" data-lang="text"><code>Package/
+|-- Scenes/
+|   `-- Main.usda
+|-- Layers/
+|   `-- Geometry.usdc
+`-- Looks/
+    `-- Appearance.usda</code></pre>
+<p>If <code>Main.usda</code> contains:</p>
+<pre class="code" data-lang="usda"><code>#usda 1.0
+(
+    subLayers = [
+        @../Layers/Geometry.usdc@,
+        @../Looks/Appearance.usda@
+    ]
+)</code></pre>
+<p>load the root and supporting layers as follows:</p>
+<pre class="code" data-lang="typescript"><code>const assetRoot = &quot;https://example.com/assets/Package&quot;;
+
+const [geometryLayer, appearanceLayer] = await Promise.all([
+    fetch(`${assetRoot}/Layers/Geometry.usdc`).then((response) =&gt; response.arrayBuffer()),
+    fetch(`${assetRoot}/Looks/Appearance.usda`).then((response) =&gt; response.arrayBuffer()),
+]);
+
+await AppendSceneAsync(`${assetRoot}/Scenes/Main.usda`, scene, {
+    pluginOptions: {
+        usd: {
+            rootFileName: &quot;Package/Scenes/Main.usda&quot;,
+            files: {
+                &quot;Package/Layers/Geometry.usdc&quot;: geometryLayer,
+                &quot;Package/Looks/Appearance.usda&quot;: appearanceLayer,
+            },
+        },
+    },
+});</code></pre>
+<p>The keys in <code>files</code> are virtual paths, not URLs. <code>rootFileName</code> gives the root layer its path in that same virtual filesystem, so OpenUSD can resolve each relative asset path exactly as authored.</p>
+<p>See this composition working entirely from in-memory layers: <span class="muted">Online playground (not embedded offline)</span></p>
+<h3 id="loading-a-local-directory">Loading a Local Directory<a class="anchor" href="#loading-a-local-directory">#</a></h3>
+<p>For local assets, let the user select a directory and preserve each file&#39;s <code>webkitRelativePath</code>. If the directory contains multiple <code>.usd</code>, <code>.usda</code>, <code>.usdc</code>, or <code>.usdz</code> files, ask the user which one is the root layer.</p>
+<pre class="code" data-lang="html"><code>&lt;input id=&quot;usdDirectory&quot; type=&quot;file&quot; webkitdirectory multiple /&gt;</code></pre>
+<pre class="code" data-lang="typescript"><code>const input = document.getElementById(&quot;usdDirectory&quot;) as HTMLInputElement;
+const selectedFiles = Array.from(input.files ?? []);
+const rootFile = selectedFiles.find((file) =&gt; file.webkitRelativePath.endsWith(&quot;/Scenes/Main.usda&quot;));
+
+if (!rootFile) {
+    throw new Error(&quot;The root USD layer was not selected.&quot;);
+}
+
+const entries = await Promise.all(
+    selectedFiles
+        .filter((file) =&gt; file !== rootFile)
+        .map(async (file) =&gt; [file.webkitRelativePath, await file.arrayBuffer()] as const)
+);
+
+await AppendSceneAsync(rootFile, scene, {
+    pluginOptions: {
+        usd: {
+            rootFileName: rootFile.webkitRelativePath,
+            files: Object.fromEntries(entries),
+        },
+    },
+});</code></pre>
+<h3 id="absolute-asset-paths">Absolute Asset Paths<a class="anchor" href="#absolute-asset-paths">#</a></h3>
+<p><code>resolveByFileName</code> defaults to <code>true</code>. When an unresolved asset uses an absolute path authored on another computer, the loader can conservatively match one supplied virtual file with the same file name.</p>
+<pre class="code" data-lang="typescript"><code>pluginOptions: {
+    usd: {
+        rootFileName,
+        files,
+        resolveByFileName: true,
+    },
+}</code></pre>
+<p>This fallback only works when the file name is unambiguous. Preserve the authored directory layout whenever possible, especially when different directories contain files with the same name. Set <code>resolveByFileName</code> to <code>false</code> to require strict path resolution.</p>
+<h2 id="diagnostics">Diagnostics<a class="anchor" href="#diagnostics">#</a></h2>
+<p>Use the loader callbacks to display progress, collect OpenUSD messages, and detect missing dependencies:</p>
+<pre class="code" data-lang="typescript"><code>await AppendSceneAsync(rootFile, scene, {
+    pluginOptions: {
+        usd: {
+            rootFileName,
+            files,
+            onProgress: ({ phase, message }) =&gt; {
+                console.log(phase, message);
+            },
+            onLog: (level, message) =&gt; {
+                console.log(`[${level}] ${message}`);
+            },
+            onComplete: ({ timings, statistics, missingAssets }) =&gt; {
+                console.table(timings);
+                console.table(statistics);
+                console.log(&quot;Missing assets:&quot;, missingAssets);
+            },
+        },
+    },
+});</code></pre>
+<p><code>missingAssets</code> lists references that OpenUSD could not resolve from the root layer, a USDZ package, or the supplied virtual files.</p>
+<h2 id="hosting-the-openusd-runtime">Hosting the OpenUSD Runtime<a class="anchor" href="#hosting-the-openusd-runtime">#</a></h2>
+<p>By default, the worker and OpenUSD runtime are downloaded from the Babylon.js CDN. To host them with your application, copy all four runtime files from the same protocol version and configure their URLs for each load:</p>
+<pre class="code" data-lang="typescript"><code>const importerRoot = &quot;/runtime/babylonUsdImporter/&quot;;
+
+await AppendSceneAsync(&quot;/assets/model.usdz&quot;, scene, {
+    pluginOptions: {
+        usd: {
+            workerUrl: `${importerRoot}babylon-usd-importer.worker.js`,
+            glueUrl: `${importerRoot}babylon-usd-importer.js`,
+            wasmUrl: `${importerRoot}babylon-usd-importer.wasm`,
+            dataUrl: `${importerRoot}babylon-usd-importer.data`,
+        },
+    },
+});</code></pre>
+<p>Keep these four files together and use the protocol version associated with your <code>@babylonjs/loaders</code> version. Mixing runtime files or protocol versions is not supported.</p>
+<h2 id="current-limitations">Current Limitations<a class="anchor" href="#current-limitations">#</a></h2>
+<ul>
+<li><code>UsdPreviewSurface</code> is supported; MaterialX and other surface shader networks currently use the default material.</li>
+<li>PNG, JPEG, BMP, and WebP textures are supported. Convert other texture formats before loading them in a browser.</li>
+<li>Animated point-instancer data is imported at its first authored frame as static thin instances.</li>
+<li>Nested point instancers are not currently supported.</li>
+<li>Mesh-name filtering is not currently supported; <code>ImportMeshAsync</code> imports the complete composed stage.</li>
+</ul>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#overview">Overview </a><a href="#setup">Setup </a><a href="#loading-a-usd-file">Loading a USD File </a><a href="#loading-a-stage-with-sublayers-and-references">Loading a Stage with Sublayers and References </a><a href="#diagnostics">Diagnostics </a><a href="#hosting-the-openusd-runtime">Hosting the OpenUSD Runtime </a><a href="#current-limitations">Current Limitations </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phaser.Structs.Size — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Phaser.Structs.Size</h1>
+<p><span class="badge">Underlying Phaser 4.2.1 API</span> <span class="badge">Class</span></p><p class="muted">Official public declarations and JSDoc from <code>phaser</code>. Use with engine objects, not directly on a Nord entity.</p><aside class="box tip"><div class="box-title">The Nord way</div><p><a href="2d.html">2D manual</a> · <a href="component-sprite.html">sprite</a> · <a href="component-animatedSprite.html">animatedSprite</a> · <a href="physics.html">physics</a>. Access raw objects only when the Nord wrapper does not cover your feature. <a href="reference.html#escape-hatch">How escape hatches work</a>.</p></aside><h3 id="declaration">Size <a class="anchor" href="#declaration">#</a></h3><pre class="code" data-lang="ts"><code>class Size</code></pre><p>The Size component allows you to set <code>width</code> and <code>height</code> properties and define the relationship between them.</p>
+<p>The component can automatically maintain the aspect ratios between the two values, and clamp them
+to a defined min-max range. You can also control the dominant axis. When dimensions are given to the Size component
+that would cause it to exceed its min-max range, the dimensions are adjusted based on the dominant axis.</p>
+<h2 id="members">Public members (34)</h2><p>Private, protected and explicitly internal declarations are excluded. Inherited members belong to the base type listed in the declaration.</p><h3 id="member-constructor-0">constructor <a class="anchor" href="#member-constructor-0">#</a></h3><pre class="code" data-lang="ts"><code>constructor(width?: number, height?: number, aspectMode?: number, parent?: any);</code></pre><p><strong>param</strong>  width The width of the Size component. Default 0.
+<strong>param</strong>  height The height of the Size component. If not given, it will use the <code>width</code>. Default width.
+<strong>param</strong>  aspectMode The aspect mode of the Size component. Defaults to 0, no mode. Default 0.
+<strong>param</strong>  parent The parent of this Size component. Can be any object with public <code>width</code> and <code>height</code> properties. Dimensions are clamped to keep them within the parent bounds where possible. Default null.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>width</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>aspectMode</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>parent</code></td><td><code>any</code></td><td>Optional</td></tr></tbody></table><h3 id="member-aspectmode-1">aspectMode <a class="anchor" href="#member-aspectmode-1">#</a></h3><pre class="code" data-lang="ts"><code>readonly aspectMode: number;</code></pre><p>The aspect mode this Size component will use when calculating its dimensions.
+This property is read-only. To change it use the <code>setAspectMode</code> method.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-aspectratio-2">aspectRatio <a class="anchor" href="#member-aspectratio-2">#</a></h3><pre class="code" data-lang="ts"><code>readonly aspectRatio: number;</code></pre><p>The proportional relationship between the width and height.</p>
+<p>This property is read-only and is updated automatically when either the <code>width</code> or <code>height</code> properties are changed,
+depending on the aspect mode.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-minwidth-3">minWidth <a class="anchor" href="#member-minwidth-3">#</a></h3><pre class="code" data-lang="ts"><code>readonly minWidth: number;</code></pre><p>The minimum allowed width.
+Cannot be less than zero.
+This value is read-only. To change it see the <code>setMin</code> method.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-minheight-4">minHeight <a class="anchor" href="#member-minheight-4">#</a></h3><pre class="code" data-lang="ts"><code>readonly minHeight: number;</code></pre><p>The minimum allowed height.
+Cannot be less than zero.
+This value is read-only. To change it see the <code>setMin</code> method.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-maxwidth-5">maxWidth <a class="anchor" href="#member-maxwidth-5">#</a></h3><pre class="code" data-lang="ts"><code>readonly maxWidth: number;</code></pre><p>The maximum allowed width.
+This value is read-only. To change it see the <code>setMax</code> method.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-maxheight-6">maxHeight <a class="anchor" href="#member-maxheight-6">#</a></h3><pre class="code" data-lang="ts"><code>readonly maxHeight: number;</code></pre><p>The maximum allowed height.
+This value is read-only. To change it see the <code>setMax</code> method.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-snapto-7">snapTo <a class="anchor" href="#member-snapto-7">#</a></h3><pre class="code" data-lang="ts"><code>readonly snapTo: Phaser.Math.Vector2;</code></pre><p>A Vector2 containing the horizontal and vertical snap values, which the width and height are snapped to during resizing.</p>
+<p>By default this is disabled.</p>
+<p>This property is read-only. To change it see the <code>setSnap</code> method.</p>
+<p><b>Type / return:</b> <code>Phaser.Math.Vector2</code></p><h3 id="member-setaspectmode-8">setAspectMode <a class="anchor" href="#member-setaspectmode-8">#</a></h3><pre class="code" data-lang="ts"><code>setAspectMode(value?: number): this;</code></pre><p>Sets the aspect mode of this Size component.</p>
+<p>The aspect mode controls what happens when you modify the <code>width</code> or <code>height</code> properties, or call <code>setSize</code>.</p>
+<p>It can be a number from 0 to 4, or a Size constant:</p>
+<ol start="0">
+<li>NONE = Do not make the size fit the aspect ratio. Change the ratio when the size changes.</li>
+<li>WIDTH_CONTROLS_HEIGHT = The height is automatically adjusted based on the width.</li>
+<li>HEIGHT_CONTROLS_WIDTH = The width is automatically adjusted based on the height.</li>
+<li>FIT = The width and height are automatically adjusted to fit inside the given target area, while keeping the aspect ratio. Depending on the aspect ratio there may be some space inside the area which is not covered.</li>
+<li>ENVELOP = The width and height are automatically adjusted to make the size cover the entire target area while keeping the aspect ratio. This may extend further out than the target size.</li>
+</ol>
+<p>Calling this method automatically recalculates the <code>width</code> and the <code>height</code>, if required.
+<strong>param</strong>  value The aspect mode value. Default 0.
+<strong>returns</strong>  This Size component instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setsnap-9">setSnap <a class="anchor" href="#member-setsnap-9">#</a></h3><pre class="code" data-lang="ts"><code>setSnap(snapWidth?: number, snapHeight?: number): this;</code></pre><p>By setting snap values, when this Size component is modified its dimensions will automatically
+be snapped to the nearest grid slice, using floor. For example, if you have snap value of 16,
+and the width changes to 68, then it will snap down to 64 (the closest multiple of 16 when floored)</p>
+<p>Note that snapping takes place before adjustments by the parent, or the min / max settings. If these
+values are not multiples of the given snap values, then this can result in un-snapped dimensions.</p>
+<p>Call this method with no arguments to reset the snap values.</p>
+<p>Calling this method automatically recalculates the <code>width</code> and the <code>height</code>, if required.
+<strong>param</strong>  snapWidth The amount to snap the width to. If you don&#39;t want to snap the width, pass a value of zero. Default 0.
+<strong>param</strong>  snapHeight The amount to snap the height to. If not provided it will use the <code>snapWidth</code> value. If you don&#39;t want to snap the height, pass a value of zero. Default snapWidth.
+<strong>returns</strong>  This Size component instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>snapWidth</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>snapHeight</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setparent-10">setParent <a class="anchor" href="#member-setparent-10">#</a></h3><pre class="code" data-lang="ts"><code>setParent(parent?: any): this;</code></pre><p>Sets, or clears, the parent of this Size component.</p>
+<p>To clear the parent call this method with no arguments.</p>
+<p>The parent influences the maximum extents to which this Size component can expand,
+based on the aspect mode:</p>
+<p>NONE - The parent clamps both the width and height.
+WIDTH_CONTROLS_HEIGHT - The parent clamps just the width.
+HEIGHT_CONTROLS_WIDTH - The parent clamps just the height.
+FIT - The parent clamps whichever axis is required to ensure the size fits within it.
+ENVELOP - The parent is used to ensure the size fully envelops the parent.</p>
+<p>Calling this method automatically calls <code>setSize</code>.
+<strong>param</strong>  parent Sets the parent of this Size component. Don&#39;t provide a value to clear an existing parent.
+<strong>returns</strong>  This Size component instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>parent</code></td><td><code>any</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setmin-11">setMin <a class="anchor" href="#member-setmin-11">#</a></h3><pre class="code" data-lang="ts"><code>setMin(width?: number, height?: number): this;</code></pre><p>Set the minimum width and height values this Size component will allow.</p>
+<p>The minimum values can never be below zero, or greater than the maximum values.</p>
+<p>Setting this will automatically adjust both the <code>width</code> and <code>height</code> properties to ensure they are within range.</p>
+<p>Note that based on the aspect mode, and if this Size component has a parent set or not, the minimums set here
+<em>can</em> be exceeded in some situations.
+<strong>param</strong>  width The minimum allowed width of the Size component. Default 0.
+<strong>param</strong>  height The minimum allowed height of the Size component. If not given, it will use the <code>width</code>. Default width.
+<strong>returns</strong>  This Size component instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>width</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setmax-12">setMax <a class="anchor" href="#member-setmax-12">#</a></h3><pre class="code" data-lang="ts"><code>setMax(width?: number, height?: number): this;</code></pre><p>Set the maximum width and height values this Size component will allow.</p>
+<p>Setting this will automatically adjust both the <code>width</code> and <code>height</code> properties to ensure they are within range.</p>
+<p>Note that based on the aspect mode, and if this Size component has a parent set or not, the maximums set here
+<em>can</em> be exceeded in some situations.
+<strong>param</strong>  width The maximum allowed width of the Size component. Default Number.MAX_VALUE.
+<strong>param</strong>  height The maximum allowed height of the Size component. If not given, it will use the <code>width</code>. Default width.
+<strong>returns</strong>  This Size component instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>width</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setsize-13">setSize <a class="anchor" href="#member-setsize-13">#</a></h3><pre class="code" data-lang="ts"><code>setSize(width?: number, height?: number): this;</code></pre><p>Sets the width and height of this Size component based on the aspect mode.</p>
+<p>If the aspect mode is &#39;none&#39; then calling this method will change the aspect ratio, otherwise the current
+aspect ratio is honored across all other modes.</p>
+<p>If snapTo values have been set then the given width and height are snapped first, prior to any further
+adjustment via min/max values, or a parent.</p>
+<p>If minimum and/or maximum dimensions have been specified, the values given to this method will be clamped into
+that range prior to adjustment, but may still exceed them depending on the aspect mode.</p>
+<p>If this Size component has a parent set, and the aspect mode is <code>fit</code> or <code>envelop</code>, then the given sizes will
+be clamped to the range specified by the parent.
+<strong>param</strong>  width The new width of the Size component. Default 0.
+<strong>param</strong>  height The new height of the Size component. If not given, it will use the <code>width</code>. Default width.
+<strong>returns</strong>  This Size component instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>width</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setaspectratio-14">setAspectRatio <a class="anchor" href="#member-setaspectratio-14">#</a></h3><pre class="code" data-lang="ts"><code>setAspectRatio(ratio: number): this;</code></pre><p>Sets a new aspect ratio, overriding what was there previously.</p>
+<p>It then calls <code>setSize</code> immediately using the current dimensions.
+<strong>param</strong>  ratio The new aspect ratio.
+<strong>returns</strong>  This Size component instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>ratio</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-resize-15">resize <a class="anchor" href="#member-resize-15">#</a></h3><pre class="code" data-lang="ts"><code>resize(width: number, height?: number): this;</code></pre><p>Sets a new width and height for this Size component and updates the aspect ratio based on them.</p>
+<p>It <em>doesn&#39;t</em> change the <code>aspectMode</code> and still factors in size limits such as the min max and parent bounds.
+<strong>param</strong>  width The new width of the Size component.
+<strong>param</strong>  height The new height of the Size component. If not given, it will use the <code>width</code>. Default width.
+<strong>returns</strong>  This Size component instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>width</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-getnewwidth-16">getNewWidth <a class="anchor" href="#member-getnewwidth-16">#</a></h3><pre class="code" data-lang="ts"><code>getNewWidth(value: number, checkParent?: boolean): number;</code></pre><p>Takes a new width and passes it through the min/max clamp and then checks it doesn&#39;t exceed the parent width.
+<strong>param</strong>  value The value to clamp and check.
+<strong>param</strong>  checkParent Check the given value against the parent, if set. Default true.
+<strong>returns</strong>  The modified width value.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>checkParent</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>number</code></p><h3 id="member-getnewheight-17">getNewHeight <a class="anchor" href="#member-getnewheight-17">#</a></h3><pre class="code" data-lang="ts"><code>getNewHeight(value: number, checkParent?: boolean): number;</code></pre><p>Takes a new height and passes it through the min/max clamp and then checks it doesn&#39;t exceed the parent height.
+<strong>param</strong>  value The value to clamp and check.
+<strong>param</strong>  checkParent Check the given value against the parent, if set. Default true.
+<strong>returns</strong>  The modified height value.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>checkParent</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>number</code></p><h3 id="member-constrain-18">constrain <a class="anchor" href="#member-constrain-18">#</a></h3><pre class="code" data-lang="ts"><code>constrain(width?: number, height?: number, fit?: boolean): this;</code></pre><p>The current <code>width</code> and <code>height</code> are adjusted to fit inside the given dimensions, while keeping the aspect ratio.</p>
+<p>If <code>fit</code> is true there may be some space inside the target area which is not covered if its aspect ratio differs.
+If <code>fit</code> is false the size may extend further out than the target area if the aspect ratios differ.</p>
+<p>If this Size component has a parent set, then the width and height passed to this method will be clamped so
+it cannot exceed that of the parent.
+<strong>param</strong>  width The new width of the Size component. Default 0.
+<strong>param</strong>  height The new height of the Size component. If not given, it will use the width value.
+<strong>param</strong>  fit Perform a <code>fit</code> (true) constraint, or an <code>envelop</code> (false) constraint. Default true.
+<strong>returns</strong>  This Size component instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>width</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>fit</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-fitto-19">fitTo <a class="anchor" href="#member-fitto-19">#</a></h3><pre class="code" data-lang="ts"><code>fitTo(width?: number, height?: number): this;</code></pre><p>The current <code>width</code> and <code>height</code> are adjusted to fit inside the given dimensions, while keeping the aspect ratio.</p>
+<p>There may be some space inside the target area which is not covered if its aspect ratio differs.</p>
+<p>If this Size component has a parent set, then the width and height passed to this method will be clamped so
+it cannot exceed that of the parent.
+<strong>param</strong>  width The new width of the Size component. Default 0.
+<strong>param</strong>  height The new height of the Size component. If not given, it will use the width value.
+<strong>returns</strong>  This Size component instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>width</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-envelop-20">envelop <a class="anchor" href="#member-envelop-20">#</a></h3><pre class="code" data-lang="ts"><code>envelop(width?: number, height?: number): this;</code></pre><p>The current <code>width</code> and <code>height</code> are adjusted so that they fully envelope the given dimensions, while keeping the aspect ratio.</p>
+<p>The size may extend further out than the target area if the aspect ratios differ.</p>
+<p>If this Size component has a parent set, then the values are clamped so that it never exceeds the parent
+on the longest axis.
+<strong>param</strong>  width The new width of the Size component. Default 0.
+<strong>param</strong>  height The new height of the Size component. If not given, it will use the width value.
+<strong>returns</strong>  This Size component instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>width</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setwidth-21">setWidth <a class="anchor" href="#member-setwidth-21">#</a></h3><pre class="code" data-lang="ts"><code>setWidth(value: number): this;</code></pre><p>Sets the width of this Size component.</p>
+<p>Depending on the aspect mode, changing the width may also update the height and aspect ratio.
+<strong>param</strong>  value The new width of the Size component.
+<strong>returns</strong>  This Size component instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setheight-22">setHeight <a class="anchor" href="#member-setheight-22">#</a></h3><pre class="code" data-lang="ts"><code>setHeight(value: number): this;</code></pre><p>Sets the height of this Size component.</p>
+<p>Depending on the aspect mode, changing the height may also update the width and aspect ratio.
+<strong>param</strong>  value The new height of the Size component.
+<strong>returns</strong>  This Size component instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-tostring-23">toString <a class="anchor" href="#member-tostring-23">#</a></h3><pre class="code" data-lang="ts"><code>toString(): string;</code></pre><p>Returns a string representation of this Size component.undefined
+<strong>returns</strong>  A string representation of this Size component.</p>
+<p><b>Type / return:</b> <code>string</code></p><h3 id="member-setcss-24">setCSS <a class="anchor" href="#member-setcss-24">#</a></h3><pre class="code" data-lang="ts"><code>setCSS(element: HTMLElement): void;</code></pre><p>Sets the values of this Size component to the <code>element.style.width</code> and <code>height</code>
+properties of the given DOM Element. The properties are set as <code>px</code> values.
+<strong>param</strong>  element The DOM Element to set the CSS style on.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>element</code></td><td><code>HTMLElement</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-copy-25">copy <a class="anchor" href="#member-copy-25">#</a></h3><pre class="code" data-lang="ts"><code>copy(destination: Phaser.Structs.Size): Phaser.Structs.Size;</code></pre><p>Copies the aspect mode, aspect ratio, width and height from this Size component
+to the given Size component. Note that the parent, if set, is not copied across.
+<strong>param</strong>  destination The Size component to copy the values to.
+<strong>returns</strong>  The updated destination Size component.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>destination</code></td><td><code>Phaser.Structs.Size</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Structs.Size</code></p><h3 id="member-destroy-26">destroy <a class="anchor" href="#member-destroy-26">#</a></h3><pre class="code" data-lang="ts"><code>destroy(): void;</code></pre><p>Destroys this Size component.</p>
+<p>This clears the local properties and any parent object, if set.</p>
+<p>A destroyed Size component cannot be re-used.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="member-width-27">width <a class="anchor" href="#member-width-27">#</a></h3><pre class="code" data-lang="ts"><code>width: number;</code></pre><p>The width of this Size component.</p>
+<p>This value is clamped to the range specified by <code>minWidth</code> and <code>maxWidth</code>, if enabled.</p>
+<p>A width can never be less than zero.</p>
+<p>Changing this value will automatically update the <code>height</code> if the aspect ratio lock is enabled.
+You can also use the <code>setWidth</code> method.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-height-28">height <a class="anchor" href="#member-height-28">#</a></h3><pre class="code" data-lang="ts"><code>height: number;</code></pre><p>The height of this Size component.</p>
+<p>This value is clamped to the range specified by <code>minHeight</code> and <code>maxHeight</code>, if enabled.</p>
+<p>A height can never be less than zero.</p>
+<p>Changing this value will automatically update the <code>width</code> if the aspect ratio lock is enabled.
+You can also use the <code>setHeight</code> method.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-none-29">NONE <a class="anchor" href="#member-none-29">#</a></h3><pre class="code" data-lang="ts"><code>static readonly NONE: number;</code></pre><p>Do not make the size fit the aspect ratio. Change the ratio when the size changes.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-width-controls-height-30">WIDTH_CONTROLS_HEIGHT <a class="anchor" href="#member-width-controls-height-30">#</a></h3><pre class="code" data-lang="ts"><code>static readonly WIDTH_CONTROLS_HEIGHT: number;</code></pre><p>The height is automatically adjusted based on the width.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-height-controls-width-31">HEIGHT_CONTROLS_WIDTH <a class="anchor" href="#member-height-controls-width-31">#</a></h3><pre class="code" data-lang="ts"><code>static readonly HEIGHT_CONTROLS_WIDTH: number;</code></pre><p>The width is automatically adjusted based on the height.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-fit-32">FIT <a class="anchor" href="#member-fit-32">#</a></h3><pre class="code" data-lang="ts"><code>static readonly FIT: number;</code></pre><p>The width and height are automatically adjusted to fit inside the given target area, while keeping the aspect ratio. Depending on the aspect ratio there may be some space inside the area which is not covered.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-envelop-33">ENVELOP <a class="anchor" href="#member-envelop-33">#</a></h3><pre class="code" data-lang="ts"><code>static readonly ENVELOP: number;</code></pre><p>The width and height are automatically adjusted to make the size cover the entire target area while keeping the aspect ratio. This may extend further out than the target size.</p>
+<p><b>Type / return:</b> <code>number</code></p><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#members">Public members (34)</a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

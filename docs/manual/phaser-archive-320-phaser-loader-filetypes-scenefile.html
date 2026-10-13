@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phaser archive: Phaser.Loader.FileTypes.SceneFile — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Phaser archive: Phaser.Loader.FileTypes.SceneFile</h1>
+<p><span class="badge">Phaser 4.1.0 archive</span> · <a href="phaser-api-index.html">Matching 4.2.1 API</a></p><p>A Scene File is an external JavaScript file that defines a Phaser Scene class, which is loaded by the Loader
+and then registered directly with the Scene Manager so it can be started, launched, or otherwise used like
+any Scene that was defined locally. This allows you to split your game&#39;s Scenes across multiple JavaScript
+files and load them on demand rather than bundling everything upfront.</p>
+<p>The key used when loading must match the class name defined in the JavaScript file, as the file is evaluated
+and the class is instantiated by name. Once loaded, the Scene is available to the Scene Manager under either
+that key or whichever key was passed to <code>super()</code> in the Scene&#39;s constructor.</p>
+<p>These are created when you use the Phaser.Loader.LoaderPlugin#sceneFile method and are not typically created directly.</p>
+<p>For documentation about what all the arguments and configuration options mean please see Phaser.Loader.LoaderPlugin#sceneFile.</p>
+<h2 id="constructor">Constructor</h2><pre class="code" data-lang="ts"><code>SceneFile(loader, key, url?, xhrSettings?)</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>loader</code></td><td><code>Phaser.Loader.LoaderPlugin</code></td><td>A reference to the Loader that is responsible for this file.</td></tr><tr><td><code>key</code></td><td><code>string | Phaser.Types.Loader.FileTypes.SceneFileConfig</code></td><td>The key to use for this file, or a file configuration object.</td></tr><tr><td><code>url</code></td><td><code>string</code></td><td>Optional. The absolute or relative URL to load this file from. If undefined or `null` it will be set to `&lt;key&gt;.js`, i.e. if `key` was &quot;alien&quot; then the URL will be &quot;alien.js&quot;.</td></tr><tr><td><code>xhrSettings</code></td><td><code>Phaser.Types.Loader.XHRSettingsObject</code></td><td>Optional. Extra XHR Settings specifically for this file.</td></tr></tbody></table><h2 id="members">members</h2><h3 id="members-0">base64</h3><pre class="code" data-lang="ts"><code>base64</code></pre><p>Does this File contain a data URI?</p>
+<h3 id="members-1">bytesLoaded</h3><pre class="code" data-lang="ts"><code>bytesLoaded</code></pre><p>Updated as the file loads.
+Only set if loading via XHR.</p>
+<h3 id="members-2">bytesTotal</h3><pre class="code" data-lang="ts"><code>bytesTotal</code></pre><p>The total size of this file.
+Set by onProgress and only if loading via XHR.</p>
+<h3 id="members-3">cache</h3><pre class="code" data-lang="ts"><code>cache</code></pre><p>A reference to the Cache, or Texture Manager, that is going to store this file if it loads.</p>
+<h3 id="members-4">config</h3><pre class="code" data-lang="ts"><code>config</code></pre><p>A config object that can be used by file types to store transitional data.</p>
+<h3 id="members-5">crossOrigin</h3><pre class="code" data-lang="ts"><code>crossOrigin</code></pre><p>For CORS based loading.
+If this is undefined then the File will check LoaderPlugin.crossOrigin and use that (if set)</p>
+<h3 id="members-6">data</h3><pre class="code" data-lang="ts"><code>data</code></pre><p>The processed file data, stored here after the file has loaded.</p>
+<h3 id="members-7">key</h3><pre class="code" data-lang="ts"><code>key</code></pre><p>Unique cache key (unique within its file type)</p>
+<h3 id="members-8">linkFile</h3><pre class="code" data-lang="ts"><code>linkFile</code></pre><p>Does this file have an associated linked file? Such as an image and a normal map.
+Atlases and Bitmap Fonts use the multiFile, because those files need loading together but aren&#39;t
+actually bound by data, where-as a linkFile is.</p>
+<h3 id="members-9">loader</h3><pre class="code" data-lang="ts"><code>loader</code></pre><p>A reference to the Loader that is going to load this file.</p>
+<h3 id="members-10">multiFile</h3><pre class="code" data-lang="ts"><code>multiFile</code></pre><p>If this is a multipart file, i.e. an atlas and its json together, then this is a reference
+to the parent MultiFile. Set and used internally by the Loader or specific file types.</p>
+<h3 id="members-11">percentComplete</h3><pre class="code" data-lang="ts"><code>percentComplete</code></pre><p>A percentage value between 0 and 1 indicating how much of this file has loaded.
+Only set if loading via XHR.</p>
+<h3 id="members-12">retryAttempts</h3><pre class="code" data-lang="ts"><code>retryAttempts</code></pre><p>The counter for the number of times to retry loading this file before it fails.</p>
+<p>You can set this property value in the FileConfig object. If not present,
+this property is read from the <code>LoaderPlugin.maxRetries</code> property when
+this File instance is created.</p>
+<p>You can set this value via the Game Config, or you can adjust the <code>LoaderPlugin</code> property
+at any point after the Loader has started. However, it will not apply to files
+that have already been added to the Loader, only those added after this value
+is changed.</p>
+<h3 id="members-13">src</h3><pre class="code" data-lang="ts"><code>src</code></pre><p>The final URL this file will load from, including baseURL and path.
+Set automatically when the Loader calls &#39;load&#39; on this file.</p>
+<h3 id="members-14">state</h3><pre class="code" data-lang="ts"><code>state</code></pre><p>The current state of the file. One of the FILE_CONST values.</p>
+<h3 id="members-15">type</h3><pre class="code" data-lang="ts"><code>type</code></pre><p>The file type string (image, json, etc) for sorting within the Loader.</p>
+<h3 id="members-16">url</h3><pre class="code" data-lang="ts"><code>url</code></pre><p>The URL of the file, not including baseURL.</p>
+<p>Automatically has Loader.path prepended to it if a string.</p>
+<p>Can also be a JavaScript Object, such as the results of parsing JSON data.</p>
+<h3 id="members-17">xhrLoader</h3><pre class="code" data-lang="ts"><code>xhrLoader</code></pre><p>The XMLHttpRequest instance (as created by XHR Loader) that is loading this File.</p>
+<h3 id="members-18">xhrSettings</h3><pre class="code" data-lang="ts"><code>xhrSettings</code></pre><p>The merged XHRSettings for this file.</p>
+<h2 id="methods">methods</h2><h3 id="methods-0">addToCache</h3><pre class="code" data-lang="ts"><code>addToCache()</code></pre><p>Evaluates the loaded JavaScript source, instantiates the Scene class identified by this file&#39;s key,
+and registers the resulting Scene instance with the Scene Manager so it is available for use.</p>
+<h3 id="methods-1">destroy</h3><pre class="code" data-lang="ts"><code>destroy()</code></pre><p>Destroy this File and any references it holds.</p>
+<h3 id="methods-2">hasCacheConflict</h3><pre class="code" data-lang="ts"><code>hasCacheConflict()</code></pre><p>Checks if a key matching the one used by this file exists in the target Cache or not.
+This is called automatically by the LoaderPlugin to decide if the file can be safely
+loaded or will conflict.</p>
+<p>Returns: <code>boolean</code> `true` if adding this file will cause a conflict, otherwise `false`.</p><h3 id="methods-3">load</h3><pre class="code" data-lang="ts"><code>load()</code></pre><p>Called by the Loader, starts the actual file downloading.
+During the load the methods onLoad, onError and onProgress are called, based on the XHR events.
+You shouldn&#39;t normally call this method directly, it&#39;s meant to be invoked by the Loader.</p>
+<h3 id="methods-4">onBase64Load</h3><pre class="code" data-lang="ts"><code>onBase64Load(xhr)</code></pre><p>Called by the XHRLoader if it was given a File with base64 data to load.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>xhr</code></td><td><code>XMLHttpRequest</code></td><td>The FakeXHR object containing the decoded base64 data.</td></tr></tbody></table><h3 id="methods-5">onError</h3><pre class="code" data-lang="ts"><code>onError(xhr, event)</code></pre><p>Called if the file errors while loading. Resets the XHR state, then either decrements
+<code>retryAttempts</code> and retries the load, or signals failure to the Loader via <code>nextFile</code>
+if no retry attempts remain.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>xhr</code></td><td><code>XMLHttpRequest</code></td><td>The XMLHttpRequest that caused this onerror event.</td></tr><tr><td><code>event</code></td><td><code>ProgressEvent</code></td><td>The DOM ProgressEvent that resulted from this error.</td></tr></tbody></table><h3 id="methods-6">onLoad</h3><pre class="code" data-lang="ts"><code>onLoad(xhr, event)</code></pre><p>Called when the file finishes loading, is sent a DOM ProgressEvent.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>xhr</code></td><td><code>XMLHttpRequest</code></td><td>The XMLHttpRequest that caused this onload event.</td></tr><tr><td><code>event</code></td><td><code>ProgressEvent</code></td><td>The DOM ProgressEvent that resulted from this load.</td></tr></tbody></table><h3 id="methods-7">onProcess</h3><pre class="code" data-lang="ts"><code>onProcess()</code></pre><p>Called automatically by Loader.nextFile.
+This method controls what extra work this File does with its loaded data.</p>
+<h3 id="methods-8">onProcessComplete</h3><pre class="code" data-lang="ts"><code>onProcessComplete()</code></pre><p>Called when the File has completed processing.
+Checks on the state of its multifile, if set.</p>
+<h3 id="methods-9">onProcessError</h3><pre class="code" data-lang="ts"><code>onProcessError()</code></pre><p>Called when the File has completed processing but it generated an error.
+Checks on the state of its multifile, if set.</p>
+<h3 id="methods-10">onProgress</h3><pre class="code" data-lang="ts"><code>onProgress(event)</code></pre><p>Called during the file load progress. Is sent a DOM ProgressEvent.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>event</code></td><td><code>ProgressEvent</code></td><td>The DOM ProgressEvent.</td></tr></tbody></table><h3 id="methods-11">pendingDestroy</h3><pre class="code" data-lang="ts"><code>pendingDestroy()</code></pre><p>Called once the file has been added to its cache and is now ready for deletion from the Loader.
+It will emit a <code>filecomplete</code> event from the LoaderPlugin.</p>
+<h3 id="methods-12">resetXHR</h3><pre class="code" data-lang="ts"><code>resetXHR()</code></pre><p>Clears the <code>onload</code>, <code>onerror</code>, and <code>onprogress</code> event handlers from the XHRLoader instance
+this file is using, preventing stale callbacks from firing after the load has completed or errored.</p>
+<h3 id="methods-13">setLink</h3><pre class="code" data-lang="ts"><code>setLink(fileB)</code></pre><p>Links this File with another, so they depend upon each other for loading and processing.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>fileB</code></td><td><code>Phaser.Loader.File</code></td><td>The file to link to this one.</td></tr></tbody></table><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#constructor">Constructor</a><a href="#members">members</a><a href="#methods">methods</a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

@@ -4,6 +4,13 @@ section: Manual
 order: 7
 summary: 2D arcade/matter, 3D Havok, bodies, triggers, raycasts.
 ---
+
+Physics makes objects fall, collide and react to pushes. Choose the system for your project, then give objects bodies and collision shapes.
+
+::: dummies
+The body controls motion. The collider describes the shape that touches other things. A trigger detects an overlap without blocking movement. Start with a falling object and a floor.
+:::
+
 Physics is selected in `nord.project.json`:
 ```json
 "physics": { "engine": "arcade", "gravity": [0, 900, 0] }

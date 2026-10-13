@@ -1,0 +1,631 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Screen Space Reflections (SSR) Rendering Pipeline — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Screen Space Reflections (SSR) Rendering Pipeline</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><p>This rendering pipeline is new in Babylon.js 5.51.0 and replaces the <a href="babylon-guide-features-featuresdeepdive-postprocesses-screenspacereflectionspostprocess.html">Screen Space Reflections Post Process</a>. It is a more efficient and robust method for rendering screen space reflections.</p>
+<h2 id="introduction">Introduction<a class="anchor" href="#introduction">#</a></h2>
+<p>Rendering reflections in real time can be done using several methods. Each method has its own advantages and disadvantages. For web technologies, there are two main methods:</p>
+<ul>
+<li><strong>Use of a mirror texture</strong>:<ul>
+<li>Advantages: renders perfect reflections on a plane.</li>
+<li>Disadvantages: limited to one reflection direction and complexity increases according to the geometry of the scene.</li>
+</ul>
+</li>
+<li><strong>Use of SSR post-processing</strong>:<ul>
+<li>Advantages: makes all reflections possible in all directions and the complexity only depends on the screen resolution (like all post-processing).</li>
+<li>Disadvantages: limited to what the camera sees.</li>
+</ul>
+</li>
+</ul>
+<p>Ray tracing is also used in some games to render reflections. However, it is not yet available in web technologies.</p>
+<p>Here is a comparison of the rendering with and without the SSR rendering pipeline enabled:</p>
+<table>
+<thead>
+<tr>
+<th>With SSR</th>
+<th>Without SSR</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><p class="muted">Upstream illustration: With SSR (media not bundled).</p></td>
+<td><p class="muted">Upstream illustration: Without SSR (media not bundled).</p></td>
+</tr>
+<tr>
+<td><p class="muted">Upstream illustration: With SSR (media not bundled).</p></td>
+<td><p class="muted">Upstream illustration: Without SSR (media not bundled).</p></td>
+</tr>
+<tr>
+<td><p class="muted">Upstream illustration: With SSR (media not bundled).</p></td>
+<td><p class="muted">Upstream illustration: Without SSR (media not bundled).</p></td>
+</tr>
+</tbody></table>
+<p>Here are the playgrounds that generated the above images:</p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<h2 id="prerequisites">Prerequisites<a class="anchor" href="#prerequisites">#</a></h2>
+<p>To render reflections using the SSR rendering pipeline, the device must support WebGL 2 or WebGPU. If it does not, the render pipeline will work as a simple pass-through.</p>
+<p>For any reflective geometry in your scene, the SSR pipeline needs to know its &quot;reflectivity&quot; properties. To provide this information, your reflective meshes must contain:</p>
+<ul>
+<li>For a <strong>Standard Material</strong>: a specular color (<code>material.specularColor</code>), and optionally a specular texture (<code>material.specularTexture</code>). These elements will be used to know how much the object reflects for each pixel. <strong>Important</strong>: by default, the specular color of a standard material is <code>(1,1,1)</code>, so the material is totally reflective! If you don&#39;t want your material to be reflective, set the specular color to <code>(0,0,0)</code>.</li>
+<li>For a <strong>PBR</strong> material: the <code>metallic</code> property and optionally a <code>metallicTexture</code> for the metallic/roughness workflow, and the <code>reflectivityColor</code> property and optionally a <code>reflectivityTexture</code> for the specular/glossiness workflow. The roughness property (in the metallic/roughness workflow) or the micro-surface property (in the specular/glossiness workflow) will also be used to blur the reflection (see below for more details).</li>
+</ul>
+<p>In the case of PBR, the reflective color is never black, so there are always reflections. This means that the SSR effect will be applied to all pixels on the screen. This can be costly for no real benefit, because when the reflective color is low, you usually won&#39;t see any difference between applying or not applying the SSR effect (it also depends on the roughness property). This is why the SSR pipeline provides a <code>reflectivityThreshold</code> property, which disables the effect for pixels whose reflective color is at or below a certain threshold. The default value is <code>0.04</code>, which is the default reflective color you get when <code>metallic = 0</code>.</p>
+<p><strong>Important</strong>: only standard and PBR materials are supported by the SSR effect!</p>
+<h2 id="creating-the-ssr-rendering-pipeline">Creating the SSR rendering pipeline<a class="anchor" href="#creating-the-ssr-rendering-pipeline">#</a></h2>
+<p>Just create an instance of <code>BABYLON.SSRRenderingPipeline</code> :</p>
+<pre class="code" data-lang="javascript"><code>const ssr = new BABYLON.SSRRenderingPipeline(
+  &quot;ssr&quot;, // The name of the pipeline
+  scene, // The scene to which the pipeline belongs
+  [scene.activeCamera], // The list of cameras to attach the pipeline to
+  false, // Whether or not to use the geometry buffer renderer (default: false, use the pre-pass renderer)
+  BABYLON.Constants.TEXTURETYPE_UNSIGNED_BYTE, // The texture type used by the SSR effect (default: TEXTURETYPE_UNSIGNED_BYTE)
+);</code></pre>
+<p>You can easily enable or disable the SSR effect by setting the <code>isEnabled</code> property of the pipeline.</p>
+<h2 id="how-ssr-works">How SSR works<a class="anchor" href="#how-ssr-works">#</a></h2>
+<p>A basic understanding of the algorithm will help you understand how to configure the SSR rendering pipeline for best results.</p>
+<p>The algorithm is based on the following steps:</p>
+<ol>
+<li>Render the scene in multiple render targets, using either the geometry buffer or the pre-pass renderer. We need to generate the normal, depth and reflectivity buffers.</li>
+<li>For each pixel in the screen, if it is reflective:<ol>
+<li>Calculate the reflection vector of the camera-to-pixel direction and trace a ray from the pixel&#39;s position in that direction. To calculate the reflection vector, we need the normal at this pixel, that&#39;s why we need to generate this buffer. Moreover, this calculation is done in the camera space (3D space), so we need to convert the 2D coordinates of the pixel into 3D (thanks to the depth buffer).</li>
+<li>If the ray intersects an object, we get the color of this object from the color texture.</li>
+<li>If the ray does not intersect anything:<ol>
+<li>we use the color from <code>SSRRenderingPipeline.environmentTexture</code> as the hit color if a texture is provided.</li>
+<li>we simply use the color of the pixel if no environment texture is provided.</li>
+</ol>
+</li>
+<li>If blur is not enabled, we blend the hit color with the pixel color to generate the final color. By default, the blending is done using the reflectivity of the object at that pixel (there&#39;s a new option in 6.5.1 (<code>useFresnel</code>) that will blend using the fresnel coefficient). The calculation of the intersection is done by marching the ray (which means that we advance the ray step by step and calculate a new 3D point at each step) in the screen space, using the depth buffer to know if the ray hit an object or not. In this way, we can calculate the position of the intersected object in camera space (3D) but move forward in 2D space so as not to spend resources in iterations that would project the current point of the ray on the same pixel as the previous iteration.</li>
+<li>If blur is enabled, we simply store the SSR effect and not the final pixel color. We will blur the SSR effect in one more pass (see next step).</li>
+</ol>
+</li>
+<li>If blur is enabled, we blur (in two passes - horizontal and vertical) the result of the SSR pass and merge it with the original scene in a final pass.</li>
+</ol>
+<p>Regarding some properties of the SSR pipeline:</p>
+<ul>
+<li>In step 2, the <code>reflectivityThreshold</code> property is used to know whether a pixel is reflective or not.</li>
+<li>In step 2.1:<ul>
+<li>The starting point of the ray is shifted to avoid self-collision intersections and erroneous reflections. The <code>selfCollisionNumSkip</code> property controls the number of iterations to skip at the start before considering an intersection legitimate. A value of 1 works well in most cases, but it is sometimes necessary to increase it to 2 or 3 to avoid certain rendering artifacts.</li>
+<li>If blur is not enabled, the starting point of the ray is jittered to account for the roughness of the surface. The intensity of the jitter is controlled by the <code>roughnessFactor</code> property (default: 0.2).</li>
+</ul>
+</li>
+<li>At step 2.2:<ul>
+<li>The ray is moved in 3D space only up to <code>maxDistance</code> (default: 1000) units from the pixel position (3D). Note that when frustum clipping is enabled (<code>clipToFrustum = true</code>, which is the default), the ray is clipped to the camera frustum, which may reduce the value of <code>maxDistance</code> for that ray.</li>
+<li>The ray is moved in 2D space up to <code>maxSteps</code> (default: 1000) iterations. The number of pixels that are moved in each iteration is given by <code>step</code> (default: 1). When the <code>enableSmoothReflections</code> property is <code>true</code>, an additional calculation is performed to compute a more accurate intersection point. This extra step will only occur if <code>enableSmoothReflections = true</code> and <code>step &gt; 1</code>.</li>
+<li>The <code>thickness</code> property is used to give thickness to objects during the intersection calculation. See below for more explanation of the <code>thickness</code> parameter.</li>
+</ul>
+</li>
+<li>In step 2.5, <code>roughnessFactor</code> is used as a global roughness factor applied to all objects. It can help blur reflections even when the roughness of some surfaces is 0.</li>
+<li>In step 3, <code>blurDispersionStrength</code> (default: 0.03) and <code>blurQuality</code> (default: 2) are used to control the strength and quality of the blur dispersion effect.</li>
+</ul>
+<h2 id="debugging-ssr-scenes">Debugging SSR scenes<a class="anchor" href="#debugging-ssr-scenes">#</a></h2>
+<p>An important setting in the SSR pipeline is the <code>debug</code> property. It can help you understand what is going on in your scene, and we will use it a lot in the following sections.
+Simply set it to <code>true</code> to enable a special color rendering of the SSR effect:</p>
+<pre class="code" data-lang="javascript"><code>ssr.debug = true;</code></pre>
+<p>For example</p>
+<table>
+<thead>
+<tr>
+<th>Without debug</th>
+<th>With debug</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><p class="muted">Upstream illustration: Without debug (media not bundled).</p></td>
+<td><p class="muted">Upstream illustration: With debug (media not bundled).</p></td>
+</tr>
+</tbody></table>
+<p>The meaning of the colors is as follows:</p>
+<ul>
+<li>blue: the ray has reached the maximum distance (we have reached <code>maxDistance</code>)</li>
+<li>red: the ray ran out of steps (we have reached <code>maxSteps</code>)</li>
+<li>yellow: the ray has left the screen. By default, frustum clipping is on, so you shouldn&#39;t see this color much.</li>
+<li>green: the ray has intersected a surface. The brightness of the green color is proportional to the distance between the origin of the ray and the point of intersection: a lighter green means more calculations than a darker green. The brightness is directly proportional to the number of steps the main loop had to execute to find an intersection (<code>debug.green = num_steps / maxSteps</code>): if we did not find an intersection within <code>maxSteps</code>, a red color is generated instead of a full green.</li>
+</ul>
+<p>If possible, you should try to get as few red pixels as possible, as this means that we have executed all the iterations of the loop before stopping without finding an intersection.
+You can trade red pixels for blue pixels by increasing the value of <code>step</code>, which will favor speed over quality, so it&#39;s a balance to be found depending on your scene and the final result you expect.</p>
+<h2 id="geometry-buffer-or-pre-pass-renderer">Geometry buffer or Pre-Pass renderer<a class="anchor" href="#geometry-buffer-or-pre-pass-renderer">#</a></h2>
+<p>The SSR rendering pipeline can use either the <span>Geometry Buffer Renderer</span> or the <span>Pre-Pass Renderer</span> to render the scene. The default is to use the pre-pass renderer, but you can force the use of the geometry buffer renderer by setting the <code>forceGeometryBuffer</code> parameter in the constructor to <code>true</code>.</p>
+<p>You don&#39;t need to worry about the internal details of these renderers, but choosing one or the other can affect the final rendering.</p>
+<h3 id="using-msaa">Using MSAA<a class="anchor" href="#using-msaa">#</a></h3>
+<p>You would normally choose the pre-pass renderer because the reflectivity color is calculated more accurately than with the geometry buffer renderer and the performance is better overall, but if you want to use MSAA as an anti-aliasing method, the geometry buffer renderer may be a better choice. This is because MSAA can cause artifacts when used with the pre-pass renderer.</p>
+<p>Here is an example of a scene using MSAA with the geometric buffer and the pre-pass renderer:</p>
+<table>
+<thead>
+<tr>
+<th>Geometry Buffer</th>
+<th>Pre-Pass</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><p class="muted">Upstream illustration: Geometry buffer (media not bundled).</p></td>
+<td><p class="muted">Upstream illustration: Pre-pass (media not bundled).</p></td>
+</tr>
+</tbody></table>
+<p>Look inside the red rectangle to see the artifacts.</p>
+<p>It&#39;s even worse if you turn on the automatic thickness calculation:</p>
+<table>
+<thead>
+<tr>
+<th>Geometry Buffer</th>
+<th>Pre-Pass</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><p class="muted">Upstream illustration: Geometry buffer (media not bundled).</p></td>
+<td><p class="muted">Upstream illustration: Pre-pass (media not bundled).</p></td>
+</tr>
+</tbody></table>
+<p>Note that the artifacts depend on your scene. Try to spot them in the image on the right:</p>
+<table>
+<thead>
+<tr>
+<th>Pre-Pass without MSAA</th>
+<th>Pre-Pass with MSAA</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><p class="muted">Upstream illustration: Pre-Pass without MSAA (media not bundled).</p></td>
+<td><p class="muted">Upstream illustration: Pre-Pass with MSAA (media not bundled).</p></td>
+</tr>
+</tbody></table>
+<p>The artifacts are barely visible, so in this scene using MSAA might be a valid option.</p>
+<p>Instead of MSAA, you can use FXAA if you want anti-aliasing in the case of pre-pass rendering:</p>
+<table>
+<thead>
+<tr>
+<th>Geometry Buffer with MSAA</th>
+<th>Pre-Pass with FXAA</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><p class="muted">Upstream illustration: Geometry Buffer with MSAA (media not bundled).</p></td>
+<td><p class="muted">Upstream illustration: Pre-Pass with FXAA (media not bundled).</p></td>
+</tr>
+</tbody></table>
+<p>Here is the PG used in these examples: <span class="muted">Online playground (not embedded offline)</span></p>
+<h3 id="depth-texture-type">Depth texture type<a class="anchor" href="#depth-texture-type">#</a></h3>
+<p>Also, one thing to note about the pre-pass renderer is that you have the option to use 16-bit floating textures for the depth texture, for example to save memory space (the geometry buffer renderer always uses a 32-bit floating texture). This can lead to rendering artifacts, depending on your scene:</p>
+<table>
+<thead>
+<tr>
+<th>32 bits float depth texture</th>
+<th>16 bits float depth texture</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><p class="muted">Upstream illustration: 32 bits float depth texture (media not bundled).</p></td>
+<td><p class="muted">Upstream illustration: 16 bits float depth texture (media not bundled).</p></td>
+</tr>
+</tbody></table>
+<p>Note: <code>ssr.clipToFrustum</code> has been set to <code>false</code> to take these screenshots because the artifacts are more visible with a yellow background than with a blue one!</p>
+<p>You get these artifacts because there is less precision in the depth buffer and therefore you get more self-collisions between the reflected ray and the actual surface from which the ray is shot (see section 2.1 in <a href="babylon-guide-features-featuresdeepdive-postprocesses.html">How SSR is working</a>).</p>
+<p>You can solve the problem by keeping the default texture with a depth of 32 bits or by increasing <code>selfCollisionNumSkip</code> :</p>
+<pre class="code" data-lang="javascript"><code>ssr.selfCollisionNumSkip = 2;</code></pre>
+<p><p class="muted">Upstream illustration: 16 bits float depth texture with selfCollisionNumSkip=2 (media not bundled).</p></p>
+<p>Here is the corresponding PG for this screenshot: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>Note that currently WebGPU does not support filtering for 32-bit floating point textures, so the depth texture is a 16-bit floating point texture!</p>
+<h2 id="description-of-ssr-parameters">Description of SSR parameters<a class="anchor" href="#description-of-ssr-parameters">#</a></h2>
+<p>In the following sections, we will describe the most important parameters of the SSR rendering pipeline, as it is not always easy to choose the right values for each parameter, or to know what impact it has on the final rendering.</p>
+<h3 id="thickness">Thickness<a class="anchor" href="#thickness">#</a></h3>
+<p>In <a href="babylon-guide-features-featuresdeepdive-postprocesses.html">step 2.2 of the SSR algorithm</a>, we know if the ray has hit an object when:</p>
+<ul>
+<li>the depth of the current point of the ray is farther away than the depth of the pixel on which this point is projected (this depth is read from the depth buffer). This means that the current ray point is &quot;behind&quot; the object that was rendered in the depth buffer at that point. Note that the depth increases for objects further away from the camera.</li>
+<li>The depth of the previous point of the ray is closer than the depth of the pixel on which this point is projected. This means that the previous point of the ray is &quot;in front&quot; of the object that was rendered in the depth buffer at that point</li>
+</ul>
+<p>Thus, we know that we have crossed the boundary of the object rendered at the location of this pixel. However, the depth buffer stores only one depth value for each pixel, so we don&#39;t know the thickness of an object, which is necessary if we want to calculate accurate intersections. By default we use a constant thickness value, which is set to <code>0.5</code> by default. You can change this value by setting the <code>thickness</code> property of the SSR rendering pipeline, and this value will depend on the extent of your scene.</p>
+<table>
+<thead>
+<tr>
+<th>Thickness 0</th>
+<th>Thickness 0.5</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><p class="muted">Upstream illustration: Thickness 0 (media not bundled).</p></td>
+<td><p class="muted">Upstream illustration: Thickness 0.5 (media not bundled).</p></td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>Thickness 1</th>
+<th>Thickness 4</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><p class="muted">Upstream illustration: Thickness 1 (media not bundled).</p></td>
+<td><p class="muted">Upstream illustration: Thickness 1 (media not bundled).</p></td>
+</tr>
+</tbody></table>
+<p>As you can see in the mirror and on the floor, the reflections of the objects expand but only in a linear way, the shape of the sphere is not preserved because we use a constant thickness value.</p>
+<h3 id="automatic-thickness-calculation">Automatic thickness calculation<a class="anchor" href="#automatic-thickness-calculation">#</a></h3>
+<p>The SSR pipeline also supports a more accurate method of calculating thickness, which is to use additional depth rendering to generate the depth of the back faces. In this way, we can calculate the thickness as the difference between the depth value read from this back depth buffer and that read from the front depth buffer:</p>
+<table>
+<thead>
+<tr>
+<th>Thickness 1</th>
+<th>Thickness 0 with automatic thickness computation</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><p class="muted">Upstream illustration: Thickness 1 (media not bundled).</p></td>
+<td><p class="muted">Upstream illustration: Thickness 0 with automatic thickness computation (media not bundled).</p></td>
+</tr>
+</tbody></table>
+<p>Here is the corresponding PG: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>You can enable this mode by setting the <code>enableAutomaticThicknessComputation</code> property of the SSR rendering pipeline to <code>true</code>:</p>
+<pre class="code" data-lang="javascript"><code>ssr.enableAutomaticThicknessComputation = true;</code></pre>
+<p>In this mode, <code>thickness</code> is always used as an additional offset, but you can typically use a much lower value, and even 0 works well in many cases.</p>
+<p>However, this is not a magic mode. It will not solve all SSR problems, and only a single thickness can be calculated this way. It is also more demanding in terms of performance because the scene must be rendered again to generate the back depth buffer.
+Sometimes it&#39;s better to add a little blur to mask artifacts rather than enabling this mode, which will be lighter on the GPU.</p>
+<p>You can reduce the GPU requirements of this mode by setting a value greater than 0 for <code>backfaceDepthTextureDownsample</code> (1 to divide the texture size by 2, 2 to divide it by 3 and so on), which will reduce the size of the depth texture used by the depth renderer. However, this can lead to significant artifacts, so it is always a trade-off between performance and quality and how best you can try to hide the artifacts.</p>
+<h3 id="maximum-distance-maximum-steps-steps-smooth-reflections-and-clipping-to-frustum">Maximum distance, maximum steps, steps, smooth reflections and clipping to frustum<a class="anchor" href="#maximum-distance-maximum-steps-steps-smooth-reflections-and-clipping-to-frustum">#</a></h3>
+<p><code>maxDistance</code>, <code>maxSteps</code>, <code>step</code> and <code>enableSmoothReflections</code> work together, and their impact on the final rendering can be understood by reading the <a href="babylon-guide-features-featuresdeepdive-postprocesses.html">How SSR works</a> section as well as <a href="babylon-guide-features-featuresdeepdive-postprocesses.html">Debugging your SSR scenes</a>.</p>
+<p>In summary:</p>
+<ul>
+<li>a ray will not go further than <code>maxDistance</code> (in 3D space)</li>
+<li>a ray will not go further than <code>maxSteps</code> * <code>step</code> pixels (in 2D space)</li>
+<li>If <code>step</code> is greater than 1, you can enable <code>enableSmoothReflections</code> to compute more accurate intersections and thus improve reflections.</li>
+</ul>
+<p><code>clipToFrustum = true</code> will clip the ray to the camera frustum and should generally be left <code>true</code>, because although it adds some instructions to the shader, it shortens the radius and thus reduces the computation.</p>
+<p><code>step</code> must be a strictly positive integer, as it is a number of pixels.</p>
+<h3 id="reflection-intensity">Reflection intensity<a class="anchor" href="#reflection-intensity">#</a></h3>
+<p><code>strength</code> and <code>reflectionSpecularFalloffExponent</code> work together to increase or decrease the SSR effect:</p>
+<ul>
+<li>The <code>strength</code> parameter will modulate the reflectivity color.</li>
+<li>The <code>reflectionSpecularFalloffExponent</code> parameter is applied after the reflectivity color is modulated by the <code>strength</code> parameter.</li>
+</ul>
+<p>The formula is as follows:</p>
+<pre class="code" data-lang="javascript"><code>reflectionMultiplier = pow(reflectivity * strength, reflectionSpecularFalloffExponent);
+finalColor = color * (1 - reflectionMultiplier) + reflectionMultiplier * SSR;</code></pre>
+<p>Note: <code>pow</code> is the exponentiation operator.</p>
+<p>It is probably best to keep <code>strength = 1</code> (the default) and change <code>reflectionSpecularFalloffExponent</code> depending on whether you want to enhance the effect (use values less than 1) or reduce the effect (use values greater than 1).</p>
+<h3 id="blurred-reflections">Blurred reflections<a class="anchor" href="#blurred-reflections">#</a></h3>
+<p>You can optionally add a blur pass to SSR reflections (enabled by default). This improves realism when the surface is not a perfect mirror and has roughness, and it also hides some of the flaws in the technique (see <a href="babylon-guide-features-featuresdeepdive-postprocesses.html">How to deal with Artifacts</a>)!</p>
+<p><code>blurDispersionStrength</code> is the main parameter (default: 0.03). When it is set to 0, the blur is disabled: You must set a value greater than 0 to enable it. The range of values is approximately between 0 and 0.1, where 0.1 is already a strong blur effect.</p>
+<p>As mentioned above, the blur is based on the roughness of the material:</p>
+<ul>
+<li>for standard materials, the roughness comes from the alpha channel of the specular texture if provided (and is actually <code>1 - alpha</code>, since the alpha channel stores gloss, not roughness), and is set to 0 otherwise</li>
+<li>for PBR materials, it is computed from the <code>roughness</code> property and optionally a <code>reflectivityTexture</code> for the metallic/roughness workflow, and from the <code>microSurface</code> property and optionally a <code>reflectivityTexture</code> for the specular/glossiness workflow.</li>
+</ul>
+<p>If the roughness is 0, the blur will have no effect because the surface is perfectly smooth. If you still want to get some blur even in this case, you can use the <code>roughnessFactor</code> property (default: 0.2), which acts as an additional global roughness:</p>
+<table>
+<thead>
+<tr>
+<th><code>blurDispersionStrength = 0.0</code>, <code>roughnessFactor = 0</code></th>
+<th><code>blurDispersionStrength = 0.05</code>, <code>roughnessFactor = 0</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><p class="muted">Upstream illustration: Non blurred scene (media not bundled).</p></td>
+<td><p class="muted">Upstream illustration: Blur with roughnessFactor = 0 (media not bundled).</p></td>
+</tr>
+</tbody></table>
+<p>In this scene, all materials are standard materials with no specular texture, so their roughness is 0. The two screenshots are identical because the final roughness is 0 for all materials, even if we give a non-zero value to <code>blurDispersionStrength</code>.</p>
+<table>
+<thead>
+<tr>
+<th><code>blurDispersionStrength = 0.05</code>, <code>roughnessFactor = 0.1</code></th>
+<th><code>blurDispersionStrength = 0.05</code>, <code>roughnessFactor = 0.5</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><p class="muted">Upstream illustration: Blur with roughnessFactor = 0.1 (media not bundled).</p></td>
+<td><p class="muted">Upstream illustration: Blur with roughnessFactor = 0.5 (media not bundled).</p></td>
+</tr>
+</tbody></table>
+<p>By setting a non-zero value to <code>roughnessFactor</code>, you increase the final roughness and the blur now has a visible effect.</p>
+<p>Here is the corresponding PG: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>The <code>blurDownsample</code> property (default: 0) can be used to reduce the size of the textures used in the blur pass: <code>blurDownsample = 1</code> will blur at half resolution, <code>blurDownsample = 2</code> will blur at 1/3 resolution, etc.
+Using a value greater than 0 will save some performance and generally have little impact on the final result (at least for small values of <code>blurDownsample</code>), so feel free to use it!</p>
+<p>Note that when blur is not enabled, <code>roughnessFactor</code> is used as a factor to modulate the jitter of the starting point of the reflected ray:</p>
+<table>
+<thead>
+<tr>
+<th>no blur, <code>roughnessFactor = 0.05</code></th>
+<th>no blur, <code>roughnessFactor = 0.2</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><p class="muted">Upstream illustration: Jitter with roughnessFactor = 0.05 (media not bundled).</p></td>
+<td><p class="muted">Upstream illustration: Blur with roughnessFactor = 0.5 (media not bundled).</p></td>
+</tr>
+</tbody></table>
+<p>As you can see, jittering produces noise, so it&#39;s up to you to turn it on or off depending on your needs. Also note that for jittering to be effective, the roughness must be non-zero, as the base value of jittering depends only on the roughness: the <code>roughnessFactor</code> property will only reduce or amplify the effect as a multiplication factor.</p>
+<h3 id="reflectivity-threshold">Reflectivity Threshold<a class="anchor" href="#reflectivity-threshold">#</a></h3>
+<p>The <code>reflectivityThreshold</code> parameter is used to discard pixels whose reflectivity value is below a certain threshold. This avoids computing the SSR for pixels that reflect nothing or almost nothing, which can be useful for saving time on the GPU.</p>
+<p>For example, in this scene, <code>reflectivityThreshold</code> has been set to 0.001 :</p>
+<table>
+<thead>
+<tr>
+<th><code>reflectivityThreshold = 0</code></th>
+<th>Debug view</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><p class="muted">Upstream illustration: SSR with reflectivityThreshold = 0 (media not bundled).</p></td>
+<td><p class="muted">Upstream illustration: Debug view of the scene (media not bundled).</p></td>
+</tr>
+</tbody></table>
+<p>Using the debug view, we can see that the reflections are calculated on the sphere, but taking them into account makes no difference visually because the <code>metallic</code> property of the material is 0 and the <code>roughness</code> is 1, so the reflectivity is very low (0.04). By setting <code>reflectivityThreshold</code> to <code>0.04</code> (the default value), these reflections are no longer calculated:</p>
+<p><p class="muted">Upstream illustration: SSR with reflectivityThreshold = 0.04 (media not bundled).</p></p>
+<h3 id="color-space">Color space<a class="anchor" href="#color-space">#</a></h3>
+<p>By default, the SSR pipeline expects the input color texture to be in gamma space and will generate its output in gamma space. If for some reason the input is in linear space or you want to generate the output in linear space, you can use these parameters:</p>
+<ul>
+<li><code>inputTextureColorIsInGammaSpace</code>: set it to <code>false</code> to indicate that the input color texture is in linear space.</li>
+<li><code>generateOutputInGammaSpace</code>: set it to <code>false</code> to generate the output in linear space.</li>
+</ul>
+<h3 id="use-fresnel">Use fresnel<a class="anchor" href="#use-fresnel">#</a></h3>
+<p>New in 6.5.1 is the ability to use the fresnel coefficient to blend the SSR effect with the original scene. This is controlled by the <code>useFresnel</code> property, which is <code>false</code> by default.
+Setting <code>useFresnel</code> to <code>true</code> is more physically accurate, but is more GPU-intensive when you also enable blur (<code>blurDispersionStrength &gt; 0</code>).</p>
+<p>This setting can be useful if you want PBR materials to show reflections even when their <code>metallic</code> property is set to 0. By default, <code>reflectivityThreshold = 0.04</code> because when using material reflectivity instead of Fresnel as the blending factor, reflections are not visible when <code>metallic = 0</code> (reflectivity is 0.04 in this case). By setting <code>useFresnel = true</code>, you can obtain reflections even when <code>metallic = 0</code>.</p>
+<p>Note that the rendering can be quite different if you use <code>useFresnel = true</code>, everything will look more reflective:</p>
+<table>
+<thead>
+<tr>
+<th><code>useFresnel = false</code></th>
+<th><code>useFresnel = true</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><p class="muted">Upstream illustration: useFresnel = false (media not bundled).</p></td>
+<td><p class="muted">Upstream illustration: useFresnel = true (media not bundled).</p></td>
+</tr>
+<tr>
+<td><p class="muted">Upstream illustration: useFresnel = false (media not bundled).</p></td>
+<td><p class="muted">Upstream illustration: useFresnel = true (media not bundled).</p></td>
+</tr>
+</tbody></table>
+<p>In the second example, the blue sphere has a PBR material applied, with <code>metallic = 0</code> and <code>roughness = 0</code>.
+Note that <code>reflectivityThreshold</code> has been lowered to 0.001, as reflections would not have been calculated with the default value of 0.04!
+As you can see, there are no visible reflections in the non-Fresnel case, whereas they are visible in the Fresnel case.</p>
+<h2 id="how-to-deal-with-artifacts">How to deal with artifacts<a class="anchor" href="#how-to-deal-with-artifacts">#</a></h2>
+<p>SSR is subject to many artifacts, some of which can be corrected and some of which are inherent to the technique.</p>
+<p>This section describes the most common artifacts and explains how to correct them when possible, or how to hide them as much as possible when not.</p>
+<h3 id="artifacts-when-enabling-msaa-with-the-pre-pass-renderer">Artifacts when enabling MSAA with the Pre-Pass renderer<a class="anchor" href="#artifacts-when-enabling-msaa-with-the-pre-pass-renderer">#</a></h3>
+<p>These artifacts and how to correct them have already been described in the <strong>Geometry Buffer or Pre-Pass Rendering section</strong>, subsection <a href="babylon-guide-features-featuresdeepdive-postprocesses.html">Using MSAA</a>.
+As an illustration, here is what artifacts can look like:
+<p class="muted">Upstream illustration: Artifacts caused by MSAA (media not bundled).</p></p>
+<h3 id="depth-buffer-accuracy-artifacts">Depth buffer accuracy artifacts<a class="anchor" href="#depth-buffer-accuracy-artifacts">#</a></h3>
+<p>These artifacts and how to correct them have already been described in the <strong>Geometric buffer or Pre-Pass rendering section</strong>, subsection <a href="babylon-guide-features-featuresdeepdive-postprocesses.html">Depth texture type</a>.
+As an illustration, here is what artifacts can look like:
+<p class="muted">Upstream illustration: Artifacts caused by depth buffer precision (media not bundled).</p></p>
+<h3 id="artifacts-with-transparent-meshes">Artifacts with transparent meshes<a class="anchor" href="#artifacts-with-transparent-meshes">#</a></h3>
+<p>You should note that the Pre-Pass renderer handles transparent meshes better than the geometry buffer renderer when using the opacity texture:</p>
+<table>
+<thead>
+<tr>
+<th>Geometry Buffer</th>
+<th>Pre-Pass</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><p class="muted">Upstream illustration: Geometry Buffer with transparent mesh (media not bundled).</p></td>
+<td><p class="muted">Upstream illustration: Pre-Pass with transparent mesh (media not bundled).</p></td>
+</tr>
+</tbody></table>
+<p>It&#39;s still not perfect, you can get artifacts even with the pre-pass renderer (exaggerated by putting a full mirror surface) :
+<p class="muted">Upstream illustration: Artifacts with transparent meshes and pre-pass renderer (media not bundled).</p></p>
+<p>Here is the corresponding PG: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>There is nothing we can do, unfortunately, you will have to be creative to try to hide these defects!</p>
+<h3 id="artifacts-when-using-the-automatic-thickness-calculation">Artifacts when using the automatic thickness calculation<a class="anchor" href="#artifacts-when-using-the-automatic-thickness-calculation">#</a></h3>
+<p>For automatic thickness calculation (<code>enableAutomaticThicknessComputation = true</code>) to work, the back sides must exist, so that a thickness can be accurately calculated by subtracting the depth read from the back and front depth textures. If some of your objects have only front faces, you will get nasty artifacts:</p>
+<table>
+<thead>
+<tr>
+<th>This plane does not have a back face</th>
+<th>Some of the objects of the robot don&#39;t have back faces</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><p class="muted">Upstream illustration: Artifacts with plane (media not bundled).</p></td>
+<td><p class="muted">Upstream illustration: Artifacts with robot (media not bundled).</p></td>
+</tr>
+</tbody></table>
+<p>The solution is to make sure that all objects have back sides:</p>
+<ul>
+<li>for the plane it&#39;s easy, just set <code>plane.material.backFaceCulling = false</code></li>
+<li>for the robot, it&#39;s not so easy, you have to find the defective meshes and either create back faces for them or set <code>backFaceCulling = false</code> for their materials. Another solution would be to simply disable the automatic thickness calculation!</li>
+</ul>
+<p>Here is the PG for the plane example: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>Note that there is a special case for transparent meshes. In the standard rendering pass, transparent meshes do not write to the depth buffer, so it will not be possible to calculate a correct thickness for these subjects.
+It turns out that transparent meshes write to the depth texture when using the geometry/pre-pass renderer, but the backface depth renderer created internally when enabling automatic thickness calculation does not write to the depth texture for transparent materials.
+You will need to enable writing of depth values for transparent meshes by doing:</p>
+<pre class="code" data-lang="javascript"><code>ssr.backfaceForceDepthWriteTransparentMeshes = true;</code></pre>
+<p>Since this is usually what you want, <code>true</code> is the default value for <code>backfaceForceDepthWriteTransparentMeshes</code>.</p>
+<p>You will get the same kind of artifacts if you do not:</p>
+<table>
+<thead>
+<tr>
+<th>Artifacts when using transparent material</th>
+<th>Artifacts fixed</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><p class="muted">Upstream illustration: Artifacts with transparent mesh (media not bundled).</p></td>
+<td><p class="muted">Upstream illustration: Artifacts fixed with transparent meshes (media not bundled).</p></td>
+</tr>
+</tbody></table>
+<p>Here is the PG corresponding to the screenshot on the right: <span class="muted">Online playground (not embedded offline)</span></p>
+<h3 id="artifacts-inherent-to-the-ssr-technique">Artifacts inherent to the SSR technique<a class="anchor" href="#artifacts-inherent-to-the-ssr-technique">#</a></h3>
+<p>Because SSR is a screen-space technique, it can only handle geometry rendered on the screen: when moving, some geometry that was previously visible and reflected on other objects will no longer be visible, and the reflection will disappear when the objects that reflected the geometry are still visible.</p>
+<p>Also, the back of the objects cannot be reflected properly, because we only have access to the colors of the front of the objects (the color texture stores what the camera sees, so the front of the objects, not the back).</p>
+<h4 id="attenuate-reflections-on-the-edges-of-the-screen">Attenuate reflections on the edges of the screen<a class="anchor" href="#attenuate-reflections-on-the-edges-of-the-screen">#</a></h4>
+<p>Here&#39;s what happens to reflections when geometries go out of view:
+<span class="muted">&lt;video controls muted loop preload=&quot;auto&quot; width=&quot;600px&quot;&gt;</span>
+<span class="muted">&lt;source src=&quot;/img/how_to/ssrRenderingPipeline/artifacts_ssr_geometry_disappear.webm&quot; type=&quot;video/webm&quot;/&gt;</span>
+Your browser does not support the video tag.
+<span class="muted">&lt;/video&gt;</span></p>
+<p>The <code>attenuateScreenBorders = true</code> parameter makes the disappearance of reflections less abrupt:</p>
+<span class="muted">&lt;video controls muted loop preload=&quot;auto&quot; width=&quot;600px&quot;&gt;
+    &lt;source src=&quot;/img/how_to/ssrRenderingPipeline/artifacts_ssr_geometry_disappear_attenuate.webm&quot; type=&quot;video/webm&quot;/&gt;
+    Your browser does not support the video tag.
+&lt;/video&gt;</span><p>Since this is what you expect by default, <code>true</code> is the default value for <code>attenuateScreenBorders</code>.</p>
+<h4 id="attenuate-reflections-based-on-distance">Attenuate reflections based on distance<a class="anchor" href="#attenuate-reflections-based-on-distance">#</a></h4>
+<p>Reflections should be attenuated according to the distance the ray travels before reaching an intersection, and also according to the number of steps we have taken before calculating that intersection. Indeed, if/when we reach the maximum distance/maximum number of steps, we want a smooth transition between what we generated before and after reaching the limit:</p>
+<table>
+<thead>
+<tr>
+<th>Hard transition when <code>maxDistance</code> reached</th>
+<th>Hard transition when <code>maxSteps</code> reached</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><p class="muted">Upstream illustration: Hard transition with maxDistance (media not bundled).</p></td>
+<td><p class="muted">Upstream illustration: Hard transition with maxSteps (media not bundled).</p></td>
+</tr>
+</tbody></table>
+<p>If we enable <code>attenuateIntersectionDistance</code> in the first case, and <code>attenuateIntersectionIterations</code> in the second, we get :</p>
+<table>
+<thead>
+<tr>
+<th>Soft transition when <code>maxDistance</code> reached</th>
+<th>Soft transition when <code>maxSteps</code> reached</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><p class="muted">Upstream illustration: Soft transition with maxDistance (media not bundled).</p></td>
+<td><p class="muted">Upstream illustration: Soft transition with maxSteps (media not bundled).</p></td>
+</tr>
+</tbody></table>
+<p>This is normally the behavior you want, which is why these two parameters are enabled by default.</p>
+<h4 id="attenuate-reflections-for-rays-facing-the-camera">Attenuate reflections for rays facing the camera<a class="anchor" href="#attenuate-reflections-for-rays-facing-the-camera">#</a></h4>
+<p>Reflected rays coming towards the camera should normally be ignored for intersection purposes (by setting <code>attenuateFacingCamera = true</code>), because they will usually hit an object in the back and we only know their colors in the front. However, having a bad reflection can sometimes be better than having no reflection at all, especially if a blur is applied (making the &quot;bad&quot; reflection less obvious):</p>
+<table>
+<thead>
+<tr>
+<th><code>attenuateFacingCamera = false</code></th>
+<th><code>attenuateFacingCamera = true</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><p class="muted">Upstream illustration: No attenuation for rays facing the camera (media not bundled).</p></td>
+<td><p class="muted">Upstream illustration: Rays facing the camera attenuated (media not bundled).</p></td>
+</tr>
+</tbody></table>
+<p>As you can see, when the rays facing the camera are not attenuated, we get a &quot;backward&quot; reflection for the gas pumps. These reflections are false because we can&#39;t reflect the back of the pumps, but it&#39;s not obvious in the screenshot and in the motion + a little blur would probably fool many people! That&#39;s why the <code>attenuateFacingCamera</code> parameter is <code>false</code> by default.</p>
+<p>Here is the PG corresponding to the screenshot on the left: <span class="muted">Online playground (not embedded offline)</span></p>
+<h4 id="attenuate-backface-reflections">Attenuate backface reflections<a class="anchor" href="#attenuate-backface-reflections">#</a></h4>
+<p><code>attenuateBackfaceReflection</code> is used for the same purpose as <code>attenuateFacingCamera</code> and can remove artifacts that the latter cannot. For example</p>
+<table>
+<thead>
+<tr>
+<th><code>attenuateBackfaceReflection = false</code></th>
+<th><code>attenuateBackfaceReflection = true</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><p class="muted">Upstream illustration: No attenuation for back face reflections (media not bundled).</p></td>
+<td><p class="muted">Upstream illustration: Attenuation for back face reflections (media not bundled).</p></td>
+</tr>
+</tbody></table>
+<p>The rays reflected from the window that hit the &quot;20&quot; panel make an angle with the direction of the view, which is too large for <code>attenuateFacingCamera</code> to remove the reflections, but <code>attenuateBackfaceReflection</code> is able to do so. This is because it checks the angle between the reflected ray and the normal to the point of intersection, and if they point in the same direction, it attenuates/suppresses the reflections.</p>
+<p>Because this check requires additional texture lookup to get the normal to the point of intersection, and also because <code>attenuateFacingCamera</code> can capture most problems, <code>attenuateBackfaceReflection</code> is <code>false</code> by default.</p>
+<h4 id="handling-missed-intersections">Handling missed intersections<a class="anchor" href="#handling-missed-intersections">#</a></h4>
+<p>When a reflected ray doesn&#39;t hit anything (either because there is no geometry to intersect, or because we have reached the maximum distance / maximum steps), we have two choices for the color we should choose:</p>
+<ul>
+<li>if an environment cube texture has been provided, we read the color from the texture using the direction of the reflected ray</li>
+<li>If no environment texture has been provided, we use the color of the current pixel as a fallback.</li>
+</ul>
+<p>If you don&#39;t provide an environment texture, you will usually see obvious differences between the pixels for which we were able to find a reflected pixel and those for which we were not:</p>
+<table>
+<thead>
+<tr>
+<th>No environment texture</th>
+<th>Debug view</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><p class="muted">Upstream illustration: No environment texture (media not bundled).</p></td>
+<td><p class="muted">Upstream illustration: Attenuation for back face reflections (media not bundled).</p></td>
+</tr>
+</tbody></table>
+<p>The debug view helps to understand what&#39;s going on: the lighter pixels on the left screenshot correspond to pixels for which no intersection could be calculated (blue or red on the right screenshot), so we ended up using the original color of the ground for the SSR effect, which is a bit lighter than the pixel that would normally be reflected.</p>
+<p>Using an environment texture can help mask these artifacts, as long as the environment texture matches the local environment well! The best way to generate such textures is to use a reflection probe. The probe captures the local environment by rendering the scene as a cube texture from the probe position.</p>
+<p>For the screenshot below, a probe was created roughly in the center of the courtyard and was defined as a <a href="babylon-guide-features-featuresdeepdive-materials-using-reflectiontexture.html">local cube map</a> by providing a bounding box for the cube, which is roughly the size of the courtyard:
+<p class="muted">Upstream illustration: With environment texture (media not bundled).</p></p>
+<p>Note that since the environment texture comes from a reflection probe, you need to set <code>ssr.environmentTextureIsProbe</code> to <code>true</code> (a probe cube texture is treated differently than an ordinary cube texture because the Y-axis is reversed).</p>
+<p>If you look closely, you will see that some reflections are not quite right, and if you move around, you will see reflections that are clearly misplaced:
+<p class="muted">Upstream illustration: With environment texture (media not bundled).</p></p>
+<p>One way to mitigate these artifacts would be to use several cube maps, depending on where you are in the scene, and not to use one global cube map for the whole scene.</p>
+<p>Here is the PG corresponding to the scene with the local cube map: <span class="muted">Online playground (not embedded offline)</span></p>
+<h4 id="managing-self-intersections">Managing self-intersections<a class="anchor" href="#managing-self-intersections">#</a></h4>
+<p>As explained in <a href="babylon-guide-features-featuresdeepdive-postprocesses.html">How SSR works</a>, the starting point of the reflected ray is shifted to avoid self-intersections and false reflections. The <code>selfCollisionNumSkip</code> property controls how many iterations to skip at the start before considering an intersection legitimate. While a value of 1 works well in most cases, it is sometimes necessary to increase this value a bit:</p>
+<table>
+<thead>
+<tr>
+<th><code>selfCollisionNumSkip = 1</code></th>
+<th><code>selfCollisionNumSkip = 2</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><p class="muted">Upstream illustration: selfCollisionNumSkip = 1 (media not bundled).</p></td>
+<td><p class="muted">Upstream illustration: selfCollisionNumSkip = 2 (media not bundled).</p></td>
+</tr>
+</tbody></table>
+<h2 id="optimize-ssr-in-your-scenes">Optimize SSR in your scenes<a class="anchor" href="#optimize-ssr-in-your-scenes">#</a></h2>
+<p>As you can see above, SSR is not a perfect technique (far from it!), and you have to deal with a number of artifacts and limitations. Most of your work will be in trying to hide these artifacts as much as possible, and making sure the effect works as fast as possible within these constraints.</p>
+<p>To make the SSR as fast as possible, you should:</p>
+<ol>
+<li>use the largest possible values for <code>step</code></li>
+<li>use the smallest possible values for <code>maxSteps</code> and <code>maxDistance</code></li>
+<li>disable <code>enableSmoothReflections</code> - but, with larger values of <code>step</code>, you may want to enable this setting</li>
+<li>disable <code>enableAutomaticThicknessComputation</code> - this option will render your scene a second time to generate a back depth buffer!</li>
+<li>Use values as large as possible for <code>blurDownsample</code>.</li>
+<li>Use as large values as possible for <code>ssrDownsample</code>. This parameter acts like <code>blurDownsample</code> but for the SSR effect itself. Also, it will only have an effect when the blur is on (so when <code>blurDispersionStrength</code> is greater than 0).</li>
+</ol>
+<p>Here is a playground demonstrating two different settings for the Hill Valley scene:</p>
+<span class="muted">Online playground (not embedded offline)</span><p>For the starting position (GPU is an RTX 3080Ti, canvas size is 1278x1200):</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Total GPU frame time</th>
+<th>GPU time for SSR alone</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Quality settings</td>
+<td>6.6ms</td>
+<td>4.15ms</td>
+</tr>
+<tr>
+<td>Optimized settings</td>
+<td>1.35ms</td>
+<td>0.2ms</td>
+</tr>
+</tbody></table>
+<p>In the optimized case, the blur + final merge take <code>0.05ms</code>, so the full SSR effect takes <code>0.25ms</code>! For comparison, the same scene without SSR takes <code>0.9ms</code>. So, in reality, the SSR effect takes <code>1.35 - 0.9 = 0.45ms</code> and not <code>0.25ms</code>. The difference between <code>0.25ms</code> and <code>0.45ms</code> (<code>0.2ms</code>) is the extra time needed to render normal, depth and reflectivity textures. In the end, the optimized settings are <code>4.4 / 0.45 ~ 10</code> times faster than the quality settings!</p>
+<p>Of course, the final rendering is not exactly the same in both cases, but as you can see in the PG, it is still quite usable and not that different from the quality settings.</p>
+<p>The times shown above are when using the pre-pass renderer. When using the geometry buffer renderer, the times are as follows:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Total GPU frame time</th>
+<th>GPU time for SSR alone</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Quality settings</td>
+<td>8.1ms</td>
+<td>4.3ms</td>
+</tr>
+<tr>
+<td>Optimized settings</td>
+<td>2.23ms</td>
+<td>0.2ms</td>
+</tr>
+</tbody></table>
+<p>It is slower because the geometry buffer renderer must perform an additional scene rendering to generate the normal, depth, and reflectivity textures, whereas the pre-pass renderer generates them as part of the normal scene rendering.</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#introduction">Introduction </a><a href="#prerequisites">Prerequisites </a><a href="#creating-the-ssr-rendering-pipeline">Creating the SSR rendering pipeline </a><a href="#how-ssr-works">How SSR works </a><a href="#debugging-ssr-scenes">Debugging SSR scenes </a><a href="#geometry-buffer-or-pre-pass-renderer">Geometry buffer or Pre-Pass renderer </a><a href="#description-of-ssr-parameters">Description of SSR parameters </a><a href="#how-to-deal-with-artifacts">How to deal with artifacts </a><a href="#optimize-ssr-in-your-scenes">Optimize SSR in your scenes </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

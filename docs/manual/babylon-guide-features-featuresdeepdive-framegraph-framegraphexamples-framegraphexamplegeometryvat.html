@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Generating geometry textures for VAT — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Generating geometry textures for VAT</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="introduction">Introduction<a class="anchor" href="#introduction">#</a></h2>
+<p>VAT (Vertex Animation Texture) or BVA (Baked Vertex Animation) is a way to support a large number of animated meshes by precomputing the animations. For more information, see <a href="babylon-guide-features-featuresdeepdive-animation-baked-texture-animations.html">Baked Texture Animations</a>.</p>
+<p>VAT is not supported by the <a href="engine-babylonjs-babylon-geometrybufferrenderer.html">geometry buffer renderer</a>. Therefore, if you use it to generate a normal map (or any other geometry texture) with VAT meshes, it will not work as expected.</p>
+<p>For example: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>You can see that the spiders are not animated in the normal texture (which is used as the emissive texture on the plane facing the camera).</p>
+<p>Let&#39;s use a frame graph to make it work!</p>
+<h2 id="using-a-frame-graph">Using a frame graph<a class="anchor" href="#using-a-frame-graph">#</a></h2>
+<p>We will use a frame graph to generate the normal texture, instead of using the geometry buffer renderer as in the previous example.
+Note that the frame graph will not take control of the entire scene rendering loop: we will not set <code>scene.frameGraph</code> to our frame graph, but rather execute it manually.</p>
+<p>The frame graph is actually very simple; we only need a geometry renderer task and to configure it to generate the normal texture.</p>
+<p>First, we create the frame graph and the depth texture that will be used by the geometry renderer. We also clear the depth texture:</p>
+<pre class="code" data-lang="javascript"><code>const frameGraph = new BABYLON.FrameGraph(scene);
+
+const depthTexture = frameGraph.textureManager.createRenderTargetTexture(&quot;depth&quot;, {
+    size: { width: 100, height: 100 },
+    sizeIsPercentage: true,
+    options: {
+        createMipMaps: false,
+        types: [BABYLON.Constants.TEXTURETYPE_UNSIGNED_BYTE],
+        formats: [BABYLON.Constants.TEXTUREFORMAT_DEPTH32_FLOAT],
+        samples: 1,
+        useSRGBBuffers: [false],
+        labels: [&quot;depth&quot;],
+    },
+});
+
+const clearTask = new BABYLON.FrameGraphClearTextureTask(&quot;clear&quot;, frameGraph);
+
+clearTask.clearColor = false;
+clearTask.clearDepth = true;
+clearTask.depthTexture = depthTexture;
+
+frameGraph.addTask(clearTask);</code></pre>
+<p>We can now create the geometry renderer task:</p>
+<pre class="code" data-lang="javascript"><code>const rlist = {
+    meshes: [mesh],
+    particleSystems: []
+}
+
+const geomRendererTask = new BABYLON.FrameGraphGeometryRendererTask(&quot;geomRenderer&quot;, frameGraph, scene);
+
+geomRendererTask.depthTexture = clearTask.outputDepthTexture;
+geomRendererTask.objectList = rlist;
+geomRendererTask.camera = camera;
+geomRendererTask.samples = 1;
+geomRendererTask.textureDescriptions.push({
+    type: BABYLON.Constants.PREPASS_NORMAL_TEXTURE_TYPE,
+    textureFormat: BABYLON.Constants.TEXTUREFORMAT_RGBA,
+    textureType: BABYLON.Constants.TEXTURETYPE_UNSIGNED_BYTE,
+});
+
+frameGraph.addTask(geomRendererTask);</code></pre>
+<p>Note how we configure the task to generate the normal texture: this is an entry we add to the <code>geomRendererTask.textureDescriptions</code> array of the task.</p>
+<p>That&#39;s all it takes to create the graph. Now we need to retrieve the texture and set it as the emissive texture of the plane material:</p>
+<pre class="code" data-lang="javascript"><code>let texture = null;
+
+frameGraph.onBuildObservable.add(() =&gt; {
+    const geomTexture = frameGraph.textureManager.getTextureFromHandle(geomRendererTask.geometryViewNormalTexture);
+    geomTexture.incrementReferences();
+
+    texture?.dispose();
+    texture = new BABYLON.Texture(&quot;&quot;, scene, {
+        internalTexture: geomTexture
+    });
+    texture.name = &quot;GeomRenderer normal&quot;;
+    mat.emissiveTexture = texture;
+});</code></pre>
+<p>The texture can only be retrieved after the frame graph has been built, so <code>frameGraph.onBuildObservable</code> is the appropriate place to add our code. The code itself retrieves the actual texture (an <code>InternalTexture</code> instance) from the texture handle. Note that we increment the number of references to the texture because we wrap this internal texture in a <code>Texture</code> instance (an <code>InternalTexture</code> instance cannot be assigned to <code>mat.emissiveTexture</code>), and the <code>Texture.dispose</code> method decrements the number of references.</p>
+<p>All that remains is to write the code to build the frame graph and execute it:</p>
+<pre class="code" data-lang="javascript"><code>await frameGraph.buildAsync();
+
+engine.onResizeObservable.add(async () =&gt; {
+    await frameGraph.buildAsync();
+});
+
+scene.onBeforeRenderObservable.add(() =&gt; {
+    frameGraph.execute();
+});</code></pre>
+<p>The full PG: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>You can see that the spiders are now animated in the normal texture.</p>
+<h2 id="using-a-node-render-graph">Using a node render graph<a class="anchor" href="#using-a-node-render-graph">#</a></h2>
+<p>For completeness, here is the same thing using a node render graph:</p>
+<p>Node Render Graph: <span class="muted">&lt;NRGE id=&quot;#USAV67#5&quot; title=&quot;VAT and frame graph (NRGE)&quot; description=&quot;VAT working when using a frame graph (NRGE)&quot; isMain={false}/&gt;</span></p>
+<p>PG: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>Notes:</p>
+<ul>
+<li>We disable <code>autoFillExternalInputs</code> when loading the node&#39;s render graph, because the list of meshes used by the geometry renderer task must not contain the plane on which we display the geometry texture (otherwise, you will get an error such as “GL_INVALID_OPERATION: glDrawElements: feedback loop formed between the frame buffer and the active texture&quot;).</li>
+<li>We disable the <code>Output</code> block in the render graph to avoid copying the result of the graph execution to the default frame buffer, which is a waste of GPU resources as it will be overwritten by the actual rendering of the scene.</li>
+</ul>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#introduction">Introduction </a><a href="#using-a-frame-graph">Using a frame graph </a><a href="#using-a-node-render-graph">Using a node render graph </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

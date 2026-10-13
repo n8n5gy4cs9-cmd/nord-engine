@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phaser.Geom.Polygon — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Phaser.Geom.Polygon</h1>
+<p><span class="badge">Underlying Phaser 4.2.1 API</span> <span class="badge">Class</span></p><p class="muted">Official public declarations and JSDoc from <code>phaser</code>. Use with engine objects, not directly on a Nord entity.</p><aside class="box tip"><div class="box-title">The Nord way</div><p><a href="2d.html">2D manual</a> · <a href="component-sprite.html">sprite</a> · <a href="component-animatedSprite.html">animatedSprite</a> · <a href="physics.html">physics</a>. Access raw objects only when the Nord wrapper does not cover your feature. <a href="reference.html#escape-hatch">How escape hatches work</a>.</p></aside><h3 id="declaration">Polygon <a class="anchor" href="#declaration">#</a></h3><pre class="code" data-lang="ts"><code>class Polygon</code></pre><p>A Polygon object</p>
+<p>The polygon is a closed shape consisting of a series of connected straight lines defined by a list of ordered points.
+Several formats are supported to define the list of points, check the setTo method for details.
+This is a geometry object allowing you to define and inspect the shape.
+It is not a Game Object, in that you cannot add it to the display list, and it has no texture.
+To render a Polygon you should look at the capabilities of the Graphics class.</p>
+<h2 id="members">Public members (20)</h2><p>Private, protected and explicitly internal declarations are excluded. Inherited members belong to the base type listed in the declaration.</p><h3 id="member-constructor-0">constructor <a class="anchor" href="#member-constructor-0">#</a></h3><pre class="code" data-lang="ts"><code>constructor(points?: string | number[] | Phaser.Types.Math.Vector2Like[]);</code></pre><p><strong>param</strong>  points List of points defining the perimeter of this Polygon. Several formats are supported:</p>
+<ul>
+<li>A string containing paired x y values separated by a single space: <code>&#39;40 0 40 20 100 20 100 80 40 80 40 100 0 50&#39;</code></li>
+<li>An array of Point objects: <code>[new Phaser.Point(x1, y1), ...]</code></li>
+<li>An array of objects with public x y properties: <code>[obj1, obj2, ...]</code></li>
+<li>An array of paired numbers that represent point coordinates: <code>[x1,y1, x2,y2, ...]</code></li>
+<li>An array of arrays with two elements representing x/y coordinates: <code>[[x1, y1], [x2, y2], ...]</code></li>
+</ul>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>points</code></td><td><code>string | number[] | Phaser.Types.Math.Vector2Like[]</code></td><td>Optional</td></tr></tbody></table><h3 id="member-clone-1">Clone <a class="anchor" href="#member-clone-1">#</a></h3><pre class="code" data-lang="ts"><code>static Clone(polygon: Phaser.Geom.Polygon): Phaser.Geom.Polygon;</code></pre><p>Create a new polygon which is a copy of the specified polygon
+<strong>param</strong>  polygon The polygon to create a clone of
+<strong>returns</strong>  A new separate Polygon cloned from the specified polygon, based on the same points.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>polygon</code></td><td><code>Phaser.Geom.Polygon</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Geom.Polygon</code></p><h3 id="member-contains-2">Contains <a class="anchor" href="#member-contains-2">#</a></h3><pre class="code" data-lang="ts"><code>static Contains(polygon: Phaser.Geom.Polygon, x: number, y: number): boolean;</code></pre><p>Checks if a point is within the bounds of a Polygon.
+<strong>param</strong>  polygon The Polygon to check against.
+<strong>param</strong>  x The X coordinate of the point to check.
+<strong>param</strong>  y The Y coordinate of the point to check.
+<strong>returns</strong>  <code>true</code> if the point is within the bounds of the Polygon, otherwise <code>false</code>.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>polygon</code></td><td><code>Phaser.Geom.Polygon</code></td><td>Required</td></tr><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-containspoint-3">ContainsPoint <a class="anchor" href="#member-containspoint-3">#</a></h3><pre class="code" data-lang="ts"><code>static ContainsPoint(polygon: Phaser.Geom.Polygon, vec: Phaser.Math.Vector2): boolean;</code></pre><p>Checks the given Point against the Polygon to see if the Point lays within its vertices.
+<strong>param</strong>  polygon The Polygon to check.
+<strong>param</strong>  vec The Vector2 point to check if it&#39;s within the Polygon.
+<strong>returns</strong>  <code>true</code> if the point is within the Polygon, otherwise <code>false</code>.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>polygon</code></td><td><code>Phaser.Geom.Polygon</code></td><td>Required</td></tr><tr><td><code>vec</code></td><td><code>Phaser.Math.Vector2</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-earcut-4">Earcut <a class="anchor" href="#member-earcut-4">#</a></h3><pre class="code" data-lang="ts"><code>static Earcut(data: number[], holeIndices?: number[], dimensions?: number): number[];</code></pre><p>This module implements a modified ear slicing algorithm, optimized by z-order curve hashing and extended to
+handle holes, twisted polygons, degeneracies and self-intersections in a way that doesn&#39;t guarantee correctness
+of triangulation, but attempts to always produce acceptable results for practical data.</p>
+<p>Example:</p>
+<pre class="code" data-lang="javascript"><code>const triangles = Phaser.Geom.Polygon.Earcut([10,0, 0,50, 60,60, 70,10]); // returns [1,0,3, 3,2,1]</code></pre>
+<p>Each group of three vertex indices in the resulting array forms a triangle.</p>
+<pre class="code" data-lang="javascript"><code>// triangulating a polygon with a hole
+earcut([0,0, 100,0, 100,100, 0,100,  20,20, 80,20, 80,80, 20,80], [4]);
+// [3,0,4, 5,4,0, 3,4,7, 5,0,1, 2,3,7, 6,5,1, 2,7,6, 6,1,2]
+
+// triangulating a polygon with 3d coords
+earcut([10,0,1, 0,50,2, 60,60,3, 70,10,4], null, 3);
+// [1,0,3, 3,2,1]</code></pre>
+<p>If you pass a single vertex as a hole, Earcut treats it as a Steiner point.</p>
+<p>If your input is a multi-dimensional array (e.g. GeoJSON Polygon), you can convert it to the format
+expected by Earcut with <code>Phaser.Geom.Polygon.Earcut.flatten</code>:</p>
+<pre class="code" data-lang="javascript"><code>var data = earcut.flatten(geojson.geometry.coordinates);
+var triangles = earcut(data.vertices, data.holes, data.dimensions);</code></pre>
+<p>After getting a triangulation, you can verify its correctness with <code>Phaser.Geom.Polygon.Earcut.deviation</code>:</p>
+<pre class="code" data-lang="javascript"><code>var deviation = earcut.deviation(vertices, holes, dimensions, triangles);</code></pre>
+<p>Returns the relative difference between the total area of triangles and the area of the input polygon.
+0 means the triangulation is fully correct.</p>
+<p>For more information see (online reference)
+<strong>param</strong>  data A flat array of vertex coordinates, like [x0,y0, x1,y1, x2,y2, ...]
+<strong>param</strong>  holeIndices An array of hole indices if any (e.g. [5, 8] for a 12-vertex input would mean one hole with vertices 5–7 and another with 8–11).
+<strong>param</strong>  dimensions The number of coordinates per vertex in the input array (2 by default). Default 2.
+<strong>returns</strong>  An array of triangulated data.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>data</code></td><td><code>number[]</code></td><td>Required</td></tr><tr><td><code>holeIndices</code></td><td><code>number[]</code></td><td>Optional</td></tr><tr><td><code>dimensions</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>number[]</code></p><h3 id="member-getaabb-5">GetAABB <a class="anchor" href="#member-getaabb-5">#</a></h3><pre class="code" data-lang="ts"><code>static GetAABB&lt;O extends Phaser.Geom.Rectangle&gt;(polygon: Phaser.Geom.Polygon, out?: O): O;</code></pre><p>Calculates the bounding AABB rectangle of a polygon.
+<strong>param</strong>  polygon The polygon that should be calculated.
+<strong>param</strong>  out The rectangle or object that has x, y, width, and height properties to store the result. Optional.
+<strong>returns</strong>  The resulting rectangle or object that is passed in with position and dimensions of the polygon&#39;s AABB.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>polygon</code></td><td><code>Phaser.Geom.Polygon</code></td><td>Required</td></tr><tr><td><code>out</code></td><td><code>O</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>O</code></p><h3 id="member-getnumberarray-6">GetNumberArray <a class="anchor" href="#member-getnumberarray-6">#</a></h3><pre class="code" data-lang="ts"><code>static GetNumberArray&lt;O extends number[]&gt;(polygon: Phaser.Geom.Polygon, output?: O): O;</code></pre><p>Stores all of the points of a Polygon into a flat array of numbers following the sequence [ x,y, x,y, x,y ],
+i.e. each point of the Polygon, in the order it&#39;s defined, corresponds to two elements of the resultant
+array for the point&#39;s X and Y coordinate.
+<strong>param</strong>  polygon The Polygon whose points to export.
+<strong>param</strong>  output An array to which the points&#39; coordinates should be appended.
+<strong>returns</strong>  The modified <code>output</code> array, or a new array if none was given.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>polygon</code></td><td><code>Phaser.Geom.Polygon</code></td><td>Required</td></tr><tr><td><code>output</code></td><td><code>O</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>O</code></p><h3 id="member-getpoints-7">GetPoints <a class="anchor" href="#member-getpoints-7">#</a></h3><pre class="code" data-lang="ts"><code>static GetPoints(polygon: Phaser.Geom.Polygon, quantity: number, stepRate?: number, output?: any[]): Phaser.Math.Vector2[];</code></pre><p>Returns an array of Vector2 objects containing the coordinates of the points around the perimeter of the Polygon,
+based on the given quantity or stepRate values.
+<strong>param</strong>  polygon The Polygon to get the points from.
+<strong>param</strong>  quantity The amount of points to return. If a falsy value the quantity will be derived from the <code>stepRate</code> instead.
+<strong>param</strong>  stepRate Sets the quantity by getting the perimeter of the Polygon and dividing it by the stepRate.
+<strong>param</strong>  output An array to insert the points in to. If not provided a new array will be created.
+<strong>returns</strong>  An array of Vector2 objects pertaining to the points around the perimeter of the Polygon.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>polygon</code></td><td><code>Phaser.Geom.Polygon</code></td><td>Required</td></tr><tr><td><code>quantity</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>stepRate</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>output</code></td><td><code>any[]</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Math.Vector2[]</code></p><h3 id="member-perimeter-8">Perimeter <a class="anchor" href="#member-perimeter-8">#</a></h3><pre class="code" data-lang="ts"><code>static Perimeter(polygon: Phaser.Geom.Polygon): number;</code></pre><p>Returns the perimeter of the given Polygon by summing the lengths of all its edges.
+The polygon is treated as closed, so the edge between the last point and the first
+point is included in the total.
+<strong>param</strong>  polygon The Polygon to get the perimeter of.
+<strong>returns</strong>  The perimeter of the Polygon.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>polygon</code></td><td><code>Phaser.Geom.Polygon</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>number</code></p><h3 id="member-type-9">type <a class="anchor" href="#member-type-9">#</a></h3><pre class="code" data-lang="ts"><code>readonly type: number;</code></pre><p>The geometry constant type of this object: <code>GEOM_CONST.POLYGON</code>.
+Used for fast type comparisons.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-area-10">area <a class="anchor" href="#member-area-10">#</a></h3><pre class="code" data-lang="ts"><code>area: number;</code></pre><p>The area of this Polygon.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-points-11">points <a class="anchor" href="#member-points-11">#</a></h3><pre class="code" data-lang="ts"><code>points: Phaser.Math.Vector2[];</code></pre><p>An array of number pair objects that make up this polygon. I.e. [ {x,y}, {x,y}, {x,y} ]</p>
+<p><b>Type / return:</b> <code>Phaser.Math.Vector2[]</code></p><h3 id="member-contains-12">contains <a class="anchor" href="#member-contains-12">#</a></h3><pre class="code" data-lang="ts"><code>contains(x: number, y: number): boolean;</code></pre><p>Check to see if the Polygon contains the given x / y coordinates.
+<strong>param</strong>  x The x coordinate to check within the polygon.
+<strong>param</strong>  y The y coordinate to check within the polygon.
+<strong>returns</strong>  <code>true</code> if the coordinates are within the polygon, otherwise <code>false</code>.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-setto-13">setTo <a class="anchor" href="#member-setto-13">#</a></h3><pre class="code" data-lang="ts"><code>setTo(points?: string | number[] | Phaser.Types.Math.Vector2Like[]): this;</code></pre><p>Sets this Polygon to the given points.</p>
+<p>The points can be set from a variety of formats:</p>
+<ul>
+<li>A string containing paired values separated by a single space: <code>&#39;40 0 40 20 100 20 100 80 40 80 40 100 0 50&#39;</code></li>
+<li>An array of Point objects: <code>[new Phaser.Point(x1, y1), ...]</code></li>
+<li>An array of objects with public x/y properties: <code>[obj1, obj2, ...]</code></li>
+<li>An array of paired numbers that represent point coordinates: <code>[x1,y1, x2,y2, ...]</code></li>
+<li>An array of arrays with two elements representing x/y coordinates: <code>[[x1, y1], [x2, y2], ...]</code></li>
+</ul>
+<p><code>setTo</code> may also be called without any arguments to remove all points.
+<strong>param</strong>  points Points defining the perimeter of this polygon. Please check function description above for the different supported formats.
+<strong>returns</strong>  This Polygon object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>points</code></td><td><code>string | number[] | Phaser.Types.Math.Vector2Like[]</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-calculatearea-14">calculateArea <a class="anchor" href="#member-calculatearea-14">#</a></h3><pre class="code" data-lang="ts"><code>calculateArea(): number;</code></pre><p>Calculates the area of the Polygon using the Shoelace formula. The result is stored in the <code>area</code> property.undefined
+<strong>returns</strong>  The area of the polygon.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-getpoints-15">getPoints <a class="anchor" href="#member-getpoints-15">#</a></h3><pre class="code" data-lang="ts"><code>getPoints&lt;O extends Phaser.Math.Vector2[]&gt;(quantity: number, stepRate?: number, output?: O): O;</code></pre><p>Returns an array of Vector2 objects containing the coordinates of the points around the perimeter of the Polygon,
+based on the given quantity or stepRate values.
+<strong>param</strong>  quantity The amount of points to return. If a falsy value the quantity will be derived from the <code>stepRate</code> instead.
+<strong>param</strong>  stepRate Sets the quantity by getting the perimeter of the Polygon and dividing it by the stepRate.
+<strong>param</strong>  output An array to insert the points in to. If not provided a new array will be created.
+<strong>returns</strong>  An array of Vector2 objects pertaining to the points around the perimeter of the Polygon.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>quantity</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>stepRate</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>output</code></td><td><code>O</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>O</code></p><h3 id="member-reverse-16">Reverse <a class="anchor" href="#member-reverse-16">#</a></h3><pre class="code" data-lang="ts"><code>static Reverse&lt;O extends Phaser.Geom.Polygon&gt;(polygon: O): O;</code></pre><p>Reverses the order of the points of a Polygon.
+<strong>param</strong>  polygon The Polygon to modify.
+<strong>returns</strong>  The modified Polygon.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>polygon</code></td><td><code>O</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>O</code></p><h3 id="member-simplify-17">Simplify <a class="anchor" href="#member-simplify-17">#</a></h3><pre class="code" data-lang="ts"><code>static Simplify&lt;O extends Phaser.Geom.Polygon&gt;(polygon: O, tolerance?: number, highestQuality?: boolean): O;</code></pre><p>Takes a Polygon object and simplifies the points by running them through a combination of
+Douglas-Peucker and Radial Distance algorithms. Simplification dramatically reduces the number of
+points in a polygon while retaining its shape, giving a huge performance boost when processing
+it and also reducing visual noise.
+<strong>param</strong>  polygon The polygon to be simplified. The polygon will be modified in-place and returned.
+<strong>param</strong>  tolerance Affects the amount of simplification (in the same metric as the point coordinates). Default 1.
+<strong>param</strong>  highestQuality Excludes distance-based preprocessing step which leads to highest quality simplification but runs ~10-20 times slower. Default false.
+<strong>returns</strong>  The input polygon.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>polygon</code></td><td><code>O</code></td><td>Required</td></tr><tr><td><code>tolerance</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>highestQuality</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>O</code></p><h3 id="member-smooth-18">Smooth <a class="anchor" href="#member-smooth-18">#</a></h3><pre class="code" data-lang="ts"><code>static Smooth&lt;O extends Phaser.Geom.Polygon&gt;(polygon: O): O;</code></pre><p>Takes a Polygon object and applies Chaikin&#39;s smoothing algorithm on its points.</p>
+<p>Chaikin&#39;s algorithm is a corner-cutting technique that replaces each edge between
+two consecutive points with two new points positioned along that edge, resulting in
+a smoother curve. Each iteration of the algorithm increases the total number of points
+in the polygon. The original first and last points are preserved, while all intermediate
+points are replaced by pairs of new points at 85% and 15% along each edge.</p>
+<p>The polygon is modified in-place and the same polygon object is returned.
+<strong>param</strong>  polygon The polygon to be smoothed. The polygon will be modified in-place and returned.
+<strong>returns</strong>  The input polygon.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>polygon</code></td><td><code>O</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>O</code></p><h3 id="member-translate-19">Translate <a class="anchor" href="#member-translate-19">#</a></h3><pre class="code" data-lang="ts"><code>static Translate&lt;O extends Phaser.Geom.Polygon&gt;(polygon: O, x: number, y: number): O;</code></pre><p>Translates the points of the given Polygon.
+<strong>param</strong>  polygon The Polygon to modify.
+<strong>param</strong>  x The amount to horizontally translate the points by.
+<strong>param</strong>  y The amount to vertically translate the points by.
+<strong>returns</strong>  The modified Polygon.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>polygon</code></td><td><code>O</code></td><td>Required</td></tr><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>O</code></p><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#members">Public members (20)</a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

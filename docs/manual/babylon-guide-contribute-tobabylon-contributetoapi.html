@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Contribute To The API — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Contribute To The API</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="need-for-contribution">Need for Contribution<a class="anchor" href="#need-for-contribution">#</a></h2>
+<p>Many people have asked for the API documentation to be improved. This is a major task, with lots of files needing comments. Comments are very useful for future development and maintenance of the code, and they are even more useful now because, in the correct format, they can be read by “TYPEDOC” to produce the API documentation for the classes, properties, and methods used by Babylon.js. The core team has worked to make this happen, as you can see in the new API documentation. Volunteers are needed to add comments, so even if you only have time to work on a couple of files, please do volunteer.</p>
+<h2 id="how-to-contribute">How to Contribute<a class="anchor" href="#how-to-contribute">#</a></h2>
+<p>You need to add appropriate comments according to the formats given below. Check the comments for errors and submit a PR when everything is validated.</p>
+<ol>
+<li>Fork and clone <span>Babylon.js</span> from GitHub;</li>
+<li>Install dependencies with <code>npm install</code></li>
+<li>Edit files from within the <strong>src</strong> folder by adding comments;</li>
+<li>Run <code>npm run lint:check</code> to check linting issues with your docs (or use the eslint extension for your IDE)</li>
+<li>When validated submit a PR.</li>
+</ol>
+<h2 id="format-of-comments">Format of Comments<a class="anchor" href="#format-of-comments">#</a></h2>
+<p>We follow tsdoc as a standard for our comments.</p>
+<p>Below are descriptions of the comment format for the various code entities, with examples.</p>
+<p>Comments go immediately before the entity and take the form of plain comments:</p>
+<pre class="code" data-lang=""><code>/**
+* comment
+* more comments
+*/</code></pre>
+<p>or comments plus key @words</p>
+<table>
+<thead>
+<tr>
+<th>@word</th>
+<th>followed by</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>@param</td>
+<td>parameter name then parameter description</td>
+</tr>
+<tr>
+<td>@returns</td>
+<td>description of what a function returns</td>
+</tr>
+<tr>
+<td>@see</td>
+<td>URL when it is useful to link to another site or page add one</td>
+</tr>
+<tr>
+<td>@ignore</td>
+<td>reason why it is ignored</td>
+</tr>
+</tbody></table>
+<h2 id="enum">Enum<a class="anchor" href="#enum">#</a></h2>
+<p><strong>Defines a set of named constants</strong></p>
+<p>Plain comments to describe the purpose of the ENUM and the constants it defines</p>
+<pre class="code" data-lang="javascript"><code>/**
+* Defines the list of states available for a task inside an AssetsManager
+*/
+export enum AssetTaskState {
+    /**
+     * Initialization
+     */
+    INIT,
+    /**
+     * Running
+     */
+    RUNNING,
+    /**
+     * Done
+     */
+    DONE,
+    /**
+     * Error
+     */
+    ERROR
+}</code></pre>
+<pre class="code" data-lang="javascript"><code>/**
+* Specifies the level of max blur that should be applied when using the depth of field effect
+*/
+export enum DepthOfFieldEffectBlurLevel {
+    /**
+     * Subtle blur
+     */
+    Low,
+    /**
+     * Medium blur
+     */
+    Medium,
+    /**
+     * Large blur
+     */
+    High
+};</code></pre>
+<h2 id="class">Class<a class="anchor" href="#class">#</a></h2>
+<p><strong>Template containing the constructor along with the public, private and protected properties and methods defining an object</strong></p>
+<p>A defining comment to describe the purpose of the CLASS.</p>
+<pre class="code" data-lang="javascript"><code>/**
+ * Defines a HemisphericLight object that simulates the ambient environment light
+ * so the passed direction is the light reflection direction, not the incoming direction
+ */
+export class HemisphericLight extends Light {
+  //All the parts defining the class in here
+}</code></pre>
+<pre class="code" data-lang="javascript"><code>/**
+ * Define an abstract asset task used with a {BABYLON.AssetsManager} class to load assets into a scene
+ */
+ export abstract class AbstractAssetTask {
+     //All the parts defining the class in here
+}</code></pre>
+<h2 id="constructor">Constructor<a class="anchor" href="#constructor">#</a></h2>
+<p><strong>This creates an instance of the class</strong></p>
+<h1 id="no-parameters">No Parameters</h1>
+<p>A comment to describe the CONSTRUCTOR.</p>
+<pre class="code" data-lang="javascript"><code>export class MapperManager {
+  //class properties
+
+  /**
+   * Creates a new MapperManager object to manage the different implemented mappers
+   */
+  constructor() {
+    this._mappers = {
+      html: new HTMLMapper(),
+      json: new JSONMapper(),
+      dom: new DOMMapper(),
+    };
+  }
+}</code></pre>
+<h2 id="with-parameters">With Parameters<a class="anchor" href="#with-parameters">#</a></h2>
+<p>A comment to describe the CONSTRUCTOR and use <code>@param</code> for each parameter. The first item after <code>@param</code> must be the parameter name, followed by a comment. In addition, if any members of the constructor are declared as public, the comment should be repeated before the member in the parameter list.</p>
+<h3 id="no-public-parameters">No Public Parameters<a class="anchor" href="#no-public-parameters">#</a></h3>
+<p>Create comments and <code>@param</code> entries for the constructor.</p>
+<pre class="code" data-lang="javascript"><code>/**
+ * Create a new Model loader
+ * @param _viewer the viewer using this model loader
+ */
+constructor(private _viewer: AbstractViewer) {
+    this._loaders = [];
+    this._loadId = 0;
+}</code></pre>
+<pre class="code" data-lang="javascript"><code>/**
+ * Creates a Solid Particle object
+ * Don't create particles manually, use instead the Solid Particle System internal tools like _addParticle()
+ * @param particleIndex is the particle index in the Solid Particle System pool. It's also the particle identifier
+ * @param positionIndex is the starting index of the particle vertices in the SPS &quot;positions&quot; array
+ * @param indiceIndex is the starting index of the particle indices in the SPS &quot;indices&quot; array
+ * @param model is a reference to the model shape on what the particle is designed.
+ * @param shapeId is the model shape identifier in the SPS
+ * @param idxInShape is the index of the particle in the current model (ex: the 10th box of addShape(box, 30))
+ * @param modelBoundingInfo is the reference to the model BoundingInfo used for intersection computations
+ */
+constructor(particleIndex: number, positionIndex: number, indiceIndex: number, model: Nullable&lt;ModelShape&gt;, shapeId: number, idxInShape: number, sps: SolidParticleSystem, modelBoundingInfo: Nullable&lt;BoundingInfo&gt; = null) {
+    this.idx = particleIndex;
+    this._pos = positionIndex;
+    this._ind = indiceIndex;
+    this._model = &lt;ModelShape&gt;model;
+    this.shapeId = shapeId;
+    this.idxInShape = idxInShape;
+    this._sps = sps;
+    if (modelBoundingInfo) {
+        this._modelBoundingInfo = modelBoundingInfo;
+        this._boundingInfo = new BoundingInfo(modelBoundingInfo.minimum, modelBoundingInfo.maximum);
+    }
+}</code></pre>
+<h3 id="with-public-parameters">With Public Parameters<a class="anchor" href="#with-public-parameters">#</a></h3>
+<p>Create comments and <code>@param</code> entries for the constructor, and copy comments before any public parameter in the list.</p>
+<pre class="code" data-lang="javascript"><code>/**
+ * Creates a new Action
+ * @param triggerOptions the trigger, with or without parameters, for the action
+ * @param condition an optional determinant of action
+ */
+constructor(
+
+    /**
+     * The trigger, with or without parameters, for the action
+     */
+    public triggerOptions: any,
+
+    condition?: Condition) {
+
+    if (triggerOptions.parameter) {
+                this.trigger = triggerOptions.trigger;
+                this._triggerParameter = triggerOptions.parameter;
+            } else {
+                this.trigger = triggerOptions;
+            }
+
+            this._nextActiveAction = this;
+            this._condition = condition;
+}</code></pre>
+<pre class="code" data-lang="javascript"><code>/**
+ * Creates a new instance ConeParticleEmitter
+ * @param radius the radius of the emission cone (1 by default)
+ * @param angles the cone base angle (PI by default)
+ * @param directionRandomizer defines how much to randomize the particle direction [0-1]
+ */
+constructor(
+    radius = 1,
+    /**
+     * The cone base angle (PI by default)
+     */
+    public angle = Math.PI,
+
+    /**
+     * Defines how much to randomize the particle direction [0-1]
+     */
+    public directionRandomizer = 0) {
+
+    this.radius = radius;
+}</code></pre>
+<h2 id="property-of-class-constructor-function">Property of Class, Constructor, Function<a class="anchor" href="#property-of-class-constructor-function">#</a></h2>
+<h3 id="public-with-public-variable">Public with public variable<a class="anchor" href="#public-with-public-variable">#</a></h3>
+<p>Plain comments to describe the PROPERTY</p>
+<pre class="code" data-lang="javascript"><code>/**
+ * The groundColor is the light in the opposite direction to the one specified during creation
+ * You can think of the diffuse and specular light as coming from the centre of the object in the given direction and the groundColor light in the opposite direction
+ */
+public groundColor = new Color3(0.0, 0.0, 0.0);
+
+/**
+ * The light reflection direction, not the incoming direction
+ */
+public direction: Vector3
+</code></pre>
+<h3 id="public-with-private-variable">Public with private variable<a class="anchor" href="#public-with-private-variable">#</a></h3>
+<p>There are occasions when a variable should be public for the code but effectively private to the user. Such variables start with an underscore. Plain comments are useful for development, but the variable should be ignored when building the API documentation. Hence the use of <code>@ignore</code>.</p>
+<pre class="code" data-lang="javascript"><code>/**
+ * Internal only - manager for action
+ * @ignore
+ */
+public _actionManager: ActionManager;</code></pre>
+<h3 id="private-or-protected">Private or Protected<a class="anchor" href="#private-or-protected">#</a></h3>
+<p>These will be ignored automatically when building the API documentation and comments are optional.</p>
+<pre class="code" data-lang="javascript"><code>private _worldMatrix: Matrix;
+
+protected _background: string;</code></pre>
+<h2 id="method-of-class-constructor-or-function">Method of Class, Constructor or Function<a class="anchor" href="#method-of-class-constructor-or-function">#</a></h2>
+<h3 id="public-with-public-name">Public with public name<a class="anchor" href="#public-with-public-name">#</a></h3>
+<h3 id="no-parameters">No Parameters<a class="anchor" href="#no-parameters">#</a></h3>
+<h4 id="no-return-value">No Return Value<a class="anchor" href="#no-return-value">#</a></h4>
+<p>Plain comments to describe the FUNCTION</p>
+<pre class="code" data-lang="javascript"><code>/**
+ * Clears the texture
+ */
+public clear(): void {
+    const size = this.getSize();
+    this._context.fillRect(0, 0, size.width, size.height);
+}</code></pre>
+<pre class="code" data-lang="javascript"><code>/**
+ * Skips to next active action
+ */
+public skipToNextActiveAction(): void {
+    if (this._nextActiveAction._child) {
+
+if (!this._nextActiveAction._child._actionManager) {
+    this._nextActiveAction._child._actionManager = this._actionManager;
+}
+
+this._nextActiveAction = this._nextActiveAction._child;
+    } else {
+this._nextActiveAction = this;
+    }
+}</code></pre>
+<pre class="code" data-lang="javascript"><code>/**
+ * Observable called when all tasks are processed
+ */
+public onTaskSuccessObservable = new Observable&lt;AbstractAssetTask&gt;();</code></pre>
+<h4 id="with-return-value">With Return Value<a class="anchor" href="#with-return-value">#</a></h4>
+<p>Comments to describe the FUNCTION and use <code>@returns</code>.</p>
+<pre class="code" data-lang="javascript"><code>/**
+ * Gets the context of the canvas used by the texture
+ * @returns the canvas context of the dynamic texture
+ */
+public getContext(): CanvasRenderingContext2D {
+    return this._context;
+}</code></pre>
+<pre class="code" data-lang="javascript"><code> /**
+ * Serializes the current light into a Serialization object
+ * @returns the serialized object
+ */
+public serialize(): any {
+    const serializationObject = SerializationHelper.Serialize(this);
+
+    // Internal working here
+
+    return serializationObject;
+}</code></pre>
+<pre class="code" data-lang="javascript"><code>/**
+ * @returns the current error object (if task is in error)
+ */
+public get errorObject(): { message?: string; exception?: any; } {
+    return this._errorObject;
+}</code></pre>
+<h3 id="with-parameters">With Parameters<a class="anchor" href="#with-parameters">#</a></h3>
+<h4 id="no-return-value">No Return Value<a class="anchor" href="#no-return-value">#</a></h4>
+<p>Comments to describe the FUNCTION and use <code>@param</code> for each parameter. The first item after <code>@param</code> must be the parameter name, followed by a comment.</p>
+<pre class="code" data-lang="javascript"><code>/**
+ * Execute the current task
+ * @param scene defines the scene where you want your assets to be loaded
+ * @param onSuccess is a callback called when the task is successfully executed
+ * @param onError is a callback called if an error occurs
+ */
+public run(scene: Scene, onSuccess: () =&gt; void, onError: (message?: string, exception?: any) =&gt; void) {
+    this._taskState = AssetTaskState.RUNNING;
+    this.runTask(scene, () =&gt; {
+this.onDoneCallback(onSuccess, onError);
+    }, (msg, exception) =&gt; {
+this.onErrorCallback(onError, msg, exception);
+    });
+}</code></pre>
+<pre class="code" data-lang="javascript"><code>/**
+ * Draws text onto the texture
+ * @param text defines the text to be drawn
+ * @param x defines the placement of the text from the left
+ * @param y defines the placement of the text from the top when invertY is true and from the bottom when false
+ * @param font defines the font to be used with font-style, font-size, font-name
+ * @param color defines the color used for the text
+ * @param clearColor defines the color for the canvas, use null to not overwrite canvas
+ * @param invertY defines the direction for the Y axis (default is true - y increases downwards)
+ * @param update defines whether texture is immediately update (default is true)
+ */
+public drawText(text: string, x: number, y: number, font: string, color: string, clearColor: string, invertY?: boolean, update = true) {
+    const size = this.getSize();
+    if (clearColor) {
+this._context.fillStyle = clearColor;
+this._context.fillRect(0, 0, size.width, size.height);
+    }
+
+    this._context.font = font;
+    if (x === null || x === undefined) {
+const textSize = this._context.measureText(text);
+x = (size.width - textSize.width) / 2;
+    }
+    if (y === null || y === undefined) {
+const fontSize = parseInt((font.replace(/\D/g, '')));;
+y = (size.height / 2) + (fontSize / 3.65);
+    }
+
+    this._context.fillStyle = color;
+    this._context.fillText(text, x, y);
+
+    if (update) {
+this.update(invertY);
+    }
+}
+</code></pre>
+<h4 id="with-return-value">With Return Value<a class="anchor" href="#with-return-value">#</a></h4>
+<p>Comments to describe the FUNCTION and use <code>@param</code> for each parameter and <code>@returns</code> to describe what the function returns. The first item after <code>@param</code> must be the parameter name, followed by a comment.</p>
+<pre class="code" data-lang="javascript"><code>/**
+ * Add a TextFileAssetTask to the list of active tasks
+ * @param taskName defines the name of the new task
+ * @param url defines the url of the file to load
+ * @returns a new TextFileAssetTask object
+ */
+public addTextFileTask(taskName: string, url: string): TextFileAssetTask {
+const task = new TextFileAssetTask(taskName, url);
+    this._tasks.push(task);
+
+    return task;
+}</code></pre>
+<pre class="code" data-lang="javascript"><code> /**
+ * Sets the passed Effect object with the HemisphericLight normalized direction and color and the passed name (string).
+ * @param effect The effect to update
+ * @param lightIndex The index of the light in the effect to update
+ * @returns The hemispheric light
+ */
+public transferToEffect(effect: Effect, lightIndex: string): HemisphericLight {
+    const normalizeDirection = Vector3.Normalize(this.direction);
+    this._uniformBuffer.updateFloat4(&quot;vLightData&quot;,
+normalizeDirection.x,
+normalizeDirection.y,
+normalizeDirection.z,
+0.0,
+lightIndex);
+    this._uniformBuffer.updateColor3(&quot;vLightGround&quot;, this.groundColor.scale(this.intensity), lightIndex);
+    return this;
+}</code></pre>
+<h2 id="public-with-private-name">Public with private name<a class="anchor" href="#public-with-private-name">#</a></h2>
+<p>There are occasions when a function should be public for the code but effectively private to the user. Such names start with an underscore. Plain comments are useful for development, but the function should be ignored when building the API documentation. Hence the use of <code>@ignore</code>.</p>
+<pre class="code" data-lang="javascript"><code>/**
+ * @ignore internal use only
+ */
+public _getWorldMatrix(): Matrix {
+    if (!this._worldMatrix) {
+this._worldMatrix = Matrix.Identity();
+    }
+    return this._worldMatrix;
+}</code></pre>
+<pre class="code" data-lang="javascript"><code>/**
+ * @ignore internal use only
+ */
+public _onPointerEnter(target: Control): boolean {
+    if (!super._onPointerEnter(target)) {
+return false;
+    }
+
+    if (this.pointerEnterAnimation) {
+this.pointerEnterAnimation();
+    }
+
+    return true;
+}</code></pre>
+<h2 id="private-or-protected">Private or Protected<a class="anchor" href="#private-or-protected">#</a></h2>
+<p>These will be ignored automatically when building the API documentation and comments are optional.</p>
+<pre class="code" data-lang="javascript"><code>protected _buildUniformLayout(): void {
+    this._uniformBuffer.addUniform(&quot;vLightData&quot;, 4);
+    this._uniformBuffer.addUniform(&quot;vLightDiffuse&quot;, 4);
+    this._uniformBuffer.addUniform(&quot;vLightSpecular&quot;, 3);
+    this._uniformBuffer.addUniform(&quot;vLightGround&quot;, 3);
+    this._uniformBuffer.addUniform(&quot;shadowsInfo&quot;, 3);
+    this._uniformBuffer.addUniform(&quot;depthValues&quot;, 2);
+    this._uniformBuffer.create();
+}</code></pre>
+<pre class="code" data-lang="javascript"><code>private follow(): void {
+    if (!this.target) {
+        return;
+    }
+    this._cartesianCoordinates.x = this.radius * Math.cos(this.alpha) * Math.cos(this.beta);
+    this._cartesianCoordinates.y = this.radius * Math.sin(this.beta);
+    this._cartesianCoordinates.z = this.radius * Math.sin(this.alpha) * Math.cos(this.beta);
+
+    const targetPosition = this.target.getAbsolutePosition();
+    this.position = targetPosition.add(this._cartesianCoordinates);
+    this.setTarget(targetPosition);
+}</code></pre>
+<pre class="code" data-lang="javascript"><code>private _drawRoundedRect(context: CanvasRenderingContext2D, offset: number = 0): void {
+    const x = this._currentMeasure.left + offset;
+    const y = this._currentMeasure.top + offset;
+    const width = this._currentMeasure.width - offset * 2;
+    const height = this._currentMeasure.height - offset * 2;
+
+    const radius = Math.min(height / 2 - 2, Math.min(width / 2 - 2, this._cornerRadius));
+
+    context.beginPath();
+    context.moveTo(x + radius, y);
+    context.lineTo(x + width - radius, y);
+    context.quadraticCurveTo(x + width, y, x + width, y + radius);
+    context.lineTo(x + width, y + height - radius);
+    context.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    context.lineTo(x + radius, y + height);
+    context.quadraticCurveTo(x, y + height, x, y + height - radius);
+    context.lineTo(x, y + radius);
+    context.quadraticCurveTo(x, y, x + radius, y);
+    context.closePath();
+}</code></pre>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#need-for-contribution">Need for Contribution </a><a href="#how-to-contribute">How to Contribute </a><a href="#format-of-comments">Format of Comments </a><a href="#enum">Enum </a><a href="#class">Class </a><a href="#constructor">Constructor </a><a href="#with-parameters">With Parameters </a><a href="#property-of-class-constructor-function">Property of Class, Constructor, Function </a><a href="#method-of-class-constructor-or-function">Method of Class, Constructor or Function </a><a href="#public-with-private-name">Public with private name </a><a href="#private-or-protected">Private or Protected </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

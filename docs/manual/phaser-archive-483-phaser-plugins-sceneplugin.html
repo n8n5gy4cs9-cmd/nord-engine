@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phaser archive: Phaser.Plugins.ScenePlugin — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Phaser archive: Phaser.Plugins.ScenePlugin</h1>
+<p><span class="badge">Phaser 4.1.0 archive</span> · <a href="phaser-api-index.html">Matching 4.2.1 API</a></p><p>A Scene Level Plugin is a plugin that is installed into every Scene and belongs to that Scene for its lifetime.
+Unlike a Global Plugin, which exists once for the entire game, a Scene Plugin is instantiated separately for
+each Scene and is destroyed when its Scene is destroyed.</p>
+<p>You would extend this class when creating your own custom plugins that need per-Scene state or need to
+respond to Scene lifecycle events such as <code>start</code>, <code>pause</code>, <code>sleep</code>, <code>wake</code>, <code>shutdown</code>, and <code>destroy</code>.</p>
+<p>The plugin can map itself to a property on the Scene (e.g. <code>this.myPlugin</code>) and/or into the Scene Systems,
+making it accessible from anywhere within that Scene. Override the <code>boot</code> method to set up event listeners
+and initialize any per-Scene resources your plugin requires.</p>
+<h2 id="constructor">Constructor</h2><pre class="code" data-lang="ts"><code>ScenePlugin(scene, pluginManager, pluginKey)</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>scene</code></td><td><code>Phaser.Scene</code></td><td>A reference to the Scene that has installed this plugin.</td></tr><tr><td><code>pluginManager</code></td><td><code>Phaser.Plugins.PluginManager</code></td><td>A reference to the Plugin Manager.</td></tr><tr><td><code>pluginKey</code></td><td><code>string</code></td><td>The key under which this plugin has been installed into the Scene Systems.</td></tr></tbody></table><h2 id="members">members</h2><h3 id="members-0">game</h3><pre class="code" data-lang="ts"><code>game</code></pre><p>A reference to the Game instance this plugin is running under.</p>
+<h3 id="members-1">pluginKey</h3><pre class="code" data-lang="ts"><code>pluginKey</code></pre><p>The key under which this plugin was installed into the Scene Systems.</p>
+<p>This property is only set when the plugin is instantiated and added to the Scene, not before.
+You can use it during the <code>boot</code> method.</p>
+<h3 id="members-2">pluginManager</h3><pre class="code" data-lang="ts"><code>pluginManager</code></pre><p>A handy reference to the Plugin Manager that is responsible for this plugin.
+Can be used as a route to gain access to game systems and events.</p>
+<h3 id="members-3">scene</h3><pre class="code" data-lang="ts"><code>scene</code></pre><p>A reference to the Scene that has installed this plugin.
+Only set if it&#39;s a Scene Plugin, otherwise <code>null</code>.
+This property is only set when the plugin is instantiated and added to the Scene, not before.
+You can use it during the <code>boot</code> method.</p>
+<h3 id="members-4">systems</h3><pre class="code" data-lang="ts"><code>systems</code></pre><p>A reference to the Scene Systems of the Scene that has installed this plugin.
+Only set if it&#39;s a Scene Plugin, otherwise <code>null</code>.
+This property is only set when the plugin is instantiated and added to the Scene, not before.
+You can use it during the <code>boot</code> method.</p>
+<h2 id="methods">methods</h2><h3 id="methods-0">boot</h3><pre class="code" data-lang="ts"><code>boot()</code></pre><p>This method is called when the Scene boots. It is only ever called once.</p>
+<p>By this point the plugin properties <code>scene</code> and <code>systems</code> will have already been set.</p>
+<p>In here you can listen for Phaser.Scenes.Events Scene events and set-up whatever you need for this plugin to run.
+Here are the Scene events you can listen to:</p>
+<ul>
+<li>start</li>
+<li>ready</li>
+<li>preupdate</li>
+<li>update</li>
+<li>postupdate</li>
+<li>resize</li>
+<li>pause</li>
+<li>resume</li>
+<li>sleep</li>
+<li>wake</li>
+<li>transitioninit</li>
+<li>transitionstart</li>
+<li>transitioncomplete</li>
+<li>transitionout</li>
+<li>shutdown</li>
+<li>destroy</li>
+</ul>
+<p>At the very least you should offer a destroy handler for when the Scene closes down, i.e:</p>
+<pre class="code" data-lang="javascript"><code>var eventEmitter = this.systems.events;
+eventEmitter.once('destroy', this.sceneDestroy, this);</code></pre>
+<h3 id="methods-1">destroy</h3><pre class="code" data-lang="ts"><code>destroy()</code></pre><p>Destroys this plugin and releases all references it holds, including the Scene, Scene Systems,
+and Plugin Manager. This method is called automatically when the Scene is destroyed.</p>
+<p>If you extend this class you should override this method, clean up any resources your plugin
+has created, and then call <code>BasePlugin.destroy</code> via <code>super.destroy()</code> or the prototype chain.</p>
+<h3 id="methods-2">init</h3><pre class="code" data-lang="ts"><code>init(data?)</code></pre><p>The PluginManager calls this method on a Global Plugin when the plugin is first instantiated.
+It will never be called again on this instance.
+In here you can set-up whatever you need for this plugin to run.
+If a plugin is set to automatically start then <code>BasePlugin.start</code> will be called immediately after this.
+On a Scene Plugin, this method is never called. Use Phaser.Plugins.ScenePlugin#boot instead.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>data</code></td><td><code>any</code></td><td>Optional. A value specified by the user, if any, from the `data` property of the plugin's configuration object (if started at game boot) or passed in the PluginManager's `install` method (if started manually).</td></tr></tbody></table><h3 id="methods-3">start</h3><pre class="code" data-lang="ts"><code>start()</code></pre><p>The PluginManager calls this method on a Global Plugin when the plugin is started.
+If a plugin is stopped, and then started again, this will get called again.
+Typically called immediately after <code>BasePlugin.init</code>.
+On a Scene Plugin, this method is never called.</p>
+<h3 id="methods-4">stop</h3><pre class="code" data-lang="ts"><code>stop()</code></pre><p>The PluginManager calls this method on a Global Plugin when the plugin is stopped.
+The game code has requested that your plugin stop doing whatever it does.
+It is now considered as &#39;inactive&#39; by the PluginManager.
+Handle that process here (i.e. stop listening for events, etc)
+If the plugin is started again then <code>BasePlugin.start</code> will be called again.
+On a Scene Plugin, this method is never called.</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#constructor">Constructor</a><a href="#members">members</a><a href="#methods">methods</a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

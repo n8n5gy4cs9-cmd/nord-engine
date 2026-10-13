@@ -4,6 +4,13 @@ section: Manual
 order: 11
 summary: Importing, thumbnails, spritesheets, models, audio, fonts, optional packs.
 ---
+
+Assets are the pictures, models, sounds and fonts your project uses. Store them inside the project and refer to them with a relative path.
+
+::: dummies
+assets/hero.png means the hero.png file inside your project’s assets folder. Spelling and capitals must match. A thumbnail is only a preview; the original file is what gets exported.
+:::
+
 Everything lives under `assets/`. Drag files from Finder into the **Assets** panel to import them (they are copied into the project). Paths in scenes are project-relative strings, e.g. `assets/sprites/hero.png`.
 
 | Type | Formats | Notes |

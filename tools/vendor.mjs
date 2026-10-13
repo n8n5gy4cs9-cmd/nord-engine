@@ -55,6 +55,8 @@ if (process.argv.includes('--verify')) {
   process.exit(bad ? 1 : 0);
 }
 
+if (process.argv.includes('--docs')) { execFileSync(process.execPath, [path.join(root, 'tools/vendor-docs.mjs')], { stdio: 'inherit' }); process.exit(0); }
+
 const work = fs.mkdtempSync(path.join(os.tmpdir(), 'nord-vendor-'));
 const run = (cmd, args, cwd) => execFileSync(cmd, args, { cwd, stdio: ['ignore', 'pipe', 'inherit'] }).toString().trim();
 function fetchPkg(pkg) {
@@ -97,6 +99,9 @@ if (process.argv.includes('--crates')) { // add/refresh only the crate assets, k
   fs.rmSync(work, { recursive: true, force: true });
   process.exit(0);
 }
+// Preserve the owner-supplied documentation archive when re-vendoring all libraries.
+const archivePath = path.join(V, 'engine-docs/phaser-snapshot.json.gz');
+const savedArchive = fs.existsSync(archivePath) ? fs.readFileSync(archivePath) : null;
 fs.rmSync(V, { recursive: true, force: true });
 for (const L of LIBS) {
   const pkgDir = fetchPkg(L.pkg);
@@ -139,6 +144,9 @@ for (const n of names) {
 fs.copyFileSync(path.join(lp, 'LICENSE'), path.join(idir, 'LICENSE'));
 entries.push({ lib: 'lucide', version: lver, license: LUCIDE.license, file: 'assets/icons/lucide (subset, see tools/lucide-icons.txt)' });
 
+if (savedArchive) { fs.mkdirSync(path.dirname(archivePath), { recursive: true }); fs.writeFileSync(archivePath, savedArchive); }
+execFileSync(process.execPath, [path.join(root, 'tools/vendor-docs.mjs')], { stdio: 'inherit' });
+entries.push({ lib: 'engine-docs', version: 'Phaser 4.2.1 / Babylon 9.30.0', license: 'MIT / Apache-2.0', file: 'vendor/engine-docs' });
 const files = {};
 for (const f of walk(V).filter((f) => f !== manifestPath)) files[path.relative(root, f)] = sha(f);
 for (const f of walk(idir)) files[path.relative(root, f)] = sha(f);

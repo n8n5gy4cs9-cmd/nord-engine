@@ -1,0 +1,839 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: The .babylon File Format — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: The .babylon File Format</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><p><strong>Babylon.js</strong> uses a JSON file format for describing scenes.</p>
+<p>You can find the complete loader code <span>here</span>.</p>
+<h2 id="basic-types">Basic types<a class="anchor" href="#basic-types">#</a></h2>
+<p>.babylon files use the following conventions for basic types:</p>
+<ul>
+<li><strong>Vector3</strong>: An array of 3 floats ([x, y, z]). Example: [1.1, 2.2, 3.3]</li>
+<li><strong>Vector4</strong>: An array of 4 floats ([x, y, z, w]). Example: [1.1, 2.2, 3.3, 4.4]</li>
+<li><strong>Color3</strong>: An array of 3 floats between 0 and 1 ([r, g, b]). Example: [0.2, 0.3, 0.5]</li>
+<li><strong>Matrix</strong>: An array of 16 floats exposed with row first convention</li>
+<li><strong>Boolean</strong>: true or false</li>
+</ul>
+<h2 id="global-structure">Global structure<a class="anchor" href="#global-structure">#</a></h2>
+<p>The global structure of a .babylon file is as follows:</p>
+<pre class="code" data-lang="javascript"><code>{
+    &quot;autoClear&quot;: boolean,
+    &quot;clearColor&quot;: color3,
+    &quot;ambientColor&quot;: color3,
+    &quot;gravity&quot;: vector3 (usually [0,-9,0]),
+    &quot;cameras&quot;: array of Cameras (see below),
+    &quot;activeCamera_&quot;: string,
+    &quot;lights&quot;: array of Lights (see below),
+    &quot;reflectionProbes&quot;: array of ReflectionProbe (see below),
+    &quot;materials&quot;: array of Materials (see below),
+    &quot;geometries&quot;: {...} (see below),
+    &quot;meshes&quot;: array of Meshes (see below),
+    &quot;multiMaterials&quot;: array of MultiMaterials (see below),
+    &quot;shadowGenerators&quot;: array of ShadowGenerators (see below),
+    &quot;skeletons&quot;: array of Skeletons (see below),
+    &quot;particleSystems&quot;: array of ParticleSystems (see below),
+    &quot;lensFlareSystems&quot;: array of LensFlareSystems (see below),
+    &quot;actions&quot;: array of actions (see below),
+    &quot;sounds&quot;: array of Sounds (see below),
+    &quot;collisionsEnabled&quot;: boolean,
+    &quot;physicsEnabled&quot;: boolean,
+    &quot;physicsGravity&quot;: vector3 (defaults to [0,-9.81,0]),
+    &quot;physicsEngine&quot;: string (&quot;oimo&quot; or &quot;cannon&quot;, defaults to the default engine (oimo),
+    &quot;animations&quot;: array of Animations (see below, can be omitted),
+    &quot;autoAnimate&quot;: boolean,
+    &quot;autoAnimateFrom&quot;: int,
+    &quot;autoAnimateTo&quot;: int,
+    &quot;autoAnimateLoop&quot;: boolean (can be omitted),
+    &quot;autoAnimateSpeed&quot;: number (can be omitted),
+	&quot;spriteManagers&quot;:array of SpriteManagers (can be omitted)
+}</code></pre>
+<h2 id="cameras">Cameras<a class="anchor" href="#cameras">#</a></h2>
+<p>A camera is defined by the following JSON:</p>
+<pre class="code" data-lang="javascript"><code>{
+    &quot;name&quot;: string,
+    &quot;id&quot;: string,
+    &quot;type&quot;: string,
+    &quot;tags&quot;: string,
+    &quot;parentId&quot;: string,
+    &quot;lockedTargetId&quot;: string,
+    &quot;position&quot;: vector3,
+    &quot;target&quot;: vector3,
+    &quot;alpha&quot;: float, // only for ArcRotateCamera and AnaglyphArcRotateCamera
+    &quot;beta&quot;: float, // only for ArcRotateCamera and AnaglyphArcRotateCamera
+    &quot;radius&quot;: float, // only for ArcRotateCamera, FollowCamera and AnaglyphArcRotateCamera
+    &quot;eye_space&quot;: float, // only for AnaglyphFreeCamera and AnaglyphArcRotateCamera
+    &quot;heightOffset&quot;: float, // only for FollowCamera
+    &quot;rotationOffset&quot;: float, // only for FollowCamera
+    &quot;cameraRigMode&quot;: int (can be omitted),
+    &quot;fov&quot;: float (in radians),
+    &quot;minZ&quot;: float,
+    &quot;maxZ&quot;: float,
+    &quot;speed&quot;: float,
+    &quot;inertia&quot;: float (between 0 and 1),
+    &quot;checkCollisions&quot;: boolean,
+    &quot;applyGravity&quot;: boolean,
+    &quot;ellipsoid&quot;: vector3,
+    &quot;animations&quot;: array of Animations (see below, can be omitted),
+    &quot;autoAnimate&quot;: boolean,
+    &quot;autoAnimateFrom&quot;: int,
+    &quot;autoAnimateTo&quot;: int,
+    &quot;autoAnimateLoop&quot;: boolean (can be omitted),
+    &quot;autoAnimateSpeed&quot;: number (can be omitted),
+    &quot;inputmgr&quot; : map of camera inputs (can be omitted, see below)
+}</code></pre>
+<h2 id="map-of-camera-inputs">Map of camera inputs<a class="anchor" href="#map-of-camera-inputs">#</a></h2>
+<p>This is an object literal using the input type as a key, and the input settings as a child object. Each input type has its own properties.</p>
+<h2 id="lights">Lights<a class="anchor" href="#lights">#</a></h2>
+<p>A light is defined by the following JSON:</p>
+<pre class="code" data-lang="javascript"><code>{
+    &quot;name&quot;: string,
+    &quot;id&quot;: string,
+    &quot;tags&quot;: string,
+    &quot;type&quot;: int (0 for point light, 1 for directional, 2 for spot and 3 for hemispheric),
+    &quot;position&quot;: vector3,
+    &quot;direction&quot;: vector3,
+    &quot;angle&quot;: float (for spot lights),
+    &quot;exponent&quot;: float (for spot lights),
+    &quot;groundColor&quot;: color3 (for hemispheric lights),
+    &quot;intensity&quot;: float,
+    &quot;range&quot;: float,
+    &quot;diffuse&quot;: color3,
+    &quot;specular&quot;: color3,
+    &quot;excludedMeshesIds&quot;: array of string,
+    &quot;includedOnlyMeshesIds&quot;: array of string,
+    &quot;animations&quot;: array of Animations (see below, can be omitted),
+    &quot;autoAnimate&quot;: boolean,
+    &quot;autoAnimateFrom&quot;: int,
+    &quot;autoAnimateTo&quot;: int,
+    &quot;autoAnimateLoop&quot;: boolean (can be omitted),
+    &quot;autoAnimateSpeed&quot;: number (can be omitted)
+}</code></pre>
+<h2 id="materials">Materials<a class="anchor" href="#materials">#</a></h2>
+<p>A material is defined by the following JSON:</p>
+<pre class="code" data-lang="javascript"><code>{
+    &quot;name&quot;: string,
+    &quot;id&quot;: string,
+    &quot;tags&quot;: string,
+    &quot;disableDepthWrite&quot;: boolean (can be omitted),
+    &quot;ambient&quot;: color3,
+    &quot;diffuse&quot;: color3,
+    &quot;specular&quot;: color3,
+    &quot;specularPower&quot;: float,
+    &quot;emissive&quot;: color3,
+    &quot;alpha&quot;: float,
+    &quot;backFaceCulling&quot;: boolean,
+    &quot;wireframe&quot;: boolean,
+    &quot;diffuseTexture&quot;: Texture (see below),
+    &quot;ambientTexture&quot;: Texture (see below),
+    &quot;opacityTexture&quot;: Texture (see below),
+    &quot;reflectionTexture&quot;: Texture (see below),
+    &quot;refractionTexture&quot;: Texture (see below),
+    &quot;indexOfRefraction&quot;: float,
+    &quot;emissiveTexture&quot;: Texture (see below),
+    &quot;specularTexture&quot;: Texture (see below),
+    &quot;bumpTexture&quot;: Texture (see below),
+    &quot;lightmapTexture&quot;: Texture (see below),
+    &quot;useLightmapAsShadowmap&quot;: boolean, 
+    &quot;checkReadyOnlyOnce&quot;: boolean
+    &quot;useReflectionFresnelFromSpecular&quot;: boolean (can be omitted),
+    &quot;useEmissiveAsIllumination&quot;: boolean (can be omitted),
+    &quot;diffuseFresnelParameters&quot;: Fresnel parameters (see below),
+    &quot;opacityFresnelParameters&quot;: Fresnel parameters (see below),
+    &quot;reflectionFresnelParameters&quot;: Fresnel parameters (see below),
+    &quot;refractionFresnelParameters&quot;: Fresnel parameters (see below),
+    &quot;emissiveFresnelParameters&quot;: Fresnel parameters (see below)
+}</code></pre>
+<h2 id="fresnel-parameters">Fresnel parameters<a class="anchor" href="#fresnel-parameters">#</a></h2>
+<p>Fresnel parameters are defined by the following JSON:</p>
+<pre class="code" data-lang="javascript"><code>{
+    &quot;isEnabled&quot;: boolean,
+    &quot;leftColor&quot;: color3,
+    &quot;rightColor&quot;: color3,
+    &quot;bias&quot;: float,
+    &quot;power&quot;: float
+}</code></pre>
+<h2 id="textures">Textures<a class="anchor" href="#textures">#</a></h2>
+<p>A texture is defined by the following JSON:</p>
+<pre class="code" data-lang="javascript"><code>{
+    &quot;name&quot;: string (filename),
+    &quot;level&quot;: float (between 0 and 1),
+    &quot;hasAlpha&quot;: boolean,
+    &quot;getAlphaFromRGB&quot;: boolean,
+    &quot;coordinatesMode&quot;: int (0 = explicit, 1 spherical, 2 = planar, 3 = cubic, 4 = projection, 5 = skybox),
+    &quot;uOffset&quot;: float,
+    &quot;vOffset&quot;: float,
+    &quot;uScale&quot;: float,
+    &quot;vScale&quot;: float,
+    &quot;uAng&quot;: float,
+    &quot;vAng&quot;: float,
+    &quot;wAng&quot;: float,
+    &quot;wrapU&quot;: boolean,
+    &quot;wrapV&quot;: boolean,
+    &quot;coordinatesIndex&quot;: int,
+    &quot;animations&quot;: array of Animations (see below, can be omitted),
+    &quot;base64String&quot;: string (can be omitted)
+}</code></pre>
+<h2 id="reflectionprobe">ReflectionProbe<a class="anchor" href="#reflectionprobe">#</a></h2>
+<p>A reflection probe is defined by the following JSON, which extends the RenderTargetTexture JSON (see below):</p>
+<pre class="code" data-lang="javascript"><code>{
+    &quot;_attachedMesh&quot;: string (id of the attached mesh),
+	&quot;position&quot;: array of floats (position of the reflection probe: x, y, and z),
+    &quot;isReflectionProbe&quot;: boolean (indicates that this RenderTargetTexture JSON is a reflection probe)
+}</code></pre>
+<h2 id="rendertargettexture">RenderTargetTexture<a class="anchor" href="#rendertargettexture">#</a></h2>
+<p>A render target texture is defined by the following JSON, which extends the Texture JSON (see below):</p>
+<pre class="code" data-lang="javascript"><code>{
+	&quot;refreshRate&quot;: int,
+	&quot;isCube&quot;: boolean,
+	&quot;is3D&quot;: boolean,
+	&quot;renderTargetSize&quot;: int (render size of the render target texture),
+	&quot;renderList&quot;: string[] (list of meshes to render identified by their id)
+}</code></pre>
+<h2 id="multimaterials">MultiMaterials<a class="anchor" href="#multimaterials">#</a></h2>
+<p>A multiMaterial is defined by the following JSON:</p>
+<pre class="code" data-lang="javascript"><code>{
+    &quot;name&quot;: string,
+    &quot;id&quot;: string,
+    &quot;tags&quot;: string,
+    &quot;materials&quot;: array of string (which are the ids of sub-materials)
+}</code></pre>
+<h2 id="geometries">Geometries<a class="anchor" href="#geometries">#</a></h2>
+<p>The structure of &quot;geometries&quot; is the following:</p>
+<pre class="code" data-lang="javascript"><code>{
+    &quot;vertexData&quot;: array of VertexData (see below)
+}</code></pre>
+<h2 id="vertexdata">VertexData<a class="anchor" href="#vertexdata">#</a></h2>
+<p>A vertexData is defined by the following JSON:</p>
+<pre class="code" data-lang="javascript"><code>{
+    &quot;id&quot;: string,
+    &quot;updatable&quot;: bool,
+    &quot;positions&quot;: array of floats (3 per vertex),
+    &quot;normals&quot;: array of floats (3 per vertex),
+    &quot;uvs&quot;: array of floats (2 per vertex),
+    &quot;uvs2&quot;: array of floats (2 per vertex) which is the 2nd texture coordinates (can be omitted),
+    &quot;uvs3&quot;: array of floats (2 per vertex) which is the 3nd texture coordinates (can be omitted),
+    &quot;uvs4&quot;: array of floats (2 per vertex) which is the 4nd texture coordinates (can be omitted),
+    &quot;uvs5&quot;: array of floats (2 per vertex) which is the 5nd texture coordinates (can be omitted),
+    &quot;uvs6&quot;: array of floats (2 per vertex) which is the 6nd texture coordinates (can be omitted),
+    &quot;colors&quot;: array of floats (3 per vertex) which is the per vertex color (can be omitted),
+    &quot;matricesIndices&quot;: array of ints (4 per vertex) which is the matrices indices for bones (can be omitted),
+    &quot;matricesWeights&quot;: array of floats (4 per vertex) which is the matrices weights for bones (can be omitted),
+    &quot;indices&quot;: array of ints (3 per face),
+    &quot;tags&quot;: string
+}</code></pre>
+<h2 id="instances">Instances<a class="anchor" href="#instances">#</a></h2>
+<p>An instance is defined by the following JSON:</p>
+<pre class="code" data-lang="javascript"><code>{
+    &quot;name&quot;: string,
+    &quot;tags&quot;: string,
+    &quot;position&quot;: vector3,
+    &quot;rotation&quot;: vector3 (can be omitted),
+    &quot;rotationQuaternion&quot;: vector4 (can be omitted),
+    &quot;scaling&quot;: vector3,
+    &quot;actions&quot;: array of actions (see below)
+}</code></pre>
+<h2 id="meshes">Meshes<a class="anchor" href="#meshes">#</a></h2>
+<p>A mesh is defined by the following JSON:</p>
+<pre class="code" data-lang="javascript"><code>{
+    &quot;name&quot;: string,
+    &quot;id&quot;: string,
+    &quot;tags&quot;: string,
+    &quot;parentId&quot;: string,
+    &quot;materialId&quot;: string,
+    &quot;geometryId&quot;: string (can be omitted),
+    &quot;position&quot;: vector3,
+    &quot;rotation&quot;: vector3 (can be omitted),
+    &quot;rotationQuaternion&quot;: vector4 (can be omitted),
+    &quot;scaling&quot;: vector3,
+    &quot;pivotMatrix&quot;: matrix,
+    &quot;freezeWorldMatrix&quot;: boolean (can be omitted),
+    &quot;infiniteDistance&quot;: boolean,
+    &quot;showBoundingBox&quot;: boolean,
+    &quot;showSubMeshesBoundingBox&quot;: boolean,
+    &quot;isVisible&quot;: boolean,
+    &quot;isEnabled&quot;: boolean,
+    &quot;pickable&quot;: boolean,
+    &quot;applyFog&quot;: boolean,
+    &quot;alphaIndex&quot;: int,
+    &quot;checkCollisions&quot;: boolean,
+    &quot;billboardMode&quot;: int (0 = None, 1 = X, 2 = Y, 4 = Z, 7 = All),
+    &quot;receiveShadows&quot;: boolean,
+    &quot;physicsImpostor&quot;: int (0 = None, 1 = Box, 2 = Sphere),
+    &quot;physicsMass&quot;: float,
+    &quot;physicsFriction&quot;: float,
+    &quot;physicsRestitution&quot;: float,
+    &quot;positions&quot;: array of floats (3 per vertex),
+    &quot;normals&quot;: array of floats (3 per vertex),
+    &quot;uvs&quot;: array of floats (2 per vertex),
+    &quot;uvs2&quot;: array of floats (2 per vertex) which is the 2nd texture coordinates (can be omitted),
+    &quot;uvs3&quot;: array of floats (2 per vertex) which is the 3nd texture coordinates (can be omitted),
+    &quot;uvs4&quot;: array of floats (2 per vertex) which is the 4nd texture coordinates (can be omitted),
+    &quot;uvs5&quot;: array of floats (2 per vertex) which is the 5nd texture coordinates (can be omitted),
+    &quot;uvs6&quot;: array of floats (2 per vertex) which is the 6nd texture coordinates (can be omitted),
+    &quot;colors&quot;: array of floats (4 per vertex) which is the per vertex color (can be omitted),
+    &quot;hasVertexAlpha&quot;: boolean to indicate if colors field contains useful alpha value (can be omitted),
+    &quot;matricesIndices&quot;: array of ints (4 per vertex) which is the matrices indices for bones (can be omitted),
+    &quot;matricesWeights&quot;: array of floats (4 per vertex) which is the matrices weights for bones (can be omitted),
+    &quot;indices&quot;: array of ints (3 per face),
+    &quot;subMeshes&quot;: array of SubMeshes (see below),
+    &quot;animations&quot;: array of Animations (see below, can be omitted),
+    &quot;autoAnimate&quot;: boolean,
+    &quot;autoAnimateFrom&quot;: int,
+    &quot;autoAnimateTo&quot;: int,
+    &quot;autoAnimateLoop&quot;: boolean,
+    &quot;autoAnimateSpeed&quot;: number (can be omitted)
+    &quot;instances&quot;: array of Instances (see below, can be omitted),
+    &quot;actions&quot;: array of actions (see below)
+}</code></pre>
+<p>Please note that a parent mesh must be described before its child nodes.</p>
+<h2 id="submeshes">SubMeshes<a class="anchor" href="#submeshes">#</a></h2>
+<p>A subMesh is defined by the following JSON:</p>
+<pre class="code" data-lang="javascript"><code>{
+    &quot;materialIndex&quot;: int,
+    &quot;verticesStart&quot;: int,
+    &quot;verticesCount&quot;: int,
+    &quot;indexStart&quot;: int,
+    &quot;indexCount&quot;: int
+}</code></pre>
+<h2 id="animations">Animations<a class="anchor" href="#animations">#</a></h2>
+<p>An animation can be defined by the following JSON:</p>
+<pre class="code" data-lang="javascript"><code>{
+    &quot;dataType&quot;: int (0 = float, 1 = vector3, 2 = quaternion, 3 = matrix),
+    &quot;framePerSecond&quot;: int,
+    &quot;loopBehavior&quot;: int (0 = relative, 1 = cycle, 2 = constant),
+    &quot;name&quot;: string,
+    &quot;property&quot;: string,
+    &quot;keys&quot;: array of AnimationKeys (see below),
+    &quot;autoAnimate&quot;: boolean,
+    &quot;autoAnimateFrom&quot;: int,
+    &quot;autoAnimateTo&quot;: int,
+    &quot;autoAnimateLoop&quot;: boolean
+}</code></pre>
+<h2 id="animationkeys">AnimationKeys<a class="anchor" href="#animationkeys">#</a></h2>
+<p>An animationKey is defined by the following JSON:</p>
+<pre class="code" data-lang="javascript"><code>{
+    &quot;frame&quot;: int,
+    &quot;values&quot;: array of float (depending of animated value)
+}</code></pre>
+<h2 id="shadowgenerators">ShadowGenerators<a class="anchor" href="#shadowgenerators">#</a></h2>
+<p>A shadowGenerator is defined by the following JSON:</p>
+<pre class="code" data-lang="javascript"><code>{
+    &quot;useBlurVarianceShadowMap&quot;: boolean,
+    &quot;useVarianceShadowMap&quot;: boolean,
+    &quot;usePoissonSampling&quot;: boolean,
+    &quot;mapSize&quot;: int (between 64 and 2048, must be a power of 2),
+    &quot;bias&quot;: float,
+    &quot;forceBackFacesOnly&quot;: float,
+    &quot;lightId&quot;: string,
+    &quot;renderList&quot;: array of string (which are IDs of meshes)
+}</code></pre>
+<h2 id="skeletons">Skeletons<a class="anchor" href="#skeletons">#</a></h2>
+<p>A skeleton is defined by the following JSON:</p>
+<pre class="code" data-lang="javascript"><code>{
+    &quot;name&quot;: string,
+    &quot;id&quot;: string,
+    &quot;bones&quot;: array of Bones (see below)
+    &quot;needInitialSkinMatrix&quot;: boolean
+}</code></pre>
+<h2 id="bones">Bones<a class="anchor" href="#bones">#</a></h2>
+<p>A bone is defined by the following JSON:</p>
+<pre class="code" data-lang="javascript"><code>{
+    &quot;parentBoneIndex&quot;: int,
+    &quot;name&quot;: string,
+    &quot;matrix&quot;: matrix,
+    &quot;animations&quot;: array of Animations (must be of matrix type)
+}</code></pre>
+<h2 id="particlesystems">ParticleSystems<a class="anchor" href="#particlesystems">#</a></h2>
+<p>A particle system is defined by the following JSON:</p>
+<pre class="code" data-lang="javascript"><code>{
+     &quot;emitterId&quot;: string,
+     &quot;gravity&quot;: vector3,
+     &quot;direction1&quot;: vector3,
+     &quot;direction2&quot;: vector3,
+     &quot;minEmitBox&quot;: vector3,
+     &quot;maxEmitBox&quot;: vector3,
+     &quot;color1&quot;: color3,
+     &quot;color2&quot;: color3,
+     &quot;colorDead&quot;: color3,
+     &quot;deadAlpha&quot;: float,
+     &quot;emitRate&quot;: float,
+     &quot;updateSpeed&quot;: float,
+     &quot;targetStopFrame&quot;: int,
+     &quot;minEmitPower&quot;: int,
+     &quot;maxEmitPower&quot;: float,
+     &quot;minLifeTime&quot;: float,
+     &quot;maxLifeTime&quot;: float,
+     &quot;minSize&quot;: float,
+     &quot;maxSize&quot;: float,
+     &quot;minAngularSpeed&quot;: float,
+     &quot;maxAngularSpeed&quot;: float,
+     &quot;textureName&quot;: string,
+     &quot;blendMode&quot;: int,
+     &quot;capacity&quot;: int,
+     &quot;textureMask&quot;: color4,
+     &quot;linkToEmitter&quot;: bool,
+    &quot;animations&quot;: array of Animations (see below, can be omitted),
+    &quot;autoAnimate&quot;: boolean,
+    &quot;autoAnimateFrom&quot;: int,
+    &quot;autoAnimateTo&quot;: int,
+    &quot;autoAnimateLoop&quot;: boolean (can be omitted),
+    &quot;autoAnimateSpeed&quot;: number (can be omitted)
+}</code></pre>
+<h2 id="lensflaresystems">LensFlareSystems<a class="anchor" href="#lensflaresystems">#</a></h2>
+<p>A lens flare system is defined by the following JSON:</p>
+<pre class="code" data-lang="javascript"><code>{
+     &quot;emitterId&quot;: string,
+     &quot;borderLimit&quot;: int,
+     &quot;flares&quot;: array of LensFlares (see below)
+}</code></pre>
+<h2 id="lensflares">LensFlares<a class="anchor" href="#lensflares">#</a></h2>
+<p>A lens flare is defined by the following JSON:</p>
+<pre class="code" data-lang="javascript"><code>{
+     &quot;position&quot;: float,
+     &quot;size&quot;: float,
+     &quot;color&quot;: color3,
+     &quot;textureName&quot;: string
+}</code></pre>
+<h2 id="sounds">Sounds<a class="anchor" href="#sounds">#</a></h2>
+<p>A sound is defined by the following JSON:</p>
+<pre class="code" data-lang="javascript"><code>{
+     &quot;name&quot;: string, (name of the file to load)
+     &quot;volume&quot;: float, (if omitted will be 1)
+     &quot;autoplay&quot;: bool, (can be omitted)
+     &quot;loop&quot;: bool, (can be omitted)
+     &quot;soundTrackId&quot;: int, (can be omitted)
+     &quot;spatialSound&quot;: bool, (to enable 3D sound, can be omitted)
+     &quot;position&quot;: vector3, (if omitted will be 0,0,0)
+     &quot;refDistance&quot;: float, (can be omitted, default to 1)
+     &quot;rolloffFactor&quot;: float, (can be omitted, default to 1)
+     &quot;maxDistance&quot;: float, (can be omitted, default to 100)
+     &quot;distanceModel&quot;: string, (can be omitted, default to linear, other values: inverse or exponential)
+     &quot;panningModel&quot;: string, (can be omitted, default to HRTF, other value: equalpower)
+     &quot;isDirectional&quot;: bool, (to enable directional cone)
+     &quot;coneInnerAngle&quot;: float, (can be omitted but set it for directional sound)
+     &quot;coneOuterAngle&quot;: float, (can be omitted but set it for directional sound)
+     &quot;coneOuterGain&quot;: float, (can be omitted but set it for directional sound)
+     &quot;connectedMeshId&quot;: string, (ID of the mesh to attach to)
+     &quot;localDirectionToMesh&quot;: vector3 (can be omitted, default to 1,0,0)
+}</code></pre>
+<h2 id="actions">Actions<a class="anchor" href="#actions">#</a></h2>
+<p>An action is defined by the following JSON. An action can contain children actions.</p>
+<pre class="code" data-lang="javascript"><code>{
+    &quot;type&quot;: number, (action's type. 0 = Trigger, 1 = Action, 2 = Flow Control)
+    &quot;name&quot;: string, (name of the action, trigger or flow control)
+    &quot;detached&quot;: boolean, (if the node is detached or not. Means it will not be computed if detached === true)
+    &quot;properties&quot;: array of properties, (see below)
+    &quot;children&quot;: array of Actions,
+    &quot;combine&quot;: array of Actions (used as a combine action. i.e name = &quot;CombineAction&quot;. Can be null)
+}</code></pre>
+<p>A property is defined by the following JSON. A property value is always a string.</p>
+<pre class="code" data-lang="javascript"><code>{
+    &quot;name&quot;: string, (name of the property)
+    &quot;value&quot;: string, (value of the property. For example: name = &quot;target&quot; and value = &quot;Plane001&quot;)
+    &quot;targetType&quot;: string (internal use for theBabylon.js Actions Builder, specifies where to find the properties for &quot;propertyPath&quot;)
+}</code></pre>
+<h2 id="example">Example<a class="anchor" href="#example">#</a></h2>
+<p>Here is a simple example of a .babylon file:</p>
+<pre class="code" data-lang="javascript"><code>{
+    &quot;autoClear&quot;: true,
+    &quot;clearColor&quot;: [0, 0, 0],
+    &quot;ambientColor&quot;: [0, 0, 0],
+    &quot;gravity&quot;: [0, -9.81, 0],
+    &quot;cameras&quot;: [{
+        &quot;name&quot;: &quot;Camera&quot;,
+        &quot;id&quot;: &quot;Camera&quot;,
+        &quot;position&quot;: [7.4811, 5.3437, -6.5076],
+        &quot;target&quot;: [-0.3174, 0.8953, 0.3125],
+        &quot;fov&quot;: 0.8576,
+        &quot;minZ&quot;: 0.1,
+        &quot;maxZ&quot;: 100,
+        &quot;speed&quot;: 1,
+        &quot;inertia&quot;: 0.9,
+        &quot;checkCollisions&quot;: false,
+        &quot;applyGravity&quot;: false,
+        &quot;ellipsoid&quot;: [0.2, 0.9, 0.2]
+    }],
+    &quot;activeCamera&quot;: &quot;Camera&quot;,
+    &quot;lights&quot;: [{
+        &quot;name&quot;: &quot;Sun&quot;,
+        &quot;id&quot;: &quot;Sun&quot;,
+        &quot;type&quot;: 1,
+        &quot;position&quot;: [0.926, 7.3608, 14.1829],
+        &quot;direction&quot;: [-0.347, -0.4916, -0.7987],
+        &quot;intensity&quot;: 1,
+        &quot;diffuse&quot;: [1, 1, 1],
+        &quot;specular&quot;: [1, 1, 1]
+    }],
+    &quot;materials&quot;: [{
+        &quot;name&quot;: &quot;Material&quot;,
+        &quot;id&quot;: &quot;Material&quot;,
+        &quot;ambient&quot;: [0.8, 0.8, 0.8],
+        &quot;diffuse&quot;: [0.64, 0.64, 0.64],
+        &quot;specular&quot;: [0.5, 0.5, 0.5],
+        &quot;specularPower&quot;: 50,
+        &quot;emissive&quot;: [0, 0, 0],
+        &quot;alpha&quot;: 1,
+        &quot;backFaceCulling&quot;: true,
+        &quot;diffuseTexture&quot;: {
+            &quot;name&quot;: &quot;Metal1.png&quot;,
+            &quot;level&quot;: 1,
+            &quot;hasAlpha&quot;: 1,
+            &quot;coordinatesMode&quot;: 0,
+            &quot;uOffset&quot;: 0,
+            &quot;vOffset&quot;: 0,
+            &quot;uScale&quot;: 1,
+            &quot;vScale&quot;: 1,
+            &quot;uAng&quot;: 0,
+            &quot;vAng&quot;: 0,
+            &quot;wAng&quot;: 0,
+            &quot;wrapU&quot;: true,
+            &quot;wrapV&quot;: true,
+            &quot;coordinatesIndex&quot;: 0
+        }
+    },
+    {
+        &quot;name&quot;: &quot;Material.001&quot;,
+        &quot;id&quot;: &quot;Material.001&quot;,
+        &quot;ambient&quot;: [0.8, 0.8, 0.8],
+        &quot;diffuse&quot;: [0.64, 0.64, 0.64],
+        &quot;specular&quot;: [0.5, 0.5, 0.5],
+        &quot;specularPower&quot;: 50,
+        &quot;emissive&quot;: [0, 0, 0],
+        &quot;alpha&quot;: 1,
+        &quot;backFaceCulling&quot;: true,
+        &quot;diffuseTexture&quot;: {
+            &quot;name&quot;: &quot;concrete5.png&quot;,
+            &quot;level&quot;: 1,
+            &quot;hasAlpha&quot;: 1,
+            &quot;coordinatesMode&quot;: 0,
+            &quot;uOffset&quot;: 0,
+            &quot;vOffset&quot;: 0,
+            &quot;uScale&quot;: 5,
+            &quot;vScale&quot;: 5,
+            &quot;uAng&quot;: 0,
+            &quot;vAng&quot;: 0,
+            &quot;wAng&quot;: 0,
+            &quot;wrapU&quot;: true,
+            &quot;wrapV&quot;: true,
+            &quot;coordinatesIndex&quot;: 0
+        }
+    }],
+    &quot;geometries&quot;: {
+        &quot;vertexData&quot;: [{
+            &quot;id&quot;: &quot;CubeGeometry&quot;,
+            &quot;updatable&quot;: false,
+            &quot;positions&quot;: [ 1, -1, 1, 1, -1, -1, -1, -1, 1, 1, 1, 1, -1, 1, 1, 1, 1, -1, 1, 1, 1, 1, -1, -1, 1, -1, -1, 1, 1, -1, -1, -1, -1, -1, -1, -1, -1, 1, -1, -1, -1, 1, 1, 1, 1, 1, -1, 1, -1, 1, 1, -1, -1, -1, -1, 1, -1, 1, 1, 1, 1, 1, -1, 1, -1, -1, 1, 1, -1, -1, 1, -1, -1, 1, 1, -1, -1, 1, 1, -1, 1, -1, -1, 1, -1, 1, 1],
+            &quot;normals&quot;: [0.5773, -0.5773, 0.5773, 0.5773, -0.5773, -0.5773, -0.5773, -0.5773, 0.5773, 0.5773, 0.5773, 0.5773, -0.5773, 0.5773, 0.5773, 0.5773, 0.5773, -0.5773, 0.5773, 0.5773, 0.5773, 0.5773, -0.5773, -0.5773, 0.5773, -0.5773, -0.5773, 0.5773, 0.5773, -0.5773, -0.5773, -0.5773, -0.5773, -0.5773, -0.5773, -0.5773, -0.5773, 0.5773, -0.5773, -0.5773, -0.5773, 0.5773, 0.5773, 0.5773, 0.5773, 0.5773, -0.5773, 0.5773, -0.5773, 0.5773, 0.5773, -0.5773, -0.5773, -0.5773, -0.5773, 0.5773, -0.5773, 0.5773, 0.5773, 0.5773, 0.5773, 0.5773, -0.5773, 0.5773, -0.5773, -0.5773, 0.5773, 0.5773, -0.5773, -0.5773, 0.5773, -0.5773, -0.5773, 0.5773, 0.5773, -0.5773, -0.5773, 0.5773, 0.5773, -0.5773, 0.5773, -0.5773, -0.5773, 0.5773, -0.5773, 0.5773, 0.5773],
+            &quot;uvs&quot;: [0.5, 0.5, 0.5, 0, 0, 0.5, 0.5, 1, 0, 1, 0.5, 0.5, 0.5, 1, 0, 0.5, 0.5, 0.5, 0.5, 1, 0, 0.5, 0.5, 0.5, 0.5, 1, 1, 0.5, 0.5, 0.5, 0.5, 0, 0, 0.5, 0, 0, 0, 0.5, 0.5, 1, 0, 1, 0, 0.5, 0.5, 1, 0, 1, 1, 1, 1, 0.5, 0.5, 0, 0, 0, 0, 0.5],
+            &quot;indices&quot;: [0, 1, 2, 3, 4, 5, 0, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1, 17, 2, 4, 18, 5, 19, 20, 21, 22, 23, 10, 12, 24, 25, 26, 27, 28]
+        }]
+    },
+    &quot;meshes&quot;: [{
+        &quot;name&quot;: &quot;Plane&quot;,
+        &quot;id&quot;: &quot;Plane&quot;,
+        &quot;materialId&quot;: &quot;Material.001&quot;,
+        &quot;position&quot;: [0.0172, -2.9787, -0.5184],
+        &quot;rotation&quot;: [0, 0, 0],
+        &quot;scaling&quot;: [87.1479, 0.8635, 87.1479],
+        &quot;isVisible&quot;: true,
+        &quot;isEnabled&quot;: true,
+        &quot;checkCollisions&quot;: false,
+        &quot;billboardMode&quot;: 0,
+        &quot;receiveShadows&quot;: true,
+        &quot;positions&quot;: [-1, 0, -1, 1, 0, -1, -1, 0, 1, 1, 0, 1],
+        &quot;normals&quot;: [0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
+        &quot;uvs&quot;: [0.0001, 0.0001, 0.9999, 0.0001, 0.0001, 0.9999, 0.9999, 0.9999],
+        &quot;indices&quot;: [0, 1, 2, 1, 3, 2],
+        &quot;subMeshes&quot;: [{
+            &quot;materialIndex&quot;: 0,
+            &quot;verticesStart&quot;: 0,
+            &quot;verticesCount&quot;: 4,
+            &quot;indexStart&quot;: 0,
+            &quot;indexCount&quot;: 6
+        }]
+    },
+    {
+        &quot;name&quot;: &quot;Cube&quot;,
+        &quot;id&quot;: &quot;Cube&quot;,
+        &quot;materialId&quot;: &quot;Material&quot;,
+        &quot;geometryId&quot;: &quot;CubeGeometry&quot;,
+        &quot;position&quot;: [0, 0, 0],
+        &quot;rotation&quot;: [0, 0, 0],
+        &quot;scaling&quot;: [1, 1, 1],
+        &quot;isVisible&quot;: true,
+        &quot;isEnabled&quot;: true,
+        &quot;checkCollisions&quot;: false,
+        &quot;billboardMode&quot;: 0,
+        &quot;receiveShadows&quot;: false,
+        &quot;subMeshes&quot;: [{
+            &quot;materialIndex&quot;: 0,
+            &quot;verticesStart&quot;: 0,
+            &quot;verticesCount&quot;: 29,
+            &quot;indexStart&quot;: 0,
+            &quot;indexCount&quot;: 36
+        }],
+        &quot;animations&quot;: [{
+            &quot;dataType&quot;: 1,
+            &quot;framePerSecond&quot;: 30,
+            &quot;loopBehavior&quot;: 1,
+            &quot;name&quot;: &quot;position animation&quot;,
+            &quot;property&quot;: &quot;position&quot;,
+            &quot;keys&quot;: [{
+                &quot;frame&quot;: 0,
+                &quot;values&quot;: [0,0,0.0291]
+            },
+            {
+                &quot;frame&quot;: 1,
+                &quot;values&quot;: [0,0,0.0291]
+            },
+            {
+                &quot;frame&quot;: 30,
+                &quot;values&quot;: [0,0,10]
+            },
+            {
+                &quot;frame&quot;: 60,
+                &quot;values&quot;: [0,0,9.975]
+            },
+            {
+                &quot;frame&quot;: 90,
+                &quot;values&quot;: [0,0,0]
+            },
+            {
+                &quot;frame&quot;: 250,
+                &quot;values&quot;: [0,0,0]
+            }]
+        },
+        {
+            &quot;dataType&quot;: 1,
+            &quot;framePerSecond&quot;: 30,
+            &quot;loopBehavior&quot;: 1,
+            &quot;name&quot;: &quot;rotation animation&quot;,
+            &quot;property&quot;: &quot;rotation&quot;,
+            &quot;keys&quot;: [{
+                &quot;frame&quot;: 0,
+                &quot;values&quot;: [-0.016, 0, 0]
+            },
+            {
+                &quot;frame&quot;: 30,
+                &quot;values&quot;: [-0.016, 0, 0]
+            },
+            {
+                &quot;frame&quot;: 60,
+                &quot;values&quot;: [-6.2832, 0, 0]
+            },
+            {
+                &quot;frame&quot;: 250,
+                &quot;values&quot;: [-6.2832, 0, 0]
+            }]
+        }],
+        &quot;autoAnimate&quot;: true,
+        &quot;autoAnimateFrom&quot;: 0,
+        &quot;autoAnimateTo&quot;: 250,
+        &quot;autoAnimateLoop&quot;: true
+    },
+    {
+        &quot;name&quot;: &quot;Cube2&quot;,
+        &quot;id&quot;: &quot;Cube2&quot;,
+        &quot;materialId&quot;: &quot;Material&quot;,
+        &quot;geometryId&quot;: &quot;CubeGeometry&quot;,
+        &quot;position&quot;: [10, 0, 0],
+        &quot;rotation&quot;: [0, 0, 0],
+        &quot;scaling&quot;: [1, 1, 1],
+        &quot;isVisible&quot;: true,
+        &quot;isEnabled&quot;: true,
+        &quot;checkCollisions&quot;: false,
+        &quot;billboardMode&quot;: 0,
+        &quot;receiveShadows&quot;: false,
+        &quot;subMeshes&quot;: [{
+            &quot;materialIndex&quot;: 0,
+            &quot;verticesStart&quot;: 0,
+            &quot;verticesCount&quot;: 29,
+            &quot;indexStart&quot;: 0,
+            &quot;indexCount&quot;: 36
+        }]
+    }],
+    &quot;multiMaterials&quot;: [],
+    &quot;shadowGenerators&quot;: [{
+        &quot;useVarianceShadowMap&quot;: true,
+        &quot;mapSize&quot;: 1024,
+        &quot;lightId&quot;: &quot;Sun&quot;,
+        &quot;renderList&quot;: [&quot;Cube&quot;, &quot;Cube2&quot;]
+    }],
+    &quot;skeletons&quot;: [],
+    &quot;sounds&quot;: [{          
+        &quot;name&quot;: &quot;violons11.wav&quot;,
+        &quot;volume&quot;: 1,
+        &quot;autoplay&quot;: true,
+        &quot;loop&quot;: true,
+        &quot;soundTrackId&quot;: 1,
+        &quot;spatialSound&quot;: true,
+        &quot;position&quot;: [0, 0, 0],
+        &quot;refDistance&quot;: 1.0,
+        &quot;rolloffFactor&quot;: 1.0,
+        &quot;maxDistance&quot;: 100,
+        &quot;distanceModel&quot;: &quot;linear&quot;,
+        &quot;panningModel&quot;: &quot;equalpower&quot;,
+        &quot;isDirectional&quot;: false,
+        &quot;coneInnerAngle&quot;: 90,
+        &quot;coneOuterAngle&quot;: 180,
+        &quot;coneOuterGain&quot;: 0,
+        &quot;connectedMeshId&quot;: 0,
+        &quot;localDirectionToMesh&quot;: [1, 0, 0]
+   }],
+&quot;spriteManagers&quot;: [
+{
+	&quot;name&quot;: &quot;treesManager&quot;,
+	&quot;capacity&quot;: 2000,
+	&quot;cellWidth&quot;: 512,
+	&quot;cellHeight&quot;: 1024,
+	&quot;fogEnabled&quot;: true,
+	&quot;blendMode&quot;: 2,
+	&quot;disableDepthWrite&quot;: false,
+	&quot;pixelPerfect&quot;: false,
+	&quot;texture&quot;: {
+		&quot;tags&quot;: null,
+		&quot;url&quot;: &quot;https://assets.babylonjs.com/textures/palm.png&quot;,
+		&quot;uOffset&quot;: 0,
+		&quot;vOffset&quot;: 0,
+		&quot;uScale&quot;: 1,
+		&quot;vScale&quot;: 1,
+		&quot;uAng&quot;: 0,
+		&quot;vAng&quot;: 0,
+		&quot;wAng&quot;: 0,
+		&quot;uRotationCenter&quot;: 0.5,
+		&quot;vRotationCenter&quot;: 0.5,
+		&quot;wRotationCenter&quot;: 0.5,
+		&quot;homogeneousRotationInUVTransform&quot;: false,
+		&quot;isBlocking&quot;: true,
+		&quot;name&quot;: &quot;https://assets.babylonjs.com/textures/palm.png&quot;,
+		&quot;hasAlpha&quot;: false,
+		&quot;getAlphaFromRGB&quot;: false,
+		&quot;level&quot;: 1,
+		&quot;coordinatesIndex&quot;: 0,
+		&quot;optimizeUVAllocation&quot;: true,
+		&quot;coordinatesMode&quot;: 0,
+		&quot;wrapU&quot;: 0,
+		&quot;wrapV&quot;: 0,
+		&quot;wrapR&quot;: 1,
+		&quot;anisotropicFilteringLevel&quot;: 4,
+		&quot;isCube&quot;: false,
+		&quot;is3D&quot;: false,
+		&quot;is2DArray&quot;: false,
+		&quot;gammaSpace&quot;: true,
+		&quot;invertZ&quot;: false,
+		&quot;lodLevelInAlpha&quot;: false,
+		&quot;lodGenerationOffset&quot;: 0,
+		&quot;lodGenerationScale&quot;: 0,
+		&quot;linearSpecularLOD&quot;: false,
+		&quot;isRenderTarget&quot;: false,
+		&quot;animations&quot;: [],
+		&quot;invertY&quot;: false,
+		&quot;samplingMode&quot;: 3,
+		&quot;_useSRGBBuffer&quot;: false,
+		&quot;internalTextureLabel&quot;: &quot;https://assets.babylonjs.com/textures/palm.png&quot;,
+		&quot;noMipmap&quot;: true
+	},
+	&quot;sprites&quot;: [
+		{
+			&quot;name&quot;: &quot;tree&quot;,
+			&quot;position&quot;: [
+				-21.262812196810966,
+				0,
+				-15.254702234794953
+			],
+			&quot;color&quot;: [
+				1,
+				1,
+				1,
+				1
+			],
+			&quot;width&quot;: 1,
+			&quot;height&quot;: 2,
+			&quot;angle&quot;: 0,
+			&quot;invertU&quot;: false,
+			&quot;invertV&quot;: false,
+			&quot;isPickable&quot;: false,
+			&quot;isVisible&quot;: true,
+			&quot;useAlphaForPicking&quot;: false,
+			&quot;animationStarted&quot;: false,
+			&quot;fromIndex&quot;: 0,
+			&quot;toIndex&quot;: 0,
+			&quot;loopAnimation&quot;: false,
+			&quot;delay&quot;: 1
+		},
+		{
+			&quot;name&quot;: &quot;tree&quot;,
+			&quot;position&quot;: [
+				-0.6418444578590048,
+				0,
+				24.069820121717868
+			],
+			&quot;color&quot;: [
+				1,
+				1,
+				1,
+				1
+			],
+			&quot;width&quot;: 1,
+			&quot;height&quot;: 2,
+			&quot;angle&quot;: 0,
+			&quot;invertU&quot;: false,
+			&quot;invertV&quot;: false,
+			&quot;isPickable&quot;: false,
+			&quot;isVisible&quot;: true,
+			&quot;useAlphaForPicking&quot;: false,
+			&quot;animationStarted&quot;: false,
+			&quot;fromIndex&quot;: 0,
+			&quot;toIndex&quot;: 0,
+			&quot;loopAnimation&quot;: false,
+			&quot;delay&quot;: 1
+		}
+	]
+]
+}</code></pre>
+<h2 id="spritemanagers">SpriteManagers<a class="anchor" href="#spritemanagers">#</a></h2>
+<p>A SpriteManager is defined by the following JSON:</p>
+<pre class="code" data-lang="javascript"><code>[
+{
+	&quot;name&quot;: string,
+	&quot;capacity&quot;: int,
+	&quot;cellWidth&quot;: int,
+	&quot;cellHeight&quot;: int,
+	&quot;fogEnabled&quot;: true,
+	&quot;blendMode&quot;: int,
+	&quot;disableDepthWrite&quot;: boolean,
+	&quot;pixelPerfect&quot;: boolean,
+	&quot;texture&quot;: Texture,
+	&quot;sprites&quot;: array of Sprites
+]
+</code></pre>
+<h2 id="sprites">Sprites<a class="anchor" href="#sprites">#</a></h2>
+<p>A Sprite is defined by the following JSON:</p>
+<pre class="code" data-lang="javascript"><code>[
+	{
+		&quot;name&quot;: string,
+		&quot;position&quot;: Vector3,
+		&quot;color&quot;: Color4,
+		&quot;width&quot;: float,
+		&quot;height&quot;: float,
+		&quot;angle&quot;: float,
+		&quot;invertU&quot;: boolean,
+		&quot;invertV&quot;: boolean,
+		&quot;isPickable&quot;: boolean,
+		&quot;isVisible&quot;: boolean,
+		&quot;useAlphaForPicking&quot;: boolean,
+		&quot;animationStarted&quot;: boolean,
+		&quot;fromIndex&quot;: int,
+		&quot;toIndex&quot;: int,
+		&quot;loopAnimation&quot;: boolean,
+		&quot;delay&quot;: float
+	}
+]
+</code></pre>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#basic-types">Basic types </a><a href="#global-structure">Global structure </a><a href="#cameras">Cameras </a><a href="#map-of-camera-inputs">Map of camera inputs </a><a href="#lights">Lights </a><a href="#materials">Materials </a><a href="#fresnel-parameters">Fresnel parameters </a><a href="#textures">Textures </a><a href="#reflectionprobe">ReflectionProbe </a><a href="#rendertargettexture">RenderTargetTexture </a><a href="#multimaterials">MultiMaterials </a><a href="#geometries">Geometries </a><a href="#vertexdata">VertexData </a><a href="#instances">Instances </a><a href="#meshes">Meshes </a><a href="#submeshes">SubMeshes </a><a href="#animations">Animations </a><a href="#animationkeys">AnimationKeys </a><a href="#shadowgenerators">ShadowGenerators </a><a href="#skeletons">Skeletons </a><a href="#bones">Bones </a><a href="#particlesystems">ParticleSystems </a><a href="#lensflaresystems">LensFlareSystems </a><a href="#lensflares">LensFlares </a><a href="#sounds">Sounds </a><a href="#actions">Actions </a><a href="#example">Example </a><a href="#spritemanagers">SpriteManagers </a><a href="#sprites">Sprites </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

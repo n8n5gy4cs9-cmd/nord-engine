@@ -4,6 +4,13 @@ section: Manual
 order: 10
 summary: Actions, keyboard, mouse, touch, gamepad, rebinding.
 ---
+
+Input connects a player’s keys, pointer, touch or gamepad to game actions. Give actions names such as left and jump so game code can stay simple.
+
+::: dummies
+down means a button is held. pressed means it just became held this frame. Use down for walking and pressed for a single jump or menu action.
+:::
+
 Scripts never read raw keys. You declare **actions** in the project and ask about the action:
 
 ```json

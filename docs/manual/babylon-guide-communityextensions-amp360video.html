@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Azure Media Player 360 Video Plugin — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Azure Media Player 360 Video Plugin</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h1 id="azure-media-player-360-video-plugin">Azure Media Player 360 Video Plugin</h1>
+<p>The Azure Media Player 360 Video Plugin is a handy 360 video plugin for easy integration into your Babylon.js 360 Web Apps.</p>
+<h2 id="introduction">Introduction<a class="anchor" href="#introduction">#</a></h2>
+<p>The <span>Azure Media Player</span> 360 Video plugin for AMP (aka <span>Azure Media Player</span>) uses Babylon.js to facilitate the integration of 360 videos into your web app.</p>
+<p>The plugin natively supports VR headsets (Windows Mixed Reality, etc.).</p>
+<p>{/* <span>Online Demo of the plugin</span> */}</p>
+<h2 id="how-to-run-locally">How to Run Locally<a class="anchor" href="#how-to-run-locally">#</a></h2>
+<p>First, clone the Babylon.js extensions repository:</p>
+<pre class="code" data-lang="bash"><code>git clone https://github.com/BabylonJS/Extensions.git</code></pre>
+<p>Once the repository has been cloned, open a command prompt in the Amp360Video folder.</p>
+<p>Then, type the following commands:</p>
+<pre class="code" data-lang="bash"><code>npm install
+npm start</code></pre>
+<p>The hosting web page will automatically open (using webpack-dev-server).</p>
+<h2 id="how-it-works">How it works<a class="anchor" href="#how-it-works">#</a></h2>
+<p>The 360 video plugin is a <span>videojs</span> plugin compatible with AMP versions 2.1.7 through the latest supported version (2.2.3 at the time of writing).</p>
+<p>The plugin depends on Babylon.js in order to enable 3D functionalities in AMP.</p>
+<p>For more information about AMP, you can access their <span>documentation</span>.</p>
+<h2 id="how-to-use-it-on-your-website">How to use it on your website<a class="anchor" href="#how-to-use-it-on-your-website">#</a></h2>
+<p>After deploying the bundled JavaScript file <span><code>dist/amp-360video.js</code></span> from the dist directory to your website, you can follow the steps below.</p>
+<blockquote>
+<p>Note: If you used the plugin before, you might have needed to reference Babylon.js in your site. We now provide a bundle that keeps delivery as small as possible, so the Babylon.js reference is no longer required.</p>
+</blockquote>
+<h2 id="external-resources">External Resources<a class="anchor" href="#external-resources">#</a></h2>
+<p>Include the following resources in your HTML:</p>
+<pre class="code" data-lang="html"><code>&lt;!-- Link to pep.js to ensure pointer events work consistently in all browsers --&gt;
+&lt;script src=&quot;https://code.jquery.com/pep/0.4.1/pep.js&quot;&gt;&lt;/script&gt;
+
+&lt;!-- Link to the AMP resources --&gt;
+&lt;link href=&quot;https://amp.azure.net/libs/amp/2.2.3/skins/amp-default/azuremediaplayer.min.css&quot; rel=&quot;stylesheet&quot;&gt;
+&lt;script src=&quot;https://amp.azure.net/libs/amp/2.2.3/azuremediaplayer.min.js&quot;&gt;&lt;/script&gt;</code></pre>
+<h2 id="plugin-script">Plugin Script<a class="anchor" href="#plugin-script">#</a></h2>
+<p>Include the link to your previously downloaded plugin script in your HTML:</p>
+<pre class="code" data-lang="html"><code>&lt;!-- Link to the plugin file --&gt;
+&lt;script src=&quot;amp-360video.js&quot;&gt;&lt;/script&gt;</code></pre>
+<h2 id="plugin-setup">Plugin Setup<a class="anchor" href="#plugin-setup">#</a></h2>
+<p>You can either embed the plugin in your HTML or initialize it in code, as specified in the <span>AMP documentation</span>.</p>
+<h3 id="html-initialization">Html Initialization<a class="anchor" href="#html-initialization">#</a></h3>
+<p>Add the <strong>threeSixty plugin</strong> to your video data-setup:</p>
+<pre class="code" data-lang="html"><code>&lt;video playsinline crossorigin=&quot;anonymous&quot; class=&quot;azuremediaplayer amp-default-skin amp-big-play-centered&quot; autoplay controls width=&quot;100%&quot; height=&quot;100%&quot; data-setup='{ &quot;techOrder&quot;: [&quot;azureHtml5JS&quot;, &quot;html5&quot;], &quot;plugins&quot;: { &quot;threeSixty&quot;: { } } }'&gt;
+    &lt;source src=&quot;//willzhanmswest.streaming.mediaservices.windows.net/1f2dd2dd-ee99-40be-aae9-d0c2209982eb/DroneFlightOverLasVegasStripH3Pro7.ism/Manifest&quot; type=&quot;application/vnd.ms-sstr+xml&quot; /&gt;
+    &lt;p class=&quot;amp-no-js&quot;&gt;
+        To view this video please enable JavaScript, and consider upgrading to a web browser that supports HTML5 video
+    &lt;/p&gt;
+&lt;/video&gt;</code></pre>
+<p>The only difference from your default AMP initialization is the presence of the 360 plugin:</p>
+<pre class="code" data-lang="javascript"><code>&quot;plugins&quot;: { &quot;threeSixty&quot;: { } }'</code></pre>
+<p>One example can be found in the <em>index.html</em> file located in the <span>repo</span>.</p>
+<h3 id="code-initialization">Code Initialization<a class="anchor" href="#code-initialization">#</a></h3>
+<p>The following code initializes the plugin in your AMP player:</p>
+<pre class="code" data-lang="javascript"><code>const myPlayer = amp(
+  &quot;videoPlayer&quot;,
+  {
+    nativeControlsForTouch: false,
+    autoplay: false,
+    controls: true,
+    width: &quot;640&quot;,
+    height: &quot;480&quot;,
+    poster: &quot;&quot;,
+    techOrder: [&quot;azureHtml5JS&quot;, &quot;html5&quot;],
+    plugins: {
+      threeSixty: {
+        enableVR: true,
+      },
+    },
+  },
+  function () {
+    console.log(&quot;Good to go!&quot;);
+    // add an event listener
+    this.addEventListener(&quot;ended&quot;, function () {
+      console.log(&quot;Finished!&quot;);
+    });
+  },
+);
+
+myPlayer.src([
+  {
+    src: &quot;//willzhanmswest.streaming.mediaservices.windows.net/1f2dd2dd-ee99-40be-aae9-d0c2209982eb/DroneFlightOverLasVegasStripH3Pro7.ism/Manifest&quot;,
+    type: &quot;application/vnd.ms-sstr+xml&quot;,
+  },
+]);</code></pre>
+<p>One example can be found in the indexCode.html file located in the <span>repo</span>.</p>
+<h2 id="define-the-360-video-format-monoscopic-side-by-side-top-bottom">Define the 360 video format (Monoscopic, Side by Side, Top Bottom)<a class="anchor" href="#define-the-360-video-format-monoscopic-side-by-side-top-bottom">#</a></h2>
+<p>Several types of 360 video exist today. The most common are Monoscopic Panoramic, Stereoscopic Side by Side panoramic, and Top Bottom panoramic.</p>
+<p>The first represents a panoramic view dedicated to one eye. The second contains two panoramic views, one for each eye, whereas the last contains both panoramic views on the top and bottom of the video, respectively.</p>
+<p>The plugin defaults to Monoscopic panoramic mode.</p>
+<p>In order to specify the type of your source (this can unfortunately not be automated in the plugin), you can specify a different value in your options:</p>
+<h3 id="by-html-configuration">By HTML configuration<a class="anchor" href="#by-html-configuration">#</a></h3>
+<p>In the data-setup plugin section:</p>
+<pre class="code" data-lang="javascript"><code>&quot;plugins&quot;: { &quot;threeSixty&quot;: { &quot;videoType&quot;: &quot;stereoscopicTopBottom&quot; } }</code></pre>
+<p>The available types are: &quot;monoscopicPanoramic&quot;, &quot;stereoscopicSideBySide&quot;, &quot;stereoscopicTopBottom&quot;.</p>
+<h3 id="by-code-configuration">By code configuration<a class="anchor" href="#by-code-configuration">#</a></h3>
+<p>This works exactly the same as the previous point. In the options of your plugin:</p>
+<pre class="code" data-lang="javascript"><code>plugins: {
+    &quot;threeSixty&quot;: {
+        videoType: &quot;stereoscopicTopBottom&quot;
+    }
+}</code></pre>
+<p>The available types are: &quot;monoscopicPanoramic&quot;, &quot;stereoscopicSideBySide&quot;, &quot;stereoscopicTopBottom&quot;.</p>
+<h2 id="enable-disable-the-vr-button">Enable/Disable the VR Button<a class="anchor" href="#enable-disable-the-vr-button">#</a></h2>
+<p>By default, the plugin includes a VR mode available through a button shaped like a head-mounted display.</p>
+<p>In order to disable the button, you can specify in your options:</p>
+<h3 id="by-html-configuration">By HTML configuration<a class="anchor" href="#by-html-configuration">#</a></h3>
+<p>In the data-setup plugin section:</p>
+<pre class="code" data-lang="javascript"><code>&quot;plugins&quot;: { &quot;threeSixty&quot;: { &quot;enableVR&quot;: false } }</code></pre>
+<h3 id="by-code-configuration">By code configuration<a class="anchor" href="#by-code-configuration">#</a></h3>
+<p>This works exactly the same as the previous point. In the options of your plugin:</p>
+<pre class="code" data-lang="javascript"><code>plugins: {
+    &quot;threeSixty&quot;: {
+        enableVR: false
+    }
+}</code></pre>
+<h2 id="update-the-camera-fov">Update the camera FOV<a class="anchor" href="#update-the-camera-fov">#</a></h2>
+<p>By default, the plugin uses a camera with a 1.18-radian field of view.</p>
+<p>In order to change it if needed, you can specify a different value in your options:</p>
+<h3 id="by-html-configuration">By HTML configuration<a class="anchor" href="#by-html-configuration">#</a></h3>
+<p>In the data-setup plugin section:</p>
+<pre class="code" data-lang="javascript"><code>&quot;plugins&quot;: { &quot;threeSixty&quot;: { &quot;fov&quot;: 1 } }</code></pre>
+<h3 id="by-code-configuration">By code configuration<a class="anchor" href="#by-code-configuration">#</a></h3>
+<p>This works exactly the same as the previous point. In the options of your plugin:</p>
+<pre class="code" data-lang="javascript"><code>plugins: {
+    &quot;threeSixty&quot;: {
+        fov: 1
+    }
+}</code></pre>
+<h2 id="update-the-default-camera-orientation">Update the default camera orientation<a class="anchor" href="#update-the-default-camera-orientation">#</a></h2>
+<p>If the camera is not looking where you expect when the video starts, you can use the defaultCameraOrientationX and defaultCameraOrientationY options to adjust the camera&#39;s starting point for your use case. These properties are angles around the x and y axes, respectively, defined in radians.</p>
+<p>In order to change them, you can specify a different value in your options:</p>
+<h3 id="by-html-configuration">By HTML configuration<a class="anchor" href="#by-html-configuration">#</a></h3>
+<p>In the data-setup plugin section:</p>
+<pre class="code" data-lang="javascript"><code>&quot;plugins&quot;: { &quot;threeSixty&quot;: { &quot;defaultCameraOrientationX&quot;: 1 } }</code></pre>
+<h3 id="by-code-configuration">By code configuration<a class="anchor" href="#by-code-configuration">#</a></h3>
+<p>This works exactly the same as the previous point. In the options of your plugin:</p>
+<pre class="code" data-lang="javascript"><code>plugins: {
+    &quot;threeSixty&quot;: {
+        defaultCameraOrientationY: 1
+    }
+}</code></pre>
+<h2 id="disable-webgl2">Disable WebGL2<a class="anchor" href="#disable-webgl2">#</a></h2>
+<p>The default setup enables WebGL2 to enhance application performance. If you encounter compatibility issues across platforms and want to disable it, you can use the setup below:</p>
+<h3 id="by-html-configuration">By HTML configuration<a class="anchor" href="#by-html-configuration">#</a></h3>
+<p>In the data-setup plugin section:</p>
+<pre class="code" data-lang="javascript"><code>&quot;plugins&quot;: { &quot;threeSixty&quot;: { &quot;disableWebGL2Support&quot;: true } }</code></pre>
+<h3 id="by-code-configuration">By code configuration<a class="anchor" href="#by-code-configuration">#</a></h3>
+<p>This works exactly the same as the previous point. In the options of your plugin:</p>
+<pre class="code" data-lang="javascript"><code>plugins: {
+    &quot;threeSixty&quot;: {
+        disableWebGL2Support: true
+    }
+}</code></pre>
+<h2 id="adapt-to-native-resolution">Adapt to native resolution<a class="anchor" href="#adapt-to-native-resolution">#</a></h2>
+<p>To provide the best performance, the plugin does not account for your <span>devicePixelRatio</span> setup by default. It renders 1 to 1 with CSS pixels. On a HiDPI or Retina display, the ratio might be quite high, which means that if you want to make full use of your pixels (using physical pixels), the plugin may need to render, for example, four times more pixels than the actual CSS pixel count.</p>
+<p>You can use the plugin&#39;s hardwareScalingLevel setting to choose how many times the physical pixels of your device are multiplied to define the number of CSS pixels. For instance, a value of 0.5 means there would be twice as many pixels in width and height as the number of CSS pixels, which greatly enhances the resolution.</p>
+<h3 id="by-html-configuration">By HTML configuration<a class="anchor" href="#by-html-configuration">#</a></h3>
+<p>In the data-setup plugin section:</p>
+<pre class="code" data-lang="javascript"><code>&quot;plugins&quot;: { &quot;threeSixty&quot;: { &quot;hardwareScalingLevel&quot;: 0.5 } }</code></pre>
+<h3 id="by-code-configuration">By code configuration<a class="anchor" href="#by-code-configuration">#</a></h3>
+<p>This works exactly the same as the previous point. In the options of your plugin:</p>
+<pre class="code" data-lang="javascript"><code>plugins: {
+    &quot;threeSixty&quot;: {
+        hardwareScalingLevel: 0.5
+    }
+}</code></pre>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#introduction">Introduction </a><a href="#how-to-run-locally">How to Run Locally </a><a href="#how-it-works">How it works </a><a href="#how-to-use-it-on-your-website">How to use it on your website </a><a href="#external-resources">External Resources </a><a href="#plugin-script">Plugin Script </a><a href="#plugin-setup">Plugin Setup </a><a href="#define-the-360-video-format-monoscopic-side-by-side-top-bottom">Define the 360 video format (Monoscopic, Side by Side, Top Bottom) </a><a href="#enable-disable-the-vr-button">Enable/Disable the VR Button </a><a href="#update-the-camera-fov">Update the camera FOV </a><a href="#update-the-default-camera-orientation">Update the default camera orientation </a><a href="#disable-webgl2">Disable WebGL2 </a><a href="#adapt-to-native-resolution">Adapt to native resolution </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: WebXR Controllers Support — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: WebXR Controllers Support</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><p>One of the major differences between WebVR and WebXR is support for different types of controllers. While WebVR supported the non-standard extended gamepad API and a few selected controllers, WebXR already supports many different input types, including touch screens, motion controllers, and hands.</p>
+<h2 id="some-terms-and-classes-to-clear-things-up">Some terms and classes to clear things up<a class="anchor" href="#some-terms-and-classes-to-clear-things-up">#</a></h2>
+<p>An XR controller comprises many components that we at Babylon.js sometimes name differently. It is also important to know the terms themselves so you can use what you actually need. I recommend reading the <span>XR Input section</span> of the WebXR proposal draft.</p>
+<p>An XR Session controls the input source of the current session. Every new input source connected to this session will be registered in the <code>inputSources</code> array of the native XR Session and will also trigger the <code>inputsourceschange</code> event with the new input source.</p>
+<p>An input source has one of three target ray modes - <code>tracked-pointer</code> for gamepad-like controllers, <code>screen</code> for touchscreen-oriented inputs, and <code>gaze</code> for gaze-based inputs (input sources like Google Cardboard that have no proper way for user input).</p>
+<p>Babylon&#39;s <a href="engine-babylonjs-babylon-webxrinput.html">WebXRInput</a> class is responsible for coordinating the addition and removal of input sources. It creates <strong>WebXR Input Sources</strong> classes and disposes of them automatically for you.</p>
+<p>Babylon&#39;s <a href="engine-babylonjs-babylon-webxrinputsource.html">WebXRInputSource</a> class is the container for all user-input-related objects. It is created automatically by the WebXRInput class for every controller. It is in charge of attaching the motion controller, which, in turn, is responsible for attaching the components and loading the model.</p>
+<p>An input source has two important <span>reference spaces</span>:</p>
+<ol>
+<li>The <code>targetRay</code>, which represents the pointer&#39;s position and direction. Think - the edge of your finger.</li>
+<li>The <code>gripSpace</code>, which is the base of a handheld device connected to this input source. Think - the base of your hand. The <code>gripSpace</code> is optional and is only available when a motion controller is connected.</li>
+</ol>
+<p>Although sometimes the same, the grip and target ray spaces can have different transformations.</p>
+<p>A controller has an attached <strong>motion controller</strong> if the input source is a gamepad-like device (the Oculus Touch or Windows motion controllers are good examples). In turn, each controller has different <strong>components</strong> (buttons, triggers, thumbpads, touchpads), which have their state updated on each frame.</p>
+<p>Note that input sources with <span><code>targetRayMode</code></span> of <span><code>&quot;screen&quot;</code></span> are constantly created and removed when touch starts and ends. This is called <span>transient input</span>.</p>
+<h2 id="webxrinput">WebXRInput<a class="anchor" href="#webxrinput">#</a></h2>
+<p>The <a href="engine-babylonjs-babylon-webxrinput.html">WebXRInput</a> class has little to no public members, so you typically won&#39;t interact with it. An instance is usually created by the WebXRDefaultExperience. It has two observables that can be helpful:</p>
+<h3 id="oncontrolleraddedobservable">onControllerAddedObservable<a class="anchor" href="#oncontrolleraddedobservable">#</a></h3>
+<p>This observable will be triggered when a new input source is detected and its corresponding <a href="engine-babylonjs-babylon-webxrinputsource.html">WebXRInputSource</a> is created.</p>
+<h3 id="oncontrollerremovedobservable">onControllerRemovedObservable<a class="anchor" href="#oncontrollerremovedobservable">#</a></h3>
+<p>This one will be triggered when a controller leaves the experience, right before its <a href="engine-babylonjs-babylon-webxrinputsource.html">WebXRInputSource</a> instance is disposed.</p>
+<h2 id="webxrinputsource">WebXRInputSource<a class="anchor" href="#webxrinputsource">#</a></h2>
+<p><a href="engine-babylonjs-babylon-webxrinputsource.html">WebXRInputSource</a>, created by the <a href="engine-babylonjs-babylon-webxrinput.html">WebXRInput</a>, represents an input source (controller). It has a few important members.</p>
+<h2 id="mixing-hands-and-controllers">Mixing hands and controllers<a class="anchor" href="#mixing-hands-and-controllers">#</a></h2>
+<p>Starting with Babylon 6.42.0, it is possible to mix different types of controllers, as long as the underlying system supports it. For example, you could support both a hand and a controller at the same time.
+To try that, just enter any XR demo with your controllers and put one of them down, or enter with both hands and pick up one controller.</p>
+<h3 id="public-methods">Public methods<a class="anchor" href="#public-methods">#</a></h3>
+<h4 id="getworldpointerraytoref">getWorldPointerRayToRef<a class="anchor" href="#getworldpointerraytoref">#</a></h4>
+<p>As mentioned before, an input source has two reference spaces: <code>grip</code> and <code>target</code> (which we call <code>pointer</code>). Each of those spaces is represented by a mesh, positioned using the orientation and position provided by the XRFrame (and the XRSession). If you want to query the current transform of the user&#39;s hand or the direction the user is pointing, you can use the <code>getWorldPointerRayToRef</code> method:</p>
+<pre class="code" data-lang="javascript"><code>// Get the pointer direction ray.
+const pointerRay = new BABYLON.Ray();
+xrInputSource.getWorldPointerRayToRef(pointerRay);
+
+// Try to get the grip direction ray. If that's not available,
+// the pointer direction ray will be given.
+const gripRay = new BABYLON.Ray();
+xrInputSource.getWorldPointerRayToRef(gripRay, /* gripIfAvailable = */ true);</code></pre>
+<p>In most scenarios, you will need the pointer (not the grip) direction ray.</p>
+<h3 id="observables">Observables<a class="anchor" href="#observables">#</a></h3>
+<h4 id="onmotioncontrollerinitobservable">onMotionControllerInitObservable<a class="anchor" href="#onmotioncontrollerinitobservable">#</a></h4>
+<p>This will be triggered when a motion controller, if available, is initialized and its profile is loaded.</p>
+<h4 id="onmeshloadedobservable">onMeshLoadedObservable<a class="anchor" href="#onmeshloadedobservable">#</a></h4>
+<p>This is a helper observable. It is the same as <code>xrController.motionController.onModelLoadedObservable</code>. Because <code>motionController</code> is created asynchronously, using this one may require less code:</p>
+<pre class="code" data-lang="javascript"><code>// async, async, async
+xrInput.onControllerAddedObservable.add((inputSource) =&gt; {
+  inputSource.onMotionControllerInitObservable.add((motionController) =&gt; {
+    motionController.onMeshLoadedObservable.add((model) =&gt; {});
+  });
+});
+
+// a little cleaner
+xrInput.onControllerAddedObservable.add((inputSource) =&gt; {
+  inputSource.onModelLoadedObservable.add((model) =&gt; {});
+});</code></pre>
+<h4 id="ondisposeobservable">onDisposeObservable<a class="anchor" href="#ondisposeobservable">#</a></h4>
+<p>Will be triggered right at the end of the <code>dispose()</code> function of the input source.</p>
+<h2 id="tracked-sources">Tracked sources<a class="anchor" href="#tracked-sources">#</a></h2>
+<p>The experimental tracked-sources feature exposes hands and controllers that the XR runtime continues to track even when they are not active input sources. The native <code>XRSession.inputSources</code> collection contains sources currently participating in input, while <code>XRSession.trackedSources</code> can retain pose-capable sources that are not currently active. See the <span>WebXR specification</span> for the native API.</p>
+<span class="muted">&lt;Alert severity=&quot;warning&quot; title=&quot;Experimental browser support&quot;&gt;
+Tracked sources are currently known to be supported primarily in Meta Quest Browser 34.1+ and require compatible XR hardware. Enable the feature as optional and check whether it attached before relying on it.
+&lt;/Alert&gt;</span><p>Babylon&#39;s <code>WebXRFeatureName.TRACKED_SOURCES</code> has the value <code>&quot;xr-tracked-sources&quot;</code>. This is a Babylon feature-manager name; the feature requests the distinct native WebXR session feature descriptor <code>&quot;tracked-sources&quot;</code>.</p>
+<p>For ES modules, import the feature module so it registers with the features manager:</p>
+<pre class="code" data-lang="typescript"><code>import &quot;@babylonjs/core/XR/features/WebXRTrackedSources.js&quot;;</code></pre>
+<p>Then enable the latest feature version. There are no feature-specific options; the final <code>false</code> requests <code>&quot;tracked-sources&quot;</code> as an optional rather than required native session feature:</p>
+<pre class="code" data-lang="typescript"><code>const trackedSourcesFeature = xr.baseExperience.featuresManager.enableFeature(BABYLON.WebXRFeatureName.TRACKED_SOURCES, &quot;latest&quot;, undefined, true, false);
+
+xr.baseExperience.onStateChangedObservable.add((state) =&gt; {
+  if (state === BABYLON.WebXRState.IN_XR &amp;&amp; !trackedSourcesFeature.attached) {
+    console.warn(&quot;Tracked sources are unavailable in this XR runtime.&quot;);
+  }
+});</code></pre>
+<p>Applications using the side-effect-free <code>.pure</code> module must instead call the exported, idempotent <code>RegisterWebXRTrackedSources()</code> function before enabling the feature.</p>
+<p>The feature provides:</p>
+<pre class="code" data-lang="typescript"><code>readonly trackedSources: ReadonlyArray&lt;XRInputSource&gt;;
+readonly onTrackedSourceAddedObservable: Observable&lt;XRInputSource&gt;;
+readonly onTrackedSourceRemovedObservable: Observable&lt;XRInputSource&gt;;</code></pre>
+<p>Each <code>trackedSources</code> access returns a copied, read-only view of the current native collection. The array is a snapshot, but each entry is the original native <code>XRInputSource</code>; add and remove notifications preserve that same object identity.</p>
+<p>Enabling this feature does not add tracked-only sources to <code>XRSession.inputSources</code>, <code>WebXRInput.controllers</code>, or Babylon&#39;s normal controller/model pipeline. Use the observables when you need to manage tracked-only state yourself:</p>
+<pre class="code" data-lang="typescript"><code>trackedSourcesFeature.onTrackedSourceAddedObservable.add((source) =&gt; {
+  console.log(&quot;Tracked source added:&quot;, source);
+});
+
+trackedSourcesFeature.onTrackedSourceRemovedObservable.add((source) =&gt; {
+  console.log(&quot;Tracked source removed:&quot;, source);
+});</code></pre>
+<p>On attachment, existing native tracked sources are reported as additions. Babylon reconciles later changes by native object identity. Detaching the feature, ending or changing the XR session, and disposing the feature remove listeners and clear the current collection; removals are reported for retained sources during cleanup.</p>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="motion-controllers">Motion controllers<a class="anchor" href="#motion-controllers">#</a></h2>
+<p>In most cases, when starting a VR session, the user will have handheld devices, called motion controllers here. A motion controller will be automatically loaded if available. A motion controller has a profile containing its different components and their positions in the buttons and axes array, but Babylon.js takes care of this for you, so you don&#39;t have to know this to interact with the motion controller. You can see the different profiles in the <span>WebXR Input Profiles repository</span>.</p>
+<h3 id="controller-haptics">Controller haptics<a class="anchor" href="#controller-haptics">#</a></h3>
+<p>The <span>WebXR Gamepads Module</span> exposes a gamepad for an XR input source. Babylon WebXR motion controllers use it to support both the standard advanced <span>Gamepad haptics API</span> and the legacy <code>pulse()</code> API. This Babylon API belongs to WebXR motion-controller classes; it does not extend Babylon&#39;s general gamepad system and requires no WebXR feature-manager registration.</p>
+<span class="muted">&lt;Alert severity=&quot;warning&quot; title=&quot;Experimental browser and hardware support&quot;&gt;
+Advanced controller haptics are experimental. Available actuators and effects vary by browser, XR runtime, controller firmware, and streaming layer. Query every actuator's advertised effects and handle operation errors instead of relying on a browser or controller model alone.
+&lt;/Alert&gt;</span><p>The actuator shape and motion-controller methods are:</p>
+<pre class="code" data-lang="typescript"><code>export interface IWebXRControllerHapticActuator {
+  readonly effects?: ReadonlyArray&lt;GamepadHapticEffectType&gt;;
+  playEffect?: GamepadHapticActuator[&quot;playEffect&quot;];
+  reset?: GamepadHapticActuator[&quot;reset&quot;];
+}
+
+getHapticEffects(hapticActuatorIndex: number = 0): ReadonlyArray&lt;GamepadHapticEffectType&gt;;
+
+playHapticEffectAsync(
+  effectType: GamepadHapticEffectType,
+  parameters?: GamepadEffectParameters,
+  hapticActuatorIndex: number = 0,
+): Promise&lt;GamepadHapticsResult&gt;;
+
+resetHapticActuatorAsync(hapticActuatorIndex: number = 0): Promise&lt;GamepadHapticsResult&gt;;
+
+pulse(value: number, duration: number, hapticActuatorIndex: number = 0): Promise&lt;boolean&gt;;</code></pre>
+<p>Advanced haptics primarily use the standard <code>gamepad.vibrationActuator</code> at index <code>0</code>. If it is absent, Babylon falls back to <code>gamepad.hapticActuators[0]</code>; higher indices use the corresponding legacy array entry. If a <code>vibrationActuator</code> exists but lacks an advanced capability, Babylon reports that error rather than switching to the legacy actuator. Babylon retains <code>hapticActuators</code> for backward-compatible <code>pulse()</code> behavior, and <code>pulse()</code> continues to use that legacy array directly. It resolves <code>false</code> if the indexed legacy actuator is unavailable, while a native <code>pulse()</code> rejection still propagates.</p>
+<p>Always query an actuator&#39;s advertised effects before playback. An empty array means effect discovery is unavailable or no effects were advertised; do not assume that every actuator supports every effect:</p>
+<pre class="code" data-lang="typescript"><code>const effects = motionController.getHapticEffects();
+
+try {
+  if (effects.includes(&quot;dual-rumble&quot;)) {
+    await motionController.playHapticEffectAsync(&quot;dual-rumble&quot;, {
+      duration: 200,
+      strongMagnitude: 0.7,
+      weakMagnitude: 0.4,
+    });
+  }
+} catch (error) {
+  console.warn(&quot;Controller haptics are unavailable:&quot;, error);
+}</code></pre>
+<p>The standard <code>GamepadEffectParameters</code> type supports <code>duration</code> and <code>startDelay</code> in milliseconds. A <code>&quot;dual-rumble&quot;</code> effect uses <code>strongMagnitude</code> and <code>weakMagnitude</code>; a <code>&quot;trigger-rumble&quot;</code> effect uses <code>leftTrigger</code> and <code>rightTrigger</code>. Magnitudes range from <code>0</code> to <code>1</code>. Babylon forwards these typed parameters to the native actuator without adding defaults or range validation.</p>
+<p>Advanced methods fail deterministically for negative, fractional, or unavailable actuator indices. Playback also rejects when effect discovery, the requested effect, or <code>playEffect</code> is unsupported; reset rejects when the actuator has no <code>reset</code> method. Native <code>&quot;complete&quot;</code> or <code>&quot;preempted&quot;</code> results and native promise rejections propagate to the caller.</p>
+<p>The corresponding errors identify the actuator and failure: an invalid index throws <code>RangeError: Haptic actuator index &lt;index&gt; is out of range.</code>; unsupported playback reports missing effect discovery, an unsupported effect, or missing advanced playback; unsupported reset reports <code>Haptic actuator &lt;index&gt; does not support reset.</code></p>
+<p>Keep haptic effects short and initiate them in response to an intentional interaction rather than vibrating automatically or for a prolonged period.</p>
+<span class="muted">Online playground (not embedded offline)</span><h3 id="controller-components">Controller components<a class="anchor" href="#controller-components">#</a></h3>
+<p>Each motion controller has different components, which are described in its profile. Available component types:</p>
+<ul>
+<li>Button</li>
+<li>Trigger</li>
+<li>Squeeze</li>
+<li>Thumbstick</li>
+<li>Touchpad</li>
+</ul>
+<p>It also has a <strong>unique</strong> component ID, which corresponds to the actual component. For example, the <strong>A button</strong> on the Oculus Touch has the <strong>type</strong> <code>button</code> and the <strong>ID</strong> <code>a-button</code>.</p>
+<h4 id="getting-available-components">Getting available components<a class="anchor" href="#getting-available-components">#</a></h4>
+<p>To get a list of the available components, use the <code>getComponentIds</code> function. This will return an array of strings containing the IDs of the different components in this motion controller:</p>
+<pre class="code" data-lang="javascript"><code>const ids = motionController.getComponentIds();
+// ids = [&quot;a-button&quot;, &quot;b-button&quot;, &quot;xr-standard-trigger&quot;, .....]</code></pre>
+<p>You can also get all of the available components using the <code>components</code> public member of the Motion Controller class. It is a map of all <code>WebXRControllerComponent</code> elements in this motion controller.</p>
+<h4 id="get-components">Get components<a class="anchor" href="#get-components">#</a></h4>
+<p>To get a component, you need to know either its ID or its type. When more than one component of that type exists, the ID is better. The IDs can be found in the profile.</p>
+<p>To get a component according to its ID:</p>
+<pre class="code" data-lang="javascript"><code>const triggerComponent = motionController.getComponent(&quot;xr-standard-trigger&quot;);
+if (triggerComponent) {
+  // found, do something with it.
+}</code></pre>
+<p>To get a component of a specific type:</p>
+<pre class="code" data-lang="javascript"><code>const squeezeComponent = motionController.getComponentOfType(&quot;squeeze&quot;);
+
+// get the first registered button component
+const buttonComponent = motionController.getComponentOfType(&quot;button&quot;);</code></pre>
+<p>To get all components of a specific type:</p>
+<pre class="code" data-lang="javascript"><code>// get all button components
+const buttonComponents = motionController.getAllComponentsOfType(&quot;button&quot;);
+if (buttonComponents.length) {
+  // some were found
+}</code></pre>
+<h4 id="the-main-component">The main component<a class="anchor" href="#the-main-component">#</a></h4>
+<p>Each controller has a main component, defined by the vendor. In most cases it is the trigger component type that is the main component. To get the main component (as defined in the profile):</p>
+<pre class="code" data-lang="javascript"><code>const mainComponent = motionController.getMainComponent();
+// mainComponent always exists!</code></pre>
+<h4 id="events-and-changes-of-a-controller-component">Events and changes of a controller component<a class="anchor" href="#events-and-changes-of-a-controller-component">#</a></h4>
+<p>A component is updated on each frame with values provided by the gamepad object of the session&#39;s input source. Each button has 2 states - <code>touched</code> and <code>pressed</code>, and a value from 0 to 1 (0 being not pressed at all, 1 being fully pressed). Some components can only have the values 0 and 1 (like the button component).</p>
+<p>Some types of components also have axes values (like a thumbstick or touchpad). The axes have values from -1 to 1.
+1 in the X-axis means right, and 1 in the Y-Axis means down (towards the user).</p>
+<p>To know what the components support:</p>
+<pre class="code" data-lang="javascript"><code>if (component.isButton()) {
+  // we have a value
+}
+if (component.isAxes()) {
+  // we have axes data
+}</code></pre>
+<p>To get the component values at the current frame:</p>
+<pre class="code" data-lang="javascript"><code>let value = component.value;
+if (value &gt; 0.8) {
+  // do something nice with this value
+}
+if (component.pressed) {
+  // the component is pressed, meaning value === 1
+}
+
+if (component.touched) {
+  // fingers are on the component, might be half-pressed or moved
+}</code></pre>
+<p>To access the axes data:</p>
+<pre class="code" data-lang="javascript"><code>let axes = component.axes;
+if (axes.x &gt; 0.8) {
+  // do something nice with the x-axis value
+}</code></pre>
+<p>The component can also return changes compared to the last frame. The changes object is populated only when changes exist; otherwise, the map will be empty:</p>
+<pre class="code" data-lang="javascript"><code>// maybe nothing happened between this and last frame
+if (!component.hasChanges) {
+    return;
+}
+let changes = component.changes;
+if (changes.pressed) {
+    // pressed state changed
+    const isPressedNow = changes.pressed.current;
+    const wasPressedInLastFrame = changes.pressed.previous;
+}
+if (changes.value) {
+    // value changed! let's get the delta
+    const delta - changes.value.current - changes.value.previous;
+}</code></pre>
+<p>The components have two observables that can be used to fetch changes (and avoid checking value changes on each frame):</p>
+<pre class="code" data-lang="javascript"><code>component.onButtonStateChangedObservable.add((component) =&gt; {
+  // something changed, check the changes object
+});
+
+component.onAxisValueChangedObservable.add((values) =&gt; {
+  console.log(values.x, values.y);
+});</code></pre>
+<p>Here is a simple example of controller input.<br>When using Oculus Quest 2 controllers, component IDs and controller buttons are mapped as follows.</p>
+<p>On Oculus Quest 2 controllers:</p>
+<p><p class="muted">Upstream illustration: Quest 2 controller mappings (media not bundled).</p></p>
+<p>On the Playground sample:</p>
+<p><p class="muted">Upstream illustration: ids mappings (media not bundled).</p></p>
+<p>The simple example changes the scaling of each 3D object when each button is pressed.</p>
+<pre class="code" data-lang="javascript"><code>const xr_ids = motionController.getComponentIds();
+let triggerComponent = motionController.getComponent(xr_ids[0]); //xr-standard-trigger
+triggerComponent.onButtonStateChangedObservable.add(() =&gt; {
+  if (triggerComponent.pressed) {
+    Box_Right_Trigger.scaling = new BABYLON.Vector3(1.2, 1.2, 1.2);
+  } else {
+    Box_Right_Trigger.scaling = new BABYLON.Vector3(1, 1, 1);
+  }
+});</code></pre>
+<p>Playground for a simple VR controllers input: <span class="muted">Online playground (not embedded offline)</span></p>
+<h3 id="how-to-get-a-model">How to get a model<a class="anchor" href="#how-to-get-a-model">#</a></h3>
+<h4 id="the-input-profile-online-repository">The input-profile online repository<a class="anchor" href="#the-input-profile-online-repository">#</a></h4>
+<p>As part of the (successful!) effort to standardize WebXR, the <span>WebXR Input Profiles</span> GitHub repository provides an online repository that holds models and visual reference definitions for most, if not all, motion controllers available today.</p>
+<p>The repository provides a useful tool as <span>WebXR Input Profile Viewer</span>. You can easily check each id, state, button, and axis of XR controllers.</p>
+<p>Babylon.js natively supports this repository and currently uses it as the default model delivery method for XR controllers.</p>
+<p>There is little to no action required on your end—this is automated as long as you do not change the configuration.</p>
+<h4 id="babylon-local-controller-definitions">Babylon local controller definitions<a class="anchor" href="#babylon-local-controller-definitions">#</a></h4>
+<p>Before the input-profile repository was published, Babylon supported different types of controllers - Oculus Touch (1 and 2), Vive, Windows Motion Controllers, and more. Since we still wanted to offer local support for those devices, we decided not only to rely on the online profile repository, but also to deliver Babylon-based controller classes for those that were already developed.</p>
+<p>Babylon offers local definitions for the following:</p>
+<ul>
+<li>Windows Motion Controllers</li>
+<li>Oculus Touch 1 and 2</li>
+<li>Vive</li>
+<li>Generic-Button controller</li>
+</ul>
+<p>To use them, import them into your project, while remembering to prioritize them or disable the online repository:</p>
+<pre class="code" data-lang="javascript"><code>// import the ones you want to use
+import { WebXRMicrosoftMixedRealityController } from &quot;@babylonjs/core/XR/motionController/webXRMicrosoftMixedRealityController&quot;;
+
+// prioritize the local classes (but use online if controller not found)
+WebXRMotionControllerManager.PrioritizeOnlineRepository = false;
+// or disable the online repository
+WebXRMotionControllerManager.UseOnlineRepository = false;
+
+// now, if loading a microsoft motion controller it will use the local class</code></pre>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#some-terms-and-classes-to-clear-things-up">Some terms and classes to clear things up </a><a href="#webxrinput">WebXRInput </a><a href="#webxrinputsource">WebXRInputSource </a><a href="#mixing-hands-and-controllers">Mixing hands and controllers </a><a href="#tracked-sources">Tracked sources </a><a href="#motion-controllers">Motion controllers </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

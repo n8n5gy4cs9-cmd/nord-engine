@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Fresnel Parameters — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Fresnel Parameters</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><p>Babylon.js 1.14 introduced new parameters for the StandardMaterial: <em>FresnelParameters</em>.</p>
+<p><p class="muted">Upstream illustration: image (media not bundled).</p></p>
+<p>There are 5 of them:</p>
+<ul>
+<li><code>StandardMaterial.diffuseFresnelParameters</code></li>
+<li><code>StandardMaterial.opacityFresnelParameters</code></li>
+<li><code>StandardMaterial.reflectionFresnelParameters</code></li>
+<li><code>StandardMaterial.emissiveFresnelParameters</code></li>
+<li><code>StandardMaterial.refractionFresnelParameters</code></li>
+</ul>
+<h2 id="how-fresnel-works">How Fresnel Works<a class="anchor" href="#how-fresnel-works">#</a></h2>
+<p>A Fresnel term is computed by the StandardMaterial to change how a color is applied based on the viewing angle.</p>
+<p>For instance, you can simulate great glass or reflection effects by just using a simple Fresnel term. It gives you more reflection on the edges and less in the center.</p>
+<p>To do so, just use this code:</p>
+<pre class="code" data-lang="javascript"><code>material.reflectionFresnelParameters = new BABYLON.FresnelParameters();</code></pre>
+<p>You can then control if the reflection is applied on the edges or on the center. For instance, if you want the reflection on the edges (by default), you can control it using the color properties:</p>
+<pre class="code" data-lang="javascript"><code>material.reflectionFresnelParameters.leftColor = BABYLON.Color3.White();
+material.reflectionFresnelParameters.rightColor = BABYLON.Color3.Black();</code></pre>
+<p><p class="muted">Upstream illustration: image (media not bundled).</p></p>
+<p>Conversely, if you only want reflection in the center:</p>
+<pre class="code" data-lang="javascript"><code>material.reflectionFresnelParameters.leftColor = BABYLON.Color3.Black();
+material.reflectionFresnelParameters.rightColor = BABYLON.Color3.White();</code></pre>
+<p><p class="muted">Upstream illustration: image (media not bundled).</p></p>
+<p>By using the <code>bias</code> and <code>power</code> properties, you can control how the Fresnel term is computed along the surface of the object according to this formula:</p>
+<p><em>finalFresnelTerm = pow(<strong>bias</strong> + fresnelTerm, <strong>power</strong>)</em></p>
+<p>By default, bias == 0 and power == 1.</p>
+<p>For instance, the following code:</p>
+<pre class="code" data-lang="javascript"><code>material.reflectionFresnelParameters = new BABYLON.FresnelParameters();
+material.reflectionFresnelParameters.leftColor = BABYLON.Color3.Black();
+material.reflectionFresnelParameters.rightColor = BABYLON.Color3.White();
+material.reflectionFresnelParameters.power = 4;</code></pre>
+<p>...generates the following rendering:</p>
+<p><p class="muted">Upstream illustration: image (media not bundled).</p></p>
+<h2 id="how-to-use-it">How to use it<a class="anchor" href="#how-to-use-it">#</a></h2>
+<p>A <em>FresnelParameter</em> is defined by the following properties:</p>
+<ul>
+<li><code>isEnabled</code> to activate or deactivate the Fresnel effect</li>
+<li>leftColor to define the color used on the edges</li>
+<li>rightColor to define the color used in the center</li>
+<li>bias to define the bias applied to the computed Fresnel term</li>
+<li>power to define the exponent applied to the Fresnel term</li>
+</ul>
+<p>Here is a simple example:</p>
+<pre class="code" data-lang="javascript"><code>material.reflectionTexture = new BABYLON.CubeTexture(&quot;Scenes/Customs/skybox/TropicalSunnyDay&quot;, scene);
+material.diffuseColor = new BABYLON.Color3(0, 0, 0);
+material.emissiveColor = new BABYLON.Color3(0.5, 0.5, 0.5);
+material.alpha = 0.2;
+material.specularPower = 16;
+
+// Fresnel
+material.reflectionFresnelParameters = new BABYLON.FresnelParameters();
+material.reflectionFresnelParameters.bias = 0.1;
+
+material.emissiveFresnelParameters = new BABYLON.FresnelParameters();
+material.emissiveFresnelParameters.bias = 0.6;
+material.emissiveFresnelParameters.power = 4;
+material.emissiveFresnelParameters.leftColor = BABYLON.Color3.White();
+material.emissiveFresnelParameters.rightColor = BABYLON.Color3.Black();
+
+material.opacityFresnelParameters = new BABYLON.FresnelParameters();
+material.opacityFresnelParameters.leftColor = BABYLON.Color3.White();
+material.opacityFresnelParameters.rightColor = BABYLON.Color3.Black();</code></pre>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)
+</span><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#how-fresnel-works">How Fresnel Works </a><a href="#how-to-use-it">How to use it </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

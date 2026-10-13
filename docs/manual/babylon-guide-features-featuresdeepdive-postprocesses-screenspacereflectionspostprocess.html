@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Screen Space Reflections (SSR) Post Process — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Screen Space Reflections (SSR) Post Process</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><p>&lt;span style={{&quot;color&quot;: &quot;red&quot;}}&gt;This post process is deprecated starting with v5.48.0! It is superseded by the <a href="babylon-guide-features-featuresdeepdive-postprocesses-ssrrenderingpipeline.html">Screen Space Reflections Rendering Pipeline</a>.<span class="muted">&lt;/span&gt;</span></p>
+<h2 id="introduction">Introduction<a class="anchor" href="#introduction">#</a></h2>
+<p>Rendering reflections in real time can be done using several methods. Each method has its own pros and cons. For web technologies, two main methods exist:</p>
+<ul>
+<li><strong>Using a Mirror Texture</strong>:<ul>
+<li>pros: renders perfect reflections on a plane.</li>
+<li>cons: limited to one reflection direction and complexity grows according to the scene&#39;s geometries.</li>
+</ul>
+</li>
+<li><strong>Using a SSR post-process</strong>:<ul>
+<li>pros: renders all possible reflections in all directions and complexity only depends on the screen&#39;s resolution (as all post-processes).</li>
+<li>cons: limited to what the camera sees.</li>
+</ul>
+</li>
+</ul>
+<p>As an example, with SSR enabled (look at the water-tank):
+<p class="muted">Upstream illustration: with_ssr (media not bundled).</p></p>
+<p>With SSR disabled:
+<p class="muted">Upstream illustration: with_ssr (media not bundled).</p></p>
+<p>You can find a simple example of the SSR post-process in our playground: </p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<h2 id="prerequisite">Prerequisite<a class="anchor" href="#prerequisite">#</a></h2>
+<p>To render reflections using the SSR post-process, the device must support WebGL 2 or at least the multiple render targets extension for WebGL 1. If not supported, the post-process will just work as a pass-through.</p>
+<p>For any reflective geometry in your scene, the post-process must know its &quot;reflectivity&quot; properties. To provide this information, your reflective meshes must contain:</p>
+<ul>
+<li>a <strong>Standard Material</strong>: a specular texture. The specular texture will be used to know how much the object reflects for each pixel.</li>
+<li>a <strong>PBR Material</strong>: a reflectivity texture. The post-process still doesn&#39;t support the roughness/metallic properties, for instance, but this will be available in the future. That means the post-process takes the reflectivity texture as-is and doesn&#39;t compute any metallic/roughness workflow.</li>
+</ul>
+<p>In other words, don&#39;t forget to assign a specular texture or a reflectivity texture to your material if you want reflections enabled on it.</p>
+<pre class="code" data-lang="javascript"><code>// For a BABYLON.StandardMaterial
+myMaterial.specularTexture = new BABYLON.Texture(&quot;textures/specular.png&quot;, scene);</code></pre>
+<pre class="code" data-lang="javascript"><code>// For a BABYLON.PBRMaterial
+myMaterial.reflectivityTexture = new BABYLON.Texture(&quot;textures/reflectivity.png&quot;, scene);</code></pre>
+<p><strong>Note: the SSR post-process is a fairly demanding post-process. It is not intended to work smoothly on low-end devices and requires a powerful enough device.</strong></p>
+<h2 id="creating-the-ssr-post-process">Creating the SSR post-process<a class="anchor" href="#creating-the-ssr-post-process">#</a></h2>
+<p>Just create an instance of BABYLON.ScreenSpaceReflectionPostProcess:</p>
+<pre class="code" data-lang="javascript"><code>var ssr = new BABYLON.ScreenSpaceReflectionPostProcess(
+    &quot;ssr&quot;, // The name of the post-process
+    scene, // The scene where to add the post-process
+    1.0, // The ratio of the post-process
+    camera // To camera to attach the post-process
+); </code></pre>
+<h2 id="customizing">Customizing<a class="anchor" href="#customizing">#</a></h2>
+<h2 id="strength">Strength<a class="anchor" href="#strength">#</a></h2>
+<p>The strength is applied to the overall specular/reflectivity information in the scene and can be customized. The default value for the strength is 1.0 and should be changed only if you are looking for a particular result, because the result will not be realistic.</p>
+<pre class="code" data-lang="javascript"><code>// Double specular/reflectivity strength.
+ssr.strength = 2;</code></pre>
+<p>Example playground: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="falloff-exponent">Falloff Exponent<a class="anchor" href="#falloff-exponent">#</a></h2>
+<p>The falloff exponent is used to linearly reduce the reflection&#39;s intensities. The default value is &quot;3.0&quot; and works for most cases.</p>
+<pre class="code" data-lang="javascript"><code>// Reduce more the reflection's intensities
+ssr.reflectionSpecularFalloffExponent = 4;</code></pre>
+<p>Example playground with an almost equal to 0 exponent: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="quality">Quality<a class="anchor" href="#quality">#</a></h2>
+<p>The reflection quality can be customized to save performance and should be adjusted for each scene type. </p>
+<p>The post-process is based on ray-tracing algorithms. That means the more samples the post-process takes, the better the result looks.</p>
+<p>The quality is defined as:</p>
+<ul>
+<li>Low: 25 samples.</li>
+<li>Medium: 50 samples.</li>
+<li>High: 100 samples.</li>
+</ul>
+<p>Depending on the scene, the difference between medium and high quality may not be noticeable, because the ray-tracing algorithm stops once it finds the reflection color. In other words, high quality will not always be needed.</p>
+<ul>
+<li>High quality playground: <span class="muted">Online playground (not embedded offline)</span></li>
+<li>Medium quality playground: <span class="muted">Online playground (not embedded offline)</span></li>
+<li>Low quality playground: <span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#introduction">Introduction </a><a href="#prerequisite">Prerequisite </a><a href="#creating-the-ssr-post-process">Creating the SSR post-process </a><a href="#customizing">Customizing </a><a href="#strength">Strength </a><a href="#falloff-exponent">Falloff Exponent </a><a href="#quality">Quality </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: WebGPU Non Compatibility Mode — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: WebGPU Non Compatibility Mode</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><p>WebGPU can run in a <strong>non compatibility mode</strong> (NCM, also called <strong>fast path</strong>) that can provide better performance, depending on your scene.</p>
+<p>The <code>WebGPUEngine.compatibilityMode</code> property is a switch that is <code>true</code> by default. In this mode, the WebGPU engine runs in full <strong>compatibility mode</strong> (CM) with WebGL, meaning all scenes that can be rendered with WebGL can also be rendered by WebGPU without any changes on your side.</p>
+<p>Setting this property to <code>false</code> switches to <strong>non compatibility mode</strong> (NCM), allowing the engine to use another code path that may improve performance at the cost of some possible reorganization of your code.</p>
+<h2 id="description">Description<a class="anchor" href="#description">#</a></h2>
+<p>What this mode does is build an object called a <strong>bundle</strong>, which holds the commands needed to draw a mesh, more precisely a submesh, in a given context, and then reuses this bundle each time the mesh must be drawn in that context. Building this bundle has a cost, so the bundle must live long enough to make up for that cost. If the bundle is recreated every frame, using NCM will actually hurt performance.</p>
+<p>A bundle must be recreated when a number of things happen: you change the material, you change some global context directly on the engine, you update some vertex data, and so on. You can see how many bundles were recreated and how many were reused during the last frame by looking at the <code>engine.countersLastFrame</code> property:</p>
+<pre class="code" data-lang="javascript"><code>&gt; engine.countersLastFrame
+&gt; {numEnableEffects: 0, numEnableDrawWrapper: 2, numBundleCreationNonCompatMode: 0, numBundleReuseNonCompatMode: 2}</code></pre>
+<p>What you are interested in are the two <code>numBundleXXX</code> counters:</p>
+<ul>
+<li><code>numBundleReuseNonCompatMode</code> is the number of bundles that have been reused in the last frame</li>
+<li><code>numBundleCreationNonCompatMode</code> is the number of bundles that have been created in the last frame</li>
+</ul>
+<p>The lower <code>numBundleCreationNonCompatMode</code> is, the better. The best case is when this counter is 0. Of course, depending on what you are doing, it may not be possible to keep this counter at 0 all the time, but you should try to keep it as low as possible.</p>
+<p><strong>Note</strong>: if both counters are 0 it means you are not in NCM, you should do <code>engine.compatibilityMode = false</code> to switch to NCM.</p>
+<p>See the last section of this page for things to watch for that can lead to bundle creation or recreation, and for ways to modify your code to avoid it.</p>
+<h2 id="caveats">Caveats<a class="anchor" href="#caveats">#</a></h2>
+<p>When in NCM mode, it is theoretically possible that some things may not work as expected, for example that changing a material would not work. In that case, calling <code>scene.resetDrawCache()</code> would fix the problem, or <code>mesh.resetDrawCache()</code> if the problem affects only a single mesh.</p>
+<p>In practice, however, this should happen only very infrequently, as explained in the next section. If it does happen, please report it on the forum so we can analyze the case and see whether it can be made to work automatically without calling <code>resetDrawCache</code>.</p>
+<p>Also, even if you are able to achieve low, or even zero, bundle recreations each frame, you may not see a performance improvement over <strong>compatibility mode</strong>. It depends on your scene, so you should benchmark to see whether NCM improves things for you.</p>
+<h2 id="do-don-39-t-in-non-compatibility-mode-ncm">Do/Don&#39;t in non compatibility mode (NCM)<a class="anchor" href="#do-don-39-t-in-non-compatibility-mode-ncm">#</a></h2>
+<ul>
+<li>If two or more cameras are rendering into the same RTT using the <code>Camera.outputRenderTarget</code> property, set <code>rtt.renderPassId = undefined</code> so that <code>camera.renderPassId</code> is used for each camera instead of <code>rtt.renderPassId</code> for both cameras. Otherwise, this leads to bundle recreation.</li>
+<li>If you are using skeletons, make sure a material is not linked to several different skeletons. That means a material should not be used by several meshes unless they all use the same skeleton. In that case, clone the material as many times as necessary. The same applies to morph targets.</li>
+<li><code>Material.needDepthPrePass</code> works in NCM, but it always creates new bundles each frame.</li>
+<li>If you update one of these material properties after switching to NCM, you must reset the draw cache for the changes to take effect by calling either <code>mesh.resetDrawCache()</code> or <code>scene.resetDrawCache()</code>: <code>sideOrientation</code>, <code>disableDepthWrite</code>, <code>forceDepthWrite</code>, <code>depthFunction</code>, <code>disableColorWrite</code>, <code>zOffset</code>, <code>stencil</code></li>
+<li>If you update the <code>samples</code> property of a post-process or RTT, you must call <code>scene.resetDrawCache()</code> afterward. Otherwise, rendering will use the new value together with the old bundles created with the old <code>samples</code> value, and you will get an error like <code>Attachment state of renderBundles[0] ([RenderBundle]) is not compatible with attachment state of [RenderPassEncoder].</code>.</li>
+<li>Not working in NCM, meaning do not switch to NCM if you want to use them, or your program will not work as expected:<ul>
+<li>Occlusion queries. They do not work because the order of draws and queries must be preserved. That is not possible in NCM because all draws are postponed to the end of the frame when calling <code>executeBundles()</code>, whereas queries are executed at the point where they are called.</li>
+<li><code>Material.separateCullingPass = true</code> does not work because of the way it is currently implemented.</li>
+</ul>
+</li>
+</ul>
+<h2 id="case-analysis">Case analysis<a class="anchor" href="#case-analysis">#</a></h2>
+<p>Below is a list of all the playgrounds from our validation test suite that recreated one or more bundles each frame when we first tested them in <strong>non compatibility mode</strong>. We explain why they were creating bundles and how we fixed them, when that was possible. You can see the fixed code by appending the PG number, given inside the parentheses after the PG name, to the Playground URL (<span>https://playground.babylonjs.com/</span>).</p>
+<h3 id="webgpu-list-webgpu-json">WebGPU list (webgpu.json)<a class="anchor" href="#webgpu-list-webgpu-json">#</a></h3>
+<ul>
+<li><strong>sphere with custom shader to display wireframe using glow layer</strong> (#Y05E2C#6)<ul>
+<li>why: a property of a material is changed two times in a frame, to change the color depending on where the mesh is drawn (the glow layer or the regular rendering)</li>
+<li>solution: use two materials, one for each case</li>
+</ul>
+</li>
+<li><strong>particle system matrix like</strong> (#WL44T7)<ul>
+<li>why: a new particle system is recreated to replace one that has reached its time to live</li>
+<li>solution: none. New particle systems are recreated regularly as part of the normal operation of the PG, so it is expected that bundles are created regularly too</li>
+</ul>
+</li>
+</ul>
+<h3 id="default-list-config-json">Default list (config.json)<a class="anchor" href="#default-list-config-json">#</a></h3>
+<ul>
+<li><strong>Nested BBG, Chibi Rex, Yeti, Bones, GLTF Serializer Morph Target Animation Group</strong> (#ZG0C8B#5, #QATUCH#18, #QATUCH#19, #7EC27T#3, #T087A8#29)<ul>
+<li>why: use same material for different meshes that are using different skeletons</li>
+<li>solution: use as many materials as the number of skeletons</li>
+</ul>
+</li>
+<li><strong>Solid particle system</strong> (#WCDZS#92)<ul>
+<li>why: SPS mesh is pickable. When the mesh is pickable, the vertex attributes (position, normal) are updated by calling <code>mesh.updateVerticesData</code> which dirtifies the material and ends-up recreating the bundle used by the fast path code</li>
+<li>solution: sets the mesh as not pickable</li>
+</ul>
+</li>
+<li><strong>Ribbon morphing</strong> (#ACKC2#1)<ul>
+<li>why: updating the position attribute each frame</li>
+<li>solution: none at the time, the <code>CreateTube</code> (and all functions of <code>MeshBuilder</code>) are using <code>getVerticesData</code> / <code>updateVerticesData</code> to update an existing instance, the latter method triggering a <code>markAsAttributeDirty</code> call on the material. We would need to update the GPU buffer directly without using <code>updateVerticesData</code>, but by doing so we would lose the baking CPU array which is necessary for the mesh builder methods to work (the <code>Buffer.updateDirectly</code> method is clearing the <code>_data</code> property but <code>getVerticesData</code> works only if this property is not <code>null</code>)</li>
+</ul>
+</li>
+<li><strong>Custom render target</strong> (#TQCEBF#3)<ul>
+<li>why: changing the material used by a <code>RenderTargetTexture</code> in <code>onBeforeRender</code> and resetting it in <code>onAfterRender</code></li>
+<li>solution: use <code>RenderTargetTexture.setMaterialForRendering</code> instead of <code>onBeforeRender</code> / <code>onAfterRender</code></li>
+</ul>
+</li>
+<li><strong>Advanced shadows, Advanced shadows (right handed), Reverse depth buffer and shadows</strong> (#SLV8LW#3, #B48X7G#64, #WL4Q8J#20)<ul>
+<li>why: the same material is used for the eight floors. For <strong>Reverse depth buffer and shadows</strong>, the boxes, sphere, and knot reuse the same material. Each floor and box is lit by a specific light with its own shader generator. When a floor is drawn, the shadow sampler corresponding to that shadow generator is bound to the shader, and because all floors use the same material, setting a new shadow sampler resets the cache</li>
+<li>solution: use a different (cloned) material for each floor</li>
+</ul>
+</li>
+<li><strong>Motion Blur, Instances + GBR + motion blur</strong> (#E5YGEL#20, #YB006J#403)<ul>
+<li>why: the number of spheres (of trees in <strong>Instances + GBR + motion blur</strong>) visible each frame is never the same because they are moving. The <code>LeftOver</code> uniform buffer that stores the motion blur parameters for each sphere has a number of GPU buffers internally, one per sphere. When the fast path bundle is created, one buffer is associated to the bundle (buffer #0 for first sphere displayed, #1 for second sphere and so on). However, the next frame, the GPU buffer that will be used for a given sphere may be different because the buffers are reused starting from the first one: the first buffer is used for the first sphere displayed, second buffer is used for the second sphere displayed, etc. So, if the spheres are not displayed in the same order, the bundle(s) will be recreated</li>
+<li>solution: none at the time. For the PG, we simply set <code>alwaysSelectAsActiveMesh=true</code> so that the number of spheres handled by the system does not vary</li>
+</ul>
+</li>
+<li><strong>Thin instances + motion blur + manual</strong> (#HJGC2G#132)<ul>
+<li>why: <code>thinInstanceSetBuffer</code> was called each frame, which is (re)creating a vertex buffer, which in turn is flagging the material as &quot;attribute dirty&quot;</li>
+<li>solution: use <code>thinInstanceBufferUpdated</code> instead</li>
+</ul>
+</li>
+<li><strong>Multi cameras and output render target</strong> (#BCYE7J#31)<ul>
+<li>why: <code>cameraRTT1</code> and <code>cameraRTT2</code> are rendering into the same RTT (using their <code>outputRenderTarget</code> property), but when rendering in an RTT the render pass id which is used is <code>RTT.renderPassId</code>, meaning the meshes are rendered two times (because two cameras) with the same <code>renderPassId</code>, leading to bundle recreations (because the scene ubo is not the same in both cases as it stores the camera view/projection)</li>
+<li>solution: remove the <code>RTT.renderPassID</code> property (<code>RTT.renderPassID = undefined</code>) =&gt; in that case, the <code>camera.renderPassId</code> value will be used instead</li>
+</ul>
+</li>
+<li><strong>Order independent transparency</strong> (#1PLV5Z#104)<ul>
+<li>why: not using <code>useRenderPasses = true</code> on the depth peeling renderer</li>
+<li>solution: set <code>scene.depthPeelingRenderer.useRenderPasses = true;</code></li>
+</ul>
+</li>
+</ul>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#description">Description </a><a href="#caveats">Caveats </a><a href="#do-don-39-t-in-non-compatibility-mode-ncm">Do/Don&amp;#39;t in non compatibility mode (NCM) </a><a href="#case-analysis">Case analysis </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

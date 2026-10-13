@@ -1,0 +1,780 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Frame Graph Task List — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Frame Graph Task List</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><p>This page describes all the tasks that are implemented in the framework and are available for your own use when creating frame graphs.</p>
+<p>Note that most of these tasks are wrappers around existing processes in Babylon.js: whenever applicable, we will provide a link to the original documentation to avoid redundant explanations.</p>
+<p>To illustrate the use of each task, two PGs are provided:</p>
+<ul>
+<li>one using frame graph classes</li>
+<li>the other using a node render graph</li>
+</ul>
+<p>This way, you can choose which approach best suits your needs.</p>
+<h2 id="layer-tasks">Layer tasks<a class="anchor" href="#layer-tasks">#</a></h2>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphGlowLayerTask&quot; image=&quot;/img/frameGraph/task_glow.webp&quot; alt=&quot;Glow layer&quot;/&gt;</span><p>Provides the same functionality as the <a href="babylon-guide-features-featuresdeepdive-mesh-glowlayer.html">glow layer</a> class.</p>
+<p><a href="engine-babylonjs-babylon-framegraphglowlayertask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>Inputs:</p>
+<ul>
+<li><strong>targetTexture</strong>. The target texture to apply the effect layer to. The effect will be blended with the contents of this texture.</li>
+<li><strong>objectRendererTask</strong>. The object renderer task used to render the objects in the texture to which the layer will be applied. This is needed because the layer may have to inject code into the rendering manager used by the object renderer task.</li>
+<li><strong>layerTexture</strong> (optional). The layer texture to render the effect into. If not provided, a default texture will be created, based on <strong>targetTexture</strong> size, type and format.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Properties:</p>
+<ul>
+<li><strong>layer</strong>. Gives you access to the configuration of the glow layer itself.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Outputs:</p>
+<ul>
+<li><strong>outputTexture</strong>. The output texture of the task (same underlying texture as <strong>targetTexture</strong>, but the handle will be different).</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphHighlightLayerTask&quot; image=&quot;/img/frameGraph/task_highlight.webp&quot; alt=&quot;Highlight layer&quot;/&gt;</span><p>Provides the same functionality as the <a href="babylon-guide-features-featuresdeepdive-mesh-highlightlayer.html">highlight layer</a> class.</p>
+<p><a href="engine-babylonjs-babylon-framegraphhighlightlayertask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>Inputs:</p>
+<ul>
+<li><strong>targetTexture</strong>. The target texture to apply the effect layer to. The effect will be blended with the contents of this texture.</li>
+<li><strong>objectRendererTask</strong>. The object renderer task used to render the objects in the texture to which the layer will be applied. This is needed because the layer may have to inject code into the rendering manager used by the object renderer task.</li>
+<li><strong>layerTexture</strong> (optional). The layer texture to render the effect into. If not provided, a default texture will be created, based on <strong>targetTexture</strong> size, type and format.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Properties:</p>
+<ul>
+<li><strong>layer</strong>. Gives you access to the configuration of the highlight layer itself.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Outputs:</p>
+<ul>
+<li><strong>outputTexture</strong>. The output texture of the task (same underlying texture as <strong>targetTexture</strong>, but the handle will be different).<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Note that the <strong>objectRendererTask</strong> you define for the corresponding property must use a depth texture with a stencil aspect. An exception will be thrown if this is not the case.</p>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphSelectionOutlineLayerTask&quot; image=&quot;/img/frameGraph/task_selectionoutline.webp&quot; alt=&quot;Selection Outline layer&quot;/&gt;</span><p>Provides the same functionality as the <a href="babylon-guide-features-featuresdeepdive-mesh-selectionoutlinelayer.html">Selection outline layer</a> class.</p>
+<p><a href="engine-babylonjs-babylon-framegraphselectionoutlinelayertask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>Inputs:</p>
+<ul>
+<li><strong>targetTexture</strong>. The target texture to apply the effect layer to. The effect will be blended with the contents of this texture.</li>
+<li><strong>objectRendererTask</strong>. The object renderer task used to render the objects in the texture to which the layer will be applied. This is needed because the layer may have to inject code into the rendering manager used by the object renderer task.</li>
+<li><strong>depthTexture</strong>. The depth texture to use when rendering the selection outline layer. It must store the scene depth in camera view space Z, normalized or not. If not normalized, the <strong>storeCameraSpaceZ</strong> option must be passed to the constructor.</li>
+<li><strong>layerTexture</strong> (optional). The layer texture to render the effect into. If not provided, a default texture will be created, based on <strong>targetTexture</strong> size, type and format.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Properties:</p>
+<ul>
+<li><strong>layer</strong>. Gives you access to the configuration of the selection outline layer itself.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Outputs:</p>
+<ul>
+<li><strong>outputTexture</strong>. The output texture of the task (same underlying texture as <strong>targetTexture</strong>, but the handle will be different).<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<h2 id="miscellaneous-tasks">Miscellaneous tasks<a class="anchor" href="#miscellaneous-tasks">#</a></h2>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphComputeShaderTask&quot; image=&quot;/img/frameGraph/task_computeshader.webp&quot; alt=&quot;Compute shader&quot;/&gt;</span><p>Task used to execute a compute shader (WebGPU only).</p>
+<p><a href="engine-babylonjs-babylon-framegraphcomputeshadertask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>Inputs:</p>
+<ul>
+<li><strong>dispatchSize</strong>. Defines the dispatch size for the compute shader.</li>
+<li><strong>indirectDispatch</strong> (optional). Defines an indirect dispatch buffer and offset. If set, this will be used instead of the <strong>dispatchSize</strong> property and an indirect dispatch will be performed.</li>
+<li><strong>execute</strong> (optional). An optional execute function that will be called at the beginning of the task execution.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>You can use the <strong>execute</strong> function to apply additional settings (uniform parameters, textures, etc.) before executing the compute shader: see the example above.</p>
+<p>The compute shader created by the class is accessible via the <strong>computeShader</strong> getter. For ease of use, all methods of the original <a href="engine-babylonjs-babylon-computeshader.html">ComputeShader</a> class (such as <code>setTexture</code>, <code>setInternalTexture</code>, etc.) are available directly in the <code>FrameGraphComputeShaderTask</code> class.</p>
+<p>You can create uniform buffers directly via the <code>FrameGraphComputeShaderTask</code> class by calling the <code>createUniformBuffer(name, description, autoUpdate)</code> method. The advantage over creating the buffer by calling <code>new UniformBuffer()</code> is that, by default (see the <strong>autoUpdate</strong> parameter in <code>createUniformBuffer</code>), the <code>UniformBuffer.update()</code> method will be called automatically before the compute shader is run. Also, the buffer will be automatically disposed when the task is disposed.</p>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphCullObjectsTask&quot; image=&quot;/img/frameGraph/task_cull.webp&quot; alt=&quot;Cull meshes&quot;/&gt;</span><p>Task used to cull objects that are not visible.</p>
+<p><a href="engine-babylonjs-babylon-framegraphcullobjectstask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>Inputs:</p>
+<ul>
+<li><strong>objectList</strong>. The object list to cull.</li>
+<li><strong>camera</strong>. The camera to use for culling.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Outputs:</p>
+<ul>
+<li><strong>outputObjectList</strong>. The output object list containing the culled objects.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li>Only meshes are culled, not particle systems</li>
+<li>If meshes are frozen, culling is not performed and the last culling result before switching to frozen mode is reused</li>
+<li>If the task is disabled, the list of output objects (<strong>outputObjectList</strong>) is identical to the list of input objects (<strong>objectList</strong>).</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphExecuteTask&quot; image=&quot;/img/frameGraph/task_execute.webp&quot; alt=&quot;Execute task&quot;/&gt;</span><p>Task used to execute a custom function.</p>
+<p><a href="engine-babylonjs-babylon-framegraphexecutetask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>Inputs:</p>
+<ul>
+<li><strong>func</strong>. The function to execute when the task is enabled.</li>
+<li><strong>funcDisabled</strong> (optional). The function to execute when the task is disabled. If not provided, <strong>func</strong> is also used when the task is disabled.</li>
+<li><strong>customIsReady</strong> (optional). Custom readiness check.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>You can use this task for any custom process you want to run during the execution of the frame graph. In the PG example above, we use it to increment a counter each time the task is executed.</p>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphGUITask&quot; image=&quot;/img/frameGraph/task_gui.webp&quot; alt=&quot;GUI&quot;/&gt;</span><p>Task that renders a GUI texture.</p>
+<p><a href="engine-babylonjs-gui-babylon-gui-framegraphguitask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>Inputs:</p>
+<ul>
+<li><strong>targetTexture</strong>. The target texture to render the GUI to.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Properties:</p>
+<ul>
+<li><strong>gui</strong>. Gets the underlying advanced dynamic texture.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Outputs:</p>
+<ul>
+<li><strong>outputTexture</strong>. The output texture of the task. This is the same texture as the target texture, but the handles are different!<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Note that you can provide an existing instance of <code>AdvancedDynamicTexture</code> at construction time (third parameter of the constructor), but you must ensure that the <strong>useStandalone</strong> property is set to <em>true</em>, as this is required for correct use in frame graphs!</p>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphLightingVolumeTask&quot; image=&quot;/img/frameGraph/task_lightingvolume.webp&quot; alt=&quot;Lighting volume&quot;/&gt;</span><p>Task used to create a lighting volume from a directional light&#39;s shadow generator.</p>
+<p><a href="engine-babylonjs-babylon-framegraphlightingvolumetask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>Inputs:</p>
+<ul>
+<li><strong>shadowGenerator</strong>. The shadow generator used to create the lighting volume.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Properties:</p>
+<ul>
+<li><strong>lightingVolume</strong>. The lighting volume created by this task.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Outputs:</p>
+<ul>
+<li><strong>outputMeshLightingVolume</strong>. The output object list containing the lighting volume mesh. You can get the mesh by doing  <code>outputMeshLightingVolume.meshes[0]</code>.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>This task is typically used in conjunction with <a href="babylon-guide-features-featuresdeepdive-framegraph-framegraphclassframework.html">FrameGraphVolumetricLightingTask</a> to generate volumetric lighting for a directional light.</p>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphMinMaxReducerTask&quot; image=&quot;/img/frameGraph/task_minmaxreducer.webp&quot; alt=&quot;Min/max reducer task&quot;/&gt;</span><p>Reduces the red channel of a frame graph color texture, or the depth aspect of a WebGPU depth/stencil attachment, to its minimum and maximum values.</p>
+<p><a href="engine-babylonjs-babylon-framegraphminmaxreducertask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>Inputs:</p>
+<ul>
+<li><strong>sourceTexture</strong>. A <code>FrameGraphTextureHandle</code> for a non-integer color texture or a supported WebGPU depth/stencil attachment produced by an earlier task.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Depth/stencil sources must be single-sampled off-screen 2D attachments on WebGPU; the initial reduction samples only the depth aspect with <code>texture_depth_2d</code>, not stencil. Backbuffer depth/stencil, stencil-only or unsupported depth formats, multisampled attachments, and 2D-array, cube, or 3D textures are rejected. No depth/stencil attachment is supported as a source on WebGL.</p>
+<p>Properties:</p>
+<ul>
+<li><strong>depthRedux</strong>. Ignores the depth clear value when reducing depth-as-color data (default: <code>false</code>). Automatically enabled for depth/stencil attachments.</li>
+<li><strong>depthTextureType</strong>. The depth-as-color encoding when <strong>depthRedux</strong> is enabled: <code>DepthTextureType.NormalizedViewDepth</code> (default), <code>DepthTextureType.ViewDepth</code>, or <code>DepthTextureType.ScreenDepth</code>. Depth/stencil attachments automatically use screen depth, with the clear value handled for both forward (1) and reverse (0) depth.</li>
+<li><strong>textureType</strong>. Type of the intermediate and output textures: <code>TEXTURETYPE_HALF_FLOAT</code> (default), <code>TEXTURETYPE_FLOAT</code>, or <code>TEXTURETYPE_UNSIGNED_BYTE</code>.</li>
+<li><strong>waitForReadback</strong>. Whether to wait for WebGPU readback before notifying observers (default: <code>false</code>). When <code>true</code>, the notification is asynchronous after readback; it does not block frame execution. WebGL readback remains synchronous.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Outputs:</p>
+<ul>
+<li><strong>outputTexture</strong>. A 1x1 RG color texture handle, with the minimum in red and maximum in green, for downstream graph tasks.</li>
+<li><strong>onAfterReductionPerformed</strong>. Observable receiving <code>{ min, max }</code> when subscribed. With depth reduction enabled, equal-valued depth falls back to <code>[0, 1]</code>. Without observers, the task does not perform CPU readback; use <strong>outputTexture</strong> if only GPU-side results are needed.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>For example, after configuring a <code>FrameGraphGeometryRendererTask</code> to request its normalized view-depth channel and adding it to <code>frameGraph</code>:</p>
+<pre class="code" data-lang="javascript"><code>const reducerTask = new FrameGraphMinMaxReducerTask(&quot;depth range&quot;, frameGraph);
+reducerTask.sourceTexture = geometryRendererTask.geometryNormViewDepthTexture;
+reducerTask.depthRedux = true;
+reducerTask.onAfterReductionPerformed.add(({ min, max }) =&gt; {
+    // Use the reduced depth range after readback.
+});
+frameGraph.addTask(reducerTask);</code></pre>
+<p>The geometry renderer task must be added <strong>before</strong> the reducer, and <code>geometryNormViewDepthTexture</code> is available only when that geometry channel was requested. This reuses the geometry depth-as-color output without rendering another depth map. For other depth-as-color encodings, use <code>geometryViewDepthTexture</code> or <code>geometryScreenDepthTexture</code> and set <strong>depthTextureType</strong> to match. Set <strong>depthRedux</strong> to <code>true</code> for depth-as-color values so the depth clear value is ignored; leave it <code>false</code> for ordinary color data. For WebGPU depth/stencil attachments, neither setting needs to be changed: the task enables depth reduction and infers screen depth automatically. With the default <strong>waitForReadback</strong>, a WebGPU notification may contain previous values; setting it to <code>true</code> notifies only after the asynchronous GPU readback, not synchronously with the current frame.</p>
+<p>Unlike this frame graph task, the legacy <code>MinMaxReducer.setSourceTexture</code> accepts a <code>RenderTargetTexture</code>, not a frame graph texture handle. The legacy reducer also has <strong>waitForReadback</strong> with the same default and WebGPU notification behavior.</p>
+<h2 id="post-process-tasks">Post-process tasks<a class="anchor" href="#post-process-tasks">#</a></h2>
+<p>Unless otherwise specified, all post-process tasks share certain common properties.</p>
+<p>Inputs:</p>
+<ul>
+<li><strong>sourceTexture</strong>. The source texture to apply the post process to. It is allowed to be <code>undefined</code> if the post process does not require a source texture. In that case, <code>targetTexture</code> must be provided.</li>
+<li><strong>sourceSamplingMode</strong>. The sampling mode to use for the source texture.</li>
+<li><strong>alphaMode</strong>. The alpha mode to use when applying the post process (default is ALPHA_DISABLE).</li>
+<li><strong>targetTexture</strong> (optional). The target texture to render the post process to. If not supplied, a texture with the same configuration as the source texture will be created.</li>
+<li><strong>stencilState</strong> (optional). The stencil state to use for the post process.</li>
+<li><strong>depthAttachmentTexture</strong> (optional). The depth attachment texture to use for the post process. Note that a post-process task never writes to the depth buffer: attaching a depth texture is only useful if you want to test against the depth/stencil aspect or write to the stencil buffer.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Properties:</p>
+<ul>
+<li><strong>depthReadOnly</strong>. If <em>true</em>, the depth attachment will be read-only. This means that the post process will not write to the depth/stencil buffer. Setting <strong>depthReadOnly</strong> and <strong>stencilReadOnly</strong> to <em>true</em> is useful when you want to also be able to bind this same depth/stencil attachment to a shader. Note that it will only work in WebGPU, as WebGL does not support read-only depth/stencil attachments.</li>
+<li><strong>stencilReadOnly</strong>. If <em>true</em>, the stencil attachment will be read-only. This means that the post process will not write to the stencil buffer. See above for further explanation.</li>
+<li><strong>disableColorWrite</strong>. If <em>true</em>, color write will be disabled when applying the post process. This means that the post process will not write to the color buffer.</li>
+<li><strong>drawBackFace</strong>. If <em>true</em>, the post process will be generated by a back face full-screen quad (CW order).</li>
+<li><strong>depthTest</strong>. If depth testing should be enabled.</li>
+<li><strong>viewport</strong> (optional). The viewport to use when applying the post process. If set to <em>null</em>, the currently active viewport is used. If <em>undefined</em> (default), the viewport is reset to a full screen viewport before applying the post process.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Outputs:</p>
+<ul>
+<li><strong>outputTexture</strong>. The output texture of the post process. It is the same texture as <strong>targetTexture</strong>, but with a different handle.</li>
+<li><strong>outputDepthAttachmentTexture</strong>. The output depth attachment texture. This texture will point to the same texture as the <strong>depthAttachmentTexture</strong> property if it is set. Note, however, that the handle itself will be different!<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Since these properties are common to all post-process tasks, we will not repeat their description in the following sections.</p>
+<p>In addition, all these tasks are wrappers around existing post-process classes. You should therefore refer to the documentation for these classes (for each task in the following sections, we provide a link to the corresponding post-process class) to find out which specific properties are available for each task: you can access these properties via <strong>postProcessTask.postProcess</strong>.</p>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphAnaglyphTask&quot; image=&quot;/img/frameGraph/task_anaglyph.webp&quot; alt=&quot;Anaglyph post-process&quot;/&gt;</span><p>Task which applies an anaglyph post-process.</p>
+<p><a href="engine-babylonjs-babylon-framegraphanaglyphtask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>Inputs:</p>
+<ul>
+<li><strong>leftTexture</strong>. The texture to use as the left texture.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphBlackAndWhiteTask&quot; image=&quot;/img/frameGraph/task_blackandwhite.webp&quot; alt=&quot;Black and white post-process&quot;/&gt;</span><p>Task which applies a black and white post-process.</p>
+<p><a href="engine-babylonjs-babylon-framegraphblackandwhitetask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>Properties:</p>
+<ul>
+<li><a href="engine-babylonjs-babylon-thinblackandwhitepostprocess.html">postProcess</a>. The properties of the post-process.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphBloomTask&quot; image=&quot;/img/frameGraph/task_bloom.webp&quot; alt=&quot;Bloom post-process&quot;/&gt;</span><p>Task which applies a bloom post-process.</p>
+<p><a href="engine-babylonjs-babylon-framegraphbloomtask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>This post-process <strong>doesn&#39;t share</strong> the common properties of post-processes!</p>
+<p>Inputs:</p>
+<ul>
+<li><strong>sourceTexture</strong>. The source texture to apply the bloom effect on.</li>
+<li><strong>sourceSamplingMode</strong>. The sampling mode to use for the source texture.</li>
+<li><strong>alphaMode</strong>. The alpha mode to use when applying the bloom post process (default is ALPHA_DISABLE).</li>
+<li><strong>targetTexture</strong> (optional). The target texture to render the bloom effect to. If not supplied, a texture with the same configuration as the source texture will be created.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Properties:</p>
+<ul>
+<li><strong>hdr</strong> (read only). Whether the bloom effect is HDR. When <em>true</em>, the bloom effect will use a higher precision texture format (half float or float). Else, it will use unsigned byte.</li>
+<li><a href="engine-babylonjs-babylon-thinbloomeffect.html">bloom</a>. The properties of the post-process.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Outputs:</p>
+<ul>
+<li><strong>outputTexture</strong>. The output texture of the bloom effect.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Note that you can set <strong>weight</strong>, <strong>kernel</strong>, <strong>threshold</strong>, and <strong>hdr</strong> at construction time (these are constructor parameters). You can change these values later via the <strong>bloom</strong> property, except for <strong>hdr</strong>, which is only a construction parameter.</p>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphBlurTask&quot; image=&quot;/img/frameGraph/task_blur.webp&quot; alt=&quot;Blur post-process&quot;/&gt;</span><p>Task which applies a blur post-process.</p>
+<p><a href="engine-babylonjs-babylon-framegraphblurtask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>Properties:</p>
+<ul>
+<li><a href="engine-babylonjs-babylon-thinblurpostprocess.html">postProcess</a>. The properties of the post-process.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphChromaticAberrationTask&quot; image=&quot;/img/frameGraph/task_chromaticaberration.webp&quot; alt=&quot;Chromatic aberration post-process&quot;/&gt;</span><p>Task which applies a chromatic aberration post-process.</p>
+<p><a href="engine-babylonjs-babylon-framegraphchromaticaberrationtask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>Properties:</p>
+<ul>
+<li><a href="engine-babylonjs-babylon-thinchromaticaberrationpostprocess.html">postProcess</a>. The properties of the post-process.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphCircleOfConfusionTask&quot; image=&quot;/img/frameGraph/task_circleofconfusion.webp&quot; alt=&quot;Circle of confusion post-process&quot;/&gt;</span><p>Task which applies a circle of confusion post-process.</p>
+<p><a href="engine-babylonjs-babylon-framegraphcircleofconfusiontask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>Inputs:</p>
+<ul>
+<li><strong>depthTexture</strong>. The depth texture to use for the circle of confusion effect. It must store camera space depth (Z coordinate).</li>
+<li><strong>depthSamplingMode</strong>. The sampling mode to use for the depth texture.</li>
+<li><strong>camera</strong>. The camera to use for the circle of confusion effect.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Properties:</p>
+<ul>
+<li><a href="engine-babylonjs-babylon-thincircleofconfusionpostprocess.html">postProcess</a>. The properties of the post-process.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphColorCorrectionTask&quot; image=&quot;/img/frameGraph/task_colorcorrection.webp&quot; alt=&quot;Color correction post-process&quot;/&gt;</span><p>Task which applies a color correction post-process.</p>
+<p><a href="engine-babylonjs-babylon-framegraphcolorcorrectiontask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>Properties:</p>
+<ul>
+<li><a href="engine-babylonjs-babylon-thincolorcorrectionpostprocess.html">postProcess</a>. The properties of the post-process.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphConvolutionTask&quot; image=&quot;/img/frameGraph/task_convolution.webp&quot; alt=&quot;Convolution post-process&quot;/&gt;</span><p>Task which applies a convolution post-process.</p>
+<p><a href="engine-babylonjs-babylon-framegraphconvolutiontask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>Properties:</p>
+<ul>
+<li><a href="engine-babylonjs-babylon-thinconvolutionpostprocess.html">postProcess</a>. The properties of the post-process.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphCustomPostProcessTask&quot; image=&quot;/img/frameGraph/task_custompostprocess.webp&quot; alt=&quot;Custom post-process&quot;/&gt;</span><p>Task which applies a custom post-process.</p>
+<p><a href="engine-babylonjs-babylon-framegraphcustompostprocesstask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)</span><p>Inputs:</p>
+<ul>
+<li><strong>onApplyObservable</strong>. Observable triggered when bind is called for the post process. Use this to set custom uniforms (see example playground).<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphDepthOfFieldTask&quot; image=&quot;/img/frameGraph/task_depthoffield.webp&quot; alt=&quot;Depth of field post-process&quot;/&gt;</span><p>Task which applies a depth of field post-process.</p>
+<p><a href="engine-babylonjs-babylon-framegraphdepthoffieldtask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>This post-process <strong>doesn&#39;t share</strong> the common properties of post-processes!</p>
+<p>Inputs:</p>
+<ul>
+<li><strong>sourceTexture</strong>. The source texture to apply the depth of field effect on.</li>
+<li><strong>sourceSamplingMode</strong>. The sampling mode to use for the source texture.</li>
+<li><strong>alphaMode</strong>. The alpha mode to use when applying the depth of field post process (default is ALPHA_DISABLE).</li>
+<li><strong>depthTexture</strong>. The depth texture to use for the depth of field effect. Should store camera space depth (Z coordinate).</li>
+<li><strong>depthSamplingMode</strong>. The sampling mode to use for the depth texture.</li>
+<li><strong>camera</strong>. The camera used to render the scene.</li>
+<li><strong>targetTexture</strong> (optional). The target texture to render the depth of field effect to. If not supplied, a texture with the same configuration as the source texture will be created.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Properties:</p>
+<ul>
+<li><strong>hdr</strong> (read only). Whether the depth of field effect is applied on HDR textures. When true, the depth of field effect will use a higher precision texture format (half float or float). Else, it will use unsigned byte.</li>
+<li><a href="engine-babylonjs-babylon-thindepthoffieldeffect.html">depthOfField</a>. The properties of the post-process.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Outputs:</p>
+<ul>
+<li><strong>outputTexture</strong>. The output texture of the depth of field effect.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Note that <strong>hdr</strong> can only be set at construction time (it is a constructor parameter).</p>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphExtractHighlightsTask&quot; image=&quot;/img/frameGraph/task_extracthighlights.webp&quot; alt=&quot;Extract highlights post-process&quot;/&gt;</span><p>Task which applies an extract-highlights post-process.</p>
+<p><a href="engine-babylonjs-babylon-framegraphextracthighlightstask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>Properties:</p>
+<ul>
+<li><a href="engine-babylonjs-babylon-thinextracthighlightspostprocess.html">postProcess</a>. The properties of the post-process.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphFilterTask&quot; image=&quot;/img/frameGraph/task_filter.webp&quot; alt=&quot;Filter post-process&quot;/&gt;</span><p>Task which applies a filter post-process.</p>
+<p><a href="engine-babylonjs-babylon-framegraphfiltertask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>Properties:</p>
+<ul>
+<li><a href="engine-babylonjs-babylon-thinfilterpostprocess.html">postProcess</a>. The properties of the post-process.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphFXAATask&quot; image=&quot;/img/frameGraph/task_fxaa.webp&quot; alt=&quot;FXAA post-process&quot;/&gt;</span><p>Task which applies an FXAA post-process.</p>
+<p><a href="engine-babylonjs-babylon-framegraphfxaatask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>Properties:</p>
+<ul>
+<li><a href="engine-babylonjs-babylon-thinfxaapostprocess.html">postProcess</a>. The properties of the post-process.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphGrainTask&quot; image=&quot;/img/frameGraph/task_grain.webp&quot; alt=&quot;Grain post-process&quot;/&gt;</span><p>Task which applies a grain post-process.</p>
+<p><a href="engine-babylonjs-babylon-framegraphgraintask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>Properties:</p>
+<ul>
+<li><a href="engine-babylonjs-babylon-thingrainpostprocess.html">postProcess</a>. The properties of the post-process.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphImageProcessingTask&quot; image=&quot;/img/frameGraph/task_imageprocessing.webp&quot; alt=&quot;Image processing post-process&quot;/&gt;</span><p>Task which applies an image-processing post-process.</p>
+<p><a href="engine-babylonjs-babylon-framegraphimageprocessingtask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>Properties:</p>
+<ul>
+<li><a href="engine-babylonjs-babylon-thinimageprocessingpostprocess.html">postProcess</a>. The properties of the post-process.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>If you use this post-process, you will probably want to set <strong>disableImageProcessing = true</strong> on the object renderer that renders the texture to which the image processing is applied.
+Alternatively, you can also set <code>FrameGraphImageProcessingTask.postProcess.fromLinearSpace = false</code> to indicate that the source texture is in gamma space.</p>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphMeshBlendingTask&quot; image=&quot;/img/how_to/meshBlending/coastal-after.png&quot; alt=&quot;Coastal cliff scene with mesh blending&quot;/&gt;</span><p>Task which softens validated contacts between meshes by blending SceneColor in screen space.</p>
+<p><a href="engine-babylonjs-babylon-framegraphmeshblendingtask.html">Link to the class</a></p>
+<p><a href="babylon-guide-features-featuresdeepdive-postprocesses-meshblending.html">Mesh blending documentation</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>Inputs:</p>
+<ul>
+<li><strong>sourceTexture</strong>. SceneColor to blend.</li>
+<li><strong>meshBlendTagTexture</strong>. Packed <code>R8UI</code> mesh tags generated by <code>FrameGraphGeometryRendererTask</code>.</li>
+<li><strong>depthTexture</strong>. View or screen depth aligned with SceneColor and the mesh tags.</li>
+<li><strong>baseColorTexture</strong> (optional). Linear albedo used to attenuate transferred shadows. Omitting it compiles all shadow-estimation work out.</li>
+<li><strong>camera</strong>. Camera used to project world radii and reconstruct positions.</li>
+<li><strong>targetTexture</strong> (optional). Target texture for the result. If omitted, a compatible texture is created from <strong>sourceTexture</strong>.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Properties:</p>
+<ul>
+<li><strong>quality</strong>. Compile-time quality variant.</li>
+<li><strong>radiusClasses</strong>. Four world-radius and minimum-physical-pixel definitions.</li>
+<li><strong>slopeFactor</strong>. Contact-slope narrowing factor. A value of <code>1</code> disables narrowing.</li>
+<li><strong>depthType</strong>. Representation stored in <strong>depthTexture</strong>.</li>
+<li><strong>debugMode</strong>. Compiled diagnostic visualization.</li>
+<li><a href="engine-babylonjs-babylon-thinmeshblendingpostprocess.html">postProcess</a>. The shared thin post-process implementation.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Outputs:</p>
+<ul>
+<li><strong>outputTexture</strong>. The blended SceneColor result.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>All connected textures must have matching physical dimensions and sample counts, and must be single-sampled. The tag texture must use <code>TEXTURETYPE_UNSIGNED_BYTE</code> with <code>TEXTUREFORMAT_RED_INTEGER</code>, nearest sampling, and no mipmaps. The effect supports WebGL 2 and WebGPU.</p>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphMotionBlurTask&quot; image=&quot;/img/frameGraph/task_motionblur.webp&quot; alt=&quot;Motion blur post-process&quot;/&gt;</span><p>Task which applies a motion blur post-process.</p>
+<p><a href="engine-babylonjs-babylon-framegraphmotionblurtask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>Inputs:</p>
+<ul>
+<li><strong>velocityTexture</strong> (optional). The velocity texture to use for the motion blur effect. Needed for object-based motion blur.</li>
+<li><strong>depthTexture</strong> (optional). The (view) depth texture to use for the motion blur effect. Needed for screen-based motion blur.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Properties:</p>
+<ul>
+<li><a href="engine-babylonjs-babylon-thinmotionblurpostprocess.html">postProcess</a>. The properties of the post-process.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>This task requires a geometry texture as input, which depends on the type of motion blur you want to use:</p>
+<ul>
+<li>for object-based motion blur, you need to connect a <strong>geometry velocity</strong> texture</li>
+<li>for screen-based motion blur, you need to connect a <strong>geometry view depth</strong> texture</li>
+</ul>
+<p>If the appropriate texture is not connected according to the current motion blur type, you will get an error in the console log.</p>
+<p>Both of these textures can be generated by the <a href="babylon-guide-features-featuresdeepdive-framegraph-framegraphclassframework.html">FrameGraphGeometryRendererTask</a> task (see below).</p>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphScreenSpaceCurvatureTask&quot; image=&quot;/img/frameGraph/task_screenspacecurvature.webp&quot; alt=&quot;Screen space curvature post-process&quot;/&gt;</span><p>Task which applies a screen space curvature post-process.</p>
+<p><a href="engine-babylonjs-babylon-framegraphscreenspacecurvaturetask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>Inputs:</p>
+<ul>
+<li><strong>normalTexture</strong>. The normal texture to use for the screen space curvature effect. It must store normals in camera view space.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Properties:</p>
+<ul>
+<li><a href="engine-babylonjs-babylon-thinscreenspacecurvaturepostprocess.html">postProcess</a>. The properties of the post-process.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphSharpenTask&quot; image=&quot;/img/frameGraph/task_sharpen.webp&quot; alt=&quot;Sharpen post-process&quot;/&gt;</span><p>Task which applies a sharpen post-process.</p>
+<p><a href="engine-babylonjs-babylon-framegraphsharpentask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>Properties:</p>
+<ul>
+<li><a href="engine-babylonjs-babylon-thinsharpenpostprocess.html">postProcess</a>. The properties of the post-process.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphSSAO2RenderingPipelineTask&quot; image=&quot;/img/frameGraph/task_ssao2.webp&quot; alt=&quot;SSAO2 post-process&quot;/&gt;</span><p>Task which applies a screen-space ambient occlusion post-process.</p>
+<p><a href="engine-babylonjs-babylon-framegraphssao2renderingpipelinetask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>This post-process <strong>doesn&#39;t share</strong> the common properties of post-processes!</p>
+<p>Inputs:</p>
+<ul>
+<li><strong>sourceTexture</strong>. The source texture to apply the SSAO2 effect on.</li>
+<li><strong>sourceSamplingMode</strong>. The sampling mode to use for the source texture.</li>
+<li><strong>alphaMode</strong>. The alpha mode to use when applying the SSAO post process (default is ALPHA_DISABLE).</li>
+<li><strong>depthTexture</strong>. The depth texture used by the SSAO2 effect (Z coordinate in camera view space).</li>
+<li><strong>normalTexture</strong>. The normal texture used by the SSAO2 effect (normal vector in camera view space).</li>
+<li><strong>camera</strong>. The camera used to render the scene.</li>
+<li><strong>targetTexture</strong> (optional). The target texture to render the SSAO2 effect to. If not supplied, a texture with the same configuration as the source texture will be created.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Properties:</p>
+<ul>
+<li><strong>ratioSSAO</strong> (read only). The ratio between the SSAO texture size and the source texture size.</li>
+<li><strong>ratioBlur</strong> (read only). The ratio between the SSAO blur texture size and the source texture size.</li>
+<li><strong>textureType</strong> (read only). The texture type used by the different post processes created by SSAO2. It&#39;s a read-only property. If you want to change it, you must recreate the task and pass the appropriate texture type to the constructor.</li>
+<li><a href="engine-babylonjs-babylon-thinssao2renderingpipeline.html">ssao</a>. The properties of the post-process.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Outputs:</p>
+<ul>
+<li><strong>outputTexture</strong>. The output texture of the ssao effect.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Note that you can set <strong>ratioSSAO</strong>, <strong>ratioBlur</strong> and <strong>textureType</strong> only at construction time (these are constructor parameters).</p>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphSSRRenderingPipelineTask&quot; image=&quot;/img/frameGraph/task_ssr.webp&quot; alt=&quot;SSR post-process&quot;/&gt;</span><p>Task which applies a screen-space reflection post-process.</p>
+<p><a href="engine-babylonjs-babylon-framegraphssrrenderingpipelinetask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>This post-process <strong>doesn&#39;t share</strong> the common properties of post-processes!</p>
+<p>Inputs:</p>
+<ul>
+<li><strong>sourceTexture</strong>. The source texture to apply the SSR effect on.</li>
+<li><strong>sourceSamplingMode</strong>. The sampling mode to use for the source texture.</li>
+<li><strong>alphaMode</strong>. The alpha mode to use when applying the SSR post process (default is ALPHA_DISABLE).</li>
+<li><strong>depthTexture</strong>. The depth texture used by the SSR effect. Can be a view or screen space depth texture.</li>
+<li><strong>normalTexture</strong>. The normal texture used by the SSR effect. Can be a view or world space normal texture.</li>
+<li><strong>backDepthTexture</strong> (optional). The back depth texture used by the SSR effect. Can be a view or screen space depth texture. This is used when automatic thickness computation is enabled. The back depth texture is the depth texture of the scene rendered for the back side of the objects (that is, front faces are culled).</li>
+<li><strong>reflectivityTexture</strong>. The reflectivity texture used by the SSR effect.</li>
+<li><strong>camera</strong>. The camera used to render the scene.</li>
+<li><strong>targetTexture</strong> (optional). The target texture to render the SSR effect to. If not supplied, a texture with the same configuration as the source texture will be created.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Properties:</p>
+<ul>
+<li><strong>textureType</strong> (read only). The texture type used by the different post processes created by SSR. It&#39;s a read-only property. If you want to change it, you must recreate the task and pass the appropriate texture type to the constructor.</li>
+<li><a href="engine-babylonjs-babylon-thinssrrenderingpipeline.html">ssr</a>. The properties of the post-process.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Outputs:</p>
+<ul>
+<li><strong>outputTexture</strong>. The output texture of the ssr effect.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Note that you can set <strong>textureType</strong> only at construction time (this is a constructor parameter).</p>
+<p>If you programmatically change the blur strength value (the <code>FrameGraphSSRRenderingPipelineTask.ssr.blurDispersionStrength</code> property) from 0 to a non-zero value, or vice versa, you must call the <code>FrameGraph.build()</code> function again to rebuild the graph! This is because the frame graph task of the SSR rendering pipeline generates blur tasks when this parameter is non-zero, and does not generate them when it is zero (for performance reasons). This means that the rendering passes generated are not the same depending on this parameter, which is why you need to call <code>build()</code> again when you change it.</p>
+<p><strong>backDepthTexture</strong> is optional, and you should only connect a texture to this input if you set <strong>FrameGraphSSRRenderingPipelineTask.ssr.enableAutomaticThicknessComputation = true</strong>. Do not connect a texture if you do not use this option, otherwise you will be penalized in terms of performance for having generated the texture when it is not used by the SSR block. If you connect something to <strong>backDepthTexture</strong>, you must connect the same type of texture as the one you connect to <strong>depthTexture</strong>: a view or a screen space depth texture. You will get an error message in the console if you mix the types. Also, don&#39;t forget to set <strong>reverseCulling = true</strong> in the geometry renderer task that generates the back depth texture, as this texture must store the depth of the back faces!</p>
+<p>Refer to <a href="babylon-guide-features-featuresdeepdive-postprocesses-ssrrenderingpipeline.html">Screen Space Reflections (SSR) Rendering Pipeline</a> for more information on SSR and the parameters you can use to adjust the effect.</p>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphTAATask&quot; image=&quot;/img/frameGraph/task_taa.webp&quot; alt=&quot;TAA post-process&quot;/&gt;</span><p>Task which applies a temporal anti-aliasing post-process.</p>
+<p><a href="engine-babylonjs-babylon-framegraphtaatask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)</span><p>Inputs:</p>
+<ul>
+<li><strong>objectRendererTask</strong>. The object renderer task used to render the scene objects.</li>
+<li><strong>velocityTexture</strong>. The handle to the velocity texture. Only needed if <strong>postProcess.reprojectHistory</strong> is enabled. Note that you must use the linear velocity texture!<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Properties:</p>
+<ul>
+<li><a href="engine-babylonjs-babylon-thintaapostprocess.html">postProcess</a>. The properties of the post-process.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>This task is slightly different from other post-process tasks, as the <strong>source</strong> input is mandatory and the <strong>target</strong> input is not (yet) used.
+In addition, this task must instrument the rendering of objects, which is why you must connect a <a href="babylon-guide-features-featuresdeepdive-framegraph-framegraphclassframework.html">FrameGraphObjectRendererTask</a> instance to the <strong>objectRendererTask</strong> input.</p>
+<p>If you are using the <a href="babylon-guide-features-featuresdeepdive-postprocesses-taarenderingpipeline.html">reprojectHistory</a> option, you must provide a <strong>velocityTexture</strong> texture. You can generate this texture using the <a href="babylon-guide-features-featuresdeepdive-framegraph-framegraphclassframework.html">FrameGraphGeometryRendererTask</a> task. Note that you should not connect anything to the <strong>velocityTexture</strong> input if you are not using the reprojection history option, otherwise you may get rendering artifacts (and affect performance).</p>
+<p>In addition, when using TAA post-processing, you probably don&#39;t want to use MSAA for the color/depth texture. So set their samples to 1.</p>
+<p>Refer to <a href="babylon-guide-features-featuresdeepdive-postprocesses-taarenderingpipeline.html">Temporal Anti-Aliasing (TAA) Rendering Pipeline</a> for more information on TAA and the parameters you can use to adjust the effect.</p>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphTonemapTask&quot; image=&quot;/img/frameGraph/task_tonemap.webp&quot; alt=&quot;Tonemap post-process&quot;/&gt;</span><p>Task which applies a tonemap post-process.</p>
+<p><a href="engine-babylonjs-babylon-framegraphtonemaptask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>Properties:</p>
+<ul>
+<li><a href="engine-babylonjs-babylon-thintonemappostprocess.html">postProcess</a>. The properties of the post-process.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphVolumetricLightingTask&quot; image=&quot;/img/frameGraph/task_volumetriclighting.webp&quot; alt=&quot;Volumetric lighting post-process&quot;/&gt;</span><p>A frame graph task that performs volumetric lighting.</p>
+<p><a href="engine-babylonjs-babylon-framegraphvolumetriclightingtask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>This post-process <strong>doesn&#39;t share</strong> the common properties of post-processes!</p>
+<p>Inputs:</p>
+<ul>
+<li><strong>targetTexture</strong>. The target texture to which the volumetric lighting will be applied.</li>
+<li><strong>sourceSamplingMode</strong>. The sampling mode to use when blending the volumetric lighting texture with <strong>targetTexture</strong>.</li>
+<li><strong>depthTexture</strong>. The depth texture used for volumetric lighting calculations. It must be the depth (attachment) texture used to generate <strong>targetTexture</strong>.</li>
+<li><strong>camera</strong>. The camera used for volumetric lighting calculations.</li>
+<li><strong>lightingVolumeMesh</strong>. The mesh representing the lighting volume. This is the mesh that will be rendered to create the volumetric lighting effect. A common use case is to use the output of the <a href="babylon-guide-features-featuresdeepdive-framegraph-framegraphclassframework.html">FrameGraphLightingVolumeTask</a> task for this mesh.</li>
+<li><strong>light</strong>. The directional light used for volumetric lighting.</li>
+<li><strong>lightingVolumeTexture</strong> (optional). The lighting volume texture. If not provided, a new texture will be created with the same size, format, and type as <strong>targetTexture</strong>. This is the texture that will store the volumetric lighting information before being blended into <strong>targetTexture</strong>.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Properties:</p>
+<ul>
+<li><strong>phaseG</strong>. The phase G parameter for the volumetric lighting effect (default: 0). This parameter controls the anisotropy of the scattering. A value of 0 means isotropic scattering, while a value of 1 means forward scattering and -1 means backward scattering.</li>
+<li><strong>extinction</strong>. The extinction coefficient for the volumetric lighting effect (default: (0, 0, 0) - no extinction). This parameter controls how much light is absorbed and scattered as it travels through the medium. Will only have an effect if <strong>enableExtinction</strong> is set to true in the constructor!</li>
+<li><strong>lightPower</strong>. The light power/color for the volumetric lighting effect (default: (1, 1, 1)). This parameter controls the intensity and color of the light used for volumetric lighting.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Outputs:</p>
+<ul>
+<li><strong>outputTexture</strong>. The output texture of the task. It will be the same as <strong>targetTexture</strong>.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>The <strong>extinction</strong> property will only work if <strong>enableExtinction</strong> is set to <em>true</em> in the constructor when creating the <code>FrameGraphVolumetricLightingTask</code> instance. If you don&#39;t plan to set extinction to something different than (0, 0, 0), you can disable this to save some performance.</p>
+<h2 id="rendering-tasks">Rendering tasks<a class="anchor" href="#rendering-tasks">#</a></h2>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphObjectRendererTask&quot; image=&quot;/img/frameGraph/task_objectrenderer.webp&quot; alt=&quot;Object renderer&quot;/&gt;</span><p>Task used to render objects to a texture.</p>
+<p><a href="engine-babylonjs-babylon-framegraphobjectrenderertask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>Inputs:</p>
+<ul>
+<li><strong>targetTexture</strong>. The target texture(s) where the objects will be rendered. Define an array of handles if you want to use multi-target rendering (see below for more details).</li>
+<li><strong>depthTexture</strong> (optional). The depth attachment texture where the objects will be rendered.</li>
+<li><strong>shadowGenerators</strong> (optional). The shadow generators used to render the objects.</li>
+<li><strong>camera</strong>. Camera used to render the objects.</li>
+<li><strong>objectList</strong>. The list of objects to render.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Properties:</p>
+<ul>
+<li><strong>depthTest</strong>. If depth testing should be enabled (default is true).</li>
+<li><strong>depthWrite</strong>. If depth writing should be enabled (default is true).</li>
+<li><strong>disableShadows</strong>. If shadows should be disabled (default is false).</li>
+<li><strong>disableImageProcessing</strong>. If image processing should be disabled (default is false). <em>false</em> means that the default image processing configuration will be applied (the one from the scene).</li>
+<li><strong>isMainObjectRenderer</strong>. Sets this property to <em>true</em> if this task is the main object renderer of the frame graph. It will help to locate the main object renderer in the frame graph when multiple object renderers are used. This is useful for the inspector to know which object renderer to use for additional rendering features like wireframe rendering or frustum light debugging. It is also used to determine the main camera used by the frame graph: this is the camera used by the main object renderer.</li>
+<li><strong>renderMeshes</strong>. Defines if meshes should be rendered (default is true).</li>
+<li><strong>renderDepthOnlyMeshes</strong>. Defines if depth only meshes should be rendered (default is true). Always subject to the renderMeshes property, though.</li>
+<li><strong>renderOpaqueMeshes</strong>. Defines if opaque meshes should be rendered (default is true). Always subject to the renderMeshes property, though.</li>
+<li><strong>renderAlphaTestMeshes</strong>. Defines if alpha test meshes should be rendered (default is true). Always subject to the renderMeshes property, though.</li>
+<li><strong>renderTransparentMeshes</strong>. Defines if transparent meshes should be rendered (default is true). Always subject to the renderMeshes property, though.</li>
+<li><strong>useOITForTransparentMeshes</strong>. Defines if Order Independent Transparency should be used for transparent meshes (default is false).</li>
+<li><strong>oitPassCount</strong>. Defines the number of passes to use for Order Independent Transparency (default is 5).</li>
+<li><strong>renderParticles</strong>. Defines if particles should be rendered (default is true).</li>
+<li><strong>renderSprites</strong>. Defines if sprites should be rendered (default is true).</li>
+<li><strong>forceLayerMaskCheck</strong>. Forces checking the layerMask property even if a custom list of meshes is provided (i.e. if renderList is not undefined). Default is true.</li>
+<li><strong>enableBoundingBoxRendering</strong>. Enables the rendering of bounding boxes for meshes (still subject to <code>Mesh.showBoundingBox</code> or <code>scene.forceShowBoundingBoxes</code>). Default is true.</li>
+<li><strong>enableOutlineRendering</strong>. Enables the rendering of outlines/overlays for meshes (still subject to <code>Mesh.renderOutline</code> / <code>Mesh.renderOverlay</code>). Default is true.</li>
+<li><strong>resolveMSAAColors</strong>. If true, targetTexture will be resolved at the end of the render pass, if this/these texture(s) is/are MSAA (default: true).</li>
+<li><strong>resolveMSAADepth</strong>. If true, <strong>depthTexture</strong> will be resolved at the end of the render pass, if this texture is provided and is MSAA (default: false).</li>
+<li><strong>objectRenderer</strong>. The object renderer used to render the objects.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Outputs:</p>
+<ul>
+<li><strong>outputTexture</strong>. The output texture. This texture will point to the same texture as the <strong>targetTexture</strong> property. Note, however, that the handle itself will be different!</li>
+<li><strong>outputDepthTexture</strong>. The output depth attachment texture. This texture will point to the same texture as the depthTexture property if it is set. Note, however, that the handle itself will be different!<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>This is the main task used to render objects on a texture. You can consider it as the equivalent of <a href="engine-babylonjs-babylon-rendertargettexture.html">RenderTargetTexture</a> when you want to create a render pass programmatically.</p>
+<p>The <strong>shadowGenerators</strong> input is optional and can be used if you want to generate shadows at the same time as you render objects. This input expects an array of <a href="babylon-guide-features-featuresdeepdive-framegraph-framegraphclassframework.html">FrameGraphShadowGeneratorTask</a> instances. This way, you can generate shadows from multiple lights at once.</p>
+<p>If you enable Order Independent Transparency (OIT - <strong>useOITForTransparentMeshes = true</strong>), the target/depth texture(s) must <strong>NOT</strong> use MSAA! So, number of samples must be 1 for these textures. If you want to get rid of anti-aliasing artifacts, you can use a <a href="babylon-guide-features-featuresdeepdive-framegraph-framegraphclassframework.html">FXAA</a> or <a href="babylon-guide-features-featuresdeepdive-framegraph-framegraphclassframework.html">TAA</a> post-process after the rendering pass.</p>
+<p>Note that this class supports multi-target rendering, which means you can render to multiple textures at once. To enable it, simply provide an array of texture handles for the <strong>targetTexture</strong> property instead of a single handle. For this mode to work, all textures must have the same dimensions and the same number of MSAA samples (if applicable). In this mode, <strong>outputTexture</strong> remains a single texture handle: it is the first texture in the array that you passed to <strong>targetTexture</strong>.
+<span class="muted">&lt;br/&gt;</span><span class="muted">&lt;br/&gt;</span>
+To illustrate the use of this mode, here are two playgrounds:</p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><span class="muted">&lt;H3Image title=&quot;FrameGraphGeometryRendererTask&quot; image=&quot;/img/frameGraph/task_geometryrenderer.webp&quot; alt=&quot;Geometry renderer&quot;/&gt;</span><p>Task used to render geometry to a set of textures.</p>
+<p><a href="engine-babylonjs-babylon-framegraphgeometryrenderertask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p><span class="muted">&lt;br/&gt;</span><span class="muted">&lt;br/&gt;</span></p>
+<p>This class is a superset of <a href="babylon-guide-features-featuresdeepdive-framegraph-framegraphclassframework.html">FrameGraphObjectRendererTask</a>: it can render a scene (with some restrictions, see below) and generate geometry textures.
+This means that all inputs, properties, and outputs described above are supported, as well as:<span class="muted">&lt;br/&gt;</span></p>
+<p>Properties:</p>
+<ul>
+<li><strong>size</strong>. The size of the output textures (default is 100% of the back buffer texture size).</li>
+<li><strong>sizeIsPercentage</strong>. Whether the size is a percentage of the back buffer size (default is true).</li>
+<li><strong>samples</strong>. The number of samples to use for the output textures (default is 1).</li>
+<li><strong>reverseCulling</strong>. Whether to reverse culling (default is false).</li>
+<li><strong>dontRenderWhenMaterialDepthWriteIsDisabled</strong>. Indicates if a mesh shouldn&#39;t be rendered when its material has depth write disabled (default is true).</li>
+<li><strong>disableDepthPrePass</strong>. Indicates whether the depth pre-pass is disabled (default is true). Materials that require depth pre-pass (<code>Material.needDepthPrePass == true</code>) don&#39;t work with the geometry renderer, that&#39;s why this setting is <em>true</em> by default. However, if the geometry renderer doesn&#39;t generate any geometry textures but only renders to the main target texture, then depth pre-pass can be enabled.</li>
+<li><strong>textureDescriptions</strong>. The list of texture descriptions used by the geometry renderer task. Only geometry textures described in this array will be generated. See below for more information.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Methods:</p>
+<ul>
+<li><code>excludeSkinnedMeshFromVelocityTexture(skinnedMesh: AbstractMesh)</code>. Excludes the given skinned mesh from computing bones velocities. Computing bones velocities can have a cost. The cost can be saved by calling this function and by passing the skinned mesh to ignore.</li>
+<li><code>removeExcludedSkinnedMeshFromVelocityTexture(skinnedMesh: AbstractMesh)</code>. Removes the given skinned mesh from the excluded meshes list.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Outputs:</p>
+<ul>
+<li><strong>geometryIrradianceTexture</strong>. The irradiance output texture. Will point to a valid texture only if that texture has been requested in textureDescriptions!</li>
+<li><strong>geometryViewDepthTexture</strong>. The depth (in view space) output texture. Will point to a valid texture only if that texture has been requested in textureDescriptions!</li>
+<li><strong>geometryNormViewDepthTexture</strong>. The normalized depth (in view space) output texture. Will point to a valid texture only if that texture has been requested in textureDescriptions! The normalization is <code>(d - near) / (far - near)</code>, where <strong>d</strong> is the depth value in view space and <strong>near</strong> and <strong>far</strong> are the near and far planes of the camera.</li>
+<li><strong>geometryScreenDepthTexture</strong>. The depth (in screen space) output texture. Will point to a valid texture only if that texture has been requested in textureDescriptions!</li>
+<li><strong>geometryViewNormalTexture</strong>. The normal (in view space) output texture. Will point to a valid texture only if that texture has been requested in textureDescriptions!</li>
+<li><strong>geometryWorldNormalTexture</strong>. The normal (in world space) output texture. Will point to a valid texture only if that texture has been requested in textureDescriptions!</li>
+<li><strong>geometryLocalPositionTexture</strong>. The position (in local space) output texture. Will point to a valid texture only if that texture has been requested in textureDescriptions!</li>
+<li><strong>geometryWorldPositionTexture</strong>. The position (in world space) output texture. Will point to a valid texture only if that texture has been requested in textureDescriptions!</li>
+<li><strong>geometryAlbedoTexture</strong>. The albedo output texture. Will point to a valid texture only if that texture has been requested in textureDescriptions!</li>
+<li><strong>geometryReflectivityTexture</strong>. The reflectivity output texture. Will point to a valid texture only if that texture has been requested in textureDescriptions!</li>
+<li><strong>geometryVelocityTexture</strong>. The velocity output texture. Will point to a valid texture only if that texture has been requested in textureDescriptions!</li>
+<li><strong>geometryLinearVelocityTexture</strong>. The linear velocity output texture. Will point to a valid texture only if that texture has been requested in textureDescriptions!<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>This task is primarily used to generate geometry textures, i.e. textures containing special data such as depths in view/screen space, normals in view/world space, reflectivity, etc. Here is a list of all outputs that this task can generate. The clear values below apply to the color components present in each texture&#39;s format, before any objects are drawn:</p>
+<ul>
+<li><strong>geometryIrradianceTexture</strong>: irradiance color, normally written by the material&#39;s geometry rendering shader. Cleared to zero.</li>
+<li><strong>geometryViewDepthTexture</strong>: depth in camera view space. This is the Z component of the vertex coordinate in the camera&#39;s view space and is a value between <strong>near</strong> and <strong>far</strong>, the camera&#39;s near and far clipping planes. Cleared to zero.</li>
+<li><strong>geometryNormViewDepthTexture</strong>: normalized depth in camera view space. Identical to the value above, but with values between 0 and 1, calculated using the formula <code>normViewDepth = (viewDepth - near) / (far - near)</code>. Cleared to one.</li>
+<li><strong>geometryScreenDepthTexture</strong>: depth in screen space. This is the depth written to the depth buffer (<code>gl_FragCoord.z</code>) and is a value between 0 and 1. Cleared to one, or to zero when reverse depth buffering is enabled.</li>
+<li><strong>geometryViewNormalTexture</strong>: normal in camera view space. This is the normal to the vertex in camera view space. The vector is normalized before being written to the texture. Cleared to zero.</li>
+<li><strong>geometryWorldNormalTexture</strong>: normal in world space. This is the normal at the vertex in world space. The vector is normalized before being written to the texture. It is also scaled and offset by 0.5 to generate components between 0 and 1. Cleared to zero.</li>
+<li><strong>geometryLocalPositionTexture</strong>: position in local space. This is the position of the vertex in the object model space, i.e., before any camera or world transformations. Cleared to zero.</li>
+<li><strong>geometryWorldPositionTexture</strong>: position in world space. This is the position of the vertex in world space. Cleared to zero.</li>
+<li><strong>geometryAlbedoTexture</strong>: albedo color. This is the albedo/diffuse color of the vertex. Cleared to zero.</li>
+<li><strong>geometryReflectivityTexture</strong>: reflectivity color. This is the reflectivity color of the vertex (used by SSR, for example). Cleared to zero.</li>
+<li><strong>geometryVelocityTexture</strong>: velocity vector in screen space. See <span>Motion blur by object</span> for more details on what a velocity texture is. <strong>geometryVelocityTexture</strong> is a texture constructed with the optimization described in the “Format and precision” section to improve accuracy when using an unsigned byte texture type. Cleared to zero.</li>
+<li><strong>geometryLinearVelocityTexture</strong>: linear velocity vector in screen space. It is identical to the one above, but without the optimization, so without the <code>pow()</code> call. The coordinates are multiplied by 0.5, so that they are between [-0.5, 0.5] instead of [-1, 1]. Cleared to zero.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p><strong>Using an existing channel for custom geometry data</strong>: If your graph does not need one of the supported <code>PREPASS_*</code> outputs for its original purpose, you can use its attachment to carry application-defined per-object data. For example, request the irradiance channel with a format and type appropriate for your data:</p>
+<pre class="code" data-lang="javascript"><code>const geomRendererTask = new BABYLON.FrameGraphGeometryRendererTask(&quot;customGeometry&quot;, frameGraph, scene);
+geomRendererTask.objectList = { meshes: [mesh], particleSystems: [] };
+geomRendererTask.camera = camera;
+geomRendererTask.textureDescriptions.push({
+    type: BABYLON.Constants.PREPASS_IRRADIANCE_TEXTURE_TYPE,
+    textureFormat: BABYLON.Constants.TEXTUREFORMAT_RGBA,
+    textureType: BABYLON.Constants.TEXTURETYPE_HALF_FLOAT,
+});
+
+frameGraph.addTask(geomRendererTask);
+// Connect this handle to a downstream task's texture input.
+const customGeometryTexture = geomRendererTask.geometryIrradianceTexture;</code></pre>
+<p>Here <code>frameGraph</code>, <code>scene</code>, <code>camera</code>, and <code>mesh</code> are from your existing graph setup; provide <strong>depthTexture</strong> if your pass needs one. The handle becomes a usable texture when the graph is built; requesting or consuming the output <strong>does not</strong> write your data into it. Every material/shader contributing objects to that texture must explicitly write the custom value at the matching <code>PREPASS_IRRADIANCE_INDEX</code>, <strong>after</strong> any built-in irradiance write. For example, in the fragment shader of a material whose prepass/MRT declarations provide <code>WRITE_GEOMETRY_FRAGMENT_OUTPUT</code>, place this write after the material&#39;s default geometry output code:</p>
+<pre class="code" data-lang="glsl"><code>#ifdef PREPASS_IRRADIANCE
+    WRITE_GEOMETRY_FRAGMENT_OUTPUT(PREPASS_IRRADIANCE_INDEX, vec4(customData.rgb, 1.0));
+#endif</code></pre>
+<p>Here <code>customData</code> is an application-provided value, not a built-in shader variable. For WGSL, use <code>vec4f</code> rather than <code>vec4</code> and write to <code>fragData[PREPASS_IRRADIANCE_INDEX]</code> <strong>before</strong> the material copies that array into <code>fragmentOutputs</code>; if you inject code after that copy, you must instead update the corresponding <code>fragmentOutputs.fragDataN</code> output (<code>N</code> is the attachment index). The GLSL macro is not WGSL syntax. If you prefer a domain-specific guard in your own shader, you can replace the guard above with this optional alias:</p>
+<pre class="code" data-lang="glsl"><code>#ifdef PREPASS_IRRADIANCE
+    #define CUSTOM_GEOMETRY_NAME
+#endif
+
+// After the material's default geometry output code:
+#ifdef CUSTOM_GEOMETRY_NAME
+    WRITE_GEOMETRY_FRAGMENT_OUTPUT(PREPASS_IRRADIANCE_INDEX, vec4(customData.rgb, 1.0));
+#endif</code></pre>
+<p><code>CUSTOM_GEOMETRY_NAME</code> is <strong>not</strong> generated by the engine, and a define alone does not replace the stock shader write.</p>
+<p>Choose an attachment format/type that preserves the values and precision you need, and account for its default clear value and color/alpha conventions (the example writes alpha 1 for covered opaque pixels; untouched pixels retain the clear value). MRT outputs share the pass&#39;s attachment count, formats, dimensions, and sample settings; you cannot add arbitrary extra shader outputs just by inventing another <code>PREPASS_*</code> type. Do not repurpose the special object-ID or integer mesh-blend-tag channels. Other materials and built-in rendering paths may still write their usual irradiance values, so use this texture only when you control all contributing writes, or account for mixed content.</p>
+<p>However, this task can also render a scene, similar to how <code>FrameGraphObjectRendererTask</code> does. There are some limitations when geometry textures and the normal texture scene (<strong>outputTexture</strong> property) are generated by <code>FrameGraphGeometryRendererTask</code>:</p>
+<ul>
+<li>You must set <strong>disableDepthPrePass</strong> to <em>false</em> if any of your materials use <strong>needDepthPrePass</strong>, in order to avoid artifacts/errors with geometry textures, but this means you may get artifacts in the normal texture scene. Again, if you need this to work, use a separate <code>FrameGraphObjectRendererTask</code> to generate the normal scene texture.</li>
+<li>You must use the same number of MSAA samples for all textures (<strong>targetTexture</strong>, <strong>depthTexture</strong>, and <strong>FrameGraphObjectRendererTask.samples</strong>). Using MSAA textures is more demanding in terms of performance. If you don&#39;t need MSAA for geometry textures, you can use the geometry renderer only for geometry textures and use a <code>FrameGraphObjectRendererTask</code> instance to generate the normal texture scene.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p><strong>Important</strong>: If you do not plan to use <strong>outputTexture</strong>, do not set anything in the <strong>targetTexture</strong> input property! If you connect something to <strong>targetTexture</strong>, the texture will be generated, even if it is not used via <strong>outputTexture</strong>.</p>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphShadowGeneratorTask&quot; image=&quot;/img/frameGraph/task_shadowgenerator.webp&quot; alt=&quot;Shadow generator&quot;/&gt;</span><p>Task used to generate shadows from a list of objects.</p>
+<p><a href="engine-babylonjs-babylon-framegraphshadowgeneratortask.html">Link to the class</a></p>
+<p><a href="engine-babylonjs-babylon-framegraphcascadedshadowgeneratortask.html">Link to the class (CSM)</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>Inputs:</p>
+<ul>
+<li><strong>objectList</strong>. The object list that generates shadows.</li>
+<li><strong>light</strong>. The light to generate shadows from.</li>
+<li><strong>camera</strong>. The camera used to generate the shadows.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Inputs (specific to cascaded shadow maps):</p>
+<ul>
+<li><strong>depthTexture</strong> (optional). The depth texture used by the <strong>autoCalcDepthBounds</strong> feature (optional if <strong>autoCalcDepthBounds</strong> is set to <em>false</em>). This texture is used to compute the min/max depth bounds of the scene to set up the cascaded shadow generator. The texture should contain either “view,” “normalized view,” or “screen” depth values - if possible, connect “normalized view” or “screen” for best performance. <strong>Warning</strong>: Do not set a texture if you are not using the <strong>autoCalcDepthBounds</strong> feature, to avoid generating a depth texture that will not be used.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Properties:</p>
+<ul>
+<li><strong>mapSize</strong>. The size of the shadow map.</li>
+<li><strong>useFloat32TextureType</strong>. If true, the shadow map will use a 32 bits float texture type (else, 16 bits float is used if supported).</li>
+<li><strong>useRedTextureFormat</strong>. If true, the shadow map will use a red texture format (else, a RGBA format is used).</li>
+<li><strong>bias</strong>. The bias to apply to the shadow map.</li>
+<li><strong>normalBias</strong>. The normal bias to apply to the shadow map.</li>
+<li><strong>darkness</strong>. The darkness of the shadows.</li>
+<li><strong>transparencyShadow</strong>. Gets or sets the ability to have transparent shadows.</li>
+<li><strong>enableSoftTransparentShadow</strong>. Enables or disables shadows with varying strength based on the transparency.</li>
+<li><strong>useOpacityTextureForTransparentShadow</strong>. If this is true, use the opacity texture&#39;s alpha channel for transparent shadows instead of the diffuse one.</li>
+<li><strong>filter</strong>. The filter to apply to the shadow map.</li>
+<li><strong>filteringQuality</strong>. The filtering quality to apply to the filter.</li>
+<li><strong>shadowGenerator</strong> (read only). The shadow generator.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Properties (specific to cascaded shadow maps):</p>
+<ul>
+<li><strong>numCascades</strong>. The number of cascades.</li>
+<li><strong>debug</strong>. Indicates whether the shadow generator should display the cascades.</li>
+<li><strong>stabilizeCascades</strong>. Indicates whether the shadow generator should stabilize the cascades.</li>
+<li><strong>lambda</strong>. Lambda parameter of the shadow generator.</li>
+<li><strong>cascadeBlendPercentage</strong>. Cascade blend percentage.</li>
+<li><strong>depthClamp</strong>. Indicates whether the shadow generator should use depth clamping.</li>
+<li><strong>autoCalcDepthBounds</strong>. Indicates whether the shadow generator should automatically calculate the depth bounds.</li>
+<li><strong>autoCalcDepthBoundsRefreshRate</strong>. Defines the refresh rate of the min/max computation used when <strong>autoCalcDepthBounds</strong> is set to true. Use 0 to compute just once, 1 to compute on every frame, 2 to compute every two frames and so on...</li>
+<li><strong>shadowMaxZ</strong>. Maximum shadow Z value. If 0, will use <strong>camera.maxZ</strong>.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Outputs:</p>
+<ul>
+<li><strong>outputTexture</strong>. The shadow map texture.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Use this task when you want to generate shadows from a light. The light must be a “shadow light”, i.e. any light except area lights and hemispherical lights.</p>
+<p>You may be surprised to see a <strong>camera</strong> input, because the scene is rendered from the point of view of the light to generate the shadow map, not from the point of view of a camera. This camera is necessary to:</p>
+<ul>
+<li>split the camera frustum when using a <code>FrameGraphCascadedShadowGeneratorTask</code> block</li>
+<li>calculate the LOD of the meshes. The LOD of the meshes is defined according to the distance from a camera, not from a light.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Refer to <a href="babylon-guide-features-featuresdeepdive-lights-shadows.html">Shadows</a> for general information about shadows, and <a href="babylon-guide-features-featuresdeepdive-lights-shadows-csm.html">Cascaded Shadow Maps</a> for specific information about cascaded shadow maps.</p>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphUtilityLayerRendererTask&quot; image=&quot;/img/frameGraph/task_utilitylayerrenderer.webp&quot; alt=&quot;Utility layer renderer&quot;/&gt;</span><p>Task used to render a utility layer.</p>
+<p><a href="engine-babylonjs-babylon-framegraphutilitylayerrenderertask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>Inputs:</p>
+<ul>
+<li><strong>targetTexture</strong>. The target texture of the task.</li>
+<li><strong>camera</strong>. The camera used to render the utility layer.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Properties:</p>
+<ul>
+<li><strong>layer</strong>. The utility layer renderer.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Outputs:</p>
+<ul>
+<li><strong>outputTexture</strong>. The output texture of the task. This is the same texture as the target texture, but the handles are different!<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>This class is a wrapper around <a href="engine-babylonjs-babylon-utilitylayerrenderer.html">UtilityLayerRenderer</a> and allows you to use gizmos with frame graphs: see the PGs above for some examples.</p>
+<h2 id="texture-tasks">Texture tasks<a class="anchor" href="#texture-tasks">#</a></h2>
+<h3 id="framegraphcleartexturetask">FrameGraphClearTextureTask<a class="anchor" href="#framegraphcleartexturetask">#</a></h3>
+<p>Task used to clear a texture.</p>
+<p><a href="engine-babylonjs-babylon-framegraphcleartexturetask.html">Link to the class</a></p>
+<p>No specific example: the clear texture task is used in all the PG on this page!</p>
+<p>Inputs:</p>
+<ul>
+<li><strong>targetTexture</strong> (optional). The color texture to clear.</li>
+<li><strong>depthTexture</strong> (optional). The depth attachment texture to clear.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Properties:</p>
+<ul>
+<li><strong>color</strong>. The color to clear the texture with.</li>
+<li><strong>clearColor</strong>. If the color should be cleared.</li>
+<li><strong>convertColorToLinearSpace</strong>. If the color should be converted to linear space (default: false).</li>
+<li><strong>clearDepth</strong>. If the depth should be cleared.</li>
+<li><strong>clearStencil</strong>. If the stencil should be cleared.</li>
+<li><strong>stencilValue</strong>. The value to use to clear the stencil buffer (default: 0).<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Outputs:</p>
+<ul>
+<li><strong>outputTexture</strong>. The output texture (same as <strong>targetTexture</strong>, but the handle will be different).</li>
+<li><strong>outputDepthTexture</strong>. The output depth texture (same as <strong>depthTexture</strong>, but the handle will be different).<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>The inputs <strong>target</strong> and <strong>depth</strong> are optional, but you must provide at least one of them (otherwise there is no reason to use a clear task!).</p>
+<h3 id="framegraphcopytobackbuffercolortask">FrameGraphCopyToBackbufferColorTask<a class="anchor" href="#framegraphcopytobackbuffercolortask">#</a></h3>
+<p>Task which copies a texture to the backbuffer color texture (the screen).</p>
+<p><a href="engine-babylonjs-babylon-framegraphcopytobackbuffercolortask.html">Link to the class</a></p>
+<p>No specific example: the copy to backbuffer color task is used in all the PG on this page!</p>
+<p>Inputs:</p>
+<ul>
+<li><strong>sourceTexture</strong>. The source texture to copy to the backbuffer color texture.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<h3 id="framegraphcopytotexturetask">FrameGraphCopyToTextureTask<a class="anchor" href="#framegraphcopytotexturetask">#</a></h3>
+<p>Task used to copy a texture to another texture.</p>
+<p><a href="engine-babylonjs-babylon-framegraphcopytotexturetask.html">Link to the class</a></p>
+<p>Playground: see the PG for the <a href="babylon-guide-features-featuresdeepdive-framegraph-framegraphclassframework.html">Geometry renderer task</a></p>
+<p>Inputs:</p>
+<ul>
+<li><strong>sourceTexture</strong>. The source texture to copy from.</li>
+<li><strong>targetTexture</strong>. The target texture to copy to.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Properties:</p>
+<ul>
+<li><strong>viewport</strong> (optional). The viewport to use when doing the copy. If set to <em>null</em>, the currently active viewport is used. If <em>undefined</em> (default), the viewport is reset to a full-screen viewport before performing the copy.</li>
+<li><strong>lodLevel</strong>. The LOD level to copy from the source texture (default: 0).<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Outputs:</p>
+<ul>
+<li><strong>outputTexture</strong>. The output texture (same as <strong>targetTexture</strong>, but the handle may be different).<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;FrameGraphGenerateMipMapsTask&quot; image=&quot;/img/frameGraph/task_generatemipmaps.webp&quot; alt=&quot;Generate mipmaps&quot;/&gt;</span><p>Task which generates mipmaps for a texture.</p>
+<p><a href="engine-babylonjs-babylon-framegraphgeneratemipmapstask.html">Link to the class</a></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>Inputs:</p>
+<ul>
+<li><strong>targetTexture</strong>. The texture to generate mipmaps for.<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Outputs:</p>
+<ul>
+<li><strong>outputTexture</strong>. The output texture (same as <strong>targetTexture</strong>, but the handle may be different).<span class="muted">&lt;br/&gt;</span></li>
+</ul>
+<p>Note that in a frame graph, mipmaps are not generated automatically; you must use a <code>FrameGraphGenerateMipMapsTask</code> task to do so.</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#layer-tasks">Layer tasks </a><a href="#miscellaneous-tasks">Miscellaneous tasks </a><a href="#post-process-tasks">Post-process tasks </a><a href="#rendering-tasks">Rendering tasks </a><a href="#texture-tasks">Texture tasks </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

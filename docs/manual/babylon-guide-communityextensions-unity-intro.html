@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Introduction to the Unity Toolkit — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Introduction to the Unity Toolkit</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="exportation">Exportation<a class="anchor" href="#exportation">#</a></h2>
+<p>The toolkit exports game objects that have a camera, light, or mesh component attached. The toolkit also provides built-in script components to support native Babylon engine features at design time. The toolkit&#39;s <a href="babylon-guide-communityextensions-unity-exporter.html">Export Inspector</a> window provides easy access to global export properties. Docking this window is recommended to enable the <strong>Unity Editor</strong> game development and export features.</p>
+<p><strong>Camera Rigs</strong></p>
+<p>Perspective and orthographic cameras are supported. The Camera Rig component supports detailed camera control, allowing easy camera type selection and specific runtime camera mode options. Please refer to the <span>Unity Camera</span> documentation for details.</p>
+<p><strong>Scene Lighting</strong></p>
+<p>The toolkit exports directional, point and spot lights. Realtime lights are standard lights that illuminate the scene at runtime. Mixed lights support baked lighting and require the <span>Subtractive</span> lightmapper mode.</p>
+<p>Fully baked lighting (including all area lights) is used for lightmap shadow baking at design time and will <strong>not</strong> be included in the exported scene file. This allows detailed lightmap baking using as many baking lights as required to achieve the best shadow effects possible without using any of those baking light resources at runtime. Please refer to the <span>Unity Baked Lighting</span> documentation for details.</p>
+<p><strong>Scene Environment</strong></p>
+<p>Skyboxes for the scene are primarily controlled via the <span>Unity Lighting Window</span>. The default scene controller <strong>Skybox Options</strong> allow more detailed settings at runtime. The toolkit supports native HDR, EXR, and DDS cubemaps. Please refer to the <span>Unity Skybox Rendering</span> documentation for details.</p>
+<p><strong>Default Color Space</strong></p>
+<p>The preferred <strong>Color Space</strong> for realistic rendering is <strong>Linear</strong>. A significant advantage of using <strong>Linear</strong> color space is that the colors supplied to shaders within your scene brighten linearly as light intensities increase. This can be selected using the <strong>Color Space</strong> property in the <strong>Edit&gt;Project Settings&gt;Player</strong> settings panel.</p>
+<h2 id="getting-started">Getting Started<a class="anchor" href="#getting-started">#</a></h2>
+<p>The <a href="babylon-guide-communityextensions-unity-projects.html">Project Setup</a> section covers the current Unity Package Manager installation, required UnityGLTF shader configuration, scene configuration, and runtime script compiler options. The actively maintained <span>Unity Exporter guide</span> lists the supported Unity version and package sources. Watch the current <span>Getting Started video</span> for an exporter walkthrough.</p>
+<h2 id="toolkit-features">Toolkit Features<a class="anchor" href="#toolkit-features">#</a></h2>
+<h3 id="script-components">Script Components<a class="anchor" href="#script-components">#</a></h3>
+<p><a href="babylon-guide-communityextensions-unity-01-scriptcomponents.html">Script Components</a> are the primary way of attaching native Babylon classes to game objects and prefabs in the editor.</p>
+<p>The <strong>Editor Script Components</strong> are C# design-time components used to enter client properties. They are not intended to execute at runtime. They simply allow the use of design-time editor properties for your native Babylon client scripts. Each editor script specifies the native JavaScript or TypeScript backing class to use at runtime. Please refer to the <span>Unity Component</span> documentation for details.</p>
+<p>The client scripts are your native Babylon JavaScript or TypeScript classes that contain your game logic code. Each class has a <strong>ready</strong> function that is called once during the scene&#39;s execute-when-ready phase, a <strong>start</strong> function that is called once during the first frame, an <strong>update</strong> function that is called every frame, an <strong>after</strong> function that is called after the scene render phase, and a <strong>destroy</strong> function that is called on component disposal.</p>
+<h3 id="scene-manager">Scene Manager<a class="anchor" href="#scene-manager">#</a></h3>
+<p>The <a href="babylon-guide-communityextensions-unity-02-scenemanager.html">Scene Manager</a> application programming interface exposes a Unity-like scene component development pattern. This allows script components to be attached to game objects such as meshes, cameras, and lights. Each component type has a ready, start, update, after, and destroy function that will be called by the scene manager during its life cycle.</p>
+<h3 id="shader-materials">Shader Materials<a class="anchor" href="#shader-materials">#</a></h3>
+<p><a href="babylon-guide-communityextensions-unity-03-shadermaterials.html">Shader Materials</a> are used to assign Unity standard and legacy shaders to native Babylon material classes. Custom shaders are supported if they follow the Unity shader property naming standard. The universal shader material component encapsulates both Unity design-time shader information and Babylon runtime shader information. Please refer to 
+the <span>Unity Material Editor</span> documentation for details.</p>
+<h3 id="collision-meshes">Collision Meshes<a class="anchor" href="#collision-meshes">#</a></h3>
+<p><a href="babylon-guide-communityextensions-unity-04-collisionmeshes.html">Collision Meshes</a> are generated to provide simple collision for each component type (box, sphere, capsule, wheel, mesh, and terrain). This allows simple geometry to be used for physics collisions and mesh intersections instead of the original detailed geometry. Please refer to the <span>Unity Collider Components</span> documentation for details.</p>
+<h3 id="terrain-builder">Terrain Builder<a class="anchor" href="#terrain-builder">#</a></h3>
+<p><a href="babylon-guide-communityextensions-unity-05-terrainbuilder.html">Terrain Builder</a> options are used to export dynamic terrain geometry generation at export time. Up to 12 textures and normal maps may be used to paint terrains. Texture atlas maps are created to optimize multiple terrain splat textures. Terrain mesh colliders are supported to optimize runtime collision checking. Colliders can be segmented into up to 16 x 16 low-poly collision meshes that cover the original high-poly terrain surface.</p>
+<p>The terrain builder supports custom terrain splatmap shaders to allow design-time editor access to the terrain render material. If no custom terrain splatmap material is selected, default options will be used. Please refer to the <span>Unity Terrain Settings</span> documentation for details.</p>
+<h3 id="animation-state">Animation State<a class="anchor" href="#animation-state">#</a></h3>
+<p><a href="babylon-guide-communityextensions-unity-06-animationstate.html">Animation State</a> is supported for both transform and skeleton animations. Transform animations are used to animate the position, rotation, and scale of any light, camera, or mesh. Skeleton animations are used to animate the bones of a skeletal mesh. Legacy Animation controls are used to enable standard bone keyframe animations only. </p>
+<p>The newer standard Animator controls are used to enable the built-in Unity Mecanim humanoid animation rigging system. Please refer to the <span>Unity Animation Group</span> documentation for details.</p>
+<h3 id="runtime-prefabs">Runtime Prefabs<a class="anchor" href="#runtime-prefabs">#</a></h3>
+<p><a href="babylon-guide-communityextensions-unity-07-runtimeprefabs.html">Runtime Prefabs</a> are used to allow client-side prefab instantiation. Game objects that are assigned to the <strong>Babylon Prefab</strong> layer are marked for client-side prefab usage and will not be enabled in the scene. The scene manager function <strong>instantiate prefab</strong> is used to create fully scripted components at runtime. The scene manager uses deep cloning with hierarchy.</p>
+<h3 id="static-batching">Static Batching<a class="anchor" href="#static-batching">#</a></h3>
+<p><a href="babylon-guide-communityextensions-unity-08-staticbatching.html">Static Batching</a> allows design-time mesh combining. Game objects that are assigned to the <strong>Babylon Static</strong> layer are marked for mesh optimization at scene export. Meshes will automatically be grouped by material, combined, baked, and serialized as a single mesh per material. Texture atlas materials are supported to improve multiple-texture rendering performance.</p>
+<h3 id="navigation-mesh">Navigation Mesh<a class="anchor" href="#navigation-mesh">#</a></h3>
+<p><a href="babylon-guide-communityextensions-unity-09-navigationmesh.html">Navigation Mesh</a> support is provided by <span>Babylon-Navigation-Mesh</span>, a pathfinding tool for AI agents. It uses the <strong>A Star</strong> and <strong>Funnel</strong> algorithms to calculate a path on a navigation mesh. The toolkit supports the Unity navigation mesh generation tools to produce and serialize the navigation mesh geometry into your scene. Please refer to the <span>Unity Navigation Mesh</span> documentation for details.</p>
+<h3 id="windows-platform">Windows Platform<a class="anchor" href="#windows-platform">#</a></h3>
+<p>The <a href="babylon-guide-communityextensions-unity-10-windowsplatform.html">Windows Platform</a> toolset provides built-in support for developing hosted <span>Universal Windows Platform</span> applications that serve as self-contained web browser applications for your game projects. This allows native platform integration support for the <strong>Windows Runtime Library</strong>, including <strong>Xbox Live Services</strong>, for both <strong>Windows 10 PC</strong> and <strong>Xbox One</strong> game consoles.</p>
+<h3 id="babylon-art-tools">Babylon Art Tools<a class="anchor" href="#babylon-art-tools">#</a></h3>
+<p>The <a href="babylon-guide-communityextensions-unity-11-babylonarttools.html">Babylon Art Tools</a> included in the toolkit provide a number of art tools to help create optimized, game-ready assets.</p>
+<h2 id="exported-content">Exported Content<a class="anchor" href="#exported-content">#</a></h2>
+<h3 id="editor-script-components">Editor Script Components<a class="anchor" href="#editor-script-components">#</a></h3>
+<p>The toolkit-provided abstract base class <strong>Editor Script Component</strong> is the only supported script component that will be exported. All other unsupported components will be ignored. The prebuilt toolkit components and your <a href="babylon-guide-communityextensions-unity-01-scriptcomponents.html">Custom Script Components</a> are all derived from the base editor script component class and will be included in the exported scene.</p>
+<p>Native JavaScript libraries (renamed to .bjs) that are included anywhere in the <strong>Assets</strong> folder will be packaged and included in your project script file. This allows easy packaging of third-party script packages. TypeScript definition files are supported by most IDEs and should also be included for autocomplete use in your game project development.</p>
+<h3 id="supported-unity-features">Supported Unity Features<a class="anchor" href="#supported-unity-features">#</a></h3>
+<ul>
+<li><strong>Scene</strong></li>
+<li>Assets</li>
+<li>Metadata</li>
+<li><strong>Cameras</strong></li>
+<li>Name</li>
+<li>Position</li>
+<li>Target</li>
+<li>FOV</li>
+<li>LOD Groups</li>
+<li>Clip Range Start</li>
+<li>Clip Range End</li>
+<li>Check Collisions</li>
+<li>Gravity</li>
+<li>Ellipsoid</li>
+<li>Animations (Position)</li>
+<li><strong>Lights</strong></li>
+<li>Type (Point, Directional, Spot)</li>
+<li>Name</li>
+<li>Position</li>
+<li>Direction</li>
+<li>Spot Angle</li>
+<li>Intensity</li>
+<li>Diffuse Color</li>
+<li>Animations (Position)</li>
+<li>Shadow Maps</li>
+<li>Light Maps</li>
+<li><strong>Materials</strong></li>
+<li>Name</li>
+<li>Diffuse Color</li>
+<li>Specular Color</li>
+<li>Specular Power</li>
+<li>Emissive Color</li>
+<li>Alpha</li>
+<li>Backface Culling</li>
+<li>Diffuse Texture</li>
+<li>Reflection Texture</li>
+<li>Emissive Texture</li>
+<li>Bump Texture</li>
+<li><strong>Physically Based Rendering</strong></li>
+<li>Metallic Setup</li>
+<li>Roughness Setup</li>
+<li>Specular Setup</li>
+<li><strong>Multi-Materials</strong></li>
+<li>Name</li>
+<li>Child Materials</li>
+<li><strong>Textures</strong></li>
+<li>Name</li>
+<li>Associated File</li>
+<li>Use Alpha</li>
+<li>uOffset / voffset</li>
+<li>uScale / uScale</li>
+<li><strong>Meshes</strong></li>
+<li>Name</li>
+<li>Geometry (Positions &amp; Normals)</li>
+<li>Position</li>
+<li>Rotation</li>
+<li>Scaling</li>
+<li>Texture Coordinates (2 Channels)</li>
+<li>Check Collisions</li>
+<li>Receive &amp; Cast Shadows</li>
+<li>Animations (Position, Rotation, Scaling)</li>
+<li>Skeletons (Shared Cloning)</li>
+<li><strong>Shaders</strong></li>
+<li>Vertex Shaders</li>
+<li>Fragment Shaders</li>
+<li>Custom Shaders</li>
+<li><strong>Layers</strong></li>
+<li>Custom Layers</li>
+<li>Object Layers</li>
+<li>Static Layers</li>
+<li>Prefab Layers</li>
+<li>Ignore Layers (Void)</li>
+<li><strong>Tagging</strong></li>
+<li>Object Tag Name</li>
+<li>Custom Tag Names</li>
+<li><strong>Terrains</strong></li>
+<li>Multiple Terrains</li>
+<li>Splatmap Textures</li>
+<li>Tree Instances</li>
+<li>Grass Patches (Under Construction)</li>
+<li>Detail Prototypes (Under Construction)</li>
+<li><strong>Components</strong></li>
+<li>Mesh Filter</li>
+<li>Mesh Renderer</li>
+<li>Skinned Mesh Renderer</li>
+<li><strong>Collisions</strong></li>
+<li>Box Collider</li>
+<li>Sphere Collider</li>
+<li>Capsule Collider</li>
+<li>Mesh Collider</li>
+<li>Wheel Collider</li>
+<li>Terrain Collider</li>
+<li><strong>Navigation</strong></li>
+<li>Navigation Mesh</li>
+<li>Nav Mesh Agent</li>
+<li>Off Mesh Link</li>
+<li>Nav Mesh Obstacle</li>
+<li><strong>Local Multiplayer</strong></li>
+<li>Multiplayer Input </li>
+<li>Multiplayer Camera</li>
+<li><strong>Miscellaneous</strong></li>
+<li>Tree Component</li>
+<li>Terrain Component</li>
+<li>Animator Component</li>
+<li>Animation Component</li>
+</ul>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#exportation">Exportation </a><a href="#getting-started">Getting Started </a><a href="#toolkit-features">Toolkit Features </a><a href="#exported-content">Exported Content </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

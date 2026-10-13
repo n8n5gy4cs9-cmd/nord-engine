@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Network Physical Synchronization (based on ammojs + colyseus) — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Network Physical Synchronization (based on ammojs + colyseus)</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><p><p class="muted">Upstream illustration: Wireframe (media not bundled).</p></p>
+<p>This guide will help you implement networked physics synchronization with Colyseus. This is a very simple demonstration. It does not include server-side verification. Collision detection occurs only on the player&#39;s client. The server is responsible for synchronizing physics-effect data and assigning physics-calculation authority.</p>
+<p>We use ammojs as the physics engine for this demonstration, and you can replace it with other physics engines.</p>
+<h2 id="full-source-code">Full source code<a class="anchor" href="#full-source-code">#</a></h2>
+<ul>
+<li><span>colyseus-babylonjs-ammojs</span></li>
+</ul>
+<h2 id="before-you-start">Before you start<a class="anchor" href="#before-you-start">#</a></h2>
+<h4 id="prior-knowledge-expected">Prior Knowledge Expected<a class="anchor" href="#prior-knowledge-expected">#</a></h4>
+<ul>
+<li>(<span>Using A Physics Engine</span>)</li>
+<li>(<span>Real-time Multiplayer with Colyseus</span>)</li>
+</ul>
+<h2 id="quick-demo">Quick demo<a class="anchor" href="#quick-demo">#</a></h2>
+<p>Please clone this project and follow the instructions to install and start the project:
+<span>colyseus-babylonjs-ammojs</span></p>
+<h4 id="client-application">Client application<a class="anchor" href="#client-application">#</a></h4>
+<p>To be able to build the client application, you&#39;ll need to enter the folder,
+and install its dependencies first.</p>
+<pre class="code" data-lang=""><code>cd client/
+npm install</code></pre>
+<p>Now you can build and run it by running:</p>
+<pre class="code" data-lang=""><code>npm start</code></pre>
+<p>It will spawn the <code>webpack-dev-server</code>, listening on <span>http://localhost:8080</span>.</p>
+<h4 id="server-application">Server application<a class="anchor" href="#server-application">#</a></h4>
+<p>For the server, the steps are exactly the same. Install the dependencies:</p>
+<pre class="code" data-lang=""><code>cd server/
+npm install</code></pre>
+<p>Now you can build and run it by running:</p>
+<pre class="code" data-lang=""><code>npm start</code></pre>
+<p>It will spawn a web socket server, listening on <span>ws://localhost:2657</span>.</p>
+<h2 id="explanation-of-overall-implementation-logic">Explanation of overall implementation logic<a class="anchor" href="#explanation-of-overall-implementation-logic">#</a></h2>
+<p>The red mesh calculates the local player&#39;s physics effects, while the green mesh calculates the physics effects on other players&#39; clients and then synchronizes them through Colyseus.</p>
+<p>The sphere represents the player character, and the cube represents the interactive objects in the scene.</p>
+<p>The first player to enter the scene is responsible for the cube&#39;s physics calculation, and the other players are responsible for receiving data and rendering. When other players collide with the cube, responsibility for the cube&#39;s physics calculation is transferred to those players. You can distinguish these changes by color, just like the difference between green and red mentioned above.</p>
+<p>Yes, that&#39;s it.</p>
+<h2 id="code-implementation-demonstration">Code implementation demonstration<a class="anchor" href="#code-implementation-demonstration">#</a></h2>
+<h4 id="character-control-and-network-synchronization">Character control and network synchronization<a class="anchor" href="#character-control-and-network-synchronization">#</a></h4>
+<p>First, we create a box and ground, and add physics to them. The ground represents the scene, and the box represents the interactive objects in the scene (such as a football used by many players).</p>
+<pre class="code" data-lang="javascript"><code>scene.enablePhysics(new BABYLON.Vector3(0, -10, 0), new BABYLON.HavokPlugin(true, havokInstance));
+var ground = BABYLON.MeshBuilder.CreateGround(&quot;ground1&quot;, { width: 160, height: 160, subdivisions: 2 }, scene);
+ground.position.y = -5;
+const groundAggregate = new BABYLON.PhysicsAggregate(ground, BABYLON.PhysicsShapeType.BOX, { mass: 0, friction: 0.5, restitution: 0.7 }, scene);
+
+var box = BABYLON.MeshBuilder.CreateBox(&quot;box&quot;, { size: 2 }, scene);
+box.position.y = 1;
+const boxAggregate = new BABYLON.PhysicsAggregate(box, BABYLON.PhysicsShapeType.BOX, { mass: 1, restitution: 0.9 }, scene);
+box.material = new BABYLON.StandardMaterial(&quot;s-mat&quot;, scene);
+box.material.diffuseColor = new BABYLON.Color3(0, 0, 1);
+box.material.emissiveTexture = new BABYLON.Texture(&quot;./src/grass.png&quot;, scene);</code></pre>
+<p>Players and other players, we will create character grid after they join the room</p>
+<pre class="code" data-lang="javascript"><code>client.joinOrCreate &lt;
+  StateHandler &gt;
+  &quot;game&quot;.then((room) =&gt; {
+    const playerViews: { [id: string]: BABYLON.Mesh } = {};
+
+    room.state.players.onAdd = function (player, key) {
+      // Our built-in 'sphere' shape. Params: name, subdivs, size, scene
+      playerViews[key] = BABYLON.MeshBuilder.CreateSphere(&quot;sphere1&quot;, { segments: 16, diameter: 2 }, scene);
+    };
+  });</code></pre>
+<p>Controlling player characters physically with keyboard input</p>
+<pre class="code" data-lang="javascript"><code>// Keyboard listeners
+const keyboard = { x: 0, y: 0 };
+window.addEventListener(&quot;keydown&quot;, function (e) {
+  if (e.which === Keycode.LEFT) {
+    keyboard.x = -10;
+  } else if (e.which === Keycode.RIGHT) {
+    keyboard.x = 10;
+  } else if (e.which === Keycode.UP) {
+    keyboard.y = 10;
+  } else if (e.which === Keycode.DOWN) {
+    keyboard.y = -10;
+  }
+  playerViews[sessionId].physics.body.setLinearVelocity(new BABYLON.Vector3(keyboard.x, 0, keyboard.y));
+});
+
+window.addEventListener(&quot;keyup&quot;, function (e) {
+  if (e.which === Keycode.LEFT) {
+    keyboard.x = 0;
+  } else if (e.which === Keycode.RIGHT) {
+    keyboard.x = 0;
+  } else if (e.which === Keycode.UP) {
+    keyboard.y = 0;
+  } else if (e.which === Keycode.DOWN) {
+    keyboard.y = 0;
+  }
+
+  playerViews[sessionId].physics.body.setLinearVelocity(new BABYLON.Vector3(0, 0, 0));
+});</code></pre>
+<p>In the render loop, the player&#39;s rotation and position data for each frame are sent to the server.</p>
+<pre class="code" data-lang="javascript"><code>engine.runRenderLoop(function () {
+  if (room &amp;&amp; playerViews[sessionId]) {
+    room.send(&quot;playData&quot;, {
+      position: {
+        x: playerViews[sessionId].position.x,
+        y: playerViews[sessionId].position.y,
+        z: playerViews[sessionId].position.z,
+      },
+      quaternion: {
+        x: playerViews[sessionId].rotationQuaternion.x,
+        y: playerViews[sessionId].rotationQuaternion.y,
+        z: playerViews[sessionId].rotationQuaternion.z,
+        w: playerViews[sessionId].rotationQuaternion.w,
+      },
+    });
+  }
+});</code></pre>
+<p>The server broadcasts the position and rotation data submitted by players.</p>
+<pre class="code" data-lang="javascript"><code>  onCreate (options) {
+   //...
+    this.onMessage(&quot;playData&quot;, (client, message) =&gt; {
+        this.state.players.get(client.sessionId).playerData = message;
+    });
+   //...
+  }
+  onUpdate () {
+    //...
+    this.state.players.forEach((player, sessionId) =&gt; {
+        player.position.x = player.playerData.position.x
+        player.position.y = player.playerData.position.y
+        player.position.z = player.playerData.position.z
+
+        player.quaternion.x = player.playerData.quaternion.x
+        player.quaternion.y = player.playerData.quaternion.y
+        player.quaternion.z = player.playerData.quaternion.z
+        player.quaternion.w = player.playerData.quaternion.w
+    });
+      //...
+  }</code></pre>
+<p>Update the position and rotation of other players using the broadcast rotation data.</p>
+<p>Note: to prevent jitter caused by linear speed, the position is used directly to lock the target when it is close enough to the broadcast position.</p>
+<pre class="code" data-lang="javascript"><code>player.position.onChange = () =&gt; {
+  if (key != room.sessionId) {
+    if (Math.abs(playerViews[key].position.x) &lt; 0.2 &amp;&amp; Math.abs(playerViews[key].position.y) &lt; 0.5 &amp;&amp; Math.abs(playerViews[key].position.x) &lt; 0.2) {
+      playerViews[key].position = new BABYLON.Vector3(player.position.x, player.position.y, player.position.z);
+    } else {
+      playerViews[key].physics.body.setLinearVelocity(new BABYLON.Vector3((player.position.x - playerViews[key].position.x) * 10, (player.position.y - playerViews[key].position.y) * 10, (player.position.z - playerViews[key].position.z) * 10));
+
+      playerViews[key].rotationQuaternion = BABYLON.Quaternion.Slerp(playerViews[key].rotationQuaternion, new BABYLON.Quaternion(player.quaternion.x, player.quaternion.y, player.quaternion.z, player.quaternion.w), 0.4);
+    }
+  }
+};</code></pre>
+<p>Now, our player-character controls and network synchronization are complete. Next, we will continue implementing scene-object interactions.</p>
+<h4 id="physical-interaction-of-scene-objects-multiplayer-football">Physical interaction of scene objects (multiplayer football)<a class="anchor" href="#physical-interaction-of-scene-objects-multiplayer-football">#</a></h4>
+<p>In <code>GameRoom.ts</code>, create a variable called &quot;boxData&quot; to store the box&#39;s position and rotation data, where &quot;targetId&quot; represents the &quot;sessionId&quot; of the player responsible for the box&#39;s physics calculation and ownership. At the same time, you need to receive the box data sent by the player client and broadcast it to the other players.</p>
+<pre class="code" data-lang="javascript"><code>export class GameRoom extends Room {
+  maxClients = 8;
+  boxData = {
+    targetId: null,
+    position: null,
+    quaternion: null,
+  };
+  //...
+  onCreate(options) {
+    //...
+    this.onMessage(&quot;boxUpdate&quot;, (client, message) =&gt; {
+      this.boxData = message;
+    });
+  }
+  onUpdate() {
+    this.broadcast(&quot;boxUpdate&quot;, this.boxData);
+    //...
+  }
+}</code></pre>
+<p>We declare a variable called &quot;isUpdateBox&quot; to record whether the local player character is responsible for the box&#39;s physical collision. If the targetid value broadcast by the server is null or equal to the local player&#39;s sessionid, the local player will immediately take over the physical collision. Otherwise, the box&#39;s position and rotation will use the data broadcast by the server.</p>
+<pre class="code" data-lang="javascript"><code>let isUpdateBox=false;
+
+ room.onMessage(&quot;boxUpdate&quot;, (message) =&gt; {
+    if(message.targetId==null||message.targetId==sessionId){
+        isUpdateBox=true
+        box.material.diffuseColor. = new BABYLON.Color3(1, 0, 0);
+    }else{
+        isUpdateBox=false
+        box.material.diffuseColor = new BABYLON.Color3(0, 1, 0);
+        box.position= BABYLON.Vector3.Lerp(
+          box.position,
+          new BABYLON.Vector3(
+            message.position.x,
+            message.position.y,
+            message.position.z
+          ),
+          0.5)
+        box.rotationQuaternion=BABYLON.Quaternion.Slerp(
+          box.rotationQuaternion,
+          new BABYLON.Quaternion(
+            message.quaternion.x,
+            message.quaternion.y,
+            message.quaternion.z,
+            message.quaternion.w
+          ),
+          0.4)
+    }
+});
+
+ engine.runRenderLoop(function() {
+    if(room&amp;&amp;playerViews[sessionId]){
+        // ...
+        if(isUpdateBox){
+            room.send('boxUpdate', {
+                targetId:sessionId,
+                position:{
+                  x: box.position.x,
+                  y: box.position.y,
+                  z:box.position.z
+                },
+                quaternion:{
+                  x:box.rotationQuaternion.x,
+                  y:box.rotationQuaternion.y,
+                  z:box.rotationQuaternion.z,
+                  w:box.rotationQuaternion.w
+                }
+            });
+        }
+    }
+});</code></pre>
+<p>If other players collide with the box, the targetid will be replaced by the sessionid of those players. Correspondingly, the physical-collision authority will also be transferred to them.</p>
+<pre class="code" data-lang="javascript"><code>if (key === room.sessionId) {
+  //...
+  boxAggregate.body.setCollisionCallbackEnabled(true);
+  boxAggregate.body.getCollisionObservable().add((event) =&gt; {
+    room.send(&quot;boxUpdate&quot;, {
+      targetId: sessionId,
+      position: { x: box.position.x, y: box.position.y, z: box.position.z },
+      quaternion: { x: box.rotationQuaternion.x, y: box.rotationQuaternion.y, z: box.rotationQuaternion.z, w: box.rotationQuaternion.w },
+    });
+  });
+} else {
+  //...
+}</code></pre>
+<p>Now, we have completed all the functions!!!</p>
+<h2 id="please-enjoy-the-final-effect">Please enjoy the final effect<a class="anchor" href="#please-enjoy-the-final-effect">#</a></h2>
+<p><p class="muted">Upstream illustration: Wireframe (media not bundled).</p></p>
+<h2 id="homework">Homework<a class="anchor" href="#homework">#</a></h2>
+<p>There is a small bug in this demo: when the player responsible for the box&#39;s physics leaves the game, the box remains suspended in the air because it loses its computing host. In that case, you need to transfer control of the box to another player. Please try to implement this in the sample code.</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#full-source-code">Full source code </a><a href="#before-you-start">Before you start </a><a href="#quick-demo">Quick demo </a><a href="#explanation-of-overall-implementation-logic">Explanation of overall implementation logic </a><a href="#code-implementation-demonstration">Code implementation demonstration </a><a href="#please-enjoy-the-final-effect">Please enjoy the final effect </a><a href="#homework">Homework </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

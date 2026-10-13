@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Getting Set Up — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Getting Set Up</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="introduction">Introduction<a class="anchor" href="#introduction">#</a></h2>
+<p>The game will be developed using TypeScript and requires some setup using npm. The setup of the project will probably be the hardest part! For a simpler introduction to the features of Babylon.js and a basic HTML and JavaScript template, read the <a href="babylon-guide-features-introductiontofeatures.html">Getting Started</a> section first. </p>
+<p>The setup process for this game example is based on the <a href="babylon-guide-setup-frameworkpackages-npmsupport.html">NPM-support</a> documentation for getting started with Babylon.js and the <span>babylonjs webpack</span> sample project, but with a few additions and modifications. </p>
+<h2 id="first-steps">First Steps<a class="anchor" href="#first-steps">#</a></h2>
+<h3 id="creating-a-project">Creating A Project<a class="anchor" href="#creating-a-project">#</a></h3>
+<p>First you&#39;ll need to set up where you want the project to be located.</p>
+<ol>
+<li>Using the text editor of your choice, open up your project folder. I will be using Visual Studio Code for this series.</li>
+<li>Create a folder where you&#39;ll be storing your project files.</li>
+<li>Set up the file folder structure to be something like this:<ul>
+<li>dist</li>
+<li>public</li>
+<li>src</li>
+</ul>
+</li>
+<li>Main files<ul>
+<li>Go into your src folder and create an app.ts file</li>
+<li>Go into your public folder and create an <em>index.html</em> file with the following contents:</li>
+</ul>
+</li>
+</ol>
+<pre class="code" data-lang="html"><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;UTF-8&quot;&gt;
+        &lt;title&gt;Title of Your Project&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+    &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p>Notice that we currently don&#39;t have anything within the body of our html file. We&#39;ll be generating a canvas within our app.ts file later on.</p>
+<h3 id="installing-babylon-js">Installing Babylon.js<a class="anchor" href="#installing-babylon-js">#</a></h3>
+<ol>
+<li>Generate the package.json</li>
+</ol>
+<pre class="code" data-lang="shell"><code>npm init</code></pre>
+<p>You can fill these out now or just keep pressing <em>Enter</em> and fill these out in your package.json later.</p>
+<ol start="2">
+<li><p>Open up the terminal (in VSCode you can do this by going to the top bar &gt; Terminal &gt; New Terminal).</p>
+</li>
+<li><p>Install Babylon.js</p>
+</li>
+</ol>
+<pre class="code" data-lang="shell"><code>npm install --save-dev @babylonjs/core
+npm install --save-dev @babylonjs/inspector</code></pre>
+<p>This will install all of the Babylon.js dependencies that you&#39;ll need.</p>
+<ol start="4">
+<li>TypeScript Support</li>
+</ol>
+<pre class="code" data-lang="shell"><code>tsc --init</code></pre>
+<p>This will create a default tsconfig.json. You can replace the contents with:</p>
+<pre class="code" data-lang="json"><code>{
+  &quot;compilerOptions&quot;: {
+    &quot;target&quot;: &quot;es6&quot;,
+    &quot;module&quot;: &quot;ESNext&quot;,
+    &quot;moduleResolution&quot;: &quot;node&quot;,
+    &quot;noResolve&quot;: false,
+    &quot;noImplicitAny&quot;: false,
+    &quot;sourceMap&quot;: true,
+    &quot;preserveConstEnums&quot;:true,
+    &quot;lib&quot;: [
+        &quot;dom&quot;,
+        &quot;es6&quot;
+    ],
+    &quot;rootDir&quot;: &quot;src&quot;
+  }
+}</code></pre>
+<h3 id="setting-up-webpack">Setting Up Webpack<a class="anchor" href="#setting-up-webpack">#</a></h3>
+<p><strong>Installing Dependencies</strong></p>
+<p>Now that we have our package.json generated, we need to install the dev dependencies for using webpack.</p>
+<pre class="code" data-lang="shell"><code>npm install --save-dev typescript webpack ts-loader webpack-cli</code></pre>
+<p><strong>NOTE</strong> If this line doesn&#39;t work the first time, try one more time.</p>
+<p><strong>Configure Webpack</strong></p>
+<p>Now we will need to configure webpack to know what to do. Create a webpack.config.js file within your root directory. This is an example of what my configuration looks like:</p>
+<pre class="code" data-lang="javascript"><code>const path = require(&quot;path&quot;);
+const fs = require(&quot;fs&quot;);
+const appDirectory = fs.realpathSync(process.cwd());
+
+module.exports = {
+    entry: path.resolve(appDirectory, &quot;src/app.ts&quot;), //path to the main .ts file
+    output: {
+        filename: &quot;js/bundleName.js&quot;, //name for the javascript file that is created/compiled in memory
+    },
+    resolve: {
+        extensions: [&quot;.tsx&quot;, &quot;.ts&quot;, &quot;.js&quot;],
+    },
+    module: {
+        rules: [
+            {
+                test: /\.tsx?$/,
+                use: &quot;ts-loader&quot;,
+                exclude: /node_modules/,
+            },
+        ],
+    },
+    mode: &quot;development&quot;,
+};</code></pre>
+<p><strong>Plugins</strong></p>
+<p>Additionally, we will install some plugins that will help with updating when running locally, and cleaning our bundle.</p>
+<p><strong>NOTE</strong> Make sure that the file <em>webpack.config.js</em> is closed before installing the plugins.</p>
+<pre class="code" data-lang="shell"><code>npm install --save-dev html-webpack-plugin
+npm install --save-dev webpack-dev-server</code></pre>
+<p>After we have these installed, we&#39;ll need to add them to our webpack.config.js. Our updated webpack.config.js should look something like this now:</p>
+<pre class="code" data-lang="javascript"><code>const path = require(&quot;path&quot;);
+const fs = require(&quot;fs&quot;);
+const HtmlWebpackPlugin = require(&quot;html-webpack-plugin&quot;);
+const appDirectory = fs.realpathSync(process.cwd());
+
+module.exports = {
+    entry: path.resolve(appDirectory, &quot;src/app.ts&quot;), //path to the main .ts file
+    output: {
+        filename: &quot;js/bundleName.js&quot;, //name for the js file that is created/compiled in memory
+        clean: true,
+    },
+    resolve: {
+        extensions: [&quot;.tsx&quot;, &quot;.ts&quot;, &quot;.js&quot;],
+    },
+    devServer: {
+        host: &quot;0.0.0.0&quot;,
+        port: 8080, //port that we're using for local host (localhost:8080)
+        static: path.resolve(appDirectory, &quot;public&quot;), //tells webpack to serve from the public folder
+        hot: true,
+        devMiddleware: {
+            publicPath: &quot;/&quot;,
+        }
+    },
+    module: {
+        rules: [
+            {
+                test: /\.tsx?$/,
+                use: &quot;ts-loader&quot;,
+                exclude: /node_modules/,
+            },
+        ],
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            inject: true,
+            template: path.resolve(appDirectory, &quot;public/index.html&quot;),
+        })
+    ],
+    mode: &quot;development&quot;,
+};</code></pre>
+<p>Now when we build and run our project, if we make any updates, the browser will refresh so that we can see our changes. In addition, the HTML Webpack plugin takes the compiled JavaScript bundle file and injects it into our <em>index.html</em> file. This .js bundle will show up inside the dist folder.</p>
+<h3 id="creating-a-scene">Creating A Scene<a class="anchor" href="#creating-a-scene">#</a></h3>
+<p>We&#39;ll be setting up the app.ts file to be the main entry point for our project.</p>
+<p><strong>Set up and create the App class</strong></p>
+<p>The App class will serve as our entire game application. This is a very simple example of how to set up a scene and should be separated out into different functions and make use of class variables for your project as you progress.</p>
+<pre class="code" data-lang="typescript"><code>class App {
+    constructor() {
+        // create the canvas html element and attach it to the webpage
+        var canvas = document.createElement(&quot;canvas&quot;);
+        canvas.style.width = &quot;100%&quot;;
+        canvas.style.height = &quot;100%&quot;;
+        canvas.id = &quot;gameCanvas&quot;;
+        document.body.appendChild(canvas);
+
+        // initialize babylon scene and engine
+        var engine = new Engine(canvas, true);
+        var scene = new Scene(engine);
+
+        var camera: ArcRotateCamera = new ArcRotateCamera(&quot;Camera&quot;, Math.PI / 2, Math.PI / 2, 2, Vector3.Zero(), scene);
+        camera.attachControl(canvas, true);
+        var light1: HemisphericLight = new HemisphericLight(&quot;light1&quot;, new Vector3(1, 1, 0), scene);
+        var sphere: Mesh = MeshBuilder.CreateSphere(&quot;sphere&quot;, { diameter: 1 }, scene);
+
+        // hide/show the Inspector
+        window.addEventListener(&quot;keydown&quot;, (ev) =&gt; {
+            // Shift+Ctrl+Alt+I
+            if (ev.shiftKey &amp;&amp; ev.ctrlKey &amp;&amp; ev.altKey &amp;&amp; (ev.key === &quot;I&quot; || ev.key === &quot;i&quot;)) {
+                if (scene.debugLayer.isVisible()) {
+                    scene.debugLayer.hide();
+                } else {
+                    scene.debugLayer.show();
+                }
+            }
+        });
+
+        // run the main render loop
+        engine.runRenderLoop(() =&gt; {
+            scene.render();
+        });
+    }
+}
+new App();</code></pre>
+<p>At this point, you should be seeing a lot of errors. This is because we haven&#39;t imported the Babylon.js dependencies. Add this to the top of your file:</p>
+<pre class="code" data-lang="typescript"><code>import &quot;@babylonjs/core/Debug/debugLayer&quot;;
+import &quot;@babylonjs/inspector&quot;;
+import &quot;@babylonjs/loaders/glTF&quot;;
+import { Engine, Scene, ArcRotateCamera, Vector3, HemisphericLight, Mesh, MeshBuilder } from &quot;@babylonjs/core&quot;;</code></pre>
+<h3 id="bundling-the-project-and-running-locally">Bundling the Project and Running Locally<a class="anchor" href="#bundling-the-project-and-running-locally">#</a></h3>
+<p>Now that we have our project set up, how do we run it locally? We need to set up tasks in our package.json. In your package.json, replace your &quot;scripts&quot; with this:</p>
+<pre class="code" data-lang="json"><code>    &quot;scripts&quot;: {
+        &quot;build&quot;: &quot;webpack&quot;,
+        &quot;start&quot;: &quot;webpack-dev-server --port 8080&quot;
+    },</code></pre>
+<p>Now all we need to do is:</p>
+<pre class="code" data-lang="shell"><code>npm run build
+npm run start</code></pre>
+<p>Then when you visit localhost:8080 in your browser, you should see a sphere!</p>
+<p><strong>NOTE</strong> Additionally, you can press <code>SHIFT</code> + <code>CTRL</code> + <code>ALT</code> + <code>I</code> to show/hide the inspector.</p>
+<h3 id="optional-github-for-version-control">(Optional) GitHub for Version Control<a class="anchor" href="#optional-github-for-version-control">#</a></h3>
+<p>If you&#39;re working with a large project, you&#39;ll most likely want to keep it in a safe place in case your computer breaks, you lose your files, etc. GitHub is also very useful for keeping track of the changes that you make and can make things a lot easier if you need to bring back a previous version of your project. You can follow this to learn how to <span>add a project</span> using GitHub Desktop.</p>
+<h2 id="resources">Resources<a class="anchor" href="#resources">#</a></h2>
+<p><a href="babylon-guide-features-introductiontofeatures-chap1-first-app.html">First Steps</a><br><a href="babylon-guide-setup-frameworkpackages-frameworkvers.html">How To Get Babylon.js</a><br><a href="babylon-guide-setup-frameworkpackages-npmsupport.html">NPM Support</a><br><span>Sample Project</span></p>
+<h3 id="external">External<a class="anchor" href="#external">#</a></h3>
+<p><span>HTML Webpack Plugin</span><br><span>Clean Webpack Plugin</span><br><span>Webpack Dev Server</span></p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#introduction">Introduction </a><a href="#first-steps">First Steps </a><a href="#resources">Resources </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

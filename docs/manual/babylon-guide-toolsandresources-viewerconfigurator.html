@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Viewer Configurator — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Viewer Configurator</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="overview">Overview<a class="anchor" href="#overview">#</a></h2>
+<p>The <span>Viewer Configurator</span> is a tool that simplifies configuring the <span>Babylon Viewer</span>. Rather than relying on documentation and setting the HTML attributes of the <code>&lt;babylon-viewer&gt;</code> directly in your code editor, the Viewer Configurator gives you an interactive visual interface for configuring every aspect of the Viewer. The output is a block of <a href="babylon-guide-toolsandresources.html">HTML</a> that you can copy and paste into your web app, or <a href="babylon-guide-toolsandresources.html">JSON</a> that you can use as the <code>ViewerOptions</code>.</p>
+<h2 id="accessing-the-viewer-configurator">Accessing the Viewer Configurator<a class="anchor" href="#accessing-the-viewer-configurator">#</a></h2>
+<ol>
+<li>Open a web browser.</li>
+<li>Visit the Viewer Configurator at <span>viewerconfig.babylonjs.com</span>.</li>
+</ol>
+<h2 id="loading-assets">Loading Assets<a class="anchor" href="#loading-assets">#</a></h2>
+<p>Load a model into the Viewer Configurator using one of the following methods:</p>
+<ol>
+<li><strong>URL</strong>: Enter the URL for a supported model type in the &quot;Model&quot; text input and click the confirm button to the right of the text input.</li>
+<li><strong>File Selection</strong>: Use the open file button to the right of the &quot;Model&quot; text input and browse the file system.</li>
+<li><strong>Drag and Drop</strong>: Drag supported files directly onto the Viewer Configurator interface.</li>
+</ol>
+<span class="muted">&lt;Alert severity=&quot;info&quot;&gt;
+Note that when using a local file, the output HTML simply includes the name of the file. You will need to set the `source` attribute to a valid model URL when using the HTML snippet in your web app.
+&lt;/Alert&gt;</span><span class="muted">&lt;Alert severity=&quot;info&quot;&gt;
+Note that all required assets, including files referenced from the main asset file, must be dropped or selected so that the browser knows about them. For example, if the asset is a glTF, the .gltf file, the .bin file, and all image files must be dropped or selected for the asset to load properly.
+&lt;/Alert&gt;</span><h2 id="configuration">Configuration<a class="anchor" href="#configuration">#</a></h2>
+<p>Ideally, the Viewer Configurator is self-explanatory, but there are some complexities that are covered in more detail below.</p>
+<h3 id="revert-and-reset">Revert and Reset<a class="anchor" href="#revert-and-reset">#</a></h3>
+<p>In various places in the Viewer Configurator, you will see Revert and Reset buttons.</p>
+<p>Revert means syncing the live Viewer state with what you see in the HTML output (e.g. the current Viewer configuration). For example, if an initial camera pose has been configured but you then change the camera pose in the Viewer, reverting it will set the camera pose back to the configured pose shown in the HTML output.</p>
+<p>Reset means removing the configuration entirely and returning to the default state. For example, if an initial camera pose has been configured, resetting the camera pose will remove that configuration <em>and</em> revert the camera pose to its default.</p>
+<h3 id="snapshotting-viewer-state">Snapshotting Viewer State<a class="anchor" href="#snapshotting-viewer-state">#</a></h3>
+<p>Generally, all Viewer configuration happens in the side pane of the Configurator. Usually, this is done by manipulating UI elements such as toggles and sliders directly in the side pane. However, some state is established directly in the Viewer. For example, to set the initial camera pose, you can position the camera as you like in the Viewer and then click the &quot;Use Current Pose&quot; button. This &quot;snapshots&quot; the current camera pose and adds it to the HTML snippet.</p>
+<p>Similar behavior exists for other Viewer features, such as animation and material variants.</p>
+<h3 id="hot-spots">Hot Spots<a class="anchor" href="#hot-spots">#</a></h3>
+<p>Creating and configuring <span>hot spots</span> is a multi-step process.</p>
+<ol>
+<li>Required: Click the <code>+</code> button to add a new hot spot.</li>
+<li>Optional: Update the hot spot name (make sure it is unique relative to other hot spots).</li>
+<li>Required: Click the target button to the right of the hot spot name text input. You are now in picking mode.</li>
+<li>Required: Click a point on the surface of the model. This establishes the position of the hot spot.</li>
+<li>Optional: Rotate the camera around the hot spot to a desired camera pose and then click the camera button to the right of the hot spot name text input. This establishes a custom camera pose relative to the hot spot position.</li>
+</ol>
+<p>When hot spots are added, they will immediately show up in the Viewer toolbar. Hot spots can be re-ordered by clicking and dragging the handle to the left of the hot spot name text input.</p>
+<h2 id="output-format">Output Format<a class="anchor" href="#output-format">#</a></h2>
+<p>By default, the Viewer Configurator outputs HTML that can be copied and pasted into a web page. The output format can also be changed to JSON. In this case, the JSON can be parsed and used directly as <code>ViewerOptions</code> in any of the Viewer layers:</p>
+<pre class="code" data-lang="ts"><code>const configuration: string = &quot;the copied and pasted output of the Viewer Configurator goes here&quot;;
+const options: ViewerOptions = JSON.parse(configuration);</code></pre>
+<h3 id="configurecustomviewerelement"><code>ConfigureCustomViewerElement</code><a class="anchor" href="#configurecustomviewerelement">#</a></h3>
+<p>The <code>ConfigureCustomViewerElement</code> function creates a configured <code>HTML3DElement</code> (<code>&lt;babylon-viewer&gt;</code>). For example, if you know you want the same skybox for multiple instances of the Babylon Viewer, this could be configured in the Configurator and the parsed <code>ViewerOptions</code> (as described above) could be used like this:</p>
+<pre class="code" data-lang="ts"><code>ConfigureCustomViewerElement(&quot;my-babylon-viewer&quot;, options);</code></pre>
+<pre class="code" data-lang="html"><code>&lt;!-- Each of these Viewer instances will use the same configured environment. --&gt;
+&lt;my-babylon-viewer source=&quot;model1.glb&quot;&gt;&lt;/my-babylon-viewer&gt;
+&lt;my-babylon-viewer source=&quot;model2.glb&quot;&gt;&lt;/my-babylon-viewer&gt;
+&lt;my-babylon-viewer source=&quot;model3.glb&quot;&gt;&lt;/my-babylon-viewer&gt;</code></pre>
+<h3 id="html3delement-constructor"><code>HTML3DElement</code> Constructor<a class="anchor" href="#html3delement-constructor">#</a></h3>
+<p>If the Viewer element is being constructed in code, the same options can be passed to the constructor:</p>
+<pre class="code" data-lang="ts"><code>const viewerElement = new HTML3DElement(options);
+document.body.appendChild(viewerElement);</code></pre>
+<h3 id="createviewerforcanvas"><code>CreateViewerForCanvas</code><a class="anchor" href="#createviewerforcanvas">#</a></h3>
+<p>If a <code>Viewer</code> is being created from a <code>Canvas</code> without the HTML layer, the options can be passed to the factory function:</p>
+<pre class="code" data-lang="ts"><code>const viewer = await CreateViewerForCanvas(canvas, options);</code></pre>
+<h3 id="viewer-constructor"><code>Viewer</code> Constructor<a class="anchor" href="#viewer-constructor">#</a></h3>
+<p>If a <code>Viewer</code> is being instantiated directly, the options can be passed to the constructor:</p>
+<pre class="code" data-lang="ts"><code>const viewer = new Viewer(engine, options);</code></pre>
+<h2 id="saving-amp-loading">Saving &amp; Loading<a class="anchor" href="#saving-amp-loading">#</a></h2>
+<p>After the Viewer has been configured, you can also save the current state of the Viewer Configurator and restore it later. This works the same way as in other Babylon tools: clicking the save button will save a &quot;snippet&quot; and encode the snippet ID into the URL. If you reload this URL later, it will restore the currently configured state.</p>
+<span class="muted">&lt;Alert severity=&quot;info&quot;&gt;
+Note that if you have loaded a local model, that model is not saved with the snippet. You will have to reload the same local model after reloading the URL.
+&lt;/Alert&gt;</span><h2 id="testing">Testing<a class="anchor" href="#testing">#</a></h2>
+<p>What you see in the Viewer Configurator should be exactly what you see when you use the HTML snippet in your own web app. An easy way to test this further is to copy the HTML output from the Viewer Configurator and paste it into this CodePen:</p>
+<span class="muted">&lt;CodePen pen=&quot;ByaZQEp&quot; tab=&quot;html,result&quot; title=&quot;Viewer Configurator Test&quot; /&gt;
+</span><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#overview">Overview </a><a href="#accessing-the-viewer-configurator">Accessing the Viewer Configurator </a><a href="#loading-assets">Loading Assets </a><a href="#configuration">Configuration </a><a href="#output-format">Output Format </a><a href="#saving-amp-loading">Saving Loading </a><a href="#testing">Testing </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

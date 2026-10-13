@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Drawing Curves — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Drawing Curves</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="how-to-draw-curves">How To Draw Curves<a class="anchor" href="#how-to-draw-curves">#</a></h2>
+<p>If you want to draw a circular path, it is easy enough to generate the points in the XY plane using:</p>
+<pre class="code" data-lang="javascript"><code>const path = [];
+for(let theta = 0; theta &lt; 2 * Math.PI; theta +=deltaTheta ) {
+    path.push(new BABYLON.Vector3(radius * Math.cos(theta), radius * Math.sin(theta), 0));</code></pre>
+<p>If you want to, you can work out some quite complex paths by hand.</p>
+<p>What follows is how to draw some mathematical curves by using the Babylon.js <em>Curve3</em> object, from which you can extract the array of points you need to draw lines, ribbons, tubes and extruded shapes.</p>
+<p>The general form is</p>
+<pre class="code" data-lang="javascript"><code>const curve = BABYLON.Curve3.Create.CURVETYPE(parameters);</code></pre>
+<h2 id="arc-through-three-points">Arc Through Three Points<a class="anchor" href="#arc-through-three-points">#</a></h2>
+<p>Available from version 5.0.0.
+Given three points in space that are not in a straight line, it is always possible to join them with a circular arc or to draw a circle through all three points.</p>
+<pre class="code" data-lang="javascript"><code>const arc = BABYLON.Curve3.ArcThru3Points(first, second, third, steps, closed, fullCircle);</code></pre>
+<ul>
+<li><strong>first</strong> <em>Vector3</em> the first point the arc must pass through.</li>
+<li><strong>second</strong> <em>Vector3</em> the second point the arc must pass through.</li>
+<li><strong>third</strong> <em>Vector3</em> the third point the arc must pass through.</li>
+<li><strong>steps</strong> <em>number</em> the larger the number of steps the more detailed the arc.</li>
+<li><strong>closed</strong> <em>boolean</em> optional with default false, when true forms the chord from the first and third point</li>
+<li><strong>fullCircle</strong> <em>boolean</em> optional with default false, when true forms the complete circle through the three points</li>
+</ul>
+<p>This static method returns an instance of <em>Curve3</em>.<br>Just use the Curve3 <em>getPoints()</em> method to fill your array : <em>getPoints()</em> returns an array of successive <em>Vector3</em>.<br>The <em>length()</em> method returns the curve length.</p>
+<pre class="code" data-lang="javascript"><code>const path = arc.getPoints();
+const l = arc.length();</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><span class="muted">Online playground (not embedded offline)</span><span class="muted">Online playground (not embedded offline)</span><h2 id="quadratic-bezier-curve">Quadratic Bezier Curve<a class="anchor" href="#quadratic-bezier-curve">#</a></h2>
+<p><span>http://en.wikipedia.org/wiki/B%C3%A9zier_curve#Quadratic_curves</span></p>
+<p><p class="muted">Upstream illustration: Wikipedia Quadratic Bezier Curve (media not bundled).</p></p>
+<pre class="code" data-lang="javascript"><code>const bezier2 = BABYLON.Curve3.CreateQuadraticBezier(origin, control, destination, nb_of_points);</code></pre>
+<ul>
+<li><strong>origin</strong> : <em>Vector3</em> the origin point,</li>
+<li><strong>control</strong> : <em>Vector3</em> the control point,</li>
+<li><strong>destination</strong> : <em>Vector3</em> the destination point,</li>
+<li><strong>nb_of_points</strong> : <em>number</em> number of points wanted in the path array.</li>
+</ul>
+<p>This static method returns an instance of <em>Curve3</em>.<br>Just use the Curve3 <em>getPoints()</em> method to fill your array : <em>getPoints()</em> returns an array of successive <em>Vector3</em>.<br>The <em>length()</em> method returns the curve length.</p>
+<pre class="code" data-lang="javascript"><code>const path = bezier2.getPoints();
+const l = bezier2.length();</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="cubic-bezier-curve">Cubic Bezier curve<a class="anchor" href="#cubic-bezier-curve">#</a></h2>
+<p><span>http://en.wikipedia.org/wiki/B%C3%A9zier_curve#</span> Higher-order_curves</p>
+<p><p class="muted">Upstream illustration: Wikipedia Cubic Bezier Curve (media not bundled).</p></p>
+<pre class="code" data-lang="javascript"><code>const bezier3 = BABYLON.Curve3.CreateCubicBezier(origin, control1, control2, destination, nb_of_points);</code></pre>
+<ul>
+<li><strong>origin</strong> : <em>Vector3</em> the origin point,</li>
+<li><strong>control1</strong> : <em>Vector3</em> the first control point,</li>
+<li><strong>control2</strong> : <em>Vector3</em> the second control point,</li>
+<li><strong>destination</strong> : <em>Vector3</em> the destination point,</li>
+<li><strong>nb_of_points</strong> : <em>number</em> the desired number of points in the final curve array.</li>
+</ul>
+<p>This static method returns an instance of <em>Curve3</em>.<br>Just use the Curve3 <em>getPoints()</em> method to fill your array : <em>getPoints()</em> returns an array of successive <em>Vector3</em>.<br>The <em>length()</em> method returns the curve length.</p>
+<pre class="code" data-lang="javascript"><code>const path = bezier3.getPoints();
+const l = bezier3.length();</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="hermite-spline">Hermite Spline<a class="anchor" href="#hermite-spline">#</a></h2>
+<p><span>http://en.wikipedia.org/wiki/Cubic_Hermite_spline</span></p>
+<p><p class="muted">Upstream illustration: Hermite Spline (media not bundled).</p></p>
+<pre class="code" data-lang="javascript"><code>const hermite = BABYLON.Curve3.CreateHermiteSpline(p1, t1, p2, t2, nbPoints);</code></pre>
+<ul>
+<li><strong>p1</strong> : <em>Vector3</em> the origin point,</li>
+<li><strong>t1</strong> : <em>Vector3</em> the origin tangent vector,</li>
+<li><strong>p2</strong> : <em>Vector3</em> the destination point,</li>
+<li><strong>t2</strong> : <em>Vector3</em> the destination tangent vector,</li>
+<li><strong>nbPoints</strong> : <em>number</em> the desired number of points in the final curve array.</li>
+</ul>
+<p>This static method returns an instance of <em>Curve3</em>.<br>Just use the Curve3 <em>getPoints()</em> method to fill your array : <em>getPoints()</em> returns an array of successive <em>Vector3</em>.<br>The <em>length()</em> method returns the curve length.</p>
+<pre class="code" data-lang="javascript"><code>const path = hermite.getPoints();
+const l = hermite.length();</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="catmull-rom-spline">Catmull-Rom Spline<a class="anchor" href="#catmull-rom-spline">#</a></h2>
+<p><span>https://en.wikipedia.org/wiki/Cubic_Hermite_spline#Catmull.E2.80.93Rom_spline</span></p>
+<p><p class="muted">Upstream illustration: Wikibooks Cubic Hermite spline (media not bundled).</p></p>
+<pre class="code" data-lang="javascript"><code>const nbPoints = 20;                     // the number of points between each Vector3 control points
+const points = [vec1, vec2, ..., vecN];  // an array of Vector3 the curve must pass through : the control points
+const closed = true;                     // closes the curve when true
+const catmullRom = BABYLON.Curve3.CreateCatmullRomSpline(points, nbPoints, closed);</code></pre>
+<ul>
+<li><strong>points</strong> : <em>Vector3</em> an array of Vector3 (the control points) the curve will pass through,</li>
+<li><strong>nbPoints</strong> : <em>number</em> the wanted curve number of points between each control point,</li>
+<li><strong>closed</strong> : <em>boolean</em> optional with default <em>false</em>; available from BJS V3.3; when true forms a closed curve.</li>
+</ul>
+<p>This static method returns an instance of <em>Curve3</em>.<br>Just use the Curve3 <em>getPoints()</em> method to fill your array : <em>getPoints()</em> returns an array of successive <em>Vector3</em>.<br>The <em>length()</em> method returns the curve length.</p>
+<pre class="code" data-lang="javascript"><code>const path = catmullRom.getPoints();
+const l = catmullRom.length();</code></pre>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><h2 id="hermite-quaternion-spline">Hermite Quaternion Spline<a class="anchor" href="#hermite-quaternion-spline">#</a></h2>
+<pre class="code" data-lang="javascript"><code>BABYLON.Quaternion.Hermite(point0, tangent0, point1, tangent1, amount);</code></pre>
+<p>This allows the interpolation of quaternions for use in animation. As a quaternion is a 4D object, how can you visualize the Hermite quaternion spline used by the interpolation? By representing the hyperspline in 3D space.</p>
+<p>This is achieved by mapping a rotation quaternion onto a 3D vector.</p>
+<h3 id="the-math">The Math<a class="anchor" href="#the-math">#</a></h3>
+<p>What is needed is a function $f$ from rotation quaternions to 3D vectors of the form</p>
+<p>$f(x, y, z, w) = (x_{v}, y_{v}, z_{v})$</p>
+<p>For a rotation quaternion there are two things to note:</p>
+<ol>
+<li>&nbsp; $x^2 + y^2 + z^2 + w^2 = 1$</li>
+<li>&nbsp; $(x, y, z, w)$ and $(-x, -y, -z, -w)$ are equivalent.</li>
+</ol>
+<p>The equivalence of $(x, y, z, w)$ and $(-x, -y, -z, -w)$ can be seen in the following</p>
+<span class="muted">Online playground (not embedded offline)</span><p>It follows that the set of rotation quaternions $(x, y, z, w)$ where $x^2 + y^2 + z^2 + w^2 = 1$ and $-1 \leq x, y, z, \leq 1$ and $0 \leq w \leq 1$ covers all possible rotations.</p>
+<p>$x^2 + y^2 + z^2 + w^2 = 1$ and so<br>$x^2 + y^2 + z^2 = 1 - w^2$ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Eq 1</p>
+<p>Since $0 \leq w \leq 1$ then $0 &lt; 1 \leq (1 + w) \leq 2$</p>
+<p>Dividing Eq 1 by $(1 + w)^2$, which can never be $0$</p>
+<p>$x^2 + y^2 + z^2 \over (1 + w)^2$ = $(1 - w^2) \over (1 + w)^2$ = $(1 - w) \over (1 + w)$</p>
+<p>This gives the mapping</p>
+<p>$f(x, y, z, w)$ = ($x \over (1 + w)$, $y\over (1 + w)$, $z\over (1 + w)$ )</p>
+<p>Each rotation quaternion where $0 \leq w \leq 1$ is mapped onto one of a series of concentric spherical shells of radius, $r$,</p>
+<p>$0 \leq r^2$ = $(1 - w) \over (1 + w)$ $\leq 1$.</p>
+<p><p class="muted">Upstream illustration: Hermite Quaternion Spline (media not bundled).</p></p>
+<p>The center of the shells represents the rotation quaternion $(0, 0, 0, 1)$; the outer white shell is a unit sphere where $w = 0$.</p>
+<p>The process can be reversed: the inverse function $f^{-1}$ returns the rotation quaternion from a point $(x, y, z)$ on the shells.</p>
+<p>Since the radius, r, of the sphere at $(x, y, z)$ is such that $r^2 = x^2 + y^2 + z^2$ and</p>
+<p>$r^2$ = $(1 - w) \over (1 + w)$ then</p>
+<p>$w$ = $(1 - r^2) \over (1 + r^2)$ and</p>
+<p>$1 + w$ = $2 \over (1 + r^2)$ and</p>
+<p>$f^{-1}(x, y, z)$ = ($2x \over (1 + r^2)$, $2y \over (1 + r^2)$, $2z \over (1 + r^2)$, $(1 - r^2) \over (1 + r^2)$)</p>
+<h3 id="drawing">Drawing<a class="anchor" href="#drawing">#</a></h3>
+<p>The following function will return a Curve3 within a unit sphere representing a Hermite quaternion spline in 3D space using the math above.</p>
+<pre class="code" data-lang="javascript"><code>const hermiteQuarternionSpline = (p1, t1, p2, t2, nbPoints) =&gt; {
+  const hermite = new Array();
+  const step = 1.0 / nbPoints;
+  for (let i = 0; i &lt;= nbPoints; i++) {
+    const q = BABYLON.Quaternion.Hermite(p1, t1, p2, t2, i * step);
+    q.normalize();
+    if (q.w &lt; 0) {
+      q.scaleInPlace(-1);
+    }
+    const v = new BABYLON.Vector3(q.x / (1 + q.w), q.y / (1 + q.w), q.z / (1 + q.w));
+    hermite.push(v);
+  }
+  return new BABYLON.Curve3(hermite);
+};</code></pre>
+<ul>
+<li><strong>p1</strong> : <em>Quaternion</em> the origin point,</li>
+<li><strong>t1</strong> : <em>Quaternion</em> the origin tangent vector,</li>
+<li><strong>p2</strong> : <em>Quaternion</em> the destination point,</li>
+<li><strong>t2</strong> : <em>Quaternion</em> the destination tangent vector,</li>
+<li><strong>nbPoints</strong> : <em>number</em> the wanted final curve number of points in the array.</li>
+</ul>
+<p><strong>Warning</strong><br>Using BABYLON.Quaternion.RotationAxis(axis, angle) to create any of p1, t1, p2, or t2 does not produce the expected results. Other ways of producing rotation quaternions, apart from creating them directly, should also be checked to ensure the resulting quaternion is in the range required for the mapping to work.</p>
+<p>To produce a vector on the outer shell, you need a rotation quaternion with $w = 0$.</p>
+<p>Take the rotation quaternion from</p>
+<pre class="code" data-lang="javascript"><code>new BABYLON.Quaternion(1, 1, 1, 0).normalize(); //giving (0.5774, 0.5774, 0.5774, 0) to 4 dp</code></pre>
+<p>However using</p>
+<pre class="code" data-lang="javascript"><code>BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(1, 1, 1), 0); // gives (0, 0, 0, 1)</code></pre>
+<p>and while this may be an equivalent quaternion, it places the vector at the center of the shells, not on the outer shell.<br><strong>End Warning</strong></p>
+<span class="muted">Online playground (not embedded offline)</span><p>As it is difficult to visualize the spline from pure quaternions it would be useful if there was an editor to draw the representation of the spline in 3D space.</p>
+<h3 id="a-very-basic-editor">A (Very) Basic Editor<a class="anchor" href="#a-very-basic-editor">#</a></h3>
+<span class="muted">Online playground (not embedded offline)</span><p>This playground allows you to drag representations of the start (green) and end (red) quaternions within the unit sphere in 3D space. The representations of the start and end quaternion tangents (purple) are attached to the respective start and end controls. The tangents can also be dragged around the invisible sphere shells centered on the start and end controls. The shells, and hence the radius, can be adjusted using the up and down arrow keys (or w and x) for the selected control. While dragging or adjusting the radius, the camera is detached. The camera is reattached whenever dragging ends, and when using keys you can reattach it by pressing the spacebar.</p>
+<p>The representation of the spline in 3D space is drawn as you adjust the controls. To apply the created Hermite quaternion spline to the box, click the animate button.</p>
+<h2 id="custom-curve3-object">Custom Curve3 Object<a class="anchor" href="#custom-curve3-object">#</a></h2>
+<p>You can also make your own Curve3 object from a simple array of successive Vector3.<br>Why would you do this and not just use the points to draw a line?<br>Because the <em>Curve3</em> object has a useful method, <em>continue()</em>, that allows you to place the start of one <em>Curve3</em> at the end of another <em>Curve3</em> without any calculations to match the start and end points of the curves.</p>
+<h3 id="example-1">Example 1<a class="anchor" href="#example-1">#</a></h3>
+<p>Create an array of Vector3 along a simple sinus curve.</p>
+<pre class="code" data-lang="javascript"><code>const mySinus = [];
+for (let i = 0; i &lt; 30; i++) {
+  mySinus.push(new BABYLON.Vector3(i, Math.sin(i / 10), 0));
+}
+const mySinusCurve = new BABYLON.Curve3(mySinus);</code></pre>
+<p>You would like to continue your <em>mySinus</em> curve with a <em>bezier3</em> curve and then join on a <em>bezier2</em>.</p>
+<pre class="code" data-lang="javascript"><code>const myFullCurve = mySinusCurve.continue(bezier3).continue(bezier2);</code></pre>
+<p>The <em>continue()</em> method returns a new <em>Curve3</em> object and leaves <em>mySinusCurve3</em>, <em>bezier3</em> and <em>bezier2</em> unchanged.</p>
+<p>If you then need to draw the curve or use it for anything else, just get the array of points with the <em>getPoints()</em> method. This method simply returns an array of successive <em>Vector3</em>.</p>
+<pre class="code" data-lang="javascript"><code>const path = myFullCurve.getPoints();
+const extruded = BABYLON.MeshBuilder.ExtrudeShape(&quot;extrudedShape&quot;, { shape: shape, path: path, scale: 1, rotation: 0 }, scene);</code></pre>
+<p>If you need then to know the curve length, just use the <em><strong>length()</strong></em> method.</p>
+<pre class="code" data-lang="javascript"><code>const l = myFullCurve.length();</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><h3 id="example-2">Example 2<a class="anchor" href="#example-2">#</a></h3>
+<p>Here is an example where a Hermite spline is used to smoothly close a concatenation of two Bezier curves. As the spline closes the curves, the first and last points of the open continued curve need to be read from the array.</p>
+<ul>
+<li>The first and last points of the concatenation are used as last and first point of the Hermite spline.</li>
+<li>The first and last segments of the concatenation are used as the last and first tangent vectors of the Hermite. Since these segments are quite small, they are scaled according to the concatenation <em>length</em>, so the longer the concatenation, the more curved the spline.</li>
+</ul>
+<pre class="code" data-lang="javascript"><code>// two concatened cubic Bezier
+const cubicA = BABYLON.Curve3.CreateCubicBezier(vA0, vA1, vA2, vA3, 50);
+const cubicB = BABYLON.Curve3.CreateCubicBezier(vB0, vB1, vB2, vB3, 50);
+const continued = cubicA.continue(cubicB);
+
+// initial Hermite values from continued first and last segments
+const t = continued.length() / 2; // tangent scale factor
+const points = continued.getPoints();
+const p1 = points[points.length - 1]; // last continued point = first hermite point
+const t1 = p1.subtract(points[points.length - 2]).scale(t); // last segment scaled = hermite tangent t1
+const p2 = points[0]; // first continued point = last hermite point
+const t2 = points[1].subtract(p2).scale(t); // first segment scaled = hermite tangent t2
+
+const hermite = BABYLON.Curve3.CreateHermiteSpline(p1, t1, p2, t2, 50);
+continued = continued.continue(hermite);
+
+// finally drawing a smooth closed curve
+const closedCurve = BABYLON.MeshBuilder.CreateLines(&quot;closed&quot;, { points: continued.getPoints() }, scene);</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><p>The orange and yellow curves are the original Bezier curves.<br>In light blue, these two curves are connected to each other, and a Hermite curve is also added to close the path.</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#how-to-draw-curves">How To Draw Curves </a><a href="#arc-through-three-points">Arc Through Three Points </a><a href="#quadratic-bezier-curve">Quadratic Bezier Curve </a><a href="#cubic-bezier-curve">Cubic Bezier curve </a><a href="#hermite-spline">Hermite Spline </a><a href="#catmull-rom-spline">Catmull-Rom Spline </a><a href="#hermite-quaternion-spline">Hermite Quaternion Spline </a><a href="#custom-curve3-object">Custom Curve3 Object </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Making a Simple Car — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Making a Simple Car</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><p>This is to show the practical use of rotate.</p>
+<h2 id="the-design">The Design<a class="anchor" href="#the-design">#</a></h2>
+<p>The car will consist of a trapezoid for the body and four cylinders for wheels. The car will be animated to follow a path and will remain parallel to it.
+The wheels will rotate and be given a texture to show that they are rotating. For simplicity, all wheels will remain parallel to the car and
+their rotation will not be matched to the forward speed of the car. The car will move forward by following a sequence of points on the path.
+The path will be a curved line with large turning radius and will be shown in the scene.</p>
+<p><p class="muted">Upstream illustration: Basic Car (media not bundled).</p></p>
+<h3 id="car-body">Car body<a class="anchor" href="#car-body">#</a></h3>
+<p>The car body will be an extrusion of the trapezium formed by the points (-4, 2), (4, 2), (5, -2), (-7, -2)
+in the direction of the positive x axis from (0, 0, 0) to (0, 0, 4).</p>
+<pre class="code" data-lang="javascript"><code>var bodyMaterial = new BABYLON.StandardMaterial(&quot;body_mat&quot;, scene);
+bodyMaterial.diffuseColor = new BABYLON.Color3(1.0, 0.25, 0.25);
+bodyMaterial.backFaceCulling = false;
+
+var side = [new BABYLON.Vector3(-4, 2, -2), new BABYLON.Vector3(4, 2, -2), new BABYLON.Vector3(5, -2, -2), new BABYLON.Vector3(-7, -2, -2)];
+
+side.push(side[0]); //close trapezium
+
+var extrudePath = [new BABYLON.Vector3(0, 0, 0), new BABYLON.Vector3(0, 0, 4)];
+
+var carBody = BABYLON.MeshBuilder.ExtrudeShape(&quot;body&quot;, { shape: side, path: extrudePath, cap: BABYLON.Mesh.CAP_ALL }, scene);
+carBody.material = bodyMaterial;</code></pre>
+<p>PG: <span class="muted">Online playground (not embedded offline)</span></p>
+<h3 id="wheel">Wheel<a class="anchor" href="#wheel">#</a></h3>
+<p>The wheel is made from a cylinder using MeshBuilder as this allows different textures and colors to be applied
+to the flat and curved surfaces of the cylinder.</p>
+<pre class="code" data-lang="javascript"><code>var wheelMaterial = new BABYLON.StandardMaterial(&quot;wheel_mat&quot;, scene);
+var wheelTexture = new BABYLON.Texture(&quot;https://i.imgur.com/ZUWbT6L.png&quot;, scene);
+wheelMaterial.diffuseTexture = wheelTexture;
+
+//Set color for wheel tread as black
+var faceColors = [];
+faceColors[1] = new BABYLON.Color3(0, 0, 0);
+
+//set texture for flat face of wheel
+var faceUV = [];
+faceUV[0] = new BABYLON.Vector4(0, 0, 1, 1);
+faceUV[2] = new BABYLON.Vector4(0, 0, 1, 1);
+
+var wheel = BABYLON.MeshBuilder.CreateCylinder(&quot;wheel&quot;, { diameter: 3, height: 1, tessellation: 24, faceColors: faceColors, faceUV: faceUV }, scene);
+wheel.material = wheelMaterial;
+
+//rotate wheel so tread in xz plane
+wheel.rotation.x = Math.PI / 2;</code></pre>
+<p>PG: <span class="muted">Online playground (not embedded offline)</span></p>
+<h3 id="attaching-the-wheels-to-the-car">Attaching the Wheels to the Car<a class="anchor" href="#attaching-the-wheels-to-the-car">#</a></h3>
+<p>As the car moves forward, so will the wheels. This can be achieved by making the car the parent of the wheels.</p>
+<p>As the wheels first need to rotate around the x axis to orient the cylinder correctly and then rotate about another axis,
+the rotate method will be used instead of rotation.</p>
+<pre class="code" data-lang="javascript"><code>var wheelFI = BABYLON.MeshBuilder.CreateCylinder(&quot;wheelFI&quot;, { diameter: 3, height: 1, tessellation: 24, faceColors: faceColors, faceUV: faceUV }, scene);
+wheelFI.material = wheelMaterial;
+
+wheelFI.rotate(BABYLON.Axis.X, Math.PI / 2, BABYLON.Space.WORLD);
+wheelFI.parent = carBody;
+
+var wheelFO = wheelFI.createInstance(&quot;FO&quot;);
+wheelFO.parent = carBody;
+wheelFO.position = new BABYLON.Vector3(-4.5, -2, 2.8);
+
+var wheelRI = wheelFI.createInstance(&quot;RI&quot;);
+wheelRI.parent = carBody;
+wheelRI.position = new BABYLON.Vector3(2.5, -2, -2.8);
+
+var wheelRO = wheelFI.createInstance(&quot;RO&quot;);
+wheelRO.parent = carBody;
+wheelRO.position = new BABYLON.Vector3(2.5, -2, 2.8);
+
+wheelFI.position = new BABYLON.Vector3(-4.5, -2, -2.8);</code></pre>
+<p>PG: <span class="muted">Online playground (not embedded offline)</span></p>
+<h3 id="rotate-wheels">Rotate Wheels<a class="anchor" href="#rotate-wheels">#</a></h3>
+<p>The animation is achieved using scene.registerAfterRender and small rotations within the render loop.</p>
+<p><em>Note:</em> when using rotate and translate, scene.register<em>After</em>Render is preferable to scene.register<em>Before</em>Render as
+the calculations will take place after the world matrix has been computed for each mesh.</p>
+<pre class="code" data-lang="javascript"><code>scene.registerAfterRender(function () {
+  wheelFI.rotate(BABYLON.Axis.Z, Math.PI / 64, BABYLON.Space.WORLD);
+  wheelFO.rotate(BABYLON.Axis.Z, Math.PI / 64, BABYLON.Space.WORLD);
+  wheelRI.rotate(BABYLON.Axis.Z, Math.PI / 64, BABYLON.Space.WORLD);
+  wheelRO.rotate(BABYLON.Axis.Z, Math.PI / 64, BABYLON.Space.WORLD);
+});</code></pre>
+<p>PG: <span class="muted">Online playground (not embedded offline)</span></p>
+<h3 id="path">Path<a class="anchor" href="#path">#</a></h3>
+<p>To draw a path, a sequence of points is needed. Starting with a circle of radius r in the xz plane with centre (0, 0, 0), calculate points around the
+circle and vary r slightly and smoothly on the way round to give a less regular path. This is achieved by adding to the radius, at each angle, a fraction of r
+times the sine of a multiple of the angle turned. In addition a ground is added.</p>
+<p>Since on creation the side of the car is perpendicular to the z axis, the base circle will start with theta = 0 and x = r _ sin(theta) and z = r _ cos(theta).
+This means that the car can be positioned tangential to the circle by setting z = r.</p>
+<p>Since the circle has been given a perturbation some small rotation of the car will be necessary for it to be truly tangential.</p>
+<pre class="code" data-lang="javascript"><code>var points = [];
+var n = 50; // number of points - more points the slower the car
+var r = 50; //radius
+for (let i = 0; i &lt; n + 1; i++) {
+  points.push(new BABYLON.Vector3((r + (r / 5) * Math.sin((8 * i * Math.PI) / n)) * Math.cos((2 * i * Math.PI) / n), 0, (r + (r / 10) * Math.sin((6 * i * Math.PI) / n)) * Math.sin((2 * i * Math.PI) / n)));
+}
+
+var track = BABYLON.MeshBuilder.CreateLines(&quot;track&quot;, { points: points }, scene);
+track.color = new BABYLON.Color3(0, 0, 0);
+
+var ground = BABYLON.MeshBuilder.CreateGround(&quot;ground&quot;, { width: 3 * r, height: 3 * r }, scene);</code></pre>
+<p>PG: <span class="muted">Online playground (not embedded offline)</span></p>
+<h3 id="following-the-path">Following the Path<a class="anchor" href="#following-the-path">#</a></h3>
+<p>The car will be moved forward using the sequence of points calculated for the path. As it moves round the path, the car side should remain tangential to the path and the wheels should rotate about an axis that is normal to the path.
+Since the normals to the path need to be calculated for the wheel axes, it will be the normals that are used to rotate the car.
+The angle to be rotated at any point can be found from the angle between the previous normal and the current one. This angle can be found
+by using the dot product of the two normal vectors. However the dot product only gives the amount of rotation not the direction.</p>
+<p>Determining the normals at any point is achieved by forming the Path3D object from the array of points defining the path and extracting
+the normals, which are unit vectors.</p>
+<pre class="code" data-lang="javascript"><code>var path3d = new BABYLON.Path3D(points);
+var normals = path3d.getNormals();</code></pre>
+<p>As can be seen from the diagram below, the direction in which the normal changes varies from clockwise to anti-clockwise depending on whether the
+path is a convex or concave curve.</p>
+<p><p class="muted">Upstream illustration: Rotation of Normal (media not bundled).</p></p>
+<p>Both normals lie in the xz plane, so the cross product of the two normals will lie on the y axis, and the direction of turn can therefore be
+determined from the sign of the y component of the cross product.</p>
+<pre class="code" data-lang="javascript"><code>theta = Math.acos(BABYLON.Vector3.Dot(normals[i], normals[i + 1])); //amount of turn
+var dir = BABYLON.Vector3.Cross(normals[i], normals[i + 1]).y; //enables direction of turn to be found depending if +ve or -ve
+var dir = dir / Math.abs(dir); //dir takes value 1 or -1
+carBody.rotate(BABYLON.Axis.Y, dir * theta, BABYLON.Space.WORLD);</code></pre>
+<h3 id="placing-the-car">Placing the Car<a class="anchor" href="#placing-the-car">#</a></h3>
+<p>To stand on the ground, the car will need to be lifted. To set it on the path, it will be moved to the point (0, r, 4). Its current normal is
+along the z axis so determine the turn necessary from</p>
+<pre class="code" data-lang="javascript"><code>var theta = Math.acos(BABYLON.Vector3.Dot(BABYLON.Axis.Z, normals[0]));
+carBody.rotate(BABYLON.Axis.Y, theta, BABYLON.Space.WORLD);</code></pre>
+<h3 id="animating-the-car">Animating the Car<a class="anchor" href="#animating-the-car">#</a></h3>
+<p>The animation is achieved using scene.registerAfterRender. Within this render loop:
+the car is moved forward from point to point;
+it is rotated so that it remains tangential to the path at the current point;
+the wheels are rotated a small amount about the <em>normal</em> at the current point.</p>
+<pre class="code" data-lang="javascript"><code>var i = 0;
+scene.registerAfterRender(function () {
+  carBody.position.x = points[i].x;
+  carBody.position.z = points[i].z;
+  wheelFI.rotate(normals[i], Math.PI / 32, BABYLON.Space.WORLD);
+  wheelFO.rotate(normals[i], Math.PI / 32, BABYLON.Space.WORLD);
+  wheelRI.rotate(normals[i], Math.PI / 32, BABYLON.Space.WORLD);
+  wheelRO.rotate(normals[i], Math.PI / 32, BABYLON.Space.WORLD);
+
+  theta = Math.acos(BABYLON.Vector3.Dot(normals[i], normals[i + 1]));
+  var dir = BABYLON.Vector3.Cross(normals[i], normals[i + 1]).y;
+  var dir = dir / Math.abs(dir);
+  carBody.rotate(BABYLON.Axis.Y, dir * theta, BABYLON.Space.WORLD);
+
+  i = (i + 1) % (n - 1); //continuous looping
+});</code></pre>
+<p>PG: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="correction">Correction<a class="anchor" href="#correction">#</a></h2>
+<p>After allowing the finalised playground of the car to run for a while, it can be seen that the rotation of the car becomes askew.
+This is due to rounding errors in the floating point (probably).</p>
+<p>The initial rotation quaternion is stored in <em>startRotation</em> and is now applied to the car whenever it starts a new loop.</p>
+<pre class="code" data-lang="javascript"><code>if (i == 0) {
+  carBody.rotationQuaternion = startRotation;
+}</code></pre>
+<p>PG: <span class="muted">Online playground (not embedded offline)</span></p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#the-design">The Design </a><a href="#correction">Correction </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

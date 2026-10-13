@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phaser archive: Phaser.Game — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Phaser archive: Phaser.Game</h1>
+<p><span class="badge">Phaser 4.1.0 archive</span> · <a href="phaser-api-index.html">Matching 4.2.1 API</a></p><p>The Phaser.Game instance is the main controller for the entire Phaser game. It is responsible
+for handling the boot process, parsing the configuration values, creating the renderer,
+and setting-up all of the global Phaser systems, such as sound and input.
+Once that is complete it will start the Scene Manager and then begin the main game loop.</p>
+<p>You should generally avoid accessing any of the systems created by Game, and instead use those
+made available to you via the Phaser.Scene Systems class instead.</p>
+<h2 id="constructor">Constructor</h2><pre class="code" data-lang="ts"><code>Game(config?)</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>config</code></td><td><code>Phaser.Types.Core.GameConfig</code></td><td>Optional. The configuration object for your Phaser Game instance.</td></tr></tbody></table><h2 id="members">members</h2><h3 id="members-0">anims</h3><pre class="code" data-lang="ts"><code>anims</code></pre><p>An instance of the Animation Manager.</p>
+<p>The Animation Manager is a global system responsible for managing all animations used within your game.</p>
+<h3 id="members-1">cache</h3><pre class="code" data-lang="ts"><code>cache</code></pre><p>An instance of the Cache Manager.</p>
+<p>The Cache Manager is a global system responsible for caching, accessing and releasing external game assets.</p>
+<h3 id="members-2">canvas</h3><pre class="code" data-lang="ts"><code>canvas</code></pre><p>A reference to the HTML Canvas Element that Phaser uses to render the game.
+This is created automatically by Phaser unless you provide a <code>canvas</code> property
+in your Game Config.</p>
+<h3 id="members-3">config</h3><pre class="code" data-lang="ts"><code>config</code></pre><p>The parsed Game Configuration object.</p>
+<p>The values stored within this object are read-only and should not be changed at run-time.</p>
+<h3 id="members-4">context</h3><pre class="code" data-lang="ts"><code>context</code></pre><p>A reference to the Rendering Context belonging to the Canvas Element this game is rendering to.
+If the game is running under Canvas it will be a 2d Canvas Rendering Context.
+If the game is running under WebGL it will be a WebGL Rendering Context.
+This context is created automatically by Phaser unless you provide a <code>context</code> property
+in your Game Config.</p>
+<h3 id="members-5">device</h3><pre class="code" data-lang="ts"><code>device</code></pre><p>A reference to the Device inspector.</p>
+<p>Contains information about the device running this game, such as OS, browser vendor and feature support.
+Used by various systems to determine capabilities and code paths.</p>
+<h3 id="members-6">domContainer</h3><pre class="code" data-lang="ts"><code>domContainer</code></pre><p>A reference to an HTML Div Element used as the DOM Element Container.</p>
+<p>Only set if <code>createDOMContainer</code> is <code>true</code> in the game config (by default it is <code>false</code>) and
+if you provide a parent element to insert the Phaser Game inside.</p>
+<p>See the DOM Element Game Object for more details.</p>
+<h3 id="members-7">events</h3><pre class="code" data-lang="ts"><code>events</code></pre><p>An Event Emitter which is used to broadcast game-level events from the global systems.</p>
+<h3 id="members-8">hasFocus</h3><pre class="code" data-lang="ts"><code>hasFocus</code></pre><p>Does the window the game is running in currently have focus or not?
+This is modified by the VisibilityHandler.</p>
+<h3 id="members-9">input</h3><pre class="code" data-lang="ts"><code>input</code></pre><p>An instance of the Input Manager.</p>
+<p>The Input Manager is a global system responsible for the capture of browser-level input events.</p>
+<h3 id="members-10">isBooted</h3><pre class="code" data-lang="ts"><code>isBooted</code></pre><p>A flag indicating when this Game instance has finished its boot process.</p>
+<h3 id="members-11">isPaused</h3><pre class="code" data-lang="ts"><code>isPaused</code></pre><p>Is the Game currently paused? This will stop everything from updating,
+except the <code>TimeStep</code> and related RequestAnimationFrame or setTimeout.
+Those will continue stepping, but the core Game step will be skipped.</p>
+<h3 id="members-12">isRunning</h3><pre class="code" data-lang="ts"><code>isRunning</code></pre><p>A flag indicating if this Game is currently running its game step or not.</p>
+<h3 id="members-13">loop</h3><pre class="code" data-lang="ts"><code>loop</code></pre><p>An instance of the Time Step.</p>
+<p>The Time Step is a global system responsible for setting-up and responding to the browser frame events, processing
+them and calculating delta values. It then automatically calls the game step.</p>
+<h3 id="members-14">plugins</h3><pre class="code" data-lang="ts"><code>plugins</code></pre><p>An instance of the Plugin Manager.</p>
+<p>The Plugin Manager is a global system that allows plugins to register themselves with it, and can then install
+those plugins into Scenes as required.</p>
+<h3 id="members-15">registry</h3><pre class="code" data-lang="ts"><code>registry</code></pre><p>An instance of the Data Manager. This is a global manager, available from any Scene
+and allows you to share and exchange your own game-level data or events without having
+to use an internal event system.</p>
+<h3 id="members-16">renderer</h3><pre class="code" data-lang="ts"><code>renderer</code></pre><p>A reference to either the Canvas or WebGL Renderer that this Game is using.</p>
+<h3 id="members-17">scale</h3><pre class="code" data-lang="ts"><code>scale</code></pre><p>An instance of the Scale Manager.</p>
+<p>The Scale Manager is a global system responsible for handling scaling of the game canvas.</p>
+<h3 id="members-18">scene</h3><pre class="code" data-lang="ts"><code>scene</code></pre><p>An instance of the Scene Manager.</p>
+<p>The Scene Manager is a global system responsible for creating, modifying and updating the Scenes in your game.</p>
+<h3 id="members-19">sound</h3><pre class="code" data-lang="ts"><code>sound</code></pre><p>An instance of the base Sound Manager.</p>
+<p>The Sound Manager is a global system responsible for the playback and updating of all audio in your game.</p>
+<p>You can disable the inclusion of the Sound Manager in your build by toggling the webpack <code>FEATURE_SOUND</code> flag.</p>
+<h3 id="members-20">textures</h3><pre class="code" data-lang="ts"><code>textures</code></pre><p>An instance of the Texture Manager.</p>
+<p>The Texture Manager is a global system responsible for managing all textures being used by your game.</p>
+<h2 id="methods">methods</h2><h3 id="methods-0">boot</h3><pre class="code" data-lang="ts"><code>boot()</code></pre><p>This method is called automatically when the DOM is ready. It is responsible for creating the renderer,
+displaying the Debug Header, adding the game canvas to the DOM and emitting the &#39;boot&#39; event.
+It listens for a &#39;ready&#39; event from the base systems and once received it will call <code>Game.start</code>.</p>
+<h3 id="methods-1">destroy</h3><pre class="code" data-lang="ts"><code>destroy(removeCanvas, noReturn?)</code></pre><p>Flags this Game instance as needing to be destroyed on the <em>next frame</em>, making this an asynchronous operation.</p>
+<p>It will wait until the current frame has completed and then call <code>runDestroy</code> internally.</p>
+<p>If you need to react to the game&#39;s eventual destruction, listen for the <code>DESTROY</code> event.</p>
+<p>If you <strong>do not</strong> need to run Phaser again on the same web page you can set the <code>noReturn</code> argument to <code>true</code> and it will free up
+memory being held by the core Phaser plugins. If you do need to create another game instance on the same page, leave this as <code>false</code>.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>removeCanvas</code></td><td><code>boolean</code></td><td>Set to `true` if you would like the parent canvas element removed from the DOM, or `false` to leave it in place.</td></tr><tr><td><code>noReturn</code></td><td><code>boolean</code></td><td>Optional. If `true` all the core Phaser plugins are destroyed. You cannot create another instance of Phaser on the same web page if you do this. Default: <code>false</code></td></tr></tbody></table><h3 id="methods-2">getFrame</h3><pre class="code" data-lang="ts"><code>getFrame()</code></pre><p>Returns the current game frame.</p>
+<p>When the game starts running, the frame is incremented every time Request Animation Frame, or Set Timeout, fires.</p>
+<p>Returns: <code>number</code> The current game frame.</p><h3 id="methods-3">getTime</h3><pre class="code" data-lang="ts"><code>getTime()</code></pre><p>Returns the time that the current game step started at, as based on <code>performance.now</code>.</p>
+<p>Returns: <code>number</code> The current game timestamp.</p><h3 id="methods-4">headlessStep</h3><pre class="code" data-lang="ts"><code>headlessStep(time, delta)</code></pre><p>A special version of the Game Step for the HEADLESS renderer only.</p>
+<p>The main Game Step. Called automatically by the Time Step, once per browser frame (typically as a result of
+Request Animation Frame, or Set Timeout on very old browsers.)</p>
+<p>The step will update the global managers first, then proceed to update each Scene in turn, via the Scene Manager.</p>
+<p>This process emits <code>prerender</code> and <code>postrender</code> events, even though nothing actually displays.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>time</code></td><td><code>number</code></td><td>The current time. Either a High Resolution Timer value if it comes from Request Animation Frame, or Date.now if using SetTimeout.</td></tr><tr><td><code>delta</code></td><td><code>number</code></td><td>The delta time in ms since the last frame. This is a smoothed and capped value based on the FPS rate.</td></tr></tbody></table><h3 id="methods-5">onBlur</h3><pre class="code" data-lang="ts"><code>onBlur()</code></pre><p>Called automatically by the Visibility Handler.
+This will set the main loop into a &#39;blurred&#39; state, which pauses it.</p>
+<h3 id="methods-6">onFocus</h3><pre class="code" data-lang="ts"><code>onFocus()</code></pre><p>Called automatically by the Visibility Handler.
+This will set the main loop into a &#39;focused&#39; state, which resumes it.</p>
+<h3 id="methods-7">onHidden</h3><pre class="code" data-lang="ts"><code>onHidden()</code></pre><p>Called automatically by the Visibility Handler.
+This will pause the main loop and then emit a pause event.</p>
+<h3 id="methods-8">onVisible</h3><pre class="code" data-lang="ts"><code>onVisible()</code></pre><p>Called automatically by the Visibility Handler.
+This will resume the main loop and then emit a resume event.</p>
+<h3 id="methods-9">pause</h3><pre class="code" data-lang="ts"><code>pause()</code></pre><p>This will pause the entire game and emit a <code>PAUSE</code> event.</p>
+<p>All of Phaser&#39;s internal systems will be paused and the game will not re-render.</p>
+<p>Note that it does not pause any Loader requests that are currently in-flight.</p>
+<h3 id="methods-10">resume</h3><pre class="code" data-lang="ts"><code>resume()</code></pre><p>This will resume the entire game and emit a <code>RESUME</code> event.</p>
+<p>All of Phaser&#39;s internal systems will be resumed and the game will start rendering again.</p>
+<h3 id="methods-11">start</h3><pre class="code" data-lang="ts"><code>start()</code></pre><p>Called automatically by Game.boot once all of the global systems have finished setting themselves up.
+By this point the Game is now ready to start the main loop running.
+It will also enable the Visibility Handler.</p>
+<h3 id="methods-12">step</h3><pre class="code" data-lang="ts"><code>step(time, delta)</code></pre><p>The main Game Step. Called automatically by the Time Step, once per browser frame (typically as a result of
+Request Animation Frame, or Set Timeout on very old browsers.)</p>
+<p>The step will update the global managers first, then proceed to update each Scene in turn, via the Scene Manager.</p>
+<p>It will then render each Scene in turn, via the Renderer. This process emits <code>prerender</code> and <code>postrender</code> events.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>time</code></td><td><code>number</code></td><td>The current time. Either a High Resolution Timer value if it comes from Request Animation Frame, or Date.now if using SetTimeout.</td></tr><tr><td><code>delta</code></td><td><code>number</code></td><td>The delta time in ms since the last frame. This is a smoothed and capped value based on the FPS rate.</td></tr></tbody></table><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#constructor">Constructor</a><a href="#members">members</a><a href="#methods">methods</a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

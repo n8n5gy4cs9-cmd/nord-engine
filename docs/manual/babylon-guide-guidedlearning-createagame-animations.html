@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Animations — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Animations</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="summary">Summary<a class="anchor" href="#summary">#</a></h2>
+<p>For this game, I made all the animations myself in Blender. In the past, I&#39;ve had difficulty getting the animations to work correctly in Unity while using my own character rig with Mixamo animations. So, I decided to learn how to animate them myself. The meshes are exported as glTF/.glb.</p>
+<p>If you&#39;d like to see the animations themselves, you can drag the .glb files into the <span>Sandbox</span>.</p>
+<h2 id="character-rigged">Character (Rigged)<a class="anchor" href="#character-rigged">#</a></h2>
+<h3 id="setting-up-animations">Setting up Animations<a class="anchor" href="#setting-up-animations">#</a></h3>
+<p>When you import a mesh with animations, they will be a part of the result<code>.animationGroups</code>. We just need to return this along with the mesh import in <span>loadCharacter</span>.</p>
+<p>In the constructor of our Player class, we&#39;ll be storing each animationGroup that was imported.</p>
+<pre class="code" data-lang="javascript"><code>this._idle = assets.animationGroups[1];
+this._jump = assets.animationGroups[2];
+this._land = assets.animationGroups[3];
+this._run = assets.animationGroups[4];
+this._dash = assets.animationGroups[0];</code></pre>
+<p>This way, we can access them through the class variables. AnimationGroups are usually sorted alphabetically, but if you&#39;re not sure of the order, you can check in the inspector.</p>
+<p>Once we&#39;ve done this, we can set up the animations in <span>_setUpAnimations</span> which is also called in the Player constructor.</p>
+<pre class="code" data-lang="javascript"><code>this.scene.stopAllAnimations();
+this._run.loopAnimation = true;
+this._idle.loopAnimation = true;
+//initialize current and previous
+this._currentAnim = this._idle;
+this._prevAnim = this._land;</code></pre>
+<ol>
+<li>We want to stop any and all animations.</li>
+<li>Set which animations are looping.</li>
+<li>Initialize our current and previous animations.</li>
+</ol>
+<h3 id="animating-the-player">Animating the Player<a class="anchor" href="#animating-the-player">#</a></h3>
+<p>In order to actually animate the player, I created an <span>_animatePlayer</span> function that checks for different states of the player.</p>
+<pre class="code" data-lang="javascript"><code>if (!this._dashPressed &amp;&amp; !this._isFalling &amp;&amp; !this._jumped 
+    &amp;&amp; (this._input.inputMap[&quot;ArrowUp&quot;]
+    || this._input.inputMap[&quot;ArrowDown&quot;] 
+    || this._input.inputMap[&quot;ArrowLeft&quot;]
+    || this._input.inputMap[&quot;ArrowRight&quot;])) {
+
+    this._currentAnim = this._run;
+} else if (this._jumped &amp;&amp; !this._isFalling &amp;&amp; !this._dashPressed) {
+    this._currentAnim = this._jump;
+} else if (!this._isFalling &amp;&amp; this._grounded) {
+    this._currentAnim = this._idle;
+} else if (this._isFalling) {
+    this._currentAnim = this._land;
+}</code></pre>
+<p>It sets the current animation to the corresponding animationGroup for the state.
+The different states our character can be in are:</p>
+<ol>
+<li><strong>Running</strong><ul>
+<li>As long as movement inputs are detected, and we&#39;re not doing an action, then we play the running animation.</li>
+</ul>
+</li>
+<li><strong>Jumping</strong><ul>
+<li>The jumping animation is triggered by a combination of flags:</li>
+</ul>
+</li>
+</ol>
+<pre class="code" data-lang="javascript"><code>if (this._input.jumpKeyDown &amp;&amp; this._jumpCount &gt; 0) {
+    this._gravity.y = Player.JUMP_FORCE;
+    this._jumpCount--;
+
+    //jumping and falling animation flags
+    this._jumped = true;
+    this._isFalling = false;
+}</code></pre>
+<p>Because the jumping and landing animations are separate, we need to know exactly when the jump phase is and when the landing phase starts.</p>
+<p>In the <code>if(this._isGrounded)</code> check, we want to reset our animation flags since we&#39;re no longer falling and are no longer jumping.</p>
+<pre class="code" data-lang="javascript"><code>//jump &amp; falling animation flags
+this._jumped = false;
+this._isFalling = false;</code></pre>
+<ol start="3">
+<li><strong>Idle</strong> <ul>
+<li>If we&#39;re not in any other state and we&#39;re grounded, then we&#39;re idle.</li>
+</ul>
+</li>
+<li><strong>Falling</strong></li>
+</ol>
+<pre class="code" data-lang="javascript"><code>//cue falling animation once gravity starts pushing down
+if (this._gravity.y &lt; 0 &amp;&amp; this._jumped) {
+    this._isFalling = true;
+}</code></pre>
+<p>We do this by checking:
+    1. That we&#39;re currently falling, so our movement is downwards (the sign of gravity here actually correlates to the direction we&#39;re moving).
+    2. That we&#39;ve jumped, so we&#39;re in the air.
+<em>_jumped</em> is checked specifically because this falling animation was intended for the landing of the jump, but if you have a falling animation that can be used for any type of falling, then you could probably remove this check.
+5. <strong>Dashing</strong>
+    - You&#39;ll notice that the dash animation is not here. This is because it&#39;s a lot easier to include it where the <span>dash action</span> takes place.</p>
+<pre class="code" data-lang="javascript"><code>if (this._input.dashing &amp;&amp; !this._dashPressed &amp;&amp; this._canDash &amp;&amp; !this._grounded) {
+    this._canDash = false;
+    this._dashPressed = true;
+
+    this._currentAnim = this._dash;
+}</code></pre>
+<p>As soon as we detect that the dash has happened, we set the current animation.</p>
+<p>At the end of <strong>_animatePlayer</strong>, we need to make sure that we call the current animation only once. We do this by checking that the current and previous animations are not the same, so that the animation can actually play for its full duration. (This is fine because we&#39;ve already set which ones loop, so once they start, they&#39;ll keep looping).</p>
+<pre class="code" data-lang="javascript"><code>if(this._currentAnim != null &amp;&amp; this._prevAnim !== this._currentAnim){
+    this._prevAnim.stop();
+    this._currentAnim.play(this._currentAnim.loopAnimation);
+    this._prevAnim = this._currentAnim;
+}</code></pre>
+<h3 id="playing-animations">Playing Animations<a class="anchor" href="#playing-animations">#</a></h3>
+<p>Now that we have the animations hooked up, we need to call <strong>_setUpAnimations</strong> in the <em>Constructor</em> and <strong>_animatePlayer</strong> in <em>_beforeRenderUpdate</em>.</p>
+<h2 id="mesh">Mesh<a class="anchor" href="#mesh">#</a></h2>
+<p>The other meshes in my game that used animations were the lanterns.</p>
+<p>The setup for these was a little different because I had to somehow clone the animations as well. I used <span>Demystifying Animation Groups</span> to learn how to extract and clone the animationGroups.</p>
+<h3 id="importing">Importing<a class="anchor" href="#importing">#</a></h3>
+<p>The animation groups get imported along with the mesh. Returning to <span>_loadAsset</span> in the Environment class, we need to extract the animation from the lantern.</p>
+<pre class="code" data-lang="javascript"><code>const importedAnims = res.animationGroups;
+let animation = [];
+animation.push(importedAnims[0].targetedAnimations[0].animation);
+importedAnims[0].dispose();
+//create new animation group
+let animGroup = new AnimationGroup(&quot;lanternAnimGroup&quot;);
+animGroup.addTargetedAnimation(animation[0], res.meshes[1]);
+return {
+        //..other meshes,
+        animationGroups: animGroup
+        }</code></pre>
+<p>From the imported animationGroup, we extract the animation. Then we create a new animation group that sets the mesh to its targeted animation. In the video, this was useful because the cannon mesh had two animations, each belonging to a different mesh. Even though we have only 1 animation and 1 mesh, it&#39;s good to have this structure in case we want to add another animation later on.</p>
+<h3 id="cloning-amp-setting-up">Cloning &amp; Setting Up<a class="anchor" href="#cloning-amp-setting-up">#</a></h3>
+<p>Similar to how we <span>cloned our lantern meshes</span>, we need to clone the animationGroups so that they are paired with their corresponding mesh.</p>
+<pre class="code" data-lang="javascript"><code>//Animation cloning
+let animGroupClone = new AnimationGroup(&quot;lanternAnimGroup &quot; + i);
+animGroupClone.addTargetedAnimation(assets.animationGroups.targetedAnimations[0].animation, lanternInstance);
+let newLantern = new Lantern(this._lightmtl, lanternInstance, this._scene, assets.env.getChildTransformNodes(false).find(m =&gt; m.name === &quot;lantern &quot; + i).getAbsolutePosition(), animGroupClone);</code></pre>
+<p>We create a new animation group for each lantern and use the animationGroup that we got from the import, then attach it to that specific lantern instance. This animGroupClone is what we pass to the Lantern constructor.</p>
+<pre class="code" data-lang="javascript"><code>assets.animationGroups.dispose();</code></pre>
+<p>After we&#39;re done setting up all the lanterns, we can dispose of the original animationGroup, like how we did for the original lantern mesh.</p>
+<h3 id="playing">Playing<a class="anchor" href="#playing">#</a></h3>
+<p>Playing the animation is really simple since it&#39;s non-looping. Whenever the lantern is lit, we want to play the animation in <span>setEmissiveTexture</span> since this is where we&#39;re doing all the &quot;lighting&quot; effects.</p>
+<h2 id="resources">Resources<a class="anchor" href="#resources">#</a></h2>
+<p><strong>Files Used:</strong>  </p>
+<ul>
+<li><span>app.ts</span></li>
+<li><span>environment.ts</span></li>
+<li><span>characterController.ts</span></li>
+<li><span>lantern.ts</span></li>
+</ul>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#summary">Summary </a><a href="#character-rigged">Character (Rigged) </a><a href="#mesh">Mesh </a><a href="#resources">Resources </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

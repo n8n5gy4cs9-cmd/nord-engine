@@ -22,7 +22,7 @@ export default class Pulse extends NordScript {
   onHotReload() { this.entity.scale = this.base; }
 }
 ```
-2. Attach it to a sprite. While the game **runs**, edit `amount` to `0.5` in the file and save: the object keeps pulsing — **hot reload** swapped the code without restarting.
+2. Select a sprite entity in **Hierarchy**, then use **Inspector → Add script** to choose `scripts/pulse.js`. Press Play: the picture should gently grow and shrink. While the game **runs**, edit the code and save (for example, change the formula’s multiplier). To change the existing entity’s `amount`, use the Inspector: the object keeps pulsing — **hot reload** swapped the code without restarting.
 3. Add a message: in `start()` write `this.events.emit('hello', this.entity.name)` and listen in another script with `this.events.on('hello', (n) => console.log('hi', n))`. Look at the Console tab.
 4. Break it on purpose (remove a bracket): the game keeps its last good code and the error shows with `file:line`.
 

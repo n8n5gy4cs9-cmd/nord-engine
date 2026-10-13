@@ -1,6 +1,6 @@
 # Manual, guides & tutorials plan (M7)
 
-**Status: implemented.** `node tools/build-manual.mjs` builds `docs/manual/` (committed, so the editor Docs tab works without a build) from `docs/manual-src/*.md` (+ `_namespaces.json`, `tools/manual/components-data.mjs`) and the repo sources (runtime JSDoc/comments, `schema.rs`, CLI doc comments, `library/INDEX.json`, templates/examples, shortcuts, `docs/*.md`). `--check` builds to a temp dir, runs every `nord-live` snippet against the real core runtime, and fails on broken links/anchors or external URLs. Markdown extras: `::: dummies|tip|warn|todo` boxes, ```` ```nord-live ````, heading ids `{#id}`. After changing any source above, rebuild and commit `docs/manual/`. Desktop-apps chapter is a TODO stub until M9.
+**Status: implemented.** `node tools/build-manual.mjs` builds `docs/manual/` (committed, so the editor Docs tab works without a build) from `docs/manual-src/*.md` (+ `_namespaces.json`, `tools/manual/components-data.mjs`) and the repo sources (runtime JSDoc/comments, `schema.rs`, CLI doc comments, `library/INDEX.json`, templates/examples, shortcuts, `docs/*.md`). `--check` builds to a temp dir, runs every `nord-live` snippet against the real core runtime, and fails on broken links/anchors or external URLs. Markdown extras: `::: dummies|tip|warn|todo` boxes, ```` ```nord-live ````, heading ids `{#id}`. After changing any source above, rebuild and commit `docs/manual/`. Desktop apps are documented after M9.
 
 Output: `docs/manual/` — static HTML, offline, built by `tools/build-manual.mjs` from Markdown in `docs/manual-src/`
 (vendored `marked`; syntax via CodeMirror in read-only mode; "Run" buttons for live examples using the vendored runtime).
@@ -39,4 +39,16 @@ manual banner, per-section icons, diagram templates (architecture, tiers, editor
 ## Complete-edition requirements (owner, 2026-10-12)
 - Document **everything Phaser and Babylon can do, expressed in Nord format**: users only learn Nord namespaces (`NordScript`, `entity.*`, `game.physics/camera/audio/ui/gui/save`, component schemas). Raw Phaser/Babylon APIs appear only under an "escape hatch (`entity.native`)" heading.
 - One HTML site: manual, guides, tutorials, per-component and per-API pages, cookbook, search. Generated from JSDoc + component schemas + hand-written pages so it can't drift.
-- **"For dummies" info boxes** (plain-language explanations, analogies) on every concept page; shown only when the global toggle is on (persisted in localStorage; default off).
+- **"For dummies" info boxes** (plain-language explanations, analogies) on every concept page; shown by default, with a persisted global toggle to hide them.
+
+## 2026-10-13 documentation redesign (M7-14)
+
+Top-level areas: **Start here**, **Manual**, **Tutorials**, **Guides**, **API**. Only the current area appears in the sidebar; the API area groups Nord classes, components, file/CLI reference and engine docs. Each page has an on-page contents list and previous/next links. Dark/light appearance, mobile navigation, accessible search and colour-coded callouts share one static shell. Plain-language boxes default on (an existing saved preference is respected).
+
+Beginner path: Getting started → How Nord works → Programming for dummy developers → T01/T02/T03. Chapters retain their technical information and begin with a concrete first action. Real bundled-game screenshots appear in the home/2D/3D pages; the first tutorial shows its actual Nord-rendered result.
+
+All code fences have Copy controls and vendored CodeMirror syntax highlighting where a matching language exists. Read-only editors are created when their blocks approach the viewport. A classic-script wrapper around the exact vendored exports allows search/highlighting/navigation when opening HTML directly with `file://`; runnable ES-module examples require the editor Docs server or a local web server.
+
+The reference includes every named `nord` export, class members/instance fields, component contracts, complete desktop TypeScript contract, and public Rust module declarations plus their source comments. Core signatures come from source; curated plain-language usage notes stay in `tools/manual/api-help.mjs`.
+
+**Underlying engines remain separate and versioned.** `tools/vendor.mjs --docs` invokes `tools/vendor-docs.mjs`, fetching pinned Phaser 4.2.1 and Babylon 9.30.0 declaration packages (core + GUI/loaders/materials/post-process/procedural textures/serializers), parsing public declarations with pinned TypeScript 5.9.3, and preserving original declarations, licences and SHA-256 hashes. Babylon prose is cloned at the commit in `vendor/engine-docs/SOURCES.json`; all Markdown guides are rendered with local cross-links, escaped raw HTML and no online embeds/media. The owner's supplied Phaser 4.1.0 snapshot is archived separately and labelled as older/incomplete. Engine reference pages explain Nord's components/services first and do not claim upstream APIs are Nord methods. Research and reference citations: `docs/MANUAL_RESEARCH.md`.

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Timeline Control — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Timeline Control</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h1 id="video-timeline-control">Video Timeline Control</h1>
+<p>The Babylon.js Timeline Control is a web control built on top of Babylon.js that accelerates some of the typical features associated with video timelines.</p>
+<h2 id="introduction">Introduction<a class="anchor" href="#introduction">#</a></h2>
+<p>One of the inherent issues encountered while scrolling through a video timeline built from IMG tags is performance. The more pictures there are to scroll through, the slower and less smooth the interactions with the web page become.</p>
+<p>To make the web page more responsive, we rely on WebGL through Babylon.js to create an easy-to-reuse control that displays a video timeline.</p>
+<p><p class="muted">Upstream illustration: Timeline (media not bundled).</p></p>
+<h2 id="how-to-use">How to use<a class="anchor" href="#how-to-use">#</a></h2>
+<h3 id="installation">Installation<a class="anchor" href="#installation">#</a></h3>
+<p>To begin with the timeline, you first need to install the controls npm package.</p>
+<pre class="code" data-lang=""><code>npm install @babylonjs/controls</code></pre>
+<p>To reduce the size of your web page, the controls library is based on the ES6 version of <code>@babylonjs/core</code> used as a peer dependency. Therefore, if you are not relying on it so far in your project, you also need to install core:</p>
+<pre class="code" data-lang=""><code>npm install @babylonjs/core</code></pre>
+<h3 id="instantiation">Instantiation<a class="anchor" href="#instantiation">#</a></h3>
+<p>Once done, you can now import the timeline control into your code:</p>
+<pre class="code" data-lang=""><code>import { Timeline } from &quot;@babylonjs/controls/timeline&quot;;</code></pre>
+<p>And simply instantiate it in your page:</p>
+<pre class="code" data-lang=""><code>const timeline = new Timeline(timelineCanvas, {
+        totalDuration: 60,
+        thumbnailWidth: 128,
+        thumbnailHeight: 120,
+        loadingTextureURI: &quot;./assets/loading.png&quot;,
+        getThumbnailCallback: (time: number, done: (input: any) =&gt; void) =&gt; {
+            // This is strictly for demo purpose and should not be used in prod as it creates as many videos
+            // as there are thumbnails all over the timeline.
+            const hiddenVideo = document.createElement(&quot;video&quot;);
+            document.body.append(hiddenVideo);
+            hiddenVideo.style.display = &quot;none&quot;;
+
+            hiddenVideo.setAttribute(&quot;playsinline&quot;, &quot;&quot;);
+            hiddenVideo.muted = true;
+            hiddenVideo.autoplay = navigator.userAgent.indexOf(&quot;Edge&quot;) &gt; 0 ? false : true;
+            hiddenVideo.loop = false;
+
+            hiddenVideo.onloadeddata = () =&gt; {
+                if (time === 0) {
+                    done(hiddenVideo);
+                }
+                else {
+                    hiddenVideo.onseeked = () =&gt; {
+                        done(hiddenVideo);
+                    }
+                    hiddenVideo.currentTime = time;
+                }
+            }
+
+            hiddenVideo.src = &quot;./assets/test.mp4?&quot; + time;
+            hiddenVideo.load();
+        }
+    });</code></pre>
+<p>The main element to provide is a canvas on which we can use a WebGL context to render the timeline. You can also provide another Babylon.js control to share the WebGL context. For instance, you could share the context with a Resizer to use a resized image directly as a thumbnail without an extra copy.</p>
+<p>As we do not want to be opinionated about the UX you prefer or about thumbnail generation itself, it is all left to your implementation. The only information you need to provide is:</p>
+<ul>
+<li><em>totalDuration</em>: the full duration of the video to cover (used to compute when all the thumbnails should be generated).</li>
+<li><em>thumbnailWidth</em>: defines the width of your generated thumbnails (used during rendering to know how much space they should take in the timeline)</li>
+<li><em>thumbnailHeight</em>: defines the height of your generated thumbnails (used to keep the ratio intact with the width previously defined)</li>
+<li><em>loadingTextureURI</em>: defines the URL of an image used as a temporary replacement for a thumbnail that is not fully loaded yet (this helps handle network latency gracefully)</li>
+<li><em>getThumbnailCallback</em>: a callback through which you provide the thumbnail that matches the requested time parameter. Through the done function, you can return either a video element set to the right frame (as in the previous code sample), a canvas element containing, for instance, some preprocessed data, or an image URL. More choices will probably be added here, for instance to support texture atlases, as they might be a useful transport format.</li>
+</ul>
+<p>You can also provide some non-mandatory options:</p>
+<ul>
+<li><em>useClosestThumbnailAsLoadingTexture</em>: it is set to true by default, and if enabled, it will try to use the closest loaded thumbnail (in time) instead of the loading one as soon as some are ready.</li>
+</ul>
+<h3 id="render-loop">Render Loop<a class="anchor" href="#render-loop">#</a></h3>
+<p>Finally, you can start rendering the thumbnails:</p>
+<pre class="code" data-lang=""><code>    timeline.runRenderLoop();</code></pre>
+<p>It is also possible to pass a custom callback to this method to ensure that some custom code would run every frame before rendering the timeline:</p>
+<pre class="code" data-lang=""><code>    timeline.runRenderLoop(() =&gt; {
+        // Sync the timeline with a playing video
+        if (!mainVideo.paused) {
+            timeline.setCurrentTime(mainVideo.currentTime);
+        }
+    });</code></pre>
+<h3 id="changing-the-current-zoom-level">Changing the current zoom level<a class="anchor" href="#changing-the-current-zoom-level">#</a></h3>
+<p>By default, the timeline is not zoomed at all, it shows as many thumbnails as fit in the canvas distributed evenly along the entire video.</p>
+<p>You can zoom until you see one thumbnail per chosen time unit of the video (so if the total duration is 60 and you are zoomed at 100%, you will be able to see 60 thumbnails in total when scrolling from left to right).</p>
+<p>To zoom in/out, you can call the following code:</p>
+<pre class="code" data-lang=""><code>    // value is the percentage of zoom desired 0 for the entire video 100 for one thumbnail per unit
+    timeline.setVisibleDurationZoom(value);</code></pre>
+<h3 id="changing-the-current-time">Changing the current time<a class="anchor" href="#changing-the-current-time">#</a></h3>
+<p>As changing the zoom level does not change the number of visible thumbnails, you need a way to control where you currently are in the list of thumbnails. The following code can be used to do so:</p>
+<pre class="code" data-lang=""><code>    // Sets the left side of the canvas to the current chosen time
+    // The rest of the visible thumbnails are evenly distributed according to the chosen
+    // zoom level.
+    timeline.setCurrentTime(value);</code></pre>
+<p>The current time will be automatically bound between 0 and the max available position.</p>
+<h3 id="cache-warm-up">Cache Warm Up<a class="anchor" href="#cache-warm-up">#</a></h3>
+<p>In case you have some of the thumbnails ready before waiting for the callback, you can submit them into the cache like this:</p>
+<pre class="code" data-lang=""><code>    timeline.addThumbnail(textureData, time);</code></pre>
+<p>The <code>textureData</code> types are the same as those allowed to be returned in the callback: a texture, a video, a canvas, or an image URL.</p>
+<p>This can help if you generate the thumbnails client-side to warm up the cache and thus reduce thumbnail load time.</p>
+<h2 id="full-code-sample">Full Code Sample<a class="anchor" href="#full-code-sample">#</a></h2>
+<p>You can find the entirety of the code sample above on <span>Github</span> if you want to see it in action and better understand how some of the features can be used.</p>
+<h2 id="live-demo">Live Demo<a class="anchor" href="#live-demo">#</a></h2>
+<p>Please have a look at the <span>Live Timeline Demo</span> to better appreciate how it works.</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#introduction">Introduction </a><a href="#how-to-use">How to use </a><a href="#full-code-sample">Full Code Sample </a><a href="#live-demo">Live Demo </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: The Very First Step — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: The Very First Step</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="everyone-39-s-very-first-step">EVERYONE&#39;s very first step<a class="anchor" href="#everyone-39-s-very-first-step">#</a></h2>
+<p>Welcome to &quot;The Very First Step.&quot; This document is designed for absolutely EVERYONE. Whether you&#39;re an expert web developer diving into 3D, an amazing artist wanting to create 3D experiences on the web, a student/tinkerer curious about programming, or an absolute beginner, this is your very first step to learning Babylon. We strongly encourage everyone new to Babylon to go through this page before going any further through the docs.</p>
+<p>This doc will take you on a VERY brief journey of creating and hosting your very first Babylon.js Web Experience. You&#39;ll learn about the Babylon.js playground, scratch the surface of learning the core engine, and save your work as a ready-to-host .html file.</p>
+<h3 id="the-babylon-js-playground">The Babylon.js Playground<a class="anchor" href="#the-babylon-js-playground">#</a></h3>
+<p>The single most important tool available to you as you learn and develop with Babylon is the Babylon.js Playground.</p>
+<p><p class="muted">Upstream illustration: playground (media not bundled).</p></p>
+<p>The playground is your toybox, your tinker environment, your laboratory. This simple website allows you to write Babylon code on the left, and see instant updates on the right. It&#39;s really that simple.</p>
+<p>The playground is CRITICAL to your learning journey for two reasons:</p>
+<ul>
+<li><ol>
+<li>An amazing cycle of code --&gt; see updates instantly. Learn by doing!</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>It&#39;s saveable &amp; shareable!</li>
+</ol>
+</li>
+</ul>
+<p>Why is saveable &amp; shareable important for learning? Through your Babylon journey, you will undoubtedly come across something that you could use some help figuring out. It is important that you have a safe and welcoming space to ask for help! This is why the core dev team staffs the <span>Babylon.js Forum</span> every weekday, so we can be there alongside you to help you learn.</p>
+<p>And when it comes time to help you learn or solve a problem, we need to SEE and UNDERSTAND the context behind the problem. Sharing your saved playgrounds is the PERFECT solution and is mandatory on the forum. When you&#39;re stuck, save your playground, head to the forum, reach out for help, and share the playground. We think you&#39;ll be pleasantly surprised at how quickly you&#39;ll get help by following this process.</p>
+<p>So now that you know the playground is the single most important tool to start learning, let&#39;s open it up in a new tab.</p>
+<p><span>Babylon.js Playground</span></p>
+<h3 id="your-first-creation">Your First Creation<a class="anchor" href="#your-first-creation">#</a></h3>
+<p>Welcome to the Playground! Using the playground is as simple as modifying/creating code in the code editor on the left, and seeing updates in the live Babylon scene on the right! You&#39;ll also see a default Babylon scene that we&#39;ve set up for you. Take a quick look at the comments in green font in the code editor. These comments should give you a basic idea of what&#39;s happening with each line of code that&#39;s written. Pretty simple, right?</p>
+<p>There&#39;s no better way to start learning than by doing, so let&#39;s make our first scene update!</p>
+<p>On lines 20-24 you see the following lines of code:</p>
+<pre class="code" data-lang="javascript"><code>// Our built-in 'sphere' shape.
+var sphere = BABYLON.MeshBuilder.CreateSphere(&quot;sphere&quot;, { diameter: 2, segments: 32 }, scene);
+
+// Move the sphere upward 1/2 its height
+sphere.position.y = 1;</code></pre>
+<p>Go ahead and highlight those lines of code and hit DELETE! You&#39;ve just made your first change! Feel good? But wait, nothing happened in the scene? That&#39;s because we have to re-run the scene with our changes. You can do that by either pressing ALT+ENTER on your keyboard or pressing the &#39;run&#39; button in the UI.</p>
+<p><p class="muted">Upstream illustration: run (media not bundled).</p></p>
+<p>BOOM! The sphere is gone!</p>
+<span class="muted">Online playground (not embedded offline)</span><p>Quick side note - throughout this document we&#39;ll add links to playgrounds showing you exactly what changes were just made. You can compare these playgrounds with your own progress if you ever get stuck. The little arrow symbol will open these playgrounds in a new tab.</p>
+<p>Let&#39;s make another change!</p>
+<p>Find the line of code that creates the ground plane and add these new lines underneath it:</p>
+<pre class="code" data-lang="javascript"><code>const groundMaterial = new BABYLON.StandardMaterial(&quot;Ground Material&quot;, scene);
+groundMaterial.diffuseColor = BABYLON.Color3.Red();
+ground.material = groundMaterial;</code></pre>
+<p>Run the scene again (ALT+ENTER, or the run button).</p>
+<span class="muted">Online playground (not embedded offline)</span><p>Congratulations! You just created a new material, assigned that new material to the ground plane, and assigned its diffuse channel to be the color red! Pretty cool huh?! Don&#39;t worry if some of that is still a bit confusing, the takeaway here is that you&#39;re making code changes on the left and seeing updates on the right.</p>
+<p>Ok time for another change.</p>
+<p>Find this line:</p>
+<pre class="code" data-lang="javascript"><code>groundMaterial.diffuseColor = BABYLON.Color3.Red();</code></pre>
+<p>Add these two new lines underneath it and run the scene again:</p>
+<pre class="code" data-lang="javascript"><code>let groundTexture = new BABYLON.Texture(Assets.textures.checkerboard_basecolor_png.path, scene);
+groundMaterial.diffuseTexture = groundTexture;</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><p>Pretty cool! You&#39;ve now created your first Babylon.js texture and assigned it to the texture property of your ground material!</p>
+<p>Ok it&#39;s time for another addition to the scene. After all of your ground-related code, give yourself a little space by hitting enter and on a new line press CTRL+SPACE. This will spawn a list of playground templates. These templates are handy pieces of code that you will likely reuse over and over again through your Babylon learning journey. Go ahead and select the template that says &quot;Import a Mesh Async&quot;.</p>
+<p><p class="muted">Upstream illustration: templates (media not bundled).</p></p>
+<p>You should see the following lines of code pop right into the playground:</p>
+<pre class="code" data-lang="javascript"><code>BABYLON.ImportMeshAsync(&quot;url to the mesh parent directory/Mesh filename.fileextension&quot;, scene, { meshNames: &quot;&quot; }).then(function (result) {});</code></pre>
+<p>Let&#39;s do a few more things:</p>
+<ul>
+<li><ol>
+<li>Replace &quot;url to the mesh parent directory/Mesh filename.fileextension&quot; (including quotes) with this:</li>
+</ol>
+</li>
+</ul>
+<pre class="code" data-lang="javascript"><code>Assets.meshes.Yeti.rootUrl + Assets.meshes.Yeti.filename</code></pre>
+<ul>
+<li><ol start="2">
+<li>After the <code>BABYLON.ImportMeshAsync</code> line, but before the <code>&quot;});&quot;</code> add the following line:</li>
+</ol>
+</li>
+</ul>
+<pre class="code" data-lang="javascript"><code>  result.meshes[0].scaling = new BABYLON.Vector3(0.1, 0.1, 0.1);</code></pre>
+<ul>
+<li><ol start="3">
+<li>Run the scene</li>
+</ol>
+</li>
+</ul>
+<span class="muted">Online playground (not embedded offline)</span><p>Whoa! Cool! You just added an animated .gltf object into the scene! And you also scaled it down to fit on the ground plane! Well done!</p>
+<p>Let&#39;s change one final thing. We want our scene to be interactive. After all, isn&#39;t that why you&#39;re here - to create interactive web experiences?</p>
+<p>Delete lines 5-9.</p>
+<p>Press CTRL+SPACE to bring up the playground templates and create an Arc Rotate Camera.</p>
+<p>Run the scene and click+drag or touch+drag on the Babylon scene.</p>
+<span class="muted">Online playground (not embedded offline)</span><p>WooHoo! You&#39;ve added interaction to the scene! Great job! Go ahead and save your playground by pressing CTRL+S or hitting the save button.</p>
+<p><p class="muted">Upstream illustration: save (media not bundled).</p></p>
+<h3 id="the-html-file">The .html File<a class="anchor" href="#the-html-file">#</a></h3>
+<p>At this point, let&#39;s say we&#39;re happy with our creation, and we want to put the Babylon scene (without the code editor and UI) out into the world for everyone to play with.</p>
+<p>Getting your Babylon scene ready to host is as simple as pressing a button. Either press SHIFT+CTRL+S or press the Download button to download an .html file of your Babylon scene to your system.</p>
+<p><p class="muted">Upstream illustration: download (media not bundled).</p></p>
+<p>That&#39;s it! You&#39;ve got everything you need for the world to see your first Babylon experience! Now all we need to do is host it somewhere for the world to see it!</p>
+<h3 id="hosting-your-babylon-project">Hosting Your Babylon Project<a class="anchor" href="#hosting-your-babylon-project">#</a></h3>
+<p>Ok time to host this experience. If you&#39;re not familiar with web hosting, it basically means putting your web experience in a place where the whole world can access/see it. The world of hosting web pages is HUGE and what follows is just ONE example of how to do it. It is by no means the only way to host a page.</p>
+<p>For this first step into Babylon we&#39;re going to use something called GitHub Pages, because it&#39;s easy and free.</p>
+<p>Let&#39;s start by heading over to <span>GitHub</span>.</p>
+<p>You&#39;ll need to log in (or sign up if you&#39;re new to GitHub...it&#39;s free).</p>
+<p>Next, we&#39;ll create a new repository.</p>
+<p><p class="muted">Upstream illustration: newRepo (media not bundled).</p></p>
+<p>Give your new repo a cool name and make sure to check the &quot;Add a README file.&quot;</p>
+<p><p class="muted">Upstream illustration: newRepoDetails (media not bundled).</p></p>
+<p>Congratulations! You&#39;ve just set up a new GitHub repository! Yay!</p>
+<p>Now let&#39;s add the downloaded Babylon Playground files to this repository.</p>
+<p>Click on &quot;Add file&quot; and then &quot;Upload files&quot;</p>
+<p><p class="muted">Upstream illustration: uploadFiles (media not bundled).</p></p>
+<p>Locate the file that you downloaded from the Babylon.js playground and drag it onto this page. Then press the &quot;Commit changes&quot; button.</p>
+<p><p class="muted">Upstream illustration: uploadCommit (media not bundled).</p></p>
+<p>One last step and then your Babylon experience will be hosted with a live URL for anyone to see.</p>
+<p>Hit the &quot;Settings&quot; button on the main repo page.</p>
+<p><p class="muted">Upstream illustration: settings (media not bundled).</p></p>
+<p>Navigate to the &quot;Pages&quot; menu item, set the &quot;Branch&quot; to &quot;main&quot;, and hit the save button.</p>
+<p><p class="muted">Upstream illustration: pages (media not bundled).</p></p>
+<p>After your settings are saved, you&#39;ll see the URL for your website! You can share that URL with anyone that you&#39;d like!</p>
+<p><p class="muted">Upstream illustration: url (media not bundled).</p></p>
+<p>Your project also needs one more file to complete the setup, which defines the title and description of your website. It is a file named _config.yml and if it is not already in your repository, you can simply create one easily. Simply use the <code>Add File</code> drop down and select <code>Create New File</code>.</p>
+<p><p class="muted">Upstream illustration: create text file (media not bundled).</p></p>
+<p>This will open a text editor for you to create the file. At the top, type <code>_config.yml</code> in the input field as the name of the file to save in your repository. Then type the following in the body of the file:</p>
+<pre class="code" data-lang="yaml"><code>theme: jekyll-theme-minimal
+title: Title For Your Website
+description: Website description.</code></pre>
+<p><p class="muted">Upstream illustration: create config file (media not bundled).</p></p>
+<p>Once you are done editing the config file, click the <code>Commit changes...</code> button to commit the file to the repository. This will bring up a window that asks you to create a commit message and extended description. The message and description will show up in your repository&#39;s history, so it is good to be descriptive here. Once you have those entered, select the <code>Commit directly to the main branch</code> option and then <code>Commit changes</code>.</p>
+<p><p class="muted">Upstream illustration: commit text file to repository (media not bundled).</p></p>
+<p>Congratulations! You just built and hosted your very first Babylon.js web experience!</p>
+<h3 id="documentation-overview">Documentation Overview<a class="anchor" href="#documentation-overview">#</a></h3>
+<p>Before you take off and explore Babylon further, we humbly ask that you read one additional article. Babylon.js is a rich and powerful engine and we&#39;ve worked hard to provide a LOT of documentation to help you learn it. The last part of the first step of your Babylon journey is to get an overview of how the documentation is organized.</p>
+<p><a href="babylon-guide-journey-learningthedocs.html">Learning the Babylon.js Documentation</a></p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#everyone-39-s-very-first-step">EVERYONE&amp;#39;s very first step </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

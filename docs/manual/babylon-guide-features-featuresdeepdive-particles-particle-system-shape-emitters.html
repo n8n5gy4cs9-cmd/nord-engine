@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Shape Emitters — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Shape Emitters</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h1 id="shape-emitters">Shape Emitters</h1>
+<p>Starting from Babylon.js 3.2, you can shape the region particles are emitted from by using a specific emitter type:</p>
+<ul>
+<li>Point</li>
+<li>Box</li>
+<li>Sphere</li>
+<li>Hemisphere</li>
+<li>Cylinder</li>
+<li>Cone</li>
+<li>Mesh</li>
+<li>Custom</li>
+</ul>
+<h2 id="point-emitter">Point Emitter<a class="anchor" href="#point-emitter">#</a></h2>
+<p>To create a point emitter, you can run this code:</p>
+<pre class="code" data-lang="javascript"><code>var pointEmitter = particleSystem.createPointEmitter(new BABYLON.Vector3(-7, 8, 3), new BABYLON.Vector3(7, 8, -3));</code></pre>
+<p>The <code>createPointEmitter</code> method takes two parameters in the following order:</p>
+<ul>
+<li>direction1: Vector3</li>
+<li>direction2: Vector3</li>
+</ul>
+<p>The returned <code>pointEmitter</code> object can be used to change the values of these properties:</p>
+<pre class="code" data-lang="javascript"><code>pointEmitter.direction1 = new BABYLON.Vector3(-5, 2, 1); 
+pointEmitter.direction2 = new BABYLON.Vector3(5, 2, 1);  </code></pre>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="box-emitter">Box Emitter<a class="anchor" href="#box-emitter">#</a></h2>
+<p>To create a box emitter, you use, for example:</p>
+<pre class="code" data-lang="javascript"><code>var boxEmitter = particleSystem.createBoxEmitter(new BABYLON.Vector3(-7, 8, 3), new BABYLON.Vector3(7, 8, -3), new BABYLON.Vector3(-1, 0, 0), new BABYLON.Vector3(1, 0, 0));</code></pre>
+<p>The <code>createBoxEmitter</code> method takes four parameters in the following order:</p>
+<ul>
+<li>direction1: Vector3</li>
+<li>direction2: Vector3</li>
+<li>minEmitBox: Vector3</li>
+<li>maxEmitBox: Vector3</li>
+</ul>
+<p>The returned <code>boxEmitter</code> object can be used to change the values of these properties:</p>
+<pre class="code" data-lang="javascript"><code>boxEmitter.direction1 = new BABYLON.Vector3(-5, 2, 1); 
+boxEmitter.direction2 = new BABYLON.Vector3(5, 2, 1);  
+boxEmitter.minEmitBox = new BABYLON.Vector3(-2, -3, -4);  
+boxEmitter.maxEmitBox = new BABYLON.Vector3(2, 3, 4); </code></pre>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="sphere-emitter">Sphere Emitter<a class="anchor" href="#sphere-emitter">#</a></h2>
+<p>You can create a sphere emitter with a given radius (e.g. 1.2):</p>
+<pre class="code" data-lang="javascript"><code>var sphereEmitter = particleSystem.createSphereEmitter(1.2);</code></pre>
+<p>The returned <code>sphereEmitter</code> object can be used to change the radius.</p>
+<p>The particles are emitted in the direction of the surface normals, i.e. the lines from the center of the sphere through a surface point.</p>
+<span class="muted">Online playground (not embedded offline)</span><p>With <code>sphereEmitter.radiusRange</code>, you can define where along the radius the particles should be emitted. A value of 0 means only on the surface, while a value of 1 means all along the radius.</p>
+<p>If you prefer to choose the emission direction, you can create a directed sphere emitter:</p>
+<pre class="code" data-lang="javascript"><code>var sphereEmitter = particleSystem.createDirectedSphereEmitter(1.2, new BABYLON.Vector3(1, 1, 1), new BABYLON.Vector3(2, 8, 2));</code></pre>
+<p>The <code>createDirectedSphereEmitter</code> method takes three parameters in the following order:</p>
+<ul>
+<li>radius: Number</li>
+<li>direction1: Vector3</li>
+<li>direction2: Vector3</li>
+</ul>
+<p>The returned <code>sphereEmitter</code> object can be used to change the values of these properties:</p>
+<pre class="code" data-lang="javascript"><code>sphereEmitter.radius = 3.4;
+sphereEmitter.direction1 = new BABYLON.Vector3(-5, 2, 1); 
+sphereEmitter.direction2 = new BABYLON.Vector3(5, 2, -1);    </code></pre>
+<p>The particle direction will be generated randomly between <code>direction1</code> and <code>direction2</code>.</p>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="hemispheric-emitter">Hemispheric Emitter<a class="anchor" href="#hemispheric-emitter">#</a></h2>
+<p>You can create a hemispheric emitter with a given radius (e.g. 1.2):</p>
+<pre class="code" data-lang="javascript"><code>var hemisphericEmitter = particleSystem.createHemisphericEmitter(1.2);</code></pre>
+<p>The returned <code>hemisphericEmitter</code> object can be used to change the radius.</p>
+<p>The particles are emitted in the direction of the surface normals, i.e. the lines from the center of the hemisphere through a surface point.</p>
+<span class="muted">Online playground (not embedded offline)</span><p>With <code>hemisphericEmitter.radiusRange</code>, you can define where along the radius the particles should be emitted. A value of 0 means only on the surface, while a value of 1 means all along the radius.</p>
+<h2 id="cylinder-emitter">Cylinder Emitter<a class="anchor" href="#cylinder-emitter">#</a></h2>
+<p>You can create a cylinder emitter with a given <code>radius</code>, <code>height</code>, <code>radiusRange</code>, and <code>directionRandomizer</code>:</p>
+<pre class="code" data-lang="javascript"><code>var cylinderEmitter = particleSystem.createCylinderEmitter(1, 1, 0, 0);</code></pre>
+<p>The returned <code>cylinderEmitter</code> object can be used to change these property values.</p>
+<p>The particles are emitted in the direction of the surface normals, i.e. outward from the cylinder.</p>
+<span class="muted">Online playground (not embedded offline)</span><p>With <code>cylinderEmitter.radiusRange</code>, you can define where along the radius the particles should be emitted. A value of 0 means only on the surface, while a value of 1 means all along the radius.
+With <code>cylinderEmitter.directionRandomizer</code>, you can change how much to randomize the particle&#39;s direction.</p>
+<p>If you prefer to choose the emission direction, you can create a directed cylinder emitter. The <code>createDirectedCylinderEmitter</code> method takes five parameters in the following order:</p>
+<ul>
+<li>radius: Number</li>
+<li>height: Number</li>
+<li>radiusRange: Number</li>
+<li>direction1: Vector3</li>
+<li>direction2: Vector3</li>
+</ul>
+<p>The returned <code>cylinderEmitter</code> object can be used to change the values of these properties:</p>
+<pre class="code" data-lang="javascript"><code>cylinderEmitter.radius = 3.4;
+cylinderEmitter.direction1 = new BABYLON.Vector3(-5, 2, 1); 
+cylinderEmitter.direction2 = new BABYLON.Vector3(5, 2, -1);    </code></pre>
+<p>The particle direction will be generated randomly between <code>direction1</code> and <code>direction2</code>.</p>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="cone-emitter">Cone Emitter<a class="anchor" href="#cone-emitter">#</a></h2>
+<p>To create a cone emitter:</p>
+<pre class="code" data-lang="javascript"><code>var coneEmitter = particleSystem.createConeEmitter(2, Math.PI / 3);</code></pre>
+<p>The <code>createConeEmitter</code> method takes two parameters in the following order:</p>
+<ul>
+<li>radius: Number</li>
+<li>angle: Number — measured in radians; the vertex angle of the cone</li>
+</ul>
+<p>The cone is created with its axis along the Y-axis and its vertex at the bottom.</p>
+<p>With <code>coneEmitter.radiusRange</code>, you can define where along the radius the particles should be emitted. A value of 0 means only on the surface, while a value of 1 means all along the radius.</p>
+<p>The same applies to <code>coneEmitter.heightRange</code>: you can define where along the height the particles should be emitted. A value of 0 means only on the top surface, while a value of 1 means all along the height.</p>
+<p>The returned <code>coneEmitter</code> object can be used to change the values of these properties:</p>
+<pre class="code" data-lang="javascript"><code>coneEmitter.radius = 3.4;
+coneEmitter.angle = Math.PI / 2;    </code></pre>
+<p>With <code>coneEmitter.emitFromSpawnPointOnly = true</code>, you can force the emitter to only emit particles from the spawn point (the start of the cone).</p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><h2 id="mesh-emitter">Mesh Emitter<a class="anchor" href="#mesh-emitter">#</a></h2>
+<p>You can use <code>MeshParticleEmitter</code> to emit particles from the surface of a mesh:</p>
+<pre class="code" data-lang="javascript"><code>var meshEmitter = new BABYLON.MeshParticleEmitter(sphere);</code></pre>
+<p>By default, the direction of the particles follows the surface normal of the mesh. You can disable this and use a custom direction instead:</p>
+<pre class="code" data-lang="javascript"><code>meshEmitter.useMeshNormalsForDirection = false;
+meshEmitter.direction1 = new BABYLON.Vector3(0, 1, 0);
+meshEmitter.direction2 = new BABYLON.Vector3(0, -1, 0);</code></pre>
+<p><strong>Please note that <code>MeshParticleEmitter</code> is not supported by GPU particle systems.</strong></p>
+<p>Here is an example of a mesh particle emitter: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="custom-emitter">Custom Emitter<a class="anchor" href="#custom-emitter">#</a></h2>
+<p>A custom emitter lets you define the position and destination of each particle by providing two generator functions:</p>
+<pre class="code" data-lang="javascript"><code>var customEmitter = new BABYLON.CustomParticleEmitter();
+
+var id = 0;
+customEmitter.particlePositionGenerator = (index, particle, out) =&gt; {
+    out.x = Math.cos(id) * 5;
+    out.y = Math.sin(id) * 5;
+    out.z = 0;
+    id += 0.01;
+}
+
+customEmitter.particleDestinationGenerator = (index, particle, out) =&gt; {
+    out.x = 0;
+    out.y = 0;
+    out.z = 0;
+}</code></pre>
+<p>When used with a GPU particle system, the generators (<code>particlePositionGenerator</code> and <code>particleDestinationGenerator</code>) receive a particle index. When used with a CPU particle system, they receive the actual particle object to update.</p>
+<p>Here is an example of a custom particle emitter: <span class="muted">Online playground (not embedded offline)</span></p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#point-emitter">Point Emitter </a><a href="#box-emitter">Box Emitter </a><a href="#sphere-emitter">Sphere Emitter </a><a href="#hemispheric-emitter">Hemispheric Emitter </a><a href="#cylinder-emitter">Cylinder Emitter </a><a href="#cone-emitter">Cone Emitter </a><a href="#mesh-emitter">Mesh Emitter </a><a href="#custom-emitter">Custom Emitter </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

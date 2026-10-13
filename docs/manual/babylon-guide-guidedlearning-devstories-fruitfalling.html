@@ -1,0 +1,617 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Playground to Production - Fruit Fallin — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Playground to Production - Fruit Fallin</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><p>Related links:
+<span>source</span>,
+<span>assets</span>,
+<span>demo</span>.</p>
+<h2 id="high-level-overview">High Level Overview<a class="anchor" href="#high-level-overview">#</a></h2>
+<p>Once upon a time, I was fiddling with an idea in the Babylon.js Playground,
+and I thought, &quot;I like this! This is fun. I&#39;d like to make something more
+of this, but I don&#39;t want it to live in the Playground
+forever. <strong>How do I take my Playground prototype and turn it into
+independent production software?</strong>&quot;</p>
+<p><p class="muted">Upstream illustration: Playground to Web? Android? iOS? (media not bundled).</p></p>
+<p>So I went to the Babylon.js docs site and read through an article titled,
+&quot;Playground to Production: <em>Fruit Fallin&#39;</em>.&quot; After reading that article
+(and asking any questions I had on the <span>forum</span>),
+I knew exactly what to do and about how long I could expect it to take.</p>
+<ol>
+<li>On my GitHub account, I created a new repository from the
+<span>Babylon.js NPM Package Template</span>,
+moved my Playground code into that repo, and confirmed it worked. <strong>Within
+half an hour, I had my Playground code running in my own repo.</strong></li>
+<li>I then created a new repo from the Babylon.js
+<span>Asset Host Template</span>,
+put the assets I&#39;d been prototyping with in there, then changed the links
+in my prototype code to point to my local asset host. <strong>Fifteen minutes
+later, my entire prototype—source code and assets—was running from my own
+repositories.</strong></li>
+<li>Now with everything moved into dev infrastructure, I set about turning
+my prototype into real production code and assets. <strong>I refactored and
+revised to get rid of Playground-specific practices and transform my
+repos into efficient development environments where I could add features,
+take dependencies, experiment, collaborate, and iterate throughout the
+whole development process.</strong></li>
+<li>Once I had something I was ready to share, I wanted to host it using
+<span>GitHub Pages</span> so I could get feedback from
+friends and colleagues. Because the Babylon.js Template Repositories are
+set up to make this easy, <strong>it took me five minutes, if that, to publish my
+experience to a GitHub-hosted site I could link to.</strong></li>
+<li>Next, I uploaded my game code as an
+<span>NPM package</span> so that I could easily re-add it to
+other projects (websites, NPM apps, etc.) just by pulling down a package.
+Again, the Babylon.js Template repositories are set up to make this easy:
+<strong>within ten minutes, I had my new NPM package.</strong></li>
+<li>I wanted to publish my app as a mobile game and get it listed on Google
+Play and the App Store, so I decided to use
+<span>Ionic</span>. All I had to do was create a new
+Ionic app, add my new NPM package as a dependency, then invoke my code and
+tell it where to display in the app. <strong>About an hour later, my code was
+built into a native app, ready to be shipped for mobile devices or as a
+PWA.</strong></li>
+</ol>
+<p><p class="muted">Upstream illustration: The Path: Playground to GitHub to NPM to Ionic (media not bundled).</p></p>
+<p>And that is how I created
+<span><em>Fruit Fallin&#39;</em></span>,
+a Babylon.js app inspired by browser games from the heyday of Flash. While
+I happened to be making a simple game, this same process can be used for
+more complex experiences, commercial scenarios... At a high level, the
+procedure described above can be used to take any Babylon.js idea from
+Playground to production using the Babylon.js Template Repositories, NPM,
+and Ionic.</p>
+<p>For a less high-level look, let&#39;s take a more step-by-step journey through
+the process.</p>
+<h2 id="a-more-step-by-step-journey-through-the-process">A More Step-by-Step Journey Through the Process<a class="anchor" href="#a-more-step-by-step-journey-through-the-process">#</a></h2>
+<h3 id="moving-playground-code-into-a-development-repo">Moving Playground Code into a Development Repo<a class="anchor" href="#moving-playground-code-into-a-development-repo">#</a></h3>
+<p>The first step toward developing production code was to move development
+from <span>my Playground</span> into a
+dedicated repository. The Babylon.js NPM Package Template, a component
+of the
+<span>Template Repository Workflow</span>,
+is designed with this in mind, particularly when migrating code from
+the Babylon.js Typescript Playground, so I decided to use that.</p>
+<ol>
+<li><p>I logged into my <span>GitHub</span> account.</p>
+<p><p class="muted">Upstream illustration: GitHub login (media not bundled).</p></p>
+</li>
+<li><p>On the page for the Babylon.js
+<span>NPM Package Template</span>,
+I clicked the &quot;Use this template&quot; button to start a new repo.</p>
+<p><p class="muted">Upstream illustration: &quot;Use this template&quot; button (media not bundled).</p></p>
+</li>
+<li><p>I picked my repo name, chose to make it public (for non-open source,
+I would have chosen private), then created the repository.</p>
+<p><p class="muted">Upstream illustration: Picking repo options (media not bundled).</p></p>
+</li>
+<li><p>In a <span>Git</span>-enabled
+terminal (in my case, Git Bash on Windows), I navigated to where
+I wanted my new repo to be and created my local clone.</p>
+<p><p class="muted">Upstream illustration: cd and git clone (media not bundled).</p></p>
+</li>
+<li><p>In an NPM-enabled terminal, I navigated into my new repo and ran</p>
+<pre class="code" data-lang=""><code>npm install</code></pre>
+<p>This installed all the NPM dependencies for all packages in my repo.</p>
+<p><p class="muted">Upstream illustration: PowerShell NPM install (media not bundled).</p></p>
+</li>
+<li><p>Still in the root directory in my NPM-enabled terminal, I ran</p>
+<pre class="code" data-lang=""><code>npm run dev</code></pre>
+<p>This started processes to both build and serve the repo in &quot;watch&quot;
+mode. After a moment, the default NPM Package Template test app
+launched in a new browser tab at <span>http://127.0.0.1:8080</span>, confirming I was
+on the right track.</p>
+<p><p class="muted">Upstream illustration: Browser default test app (media not bundled).</p></p>
+</li>
+<li><p>I then went back to the
+<span>Babylon.js Typescript Playground I&#39;d been prototyping in</span>
+and copied all the code.</p>
+<p><p class="muted">Upstream illustration: Copying my Playground (media not bundled).</p></p>
+<p>Note: this &quot;copying&quot; process does expect the original code to be in the
+<em>TypeScript</em> Playground. Code from a <em>JavaScript</em> Playground will need
+to be ported to TypeScript (usually not very difficult) before continuing
+into the Template Repository Workflow. That kind of code migration isn&#39;t
+a part of this Dev Story, but it should be fairly straightforward, and
+help is always available on
+<span>the forum</span>.</p>
+</li>
+<li><p>In Visual Studio Code (my preferred code editor), I opened up my new
+repo&#39;s root directory, then opened the file
+<code>app_package/src/Playground/playground.ts</code> and replaced the <code>Playground</code>
+class with the one I&#39;d copied from the Web.</p>
+<p><p class="muted">Upstream illustration: Playground.ts (media not bundled).</p></p>
+</li>
+<li><p>While the NPM Package Template is designed to make it as easy as
+possible to copy-paste code from the Web Playground and have it work
+immediately, sometimes a little tweaking is needed. In my case, I
+was using coroutine features that were only available in the preview
+branch, so I had to update the version of Babylon that my
+<code>app_package/package.json</code> was depending on.</p>
+<p><p class="muted">Upstream illustration: Playground.ts pasted in (media not bundled).</p></p>
+</li>
+<li><p>After making that change and running</p>
+<pre class="code" data-lang=""><code>npm update</code></pre>
+<p>I was able to get my first glimpse of my code running locally.</p>
+<p><p class="muted">Upstream illustration: New browser Playground (media not bundled).</p></p>
+</li>
+<li><p>One more change required! Since my code had been hosted on the
+Playground, it was using the Playground-relative <code>&quot;textures/player.png&quot;</code>
+URL; however, once that code was running locally, it was unable to
+build a full URL with which to find that asset. Switching over to my
+own asset hosting was a later step, so I didn&#39;t really <em>need</em> to
+solve this; however, since getting it working could be done by just
+switching to a
+<span>RawGit</span>
+URL for <code>player.png</code> (which still works, for the moment), I decided
+to fix it anyway.</p>
+<p><p class="muted">Upstream illustration: Raw sprite location (media not bundled).</p></p>
+</li>
+<li><p>After saving that change, all I had to do was save the file
+and wait for the test app in my browser to auto-refresh.</p>
+<p><p class="muted">Upstream illustration: It's working! (media not bundled).</p></p>
+</li>
+</ol>
+<p>And, just like that, I&#39;d moved my prototype code from the Playground to
+an independent repository in which to continue development. However, I
+was still pulling assets from the Internet, which would be difficult to
+control and update as I continued developing my app. Time to create a
+more development-friendly environment for assets too!</p>
+<h3 id="creating-an-asset-host-repo">Creating an Asset Host Repo<a class="anchor" href="#creating-an-asset-host-repo">#</a></h3>
+<p>The <code>Sprite</code> I used while learning how to use sprites is the one provided
+as part of Babylon&#39;s default assets. While I knew all along I wanted to
+replace that, I first wanted to use it to bootstrap and test my approach
+to asset hosting for development.</p>
+<ol>
+<li><p>Repeating essentially the steps from the
+<a href="babylon-guide-guidedlearning-devstories.html">prior section</a>
+for creating a new repository from a template, I made a new asset host
+from the
+<span>Asset Host Template</span>,
+cloned it down, and installed the NPM dependencies.</p>
+</li>
+<li><p>As before, I ran</p>
+<pre class="code" data-lang=""><code>npm run dev</code></pre>
+<p>in the root directory of my new asset host repo. This started up a
+server to serve assets in my repo&#39;s <code>docs</code> folder at
+<span>http://127.0.0.1:8181</span> by default.</p>
+<p><p class="muted">Upstream illustration: Asset server (media not bundled).</p></p>
+</li>
+<li><p>To double-check that my server was working, I opened
+<span>http://127.0.0.1:8181/example.txt</span> and saw the text</p>
+<p><p class="muted">Upstream illustration: Browser screenshot (media not bundled).</p></p>
+</li>
+<li><p>Next, I downloaded a copy of
+<span>player.png</span>
+and placed it in the <code>docs</code> folder. Again, I used the browser to test
+that this worked by checking that I could see the image at
+<span>http://127.0.0.1:8181/player.png</span>. The dev server that comes with the
+Asset Host Template automatically serves new files dropped in the
+<code>docs</code> folder, so there was no need to restart the server.</p>
+<p><p class="muted">Upstream illustration: Player.png in the docs folder (media not bundled).</p></p>
+</li>
+<li><p>Going back over to Playground.ts in my source repository, all that
+remained to consume the sprite from my own asset host was to change
+the <code>spriteUrl</code> assignment line to</p>
+<pre class="code" data-lang="ts"><code>const spriteUrl: string = &quot;http://127.0.0.1:8181/player.png&quot;;</code></pre>
+<p>save the file, then wait for the test app to reload.</p>
+</li>
+<li><p>Of course, once that reload happened, I realized I wouldn&#39;t be able
+to see the results because the sprite from my asset host looked
+identical to the one pulled from the Internet. To make extra sure,
+then, I changed <code>player.png</code> to <code>player_2.png</code> in my asset host,
+then cleared my browser&#39;s file cache (so it wouldn&#39;t load a cached
+version of <code>player.png</code>) and refreshed the test app. After confirming
+that the test app couldn&#39;t find <code>player.png</code>, I changed the code again
+to look for <code>player_2.png</code> and saved the file. When the app
+auto-reloaded, it had found the sprite again.</p>
+<p><p class="muted">Upstream illustration: Test app without and with correct sprite name (media not bundled).</p></p>
+</li>
+</ol>
+<p>And with that, my entire prototype, both code and assets, was running
+locally from my own repos where I could iterate fast and commit often
+as I moved on to...</p>
+<h3 id="developing-the-experience">Developing the Experience<a class="anchor" href="#developing-the-experience">#</a></h3>
+<p>Coding tutorials and implementation diatribes are the stuff of dreams in
+that most people who read them fall asleep almost immediately. This is not
+a coding tutorial, so I won&#39;t spend much time describing the details of the
+implementation of <em>Fruit Fallin&#39;</em>. I will, however, cover a few notes that
+I think were particularly important to helping me get <em>Fruit Fallin&#39;</em> to
+work the way I wanted it.</p>
+<ol>
+<li><p>I pulled apart and deleted <code>playground.ts</code> just as fast as I could.</p>
+<p>The Babylon.js Playground is a fantastic place to experiment, prototype,
+and repro bugs. In order to be as good at those things as it is,
+however, the Playground makes a number of implementation decisions that
+do not translate well into production software development. Single-file
+development, kitchen-sink dependency inclusion, and the <code>BABYLON</code>
+import are prominent examples of this.</p>
+<p><p class="muted">Upstream illustration: The BABYLON import (media not bundled).</p></p>
+<p>In its initial state, the NPM Package Template repo emulates these
+patterns intentionally in <code>playground.ts</code> to make it as easy as
+possible to transition from Playground-based prototyping to repo-based
+development. The first step of that transition is to simply copy the
+Playground code into <code>playground.ts</code> as discussed above, then get that
+to a working state. Once that&#39;s done, however, I think the second step
+should always be to refactor everything in <code>playground.ts</code> into a more
+robust code structure (multiple files, types, etc.). With the code
+already in a working state, I moved functionality out into separate
+files incrementally (camera creation into a new camera type, falling
+objects into a new class, etc.), proving at every step that I hadn&#39;t
+broken my code. Then, once all the functionality had been moved out
+of <code>playground.ts</code>, I simply deleted that file and the folder
+containing it from my repo.</p>
+</li>
+<li><p>I cleaned out the unused dependencies from the NPM Package Template
+repository.</p>
+<p>This is another step I recommend for moving your new repo away from
+Playground practices and into production. In order to be able to
+support code copy-pasted out of the Playground, the NPM Package
+Template&#39;s <code>app_package</code> by default includes a <em>lot</em> of dependencies,
+only a subset of which are likely to be used by any particular
+codebase. Fortunately, it&#39;s easy to get rid of the unnecessary imports
+here; all I had to do was open <code>app_package/package.json</code> and delete
+the references to any NPM packages I wasn&#39;t using--which, in this case,
+was most of them.</p>
+<p><p class="muted">Upstream illustration: Excess NPM package deletion (media not bundled).</p></p>
+</li>
+<li><p>To make sure I was rendering under the intended circumstances, I
+customized <code>index.js</code> in the <code>test_package</code>.</p>
+<p>The test app included with the NPM Package Template has an extremely
+simplistic and generic appearance: it&#39;s basically just a small
+<code>HTMLCanvasElement</code> in a blank page. Not all Web apps are designed for
+generic canvases, however, so in many cases it may be helpful to add
+features to the test app to better reflect the real environment where
+the app will be run (full-screen capability, website forms to enter
+data, etc.). In my case, <em>Fruit Fallin&#39;</em> was designed primarily with
+mobile touchscreens in mind, so I wanted my canvas to have an aspect
+ratio that more closely resembled what the game was ultimately supposed
+to run in.</p>
+<p><p class="muted">Upstream illustration: index.js in test_package (media not bundled).</p></p>
+</li>
+<li><p>I used <code>Scene</code>s as a unit of organization for my game logic.</p>
+<p><p class="muted">Upstream illustration: Scenes used in runtime.ts (media not bundled).</p></p>
+<p>Most interactive apps have multiple &quot;modes&quot; of operation, and <em>Fruit
+Fallin&#39;</em> in particular has two: the game and the
+title/menu/options/credits. While there&#39;s no real rule for how best
+to separate the concerns of the different modes, I found it useful to
+have them as separate Babylon <code>Scene</code> objects. Specifically, I made new
+<code>Scene</code> subclasses with the behavior I wanted for the different &quot;modes,&quot;
+such as the
+<span>title screen</span>
+and
+<span>gameplay</span>.
+That made it easy for me to transition between modes by simply
+disposing one kind of scene and creating a new instance of the other,
+thus keeping the logic and resources clean and separated.</p>
+</li>
+<li><p>I wrote a fixed framerate observable to simplify having
+<span>coroutine</span>-driven
+animation and game logic without being vulnerable
+to framerate changes.</p>
+<p>Framerate-dependent logic is dangerous because you can&#39;t rely on
+framerate. If you write your sprite animations to advance with
+device framerate and you get them to look right on a 30 FPS device,
+for example, then those animations will look absurdly fast on a 60 FPS
+device. On the other hand, there are certain things in game logic
+(such as sprite animations) that fit very naturally with frame-based
+logic because they happen in discrete increments. I wanted to take
+advantage of this natural synergy, but I didn&#39;t want my logic to be
+vulnerable to variations in framerate; so, borrowing from physics
+simulation practices, my solution was to make a simple
+<span>fixed framerate observable</span>
+which drives a guaranteed number of &quot;updates&quot; per second. If the device
+is rendering faster than the desired framerate, this observable will
+&quot;skip&quot; frames until enough time has elapsed; and if the device is
+rendering slower than the desired framerate, this observable will
+&quot;double up&quot; on what frames it has so that the same number of &quot;updates&quot;
+per time are always called. This trick allowed me to write
+<span>logic</span>
+that was <em>frame</em>-dependent without it becoming vulnerable to
+frame-<em>rate</em> dependence.</p>
+<p><p class="muted">Upstream illustration: Frame-dependent game logic (media not bundled).</p></p>
+<p>Having this ability to reliably use frame-based logic allowed me to use
+coroutines for all sorts of things, from game flow to procedural
+animation. A full overview of the use of coroutines in <em>Fruit Fallin&#39;</em>
+is beyond the scope of this article, but perhaps the most fun example
+look at is how
+<span>the face animations are done entirely using coroutines</span>.</p>
+</li>
+<li><p>I made the consuming app (in this repo, the test app) responsible for
+specifying the locations of all the assets used by the game.</p>
+<p>As discussed in the Babylon docs on the
+<span>Template Repository Workflow</span>,
+one of the most varied challenges in deploying Babylon experiences is
+distributing assets. It&#39;s best to keep this problem completely separate
+from actually <em>using</em> the assets within the code, thus allowing the
+same experience code to be used in multiple situations even when assets
+are distributed differently. For this reason, my rule for myself is that
+there should never be a hard-coded asset URL anywhere in <code>app_package</code>.
+Instead, all resource locations should be passed in by the consuming
+experience, whether that be <code>test_package</code> or some production shipping
+vehicle. That way the <code>app_package</code> code can be written to &quot;just work&quot;
+as long as it&#39;s given the right asset locations, and all any consuming
+experience has to do to integrate it is just tell <code>app_package</code>
+the correct URLs to use.</p>
+<p><p class="muted">Upstream illustration: index.js asset location code (media not bundled).</p></p>
+</li>
+</ol>
+<p>I should also briefly mention how I created the assets for the game.
+Again, this is not an implementation overview; but for those who are
+curious, here are the various tools I used to make <em>Fruit Fallin&#39;</em>.</p>
+<ol>
+<li><strong>Art:</strong> I drew all the backgrounds, the buttons, and all the
+animated components by hand using
+<span>FlipaClip</span>
+on an ancient Samsung Tab A 9.7 (from 2015, I think). Frames of
+animation were batch-cropped using <span>FFmpeg</span>,
+combined into spritesheets using the
+<span>Leshy SpriteSheet Tool</span>,
+and if necessary refined (fine-tuning opacity, etc.) using
+<span>GIMP</span>.</li>
+<li><strong>Music:</strong> I made the song that plays during gameplay using
+<span>MPC Beats</span>.</li>
+<li><strong>Sound effects:</strong> Almost all the sound effects I made by just
+making ridiculous noises into a microphone, then fiddling with
+the recordings in <span>Audacity</span> to get the
+sound I wanted. The exceptions are the tones which play during the
+countdown at the start of the game, which were generated from pitch in
+Audacity.</li>
+<li><strong>Other:</strong> The few remaining elements such as text are all
+generated using
+<span>Babylon&#39;s built-in GUI</span>.
+The only exception to this is the colors of the animated buttons, which
+are done using Babylon-generated plane geometry and an unlit PBR
+material.</li>
+</ol>
+<h3 id="publishing-the-test-app-on-github-pages">Publishing the Test App on GitHub Pages<a class="anchor" href="#publishing-the-test-app-on-github-pages">#</a></h3>
+<p>Once I had <em>Fruit Fallin&#39;</em> working, I immediately wanted to share it with
+some friends to get their feedback. There are many public and private
+ways I could have done that, but because I didn&#39;t care about keeping the
+prototype private, by far the easiest option was to use
+<span>GitHub Pages</span>, a simple GitHub-based public
+hosting service that the template repositories make very easy to use.</p>
+<ol>
+<li><p>GitHub Pages essentially allows you to serve static sites from certain
+designated folders in your repository, one of which is the <code>docs</code>
+folder. This is the reason that the Asset Host Template serves assets
+from the <code>docs</code> folder in the first place. Because of this, it is
+<em>extremely</em> straight forward to get GitHub Pages to host your assets. To start, I
+pushed my changes up to my GitHub repository, then opened that repo
+in a browser.</p>
+<p><p class="muted">Upstream illustration: Asset Host web view (media not bundled).</p></p>
+</li>
+<li><p>On that repo&#39;s browser site, I opened up the Settings tab, then
+scrolled down and clicked on Pages.</p>
+<p><p class="muted">Upstream illustration: Settings -&gt; Pages (media not bundled).</p></p>
+</li>
+<li><p>I chose the main branch as my source, then selected <code>docs</code> as the
+folder to serve. With that done, because my assets were already in the
+<code>docs</code> folder, I immediately had a public Web host for my assets.</p>
+<p><p class="muted">Upstream illustration: Assets in the browser (media not bundled).</p></p>
+</li>
+<li><p>Next, I wanted to make the test app change its behavior depending on
+whether it was hosted in the local dev server or on GitHub Pages.
+If it was local, I wanted it to still pull assets from my local asset
+host at 127.0.0.1:8181 so that I could keep my development workflow.
+However, if the site was on GitHub Pages, I wanted it to pull from the
+Web host. Fortunately, the test app includes a mechanism for determining
+this pretty easily; all I had to do was check the <code>DEV_BUILD</code> variable
+and change the URL prefix based on that.</p>
+<p><p class="muted">Upstream illustration: Checking the DEV_BUILD variable (media not bundled).</p></p>
+</li>
+<li><p>The way the NPM Package Template is set up, <code>DEV_BUILD</code> will be true
+whenever running locally using</p>
+<pre class="code" data-lang=""><code>npm run dev</code></pre>
+<p>However, GitHub Pages can&#39;t (and shouldn&#39;t) run that way; instead, I needed to build my test app to a static site and put it in the <code>docs</code>
+folder. That, too, is built into the NPM Package Template; to build
+<code>test_package</code> (including its dependency <code>app_package</code>) and place the
+build output in the <code>docs</code> folder ready to deploy to GitHub Pages, I
+ran the following command from the repo&#39;s root directory.</p>
+<pre class="code" data-lang=""><code>npm run build</code></pre>
+</li>
+<li><p>I next ran <code>git status</code> just to confirm that the files in the <code>docs</code>
+folder really had changed.</p>
+<p><p class="muted">Upstream illustration: They had (media not bundled).</p></p>
+</li>
+<li><p>With that done, all that was left was to commit the built site, push
+it to GitHub, then turn on GitHub pages the same way I did for the
+asset host site.</p>
+<p><p class="muted">Upstream illustration: GitHub Pages again (media not bundled).</p></p>
+</li>
+</ol>
+<p>A few seconds later, my site was live and GitHub gave me a link I could
+use to share the first Web-accessible version of <em>Fruit Fallin&#39;</em>!</p>
+<h3 id="deploying-as-an-npm-package">Deploying as an NPM Package<a class="anchor" href="#deploying-as-an-npm-package">#</a></h3>
+<p>The speed and convenience of GitHub Pages was great, but it wasn&#39;t the end
+goal. Once I had gotten some feedback and was ready to move forward, I
+next needed to bring my <code>app_package</code> code into a real shipping vehicle.
+Continuing with the
+<span>Template Repository Workflow</span>,
+I decided to upload my <code>app_package</code> as an NPM package so that it could be
+easily integrated into a huge variety of different shipping solutions.</p>
+<ol>
+<li><p>Since the <code>app_package</code> in the NPM Package Template is already
+structured as an NPM package, publishing it as such is as easy as
+publishing any other NPM package. Personally, I had never published
+an NPM package before, so it took me an embarrassingly long time to
+figure out that I could
+<span>login to NPM in a terminal</span>
+by opening a terminal and typing</p>
+<pre class="code" data-lang=""><code>npm login</code></pre>
+</li>
+<li><p>Since I didn&#39;t need to
+<span>publish my NPM package privately</span>,
+the only other thing I needed to do was review the <code>package.json</code> file
+in <code>app_package</code> to ensure it contained the correct information for
+my new NPM package--most importantly the package name.</p>
+<p><p class="muted">Upstream illustration: app_package/package.json (media not bundled).</p></p>
+</li>
+<li><pre class="code" data-lang=""><code>cd app_package
+npm publish --access public</code></pre>
+</li>
+</ol>
+<p>And with that, my app code was available on NPM, ready to be integrated
+into whatever shipping app I chose.</p>
+<h3 id="going-to-production-with-ionic">Going to Production with Ionic<a class="anchor" href="#going-to-production-with-ionic">#</a></h3>
+<p>Because <em>Fruit Fallin&#39;</em> was designed with mobile touchscreen interfaces in
+mind, I decided I wanted to embed it into Android and iOS apps that could
+be uploaded to app stores. After looking around, I decided to use Ionic
+as my production platform because (1) it was open-source, (2) it could
+very easily consume NPM packages like the one I&#39;d just created, and (3)
+it would allow me to target both Android and iOS as well as Web and PWA
+from the same shipping vehicle.</p>
+<p>This is not an Ionic tutorial and the best way to learn about Ionic will be
+to consult <span>their own docs</span>; but
+as a quick get-up-and-go, here&#39;s what I did to get Fruit Fallin&#39; built for
+Web and Android using Ionic and developing on Windows.</p>
+<ol>
+<li><pre class="code" data-lang=""><code>npm install -g @ionic/cli</code></pre>
+</li>
+<li><p>After navigating to the folder where I wanted my Ionic app&#39;s code to
+live, I ran</p>
+<pre class="code" data-lang=""><code>ionic start</code></pre>
+</li>
+<li><p>I declined to use the App Creation Wizard, selected a React frontend,
+named my project, and chose a blank app template.</p>
+<p><p class="muted">Upstream illustration: Ionic options (media not bundled).</p></p>
+</li>
+<li><p>To check that everything was in order so far, I ran the following
+command to view the default Ionic Web app:</p>
+<pre class="code" data-lang=""><code>cd fruit-fallin
+ionic serve</code></pre>
+</li>
+<li><p>The next step was to get this default app building into an Android
+app. To do so, I chose to use Ionic&#39;s built-in integration with
+<span>Capacitor</span>.</p>
+<pre class="code" data-lang=""><code>ionic capacitor add android</code></pre>
+</li>
+<li><p>In general, Ionic has fantastic terminal output that will give you
+great advice about how to use itself. In my case, I got a message
+saying that syncing failed because the <code>build</code> directory was missing.
+To solve this, all I had to do was build and sync manually.</p>
+<pre class="code" data-lang=""><code>ionic build
+ionic capacitor sync android</code></pre>
+</li>
+<li><p>My first command to add Android created a folder in my Ionic app&#39;s root
+directory called <code>android</code>. This folder is an Android Studio project.
+Ionic&#39;s CLI provides a number of different ways to try to automatically
+invoke Android Studio on this folder, but I opted not to use those. My
+general experience is that Android Studio is something of a strange
+bird, so I usually prefer to use it directly by opening that folder
+as a project in Android Studio.</p>
+<p><p class="muted">Upstream illustration: Opening in Android Studio (media not bundled).</p></p>
+</li>
+<li><p>Using Android Studio is beyond the scope of this article, but once
+opened the project can be built and run on a real or virtual device just
+like any other project.</p>
+<p><p class="muted">Upstream illustration: The default app on an AVD (media not bundled).</p></p>
+</li>
+<li><p>With that done, it was time to change the content of the app to use
+my NPM package. In an NPM-capable terminal in the root directory, I
+added the dependency.</p>
+<pre class="code" data-lang=""><code>npm install fruit-fallin</code></pre>
+</li>
+<li><p>Installing the dependency brought in the <em>Fruit Fallin&#39;</em> code, but
+the assets needed to be added a different way. I could technically have
+continued having the Ionic app pull the assets from a different
+location, but because I wanted the app to be self-contained, I instead
+just dropped my assets in a new folder in the <code>public/assets</code> directory.</p>
+<p><p class="muted">Upstream illustration: The new assets folder (media not bundled).</p></p>
+</li>
+<li><p>Now all I had to do was actually invoke the NPM dependency I&#39;d pulled
+in and tell it where to find the assets I&#39;d just added. I am not a
+React.js expert and this is not a React.js tutorial, but with a bit of
+help from friends and colleagues I was able to create a simple rewrite
+of <code>Home.tsx</code> that displayed a full-screen canvas and passed it as an
+argument to my <em>Fruit Fallin&#39;</em> initialization code.</p>
+<pre class="code" data-lang=""><code>import { IonContent, IonPage } from '@ionic/react';
+import { Component, createRef, RefObject } from 'react';
+import { initializeBabylonApp } from 'fruit-fallin';
+import './Home.css';
+
+class BabylonGame extends Component {
+  private _canvas: RefObject&lt;HTMLCanvasElement&gt;;
+
+  constructor (props: any) {
+    super(props);
+    this._canvas = createRef();
+  }
+
+  public componentDidMount() {
+    // Crude workaround for a loading timing issue
+    setTimeout(() =&gt; {
+      const babylonOptions = {
+        canvas: this._canvas.current!,
+        backgroundTitleUrl: &quot;assets/game/background_title.jpg&quot;,
+        backgroundGameUrl: &quot;assets/game/background_game.jpg&quot;,
+        buttonPlankUrl: &quot;assets/game/button_plank.jpg&quot;,
+        imageGameOverUrl: &quot;assets/game/image_game_over.jpg&quot;,
+        spritesheetButtonFrameUrl: &quot;assets/game/spritesheet_button_frame.jpg&quot;,
+        spritesheetFruitUrl: &quot;assets/game/spritesheet_fruit.jpg&quot;,
+        spritesheetMouthUrl: &quot;assets/game/spritesheet_mouth.jpg&quot;,
+        soundMusicUrl: &quot;assets/game/sound_music.mp3&quot;,
+        soundChompUrl: &quot;assets/game/sound_chomp.mp3&quot;,
+        soundChompYumUrl: &quot;assets/game/sound_chomp_yum.mp3&quot;,
+        soundChompYuckUrl: &quot;assets/game/sound_chomp_yuck.mp3&quot;,
+        soundCountdownUrl: &quot;assets/game/sound_countdown.mp3&quot;,
+        soundGoUrl: &quot;assets/game/sound_go.mp3&quot;,
+        soundClickUrl: &quot;assets/game/sound_click.mp3&quot;,
+      };
+      initializeBabylonApp(babylonOptions);
+    }, 200);
+  }
+
+  public render() {
+      return &lt;canvas id=&quot;babylonCanvas&quot; width={window.innerWidth} height={window.innerHeight} style={{width: &quot;100%&quot;, height: &quot;100%&quot;}} className=&quot;center&quot; ref={this._canvas}&gt;&lt;/canvas&gt;;
+  }
+}
+
+const Home: React.FC = () =&gt; {
+  return (
+    &lt;IonPage&gt;
+      &lt;IonContent&gt;
+        &lt;BabylonGame&gt;&lt;/BabylonGame&gt;
+      &lt;/IonContent&gt;
+    &lt;/IonPage&gt;
+  );
+};
+
+export default Home;</code></pre>
+</li>
+<li><p>To test that this worked, I first tested in browser again:</p>
+<pre class="code" data-lang=""><code>ionic serve</code></pre>
+<p><p class="muted">Upstream illustration: Fruit Fallin' Ionic (media not bundled).</p></p>
+<p>This would be very close to the end state if I were targeting Web or PWA
+using Ionic. However, since I wanted to go to Android, there were a few
+more steps.</p>
+</li>
+<li><pre class="code" data-lang=""><code>ionic build
+ionic capacitor sync android</code></pre>
+<p>The explicit build may be unnecessary, but I did it just to be sure. The
+sync then copied over the new build as well as the assets, updating
+the Android project. Note that I closed down Android Studio before doing
+this to help ensure that the Ionic CLI and Android Studio didn&#39;t
+confuse each other while accessing the same files simultaneously.</p>
+</li>
+<li><p>Finally, I once again opened the <code>android</code> folder in Android Studio,
+built the project, and deployed it to my Android virtual device.</p>
+<p><p class="muted">Upstream illustration: Fruit Fallin' on AVD (media not bundled).</p></p>
+</li>
+</ol>
+<p>And that was it! That was all I needed. My Babylon experience could now be
+deployed to Web, PWA, Android, and iOS all from the same codebase; and
+moreover I now had a process to leverage the Template Repository Workflow
+to bring almost any project from Playground to production along the same
+path.</p>
+<p>What should I make next?</p>
+<p>What will <em>you</em> make next?</p>
+<p><p class="muted">Upstream illustration: What next? (media not bundled).</p></p>
+<p>-syntheticmagus</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#high-level-overview">High Level Overview </a><a href="#a-more-step-by-step-journey-through-the-process">A More Step-by-Step Journey Through the Process </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

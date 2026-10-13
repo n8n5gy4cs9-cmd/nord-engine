@@ -1,0 +1,680 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Geodesic and Goldberg Polyhedra Code Design — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Geodesic and Goldberg Polyhedra Code Design</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="overview">Overview<a class="anchor" href="#overview">#</a></h2>
+<p>Using the <a href="babylon-guide-guidedlearning-workshop-geodesic-math.html">geodesic mathematics</a> already described, the code needed to produce Geodesic and Goldberg polyhedra is developed and tested.</p>
+<h2 id="isometric-vectors">Isometric Vectors<a class="anchor" href="#isometric-vectors">#</a></h2>
+<p>We need a class of 2D iso-vectors to add, subtract and rotate.</p>
+<pre class="code" data-lang="javascript"><code>function IsoVector(x, y) { //x, y integers
+    this.x = x;
+    this.y = y;
+};
+
+IsoVector.prototype.length = function() {
+    return Math.sqrt(this.x * this.x + this.y * this.y + this.x * this.y);
+};
+
+IsoVector.prototype.clone = function() {
+    return new IsoVector(this.x, this.y);
+};
+
+IsoVector.prototype.add = function(other) { //other isovec
+    return new IsoVector(this.x + other.x, this.y + other.y);
+};
+
+IsoVector.prototype.addInPlace = function(other) { //other isovec
+    this.x += other.x;
+    this.y += other.y;
+    return this;
+};
+
+IsoVector.prototype.addToRef = function(other, result) { //other and result isovecs
+    result.x = this.x + other.x;
+    result.y = this.y + other.y;
+    return result;
+};
+
+IsoVector.prototype.subtract = function(other) { //other isovec
+    return new IsoVector(this.x - other.x, this.y - other.y);
+};
+
+IsoVector.prototype.subtractInPlace = function(other) { //other isovec
+    this.x -= other.x;
+    this.y -= other.y;
+    return this;
+};
+
+IsoVector.prototype.subtractToRef = function(other, result) { //other and result isovecs
+    result.x = this.x - other.x;
+    result.y = this.y - other.y;
+    return result;
+};
+
+IsoVector.prototype.rotate60About = function(other) { //other isovec
+    let x = this.x;
+    this.x = other.x + other.y - this.y;
+    this.y = x + this.y - other.x;
+    return this;
+}
+
+IsoVector.prototype.rotateNeg60About = function(other) { //other isovec
+    let x = this.x;
+    this.x = x + this.y - other.y;
+    this.y = other.x + other.y - x;
+    return this;
+};
+
+IsoVector.prototype.rotate120Sides = function(m, n) { //m, n integers
+    let x = this.x;
+    this.x = m - x - this.y;
+    this.y = n + x;
+    return this;
+}
+
+IsoVector.prototype.rotateNeg120Sides = function(m, n) { //m, n integers
+    let x = this.x
+    this.x = this.y - n;
+    this.y = m + n - x - this.y;
+    return this;
+};
+
+IsoVector.prototype.toCartesianOrigin = function(origin, size) { // origin Vector3, size real
+    const point = BABYLON.Vector3.Zero();
+    point.x = origin.x + 2 * this.x * size + this.y * size;
+    point.y = origin.y + 3 * thrdR3 * this.y * size;
+    return point;
+};</code></pre>
+<p>PG: <span class="muted">Online playground (not embedded offline)</span> </p>
+<p>PG: <span class="muted">Online playground (not embedded offline)</span> </p>
+<h2 id="the-primary-triangle">The Primary Triangle<a class="anchor" href="#the-primary-triangle">#</a></h2>
+<p>This is the code needed to produce the primary triangle (Fig 1) with Iso and Cartesian vertices ordered by x for each row.</p>
+<p><p class="muted">Upstream illustration: facet vertices (media not bundled).</p><br>Fig 1 Internal Facet Vertices</p>
+<pre class="code" data-lang="javascript"><code>function Primary(m, n) {
+    this.m = m;
+    this.n = n;
+
+    this.cartesian = [];
+    this.vertices = [];
+    this.max = [];
+    this.min = [];
+
+};   
+
+function CreatePrimary(m, n) {
+    const vertices = [];
+
+    O = new IsoVector(0, 0);
+    A = new IsoVector(m, n);
+    B = new IsoVector(-n, m + n);
+    vertices.push(O, A, B);
+
+    //max internal isoceles triangle vertices
+    for (let y = n; y &lt; m + 1 ; y++) {
+        for (let x = 0; x &lt; m + 1 - y; x++ ) {
+            vertices.push(new IsoVector(x, y));
+        }
+    }
+
+    //shared vertices along edges when needed
+    if (n &gt; 0) {
+        let g = m; // hcf of m, n when n != 0
+        let m1 = 1;
+        let n1 = 0;
+        if (n !== 0) {
+            g = HCF(m, n);
+        };
+        m1 = m / g;
+        n1 = n / g; 
+
+        for (let i = 1; i &lt; g; i++) {
+            vertices.push(new IsoVector(i * m1, i * n1)); //OA
+            vertices.push(new IsoVector(-i * n1, i * (m1 + n1)));  //OB
+            vertices.push(new IsoVector(m - i * (m1 + n1), n + i * m1)); // AB
+        }; 
+
+        //lower rows vertices and their rotations
+        const ratio = m / n;
+        for (let y = 1; y &lt; n; y++) {
+            for (let x = 0; x &lt; y * ratio; x++) {
+                vertices.push(new IsoVector(x, y));
+                vertices.push(new IsoVector(x, y).rotate120Sides(m , n));
+                vertices.push(new IsoVector(x, y).rotateNeg120Sides(m , n));
+            }
+        }
+    }
+    //order vertices by y and x
+    vertices.sort((a, b) =&gt; {
+        return a.x - b.x
+    });
+
+    vertices.sort((a, b) =&gt; {
+        return a.y - b.y
+    });
+
+    const min = new Array(m + n + 1);
+    const max = new Array(m + n + 1);
+    min.fill(Infinity);
+    max.fill(-Infinity);
+
+    let y = 0;
+    let x = 0;
+
+    let len = vertices.length;   
+    for (i = 0; i &lt; len; i++) {
+        x = vertices[i].x;
+        y = vertices[i].y
+        min[y] = Math.min(x, min[y]);
+        max[y] = Math.max(x, max[y]);
+    };
+    const cartesian = [];
+    for (let i = 0; i &lt; vertices.length; i++) {
+        cartesian[i] = vertices[i].toCartesianOrigin(new IsoVector(0, 0))
+    };
+
+    const P = new Primary(m, n);
+    P.vertices = vertices;
+    P.cartesian = cartesian;
+    P.min = min;
+    P.max = max;
+
+    return P;
+}</code></pre>
+<p>PG: <span class="muted">Online playground (not embedded offline)</span> </p>
+<h2 id="creating-the-icosahedron-base">Creating the Icosahedron Base<a class="anchor" href="#creating-the-icosahedron-base">#</a></h2>
+<p>We have based the facet triangles on the net of Fig 2 now with added vertex labels.</p>
+<p><p class="muted">Upstream illustration: facet vertices labelled (media not bundled).</p><br>Fig 2 Icosahedron Net with Vertex Labels.</p>
+<p>Where each side is of length 2, and with origin at the center of the icosahedron Table 1 gives the (x, y, z) position of each of the twelve vertices where &phi; = (1 + &Sqrt;5) / 2</p>
+<p>| Vertex Index | Position| | Vertex Index | Position| | Vertex Index | Position|
+|----|----|----|----|----|----|----|----|----|
+| 0 | (0, &phi;, -1) | | 4 |  (&phi;, 1, 0) | | 8 |  (0, -&phi;, -1) |
+| 1 |  (-&phi;, 1, 0) | | 5 |  (0, &phi;, 1) | | 9 |  (&phi;, -1, 0) |
+| 2 |  (-1, 0, -&phi;) | | 6 |  (-1, 0, &phi;) | | 10 |  (1, 0, &phi;) |
+| 3 |  (1, 0, -&phi;) | | 7 |  (-&phi;, -1, 0) | | 11 |  (0, -&phi;, 1) |
+&nbsp; 
+Table 1 </p>
+<p>From this and Fig 2 we can build the IDATA to construct the icosahedron.</p>
+<pre class="code" data-lang="javascript"><code>const IDATA = { 
+    &quot;name&quot;:&quot;icosahedron&quot;, 
+    &quot;category&quot;:[&quot;Regular&quot;], 
+    &quot;vertex&quot;:[ [0, PHI, -1], [-PHI, 1, 0], [-1, 0, -PHI], [1, 0, -PHI], [PHI, 1, 0], [0, PHI, 1], [-1, 0, PHI], [-PHI, -1, 0], [0, -PHI, -1], [PHI, -1, 0], [1, 0, PHI], [0, -PHI, 1]],
+    &quot;face&quot;:[
+        [ 0, 2, 1 ], [ 0, 3, 2 ], [ 0, 4, 3 ], [ 0, 5, 4 ], [ 0, 1, 5 ],
+        [ 7, 6, 1 ],[ 8, 7, 2 ], [ 9, 8, 3 ], [ 10, 9, 4 ], [ 6, 10, 5 ],
+        [ 2, 7, 1 ], [ 3, 8, 2 ],[ 4, 9, 3 ], [ 5, 10, 4 ], [ 1, 6, 5 ],
+        [ 11, 6, 7 ], [ 11, 7, 8 ], [ 11, 8, 9 ], [ 11, 9, 10 ], [ 11, 10, 6 ]
+    ]
+};</code></pre>
+<p>PG: <span class="muted">Online playground (not embedded offline)</span> </p>
+<h2 id="mapping-the-primary-triangle-onto-icosahedron-faces">Mapping the Primary Triangle onto Icosahedron Faces<a class="anchor" href="#mapping-the-primary-triangle-onto-icosahedron-faces">#</a></h2>
+<p>After forming the primary triangle for GD(m, n) we need to map the facet vertices formed onto each face of the icosahedron. We use the mathematics from the section in the Geodesic math page.</p>
+<pre class="code" data-lang=""><code>/******Primary Triangle*********/
+function Primary(m, n) {
+    this.m = m;
+    this.n = n;
+
+    this.cartesian = [];
+    this.vertices = [];
+    this.mapped = [];
+    this.max = [];
+    this.min = [];
+
+    this.coau = 0;
+    this.cobu = 0;
+    this.coav = 0;
+    this.cobv = 0;
+
+    this.u = BABYLON.Vector3.Zero();
+    this.v = BABYLON.Vector3.Zero();
+
+};
+
+Primary.prototype.CalcCoeffs = function() {
+    const m = this.m;
+    const n = this.n;
+
+    const LSQD = m * m + n * n + m * n;
+
+    this.coau = (m + n) / LSQD;
+    this.cobu = -n / LSQD;
+    this.coav = -THRDR3 * (m - n) / LSQD;
+    this.cobv = THRDR3 * (2* m + n) / LSQD;
+}
+
+Primary.prototype.MapToFace = function (faceNb) {
+    const F = IDATA.face[faceNb];
+    const Oidx = F[2];
+    const Aidx = F[1];
+    const Bidx = F[0];
+
+    const O = BABYLON.Vector3.FromArray(IDATA.vertex[Oidx]);
+    const A = BABYLON.Vector3.FromArray(IDATA.vertex[Aidx]);
+    const B = BABYLON.Vector3.FromArray(IDATA.vertex[Bidx]);
+
+    const OA = A.subtract(O);
+    const OB = B.subtract(O);
+
+    this.u = OA.scale(this.coau).add(OB.scale(this.cobu));
+    this.v = OA.scale(this.coav).add(OB.scale(this.cobv));
+    
+    const mapped = [];
+    let tempVec = BABYLON.Vector3.Zero();
+    for (let i = 0; i &lt; this.cartesian.length; i++) {
+        tempVec = this.u.scale(this.cartesian[i].x).add(this.v.scale(this.cartesian[i].y)).add(O);
+        mapped[i] = [tempVec.x, tempVec.y, tempVec.z];
+    }
+
+    this.mapped.push(mapped);
+    this.face = faceNb;
+}</code></pre>
+<p>PG: <span class="muted">Online playground (not embedded offline)</span> </p>
+<h3 id="forming-the-facet-triangles-for-the-geodesic-mesh-gd-m-n">Forming the Facet Triangles for the Geodesic Mesh GD(m, n)<a class="anchor" href="#forming-the-facet-triangles-for-the-geodesic-mesh-gd-m-n">#</a></h3>
+<p>The intention is to create a GDmnDATA object with the form</p>
+<pre class="code" data-lang="javascript"><code>const GDmnDATA = { 
+    &quot;name&quot;:&quot;Geodesic_m_n&quot;, 
+    &quot;category&quot;:[&quot;Geodesic&quot;], 
+    &quot;vertex&quot;: //Array of each facet vertex positions in form [x, y, z],
+    &quot;face&quot;:[ //Array of vertex indices in form [index0, index1, index2]
+};</code></pre>
+<p>So far, when mapping the primary triangle to each icosahedron face, some vertex positions are repeated. These include the original icosahedron vertices plus any that lie along the edges of the icosahedron. We need to ensure there are no repeats in GDmnDATA.vertex. For the original icosahedron vertices, we add the positions from its IDATA.</p>
+<p>Using Fig 2 above and Table 1 on the Geodesic Math page, we need to know which icosahedron faces are adjacent and which rotations between faces give the shared GD(m, n) facet vertices. We therefore add to the IDATA and GDmnDATA objects.</p>
+<pre class="code" data-lang="javascript"><code>const IDATA = { 
+    &quot;name&quot;:&quot;icosahedron&quot;, 
+    &quot;category&quot;:[&quot;Regular&quot;], 
+    &quot;edgematch&quot;: [ [1, &quot;B&quot;], [2, &quot;B&quot;], [3, &quot;B&quot;], [4, &quot;B&quot;], [0, &quot;B&quot;], [10, &quot;O&quot;, 14, &quot;A&quot;], [11, &quot;O&quot;, 10, &quot;A&quot;], [12, &quot;O&quot;, 11, &quot;A&quot;], [13, &quot;O&quot;, 12, &quot;A&quot;], [14, &quot;O&quot;, 13, &quot;A&quot;], [0, &quot;O&quot;], [1, &quot;O&quot;], [2, &quot;O&quot;], [3, &quot;O&quot;], [4, &quot;O&quot;], [19, &quot;B&quot;, 5, &quot;A&quot;], [15, &quot;B&quot;, 6, &quot;A&quot;], [16, &quot;B&quot;, 7, &quot;A&quot;], [17, &quot;B&quot;, 8, &quot;A&quot;], [18, &quot;B&quot;, 9, &quot;A&quot;] ],
+    &quot;vertex&quot;:[ [0, PHI, -1], [-PHI, 1, 0], [-1, 0, -PHI], [1, 0, -PHI], [PHI, 1, 0], [0, PHI, 1], [-1, 0, PHI], [-PHI, -1, 0], [0, -PHI, -1], [PHI, -1, 0], [1, 0, PHI], [0, -PHI, 1]],
+    &quot;face&quot;:[
+        [ 0, 2, 1 ], [ 0, 3, 2 ], [ 0, 4, 3 ], [ 0, 5, 4 ], [ 0, 1, 5 ],
+        [ 7, 6, 1 ],[ 8, 7, 2 ], [ 9, 8, 3 ], [ 10, 9, 4 ], [ 6, 10, 5 ],
+        [ 2, 7, 1 ], [ 3, 8, 2 ],[ 4, 9, 3 ], [ 5, 10, 4 ], [ 1, 6, 5 ],
+        [ 11, 6, 7 ], [ 11, 7, 8 ], [ 11, 8, 9 ], [ 11, 9, 10 ], [ 11, 10, 6 ]
+    ]
+};</code></pre>
+<pre class="code" data-lang="javascript"><code>const GDmnDATA = { 
+    &quot;name&quot;:&quot;Geodesic_m_n&quot;, 
+    &quot;category&quot;:[&quot;Geodesic&quot;],
+    &quot;vertex&quot;: [ [0, PHI, -1], [-PHI, 1, 0], [-1, 0, -PHI], [1, 0, -PHI], [PHI, 1, 0], [0, PHI, 1], [-1, 0, PHI], [-PHI, -1, 0], [0, -PHI, -1], [PHI, -1, 0], [1, 0, PHI], [0, -PHI, 1] ..........],
+    &quot;face&quot;:[ //Array of vertex indices in form [index0, index1, index2]
+};</code></pre>
+<p>For the primary triangle OAB we know</p>
+<p>O is at the iso grid origin<br>A is at m<em>i</em>⃗ + nj*⃗
+B is at -n<em>i</em>⃗ + (m + n)j*⃗</p>
+<p>For each face we need to map the iso-vector for each facet point in the primary triangle to a unique index. The following is the function that does this.</p>
+<pre class="code" data-lang="javascript"><code>Primary.prototype.SetIndices = function() {
+    let indexCount = 12; // 12 vertices already assigned
+    const vecToIdx = {}; //maps iso-vectors to indexCount;
+    const m = this.m;
+    const n = this.n;
+    let g = m; // hcf of m, n when n != 0
+    let m1 = 1;
+    let n1 = 0;
+    if (n !== 0) {
+        g = HCF(m, n);
+    };
+    m1 = m / g;
+    n1 = n / g;
+
+    let fr = 0; //face to the right of current face
+    let rot = &quot;&quot;; //rotation about which vertes for fr
+    let O = 0;
+    let A = 0;
+    let B = 0;
+    let OR = 0;
+    let AR = 0;
+    let BR = 0;
+    const Ovec = new IsoVector(0, 0);
+    const Avec = new IsoVector(m, n);
+    const Bvec = new IsoVector(-n, m + n);
+    let OAvec = new IsoVector(0, 0);
+    let ABvec = new IsoVector(0, 0);
+    let OBvec = new IsoVector(0, 0);
+    let temp = 0;
+    let tempR = 0;
+    let verts = [];
+    let idx = &quot;&quot;;
+    let idxR = &quot;&quot;;
+
+
+    /***edges AB to OB***** rotation about B*/
+    for (let f = 0; f &lt; 20; f++) { //f current face
+
+        verts = IDATA.face[f];
+        O = verts[2];
+        A = verts[1];
+        B = verts[0];
+
+        idx = f +&quot;|&quot;+ Ovec.x + &quot;|&quot; + Ovec.y;
+        if (!(idx in vecToIdx)) {
+            vecToIdx[idx] = O;
+        }
+        
+        idx = f +&quot;|&quot;+ Avec.x + &quot;|&quot; + Avec.y;
+        if (!(idx in vecToIdx)) {
+            vecToIdx[idx] = A;
+        }
+        idx = f +&quot;|&quot;+ Bvec.x + &quot;|&quot; + Bvec.y;
+        if (!(idx in vecToIdx)) {
+            vecToIdx[idx] = B;
+        }
+        fr = IDATA.edgematch[f][0];
+        rot = IDATA.edgematch[f][1];
+        if (rot === &quot;B&quot;) {
+                for (let i = 1; i &lt; g; i++) {
+                    ABvec.x = m - i * (m1 + n1);
+                    ABvec.y = n + i * m1;
+                    OBvec.x = -i * n1;
+                    OBvec.y = i * (m1 + n1);
+                    idx = f +&quot;|&quot;+ ABvec.x + &quot;|&quot; + ABvec.y;
+                    idxR = fr +&quot;|&quot;+ OBvec.x + &quot;|&quot; + OBvec.y;
+                    matchIdx(idx, idxR, &quot;B&quot;);
+                }
+        };
+
+       if (rot === &quot;O&quot;) {
+                for (let i = 1; i &lt; g; i++) {
+                    OBvec.x = -i * n1;
+                    OBvec.y = i * (m1 + n1);
+                    OAvec.x = i * m1;
+                    OAvec.y = i * n1;
+                    idx = f +&quot;|&quot;+ OBvec.x + &quot;|&quot; + OBvec.y;
+                    idxR = fr +&quot;|&quot;+ OAvec.x + &quot;|&quot; + OAvec.y;
+                    matchIdx(idx, idxR, &quot;O&quot;);
+                }
+        };
+
+        fr = IDATA.edgematch[f][2];
+        rot = IDATA.edgematch[f][3];       
+      if (rot &amp;&amp; rot === &quot;A&quot;) {
+                for (let i = 1; i &lt; g; i++) {
+                    OAvec.x = i * m1;
+                    OAvec.y = i * n1;
+                    ABvec.x = m - (g - i) * (m1 + n1);;  //reversed for BA
+                    ABvec.y = n + (g - i) * m1; //reversed for BA
+                    idx = f +&quot;|&quot;+ OAvec.x + &quot;|&quot; + OAvec.y;
+                    idxR = fr +&quot;|&quot;+ ABvec.x + &quot;|&quot; + ABvec.y;
+                    matchIdx(idx, idxR, &quot;A&quot;);
+                }
+        };
+
+        for (let i = 0; i &lt; this.vertices.length; i++) {
+            idx = f + &quot;|&quot; + this.vertices[i].x + &quot;|&quot; + this.vertices[i].y;
+            if (!(idx in vecToIdx)) {
+                vecToIdx[idx] = indexCount++;
+            }
+        } 
+    };
+
+    function matchIdx(idx, idxR, v) {
+        if (!(idx in vecToIdx || idxR in vecToIdx )) {
+            vecToIdx[idx] = indexCount;
+            vecToIdx[idxR] = indexCount;
+            indexCount++;
+        }
+        else if ((idx in vecToIdx) &amp;&amp; !(idxR in vecToIdx)) {
+            vecToIdx[idxR] = vecToIdx[idx];
+        }
+        else if ((idxR in vecToIdx) &amp;&amp; !(idx in vecToIdx)) {
+            vecToIdx[idx] = vecToIdx[idxR];
+        }
+    };
+    
+    this.vecToIdx = vecToIdx;
+}</code></pre>
+<p>The following playground generates both grey spheres, which have repeats, for all the facet vertex positions with repeats as in <em><em>Icosahedron</em></em> Test 2 above, and red spheres showing all the facet vector positions uniquely.</p>
+<p>PG: <span class="muted">Online playground (not embedded offline)</span> </p>
+<p>Now that we have the unique vertices, we need to join them correctly into the facet triangles to form the GDmn mesh.</p>
+<p>The first step is to generate the facet triple vertex indices for all the facets that lie wholly inside the primary triangle. This is relatively straightforward.</p>
+<pre class="code" data-lang="javascript"><code>Primary.prototype.InnerFacets = function() {
+    const m = this.m;
+    const n = this.n;
+    for (let y = 0; y &lt; n + m + 1; y++) {
+        for (x = this.min[y]; x &lt; this.max[y] + 1; x++) {
+            if (x &lt; this.max[y] &amp;&amp; x &lt; this.max[y + 1] + 1) {
+                this.innerFacets.push([&quot;|&quot; + x + &quot;|&quot; + y, &quot;|&quot; + x + &quot;|&quot; + (y + 1), &quot;|&quot; + (x + 1) + &quot;|&quot; + y]);
+            }
+            if ( y &gt; 0 &amp;&amp; x &lt; this.max[y - 1] &amp;&amp; x + 1 &lt; this.max[y] + 1) {
+                this.innerFacets.push([&quot;|&quot; + x + &quot;|&quot; + y, &quot;|&quot; + (x + 1) + &quot;|&quot; + y, &quot;|&quot; + (x + 1) + &quot;|&quot; + (y - 1)]);
+            }
+        }    
+    }
+}
+
+Primary.prototype.InnerToGDmnData = function(face) {
+    for (i = 0; i &lt; this.innerFacets.length; i++) {
+        GDmnDATA.face.push(this.innerFacets[i].map((el) =&gt; this.vecToIdx[face + el]));
+    }
+}</code></pre>
+<p>Next, we deal with overlapping facets between edges AB and OB, where the primary triangle is rotated right about B.</p>
+<pre class="code" data-lang="javascript"><code>Primary.prototype.EdgeVecsABOB = function() {
+    let m = this.m;
+    let n = this.n;
+
+    const B = new IsoVector(-n, m + n)
+
+    for (let y = 1; y &lt; m + n; y++) {
+        const point = new IsoVector(this.min[y], y);
+        const prev = new IsoVector(this.min[y - 1], y - 1);
+        const next = new IsoVector(this.min[y + 1], y + 1);
+        const pointR = point.clone();
+        const prevR = prev.clone();
+        const nextR = next.clone();
+        
+        pointR.rotate60About(B);
+        prevR.rotate60About(B);
+        nextR.rotate60About(B);
+
+        const maxPoint = new IsoVector(this.max[pointR.y], pointR.y);
+        const maxPrev = new IsoVector(this.max[pointR.y - 1], pointR.y - 1);
+        const maxLeftPrev = new IsoVector( this.max[pointR.y - 1] - 1, pointR.y - 1);
+
+        if ((pointR.x !== maxPoint.x) || (pointR.y !== maxPoint.y)) {
+            if (pointR.x !== maxPrev.x) { // type2
+                //up
+                this.vertexTypes.push([1, 0, 0]);
+                this.isoVecsABOB.push([point, maxPrev, maxLeftPrev]);
+                //down
+                this.vertexTypes.push([1, 0, 0]);
+                this.isoVecsABOB.push([point, maxLeftPrev, maxPoint]);
+            }
+            else if (pointR.y === nextR.y) { // type1
+                //up
+                this.vertexTypes.push([1, 1, 0]);
+                this.isoVecsABOB.push([point, prev, maxPrev]);
+                //down
+                this.vertexTypes.push([1, 0, 1]);
+                this.isoVecsABOB.push([point, maxPrev, next]);
+            }
+            else { // type 0
+                //up
+                this.vertexTypes.push([1, 1, 0]);
+                this.isoVecsABOB.push([point, prev, maxPrev])
+                //down
+                this.vertexTypes.push([1, 0, 0]);
+                this.isoVecsABOB.push([point, maxPrev, maxPoint]);
+            }
+        };
+    };
+};
+
+Primary.prototype.ABOBtoGDmnDATA = function (faceNb) {
+    const fr = IDATA.edgematch[faceNb][0];
+    for (let i = 0; i &lt; this.isoVecsABOB.length; i++) {
+        const temp = [];
+        for (let j = 0; j &lt; 3; j++) {
+            if (this.vertexTypes[i][j] === 0) {
+                temp.push(faceNb + &quot;|&quot; + this.isoVecsABOB[i][j].x + &quot;|&quot; + this.isoVecsABOB[i][j].y);
+            }
+            else {
+                temp.push(fr + &quot;|&quot; + this.isoVecsABOB[i][j].x + &quot;|&quot; + this.isoVecsABOB[i][j].y);
+            }
+        }
+        GDmnDATA.face.push([this.vecToIdx[temp[0]], this.vecToIdx[temp[1]], this.vecToIdx[temp[2]]]);
+    }
+};</code></pre>
+<p>We store the iso-vector data for the facets to obtain the other overlap facet data using rotation.</p>
+<p>Overlapping facets between edges OB and OA where the primary triangle is rotated right about O</p>
+<pre class="code" data-lang="javascript"><code>Primary.prototype.ABOBtoOBOA = function() {
+    let point = new IsoVector(0, 0);
+    for (let i = 0; i &lt; this.isoVecsABOB.length; i++) {
+        const temp = [];
+        for (let j = 0; j &lt; 3; j++) {
+            point.x = this.isoVecsABOB[i][j].x;
+            point.y = this.isoVecsABOB[i][j].y;
+            if (this.vertexTypes[i][j] === 0) {
+                point.rotateNeg120Sides(this.m, this.n);
+            }
+            temp.push(point.clone());
+        }
+        this.isoVecsOBOA.push(temp);
+    }
+};
+
+Primary.prototype.OBOAtoGDmnDATA = function (faceNb) {
+    const fr = IDATA.edgematch[faceNb][0];
+    for (let i = 0; i &lt; this.isoVecsOBOA.length; i++) {
+        const temp = [];
+        for (let j = 0; j &lt; 3; j++) {
+            if (this.vertexTypes[i][j] === 1) {
+                temp.push(faceNb + &quot;|&quot; + this.isoVecsOBOA[i][j].x + &quot;|&quot; + this.isoVecsOBOA[i][j].y);
+            }
+            else {
+                temp.push(fr + &quot;|&quot; + this.isoVecsOBOA[i][j].x + &quot;|&quot; + this.isoVecsOBOA[i][j].y);
+            }
+        }
+        GDmnDATA.face.push([this.vecToIdx[temp[0]], this.vecToIdx[temp[1]], this.vecToIdx[temp[2]]]);
+    }
+};</code></pre>
+<p>Finally, we deal with overlapping facets between edges BA and OA, where the primary triangle is rotated right about A.</p>
+<pre class="code" data-lang="javascript"><code>Primary.prototype.ABOBtoBAOA = function() {
+    let point = new IsoVector(0, 0);
+    for (let i = 0; i &lt; this.isoVecsABOB.length; i++) {
+        const temp = [];
+        for (let j = 0; j &lt; 3; j++) {
+            point.x = this.isoVecsABOB[i][j].x;
+            point.y = this.isoVecsABOB[i][j].y;
+            if (this.vertexTypes[i][j] === 1) {
+                point.rotate120Sides(this.m, this.n);
+            }
+            temp.push(point.clone());
+        }
+        this.isoVecsBAOA.push(temp);
+    }
+    
+};
+
+Primary.prototype.BAOAtoGDmnDATA = function (faceNb) {
+    const fr = IDATA.edgematch[faceNb][2];
+    for (let i = 0; i &lt; this.isoVecsBAOA.length; i++) {
+        const temp = [];
+        for (let j = 0; j &lt; 3; j++) {
+            if (this.vertexTypes[i][j] === 1) {
+                temp.push(faceNb + &quot;|&quot; + this.isoVecsBAOA[i][j].x + &quot;|&quot; + this.isoVecsBAOA[i][j].y);
+            }
+            else {
+                temp.push(fr + &quot;|&quot; + this.isoVecsBAOA[i][j].x + &quot;|&quot; + this.isoVecsBAOA[i][j].y);
+            }
+        }
+        GDmnDATA.face.push([this.vecToIdx[temp[0]], this.vecToIdx[temp[1]], this.vecToIdx[temp[2]]]);
+    }
+};</code></pre>
+<p>These methods are called for each appropriate face.</p>
+<pre class="code" data-lang="javascript"><code>PT = CreatePrimary(m, n);
+   PT.SetIndices();
+   PT.CalcCoeffs();
+   PT.InnerFacets();
+   PT.EdgeVecsABOB();
+   PT.ABOBtoOBOA();
+   PT.ABOBtoBAOA();
+   for (f = 0; f &lt; IDATA.face.length; f++) {
+       PT.MapToFace(f);
+       PT.InnerToGDmnData(f);
+       if(IDATA.edgematch[f][1] === &quot;B&quot;) {
+            PT.ABOBtoGDmnDATA(f);
+       };
+       if(IDATA.edgematch[f][1] === &quot;O&quot;) {
+            PT.OBOAtoGDmnDATA(f);
+       };
+       if(IDATA.edgematch[f][3] === &quot;A&quot;) {
+            PT.BAOAtoGDmnDATA(f);
+       };
+   };</code></pre>
+<p>PG: <span class="muted">Online playground (not embedded offline)</span><br>PG: <span class="muted">Online playground (not embedded offline)</span> </p>
+<h2 id="forming-the-goldberg-polyhedron-from-the-geodesic-polyhedron">Forming the Goldberg Polyhedron from the Geodesic Polyhedron.<a class="anchor" href="#forming-the-goldberg-polyhedron-from-the-geodesic-polyhedron">#</a></h2>
+<p>Since each is the dual of the other we need to form the data for the Goldberg polyhedra from the Geodesic data.</p>
+<pre class="code" data-lang="javascript"><code>//Puts vertices of a face for GP in correct order for mesh construction
+ const setOrder = (m, faces, data) =&gt; {
+     const dualFaces = [];
+     let face = faces.pop();
+     dualFaces.push(face);
+     let index = data.face[face].indexOf(m);
+     index = (index + 2) % 3; //index to vertex included in adjacent face
+     let v = data.face[face][index];
+     let f = 0;
+     let vIndex = 0;
+     while (faces.length &gt; 0) {
+         face = faces[f]
+         if (data.face[face].indexOf(v) &gt; -1) { // v is a vertex of face f
+             index = (data.face[face].indexOf(v) + 1) % 3;
+             v = data.face[face][index];
+             dualFaces.push(face);
+             faces.splice(f, 1);
+             f = 0;
+         }
+         else {
+             f++
+         }
+     }
+     return dualFaces; 
+ }
+
+ //convert geodesic to Goldberg by forming the dual
+ const GDtoGP = function(GDdata) {
+     const GPdata = {};
+     GPdata.name = &quot;GD dual&quot;;
+     GPdata.category = [&quot;Goldberg&quot;];
+     GPdata.vertex = [];
+     GPdata.face = [];
+     verticesNb = GDdata.vertex.length;
+     const map = new Array(verticesNb);
+     for (let v = 0; v &lt; verticesNb; v++) {
+         map[v] = new Set();
+     }
+     for (let f = 0; f &lt; GDdata.face.length; f++) {
+         for (let i = 0; i &lt; 3; i++) {
+             map[GDdata.face[f][i]].add(f);
+         }
+     }
+     let cx = 0;
+     let cy = 0;
+     let cz = 0;
+     let face = [];
+     let vertex = [];
+     for(let m = 0; m &lt; map.length; m++) {
+         GPdata.face[m] = setOrder(m, Array.from(map[m]), GDdata);
+         map[m].forEach((el) =&gt; {
+             cx = 0;
+             cy = 0;
+             cz = 0;
+             face = GDdata.face[el];
+             for(let i = 0; i &lt; 3; i++) {
+                 vertex = GDdata.vertex[face[i]];
+                 cx += vertex[0];
+                 cy += vertex[1];
+                 cz += vertex[2];
+             }
+             GPdata.vertex[el] = [cx / 3, cy / 3, cz / 3];  
+         });
+     }
+     return GPdata;
+ };</code></pre>
+<p>This gives us a final test before creating a more user-friendly example.</p>
+<p>PG: <span class="muted">Online playground (not embedded offline)</span> </p>
+<p>For different m and n, change their values on lines 53 and 54. <strong>Note</strong> that m must be greater than n. </p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#overview">Overview </a><a href="#isometric-vectors">Isometric Vectors </a><a href="#the-primary-triangle">The Primary Triangle </a><a href="#creating-the-icosahedron-base">Creating the Icosahedron Base </a><a href="#mapping-the-primary-triangle-onto-icosahedron-faces">Mapping the Primary Triangle onto Icosahedron Faces </a><a href="#forming-the-goldberg-polyhedron-from-the-geodesic-polyhedron">Forming the Goldberg Polyhedron from the Geodesic Polyhedron. </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

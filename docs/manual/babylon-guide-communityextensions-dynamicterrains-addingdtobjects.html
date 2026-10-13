@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Adding Objects to a Dynamic Terrain — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Adding Objects to a Dynamic Terrain</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><p>Having a relief map is sometimes not enough.<br>We may want to render repetitive objects referenced in the map into the landscape, such as buildings, trees, etc.<br>Dynamic Terrain can manage these objects when used with a dedicated Solid Particle System (SPS).<br>The objects are defined in a specific map, besides the ground map, called the Solid Particle Map or SPMap.</p>
+<p>How does it work?<br>As we now know, the terrain renders only the currently visible part of the map, which can be much larger and can contain millions of coordinates.<br>The dedicated SPS works the same way: it renders only the visible objects from the SPMap in the current terrain by automatically recycling a fixed pool of solid particles.</p>
+<p>Both the SPMap and the SPS are then passed to the terrain constructor as parameters.</p>
+<h1 id="the-spmap">The SPMap</h1>
+<p>The SPMap is simply an array of arrays.<br>Each object type in the map (example: house, tree) is given an array.</p>
+<pre class="code" data-lang="javascript"><code>const SPMap = [];
+SPMap[0] = [dataHouse1, dataHouse2, ..., dataHouseN];
+SPMap[1] = [dataTree1, dataTree2, ..., dataTreeN];
+...
+SPMap[t] = [dataObject1, dataObject2, ..., dataObjectN];</code></pre>
+<p>There can be as many object types as we need, but at least one <code>SPMap[0]</code> is required.<br>There can also be as many objects in each type array as we need, and their number can differ from one type to another. When a type is declared, there must be at least one object in that type.<br>So when passing a SPMap, there&#39;s at least one type and one object in this type.</p>
+<p>The data defining each object is a set of nine successive floats: the object position (x, y, z), the object rotation (x, y, z), and the object scaling (x, y, z).<br>This means that the type array simply contains a long series of successive floats:</p>
+<pre class="code" data-lang="javascript"><code>SPMap[0] = [
+    house1Posx, house1Posy, house1Posz, house1Rotx, house1Roty, house1Rotz, house1Sclx, house1Scly, house1Sclz,
+    house2Posx, house2Posy, house2Posz, house2Rotx, house2Roty, house2Rotz, house2Sclx, house2Scly, house2Sclz,
+    ...
+]</code></pre>
+<p>The same applies to every other object type.<br>So, at a minimum, a SPMap is an array containing one array of 9 floats.</p>
+<p>The only rule is to keep every object within the map range.<br>Assuming that <em>(Xmin, Zmin)</em> and <em>(Xmax, Zmax)</em> are respectively the minimum and maximum x and z coordinates of the map, every object must be set at its (x, z) coordinates this way:<br><code>Xmin &lt;= x &lt;= Xmax and Zmin &lt;= z &lt;= Zmax</code></p>
+<p>Note: the object coordinates can be different from the map vertex coordinates: the objects do not need to be on map vertex locations. They do not even need to be on the ground; they can be in the air (clouds) or inside or through the ground surface (tunnels).</p>
+<h1 id="the-sps">The SPS</h1>
+<p>The SPS passed to the Dynamic Terrain will animate and recycle its solid particles on the terrain according to the SPMap data.<br>The SPS does not need to hold as many particles as there are objects in the map. There can be tens of thousands of objects in the SPMap and only hundreds or a few thousand particles in the SPS because it reuses invisible objects to render only the visible ones.<br>The required number of particles depends only on the number of objects in the SPMap and on their density on the terrain.<br>If the SPS does not have enough particles to render some objects, it will not crash; it simply will not render them (note: objects are rendered from the minimum to the maximum <em>x,z</em> coordinates, or from the southwest to the northeast, not by distance to the camera, for performance reasons).</p>
+<p>When building the SPS, each particle type (<em>shapeId</em>) will match an object type.<br>Let&#39;s imagine that we want to depict houses from the map by boxes and trees by cones.<br>We could obviously choose any 3D (or 2D) shape to assign to every object type from the map. This is a deliberately loose coupling design: the map knows only about object locations in the landscape and nothing about how they will be rendered on the terrain, while the SPS knows only how to render particles and nothing about how many objects there are or where they are in the map until the terrain tells it.<br>So, from the same map, we can easily provide different ways to render the objects and adjust to logic needs or performance constraints.</p>
+<p>Back to our boxes and cones :</p>
+<pre class="code" data-lang="javascript"><code>const modelBox = BABYLON.MeshBuilder.CreateBox(&quot;mb&quot;, {}, scene);
+const modelCone = BABYLON.MeshBuilder.CreateCylinder(&quot;mc&quot;, { diameterTop: 0 }, scene);
+const sps = new BABYLON.SolidParticleSystem(&quot;sps&quot;, scene);
+
+// The declaration order matters from here
+// first shape = first object type
+// second shape = second object type, etc
+sps.addShape(modelBox, 200); // 200 houses maximum visible in the terrain
+sps.addShape(modelCone, 300); // 300 trees maximum visible in the terrain
+sps.buildMesh();
+modelBox.dispose();
+modelCone.dispose();</code></pre>
+<p>And that&#39;s all.</p>
+<p>If we create more particle types than object types, the extra particle types will simply be ignored.<br>If we create fewer particle types than the declared object types in the map, the extra object types will also be ignored.</p>
+<h1 id="the-dynamic-terrain-with-the-spmap">The Dynamic Terrain with the SPMap</h1>
+<p>Now that we have built an SPS and a SPMap, we can pass them to the DynamicTerrain constructor along with the usual data map.<br>We use the parameter <code>SPmapData</code> and <code>sps</code> :</p>
+<pre class="code" data-lang="javascript no-code-variants"><code>const terrainSub = 100; // 100 terrain subdivisions
+const params = {
+  mapData: mapData, // data map declaration : what data to use ?
+  mapSubX: mapSubX, // how are these data stored by rows and columns
+  mapSubZ: mapSubZ,
+  terrainSub: terrainSub, // how many terrain subdivisions wanted
+  SPmapData: SPMap, // the object data in the map
+  sps: sps, // the SPS used to render the objects
+};
+const terrain = new BABYLON.DynamicTerrain(&quot;t&quot;, params, scene);</code></pre>
+<p>Now, each time the terrain is updated and covers a part of the map containing objects, the SPS is updated and the objects are rendered as solid particles.</p>
+<h1 id="playground-example">Playground Example</h1>
+<p>Using only the solid particle system, 3000 particles are used to render tens of thousands of objects from the map. A free camera is used.<br>PG: <span class="muted">Online playground (not embedded offline)</span></p>
+<h1 id="cautionary-note">Cautionary Note</h1>
+<p>The SPMap feature seems to not work correctly with the LOD in some cases.</p>
+<h1 id="object-colors-and-textures">Object Colors and Textures</h1>
+<p>So far, we&#39;ve declared object settings (positions, rotations, scalings) in the map.<br>We can also pass the terrain two other optional maps about objects : the object colors and the object UVs.</p>
+<p>In exactly the same way as the SPMap, the object colors and UVs are stored in arrays of arrays: one array per object type.<br>Each array for a given type then holds a series of successive floats related to the colors (r, g, b, a) of each object of that type, or a series of successive floats related to the UVs (x, y, z, w) of each object of that type.<br>The UVs are simply the bottom-left and upper-right coordinates of the quad to be cropped within the texture, as used in the SPS per-particle texture feature.</p>
+<p>The UVs will then be applied to the <strong>SPS material</strong>, not to the terrain material.</p>
+<pre class="code" data-lang="javascript"><code>// Object Colors
+const SPColors = [];
+SPColors[0] = [colorHouse1, colorHouse2, ..., colorHouseN];
+SPColors[1] = [colorTree1, colorTree2, ..., colorTreeN];
+...
+SPColors[t] = [colorObject1, colorObject2, ..., colorObjectN];
+
+// Object UVs
+const SPUVs = [];
+SPUVs[0] = [UVHouse1, UVHouse2, ..., UVHouseN];
+SPUVs[1] = [UVTree1, UVTree2, ..., UVTreeN];
+...
+SPUVs[t] = [UVObject1, UVObject2, ..., UVObjectN];</code></pre>
+<p>The data defining each object color or UV is a set of four successive floats: the object color (r, g, b, a) or the object UVs (x, y, z, w).<br>This means that the type array simply contains a long series of successive floats:</p>
+<pre class="code" data-lang="javascript"><code>// Color example, first object type
+SPColor[0] = [
+    house1Col_r, house1Col_g, house1Col_b, house1Col_a,
+    house2Col_r, house2Col_g, house2Col_b, house2Col_a,
+    ...
+]
+// UV example, first object type
+SPUV[0] = [
+    house1UV_x, house1UV_y, house1UV_z, house1UV_w,
+    house2UV_x, house2UV_y, house2UV_z, house2UV_w,
+    ...
+]</code></pre>
+<p>We then pass the object colors and UVs to the DynamicTerrain constructor along with the object map and the sps.<br>We use the parameter <code>SPcolorData</code> and <code>SPuvData</code>.</p>
+<pre class="code" data-lang="javascript no-code-variants"><code>const terrainSub = 100; // terrain subdivisions
+const terrainOptions = {
+  terrainSub: terrainSub,
+  mapData: mapData,
+  mapSubX: mapSubX,
+  mapSubZ: mapSubZ,
+  mapColors: mapColors,
+  SPmapData: SPmapData, // object map
+  sps: sps, // SPS to render the objects on the terrain
+  SPcolorData: SPcolorData, // object colors
+  SPuvData: SPuvData, // object UVs to apply to the SPS material
+};
+const terrain = new BABYLON.DynamicTerrain(&quot;dt&quot;, terrainOptions, scene);
+terrain.mesh.material = terrainMaterial; // terrain material
+
+sps.mesh.material = objectMaterial; // object material !</code></pre>
+<p>The objects get more green or more red according to the map areas (north, south, east, west) and more blue when in altitude.
+PG: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>Each object is given a part of the image file.
+PG: <span class="muted">Online playground (not embedded offline)</span></p>
+<p><strong>Note :</strong>
+The object map (SPMap) requires a terrain data map to work.<br>The object color map or the object UV map both require an object map (SPMap) to work.<br>Both are optional.<br>Each one (color or UV) can work independently from the other.</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

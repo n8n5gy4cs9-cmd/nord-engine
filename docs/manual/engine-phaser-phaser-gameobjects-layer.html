@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phaser.GameObjects.Layer — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Phaser.GameObjects.Layer</h1>
+<p><span class="badge">Underlying Phaser 4.2.1 API</span> <span class="badge">Class</span></p><p class="muted">Official public declarations and JSDoc from <code>phaser</code>. Use with engine objects, not directly on a Nord entity.</p><aside class="box tip"><div class="box-title">The Nord way</div><p><a href="2d.html">2D manual</a> · <a href="component-sprite.html">sprite</a> · <a href="component-animatedSprite.html">animatedSprite</a> · <a href="physics.html">physics</a>. Access raw objects only when the Nord wrapper does not cover your feature. <a href="reference.html#escape-hatch">How escape hatches work</a>.</p></aside><h3 id="declaration">Layer <a class="anchor" href="#declaration">#</a></h3><pre class="code" data-lang="ts"><code>class Layer extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.AlphaSingle, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Mask, Phaser.GameObjects.Components.Visible</code></pre><p>A Layer Game Object.</p>
+<p>A Layer is a special type of Game Object that acts as a Display List. You can add any type of Game Object
+to a Layer, just as you would to a Scene. Layers can be used to visually group together &#39;layers&#39; of Game
+Objects:</p>
+<pre class="code" data-lang="javascript"><code>const spaceman = this.add.sprite(150, 300, 'spaceman');
+const bunny = this.add.sprite(400, 300, 'bunny');
+const elephant = this.add.sprite(650, 300, 'elephant');
+
+const layer = this.add.layer();
+
+layer.add([ spaceman, bunny, elephant ]);</code></pre>
+<p>The 3 sprites in the example above will now be managed by the Layer they were added to. Therefore,
+if you then set <code>layer.setVisible(false)</code> they would all vanish from the display.</p>
+<p>You can also control the depth of the Game Objects within the Layer. For example, calling the
+<code>setDepth</code> method of a child of a Layer will allow you to adjust the depth of that child <em>within the
+Layer itself</em>, rather than the whole Scene. The Layer, too, can have its depth set as well.</p>
+<p>The Layer class also offers many different methods for manipulating the list, such as the
+methods <code>moveUp</code>, <code>moveDown</code>, <code>sendToBack</code>, <code>bringToTop</code> and so on. These allow you to change the
+display list position of the Layers children, causing it to adjust the order in which they are
+rendered. Using <code>setDepth</code> on a child allows you to override this.</p>
+<p>Layers have no position or size within the Scene. This means you cannot enable a Layer for
+physics or input, or change the position, rotation or scale of a Layer. They also have no scroll
+factor, texture, tint, origin, crop or bounds.</p>
+<p>If you need those kind of features then you should use a Container instead. Containers can be added
+to Layers, but Layers cannot be added to Containers.</p>
+<p>However, you can set the Alpha, Blend Mode, Depth, Mask and Visible state of a Layer. These settings
+will impact all children being rendered by the Layer.</p>
+<p>Layers should always be the topmost elements of any scene hierarchy.
+They can be children of layers, but not of anything else.</p>
+<p>Until Phaser version 4.1.0, Layer was not a true GameObject.
+It is now a true GameObject.</p>
+<h2 id="members">Public members (100)</h2><p>Private, protected and explicitly internal declarations are excluded. Inherited members belong to the base type listed in the declaration.</p><h3 id="member-constructor-0">constructor <a class="anchor" href="#member-constructor-0">#</a></h3><pre class="code" data-lang="ts"><code>constructor(scene: Phaser.Scene, children?: Phaser.GameObjects.GameObject[]);</code></pre><p><strong>param</strong>  scene The Scene to which this Game Object belongs. A Game Object can only belong to one Scene at a time.
+<strong>param</strong>  children An optional array of Game Objects to add to this Layer.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>scene</code></td><td><code>Phaser.Scene</code></td><td>Required</td></tr><tr><td><code>children</code></td><td><code>Phaser.GameObjects.GameObject[]</code></td><td>Optional</td></tr></tbody></table><h3 id="member-scene-1">scene <a class="anchor" href="#member-scene-1">#</a></h3><pre class="code" data-lang="ts"><code>scene: Phaser.Scene;</code></pre><p>A reference to the Scene to which this Game Object belongs.</p>
+<p>Game Objects can only belong to one Scene.</p>
+<p>You should consider this property as being read-only. You cannot move a
+Game Object to another Scene by simply changing it.</p>
+<p><b>Type / return:</b> <code>Phaser.Scene</code></p><h3 id="member-systems-2">systems <a class="anchor" href="#member-systems-2">#</a></h3><pre class="code" data-lang="ts"><code>systems: Phaser.Scenes.Systems;</code></pre><p>A reference to the Scene Systems.</p>
+<p><b>Type / return:</b> <code>Phaser.Scenes.Systems</code></p><h3 id="member-events-3">events <a class="anchor" href="#member-events-3">#</a></h3><pre class="code" data-lang="ts"><code>events: Phaser.Events.EventEmitter;</code></pre><p>A reference to the Scene Event Emitter.</p>
+<p><b>Type / return:</b> <code>Phaser.Events.EventEmitter</code></p><h3 id="member-sortchildrenflag-4">sortChildrenFlag <a class="anchor" href="#member-sortchildrenflag-4">#</a></h3><pre class="code" data-lang="ts"><code>sortChildrenFlag: boolean;</code></pre><p>The flag that determines whether Game Objects should be sorted when <code>depthSort()</code> is called.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-setinteractive-5">setInteractive <a class="anchor" href="#member-setinteractive-5">#</a></h3><pre class="code" data-lang="ts"><code>setInteractive(): this;</code></pre><p>A Layer cannot be enabled for input.</p>
+<p>This method does nothing and is kept to ensure
+the Layer has the same shape as a Game Object.undefined
+<strong>returns</strong>  This GameObject.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-disableinteractive-6">disableInteractive <a class="anchor" href="#member-disableinteractive-6">#</a></h3><pre class="code" data-lang="ts"><code>disableInteractive(): this;</code></pre><p>A Layer cannot be enabled for input.</p>
+<p>This method does nothing and is kept to ensure
+the Layer has the same shape as a Game Object.undefined
+<strong>returns</strong>  This GameObject.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-removeinteractive-7">removeInteractive <a class="anchor" href="#member-removeinteractive-7">#</a></h3><pre class="code" data-lang="ts"><code>removeInteractive(): this;</code></pre><p>A Layer cannot be enabled for input.</p>
+<p>This method does nothing and is kept to ensure
+the Layer has the same shape as a Game Object.undefined
+<strong>returns</strong>  This GameObject.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-willrender-8">willRender <a class="anchor" href="#member-willrender-8">#</a></h3><pre class="code" data-lang="ts"><code>willRender(camera: Phaser.Cameras.Scene2D.Camera): boolean;</code></pre><p>Compares the renderMask with the renderFlags to see if this Game Object will render or not.
+Also checks the Game Object against the given Cameras exclusion list.
+<strong>param</strong>  camera The Camera to check against this Game Object.
+<strong>returns</strong>  True if the Game Object should be rendered, otherwise false.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>camera</code></td><td><code>Phaser.Cameras.Scene2D.Camera</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-queuedepthsort-9">queueDepthSort <a class="anchor" href="#member-queuedepthsort-9">#</a></h3><pre class="code" data-lang="ts"><code>queueDepthSort(): void;</code></pre><p>Force a sort of the display list on the next call to depthSort.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="member-depthsort-10">depthSort <a class="anchor" href="#member-depthsort-10">#</a></h3><pre class="code" data-lang="ts"><code>depthSort(): void;</code></pre><p>Immediately sorts the display list if the flag is set.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="member-sortbydepth-11">sortByDepth <a class="anchor" href="#member-sortbydepth-11">#</a></h3><pre class="code" data-lang="ts"><code>sortByDepth(childA: Phaser.GameObjects.GameObject, childB: Phaser.GameObjects.GameObject): number;</code></pre><p>Compare the depth of two Game Objects.
+<strong>param</strong>  childA The first Game Object.
+<strong>param</strong>  childB The second Game Object.
+<strong>returns</strong>  The difference between the depths of each Game Object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>childA</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr><tr><td><code>childB</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>number</code></p><h3 id="member-getchildren-12">getChildren <a class="anchor" href="#member-getchildren-12">#</a></h3><pre class="code" data-lang="ts"><code>getChildren(): Phaser.GameObjects.GameObject[];</code></pre><p>Returns a reference to the array which contains all Game Objects in this Layer.</p>
+<p>This is a reference, not a copy of it, so be very careful not to mutate it.undefined
+<strong>returns</strong>  An array of Game Objects within this Layer.</p>
+<p><b>Type / return:</b> <code>Phaser.GameObjects.GameObject[]</code></p><h3 id="member-eventnames-13">eventNames <a class="anchor" href="#member-eventnames-13">#</a></h3><pre class="code" data-lang="ts"><code>eventNames(): (string|symbol)[];</code></pre><p>Return an array listing the events for which the emitter has registered listeners.undefined
+<strong>returns</strong>  undefined</p>
+<p><b>Type / return:</b> <code>(string|symbol)[]</code></p><h3 id="member-listeners-14">listeners <a class="anchor" href="#member-listeners-14">#</a></h3><pre class="code" data-lang="ts"><code>listeners(event: string | symbol): Function[];</code></pre><p>Return the listeners registered for a given event.
+<strong>param</strong>  event The event name.
+<strong>returns</strong>  The registered listeners.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>event</code></td><td><code>string | symbol</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Function[]</code></p><h3 id="member-listenercount-15">listenerCount <a class="anchor" href="#member-listenercount-15">#</a></h3><pre class="code" data-lang="ts"><code>listenerCount(event: string | symbol): number;</code></pre><p>Return the number of listeners listening to a given event.
+<strong>param</strong>  event The event name.
+<strong>returns</strong>  The number of listeners.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>event</code></td><td><code>string | symbol</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>number</code></p><h3 id="member-emit-16">emit <a class="anchor" href="#member-emit-16">#</a></h3><pre class="code" data-lang="ts"><code>emit(event: string | symbol, ...args: any[]): boolean;</code></pre><p>Calls each of the listeners registered for a given event.
+<strong>param</strong>  event The event name.
+<strong>param</strong>  args Additional arguments that will be passed to the event handler.
+<strong>returns</strong>  <code>true</code> if the event had listeners, else <code>false</code>.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>event</code></td><td><code>string | symbol</code></td><td>Required</td></tr><tr><td><code>...args</code></td><td><code>any[]</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-on-17">on <a class="anchor" href="#member-on-17">#</a></h3><pre class="code" data-lang="ts"><code>on(event: string | symbol, fn: Function, context?: any): this;</code></pre><p>Add a listener for a given event.
+<strong>param</strong>  event The event name.
+<strong>param</strong>  fn The listener function.
+<strong>param</strong>  context The context to invoke the listener with. Default this.
+<strong>returns</strong>  This Layer instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>event</code></td><td><code>string | symbol</code></td><td>Required</td></tr><tr><td><code>fn</code></td><td><code>Function</code></td><td>Required</td></tr><tr><td><code>context</code></td><td><code>any</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-addlistener-18">addListener <a class="anchor" href="#member-addlistener-18">#</a></h3><pre class="code" data-lang="ts"><code>addListener(event: string | symbol, fn: Function, context?: any): this;</code></pre><p>Add a listener for a given event.
+<strong>param</strong>  event The event name.
+<strong>param</strong>  fn The listener function.
+<strong>param</strong>  context The context to invoke the listener with. Default this.
+<strong>returns</strong>  This Layer instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>event</code></td><td><code>string | symbol</code></td><td>Required</td></tr><tr><td><code>fn</code></td><td><code>Function</code></td><td>Required</td></tr><tr><td><code>context</code></td><td><code>any</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-once-19">once <a class="anchor" href="#member-once-19">#</a></h3><pre class="code" data-lang="ts"><code>once(event: string | symbol, fn: Function, context?: any): this;</code></pre><p>Add a one-time listener for a given event.
+<strong>param</strong>  event The event name.
+<strong>param</strong>  fn The listener function.
+<strong>param</strong>  context The context to invoke the listener with. Default this.
+<strong>returns</strong>  This Layer instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>event</code></td><td><code>string | symbol</code></td><td>Required</td></tr><tr><td><code>fn</code></td><td><code>Function</code></td><td>Required</td></tr><tr><td><code>context</code></td><td><code>any</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-removelistener-20">removeListener <a class="anchor" href="#member-removelistener-20">#</a></h3><pre class="code" data-lang="ts"><code>removeListener(event: string | symbol, fn?: Function, context?: any, once?: boolean): this;</code></pre><p>Remove the listeners of a given event.
+<strong>param</strong>  event The event name.
+<strong>param</strong>  fn Only remove the listeners that match this function.
+<strong>param</strong>  context Only remove the listeners that have this context.
+<strong>param</strong>  once Only remove one-time listeners.
+<strong>returns</strong>  This Layer instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>event</code></td><td><code>string | symbol</code></td><td>Required</td></tr><tr><td><code>fn</code></td><td><code>Function</code></td><td>Optional</td></tr><tr><td><code>context</code></td><td><code>any</code></td><td>Optional</td></tr><tr><td><code>once</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-off-21">off <a class="anchor" href="#member-off-21">#</a></h3><pre class="code" data-lang="ts"><code>off(event: string | symbol, fn?: Function, context?: any, once?: boolean): this;</code></pre><p>Remove the listeners of a given event.
+<strong>param</strong>  event The event name.
+<strong>param</strong>  fn Only remove the listeners that match this function.
+<strong>param</strong>  context Only remove the listeners that have this context.
+<strong>param</strong>  once Only remove one-time listeners.
+<strong>returns</strong>  This Layer instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>event</code></td><td><code>string | symbol</code></td><td>Required</td></tr><tr><td><code>fn</code></td><td><code>Function</code></td><td>Optional</td></tr><tr><td><code>context</code></td><td><code>any</code></td><td>Optional</td></tr><tr><td><code>once</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-removealllisteners-22">removeAllListeners <a class="anchor" href="#member-removealllisteners-22">#</a></h3><pre class="code" data-lang="ts"><code>removeAllListeners(event?: string | symbol): this;</code></pre><p>Remove all listeners, or those of the specified event.
+<strong>param</strong>  event The event name.
+<strong>returns</strong>  This Layer instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>event</code></td><td><code>string | symbol</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-parent-23">parent <a class="anchor" href="#member-parent-23">#</a></h3><pre class="code" data-lang="ts"><code>parent: any;</code></pre><p>The parent of this list.</p>
+<p><b>Type / return:</b> <code>any</code></p><h3 id="member-list-24">list <a class="anchor" href="#member-list-24">#</a></h3><pre class="code" data-lang="ts"><code>list: Phaser.GameObjects.GameObject[];</code></pre><p>The objects that belong to this collection.</p>
+<p><b>Type / return:</b> <code>Phaser.GameObjects.GameObject[]</code></p><h3 id="member-position-25">position <a class="anchor" href="#member-position-25">#</a></h3><pre class="code" data-lang="ts"><code>position: number;</code></pre><p>The index of the current element.</p>
+<p>This is used internally when iterating through the list with the #first, #last, #next, and #previous properties.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-addcallback-26">addCallback <a class="anchor" href="#member-addcallback-26">#</a></h3><pre class="code" data-lang="ts"><code>addCallback: Function;</code></pre><p>A callback that is invoked every time a child is added to this list.</p>
+<p><b>Type / return:</b> <code>Function</code></p><h3 id="member-removecallback-27">removeCallback <a class="anchor" href="#member-removecallback-27">#</a></h3><pre class="code" data-lang="ts"><code>removeCallback: Function;</code></pre><p>A callback that is invoked every time a child is removed from this list.</p>
+<p><b>Type / return:</b> <code>Function</code></p><h3 id="member-add-28">add <a class="anchor" href="#member-add-28">#</a></h3><pre class="code" data-lang="ts"><code>add(child: Phaser.GameObjects.GameObject | Phaser.GameObjects.GameObject[], skipCallback?: boolean): any;</code></pre><p>Adds the given item to the end of the list. Each item must be unique.
+<strong>param</strong>  child The item, or array of items, to add to the list.
+<strong>param</strong>  skipCallback Skip calling the List.addCallback if this child is added successfully. Default false.
+<strong>returns</strong>  The list&#39;s underlying array.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>child</code></td><td><code>Phaser.GameObjects.GameObject | Phaser.GameObjects.GameObject[]</code></td><td>Required</td></tr><tr><td><code>skipCallback</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>any</code></p><h3 id="member-addat-29">addAt <a class="anchor" href="#member-addat-29">#</a></h3><pre class="code" data-lang="ts"><code>addAt(child: Phaser.GameObjects.GameObject | Phaser.GameObjects.GameObject[], index?: number, skipCallback?: boolean): Phaser.GameObjects.GameObject[];</code></pre><p>Adds an item to list, starting at a specified index. Each item must be unique within the list.
+<strong>param</strong>  child The item, or array of items, to add to the list.
+<strong>param</strong>  index The index in the list at which the element(s) will be inserted. Default 0.
+<strong>param</strong>  skipCallback Skip calling the List.addCallback if this child is added successfully. Default false.
+<strong>returns</strong>  The List&#39;s underlying array.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>child</code></td><td><code>Phaser.GameObjects.GameObject | Phaser.GameObjects.GameObject[]</code></td><td>Required</td></tr><tr><td><code>index</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>skipCallback</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.GameObjects.GameObject[]</code></p><h3 id="member-getat-30">getAt <a class="anchor" href="#member-getat-30">#</a></h3><pre class="code" data-lang="ts"><code>getAt(index: number): Phaser.GameObjects.GameObject | undefined;</code></pre><p>Retrieves the item at a given position inside the List.
+<strong>param</strong>  index The index of the item.
+<strong>returns</strong>  The retrieved item, or <code>undefined</code> if it&#39;s outside the List&#39;s bounds.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>index</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.GameObjects.GameObject | undefined</code></p><h3 id="member-getindex-31">getIndex <a class="anchor" href="#member-getindex-31">#</a></h3><pre class="code" data-lang="ts"><code>getIndex(child: Phaser.GameObjects.GameObject): number;</code></pre><p>Locates an item within the List and returns its index.
+<strong>param</strong>  child The item to locate.
+<strong>returns</strong>  The index of the item within the List, or -1 if it&#39;s not in the List.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>child</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>number</code></p><h3 id="member-sort-32">sort <a class="anchor" href="#member-sort-32">#</a></h3><pre class="code" data-lang="ts"><code>sort(property: string, handler?: Function): Phaser.GameObjects.Layer;</code></pre><p>Sort the contents of this List so the items are in order based on the given property.
+For example, <code>sort(&#39;alpha&#39;)</code> would sort the List contents based on the value of their <code>alpha</code> property.
+<strong>param</strong>  property The property to lexically sort by.
+<strong>param</strong>  handler Provide your own custom handler function. Will receive 2 children which it should compare and return a number (negative if the first should come before the second, positive if after, zero if equal).
+<strong>returns</strong>  This List object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>property</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>handler</code></td><td><code>Function</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.GameObjects.Layer</code></p><h3 id="member-getbyname-33">getByName <a class="anchor" href="#member-getbyname-33">#</a></h3><pre class="code" data-lang="ts"><code>getByName(name: string): Phaser.GameObjects.GameObject | null;</code></pre><p>Searches for the first instance of a child with its <code>name</code>
+property matching the given argument. Should more than one child have
+the same name only the first is returned.
+<strong>param</strong>  name The name to search for.
+<strong>returns</strong>  The first child with a matching name, or null if none were found.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>name</code></td><td><code>string</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.GameObjects.GameObject | null</code></p><h3 id="member-getrandom-34">getRandom <a class="anchor" href="#member-getrandom-34">#</a></h3><pre class="code" data-lang="ts"><code>getRandom(startIndex?: number, length?: number): Phaser.GameObjects.GameObject | null;</code></pre><p>Returns a random child from the list.
+<strong>param</strong>  startIndex Offset from the front of the list (lowest child). Default 0.
+<strong>param</strong>  length Restriction on the number of values you want to randomly select from. Default (to top).
+<strong>returns</strong>  A random child of this List.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>startIndex</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>length</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.GameObjects.GameObject | null</code></p><h3 id="member-getfirst-35">getFirst <a class="anchor" href="#member-getfirst-35">#</a></h3><pre class="code" data-lang="ts"><code>getFirst(property: string, value: Phaser.GameObjects.GameObject | undefined, startIndex?: number, endIndex?: number): Phaser.GameObjects.GameObject | null;</code></pre><p>Returns the first element in a given part of the List which matches a specific criterion.
+<strong>param</strong>  property The name of the property to test or a falsey value to have no criterion.
+<strong>param</strong>  value The value to test the <code>property</code> against, or <code>undefined</code> to allow any value and only check for existence.
+<strong>param</strong>  startIndex The position in the List to start the search at. Default 0.
+<strong>param</strong>  endIndex The position in the List to optionally stop the search at. It won&#39;t be checked.
+<strong>returns</strong>  The first item which matches the given criterion, or <code>null</code> if no such item exists.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>property</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>value</code></td><td><code>Phaser.GameObjects.GameObject | undefined</code></td><td>Required</td></tr><tr><td><code>startIndex</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>endIndex</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.GameObjects.GameObject | null</code></p><h3 id="member-getall-36">getAll <a class="anchor" href="#member-getall-36">#</a></h3><pre class="code" data-lang="ts"><code>getAll(property?: string, value?: any, startIndex?: number, endIndex?: number): Phaser.GameObjects.GameObject[];</code></pre><p>Returns all children in this List.</p>
+<p>You can optionally specify a matching criteria using the <code>property</code> and <code>value</code> arguments.</p>
+<p>For example: <code>getAll(&#39;parent&#39;)</code> would return only children that have a property called <code>parent</code>.</p>
+<p>You can also specify a value to compare the property to:</p>
+<p><code>getAll(&#39;visible&#39;, true)</code> would return only children that have their visible property set to <code>true</code>.</p>
+<p>Optionally you can specify a start and end index. For example if this List had 100 children,
+and you set <code>startIndex</code> to 0 and <code>endIndex</code> to 50, it would return matches from only
+the first 50 children in the List.
+<strong>param</strong>  property An optional property to test against the value argument.
+<strong>param</strong>  value If property is set then Child.property must strictly equal this value to be included in the results.
+<strong>param</strong>  startIndex The first child index to start the search from.
+<strong>param</strong>  endIndex The last child index to search up until.
+<strong>returns</strong>  All items of the List which match the given criterion, if any.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>property</code></td><td><code>string</code></td><td>Optional</td></tr><tr><td><code>value</code></td><td><code>any</code></td><td>Optional</td></tr><tr><td><code>startIndex</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>endIndex</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.GameObjects.GameObject[]</code></p><h3 id="member-count-37">count <a class="anchor" href="#member-count-37">#</a></h3><pre class="code" data-lang="ts"><code>count(property: string, value: Phaser.GameObjects.GameObject): number;</code></pre><p>Returns the total number of items in the List which have a property matching the given value.
+<strong>param</strong>  property The property to test on each item.
+<strong>param</strong>  value The value to test the property against.
+<strong>returns</strong>  The total number of matching elements.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>property</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>value</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>number</code></p><h3 id="member-swap-38">swap <a class="anchor" href="#member-swap-38">#</a></h3><pre class="code" data-lang="ts"><code>swap(child1: Phaser.GameObjects.GameObject, child2: Phaser.GameObjects.GameObject): void;</code></pre><p>Swaps the positions of two items in the list.
+<strong>param</strong>  child1 The first item to swap.
+<strong>param</strong>  child2 The second item to swap.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>child1</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr><tr><td><code>child2</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-moveto-39">moveTo <a class="anchor" href="#member-moveto-39">#</a></h3><pre class="code" data-lang="ts"><code>moveTo(child: Phaser.GameObjects.GameObject, index: number): Phaser.GameObjects.GameObject;</code></pre><p>Moves an item in the List to a new position.
+<strong>param</strong>  child The item to move.
+<strong>param</strong>  index The new position to move the item to.
+<strong>returns</strong>  The item that was moved.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>child</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr><tr><td><code>index</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.GameObjects.GameObject</code></p><h3 id="member-moveabove-40">moveAbove <a class="anchor" href="#member-moveabove-40">#</a></h3><pre class="code" data-lang="ts"><code>moveAbove(child1: Phaser.GameObjects.GameObject, child2: Phaser.GameObjects.GameObject): void;</code></pre><p>Moves an item above another one in the List.
+If the given item is already above the other, it isn&#39;t moved.
+Above means toward the end of the List.
+<strong>param</strong>  child1 The element to move above base element.
+<strong>param</strong>  child2 The base element.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>child1</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr><tr><td><code>child2</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-movebelow-41">moveBelow <a class="anchor" href="#member-movebelow-41">#</a></h3><pre class="code" data-lang="ts"><code>moveBelow(child1: Phaser.GameObjects.GameObject, child2: Phaser.GameObjects.GameObject): void;</code></pre><p>Moves an item below another one in the List.
+If the given item is already below the other, it isn&#39;t moved.
+Below means toward the start of the List.
+<strong>param</strong>  child1 The element to move below base element.
+<strong>param</strong>  child2 The base element.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>child1</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr><tr><td><code>child2</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-remove-42">remove <a class="anchor" href="#member-remove-42">#</a></h3><pre class="code" data-lang="ts"><code>remove(child: Phaser.GameObjects.GameObject | Phaser.GameObjects.GameObject[], skipCallback?: boolean): Phaser.GameObjects.GameObject | Phaser.GameObjects.GameObject[];</code></pre><p>Removes one or many items from the List.
+<strong>param</strong>  child The item, or array of items, to remove.
+<strong>param</strong>  skipCallback Skip calling the List.removeCallback. Default false.
+<strong>returns</strong>  The item, or array of items, which were successfully removed from the List.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>child</code></td><td><code>Phaser.GameObjects.GameObject | Phaser.GameObjects.GameObject[]</code></td><td>Required</td></tr><tr><td><code>skipCallback</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.GameObjects.GameObject | Phaser.GameObjects.GameObject[]</code></p><h3 id="member-removeat-43">removeAt <a class="anchor" href="#member-removeat-43">#</a></h3><pre class="code" data-lang="ts"><code>removeAt(index: number, skipCallback?: boolean): Phaser.GameObjects.GameObject;</code></pre><p>Removes the item at the given position in the List.
+<strong>param</strong>  index The position to remove the item from.
+<strong>param</strong>  skipCallback Skip calling the List.removeCallback. Default false.
+<strong>returns</strong>  The item that was removed.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>index</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>skipCallback</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.GameObjects.GameObject</code></p><h3 id="member-removebetween-44">removeBetween <a class="anchor" href="#member-removebetween-44">#</a></h3><pre class="code" data-lang="ts"><code>removeBetween(startIndex?: number, endIndex?: number, skipCallback?: boolean): Phaser.GameObjects.GameObject[];</code></pre><p>Removes the items within the given range in the List.
+<strong>param</strong>  startIndex The index to start removing from. Default 0.
+<strong>param</strong>  endIndex The position to stop removing at. The item at this position won&#39;t be removed.
+<strong>param</strong>  skipCallback Skip calling the List.removeCallback. Default false.
+<strong>returns</strong>  An array of the items which were removed.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>startIndex</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>endIndex</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>skipCallback</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.GameObjects.GameObject[]</code></p><h3 id="member-removeall-45">removeAll <a class="anchor" href="#member-removeall-45">#</a></h3><pre class="code" data-lang="ts"><code>removeAll(skipCallback?: boolean): this;</code></pre><p>Removes all the items.
+<strong>param</strong>  skipCallback Skip calling the List.removeCallback. Default false.
+<strong>returns</strong>  This List object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>skipCallback</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-bringtotop-46">bringToTop <a class="anchor" href="#member-bringtotop-46">#</a></h3><pre class="code" data-lang="ts"><code>bringToTop(child: Phaser.GameObjects.GameObject): Phaser.GameObjects.GameObject;</code></pre><p>Brings the given child to the top of this List.
+<strong>param</strong>  child The item to bring to the top of the List.
+<strong>returns</strong>  The item which was moved.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>child</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.GameObjects.GameObject</code></p><h3 id="member-sendtoback-47">sendToBack <a class="anchor" href="#member-sendtoback-47">#</a></h3><pre class="code" data-lang="ts"><code>sendToBack(child: Phaser.GameObjects.GameObject): Phaser.GameObjects.GameObject;</code></pre><p>Sends the given child to the bottom of this List.
+<strong>param</strong>  child The item to send to the back of the list.
+<strong>returns</strong>  The item which was moved.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>child</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.GameObjects.GameObject</code></p><h3 id="member-moveup-48">moveUp <a class="anchor" href="#member-moveup-48">#</a></h3><pre class="code" data-lang="ts"><code>moveUp(child: Phaser.GameObjects.GameObject): Phaser.GameObjects.GameObject;</code></pre><p>Moves the given child up one place in this List unless it&#39;s already at the top.
+<strong>param</strong>  child The item to move up.
+<strong>returns</strong>  The item which was moved.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>child</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.GameObjects.GameObject</code></p><h3 id="member-movedown-49">moveDown <a class="anchor" href="#member-movedown-49">#</a></h3><pre class="code" data-lang="ts"><code>moveDown(child: Phaser.GameObjects.GameObject): Phaser.GameObjects.GameObject;</code></pre><p>Moves the given child down one place in this List unless it&#39;s already at the bottom.
+<strong>param</strong>  child The item to move down.
+<strong>returns</strong>  The item which was moved.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>child</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.GameObjects.GameObject</code></p><h3 id="member-reverse-50">reverse <a class="anchor" href="#member-reverse-50">#</a></h3><pre class="code" data-lang="ts"><code>reverse(): Phaser.GameObjects.Layer;</code></pre><p>Reverses the order of all children in this List.undefined
+<strong>returns</strong>  This List object.</p>
+<p><b>Type / return:</b> <code>Phaser.GameObjects.Layer</code></p><h3 id="member-shuffle-51">shuffle <a class="anchor" href="#member-shuffle-51">#</a></h3><pre class="code" data-lang="ts"><code>shuffle(): Phaser.GameObjects.Layer;</code></pre><p>Shuffles the items in the list.undefined
+<strong>returns</strong>  This List object.</p>
+<p><b>Type / return:</b> <code>Phaser.GameObjects.Layer</code></p><h3 id="member-replace-52">replace <a class="anchor" href="#member-replace-52">#</a></h3><pre class="code" data-lang="ts"><code>replace(oldChild: Phaser.GameObjects.GameObject, newChild: Phaser.GameObjects.GameObject): Phaser.GameObjects.GameObject;</code></pre><p>Replaces a child of this List with the given newChild. The newChild cannot be a member of this List.
+<strong>param</strong>  oldChild The child in this List that will be replaced.
+<strong>param</strong>  newChild The child to be inserted into this List.
+<strong>returns</strong>  Returns the oldChild that was replaced within this List.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>oldChild</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr><tr><td><code>newChild</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.GameObjects.GameObject</code></p><h3 id="member-exists-53">exists <a class="anchor" href="#member-exists-53">#</a></h3><pre class="code" data-lang="ts"><code>exists(child: Phaser.GameObjects.GameObject): boolean;</code></pre><p>Checks if an item exists within the List.
+<strong>param</strong>  child The item to check for the existence of.
+<strong>returns</strong>  <code>true</code> if the item is found in the list, otherwise <code>false</code>.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>child</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-setall-54">setAll <a class="anchor" href="#member-setall-54">#</a></h3><pre class="code" data-lang="ts"><code>setAll(property: string, value: any, startIndex?: number, endIndex?: number): void;</code></pre><p>Sets the property <code>key</code> to the given value on all members of this List.
+<strong>param</strong>  property The name of the property to set.
+<strong>param</strong>  value The value to set the property to.
+<strong>param</strong>  startIndex The first child index to start the search from.
+<strong>param</strong>  endIndex The last child index to search up until.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>property</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>value</code></td><td><code>any</code></td><td>Required</td></tr><tr><td><code>startIndex</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>endIndex</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-each-55">each <a class="anchor" href="#member-each-55">#</a></h3><pre class="code" data-lang="ts"><code>each(callback: EachListCallback&lt;Phaser.GameObjects.GameObject&gt;, context?: any, ...args: any[]): void;</code></pre><p>Passes all children to the given callback.
+<strong>param</strong>  callback The function to call.
+<strong>param</strong>  context Value to use as <code>this</code> when executing callback.
+<strong>param</strong>  args Additional arguments that will be passed to the callback, after the child.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>callback</code></td><td><code>EachListCallback&lt;Phaser.GameObjects.GameObject&gt;</code></td><td>Required</td></tr><tr><td><code>context</code></td><td><code>any</code></td><td>Optional</td></tr><tr><td><code>...args</code></td><td><code>any[]</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-shutdown-56">shutdown <a class="anchor" href="#member-shutdown-56">#</a></h3><pre class="code" data-lang="ts"><code>shutdown(): void;</code></pre><p>Clears the List and recreates its internal array.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="member-length-57">length <a class="anchor" href="#member-length-57">#</a></h3><pre class="code" data-lang="ts"><code>readonly length: number;</code></pre><p>The number of items inside the List.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-first-58">first <a class="anchor" href="#member-first-58">#</a></h3><pre class="code" data-lang="ts"><code>readonly first: Phaser.GameObjects.GameObject | null;</code></pre><p>The first item in the List or <code>null</code> for an empty List.</p>
+<p><b>Type / return:</b> <code>Phaser.GameObjects.GameObject | null</code></p><h3 id="member-last-59">last <a class="anchor" href="#member-last-59">#</a></h3><pre class="code" data-lang="ts"><code>readonly last: Phaser.GameObjects.GameObject | null;</code></pre><p>The last item in the List, or <code>null</code> for an empty List.</p>
+<p><b>Type / return:</b> <code>Phaser.GameObjects.GameObject | null</code></p><h3 id="member-next-60">next <a class="anchor" href="#member-next-60">#</a></h3><pre class="code" data-lang="ts"><code>readonly next: Phaser.GameObjects.GameObject | null;</code></pre><p>The next item in the List, or <code>null</code> if the entire List has been traversed.</p>
+<p>This property can be read successively after reading #first or manually setting the #position to iterate the List.</p>
+<p><b>Type / return:</b> <code>Phaser.GameObjects.GameObject | null</code></p><h3 id="member-previous-61">previous <a class="anchor" href="#member-previous-61">#</a></h3><pre class="code" data-lang="ts"><code>readonly previous: Phaser.GameObjects.GameObject | null;</code></pre><p>The previous item in the List, or <code>null</code> if the entire List has been traversed.</p>
+<p>This property can be read successively after reading #last or manually setting the #position to iterate the List backwards.</p>
+<p><b>Type / return:</b> <code>Phaser.GameObjects.GameObject | null</code></p><h3 id="member-destroy-62">destroy <a class="anchor" href="#member-destroy-62">#</a></h3><pre class="code" data-lang="ts"><code>destroy(fromScene?: boolean): void;</code></pre><p>Destroys this Layer removing it from the Display List and Update List and
+severing all ties to parent resources.</p>
+<p>Also destroys all children of this Layer. If you do not wish for the
+children to be destroyed, you should move them from this Layer first.</p>
+<p>Use this to remove this Layer from your game if you don&#39;t ever plan to use it again.
+As long as no reference to it exists within your own code it should become free for
+garbage collection by the browser.</p>
+<p>If you just want to temporarily disable an object then look at using the
+Game Object Pool instead of destroying it, as destroyed objects cannot be resurrected.
+<strong>param</strong>  fromScene <code>True</code> if this Game Object is being destroyed by the Scene, <code>false</code> if not. Default false.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>fromScene</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-filtercamera-63">filterCamera <a class="anchor" href="#member-filtercamera-63">#</a></h3><pre class="code" data-lang="ts"><code>filterCamera: Phaser.Cameras.Scene2D.Camera;</code></pre><p>The Camera used for filters.
+You can use this to alter the perspective of filters.
+It is not necessary to use this camera for ordinary rendering.</p>
+<p>This is only available if you use the <code>enableFilters</code> method.</p>
+<p><b>Type / return:</b> <code>Phaser.Cameras.Scene2D.Camera</code></p><h3 id="member-filters-64">filters <a class="anchor" href="#member-filters-64">#</a></h3><pre class="code" data-lang="ts"><code>readonly filters: Phaser.Types.GameObjects.FiltersInternalExternal | null;</code></pre><p>The filter lists for this Game Object.
+This is an object with <code>internal</code> and <code>external</code> properties.
+Each list is a Phaser.GameObjects.Components.FilterList object.</p>
+<p>This is only available if you use the <code>enableFilters</code> method.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.FiltersInternalExternal | null</code></p><h3 id="member-renderfilters-65">renderFilters <a class="anchor" href="#member-renderfilters-65">#</a></h3><pre class="code" data-lang="ts"><code>renderFilters: boolean;</code></pre><p>Whether any filters should be rendered on this Game Object.
+This is <code>true</code> by default, even if there are no filters yet.
+Disable this to skip filter rendering.</p>
+<p>Use <code>willRenderFilters()</code> to see if there are any active filters.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-maxfiltersize-66">maxFilterSize <a class="anchor" href="#member-maxfiltersize-66">#</a></h3><pre class="code" data-lang="ts"><code>maxFilterSize: Phaser.Math.Vector2;</code></pre><p>The maximum size of the base filter texture.
+Filters may use a larger texture after the base texture is rendered.
+The maximum texture size is at least 4096 in WebGL, based on the hardware.
+You may set this lower to save memory or prevent resizing.</p>
+<p><b>Type / return:</b> <code>Phaser.Math.Vector2</code></p><h3 id="member-filtersautofocus-67">filtersAutoFocus <a class="anchor" href="#member-filtersautofocus-67">#</a></h3><pre class="code" data-lang="ts"><code>filtersAutoFocus: boolean;</code></pre><p>Whether <code>filterCamera</code> should update every frame
+to focus on the Game Object.
+Disable this if you want to manually control the camera.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-filtersfocuscontext-68">filtersFocusContext <a class="anchor" href="#member-filtersfocuscontext-68">#</a></h3><pre class="code" data-lang="ts"><code>filtersFocusContext: boolean;</code></pre><p>Whether the filters should focus on the context,
+rather than attempt to focus on the Game Object.
+This is enabled automatically when enabling filters on objects
+which don&#39;t have well-defined bounds.</p>
+<p>This effectively sets the internal filters to render the same way
+as the external filters.</p>
+<p>This is only used if <code>filtersAutoFocus</code> is enabled.</p>
+<p>The &quot;context&quot; is the framebuffer to which the Game Object is rendered.
+This is usually the main framebuffer, but might be another framebuffer.
+It can even be several different framebuffers if the Game Object is
+rendered multiple times.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-filtersforcecomposite-69">filtersForceComposite <a class="anchor" href="#member-filtersforcecomposite-69">#</a></h3><pre class="code" data-lang="ts"><code>filtersForceComposite: boolean;</code></pre><p>Whether the Filters component should always draw to a framebuffer,
+even if there are no active filters.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-willrenderfilters-70">willRenderFilters <a class="anchor" href="#member-willrenderfilters-70">#</a></h3><pre class="code" data-lang="ts"><code>willRenderFilters(): boolean;</code></pre><p>Whether this Game Object will render filters.
+This is true if it has active filters,
+and if the <code>renderFilters</code> property is also true.undefined
+<strong>returns</strong>  Whether the Game Object will render filters.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-enablefilters-71">enableFilters <a class="anchor" href="#member-enablefilters-71">#</a></h3><pre class="code" data-lang="ts"><code>enableFilters(): this;</code></pre><p>Enable this Game Object to have filters.</p>
+<p>You need to call this method if you want to use the <code>filterCamera</code>
+and <code>filters</code> properties. It sets up the necessary data structures.
+You may disable filter rendering with the <code>renderFilters</code> property.</p>
+<p>This is a WebGL only feature. It will return early if not available.undefined
+<strong>returns</strong>  undefined</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-renderwebglfilters-72">renderWebGLFilters <a class="anchor" href="#member-renderwebglfilters-72">#</a></h3><pre class="code" data-lang="ts"><code>renderWebGLFilters(renderer: Phaser.Renderer.WebGL.WebGLRenderer, gameObject: Phaser.GameObjects.GameObject, drawingContext: Phaser.Renderer.WebGL.DrawingContext, parentMatrix?: Phaser.GameObjects.Components.TransformMatrix, renderStep?: number): Phaser.Types.GameObjects.RenderWebGLStep;</code></pre><p>Render this object using filters.</p>
+<p>This function&#39;s scope is not guaranteed, so it doesn&#39;t refer to <code>this</code>.
+<strong>param</strong>  renderer The WebGL Renderer instance to render with.
+<strong>param</strong>  gameObject The Game Object being rendered.
+<strong>param</strong>  drawingContext The current drawing context.
+<strong>param</strong>  parentMatrix The parent matrix of the Game Object, if it has one.
+<strong>param</strong>  renderStep The index of this function in the Game Object&#39;s list of render processes. Used to support multiple rendering functions. Default 0.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>renderer</code></td><td><code>Phaser.Renderer.WebGL.WebGLRenderer</code></td><td>Required</td></tr><tr><td><code>gameObject</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr><tr><td><code>drawingContext</code></td><td><code>Phaser.Renderer.WebGL.DrawingContext</code></td><td>Required</td></tr><tr><td><code>parentMatrix</code></td><td><code>Phaser.GameObjects.Components.TransformMatrix</code></td><td>Optional</td></tr><tr><td><code>renderStep</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Types.GameObjects.RenderWebGLStep</code></p><h3 id="member-focusfilters-73">focusFilters <a class="anchor" href="#member-focusfilters-73">#</a></h3><pre class="code" data-lang="ts"><code>focusFilters(): this;</code></pre><p>Focus the filter camera.
+This sets the size and position of the filter camera to match the GameObject.
+This is called automatically on render if <code>filtersAutoFocus</code> is enabled.</p>
+<p>This will focus on the GameObject&#39;s raw dimensions if available.
+If the GameObject has no dimensions, this will focus on the context:
+the camera belonging to the DrawingContext used to render the GameObject.
+Context focus occurs during rendering,
+as the context is not known until then.undefined
+<strong>returns</strong>  undefined</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-focusfiltersoncamera-74">focusFiltersOnCamera <a class="anchor" href="#member-focusfiltersoncamera-74">#</a></h3><pre class="code" data-lang="ts"><code>focusFiltersOnCamera(camera: Phaser.Cameras.Scene2D.Camera): this;</code></pre><p>Focus the filter camera on a specific camera.
+This is used internally when <code>filtersFocusContext</code> is enabled.
+<strong>param</strong>  camera The camera to focus on.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>camera</code></td><td><code>Phaser.Cameras.Scene2D.Camera</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-focusfiltersoverride-75">focusFiltersOverride <a class="anchor" href="#member-focusfiltersoverride-75">#</a></h3><pre class="code" data-lang="ts"><code>focusFiltersOverride(x?: number, y?: number, width?: number, height?: number): this;</code></pre><p>Manually override the focus of the filter camera.
+This allows you to set the size and position of the filter camera manually.
+It deactivates <code>filtersAutoFocus</code> when called.</p>
+<p>The camera will set scroll to place the game object at the
+given position within a rectangle of the given width and height.
+For example, calling <code>focusFiltersOverride(400, 200, 800, 600)</code>
+will focus the camera to place the object&#39;s center
+100 pixels above the center of the camera (which is at 400x300).
+<strong>param</strong>  x The x-coordinate of the focus point, relative to the filter size. Default is the center.
+<strong>param</strong>  y The y-coordinate of the focus point, relative to the filter size. Default is the center.
+<strong>param</strong>  width The width of the focus area. Default is the filter width.
+<strong>param</strong>  height The height of the focus area. Default is the filter height.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>width</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setfiltersize-76">setFilterSize <a class="anchor" href="#member-setfiltersize-76">#</a></h3><pre class="code" data-lang="ts"><code>setFilterSize(width: number, height: number): this;</code></pre><p>Set the base size of the filter camera.
+This is the size of the texture that internal filters will be drawn to.
+External filters are drawn to the size of the context (usually the game canvas).</p>
+<p>This is typically the size of the GameObject.
+It is set automatically when the Game Object is rendered
+and <code>filtersAutoFocus</code> is enabled.
+Turn off auto focus to set it manually.</p>
+<p>Technically, larger framebuffers may be used to provide padding.
+This is the size of the final framebuffer used for &quot;internal&quot; rendering.
+<strong>param</strong>  width Base width of the filter texture.
+<strong>param</strong>  height Base height of the filter texture.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>width</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setfiltersautofocus-77">setFiltersAutoFocus <a class="anchor" href="#member-setfiltersautofocus-77">#</a></h3><pre class="code" data-lang="ts"><code>setFiltersAutoFocus(value: boolean): this;</code></pre><p>Sets whether the filter camera should automatically re-focus on the Game Object every frame.
+Sets the <code>filtersAutoFocus</code> property.
+<strong>param</strong>  value Whether filters should be updated every frame.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setfiltersfocuscontext-78">setFiltersFocusContext <a class="anchor" href="#member-setfiltersfocuscontext-78">#</a></h3><pre class="code" data-lang="ts"><code>setFiltersFocusContext(value: boolean): this;</code></pre><p>Set whether the filters should focus on the context.
+Sets the <code>filtersFocusContext</code> property.
+<strong>param</strong>  value Whether the filters should focus on the context.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setfiltersforcecomposite-79">setFiltersForceComposite <a class="anchor" href="#member-setfiltersforcecomposite-79">#</a></h3><pre class="code" data-lang="ts"><code>setFiltersForceComposite(value: boolean): this;</code></pre><p>Set whether the filters should always draw to a framebuffer.
+Sets the <code>filtersForceComposite</code> property.
+<strong>param</strong>  value Whether the object should always draw to a framebuffer, even if there are no active filters.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setrenderfilters-80">setRenderFilters <a class="anchor" href="#member-setrenderfilters-80">#</a></h3><pre class="code" data-lang="ts"><code>setRenderFilters(value: boolean): this;</code></pre><p>Set whether the filters should be rendered.
+Sets the <code>renderFilters</code> property.
+<strong>param</strong>  value Whether the filters should be rendered.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-renderwebglstep-81">renderWebGLStep <a class="anchor" href="#member-renderwebglstep-81">#</a></h3><pre class="code" data-lang="ts"><code>renderWebGLStep(renderer: Phaser.Renderer.WebGL.WebGLRenderer, gameObject: Phaser.GameObjects.GameObject, drawingContext: Phaser.Renderer.WebGL.DrawingContext, parentMatrix?: Phaser.GameObjects.Components.TransformMatrix, renderStep?: number, displayList?: Phaser.GameObjects.GameObject[], displayListIndex?: number): void;</code></pre><p>Run a step in the render process.
+This is called automatically by the Render module.</p>
+<p>In most cases, it just runs the <code>renderWebGL</code> function.</p>
+<p>When <code>_renderSteps</code> has more than one entry,
+such as when Filters are enabled for this object,
+it allows those processes to defer <code>renderWebGL</code>
+and otherwise manage the flow of rendering.
+<strong>param</strong>  renderer The WebGL Renderer instance to render with.
+<strong>param</strong>  gameObject The Game Object being rendered.
+<strong>param</strong>  drawingContext The current drawing context.
+<strong>param</strong>  parentMatrix The parent matrix of the Game Object, if it has one.
+<strong>param</strong>  renderStep Which step of the rendering process should be run? Default 0.
+<strong>param</strong>  displayList The display list which is currently being rendered. If not provided, it will be created with the Game Object.
+<strong>param</strong>  displayListIndex The index of the Game Object within the display list. Default 0.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>renderer</code></td><td><code>Phaser.Renderer.WebGL.WebGLRenderer</code></td><td>Required</td></tr><tr><td><code>gameObject</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr><tr><td><code>drawingContext</code></td><td><code>Phaser.Renderer.WebGL.DrawingContext</code></td><td>Required</td></tr><tr><td><code>parentMatrix</code></td><td><code>Phaser.GameObjects.Components.TransformMatrix</code></td><td>Optional</td></tr><tr><td><code>renderStep</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>displayList</code></td><td><code>Phaser.GameObjects.GameObject[]</code></td><td>Optional</td></tr><tr><td><code>displayListIndex</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-addrenderstep-82">addRenderStep <a class="anchor" href="#member-addrenderstep-82">#</a></h3><pre class="code" data-lang="ts"><code>addRenderStep(fn: Phaser.Types.GameObjects.RenderWebGLStep, index?: number): this;</code></pre><p>Adds a render step function to this Game Object&#39;s WebGL render pipeline.</p>
+<p>The first render step in <code>_renderSteps</code> is run first.
+It should call the next render step in the list.
+This allows render steps to control the rendering flow.
+<strong>param</strong>  fn The render step function to add.
+<strong>param</strong>  index The index in the render list to add the step to. Omit to add to the end.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>fn</code></td><td><code>Phaser.Types.GameObjects.RenderWebGLStep</code></td><td>Required</td></tr><tr><td><code>index</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-clearalpha-83">clearAlpha <a class="anchor" href="#member-clearalpha-83">#</a></h3><pre class="code" data-lang="ts"><code>clearAlpha(): this;</code></pre><p>Clears the alpha value associated with this Game Object.</p>
+<p>Immediately sets the alpha back to 1 (fully opaque).undefined
+<strong>returns</strong>  This Game Object instance.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-setalpha-84">setAlpha <a class="anchor" href="#member-setalpha-84">#</a></h3><pre class="code" data-lang="ts"><code>setAlpha(value?: number): this;</code></pre><p>Set the Alpha level of this Game Object. The alpha controls the opacity of the Game Object as it renders.
+Alpha values are provided as a float between 0, fully transparent, and 1, fully opaque.
+<strong>param</strong>  value The alpha value applied across the whole Game Object. Default 1.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-alpha-85">alpha <a class="anchor" href="#member-alpha-85">#</a></h3><pre class="code" data-lang="ts"><code>alpha: number;</code></pre><p>The alpha value of the Game Object.</p>
+<p>This is a global value, impacting the entire Game Object, not just a region of it.
+The value is clamped to the range [0, 1]. Setting alpha to 0 also clears the render
+flag, preventing the Game Object from being drawn until the alpha is raised above 0 again.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-blendmode-86">blendMode <a class="anchor" href="#member-blendmode-86">#</a></h3><pre class="code" data-lang="ts"><code>blendMode: Phaser.BlendModes | string | number;</code></pre><p>Sets the Blend Mode being used by this Game Object.</p>
+<p>This can be a const, such as <code>Phaser.BlendModes.SCREEN</code>, or an integer, such as 4 (for Overlay)</p>
+<p>Under WebGL only the following Blend Modes are available:</p>
+<ul>
+<li>NORMAL</li>
+<li>ADD</li>
+<li>MULTIPLY</li>
+<li>SCREEN</li>
+<li>ERASE</li>
+</ul>
+<p>Canvas has more available depending on browser support.</p>
+<p>You can also create your own custom Blend Modes in WebGL.</p>
+<p>Blend modes have different effects under Canvas and WebGL, and from browser to browser, depending
+on support. Blend Modes also cause a WebGL batch flush should it encounter a new blend mode. For these
+reasons try to be careful about the construction of your Scene and the frequency with which blend modes
+are used.</p>
+<p><b>Type / return:</b> <code>Phaser.BlendModes | string | number</code></p><h3 id="member-setblendmode-87">setBlendMode <a class="anchor" href="#member-setblendmode-87">#</a></h3><pre class="code" data-lang="ts"><code>setBlendMode(value: string | Phaser.BlendModes | number): this;</code></pre><p>Sets the Blend Mode being used by this Game Object.</p>
+<p>This can be a const, such as <code>Phaser.BlendModes.SCREEN</code>, or an integer, such as 4 (for Overlay)</p>
+<p>Under WebGL only the following Blend Modes are available:</p>
+<ul>
+<li>NORMAL</li>
+<li>ADD</li>
+<li>MULTIPLY</li>
+<li>SCREEN</li>
+<li>ERASE (only works when rendering to a framebuffer, like a Render Texture)</li>
+</ul>
+<p>Canvas has more available depending on browser support.</p>
+<p>You can also create your own custom Blend Modes in WebGL.</p>
+<p>Blend modes have different effects under Canvas and WebGL, and from browser to browser, depending
+on support. Blend Modes also cause a WebGL batch flush should it encounter a new blend mode. For these
+reasons try to be careful about the construction of your Scene and the frequency with which blend modes
+are used.
+<strong>param</strong>  value The BlendMode value. Either a string, a CONST or a number.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>string | Phaser.BlendModes | number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-depth-88">depth <a class="anchor" href="#member-depth-88">#</a></h3><pre class="code" data-lang="ts"><code>depth: number;</code></pre><p>The depth of this Game Object within the Scene. Ensure this value is only ever set to a number data-type.</p>
+<p>The depth is also known as the &#39;z-index&#39; in some environments, and allows you to change the rendering order
+of Game Objects, without actually moving their position in the display list.</p>
+<p>The default depth is zero. A Game Object with a higher depth
+value will always render in front of one with a lower value.</p>
+<p>Setting the depth will queue a depth sort event within the Scene.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-setdepth-89">setDepth <a class="anchor" href="#member-setdepth-89">#</a></h3><pre class="code" data-lang="ts"><code>setDepth(value: number): this;</code></pre><p>Sets the depth of this Game Object. If the <code>value</code> argument is not provided, the depth defaults to <code>0</code>.</p>
+<p>The depth is also known as the &#39;z-index&#39; in some environments, and allows you to change the rendering order
+of Game Objects, without actually moving their position in the display list.</p>
+<p>A Game Object with a higher depth value will always render in front of one with a lower value.</p>
+<p>Setting the depth will queue a depth sort event within the Scene.
+<strong>param</strong>  value The depth of this Game Object. Ensure this value is only ever a number data-type.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-settotop-90">setToTop <a class="anchor" href="#member-settotop-90">#</a></h3><pre class="code" data-lang="ts"><code>setToTop(): this;</code></pre><p>Sets this Game Object to be at the top of the display list, or the top of its parent container.</p>
+<p>Being at the top means it will render on top of everything else.</p>
+<p>This method does not change this Game Objects <code>depth</code> value, it simply alters its list position.undefined
+<strong>returns</strong>  This Game Object instance.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-settoback-91">setToBack <a class="anchor" href="#member-settoback-91">#</a></h3><pre class="code" data-lang="ts"><code>setToBack(): this;</code></pre><p>Sets this Game Object to the back of the display list, or the back of its parent container.</p>
+<p>Being at the back means it will render below everything else.</p>
+<p>This method does not change this Game Objects <code>depth</code> value, it simply alters its list position.undefined
+<strong>returns</strong>  This Game Object instance.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-setabove-92">setAbove <a class="anchor" href="#member-setabove-92">#</a></h3><pre class="code" data-lang="ts"><code>setAbove(gameObject: Phaser.GameObjects.GameObject): this;</code></pre><p>Move this Game Object so that it appears above the given Game Object.</p>
+<p>This means it will render immediately after the other object in the display list.</p>
+<p>Both objects must belong to the same display list, or parent container.</p>
+<p>This method does not change this Game Objects <code>depth</code> value, it simply alters its list position.
+<strong>param</strong>  gameObject The Game Object that this Game Object will be moved to be above.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>gameObject</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setbelow-93">setBelow <a class="anchor" href="#member-setbelow-93">#</a></h3><pre class="code" data-lang="ts"><code>setBelow(gameObject: Phaser.GameObjects.GameObject): this;</code></pre><p>Move this Game Object so that it appears below the given Game Object.</p>
+<p>This means it will render immediately under the other object in the display list.</p>
+<p>Both objects must belong to the same display list, or parent container.</p>
+<p>This method does not change this Game Objects <code>depth</code> value, it simply alters its list position.
+<strong>param</strong>  gameObject The Game Object that this Game Object will be moved to be below.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>gameObject</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-mask-94">mask <a class="anchor" href="#member-mask-94">#</a></h3><pre class="code" data-lang="ts"><code>mask: Phaser.Display.Masks.GeometryMask;</code></pre><p>The Mask this Game Object is using during render, or <code>null</code> if no mask has been set.</p>
+<p><b>Type / return:</b> <code>Phaser.Display.Masks.GeometryMask</code></p><h3 id="member-setmask-95">setMask <a class="anchor" href="#member-setmask-95">#</a></h3><pre class="code" data-lang="ts"><code>setMask(mask: Phaser.Display.Masks.GeometryMask): this;</code></pre><p>Sets the mask that this Game Object will use to render with.</p>
+<p>The mask must have been previously created and must be a GeometryMask.
+This only works in the Canvas Renderer.
+In WebGL, use a Mask filter instead (see Phaser.GameObjects.Components.FilterList#addMask).</p>
+<p>If a mask is already set on this Game Object it will be immediately replaced.</p>
+<p>Masks are positioned in global space and are not relative to the Game Object to which they
+are applied. The reason for this is that multiple Game Objects can all share the same mask.</p>
+<p>Masks have no impact on physics or input detection. They are purely a rendering component
+that allows you to limit what is visible during the render pass.
+<strong>param</strong>  mask The mask this Game Object will use when rendering.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>mask</code></td><td><code>Phaser.Display.Masks.GeometryMask</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-clearmask-96">clearMask <a class="anchor" href="#member-clearmask-96">#</a></h3><pre class="code" data-lang="ts"><code>clearMask(destroyMask?: boolean): this;</code></pre><p>Clears the mask that this Game Object was using.</p>
+<p>This only works in the Canvas Renderer.
+In WebGL, use a Mask filter instead (see Phaser.GameObjects.Components.FilterList#addMask).
+<strong>param</strong>  destroyMask Destroy the mask before clearing it? Default false.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>destroyMask</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-creategeometrymask-97">createGeometryMask <a class="anchor" href="#member-creategeometrymask-97">#</a></h3><pre class="code" data-lang="ts"><code>createGeometryMask&lt;G extends Phaser.GameObjects.Graphics, S extends Phaser.GameObjects.Shape&gt;(graphics?: Phaser.GameObjects.Graphics | Phaser.GameObjects.Shape): Phaser.Display.Masks.GeometryMask;</code></pre><p>Creates and returns a Geometry Mask. This mask can be used by any Game Object,
+including this one.</p>
+<p>To create the mask you need to pass in a reference to a Graphics Game Object.</p>
+<p>If you do not provide a graphics object, and this Game Object is an instance
+of a Graphics object, then it will use itself to create the mask.</p>
+<p>This means you can call this method to create a Geometry Mask from any Graphics Game Object.</p>
+<p>This only works in the Canvas Renderer.
+In WebGL, use a Mask filter instead (see Phaser.GameObjects.Components.FilterList#addMask).
+<strong>param</strong>  graphics A Graphics Game Object, or any kind of Shape Game Object. The geometry within it will be used as the mask.
+<strong>returns</strong>  This Geometry Mask that was created.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>graphics</code></td><td><code>Phaser.GameObjects.Graphics | Phaser.GameObjects.Shape</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Display.Masks.GeometryMask</code></p><h3 id="member-visible-98">visible <a class="anchor" href="#member-visible-98">#</a></h3><pre class="code" data-lang="ts"><code>visible: boolean;</code></pre><p>The visible state of the Game Object.</p>
+<p>An invisible Game Object will skip rendering, but will still process update logic.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-setvisible-99">setVisible <a class="anchor" href="#member-setvisible-99">#</a></h3><pre class="code" data-lang="ts"><code>setVisible(value: boolean): this;</code></pre><p>Sets the visibility of this Game Object.</p>
+<p>An invisible Game Object will skip rendering, but will still process update logic.
+<strong>param</strong>  value The visible state of the Game Object.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h2 id="base-types">Base types</h2><p><a href="engine-phaser-phaser-gameobjects-gameobject.html">Phaser.GameObjects.GameObject</a> · <a href="engine-phaser-phaser-gameobjects-components-alphasingle.html">Phaser.GameObjects.Components.AlphaSingle</a> · <a href="engine-phaser-phaser-gameobjects-components-blendmode.html">Phaser.GameObjects.Components.BlendMode</a> · <a href="engine-phaser-phaser-gameobjects-components-depth.html">Phaser.GameObjects.Components.Depth</a> · <a href="engine-phaser-phaser-gameobjects-components-mask.html">Phaser.GameObjects.Components.Mask</a> · <a href="engine-phaser-phaser-gameobjects-components-visible.html">Phaser.GameObjects.Components.Visible</a></p><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#members">Public members (100)</a><a href="#base-types">Base types</a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

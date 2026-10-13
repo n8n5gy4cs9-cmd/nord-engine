@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Morph Targets — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Morph Targets</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="morph-targets">Morph targets<a class="anchor" href="#morph-targets">#</a></h2>
+<p>Morph targets are a new feature introduced with Babylon.js v3.0.</p>
+<p><p class="muted">Upstream illustration: Morph Target Before and After (media not bundled).</p></p>
+<h2 id="basics">Basics<a class="anchor" href="#basics">#</a></h2>
+<p>Meshes can be deformed by using morph targets. A morph target must be built from a mesh with the <strong>EXACT</strong> same number of vertices as the original mesh.
+Morph targets are used by the GPU to create the final geometry by applying the following formula:</p>
+<p>final mesh = original mesh + sum((morph targets - original mesh) * morph targets influences)</p>
+<p>For instance, you can use morph targets to simulate the opening of a mouth. The initial mesh has a closed mouth. The morph target can be the same mesh but with an open mouth. Then, by changing the influence of the morph target from 0 to 1, you can display a closed mouth, an open mouth, or a mix of both.</p>
+<p>You can find live examples here:
+<span class="muted">Online playground (not embedded offline)</span></p>
+<p>The following two examples are best seen in the full Playground, where sliders can be used to change the influences.
+<span class="muted">Online playground (not embedded offline)</span><br><span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="how-to-use-morph-targets">How to Use Morph Targets<a class="anchor" href="#how-to-use-morph-targets">#</a></h2>
+<p>To use morph targets, you first have to create a <code>MorphTargetManager</code> and assign it to a mesh:</p>
+<pre class="code" data-lang="javascript"><code>const manager = new BABYLON.MorphTargetManager();
+sphere.morphTargetManager = manager;</code></pre>
+<p>Then you can create a <code>MorphTarget</code> either with the <code>FromMesh</code> static function:</p>
+<pre class="code" data-lang="javascript"><code>const target = BABYLON.MorphTarget.FromMesh(sphereTarget, &quot;target&quot;, 0.25);</code></pre>
+<p>or simply by creating a target and specifying positions and normals:</p>
+<pre class="code" data-lang="javascript"><code>const target = new BABYLON.MorphTarget(name, influence);
+target.setPositions(...);
+target.setNormals(...);</code></pre>
+<p>Once done, you can specify the influence of a specific target with <code>target.influence = 0.25</code>.</p>
+<p>Targets with influence = 0 are disabled.</p>
+<p>Here is a complete example with 4 targets:</p>
+<pre class="code" data-lang="javascript"><code>const scramble = function (data) {
+  for (index = 0; index &lt; data.length; index++) {
+    data[index] += 0.1 * Math.random();
+  }
+};
+
+// Main sphere
+const sphere = BABYLON.MeshBuilder.CreateSphere(&quot;sphere1&quot;, { segments: 16, diameter: 2 }, scene);
+
+// Let's create some targets
+const sphere2 = BABYLON.MeshBuilder.CreateSphere(&quot;sphere2&quot;, { segments: 16, diameter: 2 }, scene);
+sphere2.setEnabled(false);
+sphere2.updateMeshPositions(scramble);
+
+const sphere3 = BABYLON.MeshBuilder.CreateSphere(&quot;sphere3&quot;, { segments: 16, diameter: 2 }, scene);
+sphere3.setEnabled(false);
+
+sphere3.scaling = new BABYLON.Vector3(2.1, 3.5, 1.0);
+sphere3.bakeCurrentTransformIntoVertices();
+
+const sphere4 = BABYLON.MeshBuilder.CreateSphere(&quot;sphere4&quot;, { segments: 16, diameter: 2 }, scene);
+sphere4.setEnabled(false);
+sphere4.updateMeshPositions(scramble);
+
+const sphere5 = BABYLON.MeshBuilder.CreateSphere(&quot;sphere5&quot;, { segments: 16, diameter: 2 }, scene);
+sphere5.setEnabled(false);
+
+sphere5.scaling = new BABYLON.Vector3(1.0, 0.1, 1.0);
+sphere5.bakeCurrentTransformIntoVertices();
+
+// Create a manager and affect it to the sphere
+const manager = new BABYLON.MorphTargetManager();
+sphere.morphTargetManager = manager;
+
+// Add the targets
+const target0 = BABYLON.MorphTarget.FromMesh(sphere2, &quot;sphere2&quot;, 0.25);
+manager.addTarget(target0);
+
+const target1 = BABYLON.MorphTarget.FromMesh(sphere3, &quot;sphere3&quot;, 0.25);
+manager.addTarget(target1);
+
+const target2 = BABYLON.MorphTarget.FromMesh(sphere4, &quot;sphere4&quot;, 0.25);
+manager.addTarget(target2);
+
+const target3 = BABYLON.MorphTarget.FromMesh(sphere5, &quot;sphere5&quot;, 0.25);
+manager.addTarget(target3);</code></pre>
+<p>At any time, you can remove a target with <code>manager.removeTarget(target)</code>.</p>
+<h2 id="how-to-access-morph-targets-in-a-gltf-file">How to Access Morph Targets in a glTF File<a class="anchor" href="#how-to-access-morph-targets-in-a-gltf-file">#</a></h2>
+<p>You can access a morph target influence on a mesh in a glTF file through the <a href="engine-babylonjs-babylon-morphtargetmanager.html">morphTargetManager</a> which is automatically created for a loaded glTF file containing morph targets. You can see how many influences are present on the mesh by writing to the console.</p>
+<pre class="code" data-lang="javascript"><code>console.log(mesh.morphTargetManager);</code></pre>
+<p>If you want to view or change the value of a morph target influence, you can access it by getting the target from the morphTargetManager by key.</p>
+<pre class="code" data-lang="javascript"><code>myInfluence = mesh.morphTargetManager.getTarget(key);</code></pre>
+<p>See the following example for a full playground using morph targets from a glTF file.</p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<h2 id="list-of-morphable-properties">List of Morphable Properties<a class="anchor" href="#list-of-morphable-properties">#</a></h2>
+<p>You can morph the following mesh attributes:</p>
+<ul>
+<li>position</li>
+<li>normal (can be turned off by calling <code>manager.enableNormalMorphing = false</code>)</li>
+<li>tangents (can be turned off by calling <code>manager.enableTangentMorphing = false</code>)</li>
+<li>uvs (can be turned off by calling <code>manager.enableUVMorphing = false</code>)</li>
+</ul>
+<h2 id="animating-morph-targets">Animating Morph Targets<a class="anchor" href="#animating-morph-targets">#</a></h2>
+<p>You can animate any morph target influence by creating a <span>BABYLON.Animation</span> targeting the influence you wish to control. When creating your animation, you need to list &quot;influence&quot; as the property to be animated. This property will always be of type FLOAT.</p>
+<pre class="code" data-lang="javascript"><code>const myAnim = new BABYLON.Animation(name, &quot;influence&quot;, frames_per_second, BABYLON.Animation.ANIMATIONTYPE_FLOAT, loop_mode);</code></pre>
+<p>To play the morph target animation, add the animation to the mesh that owns the <span>MorphTargetManager</span> so that the animation is easy to access later. You can then call <code>scene.beginAnimation</code> while targeting the specific morph target you want to animate.</p>
+<pre class="code" data-lang="javascript"><code>mesh.animations.push(myAnim);
+scene.beginAnimation(morphTarget, from, to, true);</code></pre>
+<p>You can animate multiple morphs on the same mesh by creating a new animation for each morph and targeting the appropriate influence. If you want to play several morph animations simultaneously - such as playing blink animations on morph targets driving each individual eye - you can add these animations to an <span>animation group</span>.</p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<h2 id="use-morph-targets-with-node-material">Use Morph Targets with Node Material<a class="anchor" href="#use-morph-targets-with-node-material">#</a></h2>
+<p>The <a href="babylon-guide-features-featuresdeepdive-materials-node-material.html">Node Material</a> is a powerful tool that lets you create shaders without writing <span>GLSL</span>. To use a Node Material on a mesh with Morph Targets, you need to add the Morph Target node to it so that vertex positions, normals, and UVs properly respond to the effects of the morph:</p>
+<p><p class="muted">Upstream illustration: Use Morph Target with Node Material (media not bundled).</p></p>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="limitations">Limitations<a class="anchor" href="#limitations">#</a></h2>
+<p>On WebGL2+, Babylon.js uses textures to store the targets, so the only limit is GPU memory. You can find an example with a large number of targets here: - <span class="muted">Online playground (not embedded offline)</span></p>
+<p>On WebGL1, the system cannot store inside textures (it requires float textures) so as a fallback it will store the targets inside mesh vertices.</p>
+<ul>
+<li>Please be aware that most browsers are limited to 16 attributes per mesh. Adding a single morph target to a mesh adds up to 4 new attributes (position + normal + tangents + UVs). This could quickly exceed the maximum attributes limit.</li>
+<li>All targets within the same manager must have the same vertex count.</li>
+<li>A mesh and its MorphTargetManager must have the same vertex count.</li>
+</ul>
+<p>You can find a video explaining how morph targets work here:</p>
+<span class="muted">&lt;Youtube id=&quot;LBPRmGgU0PE&quot;/&gt;
+</span><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#morph-targets">Morph targets </a><a href="#basics">Basics </a><a href="#how-to-use-morph-targets">How to Use Morph Targets </a><a href="#how-to-access-morph-targets-in-a-gltf-file">How to Access Morph Targets in a glTF File </a><a href="#list-of-morphable-properties">List of Morphable Properties </a><a href="#animating-morph-targets">Animating Morph Targets </a><a href="#use-morph-targets-with-node-material">Use Morph Targets with Node Material </a><a href="#limitations">Limitations </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

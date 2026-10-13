@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BABYLON.GaussianSplattingWorkBuffer — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>BABYLON.GaussianSplattingWorkBuffer</h1>
+<p><span class="badge">Underlying Babylon 9.30.0 API</span> <span class="badge">Class</span></p><p class="muted">Official public declarations and JSDoc from <code>babylonjs-loaders</code>. Use with engine objects, not directly on a Nord entity.</p><aside class="box tip"><div class="box-title">The Nord way</div><p><a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a>. Access raw objects only when the Nord wrapper does not cover your feature. <a href="reference.html#escape-hatch">How escape hatches work</a>.</p></aside><h3 id="declaration">GaussianSplattingWorkBuffer <a class="anchor" href="#declaration">#</a></h3><pre class="code" data-lang="ts"><code>export class GaussianSplattingWorkBuffer</code></pre><p>A unified, GPU-decoded Gaussian Splatting work buffer.</p>
+<p>Holds a square MRT texture set (centers / covA / covB / colors) sized to a fixed splat capacity
+(<code>ceil(sqrt(capacity))</code>). Each streamed SOG file is decoded directly on the GPU
+(no CPU readback) into its allocated pixel range. The decoded textures are consumed unchanged by the
+standard (non-SOG) Gaussian Splatting draw path.</p>
+<p>@experimental</p>
+<h2 id="members">Public members (18)</h2><p>Private, protected and explicitly internal declarations are excluded. Inherited members belong to the base type listed in the declaration.</p><h3 id="member-supportsasynccentersreadback-0">supportsAsyncCentersReadback <a class="anchor" href="#member-supportsasynccentersreadback-0">#</a></h3><pre class="code" data-lang="ts"><code>get supportsAsyncCentersReadback(): boolean;</code></pre><p>True when the engine supports the non-blocking GPU readback used by readCentersRangeAsync:
+WebGL2 (PBO + fence) or WebGPU (copyTextureToBuffer + mapAsync). When false (e.g. WebGL1), callers must
+decode positions on the CPU instead.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-texturesize-1">textureSize <a class="anchor" href="#member-texturesize-1">#</a></h3><pre class="code" data-lang="ts"><code>get textureSize(): number;</code></pre><p>Square edge length (in pixels) of the work-buffer textures.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-textures-2">textures <a class="anchor" href="#member-textures-2">#</a></h3><pre class="code" data-lang="ts"><code>get textures(): Texture[];</code></pre><p>The decoded work-buffer textures: [centers, covA, covB, colors].</p>
+<p><b>Type / return:</b> <code>Texture[]</code></p><h3 id="member-shtextures-3">shTextures <a class="anchor" href="#member-shtextures-3">#</a></h3><pre class="code" data-lang="ts"><code>get shTextures(): Texture[];</code></pre><p>The baked higher-order SH textures (packed-u32, one per <code>ceil(coeffs*3/16)</code>), consumed by the draw path&#39;s
+<code>computeSHWeighted</code>/<code>decompose</code> as <code>shTexture0..N</code>. Empty when SH decoding is not enabled.</p>
+<p><b>Type / return:</b> <code>Texture[]</code></p><h3 id="member-rotationtextures-4">rotationTextures <a class="anchor" href="#member-rotationtextures-4">#</a></h3><pre class="code" data-lang="ts"><code>get rotationTextures(): Texture[];</code></pre><p>The decoded rotation/scale textures ([rotationsA, rotationsB, rotationScale], half-float), consumed by the
+voxel-IBL path as <code>rotationsATexture</code>/<code>rotationsBTexture</code>/<code>rotationScaleTexture</code>. Empty when rotation decode
+is not enabled.</p>
+<p><b>Type / return:</b> <code>Texture[]</code></p><h3 id="member-constructor-5">constructor <a class="anchor" href="#member-constructor-5">#</a></h3><pre class="code" data-lang="ts"><code>constructor(scene: Scene, capacity: number, externalAtlas?: {
+            mrt: MultiRenderTarget;
+            width: number;
+            baseOffset: number;
+        }, sh?: {
+            textureCount: number;
+            externalMrts?: MultiRenderTarget[];
+        }, rotationScale?: {
+            externalMrt?: MultiRenderTarget;
+        });</code></pre><p>Creates a work buffer sized to hold <code>capacity</code> splats.</p>
+<p>Standalone (default): the work buffer creates and owns a square MRT sized <code>ceil(sqrt(capacity))</code>, with
+decodes addressed from splat 0.</p>
+<p>Hosted (<code>externalAtlas</code> provided): the work buffer decodes/reads back into an externally-owned MRT (a
+compound mesh&#39;s shared atlas) instead of creating its own. Decodes are placed at <code>externalAtlas.baseOffset</code>
+(the reserved region&#39;s first splat) and addressed over <code>externalAtlas.width</code> (the wide atlas width), so the
+streamed splats land in the compound&#39;s atlas and sort/draw together with the static parts.
+<strong>param</strong>  scene hosting scene
+<strong>param</strong>  capacity total number of splats the work buffer must address
+<strong>param</strong>  externalAtlas optional external atlas to decode into instead of creating an owned square MRT
+<strong>param</strong>  sh optional higher-order SH decode configuration. <code>textureCount = ceil(coeffs*3/16)</code> for the max SH
+  degree across the streamed files. Standalone: the work buffer creates that many owned single-attachment
+  integer render targets. Hosted: <code>externalMrts</code> are the compound&#39;s shared SH atlas targets (borrowed).
+<strong>param</strong>  rotationScale optional rotation/scale decode configuration (for voxel-IBL shadows). When present the
+  work buffer decodes each splat&#39;s rotation matrix + scale into a 3-attachment half-float target. Standalone:
+  the work buffer creates and owns that target. Hosted: <code>externalMrt</code> is the compound&#39;s shared rotation atlas.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>scene</code></td><td><code>Scene</code></td><td>Required</td></tr><tr><td><code>capacity</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>externalAtlas</code></td><td><code>{
+            mrt: MultiRenderTarget;
+            width: number;
+            baseOffset: number;
+        }</code></td><td>Optional</td></tr><tr><td><code>sh</code></td><td><code>{
+            textureCount: number;
+            externalMrts?: MultiRenderTarget[];
+        }</code></td><td>Optional</td></tr><tr><td><code>rotationScale</code></td><td><code>{
+            externalMrt?: MultiRenderTarget;
+        }</code></td><td>Optional</td></tr></tbody></table><h3 id="member-rebindatlas-6">rebindAtlas <a class="anchor" href="#member-rebindatlas-6">#</a></h3><pre class="code" data-lang="ts"><code>rebindAtlas(mrt: MultiRenderTarget): void;</code></pre><p>Rebinds a hosted work buffer to a new atlas MRT (after the compound recreated it on a grow). No-op for a
+standalone work buffer, which owns its MRT.
+<strong>param</strong>  mrt the compound&#39;s new shared atlas</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>mrt</code></td><td><code>MultiRenderTarget</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-rebindshatlas-7">rebindShAtlas <a class="anchor" href="#member-rebindshatlas-7">#</a></h3><pre class="code" data-lang="ts"><code>rebindShAtlas(shMrts: Nullable&lt;MultiRenderTarget[]&gt;): void;</code></pre><p>Rebinds a hosted work buffer to the compound&#39;s NEW shared SH atlas (after the compound recreated it on a
+grow/compaction). No-op when SH isn&#39;t in use or the work buffer owns its SH targets (standalone).
+<strong>param</strong>  shMrts the compound&#39;s new shared SH render targets (one per packed-u32 SH texture)</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>shMrts</code></td><td><code>Nullable&lt;MultiRenderTarget[]&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-rebindrotatlas-8">rebindRotAtlas <a class="anchor" href="#member-rebindrotatlas-8">#</a></h3><pre class="code" data-lang="ts"><code>rebindRotAtlas(rotMrt: Nullable&lt;MultiRenderTarget&gt;): void;</code></pre><p>Rebinds a hosted work buffer to the compound&#39;s NEW shared rotation atlas (after the compound recreated it on a
+grow/compaction). No-op when rotation isn&#39;t in use or the work buffer owns its rotation target (standalone).
+<strong>param</strong>  rotMrt the compound&#39;s new shared rotation atlas</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>rotMrt</code></td><td><code>Nullable&lt;MultiRenderTarget&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-setbaseoffset-9">setBaseOffset <a class="anchor" href="#member-setbaseoffset-9">#</a></h3><pre class="code" data-lang="ts"><code>setBaseOffset(baseOffset: number): void;</code></pre><p>Relocates this hosted region to a new base splat offset in the shared atlas (used when the compound
+compacts its atlas and this region&#39;s rows move). Subsequent decode/render/readback and
+restoreRegion all address from the new base. Call between backupRegion (which read from
+the old base) and restoreRegion (which will write to the new base). No-op for a standalone
+work buffer, which owns its square MRT at base 0.
+<strong>param</strong>  baseOffset the region&#39;s new first splat index in the atlas</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>baseOffset</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-canbackup-10">canBackup <a class="anchor" href="#member-canbackup-10">#</a></h3><pre class="code" data-lang="ts"><code>get canBackup(): boolean;</code></pre><p>True once the backup/restore/relayout copy shaders are compiled, so backupRegion can preserve the
+region across an atlas rebuild. Callers that decode into a hosted region should await this before writing
+data, so a later grow/compaction can never race shader compilation and drop the region.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-backupregion-11">backupRegion <a class="anchor" href="#member-backupregion-11">#</a></h3><pre class="code" data-lang="ts"><code>backupRegion(): void;</code></pre><p>Copies this hosted region&#39;s four decoded textures out of the shared atlas into an internal backup MRT so
+they survive the compound recreating the atlas on a grow. Call immediately before the atlas is recreated,
+then rebindAtlas + restoreRegion after.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="member-restoreregion-12">restoreRegion <a class="anchor" href="#member-restoreregion-12">#</a></h3><pre class="code" data-lang="ts"><code>restoreRegion(): void;</code></pre><p>Restores the backed-up region into the (new) atlas, confined by a scissor to the region&#39;s rows so no other
+part is touched. Call rebindAtlas to the new atlas first. Frees the backup afterwards.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="member-decodeasync-13">decodeAsync <a class="anchor" href="#member-decodeasync-13">#</a></h3><pre class="code" data-lang="ts"><code>decodeAsync(pack: ISogTexturePack, offset: number): Promise&lt;void&gt;;</code></pre><p>Decodes one SOG file into the work buffer at the given splat offset (accumulating; previously
+decoded files are preserved). Resolves once the GPU decode has been issued. The caller may
+dispose the source pack textures after this resolves.
+<strong>param</strong>  pack the SOG texture pack (GPU source textures + per-file decode parameters)
+<strong>param</strong>  offset first splat index (pixel offset) for this file in the work buffer</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>pack</code></td><td><code>ISogTexturePack</code></td><td>Required</td></tr><tr><td><code>offset</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Promise&lt;void&gt;</code></p><h3 id="member-isrelayoutready-14">isRelayoutReady <a class="anchor" href="#member-isrelayoutready-14">#</a></h3><pre class="code" data-lang="ts"><code>isRelayoutReady(): boolean;</code></pre><p>Whether the relayout copy shader is compiled and ready. Lazily creates the copy material on first call.
+Callers should poll this before relayoutSync (which must only run when ready).
+<strong>returns</strong>  true when relayoutSync can run this frame</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-relayoutsync-15">relayoutSync <a class="anchor" href="#member-relayoutsync-15">#</a></h3><pre class="code" data-lang="ts"><code>relayoutSync(srcIndexByDst: Float32Array): void;</code></pre><p>Relayouts the decoded work-buffer textures to a new (defragmented) splat layout, keeping the same
+texture instances so the consuming mesh does not need to re-bind. <code>srcIndexByDst[d]</code> is the source splat
+index whose decoded data should end up at destination index <code>d</code>, or a negative value for a gap (left
+zeroed). Uses a temporary MRT ping-pong (old -&gt; temp via the map, then temp -&gt; old identity) so
+overlapping moves stay correct. Must be called at a frame-safe point (inside <code>onBeforeRender</code>) and only
+when isRelayoutReady returns true.
+<strong>param</strong>  srcIndexByDst per-destination source splat index (negative = gap)</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>srcIndexByDst</code></td><td><code>Float32Array</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-readcentersrangeasync-16">readCentersRangeAsync <a class="anchor" href="#member-readcentersrangeasync-16">#</a></h3><pre class="code" data-lang="ts"><code>readCentersRangeAsync(splatOffset: number, splatCount: number): Promise&lt;Nullable&lt;Float32Array&gt;&gt;;</code></pre><p>Asynchronously reads back the decoded splat centers (stride-4 xyzw, w=1) for a contiguous splat range
+from the work buffer&#39;s centers texture, using a non-blocking GPU readback (WebGL2 PBO + fence, or WebGPU
+copyTextureToBuffer + mapAsync) so it never stalls the frame the way a CPU image decode does. The centers
+texture already holds the GPU-decoded positions (identical to the CPU decode), so this replaces decoding
+positions on the CPU from the means images. Returns null when async readback is unsupported (caller should
+fall back to CPU decoding).
+<strong>param</strong>  splatOffset first splat index of the range
+<strong>param</strong>  splatCount number of splats in the range
+<strong>returns</strong>  a stride-4 Float32Array of length <code>splatCount * 4</code>, or null when unsupported/failed</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>splatOffset</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>splatCount</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Promise&lt;Nullable&lt;Float32Array&gt;&gt;</code></p><h3 id="member-dispose-17">dispose <a class="anchor" href="#member-dispose-17">#</a></h3><pre class="code" data-lang="ts"><code>dispose(): void;</code></pre><p>Disposes the work buffer and its decode resources.</p>
+<p><b>Type / return:</b> <code>void</code></p><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#members">Public members (18)</a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

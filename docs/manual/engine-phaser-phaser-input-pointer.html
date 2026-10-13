@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phaser.Input.Pointer — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Phaser.Input.Pointer</h1>
+<p><span class="badge">Underlying Phaser 4.2.1 API</span> <span class="badge">Class</span></p><p class="muted">Official public declarations and JSDoc from <code>phaser</code>. Use with engine objects, not directly on a Nord entity.</p><aside class="box tip"><div class="box-title">The Nord way</div><p><a href="2d.html">2D manual</a> · <a href="component-sprite.html">sprite</a> · <a href="component-animatedSprite.html">animatedSprite</a> · <a href="physics.html">physics</a>. Access raw objects only when the Nord wrapper does not cover your feature. <a href="reference.html#escape-hatch">How escape hatches work</a>.</p></aside><h3 id="declaration">Pointer <a class="anchor" href="#declaration">#</a></h3><pre class="code" data-lang="ts"><code>class Pointer</code></pre><p>A Pointer object encapsulates both mouse and touch input within Phaser.</p>
+<p>By default, Phaser will create 2 pointers for your game to use. If you require more, i.e. for a multi-touch
+game, then use the <code>InputPlugin.addPointer</code> method to do so, rather than instantiating this class directly,
+otherwise it won&#39;t be managed by the input system.</p>
+<p>You can reference the current active pointer via <code>InputPlugin.activePointer</code>. You can also use the properties
+<code>InputPlugin.pointer1</code> through to <code>pointer10</code>, for each pointer you have enabled in your game.</p>
+<p>The properties of this object are set by the Input Plugin during processing. This object is then sent in all
+input related events that the Input Plugin emits, so you can reference properties from it directly in your
+callbacks.</p>
+<h2 id="members">Public members (62)</h2><p>Private, protected and explicitly internal declarations are excluded. Inherited members belong to the base type listed in the declaration.</p><h3 id="member-constructor-0">constructor <a class="anchor" href="#member-constructor-0">#</a></h3><pre class="code" data-lang="ts"><code>constructor(manager: Phaser.Input.InputManager, id: number);</code></pre><p><strong>param</strong>  manager A reference to the Input Manager.
+<strong>param</strong>  id The internal ID of this Pointer.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>manager</code></td><td><code>Phaser.Input.InputManager</code></td><td>Required</td></tr><tr><td><code>id</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><h3 id="member-manager-1">manager <a class="anchor" href="#member-manager-1">#</a></h3><pre class="code" data-lang="ts"><code>manager: Phaser.Input.InputManager;</code></pre><p>A reference to the Input Manager.</p>
+<p><b>Type / return:</b> <code>Phaser.Input.InputManager</code></p><h3 id="member-id-2">id <a class="anchor" href="#member-id-2">#</a></h3><pre class="code" data-lang="ts"><code>readonly id: number;</code></pre><p>The internal ID of this Pointer.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-event-3">event <a class="anchor" href="#member-event-3">#</a></h3><pre class="code" data-lang="ts"><code>event: TouchEvent | MouseEvent | WheelEvent;</code></pre><p>The most recent native DOM Event this Pointer has processed.</p>
+<p><b>Type / return:</b> <code>TouchEvent | MouseEvent | WheelEvent</code></p><h3 id="member-downelement-4">downElement <a class="anchor" href="#member-downelement-4">#</a></h3><pre class="code" data-lang="ts"><code>readonly downElement: any;</code></pre><p>The DOM element the Pointer was pressed down on, taken from the DOM event.
+In a default set-up this will be the Canvas that Phaser is rendering to, or the Window element.</p>
+<p><b>Type / return:</b> <code>any</code></p><h3 id="member-upelement-5">upElement <a class="anchor" href="#member-upelement-5">#</a></h3><pre class="code" data-lang="ts"><code>readonly upElement: any;</code></pre><p>The DOM element the Pointer was released on, taken from the DOM event.
+In a default set-up this will be the Canvas that Phaser is rendering to, or the Window element.</p>
+<p><b>Type / return:</b> <code>any</code></p><h3 id="member-camera-6">camera <a class="anchor" href="#member-camera-6">#</a></h3><pre class="code" data-lang="ts"><code>camera: Phaser.Cameras.Scene2D.Camera;</code></pre><p>The camera the Pointer interacted with during its last update.</p>
+<p>A Pointer can only ever interact with one camera at once, which will be the top-most camera
+in the list should multiple cameras be positioned on-top of each other.</p>
+<p><b>Type / return:</b> <code>Phaser.Cameras.Scene2D.Camera</code></p><h3 id="member-button-7">button <a class="anchor" href="#member-button-7">#</a></h3><pre class="code" data-lang="ts"><code>readonly button: number;</code></pre><p>A read-only property that indicates which button was pressed, or released, on the pointer
+during the most recent event. It is only set during <code>up</code> and <code>down</code> events.</p>
+<p>On Touch devices the value is always 0.</p>
+<p>Users may change the configuration of buttons on their pointing device so that if an event&#39;s button property
+is zero, it may not have been caused by the button that is physically left–most on the pointing device;
+however, it should behave as if the left button was clicked in the standard button layout.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-buttons-8">buttons <a class="anchor" href="#member-buttons-8">#</a></h3><pre class="code" data-lang="ts"><code>buttons: number;</code></pre><p>A bitmask representing which mouse buttons are currently held down. The possible values are:</p>
+<p>0: No button or un-initialized
+1: Left button
+2: Right button
+4: Wheel button or middle button
+8: 4th button (typically the &quot;Browser Back&quot; button)
+16: 5th button (typically the &quot;Browser Forward&quot; button)</p>
+<p>For a mouse configured for left-handed use, the button actions are reversed.
+In this case, the values are read from right to left.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-position-9">position <a class="anchor" href="#member-position-9">#</a></h3><pre class="code" data-lang="ts"><code>readonly position: Phaser.Math.Vector2;</code></pre><p>The position of the Pointer in screen space.</p>
+<p><b>Type / return:</b> <code>Phaser.Math.Vector2</code></p><h3 id="member-prevposition-10">prevPosition <a class="anchor" href="#member-prevposition-10">#</a></h3><pre class="code" data-lang="ts"><code>readonly prevPosition: Phaser.Math.Vector2;</code></pre><p>The previous position of the Pointer in screen space.</p>
+<p>The old x and y values are stored in here during the InputManager.transformPointer call.</p>
+<p>Use the properties <code>velocity</code>, <code>angle</code> and <code>distance</code> to create your own gesture recognition.</p>
+<p><b>Type / return:</b> <code>Phaser.Math.Vector2</code></p><h3 id="member-velocity-11">velocity <a class="anchor" href="#member-velocity-11">#</a></h3><pre class="code" data-lang="ts"><code>readonly velocity: Phaser.Math.Vector2;</code></pre><p>The current velocity of the Pointer, based on its current and previous positions.</p>
+<p>This value is smoothed out each frame, according to the <code>motionFactor</code> property.</p>
+<p>This property is updated whenever the Pointer moves, regardless of any button states. In other words,
+it changes based on movement alone - a button doesn&#39;t have to be pressed first.</p>
+<p><b>Type / return:</b> <code>Phaser.Math.Vector2</code></p><h3 id="member-angle-12">angle <a class="anchor" href="#member-angle-12">#</a></h3><pre class="code" data-lang="ts"><code>readonly angle: number;</code></pre><p>The current angle the Pointer is moving, in radians, based on its previous and current position.</p>
+<p>The angle is based on the old position facing to the current position.</p>
+<p>This property is updated whenever the Pointer moves, regardless of any button states. In other words,
+it changes based on movement alone - a button doesn&#39;t have to be pressed first.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-distance-13">distance <a class="anchor" href="#member-distance-13">#</a></h3><pre class="code" data-lang="ts"><code>readonly distance: number;</code></pre><p>The distance the Pointer has moved, based on its previous and current position.</p>
+<p>This value is smoothed out each frame, according to the <code>motionFactor</code> property.</p>
+<p>This property is updated whenever the Pointer moves, regardless of any button states. In other words,
+it changes based on movement alone - a button doesn&#39;t have to be pressed first.</p>
+<p>If you need the total distance travelled since the primary button was pressed down,
+then use the <code>Pointer.getDistance</code> method.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-smoothfactor-14">smoothFactor <a class="anchor" href="#member-smoothfactor-14">#</a></h3><pre class="code" data-lang="ts"><code>smoothFactor: number;</code></pre><p>The smoothing factor to apply to the Pointer position.</p>
+<p>Due to their nature, pointer positions are inherently noisy. While this is fine for lots of games, if you need cleaner positions
+then you can set this value to apply an automatic smoothing to the positions as they are recorded.</p>
+<p>The default value of zero means &#39;no smoothing&#39;.
+Set to a small value, such as 0.2, to apply an average level of smoothing between positions. You can do this by changing this
+value directly, or by setting the <code>input.smoothFactor</code> property in the Game Config.</p>
+<p>Positions are only smoothed when the pointer moves. If the primary button on this Pointer enters an Up or Down state, then the position
+is always precise, and not smoothed.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-motionfactor-15">motionFactor <a class="anchor" href="#member-motionfactor-15">#</a></h3><pre class="code" data-lang="ts"><code>motionFactor: number;</code></pre><p>The factor applied to the motion smoothing each frame.</p>
+<p>This value is passed to the Smooth Step Interpolation that is used to calculate the velocity,
+angle and distance of the Pointer. It&#39;s applied every frame, until the midPoint reaches the current
+position of the Pointer. 0.2 provides a good average but can be increased if you need a
+quicker update and are working in a high performance environment. Never set this value to
+zero.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-worldx-16">worldX <a class="anchor" href="#member-worldx-16">#</a></h3><pre class="code" data-lang="ts"><code>worldX: number;</code></pre><p>The x position of this Pointer, translated into the coordinate space of the most recent Camera it interacted with.</p>
+<p>If you wish to use this value <em>outside</em> of an input event handler then you should update it first by calling
+the <code>Pointer.updateWorldPoint</code> method.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-worldy-17">worldY <a class="anchor" href="#member-worldy-17">#</a></h3><pre class="code" data-lang="ts"><code>worldY: number;</code></pre><p>The y position of this Pointer, translated into the coordinate space of the most recent Camera it interacted with.</p>
+<p>If you wish to use this value <em>outside</em> of an input event handler then you should update it first by calling
+the <code>Pointer.updateWorldPoint</code> method.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-movetime-18">moveTime <a class="anchor" href="#member-movetime-18">#</a></h3><pre class="code" data-lang="ts"><code>moveTime: number;</code></pre><p>Time when this Pointer was most recently moved (regardless of the state of its buttons, if any).</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-downx-19">downX <a class="anchor" href="#member-downx-19">#</a></h3><pre class="code" data-lang="ts"><code>downX: number;</code></pre><p>X coordinate of the Pointer when Button 1 (left button), or Touch, was pressed, used for dragging objects.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-downy-20">downY <a class="anchor" href="#member-downy-20">#</a></h3><pre class="code" data-lang="ts"><code>downY: number;</code></pre><p>Y coordinate of the Pointer when Button 1 (left button), or Touch, was pressed, used for dragging objects.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-downtime-21">downTime <a class="anchor" href="#member-downtime-21">#</a></h3><pre class="code" data-lang="ts"><code>downTime: number;</code></pre><p>The Event timestamp when the first button, or Touch input, was pressed. Used for dragging objects.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-upx-22">upX <a class="anchor" href="#member-upx-22">#</a></h3><pre class="code" data-lang="ts"><code>upX: number;</code></pre><p>X coordinate of the Pointer when Button 1 (left button), or Touch, was released, used for dragging objects.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-upy-23">upY <a class="anchor" href="#member-upy-23">#</a></h3><pre class="code" data-lang="ts"><code>upY: number;</code></pre><p>Y coordinate of the Pointer when Button 1 (left button), or Touch, was released, used for dragging objects.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-uptime-24">upTime <a class="anchor" href="#member-uptime-24">#</a></h3><pre class="code" data-lang="ts"><code>upTime: number;</code></pre><p>The Event timestamp when the final button, or Touch input, was released. Used for dragging objects.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-primarydown-25">primaryDown <a class="anchor" href="#member-primarydown-25">#</a></h3><pre class="code" data-lang="ts"><code>primaryDown: boolean;</code></pre><p>Is the primary button down? (usually button 0, the left mouse button)</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-isdown-26">isDown <a class="anchor" href="#member-isdown-26">#</a></h3><pre class="code" data-lang="ts"><code>isDown: boolean;</code></pre><p>Is <em>any</em> button on this pointer considered as being down?</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-wastouch-27">wasTouch <a class="anchor" href="#member-wastouch-27">#</a></h3><pre class="code" data-lang="ts"><code>wasTouch: boolean;</code></pre><p>Did the previous input event come from a Touch input (true) or Mouse? (false)</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-wascanceled-28">wasCanceled <a class="anchor" href="#member-wascanceled-28">#</a></h3><pre class="code" data-lang="ts"><code>wasCanceled: boolean;</code></pre><p>Did this Pointer get canceled by a touchcancel event?</p>
+<p>Note: &quot;canceled&quot; is the American-English spelling of &quot;cancelled&quot;. Please don&#39;t submit PRs correcting it!</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-movementx-29">movementX <a class="anchor" href="#member-movementx-29">#</a></h3><pre class="code" data-lang="ts"><code>movementX: number;</code></pre><p>If the mouse is locked, the horizontal relative movement of the Pointer in pixels since last frame.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-movementy-30">movementY <a class="anchor" href="#member-movementy-30">#</a></h3><pre class="code" data-lang="ts"><code>movementY: number;</code></pre><p>If the mouse is locked, the vertical relative movement of the Pointer in pixels since last frame.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-identifier-31">identifier <a class="anchor" href="#member-identifier-31">#</a></h3><pre class="code" data-lang="ts"><code>identifier: number;</code></pre><p>The identifier property of the Pointer as set by the DOM event when this Pointer is started.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-pointerid-32">pointerId <a class="anchor" href="#member-pointerid-32">#</a></h3><pre class="code" data-lang="ts"><code>pointerId: number;</code></pre><p>The pointerId property of the Pointer as set by the DOM event when this Pointer is started.
+The browser can and will recycle this value.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-active-33">active <a class="anchor" href="#member-active-33">#</a></h3><pre class="code" data-lang="ts"><code>active: boolean;</code></pre><p>An active Pointer is one that is currently pressed down on the display.
+A Mouse is always considered as active.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-locked-34">locked <a class="anchor" href="#member-locked-34">#</a></h3><pre class="code" data-lang="ts"><code>readonly locked: boolean;</code></pre><p>Is this pointer Pointer Locked?</p>
+<p>Only a mouse pointer can be locked and it only becomes locked when requested via
+the browsers Pointer Lock API.</p>
+<p>You can request this by calling the <code>this.input.mouse.requestPointerLock()</code> method from
+a <code>pointerdown</code> or <code>pointerup</code> event handler.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-deltax-35">deltaX <a class="anchor" href="#member-deltax-35">#</a></h3><pre class="code" data-lang="ts"><code>deltaX: number;</code></pre><p>The horizontal scroll amount that occurred due to the user moving a mouse wheel or similar input device.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-deltay-36">deltaY <a class="anchor" href="#member-deltay-36">#</a></h3><pre class="code" data-lang="ts"><code>deltaY: number;</code></pre><p>The vertical scroll amount that occurred due to the user moving a mouse wheel or similar input device.
+This value will typically be less than 0 if the user scrolls up and greater than zero if scrolling down.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-deltaz-37">deltaZ <a class="anchor" href="#member-deltaz-37">#</a></h3><pre class="code" data-lang="ts"><code>deltaZ: number;</code></pre><p>The z-axis scroll amount that occurred due to the user moving a mouse wheel or similar input device.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-updateworldpoint-38">updateWorldPoint <a class="anchor" href="#member-updateworldpoint-38">#</a></h3><pre class="code" data-lang="ts"><code>updateWorldPoint(camera: Phaser.Cameras.Scene2D.Camera): this;</code></pre><p>Takes a Camera and updates this Pointer&#39;s <code>worldX</code> and <code>worldY</code> values so they are
+the result of a translation through the given Camera.</p>
+<p>Note that the values will be automatically replaced the moment the Pointer is
+updated by an input event, such as a mouse move, so should be used immediately.
+<strong>param</strong>  camera The Camera which is being tested against.
+<strong>returns</strong>  This Pointer object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>camera</code></td><td><code>Phaser.Cameras.Scene2D.Camera</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-positiontocamera-39">positionToCamera <a class="anchor" href="#member-positiontocamera-39">#</a></h3><pre class="code" data-lang="ts"><code>positionToCamera(camera: Phaser.Cameras.Scene2D.Camera, output?: Phaser.Math.Vector2 | object): Phaser.Math.Vector2 | object;</code></pre><p>Takes a Camera and returns a Vector2 containing the translated position of this Pointer
+within that Camera. This can be used to convert this Pointers position into camera space.
+<strong>param</strong>  camera The Camera to use for the translation.
+<strong>param</strong>  output A Vector2-like object in which to store the translated position.
+<strong>returns</strong>  A Vector2 containing the translated coordinates of this Pointer, based on the given camera.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>camera</code></td><td><code>Phaser.Cameras.Scene2D.Camera</code></td><td>Required</td></tr><tr><td><code>output</code></td><td><code>Phaser.Math.Vector2 | object</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Math.Vector2 | object</code></p><h3 id="member-nobuttondown-40">noButtonDown <a class="anchor" href="#member-nobuttondown-40">#</a></h3><pre class="code" data-lang="ts"><code>noButtonDown(): boolean;</code></pre><p>Checks to see if any buttons are being held down on this Pointer.undefined
+<strong>returns</strong>  <code>true</code> if no buttons are being held down.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-leftbuttondown-41">leftButtonDown <a class="anchor" href="#member-leftbuttondown-41">#</a></h3><pre class="code" data-lang="ts"><code>leftButtonDown(): boolean;</code></pre><p>Checks to see if the left button is being held down on this Pointer.undefined
+<strong>returns</strong>  <code>true</code> if the left button is being held down.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-rightbuttondown-42">rightButtonDown <a class="anchor" href="#member-rightbuttondown-42">#</a></h3><pre class="code" data-lang="ts"><code>rightButtonDown(): boolean;</code></pre><p>Checks to see if the right button is being held down on this Pointer.undefined
+<strong>returns</strong>  <code>true</code> if the right button is being held down.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-middlebuttondown-43">middleButtonDown <a class="anchor" href="#member-middlebuttondown-43">#</a></h3><pre class="code" data-lang="ts"><code>middleButtonDown(): boolean;</code></pre><p>Checks to see if the middle button is being held down on this Pointer.undefined
+<strong>returns</strong>  <code>true</code> if the middle button is being held down.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-backbuttondown-44">backButtonDown <a class="anchor" href="#member-backbuttondown-44">#</a></h3><pre class="code" data-lang="ts"><code>backButtonDown(): boolean;</code></pre><p>Checks to see if the back button is being held down on this Pointer.undefined
+<strong>returns</strong>  <code>true</code> if the back button is being held down.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-forwardbuttondown-45">forwardButtonDown <a class="anchor" href="#member-forwardbuttondown-45">#</a></h3><pre class="code" data-lang="ts"><code>forwardButtonDown(): boolean;</code></pre><p>Checks to see if the forward button is being held down on this Pointer.undefined
+<strong>returns</strong>  <code>true</code> if the forward button is being held down.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-leftbuttonreleased-46">leftButtonReleased <a class="anchor" href="#member-leftbuttonreleased-46">#</a></h3><pre class="code" data-lang="ts"><code>leftButtonReleased(): boolean;</code></pre><p>Checks to see if the release of the left button was the most recent activity on this Pointer.undefined
+<strong>returns</strong>  <code>true</code> if the release of the left button was the most recent activity on this Pointer.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-rightbuttonreleased-47">rightButtonReleased <a class="anchor" href="#member-rightbuttonreleased-47">#</a></h3><pre class="code" data-lang="ts"><code>rightButtonReleased(): boolean;</code></pre><p>Checks to see if the release of the right button was the most recent activity on this Pointer.undefined
+<strong>returns</strong>  <code>true</code> if the release of the right button was the most recent activity on this Pointer.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-middlebuttonreleased-48">middleButtonReleased <a class="anchor" href="#member-middlebuttonreleased-48">#</a></h3><pre class="code" data-lang="ts"><code>middleButtonReleased(): boolean;</code></pre><p>Checks to see if the release of the middle button was the most recent activity on this Pointer.undefined
+<strong>returns</strong>  <code>true</code> if the release of the middle button was the most recent activity on this Pointer.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-backbuttonreleased-49">backButtonReleased <a class="anchor" href="#member-backbuttonreleased-49">#</a></h3><pre class="code" data-lang="ts"><code>backButtonReleased(): boolean;</code></pre><p>Checks to see if the release of the back button was the most recent activity on this Pointer.undefined
+<strong>returns</strong>  <code>true</code> if the release of the back button was the most recent activity on this Pointer.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-forwardbuttonreleased-50">forwardButtonReleased <a class="anchor" href="#member-forwardbuttonreleased-50">#</a></h3><pre class="code" data-lang="ts"><code>forwardButtonReleased(): boolean;</code></pre><p>Checks to see if the release of the forward button was the most recent activity on this Pointer.undefined
+<strong>returns</strong>  <code>true</code> if the release of the forward button was the most recent activity on this Pointer.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-getdistance-51">getDistance <a class="anchor" href="#member-getdistance-51">#</a></h3><pre class="code" data-lang="ts"><code>getDistance(): number;</code></pre><p>If the Pointer has a button pressed down at the time this method is called, it will return the
+distance between the Pointer&#39;s <code>downX</code> and <code>downY</code> values and the current position.</p>
+<p>If no button is held down, it will return the last recorded distance, based on where
+the Pointer was when the button was released.</p>
+<p>If you wish to get the distance being travelled currently, based on the velocity of the Pointer,
+then see the <code>Pointer.distance</code> property.undefined
+<strong>returns</strong>  The distance the Pointer moved.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-getdistancex-52">getDistanceX <a class="anchor" href="#member-getdistancex-52">#</a></h3><pre class="code" data-lang="ts"><code>getDistanceX(): number;</code></pre><p>If the Pointer has a button pressed down at the time this method is called, it will return the
+horizontal distance between the Pointer&#39;s <code>downX</code> value and the current <code>x</code> position.</p>
+<p>If no button is held down, it will return the last recorded horizontal distance, based on where
+the Pointer was when the button was released.undefined
+<strong>returns</strong>  The horizontal distance the Pointer moved.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-getdistancey-53">getDistanceY <a class="anchor" href="#member-getdistancey-53">#</a></h3><pre class="code" data-lang="ts"><code>getDistanceY(): number;</code></pre><p>If the Pointer has a button pressed down at the time this method is called, it will return the
+vertical distance between the Pointer&#39;s <code>downY</code> value and the current <code>y</code> position.</p>
+<p>If no button is held down, it will return the last recorded vertical distance, based on where
+the Pointer was when the button was released.undefined
+<strong>returns</strong>  The vertical distance the Pointer moved.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-getduration-54">getDuration <a class="anchor" href="#member-getduration-54">#</a></h3><pre class="code" data-lang="ts"><code>getDuration(): number;</code></pre><p>If the Pointer has a button pressed down at the time this method is called, it will return the
+duration since the button was pressed down.</p>
+<p>If no button is held down, it will return the last recorded duration, based on the time
+the last button on the Pointer was released.undefined
+<strong>returns</strong>  The duration the Pointer was held down for in milliseconds.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-getangle-55">getAngle <a class="anchor" href="#member-getangle-55">#</a></h3><pre class="code" data-lang="ts"><code>getAngle(): number;</code></pre><p>If the Pointer has a button pressed down at the time this method is called, it will return the
+angle between the Pointer&#39;s <code>downX</code> and <code>downY</code> values and the current position.</p>
+<p>If no button is held down, it will return the last recorded angle, based on where
+the Pointer was when the button was released.</p>
+<p>The angle is based on the old position facing to the current position.</p>
+<p>If you wish to get the current angle, based on the velocity of the Pointer, then
+see the <code>Pointer.angle</code> property.undefined
+<strong>returns</strong>  The angle between the Pointer&#39;s coordinates in radians.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-getinterpolatedposition-56">getInterpolatedPosition <a class="anchor" href="#member-getinterpolatedposition-56">#</a></h3><pre class="code" data-lang="ts"><code>getInterpolatedPosition(steps?: number, out?: any[]): any[];</code></pre><p>Takes the previous and current Pointer positions and then generates an array of interpolated values between
+the two. The array will be populated up to the size of the <code>steps</code> argument.</p>
+<pre class="code" data-lang="javascript"><code>var points = pointer.getInterpolatedPosition(4);
+
+// points[0] = { x: 0, y: 0 }
+// points[1] = { x: 2, y: 1 }
+// points[2] = { x: 3, y: 2 }
+// points[3] = { x: 6, y: 3 }</code></pre>
+<p>Use this if you need to get smoothed values between the previous and current pointer positions. DOM pointer
+events can often fire faster than the main browser loop, and this will help you avoid janky movement
+especially if you have an object following a Pointer.</p>
+<p>Note that if you provide an output array it will only be populated up to the number of steps provided.
+It will not clear any previous data that may have existed beyond the range of the steps count.</p>
+<p>Internally it uses the Smooth Step interpolation calculation.
+<strong>param</strong>  steps The number of interpolation steps to use. Default 10.
+<strong>param</strong>  out An array to store the results in. If not provided a new one will be created.
+<strong>returns</strong>  An array of interpolated values.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>steps</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>out</code></td><td><code>any[]</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>any[]</code></p><h3 id="member-reset-57">reset <a class="anchor" href="#member-reset-57">#</a></h3><pre class="code" data-lang="ts"><code>reset(): void;</code></pre><p>Fully reset this Pointer back to its uninitialized state.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="member-destroy-58">destroy <a class="anchor" href="#member-destroy-58">#</a></h3><pre class="code" data-lang="ts"><code>destroy(): void;</code></pre><p>Destroys this Pointer instance and resets its external references.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="member-x-59">x <a class="anchor" href="#member-x-59">#</a></h3><pre class="code" data-lang="ts"><code>x: number;</code></pre><p>The x position of this Pointer.
+The value is in screen space.
+See <code>worldX</code> to get a camera converted position.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-y-60">y <a class="anchor" href="#member-y-60">#</a></h3><pre class="code" data-lang="ts"><code>y: number;</code></pre><p>The y position of this Pointer.
+The value is in screen space.
+See <code>worldY</code> to get a camera converted position.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-time-61">time <a class="anchor" href="#member-time-61">#</a></h3><pre class="code" data-lang="ts"><code>readonly time: number;</code></pre><p>Time when this Pointer was most recently updated by a DOM Event.
+This comes directly from the <code>event.timeStamp</code> property.
+If no event has yet taken place, it will return zero.</p>
+<p><b>Type / return:</b> <code>number</code></p><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#members">Public members (62)</a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

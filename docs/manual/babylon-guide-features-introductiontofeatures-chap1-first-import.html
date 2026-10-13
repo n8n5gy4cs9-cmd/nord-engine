@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Getting Started - Chapter 1 - Working with Models — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Getting Started - Chapter 1 - Working with Models</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h1 id="getting-started-working-with-models">Getting Started - Working with Models</h1>
+<p>The playgrounds on this page contain models (in this example, houses) which can be positioned, rotated and scaled. Once the basics (such as importing a model and putting your project on a web page) have been introduced, we will give you details on how to accomplish this with Babylon.js.</p>
+<h2 id="importing-a-scene-or-model">Importing a Scene or Model<a class="anchor" href="#importing-a-scene-or-model">#</a></h2>
+<p>When you add a model to a scene, you are loading it through the browser. As you likely already know, loading anything from a website is an asynchronous function. Therefore, before you can do anything with your models, you must first ensure they have been loaded successfully. You can do this using the <em>ImportMeshAsync</em> method of the <em>SceneLoader</em>, as follows:</p>
+<pre class="code" data-lang="javascript"><code>BABYLON.ImportMeshAsync(folder_path + file_name, scene, optionalOptions);</code></pre>
+<p>The scene parameter is optional and will default to the current scene. In the options you can specify which meshes to load:</p>
+<pre class="code" data-lang="javascript"><code>BABYLON.ImportMeshAsync(&quot;/relative path/myFile&quot;); //Empty string loads all meshes
+BABYLON.ImportMeshAsync(&quot;/relative path/myFile&quot;, scene, { meshNames: &quot;model1&quot; }); //Name of the model loads one model
+BABYLON.ImportMeshAsync(&quot;/relative path/myFile&quot;, scene, { meshNames: [&quot;model1&quot;, &quot;model2&quot;] }); //Array of model names</code></pre>
+<p>Note that any of the calls above will only load the models; however, you will not be able to manipulate them in any way. Internally, a Promise object is set up and returned, but the above code does nothing with the result of that Promise. Examples of this are in the following two playgrounds, which <strong>only</strong> import the named models.</p>
+<span class="muted">Online playground (not embedded offline)</span><span class="muted">Online playground (not embedded offline)</span><p>Therefore, to act on the result and manipulate the objects, we follow the Promise with the <em>then</em> method to call a function with the <em>result</em> of the <em>Promise</em>. The <em>result</em> is an object containing, among other things, the property <em>meshes</em>, which contains all the loaded models. We can use this array, or the models&#39; names, to manipulate each mesh.</p>
+<pre class="code" data-lang="javascript"><code>BABYLON.ImportMeshAsync(&quot;/relative path/myFile&quot;).then((result) =&gt; {
+  result.meshes[1].position.x = 20;
+  const myMesh1 = scene.getMeshByName(&quot;myMesh_1&quot;);
+  myMesh1.rotation.y = Math.PI / 2;
+});</code></pre>
+<p>The following playground imports all models and changes their positions:</p>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="moving-on">Moving On<a class="anchor" href="#moving-on">#</a></h2>
+<p>Having a working scene in the playground is one thing, but you will ultimately want your game or application to run on your own website. In the next section, we will provide an HTML template to do just this.</p>
+<h2 id="warning">Warning<a class="anchor" href="#warning">#</a></h2>
+<p>A clear point: different file types export models differently.</p>
+<p>A less obvious point: different file types may change when imported into Babylon.js.</p>
+<p>You need to be aware of how the type you are using affects the outcome. It is not appropriate at this stage to go into detail, but the following examples indicate why this is important.</p>
+<ol>
+<li>Some software saves all meshes with a rotationQuaternion set, and you cannot then use the <em>rotation</em> methods unless you first do one of the following:</li>
+</ol>
+<pre class="code" data-lang="javascript"><code>myMesh.rotationQuaternion = null; //Any version of Babylon.js</code></pre>
+<pre class="code" data-lang="javascript"><code>myMesh.rotation = BABYLON.Vector3.Zero(); //babylon.js versions &gt; 4.00</code></pre>
+<ol start="2">
+<li>The following two types were exported from exactly the same scene and imported into Babylon.js:</li>
+</ol>
+<p><strong>.babylon</strong>
+A model is stored as one mesh, i.e. each house body and roof forms one house.</p>
+<pre class="code" data-lang=""><code>detached_house
+ground
+semi_house</code></pre>
+<p><strong>.glb</strong>
+A _root_ node is added to hold all the models and model parts, which are stored as sub-meshes.</p>
+<pre class="code" data-lang=""><code>_root_
+    detached_house
+        detached_house primitive0
+        detached_house primitive1
+    ground
+    semi_house
+        semi_house primitive0
+        semi_house primitive1</code></pre>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#importing-a-scene-or-model">Importing a Scene or Model </a><a href="#moving-on">Moving On </a><a href="#warning">Warning </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Create Points Inside A Mesh — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Create Points Inside A Mesh</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="how-to-create-points-inside-a-mesh">How To Create Points Inside a Mesh<a class="anchor" href="#how-to-create-points-inside-a-mesh">#</a></h2>
+<p>This utility enables you to create and store Vector3 points, each of which is randomly positioned inside a given mesh.</p>
+<h2 id="design-outline">Design Outline<a class="anchor" href="#design-outline">#</a></h2>
+<ol>
+<li>Take a random triangular facet belonging to the mesh;</li>
+<li>Choose a random point inside this triangle;</li>
+<li>For the facet construct an inward pointing random vector;</li>
+<li>Using that point as ray origin and the vector as ray direction find the hit point of the ray on the mesh;</li>
+<li>Determine a random point on the line segment joining the origin point to the hit point.</li>
+</ol>
+<h2 id="design-method">Design Method<a class="anchor" href="#design-method">#</a></h2>
+<ol>
+<li>For the mesh, get the vertex positions and indices using</li>
+</ol>
+<pre class="code" data-lang="javascript"><code>var positions = mesh.getVerticesData(BABYLON.VertexBuffer.PositionKind);
+var indices = mesh.getIndices();</code></pre>
+<p>Select a facet, F, at random.</p>
+<ol start="2">
+<li>Obtain the three facet vertex positions, vertex0, vertex1, and vertex2 using the positions array. From these, construct vectors, <span class="muted">&lt;u&gt;</span>vec0<span class="muted">&lt;/u&gt;</span> and <span class="muted">&lt;u&gt;</span>vec1<span class="muted">&lt;/u&gt;</span>, along two sides of the triangle, one following the other. For a value 0 &le; &lambda; &le; 1,&nbsp;&lambda;<span class="muted">&lt;u&gt;</span>vec0<span class="muted">&lt;/u&gt;</span> and &lambda;<span class="muted">&lt;u&gt;</span>vec1<span class="muted">&lt;/u&gt;</span> form two sides of a triangle similar to the facet. So, when also given a value 0 &le; &mu; &le; 1,&nbsp;&lambda;<span class="muted">&lt;u&gt;</span>vec0<span class="muted">&lt;/u&gt;</span> and &lambda;&mu;<span class="muted">&lt;u&gt;</span>vec1<span class="muted">&lt;/u&gt;</span> give a point inside the facet. The range of values for &lambda; and &mu; determines all points within the facet. Hence, random values for &lambda; and &mu; give random points on the facet plane.</li>
+</ol>
+<p><p class="muted">Upstream illustration: Find point (media not bundled).</p></p>
+<pre class="code" data-lang="javascript"><code>lamda = BABYLON.Scalar.RandomRange(0, 1);	
+mu = BABYLON.Scalar.RandomRange(0, 1);
+facetPoint = vertex0.add(vec0.scale(lambda)).add(vec1.scale(lambda * mu));</code></pre>
+<ol start="3">
+<li>To generate a vector pointing inward, get the normal vector of the facet, which points outward, and reverse it to get the vector <span class="muted">&lt;u&gt;</span>n<span class="muted">&lt;/u&gt;</span>. Use <span class="muted">&lt;u&gt;</span>t<span class="muted">&lt;/u&gt;</span> = <span class="muted">&lt;u&gt;</span>vec0<span class="muted">&lt;/u&gt;</span> as one vector in the plane and <span class="muted">&lt;u&gt;</span>b<span class="muted">&lt;/u&gt;</span>, the cross product of the normal and <span class="muted">&lt;u&gt;</span>vec0<span class="muted">&lt;/u&gt;</span>, as the other. For an angle 0 &le; &theta; &le; 2&pi;, &nbsp;&nbsp;<span class="muted">&lt;u&gt;</span>f<span class="muted">&lt;/u&gt;</span> = <span class="muted">&lt;u&gt;</span>t<span class="muted">&lt;/u&gt;</span>cos(&theta;) + <span class="muted">&lt;u&gt;</span>b<span class="muted">&lt;/u&gt;</span>sin(&theta;) gives a vector in the facet plane. For an angle 0 &le; &phi; &le; &pi;, &nbsp;&nbsp;<span class="muted">&lt;u&gt;</span>f<span class="muted">&lt;/u&gt;</span>cos(&phi;) + <span class="muted">&lt;u&gt;</span>n<span class="muted">&lt;/u&gt;</span>sin(&phi;) gives a vector whose direction is toward the inside of the mesh.</li>
+</ol>
+<pre class="code" data-lang="javascript"><code>mesh.updateFacetData(); // needed to use getFacetNormal
+
+norm = mesh.getFacetNormal(index).normalize().scale(-1);	
+tang = vec0.clone().normalize();
+biNorm = BABYLON.Vector3.Cross(norm, tang);
+angle = BABYLON.Scalar.RandomRange(0, 2 * Math.PI);
+facetPlaneVec = tang.scale(Math.cos(angle)).add(biNorm.scale(Math.sin(angle)));
+angle = BABYLON.Scalar.RandomRange(0.1, Math.PI);
+direction = facetPlaneVec.scale(Math.cos(angle)).add(norm.scale(Math.sin(angle)));</code></pre>
+<ol start="4">
+<li>Construct a ray using the facet point, the direction, and a distance equal to the diameter of the mesh&#39;s bounding sphere. This ensures it is long enough to hit another facet of the mesh and find the hit point.</li>
+</ol>
+<pre class="code" data-lang="javascript"><code>var boundInfo = mesh.getBoundingInfo();
+var diameter = 2 * boundInfo.boundingSphere.radius;
+
+var ray = new BABYLON.Ray(facetPoint, direction, diameter);
+var hitPoint = ray.intersectsMesh(mesh).pickedPoint;</code></pre>
+<ol start="5">
+<li>Take a random fraction, 0 &le; r &le; 1, of the distance between the hit point and the facet point, and use this to determine the position of a point along this line. Use facetPoint + r(hitPoint - facetPoint) to determine a point within the mesh.</li>
+</ol>
+<pre class="code" data-lang="javascript"><code>var ray = new BABYLON.Ray(facetPoint, direction, diameter);
+var pickInfo = ray.intersectsMesh(this);	
+	if (pickInfo.hit) {			
+		var distance = pickInfo.pickedPoint.subtract(facetPoint).length();
+		var gap = BABYLON.Scalar.RandomRange(0, 1) * distance;
+		var point = facetPoint.add(direction.scale(gap));
+	}
+	else { // just in the rare case the facet point randomly chosen is on the adjoining axis of two concave meeting facets
+			point.set(0, 0, 0);
+	}</code></pre>
+<h2 id="the-whole-function">The Whole Function<a class="anchor" href="#the-whole-function">#</a></h2>
+<p>Set how many interior points to generate, then store and return them in an array.</p>
+<pre class="code" data-lang="javascript"><code>BABYLON.Mesh.prototype.createInnerPoints = function(pointsNb) {
+	var boundInfo = this.getBoundingInfo();
+	var diameter = 2 * boundInfo.boundingSphere.radius;
+	this.updateFacetData();
+
+	var positions = this.getVerticesData(BABYLON.VertexBuffer.PositionKind);
+	var indices = this.getIndices();
+	
+	var point = BABYLON.Vector3.Zero();
+	var points = [];
+	var directions = [];
+	
+	var randX = 0;
+	var randY = 0;
+	var randZ = 0
+	
+	var index = 0;
+	var id0 = 0;
+	var id1 = 0; 
+	var id2 = 0;
+	var v0X = 0;
+	var v0Y = 0;
+	var v0Z = 0;
+	var v1X = 0;
+	var v1Y = 0
+	var v1Z = 0;
+	var v2X = 0;
+	var v2Y = 0;
+	var v2Z = 0;
+	var vertex0 = BABYLON.Vector3.Zero();
+	var vertex1 = BABYLON.Vector3.Zero();
+	var vertex2 = BABYLON.Vector3.Zero();
+	var vec0 = BABYLON.Vector3.Zero();
+	var vec1 = BABYLON.Vector3.Zero();
+		
+	var lamda = 0;	
+	var mu = 0;
+	var norm = BABYLON.Vector3.Zero();
+	var tang = BABYLON.Vector3.Zero();
+	var biNorm = BABYLON.Vector3.Zero();
+	var angle = 0;
+	var facetPlaneVec = BABYLON.Vector3.Zero();
+
+	var gap = 0;
+	var distance = 0;
+	var ray = new BABYLON.Ray(BABYLON.Vector3.Zero(), BABYLON.Axis.X);
+	var pickInfo;
+	var facetPoint = BABYLON.Vector3.Zero();
+	var direction = BABYLON.Vector3.Zero();
+	var particleDirection = BABYLON.Vector3.Zero();
+	var particleDistance = 0;
+	var testPoint = BABYLON.Vector3.Zero();
+
+	for(let p = 0; p &lt;pointsNb; p++) {			
+		index = Math.floor(BABYLON.Scalar.RandomRange(0, indices.length / 3));		
+		id0 = indices[3 * index];
+		id1 = indices[3 * index + 1]; 
+		id2 = indices[3 * index + 2];
+		v0X = positions[3 * id0];
+		v0Y = positions[3 * id0 + 1];
+		v0Z = positions[3 * id0 + 2];
+		v1X = positions[3 * id1];
+		v1Y = positions[3 * id1 + 1];
+		v1Z = positions[3 * id1 + 2];
+		v2X = positions[3 * id2];
+		v2Y = positions[3 * id2 + 1];
+		v2Z = positions[3 * id2 + 2];
+		vertex0.set(v0X, v0Y, v0Z);
+		vertex1.set(v1X, v1Y, v1Z);
+		vertex2.set(v2X, v2Y, v2Z);
+		vertex1.subtractToRef(vertex0, vec0);
+		vertex2.subtractToRef(vertex1, vec1);
+		
+		norm = this.getFacetNormal(index).normalize().scale(-1);	
+		tang = vec0.clone().normalize();
+		biNorm = BABYLON.Vector3.Cross(norm, tang);
+		angle = BABYLON.Scalar.RandomRange(0, 2 * Math.PI);
+		facetPlaneVec = tang.scale(Math.cos(angle)).add(biNorm.scale(Math.sin(angle)));
+		angle = BABYLON.Scalar.RandomRange(0.1, Math.PI);
+		direction = facetPlaneVec.scale(Math.cos(angle)).add(norm.scale(Math.sin(angle)));
+		
+		//form a point inside the facet v0, v1, v2;
+		lamda = BABYLON.Scalar.RandomRange(0, 1);	
+		mu = BABYLON.Scalar.RandomRange(0, 1);
+		facetPoint = vertex0.add(vec0.scale(lamda)).add(vec1.scale(lamda * mu));
+
+		gap = 0;
+		distance = 0;
+		pickInfo;	
+		ray.origin = facetPoint;
+		ray.direction = direction;
+		ray.length = diameter;	
+		pickInfo = ray.intersectsMesh(this);	
+		if (pickInfo.hit) {			
+			distance = pickInfo.pickedPoint.subtract(facetPoint).length();
+			gap = BABYLON.Scalar.RandomRange(0, 1) * distance;
+			point = facetPoint.add(direction.scale(gap));
+		}
+		else {
+			point.set(0, 0, 0);
+		}
+		points.push(point);	
+	}
+	
+	return points;
+}</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="examples-of-use">Examples of Use<a class="anchor" href="#examples-of-use">#</a></h2>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#how-to-create-points-inside-a-mesh">How To Create Points Inside a Mesh </a><a href="#design-outline">Design Outline </a><a href="#design-method">Design Method </a><a href="#the-whole-function">The Whole Function </a><a href="#examples-of-use">Examples of Use </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

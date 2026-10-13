@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Exposing properties — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Exposing properties</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="introduction">Introduction<a class="anchor" href="#introduction">#</a></h2>
+<p>Script properties can be exposed and modified in the Editor. Using the <code>@visibleInInspector</code> decorator, these
+properties can be customized and grouped in the <code>Inspector</code>.</p>
+<p>Supported property types are:</p>
+<ul>
+<li>number</li>
+<li>string</li>
+<li>boolean</li>
+<li>Vector2</li>
+<li>Vector3</li>
+<li>Vector4</li>
+<li>Color3</li>
+<li>Color4</li>
+<li>Texture</li>
+<li>KeyMap</li>
+</ul>
+<p><strong>Note: the <code>KeyMap</code> type draws a button in the inspector that waits for the user to press a key on the keyboard</strong></p>
+<p>Common configuration options for exposed properties are their type, name, and default value.
+Example with a decorated property named <code>Speed</code>, of type <code>number</code>, and with a default value of <code>0.04</code>:</p>
+<pre class="code" data-lang="typescript"><code>@visibleInInspector(&quot;number&quot;, &quot;Speed&quot;, 0.04)
+private _speed: number;</code></pre>
+<p>The goal of these exposed properties is mainly to have one script attached to multiple nodes, where each node can
+have its own script configuration. For example, using the <code>Speed</code> property, two nodes can have the same script
+attached but will not rotate at the same speed.</p>
+<h2 id="importing-decorators">Importing decorators<a class="anchor" href="#importing-decorators">#</a></h2>
+<p>Decorators are available in the <code>decorators.ts</code> file located at <code>src/scenes/</code>. Any attached script can import this
+file and use the <code>@visibleInInspector</code> decorator. Scripts that are not attached to any node cannot be customized in
+the editor.</p>
+<pre class="code" data-lang="typescript"><code>import { visibleInInspector } from &quot;../decorators&quot;;</code></pre>
+<h2 id="understanding-decorator-options">Understanding decorator options<a class="anchor" href="#understanding-decorator-options">#</a></h2>
+<p>As well as the type, name, and default value, the decorator has an <code>options</code> parameter used to customize the property
+in the Editor. All fields are optional:</p>
+<ul>
+<li><strong>min</strong>: defines the minimum value that can be set in the Editor field. Available only for numbers and vectors.</li>
+<li><strong>max</strong>: defines the maximum value that can be set in the Editor field. Available only for numbers and vectors.</li>
+<li><strong>step</strong>: defines the step applied to the property when the user modifies it in the Editor using the mouse.</li>
+</ul>
+<p><strong>Note: If both <code>min</code> and <code>max</code> options are provided, the number field becomes a slider.</strong></p>
+<p>In this example, 3 properties will be visible in the inspector, each with distinct options.</p>
+<pre class="code" data-lang="typescript"><code>@visibleInInspector(&quot;number&quot;, &quot;Speed&quot;, 0.04, { min: 0, max: 1, step: 0.01 })
+private _speed: number = 0.04;
+
+@visibleInInspector(&quot;number&quot;, &quot;Speed 2&quot;, 0.04, { min: 0, step: 0.01 })
+private _speed2: number = 0.04;
+
+@visibleInInspector(&quot;Vector3&quot;, &quot;Gravity&quot;, Vector3.Zero(), { min: 0 })
+private _gravity2: Vector3 = Vector3.Zero();</code></pre>
+<p>Once the script is saved and attached to at least one node, the inspector will show the exposed properties
+according to their types and options. If the inspector is already focused on a node that has the edited script
+attached to it, the inspector will be automatically updated.</p>
+<p><p class="muted">Upstream illustration: example (media not bundled).</p></p>
+<p>As a full example, here is a script that uses the decorated <code>Speed</code> property to apply a rotation to a mesh.</p>
+<pre class="code" data-lang="typescript"><code>import { Mesh } from &quot;@babylonjs/core/Meshes/mesh&quot;;
+
+import { visibleInInspector } from &quot;../decorators&quot;;
+
+export default class MyMeshComponent extends Mesh {
+    @visibleInInspector(&quot;number&quot;, &quot;Speed&quot;, 0.04, { min: 0, max: 1, step: 0.01 })
+    private _speed: number = 1;
+
+    /**
+     * Called each frame.
+     */
+    public onUpdate(): void {
+        this.rotation.y += 0.04 * this._speed;
+    }
+}</code></pre>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#introduction">Introduction </a><a href="#importing-decorators">Importing decorators </a><a href="#understanding-decorator-options">Understanding decorator options </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>

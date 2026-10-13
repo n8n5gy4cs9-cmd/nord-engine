@@ -4,16 +4,16 @@ section: Manual
 order: 2
 summary: Panels, viewport, inspector, code editor, console, shortcuts.
 ---
-The editor is a native **egui** app. Its layout follows the PlayCanvas editor with Defold-style toolbars.
 
-```
-┌ Toolbar: Project ▾ | ▶ Play ■ Stop ⟳ | Move Rotate Scale | 2D/3D | Snap Grid | Export ▾ | Docs ┐
-├ Hierarchy ──────┬ Viewport (Scene | Game | Code …) ─────────────────────┬ Inspector ───────────┤
-│ tree, search, + │  edit view with grid and gizmos                        │ name, tags, transform │
-│ drag to reparent│                                                        │ components, scripts   │
-├ Assets ─────────┴────────────────────────────────────────────────────────┴───────────────────────
-│ folders | thumbnails | search | Library | Console | Docs                                          │
-```
+The editor lets you choose an object, change its settings and try the result. Start with Hierarchy, Inspector and the Play button; learn the other panels when you need them.
+
+::: dummies
+Choose an entity in Hierarchy, change its position in Inspector, save, then press Play. Scene view is for arranging things; Game view shows what the player sees.
+:::
+
+The editor runs as a desktop app. Its layout puts the scene in the middle, the entity list on the left and the selected entity’s settings on the right.
+
+<figure class="shot"><img src="assets/editor-layout.svg" alt="Nord editor diagram: toolbar above Hierarchy, Scene/Game and Inspector; Assets and Console below"><figcaption>Panel map (diagram). Dock tabs can be moved, so your editor layout may differ. Start by choosing an entity on the left and changing its settings on the right.</figcaption></figure>
 
 ## Appearance and project hub
 The default **Graphite** theme uses neutral dark-grey panels, a darker canvas and a soft blue accent. Existing settings using the original Nord default migrate once; custom themes remain selected. All previous themes are available in Settings. The blue **Play-mode tint** and your chosen PLAYMODE-COLOR are preserved.

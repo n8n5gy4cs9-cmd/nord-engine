@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babylon guide: Playground — Nord Engine Docs</title>
+<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html">Start here</a><a href="welcome.html">Manual</a><a href="tutorials.html">Tutorials</a><a href="cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="component-sprite.html">sprite</a><a href="component-animatedSprite.html">animatedSprite</a><a href="component-text.html">text</a><a href="component-tilemap.html">tilemap</a><a href="component-parallax.html">parallax</a><a href="component-particles.html">particles</a><a href="component-camera.html">camera</a><a href="component-light.html">light</a><a href="component-mesh.html">mesh</a><a href="component-model.html">model</a><a href="component-material.html">material</a><a href="component-skybox.html">skybox</a><a href="component-postProcess.html">postProcess</a><a href="component-rigidbody.html">rigidbody</a><a href="component-collider.html">collider</a><a href="component-trigger.html">trigger</a><a href="component-audioSource.html">audioSource</a><a href="component-audioListener.html">audioListener</a><a href="component-uiPanel.html">uiPanel</a><a href="component-uiLabel.html">uiLabel</a><a href="component-uiImage.html">uiImage</a><a href="component-uiBar.html">uiBar</a><a href="component-uiButton.html">uiButton</a><a href="component-path.html">path</a><a href="component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="babylon-api-index.html">Babylon 9.30.0 API</a><a href="phaser-api-index.html">Phaser 4.2.1 API</a><a href="babylon-guide-index.html">Babylon documentation library</a><a href="phaser-archive.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Playground</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="3d.html">3D manual</a> · <a href="component-mesh.html">mesh</a> · <a href="component-model.html">model</a> · <a href="component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="the-playground">The Playground<a class="anchor" href="#the-playground">#</a></h2>
+<p>The place to try out coding with Babylon.js. <span>Playground</span></p>
+<p>Experimenting and changing any code in the playground and clicking on the <strong>Run</strong> button will not affect any original code in the playground you are currently using.
+Original code can be restored by refreshing the browser.</p>
+<p>You can write the code in JavaScript or TypeScript. The Playground compiles the code to JavaScript in the background before rendering.</p>
+<h3 id="scene-creation-functions">Scene creation functions<a class="anchor" href="#scene-creation-functions">#</a></h3>
+<p>Usually you&#39;ll want to place your scene creation code in the already defined <code>createScene</code> function. But sometimes, you might want to substitute it for the <code>delayCreateScene</code> function, which allows you to return a scene without a camera (because for instance you plan to create the camera after an asynchronous mesh load, like: <span class="muted">Online playground (not embedded offline)</span>).</p>
+<p>You can also override the engine creation by defining the <code>createEngine</code> function. This can be useful if you want to test a scene without antialiasing, for example: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="overview">Overview<a class="anchor" href="#overview">#</a></h2>
+<p><p class="muted">Upstream illustration: Playground Overview (media not bundled).</p></p>
+<p>The Playground consists of four areas:</p>
+<ul>
+<li>A menu bar at the top.</li>
+<li>A links bar at the bottom.</li>
+<li>A coding editor on the left</li>
+<li>A rendering area on the right.</li>
+</ul>
+<p>The space for the coding editor and rendering area can be adjusted by dragging the vertical bar between them.</p>
+<h2 id="the-menu">The Menu<a class="anchor" href="#the-menu">#</a></h2>
+<p><p class="muted">Upstream illustration: Playground Menu (media not bundled).</p></p>
+<p>In Typescript mode the menu has an orange color theme:</p>
+<p><p class="muted">Upstream illustration: Playground Typescript Menu (media not bundled).</p></p>
+<h3 id="large-screen">Large Screen<a class="anchor" href="#large-screen">#</a></h3>
+<ul>
+<li><strong>Title and Version</strong>: As stated.</li>
+<li><strong>Language</strong>: TypeScript/JavaScript switch.</li>
+<li><strong>Run</strong>: Commands the playground to try to render your scene.</li>
+<li><strong>Save</strong>: Causes your scene to be permanently stored in the playground&#39;s database and it will issue a unique URL for each save. On save you will be asked to complete the metadata so that it can be searched for. Once saved it is a good idea to bookmark the page so you can return to it later. You could then share the URL with others, for example, if it is not working as you expect you can ask a question in the forum along with the link to your playground.</li>
+<li><strong>Download</strong>: Allows you to download a zip file named <em>sample.zip</em>. Once downloaded and unzipped, you will see a file named <code>index.html</code>
+which contains everything necessary to run the code in your browser, including links to external <em>Babylon.js</em> and other files.</li>
+<li><strong>New</strong>: Places a basic <code>createScene()</code> function into the editor along with code to initialize the scene variable and provide a camera.</li>
+<li><strong>Clear</strong>: Empties all the code out of the playground editor. You could then paste in any createScene function you are working on locally.</li>
+<li><strong>Settings</strong>: The Settings button has a submenu with extra options<ul>
+<li><em>Theme</em>: Choose the theme for the playground</li>
+<li><em>Font size</em>: Set the font size in the editor.</li>
+<li><em>Safe Mode</em>: When the checkbox is ticked the playground issues a &quot;leaving the page?&quot; confirmation warning when you try to unload/reload a freshly-edited, un-saved scene.</li>
+<li><em>Editor</em>: The checkbox hides or un-hides the editor portion of the playground.</li>
+<li><em>Full Screen</em>: Makes the render area full screen.</li>
+<li><em>Editor Full Screen</em>: Makes the editor area full screen.</li>
+<li><em>Format Code</em>: Pretty prints the code.</li>
+<li><em>Minimap</em>: Display the minimap of the code editor.</li>
+<li><em>Metadata</em>: This is where you describe your playground, allowing yourself and others to search the playground database for examples of use.</li>
+</ul>
+</li>
+<li><strong>Version</strong>: Allows and shows your choice of the Babylon.js framework, either the current stable one or the latest preview version.</li>
+<li><strong>Examples</strong>: A drop-down menu that gives examples of playgrounds with a search filter.</li>
+</ul>
+<h3 id="small-screens">Small Screens<a class="anchor" href="#small-screens">#</a></h3>
+<p><p class="muted">Upstream illustration: Playground Typescript Menu (media not bundled).</p></p>
+<ul>
+<li><strong>Menu</strong>: Contains Run, New, Clear, Save and Zip as submenus.</li>
+<li><strong>Code/Scene</strong>: Bottom Left Corner - switch between Code and Scene views.</li>
+</ul>
+<h2 id="playground-url-formats-and-templates">Playground URL formats and templates<a class="anchor" href="#playground-url-formats-and-templates">#</a></h2>
+<p>After editing, any saves of the playground are numbered incrementally from one. For example:</p>
+<ul>
+<li><span>https://playground.babylonjs.com/#6F0LKI#1</span></li>
+<li><span>https://playground.babylonjs.com/#6F0LKI#2</span></li>
+<li>etc...</li>
+</ul>
+<p>Some useful HTML templates are also available:</p>
+<table>
+<thead>
+<tr>
+<th>Template</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><span>full.html</span></td>
+<td>Shows the render area in full screen</td>
+</tr>
+<tr>
+<td><span>frame.html</span></td>
+<td>Shows the render area in full screen, but with a bottom toolbar showing FPS, reload and edit buttons</td>
+</tr>
+<tr>
+<td><span>debug.html</span></td>
+<td>Uses a debug version of Babylon.js</td>
+</tr>
+</tbody></table>
+<h2 id="forum-sharing">Forum sharing<a class="anchor" href="#forum-sharing">#</a></h2>
+<p>Of course, the Playground is extremely useful for getting help from the community. In the forum, simply paste the link to your playground.</p>
+<p>You can also embed your playground directly in your message using an iframe. But use this sparingly, because it will slow down the loading of your topic.</p>
+<pre class="code" data-lang="html"><code>&lt;iframe src=&quot;https://playground.babylonjs.com/frame.html#6F0LKI#2&quot; width=&quot;400px&quot; height=&quot;250px&quot;&gt;&lt;/iframe&gt;</code></pre>
+<p><p class="muted">Upstream illustration: playground forum sharing ways (media not bundled).</p></p>
+<h2 id="compilation-errors">Compilation Errors<a class="anchor" href="#compilation-errors">#</a></h2>
+<p><p class="muted">Upstream illustration: compilation error popup (media not bundled).</p></p>
+<p>Any errors in your playground are flagged with a red pop-up box containing limited information. After making an adjustment to your code, you need not close the compilation error pop-up. It should close automatically at the next Run, if all errors have been corrected.</p>
+<h2 id="focus">Focus<a class="anchor" href="#focus">#</a></h2>
+<p>Whenever a scene in the Playground requires the use of keys to move an object, such as a mesh or camera, the rendering area needs to have focus. After running the Playground, ensure that the render area has focus by clicking inside it before using the keys.</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#the-playground">The Playground </a><a href="#overview">Overview </a><a href="#the-menu">The Menu </a><a href="#playground-url-formats-and-templates">Playground URL formats and templates </a><a href="#forum-sharing">Forum sharing </a><a href="#compilation-errors">Compilation Errors </a><a href="#focus">Focus </a></aside></div>
+<script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>
