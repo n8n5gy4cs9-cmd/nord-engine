@@ -70,12 +70,21 @@ export default class XKom extends XkBase {
     initWorld(this.C, this.land, this.seed); this.finalOperation = false; this.checkpoint = null;
   }
   savedCampaign() { try { const s = this.game.save.get('campaign', null); return validSave(s) && !s.C.over ? s : null; } catch { return null; } }
-  saveCampaign() {
-    if (this.mode === 'title') return false; // Opening/closing the title must never replace an existing war.
+  campaignSaveData() {
+    if (this.mode === 'title') return null; // Opening/closing the title must never replace an existing war.
     const strategic = ['geo', 'base', 'end'].includes(this.mode);
     const s = strategic ? snapshot(this.C, this.seed, this.attrs.goal, this.news) : this.checkpoint;
-    if (!s || !validSave(s)) return false;
+    return s && validSave(s) ? s : null;
+  }
+  saveCampaign() {
+    const s = this.campaignSaveData(); if (!s) return false;
     try { this.game.save.set('campaign', s); return true; } catch { return false; }
+  }
+  importCampaign(raw) {
+    const file = JSON.parse(raw), s = file?.checkpoint;
+    if (file?.game !== 'xkom' || !validSave(s) || s.C.over) throw new Error('Not a supported X-KOM campaign checkpoint.');
+    this.game.save.set('campaign', s); // Persist before replacing the running campaign.
+    return this.loadCampaign();
   }
   checkpointCampaign() { this.checkpoint = snapshot(this.C, this.seed, this.attrs.goal, this.news); this.saveCampaign(); }
   leaveMission() {
@@ -103,10 +112,10 @@ export default class XKom extends XkBase {
     h.keep(h.text(17, 94, 'EARTH DEFENCE  /  2026', COL.blue, { hud: true, depth: 6 }));
     h.keep(h.text(17, 111, 'COMMAND THE RESISTANCE', COL.dim, { hud: true, depth: 6 }));
     h.keep(h.panel(16, 166, 152, 17, 0x354761, { depth: 4 }));
-    h.keep(h.text(92, 170, this.savedCampaign() ? 'CONTINUE  [ENTER]' : 'BEGIN CAMPAIGN  [ENTER]', COL.text, { origin: [0.5, 0], hud: true, depth: 6 }));
+    h.keep(h.label(16, 166, 152, 17, this.savedCampaign() ? 'CONTINUE  [ENTER]' : 'BEGIN CAMPAIGN  [ENTER]'));
     h.keep(h.text(17, 190, 'CROWELIAN 2026 + SONNET', COL.dim, { scale: 0.85, hud: true, depth: 6 }));
     h.keep(h.text(310, 190, 'F1  FIELD MANUAL', COL.dim, { origin: [1, 0], scale: 0.85, hud: true, depth: 6 }));
-    if (this.savedCampaign()) { h.keep(h.panel(16, 144, 152, 17, 0x253249, { depth: 4 })); h.keep(h.text(92, 148, 'NEW CAMPAIGN  [N]', COL.dim, { origin: [0.5, 0], hud: true, depth: 6 })); }
+    if (this.savedCampaign()) { h.keep(h.panel(16, 144, 152, 17, 0x253249, { depth: 4 })); h.keep(h.label(16, 144, 152, 17, 'NEW CAMPAIGN  [N]', COL.dim)); }
     this.music('music_title', 0.25);
   }
 
@@ -122,7 +131,7 @@ export default class XKom extends XkBase {
     this.clockText = h.keep(h.text(5, 14, '', COL.dim, { hud: true, depth: 6, scale: 0.9 })); this.refreshClock();
     h.keep(h.text(276, 6, 'EARTH DEFENCE', COL.blue, { origin: [0.5, 0], hud: true, depth: 6 }));
     this.geoBtns = [];
-    const button = (id, x, y, w, label) => { h.keep(h.panel(x, y, w, 14, 0x455a73, { depth: 2 })); h.keep(h.text(x + w / 2, y + 3, label, COL.text, { origin: [0.5, 0], hud: true, depth: 6 })); this.geoBtns.push({ id, x, y, w, h: 14 }); };
+    const button = (id, x, y, w, label) => { h.keep(h.panel(x, y, w, 14, 0x455a73, { depth: 2 })); h.keep(h.label(x, y, w, 14, label)); this.geoBtns.push({ id, x, y, w, h: 14 }); };
     button('base', 236, 20, 80, 'BASE  [B]'); button('hq', 236, 36, 80, 'HQ / GLOBE  [Z]');
     button('in', 236, 52, 38, 'ZOOM +'); button('out', 278, 52, 38, 'ZOOM -');
     button('left', 236, 68, 38, '< WEST'); button('right', 278, 68, 38, 'EAST >');
@@ -131,8 +140,8 @@ export default class XKom extends XkBase {
     else h.keep(h.text(5, 159, 'OBJECTIVE: ' + stage, COL.gold, { hud: true, depth: 6 }));
     this.baseBtn = this.geoBtns[0]; h.keep(h.text(236, 87, 'ALIEN CONTACTS', COL.gold, { hud: true, depth: 6 }));
     this.sites.forEach((site, i) => { const y = 98 + i * 25; h.keep(h.panel(236, y, 80, 23, UI.panel, { depth: 2 }));
-      h.keep(h.text(240, y + 3, String(i + 1) + ' ' + site.name, COL.text, { hud: true, depth: 6, scale: 0.9 }));
-      h.keep(h.text(240, y + 13, site.aliens + ' ALIENS  ' + (site.expires - C.idleDays) + 'D LEFT', COL.alien, { hud: true, depth: 6, scale: 0.85 })); site.rect = { x: 236, y, w: 80, h: 23 }; });
+      h.keep(h.text(240, y + 7, String(i + 1) + ' ' + site.name, COL.text, { origin: [0, 0.5], hud: true, depth: 6, scale: 0.9 }));
+      h.keep(h.text(240, y + 16, site.aliens + ' ALIENS  ' + (site.expires - C.idleDays) + 'D LEFT', COL.alien, { origin: [0, 0.5], hud: true, depth: 6, scale: 0.85 })); site.rect = { x: 236, y, w: 80, h: 23 }; });
     const d = C.day, date = String(((d - 1) % 28) + 1).padStart(2, '0') + ' ' + MONTHS[Math.floor((d - 1) / 28) % 12] + ' 2026';
     h.keep(h.text(5, 181, date + '   $' + C.funds + '   INTEL ' + C.kills + '/' + this.attrs.goal, COL.text, { hud: true, depth: 6 }));
     h.keep(h.text(5, 192, (this.news ?? '').slice(0, 50), COL.amber, { hud: true, depth: 6, scale: 0.8 }));
@@ -147,14 +156,14 @@ export default class XKom extends XkBase {
     h.keep(h.rect(0, 0, VW, VH, 0x14122e, 1)); h.keep(h.text(6, 2, 'X-KOM BASE', COL.blue, { hud: true, depth: 6, scale: 2 })); h.keep(h.text(VW - 4, 6, `FUNDS $${C.funds}`, COL.gold, { origin: [1, 0], hud: true, depth: 6 }));
     // facility grid (5x5 cells of 24px): L lift · Q quarters · R lab · W workshop · A radar · S stores · H hangar (2x2)
     const FAC = [['LFT', 0, 0, 1, 1, 0x3a4a6a], ['QTR', 1, 0, 1, 1, 0x3a6a4a], ['LAB', 2, 0, 1, 1, R.active ? 0x7a5aa0 : 0x5a4a80], ['WRK', 3, 0, 1, 1, 0x6a5a3a], ['RDR', 4, 0, 1, 1, 0x3a6a7a], ['STR', 0, 1, 1, 1, 0x5a5a62], ['HANGAR', 1, 2, 2, 2, 0x4a5a8a], ['GUN', 4, 2, 1, 1, 0x8a4a3a], ['GUN', 0, 2, 1, 1, 0x8a4a3a]];
-    h.keep(h.panel(3, 21, 126, 126, UI.dark, { raised: false, depth: 1 })); for (const [n, cx, cy, w, hh, col] of FAC) { h.keep(h.panel(6 + cx * 24, 24 + cy * 24, w * 24 - 2, hh * 24 - 2, col, { depth: 2 })); h.keep(h.text(6 + cx * 24 + (w * 24 - 2) / 2, 24 + cy * 24 + (hh * 24 - 2) / 2 - 4, n, COL.text, { origin: [0.5, 0], hud: true, depth: 6 })); }
+    h.keep(h.panel(3, 21, 126, 126, UI.dark, { raised: false, depth: 1 })); for (const [n, cx, cy, w, hh, col] of FAC) { h.keep(h.panel(6 + cx * 24, 24 + cy * 24, w * 24 - 2, hh * 24 - 2, col, { depth: 2 })); h.keep(h.label(6 + cx * 24, 24 + cy * 24, w * 24 - 2, hh * 24 - 2, n)); }
     h.keep(h.text(6, 150, 'SOLDIERS', COL.gold, { hud: true, depth: 6 })); C.squad.forEach((m, i) => h.keep(h.text(6 + (i % 2) * 64, 160 + ((i / 2) | 0) * 9, `${m.name.toUpperCase().slice(0, 8)} K${m.kills}`, COL.text, { hud: true, depth: 6 })));
     h.keep(h.text(138, 22, 'RESEARCH', COL.gold, { hud: true, depth: 6 })); h.keep(h.text(VW - 4, 22, '(CLICK A PROJECT)', COL.dim, { origin: [1, 0], hud: true, depth: 6 }));
     TECHS.forEach((t, i) => { const y = 31 + i * 20, st = techStatus(R, t), col = { DONE: 0x2c6a3a, ACTIVE: 0x7a56b0, READY: UI.face, LOCKED: 0x30304a }[st];
-      h.keep(h.panel(138, y, 180, 19, col, { depth: 2 })); h.keep(h.text(141, y + 1, t.name, st === 'LOCKED' ? COL.dim : COL.text, { hud: true, depth: 6 })); h.keep(h.text(315, y + 1, st === 'ACTIVE' ? `${R.progress}/${t.days} DAYS` : st === 'DONE' ? 'DONE' : `${t.days}D $${t.cost}`, st === 'DONE' ? COL.good : st === 'ACTIVE' ? COL.amber : COL.gold, { origin: [1, 0], hud: true, depth: 6 }));
-      h.keep(h.text(141, y + 10, t.info, COL.dim, { hud: true, depth: 6 })); this.techRects.push({ id: t.id, x: 138, y, w: 180, h: 19 }); });
+      h.keep(h.panel(138, y, 180, 19, col, { depth: 2 })); h.keep(h.text(141, y + 5.5, t.name, st === 'LOCKED' ? COL.dim : COL.text, { origin: [0, 0.5], hud: true, depth: 6 })); h.keep(h.text(315, y + 5.5, st === 'ACTIVE' ? `${R.progress}/${t.days} DAYS` : st === 'DONE' ? 'DONE' : `${t.days}D $${t.cost}`, st === 'DONE' ? COL.good : st === 'ACTIVE' ? COL.amber : COL.gold, { origin: [1, 0.5], hud: true, depth: 6 }));
+      h.keep(h.text(141, y + 13.5, t.info, COL.dim, { origin: [0, 0.5], hud: true, depth: 6 })); this.techRects.push({ id: t.id, x: 138, y, w: 180, h: 19 }); });
     if (R.active) { const t = tech(R.active); h.keep(h.rect(138, 174, 180, 6, 0x000000, 1)); h.keep(h.rect(139, 175, 178 * R.progress / t.days, 4, 0xa070e0, 1)); if (!msg) h.keep(h.text(138, 183, `ACTIVE: ${t.name}`.slice(0, 26), COL.amber, { hud: true, depth: 6 })); } else if (!msg) h.keep(h.text(138, 180, 'LAB IDLE', COL.dim, { hud: true, depth: 6 }));
-    if (msg) h.keep(h.text(138, 183, msg.slice(0, 32), COL.bad, { scale: 0.85, hud: true, depth: 6 })); h.keep(h.panel(262, 183, 56, 13, UI.face, { depth: 2 })); h.keep(h.text(290, 184, 'BACK [B]', COL.text, { origin: [0.5, 0], hud: true, depth: 6 })); this.backBtn = { x: 262, y: 184, w: 56, h: 12 };
+    if (msg) h.keep(h.text(138, 183, msg.slice(0, 32), COL.bad, { scale: 0.85, hud: true, depth: 6 })); h.keep(h.panel(262, 183, 56, 13, UI.face, { depth: 2 })); h.keep(h.label(262, 183, 56, 13, 'BACK [B]')); this.backBtn = { x: 262, y: 184, w: 56, h: 12 };
     this.clockText = h.keep(h.text(6, 190, '', COL.dim, { hud: true, depth: 6, scale: 0.85 })); this.refreshClock(); this.music('music_base', 0.2);
   }
   pickTech(id) { const f = { v: this.C.funds }, err = startTech(this.C.R, f, id); if (err) { this.sfx('error', 0.4); return this.baseScreen(err); } this.C.funds = f.v; this.sfx('confirm', 0.5); this.news = `RESEARCH STARTED: ${tech(id).name}`; this.baseScreen(); this.saveCampaign(); }

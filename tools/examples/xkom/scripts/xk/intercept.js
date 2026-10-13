@@ -10,7 +10,7 @@ export class InterceptView {
     const h = this.h; this.add(h.panel(0, 0, VW, VH, 0x071016, { texture: false })); this.add(h.panel(5, 22, 210, 144, 0x020c09, { raised: false, depth: 1, texture: false }));
     this.gfx = h.ps.add.graphics(); this.h.hud.add(this.gfx); this.gfx.setDepth(5).setScale(0.66, 0.72).setPosition(4, 23);
     this.radarBtns = [{ key: 'Enter', y: 26, label: 'ENGAGE' }, { key: ' ', y: 53, label: 'AUTO-RESOLVE' }, { key: 'Escape', y: 80, label: 'DISENGAGE' }];
-    for (const b of this.radarBtns) { this.add(h.panel(220, b.y, 94, 23, 0x142a2b, { depth: 2, texture: false })); this.add(h.text(267, b.y + 7, b.label, '#88cbb0', { origin: [0.5, 0], hud: true, depth: 8 })); }
+    for (const b of this.radarBtns) { this.add(h.panel(220, b.y, 94, 23, 0x142a2b, { depth: 2, texture: false })); this.add(h.label(220, b.y, 94, 23, b.label, '#88cbb0', { depth: 8 })); }
     this.add(h.panel(220, 108, 94, 58, 0x06100e, { raised: false, depth: 1, texture: false })); this.add(h.img('jet', 0, 267, 137, 6, [0.5, 0.5], true)).setScale(1.4);
     this.add(h.text(267, 111, 'INTERCEPTOR', COL.dim, { origin: [0.5, 0], hud: true, depth: 8 }));
     this.tTitle = this.add(h.text(6, 4, `XK / AIR DEFENCE  -  ${site.name}`, '#88cbb0', { hud: true, depth: 8 }));

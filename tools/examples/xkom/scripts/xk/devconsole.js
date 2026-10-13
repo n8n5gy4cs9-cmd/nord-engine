@@ -1,10 +1,11 @@
 // Local command whitelist; deliberately no eval, completion or in-console command listing.
+import { FONT_SIZES } from './ui-config.js';
 import { TECHS, tech } from './research.js';
 import { newRookie } from './tactical.js';
 export class DevConsole {
   constructor(host) {
     this.h = host; this.open = false; this.history = []; this.cursor = 0;
-    this.el = document.createElement('section'); this.el.dataset.xkomConsole = ''; this.el.style.cssText = 'position:fixed;inset:auto 0 0;height:38%;z-index:9000;background:#061016f5;color:#9ac8b1;border-top:1px solid #365447;padding:12px;box-sizing:border-box;font:13px/1.5 monospace;display:none';
+    this.el = document.createElement('section'); this.el.dataset.xkomConsole = ''; this.el.style.cssText = `position:fixed;inset:auto 0 0;height:38%;z-index:9000;background:#061016f5;color:#9ac8b1;border-top:1px solid #365447;padding:12px;box-sizing:border-box;font:${FONT_SIZES.console}px/1.5 monospace;display:none`;
     this.log = document.createElement('pre'); this.log.style.cssText = 'margin:0;height:calc(100% - 35px);overflow:auto;white-space:pre-wrap'; this.log.textContent = 'Developer console. Command reference: commands.txt\n';
     this.input = document.createElement('input'); this.input.setAttribute('aria-label', 'Developer command'); this.input.autocomplete = 'off'; this.input.spellcheck = false; this.input.style.cssText = 'width:100%;box-sizing:border-box;background:#0b1d25;border:1px solid #365447;color:#d6efdf;font:inherit;padding:4px';
     this.el.append(this.log, this.input); document.body.append(this.el);

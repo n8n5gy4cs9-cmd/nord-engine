@@ -14,7 +14,7 @@ const { errors, result } = await withPage(process.argv[2] ?? `${ROOT}/examples/x
   const zoom = await page.evaluate(() => window.__xk.geo.zoom); await page.mouse.click(255 * 3, 59 * 3); assert.ok(await page.evaluate(() => window.__xk.geo.zoom) > zoom);
   await page.screenshot({ path: `${ROOT}/docs/screenshots/xkom-hq-map.png` });
   await page.keyboard.press('g'); await page.waitForFunction(() => !window.__xk.geo.region);
-  const textSize = await page.evaluate(() => parseFloat(window.__xk.geoLabel.img.style.fontSize)); assert.equal(textSize, 8);
+  const textSize = await page.evaluate(() => parseFloat(window.__xk.geoLabel.img.style.fontSize)); assert.equal(textSize, 7);
   await page.keyboard.press('b'); await page.waitForFunction(() => window.__xk.mode === 'base'); await page.keyboard.press('b'); await page.waitForFunction(() => window.__xk.mode === 'geo');
   for (let i = 0; i < 2; i++) {
     await page.mouse.click(276 * 3, 109 * 3); await page.waitForFunction(() => window.__xk.mode === 'air');

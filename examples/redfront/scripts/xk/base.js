@@ -1,6 +1,8 @@
 // Shared view helpers for X-KOM 2026 and Red Front 2026 (Phaser scene access, pixel text, HUD container that stays fixed on screen while the world scrolls).
 import { NordScript } from 'nord';
-import { PixelFont, PText } from './pixeltext.js';
+import { PixelFont, PText, inkOrigin } from './pixeltext.js';
+
+import { FONT_SIZES } from './ui-config.js';
 
 export const VW = 320, VH = 200, ZOOM = 3;
 export const COL = { text: '#d8dcff', dim: '#8a8fb8', gold: '#ffd25c', good: '#70e870', bad: '#ff6a50', blue: '#6ac8ff', amber: '#ffb040', alien: '#b8f070', cyan: '#60e8ff' };
@@ -25,13 +27,15 @@ export class Bevel {
 
 /** Text drawn with a vendored Google font (Pixelify Sans / Orbitron) rendered at screen resolution; same API as the bitmap PText so callers don't care. */
 export class FText {
-  constructor(ps, { x = 0, y = 0, text = '', color = '#fff', scale = 1, origin = [0, 0], compact = false } = {}) {
-    const head = scale >= 2, size = compact ? Math.round((head ? 6 : 8) * scale) : head ? (scale >= 3 ? 8 : 6) * scale : 13 * scale;
-    this.img = ps.add.text(x, y - (head ? 0 : 2), String(text), { fontFamily: `${head ? 'XKTitle' : 'XKUI'}, monospace`, fontSize: `${size}px`, color, fontStyle: head ? '900' : '400' }).setOrigin(...origin).setResolution(ZOOM);
+  constructor(ps, { x = 0, y = 0, text = '', color = '#fff', scale = 1, origin = [0, 0], compact = false, fontSize } = {}) {
+    const head = scale >= 2, size = fontSize ?? Math.round((compact ? (scale >= 3 ? FONT_SIZES.title : head ? FONT_SIZES.heading : FONT_SIZES.body) : (scale >= 3 ? FONT_SIZES.redFrontTitle : head ? FONT_SIZES.redFrontHeading : FONT_SIZES.redFrontBody)) * scale);
+    this.origin = origin;
+    this.img = ps.add.text(x, y, String(text), { fontFamily: `${head ? 'XKTitle' : 'XKUI'}, monospace`, fontSize: `${size}px`, color, fontStyle: head ? '900' : '400' }).setResolution(ZOOM);
     this.img.setShadow(1, 1, '#06040f', 0, false, true);
+    inkOrigin(this.img, this.img.canvas, origin);
     this.o = { color };
   }
-  setText(t, color) { this.img.setText(String(t)); if (color && color !== this.o.color) { this.o.color = color; this.img.setColor(color); } return this; }
+  setText(t, color) { if (this.img.text === String(t) && (!color || color === this.o.color)) return this; this.img.setText(String(t)); if (color && color !== this.o.color) { this.o.color = color; this.img.setColor(color); } inkOrigin(this.img, this.img.canvas, this.origin); return this; }
   get width() { return this.img.width; }
   setPosition(x, y) { this.img.setPosition(x, y); return this; }
   setVisible(v) { this.img.setVisible(v); return this; } setAlpha(a) { this.img.setAlpha(a); return this; } setDepth(d) { this.img.setDepth(d); return this; }
@@ -82,8 +86,12 @@ export class XkBase extends NordScript {
   wait(ms) { return new Promise((r) => this.ps.time.delayedCall(Math.max(1, ms), r)); }
   tw(cfg) { return new Promise((r) => this.ps.tweens.add({ ...cfg, onComplete: r })); }
   /** pixel text; inHud=true → child of the fixed HUD container (coordinates are screen-local) */
-  text(x, y, str = '', color = COL.text, { scale = 1, origin = [0, 0], depth = 10, hud = false, bitmap = false } = {}) {
-    const t = this.ttf && !bitmap ? new FText(this.ps, { x, y, text: str, color, scale, origin, compact: this.compact }) : new PText(this.ps, this.font, { x, y, text: str, color, scale, origin }); t.setDepth(depth); if (hud) this.hud.add(t.img); return t;
+  text(x, y, str = '', color = COL.text, { scale = 1, origin = [0, 0], depth = 10, hud = false, bitmap = false, fontSize } = {}) {
+    const t = this.ttf && !bitmap ? new FText(this.ps, { x, y, text: str, color, scale, origin, compact: this.compact, fontSize }) : new PText(this.ps, this.font, { x, y, text: str, color, scale: scale * FONT_SIZES.bitmap / 8, origin }); t.setDepth(depth); if (hud) this.hud.add(t.img); return t;
+  }
+  /** Center label ink within a button, including the font's uneven ascent/descent. */
+  label(x, y, w, h, str, color = COL.text, options = {}) {
+    return this.text(x + w / 2, y + h / 2, str, color, { hud: true, depth: 6, fontSize: FONT_SIZES.button, ...options, origin: [0.5, 0.5] });
   }
   frameOf(sheet, name) { const m = this.meta[sheet]; return (m.tiles ?? m.frames)[name]; }
   img(sheet, frame, x, y, depth = 10, origin = [0, 0], hud = false) { const i = this.ps.add.image(x, y, this.PATH[sheet], frame).setOrigin(...origin).setDepth(depth); if (hud) this.hud.add(i); return i; }

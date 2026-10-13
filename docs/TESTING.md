@@ -11,6 +11,7 @@
 | X-KOM audio | `node tools/xkom-audio-test.mjs [export-directory]`: exactly 3 music files, real WebAudio decode/loop/unlock, role routing without restarts, all 21 SFX | M6 |
 | X-KOM campaign/save | `node tools/xkom-campaign-test.mjs`; `node tools/xkom-campaign-view-test.mjs`; `node tools/xkom-save-test.mjs [export-directory]` (Continue, paused Save/Load mid-walk, two-stage finale, RTS names/costs); `node tools/xkom-start-gate-test.mjs [export-directory]` (trusted mouse/touch/key first activation) | M6 |
 | X-KOM/Red Front edge scroll | `node tools/xkom-edge-test.mjs [xkom\|redfront] [export-directory]`; `XK_EDGE_WIDE=1` for fullscreen/letterbox bounds. Real mouse, map/sidebar boundary, HUD exclusion, outside-canvas stop and overlays. | M6 |
+| X-KOM layout/portable saves | `node tools/xkom-layout-test.mjs` (rendered glyph centers, font size, tactical bar bounds); `node tools/xkom-portable-save-test.mjs` (real JSON download/upload, rejected files preserve campaign, reload, combat HQ checkpoint) | M6 |
 | X-KOM views | `node tools/xkom-view-test.mjs` (terrain/walk/camera); `node tools/xkom-ui-test.mjs [export-directory]` (globe/HQ, text, input and repeated interceptions); `node tools/xk-shots.mjs xkom` (all screens) | M6 |
 | Examples smoke | `node tools/smoke-examples.mjs` builds each example, loads in headless Chromium for 3 s, asserts no console errors + non-blank canvas | M6 |
 | Offline guarantee | `nord check-offline dist/` ; headless run with network blocked (`route.abort` for non-localhost) | every export |

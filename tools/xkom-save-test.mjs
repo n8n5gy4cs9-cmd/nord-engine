@@ -15,7 +15,7 @@ const { errors, result } = await withPage(process.argv[2] ?? `${ROOT}/examples/x
   assert.deepEqual(await page.evaluate(() => window.__xk.C), saved.C);
   // Single names, multiple count, compact bitmap costs clear the 16px icon.
   await page.evaluate(() => window.__xk.startRts());
-  const names = await page.evaluate(() => { const r = window.__xk.rts, units = r.s.units.filter(u => u.team === 'p'); r.sel = new Set([units[0].id]); r.hudRefresh(); const unit = r.tSel.o.text; r.sel = new Set([r.s.blds.find(b => b.type === 'fact' && b.team === 'p').id]); r.hudRefresh(); const building = r.tSel.o.text; r.sel = new Set(units.slice(0, 2).map(u => u.id)); r.hudRefresh(); return { unit, building, multiple: r.tSel.o.text, costs: r.h.hud.list.filter(o => o.texture?.key?.startsWith('ptext')).map(o => ({ w: o.width, h: o.height, x: o.x, y: o.y })) }; });
+  const names = await page.evaluate(() => { const r = window.__xk.rts, units = r.s.units.filter(u => u.team === 'p'); r.sel = new Set([units[0].id]); r.hudRefresh(); const unit = r.tSel.o.text; r.sel = new Set([r.s.blds.find(b => b.type === 'fact' && b.team === 'p').id]); r.hudRefresh(); const building = r.tSel.o.text; r.sel = new Set(units.slice(0, 2).map(u => u.id)); r.hudRefresh(); return { unit, building, multiple: r.tSel.o.text, costs: r.h.hud.list.filter(o => o.texture?.key?.startsWith('ptext')).map(o => ({ w: o.displayWidth, h: o.displayHeight, x: o.x, y: o.y })) }; });
   assert.notEqual(names.unit, 'SELECTED 1'); assert.equal(names.building, 'CONSTRUCTION YARD'); assert.equal(names.multiple, 'SELECTED 2');
   assert.ok(names.costs.filter(o => [102, 134, 166].includes(o.y)).every(o => o.w <= 30 && o.h <= 9));
   await page.screenshot({ path: `${ROOT}/docs/screenshots/xkom-rts.png` });

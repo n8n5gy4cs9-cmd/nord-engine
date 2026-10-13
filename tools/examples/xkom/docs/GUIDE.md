@@ -23,11 +23,11 @@ Contacts persist when you switch between globe and Base. Initial contacts expire
 At 100 threat, Hive Strike begins. A successful Hive Strike resets threat to 20%; town occupation remains until liberated. These towns are abstract campaign states on the existing world map; tactical maps remain procedural farm/UFO battlefields.
 
 ## Save, load and pause
-**P / Esc** opens pause in the map, Base, radar/shooter, tactical and RTS modes. Resume, Save campaign, Load campaign, strategic-clock toggle and Return to title are available. The simulation, scene timers and walking tweens freeze while paused. Escape closes help/console first when one is open.
+**P / Esc** opens pause in the map, Base, radar/shooter, tactical and RTS modes. Resume, Save campaign, Load campaign, Export save, Import save, strategic-clock toggle and Return to title are available. The simulation, scene timers and walking tweens freeze while paused. Escape closes help/console first when one is open.
 
 Saves use the engine's local browser storage, one campaign slot per project/site/device. The title offers **CONTINUE [Enter]** when a compatible unfinished save exists, plus **NEW CAMPAIGN [N]**; otherwise **BEGIN CAMPAIGN**. A new campaign starts when selected and replaces the previous save. Corrupt/obsolete saves are ignored. Completed/lost campaigns no longer offer Continue.
 
-Strategic saves retain the seed, funds, squad experience, intel, mission counts, research/progress, towns/occupation, contacts and deadlines, countdown and final-phase progress. Checkpoints save before deployment, after missions, research choices and waiting days, and when hiding/leaving the page. **Combat Save/Load restores the last strategic checkpoint at HQ and restarts the operation**. This preserves interception bonuses already applied before ground deployment; unit positions, battle health, RTS cash/production and shooter positions are not serialized. No offline time catch-up. If browser storage is blocked/full, manual Save reports that failure. Clearing site data removes saves; export hosts have separate storage.
+Strategic saves retain the seed, funds, squad experience, intel, mission counts, research/progress, towns/occupation, contacts and deadlines, countdown and final-phase progress. Checkpoints save before deployment, after missions, research choices and waiting days, and when hiding/leaving the page. **Combat Save/Load restores the last strategic checkpoint at HQ and restarts the operation**. This preserves interception bonuses already applied before ground deployment; unit positions, battle health, RTS cash/production and shooter positions are not serialized. No offline time catch-up. If browser storage is blocked/full, manual Save reports that failure. Clearing site data removes saves; export hosts have separate storage. **Export save** downloads `xkom-save.json` from the current strategic checkpoint (works even if browser storage is blocked). **Import save** chooses that JSON file, validates it before replacing the local slot, and resumes at HQ. Invalid, foreign, oversized or completed saves are rejected without replacing your campaign. Import needs writable browser storage. Keep exported files as backups or move them between devices/sites.
 
 ## Developer console
 **F2** or **backtick** opens/closes it; **Escape** closes it; Up/Down browse typed history. Its command reference is **commands.txt** in this project folder. Commands are deliberately not listed in console help or game help. The console pauses live updates and the campaign clock while open.
@@ -49,6 +49,9 @@ Strategic saves retain the seed, funds, squad experience, intel, mission counts,
 ## URL helpers (testing)
 `?start=geo|base|air|tac|rts` jump to a screen · `?seed=123` fixed campaign seed. Inspector attributes: seed, goal (intel required to locate the source), presence (start %).
 
+## UI font tuning
+Edit **`tools/examples/xkom/scripts/xk/ui-config.js`**, then run `node tools/gen_examples.mjs xkom redfront` and reload. `FONT_SIZES` owns body, button, heading, title, bitmap fallback/RTS, pause, note and console sizes, plus Red Front defaults. Canvas sizes are logical pixels (3× display zoom); DOM pause/console sizes are screen pixels. Existing per-label scales multiply the configured base size. Button labels center their visible pixels, so font ascent/descent padding cannot push the label up or down. Tactical TU/HP bars remain inside the inset status panel.
+
 ## Where the code is
 | File | What |
 |---|---|
@@ -63,6 +66,7 @@ Strategic saves retain the seed, funds, squad experience, intel, mission counts,
 | `scripts/xk/intercept.js` | radar + Star Fox/Raptor-style shooter (barrel roll, power-ups, missiles, boss) |
 | `scripts/xk/research.js` | 7 techs and their effects |
 | `scripts/xk/help.js` | the F1 help pages (edit the text here) |
+| `scripts/xk/ui-config.js` | all UI font sizes, shared with Red Front |
 | `scripts/xk/base.js` | shared helpers (HUD container, fonts, bevelled panels) |
 Tuning: unit stats `U`/`B` in `rts.js`, weapons/races in `tactical.js`, techs in `research.js`, site sizes/relief and waiting-day timing in `campaign.js`.
 

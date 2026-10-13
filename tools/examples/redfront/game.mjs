@@ -17,7 +17,7 @@ export default () => ({
   assets: [...FONTS.map((f) => ({ from: `vendor/fonts/${f}`, to: `assets/fonts/${f.split('/')[1]}` })), ...sfx.map((n) => A(`sfx/${n}.wav`))], // music lives in this example's own assets/audio/music/
   files: {
     'assets.md': read('docs/assets.md'), 'GUIDE.md': read('docs/GUIDE.md'),
-    'scripts/xk/base.js': shared('base.js'), 'scripts/xk/rts.js': shared('rts.js'), 'scripts/xk/rtsview.js': shared('rtsview.js'), 'scripts/xk/pixeltext.js': shared('pixeltext.js'), 'scripts/xk/help.js': shared('help.js'),
+    'scripts/xk/ui-config.js': shared('ui-config.js'), 'scripts/xk/base.js': shared('base.js'), 'scripts/xk/rts.js': shared('rts.js'), 'scripts/xk/rtsview.js': shared('rtsview.js'), 'scripts/xk/pixeltext.js': shared('pixeltext.js'), 'scripts/xk/help.js': shared('help.js'),
   },
   readme: read('docs/README.md'),
 });

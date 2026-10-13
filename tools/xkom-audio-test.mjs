@@ -16,12 +16,22 @@ const { errors, result } = await withPage(dir, async page => {
   await page.keyboard.press('Enter'); await track('base'); await page.evaluate(() => { window.__baseAudioSource = window.__nord.audio._music.src; });
   await page.keyboard.press('b'); await page.waitForFunction(() => window.__xk.mode === 'base'); await track('base');
   assert.equal(await page.evaluate(() => window.__nord.audio._music.src === window.__baseAudioSource), true);
+  await page.evaluate(() => {
+    const start = AudioBufferSourceNode.prototype.start;
+    AudioBufferSourceNode.prototype.start = function(when, offset = 0, ...rest) { this.__testOffset = offset; return start.call(this, when, offset, ...rest); };
+  });
   await page.keyboard.press('b'); await page.keyboard.press('1'); await page.waitForFunction(() => window.__xk.mode === 'air'); await track('game');
+  assert.equal(await page.evaluate(async () => window.__nord.audio._music.src.__testOffset === (await import('/scripts/music-config.js')).MUSIC_CONFIG.interceptStartSeconds), true);
   await page.evaluate(() => { window.__gameAudioSource = window.__nord.audio._music.src; });
   await page.keyboard.press('Enter'); await page.waitForFunction(() => window.__xk.air.phase === 'air'); await track('game');
-  await page.keyboard.press('d'); await page.waitForFunction(() => window.__xk.mode === 'tac'); await track('game');
   assert.equal(await page.evaluate(() => window.__nord.audio._music.src === window.__gameAudioSource), true);
+  await page.keyboard.press('d'); await page.waitForFunction(() => window.__xk.mode === 'tac'); await track('game');
+  assert.equal(await page.evaluate(() => window.__nord.audio._music.src === window.__gameAudioSource), false);
+  assert.equal(await page.evaluate(() => window.__nord.audio._music.src.__testOffset), 0);
+  await page.evaluate(() => { window.__tacAudioSource = window.__nord.audio._music.src; });
   await page.evaluate(() => { window.__xk.tac.destroy(); window.__xk.startRts(); }); await track('game');
+  assert.equal(await page.evaluate(() => window.__nord.audio._music.src === window.__tacAudioSource), false);
+  assert.equal(await page.evaluate(() => window.__nord.audio._music.src.__testOffset), 0);
   await page.evaluate(() => { window.__xk.rts.destroy(); window.__xk.ending(true); }); await track('base');
   const sfx = fs.readdirSync(`${dir}/assets/audio/sfx`).filter(f => f.endsWith('.wav')).sort(); assert.equal(sfx.length, 21);
   const decoded = await page.evaluate(async names => { const a = window.__nord.audio, out = []; for (const n of names) { const b = await a.load(`assets/audio/sfx/${n}`); out.push({ name: n, seconds: b?.duration ?? 0 }); } return out; }, sfx);
@@ -29,4 +39,4 @@ const { errors, result } = await withPage(dir, async page => {
   return await page.evaluate(() => window.__nord.errors.map(e => e.err?.message));
 }, { path: '/?seed=42', viewport: { width: 960, height: 600 } });
 assert.deepEqual(errors, []); assert.deepEqual(result, []);
-console.log('PASS: exactly 3 music files; audible looping WebAudio buffers; title unlock; title/base/game scene routing; no loop restart inside each role; all 21 SFX decode.');
+console.log('PASS: exactly 3 music files; audible looping WebAudio buffers; title unlock; title/base/game scene routing; configured radar offset, continuous shooter playback, tactical/RTS restart at zero; all 21 SFX decode.');

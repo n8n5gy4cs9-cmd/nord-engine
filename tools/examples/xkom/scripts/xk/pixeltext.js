@@ -1,6 +1,13 @@
 // (Copy of the Altimu pixel-text helper — shared Nord bitmap font renderer.) Bitmap text from the hand-drawn font sheet (assets/ui/font.png: 16 cols × 4 rows of 6×8 cells, ASCII 32..95, white glyphs).
 // Renders into a canvas texture so it stays pixel-perfect; lower-case is shown as upper-case.
 let uid = 0;
+// Anchor visible pixels rather than the font's invisible ascent/descent padding.
+export function inkOrigin(img, canvas, origin) {
+  const { width: w, height: h } = canvas, d = canvas.getContext('2d').getImageData(0, 0, w, h).data;
+  let l = w, r = 0, t = h, b = 0;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (d[(y * w + x) * 4 + 3]) { l = Math.min(l, x); r = Math.max(r, x + 1); t = Math.min(t, y); b = Math.max(b, y + 1); }
+  img.setOrigin(r > l ? (l + (r - l) * origin[0]) / w : origin[0], b > t ? (t + (b - t) * origin[1]) / h : origin[1]);
+}
 /** '[word]' markup → [[text, highlighted], …] */
 export const split = (s) => { const out = []; let cur = '', on = false; for (const ch of String(s)) { if (ch === '[' ) { out.push([cur, on]); cur = ''; on = true; } else if (ch === ']') { out.push([cur, on]); cur = ''; on = false; } else cur += ch; } out.push([cur, on]); return out; };
 export const plain = (s) => split(s).map((p) => p[0]).join('');
@@ -48,14 +55,15 @@ export class PText {
     text = String(text); color ??= this.o.color;
     if (text === this.o.text && color === this.o.color) return this;
     this.o.text = text; this.o.color = color;
-    const c = this.font.render(text || ' ', color, this.o.scale, this.o.shadow);
+    const c = this.font.render(text || ' ', color, 1, this.o.shadow);
     if (this.ps.textures.exists(this.key)) this.ps.textures.remove(this.key);
     this.ps.textures.addCanvas(this.key, c);
     if (!this.img) { this.img = this.ps.add.image(this.x, this.y, this.key).setOrigin(...this.origin); this.layer?.add?.(this.img); } else this.img.setTexture(this.key);
-    this.img.setOrigin(...this.origin);
+    this.img.setScale(this.o.scale);
+    inkOrigin(this.img, c, this.origin);
     return this;
   }
-  get width() { return this.img?.width ?? 0; }
+  get width() { return this.img?.displayWidth ?? 0; }
   setPosition(x, y) { this.x = x; this.y = y; this.img.setPosition(x, y); return this; }
   setVisible(v) { this.img.setVisible(v); return this; }
   setAlpha(a) { this.img.setAlpha(a); return this; }

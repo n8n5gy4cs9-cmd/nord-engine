@@ -63,10 +63,10 @@ export class TacView {
     const h = this.h; this.hudGroup = [];
     const add = (o) => { this.hudGroup.push(o); return o; };
     add(h.panel(0, HUDY, VW, VH - HUDY, UI.metal, { depth: 0 })); add(h.panel(3, HUDY + 3, 68, 34, 0x1a1810, { raised: false, depth: 1 }));
-    this.tName = add(h.text(6, HUDY + 4, '', COL.gold, { hud: true, depth: 6 })); this.tStat = add(h.text(6, HUDY + 13, '', COL.text, { hud: true, depth: 6 })); this.tStat2 = add(h.text(6, HUDY + 26, '', COL.text, { hud: true, depth: 6 })); this.tInfo = this.tStat2;
-    this.barTu = add(h.rect(6, HUDY + 22, 62, 3, 0x40d040, 1)); this.barHp = add(h.rect(6, HUDY + 35, 62, 3, 0xe03030, 1));
+    this.tName = add(h.text(6, HUDY + 4, '', COL.gold, { hud: true, depth: 6 })); this.tStat = add(h.text(6, HUDY + 12, '', COL.text, { hud: true, depth: 6 })); this.tStat2 = add(h.text(6, HUDY + 23, '', COL.text, { hud: true, depth: 6 })); this.tInfo = this.tStat2;
+    this.barTu = add(h.rect(6, HUDY + 20, 62, 2, 0x40d040, 1)); this.barHp = add(h.rect(6, HUDY + 32, 62, 2, 0xe03030, 1));
     this.btns = [];
-    const mk = (id, x, y, w, label) => { const bg = add(h.panel(x, y, w, 15, 0x7a7660, { depth: 1 })); const t = add(h.text(x + w / 2, y + 4, label, COL.text, { origin: [0.5, 0], hud: true, depth: 6 })); this.btns.push({ id, x, y, w, h: 15, bg, t }); };
+    const mk = (id, x, y, w, label) => { const bg = add(h.panel(x, y, w, 15, 0x7a7660, { depth: 1 })); const t = add(h.label(x, y, w, 15, label)); this.btns.push({ id, x, y, w, h: 15, bg, t }); };
     mk('snap', 74, HUDY + 5, 78, 'SNAP'); mk('aimed', 74, HUDY + 22, 78, 'AIMED'); mk('auto', 156, HUDY + 5, 78, 'AUTO'); mk('next', 156, HUDY + 22, 78, 'NEXT [TAB]');
     mk('end', 238, HUDY + 5, 76, 'END TURN'); mk('help', 238, HUDY + 22, 76, 'ENTER=END');
     this.tTurn = add(h.text(4, 3, '', COL.text, { hud: true, depth: 6 })); this.tMsg = add(h.text(VW / 2, 12, '', COL.gold, { origin: [0.5, 0], hud: true, depth: 6 }));
@@ -74,7 +74,7 @@ export class TacView {
   }
   hudRefresh() {
     const s = this.s, u = this.sel; if (!this.tName) return;
-    if (u && !u.dead) { this.tName.setText(`${u.name.toUpperCase()} K${u.kills}`, COL.gold); this.tStat.setText(`TU ${u.tu}/${u.maxTu}`, COL.good); this.barTu.width = Math.max(0.1, 62 * u.tu / u.maxTu); this.barHp.width = Math.max(0.1, 62 * u.hp / u.max); this.tStat2.setText(`HP ${u.hp}/${u.max}`, COL.bad); } else this.tName.setText('NO SELECTION', COL.dim);
+    if (u && !u.dead) { this.tName.setText(`${u.name.toUpperCase()} K${u.kills}`, COL.gold); this.tStat.setText(`TU ${u.tu}/${u.maxTu}`, COL.good); this.barTu.width = 62 * Math.max(0, Math.min(1, u.tu / u.maxTu)); this.barHp.width = 62 * Math.max(0, Math.min(1, u.hp / u.max)); this.tStat2.setText(`HP ${u.hp}/${u.max}`, COL.bad); } else this.tName.setText('NO SELECTION', COL.dim);
     this.tTurn.setText(`TURN ${s.turn}  ALIENS ${live(s, 'a').length}  SQUAD ${live(s, 'x').length}`, COL.text);
     for (const b of this.btns) { const on = b.id === this.mode; b.bg.setFillStyle(on ? 0xb88a28 : 0x7a7660);
       if (['snap', 'aimed', 'auto'].includes(b.id) && u) { const w = WEAPONS[u.weapon][b.id]; b.t.setText(`${b.id.toUpperCase()} ${Math.round(u.firing * w[0] / 100)}% ${shotCost(u, b.id)}`, on ? '#ffffff' : COL.text); } }
