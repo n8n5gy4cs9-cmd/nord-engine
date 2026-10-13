@@ -22,6 +22,9 @@ this.game.timeScale = 0.3;
 this.after(0.5, () => (this.game.timeScale = 1));   // timers run on scaled time: 0.5 game-seconds ≈ 1.7 s real
 ```
 
+## Audio on first touch
+**Silent title screen / first click hits a button** — install the opt-in [touch-to-start gate](audio.html#touch-to-start): `this.startGate = touchToStart(this.game, { title: 'MY GAME' });` after building the title, and `this.startGate?.destroy()` in `onDestroy()`.
+
 ## Spawning
 **Bullets with a lifetime**
 ```js

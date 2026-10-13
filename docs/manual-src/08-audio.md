@@ -33,3 +33,56 @@ MP3 adds ~25 ms of encoder delay, so use **OGG or WAV** for gapless loops. The R
 :::
 
 Audio is not spatialised yet (`audioListener` is a placeholder).
+
+## Touch-to-start gate (`touchToStart`) {#touch-to-start}
+Browsers refuse to play sound until the player has clicked, tapped or pressed a key. Nord queues early `audio.play`/`audio.music` calls and replays them after the first gesture, but a title screen with music still sits silent until then — and the player's very first click would also hit your menu by accident.
+
+`touchToStart` fixes both. It is a ready-made, **opt-in** helper exported from `nord` (`runtime/core/start-gate.js`): a full-screen "TOUCH / CLICK TO ENABLE AUDIO" overlay that waits for the first gesture, **swallows that gesture and its release** (so no menu button is pressed through it), unlocks audio so the queued title music starts, then removes itself. The next click or key is normal game input. Your current screen, camera and project settings are not touched. X-KOM 2026 and Vallout 2 both use it.
+
+::: dummies
+It is the "Press any key" screen you know from old games. The game is already drawn behind it; the first touch only switches the sound on and then gets out of the way.
+:::
+
+### Add it to a game (3 steps)
+1. **Import** it from `nord`.
+2. **Build your title screen and queue the title music first**, then install the gate as the last step of setup.
+3. **Destroy** it in `onDestroy()`, and keep a reference so your own input code can ignore input while `startGate.active` is true.
+
+```js
+import { NordScript, touchToStart } from 'nord';
+
+export default class MyGame extends NordScript {
+  start() {
+    this.showTitle();                                  // draw the title + this.audio.music('assets/audio/music/title.mp3')
+    this.startGate = touchToStart(this.game, {
+      title: 'MY GAME',                                // big heading (default 'READY')
+      label: 'TOUCH / CLICK TO ENABLE AUDIO',          // small caption (also the aria-label)
+    });
+  }
+  update(dt) {
+    if (this.startGate?.active) return;                // optional: pause game logic while the gate is up
+    // ...
+  }
+  onKey(e) {
+    if (this.startGate?.active) return;                // optional: ignore your own key handlers too
+    // ...
+  }
+  onDestroy() { this.startGate?.destroy(); }           // removes the overlay and every listener
+}
+```
+
+### Options and handle
+| Option | Default | Meaning |
+|---|---|---|
+| `parent` | `document.body` | element the overlay is appended to |
+| `title` | `'READY'` | heading text |
+| `label` | `'TOUCH OR CLICK TO START AUDIO'` | caption + accessible label |
+
+Returns `{ active, destroy() }`. `active` is `true` until the first gesture. Without a DOM (tests, Rust tier) it returns an inactive no-op handle.
+
+### Good to know
+* The first **pointer-down, touch-start or key-down** dismisses it; its release and synthetic click are swallowed for about half a second, so a tap cannot "fall through" to a button. Modifier combos (Ctrl/Cmd/Alt + key) and key auto-repeat are ignored.
+* The gate does not choose music or change screens. Start the music yourself *before* installing it; it is replayed when audio unlocks.
+* Skip it when you jump straight into gameplay (a `?start=` or `?nogate` URL switch is handy for automated tests, which cannot see the overlay's first click). Example: `if (!new URLSearchParams(location.search).has('nogate')) this.startGate = touchToStart(this.game, { title: 'MY GAME' });`
+* In automated browser tests, click once on the page (`page.mouse.click`) when `[data-nord-start-gate]` exists.
+* It is not installed by default; games that do not call it are unchanged.

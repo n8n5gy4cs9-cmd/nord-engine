@@ -22,6 +22,8 @@
 <p><strong>Slow motion</strong></p>
 <pre class="code" data-lang="js"><code>this.game.timeScale = 0.3;
 this.after(0.5, () =&gt; (this.game.timeScale = 1));   // timers run on scaled time: 0.5 game-seconds ≈ 1.7 s real</code></pre>
+<h2 id="audio-on-first-touch">Audio on first touch<a class="anchor" href="#audio-on-first-touch">#</a></h2>
+<p><strong>Silent title screen / first click hits a button</strong> — install the opt-in <a href="audio.html#touch-to-start">touch-to-start gate</a>: <code>this.startGate = touchToStart(this.game, { title: &#39;MY GAME&#39; });</code> after building the title, and <code>this.startGate?.destroy()</code> in <code>onDestroy()</code>.</p>
 <h2 id="spawning">Spawning<a class="anchor" href="#spawning">#</a></h2>
 <p><strong>Bullets with a lifetime</strong></p>
 <pre class="code" data-lang="js"><code>const b = await this.scene.spawn('prefabs/bullet.prefab.json', { pos: this.entity.worldPos });

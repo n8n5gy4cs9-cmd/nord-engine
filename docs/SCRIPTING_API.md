@@ -47,6 +47,8 @@ or Babylon TransformNode — escape hatch).
 `audio.play(path, {volume, loop, rate})`, `audio.music(path, {fade})`, `audio.stopMusic()`, `audio.volume(bus, v)`, `audio.mute(b)`. Buses: master, music, sfx, ui.
 
 ### Optional touch-to-start audio gate
+Full guide with example code: manual → Audio → *Touch-to-start gate* (`docs/manual-src/08-audio.md`).
+
 Ready-made engine helper exported from `nord` (`runtime/core/start-gate.js`). Install it explicitly after building a title screen:
 
 ```js
