@@ -1193,6 +1193,12 @@
       "status": "done"
     },
     {
+      "id": "M6-42",
+      "milestone": "M6",
+      "title": "Connect Shader Terrain audio to iChannel0 and document matching collision snapshots",
+      "status": "done"
+    },
+    {
       "id": "M7-01",
       "milestone": "M7",
       "title": "tools/build-manual.mjs (marked + CodeMirror readonly + nord-live blocks)",

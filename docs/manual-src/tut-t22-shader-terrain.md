@@ -47,12 +47,20 @@ Copy `examples/shader-terrain/_kit.js` to your folder; it is the existing Nord D
 ## 4. Add the audio
 Copy `examples/shader-terrain/assets/audio/ambience.wav` to the same path in your project. **Enable audio** starts this original local 16-second loop after a click; **Mute audio** stops it.
 
-The shader's own `iChannel0` sound-texture sampling remains disabled as in the provided code. The audio here is an independent ambient loop, not an FFT visualizer. You can explicitly regenerate the default WAV with `node tools/gen_shader_audio.mjs` in the engine checkout.
+The loop now drives the shader through **`iChannel0`**. The host removes `#define disable_sound_texture_sampling` from the compiled copy; `terrain.glsl` stays unchanged on disk. This activates the original shader's audio-reactive terrain and sky, and its slower camera speed of **5**.
+
+Here is the signal path: **WAV → Web Audio analyser → volume control → speakers**. Each animation frame, the analyser produces 512 frequency bins (FFT) and waveform samples. The host uploads a **512 × 2 red-channel texture**: bottom row = frequency strength, top row = waveform. Both the picture shader and the terrain-probe shader bind this texture to texture unit 0 and set `iChannel0` to 0. `iChannelResolution[0]` is `(512, 2, 1)`. The analyser reads before the quiet speaker volume, so the visual reaction remains visible.
+
+::: dummies
+Click **Enable audio**, then leave the terrain running. The sound now changes the landscape and sky as it plays. **Mute audio** stops playback and clears the sound input on the next unfrozen frame. To use your own music, replace `assets/audio/ambience.wav` with a local file and keep its filename, or change the URL in `app.js`. No microphone permission is needed.
+:::
+
+You can explicitly regenerate the default WAV with `node tools/gen_shader_audio.mjs` in the engine checkout.
 
 ## 5. Click terrain or drop a cube
 Click visible ground. The host runs the original shader's `intersect()` in a **1×1 off-screen framebuffer** to find the ray's terrain distance. Clicking sky reports that there is no terrain hit. **Drop cube** uses a fixed point ahead of the camera instead.
 
-The scene freezes after a drop so the terrain remains still while the cube falls. Click another point to drop again. **Resume terrain** returns to the original moving shader and clears the old cube.
+The scene freezes both shader time and the audio-texture snapshot after a drop so the terrain remains still while the cube falls. The music can keep playing; its new samples reach the terrain when you resume. Click another point to drop again. **Resume terrain** returns to the original moving shader and clears the old cube.
 
 ## 6. Make the contact agree with the picture
 The original terrain surface is:
@@ -61,7 +69,7 @@ The original terrain surface is:
 float height = 2.0 * trinoise(worldXZ).x;
 ```
 
-The host evaluates that **same GLSL function on the GPU** instead of approximating its noise with a different CPU function. It encodes one height in two colour channels and reads it back. Five probes—centre plus four corners—give a conservative contact height under the cube's footprint.
+The host evaluates that **same GLSL function on the GPU** instead of approximating its noise with a different CPU function. It encodes one height in two colour channels and reads it back. The encoded height range is −0.25 to 2.25, so audio displacement below zero is preserved. Five probes—centre plus four corners—give a conservative contact height under the cube's footprint.
 
 Gravity changes the cube's height. When its bottom reaches the sampled ground height, the demo stops it there and displays both values. The cube is projected as a solid box onto a transparent canvas over the shader.
 
@@ -74,6 +82,6 @@ Use NordEditor **Export… → HTML**, or:
 nord export my-shader-app --target html
 ```
 
-Serve/share the whole output folder, including the GLSL and WAV. The example requires WebGL2. If you change the shader's camera speed from its supplied value of 10, update the host's `cameraZ()` to match, since that function projects the cube and reconstructs clicked positions.
+Serve/share the whole output folder, including the GLSL and WAV. The example requires WebGL2. If you change the shader's camera speed from its active audio-mode value of 5, update the host's `cameraZ()` to match, since that function projects the cube and reconstructs clicked positions.
 
 The provided source did not name an author/licence; the example retains it without inventing an ownership claim. Host code and generated audio are original engine example work, credited Crowelian 2026 + Sonnet.
