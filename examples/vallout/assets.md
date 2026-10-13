@@ -1,5 +1,5 @@
 # Assets — Vallout 2: New Kerava (replace by filename; keep sizes/frame layout)
-All art is **hand-typed pixel art** (text grids in `tools/art/vallout/*.mjs`, built with `node tools/pixelart.mjs vallout`). Audio is synthesized (`node tools/gen_vallout_audio.mjs`). To replace: drop a file with the same name/size in `tools/examples/vallout/assets/…` and run `node tools/gen_examples.mjs vallout` (do not re-run the generators afterwards, they overwrite).
+All art is **hand-typed pixel art** (text grids in `tools/art/vallout/*.mjs`, built with `node tools/pixelart.mjs vallout`). Audio files are plain WAV/MP3 (no generator). To replace: drop a file with the same name/size in `tools/examples/vallout/assets/…` and run `node tools/gen_examples.mjs vallout`.
 
 ## Sprite sheets (PNG, nearest filter; `*.png.meta.json` holds frame size + frame names)
 | File | Frame size | Layout |

@@ -117,4 +117,4 @@ X-KOM audio (M6-29): exactly three original synthesized loops in `examples/xkom/
 X-KOM command UI follow-up (M6-30/31): radar uses untextured navy/green terminal panels and scan lines; RTS labels/prices use the existing 6×8 bitmap sheet with separate icon/cost rows, HQ body text is rounded to 8px. Start gate, console and pause menu are code-drawn DOM overlays. No new image/audio files or swap paths.
 
 ## Vallout 2: New Kerava (example)
-Hand-typed isometric tiles/walls/props/actors/FX/items/UI (`tools/art/vallout/*.mjs`), synthesized sfx + 3 music loops. Re-pack: `node tools/pixelart.mjs vallout --preview`; audio: `node tools/gen_vallout_audio.mjs`; then `node tools/gen_examples.mjs vallout`. Inventory + replace instructions: `examples/vallout/assets.md`; sources in `tools/examples/vallout/assets/`.
+Hand-typed isometric tiles/walls/props/actors/FX/items/UI (`tools/art/vallout/*.mjs`), WAV sfx + 3 MP3 music tracks (plain files, no generator). Re-pack: `node tools/pixelart.mjs vallout --preview`; then `node tools/gen_examples.mjs vallout`. Inventory + replace instructions: `examples/vallout/assets.md`; sources in `tools/examples/vallout/assets/`.

@@ -11,7 +11,6 @@
 | UI/modern-engine ideas | **falltergeist** (reference only: HUD layout, cursor modes) |
 | Bitmap font + text helper | nord-engine `forgotten` example (`pixeltext.js`, `font.png`) |
 | Pixel-art pipeline | nord-engine `tools/pixelart.mjs` (hand-typed text grids → PNG; **no random/procedural pixel generation** — every sprite is typed art) |
-| Audio synth | nord-engine `tools/gen_xkom_audio.mjs` pattern (oscillator/noise SFX + looping music) |
 
 ## Architecture
 ```
@@ -25,7 +24,7 @@ game/              Nord project (nord.project.json, index.html, scenes, scripts,
   scripts/v/ui.js       F2 HUD, panels (inventory, character, dialogue, world map)
   scripts/v/play.js     area view: iso render, entities, classic + modern controls, combat
 tools/art/         hand-typed pixel art sources → `node tools/pixelart.mjs vallout`
-tools/gen_vallout_audio.mjs    SFX + music synth
+(audio: plain WAV/MP3 files in assets/audio, no generator)
 tools/vallout-shots.mjs        headless Chromium screenshots
 ```
 ## Game design summary
