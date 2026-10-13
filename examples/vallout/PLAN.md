@@ -10,7 +10,6 @@
 | Bug-fix knowledge | **sfall** — adopted fixes listed in `GUIDE.md` (e.g. distance/Perception fix, no negative AC, to-hit cap 95) |
 | UI/modern-engine ideas | **falltergeist** (reference only: HUD layout, cursor modes) |
 | Bitmap font + text helper | nord-engine `forgotten` example (`pixeltext.js`, `font.png`) |
-| Pixel-art pipeline | nord-engine `tools/pixelart.mjs` (hand-typed text grids → PNG; **no random/procedural pixel generation** — every sprite is typed art) |
 
 ## Architecture
 ```
@@ -23,7 +22,6 @@ game/              Nord project (nord.project.json, index.html, scenes, scripts,
   scripts/v/path.js     A*, line of sight (pure)
   scripts/v/ui.js       F2 HUD, panels (inventory, character, dialogue, world map)
   scripts/v/play.js     area view: iso render, entities, classic + modern controls, combat
-tools/art/         hand-typed pixel art sources → `node tools/pixelart.mjs vallout`
 (audio: plain WAV/MP3 files in assets/audio, no generator)
 tools/vallout-shots.mjs        headless Chromium screenshots
 ```
@@ -36,3 +34,6 @@ tools/vallout-shots.mjs        headless Chromium screenshots
 ## Milestones
 M0 scaffold+docs · M1 pixel art · M2 rules+data+mapgen · M3 area view (classic) · M4 combat · M5 UI/HUD/panels · M6 dialogue+quests+world map · M7 modern controls · M8 audio · M9 test+screenshots+polish.
 See `tasks.md`.
+
+> **NOTE:** Music, sound effects and sprites are **no longer generated** (no Python/Node generator scripts). The earlier generated files were only placeholders and have been replaced by the real art. Edit or replace the files in `tools/examples/vallout/assets/` directly, then run `node tools/gen_examples.mjs vallout`.
+
