@@ -50,7 +50,7 @@ export default class Harrison extends NordScript {
     this.toastQ = []; this.t = 0; this.screenT = 0; window.__hc = this; this.ready = true;
     this.toast('CARRIER HARRISON ONLINE - USE THE COMPUTERS IN THE COMMAND CENTRE. DESTROY THE ENEMY HQ ON GAMMA ISLE.', 8);
   }
-  onDestroy() { for (const [t, f] of this.listeners ?? []) window.removeEventListener(t, f); this.hudRoot?.remove(); if (document.pointerLockElement === this.canvas) document.exitPointerLock(); delete window.__hc; }
+  onDestroy() { for (const [t, f] of this.listeners ?? []) window.removeEventListener(t, f); this.hudRoot?.remove(); document.removeEventListener('pointerlockchange', this.onLockChange); this.release?.(); delete window.__hc; }
 
   // ===== helpers ============================================================================================================
   inst(key, name) {
@@ -114,7 +114,7 @@ export default class Harrison extends NordScript {
     // unit camera feed
     const fc = this.feedCam = new B.FreeCamera('feedCam', new B.Vector3(0, 30, -50), sc); fc.minZ = 0.5; fc.maxZ = 1800; fc.fov = 1.0;
     const frt = this.feedRtt = new B.RenderTargetTexture('feed', 384, sc, { generateMipMaps: false, generateDepthBuffer: true }); fc.layerMask = ALL & ~SCREEN_BIT; frt.activeCamera = fc; frt.refreshRate = 2; frt.clearColor = this.clearCol; frt.renderList = sc.meshes; // everything (not just what the players' cameras see), but not the monitors themselves
-    frt.onBeforeRenderObservable.add(() => { this.feedBusy = true; }); frt.onAfterRenderObservable.add(() => { this.feedBusy = false; });
+    frt.onBeforeRenderObservable.add(() => { this.screens.feed?.setEnabled(false); }); frt.onAfterRenderObservable.add(() => { this.screens.feed?.setEnabled(true); });
     sc.customRenderTargets.push(frt);
     // ship status: a 2D canvas texture
     this.statusTex = new B.DynamicTexture('status', { width: 512, height: 288 }, sc, false);
@@ -127,6 +127,8 @@ export default class Harrison extends NordScript {
     // map markers (flat icon planes seen only by the map camera)
     this.iconMats = ICON.map((n, i) => { const m = new B.StandardMaterial(`ico_${n}`, sc), t = this.tex.icons.clone(); t.uScale = 1 / ICON.length; t.uOffset = i / ICON.length; t.hasAlpha = true; m.emissiveTexture = t; m.opacityTexture = t; m.disableLighting = true; m.backFaceCulling = false; m.diffuseColor = B.Color3.Black(); return m; });
     this.markers = new Map(); this.mapCursor = [];
+    // the map camera renders only its explicit list, but make sure no monitor that shows the map is drawn into it
+    this.mapRtt.onBeforeRenderObservable.add(() => { this.screens.nav?.setEnabled(false); this.screens.command?.setEnabled(false); }); this.mapRtt.onAfterRenderObservable.add(() => { this.screens.nav?.setEnabled(true); this.screens.command?.setEnabled(true); });
   }
   marker(key, icon, size = 26, tint = null) {
     let m = this.markers.get(key); if (m) return m;
@@ -212,13 +214,19 @@ export default class Harrison extends NordScript {
     const on = (t, f, o) => { window.addEventListener(t, f, o); this.listeners.push([t, f]); };
     on('keydown', (e) => { if (!this.ready) return; if (['Space', 'Tab', 'ArrowUp', 'ArrowDown'].includes(e.code)) e.preventDefault(); if (!e.repeat) this.keys.add(e.code), this.keyPressed(e.code); });
     on('keyup', (e) => this.keys.delete(e.code));
-    on('mousemove', (e) => { if (document.pointerLockElement === this.canvas) { this.mouse.dx += e.movementX; this.mouse.dy += e.movementY; } });
-    on('mousedown', (e) => { if (document.pointerLockElement !== this.canvas) { this.canvas.requestPointerLock?.(); return; } if (e.button === 0) { this.mouse.left = true; this.mouse.leftEdge = true; } if (e.button === 2) this.mouse.rightEdge = true; });
-    on('mouseup', (e) => { if (e.button === 0) this.mouse.left = false; });
+    // Mouse look (pointer events: Babylon cancels the legacy mouse* events on its canvas): first click captures the mouse (pointer lock + hidden cursor; Esc releases). If the host (e.g. an embedded webview) refuses pointer lock,
+    // the game still treats the mouse as captured and uses movementX/Y, so look works either way.
+    on('pointermove', (e) => { if (this.captured) { this.mouse.dx += e.movementX || 0; this.mouse.dy += e.movementY || 0; } });
+    on('pointerdown', (e) => { if (!this.captured) { this.capture(); return; } if (e.button === 0) { this.mouse.left = true; this.mouse.leftEdge = true; } if (e.button === 2) this.mouse.rightEdge = true; });
+    on('pointerup', (e) => { if (e.button === 0) this.mouse.left = false; });
+    this.onLockChange = () => { if (!document.pointerLockElement && this.locked) this.release(); this.locked = document.pointerLockElement === this.canvas; };
+    document.addEventListener('pointerlockchange', this.onLockChange);
     on('contextmenu', (e) => e.preventDefault());
     on('gamepadconnected', () => this.joinPad());
   }
-  keyPressed(code) { const p = this.players[0]; if (code === 'KeyE') p.edge.use = true; else if (code === 'Escape') p.edge.back = true; else if (code === 'Tab') p.edge.next = true; else if (code === 'KeyR') p.edge.recall = true; else if (code === 'KeyX') p.edge.stop = true; else if (code === 'Space') p.edge.jump = true; else if (code === 'KeyF') this.players[0].edge.restart = true; }
+  capture() { this.captured = true; this.canvas.style.cursor = 'none'; try { const r = this.canvas.requestPointerLock?.(); r?.catch?.(() => {}); } catch { /* fallback: unlocked look */ } }
+  release() { this.captured = false; this.mouse.left = false; this.canvas.style.cursor = ''; if (document.pointerLockElement === this.canvas) document.exitPointerLock(); }
+  keyPressed(code) { if (code === 'Escape' && this.captured && !document.pointerLockElement) this.release(); const p = this.players[0]; if (code === 'KeyE') p.edge.use = true; else if (code === 'Escape') p.edge.back = true; else if (code === 'Tab') p.edge.next = true; else if (code === 'KeyR') p.edge.recall = true; else if (code === 'KeyX') p.edge.stop = true; else if (code === 'Space') p.edge.jump = true; else if (code === 'KeyF') this.players[0].edge.restart = true; }
   joinPad() { const p = this.players[1]; if (!p.active) { p.active = true; p.joined = true; this.applyLayout(); this.toast('PLAYER 2 JOINED (GAMEPAD)', 4); } }
   /** One frame of intent per player: { mx, mz (move), lx, ly (look), fire, edge:{use,back,next,recall,stop,jump,confirm} } */
   readInput(p, dt) {
@@ -227,7 +235,6 @@ export default class Harrison extends NordScript {
       i.mx = (k.has('KeyD') ? 1 : 0) - (k.has('KeyA') ? 1 : 0); i.mz = (k.has('KeyW') ? 1 : 0) - (k.has('KeyS') ? 1 : 0); i.lx = this.mouse.dx / 700; i.ly = this.mouse.dy / 700; this.mouse.dx = this.mouse.dy = 0; // Starter-Kit-FPS mouse_sensitivity = 700
       i.lx += ((k.has('ArrowRight') ? 1 : 0) - (k.has('ArrowLeft') ? 1 : 0)) * 1.6 * dt; i.ly += ((k.has('ArrowDown') ? 1 : 0) - (k.has('ArrowUp') ? 1 : 0)) * 1.2 * dt;
       i.fire = this.mouse.left || k.has('KeyG'); if (this.mouse.leftEdge) { i.edge.confirm = true; this.mouse.leftEdge = false; } if (this.mouse.rightEdge) { i.edge.back = true; this.mouse.rightEdge = false; }
-      if (document.pointerLockElement !== this.canvas && !this.noLockHint) { /* hint shown in HUD */ }
     } else {
       const pad = [...(navigator.getGamepads?.() ?? [])].filter(Boolean)[0]; if (!pad) return i;
       if (!p.active && pad.buttons.some((b) => b.pressed)) this.joinPad();
@@ -289,7 +296,7 @@ export default class Harrison extends NordScript {
   }
 
   // ===== computers ==========================================================================================================
-  enterConsole(p, name) { p.mode = 'console'; p.station = name; p.consoleJustEntered = true; if (name === 'nav' || name === 'command') { p.cx = this.sim.ship.x; p.cz = this.sim.ship.z + 120; } this.game.audio.play(SND('open'), { volume: 0.4 }); if (document.pointerLockElement !== this.canvas) this.canvas.requestPointerLock?.(); }
+  enterConsole(p, name) { p.mode = 'console'; p.station = name; p.consoleJustEntered = true; if (name === 'nav' || name === 'command') { p.cx = this.sim.ship.x; p.cz = this.sim.ship.z + 120; } this.game.audio.play(SND('open'), { volume: 0.4 }); if (!this.captured) this.capture(); }
   exitConsole(p) { p.mode = 'walk'; p.station = null; this.game.audio.play(SND('close'), { volume: 0.4 }); }
   updateConsole(p, inp, dt) {
     const sim = this.sim, st = p.station, e = inp.edge, half = MAP.size / 2;
@@ -368,7 +375,7 @@ export default class Harrison extends NordScript {
       setHtml(q('.top'), `P${i + 1}  ${top}`); setHtml(q('.msg'), msg); q('.cross').style.display = p.mode === 'walk' ? 'block' : 'none';
       let bot = '';
       if (p.mode === 'walk') {
-        const lock = i === 0 && document.pointerLockElement !== this.canvas ? 'CLICK THE GAME TO CAPTURE THE MOUSE  -  ' : '';
+        const lock = i === 0 && !this.captured ? 'CLICK THE GAME TO CAPTURE THE MOUSE  -  ' : '';
         bot = p.near ? `${i ? '[A]' : '[E]'} USE ${STATIONS[p.near].label}` : (i === 0 ? `${lock}WASD MOVE  MOUSE LOOK  CLICK/G FIRE  SPACE JUMP  E USE COMPUTER` : (this.hasPad() ? 'LEFT STICK MOVE  RIGHT STICK LOOK  RT FIRE  A USE COMPUTER' : 'PLAYER 2: CONNECT A GAMEPAD AND PRESS ANY BUTTON'));
       } else {
         const st = p.station, u = sim.units.find((q) => q.id === p.sel), k1 = i ? ['A', 'B', 'X', 'Y', 'START'] : ['CLICK', 'ESC', 'R', 'TAB', 'X'];
