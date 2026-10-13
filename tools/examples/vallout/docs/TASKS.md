@@ -1,0 +1,13 @@
+# tasks.md  (updated after every task + commit)
+- [x] M0 Plan, PRD, tasks, repo scaffold, vendored nord-engine runtime
+- [x] M1 Pixel art: tiles, buildings, props, actors (Tero, drunk, Saku, Möttönen, Rane, soldier, aliens), FX, item icons, UI frame
+- [x] M2 Data + rules (F2 port) + mapgen + pathfinding
+- [x] M3 Area view: iso render, entities, camera, classic click control
+- [x] M4 Classic turn combat (AP, to-hit, aimed, crits, AI, XP)
+- [x] M5 F2 HUD (log, AP LEDs, HP/AC, buttons) + inventory + character + level-up
+- [x] M6 Dialogue, quests, wall-kicking minigame, drunks, world map, endings
+- [x] M7 Modern mode (WASD + mouse aim/shoot, dodge, quick slots)
+- [x] M8 SFX + music (assets.md)
+- [x] M9 Smoke test (tools/smoke.mjs ALL PASS) + screenshots (docs/screenshots)
+- [x] Added: Janikselinna sand pits + Uusimaa Republic Rangers faction (NCR-style) + quest
+- [ ] Follow-ups: more quests/dialogue, bartering, richer sfx, nord-engine example drop-in (copy game/ to examples/valout2), verify on real GPU/browser by hand

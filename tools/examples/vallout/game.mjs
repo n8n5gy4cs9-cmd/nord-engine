@@ -10,6 +10,6 @@ export default () => ({
   project: project('vallout', 'Vallout 2: New Kerava', '2d', { w: 640, h: 480, pixelArt: true, bg: '#050403', physics: { engine: 'none', gravity: [0, 0, 0] }, input }),
   scenes: { main: { entities: [E('Valout2', { s: ['scripts/valout.js'] })] } },
   assets: [],
-  files: { 'assets.md': read('docs/assets.md'), 'GUIDE.md': read('docs/GUIDE.md') },
+  files: Object.fromEntries(['assets.md', 'GUIDE.md', 'STORY.md', 'PLAN.md', 'PRD.md', 'TASKS.md'].map((f) => [f, read(`docs/${f.replace('assets.md', 'assets.md')}`)])),
   readme: read('docs/README.md'),
 });
