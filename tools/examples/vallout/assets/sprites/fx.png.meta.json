@@ -1,0 +1,18 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 16,
+  "frameHeight": 16,
+  "filter": "nearest",
+  "frames": {
+    "muzzle_a": 0,
+    "muzzle_b": 1,
+    "bolt": 2,
+    "bullet": 3,
+    "spark": 4,
+    "blood": 5,
+    "goo": 6,
+    "boom_a": 7,
+    "boom_b": 8
+  },
+  "framesPerRow": 9
+}

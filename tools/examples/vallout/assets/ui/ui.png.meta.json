@@ -1,0 +1,25 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 16,
+  "frameHeight": 16,
+  "filter": "nearest",
+  "frames": {
+    "cur_move": 0,
+    "cur_cmd": 1,
+    "cur_look": 2,
+    "cur_attack": 3,
+    "cur_wait": 4,
+    "tile": 5,
+    "tile_fill": 6,
+    "metal": 7,
+    "metal_dark": 8,
+    "btn_up": 9,
+    "btn_down": 10,
+    "led_on": 11,
+    "led_off": 12,
+    "rivet": 13,
+    "dot": 14,
+    "ap_bar": 15
+  },
+  "framesPerRow": 8
+}

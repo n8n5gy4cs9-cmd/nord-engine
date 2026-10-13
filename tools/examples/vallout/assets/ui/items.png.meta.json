@@ -1,0 +1,28 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 16,
+  "frameHeight": 12,
+  "filter": "nearest",
+  "frames": {
+    "kossu": 0,
+    "lonkero": 1,
+    "salmiakki": 2,
+    "makkara": 3,
+    "dice": 4,
+    "nokia": 5,
+    "puukko": 6,
+    "pipe": 7,
+    "pistol": 8,
+    "rifle": 9,
+    "raygun": 10,
+    "jacket": 11,
+    "tracksuit": 12,
+    "vest": 13,
+    "key": 14,
+    "sparkplug": 15,
+    "cash": 16,
+    "ammo": 17,
+    "beer_hat": 18
+  },
+  "framesPerRow": 10
+}
