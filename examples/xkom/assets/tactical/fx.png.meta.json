@@ -1,0 +1,15 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 16,
+  "frameHeight": 16,
+  "filter": "nearest",
+  "frames": {
+    "boom1": 0,
+    "boom2": 1,
+    "boom3": 2,
+    "boom4": 3,
+    "spark": 4,
+    "plasma": 5,
+    "bullet": 6
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 16,
+  "frameHeight": 24,
+  "filter": "nearest",
+  "framesPerRace": 5,
+  "races": [
+    "soldier",
+    "sectoid",
+    "muton"
+  ],
+  "note": "per race: idle, walk, aim, shoot, dead. Walk = idle with legs swapped; shoot = aim + muzzle flash"
+}

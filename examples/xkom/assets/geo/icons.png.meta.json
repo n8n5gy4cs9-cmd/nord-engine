@@ -1,0 +1,12 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 16,
+  "frameHeight": 16,
+  "filter": "nearest",
+  "frames": {
+    "base": 0,
+    "ufo": 1,
+    "terror": 2,
+    "hive": 3
+  }
+}

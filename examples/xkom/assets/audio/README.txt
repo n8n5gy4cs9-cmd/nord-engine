@@ -1,0 +1,1 @@
+SFX: rifle, plasma, explosion, hit, die_human, die_alien, step, click, select, endturn, alarm, ack, built, cannon, rocket, spit, ore, victory, defeat (.wav). Music: music_geoscape, music_tactical, music_rts (.mp3). See assets.md.

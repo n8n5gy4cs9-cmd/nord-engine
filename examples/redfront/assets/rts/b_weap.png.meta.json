@@ -1,0 +1,12 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 48,
+  "frameHeight": 32,
+  "filter": "nearest",
+  "teams": [
+    "allies",
+    "soviet"
+  ],
+  "framesPerTeam": 1,
+  "note": "frames per team in order; second frame (if any) = firing"
+}

@@ -1,0 +1,12 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 8,
+  "frameHeight": 8,
+  "filter": "nearest",
+  "frames": {
+    "laser": 0,
+    "plasmaA": 1,
+    "plasmaB": 2,
+    "spark": 3
+  }
+}

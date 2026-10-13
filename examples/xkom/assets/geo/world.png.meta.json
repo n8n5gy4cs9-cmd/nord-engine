@@ -1,0 +1,5 @@
+{
+  "type": "image",
+  "filter": "nearest",
+  "note": "one 8x8 tile per character of world.map"
+}

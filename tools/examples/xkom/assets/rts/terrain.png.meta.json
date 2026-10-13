@@ -1,0 +1,18 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 16,
+  "frameHeight": 16,
+  "filter": "nearest",
+  "frames": {
+    "grass1": 0,
+    "grass2": 1,
+    "dirt": 2,
+    "water1": 3,
+    "water2": 4,
+    "tree": 5,
+    "rock": 6,
+    "ore1": 7,
+    "ore2": 8,
+    "road": 9
+  }
+}

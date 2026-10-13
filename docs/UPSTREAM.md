@@ -36,3 +36,7 @@ Recorded SHAs + licences: `UPSTREAM.lock.json`. **Copy only what is needed; add 
 | spd / barony / doom | 00-Evan/shattered-pixel-dungeon, TurningWheel/Barony, id-software/doom | GPL-3 / GPL-3 / GPL-2 | Logic ported into the RetroPaxDungeons and Noom examples (see THIRD_PARTY.md) | Assets (SPD/Barony art not copied) |
 | aw2bhr | Eebit/aw2bhr | (decompilation; no data shipped) | Studied for Forgotten Wars: assembly only, tables not decoded — nothing copied | Everything (needs the owner's ROM) |
 | redriver2 | OpenDriver2/REDRIVER2 | GPL-2.0 | Handling/gears/camera constants ported into the Automies example (`examples/automies/scripts/am/car.js`) | Game data, models, sounds (not in the repo) |
+
+| openxcom | OpenXcom/OpenXcom (sparse `bin/standard/xcom1`, `src/Battlescape`) | GPL-3.0 | Rules numbers + TU/reaction-fire logic → X-KOM 2026 (`examples/xkom/scripts/xk/tactical.js`) | Art/sounds/maps (need original game data, not in the repo) |
+| openra | OpenRA/OpenRA (sparse `mods/ra/rules`, `OpenRA.Mods.Common/Pathfinder`) | GPL-3.0 | RA unit/building stats, A* idea → `examples/xkom/scripts/xk/rts.js` (X-KOM 2026 + Red Front 2026) | Assets, C# code verbatim |
+| cnc-remastered | electronicarts/CnC_Remastered_Collection (sparse `REDALERT`) | GPL-3.0 | Rules reference only | Everything else |

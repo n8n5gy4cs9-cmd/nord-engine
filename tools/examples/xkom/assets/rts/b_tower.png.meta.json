@@ -1,0 +1,11 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 16,
+  "frameHeight": 16,
+  "filter": "nearest",
+  "teams": [
+    "neutral"
+  ],
+  "framesPerTeam": 2,
+  "note": "frames per team in order; second frame (if any) = firing"
+}

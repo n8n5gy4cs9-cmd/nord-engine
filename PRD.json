@@ -3,7 +3,7 @@
   "tagline": "Rust-based game/app engine + editor that exports static HTML web games and a native Mac app",
   "author": "Crowelian 2026 + Sonnet",
   "version": "0.0.1",
-  "updated": "2026-10-12",
+  "updated": "2026-10-13",
   "branch": "main",
   "statusValues": [
     "todo",
@@ -1088,6 +1088,18 @@
       "id": "M6-24",
       "milestone": "M6",
       "title": "Example game Automies (Driver 2-style 3D driving PoC, REDRIVER2 handling port, Kenney city + sfx, 2-player split-screen, assets.md + GUIDE.md)",
+      "status": "done"
+    },
+    {
+      "id": "M6-25",
+      "milestone": "M6",
+      "title": "X-KOM 2026 example game: geoscape + base research + interception shooter + isometric tactical (OpenXcom rules) + Red Alert RTS hive strike",
+      "status": "done"
+    },
+    {
+      "id": "M6-26",
+      "milestone": "M6",
+      "title": "Red Front 2026 example game: Red Alert-style RTS skirmish (shared RTS engine with X-KOM 2026)",
       "status": "done"
     },
     {

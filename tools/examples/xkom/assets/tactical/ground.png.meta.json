@@ -1,0 +1,13 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 32,
+  "frameHeight": 16,
+  "filter": "nearest",
+  "frames": {
+    "grass": 0,
+    "dirt": 1,
+    "metal": 2,
+    "field": 3,
+    "road": 4
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 32,
+  "frameHeight": 32,
+  "filter": "nearest",
+  "teams": [
+    "xcom"
+  ],
+  "framesPerTeam": 1,
+  "note": "frames per team in order; second frame (if any) = firing"
+}

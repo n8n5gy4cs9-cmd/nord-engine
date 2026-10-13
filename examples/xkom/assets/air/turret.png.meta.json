@@ -1,0 +1,7 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 16,
+  "frameHeight": 16,
+  "filter": "nearest",
+  "note": "2 frames: idle, firing (yellow core). Ground emplacement, scrolls with the sea"
+}

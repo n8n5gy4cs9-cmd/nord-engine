@@ -1,0 +1,22 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 16,
+  "frameHeight": 16,
+  "filter": "nearest",
+  "framesPerRow": 24,
+  "units": [
+    "rifle",
+    "rocket",
+    "ltank",
+    "mtank",
+    "harv",
+    "warrior",
+    "spitter",
+    "walker"
+  ],
+  "teams": [
+    "allies",
+    "soviet"
+  ],
+  "note": "rows = teams; per unit 3 frames: A (idle/walk 1), B (walk 2), C (shoot). Faces right; the game mirrors it."
+}

@@ -1,0 +1,7 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 12,
+  "frameHeight": 12,
+  "filter": "nearest",
+  "note": "2 frames: wings"
+}

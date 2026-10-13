@@ -1,0 +1,7 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 24,
+  "frameHeight": 24,
+  "filter": "nearest",
+  "note": "2 frames: exhaust long, exhaust short"
+}

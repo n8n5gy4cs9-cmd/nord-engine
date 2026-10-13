@@ -1,0 +1,14 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 32,
+  "frameHeight": 32,
+  "filter": "nearest",
+  "frames": {
+    "wood": 0,
+    "hull": 1,
+    "power": 2,
+    "crate": 3,
+    "tree": 4
+  },
+  "note": "blocks: diamond top at rows 0..15, faces below; their ground diamond is rows 16..31"
+}

@@ -1,0 +1,7 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 14,
+  "frameHeight": 14,
+  "filter": "nearest",
+  "note": "2 frames: wing flicker. Fast diving enemy fighter (faces down)"
+}

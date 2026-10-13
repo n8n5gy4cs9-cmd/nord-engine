@@ -1,0 +1,21 @@
+@ Geoscape world map: one character = one 8x8 tile of assets/geo/world.png (edit this file + re-run `node tools/pixelart.mjs xkom` to redraw, or just replace world.png).
+@ ~ ocean  , ocean (waves)  g land  d desert  i ice.  Mission sites appear on g/d tiles.
+---
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~iiiii~~~~~~~~~~~iiii~~~~~~~~~iiiiii~~~~
+~~~,~~~~ggg~~~~~~~ggggg~~~~~,~~~~~,~~~~~
+~~~gggggggggg~~~,gggggggggg~~~~gggggg~~~
+~~gggggggggggg~~~~gggdddggggggggggggggg~
+~~~ggggggggggg~,~~~gdddddggggggggggggg~~
+~,~~gggggggggg~~~~~~ddddddggggggggggg~~~
+~~~~~ggggggg~~~~,~~~dddddddgggggggg~~~~~
+~~~~~~gggg~~~~~~~~~~~ddddddgggg~~~~,~~~~
+~~,~~~~ggg~~~~~~~~~~~~dddggg~~~~~~~~~~~~
+~~~~~~~~ggg~~~~~,~~~~~~~ggg~~~~~~gg~~~~~
+~~~~,~~~gggg~~~~~~~~~~~~~~gg~~~~gggg~~~~
+~~~~~~~~ggggg~~~~~~~,~~~~~~~~~~gggggg~~~
+~~~~~~~~gggg~~~~~~~~~~~~~~~~~~~~ggg~~,~~
+~~,~~~~~ggg~~~~~,~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~g~~~~~~~~~~~~~~,~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii

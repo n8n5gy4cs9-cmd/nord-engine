@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 149/161 tasks (93%)** · updated 2026-10-12
+**Overall: 151/163 tasks (93%)** · updated 2026-10-13
 
 | Milestone | Progress |
 |---|---|
@@ -13,7 +13,7 @@
 | M3 Editor | 24/26 (92%) |
 | M4 Export | 8/11 (73%) |
 | M5 Rust/WASM | 9/9 (100%) |
-| M6 Library | 24/24 (100%) |
+| M6 Library | 26/26 (100%) |
 | M7 Docs | 13/13 (100%) |
 | M8 Polish & portability | 12/19 (63%) |
 | M9 Desktop apps | 16/16 (100%) |
@@ -165,6 +165,8 @@ _snippets, controllers, systems, asset packs, examples_
 - [x] **M6-22** Harrison's Command example: Carrier Command-style 3D PoC (walkable moving carrier, RTT computers, 2-player gamepad split-screen, Kenney + WZ2100 stats)
 - [x] **M6-23** Example game Forgotten Wars (Advance Wars 2-style tactics PoC, 1 level, player vs AI, hand-pixelled sprites, assets.md + GUIDE.md)
 - [x] **M6-24** Example game Automies (Driver 2-style 3D driving PoC, REDRIVER2 handling port, Kenney city + sfx, 2-player split-screen, assets.md + GUIDE.md)
+- [x] **M6-25** X-KOM 2026 example game: geoscape + base research + interception shooter + isometric tactical (OpenXcom rules) + Red Alert RTS hive strike
+- [x] **M6-26** Red Front 2026 example game: Red Alert-style RTS skirmish (shared RTS engine with X-KOM 2026)
 
 ## M7 — Docs
 _manual, guides, tutorials, in-editor docs_

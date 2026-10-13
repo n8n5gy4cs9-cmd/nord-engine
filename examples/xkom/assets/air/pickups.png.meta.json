@@ -1,0 +1,11 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 12,
+  "frameHeight": 12,
+  "filter": "nearest",
+  "frames": {
+    "power": 0,
+    "missiles": 1,
+    "shield": 2
+  }
+}
