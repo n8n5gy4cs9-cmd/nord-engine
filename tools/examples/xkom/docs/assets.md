@@ -91,7 +91,7 @@ To change the look swap the two `.woff2` files (keep the names) or edit `loadFon
 
 Small UI text is **9 virtual pixels** (VT323, down from 13); title and heading text are also smaller. Bevelled panels have subtle deterministic 32×32 grain created in code, not an external texture. The globe is a shaded orthographic canvas projection of `world.png`; regional mode crops the same raster around HQ. No network or extra 3D library is needed.
 
-The **Base screen** (facilities + research list + soldier roster) and every panel/button are drawn in code as **bevelled rectangles** (light top/left edge, dark bottom/right — the X-COM button look; `Bevel` in `scripts/xk/base.js`, palette `UI` there) — no images. Research data: `scripts/xk/research.js`.
+The **Base screen** (facilities + research list + soldier roster) and panels/buttons are drawn in code as **bevelled rectangles** (light top/left edge, dark bottom/right — the X-COM button look; `Bevel` in `scripts/xk/base.js`, palette `UI` there) — no images. Interception radar uses texture-free terminal panels, dim scan lines, range rings and compass ticks (all drawn in code). Research data: `scripts/xk/research.js`.
 
 ## 5. Audio — EASY music and SFX replacement
 
@@ -111,7 +111,7 @@ The **Base screen** (facilities + research list + soldier roster) and every pane
 | `assets/audio/music/music_base.mp3` | **Geoscape/globe, HQ regional map, Base/research, campaign victory/defeat screen** | 53.3 s — quiet 72 BPM command-center ambience, soft synth pads and sparse melody. |
 | `assets/audio/music/music_game.mp3` | **Tactical missions, interception radar/auto/shooter, Hive Strike alert and RTS battle** | 34.3 s — tense 112 BPM combat theme with bass, percussion and restrained synth lead. |
 
-Browsers start audio after a click/key gesture. On the title press **M** or click **LISTEN [M]** to hear title music while staying on that screen. Enter starts the campaign and switches to base music. Music crossfades between different files; moving between screens using the same file keeps the loop playing.
+Browsers start audio after a click/key gesture. The first touch/click dismisses the ready-made Nord start gate and plays title music while staying on the title; the next interaction is normal game input. **M** / **LISTEN [M]** remains available. Enter starts the campaign and switches to base music. Music crossfades between different files; moving between screens using the same file keeps the loop playing.
 
 ### Sound effects — replace one sound at a time
 | File to replace | Exactly when it plays | Replacement suggestion |
@@ -153,3 +153,5 @@ node tools/pixelart.mjs xkom --preview   # re-pack reviewed raster masters + pix
 node tools/gen_xkom_audio.mjs            # all sfx + music
 node tools/gen_examples.mjs xkom         # copy everything into examples/xkom/
 ```
+
+RTS HUD uses the native 6×8 bitmap font for crisp prices/selection labels; prices sit below icons without a redundant currency prefix. HQ/body text uses rounded 8px VT323 sizing (small labels 6–7px); help pages split into at most 15 lines. Pause/console are plain terminal-style DOM overlays; no new art or music slots are required.

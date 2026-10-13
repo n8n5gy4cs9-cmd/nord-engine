@@ -46,6 +46,19 @@ or Babylon TransformNode — escape hatch).
 ## Audio
 `audio.play(path, {volume, loop, rate})`, `audio.music(path, {fade})`, `audio.stopMusic()`, `audio.volume(bus, v)`, `audio.mute(b)`. Buses: master, music, sfx, ui.
 
+### Optional touch-to-start audio gate
+Ready-made engine helper exported from `nord` (`runtime/core/start-gate.js`). Install it explicitly after building a title screen:
+
+```js
+import { touchToStart } from 'nord';
+// In start()/boot(), once the title and its queued music are ready:
+this.startGate = touchToStart(this.game, { title: 'MY GAME' });
+// In onDestroy():
+this.startGate?.destroy();
+```
+
+The helper consumes the first mouse/touch/key activation plus its release/synthetic click, unlocks audio, removes its overlay and preserves the current game screen/camera. The next gesture is normal game input. It is opt-in; other games do not receive a gate automatically. Options: `parent` (defaults to document.body), `title`, `label`. Returned handle: `active` getter and `destroy()`. No DOM environment returns an inactive handle. The helper does not choose music, change screens, or change project display/input configuration.
+
 ## UI (DOM layer)
 `ui.show('hud')`, `ui.panel/label/button/bar/...`, templates in `library/ui`.
 

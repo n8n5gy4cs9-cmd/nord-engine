@@ -10,10 +10,10 @@ const shade = (c, k) => { const r = Math.max(0, Math.min(255, Math.round(((c >> 
 
 /** Bevelled rectangle (light top/left edge, dark bottom/right edge) — the X-COM button look. setFillStyle(face) recolours it. */
 export class Bevel {
-  constructor(host, x, y, w, h, face = UI.face, { hud = true, depth = 0, raised = true } = {}) {
+  constructor(host, x, y, w, h, face = UI.face, { hud = true, depth = 0, raised = true, texture = true } = {}) {
     this.host = host; this.parts = []; this.raised = raised; const mk = (px, py, pw, ph) => { const r = host.ps.add.rectangle(px, py, pw, ph, 0, 1).setOrigin(0).setDepth(depth); if (hud) host.hud.add(r); this.parts.push(r); return r; };
     this.f = mk(x, y, w, h); this.t = mk(x, y, w, 1); this.l = mk(x, y, 1, h); this.b = mk(x, y + h - 1, w, 1); this.r = mk(x + w - 1, y, 1, h); this.setFillStyle(face);
-    if (host.compact && w > 4 && h > 4) {
+    if (texture && host.compact && w > 4 && h > 4) {
       const grain = host.ps.add.tileSprite(x + 2, y + 2, w - 4, h - 4, 'xk-panel-grain').setOrigin(0).setDepth(depth).setAlpha(0.035);
       if (hud) host.hud.add(grain); this.parts.push(grain);
     }
@@ -26,7 +26,7 @@ export class Bevel {
 /** Text drawn with a vendored Google font (Pixelify Sans / Orbitron) rendered at screen resolution; same API as the bitmap PText so callers don't care. */
 export class FText {
   constructor(ps, { x = 0, y = 0, text = '', color = '#fff', scale = 1, origin = [0, 0], compact = false } = {}) {
-    const head = scale >= 2, size = compact ? (head ? 6 : 9) * scale : head ? (scale >= 3 ? 8 : 6) * scale : 13 * scale;
+    const head = scale >= 2, size = compact ? Math.round((head ? 6 : 8) * scale) : head ? (scale >= 3 ? 8 : 6) * scale : 13 * scale;
     this.img = ps.add.text(x, y - (head ? 0 : 2), String(text), { fontFamily: `${head ? 'XKTitle' : 'XKUI'}, monospace`, fontSize: `${size}px`, color, fontStyle: head ? '900' : '400' }).setOrigin(...origin).setResolution(ZOOM);
     this.img.setShadow(1, 1, '#06040f', 0, false, true);
     this.o = { color };
@@ -74,8 +74,8 @@ export class XkBase extends NordScript {
   wait(ms) { return new Promise((r) => this.ps.time.delayedCall(Math.max(1, ms), r)); }
   tw(cfg) { return new Promise((r) => this.ps.tweens.add({ ...cfg, onComplete: r })); }
   /** pixel text; inHud=true → child of the fixed HUD container (coordinates are screen-local) */
-  text(x, y, str = '', color = COL.text, { scale = 1, origin = [0, 0], depth = 10, hud = false } = {}) {
-    const t = this.ttf ? new FText(this.ps, { x, y, text: str, color, scale, origin, compact: this.compact }) : new PText(this.ps, this.font, { x, y, text: str, color, scale, origin }); t.setDepth(depth); if (hud) this.hud.add(t.img); return t;
+  text(x, y, str = '', color = COL.text, { scale = 1, origin = [0, 0], depth = 10, hud = false, bitmap = false } = {}) {
+    const t = this.ttf && !bitmap ? new FText(this.ps, { x, y, text: str, color, scale, origin, compact: this.compact }) : new PText(this.ps, this.font, { x, y, text: str, color, scale, origin }); t.setDepth(depth); if (hud) this.hud.add(t.img); return t;
   }
   frameOf(sheet, name) { const m = this.meta[sheet]; return (m.tiles ?? m.frames)[name]; }
   img(sheet, frame, x, y, depth = 10, origin = [0, 0], hud = false) { const i = this.ps.add.image(x, y, this.PATH[sheet], frame).setOrigin(...origin).setDepth(depth); if (hud) this.hud.add(i); return i; }

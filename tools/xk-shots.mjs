@@ -9,6 +9,7 @@ const steps = id === 'xkom'
 for (const [q, name, wait] of steps) {
   const { errors, result } = await withPage(`${ROOT}/examples/${id}`, async (page) => {
     await waitReady(page); await page.waitForTimeout(wait);
+    if (await page.locator('[data-nord-start-gate]').count()) { await page.mouse.click(480, 300); await page.waitForTimeout(200); }
     if (name === 'help') { await page.keyboard.press('F1'); await page.waitForTimeout(400); await page.keyboard.press('ArrowRight'); await page.keyboard.press('ArrowRight'); await page.waitForTimeout(300); }
     if (name === 'tactical') { await page.mouse.click(480, 300); await page.waitForTimeout(500); }
     if (name === 'intercept-action') { await page.keyboard.press('Enter'); await page.waitForTimeout(1200); await page.mouse.move(480, 420); await page.mouse.down(); await page.evaluate(() => { window.__xk.air.t = 12; }); await page.waitForTimeout(2600); await page.mouse.up(); }

@@ -35,13 +35,13 @@ export function serve(project, port = 0) {
  * Open `page` of a served project, collect console errors/page errors, run `fn(page, ctx)`. Non-localhost requests are blocked
  * (offline guarantee) and counted as errors. Returns { errors, result }.
  */
-export async function withPage(project, fn, { path: pagePath = '/', viewport = { width: 960, height: 540 } } = {}) {
+export async function withPage(project, fn, { path: pagePath = '/', viewport = { width: 960, height: 540 }, contextOptions = {} } = {}) {
   const { chromium } = loadPlaywright();
   const server = await serve(project);
   const browser = await chromium.launch({ args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--autoplay-policy=no-user-gesture-required'] });
   const errors = [];
   try {
-    const page = await (await browser.newContext({ viewport })).newPage();
+    const page = await (await browser.newContext({ viewport, ...contextOptions })).newPage();
     page.on('console', (m) => { if (m.type() === 'error' && !/Failed to load resource/.test(m.text())) errors.push(`console: ${m.text()}`); });
     page.on('response', (r) => { if (r.status() >= 400 && !r.url().endsWith('.meta.json')) errors.push(`HTTP ${r.status()}: ${r.url()}`); });
     page.on('pageerror', (e) => errors.push(`pageerror: ${e.message}`));

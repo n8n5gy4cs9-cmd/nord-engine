@@ -1,7 +1,7 @@
 // RTS view (Red Alert / C&C look): scrolling 16px map, right sidebar (minimap, credits, build icons), drag-select, right-click orders, tiny event-driven effects.
 // Rules live in rts.js. Used by X-KOM 2026 (operation vs the alien hive) and Red Front 2026 (Allies vs Soviets).
 import { VW, VH, COL, UI } from './base.js';
-import { newRts, step, train, order, U, PLAYER_UNITS, TILE } from './rts.js';
+import { newRts, step, train, order, U, B, PLAYER_UNITS, TILE } from './rts.js';
 
 const TS = 16, SBX = 258, MAPVW = 256, TF = { grass1: 0, grass2: 1, dirt: 2, water1: 3, water2: 4, tree: 5, rock: 6, ore1: 7, ore2: 8, road: 9 };
 const WSFX = { bullet: 'rifle', rocket: 'rocket', shell: 'cannon', claw: 'hit', acid: 'spit' };
@@ -38,21 +38,21 @@ export class RtsView {
     for (let y = 0; y < s.h; y++) for (let x = 0; x < s.w; x++) { g.fillStyle = colr[s.tiles[y * s.w + x]] ?? '#4a7a2c'; g.fillRect(Math.floor(x * k), Math.floor(y * k), Math.ceil(k), Math.ceil(k)); }
     cv.refresh(); this.mini = h.ps.add.image(SBX, 3, this.miniKey).setOrigin(0).setDepth(6); h.hud.add(this.mini);
     this.dots = h.ps.add.graphics().setDepth(7); h.hud.add(this.dots);
-    this.tCred = h.text(SBX + 30, 64, '', COL.gold, { origin: [0.5, 0], hud: true, depth: 8 }); this.tPow = h.text(SBX + 30, 73, '', COL.good, { origin: [0.5, 0], hud: true, depth: 8 });
+    this.tCred = h.text(SBX + 30, 64, '', COL.gold, { origin: [0.5, 0], hud: true, depth: 8, bitmap: true }); this.tPow = h.text(SBX + 30, 73, '', COL.good, { origin: [0.5, 0], hud: true, depth: 8, bitmap: true });
     this.btn = [];
     Object.keys(PLAYER_UNITS).forEach((type, i) => {
-      const x = SBX + (i % 2) * 31, y = 83 + ((i / 2) | 0) * 28, bg = h.panel(x, y, 30, 27, 0x6a6a84, { depth: 2 }), ic = h.img('runits', this.ufr(type, 'p', 0), x + 7, y + 2, 8, [0, 0], true);
-      h.text(x + 15, y + 19, `$${U[type].cost}`, COL.text, { origin: [0.5, 0], hud: true, depth: 8 }); const q = h.text(x + 3, y + 3, '', COL.gold, { hud: true, depth: 9 }), pr = h.rect(x, y + 25, 0, 2, 0x40e040, 1);
-      h.text(x + 28, y + 3, String(i + 1), COL.dim, { origin: [1, 0], hud: true, depth: 9 });
-      this.btn.push({ type, x, y, w: 30, h: 27, bg, q, pr, ic });
+      const x = SBX + (i % 2) * 31, y = 83 + ((i / 2) | 0) * 32, bg = h.panel(x, y, 30, 30, 0x6a6a84, { depth: 2 }), ic = h.img('runits', this.ufr(type, 'p', 0), x + 7, y + 2, 8, [0, 0], true);
+      h.text(x + 15, y + 19, `${U[type].cost}`, COL.text, { origin: [0.5, 0], hud: true, depth: 8, bitmap: true }); const q = h.text(x + 3, y + 3, '', COL.gold, { hud: true, depth: 9, bitmap: true }), pr = h.rect(x, y + 28, 0, 1, 0x40e040, 1);
+      h.text(x + 28, y + 3, String(i + 1), COL.dim, { origin: [1, 0], hud: true, depth: 9, bitmap: true });
+      this.btn.push({ type, x, y, w: 30, h: 30, bg, q, pr, ic });
     });
-    this.tMsg = h.text(4, 3, '', COL.gold, { hud: true, depth: 8 }); this.tMsg2 = h.text(4, 12, '', COL.dim, { hud: true, depth: 8 }); this.tSel = h.text(4, 190, '', COL.text, { hud: true, depth: 8 });
-    ['RMB ORDER', 'A ATK-MOVE', 'S STOP', 'SPACE HOME'].forEach((t, i) => h.text(SBX + 30, 168 + i * 8, t, COL.dim, { origin: [0.5, 0], hud: true, depth: 8 }));
+    this.tMsg = h.text(4, 3, '', COL.gold, { hud: true, depth: 8, bitmap: true }); this.tMsg2 = h.text(4, 12, '', COL.dim, { hud: true, depth: 8, bitmap: true }); this.tSel = h.text(4, 190, '', COL.text, { hud: true, depth: 8, bitmap: true });
+    ['RMB ORDER', 'A ATTACK'].forEach((t, i) => h.text(SBX + 30, 179 + i * 10, t, COL.dim, { origin: [0.5, 0], hud: true, depth: 8, bitmap: true }));
   }
   ufr(type, team, f) { const m = this.um, row = m.teams.length > 1 && team === 'e' ? 1 : 0; return row * this.ucols + m.units.indexOf(type) * 3 + f; }
   bfr(b, f = 0) { const m = this.h.meta['b_' + b.type], idx = m.teams.length > 1 ? (b.team === 'p' ? 0 : 1) : 0; return idx * m.framesPerTeam + Math.min(f, m.framesPerTeam - 1); }
-  say(str, col = COL.gold) { this.tMsg.setText(str, col); this.msgT?.remove(); this.msgT = this.h.ps.time.delayedCall(3500, () => this.tMsg?.img && this.tMsg.setText('', col)); }
-  say2(str, col) { const t = this.tMsg2; t.setText(str, col); this.msg2T?.remove(); this.msg2T = this.h.ps.time.delayedCall(2200, () => t?.img && t.setText('', col)); }
+  say(str, col = COL.gold) { this.tMsg.setText(str.slice(0, 41), col); this.msgT?.remove(); this.msgT = this.h.ps.time.delayedCall(3500, () => this.tMsg?.img && this.tMsg.setText('', col)); }
+  say2(str, col) { const t = this.tMsg2; t.setText(str.slice(0, 41), col); this.msg2T?.remove(); this.msg2T = this.h.ps.time.delayedCall(2200, () => t?.img && t.setText('', col)); }
   hudRefresh() {
     const s = this.s; this.tCred.setText(`$ ${Math.floor(s.credits.p)}`, COL.gold); this.tPow.setText(s.lowPower.p ? 'LOW POWER' : 'POWER OK', s.lowPower.p ? COL.bad : COL.good);
     for (const b of this.btn) {
@@ -60,7 +60,9 @@ export class RtsView {
       b.bg.setFillStyle(ok ? 0x6a6a9a : 0x3c3c44); b.ic.setAlpha(prods.length ? 1 : 0.35); b.q.setText(qn ? String(qn) : '', COL.gold);
       const act = prods.find((p) => p.q[0] === b.type); b.pr.width = act ? 30 * act.prog / d.bt : 0;
     }
-    this.tSel.setText(this.sel.size ? `SELECTED ${this.sel.size}` : '', COL.text);
+    const selected = [...this.sel].map(id => s.units.find(u => u.id === id) ?? s.blds.find(b => b.id === id)).filter(Boolean);
+    this.sel = new Set(selected.map(o => o.id));
+    this.tSel.setText(selected.length === 1 ? (U[selected[0].type] ?? B[selected[0].type]).name : selected.length ? `SELECTED ${selected.length}` : '', COL.text);
     if (--this.miniT <= 0) { this.miniT = 12; this.drawDots(); }
   }
   drawDots() {

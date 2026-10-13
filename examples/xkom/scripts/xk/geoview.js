@@ -9,6 +9,7 @@ export class GeoView {
     h.ps.textures.remove('xk-geoscape'); this.texture = h.ps.textures.addCanvas('xk-geoscape', this.canvas); this.texture.setFilter(globalThis.Phaser.Textures.FilterMode.NEAREST);
     this.image = h.keep(h.ps.add.image(0, 0, 'xk-geoscape').setOrigin(0).setDepth(0)); h.hud.add(this.image);
     this.markers = [HQ, ...sites].map((s, i) => ({ site: s, sprite: h.keep(h.img('gicons', i === 0 ? 0 : s.icon === 1 ? 2 : 1, 0, 0, 4, [0.5, 0.5], true)).setScale(0.65), label: h.keep(h.text(0, 0, i ? String(i) : 'HQ', i ? '#ffd25c' : '#6ac8ff', { origin: [0.5, 0], hud: true, depth: 6 })) }));
+    this.townMarks = h.C.towns.map(town => { const sprite = h.keep(h.ps.add.rectangle(0, 0, 3, 3, 0x496c5e).setDepth(2)); h.hud.add(sprite); return { town, sprite }; });
     this.draw();
   }
   project(site) {
@@ -37,6 +38,7 @@ export class GeoView {
     ctx.putImageData(image, 0, 0);
     if (this.region) { ctx.fillStyle = '#071528'; ctx.fillRect(0, 0, 232, 176); ctx.imageSmoothingEnabled = false; const w = 232 / this.zoom, hh = 176 / this.zoom; ctx.drawImage(this.source, 68 - w / 2, 44 - hh / 2, w, hh, 0, 0, 232, 176); }
     this.texture.refresh();
+    for (const m of this.townMarks) { const p = this.project(m.town); m.sprite.setPosition(Math.round(p.x), Math.round(p.y)).setFillStyle(m.town.occupied ? 0xd95747 : 0x496c5e).setVisible(p.visible); }
     for (const m of this.markers) { const p = this.project(m.site); m.sprite.setPosition(Math.round(p.x), Math.round(p.y)).setVisible(p.visible); m.label.setPosition(Math.round(p.x), Math.round(p.y + 6)).setVisible(p.visible); }
   }
   action(id) {

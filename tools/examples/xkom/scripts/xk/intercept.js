@@ -1,4 +1,4 @@
-// UFO interception (X-COM style radar animation) + optional short Star Fox-style shooter. Both can be skipped (ESC); auto-resolve (SPACE) just plays the radar dogfight.
+// UFO interception (X-COM style radar animation) + optional short Star Fox-style shooter. Both can be skipped (D); auto-resolve (SPACE) just plays the radar dogfight.
 // Result → { downed: 0..2, crashed, skipped }: every downed ship removes one alien from the ground mission and pays $300.
 import { VW, VH, COL } from './base.js';
 const Phaser_clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -7,15 +7,15 @@ export class InterceptView {
   constructor(host) { this.h = host; }
   start({ site, onEnd }) {
     this.site = site; this.onEnd = onEnd; this.objs = []; this.phase = 'radar'; this.t = 0; this.done = false; this.finished = false; this.resolved = false; this.doneFn = null; this.keys = {}; this.shots = []; this.foes = []; this.eshots = []; this.fx = [];
-    const h = this.h; this.add(h.panel(0, 0, VW, VH, 0x354253)); this.add(h.panel(5, 22, 210, 144, 0x09230e, { raised: false, depth: 1 }));
+    const h = this.h; this.add(h.panel(0, 0, VW, VH, 0x071016, { texture: false })); this.add(h.panel(5, 22, 210, 144, 0x020c09, { raised: false, depth: 1, texture: false }));
     this.gfx = h.ps.add.graphics(); this.h.hud.add(this.gfx); this.gfx.setDepth(5).setScale(0.66, 0.72).setPosition(4, 23);
     this.radarBtns = [{ key: 'Enter', y: 26, label: 'ENGAGE' }, { key: ' ', y: 53, label: 'AUTO-RESOLVE' }, { key: 'Escape', y: 80, label: 'DISENGAGE' }];
-    for (const b of this.radarBtns) { this.add(h.panel(220, b.y, 94, 23, 0x455d79, { depth: 2 })); this.add(h.text(267, b.y + 7, b.label, COL.text, { origin: [0.5, 0], hud: true, depth: 8 })); }
-    this.add(h.panel(220, 108, 94, 58, 0x14221b, { raised: false, depth: 1 })); this.add(h.img('jet', 0, 267, 137, 6, [0.5, 0.5], true)).setScale(1.4);
+    for (const b of this.radarBtns) { this.add(h.panel(220, b.y, 94, 23, 0x142a2b, { depth: 2, texture: false })); this.add(h.text(267, b.y + 7, b.label, '#88cbb0', { origin: [0.5, 0], hud: true, depth: 8 })); }
+    this.add(h.panel(220, 108, 94, 58, 0x06100e, { raised: false, depth: 1, texture: false })); this.add(h.img('jet', 0, 267, 137, 6, [0.5, 0.5], true)).setScale(1.4);
     this.add(h.text(267, 111, 'INTERCEPTOR', COL.dim, { origin: [0.5, 0], hud: true, depth: 8 }));
-    this.tTitle = this.add(h.text(6, 4, `RADAR - ${site.name} DETECTED`, COL.alien, { hud: true, depth: 8 }));
+    this.tTitle = this.add(h.text(6, 4, `XK / AIR DEFENCE  -  ${site.name}`, '#88cbb0', { hud: true, depth: 8 }));
     this.tSub = this.add(h.text(6, 174, 'INTERCEPTOR LAUNCHED FROM HQ...', COL.dim, { hud: true, depth: 8 }));
-    this.tKeys = this.add(h.text(VW / 2, 188, '[ENTER] ENGAGE   [SPACE] AUTO   [ESC] SKIP', COL.gold, { origin: [0.5, 0], hud: true, depth: 8 }));
+    this.tKeys = this.add(h.text(VW / 2, 188, '[ENTER] ENGAGE   [SPACE] AUTO   [D] SKIP  [P] PAUSE', COL.gold, { origin: [0.5, 0], hud: true, depth: 8 }));
     h.music('music_game', 0.18); h.sfx('alarm', 0.2);
     this.ufo = { x: 250, y: 40 }; this.jet = { x: 70, y: 150 };
   }
@@ -25,6 +25,8 @@ export class InterceptView {
   // ---- radar ---------------------------------------------------------------------------------------------------------------------------------------
   drawRadar(dt) {
     const g = this.gfx, cx = 160, cy = 100; g.clear(); g.lineStyle(1, 0x1f7a3a, 1); for (const r of [30, 60, 90]) g.strokeCircle(cx, cy, r); g.lineBetween(cx - 95, cy, cx + 95, cy); g.lineBetween(cx, cy - 95, cx, cy + 95);
+    g.lineStyle(1, 0x244e3c, 0.35); for (let y = 6; y < 196; y += 4) g.lineBetween(4, y, 312, y);
+    for (let i = 0; i < 24; i++) { const a = i / 24 * Math.PI * 2; g.lineStyle(1, 0x497866, 0.7); g.lineBetween(cx + Math.cos(a) * 91, cy + Math.sin(a) * 91, cx + Math.cos(a) * 96, cy + Math.sin(a) * 96); }
     const a = this.t * 2.2; for (let i = 0; i < 14; i++) { g.lineStyle(1, 0x30ff70, (1 - i / 14) * 0.55); g.lineBetween(cx, cy, cx + Math.cos(a - i * 0.05) * 95, cy + Math.sin(a - i * 0.05) * 95); }
     const k = Math.min(1, this.t / 4.5), ufo = { x: 245 - k * 55 + Math.sin(this.t * 1.3) * 3, y: 45 + k * 22 }, jet = { x: 60 + k * 118, y: 160 - k * 85 };
     if (this.phase === 'auto') { const m = Math.min(1, this.t / 2); ufo.x = 190 + Math.sin(this.t * 9) * 8 * (1 - m * 0.4); ufo.y = 67 + Math.cos(this.t * 8) * 6; jet.x = ufo.x - 24 * (1 - m) + Math.sin(this.t * 7) * 5; jet.y = ufo.y + 20 * (1 - m) + Math.cos(this.t * 6) * 5; }
@@ -153,7 +155,7 @@ export class InterceptView {
   }
   key(e, down) {
     const k = e.key; this.keys[k] = down; if (!down || this.done) return;
-    if (k === 'Escape') { if (this.phase === 'air' && !this.resolved) this.resolved = true; this.finish({ downed: 0, skipped: true }); return; }
+    if (k === 'Escape' || k === 'd' || k === 'D') { if (this.phase === 'air' && !this.resolved) this.resolved = true; this.finish({ downed: 0, skipped: true }); return; }
     if (this.phase === 'radar') { if (k === 'Enter') this.startAir(); else if (k === ' ') { this.phase = 'auto'; this.t = 0; this.tKeys.setText('', COL.gold); this.tSub.setText('DOGFIGHT...', COL.amber); this.h.sfx('rifle', 0.3); } }
     else if (this.phase === 'air' && this.doneFn && (k === 'Enter')) this.doneFn();
     else if (this.phase === 'air' && (k === 'ArrowLeft' || k === 'ArrowRight' || k === 'a' || k === 'd') && this.pl) { const key = k === 'a' ? 'ArrowLeft' : k === 'd' ? 'ArrowRight' : k, now = this.t; if (now - (this.pl.tapT[key] ?? -9) < 0.28) this.wantRoll = true; this.pl.tapT[key] = now; }

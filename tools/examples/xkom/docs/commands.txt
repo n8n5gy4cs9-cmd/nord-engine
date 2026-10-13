@@ -1,0 +1,51 @@
+X-KOM 2026 — developer commands (local testing only)
+Crowelian 2026 + Sonnet
+
+Open/close console: F2 or backtick (`). Escape closes it.
+Type a command, then Enter. Up/Down browse history.
+While open, gameplay updates and the campaign clock are paused.
+Commands are intentionally not listed by console help or game help.
+No JavaScript eval or shell commands are supported.
+
+SCREEN SHORTCUTS
+  title                  Title screen (does not reinstall the initial start gate).
+  geo                    Globe/HQ campaign map.
+  base                   Research and soldier roster.
+  rts                    Start a Hive Strike battle immediately.
+  mission [aliens] [seed] Tactical mission directly; defaults 6 aliens/current seed.
+                         Alien count 1..20, seed 0..2147483647.
+  air                    Interception radar; Enter then flies the shooter.
+  win                    Show campaign victory ending.
+  lose                   Show campaign defeat ending.
+Wait for an ongoing tactical action to finish before switching screens.
+
+CAMPAIGN CHEATS
+  money <amount>         Add funds, e.g. money 10000; negative amounts subtract.
+                         Balance cannot go below zero; amount within +/-10000000.
+  tech all               Unlock all seven technologies.
+  tech <id>              Unlock a technology and its prerequisites.
+                         IDs: alloys, armor, stims, logistics, laser, elerium, turrets.
+                         Combat upgrades apply when a NEW mission/battle starts.
+  presence <0..100>      Set alien threat. At 100 the next campaign tick triggers Hive Strike.
+  recruit [count]        Add 1..6 rookies, up to a six-person squad.
+  clock pause            Pause the campaign clock.
+  clock resume           Resume the campaign clock.
+  tick <days>            Advance 1..30 waiting days on globe/Base, even if clock is paused.
+                         Triggers real captures, research and Hive Strike consequences.
+  state                  Print current screen, funds, day, threat, tech and occupied towns.
+  clear                  Clear console output.
+  help                   Refer to this file; deliberately prints no command list.
+
+QUICK TEST EXAMPLES
+  money 10000
+  tech all
+  mission 12 42
+  rts
+  geo
+  presence 0
+  tick 4
+
+These change the current in-memory campaign. Normal title -> new campaign resets them.
+Cheats can complete/fail a campaign; use screen shortcuts for fast visual testing.
+
+finale                 Grant required intel/research and launch final SOURCE RAID.
