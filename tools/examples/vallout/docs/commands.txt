@@ -1,0 +1,46 @@
+Vallout 2: New Kerava — console commands (local testing / cheats)
+Crowelian 2026 + Sonnet
+
+Open/close console: F2 or backtick (`). Escape closes it.
+Type a command, then Enter. Up/Down browse history. The game is paused while it is open.
+Commands are lower-case; ids come from the list commands (items, skills, quests, places).
+No JavaScript eval or shell commands are supported.
+
+SETTINGS
+  settings                    Show all settings.
+  set mode classic|modern     Control mode (same as F10).            e.g. set mode modern
+  set sfx <0-100>             Sound effect volume.                   e.g. set sfx 40
+  set music <0-100>           Music volume.                          e.g. set music 0
+  set god on|off              Invulnerable player.                   e.g. set god on
+  set ohk on|off              Every hit kills an enemy.              e.g. set ohk on
+  set time <0-23>             Hour of the day (needs a running game). e.g. set time 22
+  god | ohk [on|off]          Shortcut to toggle (or set) god / ohk. e.g. god
+
+CHEATS (need a running game: title -> NEW GAME -> create)
+  heal                        Full HP, sober.
+  give <item> [n]             Add item(s).                           e.g. give kossu 3
+  xp <n>                      Add experience (levels up if enough).  e.g. xp 500
+  level <n>                   Raise to level n.                      e.g. level 5
+  stat <ST|PE|EN|CH|IN|AG|LK> <1-10>   Set a SPECIAL stat.          e.g. stat AG 10
+  skill <id> <0-200>          Set skill points on top of the base.   e.g. skill guns 80
+  kills <n>                   Set alien kill count (quota 30).       e.g. kills 29
+  kill                        Kill every enemy in the current area (awards XP).
+  quest <id> <step>           Set a quest step.                      e.g. quest main 3
+  flag <name> [0|1]           Set a story flag (default 1).          e.g. flag moped_ready
+
+NAVIGATION
+  goto <place>                Load an area directly.                 e.g. goto joki
+  ending escape|victory|death Show an ending screen.                 e.g. ending victory
+  save | load                 Write / read the save slot.
+  title                       Back to the title screen.
+  state                       Print location, HP, level, kills, quests and flags.
+
+LISTS
+  items | skills | quests | places     Print the valid ids.
+  clear                       Empty the console log.
+  help                        List all commands in the console.
+
+EXAMPLES
+  Test the final fight:      goto joki   then   set god on   and   set ohk on
+  Skip to the ending:        flag hive_cleared   then   quest main 4   then   goto klaukkala
+  Strong character:          level 8   stat ST 10   give shotgun   give ammoShell 20   heal

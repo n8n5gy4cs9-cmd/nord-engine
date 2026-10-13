@@ -56,7 +56,7 @@ export class DevConsole {
     const need = () => { if (!c) throw Error('Start a game first.'); };
     const num = (i, lo, hi) => { const n = Number(a[i]); if (!Number.isFinite(n) || n < lo || n > hi) throw Error(`Number ${lo}..${hi} expected.`); return Math.round(n); };
     const onoff = (v) => { if (v !== 'on' && v !== 'off') throw Error('Use on or off.'); return v === 'on'; };
-    const pick = (obj, what) => { if (!(a[0] in obj)) throw Error(`Unknown ${what}. Type ${what}s to list.`); return a[0]; };
+    const pick = (obj, what) => { const k = Object.keys(obj).find((x) => x.toLowerCase() === a[0]); if (!k) throw Error(`Unknown ${what}. Type ${what}s to list.`); return k; };
     const hud = () => { ctx.hud?.refresh(); ctx.area?.hudRefresh?.(); };
     const settings = () => `mode ${ctx.mode} · sfx ${Math.round(au.volume('sfx') * 100)} · music ${Math.round(au.volume('music') * 100)} · god ${cheats.god ? 'on' : 'off'} · ohk ${cheats.ohk ? 'on' : 'off'}${G ? ` · time ${Math.floor(G.time / 60) % 24}h` : ''}`;
     switch (cmd) {
