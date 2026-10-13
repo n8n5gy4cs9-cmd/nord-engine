@@ -1,0 +1,516 @@
+[
+  {
+    "out": "assets/tactical/ground.png",
+    "width": 160,
+    "height": 16,
+    "meta": {
+      "type": "spritesheet",
+      "frameWidth": 32,
+      "frameHeight": 16,
+      "filter": "nearest",
+      "frames": {
+        "grass": 0,
+        "dirt": 1,
+        "metal": 2,
+        "field": 3,
+        "road": 4
+      }
+    },
+    "preview": 4
+  },
+  {
+    "out": "assets/tactical/objects.png",
+    "width": 160,
+    "height": 32,
+    "meta": {
+      "type": "spritesheet",
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "filter": "nearest",
+      "frames": {
+        "wood": 0,
+        "hull": 1,
+        "power": 2,
+        "crate": 3,
+        "tree": 4
+      },
+      "note": "blocks: diamond top at rows 0..15, faces below; their ground diamond is rows 16..31"
+    },
+    "preview": 4
+  },
+  {
+    "out": "assets/tactical/units.png",
+    "width": 80,
+    "height": 72,
+    "meta": {
+      "type": "spritesheet",
+      "frameWidth": 16,
+      "frameHeight": 24,
+      "filter": "nearest",
+      "framesPerRace": 5,
+      "races": [
+        "soldier",
+        "sectoid",
+        "muton"
+      ],
+      "note": "per race: idle, walk, aim, shoot, dead. Walk = idle with legs swapped; shoot = aim + muzzle flash"
+    },
+    "preview": 4
+  },
+  {
+    "out": "assets/tactical/ui.png",
+    "width": 96,
+    "height": 16,
+    "meta": {
+      "type": "spritesheet",
+      "frameWidth": 32,
+      "frameHeight": 16,
+      "filter": "nearest",
+      "frames": {
+        "cursor": 0,
+        "move": 1,
+        "hit": 2
+      }
+    },
+    "preview": 4
+  },
+  {
+    "out": "assets/tactical/fx.png",
+    "width": 128,
+    "height": 16,
+    "meta": {
+      "type": "spritesheet",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "filter": "nearest",
+      "frames": {
+        "boom1": 0,
+        "boom2": 1,
+        "boom3": 2,
+        "boom4": 3,
+        "spark": 4,
+        "plasma": 5,
+        "bullet": 6
+      }
+    },
+    "preview": 4
+  },
+  {
+    "out": "assets/ui/font.png",
+    "width": 96,
+    "height": 32,
+    "meta": {
+      "type": "bitmapfont",
+      "cellWidth": 6,
+      "cellHeight": 8,
+      "chars": " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_",
+      "charsPerRow": 16,
+      "note": "white glyphs, tinted at runtime; upper-case only"
+    },
+    "preview": 4
+  },
+  {
+    "out": "assets/geo/world.png",
+    "width": 320,
+    "height": 144,
+    "meta": {
+      "type": "image",
+      "filter": "nearest",
+      "note": "one 8x8 tile per character of world.map"
+    },
+    "preview": 2
+  },
+  {
+    "out": "assets/geo/icons.png",
+    "width": 64,
+    "height": 16,
+    "meta": {
+      "type": "spritesheet",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "filter": "nearest",
+      "frames": {
+        "base": 0,
+        "ufo": 1,
+        "terror": 2,
+        "hive": 3
+      }
+    },
+    "preview": 4
+  },
+  {
+    "out": "assets/air/jet.png",
+    "width": 48,
+    "height": 24,
+    "meta": {
+      "type": "spritesheet",
+      "frameWidth": 24,
+      "frameHeight": 24,
+      "filter": "nearest",
+      "note": "2 frames: exhaust long, exhaust short"
+    },
+    "preview": 4
+  },
+  {
+    "out": "assets/air/saucer.png",
+    "width": 48,
+    "height": 16,
+    "meta": {
+      "type": "spritesheet",
+      "frameWidth": 24,
+      "frameHeight": 16,
+      "filter": "nearest",
+      "note": "2 frames: lights yellow / red"
+    },
+    "preview": 4
+  },
+  {
+    "out": "assets/air/drone.png",
+    "width": 24,
+    "height": 12,
+    "meta": {
+      "type": "spritesheet",
+      "frameWidth": 12,
+      "frameHeight": 12,
+      "filter": "nearest",
+      "note": "2 frames: wings"
+    },
+    "preview": 4
+  },
+  {
+    "out": "assets/air/shots.png",
+    "width": 32,
+    "height": 8,
+    "meta": {
+      "type": "spritesheet",
+      "frameWidth": 8,
+      "frameHeight": 8,
+      "filter": "nearest",
+      "frames": {
+        "laser": 0,
+        "plasmaA": 1,
+        "plasmaB": 2,
+        "spark": 3
+      }
+    },
+    "preview": 6
+  },
+  {
+    "out": "assets/air/dart.png",
+    "width": 28,
+    "height": 14,
+    "meta": {
+      "type": "spritesheet",
+      "frameWidth": 14,
+      "frameHeight": 14,
+      "filter": "nearest",
+      "note": "2 frames: wing flicker. Fast diving enemy fighter (faces down)"
+    },
+    "preview": 4
+  },
+  {
+    "out": "assets/air/turret.png",
+    "width": 32,
+    "height": 16,
+    "meta": {
+      "type": "spritesheet",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "filter": "nearest",
+      "note": "2 frames: idle, firing (yellow core). Ground emplacement, scrolls with the sea"
+    },
+    "preview": 4
+  },
+  {
+    "out": "assets/air/pickups.png",
+    "width": 36,
+    "height": 12,
+    "meta": {
+      "type": "spritesheet",
+      "frameWidth": 12,
+      "frameHeight": 12,
+      "filter": "nearest",
+      "frames": {
+        "power": 0,
+        "missiles": 1,
+        "shield": 2
+      }
+    },
+    "preview": 6
+  },
+  {
+    "out": "assets/air/island.png",
+    "width": 48,
+    "height": 32,
+    "meta": {
+      "type": "image",
+      "filter": "nearest",
+      "note": "ground scenery that scrolls with the sea; turrets sit on it"
+    },
+    "preview": 4
+  },
+  {
+    "out": "assets/air/cloud.png",
+    "width": 32,
+    "height": 16,
+    "meta": {
+      "type": "image",
+      "filter": "nearest"
+    },
+    "preview": 4
+  },
+  {
+    "out": "assets/air/sea.png",
+    "width": 16,
+    "height": 16,
+    "meta": {
+      "type": "image",
+      "filter": "nearest",
+      "note": "tiled + scrolled as the background"
+    },
+    "preview": 4
+  },
+  {
+    "out": "assets/rts/terrain.png",
+    "width": 160,
+    "height": 16,
+    "meta": {
+      "type": "spritesheet",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "filter": "nearest",
+      "frames": {
+        "grass1": 0,
+        "grass2": 1,
+        "dirt": 2,
+        "water1": 3,
+        "water2": 4,
+        "tree": 5,
+        "rock": 6,
+        "ore1": 7,
+        "ore2": 8,
+        "road": 9
+      }
+    },
+    "preview": 4
+  },
+  {
+    "out": "assets/rts/units.png",
+    "width": 384,
+    "height": 16,
+    "meta": {
+      "type": "spritesheet",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "filter": "nearest",
+      "framesPerRow": 24,
+      "units": [
+        "rifle",
+        "rocket",
+        "ltank",
+        "mtank",
+        "harv",
+        "warrior",
+        "spitter",
+        "walker"
+      ],
+      "teams": [
+        "xcom"
+      ],
+      "note": "rows = teams; per unit 3 frames: A (idle/walk 1), B (walk 2), C (shoot). Faces right; the game mirrors it."
+    },
+    "preview": 4
+  },
+  {
+    "out": "assets/rts/b_fact.png",
+    "width": 48,
+    "height": 48,
+    "meta": {
+      "type": "spritesheet",
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "filter": "nearest",
+      "teams": [
+        "xcom"
+      ],
+      "framesPerTeam": 1,
+      "note": "frames per team in order; second frame (if any) = firing"
+    },
+    "preview": 4
+  },
+  {
+    "out": "assets/rts/b_powr.png",
+    "width": 32,
+    "height": 32,
+    "meta": {
+      "type": "spritesheet",
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "filter": "nearest",
+      "teams": [
+        "xcom"
+      ],
+      "framesPerTeam": 1,
+      "note": "frames per team in order; second frame (if any) = firing"
+    },
+    "preview": 4
+  },
+  {
+    "out": "assets/rts/b_barr.png",
+    "width": 32,
+    "height": 32,
+    "meta": {
+      "type": "spritesheet",
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "filter": "nearest",
+      "teams": [
+        "xcom"
+      ],
+      "framesPerTeam": 1,
+      "note": "frames per team in order; second frame (if any) = firing"
+    },
+    "preview": 4
+  },
+  {
+    "out": "assets/rts/b_weap.png",
+    "width": 48,
+    "height": 32,
+    "meta": {
+      "type": "spritesheet",
+      "frameWidth": 48,
+      "frameHeight": 32,
+      "filter": "nearest",
+      "teams": [
+        "xcom"
+      ],
+      "framesPerTeam": 1,
+      "note": "frames per team in order; second frame (if any) = firing"
+    },
+    "preview": 4
+  },
+  {
+    "out": "assets/rts/b_proc.png",
+    "width": 48,
+    "height": 32,
+    "meta": {
+      "type": "spritesheet",
+      "frameWidth": 48,
+      "frameHeight": 32,
+      "filter": "nearest",
+      "teams": [
+        "xcom"
+      ],
+      "framesPerTeam": 1,
+      "note": "frames per team in order; second frame (if any) = firing"
+    },
+    "preview": 4
+  },
+  {
+    "out": "assets/rts/b_gun.png",
+    "width": 32,
+    "height": 16,
+    "meta": {
+      "type": "spritesheet",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "filter": "nearest",
+      "teams": [
+        "xcom"
+      ],
+      "framesPerTeam": 2,
+      "note": "frames per team in order; second frame (if any) = firing"
+    },
+    "preview": 4
+  },
+  {
+    "out": "assets/rts/b_hive.png",
+    "width": 48,
+    "height": 48,
+    "meta": {
+      "type": "spritesheet",
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "filter": "nearest",
+      "teams": [
+        "neutral"
+      ],
+      "framesPerTeam": 1,
+      "note": "frames per team in order; second frame (if any) = firing"
+    },
+    "preview": 4
+  },
+  {
+    "out": "assets/rts/b_brood.png",
+    "width": 32,
+    "height": 32,
+    "meta": {
+      "type": "spritesheet",
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "filter": "nearest",
+      "teams": [
+        "neutral"
+      ],
+      "framesPerTeam": 1,
+      "note": "frames per team in order; second frame (if any) = firing"
+    },
+    "preview": 4
+  },
+  {
+    "out": "assets/rts/b_tower.png",
+    "width": 32,
+    "height": 16,
+    "meta": {
+      "type": "spritesheet",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "filter": "nearest",
+      "teams": [
+        "neutral"
+      ],
+      "framesPerTeam": 2,
+      "note": "frames per team in order; second frame (if any) = firing"
+    },
+    "preview": 4
+  },
+  {
+    "out": "assets/rts/ui.png",
+    "width": 128,
+    "height": 16,
+    "meta": {
+      "type": "spritesheet",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "filter": "nearest",
+      "frames": {
+        "arrow": 0,
+        "attack": 1,
+        "select": 2,
+        "move": 3
+      }
+    },
+    "preview": 4
+  },
+  {
+    "out": "assets/rts/fx.png",
+    "width": 128,
+    "height": 16,
+    "meta": {
+      "type": "spritesheet",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "filter": "nearest",
+      "frames": {
+        "boom1": 0,
+        "boom2": 1,
+        "boom3": 2,
+        "boom4": 3,
+        "muzzle": 4,
+        "spit": 5,
+        "rocket": 6
+      }
+    },
+    "preview": 4
+  }
+]

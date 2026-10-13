@@ -73,7 +73,7 @@ export class XkBase extends NordScript {
   /** big centred title / message card (screen space). returns a destroy() */
   card(lines, { w = 220, y = 40, color = 0x0c1424 } = {}) {
     const objs = []; const h = lines.reduce((n, l) => n + 12 + ((l[2] ?? 1) - 1) * 9, 0) + 10, x = (VW - w) / 2;
-    objs.push(this.panel(x - 2, y - 2, w + 4, h + 4, UI.panel, { depth: 5 }), this.panel(x, y, w, h, 0x151236, { raised: false, depth: 5 })); void color;
+    objs.push(this.panel(x - 2, y - 2, w + 4, h + 4, UI.panel, { depth: 5 }), this.panel(x, y, w, h, color, { raised: false, depth: 5 }));
     let ly = y + 5; lines.forEach(([str, col, sc], i) => { objs.push(this.text(VW / 2, ly, str, col ?? COL.text, { origin: [0.5, 0], scale: sc ?? 1, hud: true, depth: 6 })); ly += 12 + ((sc ?? 1) - 1) * 9; void i; });
     return () => objs.forEach((o) => (o.destroy ? o.destroy() : null));
   }

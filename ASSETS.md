@@ -106,3 +106,6 @@ Runtime PNGs: `examples/forgotten/assets/{tiles,sprites,ui}/`; sources `tools/ex
 ## Automies assets
 Generated low-poly glTF (5 cars with steerable wheel nodes, 4 towers, bank/warehouse/safehouse, street props): `node tools/gen_automies_models.mjs`. Hand-pixelled 16x16 / 32x32 seamless textures (4 facades, roof, pavement, concrete, metal, marble, container, water) + HUD icons: `node tools/pixelart.mjs automies --preview`.
 Kenney City + Racing kit models and engine/skid/impact/ambience sounds (MIT): `tools/fetch-automies-assets.sh` → `examples/automies/assets/{models/kenney,audio/kenney}/`. Map: `assets/maps/haven.map`. Inventory + how to replace: `examples/automies/assets.md`.
+
+## X-KOM 2026 artwork
+All 31 PNG sheets redrawn with original 1990s X-COM / XCOM 2-inspired art; existing dimensions, frame grids and asset paths preserved. Built-in ImageGen raster masters + exact prompts: `tools/art/xkom/redrawn/`; pixel-exact FX, cursors, pickups, map icons and font: `tools/art/xkom/details.mjs`. Offline re-pack: `node tools/pixelart.mjs xkom --preview`, then `node tools/gen_examples.mjs xkom`. The 40×18 `world.map` mission mask matches the world raster; update both together. Inventory: `examples/xkom/assets.md`. Audio remains synthesized (`tools/gen_xkom_audio.mjs`); VT323/Orbitron fonts retain their OFL licences. Crowelian 2026 + Sonnet.

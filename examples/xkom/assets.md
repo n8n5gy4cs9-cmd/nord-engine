@@ -1,7 +1,9 @@
 # X-KOM 2026 — assets (what each picture / sound is and how to replace it)
 
-**Every picture is hand-pixelled** (one character = one pixel, typed as text in `tools/art/xkom/*.mjs` of the Nord Engine repo and packed into PNGs by `node tools/pixelart.mjs xkom`; no image generation, no filters).
-**Sounds + music are synthesized** by `node tools/gen_xkom_audio.mjs` (tiny oscillator synth → WAV/MP3). Everything is *placeholder-quality but real* and meant to be swapped.
+**All 31 PNG sheets were redrawn on 2026-10-13.** Original artwork combines the gritty 1990s X-COM look with XCOM 2-inspired blue combat armor, gray Sectoids, purple-armored Mutons, alien reactors and industrial military buildings. Built-in ImageGen raster atlases were reviewed, cropped and packed at the **original dimensions and frame grids**; tiny functional cursors, effects, map markers, pickups and terminal lettering are drawn pixel-by-pixel in `tools/art/xkom/details.mjs`. No original X-COM game assets are included.
+
+**Offline sources:** reviewed native-size RGBA masters, frame manifest and exact generation/edit prompts live in `tools/art/xkom/redrawn/`. `node tools/pixelart.mjs xkom` re-packs these sources without an image service or external dependencies. The older `tools/art/xkom/rts.mjs` drawings are retained for Red Front; they no longer supply X-KOM artwork.
+**Sounds + music are synthesized** by `node tools/gen_xkom_audio.mjs` (tiny oscillator synth → WAV/MP3). Audio remains replaceable synthesized placeholders; the sprite redraw does not change the audio or the two vendored fonts.
 
 ## How replacing works (read this first)
 * The game loads files **by path**. Put your own file at the **same path**, with the **same pixel size and frame grid**, and the game uses it. No code change.
@@ -28,7 +30,7 @@ The ground is a grid of **32×16 diamonds**. Taller things are drawn as **32×32
 | `ground.png` | 160×16 | 32×16 | 0 grass · 1 dirt · 2 metal (UFO floor) · 3 wheat field · 4 road. One flat diamond each; the map picks one per tile. |
 | `objects.png` | 160×32 | 32×32 | 0 wood wall block (barn) · 1 hull block (UFO wall) · 2 power block (UFO reactor, glowing) · 3 crate · 4 tree. These stand on top of a ground tile and block movement + sight (crate blocks movement only). |
 | `units.png` | 80×72 | 16×24 | **3 rows × 5 frames.** Row 0 = X-KOM soldier, row 1 = Sectoid, row 2 = Muton. Per row: **0 idle · 1 walk (idle with legs swapped; the game alternates 0/1 while moving) · 2 aim (weapon raised) · 3 shoot (aim + muzzle flash) · 4 dead (lying down)**. Frame number = `row*5 + state`. "2 sprites max per action" rule: walk = 2 frames, shoot = 2 frames. Faces right/down; mirrored for left. |
-| `ui.png` | 96×16 | 32×16 | 0 cursor (yellow diamond outline, follows the mouse tile) · 1 move-range tile (translucent blue, shown on every tile the selected soldier can reach with its TU) · 2 hit tile (translucent red, reserved). Semi-transparent pixels are fine here. |
+| `ui.png` | 96×16 | 32×16 | 0 cursor (cyan diamond outline, follows the mouse tile) · 1 move-range tile (translucent blue, shown on every tile the selected soldier can reach with its TU) · 2 hit tile (translucent red, reserved). Semi-transparent pixels are fine here. |
 | `fx.png` | 128×16 | 16×16 | 0–3 `boom1…boom4` (explosion, played in order when a unit dies) · 4 `spark` (a hit) · 5 `plasma` (alien/laser bolt) · 6 `bullet` (rifle tracer). |
 
 Adding a race: append a row of 5 frames to `units.png`, add it to `RACES` in `scripts/xk/tactical.js` and `RACE_IDX` in `scripts/xk/tacview.js`.
@@ -63,7 +65,7 @@ Top-down shooter in the spirit of Star Fox / Raptor (the jet always flies up the
 |---|---|---|---|
 | `jet.png` | 48×24 | 24×24 | 0 exhaust long · 1 exhaust short (alternated for the engine flicker). Nose points up. |
 | `saucer.png` | 48×16 | 24×16 | 0 / 1 = rim lights yellow / red (alternated). The UFO boss (28 hits). |
-| `drone.png` | 24×12 | 12×12 | 0 / 1 = wing flap. Escort drones (2 hits each). |
+| `drone.png` | 24×12 | 12×12 | 0 / 1 = wing pose. Escort drones (2 hits each). |
 | `shots.png` | 32×8 | 8×8 | 0 player laser · 1 / 2 alien plasma orb (alternated) · 3 hit spark. |
 | `dart.png` | 28×14 | 14×14 | 0 / 1 = wing flicker. Fast red diving fighter (faces down), 2 hits. |
 | `turret.png` | 32×16 | 16×16 | 0 idle · 1 firing (yellow core). Ground gun emplacement; scrolls with the sea. 5 hits. |
@@ -76,8 +78,8 @@ Explosions reuse `tactical/fx.png` frames 0–3.
 ## 4. Geoscape / Base — `assets/geo/` and `assets/ui/`
 | File | Size | Notes |
 |---|---|---|
-| `geo/world.map` | text | **40×18 characters, one character = one 8×8 tile** of the world map. `~` ocean · `,` ocean waves · `g` land · `d` desert · `i` ice. Mission sites appear on `g`/`d` tiles. Lines before `---` are notes. Edit it, then run `node tools/pixelart.mjs xkom` to redraw `world.png`. |
-| `geo/world.png` | 320×144 | The world picture (shown at 0,0). If you replace it with your own 320×144 art, keep `world.map` roughly matching the land so sites don't sit in the sea. |
+| `geo/world.map` | text | **40×18 characters, one character = one 8×8 tile** of the world map. `~` ocean · `,` ocean waves · `g` land · `d` desert · `i` ice. Mission sites appear on `g`/`d` tiles. Lines before `---` are notes. This mission-placement mask matches the reviewed `world.png` master. Edit it alongside a replacement world picture; the art command re-packs the raster master rather than rebuilding a picture from these characters. |
+| `geo/world.png` | 320×144 | Detailed tactical world picture with mountain ranges, forests, desert dunes, ice and a cyan coordinate grid (shown at 0,0). If you replace it with your own 320×144 art, keep `world.map` roughly matching the land so sites don't sit in the sea. |
 | `geo/icons.png` | 64×16 | 16×16 frames: 0 base (HQ marker) · 1 UFO (landing site) · 2 terror site · 3 alien hive (spare). |
 | `ui/font.png` | 96×32 | **Fallback** bitmap font (ASCII 32…95, 16 columns × 4 rows of **6×8** cells, white glyphs, upper-case only). Used only if the TTF fonts below fail to load. |
 | `fonts/vt323-latin-400-normal.woff2` | font | **VT323** (Google Fonts, OFL) — all small UI text (terminal/X-COM look). |
@@ -109,14 +111,16 @@ Synthesized placeholders (`node tools/gen_xkom_audio.mjs` regenerates them all).
 | `music/music_tactical.mp3` | radar + tactical missions (tense) |
 | `music/music_rts.mp3` | Hive Strike RTS + the shooter (fast, drums) |
 
-## Palettes (so new art matches)
-* Tactical grass `#4a7a2c #62933a #386020`, dirt `#8a6a3c #a28048 #6e5230`, metal `#6a7480 #8a96a2 #4c5560`, soldier blue `#1e2c58 #3a58a0 #6c8ad8`, alien green `#2c4c1c #486a2c #7ab04a`, outline `#14141c`.
-* RTS team ramp (dark/mid/light/highlight) X-KOM blue `#1c2a58 #3860b8 #6a98e8 #c0daff`; alien bio ramp `#1c3a24 #2f6a3a #58a04a #a8e070` + purple `#5a2a6a #9a4ab0 #e080f0`.
-* In the art sources the letters `D M L H` are the team ramp (see `TEAMS` in `tools/art/xkom/rts.mjs`) — re-colouring a faction is one table.
+## Art direction (so replacements match)
+* Dark navy outlines and shadows, muted olive/brown terrain, silver-blue steel, cyan cockpit lights and targeting marks.
+* Human faction: blue segmented armor, dark visors, chunky rifles, blue military vehicles and industrial buildings.
+* Alien faction: gray Sectoids; green Mutons with purple armor; purple hive structures and acid-green power cores/plasma.
+* Upper-left highlights, hard pixel edges, clear silhouettes and transparent sprite backgrounds. Terrain stays subdued so units stand out.
+* The packed masters preserve action order and bottom alignment. Animation poses are distinct; do not include atlas labels, background glows or neighboring frames in replacement cells.
 
 ## Regenerating
 ```
-node tools/pixelart.mjs xkom --preview   # redraw all PNGs from tools/art/xkom/*.mjs (+ contact sheet in target/art-preview/)
+node tools/pixelart.mjs xkom --preview   # re-pack reviewed raster masters + pixel-exact details (+ contact sheet in target/art-preview/)
 node tools/gen_xkom_audio.mjs            # all sfx + music
 node tools/gen_examples.mjs xkom         # copy everything into examples/xkom/
 ```

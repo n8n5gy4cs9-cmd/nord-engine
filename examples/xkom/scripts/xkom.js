@@ -74,7 +74,7 @@ export default class XKom extends XkBase {
   geoscape() {
     this.tac.destroy?.(); this.clearScreen(); this.mode = 'geo'; this.camCenter(VW / 2, VH / 2); const h = this, C = this.C; this.sites = this.makeSites();
     h.keep(h.img('world', 0, 0, 0, 0, [0, 0], true)); h.keep(h.panel(0, 144, VW, 56, UI.panel, { depth: 1 }));
-    h.keep(h.img('gicons', 0, 3 * 8 + 4, 12 * 8, 3, [0.5, 0.5], true)); h.keep(h.text(3 * 8 + 4, 12 * 8 + 9, 'HQ', COL.blue, { origin: [0.5, 0], hud: true, depth: 6 }));
+    h.keep(h.img('gicons', 0, 8 * 8 + 4, 5 * 8 + 4, 3, [0.5, 0.5], true)); h.keep(h.text(8 * 8 + 4, 5 * 8 + 13, 'HQ', COL.blue, { origin: [0.5, 0], hud: true, depth: 6 }));
     this.siteSp = this.sites.map((s, i) => { const sp = h.keep(h.img('gicons', s.icon === 1 ? 2 : 1, s.x * 8 + 4, s.y * 8 + 4, 5, [0.5, 0.5], true)); h.keep(h.text(s.x * 8 + 4, s.y * 8 + 12, String(i + 1), COL.gold, { origin: [0.5, 0], hud: true, depth: 6 })); return sp; });
     if (this.blinkT) this.blinkT.remove(); this.blinkT = this.ps.time.addEvent({ delay: 400, loop: true, callback: () => { if (this.mode === 'geo') for (const sp of this.siteSp) sp.setAlpha(sp.alpha < 1 ? 1 : 0.4); } });
     const d = C.day, date = `${String(((d - 1) % 28) + 1).padStart(2, '0')} ${MONTHS[Math.floor((d - 1) / 28) % 12]} 2026`;

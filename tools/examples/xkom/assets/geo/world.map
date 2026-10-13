@@ -1,21 +1,21 @@
-@ Geoscape world map: one character = one 8x8 tile of assets/geo/world.png (edit this file + re-run `node tools/pixelart.mjs xkom` to redraw, or just replace world.png).
-@ ~ ocean  , ocean (waves)  g land  d desert  i ice.  Mission sites appear on g/d tiles.
+@ Geoscape mission mask matched to the reviewed 320x144 world.png raster master.
+@ 40x18 characters; ~ ocean, g land, d desert, i ice. Update alongside the raster master.
 ---
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ~iiiii~~~~~~~~~~~iiii~~~~~~~~~iiiiii~~~~
-~~~,~~~~ggg~~~~~~~ggggg~~~~~,~~~~~,~~~~~
-~~~gggggggggg~~~,gggggggggg~~~~gggggg~~~
-~~gggggggggggg~~~~gggdddggggggggggggggg~
-~~~ggggggggggg~,~~~gdddddggggggggggggg~~
-~,~~gggggggggg~~~~~~ddddddggggggggggg~~~
-~~~~~ggggggg~~~~,~~~dddddddgggggggg~~~~~
-~~~~~~gggg~~~~~~~~~~~ddddddgggg~~~~,~~~~
-~~,~~~~ggg~~~~~~~~~~~~dddggg~~~~~~~~~~~~
-~~~~~~~~ggg~~~~~,~~~~~~~ggg~~~~~~gg~~~~~
-~~~~,~~~gggg~~~~~~~~~~~~~~gg~~~~gggg~~~~
-~~~~~~~~ggggg~~~~~~~,~~~~~~~~~~gggggg~~~
-~~~~~~~~gggg~~~~~~~~~~~~~~~~~~~~ggg~~,~~
-~~,~~~~~ggg~~~~~,~~~~~~~~~~~~~~~~~~~~~~~
-~~~~~~~~~g~~~~~~~~~~~~~~,~~~~~~~~~~~~~~~
+~~~~~~~~ggg~~~~~~~gg~gg~~~~~~~~~~~~~~~~~
+~~~gggggggggg~~~~ggg~~ggggg~~~~gggggg~~~
+~~gg~ggggggggg~~~~ggggddggggggggggggigg~
+~~~g~igggggggg~~~~~gdddddggg~ggggg~ggg~~
+~~~~g~gggggggg~~~~~~ddddddgggggg~~ggg~~~
+~~~~~~~ggggg~~~~~~~~dddddddgggg~~gg~~~~~
+~~~~~~~~gg~~~~~~~~~~~ddddddgggg~~~~~~~~~
+~~~~~~~~gg~~~~~~~~~~~~dddggg~~~~~~~~~~~~
+~~~~~~~~~gg~~~~~~~~~~~~~ggg~~~~~~gg~~~~~
+~~~~~~~~~~gg~~~~~~~~~~~~~~gg~~~~gggg~~~~
+~~~~~~~~ggggg~~~~~~~~~~~~~~~~~~gggggg~~~
+~~~~~~~~gggg~~~~~~~~~~~~~~~~~~~~ggg~~~~~
+~~~~~~~~ggg~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~g~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
