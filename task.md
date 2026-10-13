@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 153/165 tasks (93%)** · updated 2026-10-13
+**Overall: 154/166 tasks (93%)** · updated 2026-10-13
 
 | Milestone | Progress |
 |---|---|
@@ -13,7 +13,7 @@
 | M3 Editor | 24/26 (92%) |
 | M4 Export | 8/11 (73%) |
 | M5 Rust/WASM | 9/9 (100%) |
-| M6 Library | 28/28 (100%) |
+| M6 Library | 29/29 (100%) |
 | M7 Docs | 13/13 (100%) |
 | M8 Polish & portability | 12/19 (63%) |
 | M9 Desktop apps | 16/16 (100%) |
@@ -169,6 +169,7 @@ _snippets, controllers, systems, asset packs, examples_
 - [x] **M6-26** Red Front 2026 example game: Red Alert-style RTS skirmish (shared RTS engine with X-KOM 2026)
 - [x] **M6-27** Redraw all X-KOM sprite sheets with 1990s X-COM / XCOM 2 inspired art at unchanged dimensions
 - [x] **M6-28** Fix X-KOM movement layering and camera; compact textured UI, globe and title screen
+- [x] **M6-29** Add separate X-KOM title/base/game music and clear replaceable audio inventory
 
 ## M7 — Docs
 _manual, guides, tutorials, in-editor docs_

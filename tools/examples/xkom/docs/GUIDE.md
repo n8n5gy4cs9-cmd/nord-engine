@@ -12,6 +12,9 @@ A pragmatic proof of concept that is a *whole* game: an X-COM-style campaign wit
 5. **Win the war** by killing enough aliens (default 40, tactical + RTS kills combined). Lose when the base is overrun.
 Funds ($100 per alien killed, $500 mission bonus, $2000 hive) buy **research** in the Base.
 
+## Music and sounds
+Three music loops: `assets/audio/music/music_title.mp3` (title), `music_base.mp3` (globe/HQ/research/endings), `music_game.mp3` (radar/shooter/tactical/Hive Strike). On the title, press `M` or click **LISTEN [M]** to start audio without leaving that screen. `assets.md` section 5 lists every music/SFX filename, when it plays, and replacement steps. Keep filenames/extensions, swap the audio, then Stop/Play or reload. For permanent repo changes edit `tools/examples/xkom/assets/audio/` before regenerating examples.
+
 ## Controls
 **Geoscape** — arrows rotate the globe · `+`/`-` zoom · `Z` toggles the HQ regional map · `G` returns to the globe · `B` opens Base. Buttons do the same. Click a visible map contact or the numbered contact list (all three remain available even on the far side), or press `1`/`2`/`3`, to launch interception. HQ remains centered in regional mode; zoom magnifies the existing world raster.
 **Tactical** — click soldier = select · click a blue tile = walk (TU cost shown top right) · click a visible alien = fire · `1/2/3` SNAP / AIMED / AUTO (or the buttons, right-click cycles) · `Tab/Space` next soldier · `Enter` end turn · arrows scroll smoothly. Walking alternates two poses; short moves leave the camera still, while edge moves pan only enough to stay visible. Ground and movement overlays stay below units; walls/trees still obscure units correctly. Unseen tiles are black (fog of war); you only see what your soldiers see.

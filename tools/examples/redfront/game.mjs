@@ -14,7 +14,7 @@ export default () => ({
   name: 'Red Front 2026',
   project: project('redfront', 'Red Front 2026', '2d', { w: 960, h: 600, pixelArt: true, bg: '#180808', physics: { engine: 'none', gravity: [0, 0, 0] }, input }),
   scenes: { main: { entities: [E('RedFront', { s: ['scripts/redfront.js'] })] } },
-  assets: [...FONTS.map((f) => ({ from: `vendor/fonts/${f}`, to: `assets/fonts/${f.split('/')[1]}` })), ...sfx.map((n) => A(`sfx/${n}.wav`)), A('music/music_rts.mp3')].filter((a) => fs.existsSync(path.join(here, '../../..', a.from)) || true),
+  assets: [...FONTS.map((f) => ({ from: `vendor/fonts/${f}`, to: `assets/fonts/${f.split('/')[1]}` })), ...sfx.map((n) => A(`sfx/${n}.wav`))], // music lives in this example's own assets/audio/music/
   files: {
     'assets.md': read('docs/assets.md'), 'GUIDE.md': read('docs/GUIDE.md'),
     'scripts/xk/base.js': shared('base.js'), 'scripts/xk/rts.js': shared('rts.js'), 'scripts/xk/rtsview.js': shared('rtsview.js'), 'scripts/xk/pixeltext.js': shared('pixeltext.js'), 'scripts/xk/help.js': shared('help.js'),

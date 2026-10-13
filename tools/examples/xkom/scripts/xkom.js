@@ -63,10 +63,12 @@ export default class XKom extends XkBase {
     h.keep(h.text(17, 111, 'COMMAND THE RESISTANCE', COL.dim, { hud: true, depth: 6 }));
     h.keep(h.panel(16, 166, 152, 17, 0x354761, { depth: 4 }));
     h.keep(h.text(92, 170, 'BEGIN CAMPAIGN  [ENTER]', COL.text, { origin: [0.5, 0], hud: true, depth: 6 }));
+    h.keep(h.panel(242, 166, 64, 17, 0x354761, { depth: 4 })); h.keep(h.text(274, 170, 'LISTEN [M]', COL.text, { origin: [0.5, 0], hud: true, depth: 6 }));
     h.keep(h.text(17, 190, 'CROWELIAN 2026 + SONNET', COL.dim, { scale: 0.85, hud: true, depth: 6 }));
     h.keep(h.text(310, 190, 'F1  FIELD MANUAL', COL.dim, { origin: [1, 0], scale: 0.85, hud: true, depth: 6 }));
-    this.music('music_geoscape', 0.25);
+    this.music('music_title', 0.25);
   }
+  listenTitle() { this.game.audio.mute('music', false); this.game.audio.unlock(); this.sfx('click', 0.25); }
 
   // ---- geoscape ---------------------------------------------------------------------------------------------------------------------------------------------
   makeSites() {
@@ -94,7 +96,7 @@ export default class XKom extends XkBase {
     h.keep(h.text(5, 192, (this.news ?? '').slice(0, 50), COL.amber, { hud: true, depth: 6, scale: 0.8 }));
     h.keep(h.text(236, 177, 'THREAT ' + C.presence + '%', C.presence >= 80 ? COL.bad : COL.gold, { hud: true, depth: 6 }));
     h.keep(h.panel(236, 187, 80, 8, UI.dark, { raised: false, depth: 2 })); h.keep(h.rect(238, 189, 76 * Math.min(1, C.presence / 100), 4, C.presence >= 80 ? 0xe03020 : 0xa89030, 1, true, 3));
-    this.music('music_geoscape', 0.25);
+    this.music('music_base', 0.25);
   }
 
   // ---- base (research, facilities, roster) ---------------------------------------------------------------------------------------------------------------
@@ -111,7 +113,7 @@ export default class XKom extends XkBase {
       h.keep(h.text(141, y + 10, t.info, COL.dim, { hud: true, depth: 6 })); this.techRects.push({ id: t.id, x: 138, y, w: 180, h: 19 }); });
     if (R.active) { const t = tech(R.active); h.keep(h.rect(138, 174, 180, 6, 0x000000, 1)); h.keep(h.rect(139, 175, 178 * R.progress / t.days, 4, 0xa070e0, 1)); h.keep(h.text(138, 183, `ACTIVE: ${t.name}`.slice(0, 26), COL.amber, { hud: true, depth: 6 })); } else h.keep(h.text(138, 180, 'LAB IDLE', COL.dim, { hud: true, depth: 6 }));
     h.keep(h.text(138, 14, msg, COL.bad, { hud: true, depth: 6 })); h.keep(h.panel(262, 183, 56, 13, UI.face, { depth: 2 })); h.keep(h.text(290, 184, 'BACK [B]', COL.text, { origin: [0.5, 0], hud: true, depth: 6 })); this.backBtn = { x: 262, y: 184, w: 56, h: 12 };
-    h.keep(h.text(6, 4 + 18, '', COL.dim, { hud: true, depth: 6 })); this.music('music_geoscape', 0.2);
+    h.keep(h.text(6, 4 + 18, '', COL.dim, { hud: true, depth: 6 })); this.music('music_base', 0.2);
   }
   pickTech(id) { const f = { v: this.C.funds }, err = startTech(this.C.R, f, id); if (err) { this.sfx('error', 0.4); return this.baseScreen(err); } this.C.funds = f.v; this.sfx('confirm', 0.5); this.news = `RESEARCH STARTED: ${tech(id).name}`; this.baseScreen(); }
 
@@ -138,13 +140,13 @@ export default class XKom extends XkBase {
     if (C.presence >= 100) return this.alertThenRts(); this.geoscape();
   }
   async alertThenRts() {
-    this.clearScreen(); this.mode = 'alert'; const h = this; h.keep(h.rect(0, 0, VW, VH, 0x300808, 1)); this.sfx('alarm', 0.6); this.ps.sound?.stopAll?.();
+    this.clearScreen(); this.mode = 'alert'; const h = this; h.keep(h.rect(0, 0, VW, VH, 0x300808, 1)); this.music('music_game', 0.25); this.sfx('alarm', 0.6); this.ps.sound?.stopAll?.();
     const T = (s, y, c, sc = 1) => h.keep(h.text(VW / 2, y, s, c, { origin: [0.5, 0], scale: sc, hud: true, depth: 6 }));
     T('ALIEN PRESENCE 100%', 40, COL.bad, 3); T('THE HIVE IS AWAKE.', 80, COL.text, 2); T('OPERATION: HIVE STRIKE', 104, COL.gold, 1); T('DEPLOY THE BASE FORCE - DESTROY THE ALIEN HIVE', 122, COL.alien);
     await this.wait(2600); this.startRts();
   }
   startRts() {
-    this.clearScreen(); this.mode = 'rts'; this.rts.start({ mode: 'xkom', seed: this.seed + 99 + this.C.rtsDone, bonus: Math.min(4, Math.floor(this.C.squad.length / 2)), mods: techMods(this.C.R), diff: 1 + this.C.rtsDone * 0.2,
+    this.clearScreen(); this.mode = 'rts'; this.rts.start({ mode: 'xkom', music: 'music_game', seed: this.seed + 99 + this.C.rtsDone, bonus: Math.min(4, Math.floor(this.C.squad.length / 2)), mods: techMods(this.C.R), diff: 1 + this.C.rtsDone * 0.2,
       briefing: 'DESTROY THE ALIEN HIVE', winText: 'HIVE DESTROYED', loseText: 'BASE OVERRUN', onEnd: (r) => this.rtsDone(r) });
   }
   rtsDone(r) {
@@ -159,7 +161,7 @@ export default class XKom extends XkBase {
     const T = (s, y, c, sc = 1) => h.keep(h.text(VW / 2, y, s, c, { origin: [0.5, 0], scale: sc, hud: true, depth: 6 }));
     if (win) { T('EARTH IS SAFE', 30, COL.good, 4); T('THE ALIEN THREAT IS BROKEN', 72, COL.text); } else { T('EARTH HAS FALLEN', 30, COL.bad, 4); T('YOUR BASE WAS OVERRUN BY THE HIVE', 72, COL.text); }
     T(`ALIENS KILLED ${C.kills}   MISSIONS ${C.missions}   SOLDIERS LOST ${C.lost}`, 96, COL.gold); T(`HIVE OPERATIONS ${C.rtsDone}   TECHS ${C.R.done.length}/${TECHS.length}`, 108, COL.alien);
-    T('PRESS ENTER TO PLAY AGAIN', 150, COL.gold); this.sfx(win ? 'victory' : 'defeat', 0.5); this.music('music_geoscape', 0.2);
+    T('PRESS ENTER TO PLAY AGAIN', 150, COL.gold); this.sfx(win ? 'victory' : 'defeat', 0.5); this.music('music_base', 0.2);
   }
 
   // ---- input routing --------------------------------------------------------------------------------------------------------------------------------------------
@@ -170,7 +172,7 @@ export default class XKom extends XkBase {
     if (this.mode === 'rts') { if (this.rts.over && down) this.rts.doneKey?.(e); else this.rts.key(e, down); return; }
     if (this.mode === 'air') return this.air.key(e, down);
     if (!down) return;
-    if (this.mode === 'title') { if (k === 'Enter' || k === ' ') this.geoscape(); }
+    if (this.mode === 'title') { if (k === 'Enter' || k === ' ') this.geoscape(); else if (k === 'm' || k === 'M') this.listenTitle(); }
     else if (this.mode === 'base') { if (k === 'b' || k === 'B' || k === 'Escape') this.geoscape(); else if (/^[1-7]$/.test(k)) this.pickTech(TECHS[+k - 1].id); }
     else if (this.mode === 'geo') { if (k === 'b' || k === 'B') this.baseScreen(); else if (/^[1-3]$/.test(k)) this.intercept(this.sites[+k - 1]); else if (k === 'r' || k === 'R') { this.C.presence = 100; this.alertThenRts(); } else { const id = { z: 'hq', Z: 'hq', g: 'globe', G: 'globe', ArrowLeft: 'left', ArrowRight: 'right', ArrowUp: 'up', ArrowDown: 'down', '+': 'in', '=': 'in', '-': 'out' }[k]; if (id) this.geo.action(id); } }
     else if (this.mode === 'tac') { if (this.tac.over) this.tac.doneKey?.(e); else this.tac.key(e); }
@@ -183,7 +185,7 @@ export default class XKom extends XkBase {
     if (this.mode === 'air') return this.air.pointer(p, type);
     if (type === 'move') { if (this.mode === 'tac') this.tac.pointer(p, false); return; }
     if (type !== 'down') return;
-    if (this.mode === 'title') { this.geoscape(); this.sfx('confirm', 0.5); }
+    if (this.mode === 'title') { if (lx >= 242 && lx < 306 && ly >= 166 && ly < 183) return this.listenTitle(); this.geoscape(); this.sfx('confirm', 0.5); }
     else if (this.mode === 'base') { const hit = (r) => lx >= r.x && lx < r.x + r.w && ly >= r.y && ly < r.y + r.h; if (hit(this.backBtn)) { this.sfx('click', 0.4); this.geoscape(); } else { const t = this.techRects.find(hit); if (t) this.pickTech(t.id); } }
     else if (this.mode === 'geo') { const button = this.geoBtns.find(q => lx >= q.x && lx < q.x + q.w && ly >= q.y && ly < q.y + q.h); if (button) { this.sfx('click', 0.3); return button.id === 'base' ? this.baseScreen() : this.geo.action(button.id); }
       const site = this.sites.find(s => lx >= s.rect.x && lx < s.rect.x + s.rect.w && ly >= s.rect.y && ly < s.rect.y + s.rect.h) ?? this.geo.hit(lx, ly); if (site) { this.sfx('confirm', 0.5); this.intercept(site); } }

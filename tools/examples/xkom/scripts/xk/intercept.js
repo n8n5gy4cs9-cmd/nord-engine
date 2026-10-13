@@ -16,7 +16,7 @@ export class InterceptView {
     this.tTitle = this.add(h.text(6, 4, `RADAR - ${site.name} DETECTED`, COL.alien, { hud: true, depth: 8 }));
     this.tSub = this.add(h.text(6, 174, 'INTERCEPTOR LAUNCHED FROM HQ...', COL.dim, { hud: true, depth: 8 }));
     this.tKeys = this.add(h.text(VW / 2, 188, '[ENTER] ENGAGE   [SPACE] AUTO   [ESC] SKIP', COL.gold, { origin: [0.5, 0], hud: true, depth: 8 }));
-    h.music('music_tactical', 0.18); h.sfx('alarm', 0.2);
+    h.music('music_game', 0.18); h.sfx('alarm', 0.2);
     this.ufo = { x: 250, y: 40 }; this.jet = { x: 70, y: 150 };
   }
   add(o) { this.objs.push(o); return o; }
@@ -50,7 +50,7 @@ export class InterceptView {
     this.hpPips = Array.from({ length: 5 }, (_, i) => this.add(h.rect(4 + i * 9, 13, 7, 5, 0x40e040, 1, true, 12))); this.bossBar = this.add(h.rect(VW - 4, 14, 0, 4, 0xe03030, 1, true, 12));
     this.foes = []; this.shots = []; this.eshots = []; this.items = []; this.mis = []; this.score = 0; this.killed = 0; this.boss = null; this.over = false; this.step = 0;
     this.script = [[1.5, 'drone', -1], [4.5, 'drone', 1], [7.5, 'dart', 0], [9.5, 'turrets', 0], [12.5, 'drone', -1], [14.5, 'pickup', 0], [16, 'dart', 1], [19, 'drone', 1], [21, 'dart', 0], [25, 'boss', 0]];
-    h.music('music_rts', 0.2); this.mouseDown = false; this.mx = 160; this.my = 168;
+    h.music('music_game', 0.2); this.mouseDown = false; this.mx = 160; this.my = 168;
   }
   spr(key, frame, x, y, depth = 5) { const s = this.h.ps.add.sprite(x, y, this.h.PATH[key], frame).setDepth(depth); this.h.hud.add(s); return s; }
   note(str, col = COL.gold, ms = 1600) { this.tMsg.setText(str, col); this.tMsg.setPosition(VW / 2, 84); this.msgTimer?.remove(); this.msgTimer = this.h.ps.time.delayedCall(ms, () => this.tMsg?.img && this.tMsg.setText('', col)); }

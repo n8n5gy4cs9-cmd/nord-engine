@@ -1115,6 +1115,12 @@
       "status": "done"
     },
     {
+      "id": "M6-29",
+      "milestone": "M6",
+      "title": "Add separate X-KOM title/base/game music and clear replaceable audio inventory",
+      "status": "done"
+    },
+    {
       "id": "M7-01",
       "milestone": "M7",
       "title": "tools/build-manual.mjs (marked + CodeMirror readonly + nord-live blocks)",

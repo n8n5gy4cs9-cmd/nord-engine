@@ -3,7 +3,9 @@
 **All 31 PNG sheets were redrawn on 2026-10-13.** Original artwork combines the gritty 1990s X-COM look with XCOM 2-inspired blue combat armor, gray Sectoids, purple-armored Mutons, alien reactors and industrial military buildings. Built-in ImageGen raster atlases were reviewed, cropped and packed at the **original dimensions and frame grids**; tiny functional cursors, effects, map markers, pickups and terminal lettering are drawn pixel-by-pixel in `tools/art/xkom/details.mjs`. No original X-COM game assets are included.
 
 **Offline sources:** reviewed native-size RGBA masters, frame manifest and exact generation/edit prompts live in `tools/art/xkom/redrawn/`. `node tools/pixelart.mjs xkom` re-packs these sources without an image service or external dependencies. The older `tools/art/xkom/rts.mjs` drawings are retained for Red Front; they no longer supply X-KOM artwork.
-**Sounds + music are synthesized** by `node tools/gen_xkom_audio.mjs` (tiny oscillator synth → WAV/MP3). Audio remains replaceable synthesized placeholders; the sprite redraw does not change the audio or the two vendored fonts.
+**Sounds + music are synthesized** by `node tools/gen_xkom_audio.mjs` (tiny oscillator synth → WAV/MP3). X-KOM has three distinct synthesized music loops (title/base/game) and 21 replaceable SFX; the two vendored fonts are separate.
+
+**Swapping audio? Start with [the three music files and all 21 sound effects](#5-audio--easy-music-and-sfx-replacement) below.**
 
 ## How replacing works (read this first)
 * The game loads files **by path**. Put your own file at the **same path**, with the **same pixel size and frame grid**, and the game uses it. No code change.
@@ -16,10 +18,10 @@
 ## The game in 4 parts → which assets belong to which part
 | Part | Screen | Script | Assets used |
 |---|---|---|---|
-| Title / Geoscape / Base | illustrated title, globe / HQ regional map, mission sites, alien-presence bar, **Base** (research) | `scripts/xkom.js` | `geo/*`, `ui/title.png`, `ui/font.png`, music `music_geoscape` |
+| Title / Geoscape / Base | illustrated title, globe / HQ regional map, mission sites, alien-presence bar, **Base** (research) | `scripts/xkom.js` | `geo/*`, `ui/title.png`, `ui/font.png`, music `music_title` / `music_base` |
 | Interception (radar + optional Star Fox / Raptor-style shooter) | radar, then a top-down shooter | `scripts/xk/intercept.js` | `air/*`, `tactical/fx.png` (explosions), sfx |
-| Tactical mission (X-COM) | isometric, turn-based | `scripts/xk/tacview.js` (+ rules `tactical.js`) | `tactical/*`, music `music_tactical` |
-| Hive Strike (Red Alert RTS) | scrolling map + sidebar | `scripts/xk/rtsview.js` (+ rules `rts.js`) | `rts/*`, music `music_rts` |
+| Tactical mission (X-COM) | isometric, turn-based | `scripts/xk/tacview.js` (+ rules `tactical.js`) | `tactical/*`, music `music_game` |
+| Hive Strike (Red Alert RTS) | scrolling map + sidebar | `scripts/xk/rtsview.js` (+ rules `rts.js`) | `rts/*`, music `music_game` |
 
 ---
 ## 1. Tactical mission (isometric, UFO Defense look) — `assets/tactical/`
@@ -91,28 +93,52 @@ Small UI text is **9 virtual pixels** (VT323, down from 13); title and heading t
 
 The **Base screen** (facilities + research list + soldier roster) and every panel/button are drawn in code as **bevelled rectangles** (light top/left edge, dark bottom/right — the X-COM button look; `Bevel` in `scripts/xk/base.js`, palette `UI` there) — no images. Research data: `scripts/xk/research.js`.
 
-## 5. Audio — `assets/audio/`
-Synthesized placeholders (`node tools/gen_xkom_audio.mjs` regenerates them all). Replace any file by name.
+## 5. Audio — EASY music and SFX replacement
 
-| File | When it plays |
-|---|---|
-| `sfx/rifle.wav` | X-KOM rifle shot (tactical + RTS bullets + shooter) |
-| `sfx/plasma.wav` | plasma / laser shot (tactical) |
-| `sfx/hit.wav` | bullet hit, claw hit |
-| `sfx/die_human.wav` / `die_alien.wav` | a soldier / an alien dies |
-| `sfx/explosion.wav` | building or vehicle destroyed, shooter crash/boom |
-| `sfx/step.wav` | soldier footstep |
-| `sfx/click.wav` `select.wav` `confirm.wav` `error.wav` | UI |
-| `sfx/endturn.wav` | End Turn |
-| `sfx/alarm.wav` | siren — mission deployment, "UFO!" and the Red Alert hive strike |
-| `sfx/ack.wav` | RTS unit acknowledges an order |
-| `sfx/built.wav` | RTS unit ready / research complete |
-| `sfx/cannon.wav` `rocket.wav` `spit.wav` | tank shell, rocket, alien acid |
-| `sfx/ore.wav` | harvester unloads |
-| `sfx/victory.wav` `defeat.wav` | end cards |
-| `music/music_geoscape.mp3` | title, geoscape, base, endings (slow, ambient) |
-| `music/music_tactical.mp3` | radar + tactical missions (tense) |
-| `music/music_rts.mp3` | Hive Strike RTS + the shooter (fast, drums) |
+**Exactly three music files. Every sound effect has its own WAV file. No code edits needed.** All paths below are relative to this X-KOM project folder (the folder containing this document and `nord.project.json`).
+
+### Quick swap
+1. Pick a filename in the tables below. Replace that file in `assets/audio/music/` or `assets/audio/sfx/` with your own audio. **Keep the filename and extension exactly the same.**
+2. Use a real **MP3** for music or a real **WAV** for SFX; renaming another format's extension does not convert it. Music may be mono or stereo and any length; it loops automatically. SFX play once. Trim leading silence from effects and use a loop-friendly music edit.
+3. Stop/Play in the editor, or reload the game, to hear the new file. Already-decoded audio stays cached until the game reloads.
+
+**Working in the Nord Engine repository?** For a lasting change, replace the same file under `tools/examples/xkom/assets/audio/`, then run `node tools/gen_examples.mjs xkom`. This copies it to `examples/xkom/assets/audio/`. Changing only the generated example works immediately but the next example rebuild overwrites it. **Do not run `node tools/gen_xkom_audio.mjs` after installing your own sounds**: that command restores the synthesized defaults.
+
+### Music — three separate slots
+| File to replace | Screens using it | Default track |
+|---|---|---|
+| `assets/audio/music/music_title.mp3` | **Title screen only** | 42.7 s — dramatic 90 BPM retro alien-defense theme, pulsing bass, melody and drums. |
+| `assets/audio/music/music_base.mp3` | **Geoscape/globe, HQ regional map, Base/research, campaign victory/defeat screen** | 53.3 s — quiet 72 BPM command-center ambience, soft synth pads and sparse melody. |
+| `assets/audio/music/music_game.mp3` | **Tactical missions, interception radar/auto/shooter, Hive Strike alert and RTS battle** | 34.3 s — tense 112 BPM combat theme with bass, percussion and restrained synth lead. |
+
+Browsers start audio after a click/key gesture. On the title press **M** or click **LISTEN [M]** to hear title music while staying on that screen. Enter starts the campaign and switches to base music. Music crossfades between different files; moving between screens using the same file keeps the loop playing.
+
+### Sound effects — replace one sound at a time
+| File to replace | Exactly when it plays | Replacement suggestion |
+|---|---|---|
+| `assets/audio/sfx/rifle.wav` | Human rifle fire in tactical/RTS; interceptor lasers; auto-resolve gunfire. | Short dry gunshot. Shared by these weapons. |
+| `assets/audio/sfx/plasma.wav` | Tactical alien/plasma shots (including energy-weapon fire routed as plasma). | Short sci-fi energy discharge. |
+| `assets/audio/sfx/hit.wav` | Tactical impacts; RTS claw attacks; interceptor takes damage. | Short impact/thud. |
+| `assets/audio/sfx/die_human.wav` | A human soldier/infantry unit dies in tactical or RTS. | Brief human death vocal/effect. |
+| `assets/audio/sfx/die_alien.wav` | An alien dies in tactical or RTS. | Brief alien death cry. |
+| `assets/audio/sfx/explosion.wav` | Vehicle/building destruction; interception explosions and jet crash; UFO auto-resolve success. | Short explosion with a fading tail. |
+| `assets/audio/sfx/step.wav` | Each tactical walking step, for soldiers and visible/hidden alien replay. | Very short boot/footstep sound. |
+| `assets/audio/sfx/click.wav` | UI buttons/help, RTS production request, title LISTEN button. | Quiet interface click. |
+| `assets/audio/sfx/select.wav` | Soldier/unit selection and next soldier; interceptor roll and reflected shots. | Short positive selection chirp. |
+| `assets/audio/sfx/confirm.wav` | Campaign/mission selection; research accepted; returning from Base. | Short confirmation chime. |
+| `assets/audio/sfx/error.wav` | Invalid shot, unavailable research, or failed RTS production request. | Brief negative/error buzz. |
+| `assets/audio/sfx/endturn.wav` | Player ends a tactical turn. | Distinct short end-turn cue. |
+| `assets/audio/sfx/alarm.wav` | Deployment/interception warning, UFO boss arrival, Hive Strike alert. | Short alien-alert siren. |
+| `assets/audio/sfx/ack.wav` | RTS units receive movement, attack or attack-move orders. | Short radio acknowledgement/chirp. |
+| `assets/audio/sfx/built.wav` | RTS unit ready, research finished, or interceptor collects a pickup. | Positive completion/pickup cue. |
+| `assets/audio/sfx/cannon.wav` | RTS tank shell fire. | Heavy cannon blast. |
+| `assets/audio/sfx/rocket.wav` | RTS rocket fire; interceptor launches a homing missile. | Rocket launch/whoosh. |
+| `assets/audio/sfx/spit.wav` | RTS alien acid weapon; interceptor enemy plasma fire. | Alien spit/energy effect. |
+| `assets/audio/sfx/ore.wav` | Harvester unloads ore and credits are added. | Small metal/cash delivery chime. |
+| `assets/audio/sfx/victory.wav` | Successful tactical mission, RTS victory, UFO shooter win, campaign win. | Victory sting, about 1–3 seconds. |
+| `assets/audio/sfx/defeat.wav` | Failed tactical mission, RTS loss, UFO loss/escape, campaign loss. | Defeat sting, about 1–3 seconds. |
+
+The default SFX are short synthesized placeholders (0.08–2.4 s). You can use other lengths; short effects work best for rapid/repeated actions. Several weapons share one sound as documented above. The game changes volume/pitch for some repeated actions; changing a file changes every use of that file. A music replacement never replaces the separate victory/defeat stings.
 
 ## Art direction (so replacements match)
 * Dark navy outlines and shadows, muted olive/brown terrain, silver-blue steel, cyan cockpit lights and targeting marks.

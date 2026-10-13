@@ -21,12 +21,12 @@ function tone(buf, t0, dur, freq, { shape = 'square', vol = 0.4, decay = 3, atta
   }
 }
 const mk = (secs) => new Float32Array(Math.floor(secs * SR));
-function wav(name, buf, dir = 'sfx') {
+function wav(name, buf, dir = 'sfx', base = OUT) {
   let peak = 0; for (const v of buf) peak = Math.max(peak, Math.abs(v)); const g = peak > 0.95 ? 0.95 / peak : 1;
   const b = Buffer.alloc(44 + buf.length * 2); b.write('RIFF', 0); b.writeUInt32LE(36 + buf.length * 2, 4); b.write('WAVEfmt ', 8); b.writeUInt32LE(16, 16); b.writeUInt16LE(1, 20); b.writeUInt16LE(1, 22);
   b.writeUInt32LE(SR, 24); b.writeUInt32LE(SR * 2, 28); b.writeUInt16LE(2, 32); b.writeUInt16LE(16, 34); b.write('data', 36); b.writeUInt32LE(buf.length * 2, 40);
   buf.forEach((v, i) => b.writeInt16LE(Math.max(-32767, Math.min(32767, Math.round(v * g * 32767))), 44 + i * 2));
-  const f = path.join(OUT, dir, name + '.wav'); fs.writeFileSync(f, b); return f;
+  const f = path.join(base, dir, name + '.wav'); fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, b); return f;
 }
 const S = {
   rifle: () => { const b = mk(0.35); tone(b, 0, 0.3, 0, { shape: 'noise', vol: 0.8, decay: 9 }); tone(b, 0, 0.12, [900, 120], { shape: 'saw', vol: 0.5, decay: 8 }); return b; },
@@ -55,8 +55,8 @@ for (const [n, f] of Object.entries(S)) wav(n, f());
 
 // ---- music: a step sequencer (bass + lead + drums) -------------------------------------------------------------------
 const N = (m) => 440 * 2 ** ((m - 69) / 12);
-function song({ bpm, bars, bass, lead, drums = false, pad = false, leadShape = 'square', vol = 1 }) {
-  const step = 60 / bpm / 4, steps = bars * 16, b = mk(steps * step + 0.5);
+function song({ bpm, bars, bass, lead, drums = false, pad = false, leadShape = 'square', vol = 1, loop = false }) {
+  const step = 60 / bpm / 4, steps = bars * 16, b = mk(steps * step + (loop ? 0 : 0.5));
   for (let i = 0; i < steps; i++) {
     const t = i * step, bn = bass[i % bass.length], ln = lead[i % lead.length];
     if (bn) tone(b, t, step * 1.8, N(bn), { shape: 'saw', vol: 0.22 * vol, decay: 1.5, lp: 0.12 });
@@ -64,15 +64,20 @@ function song({ bpm, bars, bass, lead, drums = false, pad = false, leadShape = '
     if (pad && i % 16 === 0) for (const m of pad) tone(b, t, step * 16, N(m), { shape: 'sine', vol: 0.09 * vol, decay: 0.6, attack: 0.4 });
     if (drums) { if (i % 4 === 0) tone(b, t, 0.15, [150, 45], { shape: 'sine', vol: 0.5, decay: 6 }); if (i % 8 === 4) tone(b, t, 0.12, 0, { shape: 'noise', vol: 0.3, decay: 9, lp: 0.5 }); if (i % 2 === 1) tone(b, t, 0.04, 0, { shape: 'noise', vol: 0.08, decay: 12, lp: 0.9 }); }
   }
+  if (loop) { const fade = Math.floor(SR * 0.02); for (let i = 0; i < fade; i++) { b[i] *= i / fade; b[b.length - 1 - i] *= i / fade; } }
   return b;
 }
 const _ = 0;
+// Keep Red Front's original music independent of X-KOM's three user-replaceable slots.
+const redfront = song({ bpm: 128, bars: 8, bass: [38, 38, _, 38, 38, _, 41, _, 36, 36, _, 36, 36, _, 43, _, 34, 34, _, 34, 34, _, 41, _, 33, 33, _, 33, 40, _, 38, _], lead: [62, _, 65, 62, _, 69, _, 65, 60, _, 64, 60, _, 67, _, 64, 58, _, 62, 58, _, 65, _, 62, 57, _, 61, 64, _, 69, _, _], drums: true, leadShape: 'square' });
 const songs = {
-  music_geoscape: song({ bpm: 72, bars: 8, bass: [45, _, _, _, _, _, _, _, 41, _, _, _, _, _, _, _, 43, _, _, _, _, _, _, _, 40, _, _, _, _, _, _, _], lead: [_, _, 69, _, _, _, 72, _, _, _, _, _, 76, _, 72, _, _, _, 65, _, _, _, 69, _, _, _, _, _, 72, _, _, _], pad: [57, 60, 64], leadShape: 'tri', vol: 1 }),
-  music_tactical: song({ bpm: 96, bars: 8, bass: [38, _, 38, _, _, 38, _, _, 41, _, 41, _, _, 41, _, _, 36, _, 36, _, _, 36, _, _, 37, _, 37, _, _, 40, _, _], lead: [_, _, _, _, 62, _, _, _, _, _, 65, _, _, _, 64, _, _, _, _, _, 60, _, _, _, _, _, 61, _, _, _, 64, _], drums: false, pad: [50, 53, 57], leadShape: 'tri' }),
-  music_rts: song({ bpm: 128, bars: 8, bass: [38, 38, _, 38, 38, _, 41, _, 36, 36, _, 36, 36, _, 43, _, 34, 34, _, 34, 34, _, 41, _, 33, 33, _, 33, 40, _, 38, _], lead: [62, _, 65, 62, _, 69, _, 65, 60, _, 64, 60, _, 67, _, 64, 58, _, 62, 58, _, 65, _, 62, 57, _, 61, 64, _, 69, _, _], drums: true, leadShape: 'square' }),
+  music_title: song({ bpm: 90, bars: 16, loop: true, bass: [33, _, _, 45, _, _, 40, _, 33, _, _, 45, _, 40, _, _, 29, _, _, 41, _, _, 36, _, 29, _, _, 41, _, 36, _, _, 31, _, _, 43, _, _, 38, _, 31, _, _, 43, _, 38, _, _, 28, _, _, 40, _, _, 35, _, 28, _, 35, _, 40, _, _, _], lead: [69, _, _, _, 72, _, _, _, 76, _, _, 74, 72, _, 69, _, 65, _, _, _, 69, _, _, _, 72, _, _, 69, 65, _, _, _, 67, _, _, _, 71, _, _, _, 74, _, 76, _, 74, _, 71, _, 64, _, _, _, 68, _, _, _, 71, _, 74, _, 76, _, _, _], drums: true, pad: [45, 48, 52], leadShape: 'tri' }),
+  music_base: song({ bpm: 72, bars: 16, loop: true, bass: [45, _, _, _, _, _, _, _, 41, _, _, _, _, _, _, _, 43, _, _, _, _, _, _, _, 40, _, _, _, _, _, _, _], lead: [_, _, 69, _, _, _, 72, _, _, _, 76, _, _, _, 72, _, _, _, 65, _, _, _, 69, _, _, _, 72, _, _, _, 69, _, _, _, 67, _, _, _, 71, _, _, _, 74, _, _, _, 71, _, _, _, 64, _, _, _, 68, _, _, _, 71, _, _, _, _, _], pad: [57, 60, 64], leadShape: 'sine', vol: 0.85 }),
+  music_game: song({ bpm: 112, bars: 16, loop: true, bass: [38, _, 38, 50, _, 38, 41, _, 38, _, 38, 50, _, 41, 38, _, 36, _, 36, 48, _, 36, 39, _, 36, _, 36, 48, _, 39, 36, _, 34, _, 34, 46, _, 34, 38, _, 34, _, 34, 46, _, 38, 34, _, 33, _, 33, 45, _, 33, 37, _, 33, _, 37, _, 40, _, 38, _], lead: [62, _, _, 65, _, _, 69, _, _, _, 65, _, 64, _, _, _, 60, _, _, 63, _, _, 67, _, _, _, 63, _, 62, _, _, _, 58, _, _, 62, _, _, 65, _, _, _, 62, _, 60, _, _, _, 57, _, _, 61, _, _, 64, _, _, _, 67, _, 69, _, _, _], drums: true, pad: [50, 53, 57], leadShape: 'tri' }),
 };
 for (const [n, buf] of Object.entries(songs)) {
   const f = wav(n, buf, 'music'); execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', f, '-b:a', '64k', f.replace('.wav', '.mp3')]); fs.unlinkSync(f);
 }
+const rf = wav('music_rts', redfront, 'music', path.join(ROOT, 'tools/examples/redfront/assets/audio'));
+execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', rf, '-b:a', '64k', rf.replace('.wav', '.mp3')]); fs.unlinkSync(rf);
 console.log('audio ->', OUT);
