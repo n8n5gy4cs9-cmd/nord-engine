@@ -4,4 +4,4 @@ MUSIC (replace these files, keep names):
   music/music_game.mp3 — tactical missions, radar/shooter, Hive Strike
 SFX (.wav): rifle, plasma, explosion, hit, die_human, die_alien, step, click, select, confirm, error, endturn, alarm, ack, built, cannon, rocket, spit, ore, victory, defeat.
 See assets.md section 5 for every sound and easy swap steps.
-Music loops. Stop/Play or reload after replacing. First touch/click enables title music and stays on title; next input plays. M/LISTEN is optional.
+Music loops. Stop/Play or reload after replacing. First touch/click enables title music and stays on title; next input plays.

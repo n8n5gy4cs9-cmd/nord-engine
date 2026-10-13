@@ -50,7 +50,7 @@ export default class XKom extends XkBase {
     document.addEventListener('visibilitychange', this.onHide); window.addEventListener('pagehide', this.onPageHide);
   }
   onDestroy() { document.removeEventListener('visibilitychange', this.onHide); window.removeEventListener('pagehide', this.onPageHide); this.pause?.destroy(); this.startGate?.destroy(); this.dev?.destroy(); window.removeEventListener('keydown', this.onKey); window.removeEventListener('keyup', this.onKeyUp); this.ps?.input?.off('pointermove', this.onMove); this.ps?.input?.off('pointerdown', this.onDown); this.ps?.input?.off('pointerup', this.onUp); delete window.__xk; }
-  update(dt) { if (!this.ready || this.pause?.open || this.help.open || this.dev?.open || this.startGate?.active || document.hidden) return; const d = Math.min(dt > 1 ? dt / 1000 : dt, 0.1); if (this.mode === 'rts') this.rts.update(d); else if (this.mode === 'air') this.air.update(d); else if (this.mode === 'geo' || this.mode === 'base') this.advanceCampaign(d); }
+  update(dt) { if (!this.ready || this.pause?.open || this.help.open || this.dev?.open || this.startGate?.active || document.hidden) return; const d = Math.min(dt > 1 ? dt / 1000 : dt, 0.1); if (this.mode === 'tac') this.tac.update(d); else if (this.mode === 'rts') this.rts.update(d); else if (this.mode === 'air') this.air.update(d); else if (this.mode === 'geo' || this.mode === 'base') this.advanceCampaign(d); }
   advanceCampaign(seconds, force = false) {
     if (!['geo', 'base'].includes(this.mode)) return;
     if (this.C.presence >= 100) { this.alertThenRts(); return; }
@@ -102,13 +102,11 @@ export default class XKom extends XkBase {
     h.keep(h.text(17, 111, 'COMMAND THE RESISTANCE', COL.dim, { hud: true, depth: 6 }));
     h.keep(h.panel(16, 166, 152, 17, 0x354761, { depth: 4 }));
     h.keep(h.text(92, 170, this.savedCampaign() ? 'CONTINUE  [ENTER]' : 'BEGIN CAMPAIGN  [ENTER]', COL.text, { origin: [0.5, 0], hud: true, depth: 6 }));
-    h.keep(h.panel(242, 166, 64, 17, 0x354761, { depth: 4 })); h.keep(h.text(274, 170, 'LISTEN [M]', COL.text, { origin: [0.5, 0], hud: true, depth: 6 }));
     h.keep(h.text(17, 190, 'CROWELIAN 2026 + SONNET', COL.dim, { scale: 0.85, hud: true, depth: 6 }));
     h.keep(h.text(310, 190, 'F1  FIELD MANUAL', COL.dim, { origin: [1, 0], scale: 0.85, hud: true, depth: 6 }));
     if (this.savedCampaign()) { h.keep(h.panel(16, 144, 152, 17, 0x253249, { depth: 4 })); h.keep(h.text(92, 148, 'NEW CAMPAIGN  [N]', COL.dim, { origin: [0.5, 0], hud: true, depth: 6 })); }
     this.music('music_title', 0.25);
   }
-  listenTitle() { this.game.audio.mute('music', false); this.game.audio.unlock(); this.sfx('click', 0.25); }
 
   // ---- geoscape ---------------------------------------------------------------------------------------------------------------------------------------------
   makeSites() {
@@ -215,7 +213,7 @@ export default class XKom extends XkBase {
     if (this.mode === 'rts') { if (this.rts.over && down) this.rts.doneKey?.(e); else this.rts.key(e, down); return; }
     if (this.mode === 'air') return this.air.key(e, down);
     if (!down) return;
-    if (this.mode === 'title') { if (k === 'Enter' || k === ' ') this.continueCampaign(); else if (k === 'n' || k === 'N') this.beginCampaign(); else if (k === 'm' || k === 'M') this.listenTitle(); }
+    if (this.mode === 'title') { if (k === 'Enter' || k === ' ') this.continueCampaign(); else if (k === 'n' || k === 'N') this.beginCampaign(); }
     else if (this.mode === 'base') { if (k === 'b' || k === 'B' || k === 'Escape') this.geoscape(); else if (/^[1-7]$/.test(k)) this.pickTech(TECHS[+k - 1].id); }
     else if (this.mode === 'geo') { if (k === 'b' || k === 'B') this.baseScreen(); else if (/^[1-3]$/.test(k)) this.intercept(this.sites[+k - 1]); else if (k === 'f' || k === 'F') this.launchFinale(); else if (k === 'r' || k === 'R') { this.C.presence = 100; this.alertThenRts(); } else { const id = { z: 'hq', Z: 'hq', g: 'globe', G: 'globe', ArrowLeft: 'left', ArrowRight: 'right', ArrowUp: 'up', ArrowDown: 'down', '+': 'in', '=': 'in', '-': 'out' }[k]; if (id) this.geo.action(id); } }
     else if (this.mode === 'tac') { if (this.tac.over) this.tac.doneKey?.(e); else this.tac.key(e); }
@@ -228,7 +226,7 @@ export default class XKom extends XkBase {
     if (this.mode === 'air') return this.air.pointer(p, type);
     if (type === 'move') { if (this.mode === 'tac') this.tac.pointer(p, false); return; }
     if (type !== 'down') return;
-    if (this.mode === 'title') { if (lx >= 242 && lx < 306 && ly >= 166 && ly < 183) return this.listenTitle(); if (ly >= 144 && ly < 161 && lx >= 16 && lx < 168 && this.savedCampaign()) this.beginCampaign(); else this.continueCampaign(); this.sfx('confirm', 0.5); }
+    if (this.mode === 'title') { if (ly >= 144 && ly < 161 && lx >= 16 && lx < 168 && this.savedCampaign()) this.beginCampaign(); else this.continueCampaign(); this.sfx('confirm', 0.5); }
     else if (this.mode === 'base') { const hit = (r) => lx >= r.x && lx < r.x + r.w && ly >= r.y && ly < r.y + r.h; if (hit(this.backBtn)) { this.sfx('click', 0.4); this.geoscape(); } else { const t = this.techRects.find(hit); if (t) this.pickTech(t.id); } }
     else if (this.mode === 'geo') { const button = this.geoBtns.find(q => lx >= q.x && lx < q.x + q.w && ly >= q.y && ly < q.y + q.h); if (button) { this.sfx('click', 0.3); return button.id === 'base' ? this.baseScreen() : button.id === 'final' ? this.launchFinale() : this.geo.action(button.id); }
       const site = this.sites.find(s => lx >= s.rect.x && lx < s.rect.x + s.rect.w && ly >= s.rect.y && ly < s.rect.y + s.rect.h) ?? this.geo.hit(lx, ly); if (site) { this.sfx('confirm', 0.5); this.intercept(site); } }

@@ -11,15 +11,15 @@ const { errors, result } = await withPage(dir, async page => {
     const r = await page.evaluate(() => { const m = window.__nord.audio._music, data = m.src.buffer.getChannelData(0); let peak = 0; for (let i = 0; i < data.length; i += 97) peak = Math.max(peak, Math.abs(data[i])); return { loop: m.src.loop, seconds: m.src.buffer.duration, peak }; });
     assert.equal(r.loop, true); assert.ok(r.seconds > 20); assert.ok(r.peak > 0.05); return r;
   };
-  await page.keyboard.press('m'); await track('title'); assert.equal(await page.evaluate(() => window.__xk.mode), 'title');
+  await page.mouse.click(480, 300); await track('title'); assert.equal(await page.evaluate(() => window.__xk.mode), 'title');
   await page.screenshot({ path: `${ROOT}/docs/screenshots/xkom-title.png` });
   await page.keyboard.press('Enter'); await track('base'); await page.evaluate(() => { window.__baseAudioSource = window.__nord.audio._music.src; });
   await page.keyboard.press('b'); await page.waitForFunction(() => window.__xk.mode === 'base'); await track('base');
   assert.equal(await page.evaluate(() => window.__nord.audio._music.src === window.__baseAudioSource), true);
-  await page.keyboard.press('Escape'); await page.keyboard.press('1'); await page.waitForFunction(() => window.__xk.mode === 'air'); await track('game');
+  await page.keyboard.press('b'); await page.keyboard.press('1'); await page.waitForFunction(() => window.__xk.mode === 'air'); await track('game');
   await page.evaluate(() => { window.__gameAudioSource = window.__nord.audio._music.src; });
   await page.keyboard.press('Enter'); await page.waitForFunction(() => window.__xk.air.phase === 'air'); await track('game');
-  await page.keyboard.press('Escape'); await page.waitForFunction(() => window.__xk.mode === 'tac'); await track('game');
+  await page.keyboard.press('d'); await page.waitForFunction(() => window.__xk.mode === 'tac'); await track('game');
   assert.equal(await page.evaluate(() => window.__nord.audio._music.src === window.__gameAudioSource), true);
   await page.evaluate(() => { window.__xk.tac.destroy(); window.__xk.startRts(); }); await track('game');
   await page.evaluate(() => { window.__xk.rts.destroy(); window.__xk.ending(true); }); await track('base');

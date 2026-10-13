@@ -69,6 +69,14 @@ export class XkBase extends NordScript {
   syncHud() { this.hud.setPosition(this.vx, this.vy); }
   /** screen pointer → [world x, world y, hud-local x, hud-local y] */
   ptr(p) { const k = ZOOM * (this.cam.width ? this.cam.width / (VW * ZOOM) : 1), lx = p.x / k, ly = p.y / k; return [this.vx + lx, this.vy + ly, lx, ly]; }
+  // Edge bands belong to the map rectangle, never the sidebar/HUD or DOM overlays.
+  edgeDirection(width, height, margin = 6) {
+    const input = this.ps.input, p = input.mousePointer;
+    if (!p || !input.manager.isOver || input.activePointer?.wasTouch) return [0, 0];
+    const [, , x, y] = this.ptr(p);
+    if (x < 0 || y < 0 || x >= width || y >= height) return [0, 0];
+    return [x < margin ? -1 : x >= width - margin ? 1 : 0, y < margin ? -1 : y >= height - margin ? 1 : 0];
+  }
   sfx(n, v = 0.5, r = 1) { this.game.audio.play(`assets/audio/sfx/${n}.wav`, { volume: v, rate: r }); }
   music(n, v = 0.25) { this.game.audio.music(`assets/audio/music/${n}.mp3`, { volume: v }); }
   wait(ms) { return new Promise((r) => this.ps.time.delayedCall(Math.max(1, ms), r)); }

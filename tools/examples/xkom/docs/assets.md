@@ -111,7 +111,7 @@ The **Base screen** (facilities + research list + soldier roster) and panels/but
 | `assets/audio/music/music_base.mp3` | **Geoscape/globe, HQ regional map, Base/research, campaign victory/defeat screen** | 53.3 s — quiet 72 BPM command-center ambience, soft synth pads and sparse melody. |
 | `assets/audio/music/music_game.mp3` | **Tactical missions, interception radar/auto/shooter, Hive Strike alert and RTS battle** | 34.3 s — tense 112 BPM combat theme with bass, percussion and restrained synth lead. |
 
-Browsers start audio after a click/key gesture. The first touch/click dismisses the ready-made Nord start gate and plays title music while staying on the title; the next interaction is normal game input. **M** / **LISTEN [M]** remains available. Enter starts the campaign and switches to base music. Music crossfades between different files; moving between screens using the same file keeps the loop playing.
+Browsers start audio after a click/key gesture. The first touch/click dismisses the ready-made Nord start gate and plays title music while staying on the title; the next interaction is normal game input. The title no longer needs a separate LISTEN button. Enter starts the campaign and switches to base music. Music crossfades between different files; moving between screens using the same file keeps the loop playing.
 
 ### Sound effects — replace one sound at a time
 | File to replace | Exactly when it plays | Replacement suggestion |
@@ -123,7 +123,7 @@ Browsers start audio after a click/key gesture. The first touch/click dismisses 
 | `assets/audio/sfx/die_alien.wav` | An alien dies in tactical or RTS. | Brief alien death cry. |
 | `assets/audio/sfx/explosion.wav` | Vehicle/building destruction; interception explosions and jet crash; UFO auto-resolve success. | Short explosion with a fading tail. |
 | `assets/audio/sfx/step.wav` | Each tactical walking step, for soldiers and visible/hidden alien replay. | Very short boot/footstep sound. |
-| `assets/audio/sfx/click.wav` | UI buttons/help, RTS production request, title LISTEN button. | Quiet interface click. |
+| `assets/audio/sfx/click.wav` | UI buttons/help and RTS production requests. | Quiet interface click. |
 | `assets/audio/sfx/select.wav` | Soldier/unit selection and next soldier; interceptor roll and reflected shots. | Short positive selection chirp. |
 | `assets/audio/sfx/confirm.wav` | Campaign/mission selection; research accepted; returning from Base. | Short confirmation chime. |
 | `assets/audio/sfx/error.wav` | Invalid shot, unavailable research, or failed RTS production request. | Brief negative/error buzz. |

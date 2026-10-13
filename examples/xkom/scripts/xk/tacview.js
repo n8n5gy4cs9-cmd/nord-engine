@@ -10,7 +10,7 @@ export class TacView {
   constructor(host) { this.h = host; }
   start({ squad, seed, aliens, mods, onEnd }) {
     const h = this.h, ps = h.ps; this.onEnd = onEnd; this.s = newMission({ seed, squad, aliens, mods });
-    this.objs = []; this.spr = new Map(); this.tiles = []; this.mode = 'snap'; this.sel = null; this.busy = false; this.fxs = []; this.preview = []; this.hover = [0, 0]; this.over = false; this.anim = 0;
+    this.objs = []; this.spr = new Map(); this.tiles = []; this.mode = 'snap'; this.sel = null; this.busy = false; this.fxs = []; this.preview = []; this.hover = [0, 0]; this.over = false; this.anim = 0; this.scrollX = this.scrollY = null;
     const s = this.s;
     for (let y = 0; y < s.h; y++) for (let x = 0; x < s.w; x++) {
       const [sx, sy] = iso(x, y), gi = s.g[y * s.w + x];
@@ -24,7 +24,7 @@ export class TacView {
     h.music('music_game', 0.22); this.msg(`MISSION START - ${s.aliensTotal} HOSTILES DETECTED`);
     this.timer = ps.time.addEvent({ delay: 380, loop: true, callback: () => { this.anim++; this.idle(); } });
   }
-  destroy() { if (!this.s) return; this.timer?.remove(); for (const o of [...this.objs, ...this.ovl, ...this.fxs, ...this.preview]) o.destroy?.(); for (const e of this.spr.values()) e.sp.destroy(); this.spr.clear(); this.h.hud.removeAll(true); this.s = null; }
+  destroy() { if (!this.s) return; this.timer?.remove(); this.msgT?.remove(); for (const o of [...this.objs, ...this.ovl, ...this.fxs, ...this.preview]) o.destroy?.(); for (const e of this.spr.values()) e.sp.destroy(); this.spr.clear(); this.h.hud.removeAll(true); this.s = null; }
 
   // ---- sprites -----------------------------------------------------------------------------------------------------------------------
   frame(u, st) { return RACE_IDX[u.race] * 5 + st; } // 0 idle · 1 walk · 2 aim · 3 shoot · 4 dead
@@ -79,7 +79,7 @@ export class TacView {
     for (const b of this.btns) { const on = b.id === this.mode; b.bg.setFillStyle(on ? 0xb88a28 : 0x7a7660);
       if (['snap', 'aimed', 'auto'].includes(b.id) && u) { const w = WEAPONS[u.weapon][b.id]; b.t.setText(`${b.id.toUpperCase()} ${Math.round(u.firing * w[0] / 100)}% ${shotCost(u, b.id)}`, on ? '#ffffff' : COL.text); } }
   }
-  msg(str, col = COL.gold) { this.tMsg.setText(str, col); this.msgT = this.h.ps.time.delayedCall(2500, () => this.tMsg?.setText('', col)); }
+  msg(str, col = COL.gold) { this.msgT?.remove(); this.tMsg.setText(str, col); this.msgT = this.h.ps.time.delayedCall(2500, () => this.tMsg?.setText('', col)); }
 
   // ---- input ----------------------------------------------------------------------------------------------------------------------------------------
   hudClick(lx, ly) { if (ly < HUDY) return false; const b = this.btns.find((q) => lx >= q.x && lx < q.x + q.w && ly >= q.y && ly < q.y + q.h); if (!b) return true; this.h.sfx('click', 0.4);
@@ -95,6 +95,19 @@ export class TacView {
     if (!u) return;
     if (al) { this.fire(u, al); return; }
     if (this.reachMap.has(key(tx, ty)) && !solid(this.s, tx, ty)) this.move(u, tx, ty);
+  }
+  update(dt) {
+    if (!this.s || this.over || this.busy) { this.scrollX = this.scrollY = null; return; }
+    const h = this.h, [dx, dy] = h.edgeDirection(VW, HUDY);
+    if (!dx && !dy) { this.scrollX = this.scrollY = null; return; }
+    h.panTween?.stop();
+    if (this.scrollX === null || Math.abs(this.scrollX - h.vx) > 1) this.scrollX = h.vx;
+    if (this.scrollY === null || Math.abs(this.scrollY - h.vy) > 1) this.scrollY = h.vy;
+    const speed = 120 * dt / Math.hypot(dx, dy);
+    this.scrollX = Math.max(OX - this.s.h * 16 - VW / 2, Math.min(OX + this.s.w * 16 - VW / 2, this.scrollX + dx * speed));
+    this.scrollY = Math.max(OY - VH / 2, Math.min(OY + (this.s.w + this.s.h) * 8 - HUDY / 2, this.scrollY + dy * speed));
+    h.camCenter(this.scrollX + VW / 2, this.scrollY + VH / 2);
+    this.pointer(h.ps.input.mousePointer, false); // Keep tile preview aligned under a stationary mouse.
   }
   cycleMode() { this.mode = this.mode === 'snap' ? 'aimed' : this.mode === 'aimed' ? 'auto' : 'snap'; this.hudRefresh(); }
   key(e) {

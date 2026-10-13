@@ -11,7 +11,7 @@ export class RtsView {
   /** cfg: { mode, bonus, seed, diff, music, briefing, winText, loseText, onEnd } */
   start(cfg) {
     const h = this.h, ps = h.ps; this.cfg = cfg; this.s = newRts({ seed: cfg.seed, mode: cfg.mode, bonus: cfg.bonus ?? 0, diff: cfg.diff ?? 1, mods: cfg.mods });
-    this.objs = []; this.usp = new Map(); this.bsp = new Map(); this.sel = new Set(); this.over = false; this.amove = false; this.drag = null; this.keys = {}; this.sx = 0; this.sy = 0; this.sfxT = {}; this.anim = 0; this.lines = []; this.dtLast = 0.016; this.edge = null;
+    this.objs = []; this.usp = new Map(); this.bsp = new Map(); this.sel = new Set(); this.over = false; this.amove = false; this.drag = null; this.keys = {}; this.sx = 0; this.sy = 0; this.sfxT = {}; this.anim = 0; this.lines = []; this.dtLast = 0.016;
     const s = this.s; this.um = h.meta.runits; this.ucols = this.um.framesPerRow;
     this.terr = [];
     for (let y = 0; y < s.h; y++) for (let x = 0; x < s.w; x++) {
@@ -27,7 +27,7 @@ export class RtsView {
     this.wt = ps.time.addEvent({ delay: 520, loop: true, callback: () => { this.anim++; this.waterTick(); } });
     this.miniT = 0;
   }
-  destroy() { this.wt?.remove(); for (const o of this.objs) o.destroy?.(); for (const e of this.usp.values()) e.sp.destroy(); for (const e of this.bsp.values()) e.sp.destroy(); for (const o of this.oreSp.values()) o.destroy(); this.h.hud.removeAll(true); this.usp.clear(); this.bsp.clear(); if (this.h.ps.textures.exists(this.miniKey)) this.h.ps.textures.remove(this.miniKey); }
+  destroy() { this.wt?.remove(); this.msgT?.remove(); this.msg2T?.remove(); for (const o of this.objs) o.destroy?.(); for (const e of this.usp.values()) e.sp.destroy(); for (const e of this.bsp.values()) e.sp.destroy(); for (const o of this.oreSp.values()) o.destroy(); this.h.hud.removeAll(true); this.usp.clear(); this.bsp.clear(); if (this.h.ps.textures.exists(this.miniKey)) this.h.ps.textures.remove(this.miniKey); }
 
   // ---- HUD / sidebar -------------------------------------------------------------------------------------------------------------------------
   buildHud() {
@@ -126,9 +126,10 @@ export class RtsView {
   update(dt) {
     if (!this.s) return; this.dtLast = dt; const s = this.s;
     if (!this.over) step(s, Math.min(dt, 0.1) * (this.cfg.speed ?? 1));
-    const sp = 170 * dt, k = this.keys, dx = (k.ArrowRight ? 1 : 0) - (k.ArrowLeft ? 1 : 0), dy = (k.ArrowDown ? 1 : 0) - (k.ArrowUp ? 1 : 0);
-    let ex = 0, ey = 0; if (this.edge) { const [x, y] = this.edge; if (x < 2) ex = -1; else if (x > VW - 3 && x < VW + 8) ex = 1; if (y < 2) ey = -1; else if (y > VH - 3 && y < VH + 8) ey = 1; }
-    if (dx || dy || ex || ey) this.view(this.sx + (dx + ex) * sp, this.sy + (dy + ey) * sp);
+    const k = this.keys, [ex, ey] = this.over ? [0, 0] : this.h.edgeDirection(MAPVW, VH);
+    const dx = this.over ? 0 : Math.sign((k.ArrowRight ? 1 : 0) - (k.ArrowLeft ? 1 : 0) + ex), dy = this.over ? 0 : Math.sign((k.ArrowDown ? 1 : 0) - (k.ArrowUp ? 1 : 0) + ey);
+    const speed = 170 * dt / (Math.hypot(dx, dy) || 1);
+    if (dx || dy) this.view(this.sx + dx * speed, this.sy + dy * speed);
     this.syncSprites(); this.syncOre(); this.events(); this.drawOverlay(); this.hudRefresh();
     if (s.result && !this.over) this.finish();
   }
@@ -147,7 +148,7 @@ export class RtsView {
   }
   ownAt(wx, wy) { const tx = wx / TS, ty = wy / TS; return this.s.units.filter((u) => u.team === 'p' && Math.hypot(u.x - tx, u.y - ty) < 0.8).sort((a, b) => Math.hypot(a.x - tx, a.y - ty) - Math.hypot(b.x - tx, b.y - ty))[0]; }
   pointer(p, type) {
-    if (!this.s) return; const [wx, wy, lx, ly] = this.h.ptr(p); this.edge = [lx, ly]; this.cursor.setPosition(lx, ly); if (this.over) return;
+    if (!this.s) return; const [wx, wy, lx, ly] = this.h.ptr(p); this.cursor.setPosition(lx, ly); if (this.over) return;
     const onSide = lx >= SBX - 2; this.cursor.setFrame(!onSide && this.sel.size && this.enemyAt(wx, wy) ? 1 : 0);
     if (type === 'move') { if (this.drag) { this.drag.x1 = wx; this.drag.y1 = wy; if (Math.hypot(wx - this.drag.x0, wy - this.drag.y0) > 4) this.drag.on = true; } return; }
     if (type === 'down') {

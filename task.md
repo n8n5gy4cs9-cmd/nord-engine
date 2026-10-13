@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 156/168 tasks (93%)** · updated 2026-10-13
+**Overall: 157/169 tasks (93%)** · updated 2026-10-13
 
 | Milestone | Progress |
 |---|---|
@@ -13,7 +13,7 @@
 | M3 Editor | 24/26 (92%) |
 | M4 Export | 8/11 (73%) |
 | M5 Rust/WASM | 9/9 (100%) |
-| M6 Library | 31/31 (100%) |
+| M6 Library | 32/32 (100%) |
 | M7 Docs | 13/13 (100%) |
 | M8 Polish & portability | 12/19 (63%) |
 | M9 Desktop apps | 16/16 (100%) |
@@ -172,6 +172,7 @@ _snippets, controllers, systems, asset packs, examples_
 - [x] **M6-29** Add separate X-KOM title/base/game music and clear replaceable audio inventory
 - [x] **M6-30** Terminal radar, developer console, reusable audio start gate and slow timed X-KOM campaign
 - [x] **M6-31** Complete simple X-KOM campaign finale, campaign save/load pause menu and compact RTS/HQ UI
+- [x] **M6-32** Mouse-edge scrolling restricted to tactical/RTS playfields and remove redundant title Listen control
 
 ## M7 — Docs
 _manual, guides, tutorials, in-editor docs_
