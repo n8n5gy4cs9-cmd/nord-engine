@@ -20,6 +20,14 @@ editor: **Project → Export…**. `web-wasm-game` (M5-05, verified) builds the 
 (`Contents/Resources/game/` + Info.plist + generated AppIcon.icns, ad-hoc codesign on macOS); the player is `crates/nord-player` (wry+tao, `--features shell`, macOS-only to build). Hosting: HOSTING.md.
 Not done: texture-atlas packing and lossy PNG quantisation (M4-11).
 
+## Touch controls (phones & tablets)
+`runtime/touch/nord-touch.js` adds on-screen controls to **any** web export. It sends normal `KeyboardEvent`s (`code`/`key`/`keyCode`), so the game needs no changes.
+- **web-2d / web-3d / web-3d-pc / web-wasm-game / web-wasm-app (and `--single-file`):** inlined automatically; buttons are derived from the project's `input.actions` (left/right/up/down → stick or D-pad, other actions → buttons, `pause`/`menu` → corner button; first keyboard code of each action).
+- **html (your own page):** copy `nord-touch.js` next to `index.html` and add `<script src="nord-touch.js"></script>` (see `examples/html-touch`).
+- Only shown on touch devices; `?touch=1` forces it on desktop, `?touch=0` turns it off; hides when a physical key is pressed.
+- Options as `data-*` on the tag or `NordTouch.init({...})`: `preset` (`arrows|wasd|platformer|topdown|shooter|tap`), `dpad` (`stick|dpad|none`), `keys` (`up,left,down,right` codes), `buttons` (`Space:Jump,KeyX:Act`), `menu`, `opacity`, `size`, `force`, `fullscreen`, `auto="false"` (call `init` yourself). `NordTouch.axis` exposes the analog stick `[x,y]`.
+- Limits: keyboard-driven games only (mouse/tap games already work via the browser's touch→mouse events); games that read the Gamepad API directly don't see it.
+
 ## Output layout (web)
 ```
 dist/

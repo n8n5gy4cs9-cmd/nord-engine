@@ -35,7 +35,7 @@ or Babylon TransformNode — escape hatch).
 
 ## Input
 `input.down('left')` (action), `input.pressed('jump')`, `input.released(...)`, `input.axis('left','right')`, `input.vec('left','right','up','down')`,
-`input.key('KeyW')`, `input.pointer` `{x,y,worldX,worldY,down}`, gamepad, touch, virtual joystick (ui plugin). Actions come from `nord.project.json`.
+`input.key('KeyW')`, `input.pointer` `{x,y,worldX,worldY,down}`, gamepad, touch, virtual joystick (ui plugin). Actions come from `nord.project.json`. Exported web builds also get automatic on-screen touch controls built from those actions (`nord-touch.js`, see EXPORT_TARGETS.md).
 
 ## Scene
 `game.loadScene(path)`, `game.restart()`, `game.pause()/resume()`, `game.timeScale`, `scene.spawn(prefabPath, {pos})`, `scene.find…`.

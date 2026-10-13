@@ -162,15 +162,15 @@ pub fn optimize_wasm(wasm: &Path) -> String {
     }
 }
 
-pub fn game_index_html(title: &str, background: &str) -> String {
+pub fn game_index_html(title: &str, background: &str, touch: &str) -> String {
     format!(
-        "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>{title}</title>\n<style>html,body{{margin:0;height:100%;background:{background};overflow:hidden}}canvas{{width:100vw;height:100vh;display:block}}</style></head>\n<body>\n<canvas id=\"glcanvas\" tabindex=\"1\"></canvas>\n<script src=\"mq_js_bundle.js\"></script>\n<script>load(\"game.wasm\");</script>\n</body></html>\n"
+        "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>{title}</title>\n<style>html,body{{margin:0;height:100%;background:{background};overflow:hidden}}canvas{{width:100vw;height:100vh;display:block}}</style></head>\n<body>\n<canvas id=\"glcanvas\" tabindex=\"1\"></canvas>\n<script src=\"mq_js_bundle.js\"></script>\n<script>load(\"game.wasm\");</script>\n{touch}\n</body></html>\n"
     )
 }
 
-pub fn app_index_html(title: &str, background: &str) -> String {
+pub fn app_index_html(title: &str, background: &str, touch: &str) -> String {
     format!(
-        "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>{title}</title>\n<style>html,body{{margin:0;height:100%;background:{background};overflow:hidden}}canvas{{width:100%;height:100%;display:block}}</style></head>\n<body>\n<canvas id=\"the_canvas_id\"></canvas>\n<script type=\"module\">\nimport init from './app.js';\ninit().catch((e) => {{ console.error(e); document.body.textContent = String(e); }});\n</script>\n</body></html>\n"
+        "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>{title}</title>\n<style>html,body{{margin:0;height:100%;background:{background};overflow:hidden}}canvas{{width:100%;height:100%;display:block}}</style></head>\n<body>\n<canvas id=\"the_canvas_id\"></canvas>\n<script type=\"module\">\nimport init from './app.js';\ninit().catch((e) => {{ console.error(e); document.body.textContent = String(e); }});\n</script>\n{touch}\n</body></html>\n"
     )
 }
 
@@ -217,8 +217,8 @@ mod tests {
 
     #[test]
     fn index_pages_reference_relative_files() {
-        let g = game_index_html("T", "#000");
+        let g = game_index_html("T", "#000", "<!--t-->");
         assert!(g.contains("src=\"mq_js_bundle.js\"") && g.contains("load(\"game.wasm\")"));
-        assert!(app_index_html("T", "#000").contains("./app.js"));
+        assert!(app_index_html("T", "#000", "").contains("./app.js"));
     }
 }

@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"><title>Nord Touch — Coin Run</title>
+<style>html,body{margin:0;height:100%;background:#2e3440;overflow:hidden}canvas{display:block;width:100vw;height:100vh;image-rendering:pixelated}</style></head>
+<body>
+<!-- A game that only knows the KEYBOARD. nord-touch.js (one tag, bottom of the page) adds phone/tablet controls by
+     sending the same key events. On a desktop it stays hidden — open with ?touch=1 to preview it. -->
+<canvas id="c" width="320" height="180"></canvas>
+<script>
+  const c = document.getElementById('c'), ctx = c.getContext('2d'), keys = {};
+  addEventListener('keydown', (e) => { keys[e.code] = true; });
+  addEventListener('keyup', (e) => { keys[e.code] = false; });
+  const p = { x: 40, y: 140, vx: 0, vy: 0, ground: true }, coins = [], state = { score: 0 };
+  const spawn = () => coins.push({ x: 20 + Math.random() * 280, y: 60 + Math.random() * 90 });
+  for (let i = 0; i < 5; i++) spawn();
+  let last = performance.now();
+  (function frame(t) {
+    const dt = Math.min((t - last) / 1000, 0.05); last = t;
+    const dir = (keys.ArrowRight || keys.KeyD ? 1 : 0) - (keys.ArrowLeft || keys.KeyA ? 1 : 0);
+    p.vx = dir * (keys.ShiftLeft ? 200 : 110);
+    if (keys.Space && p.ground) { p.vy = -260; p.ground = false; }
+    p.vy += 700 * dt; p.x = Math.max(0, Math.min(304, p.x + p.vx * dt)); p.y += p.vy * dt;
+    if (p.y >= 140) { p.y = 140; p.vy = 0; p.ground = true; }
+    for (const k of coins) if (Math.abs(k.x - p.x) < 12 && Math.abs(k.y - p.y) < 14) { k.x = -99; state.score++; spawn(); }
+    ctx.fillStyle = '#2e3440'; ctx.fillRect(0, 0, 320, 180);
+    ctx.fillStyle = '#4c566a'; ctx.fillRect(0, 156, 320, 24);
+    ctx.fillStyle = '#ebcb8b'; for (const k of coins) if (k.x > 0) ctx.fillRect(k.x, k.y, 8, 8);
+    ctx.fillStyle = '#88c0d0'; ctx.fillRect(p.x, p.y, 16, 16);
+    ctx.fillStyle = '#eceff4'; ctx.font = '10px system-ui'; ctx.fillText('Coins ' + state.score + '   ← → move, Space jump', 8, 14);
+    window.__touchgame = { x: p.x, y: p.y, score: state.score };
+    requestAnimationFrame(frame);
+  })(last);
+</script>
+<!-- the whole integration: -->
+<script src="nord-touch.js" data-preset="platformer" data-buttons="Space:Jump,ShiftLeft:Dash"></script>
+</body></html>

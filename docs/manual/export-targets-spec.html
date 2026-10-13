@@ -78,6 +78,15 @@ editor: <strong>Project → Export…</strong>. <code>web-wasm-game</code> (M5-0
 <code>nord bundle-mac &lt;project|dist&gt; [--player nord-player|NordPlayer.app] [--name] [-o dir] [--icon png] [--dmg]</code> assembles <code>&lt;Name&gt;.app</code>
 (<code>Contents/Resources/game/</code> + Info.plist + generated AppIcon.icns, ad-hoc codesign on macOS); the player is <code>crates/nord-player</code> (wry+tao, <code>--features shell</code>, macOS-only to build). Hosting: HOSTING.md.
 Not done: texture-atlas packing and lossy PNG quantisation (M4-11).</p>
+<h2 id="touch-controls-phones-amp-tablets">Touch controls (phones &amp; tablets)<a class="anchor" href="#touch-controls-phones-amp-tablets">#</a></h2>
+<p><code>runtime/touch/nord-touch.js</code> adds on-screen controls to <strong>any</strong> web export. It sends normal <code>KeyboardEvent</code>s (<code>code</code>/<code>key</code>/<code>keyCode</code>), so the game needs no changes.</p>
+<ul>
+<li><strong>web-2d / web-3d / web-3d-pc / web-wasm-game / web-wasm-app (and <code>--single-file</code>):</strong> inlined automatically; buttons are derived from the project&#39;s <code>input.actions</code> (left/right/up/down → stick or D-pad, other actions → buttons, <code>pause</code>/<code>menu</code> → corner button; first keyboard code of each action).</li>
+<li><strong>html (your own page):</strong> copy <code>nord-touch.js</code> next to <code>index.html</code> and add <code>&lt;script src=&quot;nord-touch.js&quot;&gt;&lt;/script&gt;</code> (see <code>examples/html-touch</code>).</li>
+<li>Only shown on touch devices; <code>?touch=1</code> forces it on desktop, <code>?touch=0</code> turns it off; hides when a physical key is pressed.</li>
+<li>Options as <code>data-*</code> on the tag or <code>NordTouch.init({...})</code>: <code>preset</code> (<code>arrows|wasd|platformer|topdown|shooter|tap</code>), <code>dpad</code> (<code>stick|dpad|none</code>), <code>keys</code> (<code>up,left,down,right</code> codes), <code>buttons</code> (<code>Space:Jump,KeyX:Act</code>), <code>menu</code>, <code>opacity</code>, <code>size</code>, <code>force</code>, <code>fullscreen</code>, <code>auto=&quot;false&quot;</code> (call <code>init</code> yourself). <code>NordTouch.axis</code> exposes the analog stick <code>[x,y]</code>.</li>
+<li>Limits: keyboard-driven games only (mouse/tap games already work via the browser&#39;s touch→mouse events); games that read the Gamepad API directly don&#39;t see it.</li>
+</ul>
 <h2 id="output-layout-web">Output layout (web)<a class="anchor" href="#output-layout-web">#</a></h2>
 <pre class="code" data-lang=""><code>dist/
 ├─ index.html          # loads lib/*, nord.json, boots runtime; no network except same-origin

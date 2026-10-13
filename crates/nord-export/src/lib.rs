@@ -581,7 +581,8 @@ pub fn build(project: &Path, engine: &Path, o: &Opts) -> Result<Report> {
             .replace("{{background}}", &css_safe(&proj.display.background))
             .replace("{{head}}", &head)
             .replace("{{libs}}", &libs)
-            .replace("{{main}}", &main);
+            .replace("{{main}}", &main)
+            .replace("{{touch}}", &touch_tag(engine, &proj));
         io::write_atomic(&out.join("index.html"), html.as_bytes())?;
     }
 
@@ -708,7 +709,7 @@ fn build_rust(
             copy_to(&wasm, &out.join("game.wasm"))?;
             io::write_atomic(
                 &out.join("index.html"),
-                rust::game_index_html(&title, &name).as_bytes(),
+                rust::game_index_html(&title, &name, &touch_tag(engine, proj)).as_bytes(),
             )?;
             if o.optimize {
                 notes.push(rust::optimize_wasm(&out.join("game.wasm")));
@@ -718,7 +719,7 @@ fn build_rust(
             rust::bindgen(&wasm, out)?;
             io::write_atomic(
                 &out.join("index.html"),
-                rust::app_index_html(&title, &name).as_bytes(),
+                rust::app_index_html(&title, &name, &touch_tag(engine, proj)).as_bytes(),
             )?;
             if o.optimize {
                 notes.push(rust::optimize_wasm(&out.join("app_bg.wasm")));
@@ -766,6 +767,22 @@ fn html_escape(s: &str) -> String {
     s.replace('&', "&amp;")
         .replace('<', "&lt;")
         .replace('>', "&gt;")
+        .replace('"', "&quot;")
+}
+
+/// Inline `<script>` with the on-screen touch controls (`runtime/touch/nord-touch.js`). It reads the project's
+/// `input.actions` to build buttons, shows only on touch devices and feeds the game ordinary keyboard events.
+/// Empty if the runtime file is missing (e.g. a trimmed engine checkout).
+fn touch_tag(engine: &Path, proj: &nord_core::Project) -> String {
+    let Ok(src) = fs::read_to_string(engine.join("runtime/touch/nord-touch.js")) else {
+        return String::new();
+    };
+    let actions = serde_json::to_string(&proj.input.actions).unwrap_or_else(|_| "{}".into());
+    format!(
+        "<script data-actions=\"{}\">\n{}\n</script>",
+        html_escape(&actions),
+        inline_safe(&src)
+    )
 }
 
 fn css_safe(s: &str) -> String {
@@ -899,6 +916,7 @@ fn single_file(
         .replace("{{name}}", &html_escape(&p.name))
         .replace("{{background}}", &css_safe(&p.display.background))
         .replace("{{head}}", "")
+        .replace("{{touch}}", &touch_tag(engine, p))
         .replace("{{libs}}", &libs)
         .replace(
             "{{main}}",

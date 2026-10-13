@@ -43,3 +43,13 @@ Pointer events cover touch (`input.pointer`). Add a virtual joystick and on-scre
 ::: tip
 Use `fixedUpdate` for physics-related input (jumping) and `update` for everything else; `pressed` is evaluated once per rendered frame, so read it in `update` if you must not miss a tap.
 :::
+
+## Phones and tablets
+Exported web games get **on-screen touch controls for free**: a stick or D-pad plus buttons, built from your `input.actions` (`left/right/up/down` become the pad, every other action a button, `pause`/`menu` a corner button). They appear only on touch devices; add `?touch=1` to the URL to preview on a desktop, `?touch=0` to turn them off. They work by sending ordinary keyboard events, so every export mode is covered — HTML, Phaser, Babylon, PlayCanvas and Rust/WASM.
+
+For a hand-written `html` project, copy `runtime/touch/nord-touch.js` next to your page and add one line (see `examples/html-touch`):
+
+```html
+<script src="nord-touch.js" data-preset="platformer" data-buttons="Space:Jump,ShiftLeft:Dash"></script>
+```
+Presets: `arrows`, `wasd`, `platformer`, `topdown`, `shooter`, `tap`. Details: `docs/EXPORT_TARGETS.md`.

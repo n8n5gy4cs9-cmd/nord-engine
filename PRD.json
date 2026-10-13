@@ -3,7 +3,7 @@
   "tagline": "Rust-based game/app engine + editor that exports static HTML web games and a native Mac app",
   "author": "Crowelian 2026 + Sonnet",
   "version": "0.0.1",
-  "updated": "2026-10-12",
+  "updated": "2026-10-13",
   "branch": "main",
   "statusValues": [
     "todo",
@@ -1280,6 +1280,12 @@
       "id": "M8-19",
       "milestone": "M8",
       "title": "Fix Assets folder divider resizing and staircase thumbnail grid",
+      "status": "done"
+    },
+    {
+      "id": "M8-20",
+      "milestone": "M8",
+      "title": "Plug-and-play touch controls (nord-touch.js) for every web export",
       "status": "done"
     }
   ]

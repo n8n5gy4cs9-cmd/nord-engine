@@ -3,6 +3,7 @@
 Newest first. One line per notable change. Credit: Crowelian 2026 + Sonnet.
 
 ## Unreleased
+- **M8-20 Touch controls:** `runtime/touch/nord-touch.js` — one script that draws a stick/D-pad + buttons on phones/tablets and feeds them to the game as ordinary keyboard events, so it plugs into any html / Phaser / Babylon / PlayCanvas / Rust-WASM export. Exporters inline it into every generated web `index.html` and build the buttons from the project's `input.actions`; plain `html` projects add one `<script>` tag. Shown only on touch devices (`?touch=1` forces, `?touch=0` disables). Example `examples/html-touch`, e2e suite `touch`.
 - **M8-19 Assets layout:** folder-tree divider keeps the dragged width instead of shrinking back to its labels; thumbnails and file/folder icons paint inside their allocated cells so the grid forms aligned rows instead of a staircase. Headless regressions cover divider dragging and three thumbnail sizes.
 - **Editor storage locations:** manual documents exact macOS, Windows and Linux settings/saved-example paths, `NORD_CONFIG_DIR`, Windows's working-directory fallback when `HOME` is unset, and project thumbnail/autosave/lock locations.
 - **macOS project-lock fix:** check process existence with `ps` instead of treating `kill -0` permission failures as a dead process; the existing pid-1 exclusivity regression now passes.
