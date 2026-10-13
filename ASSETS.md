@@ -109,3 +109,5 @@ Kenney City + Racing kit models and engine/skid/impact/ambience sounds (MIT): `t
 
 ## X-KOM 2026 artwork
 All 31 PNG sheets redrawn with original 1990s X-COM / XCOM 2-inspired art; existing dimensions, frame grids and asset paths preserved. Built-in ImageGen raster masters + exact prompts: `tools/art/xkom/redrawn/`; pixel-exact FX, cursors, pickups, map icons and font: `tools/art/xkom/details.mjs`. Offline re-pack: `node tools/pixelart.mjs xkom --preview`, then `node tools/gen_examples.mjs xkom`. The 40×18 `world.map` mission mask matches the world raster; update both together. Inventory: `examples/xkom/assets.md`. Audio remains synthesized (`tools/gen_xkom_audio.mjs`); VT323/Orbitron fonts retain their OFL licences. Crowelian 2026 + Sonnet.
+
+X-KOM UI follow-up (M6-28): added `assets/ui/title.png` (320×200, original ImageGen Earth/defenders illustration; reviewed raster master + exact `title-prompt.txt`), bringing the pack to 32 PNG sheets. Panels use subtle code-drawn grain; globe/HQ views sample the existing world raster. No reference-image pixels are shipped.

@@ -5,7 +5,7 @@
 A pragmatic proof of concept that is a *whole* game: an X-COM-style campaign with a **Red Alert RTS** boss operation.
 
 ## Campaign loop
-1. **Geoscape** (flat world map). Three mission sites appear. Pick one (click, or press `1` `2` `3`). `B` opens the **Base**.
+1. **Geoscape** (rotatable textured globe + HQ regional map). Three mission sites appear. Pick one (click, or press `1` `2` `3`). `B` opens the **Base**.
 2. **Interception** (skippable): radar animation → `ENTER` engage (Star Fox-style shooter), `SPACE` auto-resolve, `ESC` skip. Each shot-down ship = **one fewer alien** on the ground and +$300.
 3. **Tactical mission**: procedural farm + crashed UFO; 6 soldiers vs 4–8 aliens, turn-based with time units.
 4. Back to the Geoscape: **alien presence** rises (+10, +5 per site you ignored) and drops when you win (−8…−14). At **100 %** → siren → **Operation: Hive Strike** (RTS): destroy the Alien Hive with your base force. Win → presence resets to 20 %. Lose → the war is lost.
@@ -13,7 +13,8 @@ A pragmatic proof of concept that is a *whole* game: an X-COM-style campaign wit
 Funds ($100 per alien killed, $500 mission bonus, $2000 hive) buy **research** in the Base.
 
 ## Controls
-**Tactical** — click soldier = select · click a blue tile = walk (TU cost shown top right) · click a visible alien = fire · `1/2/3` SNAP / AIMED / AUTO (or the buttons, right-click cycles) · `Tab/Space` next soldier · `Enter` end turn · arrows scroll. Unseen tiles are black (fog of war); you only see what your soldiers see.
+**Geoscape** — arrows rotate the globe · `+`/`-` zoom · `Z` toggles the HQ regional map · `G` returns to the globe · `B` opens Base. Buttons do the same. Click a visible map contact or the numbered contact list (all three remain available even on the far side), or press `1`/`2`/`3`, to launch interception. HQ remains centered in regional mode; zoom magnifies the existing world raster.
+**Tactical** — click soldier = select · click a blue tile = walk (TU cost shown top right) · click a visible alien = fire · `1/2/3` SNAP / AIMED / AUTO (or the buttons, right-click cycles) · `Tab/Space` next soldier · `Enter` end turn · arrows scroll smoothly. Walking alternates two poses; short moves leave the camera still, while edge moves pan only enough to stay visible. Ground and movement overlays stay below units; walls/trees still obscure units correctly. Unseen tiles are black (fog of war); you only see what your soldiers see.
 *Rules you should know (they come from OpenXcom):* walking costs 4 TU (diagonal 6); a shot costs a % of max TU (snap 25 %, aimed 80 %, auto 35 % for 3 shots); hit chance = firing × weapon accuracy; damage = random 0–200 % of power minus armour. **Reaction fire:** if you end a turn with TU left, soldiers with TU shoot at aliens that move into view — keep some TU back. Rushing in kills your squad.
 **Interception** — radar first: `Enter` engage, `Space` auto-resolve, `Esc` skip. Shooter: mouse or arrows move (the jet banks) · `Space` / hold mouse button = lasers · `X` / right-click = homing missile · `Shift`, `Z` or double-tap left/right = **barrel roll** (invulnerable, **reflects enemy shots** back at them) · pick up **P** (weapon level 1→3: twin → triple → five-way), **M** (+3 missiles), **S** (+1 shield). Waves of drones, diving darts and ground turrets, then the UFO boss (2 phases). Kill ≥ 8 fighters for a bonus second ship. `Esc` skips.
 **RTS** — left-drag = select · right-click = move/attack · `A` then click = attack-move · `S` stop · `Space` jump to base · sidebar icons (or `1`–`5`) train units, click the minimap to scroll · arrows or screen edge scroll. Harvesters mine automatically; no power plant = production at half speed.
@@ -31,6 +32,7 @@ Funds ($100 per alien killed, $500 mission bonus, $2000 hive) buy **research** i
 ## Where the code is
 | File | What |
 |---|---|
+| `scripts/xk/geoview.js` | CPU canvas globe projection, horizon-clipped markers and HQ regional zoom (reuses world.png; no new 3D dependency) |
 | `scripts/xkom.js` | campaign controller: title, geoscape, base, endings, mode routing |
 | `scripts/xk/tactical.js` | **pure rules** (map generator, TU, LOS, fog, shooting, reaction fire, alien AI) — `node tools/xk-sim.mjs` |
 | `scripts/xk/tacview.js` | isometric view, HUD, replay of rule events as animation |

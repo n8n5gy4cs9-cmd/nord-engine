@@ -16,7 +16,7 @@
 ## The game in 4 parts → which assets belong to which part
 | Part | Screen | Script | Assets used |
 |---|---|---|---|
-| Title / Geoscape / Base | flat world map, mission sites, alien-presence bar, **Base** (research) | `scripts/xkom.js` | `geo/*`, `ui/font.png`, music `music_geoscape` |
+| Title / Geoscape / Base | illustrated title, globe / HQ regional map, mission sites, alien-presence bar, **Base** (research) | `scripts/xkom.js` | `geo/*`, `ui/title.png`, `ui/font.png`, music `music_geoscape` |
 | Interception (radar + optional Star Fox / Raptor-style shooter) | radar, then a top-down shooter | `scripts/xk/intercept.js` | `air/*`, `tactical/fx.png` (explosions), sfx |
 | Tactical mission (X-COM) | isometric, turn-based | `scripts/xk/tacview.js` (+ rules `tactical.js`) | `tactical/*`, music `music_tactical` |
 | Hive Strike (Red Alert RTS) | scrolling map + sidebar | `scripts/xk/rtsview.js` (+ rules `rts.js`) | `rts/*`, music `music_rts` |
@@ -79,12 +79,15 @@ Explosions reuse `tactical/fx.png` frames 0–3.
 | File | Size | Notes |
 |---|---|---|
 | `geo/world.map` | text | **40×18 characters, one character = one 8×8 tile** of the world map. `~` ocean · `,` ocean waves · `g` land · `d` desert · `i` ice. Mission sites appear on `g`/`d` tiles. Lines before `---` are notes. This mission-placement mask matches the reviewed `world.png` master. Edit it alongside a replacement world picture; the art command re-packs the raster master rather than rebuilding a picture from these characters. |
+| `ui/title.png` | 320×200 | Original Earth-and-defenders title illustration; raster master `ui-title.png.rgba.gz` and exact prompt `title-prompt.txt` in `tools/art/xkom/redrawn/`. |
 | `geo/world.png` | 320×144 | Detailed tactical world picture with mountain ranges, forests, desert dunes, ice and a cyan coordinate grid (shown at 0,0). If you replace it with your own 320×144 art, keep `world.map` roughly matching the land so sites don't sit in the sea. |
 | `geo/icons.png` | 64×16 | 16×16 frames: 0 base (HQ marker) · 1 UFO (landing site) · 2 terror site · 3 alien hive (spare). |
 | `ui/font.png` | 96×32 | **Fallback** bitmap font (ASCII 32…95, 16 columns × 4 rows of **6×8** cells, white glyphs, upper-case only). Used only if the TTF fonts below fail to load. |
 | `fonts/vt323-latin-400-normal.woff2` | font | **VT323** (Google Fonts, OFL) — all small UI text (terminal/X-COM look). |
 | `fonts/orbitron-latin-900-normal.woff2` | font | **Orbitron Black** (Google Fonts, OFL) — headings, titles, big numbers. |
 To change the look swap the two `.woff2` files (keep the names) or edit `loadFonts()` / `FText` in `scripts/xk/base.js`. The fonts are vendored (`node tools/vendor.mjs`, `vendor/fonts/…`, licences in `THIRD_PARTY.md`) and copied into each game's `assets/fonts/` — no CDN.
+
+Small UI text is **9 virtual pixels** (VT323, down from 13); title and heading text are also smaller. Bevelled panels have subtle deterministic 32×32 grain created in code, not an external texture. The globe is a shaded orthographic canvas projection of `world.png`; regional mode crops the same raster around HQ. No network or extra 3D library is needed.
 
 The **Base screen** (facilities + research list + soldier roster) and every panel/button are drawn in code as **bevelled rectangles** (light top/left edge, dark bottom/right — the X-COM button look; `Bevel` in `scripts/xk/base.js`, palette `UI` there) — no images. Research data: `scripts/xk/research.js`.
 

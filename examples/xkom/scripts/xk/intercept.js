@@ -6,17 +6,21 @@ const Phaser_clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 export class InterceptView {
   constructor(host) { this.h = host; }
   start({ site, onEnd }) {
-    this.site = site; this.onEnd = onEnd; this.objs = []; this.phase = 'radar'; this.t = 0; this.done = false; this.keys = {}; this.shots = []; this.foes = []; this.eshots = []; this.fx = [];
-    const h = this.h; this.add(h.rect(0, 0, VW, VH, 0x03120a, 1));
-    this.gfx = h.ps.add.graphics(); this.h.hud.add(this.gfx); this.gfx.setDepth(5);
+    this.site = site; this.onEnd = onEnd; this.objs = []; this.phase = 'radar'; this.t = 0; this.done = false; this.finished = false; this.resolved = false; this.doneFn = null; this.keys = {}; this.shots = []; this.foes = []; this.eshots = []; this.fx = [];
+    const h = this.h; this.add(h.panel(0, 0, VW, VH, 0x354253)); this.add(h.panel(5, 22, 210, 144, 0x09230e, { raised: false, depth: 1 }));
+    this.gfx = h.ps.add.graphics(); this.h.hud.add(this.gfx); this.gfx.setDepth(5).setScale(0.66, 0.72).setPosition(4, 23);
+    this.radarBtns = [{ key: 'Enter', y: 26, label: 'ENGAGE' }, { key: ' ', y: 53, label: 'AUTO-RESOLVE' }, { key: 'Escape', y: 80, label: 'DISENGAGE' }];
+    for (const b of this.radarBtns) { this.add(h.panel(220, b.y, 94, 23, 0x455d79, { depth: 2 })); this.add(h.text(267, b.y + 7, b.label, COL.text, { origin: [0.5, 0], hud: true, depth: 8 })); }
+    this.add(h.panel(220, 108, 94, 58, 0x14221b, { raised: false, depth: 1 })); this.add(h.img('jet', 0, 267, 137, 6, [0.5, 0.5], true)).setScale(1.4);
+    this.add(h.text(267, 111, 'INTERCEPTOR', COL.dim, { origin: [0.5, 0], hud: true, depth: 8 }));
     this.tTitle = this.add(h.text(6, 4, `RADAR - ${site.name} DETECTED`, COL.alien, { hud: true, depth: 8 }));
-    this.tSub = this.add(h.text(6, 14, 'INTERCEPTOR LAUNCHED FROM HQ...', COL.dim, { hud: true, depth: 8 }));
+    this.tSub = this.add(h.text(6, 174, 'INTERCEPTOR LAUNCHED FROM HQ...', COL.dim, { hud: true, depth: 8 }));
     this.tKeys = this.add(h.text(VW / 2, 188, '[ENTER] ENGAGE   [SPACE] AUTO   [ESC] SKIP', COL.gold, { origin: [0.5, 0], hud: true, depth: 8 }));
     h.music('music_tactical', 0.18); h.sfx('alarm', 0.2);
     this.ufo = { x: 250, y: 40 }; this.jet = { x: 70, y: 150 };
   }
   add(o) { this.objs.push(o); return o; }
-  destroy() { for (const o of this.objs) o.destroy?.(); this.gfx?.destroy(); this.objs = []; this.h.hud.removeAll(true); this.done = true; }
+  destroy() { this.resolveTimer?.remove(); this.msgTimer?.remove(); for (const o of this.objs) o.destroy?.(); this.gfx?.destroy(); this.objs = []; this.h.hud.removeAll(true); this.done = true; }
 
   // ---- radar ---------------------------------------------------------------------------------------------------------------------------------------
   drawRadar(dt) {
@@ -135,7 +139,7 @@ export class InterceptView {
   finishAir(win, escaped) {
     if (this.resolved) return; this.resolved = true; this.over = true; const h = this.h, downed = win ? 1 + (this.killed >= 8 ? 1 : 0) : 0, crashed = !win && !escaped;
     h.sfx(win ? 'victory' : 'defeat', 0.45);
-    h.ps.time.delayedCall(win ? 900 : 1200, () => { this.endCard = h.card([[win ? 'UFO SHOT DOWN!' : crashed ? 'INTERCEPTOR LOST' : 'UFO ESCAPED', win ? COL.good : COL.bad, 2], [`SCORE ${this.score}   FIGHTERS DESTROYED ${this.killed}`, COL.cyan], [win ? `${downed} CRAFT DOWNED - ${downed} FEWER ALIENS ON SITE  +$${downed * 300}` : 'NO EFFECT ON THE GROUND MISSION', COL.text], ['PRESS ENTER', COL.gold]], { y: 52, w: 260 }); this.doneFn = () => { this.endCard(); this.finish({ downed, crashed }); }; });
+    this.resolveTimer = h.ps.time.delayedCall(win ? 900 : 1200, () => { this.endCard = h.card([[win ? 'UFO SHOT DOWN!' : crashed ? 'INTERCEPTOR LOST' : 'UFO ESCAPED', win ? COL.good : COL.bad, 2], [`SCORE ${this.score}   FIGHTERS DESTROYED ${this.killed}`, COL.cyan], [win ? `${downed} CRAFT DOWNED - ${downed} FEWER ALIENS ON SITE  +$${downed * 300}` : 'NO EFFECT ON THE GROUND MISSION', COL.text], ['PRESS ENTER', COL.gold]], { y: 52, w: 260 }); this.doneFn = () => { this.endCard(); this.finish({ downed, crashed }); }; });
   }
   finish(r) { if (this.finished) return; this.finished = true; this.onEnd(r); }
 
@@ -144,7 +148,7 @@ export class InterceptView {
     if (this.done) return; this.t += dt;
     if (this.phase === 'radar' || this.phase === 'auto') { this.drawRadar(dt);
       if (this.phase === 'auto' && this.t > 2.6 && !this.resolved) { this.resolved = true; const r = Math.random(), downed = r < 0.6 ? 1 : 0, crashed = r > 0.88; this.h.sfx(downed ? 'explosion' : 'defeat', 0.35);
-        this.tSub.setText(downed ? 'UFO DESTROYED' : crashed ? 'INTERCEPTOR LOST' : 'UFO ESCAPED', downed ? COL.good : COL.bad); this.h.ps.time.delayedCall(1100, () => this.finish({ downed, crashed })); } }
+        this.tSub.setText(downed ? 'UFO DESTROYED' : crashed ? 'INTERCEPTOR LOST' : 'UFO ESCAPED', downed ? COL.good : COL.bad); this.resolveTimer = this.h.ps.time.delayedCall(1100, () => this.finish({ downed, crashed })); } }
     else if (this.phase === 'air') this.updateAir(dt);
   }
   key(e, down) {
@@ -154,5 +158,5 @@ export class InterceptView {
     else if (this.phase === 'air' && this.doneFn && (k === 'Enter')) this.doneFn();
     else if (this.phase === 'air' && (k === 'ArrowLeft' || k === 'ArrowRight' || k === 'a' || k === 'd') && this.pl) { const key = k === 'a' ? 'ArrowLeft' : k === 'd' ? 'ArrowRight' : k, now = this.t; if (now - (this.pl.tapT[key] ?? -9) < 0.28) this.wantRoll = true; this.pl.tapT[key] = now; }
   }
-  pointer(p, type) { if (this.phase !== 'air') { if (type === 'down' && this.phase === 'radar') this.startAir(); return; } const [, , lx, ly] = this.h.ptr(p); if (type === 'move') { this.mx = lx; this.my = ly; } else if (type === 'down') { if (this.doneFn) this.doneFn(); else if (p.button === 2 || p.rightButtonDown?.()) this.launchMissile(); else { this.mouseDown = true; this.mx = lx; this.my = ly; } } else if (type === 'up') this.mouseDown = false; }
+  pointer(p, type) { const [, , lx, ly] = this.h.ptr(p); if (this.phase !== 'air') { if (type === 'down' && this.phase === 'radar') { const b = this.radarBtns.find(b => lx >= 220 && lx < 314 && ly >= b.y && ly < b.y + 23); if (b) this.key({ key: b.key }, true); else if (lx < 215 && ly > 22 && ly < 166) this.startAir(); } return; } if (type === 'move') { this.mx = lx; this.my = ly; } else if (type === 'down') { if (this.doneFn) this.doneFn(); else if (p.button === 2 || p.rightButtonDown?.()) this.launchMissile(); else { this.mouseDown = true; this.mx = lx; this.my = ly; } } else if (type === 'up') this.mouseDown = false; }
 }

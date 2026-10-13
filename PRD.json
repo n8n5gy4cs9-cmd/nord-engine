@@ -1109,6 +1109,12 @@
       "status": "done"
     },
     {
+      "id": "M6-28",
+      "milestone": "M6",
+      "title": "Fix X-KOM movement layering and camera; compact textured UI, globe and title screen",
+      "status": "done"
+    },
+    {
       "id": "M7-01",
       "milestone": "M7",
       "title": "tools/build-manual.mjs (marked + CodeMirror readonly + nord-live blocks)",

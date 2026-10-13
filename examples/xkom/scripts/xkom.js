@@ -8,6 +8,7 @@ import { InterceptView } from './xk/intercept.js';
 import { Help, XKOM_PAGES } from './xk/help.js';
 import { newSquad, newRookie } from './xk/tactical.js';
 import { TECHS, newResearch, status as techStatus, start as startTech, advance as advanceTech, mods as techMods, tech } from './xk/research.js';
+import { GeoView } from './xk/geoview.js';
 
 const PATH = {
   tground: 'assets/tactical/ground.png', tobjects: 'assets/tactical/objects.png', tunits: 'assets/tactical/units.png', tui: 'assets/tactical/ui.png', tfx: 'assets/tactical/fx.png',
@@ -15,7 +16,7 @@ const PATH = {
   b_fact: 'assets/rts/b_fact.png', b_powr: 'assets/rts/b_powr.png', b_barr: 'assets/rts/b_barr.png', b_weap: 'assets/rts/b_weap.png', b_proc: 'assets/rts/b_proc.png', b_gun: 'assets/rts/b_gun.png',
   b_hive: 'assets/rts/b_hive.png', b_brood: 'assets/rts/b_brood.png', b_tower: 'assets/rts/b_tower.png',
   jet: 'assets/air/jet.png', dart: 'assets/air/dart.png', turret: 'assets/air/turret.png', pickups: 'assets/air/pickups.png', island: 'assets/air/island.png', saucer: 'assets/air/saucer.png', drone: 'assets/air/drone.png', shots: 'assets/air/shots.png', cloud: 'assets/air/cloud.png', sea: 'assets/air/sea.png',
-  world: 'assets/geo/world.png', gicons: 'assets/geo/icons.png', font: 'assets/ui/font.png', map: 'assets/geo/world.map',
+  world: 'assets/geo/world.png', title: 'assets/ui/title.png', gicons: 'assets/geo/icons.png', font: 'assets/ui/font.png', map: 'assets/geo/world.map',
 };
 const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 const SITE_TYPES = [
@@ -33,7 +34,7 @@ export default class XKom extends XkBase {
   async boot() {
     await this.initBase(PATH); this.land = [];
     const rows = (await this.game.loader.text(PATH.map)).split('---\n')[1].trim().split('\n'); rows.forEach((r, y) => [...r].forEach((c, x) => { if (c === 'g' || c === 'd') this.land.push([x, y]); }));
-    this.tac = new TacView(this); this.rts = new RtsView(this); this.air = new InterceptView(this); this.help = new Help(this, XKOM_PAGES); this.mode = 'title';
+    this.tac = new TacView(this); this.rts = new RtsView(this); this.air = new InterceptView(this); this.geo = new GeoView(this); this.help = new Help(this, XKOM_PAGES); this.mode = 'title';
     const q = new URLSearchParams(location.search); this.q = q;
     this.onKey = (e) => this.keyEv(e, true); this.onKeyUp = (e) => this.keyEv(e, false);
     this.onMove = (p) => this.ptrEv(p, 'move'); this.onDown = (p) => this.ptrEv(p, 'down'); this.onUp = (p) => this.ptrEv(p, 'up');
@@ -50,17 +51,20 @@ export default class XKom extends XkBase {
     this.seed = this.attrs.seed || Number(this.q.get('seed')) || ((Math.random() * 1e9) | 0);
     this.C = { squad: newSquad(this.seed, 6), presence: this.attrs.presence, kills: 0, missions: 0, lost: 0, day: 3, rtsDone: 0, over: false, funds: 3000, R: newResearch() }; this.news = 'WELCOME, COMMANDER. OPEN THE BASE [B] TO START RESEARCH.';
   }
-  clearScreen() { for (const o of this.screenObjs ?? []) o.destroy?.(); this.screenObjs = []; this.hud.removeAll(true); }
+  clearScreen() { this.panTween?.stop(); for (const o of this.screenObjs ?? []) o.destroy?.(); this.screenObjs = []; this.hud.removeAll(true); }
   keep(o) { this.screenObjs.push(o); return o; }
 
   // ---- title ------------------------------------------------------------------------------------------------------------------------------------------------
   titleScreen() {
     this.clearScreen(); this.mode = 'title'; this.camCenter(VW / 2, VH / 2); const h = this;
-    h.keep(h.rect(0, 0, VW, VH, 0x070b18, 1)); const w = h.keep(h.img('world', 0, 0, 20, 0, [0, 0], true)).setAlpha(0.35).setDepth(1);
-    const T = (s, y, c, sc = 1) => h.keep(h.text(VW / 2, y, s, c, { origin: [0.5, 0], scale: sc, hud: true, depth: 6 }));
-    T('X-KOM', 22, COL.blue, 5); T('2026', 66, COL.amber, 3); T('EARTH DEFENCE PROJECT', 98, COL.dim);
-    T('FIGHT SMALL TURN-BASED BATTLES.  WHEN ALIEN PRESENCE', 120, COL.text); T('REACHES 100% THE HIVE STRIKES: RED ALERT RTS OPERATION!', 130, COL.alien);
-    T('PRESS ENTER OR CLICK TO BEGIN      F1 = HELP', 158, COL.gold); T('CROWELIAN 2026 + SONNET', 186, COL.dim); void w;
+    h.keep(h.img('title', 0, 0, 0, 0, [0, 0], true));
+    h.keep(h.text(14, 63, 'X-KOM', '#eff3dd', { scale: 4, hud: true, depth: 6 }));
+    h.keep(h.text(17, 94, 'EARTH DEFENCE  /  2026', COL.blue, { hud: true, depth: 6 }));
+    h.keep(h.text(17, 111, 'COMMAND THE RESISTANCE', COL.dim, { hud: true, depth: 6 }));
+    h.keep(h.panel(16, 166, 152, 17, 0x354761, { depth: 4 }));
+    h.keep(h.text(92, 170, 'BEGIN CAMPAIGN  [ENTER]', COL.text, { origin: [0.5, 0], hud: true, depth: 6 }));
+    h.keep(h.text(17, 190, 'CROWELIAN 2026 + SONNET', COL.dim, { scale: 0.85, hud: true, depth: 6 }));
+    h.keep(h.text(310, 190, 'F1  FIELD MANUAL', COL.dim, { origin: [1, 0], scale: 0.85, hud: true, depth: 6 }));
     this.music('music_geoscape', 0.25);
   }
 
@@ -73,18 +77,23 @@ export default class XKom extends XkBase {
   mulberry(a) { return () => { a = (a + 0x6d2b79f5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
   geoscape() {
     this.tac.destroy?.(); this.clearScreen(); this.mode = 'geo'; this.camCenter(VW / 2, VH / 2); const h = this, C = this.C; this.sites = this.makeSites();
-    h.keep(h.img('world', 0, 0, 0, 0, [0, 0], true)); h.keep(h.panel(0, 144, VW, 56, UI.panel, { depth: 1 }));
-    h.keep(h.img('gicons', 0, 8 * 8 + 4, 5 * 8 + 4, 3, [0.5, 0.5], true)); h.keep(h.text(8 * 8 + 4, 5 * 8 + 13, 'HQ', COL.blue, { origin: [0.5, 0], hud: true, depth: 6 }));
-    this.siteSp = this.sites.map((s, i) => { const sp = h.keep(h.img('gicons', s.icon === 1 ? 2 : 1, s.x * 8 + 4, s.y * 8 + 4, 5, [0.5, 0.5], true)); h.keep(h.text(s.x * 8 + 4, s.y * 8 + 12, String(i + 1), COL.gold, { origin: [0.5, 0], hud: true, depth: 6 })); return sp; });
-    if (this.blinkT) this.blinkT.remove(); this.blinkT = this.ps.time.addEvent({ delay: 400, loop: true, callback: () => { if (this.mode === 'geo') for (const sp of this.siteSp) sp.setAlpha(sp.alpha < 1 ? 1 : 0.4); } });
-    const d = C.day, date = `${String(((d - 1) % 28) + 1).padStart(2, '0')} ${MONTHS[Math.floor((d - 1) / 28) % 12]} 2026`;
-    h.keep(h.text(4, 3, `X-KOM GEOSCAPE  ${date}`, COL.text, { hud: true, depth: 6 }));
-    h.keep(h.text(6, 149, 'ALIEN PRESENCE', COL.text, { hud: true, depth: 6 })); h.keep(h.panel(5, 158, 124, 10, UI.dark, { raised: false, depth: 1 })); const pc = C.presence >= 80 ? 0xe03020 : C.presence >= 55 ? 0xe0a020 : 0x40c040;
-    h.keep(h.rect(7, 160, 120 * Math.min(1, C.presence / 100), 6, pc, 1, true, 3)); h.keep(h.text(134, 160, `${C.presence}%`, C.presence >= 80 ? COL.bad : COL.text, { hud: true, depth: 6 }));
-    h.keep(h.text(6, 172, `ALIENS KILLED ${C.kills}/${this.attrs.goal}`, COL.alien, { hud: true, depth: 6 })); h.keep(h.text(6, 183, `FUNDS $${C.funds}  SQUAD ${C.squad.length}`, COL.gold, { hud: true, depth: 6 })); h.keep(h.panel(262, 1, 56, 12, UI.face, { depth: 4 })); h.keep(h.text(290, 1, 'BASE [B]', COL.text, { origin: [0.5, 0], hud: true, depth: 6 })); this.baseBtn = { x: 262, y: 1, w: 56, h: 12 };
-    h.keep(h.text(150, 3, 'F1 HELP', COL.dim, { hud: true, depth: 6 })); h.keep(h.text(4, 14, (this.news ?? '').slice(0, 56), COL.amber, { hud: true, depth: 6 }));
-    this.sites.forEach((s, i) => { const y = 148 + i * 17; h.keep(h.panel(176, y, 142, 15, UI.face, { depth: 4 })); h.keep(h.text(180, y + 1, `${i + 1} ${s.name}`, COL.text, { hud: true, depth: 6 })); h.keep(h.text(180, y + 8, `${s.aliens} ALIENS  -${s.relief}%`, COL.cyan, { hud: true, depth: 6 })); s.rect = { x: 176, y, w: 142, h: 15 }; });
-    if (C.presence >= 80) h.keep(h.text(VW / 2, 24, 'WARNING: ALIEN PRESENCE CRITICAL', COL.bad, { origin: [0.5, 0], hud: true, depth: 6 }));
+    this.geo.start(this.sites); h.keep(h.panel(232, 0, 88, 200, 0x253249, { depth: 1 })); h.keep(h.panel(0, 176, 232, 24, UI.dark, { raised: false, depth: 1 }));
+    this.geoLabel = h.keep(h.text(5, 4, this.geo.region ? 'HQ REGIONAL MAP  Z = GLOBE' : 'GEOSCAPE  ARROWS ROTATE', COL.dim, { hud: true, depth: 6 }));
+    h.keep(h.text(276, 6, 'EARTH DEFENCE', COL.blue, { origin: [0.5, 0], hud: true, depth: 6 }));
+    this.geoBtns = [];
+    const button = (id, x, y, w, label) => { h.keep(h.panel(x, y, w, 14, 0x455a73, { depth: 2 })); h.keep(h.text(x + w / 2, y + 3, label, COL.text, { origin: [0.5, 0], hud: true, depth: 6 })); this.geoBtns.push({ id, x, y, w, h: 14 }); };
+    button('base', 236, 20, 80, 'BASE  [B]'); button('hq', 236, 36, 80, 'HQ / GLOBE  [Z]');
+    button('in', 236, 52, 38, 'ZOOM +'); button('out', 278, 52, 38, 'ZOOM -');
+    button('left', 236, 68, 38, '< WEST'); button('right', 278, 68, 38, 'EAST >');
+    this.baseBtn = this.geoBtns[0]; h.keep(h.text(236, 87, 'ALIEN CONTACTS', COL.gold, { hud: true, depth: 6 }));
+    this.sites.forEach((site, i) => { const y = 98 + i * 25; h.keep(h.panel(236, y, 80, 23, UI.panel, { depth: 2 }));
+      h.keep(h.text(240, y + 3, String(i + 1) + ' ' + site.name, COL.text, { hud: true, depth: 6, scale: 0.9 }));
+      h.keep(h.text(240, y + 13, site.aliens + ' ALIENS  -' + site.relief + '%', COL.alien, { hud: true, depth: 6, scale: 0.85 })); site.rect = { x: 236, y, w: 80, h: 23 }; });
+    const d = C.day, date = String(((d - 1) % 28) + 1).padStart(2, '0') + ' ' + MONTHS[Math.floor((d - 1) / 28) % 12] + ' 2026';
+    h.keep(h.text(5, 181, date + '   $' + C.funds + '   KILLS ' + C.kills + '/' + this.attrs.goal, COL.text, { hud: true, depth: 6 }));
+    h.keep(h.text(5, 192, (this.news ?? '').slice(0, 50), COL.amber, { hud: true, depth: 6, scale: 0.8 }));
+    h.keep(h.text(236, 177, 'THREAT ' + C.presence + '%', C.presence >= 80 ? COL.bad : COL.gold, { hud: true, depth: 6 }));
+    h.keep(h.panel(236, 187, 80, 8, UI.dark, { raised: false, depth: 2 })); h.keep(h.rect(238, 189, 76 * Math.min(1, C.presence / 100), 4, C.presence >= 80 ? 0xe03020 : 0xa89030, 1, true, 3));
     this.music('music_geoscape', 0.25);
   }
 
@@ -163,7 +172,7 @@ export default class XKom extends XkBase {
     if (!down) return;
     if (this.mode === 'title') { if (k === 'Enter' || k === ' ') this.geoscape(); }
     else if (this.mode === 'base') { if (k === 'b' || k === 'B' || k === 'Escape') this.geoscape(); else if (/^[1-7]$/.test(k)) this.pickTech(TECHS[+k - 1].id); }
-    else if (this.mode === 'geo') { if (k === 'b' || k === 'B') this.baseScreen(); else if (/^[1-3]$/.test(k)) this.intercept(this.sites[+k - 1]); else if (k === 'r' || k === 'R') { this.C.presence = 100; this.alertThenRts(); } }
+    else if (this.mode === 'geo') { if (k === 'b' || k === 'B') this.baseScreen(); else if (/^[1-3]$/.test(k)) this.intercept(this.sites[+k - 1]); else if (k === 'r' || k === 'R') { this.C.presence = 100; this.alertThenRts(); } else { const id = { z: 'hq', Z: 'hq', g: 'globe', G: 'globe', ArrowLeft: 'left', ArrowRight: 'right', ArrowUp: 'up', ArrowDown: 'down', '+': 'in', '=': 'in', '-': 'out' }[k]; if (id) this.geo.action(id); } }
     else if (this.mode === 'tac') { if (this.tac.over) this.tac.doneKey?.(e); else this.tac.key(e); }
     else if (this.mode === 'end') { if (k === 'Enter') { this.newCampaign(); this.titleScreen(); } }
   }
@@ -176,7 +185,8 @@ export default class XKom extends XkBase {
     if (type !== 'down') return;
     if (this.mode === 'title') { this.geoscape(); this.sfx('confirm', 0.5); }
     else if (this.mode === 'base') { const hit = (r) => lx >= r.x && lx < r.x + r.w && ly >= r.y && ly < r.y + r.h; if (hit(this.backBtn)) { this.sfx('click', 0.4); this.geoscape(); } else { const t = this.techRects.find(hit); if (t) this.pickTech(t.id); } }
-    else if (this.mode === 'geo') { if (lx >= this.baseBtn.x && lx < this.baseBtn.x + this.baseBtn.w && ly >= this.baseBtn.y && ly < this.baseBtn.y + this.baseBtn.h) { this.sfx('click', 0.4); return this.baseScreen(); } const i = this.sites.findIndex((s) => (lx >= s.rect.x && lx < s.rect.x + s.rect.w && ly >= s.rect.y && ly < s.rect.y + s.rect.h) || Math.hypot(lx - (s.x * 8 + 4), ly - (s.y * 8 + 4)) < 9); if (i >= 0) { this.sfx('confirm', 0.5); this.intercept(this.sites[i]); } }
+    else if (this.mode === 'geo') { const button = this.geoBtns.find(q => lx >= q.x && lx < q.x + q.w && ly >= q.y && ly < q.y + q.h); if (button) { this.sfx('click', 0.3); return button.id === 'base' ? this.baseScreen() : this.geo.action(button.id); }
+      const site = this.sites.find(s => lx >= s.rect.x && lx < s.rect.x + s.rect.w && ly >= s.rect.y && ly < s.rect.y + s.rect.h) ?? this.geo.hit(lx, ly); if (site) { this.sfx('confirm', 0.5); this.intercept(site); } }
     else if (this.mode === 'tac') this.tac.pointer(p, true);
     else if (this.mode === 'end') { this.newCampaign(); this.titleScreen(); }
   }

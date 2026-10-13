@@ -14,13 +14,13 @@ export class TacView {
     const s = this.s;
     for (let y = 0; y < s.h; y++) for (let x = 0; x < s.w; x++) {
       const [sx, sy] = iso(x, y), gi = s.g[y * s.w + x];
-      const t = { g: h.img('tground', GFR[gi], sx, sy, (x + y) * 10, [0.5, 0]), o: null, x, y }; this.objs.push(t.g);
+      const t = { g: h.img('tground', GFR[gi], sx, sy, -1000 + (x + y) * 10, [0.5, 0]), o: null, x, y }; this.objs.push(t.g);
       const o = s.o[y * s.w + x]; if (o) { t.o = h.img('tobjects', OFR[o], sx, o === 'tree' ? sy - 14 : sy - 16, (x + y) * 10 + 5, [0.5, 0]); this.objs.push(t.o); }
       this.tiles.push(t);
     }
     for (const u of s.units) this.addSprite(u);
     this.cursor = h.img('tui', 0, 0, 0, 3000, [0.5, 0]); this.objs.push(this.cursor);
-    this.ovl = []; this.buildHud(); this.refresh(); this.select(live(s, 'x')[0]); this.focus(this.sel);
+    this.ovl = []; this.buildHud(); this.refresh(); this.select(live(s, 'x')[0]); this.focus(this.sel, true);
     h.music('music_tactical', 0.22); this.msg(`MISSION START - ${s.aliensTotal} HOSTILES DETECTED`);
     this.timer = ps.time.addEvent({ delay: 380, loop: true, callback: () => { this.anim++; this.idle(); } });
   }
@@ -31,7 +31,12 @@ export class TacView {
   addSprite(u) { const [sx, sy] = iso(u.x, u.y), sp = this.h.img('tunits', this.frame(u, 0), sx, sy + 13, (u.x + u.y) * 10 + 8, [0.5, 1]); sp.setFlipX(u.face < 0); this.spr.set(u.id, { u, sp, x: u.x, y: u.y }); }
   place(e, x, y) { const [sx, sy] = iso(x, y); e.x = x; e.y = y; e.sp.setPosition(sx, sy + 13).setDepth((x + y) * 10 + 8); }
   idle() { for (const e of this.spr.values()) if (!e.u.dead && !this.busy) e.sp.setFrame(this.frame(e.u, 0)).setY(iso(e.x, e.y)[1] + 13 + (e.u.race === 'sectoid' && this.anim % 2 ? 0 : 0)); this.cursor.setAlpha(this.anim % 2 ? 0.6 : 1); }
-  focus(u, snap = false) { if (!u) return; const [x, y] = iso(u.x, u.y); this.h.camCenter(x, y + 8 - 18); void snap; }
+  focus(u, snap = false) { if (!u) return; const [x, y] = iso(u.x, u.y); if (snap) this.h.camCenter(x, y - 10); else this.h.panTo(x, y - 10); }
+  keepInView(x, y) {
+    const h = this.h, dx = x < h.vx + 32 ? x - (h.vx + 64) : x > h.vx + VW - 32 ? x - (h.vx + VW - 64) : 0;
+    const dy = y < h.vy + 28 ? y - (h.vy + 44) : y > h.vy + HUDY - 24 ? y - (h.vy + HUDY - 40) : 0;
+    if (dx || dy) h.panTo(h.vx + VW / 2 + dx, h.vy + VH / 2 + dy, 350);
+  }
   // fog of war: never-seen tiles black, remembered tiles dim, visible tiles normal; aliens only drawn when in view
   refresh() {
     const s = this.s; computeSeen(s);
@@ -46,7 +51,7 @@ export class TacView {
     for (const e of this.spr.values()) e.sp.setAlpha(1);
   }
   drawRange() { for (const o of this.ovl) o.destroy(); this.ovl = []; const u = this.sel; if (!u || this.busy) return;
-    const R = this.reachMap; for (const [k, v] of R) { if (v.tu === 0) continue; const x = k % 32, y = (k / 32) | 0; if (v.tu > u.tu) continue; const [sx, sy] = iso(x, y); this.ovl.push(this.h.img('tui', 1, sx, sy, (x + y) * 10 + 1, [0.5, 0]).setAlpha(0.55)); } }
+    const R = this.reachMap; for (const [k, v] of R) { if (v.tu === 0) continue; const x = k % 32, y = (k / 32) | 0; if (v.tu > u.tu) continue; const [sx, sy] = iso(x, y); this.ovl.push(this.h.img('tui', 1, sx, sy, -500 + (x + y) * 0.1, [0.5, 0]).setAlpha(0.55)); } }
   drawPath(x, y) { for (const o of this.preview) o.destroy(); this.preview = []; const u = this.sel; if (!u || !this.reachMap?.has(key(x, y)) || this.busy) { this.pathTu = null; return; }
     const p = pathTo(this.reachMap, x, y); this.pathTu = this.reachMap.get(key(x, y)).tu;
     for (const [px, py] of p) { const [sx, sy] = iso(px, py); this.preview.push(this.h.rect(0, 0, 3, 3, 0xffe060, 1, false).setPosition(sx - 1, sy + 7).setDepth(2900)); } }
@@ -96,7 +101,7 @@ export class TacView {
     if (this.over || !this.s) return; const k = e.key;
     if (k === '1') this.mode = 'snap'; else if (k === '2') this.mode = 'aimed'; else if (k === '3') this.mode = 'auto';
     else if (k === 'Tab' || k === ' ') this.next(); else if (k === 'Enter' || k === 'e' || k === 'E') this.endTurn();
-    else { const d = { ArrowLeft: [24, 0], ArrowRight: [-24, 0], ArrowUp: [0, 24], ArrowDown: [0, -24] }[k]; if (d) { this.h.camCenter(this.h.vx + VW / 2 - d[0], this.h.vy + VH / 2 - d[1]); } }
+    else { const d = { ArrowLeft: [24, 0], ArrowRight: [-24, 0], ArrowUp: [0, 24], ArrowDown: [0, -24] }[k]; if (d) { this.h.panTo(this.h.vx + VW / 2 - d[0], this.h.vy + VH / 2 - d[1], 150); } }
     this.hudRefresh();
   }
   next() { const l = live(this.s, 'x'); if (!l.length) return; const i = l.indexOf(this.sel); const n = l[(i + 1) % l.length]; this.select(n); this.focus(n); this.h.sfx('select', 0.4); }
@@ -117,8 +122,12 @@ export class TacView {
     for (const ev of events) {
       if (ev.t === 'move') { const e = this.spr.get(ev.id); if (!e) continue; const [tx, ty] = iso(ev.x, ev.y), vis = this.s.vis.has(key(ev.x, ev.y)) || this.s.vis.has(key(ev.x0, ev.y0)) || e.u.side === 'x';
         if (e.u.side === 'a') e.sp.setVisible(vis); e.sp.setFlipX(ev.x < ev.x0 || ev.y > ev.y0 && ev.x <= ev.x0); e.sp.setFrame(this.frame(e.u, 1)); this.h.sfx('step', 0.25, 0.9 + Math.random() * 0.2);
-        if (vis) this.h.camCenter(tx, ty + 8 - 18); e.sp.setDepth((ev.x + ev.y) * 10 + 9);
-        await this.h.tw({ targets: e.sp, x: tx, y: ty + 13, duration: vis ? 130 : 1 }); e.x = ev.x; e.y = ev.y; e.sp.setDepth((ev.x + ev.y) * 10 + 8); e.sp.setFrame(this.frame(e.u, 0)); if (e.u.side === 'x') computeSeen(this.s), this.refreshFog(); }
+        if (vis) this.keepInView(tx, ty); const ox = e.sp.x, oy = e.sp.y, distance = Math.hypot(tx - ox, ty + 13 - oy), duration = vis ? 220 : 1;
+        await this.h.tw({ targets: e.sp, x: tx, y: ty + 13, duration, ease: 'Linear', onUpdate: () => {
+          const progress = distance ? Math.min(1, Math.hypot(e.sp.x - ox, e.sp.y - oy) / distance) : 1;
+          e.sp.setFrame(this.frame(e.u, progress < 0.5 ? 1 : 0));
+          e.sp.setDepth((e.sp.y - 13 - OY) / 8 * 10 + 8);
+        } }); e.x = ev.x; e.y = ev.y; e.sp.setDepth((ev.x + ev.y) * 10 + 8); e.sp.setFrame(this.frame(e.u, 0)); if (e.u.side === 'x') computeSeen(this.s), this.refreshFog(); }
       else if (ev.t === 'shot') await this.playShot(ev);
       else if (ev.t === 'die') { const e = this.spr.get(ev.id); if (!e) continue; this.h.sfx(e.u.side === 'x' ? 'die_human' : 'die_alien', 0.5); e.sp.setFrame(this.frame(e.u, 4)); e.sp.setDepth((e.x + e.y) * 10 + 2); await this.h.wait(250); }
     }
@@ -129,7 +138,7 @@ export class TacView {
   async playShot(ev) {
     const a = this.spr.get(ev.from), t = this.spr.get(ev.to); if (!a || !t) return; const h = this.h, [fx, fy] = iso(ev.fx, ev.fy), [tx, ty] = iso(ev.tx, ev.ty), seen = this.s.vis.has(key(ev.fx, ev.fy)) || this.s.vis.has(key(ev.tx, ev.ty));
     a.sp.setFlipX(ev.tx < ev.fx || (ev.tx === ev.fx && ev.ty > ev.fy)); if (!seen) return;
-    if (ev.reaction) this.msg('REACTION FIRE!', COL.bad); h.camCenter((fx + tx) / 2, (fy + ty) / 2); a.sp.setFrame(this.frame(a.u, 3)); h.sfx(ev.shot === 'plasma' ? 'plasma' : 'rifle', 0.5);
+    if (ev.reaction) this.msg('REACTION FIRE!', COL.bad); this.keepInView((fx + tx) / 2, (fy + ty) / 2); a.sp.setFrame(this.frame(a.u, 3)); h.sfx(ev.shot === 'plasma' ? 'plasma' : 'rifle', 0.5);
     const b = h.img('tfx', ev.shot === 'plasma' ? 5 : 6, fx, fy + 4, 3500, [0.5, 0.5]); this.fxs.push(b);
     await h.tw({ targets: b, x: tx, y: ty + 2, duration: 110 }); b.destroy(); a.sp.setFrame(this.frame(a.u, 2));
     if (ev.hit) { h.sfx('hit', 0.5); const sp = h.img('tfx', 4, tx, ty - 4, 3500, [0.5, 0.5]); const f = h.text(tx, ty - 22, `-${ev.dmg}`, ev.dmg ? COL.bad : COL.dim, { origin: [0.5, 1], depth: 3600 }); h.tw({ targets: f.img, y: ty - 34, alpha: 0, duration: 800 }).then(() => f.destroy()); await h.wait(110); sp.destroy(); t.sp.setFrame(this.frame(t.u, 0)); }

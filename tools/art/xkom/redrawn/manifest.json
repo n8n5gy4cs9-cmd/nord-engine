@@ -512,5 +512,15 @@
       }
     },
     "preview": 4
+  },
+  {
+    "out": "assets/ui/title.png",
+    "width": 320,
+    "height": 200,
+    "meta": {
+      "type": "image",
+      "filter": "nearest"
+    },
+    "preview": 2
   }
 ]
