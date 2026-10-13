@@ -9,8 +9,10 @@ export class Hud {
   constructor(ctx) {
     this.ctx = ctx; const { ps, font } = ctx; this.L = new Layer(ps, font, 12000); this.L.ctx = ctx;
     const L = this.L;
-    const bg = ps.add.tileSprite(0, BAR_Y, 640, 100, ctx.K.ui, 7).setOrigin(0).setScrollFactor(0).setDepth(12000); L.objs.push(bg);
+    L.metal(0, BAR_Y, 640, 100);
     L.rect(0, BAR_Y, 640, 2, HI, 1, 1); L.rect(0, BAR_Y + 2, 640, 1, LO, 1, 1);
+    for (const x of [3, 248, 299, 419, 523, 637]) { L.rivet(x, BAR_Y + 6); L.rivet(x, BAR_Y + 95); }
+    L.hazard(528, BAR_Y + 63, 104);
     L.bevel(7, BAR_Y + 7, 238, 90, { face: GLASS, inset: true });                       // message log
     this.logT = Array.from({ length: 9 }, (_, i) => L.text(12, BAR_Y + 11 + i * 9, '', COL.green));
     L.btn(252, BAR_Y + 8, 44, 24, 'INV', () => ctx.openInventory());

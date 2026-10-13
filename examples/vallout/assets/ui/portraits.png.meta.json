@@ -1,0 +1,21 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 64,
+  "frameHeight": 64,
+  "framesPerRow": 4,
+  "filter": "nearest",
+  "frames": {
+    "tero": 0,
+    "pena": 1,
+    "kalle": 2,
+    "saku": 3,
+    "mottonen": 4,
+    "rane": 5,
+    "soldier": 6,
+    "ranger": 7,
+    "harmaa": 8,
+    "komentaja": 9,
+    "blob": 10,
+    "gull": 11
+  }
+}

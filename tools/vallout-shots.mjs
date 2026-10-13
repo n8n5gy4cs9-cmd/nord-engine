@@ -8,16 +8,19 @@ const want = process.argv.slice(2); const on = (n) => !want.length || want.inclu
 const server = await serve(path.join(ENGINE, 'examples/vallout')); // same mapping as `nord serve`
 const browser = await chromium.launch({ args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader', '--autoplay-policy=no-user-gesture-required'] });
 const page = await browser.newPage({ viewport: { width: 960, height: 720 } }); const errors = [];
-page.on('pageerror', (e) => errors.push(e.stack ?? String(e))); page.on('console', (m) => { if (m.type() === 'error' || m.type() === 'warning') errors.push(`${m.type()}: ${m.text()}`); });
+page.on('pageerror', (e) => errors.push(e.stack ?? String(e))); page.on('console', (m) => { if (m.type() === 'error' || m.type() === 'warning' && !m.text().includes('GPU stall due to ReadPixels')) errors.push(`${m.type()}: ${m.text()}`); });
 await page.goto(server.url + '/?nogate'); await page.waitForFunction(() => window.__valout?.ready || window.__nord_error, null, { timeout: 20000 });
 const wait = (ms) => page.waitForTimeout(ms), shot = async (n) => { await page.screenshot({ path: path.join(OUT, `vallout-${n}.png`) }); console.log('shot', n); };
 const S = () => page.evaluate(() => window.__valout.screens), ev = (fn, arg) => page.evaluate(fn, arg);
 await wait(800); if (on('title')) await shot('01-title');
+if (on('intro')) { await ev(() => window.__valout.screens.intro()); for (let i = 0; i < 11; i++) await page.keyboard.press('Space'); await wait(300); await shot('12-intro'); }
 await ev(() => window.__valout.screens.create()); await wait(300); if (on('create')) await shot('02-create');
 await ev(() => window.__valout.screens.start()); await wait(1500);
 if (on('classic')) await shot('03-classic-explore');
 if (on('dialog')) { await ev(() => window.__valout.ctx.openDialog('pena')); await wait(300); await shot('04-dialog'); await ev(() => window.__valout.screens.stack.at(-1)?.close()); }
 if (on('inv')) { await ev(() => window.__valout.screens.inventory()); await wait(200); await shot('05-inventory'); await ev(() => window.__valout.screens.stack.at(-1)?.close()); await ev(() => window.__valout.screens.character()); await wait(200); await shot('06-character'); await ev(() => window.__valout.screens.stack.at(-1)?.close()); }
+for (const [name, method] of [['13-quests', 'nokia'], ['14-options', 'options'], ['15-wall', 'wallGame']]) if (on('menus')) { await ev(method => window.__valout.screens[method](), method); await wait(200); await shot(name); await ev(() => window.__valout.screens.stack.at(-1)?.close()); }
+if (on('ending')) { await ev(() => window.__valout.screens.ending('victory')); await wait(10000); await shot('16-ending'); await ev(() => { window.__valout.screens.create(); window.__valout.screens.start(); }); await wait(500); }
 if (on('combat')) {
   await ev(() => { const c = window.__valout.ctx, a = c.area, e = a.foes()[0]; e.x = a.player.x + 4; e.y = a.player.y; c.give('pistol', 1); c.give('ammo22', 30); c.equip('pistol'); c.G.char.weapon = 'pistol'; a.startCombat(); });
   await wait(1500); await shot('07-combat-start');

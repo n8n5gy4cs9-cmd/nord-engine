@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 162/175 tasks (93%)** · updated 2026-10-13
+**Overall: 163/175 tasks (93%)** · updated 2026-10-13
 
 | Milestone | Progress |
 |---|---|
@@ -13,7 +13,7 @@
 | M3 Editor | 24/26 (92%) |
 | M4 Export | 8/11 (73%) |
 | M5 Rust/WASM | 9/9 (100%) |
-| M6 Library | 37/38 (97%) |
+| M6 Library | 38/38 (100%) |
 | M7 Docs | 13/13 (100%) |
 | M8 Polish & portability | 12/19 (63%) |
 | M9 Desktop apps | 16/16 (100%) |
@@ -178,7 +178,7 @@ _snippets, controllers, systems, asset packs, examples_
 - [x] **M6-35** WASD tactical/RTS scrolling and globe rotation with conflict-free RTS commands
 - [x] **M6-36** Seeded tactical mission structures/deployments and simple safe RTS battlefield variation
 - [x] **M6-37** Example game: Vallout 2 New Kerava
-- [ ] **M6-38** Remake all Vallout sprites and menus for a Fallout-inspired quarantined Kerava
+- [x] **M6-38** Remake all Vallout sprites and menus for a Fallout-inspired quarantined Kerava
 
 ## M7 — Docs
 _manual, guides, tutorials, in-editor docs_

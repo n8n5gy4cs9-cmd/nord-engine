@@ -1,5 +1,7 @@
 # Changelog
 
+- 2026-10-13 (M6-38): Remade all nine Vallout sprite/terrain/UI/font sheets with original Fallout-inspired quarantined Kerava art, plus twelve portraits, sentinel title, survey map and metal casing. Restyled every game menu/HUD, fixed options-volume overlap and wrapped intro/help/description text; preserved owner audio and PNG source workflow without restoring generators. Verified 269 sprite/animation checks, menu bounds/input, gameplay smoke and twenty browser captures; static export builds, real external requests blocked (scanner retains known Phaser banner false positives).
+
 - 2026-10-13 (M6-36): X-KOM adds four seeded tactical structures (farmland, settlement, depot, woodland), rotated/mirrored approaches and shifted safe deployments with connected alien placements. Shared RTS adds compact/spread bases, small position shifts and battlefield mirroring, preserving buildings/forces/economy. OpenXcom terrain-block source cloned and documented; original game assets not copied.
 
 - 2026-10-13 (M6-35): WASD/arrows scroll tactical and RTS maps smoothly and rotate the geoscape globe. RTS attack-move moves to Q + click and stop to X, including shared Red Front controls; help/pause/console clear held map keys. Updated HUD hints and both guides, with trusted-key browser regressions.

@@ -1,6 +1,6 @@
 // Screens & panels: title, intro, character creation, world map, inventory, character sheet, Nokia (quests), options, dialogue,
 // wall-kicking minigame, endings. Everything is built from ui.js Layers (F2-style bevelled panels, bitmap font).
-import { Layer, COL, wrap } from './ui.js';
+import { Layer, COL, wrap, ascii } from './ui.js';
 import { Hud } from './hud.js';
 import { Area } from './play.js';
 import { encounterLoc } from './mapgen.js';
@@ -37,32 +37,36 @@ export class Screens {
   }
   // ===================================================================== title / intro / create
   title() {
-    this.clear(); const ctx = this.ctx, { K, fr, ps } = ctx, L = this.layer(); this.base.push(L); ctx.music('title');
-    const bands = ['#06100c', '#0a1a12', '#10281a', '#18381e', '#244a22', '#3a5a26', '#6a6a2a', '#a07a2e', '#c8782a', '#e0944a'];
-    bands.forEach((c, i) => L.rect(0, i * 31, 640, 32, Number('0x' + c.slice(1))));
-    for (let i = 0; i < 40; i++) { const s = L.rect((i * 97) % 640, (i * 53) % 140, 1, 1, 0xffffff, 0.4 + (i % 3) * 0.2); void s; }
-    const beam = ps.add.graphics().setScrollFactor(0).setDepth(D_SCREEN + 1); beam.fillStyle(0x7bff7b, 0.13).fillTriangle(450, 165, 380, 330, 520, 330); L.objs.push(beam);
-    const ufo = L.img(K.props, fr.props.ufo_big, 450, 175, 3, [0.5, 1], 2); ps.tweens.add({ targets: ufo, y: 168, duration: 1200, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
-    const sky = [['apt56', 60, 4], ['apt40', 150, 4], ['brick40', 240, 3], ['shop24', 305, 3], ['wood_ruin24', 125, 3], ['apt_ruin40', 20, 3]];
-    for (const [w, x, s] of sky) L.img(K.walls, fr.walls[w], x + 20, 330, s, [0.5, 1], 4);
-    for (let i = 0; i < 10; i++) for (const j of [0, 1]) L.img(K.ground, fr.ground[i % 3 === 0 ? 'sand2' : 'sand1'], i * 64 + 32 + (j ? 32 : 0), 330 + 10 + j * 8, 2, [0.5, 0.5], 6);
-    L.rect(0, 346, 640, 134, 0x2a1e12, 1, 5); for (let i = 0; i < 20; i++) L.img(K.ground, fr.ground[i % 4 === 0 ? 'sand3' : 'sand2'], i * 32 + 16, 352 + (i % 2) * 8, 1, [0.5, 0], 6);
-    L.rect(0, 346, 640, 134, 0x120c06, 0.72, 7);
-    L.img(K.actors, 0 * 11, 60, 395, 4, [0.5, 1], 9); L.img(K.actors, 5 * 11 + 3, 560, 400, 4, [0.5, 1], 9).setFlipX(true);
-    L.text(320, 38, 'VALLOUT 2', COL.orange, [0.5, 0], 9, 5); L.text(320, 78, 'NEW KERAVA', COL.amber, [0.5, 0], 9, 3);
-    L.text(320, 108, TITLE_QUIPS[Math.floor(Math.random() * TITLE_QUIPS.length)], COL.dim, [0.5, 0], 9);
-    const bx = 220; L.btn(bx, 360, 200, 22, 'NEW GAME', () => this.intro(), { d: 12 }); const cont = L.btn(bx, 386, 200, 22, 'CONTINUE', () => ctx.load(), { d: 12 }); if (!ctx.hasSave()) { cont.t.setText('CONTINUE (NO SAVE)', COL.dim); cont.z.disableInteractive(); }
-    const modeBtn = L.btn(bx, 412, 200, 22, `CONTROLS: ${ctx.mode.toUpperCase()}`, () => { ctx.setMode(ctx.mode === 'classic' ? 'modern' : 'classic'); modeBtn.t.setText(`CONTROLS: ${ctx.mode.toUpperCase()}`, COL.orange); }, { d: 12 });
-    L.text(320, 442, ctx.mode === 'classic' ? 'CLASSIC: CLICK TO MOVE, TURN-BASED COMBAT (FALLOUT 2)' : 'MODERN: WASD + MOUSE AIM, REAL-TIME', COL.dim, [0.5, 0], 9);
-    L.text(320, 464, 'CROWELIAN 2026 + SONNET   -   NORD ENGINE   -   F10 SWITCHES CONTROLS ANYTIME', COL.dim, [0.5, 0], 9);
+    this.clear(); const ctx = this.ctx, { K } = ctx, L = this.layer(); this.base.push(L); ctx.music('title');
+    L.img(K.title, null, 0, 0, 1, [0, 0], 0);
+    L.text(28, 34, 'VALLOUT 2', COL.text, [0, 0], 9, 4);
+    L.text(30, 76, 'NEW KERAVA', COL.amber, [0, 0], 9, 2);
+    L.text(30, 103, 'QUARANTINE SECTOR / UUSIMAA', COL.dim, [0, 0], 9);
+    L.hazard(30, 122, 214, 8);
+    L.panel(24, 154, 230, 212);
+    L.text(139, 166, 'CIVIL DEFENSE TERMINAL', COL.dim, [0.5, 0], 9);
+    const bx = 38;
+    L.btn(bx, 188, 202, 30, 'NEW GAME', () => this.intro(), { d: 12 });
+    const cont = L.btn(bx, 224, 202, 30, 'CONTINUE', () => ctx.load(), { d: 12 });
+    if (!ctx.hasSave()) { cont.t.setText('CONTINUE (NO SAVE)', COL.dim); cont.z.disableInteractive(); }
+    const modeBtn = L.btn(bx, 260, 202, 30, `CONTROLS: ${ctx.mode.toUpperCase()}`, () => { ctx.setMode(ctx.mode === 'classic' ? 'modern' : 'classic'); modeBtn.t.setText(`CONTROLS: ${ctx.mode.toUpperCase()}`, COL.orange); }, { d: 12 });
+    L.btn(bx, 296, 202, 30, 'CREDITS / TRANSMISSION', () => {
+      const o = this.overlay('credits', 430, 190, 'TRANSMISSION: KERAVA'), C = o.L;
+      ['CROWELIAN 2026 + SONNET', 'NORD ENGINE / VALLOUT 2', 'KERAVA STATION. THE LAST TRAIN NEVER LEFT.', 'F10 SWITCHES CLASSIC / MODERN CONTROLS.', TITLE_QUIPS[Math.floor(Math.random() * TITLE_QUIPS.length)]].forEach((t, i) => wrap(t, 62).forEach((line, j) => C.text(o.x + 22, o.y + 30 + i * 24 + j * 10, line, i ? COL.green : COL.amber)));
+    }, { d: 12 });
+    L.text(139, 344, 'CONNECTION LOST - CORDON ACTIVE', COL.green, [0.5, 0], 9);
+    L.rect(0, 452, 640, 28, 0x080d0b, 0.85, 8);
+    L.text(320, 462, 'CROWELIAN 2026 + SONNET  /  NORD ENGINE  /  F10 CONTROLS', COL.dim, [0.5, 0], 9);
   }
   intro() {
-    this.clear(); const ctx = this.ctx, L = this.layer(); this.base.push(L); L.rect(0, 0, 640, 480, 0x000000); let i = 0, cur = null, ch = 0;
-    const lines = L.texts; void lines; const out = []; const next = () => {
-      if (cur && ch < cur.length) { ch = cur.length; out[out.length - 1].setText(cur); return; }
-      if (i >= INTRO.length) return this.create(); cur = INTRO[i++]; ch = 0; out.push(L.text(320, 90 + (out.length) * 34, '', i === 1 ? COL.amber : COL.green, [0.5, 0], 5, 2));
+    this.clear(); const ctx = this.ctx, L = this.layer(); this.base.push(L); L.metal(0, 0, 640, 480); L.panel(16, 16, 608, 448, 'EMERGENCY BROADCAST / KERAVA'); L.bevel(28, 38, 584, 380, { inset: true, face: 0x09140c }); let i = 0, cur = null, ch = 0, ty = 62, current = [];
+    const paint = () => { const text = wrap(ascii(cur.slice(0, ch)), 46); current.forEach((t, j) => t.setText(text[j] ?? '')); };
+    const next = () => {
+      if (cur && ch < cur.length) { ch = cur.length; paint(); return; }
+      if (i >= INTRO.length) return this.create(); cur = INTRO[i++]; ch = 0;
+      current = wrap(cur, 46).map(() => { const t = L.text(320, ty, '', i === 1 ? COL.amber : COL.green, [0.5, 0], 5, 2); ty += 20; return t; }); ty += 16;
     };
-    this.tick = (dt) => { if (cur && ch < cur.length) { this.tk = (this.tk ?? 0) + dt; if (this.tk > 0.03) { this.tk = 0; ch++; out[out.length - 1].setText(cur.slice(0, ch)); if (ch % 3 === 0) ctx.sfx('click', 0.12, 1.6); } } };
+    this.tick = (dt) => { if (cur && ch < cur.length) { this.tk = (this.tk ?? 0) + dt; if (this.tk > 0.03) { this.tk = 0; ch++; paint(); if (ch % 3 === 0) ctx.sfx('click', 0.12, 1.6); } } };
     this.screenKey = (e) => { if (e.code === 'Space' || e.code === 'Enter') { next(); return true; } if (e.code === 'Escape') { this.create(); return true; } return false; };
     L.zone(0, 0, 640, 480, { down: next }); L.text(320, 450, 'CLICK / SPACE TO CONTINUE   -   ESC TO SKIP', COL.dim, [0.5, 0]); next();
   }
@@ -71,7 +75,13 @@ export class Screens {
   }
   drawCreate() {
     const ctx = this.ctx, st = this.cs; this.base.forEach((l) => l.destroy()); this.base = []; const L = this.layer(); this.base.push(L);
-    L.rect(0, 0, 640, 480, 0x0e0c08); L.panel(10, 10, 620, 460, 'CHARACTER: TERO'); const left = 40 - SPECIAL.reduce((s, k) => s + st.S[k], 0);
+    L.metal(0, 0, 640, 480); L.panel(10, 10, 620, 460, 'CIVIL DEFENSE / SURVIVOR RECORD: TERO'); const left = 40 - SPECIAL.reduce((s, k) => s + st.S[k], 0);
+    L.bevel(24, 34, 238, 254, { inset: true, face: 0x101a10 });
+    L.bevel(284, 34, 174, 126, { inset: true, face: 0x101a10 });
+    L.bevel(464, 34, 160, 254, { inset: true, face: 0x101a10 });
+    L.bevel(290, 176, 132, 132, { inset: true, face: 0x0a140c });
+    L.img(ctx.K.portraits, 0, 292, 178, 2);
+    L.text(290, 320, 'ID: KRV-019 / TERO', COL.green);
     L.text(30, 40, 'S.P.E.C.I.A.L.', COL.orange); let hover = '';
     SPECIAL.forEach((k, i) => { const y = 62 + i * 30; L.text(30, y + 3, SPECIAL_NAMES[k].toUpperCase(), COL.text); L.text(190, y + 2, String(st.S[k]), COL.amber, [0.5, 0], 5, 2);
       L.btn(214, y, 18, 18, '-', () => { if (st.S[k] > 1) { st.S[k]--; this.drawCreate(); } }); L.btn(236, y, 18, 18, '+', () => { if (left > 0 && st.S[k] < 10) { st.S[k]++; this.drawCreate(); } });
@@ -83,7 +93,7 @@ export class Screens {
     L.text(470, 40, 'TAG 2 SKILLS (+20)', COL.orange); const c = { S: st.S, tags: st.tags, sk: {} };
     SKILLS.forEach((s, i) => { const y = 62 + i * 30, on = st.tags.includes(s); L.btn(470, y, 150, 22, `${on ? '* ' : ''}${SKILL_NAMES[s].toUpperCase()}  ${R.skillValue(c, s)}%`, () => { if (on) st.tags = st.tags.filter((t) => t !== s); else if (st.tags.length < 2) st.tags.push(s); else { st.tags.shift(); st.tags.push(s); } this.drawCreate(); }, { color: on ? COL.green : COL.orange });
       L.zone(470, y, 150, 22, { over: () => this.descT?.setText(SKILL_DESC[s]) }); });
-    L.bevel(30, 350, 580, 40, { inset: true, face: 0x08100a }); this.descT = L.text(38, 358, 'HOVER A STAT. PICK 2 TAG SKILLS. SPEND ALL POINTS.', COL.green);
+    L.bevel(30, 350, 580, 40, { inset: true, face: 0x08100a }); this.descT = L.paragraph(38, 358, 564, 30, 'HOVER A STAT. PICK 2 TAG SKILLS. SPEND ALL POINTS.', COL.green);
     L.text(30, 404, 'TERO. 19. SURVIVOR OF A FRIDAY NIGHT. NO LAST NAME. CARRIES A NOKIA 3310.', COL.dim);
     const ok = left === 0 && st.tags.length === 2; const b = L.btn(470, 430, 150, 28, ok ? 'BEGIN' : 'FINISH SETUP', () => { if (ok) this.start(); }, { color: ok ? COL.green : COL.dim });
     L.btn(30, 430, 100, 28, 'BACK', () => this.title());
@@ -104,13 +114,11 @@ export class Screens {
   world() {
     const ctx = this.ctx, G = ctx.G; if (ctx.area?.combat) return ctx.area.say('You cannot leave during combat!', COL.red);
     this.clear(); const L = this.layer(); this.base.push(L);
-    L.rect(0, 0, 640, 480, 0x0a0e08); L.panel(6, 6, 628, 468, 'KERAVA REGION - WORLD MAP'); L.bevel(14, 24, 612, 346, { face: 0x1c2a16, inset: true });
+    L.metal(0, 0, 640, 480); L.panel(6, 6, 628, 468, 'CIVIL DEFENSE / KERAVA QUARANTINE REGION'); L.bevel(14, 24, 612, 346, { face: 0x1c2a16, inset: true });
+    L.img(ctx.K.world, null, 14, 24, 1, [0, 0], 0.5);
     const g = ctx.ps.add.graphics().setScrollFactor(0).setDepth(D_SCREEN + 1); L.objs.push(g);
-    for (let i = 0; i < 70; i++) { g.fillStyle(0x24361c, 1).fillRect(20 + ((i * 89) % 600), 30 + ((i * 47) % 330), 6 + (i % 4) * 4, 3); }
-    g.lineStyle(5, 0x2a5a8a, 1).beginPath().moveTo(14, 300).lineTo(120, 270).lineTo(200, 300).lineTo(340, 250).lineTo(430, 270).lineTo(520, 220).lineTo(626, 235).strokePath();     // Keravanjoki
-    g.lineStyle(2, 0x6a5a44, 1); for (const a of LOC_ORDER) for (const b of LOCS[a].links) if (a < b) g.lineBetween(...LOCS[a].map, ...LOCS[b].map);
-    g.lineStyle(1, 0xc8c8c0, 1); for (let t = 0; t < 40; t++) { const x = 14 + t * 16; g.lineBetween(x, 330 - t * 2.4, x + 7, 330 - t * 2.4 - 1); }          // VR rail
-    L.text(40, 336, 'VR RAILWAY', COL.dim); L.text(560, 232, 'KERAVANJOKI', COL.cyan, [0.5, 0]); L.text(320, 30, 'KEHA III CORDON (QUARANTINE)', COL.red, [0.5, 0]);
+    g.lineStyle(2, 0xa0b887, 0.8); for (const a of LOC_ORDER) for (const b of LOCS[a].links) if (a < b) g.lineBetween(...LOCS[a].map, ...LOCS[b].map);
+    L.text(40, 336, 'SURVEY: KRV / CORDON ACTIVE', COL.text); L.text(560, 274, 'KERAVANJOKI', COL.cyan, [0.5, 0]); L.text(320, 30, 'KEHA III CORDON (QUARANTINE)', COL.red, [0.5, 0]);
     const info = L.bevel(14, 376, 612, 56, { inset: true, face: 0x08100a }); const nameT = L.text(22, 382, '', COL.amber), descT = L.text(22, 396, '', COL.text), subT = L.text(22, 412, '', COL.dim);
     L.text(22, 440, clock(G.time) + `     ALIENS KILLED: ${G.kills}/${QUOTA}`, COL.green);
     const here = ctx.here;
@@ -138,6 +146,7 @@ export class Screens {
   inventory() {
     const ctx = this.ctx, G = ctx.G, st = (this.invSt ??= { sel: null, page: 0 }); this.stack.find((o) => o.name === 'inv')?.close();
     const o = this.overlay('inv', 560, 330, 'INVENTORY'), L = o.L, { x, y } = o, c = G.char, d = R.derived(c.S), redo = () => this.inventory();
+    L.bevel(x + 314, y + 22, 236, 270, { inset: true, face: 0x101a10 });
     const list = G.inv.filter((i) => ITEMS[i.id]), per = 11, pages = Math.max(1, Math.ceil(list.length / per)); st.page = Math.min(st.page, pages - 1);
     L.bevel(x + 8, y + 22, 300, 270, { inset: true, face: 0x0c0a08 });
     list.slice(st.page * per, st.page * per + per).forEach((it, i) => { const def = ITEMS[it.id], ry = y + 26 + i * 24, on = st.sel === it.id; if (on) L.rect(x + 10, ry - 1, 296, 22, 0x4a3a1a);
@@ -157,16 +166,24 @@ export class Screens {
   character() {
     const ctx = this.ctx, G = ctx.G, c = G.char; this.stack.find((o) => o.name === 'char')?.close();
     const o = this.overlay('char', 580, 340, `CHARACTER - TERO - LEVEL ${c.lvl}`), L = o.L, { x, y } = o, d = R.derived(c.S);
+    L.bevel(x + 8, y + 22, 164, 264, { inset: true, face: 0x101a10 });
+    L.bevel(x + 188, y + 22, 190, 190, { inset: true, face: 0x101a10 });
+    L.bevel(x + 390, y + 22, 180, 190, { inset: true, face: 0x101a10 });
+    L.img(ctx.K.portraits, 0, x + 400, y + 122, 1.25);
+    L.text(x + 492, y + 134, 'KRV-019', COL.green);
+    L.text(x + 492, y + 152, 'TERO', COL.amber);
+    L.text(x + 492, y + 172, 'SURVIVOR', COL.dim);
     L.text(x + 14, y + 26, 'SPECIAL', COL.orange); SPECIAL.forEach((k, i) => { L.text(x + 14, y + 42 + i * 14, SPECIAL_NAMES[k].toUpperCase(), COL.text); L.text(x + 150, y + 42 + i * 14, String(c.S[k]), COL.amber, [1, 0]); L.zone(x + 14, y + 42 + i * 14, 140, 12, { over: () => descT.setText(SPECIAL_DESC[k]) }); });
     L.text(x + 14, y + 150, 'DERIVED', COL.orange); [['HIT POINTS', `${c.hp}/${c.maxHp}`], ['ACTION POINTS', d.ap], ['ARMOR CLASS', R.armorClass(c)], ['SEQUENCE', d.seq], ['CRITICAL', d.crit + '%'], ['MELEE BONUS', '+' + d.mdb], ['CARRY', d.carry]].forEach(([n, v], i) => { L.text(x + 14, y + 166 + i * 13, n, COL.dim); L.text(x + 150, y + 166 + i * 13, String(v), COL.text, [1, 0]); });
     L.text(x + 200, y + 26, `SKILLS  (POINTS: ${c.skillPts})`, c.skillPts ? COL.amber : COL.orange);
     SKILLS.forEach((s, i) => { const ry = y + 44 + i * 26, tag = c.tags.includes(s); L.text(x + 200, ry + 4, `${tag ? '* ' : ''}${SKILL_NAMES[s].toUpperCase()}`, tag ? COL.green : COL.text); L.text(x + 340, ry + 4, `${R.skillValue(c, s)}%`, COL.amber, [1, 0]);
       if (c.skillPts > 0) L.btn(x + 350, ry, 18, 18, '+', () => { c.skillPts--; c.sk[s] += 2; ctx.sfx('confirm', 0.4); this.character(); }); L.zone(x + 200, ry, 150, 20, { over: () => descT.setText(SKILL_DESC[s]) }); });
     L.text(x + 400, y + 26, 'PROGRESS', COL.orange); [['LEVEL', c.lvl], ['EXPERIENCE', c.xp], ['NEXT LEVEL', R.xpForLevel(c.lvl)], ['ALIENS KILLED', `${G.kills}/${QUOTA}`], ['TIME', clock(G.time)]].forEach(([n, v], i) => { L.text(x + 400, y + 42 + i * 14, n, COL.dim); L.text(x + 566, y + 42 + i * 14, String(v), COL.text, [1, 0]); });
-    L.bevel(x + 200, y + 220, 366, 64, { inset: true, face: 0x08100a }); const descT = L.text(x + 208, y + 226, c.skillPts ? 'LEVEL UP! SPEND SKILL POINTS WITH [+].' : 'HOVER A STAT FOR DETAILS.', COL.green);
+    L.bevel(x + 200, y + 220, 366, 64, { inset: true, face: 0x08100a }); const descT = L.paragraph(x + 208, y + 226, 350, 52, c.skillPts ? 'LEVEL UP! SPEND SKILL POINTS WITH [+].' : 'HOVER A STAT FOR DETAILS.', COL.green);
   }
   nokia() {
     const ctx = this.ctx, G = ctx.G; this.stack.find((o) => o.name === 'nokia')?.close(); const o = this.overlay('nokia', 480, 330, 'NOKIA 3310 - QUEST LOG'), L = o.L, { x, y } = o; let ry = y + 28;
+    L.bevel(x + 8, y + 22, 464, 276, { inset: true, face: 0x142210 });
     L.text(x + 14, ry, `${clock(G.time)}    SIGNAL: NONE    BATTERY: 3 DAYS`, COL.green); ry += 18;
     for (const [id, Q] of Object.entries(QUESTS)) { const n = G.quests[id] ?? 0; if (!n) continue; const last = Math.max(...Object.keys(Q.steps).map(Number)); const done = n >= last && id !== 'kill';
       L.text(x + 14, ry, `${done ? '[X]' : '[ ]'} ${Q.title.toUpperCase()}`, done ? COL.dim : COL.amber); ry += 11; const txt = id === 'kill' ? `ALIENS KILLED: ${G.kills}/${QUOTA}. THE HIVE FALLS WHEN YOU KILL ENOUGH.` : Q.steps[n]; wrap(txt, 66).forEach((l) => { L.text(x + 30, ry, l, done ? COL.dim : COL.text); ry += 10; }); ry += 6; }
@@ -175,9 +192,9 @@ export class Screens {
   options() {
     const ctx = this.ctx; this.stack.find((o) => o.name === 'options')?.close(); const o = this.overlay('options', 330, 300, 'OPTIONS'), L = o.L, { x, y } = o, au = ctx.game.audio;
     const mb = L.btn(x + 20, y + 28, 290, 24, `CONTROLS: ${ctx.mode.toUpperCase()}  (F10)`, () => { ctx.setMode(ctx.mode === 'classic' ? 'modern' : 'classic'); o.close(); this.options(); });
-    L.text(x + 20, y + 60, ctx.mode === 'classic' ? 'CLICK MOVE - RMB CURSOR - SPACE END TURN - ENTER END COMBAT - B WEAPON MODE' : 'WASD MOVE - MOUSE AIM - LMB SHOOT - RMB AIM - SPACE DODGE - SHIFT SPRINT - E USE - Q HEAL - 1-4 WEAPONS', COL.dim); void mb;
+    wrap(ctx.mode === 'classic' ? 'CLICK MOVE - RMB CURSOR - SPACE END TURN - ENTER END COMBAT - B WEAPON MODE' : 'WASD MOVE - MOUSE AIM - LMB SHOOT - RMB AIM - SPACE DODGE - SHIFT SPRINT - E USE - Q HEAL - 1-4 WEAPONS', 48).forEach((line, i) => L.text(x + 20, y + 60 + i * 10, line, COL.dim)); void mb;
     L.btn(x + 20, y + 100, 140, 22, 'SAVE (F5)', () => { ctx.save(); o.close(); }); L.btn(x + 170, y + 100, 140, 22, 'LOAD (F9)', () => { o.close(); ctx.load(); });
-    const vol = (bus, lbl, yy) => { L.text(x + 20, yy + 5, `${lbl} ${Math.round(au.volume(bus) * 100)}%`, COL.text); L.btn(x + 200, yy, 50, 18, '-', () => { au.volume(bus, au.volume(bus) - 0.1); o.close(); this.options(); }); L.btn(x + 260, yy, 50, 18, '+', () => { au.volume(bus, au.volume(bus) + 0.1); o.close(); this.options(); }); };
+    const vol = (bus, lbl, yy) => { L.text(x + 20, y + yy + 5, `${lbl} ${Math.round(au.volume(bus) * 100)}%`, COL.text); L.btn(x + 200, y + yy, 50, 18, '-', () => { au.volume(bus, au.volume(bus) - 0.1); o.close(); this.options(); }); L.btn(x + 260, y + yy, 50, 18, '+', () => { au.volume(bus, au.volume(bus) + 0.1); o.close(); this.options(); }); };
     vol('sfx', 'SOUND FX', 140); vol('music', 'MUSIC', 166);
     L.btn(x + 20, y + 196, 290, 22, 'KEYS: I INV  C CHAR  P NOKIA  TAB MAP', () => {}); L.btn(x + 20, y + 224, 290, 22, 'QUIT TO TITLE', () => { o.close(); this.title(); }, { color: COL.red }); L.btn(x + 20, y + 252, 290, 22, 'RESUME', () => o.close(), { color: COL.green });
   }
@@ -192,7 +209,10 @@ export class Screens {
   runNode(npcId, id) {
     const ctx = this.ctx, G = ctx.G, N = NPCS[npcId], nd = DIALOG[id]; this.stack.find((o) => o.name === 'dialog')?.destroy(); const prev = this.stack.findIndex((o) => o.name === 'dialog'); if (prev >= 0) { this.stack.splice(prev, 1); ctx.modal--; }
     const o = this.overlay('dialog', 600, 300, N.name.toUpperCase()), L = o.L, { x, y } = o; (nd.act ?? []).forEach((a) => this.act(a, npcId));
-    L.bevel(x + 10, y + 24, 70, 90, { inset: true, face: 0x0a1410 }); L.img(ctx.K.actors, rows.indexOf(N.row) * 11, x + 45, y + 108, 3, [0.5, 1]);
+    L.bevel(x + 10, y + 24, 74, 90, { inset: true, face: 0x0a1410 }); L.img(ctx.K.portraits, Math.max(0, rows.indexOf(N.row)), x + 15, y + 29, 1);
+    L.text(x + 47, y + 99, 'SIGNAL: LOCAL', COL.green, [0.5, 0]);
+    L.bevel(x + 88, y + 24, 502, 90, { inset: true, face: 0x101a10 });
+    L.bevel(x + 10, y + 120, 580, 150, { inset: true, face: 0x0a140c });
     let ty = y + 28; for (const para of nd.say) { for (const l of wrap(para.replace(/"/g, ''), 76)) { L.text(x + 92, ty, l, para.startsWith('"') ? COL.text : COL.green); ty += 10; } ty += 5; }
     let oy = Math.max(ty + 6, y + 126); const after = [];
     for (const op of nd.opts) {
@@ -213,7 +233,7 @@ export class Screens {
   // ===================================================================== wall-kicking minigame
   wallGame() {
     const ctx = this.ctx, G = ctx.G; this.stack.find((o) => o.name === 'wall')?.close(); const o = this.overlay('wall', 420, 270, 'SEINANPOTKIMISEN MM (WALL KICKING WORLD CHAMPIONSHIP)'), L = o.L, { x, y } = o;
-    L.rect(x + 20, y + 120, 380, 96, 0x6a665c); for (let i = 0; i < 8; i++) L.rect(x + 20, y + 120 + i * 12, 380, 1, 0x4a463c); const hero = L.img(ctx.K.actors, 4, x + 70, y + 214, 4, [0.5, 1]);
+    L.bevel(x + 20, y + 116, 380, 104, { inset: true, face: 0x282f23 }); for (let i = 0; i < 12; i++) L.img(ctx.K.walls, ctx.fr.walls.conc12, x + 36 + i * 31, y + 214, 1, [0.5, 1]); const hero = L.img(ctx.K.actors, 4, x + 70, y + 214, 3, [0.5, 1]);
     L.text(x + 210, y + 28, 'PRESS [SPACE] WHEN THE MARKER IS IN THE GREEN ZONE', COL.amber, [0.5, 0]); L.text(x + 210, y + 42, '3 GOOD KICKS WITHIN 6 TRIES BEATS THE RECORD', COL.dim, [0.5, 0]);
     L.rect(x + 20, y + 62, 380, 20, 0x08100a); const zw = 60, zx = x + 20 + 160, zone = L.rect(zx, y + 62, zw, 20, 0x2a9a44), mark = L.rect(x + 20, y + 58, 4, 28, 0xffffff), res = L.text(x + 210, y + 92, 'KICKS 0/3   TRIES 0/6', COL.green, [0.5, 0]);
     let m = 0, dir = 1, kicks = 0, tries = 0, over = false; void zone;
@@ -228,8 +248,8 @@ export class Screens {
   // ===================================================================== ending
   ending(kind) {
     const ctx = this.ctx, G = ctx.G; const stats = `LEVEL ${G.char.lvl}   ALIENS KILLED ${G.kills}   ${clock(G.time)}`; this.clear(); const L = this.layer(); this.base.push(L); ctx.sfx(kind === 'death' ? 'lose' : 'win', 0.7); ctx.music('title');
-    L.rect(0, 0, 640, 480, kind === 'death' ? 0x1a0606 : 0x06100a); let i = 0, ch = 0; const lines = [...ENDINGS[kind]]; if (kind === 'escape' && !G.flags.moped_ready) lines[0] = 'You walk into Klaukkala, sausage in hand, aliens at your back.';
-    const out = []; this.tick = (dt) => { if (i >= lines.length) return; this.tk = (this.tk ?? 0) + dt; if (this.tk > 0.025) { this.tk = 0; ch++; if (!out[i]) out[i] = L.text(320, 80 + i * 46, '', i === lines.length - 1 ? COL.amber : COL.green, [0.5, 0], 5, i === lines.length - 1 ? 2 : 1); out[i].setText(lines[i].slice(0, ch)); if (ch >= lines[i].length) { i++; ch = 0; this.tk = -0.5; } } };
+    L.img(ctx.K.title, null, 0, 0, 1, [0, 0], 0); L.rect(0, 0, 640, 480, kind === 'death' ? 0x1a0606 : 0x06100a, 0.88); L.panel(18, 34, 604, 348, kind === 'death' ? 'SURVIVOR RECORD / SIGNAL LOST' : 'KERAVA / FINAL TRANSMISSION'); L.bevel(28, 56, 584, 312, { inset: true, face: 0x0a140c }); let i = 0, ch = 0; const lines = [...ENDINGS[kind]]; if (kind === 'escape' && !G.flags.moped_ready) lines[0] = 'You walk into Klaukkala, sausage in hand, aliens at your back.';
+    const out = []; this.tick = (dt) => { if (i >= lines.length) return; this.tk = (this.tk ?? 0) + dt; if (this.tk > 0.025) { this.tk = 0; ch++; if (!out[i]) out[i] = L.text(320, 80 + i * 46, '', i === lines.length - 1 ? COL.amber : COL.green, [0.5, 0], 5, i === lines.length - 1 ? 2 : 1); out[i].setText(ascii(lines[i].slice(0, ch))); if (ch >= lines[i].length) { i++; ch = 0; this.tk = -0.5; } } };
     L.text(320, 400, stats, COL.dim, [0.5, 0]); L.btn(220, 424, 200, 26, 'BACK TO TITLE', () => this.title()); if (kind !== 'death') L.btn(220, 454, 200, 20, 'KEEP PLAYING (RETURN TO MAP)', () => { G.flags.quota_hit = 1; this.world(); }, { color: COL.dim });
     if (kind === 'death') { L.btn(220, 454, 200, 20, 'LOAD LAST SAVE', () => ctx.load(), { color: COL.dim }); }
   }

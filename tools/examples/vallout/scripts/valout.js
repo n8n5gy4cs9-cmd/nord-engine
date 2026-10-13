@@ -13,7 +13,7 @@ import { DevConsole } from './v/devconsole.js';
 import * as R from './v/rules.js';
 
 const A = (p) => `assets/${p}`;
-const K = { ground: A('tiles/ground.png'), walls: A('tiles/walls.png'), props: A('sprites/props.png'), actors: A('sprites/actors.png'), boss: A('sprites/boss.png'), fx: A('sprites/fx.png'), items: A('ui/items.png'), ui: A('ui/ui.png'), font: A('ui/font.png') };
+const K = { ground: A('tiles/ground.png'), walls: A('tiles/walls.png'), props: A('sprites/props.png'), actors: A('sprites/actors.png'), boss: A('sprites/boss.png'), fx: A('sprites/fx.png'), items: A('ui/items.png'), ui: A('ui/ui.png'), font: A('ui/font.png'), portraits: A('ui/portraits.png'), title: A('art/title.png'), metal: A('art/metal.png'), world: A('art/world.png') };
 const SFX = ['click', 'step', 'hit', 'hit_goo', 'hurt', 'die_alien', 'die_human', 'gull', 'blob', 'levelup', 'win', 'lose', 'pickup', 'open', 'error', 'miss', 'combat', 'shoot_pistol', 'shoot_shotgun', 'shoot_rifle', 'ray', 'swing', 'kick', 'punch', 'whoosh', 'wallkick', 'heal', 'drink', 'confirm'];
 const MUSIC = { title: A('audio/music/music_title.mp3'), explore: A('audio/music/music_wasteland.mp3'), combat: A('audio/music/music_combat.mp3') };
 const SAVE_KEY = 'valout2';

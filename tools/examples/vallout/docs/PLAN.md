@@ -9,7 +9,8 @@
 | Game rules (SPECIAL, derived stats, to-hit, damage, AP, sequence, XP) | **fallout2-ce** (`combat.cc` `attackDetermineToHit`, `stat.cc`, `skill.cc`) — ported to `scripts/v/rules.js` (pure, node-testable) |
 | Bug-fix knowledge | **sfall** — adopted fixes listed in `GUIDE.md` (e.g. distance/Perception fix, no negative AC, to-hit cap 95) |
 | UI/modern-engine ideas | **falltergeist** (reference only: HUD layout, cursor modes) |
-| Bitmap font + text helper | nord-engine `forgotten` example (`pixeltext.js`, `font.png`) |
+| Bitmap text helper | nord-engine `forgotten` example (`pixeltext.js`); font redrawn for M6-38 |
+| Art | Original Fallout-inspired quarantined Kerava raster art; PNG source files, prompts in `ART_DIRECTION.md`; no sprite/audio generators |
 
 ## Architecture
 ```
