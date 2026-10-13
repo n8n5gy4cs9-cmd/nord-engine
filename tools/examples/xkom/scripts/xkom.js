@@ -14,6 +14,7 @@ import { DevConsole } from './xk/devconsole.js';
 import { initWorld, resolveContact, advanceClock, DAY_SECONDS, phase, snapshot, validSave } from './xk/campaign.js';
 
 import { PauseMenu } from './xk/pause.js';
+import { MUSIC_CONFIG } from './music-config.js';
 
 const PATH = {
   tground: 'assets/tactical/ground.png', tobjects: 'assets/tactical/objects.png', tunits: 'assets/tactical/units.png', tui: 'assets/tactical/ui.png', tfx: 'assets/tactical/fx.png',
@@ -34,6 +35,7 @@ export default class XKom extends XkBase {
   start() { this.ready = false; this.boot().catch((e) => this.game.reportError(e, this, 'boot')); }
 
   async boot() {
+    this.musicConfig = MUSIC_CONFIG;
     await this.initBase(PATH); this.land = [];
     const rows = (await this.game.loader.text(PATH.map)).split('---\n')[1].trim().split('\n'); rows.forEach((r, y) => [...r].forEach((c, x) => { if (c === 'g' || c === 'd') this.land.push([x, y]); }));
     this.tac = new TacView(this); this.rts = new RtsView(this); this.air = new InterceptView(this); this.geo = new GeoView(this); this.help = new Help(this, XKOM_PAGES); this.mode = 'title';

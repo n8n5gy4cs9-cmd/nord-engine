@@ -88,9 +88,9 @@ export class Audio {
     return handle;
   }
 
-  /** Start looping music, crossfading from the current track. Same path again is a no-op. */
-  async music(path, { fade = 1, volume = 1 } = {}) {
-    if (this._music?.path === path) return;
+  /** Start looping music at offset seconds. Same path is a no-op unless restart is requested. */
+  async music(path, { fade = 1, volume = 1, offset = 0, restart = false } = {}) {
+    if (this._music?.path === path && !restart) return;
     const old = this._music;
     this._music = { path, src: null, gain: null };
     const mine = this._music;
@@ -100,7 +100,8 @@ export class Audio {
       const ctx = this.ctx, t = ctx.currentTime;
       const src = ctx.createBufferSource(); src.buffer = buf; src.loop = true;
       const g = ctx.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(volume, t + fade);
-      src.connect(g); g.connect(this.buses.music); src.start();
+      src.connect(g); g.connect(this.buses.music);
+      src.start(0, Number.isFinite(offset) && offset >= 0 && offset < buf.duration ? offset : 0);
       mine.src = src; mine.gain = g;
     };
     if (old) this.#fadeOut(old, fade);

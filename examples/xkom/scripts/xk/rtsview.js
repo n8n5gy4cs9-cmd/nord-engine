@@ -23,7 +23,7 @@ export class RtsView {
     this.cursor = h.img('rui', 0, 0, 0, 6000, [0, 0], true);
     this.buildHud(); this.syncOre(); this.view(0, 0); this.syncSprites();
     const pb = s.blds.find((b) => b.team === 'p' && b.type === 'fact'); this.view(pb.tx * TS - 40, pb.ty * TS - 90);
-    h.music(cfg.music ?? 'music_rts', 0.25); this.say(cfg.briefing ?? 'DESTROY THE ENEMY BASE', COL.gold);
+    h.music(cfg.music ?? 'music_rts', 0.25, { offset: 0, restart: true }); this.say(cfg.briefing ?? 'DESTROY THE ENEMY BASE', COL.gold);
     this.wt = ps.time.addEvent({ delay: 520, loop: true, callback: () => { this.anim++; this.waterTick(); } });
     this.miniT = 0;
   }

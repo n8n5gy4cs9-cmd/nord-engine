@@ -16,7 +16,7 @@ export class InterceptView {
     this.tTitle = this.add(h.text(6, 4, `XK / AIR DEFENCE  -  ${site.name}`, '#88cbb0', { hud: true, depth: 8 }));
     this.tSub = this.add(h.text(6, 174, 'INTERCEPTOR LAUNCHED FROM HQ...', COL.dim, { hud: true, depth: 8 }));
     this.tKeys = this.add(h.text(VW / 2, 188, '[ENTER] ENGAGE   [SPACE] AUTO   [D] SKIP  [P] PAUSE', COL.gold, { origin: [0.5, 0], hud: true, depth: 8 }));
-    h.music('music_game', 0.18); h.sfx('alarm', 0.2);
+    h.music('music_game', 0.18, { offset: h.musicConfig.interceptStartSeconds, restart: true }); h.sfx('alarm', 0.2);
     this.ufo = { x: 250, y: 40 }; this.jet = { x: 70, y: 150 };
   }
   add(o) { this.objs.push(o); return o; }

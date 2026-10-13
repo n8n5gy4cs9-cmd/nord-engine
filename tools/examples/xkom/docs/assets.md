@@ -111,7 +111,7 @@ The **Base screen** (facilities + research list + soldier roster) and panels/but
 | `assets/audio/music/music_base.mp3` | **Geoscape/globe, HQ regional map, Base/research, campaign victory/defeat screen** | 53.3 s — quiet 72 BPM command-center ambience, soft synth pads and sparse melody. |
 | `assets/audio/music/music_game.mp3` | **Tactical missions, interception radar/auto/shooter, Hive Strike alert and RTS battle** | 34.3 s — tense 112 BPM combat theme with bass, percussion and restrained synth lead. |
 
-Browsers start audio after a click/key gesture. The first touch/click dismisses the ready-made Nord start gate and plays title music while staying on the title; the next interaction is normal game input. The title no longer needs a separate LISTEN button. Enter starts the campaign and switches to base music. Music crossfades between different files; moving between screens using the same file keeps the loop playing.
+Browsers start audio after a click/key gesture. The first touch/click dismisses the ready-made Nord start gate and plays title music while staying on the title; the next interaction is normal game input. The title no longer needs a separate LISTEN button. Enter starts the campaign and switches to base music. Music crossfades between different files; radar-to-shooter keeps the loop playing; tactical and RTS mission starts restart the game track from the beginning.
 
 ### Sound effects — replace one sound at a time
 | File to replace | Exactly when it plays | Replacement suggestion |
@@ -155,3 +155,14 @@ node tools/gen_examples.mjs xkom         # copy everything into examples/xkom/
 ```
 
 RTS HUD uses the native 6×8 bitmap font for crisp prices/selection labels; prices sit below icons without a redundant currency prefix. HQ/body text uses rounded 8px VT323 sizing (small labels 6–7px); help pages split into at most 15 lines. Pause/console are plain terminal-style DOM overlays; no new art or music slots are required.
+
+### Interception music start point
+Edit `scripts/music-config.js`:
+
+```js
+export const MUSIC_CONFIG = {
+  interceptStartSeconds: 30,
+};
+```
+
+This starts `assets/audio/music/music_game.mp3` at 30 seconds when interception begins. Change the number to the action-packed part of your song, or use `0` for the beginning. Radar and shooter keep the same playback; starting a tactical or RTS mission restarts the same MP3 at **0 seconds**. Music loops automatically in both mission modes. Invalid offsets or offsets beyond the song length fall back to the beginning. Reload or Stop/Play after editing. For permanent repo changes, edit `tools/examples/xkom/scripts/music-config.js`; the generated game copy is `examples/xkom/scripts/music-config.js`.
