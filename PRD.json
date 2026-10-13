@@ -1169,6 +1169,12 @@
       "status": "done"
     },
     {
+      "id": "M6-38",
+      "milestone": "M6",
+      "title": "Remake all Vallout sprites and menus for a Fallout-inspired quarantined Kerava",
+      "status": "todo"
+    },
+    {
       "id": "M7-01",
       "milestone": "M7",
       "title": "tools/build-manual.mjs (marked + CodeMirror readonly + nord-live blocks)",
