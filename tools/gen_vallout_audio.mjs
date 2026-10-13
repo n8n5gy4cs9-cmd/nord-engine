@@ -51,7 +51,9 @@ for (const [n, f] of Object.entries(S)) writeWav(`${OUT}/sfx/${n}.wav`, f());
 
 // ---- music ------------------------------------------------------------------------------------------------------------------
 const hz = (m) => 440 * 2 ** ((m - 69) / 12);
+// Never overwrites existing music (owner's own tracks live here). Pass --force-music to regenerate the synth placeholders.
 function music(name, bpm, bars, make) {
+  if (fs.existsSync(`${OUT}/music/${name}.mp3`) && !process.argv.includes('--force-music')) { console.log(`keep ${name}.mp3 (exists)`); return; }
   const beat = 60 / bpm, len = bars * 4 * beat, b = mk(len); make(b, beat); writeWav(`${OUT}/music/${name}.wav`, b, 0.8);
   const wav = `${OUT}/music/${name}.wav`; execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', wav, '-codec:a', 'libmp3lame', '-b:a', '80k', `${OUT}/music/${name}.mp3`]); fs.unlinkSync(wav);
 }
