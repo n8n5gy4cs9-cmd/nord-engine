@@ -37,3 +37,27 @@ suites['touch'] = async () => {
     if (errors.length) throw new Error(errors.join('\n'));
   } finally { await browser.close(); srv.close(); }
 };
+
+// ultima-touch: a keyboard-only RPG; the touch pad must walk the hero and Act must work.
+suites['touch-ultima'] = async () => {
+  const { chromium } = loadPlaywright();
+  const srv = await serve(`${ROOT}/examples/ultima-touch`);
+  const browser = await chromium.launch();
+  try {
+    const page = await (await browser.newContext({ hasTouch: true, isMobile: true, viewport: { width: 844, height: 390 } })).newPage();
+    const errors = []; page.on('pageerror', (e) => errors.push(String(e)));
+    await page.goto(srv.url); await page.waitForSelector('.nt-root');
+    const hold = async (text, ms) => {
+      const l = page.locator('.nt-d,.nt-b').filter({ hasText: text }).first(); const b = await l.boundingBox();
+      const o = { pointerId: 3, pointerType: 'touch', isPrimary: true, bubbles: true, clientX: b.x + b.width / 2, clientY: b.y + b.height / 2 };
+      await l.dispatchEvent('pointerdown', o); await page.waitForTimeout(ms); await l.dispatchEvent('pointerup', o);
+    };
+    const s0 = await page.evaluate(() => window.__ultima);
+    await hold('▲', 700);
+    const s1 = await page.evaluate(() => window.__ultima);
+    if (!(s1.y < s0.y - 1)) throw new Error(`pad did not walk the hero (${s0.y} → ${s1.y})`);
+    await hold('Wait', 60);
+    if ((await page.evaluate(() => window.__ultima.food)) > s1.food) throw new Error('Wait button misbehaved');
+    if (errors.length) throw new Error(errors.join('\n'));
+  } finally { await browser.close(); srv.close(); }
+};

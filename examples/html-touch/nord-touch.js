@@ -66,7 +66,7 @@
   // ---- config -------------------------------------------------------------------------------------------------
   const isKbd = (c) => /^(Key|Digit|Arrow|Space|Enter|Escape|Shift|Control|Alt|Tab|Backspace|F\d)/.test(c);
   const cap = (s) => s.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/^./, (c) => c.toUpperCase());
-  const short = (s) => { const t = cap(s); return t.length > 6 ? t.slice(0, 5) + '…' : t; };
+  const short = (s) => { const t = cap(s); return t.length > 8 ? t.slice(0, 7) + '…' : t; };
 
   /** Build a config from a Nord `input.actions` map ({ jump: ['Space','Gamepad0'], left: ['KeyA','ArrowLeft'] }). */
   function fromActions(actions) {

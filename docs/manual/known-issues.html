@@ -109,6 +109,7 @@
 <h2 id="touch-controls-m8-20">Touch controls (M8-20)<a class="anchor" href="#touch-controls-m8-20">#</a></h2>
 <ul>
 <li>Verified only in headless Chromium with touch emulation (e2e suite <code>touch</code>) and a web-2d / single-file export build. <strong>Not tried on a real phone/tablet</strong>: haptics, iOS Safari behaviour (pinch-zoom/rubber-band blocking, fullscreen button hidden there), and the Rust/WASM exports (macroquad/winit accepting synthetic key events) — the injection is built but not run against a real wasm build here.</li>
+<li>angry-touch: verified headless only (Chromium touch emulation via CDP: finger drag aims/launches, pigs die, tower collapses); not tried on a real phone. Physics is basic (pigs can roll far, damage = impact velocity change, no bird abilities). ultima-touch: POC only (single quest, no spells/ships/space); touch pad overlays the lower map corners.</li>
 <li>Keyboard-driven games only; games that poll the Gamepad API directly don&#39;t see the overlay. Actions are auto-mapped by name (<code>left/right/up/down</code>, <code>pause/menu</code>), everything else becomes a button (max 6).</li>
 </ul>
 

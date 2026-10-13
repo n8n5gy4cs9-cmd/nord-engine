@@ -1,0 +1,9 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Angry Touch</title>
+<style>html,body{margin:0;height:100%;background:#101418;overflow:hidden}canvas{width:100vw;height:100vh;display:block}</style></head>
+<body>
+<canvas id="glcanvas" tabindex="1"></canvas>
+<!-- dev page: served by `nord serve`; `nord export --target web-wasm-game` writes its own relative index.html -->
+<script src="/vendor/macroquad/mq_js_bundle.js"></script>
+<script>load("target/web/game.wasm");</script>
+</body></html>

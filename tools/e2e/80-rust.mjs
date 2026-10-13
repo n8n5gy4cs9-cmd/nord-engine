@@ -29,5 +29,6 @@ suites['rust-platformer'] = run('rust-platformer', async (page) => { await page.
 suites['rust-physics-toys'] = run('rust-physics-toys', async (page) => { await page.mouse.click(300, 100); await page.keyboard.press('Space'); await page.waitForTimeout(1500); });
 suites['rust-json-tool'] = run('rust-json-tool', async (page) => { await page.mouse.click(700, 100); await page.waitForTimeout(500); }, 'web-wasm-app', ['app.js', 'app_bg.wasm', 'index.html']);
 suites['rust-asteroids'] = run('rust-asteroids', async (page) => { await page.keyboard.down('KeyW'); await page.keyboard.down('Space'); await page.waitForTimeout(1200); await page.keyboard.up('Space'); await page.keyboard.up('KeyW'); });
+suites['rust-angry-touch'] = run('angry-touch', async (page) => { await page.keyboard.down('ArrowUp'); await page.waitForTimeout(300); await page.keyboard.up('ArrowUp'); await page.keyboard.press('Space'); await page.waitForTimeout(1500); });
 suites['rust-mq-snake'] = run('rust-mq-snake', async (page) => { await page.keyboard.press('ArrowUp'); await page.waitForTimeout(800); });
 suites['rust-mq-life'] = run('rust-mq-life', async () => {}, 'web-wasm-game', ['game.wasm', 'mq_js_bundle.js', 'index.html'], 2); // black/white cells only

@@ -1287,6 +1287,12 @@
       "milestone": "M8",
       "title": "Plug-and-play touch controls (nord-touch.js) for every web export",
       "status": "done"
+    },
+    {
+      "id": "M8-21",
+      "milestone": "M8",
+      "title": "Example angry-touch (Rust/WASM slingshot game, touch) and ultima-touch (keyboard RPG + nord-touch)",
+      "status": "done"
     }
   ]
 }

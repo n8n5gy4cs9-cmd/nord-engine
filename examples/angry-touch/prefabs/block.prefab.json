@@ -1,0 +1,64 @@
+{
+ "format": 1,
+ "root": {
+  "id": "block001",
+  "name": "Block",
+  "enabled": true,
+  "tags": [
+   "block"
+  ],
+  "layer": 0,
+  "transform": {
+   "pos": [
+    0,
+    0,
+    2
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ],
+   "scale": [
+    1,
+    1,
+    1
+   ]
+  },
+  "components": [
+   {
+    "type": "sprite",
+    "texture": "assets/sprites/wood.png",
+    "size": [
+     20,
+     80
+    ],
+    "tint": "#ffffff"
+   },
+   {
+    "type": "rigidbody",
+    "mode": "dynamic",
+    "mass": 1,
+    "bounce": 0.05,
+    "friction": 0.7,
+    "fixedRotation": false
+   },
+   {
+    "type": "collider",
+    "shape": "box",
+    "size": [
+     20,
+     80
+    ]
+   }
+  ],
+  "scripts": [
+   {
+    "path": "block",
+    "attributes": {}
+   }
+  ],
+  "children": [],
+  "prefab": null
+ }
+}

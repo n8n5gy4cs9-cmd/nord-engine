@@ -1,0 +1,61 @@
+{
+ "format": 1,
+ "root": {
+  "id": "bird0001",
+  "name": "Bird",
+  "enabled": true,
+  "tags": [
+   "bird"
+  ],
+  "layer": 0,
+  "transform": {
+   "pos": [
+    0,
+    0,
+    5
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ],
+   "scale": [
+    1,
+    1,
+    1
+   ]
+  },
+  "components": [
+   {
+    "type": "sprite",
+    "texture": "assets/sprites/bird.png",
+    "size": [
+     34,
+     34
+    ],
+    "tint": "#ffffff"
+   },
+   {
+    "type": "rigidbody",
+    "mode": "dynamic",
+    "mass": 2,
+    "bounce": 0.35,
+    "friction": 0.6,
+    "fixedRotation": false
+   },
+   {
+    "type": "collider",
+    "shape": "circle",
+    "radius": 15
+   }
+  ],
+  "scripts": [
+   {
+    "path": "bird",
+    "attributes": {}
+   }
+  ],
+  "children": [],
+  "prefab": null
+ }
+}

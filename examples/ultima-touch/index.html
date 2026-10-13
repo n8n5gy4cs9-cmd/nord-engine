@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"><title>Ultima-ish — keyboard-only RPG + Nord touch</title>
+<style>html,body{margin:0;height:100%;background:#0b0b12;overflow:hidden}canvas{display:block;width:100vw;height:100vh;object-fit:contain;image-rendering:pixelated}</style></head>
+<body>
+<canvas id="c" width="400" height="224"></canvas>
+<!-- POC: a tiny Ultima I-style RPG written for the KEYBOARD only (arrows/WASD move, Enter act, Space wait, Esc back).
+     It knows nothing about touch — the last line adds phone/tablet controls by sending those same keys. -->
+<script>
+'use strict';
+const T = 16, VW = 17, VH = 11, W = 64, H = 48;
+const c = document.getElementById('c'), g = c.getContext('2d'); g.imageSmoothingEnabled = false;
+// ---- tiny seeded RNG + value noise map --------------------------------------------------------------------------
+const mulberry = (a) => () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+const R = mulberry(1979), rnd = (n) => Math.floor(R() * n), pick = (a) => a[rnd(a.length)];
+const noise = (() => { const G = 9, v = Array.from({ length: G + 2 }, () => Array.from({ length: G + 2 }, R)); return (x, y) => { x *= G / W; y *= G / H; const xi = x | 0, yi = y | 0, fx = x - xi, fy = y - yi, s = (t) => t * t * (3 - 2 * t); const a = v[yi][xi], b = v[yi][xi + 1], d = v[yi + 1][xi], e = v[yi + 1][xi + 1]; return (a + (b - a) * s(fx)) * (1 - s(fy)) + (d + (e - d) * s(fx)) * s(fy); }; })();
+// tiles: . grass  ^ mountain  ~ water  f forest  T town  C castle  D dungeon  # wall  _ floor  < stairs  $ chest
+const world = Array.from({ length: H }, (_, y) => Array.from({ length: W }, (_, x) => {
+  const e = noise(x, y) * .75 + noise(x * 2.3 % W, y * 2.3 % H) * .25, edge = Math.min(x, y, W - 1 - x, H - 1 - y);
+  return edge < 2 || e < .36 ? '~' : e > .68 ? '^' : e > .55 && R() < .55 ? 'f' : '.';
+}));
+const free = (x, y) => world[y][x] === '.' || world[y][x] === 'f';
+const place = (ch, n) => { const out = []; while (out.length < n) { const x = 3 + rnd(W - 6), y = 3 + rnd(H - 6); if (world[y][x] === '.') { world[y][x] = ch; out.push({ x, y }); } } return out; };
+const castle = place('C', 1)[0], towns = place('T', 4), dungeons = place('D', 4);
+const state = { x: castle.x, y: castle.y + 1, hp: 30, max: 30, food: 90, gold: 25, xp: 0, lv: 1, weapon: 0, kills: 0, quest: 0, steps: 0, where: 'world', dead: false, won: false, menu: null };
+for (let i = 0; !free(state.x, state.y) && i < 9; i++) state.y++;
+const WEAPONS = [['Dagger', 2, 0], ['Short sword', 4, 60], ['Battle axe', 6, 150], ['Rapier', 9, 400]];
+const MON = { orc: ['Orc', 7, 2, 12, '#7aa84a'], skel: ['Skeleton', 9, 3, 18, '#d8dee9'], thief: ['Thief', 6, 1, 10, '#b48ead'], troll: ['Troll', 18, 5, 40, '#bf616a'] };
+let mons = [], dun = null, log = ['You awake in the realm. Seek the castle (C)...'];
+const say = (m) => { log.push(m); if (log.length > 3) log.shift(); };
+// ---- dungeon ------------------------------------------------------------------------------------------------------
+function makeDungeon(seed) {
+  const r = mulberry(seed * 77 + 5), w = 30, h = 20, m = Array.from({ length: h }, () => Array(w).fill('#'));
+  let x = 2, y = 2; m[y][x] = '<'; for (let i = 0; i < 260; i++) { const d = [[1, 0], [-1, 0], [0, 1], [0, -1]][r() * 4 | 0]; x = Math.max(1, Math.min(w - 2, x + d[0])); y = Math.max(1, Math.min(h - 2, y + d[1])); if (m[y][x] === '#') m[y][x] = '_'; }
+  const spots = []; for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) if (m[j][i] === '_' && Math.hypot(i - 2, j - 2) > 5) spots.push([i, j]);
+  spots.sort(() => r() - .5); spots.slice(0, 4).forEach(([i, j]) => m[j][i] = '$');
+  return { m, w, h, mons: spots.slice(4, 10).map(([i, j]) => mk(r() < .5 ? 'skel' : 'troll', i, j)) };
+}
+const mk = (k, x, y) => ({ k, x, y, hp: MON[k][1] + (state.lv - 1) * 2 });
+// ---- game step ----------------------------------------------------------------------------------------------------
+const tile = (x, y) => state.where === 'world' ? (world[y]?.[x] ?? '~') : (dun.m[y]?.[x] ?? '#');
+const list = () => state.where === 'world' ? mons : dun.mons;
+function hurt(n, by) { state.hp -= n; if (state.hp <= 0) { state.hp = 0; state.dead = true; say(`You were slain by ${by}.`); } }
+function attack(m) {
+  const w = WEAPONS[state.weapon], d = MON[m.k];
+  if (Math.random() < .78) { const dmg = w[1] + rnd(3) + state.lv - 1; m.hp -= dmg; say(`You hit the ${d[0]} for ${dmg}.`);
+    if (m.hp <= 0) { const gold = d[3] / 2 + rnd(d[3]); state.xp += d[3]; state.gold += gold | 0; state.kills++; say(`${d[0]} dies. +${gold | 0} gold.`); list().splice(list().indexOf(m), 1);
+      if (state.xp >= state.lv * 40) { state.lv++; state.max += 8; state.hp = state.max; say(`Level up! You are level ${state.lv}.`); } } }
+  else say(`You miss the ${d[0]}.`);
+}
+function monstersAct() {
+  for (const m of list()) {
+    const d = MON[m.k], dx = state.x - m.x, dy = state.y - m.y, dist = Math.abs(dx) + Math.abs(dy);
+    if (dist === 1) { if (Math.random() < .6) { const dmg = Math.max(1, d[2] + rnd(2) - (state.lv >> 2)); say(`${d[0]} hits you for ${dmg}.`); if (m.k === 'thief' && state.gold > 0) { const s = Math.min(state.gold, 8); state.gold -= s; say(`Thief steals ${s} gold!`); } hurt(dmg, d[0]); } else say(`${d[0]} misses.`); }
+    else if (dist < 7) { const sx = Math.abs(dx) > Math.abs(dy) ? [Math.sign(dx), 0] : [0, Math.sign(dy)]; const nx = m.x + sx[0], ny = m.y + sx[1]; if (['.', 'f', '_'].includes(tile(nx, ny)) && !(nx === state.x && ny === state.y) && !list().some((o) => o.x === nx && o.y === ny)) { m.x = nx; m.y = ny; } }
+  }
+  if (state.where === 'world' && mons.length < 5 && Math.random() < .12) { const a = Math.random() * 6.28, r = 6 + rnd(3), x = Math.round(state.x + Math.cos(a) * r), y = Math.round(state.y + Math.sin(a) * r); if (free(x, y)) mons.push(mk(world[y][x] === 'f' ? pick(['orc', 'thief', 'troll']) : pick(['orc', 'orc', 'thief', 'skel']), x, y)); }
+  mons = mons.filter((m) => Math.abs(m.x - state.x) + Math.abs(m.y - state.y) < 22);
+}
+function tick() {
+  state.steps++; if (state.steps % 4 === 0) { state.food--; if (state.food < 0) { state.food = 0; hurt(1, 'hunger'); say('You are starving!'); } else if (state.food === 10) say('You are hungry.'); }
+  monstersAct();
+}
+function move(dx, dy) {
+  const nx = state.x + dx, ny = state.y + dy, m = list().find((o) => o.x === nx && o.y === ny);
+  if (m) { attack(m); return tick(); }
+  const t = tile(nx, ny);
+  if (['.', 'f', '_', 'T', 'C', 'D', '<'].includes(t)) { state.x = nx; state.y = ny; }
+  else if (t === '$') { dun.m[ny][nx] = '_'; state.x = nx; state.y = ny; const gold = 30 + rnd(60); state.gold += gold; say(`A chest! +${gold} gold.`); }
+  else say(t === '~' ? 'You cannot swim.' : 'Blocked.');
+  tick();
+}
+function act() { // Enter
+  const t = tile(state.x, state.y);
+  if (state.where === 'dungeon') { if (t === '<') { state.where = 'world'; [state.x, state.y] = dun.from; say('You climb out into the daylight.'); } else say('Nothing here. Stairs (<) lead out.'); return; }
+  if (t === 'T') state.menu = { title: 'Town shop', sel: 0 };
+  else if (t === 'C') castle_talk();
+  else if (t === 'D') { const i = dungeons.findIndex((d) => d.x === state.x && d.y === state.y); dun = makeDungeon(i + 1); dun.from = [state.x, state.y]; state.where = 'dungeon'; state.x = 2; state.y = 2; say('You descend into the dungeon...'); }
+  else say('Nothing to enter here.');
+}
+function castle_talk() {
+  if (state.quest === 0) { state.quest = 1; state.kills = 0; say('Lord British: Slay 8 monsters, brave one!'); }
+  else if (state.kills >= 8) { state.won = true; say('Lord British: Thou hast done it! Hail, hero!'); }
+  else say(`Lord British: ${8 - state.kills} more monsters to slay.`);
+}
+const shopItems = () => { const n = WEAPONS[state.weapon + 1]; return [['Food +20', 12, () => { state.food += 20; }], n ? [`${n[0]} (dmg ${n[1]})`, n[2], () => { state.weapon++; }] : ['(no better weapon)', 0, null], ['Heal to full', 20, () => { state.hp = state.max; }], ['Leave', 0, null]]; };
+// ---- input: keyboard only -------------------------------------------------------------------------------------------
+const keys = {}, DIRS = { ArrowUp: [0, -1], KeyW: [0, -1], ArrowDown: [0, 1], KeyS: [0, 1], ArrowLeft: [-1, 0], KeyA: [-1, 0], ArrowRight: [1, 0], KeyD: [1, 0] };
+let repeat = 0, last = null;
+addEventListener('keydown', (e) => {
+  if (keys[e.code]) return; keys[e.code] = true;
+  if (state.dead || state.won) { if (e.code === 'Enter') location.reload(); return; }
+  if (state.menu) { const items = shopItems(), m = state.menu;
+    if (DIRS[e.code]) m.sel = (m.sel + DIRS[e.code][1] + items.length) % items.length;
+    else if (e.code === 'Escape') state.menu = null;
+    else if (e.code === 'Enter') { const it = items[m.sel]; if (!it[2]) state.menu = null; else if (state.gold >= it[1]) { state.gold -= it[1]; it[2](); say(`Bought ${it[0]}.`); } else say('Not enough gold.'); }
+    return; }
+  if (DIRS[e.code]) { last = DIRS[e.code]; repeat = 0; move(...last); }
+  else if (e.code === 'Enter') act();
+  else if (e.code === 'Space') { say('You wait.'); tick(); }
+  else if (e.code === 'Escape' && state.where === 'dungeon') say('Walk to the stairs (<) and press Enter.');
+});
+addEventListener('keyup', (e) => { keys[e.code] = false; });
+// held direction keeps walking (touch pad holds a key down, it never auto-repeats)
+setInterval(() => { const d = Object.keys(DIRS).find((k) => keys[k]); if (d && !state.menu && !state.dead && !state.won && ++repeat > 2) move(...DIRS[d]); }, 110);
+// ---- render ---------------------------------------------------------------------------------------------------------
+const COL = { '.': '#3d6b33', f: '#2a4d27', '^': '#8a8f9c', '~': '#2d5a9e', T: '#c9a06a', C: '#d8c070', D: '#3b2f40', '#': '#2b2b36', _: '#4a4452', '<': '#c9a06a', $: '#ebcb8b' };
+function glyph(ch, px, py) {
+  g.fillStyle = COL[ch]; g.fillRect(px, py, T, T);
+  g.fillStyle = 'rgba(255,255,255,.18)';
+  if (ch === 'f') { g.fillStyle = '#1d3a1b'; g.fillRect(px + 6, py + 2, 4, 12); g.fillRect(px + 3, py + 4, 10, 5); }
+  else if (ch === '^') { g.fillStyle = '#c5cad3'; g.beginPath(); g.moveTo(px + 8, py + 1); g.lineTo(px + 15, py + 15); g.lineTo(px + 1, py + 15); g.fill(); }
+  else if (ch === '~') { g.fillRect(px + 2, py + 5, 5, 1); g.fillRect(px + 9, py + 11, 5, 1); }
+  else if (ch === 'T') { g.fillStyle = '#7a4a2a'; g.fillRect(px + 2, py + 7, 12, 8); g.fillStyle = '#bf616a'; g.fillRect(px + 1, py + 3, 14, 4); }
+  else if (ch === 'C') { g.fillStyle = '#9a8a50'; g.fillRect(px + 2, py + 5, 12, 10); g.fillRect(px + 2, py + 2, 3, 3); g.fillRect(px + 7, py + 2, 3, 3); g.fillRect(px + 12, py + 2, 3, 3); }
+  else if (ch === 'D') { g.fillStyle = '#000'; g.fillRect(px + 4, py + 4, 8, 11); }
+  else if (ch === '<') { g.fillStyle = '#2b2b36'; g.fillRect(px + 3, py + 3, 10, 2); g.fillRect(px + 3, py + 7, 10, 2); g.fillRect(px + 3, py + 11, 10, 2); }
+  else if (ch === '$') { g.fillStyle = '#7a5a2a'; g.fillRect(px + 2, py + 5, 12, 8); g.fillStyle = '#ebcb8b'; g.fillRect(px + 6, py + 7, 4, 3); }
+}
+function sprite(col, px, py, hero) { g.fillStyle = col; g.fillRect(px + 4, py + 3, 8, 10); g.fillRect(px + 3, py + 13, 3, 2); g.fillRect(px + 10, py + 13, 3, 2); g.fillStyle = '#101018'; g.fillRect(px + 5, py + 5, 2, 2); g.fillRect(px + 9, py + 5, 2, 2); if (hero) { g.fillStyle = '#ebcb8b'; g.fillRect(px + 3, py + 1, 10, 3); } }
+function text(s, x, y, col = '#d8dee9') { g.fillStyle = col; g.fillText(s, x, y); }
+function draw() {
+  g.fillStyle = '#0b0b12'; g.fillRect(0, 0, 400, 224); g.font = '10px monospace'; g.textBaseline = 'top';
+  const ox = state.x - (VW >> 1), oy = state.y - (VH >> 1);
+  for (let j = 0; j < VH; j++) for (let i = 0; i < VW; i++) { const x = ox + i, y = oy + j; if (state.where === 'world' ? (x < 0 || y < 0 || x >= W || y >= H) : (x < 0 || y < 0 || x >= dun.w || y >= dun.h)) continue; glyph(tile(x, y), i * T, j * T); }
+  for (const m of list()) { const i = m.x - ox, j = m.y - oy; if (i >= 0 && j >= 0 && i < VW && j < VH) sprite(MON[m.k][4], i * T, j * T); }
+  sprite('#88c0d0', (VW >> 1) * T, (VH >> 1) * T, true);
+  const px = 280; g.fillStyle = '#16161f'; g.fillRect(px - 4, 0, 124, 176);
+  text(state.where === 'world' ? 'OVERWORLD' : 'DUNGEON', px, 4, '#ebcb8b');
+  [['HP', `${state.hp}/${state.max}`], ['Food', state.food], ['Gold', state.gold], ['Level', state.lv], ['Exp', state.xp], ['Weapon', WEAPONS[state.weapon][0]]].forEach(([k, v], i) => { text(k, px, 24 + i * 16, '#88c0d0'); text(String(v), px + 44, 24 + i * 16); });
+  text(state.quest ? (state.kills >= 8 ? 'Quest: return to C' : `Quest: ${state.kills}/8 kills`) : 'Quest: visit castle', px, 126, '#a3be8c');
+  text('Enter act · Space wait', px, 148, '#6c7080'); text('Arrows/WASD move', px, 160, '#6c7080');
+  log.forEach((l, i) => text(l, 6, 180 + i * 13));
+  if (state.menu) { g.fillStyle = 'rgba(11,11,18,.92)'; g.fillRect(40, 30, 200, 100); text(state.menu.title + `  (gold ${state.gold})`, 50, 38, '#ebcb8b'); shopItems().forEach((it, i) => text((i === state.menu.sel ? '> ' : '  ') + it[0] + (it[1] ? `  ${it[1]}g` : ''), 50, 60 + i * 16, i === state.menu.sel ? '#ffffff' : '#9aa'));  }
+  if (state.dead || state.won) { g.fillStyle = 'rgba(0,0,0,.75)'; g.fillRect(0, 0, 400, 224); g.textAlign = 'center'; g.font = '20px monospace'; text(state.won ? 'VICTORY!' : 'YOU DIED', 200, 80, state.won ? '#ebcb8b' : '#bf616a'); g.font = '10px monospace'; text('Press Enter to play again', 200, 120); g.textAlign = 'left'; }
+  window.__ultima = { x: state.x, y: state.y, hp: state.hp, food: state.food, gold: state.gold, where: state.where, menu: !!state.menu, quest: state.quest };
+  requestAnimationFrame(draw);
+}
+draw();
+</script>
+<!-- the whole touch integration (arrows = pad, Enter/Space/Esc = buttons): -->
+<script src="nord-touch.js" data-dpad="dpad" data-keys="ArrowUp,ArrowLeft,ArrowDown,ArrowRight" data-buttons="Enter:Act,Space:Wait,Escape:Back"></script>
+</body></html>

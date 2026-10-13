@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 150/162 tasks (93%)** · updated 2026-10-13
+**Overall: 151/163 tasks (93%)** · updated 2026-10-13
 
 | Milestone | Progress |
 |---|---|
@@ -15,7 +15,7 @@
 | M5 Rust/WASM | 9/9 (100%) |
 | M6 Library | 24/24 (100%) |
 | M7 Docs | 13/13 (100%) |
-| M8 Polish & portability | 13/20 (65%) |
+| M8 Polish & portability | 14/21 (67%) |
 | M9 Desktop apps | 16/16 (100%) |
 
 ## Next up
@@ -206,6 +206,7 @@ _dmg, CI, Windows, Linux, perf_
 - [x] **M8-18** Editor UI uplift: charcoal theme, polished workspace and hub, reliable toolbar and dialogs
 - [x] **M8-19** Fix Assets folder divider resizing and staircase thumbnail grid
 - [x] **M8-20** Plug-and-play touch controls (nord-touch.js) for every web export
+- [x] **M8-21** Example angry-touch (Rust/WASM slingshot game, touch) and ultima-touch (keyboard RPG + nord-touch)
 
 ## M9 — Desktop apps
 _real native desktop apps (Rust backend): files, dialogs, notifications, tray, windows, storage, packaging_

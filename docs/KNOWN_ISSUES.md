@@ -67,4 +67,5 @@ Assets regressions pass for divider dragging, row alignment/wrapping at 48/84/16
 
 ## Touch controls (M8-20)
 - Verified only in headless Chromium with touch emulation (e2e suite `touch`) and a web-2d / single-file export build. **Not tried on a real phone/tablet**: haptics, iOS Safari behaviour (pinch-zoom/rubber-band blocking, fullscreen button hidden there), and the Rust/WASM exports (macroquad/winit accepting synthetic key events) — the injection is built but not run against a real wasm build here.
+- angry-touch: verified headless only (Chromium touch emulation via CDP: finger drag aims/launches, pigs die, tower collapses); not tried on a real phone. Physics is basic (pigs can roll far, damage = impact velocity change, no bird abilities). ultima-touch: POC only (single quest, no spells/ships/space); touch pad overlays the lower map corners.
 - Keyboard-driven games only; games that poll the Gamepad API directly don't see the overlay. Actions are auto-mapped by name (`left/right/up/down`, `pause/menu`), everything else becomes a button (max 6).

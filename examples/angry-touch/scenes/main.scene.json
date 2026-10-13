@@ -1,0 +1,491 @@
+{
+ "format": 1,
+ "name": "main",
+ "settings": {},
+ "entities": [
+  {
+   "id": "camera00",
+   "name": "Camera",
+   "enabled": true,
+   "tags": [],
+   "layer": 0,
+   "transform": {
+    "pos": [
+     480,
+     270,
+     0
+    ],
+    "rot": [
+     0,
+     0,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ]
+   },
+   "components": [
+    {
+     "type": "camera"
+    }
+   ],
+   "scripts": [],
+   "children": [],
+   "prefab": null
+  },
+  {
+   "id": "hill0001",
+   "name": "Hill",
+   "enabled": true,
+   "tags": [],
+   "layer": 0,
+   "transform": {
+    "pos": [
+     420,
+     455,
+     -9
+    ],
+    "rot": [
+     0,
+     0,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ]
+   },
+   "components": [
+    {
+     "type": "sprite",
+     "texture": "assets/sprites/hill.png",
+     "size": [
+      620,
+      300
+     ],
+     "tint": "#a3be8c"
+    }
+   ],
+   "scripts": [],
+   "children": [],
+   "prefab": null
+  },
+  {
+   "id": "hill0002",
+   "name": "Hill2",
+   "enabled": true,
+   "tags": [],
+   "layer": 0,
+   "transform": {
+    "pos": [
+     800,
+     470,
+     -9
+    ],
+    "rot": [
+     0,
+     0,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ]
+   },
+   "components": [
+    {
+     "type": "sprite",
+     "texture": "assets/sprites/hill.png",
+     "size": [
+      520,
+      240
+     ],
+     "tint": "#8fb573"
+    }
+   ],
+   "scripts": [],
+   "children": [],
+   "prefab": null
+  },
+  {
+   "id": "ground01",
+   "name": "Ground",
+   "enabled": true,
+   "tags": [],
+   "layer": 0,
+   "transform": {
+    "pos": [
+     480,
+     510,
+     0
+    ],
+    "rot": [
+     0,
+     0,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ]
+   },
+   "components": [
+    {
+     "type": "sprite",
+     "texture": "assets/sprites/solid.png",
+     "size": [
+      1200,
+      60
+     ],
+     "tint": "#6b8f4e"
+    },
+    {
+     "type": "rigidbody",
+     "mode": "static",
+     "friction": 0.8
+    },
+    {
+     "type": "collider",
+     "shape": "box",
+     "size": [
+      1200,
+      60
+     ]
+    }
+   ],
+   "scripts": [],
+   "children": [],
+   "prefab": null
+  },
+  {
+   "id": "wallL001",
+   "name": "WallL",
+   "enabled": true,
+   "tags": [],
+   "layer": 0,
+   "transform": {
+    "pos": [
+     -30,
+     270,
+     0
+    ],
+    "rot": [
+     0,
+     0,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ]
+   },
+   "components": [
+    {
+     "type": "rigidbody",
+     "mode": "static"
+    },
+    {
+     "type": "collider",
+     "shape": "box",
+     "size": [
+      40,
+      2000
+     ]
+    }
+   ],
+   "scripts": [],
+   "children": [],
+   "prefab": null
+  },
+  {
+   "id": "post0001",
+   "name": "SlingPost",
+   "enabled": true,
+   "tags": [],
+   "layer": 0,
+   "transform": {
+    "pos": [
+     270,
+     432,
+     1
+    ],
+    "rot": [
+     0,
+     0,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ]
+   },
+   "components": [
+    {
+     "type": "sprite",
+     "texture": "assets/sprites/solid.png",
+     "size": [
+      14,
+      96
+     ],
+     "tint": "#6b4a2a"
+    }
+   ],
+   "scripts": [],
+   "children": [],
+   "prefab": null
+  },
+  {
+   "id": "fork0001",
+   "name": "SlingFork",
+   "enabled": true,
+   "tags": [],
+   "layer": 0,
+   "transform": {
+    "pos": [
+     270,
+     382,
+     1
+    ],
+    "rot": [
+     0,
+     0,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ]
+   },
+   "components": [
+    {
+     "type": "sprite",
+     "texture": "assets/sprites/solid.png",
+     "size": [
+      34,
+      10
+     ],
+     "tint": "#6b4a2a"
+    }
+   ],
+   "scripts": [],
+   "children": [],
+   "prefab": null
+  },
+  {
+   "id": "hudscor00",
+   "name": "Score",
+   "enabled": true,
+   "tags": [],
+   "layer": 0,
+   "transform": {
+    "pos": [
+     100,
+     26,
+     50
+    ],
+    "rot": [
+     0,
+     0,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ]
+   },
+   "components": [
+    {
+     "type": "text",
+     "text": "Score",
+     "size": 33,
+     "color": "#2e3440"
+    }
+   ],
+   "scripts": [],
+   "children": [],
+   "prefab": null
+  },
+  {
+   "id": "hudshot00",
+   "name": "Shots",
+   "enabled": true,
+   "tags": [],
+   "layer": 0,
+   "transform": {
+    "pos": [
+     100,
+     54,
+     50
+    ],
+    "rot": [
+     0,
+     0,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ]
+   },
+   "components": [
+    {
+     "type": "text",
+     "text": "Shots",
+     "size": 30,
+     "color": "#2e3440"
+    }
+   ],
+   "scripts": [],
+   "children": [],
+   "prefab": null
+  },
+  {
+   "id": "hudleve00",
+   "name": "Level",
+   "enabled": true,
+   "tags": [],
+   "layer": 0,
+   "transform": {
+    "pos": [
+     860,
+     26,
+     50
+    ],
+    "rot": [
+     0,
+     0,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ]
+   },
+   "components": [
+    {
+     "type": "text",
+     "text": "Level",
+     "size": 33,
+     "color": "#2e3440"
+    }
+   ],
+   "scripts": [],
+   "children": [],
+   "prefab": null
+  },
+  {
+   "id": "msg00001",
+   "name": "Msg",
+   "enabled": true,
+   "tags": [],
+   "layer": 0,
+   "transform": {
+    "pos": [
+     480,
+     200,
+     50
+    ],
+    "rot": [
+     0,
+     0,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ]
+   },
+   "components": [
+    {
+     "type": "text",
+     "text": "",
+     "size": 44,
+     "color": "#2e3440"
+    }
+   ],
+   "scripts": [],
+   "children": [],
+   "prefab": null
+  },
+  {
+   "id": "hint0001",
+   "name": "Hint",
+   "enabled": true,
+   "tags": [],
+   "layer": 0,
+   "transform": {
+    "pos": [
+     480,
+     520,
+     50
+    ],
+    "rot": [
+     0,
+     0,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ]
+   },
+   "components": [
+    {
+     "type": "text",
+     "text": "Drag the bird back and let go  \u00b7  or: arrows aim, Space fires",
+     "size": 27,
+     "color": "#eceff4"
+    }
+   ],
+   "scripts": [],
+   "children": [],
+   "prefab": null
+  },
+  {
+   "id": "game0001",
+   "name": "Game",
+   "enabled": true,
+   "tags": [],
+   "layer": 0,
+   "transform": {
+    "pos": [
+     0,
+     0,
+     0
+    ],
+    "rot": [
+     0,
+     0,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ]
+   },
+   "components": [],
+   "scripts": [
+    {
+     "path": "game",
+     "attributes": {}
+    }
+   ],
+   "children": [],
+   "prefab": null
+  }
+ ]
+}
