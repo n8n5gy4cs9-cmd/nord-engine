@@ -127,7 +127,7 @@ export default class XKom extends XkBase {
   geoscape() {
     this.tac.destroy?.(); this.clearScreen(); this.mode = 'geo'; this.camCenter(VW / 2, VH / 2); const h = this, C = this.C; this.sites = this.makeSites();
     this.geo.start(this.sites); h.keep(h.panel(232, 0, 88, 200, 0x253249, { depth: 1 })); h.keep(h.panel(0, 176, 232, 24, UI.dark, { raised: false, depth: 1 }));
-    this.geoLabel = h.keep(h.text(5, 4, this.geo.region ? 'HQ REGIONAL MAP  Z = GLOBE' : 'GEOSCAPE  ARROWS ROTATE', COL.dim, { hud: true, depth: 6 }));
+    this.geoLabel = h.keep(h.text(5, 4, this.geo.region ? 'HQ REGIONAL MAP  Z = GLOBE' : 'GEOSCAPE  WASD/ARROWS ROTATE', COL.dim, { hud: true, depth: 6 }));
     this.clockText = h.keep(h.text(5, 14, '', COL.dim, { hud: true, depth: 6, scale: 0.9 })); this.refreshClock();
     h.keep(h.text(276, 6, 'EARTH DEFENCE', COL.blue, { origin: [0.5, 0], hud: true, depth: 6 }));
     this.geoBtns = [];
@@ -223,11 +223,11 @@ export default class XKom extends XkBase {
     if (down && this.mode !== 'end' && this.help.key(e)) return; if (this.help.open) return;
     if (this.mode === 'rts') { if (this.rts.over && down) this.rts.doneKey?.(e); else this.rts.key(e, down); return; }
     if (this.mode === 'air') return this.air.key(e, down);
+    if (this.mode === 'tac') { if (this.tac.over && down) this.tac.doneKey?.(e); else this.tac.key(e, down); return; }
     if (!down) return;
     if (this.mode === 'title') { if (k === 'Enter' || k === ' ') this.continueCampaign(); else if (k === 'n' || k === 'N') this.beginCampaign(); }
     else if (this.mode === 'base') { if (k === 'b' || k === 'B' || k === 'Escape') this.geoscape(); else if (/^[1-7]$/.test(k)) this.pickTech(TECHS[+k - 1].id); }
-    else if (this.mode === 'geo') { if (k === 'b' || k === 'B') this.baseScreen(); else if (/^[1-3]$/.test(k)) this.intercept(this.sites[+k - 1]); else if (k === 'f' || k === 'F') this.launchFinale(); else if (k === 'r' || k === 'R') { this.C.presence = 100; this.alertThenRts(); } else { const id = { z: 'hq', Z: 'hq', g: 'globe', G: 'globe', ArrowLeft: 'left', ArrowRight: 'right', ArrowUp: 'up', ArrowDown: 'down', '+': 'in', '=': 'in', '-': 'out' }[k]; if (id) this.geo.action(id); } }
-    else if (this.mode === 'tac') { if (this.tac.over) this.tac.doneKey?.(e); else this.tac.key(e); }
+    else if (this.mode === 'geo') { if (k === 'b' || k === 'B') this.baseScreen(); else if (/^[1-3]$/.test(k)) this.intercept(this.sites[+k - 1]); else if (k === 'f' || k === 'F') this.launchFinale(); else if (k === 'r' || k === 'R') { this.C.presence = 100; this.alertThenRts(); } else { const id = { z: 'hq', Z: 'hq', g: 'globe', G: 'globe', ArrowLeft: 'left', ArrowRight: 'right', ArrowUp: 'up', ArrowDown: 'down', a: 'left', A: 'left', d: 'right', D: 'right', w: 'up', W: 'up', s: 'down', S: 'down', '+': 'in', '=': 'in', '-': 'out' }[k]; if (id) this.geo.action(id); } }
     else if (this.mode === 'end') { if (k === 'Enter') { this.newCampaign(); this.titleScreen(); } }
   }
   ptrEv(p, type) {

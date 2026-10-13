@@ -1,5 +1,7 @@
 # Changelog
 
+- 2026-10-13 (M6-35): WASD/arrows scroll tactical and RTS maps smoothly and rotate the geoscape globe. RTS attack-move moves to Q + click and stop to X, including shared Red Front controls; help/pause/console clear held map keys. Updated HUD hints and both guides, with trusted-key browser regressions.
+
 - 2026-10-13 (M6-34): X-KOM music config now sets start offsets for title, base, interception, tactical and RTS music, plus a fast 0.35-second fade-in/crossfade; real WebAudio regression verifies nonzero offsets and gain ramps for every role.
 
 - 2026-10-13 (M6-33): X-KOM compact configurable UI fonts, visible-glyph button centering and contained tactical TU/HP bars; pause-menu JSON checkpoint export/import with validation. Preserve custom music/offset in generator sources; regenerate X-KOM and shared Red Front helpers.

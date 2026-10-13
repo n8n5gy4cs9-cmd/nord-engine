@@ -44,7 +44,7 @@ export class PauseMenu {
     window.addEventListener('keydown', this.key, true); window.addEventListener('keyup', this.key, true);
   }
   refresh() { this.load.disabled = !this.h.savedCampaign(); this.clock.textContent = 'Strategic clock: ' + (this.h.C.clockPaused ? 'paused' : 'running'); }
-  show() { this.open = true; this.el.style.display = 'flex'; this.h.ps.time.paused = true; this.h.ps.tweens.paused = true; this.h.game.input.held.clear(); this.h.rts.keys = {}; this.h.air.keys = {}; this.h.rts.drag = null; this.h.air.mouseDown = false; this.refresh(); }
+  show() { this.open = true; this.el.style.display = 'flex'; this.h.ps.time.paused = true; this.h.ps.tweens.paused = true; this.h.game.input.held.clear(); this.h.rts.keys = {}; this.h.tac.keys = {}; this.h.air.keys = {}; this.h.rts.drag = null; this.h.air.mouseDown = false; this.refresh(); }
   close() { this.open = false; this.el.style.display = 'none'; this.h.ps.time.paused = false; this.h.ps.tweens.paused = false; this.h.game.input.held.clear(); }
   destroy() { this.close(); window.removeEventListener('keydown', this.key, true); window.removeEventListener('keyup', this.key, true); this.el.remove(); }
 }

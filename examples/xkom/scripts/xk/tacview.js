@@ -10,7 +10,7 @@ export class TacView {
   constructor(host) { this.h = host; }
   start({ squad, seed, aliens, mods, onEnd }) {
     const h = this.h, ps = h.ps; this.onEnd = onEnd; this.s = newMission({ seed, squad, aliens, mods });
-    this.objs = []; this.spr = new Map(); this.tiles = []; this.mode = 'snap'; this.sel = null; this.busy = false; this.fxs = []; this.preview = []; this.hover = [0, 0]; this.over = false; this.anim = 0; this.scrollX = this.scrollY = null;
+    this.objs = []; this.spr = new Map(); this.tiles = []; this.mode = 'snap'; this.sel = null; this.busy = false; this.fxs = []; this.preview = []; this.hover = [0, 0]; this.over = false; this.anim = 0; this.scrollX = this.scrollY = null; this.keys = {};
     const s = this.s;
     for (let y = 0; y < s.h; y++) for (let x = 0; x < s.w; x++) {
       const [sx, sy] = iso(x, y), gi = s.g[y * s.w + x];
@@ -98,7 +98,9 @@ export class TacView {
   }
   update(dt) {
     if (!this.s || this.over || this.busy) { this.scrollX = this.scrollY = null; return; }
-    const h = this.h, [dx, dy] = h.edgeDirection(VW, HUDY);
+    const h = this.h, k = this.keys, [ex, ey] = h.edgeDirection(VW, HUDY);
+    const dx = Math.sign(((k.ArrowRight || k.d) ? 1 : 0) - ((k.ArrowLeft || k.a) ? 1 : 0) + ex);
+    const dy = Math.sign(((k.ArrowDown || k.s) ? 1 : 0) - ((k.ArrowUp || k.w) ? 1 : 0) + ey);
     if (!dx && !dy) { this.scrollX = this.scrollY = null; return; }
     h.panTween?.stop();
     if (this.scrollX === null || Math.abs(this.scrollX - h.vx) > 1) this.scrollX = h.vx;
@@ -110,11 +112,11 @@ export class TacView {
     this.pointer(h.ps.input.mousePointer, false); // Keep tile preview aligned under a stationary mouse.
   }
   cycleMode() { this.mode = this.mode === 'snap' ? 'aimed' : this.mode === 'aimed' ? 'auto' : 'snap'; this.hudRefresh(); }
-  key(e) {
-    if (this.over || !this.s) return; const k = e.key;
+  key(e, down = true) {
+    const k = e.key.length === 1 ? e.key.toLowerCase() : e.key; this.keys[k] = down;
+    if (!down || this.over || !this.s) return;
     if (k === '1') this.mode = 'snap'; else if (k === '2') this.mode = 'aimed'; else if (k === '3') this.mode = 'auto';
     else if (k === 'Tab' || k === ' ') this.next(); else if (k === 'Enter' || k === 'e' || k === 'E') this.endTurn();
-    else { const d = { ArrowLeft: [24, 0], ArrowRight: [-24, 0], ArrowUp: [0, 24], ArrowDown: [0, -24] }[k]; if (d) { this.h.panTo(this.h.vx + VW / 2 - d[0], this.h.vy + VH / 2 - d[1], 150); } }
     this.hudRefresh();
   }
   next() { const l = live(this.s, 'x'); if (!l.length) return; const i = l.indexOf(this.sel); const n = l[(i + 1) % l.length]; this.select(n); this.focus(n); this.h.sfx('select', 0.4); }

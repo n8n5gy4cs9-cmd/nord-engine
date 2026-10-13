@@ -78,3 +78,5 @@ Assets regressions pass for divider dragging, row alignment/wrapping at 48/84/16
 - Art: hand-typed 16×16 / 16×24 sprites, 2 frames per walk/shoot as requested; isometric units only have 2 facings (mirror). Audio is synthesized placeholder.
 
 - **X-KOM UI/portable checkpoints (M6-33):** Chromium verifies visible glyph centers on title/globe/facility/radar/tactical buttons, contained tactical bars, smaller configurable fonts, JSON download/import, invalid-file rejection, reload persistence and combat HQ fallback. Shared Red Front helpers pass the browser regression. Native webview download/file-picker behavior remains unverified; human campaign balance remains unverified.
+
+- **WASD controls (M6-35):** trusted Chromium keys verify smooth tactical/RTS WASD and arrow scrolling, diagonal normalization, key release, cleared held keys through help/pause/console and geoscape WASD rotation. RTS attack-move is Q + click; stop is X (shared with Red Front). Native keyboard feel remains an owner check.

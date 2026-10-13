@@ -50,7 +50,7 @@ export class GeoView {
     else if (id === 'down') { this.region = false; this.pitch = Math.max(-1, this.pitch - 0.2); }
     else if (id === 'in') { this.radius = Math.min(84, this.radius + 8); this.zoom = Math.min(4, this.zoom + 0.4); }
     else if (id === 'out') { this.radius = Math.max(48, this.radius - 8); this.zoom = Math.max(1.2, this.zoom - 0.4); }
-    this.draw(); this.h.geoLabel?.setText(this.region ? 'HQ REGIONAL MAP  Z = GLOBE' : 'GEOSCAPE  ARROWS ROTATE');
+    this.draw(); this.h.geoLabel?.setText(this.region ? 'HQ REGIONAL MAP  Z = GLOBE' : 'GEOSCAPE  WASD/ARROWS ROTATE');
   }
   hit(x, y) { const i = this.markers.findIndex((m, i) => i > 0 && m.sprite.visible && Math.hypot(x - m.sprite.x, y - m.sprite.y) < 9); return i > 0 ? this.sites[i - 1] : null; }
 }

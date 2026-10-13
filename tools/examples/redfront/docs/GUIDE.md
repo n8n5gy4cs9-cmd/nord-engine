@@ -8,7 +8,7 @@ Red Alert-style skirmish on a **procedural map** (new seed every launch, `?seed=
 ## Play
 * You start with a Construction Yard, Power Plant, Barracks, War Factory, Refinery, a Gun Turret, a harvester, 5 infantry and 2 light tanks, **$2500**.
 * Train units from the sidebar (click an icon or press `1`–`5`; Barracks → infantry, War Factory → tanks/harvester). Credits come from **ore** — your harvester mines the gold fields and unloads at the Refinery automatically. Build more harvesters early.
-* **Left-drag** = select · **right-click** = move / attack · **A** then click = attack-move · **S** stop · **Space** jump to base · click the minimap to scroll · arrows or playfield-edge hover scroll. The map edge beside the sidebar scrolls right; hovering over sidebar/minimap/production UI does not scroll. Leaving the canvas stops edge scrolling.
+* **Left-drag** = select · **right-click** = move / attack · **Q** then click = attack-move · **X** stop · **Space** jump to base · click the minimap to scroll · WASD/arrows or playfield-edge hover scroll. The map edge beside the sidebar scrolls right; hovering over sidebar/minimap/production UI does not scroll. Leaving the canvas stops edge scrolling.
 * A single selected unit/building shows its name; groups show SELECTED n. Sidebar prices use the crisp bitmap font below icons.
 * No power plant → production at half speed. Rocket infantry are good against tanks, rifles against infantry; tanks are tough against bullets.
 * The computer builds units, harvests, defends and attacks in growing waves. `difficulty` (Inspector) scales its income.

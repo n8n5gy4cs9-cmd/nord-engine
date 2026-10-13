@@ -20,7 +20,7 @@ export class DevConsole {
     };
     window.addEventListener('keydown', this.key, true); window.addEventListener('keyup', this.key, true);
   }
-  toggle() { this.open = !this.open; this.el.style.display = this.open ? 'block' : 'none'; this.h.game.input.held.clear(); this.h.air.keys = {}; this.h.rts.keys = {}; if (this.open) this.input.focus(); else this.input.blur(); }
+  toggle() { this.open = !this.open; this.el.style.display = this.open ? 'block' : 'none'; this.h.game.input.held.clear(); this.h.air.keys = {}; this.h.rts.keys = {}; this.h.tac.keys = {}; if (this.open) this.input.focus(); else this.input.blur(); }
   write(text) { this.log.textContent = (this.log.textContent + text + '\n').slice(-10000); this.log.scrollTop = this.log.scrollHeight; }
   destroy() { window.removeEventListener('keydown', this.key, true); window.removeEventListener('keyup', this.key, true); this.el.remove(); }
   run(text) {

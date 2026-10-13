@@ -47,7 +47,7 @@ export class RtsView {
       this.btn.push({ type, x, y, w: 30, h: 30, bg, q, pr, ic });
     });
     this.tMsg = h.text(4, 3, '', COL.gold, { hud: true, depth: 8, bitmap: true }); this.tMsg2 = h.text(4, 12, '', COL.dim, { hud: true, depth: 8, bitmap: true }); this.tSel = h.text(4, 190, '', COL.text, { hud: true, depth: 8, bitmap: true });
-    ['RMB ORDER', 'A ATTACK'].forEach((t, i) => h.text(SBX + 30, 179 + i * 10, t, COL.dim, { origin: [0.5, 0], hud: true, depth: 8, bitmap: true }));
+    ['RMB ORDER', 'Q ATTACK', 'X STOP'].forEach((t, i) => h.text(SBX + 30, 179 + i * 7, t, COL.dim, { origin: [0.5, 0], hud: true, depth: 8, bitmap: true }));
   }
   ufr(type, team, f) { const m = this.um, row = m.teams.length > 1 && team === 'e' ? 1 : 0; return row * this.ucols + m.units.indexOf(type) * 3 + f; }
   bfr(b, f = 0) { const m = this.h.meta['b_' + b.type], idx = m.teams.length > 1 ? (b.team === 'p' ? 0 : 1) : 0; return idx * m.framesPerTeam + Math.min(f, m.framesPerTeam - 1); }
@@ -127,7 +127,7 @@ export class RtsView {
     if (!this.s) return; this.dtLast = dt; const s = this.s;
     if (!this.over) step(s, Math.min(dt, 0.1) * (this.cfg.speed ?? 1));
     const k = this.keys, [ex, ey] = this.over ? [0, 0] : this.h.edgeDirection(MAPVW, VH);
-    const dx = this.over ? 0 : Math.sign((k.ArrowRight ? 1 : 0) - (k.ArrowLeft ? 1 : 0) + ex), dy = this.over ? 0 : Math.sign((k.ArrowDown ? 1 : 0) - (k.ArrowUp ? 1 : 0) + ey);
+    const dx = this.over ? 0 : Math.sign(((k.ArrowRight || k.d) ? 1 : 0) - ((k.ArrowLeft || k.a) ? 1 : 0) + ex), dy = this.over ? 0 : Math.sign(((k.ArrowDown || k.s) ? 1 : 0) - ((k.ArrowUp || k.w) ? 1 : 0) + ey);
     const speed = 170 * dt / (Math.hypot(dx, dy) || 1);
     if (dx || dy) this.view(this.sx + dx * speed, this.sy + dy * speed);
     this.syncSprites(); this.syncOre(); this.events(); this.drawOverlay(); this.hudRefresh();
@@ -182,8 +182,8 @@ export class RtsView {
   key(e, down) {
     const k = e.key.length === 1 ? e.key.toLowerCase() : e.key; this.keys[k] = down; if (!down || this.over) return;
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) e.preventDefault();
-    if (k === 'a' && this.sel.size) { this.amove = true; this.say2('ATTACK-MOVE: CLICK TARGET', COL.amber); }
-    else if (k === 's') { for (const u of this.s.units) if (this.sel.has(u.id)) { u.path = null; u.order = null; u.target = 0; u.amove = false; } }
+    if (k === 'q' && this.sel.size) { this.amove = true; this.say2('ATTACK-MOVE: CLICK TARGET', COL.amber); }
+    else if (k === 'x') { for (const u of this.s.units) if (this.sel.has(u.id)) { u.path = null; u.order = null; u.target = 0; u.amove = false; } }
     else if (k === ' ') { const f = this.s.blds.find((b) => b.team === 'p' && b.type === 'fact'); if (f) this.view(f.tx * TS - 40, f.ty * TS - 90); }
     else if (k === 'Escape') { this.sel.clear(); this.amove = false; }
     else if (/^[1-5]$/.test(k)) { const b = this.btn[+k - 1]; if (b) this.sidebarClick(b.x + 1, b.y + 1); }
