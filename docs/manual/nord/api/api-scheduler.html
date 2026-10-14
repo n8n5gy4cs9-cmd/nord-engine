@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Scheduler — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">API</div><details open><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html" class="cur" aria-current="page">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../components/component-sprite.html">sprite</a><a href="../components/component-animatedSprite.html">animatedSprite</a><a href="../components/component-text.html">text</a><a href="../components/component-tilemap.html">tilemap</a><a href="../components/component-parallax.html">parallax</a><a href="../components/component-particles.html">particles</a><a href="../components/component-camera.html">camera</a><a href="../components/component-light.html">light</a><a href="../components/component-mesh.html">mesh</a><a href="../components/component-model.html">model</a><a href="../components/component-material.html">material</a><a href="../components/component-skybox.html">skybox</a><a href="../components/component-postProcess.html">postProcess</a><a href="../components/component-rigidbody.html">rigidbody</a><a href="../components/component-collider.html">collider</a><a href="../components/component-trigger.html">trigger</a><a href="../components/component-audioSource.html">audioSource</a><a href="../components/component-audioListener.html">audioListener</a><a href="../components/component-uiPanel.html">uiPanel</a><a href="../components/component-uiLabel.html">uiLabel</a><a href="../components/component-uiImage.html">uiImage</a><a href="../components/component-uiBar.html">uiBar</a><a href="../components/component-uiButton.html">uiButton</a><a href="../components/component-path.html">path</a><a href="../components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../reference/project-format.html">Project format</a><a href="../reference/components.html">Component index</a><a href="../reference/cli.html">Command line (nord)</a><a href="../reference/library-catalog.html">Library catalog</a><a href="../reference/templates-examples.html">Templates &amp; examples</a><a href="../reference/rust-tier-spec.html">Rust tier spec</a><a href="../reference/export-targets-spec.html">Export targets spec</a><a href="../reference/hosting-spec.html">Hosting notes</a><a href="../reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../reference/packaging.html">Packaging</a><a href="../reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../engines/babylon/9.30/index.html">Babylon 9.30.0 API</a><a href="../../engines/phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../engines/babylon/guides/index.html">Babylon documentation library</a><a href="../../engines/phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">API / Nord Engine</div><h1>Scheduler</h1>
+<p class="lead">Timers and tweens (<code>this.after/every/tween</code>).</p>
+<p class="muted">Source: <code>runtime/core/util.js</code></p>
+<p>Timers + tweens, advanced by `update(dt)` with the (time-scaled) frame delta.</p>
+<h2 id="instance-fields">Instance fields</h2><table><thead><tr><th>Field</th><th>Meaning</th></tr></thead><tbody><tr><td><code>factory</code></td><td>Created by the constructor in runtime/core/util.js.</td></tr><tr><td><code>reset</code></td><td>Created by the constructor in runtime/core/util.js.</td></tr></tbody></table><h2 id="properties">Properties</h2>
+<dl class="api"><dt id="p-size"><code>size</code> <span class="muted">read-only</span></dt><dd>The number of scheduled items that have not been cancelled or completed.</dd></dl>
+<h2 id="methods">Methods</h2>
+<dl class="api"><dt id="m-after"><a class="member-link" href="#m-after" aria-label="Link to after">#</a><code>after(sec, fn)</code></dt><dd>Run fn once after `sec`. Returns cancel().</dd><dt id="m-every"><a class="member-link" href="#m-every" aria-label="Link to every">#</a><code>every(sec, fn)</code></dt><dd>Run fn every `sec` until cancelled.</dd><dt id="m-tween"><a class="member-link" href="#m-tween" aria-label="Link to tween">#</a><code>tween(target, to, opts = {})</code></dt><dd>Tween numeric props of `target` (object or array) to `to`. opts: duration, delay, ease, onUpdate, onComplete, yoyo, repeat</dd><dt id="m-update"><a class="member-link" href="#m-update" aria-label="Link to update">#</a><code>update(dt)</code></dt><dd><details><summary>How this method works</summary><pre class="code" data-lang="js"><code>update(dt) {
+    for (const it of [...this.#items]) {
+      if (it.dead) continue;
+      if (it.tween) this.#tweenStep(it, dt);
+      else {
+        it.left -= dt;
+        while (it.left &lt;= 0 &amp;&amp; !it.dead) {
+          it.fn();
+          if (it.every &gt; 0) it.left += it.every; else it.dead = true;
+        }
+      }
+    }
+    this.#items = this.#items.filter((i) =&gt; !i.dead);
+  }
+  #tweenStep(it, dt) {
+    if (it.delay &gt; 0) { it.delay -= dt; if (it.delay &gt; 0) return; dt = -it.delay; it.delay = 0; }
+    if (!it.started) { for (const k of Object.keys(it.to)) it.from[k] = it.target[k]; it.started = true; }
+    it.t += (dt / it.dur) * it.dir;
+    let done = false;
+    if (it.t &gt;= 1 - 1e-9 || it.t &lt;= 0) {
+      it.t = clamp(it.t, 0, 1);
+      if (it.opts.yoyo &amp;&amp; it.dir === 1) it.dir = -1;
+      else if (it.reps !== 0) { if (it.reps &gt; 0) it.reps--; it.dir = 1; it.t = 0; }
+      else done = true;
+    }
+    const e = it.ease(it.t);
+    for (const k of Object.keys(it.to)) it.target[k] = lerp(it.from[k], it.to[k], e);
+    it.opts.onUpdate?.(it.target);
+    if (done) { it.dead = true; it.opts.onComplete?.(it.target); }
+  }</code></pre></details></dd><dt id="m-clear"><a class="member-link" href="#m-clear" aria-label="Link to clear">#</a><code>clear()</code></dt><dd>Remove every scheduled timer and tween.</dd></dl>
+<div class="pager"><a href="api-ui.html"><small>← Previous</small>UI</a><a href="api-rng.html"><small>Next →</small>Rng</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#instance-fields">Instance fields</a><a href="#properties">Properties</a><a href="#methods">Methods</a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

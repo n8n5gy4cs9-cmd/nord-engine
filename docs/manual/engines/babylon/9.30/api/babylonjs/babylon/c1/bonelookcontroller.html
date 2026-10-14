@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>BABYLON.BoneLookController — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../../index.html"><img src="../../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../index.html">Babylon 9.30.0 API</a><a href="../../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../../../guides/index.html">Babylon documentation library</a><a href="../../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>BABYLON.BoneLookController</h1>
+<p><span class="badge">Underlying Babylon 9.30.0 API</span> <span class="badge">Class</span></p><p class="muted">Official public declarations and JSDoc from <code>babylonjs</code>. Use with engine objects, not directly on a Nord entity.</p><aside class="box tip"><div class="box-title">The Nord way</div><p><a href="../../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../../nord/components/component-camera.html">camera</a>. Access raw objects only when the Nord wrapper does not cover your feature. <a href="../../../../../../../nord/manual/reference.html#escape-hatch">How escape hatches work</a>.</p></aside><h3 id="declaration">BoneLookController <a class="anchor" href="#declaration">#</a></h3><pre class="code" data-lang="ts"><code>export class BoneLookController</code></pre><p>Pure barrel — re-exports only side-effect-free modules
+Class used to make a bone look toward a point in space
+<strong>see</strong>  (online reference)</p>
+<h2 id="members">Public members (20)</h2><p>Private, protected and explicitly internal declarations are excluded. Inherited members belong to the base type listed in the declaration.</p><h3 id="member-target-0">target <a class="anchor" href="#member-target-0">#</a></h3><pre class="code" data-lang="ts"><code>target: Vector3;</code></pre><p>The target Vector3 that the bone will look at</p>
+<p><b>Type / return:</b> <code>Vector3</code></p><h3 id="member-mesh-1">mesh <a class="anchor" href="#member-mesh-1">#</a></h3><pre class="code" data-lang="ts"><code>mesh: TransformNode;</code></pre><p>The TransformNode that the bone is attached to
+Name kept as mesh for back compatibility</p>
+<p><b>Type / return:</b> <code>TransformNode</code></p><h3 id="member-bone-2">bone <a class="anchor" href="#member-bone-2">#</a></h3><pre class="code" data-lang="ts"><code>bone: Bone;</code></pre><p>The bone that will be looking to the target</p>
+<p><b>Type / return:</b> <code>Bone</code></p><h3 id="member-upaxis-3">upAxis <a class="anchor" href="#member-upaxis-3">#</a></h3><pre class="code" data-lang="ts"><code>upAxis: Vector3;</code></pre><p>The up axis of the coordinate system that is used when the bone is rotated</p>
+<p><b>Type / return:</b> <code>Vector3</code></p><h3 id="member-upaxisspace-4">upAxisSpace <a class="anchor" href="#member-upaxisspace-4">#</a></h3><pre class="code" data-lang="ts"><code>upAxisSpace: Space;</code></pre><p>The space that the up axis is in - Space.BONE, Space.LOCAL (default), or Space.WORLD</p>
+<p><b>Type / return:</b> <code>Space</code></p><h3 id="member-adjustyaw-5">adjustYaw <a class="anchor" href="#member-adjustyaw-5">#</a></h3><pre class="code" data-lang="ts"><code>adjustYaw: number;</code></pre><p>Used to make an adjustment to the yaw of the bone</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-adjustpitch-6">adjustPitch <a class="anchor" href="#member-adjustpitch-6">#</a></h3><pre class="code" data-lang="ts"><code>adjustPitch: number;</code></pre><p>Used to make an adjustment to the pitch of the bone</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-adjustroll-7">adjustRoll <a class="anchor" href="#member-adjustroll-7">#</a></h3><pre class="code" data-lang="ts"><code>adjustRoll: number;</code></pre><p>Used to make an adjustment to the roll of the bone</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-slerpamount-8">slerpAmount <a class="anchor" href="#member-slerpamount-8">#</a></h3><pre class="code" data-lang="ts"><code>slerpAmount: number;</code></pre><p>The amount to slerp (spherical linear interpolation) to the target.  Set this to a value between 0 and 1 (a value of 1 disables slerp)</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-minyaw-9">minYaw <a class="anchor" href="#member-minyaw-9">#</a></h3><pre class="code" data-lang="ts"><code>get minYaw(): number;</code></pre><p>Gets or sets the minimum yaw angle that the bone can look to</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-minyaw-10">minYaw <a class="anchor" href="#member-minyaw-10">#</a></h3><pre class="code" data-lang="ts"><code>set minYaw(value: number);</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><h3 id="member-maxyaw-11">maxYaw <a class="anchor" href="#member-maxyaw-11">#</a></h3><pre class="code" data-lang="ts"><code>get maxYaw(): number;</code></pre><p>Gets or sets the maximum yaw angle that the bone can look to</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-maxyaw-12">maxYaw <a class="anchor" href="#member-maxyaw-12">#</a></h3><pre class="code" data-lang="ts"><code>set maxYaw(value: number);</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><h3 id="member-useabsolutevalueforyaw-13">useAbsoluteValueForYaw <a class="anchor" href="#member-useabsolutevalueforyaw-13">#</a></h3><pre class="code" data-lang="ts"><code>useAbsoluteValueForYaw: boolean;</code></pre><p>Use the absolute value for yaw when checking the min/max constraints</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-minpitch-14">minPitch <a class="anchor" href="#member-minpitch-14">#</a></h3><pre class="code" data-lang="ts"><code>get minPitch(): number;</code></pre><p>Gets or sets the minimum pitch angle that the bone can look to</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-minpitch-15">minPitch <a class="anchor" href="#member-minpitch-15">#</a></h3><pre class="code" data-lang="ts"><code>set minPitch(value: number);</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><h3 id="member-maxpitch-16">maxPitch <a class="anchor" href="#member-maxpitch-16">#</a></h3><pre class="code" data-lang="ts"><code>get maxPitch(): number;</code></pre><p>Gets or sets the maximum pitch angle that the bone can look to</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-maxpitch-17">maxPitch <a class="anchor" href="#member-maxpitch-17">#</a></h3><pre class="code" data-lang="ts"><code>set maxPitch(value: number);</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><h3 id="member-constructor-18">constructor <a class="anchor" href="#member-constructor-18">#</a></h3><pre class="code" data-lang="ts"><code>constructor(mesh: TransformNode, bone: Bone, target: Vector3, options?: {
+            maxYaw?: number;
+            minYaw?: number;
+            maxPitch?: number;
+            minPitch?: number;
+            slerpAmount?: number;
+            upAxis?: Vector3;
+            upAxisSpace?: Space;
+            yawAxis?: Vector3;
+            pitchAxis?: Vector3;
+            adjustYaw?: number;
+            adjustPitch?: number;
+            adjustRoll?: number;
+            useAbsoluteValueForYaw?: boolean;
+        });</code></pre><p>Create a BoneLookController
+<strong>param</strong>  mesh the TransformNode that the bone belongs to
+<strong>param</strong>  bone the bone that will be looking to the target
+<strong>param</strong>  target the target Vector3 to look at
+<strong>param</strong>  options optional settings:</p>
+<ul>
+<li>maxYaw: the maximum angle the bone will yaw to</li>
+<li>minYaw: the minimum angle the bone will yaw to</li>
+<li>maxPitch: the maximum angle the bone will pitch to</li>
+<li>minPitch: the minimum angle the bone will yaw to</li>
+<li>slerpAmount: set the between 0 and 1 to make the bone slerp to the target.</li>
+<li>upAxis: the up axis of the coordinate system</li>
+<li>upAxisSpace: the space that the up axis is in - Space.BONE, Space.LOCAL (default), or Space.WORLD.</li>
+<li>yawAxis: set yawAxis if the bone does not yaw on the y axis</li>
+<li>pitchAxis: set pitchAxis if the bone does not pitch on the x axis</li>
+<li>adjustYaw: used to make an adjustment to the yaw of the bone</li>
+<li>adjustPitch: used to make an adjustment to the pitch of the bone</li>
+<li>adjustRoll: used to make an adjustment to the roll of the bone
+<strong>param</strong>  options.maxYaw
+<strong>param</strong>  options.minYaw
+<strong>param</strong>  options.maxPitch
+<strong>param</strong>  options.minPitch
+<strong>param</strong>  options.slerpAmount
+<strong>param</strong>  options.upAxis
+<strong>param</strong>  options.upAxisSpace
+<strong>param</strong>  options.yawAxis
+<strong>param</strong>  options.pitchAxis
+<strong>param</strong>  options.adjustYaw
+<strong>param</strong>  options.adjustPitch
+<strong>param</strong>  options.adjustRoll</li>
+</ul>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>mesh</code></td><td><code>TransformNode</code></td><td>Required</td></tr><tr><td><code>bone</code></td><td><code>Bone</code></td><td>Required</td></tr><tr><td><code>target</code></td><td><code>Vector3</code></td><td>Required</td></tr><tr><td><code>options</code></td><td><code>{
+            maxYaw?: number;
+            minYaw?: number;
+            maxPitch?: number;
+            minPitch?: number;
+            slerpAmount?: number;
+            upAxis?: Vector3;
+            upAxisSpace?: Space;
+            yawAxis?: Vector3;
+            pitchAxis?: Vector3;
+            adjustYaw?: number;
+            adjustPitch?: number;
+            adjustRoll?: number;
+            useAbsoluteValueForYaw?: boolean;
+        }</code></td><td>Optional</td></tr></tbody></table><h3 id="member-update-19">update <a class="anchor" href="#member-update-19">#</a></h3><pre class="code" data-lang="ts"><code>update(): void;</code></pre><p>Update the bone to look at the target.  This should be called before the scene is rendered (use scene.registerBeforeRender())</p>
+<p><b>Type / return:</b> <code>void</code></p><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#members">Public members (20)</a></aside></div>
+<script src="../../../../../../../assets/cm.classic.js"></script><script src="../../../../../../../assets/manual.js"></script></body></html>

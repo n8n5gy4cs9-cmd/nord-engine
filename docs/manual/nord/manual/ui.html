@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>UI &amp; HUD — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="welcome.html" class="active" aria-current="page">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Manual</div><a href="welcome.html">Welcome</a><a href="editor-tour.html">Editor tour</a><a href="projects-scenes.html">Projects &amp; scenes</a><a href="scripting.html">Scripting</a><a href="2d.html">2D games</a><a href="3d.html">3D games</a><a href="physics.html">Physics</a><a href="audio.html">Audio</a><a href="ui.html" class="cur" aria-current="page">UI &amp; HUD</a><a href="input.html">Input</a><a href="assets.html">Assets</a><a href="library.html">The library</a><a href="rust-wasm.html">Rust / WASM</a><a href="export.html">Export &amp; hosting</a><a href="performance.html">Performance &amp; debugging</a><a href="reference.html">Reference overview</a><a href="desktop-apps.html">Desktop apps</a></nav><main id="content"><div class="crumb">Manual / Nord Engine</div><h1>UI &amp; HUD</h1>
+<p>The UI is what the player reads and clicks: score, health, menus and buttons. Nord’s DOM UI sits over the game view and works in 2D and 3D.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>Use a label for text and a button for an action. Put health and score on the hud screen. A screen is a named group you can show or hide together.</p>
+</aside><p><code>game.ui</code> is a lightweight <strong>DOM overlay</strong> on top of the canvas — crisp text, accessible, CSS-themed. It works the same in 2D, 3D and plain HTML projects.
+Widgets live on named <strong>screens</strong> (layers). <code>hud</code> always exists and is visible; create others for menus and show them on demand.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>Imagine a sheet of see-through plastic laid over the game. You draw the score, buttons and menus on that sheet, and the game keeps running underneath.</p>
+</aside><pre class="code" data-lang="js"><code>start() {
+  const ui = this.ui;
+  this.scoreLabel = ui.label('Score: 0', { x: 16, y: 16, size: 24 });                    // top-left by default
+  this.hp = ui.bar(1, { x: 16, y: 56, w: 180, color: '#bf616a' });
+  ui.menu('pause', [
+    { text: 'Resume', onClick: () =&gt; { ui.hide('pause'); this.game.resume(); } },
+    { text: 'Restart', onClick: () =&gt; this.game.restart() },
+  ], { x: 200, y: 120 });
+}
+update() { this.scoreLabel.set(`Score: ${this.score}`); this.hp.set(this.health / 100); }</code></pre>
+<p>Positioning options for every widget: <code>x, y, anchor (&#39;tl&#39;|&#39;tr&#39;|&#39;bl&#39;|&#39;br&#39;), w, h, screen, style</code>.
+Widgets: <code>panel</code>, <code>label</code>, <code>button</code>, <code>image</code>, <code>bar</code>, <code>menu</code>. Handles have <code>el</code> (the DOM node) and <code>remove()</code>; labels and bars add <code>set()</code>.</p>
+<h2 id="ui-as-components">UI as components<a class="anchor" href="#ui-as-components">#</a></h2>
+<p><code>uiPanel</code>, <code>uiLabel</code>, <code>uiImage</code>, <code>uiBar</code>, <code>uiButton</code> put the same widgets into the scene file so the <strong>editor can lay them out</strong>. A <code>uiButton</code> with <code>event: &quot;start-game&quot;</code> emits that name on <code>game.events</code> when clicked.</p>
+<h2 id="themes-and-skins">Themes and skins<a class="anchor" href="#themes-and-skins">#</a></h2>
+<p>Project-level: <code>&quot;ui&quot;: { &quot;skin&quot;: &quot;cyber&quot;, &quot;theme&quot;: &quot;tokyo-night&quot; }</code>. A <strong>skin</strong> picks fonts, a <strong>theme</strong> picks colours (<code>--nord-*</code> CSS variables).
+At runtime: <code>ui.setTheme({ theme: &#39;dracula&#39;, skin: &#39;cyber&#39; })</code> or tweak single variables with <code>ui.theme({ accent: &#39;#ebcb8b&#39; })</code>.
+The catalogue is in <code>assets/themes/themes.json</code> (editor and game share it). Fonts come from <code>vendor/fonts</code> — nothing is loaded from the internet.</p>
+<h2 id="ready-made-screens-library">Ready-made screens (library)<a class="anchor" href="#ready-made-screens-library">#</a></h2>
+<p><code>ui-hud</code>, <code>ui-main-menu</code>, <code>ui-pause</code>, <code>ui-gameover</code>, <code>ui-settings</code>, <code>ui-level-select</code>, <code>ui-loading</code>, <code>ui-toasts</code>, <code>ui-damage-numbers</code>, <code>ui-inventory</code>, <code>ui-joystick</code>. See the <a href="../reference/library-catalog.html#ui">catalog</a>.</p>
+<h2 id="touch-controls">Touch controls<a class="anchor" href="#touch-controls">#</a></h2>
+<p><code>virtualJoystick(input, parent)</code> (or the <code>ui-joystick</code> library script) drives your four direction actions and <code>input.stick</code>, so the same <code>axis</code>/<code>vec</code> code works on phones.</p>
+<h2 id="in-world-ui">In-world UI<a class="anchor" href="#in-world-ui">#</a></h2>
+<ul>
+<li>2D: <code>text</code> component or damage-number script.</li>
+<li>3D: <code>game.gui.worldLabel(entity, &#39;text&#39;)</code> follows an entity in screen space (Babylon GUI).</li>
+</ul>
+<h2 id="apps">Apps<a class="anchor" href="#apps">#</a></h2>
+<p>For tool/app projects the library has an <strong>app kit</strong> (<code>library/apps/_kit.js</code>: layout, forms, lists, router, state) and eight sample apps — see <a href="../reference/templates-examples.html">Templates &amp; examples</a>.</p>
+<div class="pager"><a href="audio.html"><small>← Previous</small>Audio</a><a href="input.html"><small>Next →</small>Input</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#ui-as-components">UI as components </a><a href="#themes-and-skins">Themes and skins </a><a href="#ready-made-screens-library">Ready-made screens (library) </a><a href="#touch-controls">Touch controls </a><a href="#in-world-ui">In-world UI </a><a href="#apps">Apps </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Mesh Blending — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../index.html"><img src="../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../index.html">Babylon documentation library</a><a href="../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Mesh Blending</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="introduction">Introduction<a class="anchor" href="#introduction">#</a></h2>
+<p>Mesh blending softens visible seams where separate meshes meet. It is useful for contacts such as rocks placed on terrain, structural pieces joined together, roots entering the ground, or modular environment assets whose intersection would otherwise remain obvious.</p>
+<span class="muted">&lt;video controls muted loop playsInline preload=&quot;metadata&quot; width=&quot;800px&quot;&gt;
+    &lt;source src=&quot;/img/how_to/meshBlending/coastal-toggle.webm&quot; type=&quot;video/webm&quot;/&gt;
+&lt;/video&gt;</span><p>The video moves <code>P0061_primitive0</code> out of and back into the cliff, showing the contact first with mesh blending disabled and then enabled.</p>
+<p>Mesh blending is a screen-space SceneColor post-process. It does <strong>not</strong> merge vertices, modify meshes, alter collision shapes, change shadow maps, or affect the depth and normal information generated by the scene. The original meshes remain independent and can still be moved, animated, culled, or removed normally.</p>
+<p>The feature is opt-in. Only meshes with a nonzero mesh-blending tag participate.</p>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="how-it-works">How it works<a class="anchor" href="#how-it-works">#</a></h2>
+<p><p class="muted">Upstream illustration: Diagram showing SceneColor, mesh tags, depth, and optional albedo flowing into the mesh blending post-process (media not bundled).</p></p>
+<p>For each participating pixel, the post-process:</p>
+<ol>
+<li>Reads the packed mesh-blending tag to determine the logical group and radius class.</li>
+<li>Searches for a nearby pixel belonging to a different nonzero group.</li>
+<li>Refines the boundary position.</li>
+<li>Uses depth, physical span, and contact-angle checks to reject unrelated overlaps.</li>
+<li>Continues onto the target surface and constructs a representative target color.</li>
+<li>Blends the current SceneColor toward that target color using a distance-based fade.</li>
+<li>Optionally attenuates transferred shadows using a linear base-color/albedo texture.</li>
+</ol>
+<p>The search is spatially stable. It does not use temporal accumulation, does not vary from frame to frame, and does not require TAA.</p>
+<h2 id="supported-configurations">Supported configurations<a class="anchor" href="#supported-configurations">#</a></h2>
+<p>Mesh blending supports:</p>
+<ul>
+<li>WebGL 2.</li>
+<li>WebGPU.</li>
+<li>Perspective and orthographic cameras.</li>
+<li>Standard and reverse-depth rendering.</li>
+<li>Opaque and alpha-tested meshes.</li>
+<li>FrameGraph, Node Render Graph, and classic post-process integration.</li>
+</ul>
+<p>The following restrictions apply:</p>
+<ul>
+<li>WebGL 1 is not supported.</li>
+<li>Native is not supported because it cannot currently create the required <code>R8UI</code> mesh-tag render target.</li>
+<li>SceneColor, mesh tags, depth, and optional albedo must have identical physical dimensions and sample counts.</li>
+<li>The mesh-tag, depth, and optional albedo inputs must be single-sampled and must not use mipmaps.</li>
+<li>The mesh-tag texture must use nearest sampling.</li>
+<li>A normal texture is <strong>not</strong> required.</li>
+</ul>
+<h2 id="assigning-mesh-blending-tags">Assigning mesh-blending tags<a class="anchor" href="#assigning-mesh-blending-tags">#</a></h2>
+<p>Each participating mesh receives a packed tag containing:</p>
+<ul>
+<li>A six-bit logical group ID from <code>1</code> through <code>63</code>.</li>
+<li>A two-bit radius class from <code>Small</code> through <code>ExtraLarge</code>.</li>
+</ul>
+<pre class="code" data-lang="javascript"><code>rock.meshBlendingTag = BABYLON.PackMeshBlendingTag(1, BABYLON.MeshBlendingRadiusClass.Medium);</code></pre>
+<p>Set the tag to <code>0</code> to disable blending for a mesh:</p>
+<pre class="code" data-lang="javascript"><code>rock.meshBlendingTag = 0;</code></pre>
+<p><p class="muted">Upstream illustration: Diagram explaining disabled tags, same-group contacts, and contacts between different groups (media not bundled).</p></p>
+<p>The group determines which surfaces are treated as one logical object:</p>
+<ul>
+<li>Group <code>0</code> does not participate.</li>
+<li>Pixels in the same nonzero group do not blend with one another.</li>
+<li>Pixels in different nonzero groups can blend when the contact validation succeeds.</li>
+</ul>
+<p>Using the same group for all primitives that form one logical object prevents blending between those primitives while still allowing the object to blend with its surroundings.</p>
+<p>Regular instances and thin instances use their source mesh&#39;s tag. Per-instance mesh-blending tags are not supported.</p>
+<h2 id="framegraph-integration">FrameGraph integration<a class="anchor" href="#framegraph-integration">#</a></h2>
+<p>FrameGraph is the recommended programmatic integration. Generate the mesh tag and depth with <code>FrameGraphGeometryRendererTask</code>, render SceneColor, then connect those textures to <code>FrameGraphMeshBlendingTask</code>.</p>
+<p>The mesh-tag texture must use <code>TEXTURETYPE_UNSIGNED_BYTE</code> with <code>TEXTUREFORMAT_RED_INTEGER</code>.</p>
+<pre class="code" data-lang="javascript"><code>const geometryTask = new BABYLON.FrameGraphGeometryRendererTask(&quot;geometry&quot;, frameGraph, scene);
+
+geometryTask.camera = camera;
+geometryTask.objectList = {
+  meshes,
+  particleSystems: [],
+};
+geometryTask.depthTexture = clearTask.outputDepthTexture;
+geometryTask.samples = 1;
+geometryTask.renderTransparentMeshes = false;
+geometryTask.textureDescriptions = [
+  {
+    type: BABYLON.Constants.PREPASS_MESH_BLEND_TAG_TEXTURE_TYPE,
+    textureType: BABYLON.Constants.TEXTURETYPE_UNSIGNED_BYTE,
+    textureFormat: BABYLON.Constants.TEXTUREFORMAT_RED_INTEGER,
+  },
+  {
+    type: BABYLON.Constants.PREPASS_SCREENSPACE_DEPTH_TEXTURE_TYPE,
+    textureType: BABYLON.Constants.TEXTURETYPE_FLOAT,
+    textureFormat: BABYLON.Constants.TEXTUREFORMAT_RED,
+  },
+  {
+    type: BABYLON.Constants.PREPASS_ALBEDO_TEXTURE_TYPE,
+    textureType: BABYLON.Constants.TEXTURETYPE_UNSIGNED_BYTE,
+    textureFormat: BABYLON.Constants.TEXTUREFORMAT_RGBA,
+  },
+];
+frameGraph.addTask(geometryTask);
+
+const blendTask = new BABYLON.FrameGraphMeshBlendingTask(&quot;meshBlending&quot;, frameGraph);
+
+blendTask.camera = camera;
+blendTask.sourceTexture = renderTask.outputTexture;
+blendTask.meshBlendTagTexture = geometryTask.geometryMeshBlendTagTexture;
+blendTask.depthTexture = geometryTask.geometryScreenDepthTexture;
+blendTask.baseColorTexture = geometryTask.geometryAlbedoTexture;
+blendTask.depthType = BABYLON.MeshBlendDepthType.Screen;
+blendTask.quality = BABYLON.MeshBlendQuality.Medium;
+frameGraph.addTask(blendTask);</code></pre>
+<p>If shadow attenuation is not needed, omit the albedo description and leave <code>baseColorTexture</code> undefined. The sampler and all shadow-estimation work are then compiled out.</p>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="node-render-graph-editor-integration">Node Render Graph Editor integration<a class="anchor" href="#node-render-graph-editor-integration">#</a></h2>
+<p>The <code>Mesh Blending</code> block is the recommended integration when the render graph must be edited visually or serialized.</p>
+<p><p class="muted">Upstream illustration: Node Render Graph Editor setup for mesh blending (media not bundled).</p></p>
+<p>Connect:</p>
+<ul>
+<li>SceneColor to <strong>source</strong>.</li>
+<li>The active camera to <strong>camera</strong>.</li>
+<li><code>GeometryRenderer.geomViewDepth</code> or <code>GeometryRenderer.geomScreenDepth</code> to <strong>geomDepth</strong>.</li>
+<li><code>GeometryRenderer.geomMeshBlendTag</code> to <strong>geomMeshBlendTag</strong>.</li>
+<li>Optionally, <code>GeometryRenderer.geomAlbedo</code> to <strong>geomAlbedo</strong>.</li>
+<li>The mesh-blending <strong>output</strong> to the next post-process or the graph output.</li>
+</ul>
+<p>The depth connection automatically selects the matching depth representation. The albedo connection is optional.</p>
+<p>Changing quality, debug mode, depth representation, or albedo availability changes the compiled shader variant. Rebuild the graph after changing connections or compile-time options programmatically.</p>
+<p>The coastal-cliff example stores the graph separately as <code>#CC8X3G#0</code> and loads it at runtime:</p>
+<pre class="code" data-lang="javascript"><code>const nodeRenderGraph =
+  await BABYLON.NodeRenderGraph.ParseFromSnippetAsync(
+    &quot;CC8X3G#0&quot;,
+    scene,
+    {
+      autoConfigure: false,
+      autoFillExternalInputs: false,
+    },
+  );
+
+nodeRenderGraph.getBlockByName(&quot;Camera&quot;).value = camera;
+nodeRenderGraph.getBlockByName(&quot;Geometry Objects&quot;).value =
+  geometryObjectList;
+nodeRenderGraph.getBlockByName(&quot;Render Objects&quot;).value =
+  renderObjectList;
+nodeRenderGraph.getBlockByName(&quot;Shadow Light&quot;).value =
+  directionalLight;
+
+scene.frameGraph = nodeRenderGraph.frameGraph;
+await nodeRenderGraph.buildAsync();</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="classic-post-process-integration">Classic post-process integration<a class="anchor" href="#classic-post-process-integration">#</a></h2>
+<p>The classic path consumes caller-owned textures. It does not enable, reconfigure, resize, or dispose the Geometry Buffer Renderer.</p>
+<pre class="code" data-lang="javascript"><code>const geometryBufferRenderer = scene.enableGeometryBufferRenderer();
+
+geometryBufferRenderer.samples = 1;
+geometryBufferRenderer.renderTransparentMeshes = false;
+geometryBufferRenderer.enableMeshBlendingTag = true;
+geometryBufferRenderer.enableScreenspaceDepth = true;
+
+const tagIndex = geometryBufferRenderer.getTextureIndex(BABYLON.GeometryBufferRenderer.MESH_BLEND_TAG_TEXTURE_TYPE);
+const depthIndex = geometryBufferRenderer.getTextureIndex(BABYLON.GeometryBufferRenderer.SCREENSPACE_DEPTH_TEXTURE_TYPE);
+const gBuffer = geometryBufferRenderer.getGBuffer();
+
+const meshBlending = new BABYLON.MeshBlendingPostProcess(&quot;meshBlending&quot;, scene, camera, {
+  meshBlendTagTexture: gBuffer.textures[tagIndex],
+  depthTexture: gBuffer.textures[depthIndex],
+  depthType: BABYLON.MeshBlendDepthType.Screen,
+  quality: BABYLON.MeshBlendQuality.Medium,
+});</code></pre>
+<p>If a separate base-color texture is supplied, it must be linear, use matching dimensions and sample coverage, and be resized whenever the Geometry Buffer Renderer is resized.</p>
+<p>The classic wrapper is runtime-only. It is omitted from scene serialization, <code>serialize()</code> throws, and <code>clone()</code> returns <code>null</code>. Use FrameGraph or NRGE for serializable mesh blending.</p>
+<h2 id="configuration-overview">Configuration overview<a class="anchor" href="#configuration-overview">#</a></h2>
+<p>The classic post-process, FrameGraph task, and NRGE block use the same underlying <code>ThinMeshBlendingPostProcess</code>. Their quality, radius, slope, depth, and debug settings therefore behave identically.</p>
+<p><code>quality</code>, <code>debugMode</code>, <code>depthType</code>, and the presence of a base-color texture select compile-time shader variants. Changing one of these settings recompiles the effect. Radius values and <code>slopeFactor</code> are uniforms and can be adjusted without recompiling.</p>
+<h3 id="quality">Quality<a class="anchor" href="#quality">#</a></h3>
+<p><code>MeshBlendQuality.Medium</code> is the default.</p>
+<span class="muted">&lt;video controls muted loop playsInline preload=&quot;metadata&quot; width=&quot;800px&quot;&gt;
+    &lt;source src=&quot;/img/how_to/meshBlending/quality-comparison.webm&quot; type=&quot;video/webm&quot;/&gt;
+&lt;/video&gt;</span><p>The close-up focuses on the cliff&#39;s right contact boundary, where the differences between Medium, High, and Cinematic are most visible.</p>
+<table>
+<thead>
+<tr>
+<th>Quality</th>
+<th>Behavior</th>
+<th>Recommended use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Low</code></td>
+<td>Uses the lowest search and refinement workload, sRGB color interpolation, a reduced effective-radius scale, and no tiny-object or multi-target safeguards.</td>
+<td>Large screen coverage, low-end hardware, or scenes with simple two-surface contacts.</td>
+</tr>
+<tr>
+<td><code>Medium</code></td>
+<td>Uses balanced search and refinement, OKLab interpolation, and a radius scale close to the authored value.</td>
+<td>Starting point for most scenes.</td>
+</tr>
+<tr>
+<td><code>High</code></td>
+<td>Adds full search rotation, immediate close-neighbor fallback, tiny-object protection, and a secondary target at multi-mesh junctions.</td>
+<td>Detailed contacts, small projected objects, and junctions where Medium leaves visible artifacts.</td>
+</tr>
+<tr>
+<td><code>Cinematic</code></td>
+<td>Uses eight search directions and the densest radial and exact-boundary work, with the High-quality safeguards and OKLab interpolation.</td>
+<td>High-end targets, captures, or constrained scenes where the additional quality is visibly justified.</td>
+</tr>
+</tbody></table>
+<p>Quality changes more than the number of texture reads. It can also change color interpolation, fallback behavior, tiny-object handling, multi-target selection, and the scale applied to the effective radius. Recheck the authored radii when moving between Low and a higher quality.</p>
+<h3 id="radius-classes">Radius classes<a class="anchor" href="#radius-classes">#</a></h3>
+<p><p class="muted">Upstream illustration: Comparison of the four default mesh-blending radius classes (media not bundled).</p></p>
+<p>Each radius class contains two values:</p>
+<ul>
+<li><code>worldRadius</code> is the authored radius in Babylon.js world units. It keeps the visible blend width approximately stable in the world as the camera moves.</li>
+<li><code>minimumProjectedRadius</code> is a lower bound measured in physical render-target pixels. It keeps distant contacts from collapsing below a useful search width.</li>
+</ul>
+<p>The effective radius is the larger of the projected world radius and the minimum projected radius, multiplied by the selected quality&#39;s radius scale.</p>
+<table>
+<thead>
+<tr>
+<th>Radius class</th>
+<th align="right">Default world radius</th>
+<th align="right">Default minimum projected radius</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Small</code></td>
+<td align="right"><code>0.06</code></td>
+<td align="right"><code>1.5</code> pixels</td>
+</tr>
+<tr>
+<td><code>Medium</code></td>
+<td align="right"><code>0.10</code></td>
+<td align="right"><code>3</code> pixels</td>
+</tr>
+<tr>
+<td><code>Large</code></td>
+<td align="right"><code>0.20</code></td>
+<td align="right"><code>3</code> pixels</td>
+</tr>
+<tr>
+<td><code>ExtraLarge</code></td>
+<td align="right"><code>0.30</code></td>
+<td align="right"><code>5</code> pixels</td>
+</tr>
+</tbody></table>
+<p>At a contact, the smaller of the two participating radius classes wins. This prevents a surface with a broad radius from forcing an equally broad blend onto a surface authored for a tight contact.</p>
+<pre class="code" data-lang="javascript"><code>blendTask.radiusClasses[BABYLON.MeshBlendingRadiusClass.Large].worldRadius = 0.35;
+
+blendTask.radiusClasses[BABYLON.MeshBlendingRadiusClass.Large].minimumProjectedRadius = 4;</code></pre>
+<p>The four-element tuple cannot be resized, reordered, or have an entry replaced. The <code>worldRadius</code> and <code>minimumProjectedRadius</code> values inside each entry remain mutable and validate that assigned values are finite and non-negative.</p>
+<p>Use <code>configure()</code> when several values should be validated and applied together:</p>
+<pre class="code" data-lang="javascript"><code>blendTask.configure({
+  quality: BABYLON.MeshBlendQuality.High,
+  radiusClasses: [
+    { worldRadius: 0.04, minimumProjectedRadius: 1.5 },
+    { worldRadius: 0.08, minimumProjectedRadius: 2.5 },
+    { worldRadius: 0.16, minimumProjectedRadius: 3 },
+    { worldRadius: 0.28, minimumProjectedRadius: 5 },
+  ],
+  slopeFactor: 2.5,
+});</code></pre>
+<p>Start by matching <code>worldRadius</code> to the physical scale of the contact. Increase <code>minimumProjectedRadius</code> only when distant seams become visible. Large pixel minimums can make distant blending look wider than the authored world-space contact.</p>
+<h3 id="slope-factor">Slope factor<a class="anchor" href="#slope-factor">#</a></h3>
+<p><code>slopeFactor</code> narrows the effective radius when the reconstructed depth slope does not resemble a plausible surface contact. The default is <code>2</code>.</p>
+<span class="muted">&lt;video controls muted loop playsInline preload=&quot;metadata&quot; width=&quot;800px&quot;&gt;
+    &lt;source src=&quot;/img/how_to/meshBlending/slope-factor.webm&quot; type=&quot;video/webm&quot;/&gt;
+&lt;/video&gt;</span><p>This close-up uses Cinematic quality and smoothly increases <code>slopeFactor</code> from <code>1</code> to <code>8</code>.</p>
+<ul>
+<li><code>1</code> disables slope-based narrowing.</li>
+<li>Values above <code>1</code> progressively restrict blending at less plausible angles.</li>
+<li>Higher values can reduce false blends between overlapping silhouettes, but values that are too high can reopen valid seams.</li>
+</ul>
+<p>Only finite values greater than or equal to <code>1</code> are accepted.</p>
+<h3 id="depth-representation">Depth representation<a class="anchor" href="#depth-representation">#</a></h3>
+<p><code>depthType</code> must describe the data stored in the connected depth texture. The default is <code>MeshBlendDepthType.View</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Depth type</th>
+<th>Expected data</th>
+<th>Typical FrameGraph source</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>View</code></td>
+<td>Signed camera-space Z written by the geometry renderer.</td>
+<td><code>geometryViewDepthTexture</code> or <code>geomViewDepth</code></td>
+</tr>
+<tr>
+<td><code>Screen</code></td>
+<td>Hardware screen depth in the normalized depth range.</td>
+<td><code>geometryScreenDepthTexture</code> or <code>geomScreenDepth</code></td>
+</tr>
+</tbody></table>
+<p>Both representations support perspective, orthographic, and reverse-depth cameras. They should produce equivalent blending when the property and texture agree. A mismatched <code>depthType</code> reconstructs incorrect positions and can cause missing contacts, false contacts, or invalid-depth debug output.</p>
+<p>In NRGE, connecting a view-depth or screen-depth output to <code>geomDepth</code> selects the matching representation during graph build.</p>
+<h3 id="optional-base-color-and-shadow-attenuation">Optional base color and shadow attenuation<a class="anchor" href="#optional-base-color-and-shadow-attenuation">#</a></h3>
+<p>Mesh blending samples SceneColor from the target surface. Without additional information, a dark shadow near the target can be transferred across the seam as if it were part of the surface&#39;s base color.</p>
+<p>Supplying a linear base-color/albedo texture enables a heuristic that estimates this lighting difference and attenuates the transferred shadow.</p>
+<p><p class="muted">Upstream illustration: Shadow-attenuation debug view with the albedo input enabled and disabled (media not bundled).</p></p>
+<p>These are <code>ShadowAttenuation</code> <strong>debug views</strong>, not the final rendered colors:</p>
+<ul>
+<li>Green means an attenuation multiplier of <code>1</code>: the normal mesh-blending fade is preserved.</li>
+<li>Red means an attenuation multiplier near <code>0</code>: color transfer across the seam is strongly suppressed.</li>
+<li>Yellow and orange are intermediate amounts of attenuation.</li>
+<li>Blue marks pixels where the near-seam color correction was applied.</li>
+</ul>
+<p>The red-orange area in the enabled image is therefore expected. The albedo comparison identified part of the dark SceneColor as lighting or shadow rather than surface color, so the effect reduces how much of that darkness is transferred across the seam. In the disabled image, the attenuation multiplier remains <code>1</code>, which produces the uniformly green diagnostic output.</p>
+<ul>
+<li>FrameGraph: assign <code>baseColorTexture</code>.</li>
+<li>NRGE: connect <code>geomAlbedo</code>.</li>
+<li>Classic: assign <code>baseColorTexture</code> in the constructor or through the property.</li>
+</ul>
+<p>The input is optional. When omitted, the albedo sampler and all shadow-estimation shader work are compiled out; no fallback texture is created.</p>
+<p>Shadow attenuation does not modify shadow maps, lights, materials, or the scene&#39;s actual shadowing. It only changes how much sampled SceneColor is transferred across the blend.</p>
+<span class="muted">Online playground (not embedded offline)</span><h3 id="debug-modes">Debug modes<a class="anchor" href="#debug-modes">#</a></h3>
+<p>Debug modes compile deterministic diagnostic views into the post-process. They are intended for authoring and troubleshooting rather than final rendering.</p>
+<p><p class="muted">Upstream illustration: Mesh-blending tag, search, seam, rejection, work, and continuation debug views (media not bundled).</p></p>
+<p><p class="muted">Upstream illustration: Mesh-blending tiny-object, multi-target, target-color, shadow, interpolation, and world-position debug views (media not bundled).</p></p>
+<table>
+<thead>
+<tr>
+<th>Debug mode</th>
+<th>Interpretation</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Off</code></td>
+<td>Renders the final blended SceneColor.</td>
+</tr>
+<tr>
+<td><code>PackedTag</code></td>
+<td>Black means group <code>0</code>. Blue, green, orange, and pink identify the four radius classes. Brightness varies with the logical group ID so adjacent groups remain distinguishable.</td>
+</tr>
+<tr>
+<td><code>CandidateDirectionDistance</code></td>
+<td>Red and green encode the selected 2D search direction after remapping from <code>[-1, 1]</code> to <code>[0, 1]</code>. Blue decreases as the candidate boundary approaches the maximum search radius. Near-black means no candidate was found.</td>
+</tr>
+<tr>
+<td><code>SeamFade</code></td>
+<td>The dim base color identifies the selected radius class. The result approaches white as the seam fade becomes stronger.</td>
+</tr>
+<tr>
+<td><code>RejectionReason</code></td>
+<td>Accepted contacts range from blue to green according to slope narrowing. Dark gray means no candidate, purple means continuation failed, magenta means invalid depth, red means excessive depth separation, orange means a foreground/background conflict, and yellow means the physical span or effective radius was invalid.</td>
+</tr>
+<tr>
+<td><code>StageWork</code></td>
+<td>Progresses from dark blue through cyan, green, and yellow as the pixel reaches later processing stages. Brighter later-stage colors generally indicate more shader work.</td>
+</tr>
+<tr>
+<td><code>Continuation</code></td>
+<td>Near-black means no candidate, magenta means target continuation failed, yellow means the fallback path was used, and green means normal continuation succeeded.</td>
+</tr>
+<tr>
+<td><code>TinyObject</code></td>
+<td>Shows the ratio used to reduce the effective radius for thin projected objects. Red indicates a stronger reduction and blue indicates a radius closer to the normal search radius. Dim output means no reduction was applied. This view is neutral at quality levels that do not enable the safeguard.</td>
+</tr>
+<tr>
+<td><code>MultiTarget</code></td>
+<td>Blue means only the primary target was accepted. Purple means a secondary candidate was found but rejected. White means both primary and secondary targets were accepted. Near-black means no valid target.</td>
+</tr>
+<tr>
+<td><code>TargetColor</code></td>
+<td>Repeating four-pixel bands show the farther sample, boundary-plus-one sample, boundary-plus-two sample, and the final constructed target color. This makes sampling discontinuities visible.</td>
+</tr>
+<tr>
+<td><code>ShadowAttenuation</code></td>
+<td>Green means no attenuation of the blend fade. Increasing red means shadow transfer is being suppressed. Blue marks pixels where the near-seam color correction was used. The view is neutral when no base-color texture is connected.</td>
+</tr>
+<tr>
+<td><code>ColorInterpolation</code></td>
+<td>Orange identifies sRGB interpolation and cyan identifies OKLab interpolation. Brightness increases with the adjusted blend fade.</td>
+</tr>
+<tr>
+<td><code>WorldPosition</code></td>
+<td>Displays a repeating RGB visualization of reconstructed world position. It is useful for finding depth reconstruction, camera, or depth-type errors; the colors are not absolute world coordinates.</td>
+</tr>
+</tbody></table>
+<p>Changing <code>debugMode</code> recompiles the shader. Return it to <code>Off</code> for final rendering.</p>
+<h2 id="transparency">Transparency<a class="anchor" href="#transparency">#</a></h2>
+<p>Transparent rendering remains controlled by the application.</p>
+<p><p class="muted">Upstream illustration: Diagram comparing safe disjoint transparent content with overlapping transparent content that can invalidate the mesh-blending geometry inputs (media not bundled).</p></p>
+<p>Transparent meshes that do not overlap participating blended surfaces in screen space can be rendered safely. Overlapping transparent surfaces can make SceneColor inconsistent with the single-layer depth, albedo, and tag textures, producing holes, false boundaries, or incorrect transferred colors.</p>
+<p>For general scenes, render opaque and alpha-tested participating meshes, apply mesh blending, and composite transparent content afterward.</p>
+<p>On WebGL 2, rendering transparent meshes into the integer tag attachment requires per-target blending support so blending can remain enabled for color attachments while being disabled for the integer attachment. Unsupported configurations are rejected explicitly.</p>
+<h2 id="performance">Performance<a class="anchor" href="#performance">#</a></h2>
+<p>Mesh blending is a full-screen post-process, but pixels with group <code>0</code> exit early. Cost therefore depends heavily on participating screen coverage and the selected quality level.</p>
+<p>Start with <code>Medium</code>, profile on the target hardware, and compare against <code>Low</code> and <code>High</code>. Reserve <code>Cinematic</code> for cases where its additional search directions and boundary work provide a visible benefit.</p>
+<p>The feature demo exposes <code>window.runMeshBlendBenchmark()</code>, which reports same-device GPU-time ratios for disabled, Low, Medium, High, and Cinematic modes. These measurements are diagnostic and are not universal performance thresholds.</p>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="troubleshooting">Troubleshooting<a class="anchor" href="#troubleshooting">#</a></h2>
+<h3 id="nothing-blends">Nothing blends<a class="anchor" href="#nothing-blends">#</a></h3>
+<ul>
+<li>Confirm that both surfaces have nonzero tags.</li>
+<li>Confirm that the two surfaces use different group IDs.</li>
+<li>Increase the relevant world radius temporarily.</li>
+<li>Use <code>PackedTag</code> to verify the tags and radius classes.</li>
+<li>Use <code>CandidateDirectionDistance</code> to see whether another group is found.</li>
+<li>Use <code>RejectionReason</code> to identify which contact check fails.</li>
+</ul>
+<h3 id="the-effect-is-too-thin-when-the-camera-moves-away">The effect is too thin when the camera moves away<a class="anchor" href="#the-effect-is-too-thin-when-the-camera-moves-away">#</a></h3>
+<p>Increase <code>minimumProjectedRadius</code> for the affected radius class. This value is measured in physical render-target pixels, not CSS pixels.</p>
+<h3 id="the-effect-is-too-wide-or-reaches-unrelated-surfaces">The effect is too wide or reaches unrelated surfaces<a class="anchor" href="#the-effect-is-too-wide-or-reaches-unrelated-surfaces">#</a></h3>
+<ul>
+<li>Reduce <code>worldRadius</code>.</li>
+<li>Reduce <code>minimumProjectedRadius</code> if the problem occurs mainly at a distance.</li>
+<li>Increase <code>slopeFactor</code> to narrow contacts with less plausible depth slopes.</li>
+<li>Use smaller radius classes on the surfaces that require precise contacts.</li>
+</ul>
+<h3 id="the-seam-changes-when-switching-quality">The seam changes when switching quality<a class="anchor" href="#the-seam-changes-when-switching-quality">#</a></h3>
+<p>Quality levels apply different radius scales and enable different search safeguards. Retune the authored radii after selecting the production quality rather than treating quality as only a performance switch.</p>
+<h3 id="dark-colors-or-shadows-smear-across-a-seam">Dark colors or shadows smear across a seam<a class="anchor" href="#dark-colors-or-shadows-smear-across-a-seam">#</a></h3>
+<p>Connect a linear base-color/albedo texture and inspect <code>ShadowAttenuation</code>. Verify that the albedo texture has the same dimensions and sample count as SceneColor and depth.</p>
+<h3 id="geometry-appears-missing-or-stale">Geometry appears missing or stale<a class="anchor" href="#geometry-appears-missing-or-stale">#</a></h3>
+<ul>
+<li>Confirm that all input textures have matching physical dimensions.</li>
+<li>Confirm that all inputs are single-sampled and have matching sample counts.</li>
+<li>Disable mipmaps for the mesh-tag, depth, and optional albedo textures.</li>
+<li>Use nearest sampling for the mesh-tag texture.</li>
+<li>Confirm that <code>depthType</code> matches the connected depth texture.</li>
+<li>Check whether overlapping transparent content is making SceneColor disagree with the single-layer geometry inputs.</li>
+</ul>
+<h3 id="alpha-tested-edges-do-not-match">Alpha-tested edges do not match<a class="anchor" href="#alpha-tested-edges-do-not-match">#</a></h3>
+<p>Generate the mesh tags through the Geometry Buffer Renderer or FrameGraph Geometry Renderer. This ensures that tags are written only by fragments that survive the material&#39;s configured alpha cutoff.</p>
+<h3 id="instances-need-different-tags">Instances need different tags<a class="anchor" href="#instances-need-different-tags">#</a></h3>
+<p>Regular and thin instances intentionally use their source mesh&#39;s tag. Split instances across source meshes when they need different mesh-blending groups or radius classes.</p>
+<h3 id="the-classic-post-process-does-not-serialize">The classic post-process does not serialize<a class="anchor" href="#the-classic-post-process-does-not-serialize">#</a></h3>
+<p>This is intentional because its input textures are caller-owned runtime resources. Use <code>FrameGraphMeshBlendingTask</code> or the NRGE block when the setup must be serialized.</p>
+<h2 id="references-and-acknowledgements">References and acknowledgements<a class="anchor" href="#references-and-acknowledgements">#</a></h2>
+<p>The Babylon.js implementation was independently written. The following public resources informed its behavior, algorithm, performance choices, and color interpolation:</p>
+<ul>
+<li><span>MeshBlend</span> provided the behavioral target and parameter-model inspiration. Babylon.js does not use or reproduce the plugin&#39;s source code.</li>
+<li>Jack Tollenaar&#39;s <span>Screen space mesh seam blending</span> describes screen-space seam detection, mirrored color sampling, and post-process blending concepts used as implementation references.</li>
+<li>Jack Tollenaar&#39;s <span>Fast mesh seam blending</span> provided performance analysis and optimization considerations. Babylon.js does not reproduce its indirect-compute pipeline.</li>
+<li>Björn Ottosson&#39;s <span>A perceptual color space for image processing</span> defines the OKLab conversion and interpolation used by the higher quality modes.</li>
+</ul>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#introduction">Introduction </a><a href="#how-it-works">How it works </a><a href="#supported-configurations">Supported configurations </a><a href="#assigning-mesh-blending-tags">Assigning mesh-blending tags </a><a href="#framegraph-integration">FrameGraph integration </a><a href="#node-render-graph-editor-integration">Node Render Graph Editor integration </a><a href="#classic-post-process-integration">Classic post-process integration </a><a href="#configuration-overview">Configuration overview </a><a href="#transparency">Transparency </a><a href="#performance">Performance </a><a href="#troubleshooting">Troubleshooting </a><a href="#references-and-acknowledgements">References and acknowledgements </a></aside></div>
+<script src="../../../../../../assets/cm.classic.js"></script><script src="../../../../../../assets/manual.js"></script></body></html>

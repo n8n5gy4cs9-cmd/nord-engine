@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Simplifying Meshes With Auto-LOD — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../index.html"><img src="../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../index.html">Babylon documentation library</a><a href="../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Simplifying Meshes With Auto-LOD</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="simplify-a-mesh-with-auto-lod">Simplify a Mesh with Auto-LOD<a class="anchor" href="#simplify-a-mesh-with-auto-lod">#</a></h2>
+<h2 id="about">About<a class="anchor" href="#about">#</a></h2>
+<p><span>Level of Details</span> is a powerful tool that was added to Babylon.js in version 2.0. The concept is rather simple: when the camera is at a certain distance from the mesh, reducing the number of displayed faces increases performance without the user noticing the reduction.</p>
+<p>LOD requires the developer to add a few meshes to the original mesh. One of the ways to create those meshes is simplification. Many 3D tools offer various simplification algorithms. It is sometimes called Decimation.</p>
+<p>Starting with version 2.0, Babylon.js offers in-browser simplification functionality that works asynchronously while trying not to disturb the rendering process. These LOD levels are automatically added to the scene after the calculation finishes.</p>
+<h2 id="usage-simplifying-a-mesh">Usage - Simplifying a mesh<a class="anchor" href="#usage-simplifying-a-mesh">#</a></h2>
+<p>Any object of the class BABYLON.Mesh has a &quot;simplify&quot; function with the following signature:</p>
+<pre class="code" data-lang="javascript"><code>public simplify(settings: Array&lt;ISimplificationSettings&gt;,
+                parallelProcessing: boolean = true,
+                type: SimplificationType = SimplificationType.QUADRATIC,
+                successCallback?: () =&gt; void);</code></pre>
+<ul>
+<li><strong>Settings</strong></li>
+</ul>
+<p>The settings object has two parameters:</p>
+<ol>
+<li>quality - a number between 0.0 and 1.0, defining the percentage of the decimation (1 being 100%)</li>
+<li>distance - the distance from the object to which this LOD mesh will be added.</li>
+<li>(since 2.1) optimizeMesh - should the mesh be optimized? (optional, defaults to false). More about optimization later.</li>
+</ol>
+<p>A simple example for an array of settings would be:</p>
+<pre class="code" data-lang="javascript"><code>[
+  { quality: 0.9, distance: 25, optimizeMesh: true },
+  { quality: 0.3, distance: 50, optimizeMesh: true },
+];</code></pre>
+<p>For the typescript users and the &quot;new&quot; lovers, a SimplificationSettings class exists. So, this can also be done:</p>
+<pre class="code" data-lang="javascript"><code>const settings: Array&lt;ISimplificationSettings&gt; = []; //in JS: const settings = [];
+settings.push(new BABYLON.SimplificationSettings(0.8, 60));
+settings.push(new BABYLON.SimplificationSettings(0.4, 150));</code></pre>
+<ul>
+<li><strong>Parallel Processing</strong></li>
+</ul>
+<p>The code runs asynchronously. The <code>parallelProcessing</code> flag sets the processing order for each level. If set to <code>true</code>, all levels run together. This uses more RAM for a period of time, but generally runs faster. There is a chance, however, that FPS will be reduced to an unacceptable level because of many parallel calculations between frames. Setting this flag to <code>false</code> processes one setting after another. This uses only a single simplification object and less RAM, but it can take a little longer.</p>
+<ul>
+<li><strong>Type</strong></li>
+</ul>
+<p>To allow additional types of simplification to be implemented, the type of simplification should be specified. There is only one kind at the moment, <code>BABYLON.SimplificationType.QUADRATIC</code>. This is also the default value if <code>type</code> is undefined.</p>
+<ul>
+<li><strong>Success Callback</strong></li>
+</ul>
+<p>Since this is an asynchronous function, which returns immediately, a callback is required to run code after the simplification process is over.</p>
+<p>This function will be called after the Auto-LOD process is successfully done.</p>
+<ul>
+<li><strong>Usage Example</strong></li>
+</ul>
+<pre class="code" data-lang="javascript"><code>BABYLON.ImportMeshAsync(&quot;./DanceMoves.babylon&quot;, scene).then((result) =&gt; {
+  result.meshes[1].simplify(
+    [
+      { quality: 0.9, distance: 25 },
+      { quality: 0.3, distance: 50 },
+    ],
+    false,
+    BABYLON.SimplificationType.QUADRATIC,
+    function () {
+      alert(&quot;LOD finisehd, let's have a beer!&quot;);
+    },
+  );
+});</code></pre>
+<p>Once the simplification is finished, you can also access the simplified mesh by using the <a href="../../../../9.30/api/babylonjs/babylon/86/mesh.html">getLODLevelAtDistance</a> and <a href="../../../../9.30/api/babylonjs/babylon/86/mesh.html">getLODLevels</a> functions of the mesh class. You can use this to clone the simplified mesh and use it independently of the main mesh.
+<span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="demos">Demos<a class="anchor" href="#demos">#</a></h2>
+<p>Zoom in and out to see the effect, watch the number of active vertices closely.</p>
+<p>Simplifying spheres. Materials of the spheres will be set after simplification ended completely.</p>
+<span class="muted"> Online playground (not embedded offline)</span><p>Simplifying a color-based complex mesh. An alert window will pop when simplification is over. This mesh will also take time to load and requires optimization.</p>
+<p>With global mesh optimization -
+<span class="muted">Online playground (not embedded offline)</span></p>
+<p>With optimization during simplification -
+<span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="rules-quirks-and-things-to-pay-attention-to">Rules, Quirks and things to pay attention to<a class="anchor" href="#rules-quirks-and-things-to-pay-attention-to">#</a></h2>
+<p>Not all meshes should be simplified. More precisely, all meshes can be simplified, but some should not be.</p>
+<p>An object like a Box, if built in an optimal way such as with <code>BABYLON.MeshBuilder.CreateBox</code>, has no &quot;extra faces&quot; that can be removed. Removing a single face will cause it to... not be a box.</p>
+<h3 id="a-few-quot-rules-quot-to-follow">A few &quot;rules&quot; to follow<a class="anchor" href="#a-few-quot-rules-quot-to-follow">#</a></h3>
+<p>(and never forget, rules are meant to be broken!)</p>
+<ol>
+<li>Try simplifying meshes with more than 500 faces. Less than that will make no sense, probably.</li>
+<li>Best meshes to simplify are complex objects.</li>
+<li>Meshes like a plane will probably lose their shape after simplification.</li>
+<li>The lower the quality of the mesh, the further the distance should be. This should not be linear - a complex mesh that was simplified to 90% will probably still look almost the same, but at 30%, it is very obvious that the mesh was simplified. Lower quality simplification should have a large distance defined.</li>
+<li>Try simplifying meshes that represent a single object. A mesh containing many distant objects in one will simplify rather poorly. LOD will work poorly on such meshes as well, since the position of the mesh is not actually the position of all mesh-parts.</li>
+<li>Set the mesh&#39;s material before starting the decimation. The LOD Mesh uses them when initialized. If they will not be set, expect the material to disappear when the given distance is reached.</li>
+</ol>
+<h3 id="quirks">Quirks<a class="anchor" href="#quirks">#</a></h3>
+<ul>
+<li>Quadratic simplification can be calculated using many factors: position, normals, colors, UV coordinates, and so on. The more factors, the slower it runs because of the extra calculations. The decision was made to use position only. This means that after simplification, the UV coordinates may sometimes be a bit off. It is usually unnoticeable if you follow rule 4 above.</li>
+<li>Meshes might change their shape. Very noticeable with a small plane.</li>
+<li>Meshes might suddenly have &quot;holes&quot; in them. This can be avoided using the mesh optimization (starting 2.1, described further down)</li>
+<li>Submeshes are supported starting with Babylon.js 2.1. Meshes with submeshes would not be decimated 100% correctly due to the lack of border detection (see next point). Give it a try and see if it fits your needs.</li>
+<li>Some triangles on the borders will be &quot;deleted&quot;. The reason is usually the (lack of) border detection, which is a part of the original paper. The feature was not included in the implementation due to the amount of time needed to calculate that correctly.</li>
+<li>Objects that are initialized using an image (best example is a Height Map-based ground) will only decimate after the image is fully loaded. For that, take advantage of the <code>onReady</code> callbacks they have:</li>
+</ul>
+<pre class="code" data-lang="javascript"><code>const ground = BABYLON.MeshBuilder.CreateGroundFromHeightMap(&quot;ground&quot;, &quot;textures/heightmap.png&quot;, {width: 20, height: 20, subdivisions: 100, onReady: (readyMesh) =&gt; {
+    //Simplify mesh here
+    readyMesh.simplify([{quality: 0.1, distance: 10}]);
+    ...
+}}, scene);</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="mesh-optimization-starting-with-babylon-js-2-1">Mesh optimization (Starting with Babylon.js 2.1)<a class="anchor" href="#mesh-optimization-starting-with-babylon-js-2-1">#</a></h2>
+<p>Due to the nature of Babylon&#39;s file format, it is possible that many vertices will have the same positions, normals, but different color/uv information. This presents a problem to the decimation process, which relies on having all triangles with the same position altered.</p>
+<p>If you try simplifying a mesh, and it suddenly lacks a few triangles, this will be the reason - your mesh is not &quot;optimized&quot; for simplification.</p>
+<p>There are two types of optimization available:</p>
+<ol>
+<li>Global altering function, which is a part of BABYLON.Mesh:</li>
+</ol>
+<pre class="code" data-lang="javascript"><code>mesh.optimizeIndices(function () {
+  //do whatever you want here
+});</code></pre>
+<p>This option alters the mesh&#39;s index order. It is faster, but it might change the UV coordinates of the mesh vertices. If that is the case, use:</p>
+<ol start="2">
+<li>Optimization during simplification - The Simplification Settings now include a new variable, <code>optimizeMesh</code>, which is a boolean that defaults to <code>false</code>. If set to <code>true</code>, a non-altering mesh optimization runs during the mesh&#39;s preparation for decimation. The simplification runs on a temporary array of vertices and correlates the new vertex positions with the old UV/color information. This is the better option, but also the slower one, which will be noticeable with very large meshes like the demo skull. <span class="muted">Online playground (not embedded offline)</span></li>
+</ol>
+<p>Check which method works best for you. Both have their upsides and downsides. For better results, use the second option by setting <code>optimizeMesh</code> to <code>true</code> in the settings.</p>
+<h2 id="developing-further-simplification-algorithms">Developing further simplification algorithms<a class="anchor" href="#developing-further-simplification-algorithms">#</a></h2>
+<p>If you want to add a new simplification algorithm, there are a few steps that are required:</p>
+<ol>
+<li>Create a class that implements the <code>BABYLON.ISimplifier</code> interface, and of course implement the function.</li>
+<li>Add the type of simplification to the SimplificationType enum</li>
+<li>Add the class initialization in the <code>mesh.simplify</code> function. The inner function <code>getSimplifier</code> should contain your type.</li>
+<li>We&#39;d love to see a PR with your new simplification!</li>
+</ol>
+<h2 id="accessing-the-simplification-class-directly">Accessing the simplification class directly<a class="anchor" href="#accessing-the-simplification-class-directly">#</a></h2>
+<p>You can access quadratic error decimation directly and experiment with its features by creating an object of the <code>QuadraticErrorSimplification</code> class.</p>
+<pre class="code" data-lang="javascript"><code>const decimator = new QuadraticErrorSimplification(meshToDecimate);</code></pre>
+<p>Afterwards you can play with the following object variables:</p>
+<ol>
+<li>decimationIterations - maximum number of iterations of the decimation process. The simplification usually stops before the maximum number of iterations, but it depends on the next variable. Default: 100.</li>
+<li>aggressiveness - The threshold that decides whether a triangle is a candidate for deletion is controlled by this variable. Setting it to a low value, such as 2, makes decimation a little slower but more precise in selecting triangles. Setting it to a high value, such as 15, will probably cause decimation to end in 1 or 2 iterations, since many triangles will be chosen for deletion. In any case, once the quality is reached, the process stops. The question is whether it chose the best triangles to decimate. Default: 7.</li>
+<li>syncIterations - the number of synchronous iterations inside the async iterations. Rather hard to explain, but a lower number will hurt the performance less but will make the process take a bit more time. If you need explanations look at the AsyncLoop class in babylon.tools.js or contact @raananw at the forum.
+After setting the variables, you can run the simplify function that will start the entire process:</li>
+</ol>
+<pre class="code" data-lang="javascript"><code>simplify(settings, successCallback);</code></pre>
+<p>See the explanation above to understand what each variable is.</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#simplify-a-mesh-with-auto-lod">Simplify a Mesh with Auto-LOD </a><a href="#about">About </a><a href="#usage-simplifying-a-mesh">Usage - Simplifying a mesh </a><a href="#demos">Demos </a><a href="#rules-quirks-and-things-to-pay-attention-to">Rules, Quirks and things to pay attention to </a><a href="#mesh-optimization-starting-with-babylon-js-2-1">Mesh optimization (Starting with Babylon.js 2.1) </a><a href="#developing-further-simplification-algorithms">Developing further simplification algorithms </a><a href="#accessing-the-simplification-class-directly">Accessing the simplification class directly </a></aside></div>
+<script src="../../../../../../assets/cm.classic.js"></script><script src="../../../../../../assets/manual.js"></script></body></html>

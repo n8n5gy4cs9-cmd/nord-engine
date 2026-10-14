@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Facet Data — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../index.html"><img src="../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../index.html">Babylon documentation library</a><a href="../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Facet Data</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h1 id="facet-data">Facet Data</h1>
+<h2 id="what-is-facetdata">What is FacetData ?<a class="anchor" href="#what-is-facetdata">#</a></h2>
+<p>FacetData is a feature that can be enabled on a mesh.<br>As it requires some extra memory, it&#39;s not enabled by default.<br>This feature provides methods and properties to access each facet of a mesh, such as facet positions, normals, or the ability to retrieve all of a mesh&#39;s facets in a given area of world space.</p>
+<h2 id="what-is-a-mesh-facet">What is a mesh facet ?<a class="anchor" href="#what-is-a-mesh-facet">#</a></h2>
+<p>We use the term &quot;facet&quot; here to avoid confusing it with the term &quot;face&quot;.<br>A mesh can have some planar faces. For example, a box has 6 sides, so 6 planar squared faces. Each of its faces are drawn at the WebGL level with 2 triangles.<br>We call &quot;facets&quot; these elementary triangles.</p>
+<h2 id="how-to-enable-the-facet-data">How to enable the facet data ?<a class="anchor" href="#how-to-enable-the-facet-data">#</a></h2>
+<p>The <code>facetData</code> feature can work with any mesh, whether it is created from Babylon.js-provided shapes (box, sphere, cylinder, tube, parametric shapes, etc.), cloned meshes or instances, merged meshes, or imported meshes from an external source such as Blender.<br>To enable this feature, just call <code>updateFacetData()</code> once.<br>If the mesh belongs to some parent-child relationship, the feature is then not enabled for its parents or children.</p>
+<pre class="code" data-lang="javascript"><code>const mesh = BABYLON.MeshBuilder.CreateTorusKnot(&quot;t&quot;, { radius: 2.0 }, scene);
+mesh.updateFacetData();
+console.log(mesh.facetNb);</code></pre>
+<p>As soon as the feature is enabled, you can get the mesh&#39;s total number of facets with the read-only property <code>.facetNb</code>.</p>
+<p>The method <code>updateFacetData()</code> creates two permanent arrays: the mesh facet positions and facet normals.<br>Moreover, it logically divides the mesh according to some partitioning and stores all the facets in this partitioning.<br>Unless the mesh is updated or morphed afterwards, you don&#39;t need to call this method anymore once it has been done.<br>If you don&#39;t need this feature any longer, you can disable it to release the memory with <code>mesh.disableFacetData()</code>.</p>
+<pre class="code" data-lang="javascript"><code>mesh.updateFacetData();
+console.log(mesh.isFacetDataEnabled); // displays &quot;true&quot;
+mesh.disableFacetData();
+console.log(mesh.isFacetDataEnabled); // displays &quot;false&quot;</code></pre>
+<p>The read-only property <code>.isFacetDataEnabled</code> returns the current state of the feature.<br>Note that disposing the mesh will automatically disable its facet data.</p>
+<h2 id="the-facet-data-tools">The facet data tools<a class="anchor" href="#the-facet-data-tools">#</a></h2>
+<h3 id="facet-position">Facet position<a class="anchor" href="#facet-position">#</a></h3>
+<p>The position of a facet is the position of its barycenter.<br>You can get the position of the i-th facet of a mesh with <code>getFacetPosition(i)</code>. This returns a new <code>Vector3</code> that is the world coordinates of the facet center.</p>
+<pre class="code" data-lang="javascript"><code>const pos = mesh.getFacetPosition(50); // returns the world position of the mesh 50th facet</code></pre>
+<p>If you don&#39;t want to allocate a new <code>Vector3</code> per call, you can use <code>getFacetPositionToRef(i, ref)</code> instead.</p>
+<pre class="code" data-lang="javascript"><code>const pos = BABYLON.Vector3.Zero();
+mesh.getFacetPositionToRef(50, pos); // stores the facet world position in the variable &quot;pos&quot;</code></pre>
+<p>Actually, in the internal array containing the facet positions, all the stored coordinates are computed in the mesh local space.<br>If you need to get some facet local position, call <code>getFacetLocalPositions()</code> to get the array of the facet positions, then access the i-th element.</p>
+<pre class="code" data-lang="javascript"><code>const localPositions = mesh.getFacetLocalPositions(); // returns the array of facet positions in the local space
+const localPos = localPositions[50]; // Vector3 : the 50th facet local position</code></pre>
+<h3 id="facet-normal">Facet normal<a class="anchor" href="#facet-normal">#</a></h3>
+<p>The normal of a facet is the normalized vector orthogonal to the facet plane.<br>You can get the normal of the i-th facet of a mesh with <code>getFacetNormal(i)</code>. This returns a new <code>Vector3</code> that is the world coordinates of the facet normal.</p>
+<pre class="code" data-lang="javascript"><code>const norm = mesh.getFacetNormal(50); // returns the world normal of the mesh 50th facet</code></pre>
+<p>If you don&#39;t want to allocate a new <code>Vector3</code> per call, you can use <code>getFacetNormalToRef(i, ref)</code> instead.</p>
+<pre class="code" data-lang="javascript"><code>const norm = BABYLON.Vector3.Zero();
+mesh.getFacetNormalToRef(50, norm); // stores the facet world normal in the variable &quot;norm&quot;</code></pre>
+<p>Like for the positions, in the internal array containing the facet normals, all the stored coordinates are computed in the mesh local space.<br>If you need to get some facet local normal, call <code>getFacetLocalNormals()</code> to get the array of the facet local normals, then access the i-th element.</p>
+<pre class="code" data-lang="javascript"><code>const localNormals = mesh.getFacetLocalNormals(); // returns the array of facet normals in the local space
+const localPos = localNormals[50]; // Vector3 : the 50th facet local position</code></pre>
+<h4 id="note">Note<a class="anchor" href="#note">#</a></h4>
+<p>All the methods dealing with the world coordinates use the mesh world matrix. As you may know, this matrix is automatically computed on the render call.<br>If you&#39;ve just moved, scaled, or rotated your mesh before calling the facetData methods that use world values, and you&#39;re not sure about this, you can always force the world matrix computation.</p>
+<pre class="code" data-lang="javascript"><code>mesh.rotate.y += 0.2; // the mesh will be rotated on the next render call, but I need a rotated normal
+mesh.computeWorldMatrix(true); // force the world matrix computation
+const norm = mesh.getFacetNormal(50); // returns the world normal of the mesh 50th facet</code></pre>
+<h4 id="examples">Examples :<a class="anchor" href="#examples">#</a></h4>
+<p>Displaying all the facet normals of an icosphere: <span class="muted">Online playground (not embedded offline)</span>
+Just change the mesh shape, torus knot : <span class="muted">Online playground (not embedded offline)</span>
+Smarter : set a box at a distance of 2 from the mesh 10th facet and keep it there, even if the mesh rotates: <span class="muted">Online playground (not embedded offline)</span>
+Of course, you can add some <a href="../../../../9.30/api/babylonjs/babylon/1c/transformnode.html">translation</a> to the mesh and even some rotation to the box: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>Note also that the facet index is the same as the facet id <code>faceId</code> used by the pickingInfo object or the <code>faceId</code> used by the SPS when pickable.  
+Here is an example combining pickingInfo, pickable SPS and facetData facet index: <span class="muted">Online playground (not embedded offline)</span>
+Just click and the ball is positioned at the clicked facet position, not the clicked point.</p>
+<h3 id="mesh-partitioning">Mesh partitioning<a class="anchor" href="#mesh-partitioning">#</a></h3>
+<p>The <code>facetData</code> feature also provides another tool called mesh partitioning.<br>The mesh is logically divided into 3D blocks aligned with the X, Y, and Z axes in its local space.<br>Here&#39;s an illustration about how this logical partitioning looks like (please wait until the skull is downloaded): <span class="muted">Online playground (not embedded offline)</span>
+To improve visibility, the planes along the Z axis were not displayed.<br>As you can see, there are by default 10 subdivisions on each axis.<br>When you call <code>updateFacetData()</code>, the indexes of all the facets are sorted in the partitioning array according to the block to which each facet belongs.</p>
+<p>Thus you can get all the facet indexes from some local coordinates <em>(x, y, z)</em> with <code>getFacetsAtLocalCoordinates(x, y, z)</code>.</p>
+<pre class="code" data-lang="javascript"><code>const indexes = mesh.getFacetsAtLocalCoordinates(x, y, z); // returns an array containing the facet indexes
+if (indexes != null) {
+  const worldPos = mesh.getFacetPosition(indexes[0]); // the world position of the first facet in the block
+}</code></pre>
+<p>This method returns an array containing the indexes of the facets belonging to the block that contains the point at coordinates <em>(x, y, z)</em>.<br>If <em>(x, y, z)</em> aren&#39;t in any block or if there&#39;s no facet in the block containing <em>(x, y, z)</em>, it returns <code>null</code>.<br>So you can retrieve all the facets near a given position this way and do your own processing.<br>This method can be called as many times as you need, even in the render loop. It doesn&#39;t allocate any objects in memory.</p>
+<p>Sometimes you don&#39;t need all the facets from a given block, but only the closest facet to some world-space coordinates.<br>You can then use the method <code>getClosestFacetAtCoordinates(x, y, z)</code>, which returns the index of the closest facet to the world coordinates <em>(x, y, z)</em>.</p>
+<pre class="code" data-lang="javascript"><code>const index = mesh.getClosestFacetAtCoordinates(x, y, z); // returns the index of the closest facet to (x, y, z)
+if (index != null) {
+  const worldPos = mesh.getFacetPosition(index); // the world position of this facet
+}</code></pre>
+<p>The method returns just the index of the closest facet, if any.<br>Actually the world coordinates <em>(x, y, z)</em> are internally transformed to local coordinates in the mesh local system.<br>If these local coordinates aren&#39;t in any block or if there&#39;s no facet in this block, it returns <code>null</code>.<br>This method can be called as many times you need, even in the render loop.</p>
+<p>This method can also compute for you the coordinates of the projection of <em>(x, y, z)</em> on the closest facet plane. You can imagine this projection point as the contact point of <em>(x, y, z)</em> on the facet, or the nearest point from <em>(x, y, z)</em> on the facet.<br>Just pass it a <code>Vector3</code> as a reference:</p>
+<pre class="code" data-lang="javascript"><code>const projected = BABYLON.Vector3.Zero();
+const index = mesh.getClosestFacetAtCoordinates(x, y, z, projected); // sets the point &quot;projected&quot; world coordinates
+if (index != null) {
+  const worldPos = mesh.getFacetPosition(index); // the world position of this facet
+  // use the vector3 projected here ...
+}</code></pre>
+<p>You can even filter the returned facet index.<br>Imagine that you want only the facet &quot;facing&quot; the coordinates <em>(x, y, z)</em>; that is, the facet for which the dot product normal * facetPosition<em>to</em>(x, y, z) is positive.</p>
+<p>So just set the fifth parameter <code>checkFace</code> to <code>true</code> (default <code>false</code>) and the sixth parameter <code>facing?</code> to <code>true</code> (default <code>true</code>).</p>
+<pre class="code" data-lang="javascript"><code>const projected = BABYLON.Vector3.Zero();
+const index = mesh.getClosestFacetAtCoordinates(x, y, z, projected, true); // just the &quot;facing&quot; closest facet
+if (index != null) {
+  const worldPos = mesh.getFacetPosition(index); // the world position of this facet
+  // use the vector3 projected here ...
+}</code></pre>
+<p>On the contrary, if you just want the closest facet facing away from <em>(x, y, z)</em>, set <code>checkFace</code> to <code>true</code> and <code>facing?</code> to <code>false</code>.</p>
+<pre class="code" data-lang="javascript"><code>const projected = BABYLON.Vector3.Zero();
+const index = mesh.getClosestFacetAtCoordinates(x, y, z, projected, true, false); // just the &quot;turning back&quot; closest facet
+if (index != null) {
+  const worldPos = mesh.getFacetPosition(index); // the world position of this facet
+  // use the vector3 projected here ...
+}</code></pre>
+<p>If you need it, this method exists also in the mesh local space. Everything is then expressed in the local space : <em>(x, y, z)</em> and the returned coordinates of the projected point.<br>Just call <code>getClosestFacetAtLocalCoordinates(x, y, z, projected, checkFace, facing?)</code> instead.</p>
+<pre class="code" data-lang="javascript"><code>const localProj = BABYLON.Vector3.Zero();
+const index = mesh.getClosestFacetAtLocalCoordinates(x, y, z, localProj); // local projection
+if (index != null) {
+  const worldPos = mesh.getFacetPosition(index); // the world position of this facet
+  // use the vector3 localProj here ...
+}</code></pre>
+<h4 id="note">Note<a class="anchor" href="#note">#</a></h4>
+<p>As said before, the returned facet indexes from all these former methods are the same values as the <code>PickingInfo</code> or pickable SPS <code>faceId</code> values.
+So, you can easily mix all these features together. Ex : to get the facet normal from a picked mesh.</p>
+<h4 id="example">Example<a class="anchor" href="#example">#</a></h4>
+<p>A rotating torus knot with facet data enabled and a Solid Particle System (SPS) moving balls with simple custom physics :</p>
+<ul>
+<li>move the ball,</li>
+<li>get the torus closest facet to the particle,</li>
+<li>if any, bounce back the particle.</li>
+</ul>
+<span class="muted"> Online playground (not embedded offline)</span><h3 id="tweaking-the-partitioning">Tweaking the partitioning<a class="anchor" href="#tweaking-the-partitioning">#</a></h3>
+<p>By default, the partitioning is set to 10 subdivisions per axis. These subdivisions are applied to the mesh bounding box.<br>Actually, it&#39;s a bit smarter. It divides the largest bounding box dimension by 10 and adjusts the others according to their ratio to the largest one.<br>Example: if the mesh is sized 200 on X, 100 on Z, and 3 on Y, it will subdivide X into 10 subdivisions, Z into 5 subdivisions, and Y into only 1.<br>10 subdivisions is an arbitrary default value. You can change it according to your mesh geometry.<br>Just keep these two principles in mind:</p>
+<ul>
+<li>the subdivisions (blocks) must be bigger than the facets to get accurate results,</li>
+<li>the more subdivisions, the fastest the method <code>getClosestFacetAtCoordinates()</code>.</li>
+</ul>
+<p>So if you deal with a huge mesh with plenty of very small facets like the BJS skull, you can easily set the subdivision number to 50, but if you deal with your own ribbon built with only one hundred big facets, you should probably reduce this number to 4.<br>To set the number of subdivisions, just use the property <code>.partitioningSubdivisions</code>. It will be taken into account at the next call to <code>updateFacetData()</code> and can be changed at will.</p>
+<pre class="code" data-lang="javascript"><code>mesh.partitioningSubdivisions = 50; // set a bigger value than the default one (integer)
+mesh.updateFacetData(); // now the internal partitioning has 50 blocks per axis</code></pre>
+<p>You can also enlarge a bit the space used by the blocks to have a bigger &quot;detection zone&quot; (remember that if <em>(x, y, z)</em> is outside the block zone, the methods return <code>null</code>).<br>By default, the block area is 1% bigger than the mesh bounding box in order to keep a little space between the peripheral blocks and their contained facets.<br>You can set your own value with the property <code>.partitioningBBoxRatio</code> (default = 1.01). It will be taken into account at the next call to <code>updateFacetData()</code> and can be changed at will.</p>
+<pre class="code" data-lang="javascript"><code>mesh.partitioningBBoxRatio = 1.05; // 5% bigger than the bounding box instead of 1% bigger
+mesh.updateFacetData(); // now the internal block area if 5% bigger than the bounding box</code></pre>
+<p>In order to understand, here are two examples :<br>ratio = 1.20 (20% bigger) <span class="muted">Online playground (not embedded offline)</span><br>ratio = 0.80 (20% smaller) <span class="muted">Online playground (not embedded offline)</span><br>Those examples aren&#39;t very useful, because the values are too big or too small: the block area is either too far from the mesh or inside the mesh.<br>Good values should stay between 1.0 and 1.10.</p>
+<h3 id="updating-facet-data">Updating Facet Data<a class="anchor" href="#updating-facet-data">#</a></h3>
+<p>As said in the first part, you need to call <code>updateFacetData()</code> once to enable the feature.<br>This is enough if the mesh geometry stays unchanged afterward.</p>
+<p>Nonetheless, if you update or morph your mesh afterwards, you need to call <code>updateFacetData()</code> again to force the partitioning recomputation.</p>
+<pre class="code" data-lang="javascript"><code>const mesh = myBlenderImportedMesh; // import some mesh from an external source
+mesh.updateFacetData(); // enable facetData
+// ... process here using the mesh with its current geometry and FacetData
+if (condition) {
+  customMorphFunction(mesh); // update the mesh geometry
+  mesh.updateFacetData(); // update the facet data
+}</code></pre>
+<p><code>updateFacetData()</code> can be called on demand, even in the render loop. However, this method has a CPU cost, exactly the same as the static method <code>ComputeNormals()</code>.<br>So if your mesh has a very large number of facets, like the BJS skull, this can take some time.</p>
+<p>Some of the provided BJS mesh types are updatable/morphable by their dedicated methods : the parametric shapes and the SPS.</p>
+<ul>
+<li>the parametric shapes are updatable by calling again the method <code>CreateXXX()</code> with the parameter <code>instance</code>,</li>
+<li>the SPS is updated each call to <code>setParticles()</code>.</li>
+</ul>
+<p>For these specific types of updatable meshes, you don&#39;t need to call <code>updateFacetData()</code> yourself if the feature is already enabled.
+It will be done automatically, generally in an optimized way, inside the process loop of the mesh geometry update.</p>
+<pre class="code" data-lang="javascript"><code>const paths = someArrayOfPaths;
+const mesh = BABYLON.MeshBuilder.CreateRibbon(&quot;m&quot;, {pathArray: paths, updatable: true}, scene); // create an updatable ribbon
+mesh.updateFacetData();    // enable the feature once
+// morphing function : change the ribbon geometry
+const morphRibbon = function(k) {
+    for (let p = 0; p &lt; paths.length; p++) {
+        const path = paths[p];
+        for (let i = 0; i &lt; path.length) {
+            path[i].y = Math.sin(k) * Math.cos(i);
+        }
+    }
+}
+const k = 0.0;
+// render loop
+scene.registerBeforeRender(function() {
+    morphRibbon(k);                     // change the geometry
+    BABYLON.MeshBuilder.CreateRibbon(null, {pathArray: paths, instance: mesh}); // actually morph the ribbon
+    // No need for updateFacetData() here, CreateRibbon() just did it ... faster !
+    k += 0.01;
+});</code></pre>
+<p>Example :<br>Custom simple physics on a dynamically morphed ribbon: <span class="muted">Online playground (not embedded offline)</span></p>
+<h3 id="facet-depth-sort">Facet Depth Sort<a class="anchor" href="#facet-depth-sort">#</a></h3>
+<p>As you may know, for performance reasons, the facets of a given mesh are always drawn in the same order. This comes to visual issues when the mesh is transparent, concave and is no longer oriented in the right place from the camera :</p>
+<span class="muted">Online playground (not embedded offline)</span><p>This feature solves the self-transparency issue by sorting the mesh facets from some location, the camera position by default, just before drawing them.<br>The mesh is <strong>required</strong> to be <code>updatable</code>.<br>The depth sort is done on each call to <code>updateFacetData()</code>. It can be disabled at any time to save CPU cycles if the mesh and the camera don&#39;t move anymore.<br>Usage :</p>
+<pre class="code" data-lang="javascript"><code>// the mesh must be updatable
+const mesh = BABYLON.MeshBuilder.CreateTorusKnot(&quot;mesh&quot;, {updatable: true}, scene);
+mesh.material = mat;                         // transparent material
+mesh.mustDepthSortFacets = true;             // enable the depth sort, can be disabled at any time
+
+scene.registerBeforeRender(function() {
+mesh.updateFacetData();     // sort the facets each frame</code></pre>
+<p>Example: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>Depth sorted on the left, standard on the right.</p>
+<p>If you don&#39;t need the depth sort once enabled, you can simply stop to call <code>updateFacetData()</code>.<br>If, for some reason, you still need to call <code>updateFacetData()</code> but no longer need depth sorting, just disable it with <code>mesh.mustDepthSortFacets = false</code>.<br>In both cases, the facets will keep the last assigned order.</p>
+<p>Note that if your mesh is an SPS (Solid Particle System), it&#39;s better not to enable facet depth sort at the same time as particle depth sort, simply because the underlying sort is done twice, so more CPU is used for no gain.<br>In this case, just choose which kind of sorting is better for you: at the particle level (faster) or at the facet level (more accurate).</p>
+<p>As the facet depth sort reorganizes the mesh indices, it <strong>can&#39;t work</strong> with the MultiMaterials.</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#what-is-facetdata">What is FacetData ? </a><a href="#what-is-a-mesh-facet">What is a mesh facet ? </a><a href="#how-to-enable-the-facet-data">How to enable the facet data ? </a><a href="#the-facet-data-tools">The facet data tools </a></aside></div>
+<script src="../../../../../../assets/cm.classic.js"></script><script src="../../../../../../assets/manual.js"></script></body></html>

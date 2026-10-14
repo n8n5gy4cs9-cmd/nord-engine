@@ -1,5 +1,7 @@
 # Changelog
 
+- 2026-10-14 (M7-20): Organized the unchanged static HTML manual into Nord section folders and versioned Phaser/Babylon package/namespace folders, capped generated folders at 100 files, split search into stable section shards, and made generation content-incremental. Unchanged output now retains its mtime for fast FTP sync; a one-page source edit rewrites one HTML file instead of all 9,000+ pages.
+
 - 2026-10-13: Added noindex/nofollow/noarchive to every generated manual page, plus robots.txt, Apache .htaccess, static-host _headers and upload instructions. Hosting files survive manual regeneration. No tests run per owner.
 
 - 2026-10-13: Shader Terrain Lab now feeds live Web Audio FFT/waveform data into iChannel0, enabling the supplied audio-reactive shader branch. GPU picking/collision shares the same sound snapshot; freeze holds both time and texture, with the audio-mode camera speed and signed-height encoding kept consistent. Tutorial/guide updated. No tests or runtime runs per owner.

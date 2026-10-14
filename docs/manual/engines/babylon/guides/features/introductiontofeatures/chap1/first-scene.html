@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Getting Started - Chapter 1 - First Scene — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../index.html"><img src="../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../index.html">Babylon documentation library</a><a href="../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Getting Started - Chapter 1 - First Scene</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h1 id="getting-started-chapter-1-first-scene">Getting Started - Chapter 1 - First Scene</h1>
+<h2 id="first-scene-and-model">First Scene and Model<a class="anchor" href="#first-scene-and-model">#</a></h2>
+<p>Whether you are creating a whole world or just placing one model into a web page, you need a <a href="../../featuresdeepdive/scene.html">scene</a> to contain the world or model, a <a href="../../featuresdeepdive/cameras.html">camera</a> to view it, a <a href="../../featuresdeepdive/lights.html">light</a> to illuminate it, and, of course, at least one viewable object as a model. All models, whether just a box or a complex character, are made from a <a href="../../featuresdeepdive/mesh.html">mesh</a> of triangles or facets.</p>
+<p><p class="muted">Upstream illustration: wireframe (media not bundled).</p><br>Wireframe View Showing Mesh Triangles</p>
+<p>A large number of meshes can be created directly within Babylon.js using code, or, as you will shortly see, imported as models from meshes created with other software. Let us start simply with a box.</p>
+<p>Examples on these pages can be viewed in the Playground, the place to try out Babylon.js live on the web, by clicking their titles. To edit the code, open them with <p class="muted">Upstream illustration: open pg (media not bundled).</p></p>
+<h2 id="say-hello-to-your-first-world">Say Hello to Your First World<a class="anchor" href="#say-hello-to-your-first-world">#</a></h2>
+<p>All projects using the Babylon.js Engine need a scene with a camera and a light added. Then we can create our box.</p>
+<p>Wait... what is the Babylon.js Engine, you ask? Excellent question. The <code>engine</code> variable shown below is the class responsible for interfacing with lower-level APIs such as WebGL, audio, and more. The constructor used to create a Babylon scene (the context that renders visuals to the screen) needs the engine to talk to these lower-level APIs. This is why the <code>engine</code> variable is needed when creating a scene.</p>
+<p>You can read more about the <a href="../../../../9.30/api/babylonjs/babylon/30/engine.html">engine class here</a>.</p>
+<p>Use the tabs to view this example with standard ES6 imports, side-effect-free pure ES6 imports, or the global UMD package.</p>
+<span class="muted">&lt;CodeVariants&gt;
+&lt;CodeVariant variant=&quot;es6&quot; label=&quot;ES6&quot;&gt;</span><pre class="code" data-lang="javascript"><code>import { ArcRotateCamera } from &quot;@babylonjs/core/Cameras/arcRotateCamera&quot;;
+import { HemisphericLight } from &quot;@babylonjs/core/Lights/hemisphericLight&quot;;
+import &quot;@babylonjs/core/Materials/standardMaterial&quot;;
+import { Vector3 } from &quot;@babylonjs/core/Maths/math.vector&quot;;
+import { CreateBox } from &quot;@babylonjs/core/Meshes/Builders/boxBuilder&quot;;
+import { Scene } from &quot;@babylonjs/core/scene&quot;;
+
+const scene = new Scene(engine);
+
+const camera = new ArcRotateCamera(&quot;camera&quot;, -Math.PI / 2, Math.PI / 2.5, 3, new Vector3(0, 0, 0), scene);
+camera.attachControl(canvas, true);
+
+const light = new HemisphericLight(&quot;light&quot;, new Vector3(0, 1, 0), scene);
+
+const box = CreateBox(&quot;box&quot;, {}, scene);</code></pre>
+<span class="muted">&lt;/CodeVariant&gt;
+&lt;CodeVariant variant=&quot;pure-es6&quot; label=&quot;ES6 pure&quot;&gt;</span><pre class="code" data-lang="javascript"><code>import {
+    ArcRotateCamera,
+    CreateBox,
+    HemisphericLight,
+    RegisterStandardEngineExtensions,
+    RegisterStandardMaterial,
+    Scene,
+    Vector3,
+} from &quot;@babylonjs/core/pure&quot;;
+
+RegisterStandardEngineExtensions();
+RegisterStandardMaterial();
+
+const scene = new Scene(engine);
+
+const camera = new ArcRotateCamera(&quot;camera&quot;, -Math.PI / 2, Math.PI / 2.5, 3, new Vector3(0, 0, 0), scene);
+camera.attachControl(canvas, true);
+
+const light = new HemisphericLight(&quot;light&quot;, new Vector3(0, 1, 0), scene);
+
+const box = CreateBox(&quot;box&quot;, {}, scene);</code></pre>
+<span class="muted">&lt;/CodeVariant&gt;
+&lt;CodeVariant variant=&quot;umd&quot; label=&quot;UMD&quot;&gt;</span><pre class="code" data-lang="javascript"><code>const scene = new BABYLON.Scene(engine);
+
+const camera = new BABYLON.ArcRotateCamera(&quot;camera&quot;, -Math.PI / 2, Math.PI / 2.5, 3, new BABYLON.Vector3(0, 0, 0), scene);
+camera.attachControl(canvas, true);
+
+const light = new BABYLON.HemisphericLight(&quot;light&quot;, new BABYLON.Vector3(0, 1, 0), scene);
+
+const box = BABYLON.MeshBuilder.CreateBox(&quot;box&quot;, {}, scene);</code></pre>
+<span class="muted">&lt;/CodeVariant&gt;
+&lt;/CodeVariants&gt;</span><p>Like most meshes created with Babylon.js&#39;s mesh creation helpers, the box is created with its center positioned at the origin and needs three parameters. These are a name, <em>a string</em>; options, <em>a JavaScript object</em>; and a scene. By leaving the options as an empty object <em>{}</em> with no properties, the box defaults to unit size for its width, height, and depth.</p>
+<p>To make this usable in a Playground, we need to place these within a function called <strong>createScene</strong> that returns a scene. The Playground app takes care of the rest.</p>
+<span class="muted">&lt;CodeVariants&gt;
+&lt;CodeVariant variant=&quot;es6&quot; label=&quot;ES6&quot;&gt;</span><pre class="code" data-lang="javascript"><code>import { ArcRotateCamera } from &quot;@babylonjs/core/Cameras/arcRotateCamera&quot;;
+import { HemisphericLight } from &quot;@babylonjs/core/Lights/hemisphericLight&quot;;
+import &quot;@babylonjs/core/Materials/standardMaterial&quot;;
+import { Vector3 } from &quot;@babylonjs/core/Maths/math.vector&quot;;
+import { CreateBox } from &quot;@babylonjs/core/Meshes/Builders/boxBuilder&quot;;
+import { Scene } from &quot;@babylonjs/core/scene&quot;;
+
+const createScene = () =&gt; {
+    const scene = new Scene(engine);
+
+    const camera = new ArcRotateCamera(&quot;camera&quot;, -Math.PI / 2, Math.PI / 2.5, 3, new Vector3(0, 0, 0));
+    camera.attachControl(canvas, true);
+
+    const light = new HemisphericLight(&quot;light&quot;, new Vector3(0, 1, 0));
+
+    const box = CreateBox(&quot;box&quot;, {});
+
+    return scene;
+}</code></pre>
+<span class="muted">&lt;/CodeVariant&gt;
+&lt;CodeVariant variant=&quot;pure-es6&quot; label=&quot;ES6 pure&quot;&gt;</span><pre class="code" data-lang="javascript"><code>import {
+    ArcRotateCamera,
+    CreateBox,
+    HemisphericLight,
+    RegisterStandardEngineExtensions,
+    RegisterStandardMaterial,
+    Scene,
+    Vector3,
+} from &quot;@babylonjs/core/pure&quot;;
+
+RegisterStandardEngineExtensions();
+RegisterStandardMaterial();
+
+const createScene = () =&gt; {
+    const scene = new Scene(engine);
+
+    const camera = new ArcRotateCamera(&quot;camera&quot;, -Math.PI / 2, Math.PI / 2.5, 3, new Vector3(0, 0, 0));
+    camera.attachControl(canvas, true);
+
+    const light = new HemisphericLight(&quot;light&quot;, new Vector3(0, 1, 0));
+
+    const box = CreateBox(&quot;box&quot;, {});
+
+    return scene;
+}</code></pre>
+<span class="muted">&lt;/CodeVariant&gt;
+&lt;CodeVariant variant=&quot;umd&quot; label=&quot;UMD&quot;&gt;</span><pre class="code" data-lang="javascript"><code>const createScene = () =&gt; {
+    const scene = new BABYLON.Scene(engine);
+
+    const camera = new BABYLON.ArcRotateCamera(&quot;camera&quot;, -Math.PI / 2, Math.PI / 2.5, 3, new BABYLON.Vector3(0, 0, 0));
+    camera.attachControl(canvas, true);
+
+    const light = new BABYLON.HemisphericLight(&quot;light&quot;, new BABYLON.Vector3(0, 1, 0));
+
+    const box = BABYLON.MeshBuilder.CreateBox(&quot;box&quot;, {});
+
+    return scene;
+}</code></pre>
+<span class="muted">&lt;/CodeVariant&gt;
+&lt;/CodeVariants&gt;</span><p>Since there is only one scene at this point, you may notice that this parameter can be dropped from the camera, light, and box, as they default to being placed in the current scene.</p>
+<span class="muted">Online playground (not embedded offline)</span><p><p class="muted">Upstream illustration: box (media not bundled).</p></p>
+<p>Having created our box we can save, or export, the scene from within the playground by selecting the <em>Inspector</em><br><p class="muted">Upstream illustration: inspector (media not bundled).</p>    </p>
+<p>followed by <em>Tools</em> and choose which type to export, the <em>.babylon</em> format or the <em>GLB</em> format.<br><p class="muted">Upstream illustration: Tools (media not bundled).</p></p>
+<p>Now that we have a file, we can use it to demonstrate how to view it on a web page.</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#first-scene-and-model">First Scene and Model </a><a href="#say-hello-to-your-first-world">Say Hello to Your First World </a></aside></div>
+<script src="../../../../../../assets/cm.classic.js"></script><script src="../../../../../../assets/manual.js"></script></body></html>

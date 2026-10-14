@@ -29,7 +29,7 @@ All web exports are **static folders**: `index.html`, `nord.json` (project manif
 ```
 nord-engine/
 ├─ AGENTS.md  README.md  PRD.json  task.md  ASSETS.md  THIRD_PARTY.md  LICENSE
-├─ docs/                 plans + specs + manual (docs/manual = HTML manual, built in M7)
+├─ docs/                 plans + specs + foldered static manual (docs/manual/{nord,engines,assets})
 ├─ crates/
 │  ├─ nord-core/         project model, scene schema, asset index, thumbnails, offline scan
 │  ├─ nord-cli/          `nord` binary (clap): new/serve/build/export/thumbs/check-offline/…

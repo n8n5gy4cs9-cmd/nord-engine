@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Phaser.GameObjects.StencilReference — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../../../index.html"><img src="../../../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../../../../babylon/9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../index.html">Phaser 4.2.1 API</a><a href="../../../../../../../babylon/guides/index.html">Babylon documentation library</a><a href="../../../../../../4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Phaser.GameObjects.StencilReference</h1>
+<p><span class="badge">Underlying Phaser 4.2.1 API</span> <span class="badge">Class</span></p><p class="muted">Official public declarations and JSDoc from <code>phaser</code>. Use with engine objects, not directly on a Nord entity.</p><aside class="box tip"><div class="box-title">The Nord way</div><p><a href="../../../../../../../../nord/manual/2d.html">2D manual</a> · <a href="../../../../../../../../nord/components/component-sprite.html">sprite</a> · <a href="../../../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a> · <a href="../../../../../../../../nord/manual/physics.html">physics</a>. Access raw objects only when the Nord wrapper does not cover your feature. <a href="../../../../../../../../nord/manual/reference.html#escape-hatch">How escape hatches work</a>.</p></aside><h3 id="declaration">StencilReference <a class="anchor" href="#declaration">#</a></h3><pre class="code" data-lang="ts"><code>class StencilReference extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.StencilModifier, Phaser.GameObjects.Components.Visible</code></pre><p>A StencilReference Game Object.</p>
+<p>A StencilReference is a special type of Game Object that uses a Stencil
+as a reference for its own rendering. This allows you to re-render a Stencil
+using different settings.</p>
+<p>For example, you can add a layer with a Stencil with some complex geometry,
+draw objects affected by the stencil layer,
+then use a StencilReference to subtract the same layer without recreating it.</p>
+<p>It is WebGL-only.</p>
+<p>A StencilReference temporarily changes the settings on the target Stencil,
+then restores them after rendering.
+Thus, it keeps the original Stencil&#39;s transforms.
+The stencil options can be changed by setting the properties on this object.
+Note that these properties will be set to default values,
+so if you have configured the targetStencil with its own properties,
+you should configure this with those properties as well,
+altered to your requirements.</p>
+<p>See the Phaser.GameObjects.Stencil documentation for more details.</p>
+<h2 id="members">Public members (39)</h2><p>Private, protected and explicitly internal declarations are excluded. Inherited members belong to the base type listed in the declaration.</p><h3 id="member-constructor-0">constructor <a class="anchor" href="#member-constructor-0">#</a></h3><pre class="code" data-lang="ts"><code>constructor(scene: Phaser.Scene, targetStencil: Phaser.GameObjects.Stencil, options?: Phaser.Types.GameObjects.Stencil.StencilOptions);</code></pre><p><strong>param</strong>  scene The Scene to which this Game Object belongs.
+<strong>param</strong>  targetStencil The Stencil to use as a reference.
+<strong>param</strong>  options The options for the StencilReference.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>scene</code></td><td><code>Phaser.Scene</code></td><td>Required</td></tr><tr><td><code>targetStencil</code></td><td><code>Phaser.GameObjects.Stencil</code></td><td>Required</td></tr><tr><td><code>options</code></td><td><code>Phaser.Types.GameObjects.Stencil.StencilOptions</code></td><td>Optional</td></tr></tbody></table><h3 id="member-targetstencil-1">targetStencil <a class="anchor" href="#member-targetstencil-1">#</a></h3><pre class="code" data-lang="ts"><code>targetStencil: Phaser.GameObjects.Stencil;</code></pre><p>The Stencil to use as a reference.</p>
+<p><b>Type / return:</b> <code>Phaser.GameObjects.Stencil</code></p><h3 id="member-blendmode-2">blendMode <a class="anchor" href="#member-blendmode-2">#</a></h3><pre class="code" data-lang="ts"><code>readonly blendMode: number;</code></pre><p>The blend mode to use when rendering the stencil reference.
+This is read-only, and is only used for internal compliance.
+Stencil drawing uses its own combination rules.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-predestroy-3">preDestroy <a class="anchor" href="#member-predestroy-3">#</a></h3><pre class="code" data-lang="ts"><code>preDestroy(): void;</code></pre><p>Pre-destroy callback.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="member-filtercamera-4">filterCamera <a class="anchor" href="#member-filtercamera-4">#</a></h3><pre class="code" data-lang="ts"><code>filterCamera: Phaser.Cameras.Scene2D.Camera;</code></pre><p>The Camera used for filters.
+You can use this to alter the perspective of filters.
+It is not necessary to use this camera for ordinary rendering.</p>
+<p>This is only available if you use the <code>enableFilters</code> method.</p>
+<p><b>Type / return:</b> <code>Phaser.Cameras.Scene2D.Camera</code></p><h3 id="member-filters-5">filters <a class="anchor" href="#member-filters-5">#</a></h3><pre class="code" data-lang="ts"><code>readonly filters: Phaser.Types.GameObjects.FiltersInternalExternal | null;</code></pre><p>The filter lists for this Game Object.
+This is an object with <code>internal</code> and <code>external</code> properties.
+Each list is a Phaser.GameObjects.Components.FilterList object.</p>
+<p>This is only available if you use the <code>enableFilters</code> method.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.FiltersInternalExternal | null</code></p><h3 id="member-renderfilters-6">renderFilters <a class="anchor" href="#member-renderfilters-6">#</a></h3><pre class="code" data-lang="ts"><code>renderFilters: boolean;</code></pre><p>Whether any filters should be rendered on this Game Object.
+This is <code>true</code> by default, even if there are no filters yet.
+Disable this to skip filter rendering.</p>
+<p>Use <code>willRenderFilters()</code> to see if there are any active filters.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-maxfiltersize-7">maxFilterSize <a class="anchor" href="#member-maxfiltersize-7">#</a></h3><pre class="code" data-lang="ts"><code>maxFilterSize: Phaser.Math.Vector2;</code></pre><p>The maximum size of the base filter texture.
+Filters may use a larger texture after the base texture is rendered.
+The maximum texture size is at least 4096 in WebGL, based on the hardware.
+You may set this lower to save memory or prevent resizing.</p>
+<p><b>Type / return:</b> <code>Phaser.Math.Vector2</code></p><h3 id="member-filtersautofocus-8">filtersAutoFocus <a class="anchor" href="#member-filtersautofocus-8">#</a></h3><pre class="code" data-lang="ts"><code>filtersAutoFocus: boolean;</code></pre><p>Whether <code>filterCamera</code> should update every frame
+to focus on the Game Object.
+Disable this if you want to manually control the camera.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-filtersfocuscontext-9">filtersFocusContext <a class="anchor" href="#member-filtersfocuscontext-9">#</a></h3><pre class="code" data-lang="ts"><code>filtersFocusContext: boolean;</code></pre><p>Whether the filters should focus on the context,
+rather than attempt to focus on the Game Object.
+This is enabled automatically when enabling filters on objects
+which don&#39;t have well-defined bounds.</p>
+<p>This effectively sets the internal filters to render the same way
+as the external filters.</p>
+<p>This is only used if <code>filtersAutoFocus</code> is enabled.</p>
+<p>The &quot;context&quot; is the framebuffer to which the Game Object is rendered.
+This is usually the main framebuffer, but might be another framebuffer.
+It can even be several different framebuffers if the Game Object is
+rendered multiple times.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-filtersforcecomposite-10">filtersForceComposite <a class="anchor" href="#member-filtersforcecomposite-10">#</a></h3><pre class="code" data-lang="ts"><code>filtersForceComposite: boolean;</code></pre><p>Whether the Filters component should always draw to a framebuffer,
+even if there are no active filters.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-willrenderfilters-11">willRenderFilters <a class="anchor" href="#member-willrenderfilters-11">#</a></h3><pre class="code" data-lang="ts"><code>willRenderFilters(): boolean;</code></pre><p>Whether this Game Object will render filters.
+This is true if it has active filters,
+and if the <code>renderFilters</code> property is also true.undefined
+<strong>returns</strong>  Whether the Game Object will render filters.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-enablefilters-12">enableFilters <a class="anchor" href="#member-enablefilters-12">#</a></h3><pre class="code" data-lang="ts"><code>enableFilters(): this;</code></pre><p>Enable this Game Object to have filters.</p>
+<p>You need to call this method if you want to use the <code>filterCamera</code>
+and <code>filters</code> properties. It sets up the necessary data structures.
+You may disable filter rendering with the <code>renderFilters</code> property.</p>
+<p>This is a WebGL only feature. It will return early if not available.undefined
+<strong>returns</strong>  undefined</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-renderwebglfilters-13">renderWebGLFilters <a class="anchor" href="#member-renderwebglfilters-13">#</a></h3><pre class="code" data-lang="ts"><code>renderWebGLFilters(renderer: Phaser.Renderer.WebGL.WebGLRenderer, gameObject: Phaser.GameObjects.GameObject, drawingContext: Phaser.Renderer.WebGL.DrawingContext, parentMatrix?: Phaser.GameObjects.Components.TransformMatrix, renderStep?: number): Phaser.Types.GameObjects.RenderWebGLStep;</code></pre><p>Render this object using filters.</p>
+<p>This function&#39;s scope is not guaranteed, so it doesn&#39;t refer to <code>this</code>.
+<strong>param</strong>  renderer The WebGL Renderer instance to render with.
+<strong>param</strong>  gameObject The Game Object being rendered.
+<strong>param</strong>  drawingContext The current drawing context.
+<strong>param</strong>  parentMatrix The parent matrix of the Game Object, if it has one.
+<strong>param</strong>  renderStep The index of this function in the Game Object&#39;s list of render processes. Used to support multiple rendering functions. Default 0.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>renderer</code></td><td><code>Phaser.Renderer.WebGL.WebGLRenderer</code></td><td>Required</td></tr><tr><td><code>gameObject</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr><tr><td><code>drawingContext</code></td><td><code>Phaser.Renderer.WebGL.DrawingContext</code></td><td>Required</td></tr><tr><td><code>parentMatrix</code></td><td><code>Phaser.GameObjects.Components.TransformMatrix</code></td><td>Optional</td></tr><tr><td><code>renderStep</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Types.GameObjects.RenderWebGLStep</code></p><h3 id="member-focusfilters-14">focusFilters <a class="anchor" href="#member-focusfilters-14">#</a></h3><pre class="code" data-lang="ts"><code>focusFilters(): this;</code></pre><p>Focus the filter camera.
+This sets the size and position of the filter camera to match the GameObject.
+This is called automatically on render if <code>filtersAutoFocus</code> is enabled.</p>
+<p>This will focus on the GameObject&#39;s raw dimensions if available.
+If the GameObject has no dimensions, this will focus on the context:
+the camera belonging to the DrawingContext used to render the GameObject.
+Context focus occurs during rendering,
+as the context is not known until then.undefined
+<strong>returns</strong>  undefined</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-focusfiltersoncamera-15">focusFiltersOnCamera <a class="anchor" href="#member-focusfiltersoncamera-15">#</a></h3><pre class="code" data-lang="ts"><code>focusFiltersOnCamera(camera: Phaser.Cameras.Scene2D.Camera): this;</code></pre><p>Focus the filter camera on a specific camera.
+This is used internally when <code>filtersFocusContext</code> is enabled.
+<strong>param</strong>  camera The camera to focus on.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>camera</code></td><td><code>Phaser.Cameras.Scene2D.Camera</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-focusfiltersoverride-16">focusFiltersOverride <a class="anchor" href="#member-focusfiltersoverride-16">#</a></h3><pre class="code" data-lang="ts"><code>focusFiltersOverride(x?: number, y?: number, width?: number, height?: number): this;</code></pre><p>Manually override the focus of the filter camera.
+This allows you to set the size and position of the filter camera manually.
+It deactivates <code>filtersAutoFocus</code> when called.</p>
+<p>The camera will set scroll to place the game object at the
+given position within a rectangle of the given width and height.
+For example, calling <code>focusFiltersOverride(400, 200, 800, 600)</code>
+will focus the camera to place the object&#39;s center
+100 pixels above the center of the camera (which is at 400x300).
+<strong>param</strong>  x The x-coordinate of the focus point, relative to the filter size. Default is the center.
+<strong>param</strong>  y The y-coordinate of the focus point, relative to the filter size. Default is the center.
+<strong>param</strong>  width The width of the focus area. Default is the filter width.
+<strong>param</strong>  height The height of the focus area. Default is the filter height.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>width</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setfiltersize-17">setFilterSize <a class="anchor" href="#member-setfiltersize-17">#</a></h3><pre class="code" data-lang="ts"><code>setFilterSize(width: number, height: number): this;</code></pre><p>Set the base size of the filter camera.
+This is the size of the texture that internal filters will be drawn to.
+External filters are drawn to the size of the context (usually the game canvas).</p>
+<p>This is typically the size of the GameObject.
+It is set automatically when the Game Object is rendered
+and <code>filtersAutoFocus</code> is enabled.
+Turn off auto focus to set it manually.</p>
+<p>Technically, larger framebuffers may be used to provide padding.
+This is the size of the final framebuffer used for &quot;internal&quot; rendering.
+<strong>param</strong>  width Base width of the filter texture.
+<strong>param</strong>  height Base height of the filter texture.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>width</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setfiltersautofocus-18">setFiltersAutoFocus <a class="anchor" href="#member-setfiltersautofocus-18">#</a></h3><pre class="code" data-lang="ts"><code>setFiltersAutoFocus(value: boolean): this;</code></pre><p>Sets whether the filter camera should automatically re-focus on the Game Object every frame.
+Sets the <code>filtersAutoFocus</code> property.
+<strong>param</strong>  value Whether filters should be updated every frame.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setfiltersfocuscontext-19">setFiltersFocusContext <a class="anchor" href="#member-setfiltersfocuscontext-19">#</a></h3><pre class="code" data-lang="ts"><code>setFiltersFocusContext(value: boolean): this;</code></pre><p>Set whether the filters should focus on the context.
+Sets the <code>filtersFocusContext</code> property.
+<strong>param</strong>  value Whether the filters should focus on the context.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setfiltersforcecomposite-20">setFiltersForceComposite <a class="anchor" href="#member-setfiltersforcecomposite-20">#</a></h3><pre class="code" data-lang="ts"><code>setFiltersForceComposite(value: boolean): this;</code></pre><p>Set whether the filters should always draw to a framebuffer.
+Sets the <code>filtersForceComposite</code> property.
+<strong>param</strong>  value Whether the object should always draw to a framebuffer, even if there are no active filters.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setrenderfilters-21">setRenderFilters <a class="anchor" href="#member-setrenderfilters-21">#</a></h3><pre class="code" data-lang="ts"><code>setRenderFilters(value: boolean): this;</code></pre><p>Set whether the filters should be rendered.
+Sets the <code>renderFilters</code> property.
+<strong>param</strong>  value Whether the filters should be rendered.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-renderwebglstep-22">renderWebGLStep <a class="anchor" href="#member-renderwebglstep-22">#</a></h3><pre class="code" data-lang="ts"><code>renderWebGLStep(renderer: Phaser.Renderer.WebGL.WebGLRenderer, gameObject: Phaser.GameObjects.GameObject, drawingContext: Phaser.Renderer.WebGL.DrawingContext, parentMatrix?: Phaser.GameObjects.Components.TransformMatrix, renderStep?: number, displayList?: Phaser.GameObjects.GameObject[], displayListIndex?: number): void;</code></pre><p>Run a step in the render process.
+This is called automatically by the Render module.</p>
+<p>In most cases, it just runs the <code>renderWebGL</code> function.</p>
+<p>When <code>_renderSteps</code> has more than one entry,
+such as when Filters are enabled for this object,
+it allows those processes to defer <code>renderWebGL</code>
+and otherwise manage the flow of rendering.
+<strong>param</strong>  renderer The WebGL Renderer instance to render with.
+<strong>param</strong>  gameObject The Game Object being rendered.
+<strong>param</strong>  drawingContext The current drawing context.
+<strong>param</strong>  parentMatrix The parent matrix of the Game Object, if it has one.
+<strong>param</strong>  renderStep Which step of the rendering process should be run? Default 0.
+<strong>param</strong>  displayList The display list which is currently being rendered. If not provided, it will be created with the Game Object.
+<strong>param</strong>  displayListIndex The index of the Game Object within the display list. Default 0.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>renderer</code></td><td><code>Phaser.Renderer.WebGL.WebGLRenderer</code></td><td>Required</td></tr><tr><td><code>gameObject</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr><tr><td><code>drawingContext</code></td><td><code>Phaser.Renderer.WebGL.DrawingContext</code></td><td>Required</td></tr><tr><td><code>parentMatrix</code></td><td><code>Phaser.GameObjects.Components.TransformMatrix</code></td><td>Optional</td></tr><tr><td><code>renderStep</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>displayList</code></td><td><code>Phaser.GameObjects.GameObject[]</code></td><td>Optional</td></tr><tr><td><code>displayListIndex</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-addrenderstep-23">addRenderStep <a class="anchor" href="#member-addrenderstep-23">#</a></h3><pre class="code" data-lang="ts"><code>addRenderStep(fn: Phaser.Types.GameObjects.RenderWebGLStep, index?: number): this;</code></pre><p>Adds a render step function to this Game Object&#39;s WebGL render pipeline.</p>
+<p>The first render step in <code>_renderSteps</code> is run first.
+It should call the next render step in the list.
+This allows render steps to control the rendering flow.
+<strong>param</strong>  fn The render step function to add.
+<strong>param</strong>  index The index in the render list to add the step to. Omit to add to the end.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>fn</code></td><td><code>Phaser.Types.GameObjects.RenderWebGLStep</code></td><td>Required</td></tr><tr><td><code>index</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-stencillayermode-24">stencilLayerMode <a class="anchor" href="#member-stencillayermode-24">#</a></h3><pre class="code" data-lang="ts"><code>stencilLayerMode: Phaser.Types.GameObjects.Stencil.StencilLayerMode;</code></pre><p>The mode to use when rendering the stencil.</p>
+<ul>
+<li>&#39;addLayer&#39; - Add a stencil layer.</li>
+<li>&#39;subtractLayer&#39; - Subtract a stencil layer.</li>
+<li>&#39;clear&#39; - Clear the stencil buffer.</li>
+<li>&#39;clearRegion&#39; - Clear a region of the stencil buffer.</li>
+</ul>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.Stencil.StencilLayerMode</code></p><h3 id="member-stencilinvert-25">stencilInvert <a class="anchor" href="#member-stencilinvert-25">#</a></h3><pre class="code" data-lang="ts"><code>stencilInvert: boolean;</code></pre><p>Whether to invert the stencil, using an extra draw call.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-stencilalphastrategy-26">stencilAlphaStrategy <a class="anchor" href="#member-stencilalphastrategy-26">#</a></h3><pre class="code" data-lang="ts"><code>stencilAlphaStrategy: Phaser.Types.Renderer.WebGL.AlphaStrategy;</code></pre><p>The alpha strategy to use when rendering the stencil.
+This is usually set to <code>dither</code>, or the default game config setting.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.Renderer.WebGL.AlphaStrategy</code></p><h3 id="member-stencilcompositecheck-27">stencilCompositeCheck <a class="anchor" href="#member-stencilcompositecheck-27">#</a></h3><pre class="code" data-lang="ts"><code>stencilCompositeCheck: boolean | 'auto';</code></pre><p>Whether to composite the contents of the stencil to a framebuffer.
+This is necessary when the stencil contains stencils.
+It requires extra draw calls to composite.
+You should set this to <code>false</code> or <code>true</code> if you know the answer,
+or <code>auto</code> to have Phaser automatically determine the best option.</p>
+<p>This will set <code>filtersForceComposite</code> to <code>true</code> during rendering.</p>
+<p><b>Type / return:</b> <code>boolean | 'auto'</code></p><h3 id="member-stencilclearvalue-28">stencilClearValue <a class="anchor" href="#member-stencilclearvalue-28">#</a></h3><pre class="code" data-lang="ts"><code>stencilClearValue: number;</code></pre><p>The value to clear the stencil buffer to,
+if the <code>stencilLayerMode</code> is <code>clear</code> or <code>clearRegion</code>.
+Should be between 0 and 255, as the buffer is 8 bits.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-stencilvaluewrap-29">stencilValueWrap <a class="anchor" href="#member-stencilvaluewrap-29">#</a></h3><pre class="code" data-lang="ts"><code>stencilValueWrap: boolean;</code></pre><p>Whether to wrap the value in the stencil buffer when it overflows or underflows
+when using the <code>addLayer</code> or <code>subtractLayer</code> mode.
+This is useful when defining stencils with subtraction,
+and you don&#39;t want to underflow from 0 to 255.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-isstencilmodifier-30">isStencilModifier <a class="anchor" href="#member-isstencilmodifier-30">#</a></h3><pre class="code" data-lang="ts"><code>readonly isStencilModifier: boolean;</code></pre><p>Whether this Game Object is a stencil modifier.
+Do not edit this property. It is used internally.</p>
+<p>Any object with <code>isStencilModifier</code> set to <code>true</code> is a positive result
+for <code>hasStencilChildren</code>, and can affect stencil compositing.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-setstencilalphastrategy-31">setStencilAlphaStrategy <a class="anchor" href="#member-setstencilalphastrategy-31">#</a></h3><pre class="code" data-lang="ts"><code>setStencilAlphaStrategy(stencilAlphaStrategy: Phaser.Types.Renderer.WebGL.AlphaStrategy): this;</code></pre><p>Sets the alpha strategy to use when rendering the stencil.
+<strong>param</strong>  stencilAlphaStrategy The alpha strategy to use when rendering the stencil.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>stencilAlphaStrategy</code></td><td><code>Phaser.Types.Renderer.WebGL.AlphaStrategy</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setstencilclearvalue-32">setStencilClearValue <a class="anchor" href="#member-setstencilclearvalue-32">#</a></h3><pre class="code" data-lang="ts"><code>setStencilClearValue(stencilClearValue: number): this;</code></pre><p>Sets the value to clear the stencil to,
+if the <code>stencilLayerMode</code> is <code>clear</code> or <code>clearRegion</code>.
+Should be between 0 and 255, as the buffer is 8 bits.
+<strong>param</strong>  stencilClearValue The value to clear the stencil buffer to.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>stencilClearValue</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setstencilcompositecheck-33">setStencilCompositeCheck <a class="anchor" href="#member-setstencilcompositecheck-33">#</a></h3><pre class="code" data-lang="ts"><code>setStencilCompositeCheck(stencilCompositeCheck: boolean | 'auto'): this;</code></pre><p>Sets whether to composite the contents of the stencil to a framebuffer.
+While <code>auto</code> is default, it must run extra checks,
+so you should set it to <code>true</code> or <code>false</code> if you know the answer.</p>
+<ul>
+<li><code>true</code> - Composite the contents of the stencil to a framebuffer.</li>
+<li><code>false</code> - Do not composite the contents of the stencil to a framebuffer.</li>
+<li><code>&#39;auto&#39;</code> - Automatically determine whether to composite the contents of the stencil to a framebuffer.
+<strong>param</strong>  stencilCompositeCheck The check mode to use.
+<strong>returns</strong>  This Game Object instance.</li>
+</ul>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>stencilCompositeCheck</code></td><td><code>boolean | 'auto'</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setstencilinvert-34">setStencilInvert <a class="anchor" href="#member-setstencilinvert-34">#</a></h3><pre class="code" data-lang="ts"><code>setStencilInvert(stencilInvert: boolean): this;</code></pre><p>Sets whether to invert the stencil, using an extra draw call.
+<strong>param</strong>  stencilInvert Whether to invert the stencil.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>stencilInvert</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setstencillayermode-35">setStencilLayerMode <a class="anchor" href="#member-setstencillayermode-35">#</a></h3><pre class="code" data-lang="ts"><code>setStencilLayerMode(stencilLayerMode: Phaser.Types.GameObjects.Stencil.StencilLayerMode): this;</code></pre><p>Sets the mode to use when rendering the stencil.</p>
+<ul>
+<li>&#39;addLayer&#39; - Add a stencil layer.</li>
+<li>&#39;subtractLayer&#39; - Subtract a stencil layer.</li>
+<li>&#39;clear&#39; - Clear the whole stencil buffer.</li>
+<li>&#39;clearRegion&#39; - Clear a specific region of the stencil buffer.
+You can also use this to fill a region with a specific value.
+<strong>param</strong>  stencilLayerMode The mode which the Stencil should run in.
+<strong>returns</strong>  This Game Object instance.</li>
+</ul>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>stencilLayerMode</code></td><td><code>Phaser.Types.GameObjects.Stencil.StencilLayerMode</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setstencilvaluewrap-36">setStencilValueWrap <a class="anchor" href="#member-setstencilvaluewrap-36">#</a></h3><pre class="code" data-lang="ts"><code>setStencilValueWrap(stencilValueWrap: boolean): this;</code></pre><p>Sets whether to wrap the value in the stencil buffer when it overflows or underflows.
+This is useful when defining stencils with subtraction,
+and you don&#39;t want to underflow from 0 to 255.
+<strong>param</strong>  stencilValueWrap Whether to wrap the value in the stencil buffer when it overflows or underflows.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>stencilValueWrap</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-visible-37">visible <a class="anchor" href="#member-visible-37">#</a></h3><pre class="code" data-lang="ts"><code>visible: boolean;</code></pre><p>The visible state of the Game Object.</p>
+<p>An invisible Game Object will skip rendering, but will still process update logic.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-setvisible-38">setVisible <a class="anchor" href="#member-setvisible-38">#</a></h3><pre class="code" data-lang="ts"><code>setVisible(value: boolean): this;</code></pre><p>Sets the visibility of this Game Object.</p>
+<p>An invisible Game Object will skip rendering, but will still process update logic.
+<strong>param</strong>  value The visible state of the Game Object.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h2 id="base-types">Base types</h2><p><a href="../7b/gameobject.html">Phaser.GameObjects.GameObject</a> · <a href="../components/e7/stencilmodifier.html">Phaser.GameObjects.Components.StencilModifier</a> · <a href="../components/4a/visible.html">Phaser.GameObjects.Components.Visible</a></p><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#members">Public members (39)</a><a href="#base-types">Base types</a></aside></div>
+<script src="../../../../../../../../assets/cm.classic.js"></script><script src="../../../../../../../../assets/manual.js"></script></body></html>

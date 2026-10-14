@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Goldberg Polyhedra — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../../../index.html"><img src="../../../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../../../index.html">Babylon documentation library</a><a href="../../../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Goldberg Polyhedra</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="goldberg-polyhedron">Goldberg Polyhedron<a class="anchor" href="#goldberg-polyhedron">#</a></h2>
+<p>Within Babylon.js, a Goldberg polyhedron (GBP) is formed as the dual of an icosahedron-based geodesic polyhedron, with its vertices mapped onto a sphere. The two parameters, m and n, used in forming the geodesic base also determine the arrangement of faces for the GBP.</p>
+<p><p class="muted">Upstream illustration: Dual (media not bundled).</p><br>Fig 1 - The red grid is the dual of the blue grid and vice-versa.</p>
+<p>On this page we explain how to create a GBP directly. More information about <a href="../../../../../guidedlearning/workshop/geodesic-math.html">GBP Mathematics</a> and the <a href="../../../../../guidedlearning/workshop/geodesic-code.html">first development stage of coding a GBP</a> are available in the documentation workshop.</p>
+<p>A GBP can only be created using <code>MeshBuilder</code>.</p>
+<p>A GBP consists of 12 pentagonal faces and a number of hexagonal faces determined by m and n. The options used when creating a GBP have different properties from those for <code>CreateGeodesic</code> or <code>CreatePolyhedron</code>. However, additional properties and methods beyond those of a standard mesh are available for a Goldberg mesh. These allow individual or grouped pentagonal and hexagonal faces to be colored, textured, or built upon, giving you a hexagon-grid, planet-shaped world.</p>
+<p>The world consists of 12 poles, the pentagonal faces, plus a number of hexagonal faces. Around each pole there is a group of hexagonal faces that are closer to that pole than to the others. These are the unshared faces of the world. Depending on the value of the second parameter, <strong>n</strong>, there may be zero or more faces that are equidistant from two or even three poles. These are the shared faces.</p>
+<p><p class="muted">Upstream illustration: Faces (media not bundled).</p><br>Fig 2 - Poles are black, unshared faces are colored and shared faces are white.</p>
+<p>The faces are stored in the following order:</p>
+<ul>
+<li>the poles 0 to 11</li>
+<li>the unshared faces for pole 0, then for pole 1, pole 2 etc</li>
+<li>the shared faces come at the end</li>
+</ul>
+<h2 id="meshbuilder">MeshBuilder<a class="anchor" href="#meshbuilder">#</a></h2>
+<p>usage :</p>
+<pre class="code" data-lang="javascript"><code>const goldbergPoly = BABYLON.MeshBuilder.CreateGoldberg(&quot;goldberg&quot;, options, scene); //scene is optional and defaults to the current scene</code></pre>
+<table>
+<thead>
+<tr>
+<th>option</th>
+<th>value</th>
+<th>default value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>m</td>
+<td><em>(number)</em> an integer &gt; 0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>n</td>
+<td><em>(number)</em> a positive or zero integer &lt;= m</td>
+<td>0</td>
+</tr>
+<tr>
+<td>size</td>
+<td><em>(number)</em> polyhedron size</td>
+<td>1</td>
+</tr>
+<tr>
+<td>sizeX</td>
+<td><em>(number)</em> X axis polyhedron size, overwrites the <em>size</em> property</td>
+<td>1</td>
+</tr>
+<tr>
+<td>sizeY</td>
+<td><em>(number)</em> Y axis polyhedron size, overwrites the <em>size</em> property</td>
+<td>1</td>
+</tr>
+<tr>
+<td>sizeZ</td>
+<td><em>(number)</em> Z axis polyhedron size, overwrites the <em>size</em> property</td>
+<td>1</td>
+</tr>
+<tr>
+<td>updatable</td>
+<td><em>(boolean)</em> true if the mesh is updatable</td>
+<td>false</td>
+</tr>
+<tr>
+<td>sideOrientation</td>
+<td><em>(number)</em> side orientation</td>
+<td>DEFAULTSIDE</td>
+</tr>
+</tbody></table>
+<h2 id="additional-properties-and-methods">Additional Properties and Methods<a class="anchor" href="#additional-properties-and-methods">#</a></h2>
+<h3 id="properties">Properties<a class="anchor" href="#properties">#</a></h3>
+<p>In addition to the features of a standard mesh, there are a number of read-only properties stored in the <code>goldbergData</code> object.</p>
+<p>Each can be accessed using the following pattern:</p>
+<pre class="code" data-lang="javascript"><code>const goldbergPoly = BABYLON.MeshBuilder.CreateGoldberg(&quot;goldberg&quot;, options);
+const nbFaces = goldbergPoly.goldbergData.nbFaces;
+const centerOfFace32 = goldbergPoly.goldbergData.faceCenters[32];</code></pre>
+<p>The following are the properties of <code>goldbergData</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>nbFaces</td>
+<td><em>(number)</em> Total number of faces in the GBP</td>
+</tr>
+<tr>
+<td>nbFacesAtPole</td>
+<td><em>(number)</em> The pole plus the closest hexagons</td>
+</tr>
+<tr>
+<td>nbUnsharedFaces</td>
+<td><em>(number)</em> Total number of hexagonal faces closest to the poles</td>
+</tr>
+<tr>
+<td>nbSharedFaces</td>
+<td><em>(number)</em> Total number of faces equidistant to two poles</td>
+</tr>
+<tr>
+<td>adjacentFaces</td>
+<td><em>(number[][])</em> Array of the faces adjacent to a particular face</td>
+</tr>
+<tr>
+<td>faceCenters</td>
+<td><em>(Vector3[])</em> Array of centers of each face</td>
+</tr>
+<tr>
+<td>faceYaxis</td>
+<td><em>(Vector3[])</em> Array of normals of each face</td>
+</tr>
+<tr>
+<td>faceXaxis</td>
+<td><em>(Vector3[])</em> Array of vectors perpendicular to normal for each face</td>
+</tr>
+<tr>
+<td>faceZaxis</td>
+<td><em>(Vector3[])</em> Array of vectors perpendicular to normal for each face</td>
+</tr>
+</tbody></table>
+<p>The vector properties faceCenters[face], faceXaxis[face], faceYaxis[face], and faceZaxis[face] can be used as a frame of reference to place meshes on the given face.</p>
+<h3 id="methods">Methods<a class="anchor" href="#methods">#</a></h3>
+<h4 id="colors">Colors<a class="anchor" href="#colors">#</a></h4>
+<p>Groups of faces can be colored using</p>
+<pre class="code" data-lang="javascript"><code>goldbergPoly.setGoldbergFaceColors(colorArray); //resets face colors whether the mesh is updatable or not
+//or
+goldbergPoly.updateGoldbergFaceColors(colorArray); //resets face colors only when the mesh is updatable</code></pre>
+<p>where <code>colorArray</code> is an array of elements of the form [start face, end face, Color4]</p>
+<p>For example</p>
+<pre class="code" data-lang="javascript"><code>const colorArray = [
+  [18, 18, new BABYLON.Color4(1, 0, 0, 1)], // color face 18 red
+  [26, 37, new BABYLON.Color4(0, 1, 0, 1)], //color faces 26 to 37 inclusive green
+];</code></pre>
+<p>PG: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>PG: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>PG: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>PG: <span class="muted">Online playground (not embedded offline)</span></p>
+<h4 id="textures">Textures<a class="anchor" href="#textures">#</a></h4>
+<p>Groups of faces can have their texture changed by using</p>
+<pre class="code" data-lang="javascript"><code>goldbergPoly.setGoldbergFaceUVs(uvArray); //resets face UVs whether the mesh is updatable or not
+//or
+goldbergPoly.updateGoldbergFaceUVs(uvArray); //resets face UVs only when the mesh is updatable</code></pre>
+<p>where <code>uvArray</code> is an array of elements of the form [start face, end face, center, radius, angle]</p>
+<p>center is a Vector2 with 0 &le; x &le; 1 and 0 &le; y &le; 1, giving the relative center of a pentagon/hexagon within an image, of a given radius and set at the given angle. The image used should be square to prevent distortion of the texture.</p>
+<p>For example</p>
+<pre class="code" data-lang="javascript"><code>const uvArray = [
+  [18, 18, new BABYLON.Vector2(0.25, 0.75), 0.25, 0], // updates the uvs for face 18 to match the vertices of the green hexagon in Fig 3
+  [26, 37, new BABYLON.Vector2(0.625, 0.37), 0.37, Math.PI / 2], //updates the uvs for faces 26 to 37 to match the vertices of the red hexagon in Fig 3
+];</code></pre>
+<p>For the poles, pentagons are used to match the UVs.</p>
+<p><p class="muted">Upstream illustration: Face Texture (media not bundled).</p><br>Fig 3 - Areas of Image to Use as Face Textures</p>
+<p><p class="muted">Upstream illustration: Texture map (media not bundled).</p><br>Fig 4 - Texture Map to Apply to Different Faces</p>
+<p>In the following playground, different areas of the texture map from Fig 4 are applied to the 12 polar regions and to the shared faces.</p>
+<p>PG: <span class="muted">Online playground (not embedded offline)</span></p>
+<p><p class="muted">Upstream illustration: Texture (media not bundled).</p>
+Fig 5 - Same Texture for the Hexagonal Faces
+In the following playground the same area is applied to all the hexagonal faces and a blank area to the poles.</p>
+<p>PG: <span class="muted">Online playground (not embedded offline)</span></p>
+<h4 id="placing-meshes">Placing Meshes<a class="anchor" href="#placing-meshes">#</a></h4>
+<p>A mesh can be placed on a face using</p>
+<pre class="code" data-lang="javascript"><code>goldbergPoly.placeOnGoldbergFaceAt(mesh, face, position); //position is a Vector3</code></pre>
+<p>The position is relative to the center of the face and the axes faceXaxis, faceYaxis, and faceZaxis.</p>
+<p>For example
+Placing a box mesh on face 32:</p>
+<pre class="code" data-lang="javascript"><code>const height = 2;
+const width = 0.1;
+const depth = 0.08;
+const box = BABYLON.MeshBuilder.CreateBox(&quot;box&quot;, { width: width, depth: depth, height: height });
+const position = new BABYLON.Vector3(0.53, height / 2, 0.34);
+goldbergPoly.placeOnGoldbergFaceAt(box, 32, position);</code></pre>
+<p>Meshes should be sized according to the size of the face. To keep a mesh within a face, the values for position.x and position.z should be approximately between &PlusMinus;radius of face * &radic;3.</p>
+<p>PG: <span class="muted">Online playground (not embedded offline)</span></p>
+<h3 id="faces-related-to-a-pole">Faces Related to a Pole<a class="anchor" href="#faces-related-to-a-pole">#</a></h3>
+<p>Since the faces are stored in the following order—the poles 0 to 11, the unshared faces closest to pole 0, then to pole 1, pole 2, and so on, and finally the shared faces, those equidistant from two or more poles—this ordering can be used to find face numbers related to a particular pole.</p>
+<p>For pole 0 &le; k &lt; 12, you can determine the face number for the unshared faces closest to pole k using</p>
+<pre class="code" data-lang="javascript"><code>const faceNumb = goldbergPoly.relatedGoldBergFace(k, s); // 0 &lt;= s &lt; nbFacesAtPole</code></pre>
+<p>The unshared faces related to a pole are numbered in an anti-clockwise spiral around the pole.</p>
+<p>For the shared faces you use</p>
+<pre class="code" data-lang="javascript"><code>const faceNumb = goldbergPoly.relatedGoldBergFace(n); //0 &lt;= n &lt; nbSharedFaces</code></pre>
+<p>by omitting the second parameter. For n = 0, the face number returned is that of the first shared face; for n = 1, it is that of the second shared face, and so on.</p>
+<h2 id="importing-an-exported-goldberg-mesh">Importing An Exported Goldberg Mesh<a class="anchor" href="#importing-an-exported-goldberg-mesh">#</a></h2>
+<p>Although a Goldberg mesh is a very specialized mesh, Babylon.js supports exporting and importing a Goldberg mesh using standard export and import methods.</p>
+<h2 id="example">Example<a class="anchor" href="#example">#</a></h2>
+<p>A Goldberg mesh is exported to file.babylon.</p>
+<pre class="code" data-lang="javascript"><code>BABYLON.ImportMeshAsync(&quot;PATH TO FOLDER&quot; + &quot;file.babylon&quot;).then((result) =&gt; {
+  const goldbergPoly = result.meshes[0];
+});</code></pre>
+<p>PG: <span class="muted">Online playground (not embedded offline)</span></p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#goldberg-polyhedron">Goldberg Polyhedron </a><a href="#meshbuilder">MeshBuilder </a><a href="#additional-properties-and-methods">Additional Properties and Methods </a><a href="#importing-an-exported-goldberg-mesh">Importing An Exported Goldberg Mesh </a><a href="#example">Example </a></aside></div>
+<script src="../../../../../../../../assets/cm.classic.js"></script><script src="../../../../../../../../assets/manual.js"></script></body></html>

@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Changing Particle Properties Over Time — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../../index.html"><img src="../../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../../index.html">Babylon documentation library</a><a href="../../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Changing Particle Properties Over Time</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h1 id="change-particle-behaviors-over-time">Change Particle Behaviors Over Time</h1>
+<p>Particle properties can be changed over time using <strong>gradients</strong>. There are two distinct time periods you can target:</p>
+<ul>
+<li><strong>Particle lifetime</strong> — the lifespan of an individual particle, from when it is emitted to when it dies. Properties like size, color, speed, angular speed, and drag can be changed over a particle&#39;s lifetime.</li>
+<li><strong>System duration</strong> — the total running time of the particle system, controlled by <em>targetStopDuration</em>. Properties like emit rate, start size, and particle lifetime can be changed over the system&#39;s duration.</li>
+</ul>
+<p>Both time periods are normalized from 0 (start) to 1 (end).</p>
+<p>The general form to change a specific property value is:</p>
+<pre class="code" data-lang="javascript"><code>particleSystem.addPropertyGradient(fraction, value);</code></pre>
+<p>For a range of property values:</p>
+<pre class="code" data-lang="javascript"><code>particleSystem.addPropertyGradient(fraction, minValue, maxValue);</code></pre>
+<p>In both cases, we recommend that you add gradients for the start (0) and end (1), even when setting other time points between 0 and 1.</p>
+<p>To remove a gradient:</p>
+<pre class="code" data-lang="javascript"><code>particleSystem.removePropertyGradient(fraction);</code></pre>
+<p>Replace <code>Property</code> with the actual property name (e.g., <code>addSizeGradient</code>, <code>removeColorGradient</code>). See the sections below for each supported property.</p>
+<h2 id="change-size-over-lifetime">Change Size Over Lifetime<a class="anchor" href="#change-size-over-lifetime">#</a></h2>
+<p>To change size over the lifetime of the particle:</p>
+<pre class="code" data-lang="javascript"><code>particleSystem.addSizeGradient(0, 0.5); //size at start of particle lifetime
+particleSystem.addSizeGradient(1, 3); //size at end of particle lifetime</code></pre>
+<p>For a range of values:</p>
+<pre class="code" data-lang="javascript"><code>particleSystem.addSizeGradient(0, 0.5, 0.8); //size range at start of particle lifetime
+particleSystem.addSizeGradient(0.4, 1, 2); //size range at 2/5 of particle lifetime
+particleSystem.addSizeGradient(1.0, 3, 4); //size range at end of particle lifetime</code></pre>
+<p>To remove a size gradient:</p>
+<pre class="code" data-lang="javascript"><code>particleSystem.removeSizeGradient(0.4);</code></pre>
+<p>Size increases over lifetime: <span class="muted">Online playground (not embedded offline)</span><br>Size increases then decreases over lifetime: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="change-start-size-over-duration">Change Start Size Over Duration<a class="anchor" href="#change-start-size-over-duration">#</a></h2>
+<p>To change the size of a particle on emission over the duration of the particle system:</p>
+<pre class="code" data-lang="javascript"><code>particleSystem.targetStopDuration = 8;
+
+particleSystem.addStartSizeGradient(0, 0.25); //start size at start of particle system
+particleSystem.addStartSizeGradient(1, 1.5); //start size at end of particle system</code></pre>
+<p>Setting a range of start sizes:</p>
+<pre class="code" data-lang="javascript"><code>particleSystem.targetStopDuration = 8;
+
+particleSystem.addStartSizeGradient(0, 0.5, 0.75); //start size range at start of particle system
+particleSystem.addStartSizeGradient(0.4, 0.25, 0.5); //start size range at 2/5 of duration of particle system
+particleSystem.addStartSizeGradient(1, 0, 0.1); //start size range at end of particle system</code></pre>
+<p>Remove gradient at 0.4:</p>
+<pre class="code" data-lang="javascript"><code>particleSystem.removeStartSizeGradient(0.4);</code></pre>
+<p>Increasing start sizes over duration: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="change-color-over-lifetime">Change Color Over Lifetime<a class="anchor" href="#change-color-over-lifetime">#</a></h2>
+<p>To change color over the lifetime of the particle:</p>
+<pre class="code" data-lang="javascript"><code>particleSystem.addColorGradient(0, new BABYLON.Color4(1, 1, 1, 0)); //color at start of particle lifetime
+particleSystem.addColorGradient(1, new BABYLON.Color4(1, 1, 1, 1)); //color at end of particle lifetime</code></pre>
+<p>For a range of values:</p>
+<pre class="code" data-lang="javascript"><code>particleSystem.addColorGradient(0, new BABYLON.Color4(1, 1, 1, 0), new BABYLON.Color4(1, 0, 1, 0)); //color range at start of particle lifetime
+particleSystem.addColorGradient(0.4, new BABYLON.Color4(1, 1, 1, 0.5), new BABYLON.Color4(1, 0, 1, 0.5)); //color range at 2/5 of particle lifetime
+particleSystem.addColorGradient(1.0, new BABYLON.Color4(1, 1, 1, 1), new BABYLON.Color4(1, 0, 1, 1)); //color range at end of particle lifetime</code></pre>
+<p>To remove a color gradient:</p>
+<pre class="code" data-lang="javascript"><code>particleSystem.removeColorGradient(0.4);</code></pre>
+<p>Color change over lifetime: <span class="muted">Online playground (not embedded offline)</span><br>Color change with ranges over lifetime: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="change-speed-over-lifetime">Change Speed Over Lifetime<a class="anchor" href="#change-speed-over-lifetime">#</a></h2>
+<p>The velocity gradient acts as a multiplier on the particle&#39;s speed. To change it over the lifetime of the particle:</p>
+<pre class="code" data-lang="javascript"><code>particleSystem.addVelocityGradient(0, 0.5); //speed multiplier at start of particle lifetime
+particleSystem.addVelocityGradient(1, 3); //speed multiplier at end of particle lifetime</code></pre>
+<p>For a range of values:</p>
+<pre class="code" data-lang="javascript"><code>particleSystem.addVelocityGradient(0, 0.5, 0.8); //speed multiplier range at start of particle lifetime
+particleSystem.addVelocityGradient(0.4, 1, 2); //speed multiplier range at 2/5 of particle lifetime
+particleSystem.addVelocityGradient(1.0, 3, 4); //speed multiplier range at end of particle lifetime</code></pre>
+<p>To remove a velocity gradient:</p>
+<pre class="code" data-lang="javascript"><code>particleSystem.removeVelocityGradient(0.4);</code></pre>
+<p>Speed increases over lifetime: <span class="muted">Online playground (not embedded offline)</span><br>Speed increases then decreases over lifetime: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="limit-speed-over-lifetime">Limit Speed Over Lifetime<a class="anchor" href="#limit-speed-over-lifetime">#</a></h2>
+<p>You can cap a particle&#39;s speed at a maximum value and apply damping when that limit is exceeded. First, set the damping factor:</p>
+<pre class="code" data-lang="javascript"><code>particleSystem.limitVelocityDamping = 0.1; //damping factor</code></pre>
+<p>At each frame, if the particle&#39;s current speed exceeds the limit, the speed is reduced by multiplying it by the damping factor. For example, a damping factor of 0.1 would reduce the speed to 10% of its current value.</p>
+<p>To set the speed limit over the particle&#39;s lifetime:</p>
+<pre class="code" data-lang="javascript"><code>particleSystem.addLimitVelocityGradient(0, 10); //speed limit at start of particle lifetime
+particleSystem.addLimitVelocityGradient(1, 0.1); //speed limit at end of particle lifetime</code></pre>
+<p>For a range of values:</p>
+<pre class="code" data-lang="javascript"><code>particleSystem.addLimitVelocityGradient(0, 9, 10); //speed limit range at start of particle lifetime
+particleSystem.addLimitVelocityGradient(0.4, 2, 3); //speed limit range at 2/5 of particle lifetime
+particleSystem.addLimitVelocityGradient(1.0, 0.1, 0.2); //speed limit range at end of particle lifetime</code></pre>
+<p>To remove a speed limit gradient:</p>
+<pre class="code" data-lang="javascript"><code>particleSystem.removeLimitVelocityGradient(0.4);</code></pre>
+<p>Speed limit increases over lifetime: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="change-rotation-speed-over-lifetime">Change Rotation Speed Over Lifetime<a class="anchor" href="#change-rotation-speed-over-lifetime">#</a></h2>
+<p>To change the angular speed over the lifetime of the particle:</p>
+<pre class="code" data-lang="javascript"><code>particleSystem.addAngularSpeedGradient(0, 0.5); //angular speed at start of particle lifetime
+particleSystem.addAngularSpeedGradient(1, 3); //angular speed at end of particle lifetime</code></pre>
+<p>For a range of values:</p>
+<pre class="code" data-lang="javascript"><code>particleSystem.addAngularSpeedGradient(0, 0.5, 0.8); //angular speed range at start of particle lifetime
+particleSystem.addAngularSpeedGradient(0.4, 1, 2); //angular speed range at 2/5 of particle lifetime
+particleSystem.addAngularSpeedGradient(1.0, 3, 4); //angular speed range at end of particle lifetime</code></pre>
+<p>To remove an angular speed gradient:</p>
+<pre class="code" data-lang="javascript"><code>particleSystem.removeAngularSpeedGradient(0.4);</code></pre>
+<p>Angular speed increases over lifetime: <span class="muted">Online playground (not embedded offline)</span><br>Angular speed increases then decreases over lifetime: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="change-drag-over-lifetime">Change Drag Over Lifetime<a class="anchor" href="#change-drag-over-lifetime">#</a></h2>
+<p>You can simulate air friction by applying drag to a particle over its lifetime. Drag reduces the particle&#39;s velocity: a drag value of 0.8 reduces the velocity to 20% of its current value. When drag is &gt; 1, the particle&#39;s direction will reverse.</p>
+<p>To change drag over the lifetime of the particle:</p>
+<pre class="code" data-lang="javascript"><code>particleSystem.addDragGradient(0, 0.1); //drag at start of particle lifetime
+particleSystem.addDragGradient(1, 0.8); //drag at end of particle lifetime</code></pre>
+<p>For a range of values:</p>
+<pre class="code" data-lang="javascript"><code>particleSystem.addDragGradient(0, 0.1, 0.2); //drag range at start of particle lifetime
+particleSystem.addDragGradient(0.4, 0.5, 0.6); //drag range at 2/5 of particle lifetime
+particleSystem.addDragGradient(1.0, 0.8, 0.9); //drag range at end of particle lifetime</code></pre>
+<p>To remove a drag gradient:</p>
+<pre class="code" data-lang="javascript"><code>particleSystem.removeDragGradient(0.4);</code></pre>
+<p>Drag &le; 1: <span class="muted">Online playground (not embedded offline)</span><br>Drag &gt; 1: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="change-emit-rate-over-duration">Change Emit Rate Over Duration<a class="anchor" href="#change-emit-rate-over-duration">#</a></h2>
+<p>To change the emit rate over the duration of the particle system:</p>
+<pre class="code" data-lang="javascript"><code>particleSystem.targetStopDuration = 8;
+
+particleSystem.addEmitRateGradient(0, 10); //emit rate at start of particle system
+particleSystem.addEmitRateGradient(1.0, 500); //emit rate at end of particle system</code></pre>
+<p>Setting a range of emit rates:</p>
+<pre class="code" data-lang="javascript"><code>particleSystem.targetStopDuration = 8;
+
+particleSystem.addEmitRateGradient(0, 10, 20); //emit rate range at start of particle system
+particleSystem.addEmitRateGradient(0.4, 200, 250); //emit rate range at 2/5 of duration of particle system
+particleSystem.addEmitRateGradient(1, 500, 600); //emit rate range at end of particle system</code></pre>
+<p>Remove gradient at 0.4:</p>
+<pre class="code" data-lang="javascript"><code>particleSystem.removeEmitRateGradient(0.4);</code></pre>
+<p>Faster emit rate over duration: <span class="muted">Online playground (not embedded offline)</span><br>Increasing and then decreasing emit rates over duration: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="change-lifetime-over-duration">Change Lifetime Over Duration<a class="anchor" href="#change-lifetime-over-duration">#</a></h2>
+<p>To change how long each particle lives over the duration of the particle system:</p>
+<pre class="code" data-lang="javascript"><code>particleSystem.targetStopDuration = 8;
+
+particleSystem.addLifeTimeGradient(0, 0.5); //lifetime at start of particle system
+particleSystem.addLifeTimeGradient(1, 0); //lifetime at end of particle system</code></pre>
+<p>Setting a range of lifetimes:</p>
+<pre class="code" data-lang="javascript"><code>particleSystem.targetStopDuration = 8;
+
+particleSystem.addLifeTimeGradient(0, 0.5, 0.75); //lifetime range at start of particle system
+particleSystem.addLifeTimeGradient(0.4, 0.25, 0.5); //lifetime range at 2/5 of duration of particle system
+particleSystem.addLifeTimeGradient(1, 0, 0.1); //lifetime range at end of particle system</code></pre>
+<p>Remove gradient at 0.4:</p>
+<pre class="code" data-lang="javascript"><code>particleSystem.removeLifeTimeGradient(0.4);</code></pre>
+<p>Shorter lifetimes over duration: <span class="muted">Online playground (not embedded offline)</span><br>Increasing and then decreasing lifetimes over duration: <span class="muted">Online playground (not embedded offline)</span></p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#change-size-over-lifetime">Change Size Over Lifetime </a><a href="#change-start-size-over-duration">Change Start Size Over Duration </a><a href="#change-color-over-lifetime">Change Color Over Lifetime </a><a href="#change-speed-over-lifetime">Change Speed Over Lifetime </a><a href="#limit-speed-over-lifetime">Limit Speed Over Lifetime </a><a href="#change-rotation-speed-over-lifetime">Change Rotation Speed Over Lifetime </a><a href="#change-drag-over-lifetime">Change Drag Over Lifetime </a><a href="#change-emit-rate-over-duration">Change Emit Rate Over Duration </a><a href="#change-lifetime-over-duration">Change Lifetime Over Duration </a></aside></div>
+<script src="../../../../../../../assets/cm.classic.js"></script><script src="../../../../../../../assets/manual.js"></script></body></html>

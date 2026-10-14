@@ -1,0 +1,1437 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: The Babylon GUI — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../index.html"><img src="../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../index.html">Babylon documentation library</a><a href="../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: The Babylon GUI</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="introduction">Introduction<a class="anchor" href="#introduction">#</a></h2>
+<p>The Babylon.js GUI library is an extension you can use to generate interactive user interfaces.</p>
+<p>Babylon.GUI uses a DynamicTexture to generate a fully functional user interface which is flexible and GPU accelerated.</p>
+<p>See the demo: <span>https://www.babylonjs.com/Demos/GUI/</span></p>
+<span class="muted">&lt;Alert severity=&quot;info&quot; title=&quot;3D GUI&quot; description=&quot;In addition to the Babylon 2D GUI system described below, with Babylon.js v3.3 and higher, you also have a &lt;a href='/features/featuresDeepDive/gui/gui3D'&gt;3D GUI system&lt;/a&gt; available to leverage as well. Both systems can be used for different needs for your project.&quot;/&gt;</span><h2 id="how-to-use-babylon-gui">How To Use Babylon GUI<a class="anchor" href="#how-to-use-babylon-gui">#</a></h2>
+<h3 id="cdn">CDN<a class="anchor" href="#cdn">#</a></h3>
+<p>The latest version can be found on our CDN at <span>https://cdn.babylonjs.com/gui/babylon.gui.js</span>.</p>
+<span class="muted">&lt;Alert severity=&quot;warning&quot; title=&quot;Warning&quot; description=&quot;The CDN should not be used in production environments. The purpose of our CDN is to serve Babylon packages to users learning how to use the platform or running small experiments. Once you've built an application and are ready to share it with the world at large, you should serve all packages from your own CDN.&quot;/&gt;</span><p>Here is the source code on the main Babylon.js repo: <span>https://github.com/BabylonJS/Babylon.js/tree/master/packages/dev/gui</span>.</p>
+<h3 id="npm">NPM<a class="anchor" href="#npm">#</a></h3>
+<p>First, download the GUI package (see <span>npmjs.com</span>):</p>
+<pre class="code" data-lang="bash"><code>npm install @babylonjs/gui</code></pre>
+<p>Then import it into your project:</p>
+<pre class="code" data-lang="javascript"><code>import * as GUI from '@babylonjs/gui'</code></pre>
+<h2 id="advanceddynamictexture">AdvancedDynamicTexture<a class="anchor" href="#advanceddynamictexture">#</a></h2>
+<p>To begin with Babylon.GUI, you first need an AdvancedDynamicTexture object.</p>
+<p>Babylon.GUI has two modes:</p>
+<h3 id="fullscreen-mode">Fullscreen mode<a class="anchor" href="#fullscreen-mode">#</a></h3>
+<p>In this mode, Babylon.GUI will cover the entire screen and will rescale to always adapt to your rendering resolution. It will also intercept clicks (including touches). To create an AdvancedDynamicTexture in fullscreen mode, just run this code:</p>
+<pre class="code" data-lang="javascript"><code>const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI(&quot;myUI&quot;);</code></pre>
+<p>Here is an example of a simple fullscreen mode GUI: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>By default the ratio between rendering resolution and texture size is 1. But you can force it to different values with <code>advancedTexture.renderScale</code>. This could be useful if you want crisper texts for instance.</p>
+<p>Foreground &amp; background:
+The fullscreen mode can be rendered in either the foreground or the background of a scene.
+It can be set like this:</p>
+<pre class="code" data-lang="javascript"><code>// true == foreground (default)
+// false == background
+const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI(&quot;myUI&quot;, foreground? : Boolean );
+// it can also be changed on the go:
+    advancedTexture.isForeground = false;</code></pre>
+<p><strong>Please note that only one fullscreen mode GUI is allowed per scene.</strong></p>
+<p>The fullscreen mode is not intended to be used with WebVR, as it is pure 2D rendering. For WebVR scenarios, you will have to use the texture mode below.</p>
+<h3 id="texture-mode">Texture mode<a class="anchor" href="#texture-mode">#</a></h3>
+<p>In this mode, BABYLON.GUI will be used as a texture for a given mesh. You will have to define the resolution of your texture. To create an AdvancedDynamicTexture in texture mode, just run this code:</p>
+<pre class="code" data-lang="javascript"><code>const advancedTexture2 = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(myPlane, 1024, 1024);</code></pre>
+<p>Here is an example of a simple texture mode GUI: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>Here is the same example but now using “billboardMode = all” where the GUI will always face the camera: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>Please note that handling pointer move events could be costly on complex meshes, so you can turn off supporting pointer move events with a fourth parameter:</p>
+<pre class="code" data-lang="javascript"><code>const advancedTexture2 = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(myPlane, 1024, 1024, false);</code></pre>
+<p>Once you have an AdvancedDynamicTexture object, you can start adding controls.</p>
+<h2 id="loading-from-snippet-server">Loading from Snippet Server<a class="anchor" href="#loading-from-snippet-server">#</a></h2>
+<p>Here is an example of loading an AdvancedDynamicTexture from the Snippet Server: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="debugging">Debugging<a class="anchor" href="#debugging">#</a></h2>
+<p>Starting with Babylon.js v4.0, the new inspector can help you debug your GUI by displaying bounding info and letting you dynamically change properties: <span>Inspector Docs</span></p>
+<h2 id="general-properties">General properties<a class="anchor" href="#general-properties">#</a></h2>
+<h3 id="events">Events<a class="anchor" href="#events">#</a></h3>
+<p><strong>Please note that controls need to have <code>control.isPointerBlocker = true</code> to correctly handle all the pointer events. This property is set by default on obvious controls like buttons for instance but if you want to have it on controls like images you must turn it on.</strong></p>
+<p>All controls have the following observables:</p>
+<table>
+<thead>
+<tr>
+<th>Observables</th>
+<th>Comments</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>onPointerMoveObservable</td>
+<td>Raised when the cursor moves over the control. Only available on fullscreen mode</td>
+</tr>
+<tr>
+<td>onPointerEnterObservable</td>
+<td>Raised when the cursor enters the control. Only available on fullscreen mode</td>
+</tr>
+<tr>
+<td>onPointerOutObservable</td>
+<td>Raised when the cursor leaves the control. Only available on fullscreen mode</td>
+</tr>
+<tr>
+<td>onPointerDownObservable</td>
+<td>Raised when pointer is down on the control.</td>
+</tr>
+<tr>
+<td>onPointerUpObservable</td>
+<td>Raised when pointer is up on the control.</td>
+</tr>
+<tr>
+<td>onPointerClickObservable</td>
+<td>Raised when a control is clicked on.</td>
+</tr>
+<tr>
+<td>onClipboardObservable</td>
+<td>Raised when a clipboard event is triggered.</td>
+</tr>
+</tbody></table>
+<p>To use the clipboard events, they first need to be enabled by calling <code>registerClipboardEvents</code> on the AdvancedDynamicTexture instance, which registers the <code>cut</code>, <code>copy</code>, and <code>paste</code> events on the canvas. Once enabled, they can be triggered via <code>ctrl/cmd + c</code> for copy, <code>ctrl/cmd + v</code> for paste, and <code>ctrl/cmd + x</code> for cut, and they will always listen to the canvas. If you have any other actions that use the same key bindings, you can prevent the default triggering of these events by calling <code>unRegisterClipboardEvents</code>, which unregisters them from the canvas.</p>
+<p>Here is an example on how to use clipboard observables:</p>
+<ul>
+<li>To create new meshes: <span class="muted">Online playground (not embedded offline)</span></li>
+<li>To create new textblocks from clipboard data: <span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<p>You can also define that a control is invisible to events (so you can click through it for instance). To do so, just call <code>control.isHitTestVisible</code>.</p>
+<p>Please note that <code>onPointerMoveObservable</code>, <code>onPointerDownObservable</code>, <code>onPointerUpObservable</code>, <code>onPointerClickObservable</code> will receive a Vector2 parameter containing the pointer coordinates. If you want to get the pointer coordinates in local control space, you have to call <code>control.getLocalCoordinates(coordinates)</code>.</p>
+<p>Here is an example of how to use observables: <span class="muted">Online playground (not embedded offline)</span>
+Here is an example of how to use the onPointerClickObservable: <span class="muted">Online playground (not embedded offline)</span></p>
+<h3 id="alignments">Alignments<a class="anchor" href="#alignments">#</a></h3>
+<p>You can define the alignments used by your control with the following properties:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Default</th>
+<th>Comments</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>horizontalAlignment</td>
+<td>2</td>
+<td>Can be set to left, right or center.</td>
+</tr>
+<tr>
+<td>verticalAlignment</td>
+<td>2</td>
+<td>Can be set to top, bottom and center.</td>
+</tr>
+</tbody></table>
+<p>Values can be taken from <code>BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_*</code> and <code>BABYLON.GUI.Control.VERTICAL_ALIGNMENT_*</code>.</p>
+<p>Here is an example of how to use alignments: <span class="muted">Online playground (not embedded offline)</span></p>
+<h3 id="position-and-size">Position and size<a class="anchor" href="#position-and-size">#</a></h3>
+<p>You can set controls&#39; position with the following properties:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Default</th>
+<th>Default unit</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>left</td>
+<td>valueAndUnit</td>
+<td>0</td>
+<td>Pixel</td>
+</tr>
+<tr>
+<td>top</td>
+<td>valueAndUnit</td>
+<td>0</td>
+<td>Pixel</td>
+</tr>
+</tbody></table>
+<p>Size can be set with:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Default</th>
+<th>Default unit</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>width</td>
+<td>valueAndUnit</td>
+<td>100%</td>
+<td>Percentage</td>
+</tr>
+<tr>
+<td>height</td>
+<td>valueAndUnit</td>
+<td>100%</td>
+<td>Percentage</td>
+</tr>
+</tbody></table>
+<p>Paddings can be set with:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Default</th>
+<th>Default unit</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>paddingTop</td>
+<td>valueAndUnit</td>
+<td>0px</td>
+<td>Pixel</td>
+</tr>
+<tr>
+<td>paddingBottom</td>
+<td>valueAndUnit</td>
+<td>0px</td>
+<td>Pixel</td>
+</tr>
+<tr>
+<td>paddingLeft</td>
+<td>valueAndUnit</td>
+<td>0px</td>
+<td>Pixel</td>
+</tr>
+<tr>
+<td>paddingRight</td>
+<td>valueAndUnit</td>
+<td>0px</td>
+<td>Pixel</td>
+</tr>
+</tbody></table>
+<p>Padding is the space around the control (on the outside) between it and its parent or sibling controls (like CSS margin when <code>box-sizing</code> is set to <code>border-box</code>). This means that <code>usableWidth = width - paddingLeft - paddingRight</code>. The same applies to <code>usableHeight = height - paddingTop - paddingBottom</code>.</p>
+<p>All these properties can be defined using pixels or percentages as units.
+To set a value in pixels, use this construct: <code>control.left = &quot;50px&quot;</code>.
+To set a value as a percentage, use this construct: <code>control.left = &quot;50%&quot;</code>.</p>
+<p>You can also omit the unit (in this case, the default unit will be used): <code>control.width = 0.5</code> (which is equivalent to <code>control.width = &quot;50%&quot;</code>).</p>
+<p>Here is an example of how to use and update positions and sizes: <span class="muted">Online playground (not embedded offline)</span></p>
+<h3 id="tracking-positions">Tracking positions<a class="anchor" href="#tracking-positions">#</a></h3>
+<p>All controls can be moved to track the position of a mesh.
+To do this, just call <code>control.linkWithMesh(mesh)</code>. You can then offset the position with <code>control.linkOffsetX</code> and <code>control.linkOffsetY</code>.</p>
+<p>Here is an example of a trackable label: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>Please note that controls that want to track position of a mesh must be at root level (at AdvancedDynamicTexture level).</p>
+<p>You can also move a control to specific coordinates in your scene with <code>control.moveToVector3(position)</code>. Please note that the control will not stay with the vector if you change it afterward.</p>
+<p>For Line control, you can also attach the second point to a control with <code>line.connectedControl = control</code>. In this case the <code>x2</code> and <code>y2</code> properties are used to offset the second point from the connected control.</p>
+<p>With these 2 options, you can create a complete trackable label: <span class="muted">Online playground (not embedded offline)</span></p>
+<p><strong>Tracking positions features only work when the AdvancedDynamicTexture is in fullscreen mode</strong></p>
+<h3 id="adaptive-scaling">Adaptive scaling<a class="anchor" href="#adaptive-scaling">#</a></h3>
+<p>When using fullscreen UI, you can choose to define your UI with a fixed resolution.
+To define this resolution, just set <code>myAdvancedDynamicTexture.idealWidth = 600</code> <strong>or</strong> <code>myAdvancedDynamicTexture.idealHeight = 400</code>.</p>
+<p>If both are set, the idealWidth will be used.</p>
+<p>If neither is set, you will be responsible for resizing the UI controls yourself.</p>
+<p>When an ideal resolution is set, all values expressed <strong>in pixels</strong> are considered relative to this resolution and scaled accordingly to match the current resolution.</p>
+<p>Even when an ideal size is set, the fullscreen UI is rendered at the same resolution as your canvas, but you can choose (mostly for performance reasons) to force the texture to use the ideal size for its resolution as well. To do so, call <code>myAdvancedDynamicTexture.renderAtIdealSize = true</code>.</p>
+<p>In order to use both idealWidth and idealHeight, set both of them, and set <code>myAdvancedDynamicTexture.useSmallestIdeal = true</code>.
+When the window width is smaller than the window height, <code>idealWidth</code> will be used; otherwise, <code>idealHeight</code> will be used.
+This is a good solution for when your canvas can be resized to varying width : height ratios.</p>
+<p>Here is an example of how to use horizontal adaptive scaling: <span class="muted">Online playground (not embedded offline)</span></p>
+<h3 id="rotation-and-scaling">Rotation and Scaling<a class="anchor" href="#rotation-and-scaling">#</a></h3>
+<p>Controls can be transformed with the following properties:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Default</th>
+<th>Comments</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>rotation</td>
+<td>number</td>
+<td>0</td>
+<td>Value is in radians</td>
+</tr>
+<tr>
+<td>scaleX</td>
+<td>number</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>scaleY</td>
+<td>number</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>transformCenterX</td>
+<td>number</td>
+<td>0.5</td>
+<td>Define the center of transformation on X axis. Value is between 0 and 1</td>
+</tr>
+<tr>
+<td>transformCenterY</td>
+<td>number</td>
+<td>0.5</td>
+<td>Define the center of transformation on Y axis. Value is between 0 and 1</td>
+</tr>
+</tbody></table>
+<p><strong>Please be aware that transformations are done at the rendering level, after all computations.</strong> This means that alignment or positioning is done first without taking the transform into account.</p>
+<p>Here is an example of how to use rotation and scaling: <span class="muted">Online playground (not embedded offline)</span></p>
+<h3 id="optimization">Optimization<a class="anchor" href="#optimization">#</a></h3>
+<p>For complex controls (like the ColorPicker, for instance), you can turn on rendering cache by using <code>control.useBitmapCache = true</code>. This stores a cached version of the control image so it can be reused when the GUI is updated.</p>
+<p>Starting with Babylon.js v4.0, the GUI system uses the Invalidate Rect optimization, which allows the renderer to update only portions of the texture. If you want to turn it off, you can call <code>adtTexture.useInvalidateRectOptimization = false</code>.</p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<h2 id="controls">Controls<a class="anchor" href="#controls">#</a></h2>
+<p>A control is an abstraction of a piece of UI. There are two kinds of controls:</p>
+<ul>
+<li>Pure controls: A pure control defines an action or an information useful for the user. It could be a TextBlock or a Button.</li>
+<li>Containers: Containers are used to organize your UI. They can contain other controls or containers.</li>
+</ul>
+<p>All controls share the following properties:</p>
+<table>
+<thead>
+<tr>
+<th>Property (Default)</th>
+<th>Type</th>
+<th>Comments</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>alpha (1)</td>
+<td>number</td>
+<td>Between 0 and 1. 0 means completely transparent. 1 means fully opaque</td>
+</tr>
+<tr>
+<td>color (Black)</td>
+<td>string</td>
+<td>Foreground color</td>
+</tr>
+<tr>
+<td>fontFamily (Arial)</td>
+<td>string</td>
+<td>Font family can be inherited. This means that if you set it on a container, it will be transmitted to all children of the container</td>
+</tr>
+<tr>
+<td>fontSize (18)</td>
+<td>number</td>
+<td>Can be inherited</td>
+</tr>
+<tr>
+<td>fontStyle (unset)</td>
+<td>string</td>
+<td>Can be inherited</td>
+</tr>
+<tr>
+<td>fontWeight (unset)</td>
+<td>string</td>
+<td>Can be inherited</td>
+</tr>
+<tr>
+<td>zIndex (0)</td>
+<td>number</td>
+<td>the zIndex can be used to reorder controls on the z axis</td>
+</tr>
+<tr>
+<td>shadowBlur (0)</td>
+<td>number</td>
+<td>the amount of blur that is applied to the drop shadow</td>
+</tr>
+<tr>
+<td>shadowOffsetX (0)</td>
+<td>number</td>
+<td>the offset of the shadow on the x axis</td>
+</tr>
+<tr>
+<td>shadowOffsetY (0)</td>
+<td>number</td>
+<td>the offset of the shadow on the y axis</td>
+</tr>
+<tr>
+<td>shadowColor (#000)</td>
+<td>string</td>
+<td>the color of the shadow</td>
+</tr>
+<tr>
+<td>isPointerBlocker (false)</td>
+<td>boolean</td>
+<td>make sure gui events are triggered before the scene events</td>
+</tr>
+<tr>
+<td>hoverCursor (&quot;&quot;)</td>
+<td>string</td>
+<td>the cursor to use when the mouse is over the control; <code>isPointerBlocker</code> needs to be set to <code>true</code> <span class="muted">Online playground (not embedded offline)</span></td>
+</tr>
+<tr>
+<td>overlapGroup</td>
+<td>number</td>
+<td>The overlapGroup to which the control belongs, or <code>undefined</code> to exclude it from moving the control to a non-overlapping position.<span class="muted">Online playground (not embedded offline)</span></td>
+</tr>
+<tr>
+<td>overlapDeltaMultiplier</td>
+<td>number</td>
+<td>The speed of the movement of the control when used with <code>AdvancedDynamicTexture</code>&#39;s <code>moveToNonOverlappedPosition</code> method. See the playground above.</td>
+</tr>
+</tbody></table>
+<p>Controls can be added directly to the AdvancedDynamicTexture or to a container with:</p>
+<pre class="code" data-lang="javascript"><code>container.addControl(control);</code></pre>
+<p>They can be removed with:</p>
+<pre class="code" data-lang="javascript"><code>container.removeControl(control);</code></pre>
+<p>You can also control the control visibility with <code>control.isVisible = false</code>. When <code>isVisible</code> is false, all children will also be invisible. If you just want to hide the current control but keep its children visible then you can use <code>control.notRenderable = true</code>.</p>
+<h3 id="textblock">TextBlock<a class="anchor" href="#textblock">#</a></h3>
+<p>The TextBlock is a simple control used to display text: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>Here are the properties you can define:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Comments</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>lineSpacing (0px)</td>
+<td>valueAndUnit</td>
+<td>Can be set to configure vertical spacing between text lines</td>
+</tr>
+<tr>
+<td>text (null)</td>
+<td>string</td>
+<td>Text to display</td>
+</tr>
+<tr>
+<td>textWrapping (false)</td>
+<td>boolean</td>
+<td>Can be set to true to enable text wrapping.</td>
+</tr>
+<tr>
+<td>resizeToFit (false)</td>
+<td>boolean</td>
+<td>Can be set to true to enable resize to fit.</td>
+</tr>
+<tr>
+<td>textHorizontalAlignment (2)</td>
+<td>number</td>
+<td>Can be set to left, right or center</td>
+</tr>
+<tr>
+<td>textVerticalAlignment (2)</td>
+<td>number</td>
+<td>Can be set to top, bottom or center</td>
+</tr>
+<tr>
+<td>outlineWidth (0)</td>
+<td>number</td>
+<td>Text outline size, in pixels.</td>
+</tr>
+<tr>
+<td>outlineColor (&quot;white&quot;)</td>
+<td>string</td>
+<td>Text outline color.</td>
+</tr>
+<tr>
+<td>wordSplittingFunction</td>
+<td>string</td>
+<td>Function to use to split the text into words</td>
+</tr>
+</tbody></table>
+<p>The control currently provides 1 observable:</p>
+<table>
+<thead>
+<tr>
+<th>Observables</th>
+<th>Comments</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>onTextChangedObservable</td>
+<td>Raised when the text has changed</td>
+</tr>
+</tbody></table>
+<p>Please note that to get crisp texts you have to ensure that your rendering resolution is aligned with the screen: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>In this example, you can see on line #3 that we force the engine to use the same DPI as the screen.
+Then on lines #10 and #11 we scale the GUI to align with the screen resolution.</p>
+<p>When in wrapping mode, the text is split into words before being displayed, and words are supposed to be separated by at least one space character. In some languages, however, breaking a text into words should follow some other rules.</p>
+<p>For those languages, you can use the <code>wordSplittingFunction</code> property to provide your own splitting function: this function takes a string as input and must return an array of strings (the input string broken into words).</p>
+<p>Here&#39;s an example for Japanese: <span>https://jsfiddle.net/3ph9m0cx/</span></p>
+<h3 id="line-spacing">Line spacing<a class="anchor" href="#line-spacing">#</a></h3>
+<p>You can configure vertical line spacing between lines in pixels or percentage values.</p>
+<p><strong>lineSpacing should be used with textWrapping set to true.</strong></p>
+<p>You can try it here: <span class="muted">Online playground (not embedded offline)</span></p>
+<h3 id="resize-to-fit">Resize to Fit<a class="anchor" href="#resize-to-fit">#</a></h3>
+<p>When resizeToFit is set to true, the width and height of the rendered text will be automatically measured and applied to the TextBlock.</p>
+<p>This property allows you to change the text and font of a TextBlock without having to worry about manually setting the estimated rendered width and height.</p>
+<p><strong>Warning</strong> When <code>resizeToFit</code> and <code>textWrapping</code> are both set to <code>true</code>, the width of the block will not be resized to fit the text; however, the height will be. This means that, depending on the font size, parts of the text on each line may be missing, and the width of the block may need to be changed manually.</p>
+<h2 id="inputtext">InputText<a class="anchor" href="#inputtext">#</a></h2>
+<p>The InputText is a control used to let users insert text in a single line: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>Here are the properties you can define:</p>
+<table>
+<thead>
+<tr>
+<th>Property (default)</th>
+<th>Type</th>
+<th>Comments</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>text (null)</td>
+<td>string</td>
+<td>Text to display</td>
+</tr>
+<tr>
+<td>color (white)</td>
+<td>string</td>
+<td>Foreground color</td>
+</tr>
+<tr>
+<td>background (black)</td>
+<td>string</td>
+<td>Background color</td>
+</tr>
+<tr>
+<td>focusedBackground (black)</td>
+<td>string</td>
+<td>Background color to use when the control is focused</td>
+</tr>
+<tr>
+<td>autoStretchWidth (true)</td>
+<td>boolean</td>
+<td>The control will resize horizontally to adapt to text size</td>
+</tr>
+<tr>
+<td>maxWidth (100%)</td>
+<td>valueAndUnit</td>
+<td>The maximum width allowed if autoStretchWidth is set to true</td>
+</tr>
+<tr>
+<td>margin (10px)</td>
+<td>valueAndUnit</td>
+<td>Margin to use on left and right inside the control itself. This margin is used to determine where the text will be drawn</td>
+</tr>
+<tr>
+<td>thickness (1)</td>
+<td>number</td>
+<td>Thickness of the border</td>
+</tr>
+<tr>
+<td>highligherOpacity (0.4)</td>
+<td>number</td>
+<td>Defines the transparency of highlighted text&#39;s background</td>
+</tr>
+<tr>
+<td>textHighlightColor (#D5E0FF)</td>
+<td>string</td>
+<td>Background color of highlighted text</td>
+</tr>
+<tr>
+<td>onFocusSelectAll (false)</td>
+<td>boolean</td>
+<td>Allows complete selection of text by default when the input is focused.</td>
+</tr>
+</tbody></table>
+<p>The InputText is a focusable control. This means you can click / touch it in order to give it the focus and control over the keyboard events. You can remove the focus from the control by hitting enter or clicking outside of the control.</p>
+<p>The control provides several observables to track its state:</p>
+<table>
+<thead>
+<tr>
+<th>Observables</th>
+<th>Comments</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>onTextChangedObservable</td>
+<td>Raised when the text has changed</td>
+</tr>
+<tr>
+<td>onBeforeKeyAddObservable</td>
+<td>Raised just before the entered key is added to the text</td>
+</tr>
+<tr>
+<td>onFocusObservable</td>
+<td>Raised when the control gets the focus</td>
+</tr>
+<tr>
+<td>onBlurObservable</td>
+<td>Raised when the control loses the focus</td>
+</tr>
+<tr>
+<td>onTextHighlightObservable</td>
+<td>Raised when the text is highlighted</td>
+</tr>
+<tr>
+<td>onTextCopyObservable</td>
+<td>Raised when the copy event is triggered</td>
+</tr>
+<tr>
+<td>onTextCutObservable</td>
+<td>Raised when the cut event is triggered</td>
+</tr>
+<tr>
+<td>onTextPasteObservable</td>
+<td>Raised when the paste event is triggered</td>
+</tr>
+<tr>
+<td>onKeyboardEventProcessedObservable</td>
+<td>Raised when a key event was processed</td>
+</tr>
+</tbody></table>
+<p>Please note that the InputText has fairly limited editing support. Here are the supported keys:</p>
+<ul>
+<li>Delete</li>
+<li>Backspace</li>
+<li>Home</li>
+<li>End</li>
+<li>Enter</li>
+<li>Left / Right (used to move the cursor)</li>
+</ul>
+<p>Furthermore, please note that due to JavaScript platform limitation, the InputText cannot invoke the onscreen keyboard. On mobile, the InputText will use the <code>prompt()</code> command to get user input. You can define the title of the prompt by setting <code>control.promptMessage</code>.</p>
+<h3 id="using-onbeforekeyaddobservable-for-extended-keyboard-layouts-and-input-masks">Using onBeforeKeyAddObservable for extended keyboard layouts and input masks<a class="anchor" href="#using-onbeforekeyaddobservable-for-extended-keyboard-layouts-and-input-masks">#</a></h3>
+<p>The onBeforeKeyAddObservable observable can be used to extend or change how the InputText control accepts text. For example, it&#39;s possible to implement support for different keyboard layouts using this feature where some keys act as modifiers for the next entered key or you can implement an input mask which only accepts numerical keys.</p>
+<p>The observable is triggered just before a printable key will be added to the text in the control. The attached handler can then use the following methods to get information on the keyboard state and to modify how the key is handled within the control:</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>currentKey</td>
+<td>The key that will be appended to the text</td>
+</tr>
+<tr>
+<td>addKey</td>
+<td>If true, the key in currentKey will be added to the text, otherwise it will be skipped</td>
+</tr>
+<tr>
+<td>deadKey</td>
+<td>Set to true if the user hit the dead key on the keyboard. Handler must reset to false</td>
+</tr>
+</tbody></table>
+<p>For example, if the handler wants to limit the control to only accept numerical keys, it can set <code>addKey</code> to <code>false</code> if the value of <code>currentKey</code> is not numerical. The key will then not be added to the text. Similarly, dead key support can be implemented by checking the <code>deadKey</code> flag and setting <code>currentKey</code> to the appropriate character for the dead key + key combination.</p>
+<p>Please note that the observable is only triggered by printable keys, that is, keys that can be added to the text, and not by control keys like backspace and enter.</p>
+<p>Here&#39;s an example showing two inputs, one which only accepts numerical keys and one which has simple dead key support: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>InputText also supports clipboardObservables, here&#39;s an example: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="inputtextarea">InputTextArea<a class="anchor" href="#inputtextarea">#</a></h2>
+<p>The InputTextArea is a control used to display editable text across multiple lines:</p>
+<pre class="code" data-lang="javascript"><code>const inputTextArea = new BABYLON.GUI.InputTextArea(&quot;input&quot;, &quot;Some initial text&quot;);</code></pre>
+<p>You can try it here: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>InputTextArea behaves the same as the InputText control but it also has these additional properties:</p>
+<table>
+<thead>
+<tr>
+<th>Property (default)</th>
+<th>Type</th>
+<th>Comments</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>autoStretchHeight (true)</td>
+<td>boolean</td>
+<td>The control will resize vertically to adapt to text size</td>
+</tr>
+<tr>
+<td>maxHeight (100%)</td>
+<td>valueAndUnit</td>
+<td>The maximum height allowed if autoStretchWidth is set to true</td>
+</tr>
+</tbody></table>
+<p>Here&#39;s an example of an InputTextArea using the additional properties: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="inputpassword">InputPassword<a class="anchor" href="#inputpassword">#</a></h2>
+<p>The InputPassword is a control that shows the entered characters as bullets and is thus suited for entering passwords: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>Otherwise it behaves the same as the InputText control and has the same properties as shown above.</p>
+<p>There are no configuration options available that are specific to this control. For example, it is not possible to show the entered plain text.</p>
+<h2 id="button">Button<a class="anchor" href="#button">#</a></h2>
+<p>A button can be used to interact with the user.
+Please see the events chapter to see how to connect your events with your buttons.
+The <code>onPointerClickObservable</code> is raised when a button is clicked, meaning both the down and up events happen while the cursor is over the control.</p>
+<p>There are three kinds of buttons available out of the box:</p>
+<ul>
+<li>ImageButton: An image button is a button made with an image and text. You can create one with:</li>
+</ul>
+<pre class="code" data-lang="javascript"><code>const button = BABYLON.GUI.Button.CreateImageButton(&quot;but&quot;, &quot;Click Me&quot;, &quot;textures/grass.png&quot;);</code></pre>
+<p>You can try it here: <span class="muted">Online playground (not embedded offline)</span></p>
+<ul>
+<li>ImageWithCenterTextButton: An image button made with an image background and a centered text overlay.</li>
+</ul>
+<pre class="code" data-lang="javascript"><code>const button = BABYLON.GUI.Button.CreateImageWithCenterTextButton(&quot;but&quot;, &quot;Click Me&quot;, &quot;textures/grass.png&quot;);</code></pre>
+<p>You can try it here: <span class="muted">Online playground (not embedded offline)</span></p>
+<ul>
+<li>SimpleButton: A simple button with text only.</li>
+</ul>
+<pre class="code" data-lang="javascript"><code>const button = BABYLON.GUI.Button.CreateSimpleButton(&quot;but&quot;, &quot;Click Me&quot;);</code></pre>
+<p>You can try it here: <span class="muted">Online playground (not embedded offline)</span></p>
+<ul>
+<li>ImageOnlyButton:</li>
+</ul>
+<pre class="code" data-lang="javascript"><code>const button = BABYLON.GUI.Button.CreateImageOnlyButton(&quot;but&quot;, &quot;textures/grass.png&quot;);</code></pre>
+<p>You can try it here: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>Please also note that by default, buttons handle hit testing based on their bounding info. If you want embedded controls to handle the picking, you can call <code>button.delegatePickingToChildren = true</code>.</p>
+<h3 id="accessing-parts">Accessing parts<a class="anchor" href="#accessing-parts">#</a></h3>
+<p>You can use the following properties to get a button&#39;s parts (if available):</p>
+<ul>
+<li>image: Returns the image part of the button (if any)</li>
+<li>textBlock: Returns text related properties of the button</li>
+</ul>
+<h3 id="visual-animations">Visual animations<a class="anchor" href="#visual-animations">#</a></h3>
+<p>By default, a button changes its opacity on pointerOver and changes its scale when clicked.
+You can define your own animations with the following callbacks:</p>
+<ul>
+<li>pointerEnterAnimation</li>
+<li>pointerOutAnimation</li>
+<li>pointerDownAnimation</li>
+<li>pointerUpAnimation</li>
+</ul>
+<h3 id="custom-button">Custom button<a class="anchor" href="#custom-button">#</a></h3>
+<p>You can also create a complete custom button by manually adding children to the button. Here is how the ImageButton is built:</p>
+<pre class="code" data-lang="javascript"><code>BABYLON.GUI.Button.CreateMyCustomButton = function (name, text, imageUrl) {
+  const result = new BABYLON.GUI.Button(name);
+
+  // Adding text
+  const textBlock = new BABYLON.GUI.TextBlock(name + &quot;_button&quot;, text);
+  textBlock.textWrapping = true;
+  textBlock.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+  textBlock.paddingLeft = &quot;20%&quot;;
+  result.addControl(textBlock);
+
+  // Adding image
+  const iconImage = new BABYLON.GUI.Image(name + &quot;_icon&quot;, imageUrl);
+  iconImage.width = &quot;20%&quot;;
+  iconImage.stretch = BABYLON.GUI.Image.STRETCH_UNIFORM;
+  iconImage.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+  result.addControl(iconImage);
+
+  return result;
+};</code></pre>
+<h2 id="checkbox">Checkbox<a class="anchor" href="#checkbox">#</a></h2>
+<p>The checkbox is used to control a boolean value.
+You can specify the value with <code>checkbox.isChecked</code>.</p>
+<p>Changing the <code>isChecked</code> property will raise an observable called <code>checkbox.onIsCheckedChangedObservable</code>.</p>
+<p>The control is rendered using the following properties:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Default</th>
+<th>Comments</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>color</td>
+<td>string</td>
+<td>white</td>
+<td>Foreground color</td>
+</tr>
+<tr>
+<td>background</td>
+<td>string</td>
+<td>black</td>
+<td>Background color</td>
+</tr>
+<tr>
+<td>checkSizeRatio</td>
+<td>number</td>
+<td>0.8</td>
+<td>Define the ratio used to compute the size of the inner checkbox (0.8 by default, which means the inner check size is equal to 80% of the control itself)</td>
+</tr>
+</tbody></table>
+<p>Here is an example of a checkbox: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="radiobutton">RadioButton<a class="anchor" href="#radiobutton">#</a></h2>
+<p>The radio button is used to define a value among a list by using a group of radio buttons where only one can be true.
+You can specify the selected value with <code>radiobutton.isChecked</code>.</p>
+<p>Changing the <code>isChecked</code> property will raise an observable called <code>checkbox.onIsCheckedChangedObservable</code>. Furthermore, if you select a radio button, all other radio buttons within the same group will turn to false.</p>
+<p>The control is rendered using the following properties:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Default</th>
+<th>Comments</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>color</td>
+<td>string</td>
+<td>white</td>
+<td>Foreground color</td>
+</tr>
+<tr>
+<td>background</td>
+<td>string</td>
+<td>black</td>
+<td>Background color</td>
+</tr>
+<tr>
+<td>checkSizeRatio</td>
+<td>number</td>
+<td>0.8</td>
+<td>Define the ratio used to compute the size of the inner checkbox (0.8 by default, which means the inner check size is equal to 80% of the control itself)</td>
+</tr>
+<tr>
+<td>group</td>
+<td>string</td>
+<td>empty string</td>
+<td>Use the group property to gather radio buttons working on the same value set</td>
+</tr>
+</tbody></table>
+<p>Here is an example of a radiobutton: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="slider">Slider<a class="anchor" href="#slider">#</a></h2>
+<p>The slider is used to control a value within a range.
+You can specify the range with <code>slider.minimum</code> and <code>slider.maximum</code>.</p>
+<p>The value itself is specified with <code>slider.value</code> and raises an observable every time it is changed (<code>slider.onValueChangedObservable</code>).</p>
+<p>The control is rendered using the following properties:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Default</th>
+<th>Comments</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>borderColor</td>
+<td>string</td>
+<td>white</td>
+<td>Color used to render the border of the thumb</td>
+</tr>
+<tr>
+<td>color</td>
+<td>string</td>
+<td>white</td>
+<td>Foreground color</td>
+</tr>
+<tr>
+<td>background</td>
+<td>string</td>
+<td>black</td>
+<td>Background color</td>
+</tr>
+<tr>
+<td>barOffset</td>
+<td>valueAndUnit</td>
+<td>5px</td>
+<td>Offset used vertically to draw the background bar</td>
+</tr>
+<tr>
+<td>thumbWidth</td>
+<td>valueAndUnit</td>
+<td>30px</td>
+<td>Width of the thumb</td>
+</tr>
+<tr>
+<td>displayThumb</td>
+<td>boolean</td>
+<td>true</td>
+<td>Indicates if the thumb must be rendered (useful to simulate progress bar)</td>
+</tr>
+<tr>
+<td>isThumbCircle</td>
+<td>boolean</td>
+<td>false</td>
+<td>Indicates if the thumb should be a circle (square if false)</td>
+</tr>
+<tr>
+<td>isThumbClamped</td>
+<td>boolean</td>
+<td>false</td>
+<td>Indicates if the thumb should be clamped</td>
+</tr>
+<tr>
+<td>isVertical</td>
+<td>boolean</td>
+<td>false</td>
+<td>Indicates that the slider will be rendered vertically instead of horizontally</td>
+</tr>
+<tr>
+<td>step</td>
+<td>number</td>
+<td>0</td>
+<td>Indicates the degree of precision required for slider values (0 means full precision, whereas 0.01 means 2 digits of precision)</td>
+</tr>
+</tbody></table>
+<p>When using a vertical slider, you have to make sure that the height is greater than the width. The opposite has to be true when using <code>isVertical = false</code>.</p>
+<p>Here is an example of a slider: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="imagebasedslider">ImageBasedSlider<a class="anchor" href="#imagebasedslider">#</a></h2>
+<p>You can use an ImageBasedSlider to customize a slider using pictures. This control can be configured like the Slider.</p>
+<p>It is rendered using the following properties:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Default</th>
+<th>Comments</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>backgroundImage</td>
+<td>string</td>
+<td>null</td>
+<td>Path to the image to use for the background</td>
+</tr>
+<tr>
+<td>valueBarImage</td>
+<td>string</td>
+<td>null</td>
+<td>Path to the image to use for the value bar</td>
+</tr>
+<tr>
+<td>thumbImage</td>
+<td>string</td>
+<td>null</td>
+<td>Path to the image to use for the thumb</td>
+</tr>
+<tr>
+<td>barOffset</td>
+<td>valueAndUnit</td>
+<td>5px</td>
+<td>Offset used vertically to draw the background bar</td>
+</tr>
+<tr>
+<td>thumbWidth</td>
+<td>valueAndUnit</td>
+<td>30px</td>
+<td>Width of the thumb</td>
+</tr>
+<tr>
+<td>displayThumb</td>
+<td>boolean</td>
+<td>true</td>
+<td>Indicates if the thumb must be rendered (useful to simulate progress bar)</td>
+</tr>
+<tr>
+<td>isThumbClamped</td>
+<td>boolean</td>
+<td>false</td>
+<td>Indicates if the thumb should be clamped</td>
+</tr>
+<tr>
+<td>isVertical</td>
+<td>boolean</td>
+<td>false</td>
+<td>Indicates that the slider will be rendered vertically instead of horizontally</td>
+</tr>
+</tbody></table>
+<p>Here is an example of sliders and image-based sliders: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="line">Line<a class="anchor" href="#line">#</a></h2>
+<p>The line will draw a line (!!) between two points.</p>
+<p>Here are the properties you can define:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Default</th>
+<th>Comments</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>x1</td>
+<td>number</td>
+<td>0</td>
+<td>X coordinate of the first point</td>
+</tr>
+<tr>
+<td>y1</td>
+<td>number</td>
+<td>0</td>
+<td>Y coordinate of the first point</td>
+</tr>
+<tr>
+<td>x2</td>
+<td>number</td>
+<td>0</td>
+<td>X coordinate of the second point</td>
+</tr>
+<tr>
+<td>y2</td>
+<td>number</td>
+<td>0</td>
+<td>Y coordinate of the second point</td>
+</tr>
+<tr>
+<td>dash</td>
+<td>array of numbers</td>
+<td>Empty array</td>
+<td>Defines the size of the dashes</td>
+</tr>
+<tr>
+<td>lineWidth</td>
+<td>number</td>
+<td>1</td>
+<td>Width in pixel</td>
+</tr>
+</tbody></table>
+<p>Here is an example of a line: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="multiline">MultiLine<a class="anchor" href="#multiline">#</a></h2>
+<p>MultiLine will draw lines between any number of meshes, controls and points.</p>
+<p>Each item in MultiLine is called MultiLinePoint, and has the following properties:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Default</th>
+<th>Comments</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>mesh</td>
+<td>AbstractMesh</td>
+<td>null</td>
+<td>Tracks a Mesh</td>
+</tr>
+<tr>
+<td>control</td>
+<td>Control</td>
+<td>null</td>
+<td>Tracks a Control</td>
+</tr>
+<tr>
+<td>x</td>
+<td>number</td>
+<td>null</td>
+<td>x of a point, can be specified in px or %</td>
+</tr>
+<tr>
+<td>y</td>
+<td>number</td>
+<td>null</td>
+<td>y of a point, can be specified in px or %</td>
+</tr>
+</tbody></table>
+<p>Here are the functions you can use:</p>
+<ul>
+<li>add(): Receives any number of arguments and adds them, each argument can be a mesh, a control, or a point. Returns an array of MultiLinePoint</li>
+<li>push(): Receives 1 argument and adds it, each argument can be a mesh, a control, or a point. Returns a MultiLinePoint</li>
+<li>remove(): Receives an index or an instance of a MultiLinePoint and removes it</li>
+<li>getAt(): Receives an index of a MultiLinePoint and returns its instance. If no MultiLinePoint exists at that index, a new one is created</li>
+</ul>
+<p>Here are the properties you can define in MultiLine:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Default</th>
+<th>Comments</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>dash</td>
+<td>array of numbers</td>
+<td>Empty array</td>
+<td>Defines the size of the dashes</td>
+</tr>
+<tr>
+<td>lineWidth</td>
+<td>number</td>
+<td>1</td>
+<td>Width in pixel</td>
+</tr>
+</tbody></table>
+<p>Here is an example of a MultiLine combining meshes, a control and a point: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="image">Image<a class="anchor" href="#image">#</a></h2>
+<p>Use the image control to display an image in your UI.</p>
+<h3 id="stretch-modes-and-scaling">Stretch Modes and Scaling<a class="anchor" href="#stretch-modes-and-scaling">#</a></h3>
+<p>You can control the stretch used by the image with <code>image.stretch</code> property. You can set it to one of these values:</p>
+<ul>
+<li>BABYLON.GUI.Image.STRETCH_NONE: Use original size</li>
+<li>BABYLON.GUI.Image.STRETCH_FILL: Scale the image to fill the container (This is the default value)</li>
+<li>BABYLON.GUI.Image.STRETCH_UNIFORM: Scale the image to fill the container but maintain aspect ratio</li>
+<li>BABYLON.GUI.Image.STRETCH_EXTEND: Scale the container to adapt to the image size.</li>
+<li>BABYLON.GUI.Image.STRETCH_NINE_PATCH: Scale the image using a <span>nine patch technique</span>. You have to either define the <code>sliceLeft</code>, <code>sliceRight</code>, <code>sliceTop</code> and <code>sliceBottom</code> properties or store data into your image (in the first and last rows and columns) and call <code>image.populateNinePatchSlicesFromImage = true</code> to read that data. Demo: <span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<p>You may want to have the Image control adapt its size to the source image. To do so just call <code>image.autoScale = true</code>.</p>
+<h3 id="image-source">Image Source<a class="anchor" href="#image-source">#</a></h3>
+<p>You can change image source at any time with <code>image.source=&quot;myimage.jpg&quot;</code>.</p>
+<p>You can also define which part of the source image you want to use with the following properties:</p>
+<ul>
+<li>sourceLeft: x coordinate in
+the source image (in pixel)</li>
+<li>sourceTop: y coordinate in the source image (in pixel)</li>
+<li>sourceWidth: width of the source image you want to use (in pixel)</li>
+<li>sourceHeight: height of the source image you want to use (in pixel)</li>
+</ul>
+<p>Here is an example of an image: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>You can use an animation sheet in the image by using the properties <code>image.cellId</code>, <code>image.cellWidth</code>, and <code>image.cellHeight</code>. <span class="muted">Online playground (not embedded offline)</span></p>
+<p>You can also apply stretch to animation sheet using <code>image.stretch</code> property.</p>
+<span class="muted">Online playground (not embedded offline)</span><span class="muted">Online playground (not embedded offline)</span><h3 id="pointer-events">Pointer events<a class="anchor" href="#pointer-events">#</a></h3>
+<p>If you want the non-visible parts of a transparent image to not trigger pointer events, you can set <code>img.detectPointerOnOpaqueOnly = true</code> to indicate that pointer events should only be fired on pixels with alpha &gt; 0.</p>
+<span class="muted">Online playground (not embedded offline)</span><h3 id="batch-loading-of-svg-images-from-icon-sheet">Batch loading of SVG images from icon sheet<a class="anchor" href="#batch-loading-of-svg-images-from-icon-sheet">#</a></h3>
+<p>You can now load multiple SVG icons from a single SVG icon sheet without manually defining multiple sourceLeft, sourceTop, sourceWidth, sourceHeight attributes for each image.</p>
+<p>Pre-requisite: a valid single layer SVG document with width, height, viewbox defined and icons grouped via ids. The layer should not have any transform attributes.</p>
+<p><code>onSVGAttributesComputedObservable</code> will trigger when the sourceLeft, sourceTop, sourceWidth, sourceHeight attributes are automatically computed. You can create custom SVG buttons that are built from multiple SVG assets (glow, text, images etc) for even cleaner code.</p>
+<p>Here is an example that uses SVG assets for images and buttons: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>Known issue: The batch loading process requires the entire SVG icon sheet to be loaded as an HTMLObjectElement in the DOM. In certain browsers, you may notice a quick flash of the icon sheet on the canvas as the assets load. To alleviate this, you may use <a href="../scene/customloadingscreen.html">a loading screen</a>.</p>
+<h2 id="colorpicker">ColorPicker<a class="anchor" href="#colorpicker">#</a></h2>
+<p>The color picker control allows users to set colors in your scene.</p>
+<p>Whenever a user interacts with the color picker an observable is triggered (<code>colorPicker.onValueChangedObservable</code>) which returns the current value (Color3) of the color picker.</p>
+<p>The control is rendered using the following properties:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Default</th>
+<th>Comments</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>size</td>
+<td>string or number</td>
+<td>&quot;200px&quot;</td>
+<td>The size, width, and height property will always be the same value since the color picker can only be a square.</td>
+</tr>
+</tbody></table>
+<p>Here is an example of a color picker: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="displaygrid">DisplayGrid<a class="anchor" href="#displaygrid">#</a></h2>
+<p>The display grid control is a simple control used to display grids inside your GUI.</p>
+<p>The control is rendered using the following properties:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Default</th>
+<th>Comments</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>background</td>
+<td>string</td>
+<td>&quot;Black&quot;</td>
+<td>Defines the color of the grid background</td>
+</tr>
+<tr>
+<td>cellWidth</td>
+<td>number</td>
+<td>20</td>
+<td>Defines the width of each cell</td>
+</tr>
+<tr>
+<td>cellHeight</td>
+<td>number</td>
+<td>20</td>
+<td>Defines the height of each cell</td>
+</tr>
+<tr>
+<td>minorLineTickness</td>
+<td>number</td>
+<td>1</td>
+<td>Defines the tickness of minor lines</td>
+</tr>
+<tr>
+<td>minorLineColor</td>
+<td>string</td>
+<td>&quot;DarkGray&quot;</td>
+<td>Defines the color of the minor lines</td>
+</tr>
+<tr>
+<td>majorLineTickness</td>
+<td>number</td>
+<td>2</td>
+<td>Defines the tickness of major lines</td>
+</tr>
+<tr>
+<td>majorLineColor</td>
+<td>string</td>
+<td>&quot;White&quot;</td>
+<td>Defines the color of the major lines</td>
+</tr>
+<tr>
+<td>majorLineFrequency</td>
+<td>number</td>
+<td>5</td>
+<td>Defines the frequency of major lines</td>
+</tr>
+</tbody></table>
+<p>Here is an example of a display grid: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="virtualkeyboard">VirtualKeyboard<a class="anchor" href="#virtualkeyboard">#</a></h2>
+<p>The VirtualKeyboard is a control used to display a simple onscreen keyboard. This is mostly useful for WebVR scenarios where the user cannot easily use a keyboard.</p>
+<h3 id="keys">Keys<a class="anchor" href="#keys">#</a></h3>
+<p>You can define the keys provided by the keyboard with the following code:</p>
+<pre class="code" data-lang="javascript"><code>const keyboard = new BABYLON.GUI.VirtualKeyboard();
+keyboard.addKeysRow([&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;5&quot;, &quot;6&quot;, &quot;7&quot;, &quot;8&quot;, &quot;9&quot;, &quot;0&quot;, &quot;\u2190&quot;]);</code></pre>
+<p>Every key will be created using default values specified by the following properties:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>defaultButtonWidth</td>
+<td>40px</td>
+</tr>
+<tr>
+<td>defaultButtonHeight</td>
+<td>40px</td>
+</tr>
+<tr>
+<td>defaultButtonPaddingLeft</td>
+<td>2px</td>
+</tr>
+<tr>
+<td>defaultButtonPaddingRight</td>
+<td>2px</td>
+</tr>
+<tr>
+<td>defaultButtonPaddingTop</td>
+<td>2px</td>
+</tr>
+<tr>
+<td>defaultButtonPaddingBottom</td>
+<td>2px</td>
+</tr>
+<tr>
+<td>defaultButtonColor</td>
+<td>#DDD</td>
+</tr>
+<tr>
+<td>defaultButtonBackground</td>
+<td>#070707</td>
+</tr>
+</tbody></table>
+<p>You can also override each property by providing an array containing properties for keys (or null):</p>
+<pre class="code" data-lang="javascript"><code>addKeysRow([&quot;a&quot;, &quot;b&quot;], [null, { width: &quot;200px&quot; }]);</code></pre>
+<p>You can define each default property set based on the following class:</p>
+<pre class="code" data-lang="javascript"><code>class KeyPropertySet {
+      width?: string;
+      height?: string;
+      paddingLeft?: string;
+      paddingRight?: string;
+      paddingTop?: string;
+      paddingBottom?: string;
+      color?: string;
+      background?: string;
+  }</code></pre>
+<h3 id="layouts">Layouts<a class="anchor" href="#layouts">#</a></h3>
+<p>The VirtualKeyboard provides a static method to create a default layout:</p>
+<pre class="code" data-lang="javascript"><code>const keyboard = BABYLON.GUI.VirtualKeyboard.CreateDefaultLayout();</code></pre>
+<p>The default layout is equivalent to:</p>
+<pre class="code" data-lang="javascript"><code>addKeysRow([&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;5&quot;, &quot;6&quot;, &quot;7&quot;, &quot;8&quot;, &quot;9&quot;, &quot;0&quot;, &quot;\u2190&quot;]);
+addKeysRow([&quot;q&quot;, &quot;w&quot;, &quot;e&quot;, &quot;r&quot;, &quot;t&quot;, &quot;y&quot;, &quot;u&quot;, &quot;i&quot;, &quot;o&quot;, &quot;p&quot;]);
+addKeysRow([&quot;a&quot;, &quot;s&quot;, &quot;d&quot;, &quot;f&quot;, &quot;g&quot;, &quot;h&quot;, &quot;j&quot;, &quot;k&quot;, &quot;l&quot;, &quot;;&quot;, &quot;'&quot;, &quot;\u21B5&quot;]);
+addKeysRow([&quot;\u21E7&quot;, &quot;z&quot;, &quot;x&quot;, &quot;c&quot;, &quot;v&quot;, &quot;b&quot;, &quot;n&quot;, &quot;m&quot;, &quot;,&quot;, &quot;.&quot;, &quot;/&quot;]);
+addKeysRow([&quot; &quot;], [{ width: &quot;200px&quot; }]);</code></pre>
+<h3 id="virtualkeyboard-events">VirtualKeyboard Events<a class="anchor" href="#virtualkeyboard-events">#</a></h3>
+<p>Every time a key is pressed, the <code>onKeyPressObservable</code> observable is triggered. But you can also rely on <code>keyboard.connect(inputText)</code> to automatically connect a VirtualKeyboard to an InputText. In this case, the keyboard will appear only when the InputText is focused, and all key-press events will be sent to the InputText.</p>
+<p>You can find a complete demo here: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="containers">Containers<a class="anchor" href="#containers">#</a></h2>
+<p>The containers are controls used to host other controls. Use them to organize your UI.
+Containers have one specific property: <code>container.background</code>. Use it to define the background color of your container.</p>
+<p>By default containers do not block pointer events (ie. the underlying scene will receive the pointer event even if the pointer is over a container). You can prevent this behavior by calling <code>container.isPointerBlocker = true</code>.</p>
+<p>Containers are responsible for managing their children&#39;s layout. To prevent layout cycles, the system will not let the layout being updated during a cycle more than 3 times. This value can be changed with <code>container.maxLayoutCycle</code>. You can also turn on console warnings when layout cycles are detected with <code>container.logLayoutCycleErrors = true</code>.</p>
+<h3 id="adaptive-size">Adaptive size<a class="anchor" href="#adaptive-size">#</a></h3>
+<p>You can have your containers adapt their size to their children by using one of these properties:</p>
+<ul>
+<li>adaptWidthToChildren (false by default)</li>
+<li>adaptHeightToChildren (false by default)</li>
+</ul>
+<p>If you set one of these properties to <code>true</code>, the associated dimension (width, height, or both) is computed based on the direct children&#39;s size as long as it is defined in pixels (size cannot be defined as a percentage because this would generate an infinite loop: the child would need the parent size, and the parent would need the child size).
+You can find a demo here: <span class="muted">Online playground (not embedded offline)</span></p>
+<h3 id="make-your-controls-non-overlapping">Make your controls non-overlapping<a class="anchor" href="#make-your-controls-non-overlapping">#</a></h3>
+<p>If you link your control with a mesh, the control will follow the mesh and its position will be changed automatically relative to the position of the linked mesh. Sometimes your controls will overlap each other.</p>
+<p>To solve this problem, you can use the <code>moveToNonOverlappedPosition</code> method of the <code>AdvancedDynamicTexture</code> class.
+First, you need to set a value for the <code>overlapGroup</code> property on your control. If you leave it <code>undefined</code>, the control will not be touched during the execution of the <code>moveToNonOverlappedPosition</code> method. Second, you need to call the <code>moveToNonOverlappedPosition</code> method of the <code>AdvancedDynamicTexture</code> class manually each frame, for example in the render loop or by using an observer. The <code>onBeginRenderObservable</code> of the <code>AdvancedDynamicTexture</code> is a good place for this.</p>
+<p>Please refer to this playground with detailed comments in the code on how to use this functionality: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>Forum: <span>https://forum.babylonjs.com/t/non-overlapping-gui-linked-controls/24610</span></p>
+<h3 id="clipping">Clipping<a class="anchor" href="#clipping">#</a></h3>
+<p>By default containers will clip their children to their bounds. If you want to clip a control&#39;s contents and its children, you should set</p>
+<pre class="code" data-lang="javascript"><code>container.clipChildren = false;
+container.clipContent = true;</code></pre>
+<p>Please note that not clipping children may generate issues with <code>adt.useInvalidateRectOptimization</code> so it is recommended to turn this optimization off if you want to use unclipped children.</p>
+<p>You can find a demo here: <span class="muted">Online playground (not embedded offline)</span></p>
+<h3 id="rectangle">Rectangle<a class="anchor" href="#rectangle">#</a></h3>
+<p>The Rectangle is a rectangular container with the following properties:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Default</th>
+<th>Comments</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>thickness</td>
+<td>number</td>
+<td>1</td>
+<td>Thickness of the border</td>
+</tr>
+<tr>
+<td>cornerRadius</td>
+<td>number</td>
+<td>0</td>
+<td>Size in pixel of each corner. Used to create rounded rectangles</td>
+</tr>
+</tbody></table>
+<p>Here is an example of a rectangle control: <span class="muted">Online playground (not embedded offline)</span></p>
+<h3 id="ellipse">Ellipse<a class="anchor" href="#ellipse">#</a></h3>
+<p>The Ellipse is an ellipsoidal container with the following properties:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Default</th>
+<th>Comments</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>thickness</td>
+<td>number</td>
+<td>1</td>
+<td>Thickness of the border</td>
+</tr>
+<tr>
+<td>arc</td>
+<td>number</td>
+<td>1</td>
+<td>Used to create arcs. Ranges between 0 and 1 (CW), or 0 and -1 (CCW)</td>
+</tr>
+</tbody></table>
+<p>Here is an example of an ellipse control: <span class="muted">Online playground (not embedded offline)</span></p>
+<h3 id="stackpanel">StackPanel<a class="anchor" href="#stackpanel">#</a></h3>
+<p>The StackPanel is a control which stacks its children based on its orientation (can be horizontal or vertical).
+All children must have a defined width or height (depending on the orientation) in <strong>pixels</strong> (A warning will be written to the console if this is not true. This warning can be turned off with <code>panel.ignoreLayoutWarnings = true</code>).</p>
+<p>If the panel is vertical, its height will depend on the children, while its width will be 100% of the parent, unless specified. If the panel is horizontal, its width will depend on the children, while its height will be 100% of the parent, unless specified.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Default</th>
+<th>Comments</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>isVertical</td>
+<td>boolean</td>
+<td>true</td>
+<td>Orientation of the panel</td>
+</tr>
+</tbody></table>
+<p>Here is an example of a StackPanel: <span class="muted">Online playground (not embedded offline)</span></p>
+<h3 id="scrollviewer">ScrollViewer<a class="anchor" href="#scrollviewer">#</a></h3>
+<p>Due to its rich feature set, the ScrollViewer has its own dedicated page right <a href="scrollviewer.html">here</a>.</p>
+<h3 id="grid">Grid<a class="anchor" href="#grid">#</a></h3>
+<p>The Grid is a control which defines a set of rows and columns and allows children to specify which cell they want to belong to:</p>
+<pre class="code" data-lang="javascript"><code>const grid = new BABYLON.GUI.Grid();
+grid.addColumnDefinition(100, true);
+grid.addColumnDefinition(0.5);
+grid.addColumnDefinition(0.5);
+grid.addColumnDefinition(100, true);
+grid.addRowDefinition(0.5);
+grid.addRowDefinition(0.5);
+
+// This rect will be on first row and second column
+const rect = new BABYLON.GUI.Rectangle();
+rect.background = &quot;green&quot;;
+rect.thickness = 0;
+grid.addControl(rect, 0, 1);
+
+// This rect will be on second row and third column
+rect = new BABYLON.GUI.Rectangle();
+rect.background = &quot;red&quot;;
+rect.thickness = 0;
+grid.addControl(rect, 1, 2);</code></pre>
+<p>You can define rows and columns with the following functions:</p>
+<ul>
+<li>addColumnDefinition(width, isPixel): Use this function to create a new column. Width can be between 0 and 1 if isPixel is false (percentage mode then) or contains an actual width if isPixel is true</li>
+<li>addRowDefinition(height, isPixel): Use this function to create a new row. Height can be between 0 and 1 if isPixel is false (percentage mode then) or contains an actual width if isPixel is true</li>
+</ul>
+<p>Here is an example of a grid made of 4 columns where the first and the last will have a width of 50px and the second and third will each have 50% of the remaining space:</p>
+<pre class="code" data-lang="javascript"><code>grid.addColumnDefinition(100, true);
+grid.addColumnDefinition(0.5);
+grid.addColumnDefinition(0.5);
+grid.addColumnDefinition(100, true);</code></pre>
+<p>You can update or delete columns and rows with the following functions:</p>
+<ul>
+<li>setRowDefinition(index, height, isPixel): Update a row definition</li>
+<li>setColumnDefinition(index, width, isPixel): Update a column definition</li>
+<li>removeRowDefinition(index): Remove a row definition at specified index</li>
+<li>removeColumnDefinition(index): Remove a column definition at specified index</li>
+</ul>
+<p>Two properties can also help you get the row and column counts:</p>
+<ul>
+<li>rowCount: Will give you the number of rows</li>
+<li>columnCount: Will give you the number of columns</li>
+</ul>
+<p>To add a control in a grid, you have to specify the row and column indexes:</p>
+<pre class="code" data-lang="javascript"><code>grid.addControl(control, 1, 2); // 2nd row, thrid column</code></pre>
+<p>You can get the list of controls in a specific cell by calling:</p>
+<pre class="code" data-lang="javascript"><code>const controls = grid.getChildrenAt(2, 3);</code></pre>
+<p>Here is an example of a Grid: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="styles">Styles<a class="anchor" href="#styles">#</a></h2>
+<p>Starting with Babylon.js v3.3, you can create a style object that will be used to share configuration across controls. To do so, you can use this code:</p>
+<pre class="code" data-lang="javascript"><code>const style = advancedTexture.createStyle();
+style.fontSize = 24;
+style.fontStyle = &quot;italic&quot;;
+style.fontFamily = &quot;Verdana&quot;;</code></pre>
+<p>Then apply the style to a control:</p>
+<pre class="code" data-lang="javascript"><code>textControl.style = style;</code></pre>
+<p>Here is the list of properties supported by styles so far:</p>
+<ul>
+<li>fontSize</li>
+<li>fontStyle</li>
+<li>fontFamily</li>
+<li>fontWeight</li>
+</ul>
+<p>Please note that if a control has a style, then the style values are used instead of values directly defined on the control itself.</p>
+<p>You can find a demo here: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="helpers">Helpers<a class="anchor" href="#helpers">#</a></h2>
+<p>To reduce the amount of code required to achieve frequent tasks you can use the following helpers:</p>
+<ul>
+<li><p><code>BABYLON.GUI.Control.AddHeader(control, text, size, options { isHorizontal, controlFirst })</code>: This function creates a StackPanel (horizontal or vertical based on options) and adds your control plus a TextBlock to it. Options can also be used to specify whether the control is inserted first or after the header. Depending on the orientation, <code>size</code> specifies either the width or the height used for the TextBlock.</p>
+</li>
+<li><p><code>BABYLON.GUI.Checkbox.AddCheckBoxWithHeader(title, onValueChanged)</code>: This function will create a horizontal StackPanel and will add a checkbox alongside a text block displaying the <code>title</code> property. <code>onValueChanged</code> defines the callback to call when checkbox state changes.</p>
+</li>
+<li><p><code>BABYLON.GUI.RadioButton.AddRadioButtonWithHeader(title, group, isChecked, onValueChanged)</code>: This function will create a horizontal StackPanel and will add a radio button (set with specified group and isChecked parameters) alongside a text block displaying the <code>title</code> property. <code>onValueChanged</code> defines the callback to call when radio button state changes.</p>
+</li>
+</ul>
+<h2 id="cloning">Cloning<a class="anchor" href="#cloning">#</a></h2>
+<p>You can clone individual controls by using the <code>clone</code> method. Its argument is an optional AdvancedDynamicTexture that will host the cloned control. This is so you can clone the control to a different ADT. After cloning the control, you still have to add it to the ADT, like this:</p>
+<pre class="code" data-lang="javascript"><code>const cloned = control.clone();
+adt.addControl(cloned);</code></pre>
+<p>An example can be seen here: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>You can also clone the entire ADT by using the same method: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="gui-and-postprocesses">GUI and postprocesses<a class="anchor" href="#gui-and-postprocesses">#</a></h2>
+<h3 id="layermask">LayerMask<a class="anchor" href="#layermask">#</a></h3>
+<p>In order to not apply postprocesses to your GUI, you will have to use a multi-cameras approach: one for your main scene and one for your GUI.</p>
+<p>You can find an implementation example here: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>The key point is to use the camera.layerMask property to isolate your GUI:</p>
+<pre class="code" data-lang="javascript"><code>const camera2 = new BABYLON.ArcRotateCamera(&quot;Camera&quot;, 0, 0.8, 100, BABYLON.Vector3.Zero(), scene);
+camera2.layerMask = 2;
+
+// GUI - simply set advancedTexture layerMask to 2
+const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI(&quot;UI&quot;);
+advancedTexture.layer.layerMask = 2;</code></pre>
+<p>Then all meshes of your main scene will have a different layerMask attached to main camera:</p>
+<pre class="code" data-lang="javascript"><code>const camera1 = new BABYLON.ArcRotateCamera(&quot;Camera&quot;, 0, 0.8, 100, BABYLON.Vector3.Zero(), scene);
+camera1.layerMask = 1;
+
+myMesh.layerMask = 1;</code></pre>
+<h3 id="multi-scenes">Multi-scenes<a class="anchor" href="#multi-scenes">#</a></h3>
+<p>The other option is to use a multi-scene approach with a render loop defined like this:</p>
+<pre class="code" data-lang="javascript"><code>guiScene.autoClear = false;
+engine.runRenderLoop(function () {
+  mainScene.render();
+  guiScene.render();
+});</code></pre>
+<p>In this case the <code>guiScene</code> will host your GUI and the <code>mainScene</code> will host your scene with your postprocesses.</p>
+<h2 id="gui-and-highdpi-displays">GUI and HighDPI Displays<a class="anchor" href="#gui-and-highdpi-displays">#</a></h2>
+<p>If you are viewing the scene on a high-DPI (or &quot;retina&quot;) device (such as many mobile devices or some laptops), you may notice that text on the UI appears &quot;blurry&quot; or &quot;pixelated&quot;. This is because, starting in Babylon.js v2.6, the engine no longer defaults to adapting to the device pixel ratio. This was done for performance reasons on mobile devices; turning it on can have a large impact on performance. To improve text rendering (at the cost of performance), you need to enable the <code>adaptToDeviceRatio</code> option when constructing your engine.</p>
+<p>Please see <a href="../scene/optimize-your-scene.html">Turning AdaptToDeviceRatio Off/On</a> for more information on the trade-offs.</p>
+<h2 id="gui-examples">GUI Examples<a class="anchor" href="#gui-examples">#</a></h2>
+<p>This <span>example showing contributors to the Babylon repo</span> - created by <span>Tricotou</span> and posted to our <span>forum</span> - is a great example of dynamically creating Babylon GUI from a data set.</p>
+<p>The following playground shows Tricotou&#39;s process of creating a complex GUI comprised of buttons, images, and text in a scroll viewer generated from a JSON string.
+<span class="muted">Online playground (not embedded offline)</span></p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#introduction">Introduction </a><a href="#how-to-use-babylon-gui">How To Use Babylon GUI </a><a href="#advanceddynamictexture">AdvancedDynamicTexture </a><a href="#loading-from-snippet-server">Loading from Snippet Server </a><a href="#debugging">Debugging </a><a href="#general-properties">General properties </a><a href="#controls">Controls </a><a href="#inputtext">InputText </a><a href="#inputtextarea">InputTextArea </a><a href="#inputpassword">InputPassword </a><a href="#button">Button </a><a href="#checkbox">Checkbox </a><a href="#radiobutton">RadioButton </a><a href="#slider">Slider </a><a href="#imagebasedslider">ImageBasedSlider </a><a href="#line">Line </a><a href="#multiline">MultiLine </a><a href="#image">Image </a><a href="#colorpicker">ColorPicker </a><a href="#displaygrid">DisplayGrid </a><a href="#virtualkeyboard">VirtualKeyboard </a><a href="#containers">Containers </a><a href="#styles">Styles </a><a href="#helpers">Helpers </a><a href="#cloning">Cloning </a><a href="#gui-and-postprocesses">GUI and postprocesses </a><a href="#gui-and-highdpi-displays">GUI and HighDPI Displays </a><a href="#gui-examples">GUI Examples </a></aside></div>
+<script src="../../../../../../assets/cm.classic.js"></script><script src="../../../../../../assets/manual.js"></script></body></html>

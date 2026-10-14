@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Editor tour — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="welcome.html" class="active" aria-current="page">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Manual</div><a href="welcome.html">Welcome</a><a href="editor-tour.html" class="cur" aria-current="page">Editor tour</a><a href="projects-scenes.html">Projects &amp; scenes</a><a href="scripting.html">Scripting</a><a href="2d.html">2D games</a><a href="3d.html">3D games</a><a href="physics.html">Physics</a><a href="audio.html">Audio</a><a href="ui.html">UI &amp; HUD</a><a href="input.html">Input</a><a href="assets.html">Assets</a><a href="library.html">The library</a><a href="rust-wasm.html">Rust / WASM</a><a href="export.html">Export &amp; hosting</a><a href="performance.html">Performance &amp; debugging</a><a href="reference.html">Reference overview</a><a href="desktop-apps.html">Desktop apps</a></nav><main id="content"><div class="crumb">Manual / Nord Engine</div><h1>Editor tour</h1>
+<p>The editor lets you choose an object, change its settings and try the result. Start with Hierarchy, Inspector and the Play button; learn the other panels when you need them.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>Choose an entity in Hierarchy, change its position in Inspector, save, then press Play. Scene view is for arranging things; Game view shows what the player sees.</p>
+</aside><p>The editor runs as a desktop app. Its layout puts the scene in the middle, the entity list on the left and the selected entity’s settings on the right.</p>
+<figure class="shot"><img src="../../assets/editor-layout.svg" alt="Nord editor diagram: toolbar above Hierarchy, Scene/Game and Inspector; Assets and Console below"><figcaption>Panel map (diagram). Dock tabs can be moved, so your editor layout may differ. Start by choosing an entity on the left and changing its settings on the right.</figcaption></figure><h2 id="appearance-and-project-hub">Appearance and project hub<a class="anchor" href="#appearance-and-project-hub">#</a></h2>
+<p>The default <strong>Graphite</strong> theme uses neutral dark-grey panels, a darker canvas and a soft blue accent. Existing settings using the original Nord default migrate once; custom themes remain selected. All previous themes are available in Settings. The blue <strong>Play-mode tint</strong> and your chosen PLAYMODE-COLOR are preserved.</p>
+<p>The hub provides New project, Recent projects and searchable Examples/Tutorials in separately scrolling cards. Expand <strong>Starter templates</strong> for a ready-made project; the templates are included in the app bundle. Hover a recent-project row to see its full path. <strong>Docs</strong> opens the guides even before opening a project; <strong>Back to projects</strong> returns to the hub.</p>
+<p>Toolbar <strong>Play</strong> toggles Stop, <strong>Export…</strong> opens the export dialog, and the search icon opens the command palette. Settings scrolls in smaller windows. Drag dock tabs to rearrange panels; closed tabs reopen from View.</p>
+<h2 id="panels">Panels<a class="anchor" href="#panels">#</a></h2>
+<ul>
+<li><strong>Hierarchy</strong> — the entity tree (<strong>Add entity</strong> button; right-click: Add child, Duplicate, Delete, Copy, Paste). Drag a row onto another to reparent (top 30 % of a row inserts <em>before</em>), drop on empty space to move to the root. Dropping an asset on empty space creates an entity from it.</li>
+<li><strong>Viewport</strong> — <em>Scene</em> tab is the edit view (2D Canvas / 3D Babylon): pan, orbit, zoom, pick, and move/rotate/scale gizmos with snapping. <em>Game</em> tab runs the real game.</li>
+<li><strong>Inspector</strong> — generated from component schemas and script <code>static attributes</code>. Add components with <strong>+ Add component</strong> and scripts with <strong>+ Add script</strong>; change values live.</li>
+<li><strong>Assets</strong> — folder tree plus thumbnail grid (images, spritesheets, audio waveforms, rendered models). Import by dropping files from the OS.</li>
+<li><strong>Library</strong> — search ready-made scripts, prefabs and kits; <strong>Insert</strong> adds them to the project/selection.</li>
+<li><strong>Console</strong> — <code>console.*</code> output of the running game and build output. Click <code>file.js:12</code> to open that line.</li>
+<li><strong>Code</strong> — a native code editor with tabs, highlighting (10 languages), find/replace (regex), project search, autocomplete (nord.js API + library + file words), error squiggles, minimap, split view and multi-cursor.</li>
+<li><strong>Docs</strong> — this manual.</li>
+</ul>
+<h2 id="play-stop-reload">Play, stop, reload<a class="anchor" href="#play-stop-reload">#</a></h2>
+<p><strong>▶ Play</strong> (Cmd+R) runs the game in the Game tab with live reload: saving a script <strong>hot-reloads</strong> it without restarting the scene
+(see <a href="scripting.html#hot-reload">Scripting</a>). <strong>■ Stop</strong> is Cmd+<code>.</code>. For Rust projects Play builds first and streams <code>cargo</code> output to the Console.</p>
+<h2 id="undo-and-project-safety">Undo and project safety<a class="anchor" href="#undo-and-project-safety">#</a></h2>
+<p>Every scene change is an undoable command (Cmd+Z / Shift+Cmd+Z). The editor autosaves with crash recovery; Cmd+S saves explicitly.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>Don&#39;t be afraid to click around: almost everything has undo. The two places you will spend 90 % of your time are the <strong>Hierarchy</strong>
+(what exists) and the <strong>Inspector</strong> (how each thing is set up).</p>
+</aside><h2 id="shortcuts">Shortcuts<a class="anchor" href="#shortcuts">#</a></h2>
+<p>See the <a href="../guides/shortcuts.html">shortcut table</a> (also in Settings, Cmd+,). Highlights: Cmd+P quick open, Cmd+K command palette, W/E/R gizmos, F focus, Cmd+D duplicate.</p>
+<h2 id="themes-and-skins">Themes and skins<a class="anchor" href="#themes-and-skins">#</a></h2>
+<p>Settings → <em>Skin</em> (fonts) and <em>Theme</em> (colours). The same skins/themes exist for in-game UI (<code>project.ui.skin</code>/<code>ui.theme</code>, see <a href="ui.html">UI</a>).</p>
+<h2 id="current-example-content">Current example content<a class="anchor" href="#current-example-content">#</a></h2>
+<p><strong>Settings → USE CACHED CONTENT</strong> is <strong>OFF by default</strong>. Examples and Tutorials open the current files from your checkout or rebuilt app bundle. Old Recent entries for saved example copies also resolve to the current bundled example. Save edits to a separate project if you want your own version: editing an example with this setting OFF changes its current source files.</p>
+<p>Turn the setting <strong>ON</strong> to test saved example content: the editor creates/reuses a private copy under <code>~/.config/nord/examples/</code>. Rebuilding the app leaves those copies as they were. Reopen the example after changing this setting to switch its source.</p>
+<p>OFF also uses temporary embedded-browser storage and reads script attributes fresh. ON permits persistent embedded-browser storage. Changing the mode recreates webviews; game saves in temporary browser storage last only for that view. The dev server always reads requested files from disk and sends <code>Cache-Control: no-store</code>.</p>
+<h2 id="where-the-editor-saves-files">Where the editor saves files<a class="anchor" href="#where-the-editor-saves-files">#</a></h2>
+<p>The editor&#39;s settings folder contains saved example/tutorial copies as well as your preferences. <strong>Rebuilding or replacing the app does not remove this folder.</strong> <code>NORD_CONFIG_DIR</code>, when set before launching the editor, overrides the entire folder on every platform.</p>
+<table>
+<thead>
+<tr>
+<th>Platform</th>
+<th>Settings folder without <code>NORD_CONFIG_DIR</code></th>
+<th>Saved example/tutorial copies</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>macOS</td>
+<td><code>$HOME/.config/nord/</code>, normally <code>/Users/&lt;user&gt;/.config/nord/</code></td>
+<td><code>/Users/&lt;user&gt;/.config/nord/examples/&lt;example-name&gt;/</code></td>
+</tr>
+<tr>
+<td>Linux</td>
+<td><code>$HOME/.config/nord/</code>, normally <code>/home/&lt;user&gt;/.config/nord/</code></td>
+<td><code>/home/&lt;user&gt;/.config/nord/examples/&lt;example-name&gt;/</code></td>
+</tr>
+<tr>
+<td>Windows, with <code>HOME</code> set</td>
+<td><code>%HOME%\.config\nord\</code></td>
+<td><code>%HOME%\.config\nord\examples\&lt;example-name&gt;\</code></td>
+</tr>
+<tr>
+<td>Windows, with <code>HOME</code> unset</td>
+<td><code>.config\nord\</code> under the editor&#39;s launch working directory</td>
+<td><code>.config\nord\examples\&lt;example-name&gt;\</code> under that directory</td>
+</tr>
+</tbody></table>
+<p>The current editor does not automatically select Windows <code>%APPDATA%</code> or <code>%USERPROFILE%</code>, macOS <code>~/Library/Application Support</code>, or Linux <code>$XDG_CONFIG_HOME</code>. For a predictable Windows location, set <code>NORD_CONFIG_DIR</code> to an absolute path such as <code>C:\Users\&lt;user&gt;\AppData\Roaming\NordEngine</code> before launching the editor. If <code>HOME</code> is unset on macOS or Linux, the same working-directory fallback applies.</p>
+<p>Inside the settings folder:</p>
+<table>
+<thead>
+<tr>
+<th>File or folder</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>examples/&lt;example-name&gt;/</code></td>
+<td>Complete saved project copies, including sprites, textures and scripts. Created/reused when <strong>USE CACHED CONTENT</strong> is ON; old copies can remain from earlier editor versions.</td>
+</tr>
+<tr>
+<td><code>editor.json</code></td>
+<td>Editor settings, including <code>use_cached_content</code>.</td>
+</tr>
+<tr>
+<td><code>layout.json</code></td>
+<td>Panel layout.</td>
+</tr>
+<tr>
+<td><code>recent.json</code></td>
+<td>Recent project paths.</td>
+</tr>
+</tbody></table>
+<p>On macOS, open Finder → <strong>Go → Go to Folder…</strong> (<code>Cmd+Shift+G</code>) and enter <code>~/.config/nord/</code>. On Linux, enter <code>~/.config/nord/</code> in your file manager; <code>Ctrl+H</code> usually shows hidden folders. On Windows, paste the resolved path into File Explorer&#39;s address bar.</p>
+<p>Every opened project can also contain these folders, on all three platforms:</p>
+<table>
+<thead>
+<tr>
+<th>Project-relative path</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>.nord-cache/thumbs/</code></td>
+<td>Generated asset thumbnails, keyed by source hash. These are previews, not copies used to run the game.</td>
+</tr>
+<tr>
+<td><code>.nord-cache/autosave/</code></td>
+<td>Scene autosaves for crash recovery.</td>
+</tr>
+<tr>
+<td><code>.nord-cache/lock</code></td>
+<td>Running editor&#39;s project lock; normally removed when the project closes.</td>
+</tr>
+</tbody></table>
+<p>With <strong>USE CACHED CONTENT OFF</strong>, existing saved example copies are bypassed; you do not need to delete them to see current art. To remove a saved copy, close that project and back up any edits before removing its <code>examples/&lt;example-name&gt;/</code> folder. Removing <code>editor.json</code>, <code>layout.json</code> or <code>recent.json</code> resets the corresponding preferences/history; removing autosaves loses crash-recovery data.</p>
+<h2 id="code-wrapping-and-spacing">Code wrapping and spacing<a class="anchor" href="#code-wrapping-and-spacing">#</a></h2>
+<p>The Code toolbar has a <strong>Word wrap</strong> toggle. It wraps the view without inserting newlines into your file. <strong>Settings</strong> exposes code font size, word wrap, <strong>line height</strong> (default <strong>1.6 × font size</strong>), <strong>letter spacing</strong> (default 0 points), and tab width. These preferences are saved with the editor settings. Wrapped lines keep their original line number; the gutter and error markers follow their displayed positions.</p>
+<p>Manual code previews have their own <strong>Wrap: on/off</strong> button and 1.6 line height. That preference belongs to this browser/manual, separately from the native editor settings.</p>
+<div class="pager"><a href="welcome.html"><small>← Previous</small>Welcome</a><a href="projects-scenes.html"><small>Next →</small>Projects &amp; scenes</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#appearance-and-project-hub">Appearance and project hub </a><a href="#panels">Panels </a><a href="#play-stop-reload">Play, stop, reload </a><a href="#undo-and-project-safety">Undo and project safety </a><a href="#shortcuts">Shortcuts </a><a href="#themes-and-skins">Themes and skins </a><a href="#current-example-content">Current example content </a><a href="#where-the-editor-saves-files">Where the editor saves files </a><a href="#code-wrapping-and-spacing">Code wrapping and spacing </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

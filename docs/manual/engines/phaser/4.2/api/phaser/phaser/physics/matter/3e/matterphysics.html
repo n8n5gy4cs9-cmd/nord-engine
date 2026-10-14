@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Phaser.Physics.Matter.MatterPhysics — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../../../../index.html"><img src="../../../../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../../../../../babylon/9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../../index.html">Phaser 4.2.1 API</a><a href="../../../../../../../../babylon/guides/index.html">Babylon documentation library</a><a href="../../../../../../../4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Phaser.Physics.Matter.MatterPhysics</h1>
+<p><span class="badge">Underlying Phaser 4.2.1 API</span> <span class="badge">Class</span></p><p class="muted">Official public declarations and JSDoc from <code>phaser</code>. Use with engine objects, not directly on a Nord entity.</p><aside class="box tip"><div class="box-title">The Nord way</div><p><a href="../../../../../../../../../nord/manual/2d.html">2D manual</a> · <a href="../../../../../../../../../nord/components/component-sprite.html">sprite</a> · <a href="../../../../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a> · <a href="../../../../../../../../../nord/manual/physics.html">physics</a>. Access raw objects only when the Nord wrapper does not cover your feature. <a href="../../../../../../../../../nord/manual/reference.html#escape-hatch">How escape hatches work</a>.</p></aside><h3 id="declaration">MatterPhysics <a class="anchor" href="#declaration">#</a></h3><pre class="code" data-lang="ts"><code>class MatterPhysics</code></pre><p>The Phaser Matter plugin provides the ability to use the Matter JS Physics Engine within your Phaser games.</p>
+<p>Unlike Arcade Physics, the other physics system provided with Phaser, Matter JS is a full-body physics system.
+It features:</p>
+<ul>
+<li>Rigid bodies</li>
+<li>Compound bodies</li>
+<li>Composite bodies</li>
+<li>Concave and convex hulls</li>
+<li>Physical properties (mass, area, density etc.)</li>
+<li>Restitution (elastic and inelastic collisions)</li>
+<li>Collisions (broad-phase, mid-phase and narrow-phase)</li>
+<li>Stable stacking and resting</li>
+<li>Conservation of momentum</li>
+<li>Friction and resistance</li>
+<li>Constraints</li>
+<li>Gravity</li>
+<li>Sleeping and static bodies</li>
+<li>Rounded corners (chamfering)</li>
+<li>Views (translate, zoom)</li>
+<li>Collision queries (raycasting, region tests)</li>
+<li>Time scaling (slow-mo, speed-up)</li>
+</ul>
+<p>Configuration of Matter is handled via the Matter World Config object, which can be passed in either the
+Phaser Game Config, or Phaser Scene Config. Here is a basic example:</p>
+<pre class="code" data-lang="js"><code>physics: {
+    default: 'matter',
+    matter: {
+        enableSleeping: true,
+        gravity: {
+            y: 0
+        },
+        debug: {
+            showBody: true,
+            showStaticBody: true
+        }
+    }
+}</code></pre>
+<p>This class acts as an interface between a Phaser Scene and a single instance of the Matter Engine.</p>
+<p>Use it to access the most common Matter features and helper functions.</p>
+<p>You can find details, documentation and examples on the Matter JS website: (online reference)</p>
+<h2 id="members">Public members (49)</h2><p>Private, protected and explicitly internal declarations are excluded. Inherited members belong to the base type listed in the declaration.</p><h3 id="member-constructor-0">constructor <a class="anchor" href="#member-constructor-0">#</a></h3><pre class="code" data-lang="ts"><code>constructor(scene: Phaser.Scene);</code></pre><p><strong>param</strong>  scene The Phaser Scene that owns this Matter Physics instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>scene</code></td><td><code>Phaser.Scene</code></td><td>Required</td></tr></tbody></table><h3 id="member-scene-1">scene <a class="anchor" href="#member-scene-1">#</a></h3><pre class="code" data-lang="ts"><code>scene: Phaser.Scene;</code></pre><p>The Phaser Scene that owns this Matter Physics instance.</p>
+<p><b>Type / return:</b> <code>Phaser.Scene</code></p><h3 id="member-systems-2">systems <a class="anchor" href="#member-systems-2">#</a></h3><pre class="code" data-lang="ts"><code>systems: Phaser.Scenes.Systems;</code></pre><p>A reference to the Scene Systems that belong to the Scene owning this Matter Physics instance.</p>
+<p><b>Type / return:</b> <code>Phaser.Scenes.Systems</code></p><h3 id="member-config-3">config <a class="anchor" href="#member-config-3">#</a></h3><pre class="code" data-lang="ts"><code>config: Phaser.Types.Physics.Matter.MatterWorldConfig;</code></pre><p>The parsed Matter Configuration object.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.Physics.Matter.MatterWorldConfig</code></p><h3 id="member-world-4">world <a class="anchor" href="#member-world-4">#</a></h3><pre class="code" data-lang="ts"><code>world: Phaser.Physics.Matter.World;</code></pre><p>An instance of the Matter World class. This class is responsible for the updating of the
+Matter Physics world, as well as handling debug drawing functions.</p>
+<p><b>Type / return:</b> <code>Phaser.Physics.Matter.World</code></p><h3 id="member-add-5">add <a class="anchor" href="#member-add-5">#</a></h3><pre class="code" data-lang="ts"><code>add: Phaser.Physics.Matter.Factory;</code></pre><p>An instance of the Matter Factory. This class provides lots of functions for creating a
+wide variety of physics objects and adds them automatically to the Matter World.</p>
+<p>You can use this class to cut-down on the amount of code required in your game, however,
+use of the Factory is entirely optional and should be seen as a development aid. It&#39;s
+perfectly possible to create and add components to the Matter world without using it.</p>
+<p><b>Type / return:</b> <code>Phaser.Physics.Matter.Factory</code></p><h3 id="member-bodybounds-6">bodyBounds <a class="anchor" href="#member-bodybounds-6">#</a></h3><pre class="code" data-lang="ts"><code>bodyBounds: Phaser.Physics.Matter.BodyBounds;</code></pre><p>An instance of the Body Bounds class. This class contains functions used for getting the
+world position from various points around the bounds of a physics body.</p>
+<p><b>Type / return:</b> <code>Phaser.Physics.Matter.BodyBounds</code></p><h3 id="member-body-7">body <a class="anchor" href="#member-body-7">#</a></h3><pre class="code" data-lang="ts"><code>body: MatterJS.BodyFactory;</code></pre><p>A reference to the <code>Matter.Body</code> module.</p>
+<p>The <code>Matter.Body</code> module contains methods for creating and manipulating body models.
+A <code>Matter.Body</code> is a rigid body that can be simulated by a <code>Matter.Engine</code>.
+Factories for commonly used body configurations (such as rectangles, circles and other polygons) can be found in the <code>Bodies</code> module.</p>
+<p><b>Type / return:</b> <code>MatterJS.BodyFactory</code></p><h3 id="member-composite-8">composite <a class="anchor" href="#member-composite-8">#</a></h3><pre class="code" data-lang="ts"><code>composite: MatterJS.CompositeFactory;</code></pre><p>A reference to the <code>Matter.Composite</code> module.</p>
+<p>The <code>Matter.Composite</code> module contains methods for creating and manipulating composite bodies.
+A composite body is a collection of <code>Matter.Body</code>, <code>Matter.Constraint</code> and other <code>Matter.Composite</code>, therefore composites form a tree structure.
+It is important to use the functions in this module to modify composites, rather than directly modifying their properties.
+Note that the <code>Matter.World</code> object is also a type of <code>Matter.Composite</code> and as such all composite methods here can also operate on a <code>Matter.World</code>.</p>
+<p><b>Type / return:</b> <code>MatterJS.CompositeFactory</code></p><h3 id="member-collision-9">collision <a class="anchor" href="#member-collision-9">#</a></h3><pre class="code" data-lang="ts"><code>collision: MatterJS.Collision;</code></pre><p>A reference to the <code>Matter.Collision</code> module.</p>
+<p>The <code>Matter.Collision</code> module contains methods for detecting collisions between a given pair of bodies.</p>
+<p>For efficient detection between a list of bodies, see <code>Matter.Detector</code> and <code>Matter.Query</code>.</p>
+<p><b>Type / return:</b> <code>MatterJS.Collision</code></p><h3 id="member-detector-10">detector <a class="anchor" href="#member-detector-10">#</a></h3><pre class="code" data-lang="ts"><code>detector: MatterJS.DetectorFactory;</code></pre><p>A reference to the <code>Matter.Detector</code> module.</p>
+<p>The <code>Matter.Detector</code> module contains methods for detecting collisions given a set of pairs.</p>
+<p><b>Type / return:</b> <code>MatterJS.DetectorFactory</code></p><h3 id="member-pair-11">pair <a class="anchor" href="#member-pair-11">#</a></h3><pre class="code" data-lang="ts"><code>pair: MatterJS.PairFactory;</code></pre><p>A reference to the <code>Matter.Pair</code> module.</p>
+<p>The <code>Matter.Pair</code> module contains methods for creating and manipulating collision pairs.</p>
+<p><b>Type / return:</b> <code>MatterJS.PairFactory</code></p><h3 id="member-pairs-12">pairs <a class="anchor" href="#member-pairs-12">#</a></h3><pre class="code" data-lang="ts"><code>pairs: MatterJS.PairsFactory;</code></pre><p>A reference to the <code>Matter.Pairs</code> module.</p>
+<p>The <code>Matter.Pairs</code> module contains methods for creating and manipulating collision pair sets.</p>
+<p><b>Type / return:</b> <code>MatterJS.PairsFactory</code></p><h3 id="member-query-13">query <a class="anchor" href="#member-query-13">#</a></h3><pre class="code" data-lang="ts"><code>query: MatterJS.QueryFactory;</code></pre><p>A reference to the <code>Matter.Query</code> module.</p>
+<p>The <code>Matter.Query</code> module contains methods for performing collision queries.</p>
+<p><b>Type / return:</b> <code>MatterJS.QueryFactory</code></p><h3 id="member-resolver-14">resolver <a class="anchor" href="#member-resolver-14">#</a></h3><pre class="code" data-lang="ts"><code>resolver: MatterJS.ResolverFactory;</code></pre><p>A reference to the <code>Matter.Resolver</code> module.</p>
+<p>The <code>Matter.Resolver</code> module contains methods for resolving collision pairs.</p>
+<p><b>Type / return:</b> <code>MatterJS.ResolverFactory</code></p><h3 id="member-constraint-15">constraint <a class="anchor" href="#member-constraint-15">#</a></h3><pre class="code" data-lang="ts"><code>constraint: MatterJS.ConstraintFactory;</code></pre><p>A reference to the <code>Matter.Constraint</code> module.</p>
+<p>The <code>Matter.Constraint</code> module contains methods for creating and manipulating constraints.
+Constraints are used for specifying that a fixed distance must be maintained between two bodies (or a body and a fixed world-space position).
+The stiffness of constraints can be modified to create springs or elastic.</p>
+<p><b>Type / return:</b> <code>MatterJS.ConstraintFactory</code></p><h3 id="member-bodies-16">bodies <a class="anchor" href="#member-bodies-16">#</a></h3><pre class="code" data-lang="ts"><code>bodies: MatterJS.BodiesFactory;</code></pre><p>A reference to the <code>Matter.Bodies</code> module.</p>
+<p>The <code>Matter.Bodies</code> module contains factory methods for creating rigid bodies
+with commonly used body configurations (such as rectangles, circles and other polygons).</p>
+<p><b>Type / return:</b> <code>MatterJS.BodiesFactory</code></p><h3 id="member-composites-17">composites <a class="anchor" href="#member-composites-17">#</a></h3><pre class="code" data-lang="ts"><code>composites: MatterJS.CompositesFactory;</code></pre><p>A reference to the <code>Matter.Composites</code> module.</p>
+<p>The <code>Matter.Composites</code> module contains factory methods for creating composite bodies
+with commonly used configurations (such as stacks and chains).</p>
+<p><b>Type / return:</b> <code>MatterJS.CompositesFactory</code></p><h3 id="member-axes-18">axes <a class="anchor" href="#member-axes-18">#</a></h3><pre class="code" data-lang="ts"><code>axes: MatterJS.AxesFactory;</code></pre><p>A reference to the <code>Matter.Axes</code> module.</p>
+<p>The <code>Matter.Axes</code> module contains methods for creating and manipulating sets of axes.</p>
+<p><b>Type / return:</b> <code>MatterJS.AxesFactory</code></p><h3 id="member-bounds-19">bounds <a class="anchor" href="#member-bounds-19">#</a></h3><pre class="code" data-lang="ts"><code>bounds: MatterJS.BoundsFactory;</code></pre><p>A reference to the <code>Matter.Bounds</code> module.</p>
+<p>The <code>Matter.Bounds</code> module contains methods for creating and manipulating axis-aligned bounding boxes (AABB).</p>
+<p><b>Type / return:</b> <code>MatterJS.BoundsFactory</code></p><h3 id="member-svg-20">svg <a class="anchor" href="#member-svg-20">#</a></h3><pre class="code" data-lang="ts"><code>svg: MatterJS.SvgFactory;</code></pre><p>A reference to the <code>Matter.Svg</code> module.</p>
+<p>The <code>Matter.Svg</code> module contains methods for converting SVG images into an array of vector points.</p>
+<p>To use this module you also need the SVGPathSeg polyfill: (online reference)</p>
+<p><b>Type / return:</b> <code>MatterJS.SvgFactory</code></p><h3 id="member-vector-21">vector <a class="anchor" href="#member-vector-21">#</a></h3><pre class="code" data-lang="ts"><code>vector: MatterJS.VectorFactory;</code></pre><p>A reference to the <code>Matter.Vector</code> module.</p>
+<p>The <code>Matter.Vector</code> module contains methods for creating and manipulating vectors.
+Vectors are the basis of all the geometry related operations in the engine.
+A <code>Matter.Vector</code> object is of the form <code>{ x: 0, y: 0 }</code>.</p>
+<p><b>Type / return:</b> <code>MatterJS.VectorFactory</code></p><h3 id="member-vertices-22">vertices <a class="anchor" href="#member-vertices-22">#</a></h3><pre class="code" data-lang="ts"><code>vertices: MatterJS.VerticesFactory;</code></pre><p>A reference to the <code>Matter.Vertices</code> module.</p>
+<p>The <code>Matter.Vertices</code> module contains methods for creating and manipulating sets of vertices.
+A set of vertices is an array of <code>Matter.Vector</code> with additional indexing properties inserted by <code>Vertices.create</code>.
+A <code>Matter.Body</code> maintains a set of vertices to represent the shape of the object (its convex hull).</p>
+<p><b>Type / return:</b> <code>MatterJS.VerticesFactory</code></p><h3 id="member-verts-23">verts <a class="anchor" href="#member-verts-23">#</a></h3><pre class="code" data-lang="ts"><code>verts: MatterJS.VerticesFactory;</code></pre><p>A reference to the <code>Matter.Vertices</code> module. This is an alias for Phaser.Physics.Matter.MatterPhysics#vertices.</p>
+<p>The <code>Matter.Vertices</code> module contains methods for creating and manipulating sets of vertices.
+A set of vertices is an array of <code>Matter.Vector</code> with additional indexing properties inserted by <code>Vertices.create</code>.
+A <code>Matter.Body</code> maintains a set of vertices to represent the shape of the object (its convex hull).</p>
+<p><b>Type / return:</b> <code>MatterJS.VerticesFactory</code></p><h3 id="member-getconfig-24">getConfig <a class="anchor" href="#member-getconfig-24">#</a></h3><pre class="code" data-lang="ts"><code>getConfig(): Phaser.Types.Physics.Matter.MatterWorldConfig;</code></pre><p>This internal method is called when this class starts and retrieves the final Matter World Config.undefined
+<strong>returns</strong>  The Matter World Config.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.Physics.Matter.MatterWorldConfig</code></p><h3 id="member-pause-25">pause <a class="anchor" href="#member-pause-25">#</a></h3><pre class="code" data-lang="ts"><code>pause(): Phaser.Physics.Matter.World;</code></pre><p>Pauses the Matter World instance and sets <code>enabled</code> to <code>false</code>.</p>
+<p>A paused world will not run any simulations for the duration it is paused.undefined
+<strong>returns</strong>  The Matter World object.</p>
+<p><b>Type / return:</b> <code>Phaser.Physics.Matter.World</code></p><h3 id="member-resume-26">resume <a class="anchor" href="#member-resume-26">#</a></h3><pre class="code" data-lang="ts"><code>resume(): Phaser.Physics.Matter.World;</code></pre><p>Resumes this Matter World instance from a paused state and sets <code>enabled</code> to <code>true</code>.undefined
+<strong>returns</strong>  The Matter World object.</p>
+<p><b>Type / return:</b> <code>Phaser.Physics.Matter.World</code></p><h3 id="member-set60hz-27">set60Hz <a class="anchor" href="#member-set60hz-27">#</a></h3><pre class="code" data-lang="ts"><code>set60Hz(): this;</code></pre><p>Sets the Matter Engine to run at fixed timestep of 60Hz and enables <code>autoUpdate</code>.
+If you have set a custom <code>getDelta</code> function then this will override it.undefined
+<strong>returns</strong>  This Matter Physics instance.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-set30hz-28">set30Hz <a class="anchor" href="#member-set30hz-28">#</a></h3><pre class="code" data-lang="ts"><code>set30Hz(): this;</code></pre><p>Sets the Matter Engine to run at fixed timestep of 30Hz and enables <code>autoUpdate</code>.
+If you have set a custom <code>getDelta</code> function then this will override it.undefined
+<strong>returns</strong>  This Matter Physics instance.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-step-29">step <a class="anchor" href="#member-step-29">#</a></h3><pre class="code" data-lang="ts"><code>step(delta?: number, correction?: number): void;</code></pre><p>Manually advances the physics simulation by one iteration.</p>
+<p>You can optionally pass in the <code>delta</code> and <code>correction</code> values to be used by Engine.update.
+If undefined they use the Matter defaults of 60Hz and no correction.</p>
+<p>Calling <code>step</code> directly bypasses any checks of <code>enabled</code> or <code>autoUpdate</code>.</p>
+<p>It also ignores any custom <code>getDelta</code> functions, as you should be passing the delta
+value in to this call.</p>
+<p>You can adjust the number of iterations that Engine.update performs internally.
+Use the Scene Matter Physics config object to set the following properties:</p>
+<p>positionIterations (defaults to 6)
+velocityIterations (defaults to 4)
+constraintIterations (defaults to 2)</p>
+<p>Adjusting these values can help performance in certain situations, depending on the physics requirements
+of your game.
+<strong>param</strong>  delta The delta value. Default 16.666.
+<strong>param</strong>  correction Optional delta correction value. Default 1.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>delta</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>correction</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-containspoint-30">containsPoint <a class="anchor" href="#member-containspoint-30">#</a></h3><pre class="code" data-lang="ts"><code>containsPoint(body: Phaser.Types.Physics.Matter.MatterBody | Phaser.Types.Physics.Matter.MatterBody[], x: number, y: number): boolean;</code></pre><p>Checks if the vertices of the given body, or an array of bodies, contains the given point, or not.</p>
+<p>You can pass in either a single body, or an array of bodies to be checked. This method will
+return <code>true</code> if <em>any</em> of the bodies in the array contain the point. See the <code>intersectPoint</code> method if you need
+to get a list of intersecting bodies.</p>
+<p>The point should be transformed into the Matter World coordinate system in advance. This happens by
+default with Input Pointers, but if you wish to use points from another system you may need to
+transform them before passing them.
+<strong>param</strong>  body The body, or an array of bodies, to check against the point.
+<strong>param</strong>  x The horizontal coordinate of the point.
+<strong>param</strong>  y The vertical coordinate of the point.
+<strong>returns</strong>  <code>true</code> if the point is within one of the bodies given, otherwise <code>false</code>.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>body</code></td><td><code>Phaser.Types.Physics.Matter.MatterBody | Phaser.Types.Physics.Matter.MatterBody[]</code></td><td>Required</td></tr><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-intersectpoint-31">intersectPoint <a class="anchor" href="#member-intersectpoint-31">#</a></h3><pre class="code" data-lang="ts"><code>intersectPoint(x: number, y: number, bodies?: Phaser.Types.Physics.Matter.MatterBody[]): Phaser.Types.Physics.Matter.MatterBody[];</code></pre><p>Checks the given coordinates to see if any vertices of the given bodies contain it.</p>
+<p>If no bodies are provided it will search all bodies in the Matter World, including within Composites.</p>
+<p>The coordinates should be transformed into the Matter World coordinate system in advance. This happens by
+default with Input Pointers, but if you wish to use coordinates from another system you may need to
+transform them before passing them.
+<strong>param</strong>  x The horizontal coordinate of the point.
+<strong>param</strong>  y The vertical coordinate of the point.
+<strong>param</strong>  bodies An array of bodies to check. If not provided it will search all bodies in the world.
+<strong>returns</strong>  An array of bodies which contain the given point.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>bodies</code></td><td><code>Phaser.Types.Physics.Matter.MatterBody[]</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Types.Physics.Matter.MatterBody[]</code></p><h3 id="member-intersectrect-32">intersectRect <a class="anchor" href="#member-intersectrect-32">#</a></h3><pre class="code" data-lang="ts"><code>intersectRect(x: number, y: number, width: number, height: number, outside?: boolean, bodies?: Phaser.Types.Physics.Matter.MatterBody[]): Phaser.Types.Physics.Matter.MatterBody[];</code></pre><p>Checks the given rectangular area to see if any vertices of the given bodies intersect with it.
+Or, if the <code>outside</code> parameter is set to <code>true</code>, it checks to see which bodies do not
+intersect with it.</p>
+<p>If no bodies are provided it will search all bodies in the Matter World, including within Composites.
+<strong>param</strong>  x The horizontal coordinate of the top-left of the area.
+<strong>param</strong>  y The vertical coordinate of the top-left of the area.
+<strong>param</strong>  width The width of the area.
+<strong>param</strong>  height The height of the area.
+<strong>param</strong>  outside If <code>false</code> it checks for vertices inside the area, if <code>true</code> it checks for vertices outside the area. Default false.
+<strong>param</strong>  bodies An array of bodies to check. If not provided it will search all bodies in the world.
+<strong>returns</strong>  An array of bodies that intersect with the given area.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>width</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>outside</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>bodies</code></td><td><code>Phaser.Types.Physics.Matter.MatterBody[]</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Types.Physics.Matter.MatterBody[]</code></p><h3 id="member-intersectray-33">intersectRay <a class="anchor" href="#member-intersectray-33">#</a></h3><pre class="code" data-lang="ts"><code>intersectRay(x1: number, y1: number, x2: number, y2: number, rayWidth?: number, bodies?: Phaser.Types.Physics.Matter.MatterBody[]): Phaser.Types.Physics.Matter.MatterBody[];</code></pre><p>Checks the given ray segment to see if any vertices of the given bodies intersect with it.</p>
+<p>If no bodies are provided it will search all bodies in the Matter World.</p>
+<p>The width of the ray can be specified via the <code>rayWidth</code> parameter.
+<strong>param</strong>  x1 The horizontal coordinate of the start of the ray segment.
+<strong>param</strong>  y1 The vertical coordinate of the start of the ray segment.
+<strong>param</strong>  x2 The horizontal coordinate of the end of the ray segment.
+<strong>param</strong>  y2 The vertical coordinate of the end of the ray segment.
+<strong>param</strong>  rayWidth The width of the ray segment. Default 1.
+<strong>param</strong>  bodies An array of bodies to check. If not provided it will search all bodies in the world.
+<strong>returns</strong>  An array of bodies whose vertices intersect with the ray segment.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x1</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y1</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>x2</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y2</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>rayWidth</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>bodies</code></td><td><code>Phaser.Types.Physics.Matter.MatterBody[]</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Types.Physics.Matter.MatterBody[]</code></p><h3 id="member-intersectbody-34">intersectBody <a class="anchor" href="#member-intersectbody-34">#</a></h3><pre class="code" data-lang="ts"><code>intersectBody(body: Phaser.Types.Physics.Matter.MatterBody, bodies?: Phaser.Types.Physics.Matter.MatterBody[]): Phaser.Types.Physics.Matter.MatterBody[];</code></pre><p>Checks the given Matter Body to see if it intersects with any of the given bodies.</p>
+<p>If no bodies are provided it will check against all bodies in the Matter World.
+<strong>param</strong>  body The target body.
+<strong>param</strong>  bodies An array of bodies to check the target body against. If not provided it will search all bodies in the world.
+<strong>returns</strong>  An array of bodies whose vertices intersect with the target body.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>body</code></td><td><code>Phaser.Types.Physics.Matter.MatterBody</code></td><td>Required</td></tr><tr><td><code>bodies</code></td><td><code>Phaser.Types.Physics.Matter.MatterBody[]</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Types.Physics.Matter.MatterBody[]</code></p><h3 id="member-overlap-35">overlap <a class="anchor" href="#member-overlap-35">#</a></h3><pre class="code" data-lang="ts"><code>overlap(target: Phaser.Types.Physics.Matter.MatterBody | Phaser.Types.Physics.Matter.MatterBody[], bodies?: Phaser.Types.Physics.Matter.MatterBody[], overlapCallback?: Phaser.Types.Physics.Arcade.ArcadePhysicsCallback, processCallback?: Phaser.Types.Physics.Arcade.ArcadePhysicsCallback, callbackContext?: any): boolean;</code></pre><p>Checks to see if the target body, or an array of target bodies, intersects with any of the given bodies.</p>
+<p>If intersection occurs this method will return <code>true</code> and, if provided, invoke the callbacks.</p>
+<p>If no bodies are provided for the second parameter the target will check against all bodies in the Matter World.</p>
+<p><strong>Note that bodies can only overlap if they are in non-colliding collision groups or categories.</strong></p>
+<p>If you provide a <code>processCallback</code> then the two bodies that overlap are sent to it. This callback
+must return a boolean and is used to allow you to perform additional processing tests before a final
+outcome is decided. If it returns <code>true</code> then the bodies are finally passed to the <code>overlapCallback</code>, if set.</p>
+<p>If you provide an <code>overlapCallback</code> then the matching pairs of overlapping bodies will be sent to it.</p>
+<p>Both callbacks have the following signature: <code>function (bodyA, bodyB, collisionInfo)</code> where <code>bodyA</code> is always
+the target body. The <code>collisionInfo</code> object contains additional data, such as the angle and depth of penetration.
+<strong>param</strong>  target The target body, or array of target bodies, to check.
+<strong>param</strong>  bodies The second body, or array of bodies, to check. If falsey it will check against all bodies in the world.
+<strong>param</strong>  overlapCallback An optional callback function that is called if the bodies overlap.
+<strong>param</strong>  processCallback An optional callback function that lets you perform additional checks against the two bodies if they overlap. If this is set then <code>overlapCallback</code> will only be invoked if this callback returns <code>true</code>.
+<strong>param</strong>  callbackContext The context, or scope, in which to run the callbacks.
+<strong>returns</strong>  <code>true</code> if the target body intersects with <em>any</em> of the bodies given, otherwise <code>false</code>.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>target</code></td><td><code>Phaser.Types.Physics.Matter.MatterBody | Phaser.Types.Physics.Matter.MatterBody[]</code></td><td>Required</td></tr><tr><td><code>bodies</code></td><td><code>Phaser.Types.Physics.Matter.MatterBody[]</code></td><td>Optional</td></tr><tr><td><code>overlapCallback</code></td><td><code>Phaser.Types.Physics.Arcade.ArcadePhysicsCallback</code></td><td>Optional</td></tr><tr><td><code>processCallback</code></td><td><code>Phaser.Types.Physics.Arcade.ArcadePhysicsCallback</code></td><td>Optional</td></tr><tr><td><code>callbackContext</code></td><td><code>any</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-setcollisioncategory-36">setCollisionCategory <a class="anchor" href="#member-setcollisioncategory-36">#</a></h3><pre class="code" data-lang="ts"><code>setCollisionCategory(bodies: Phaser.Types.Physics.Matter.MatterBody[], value: number): this;</code></pre><p>Sets the collision filter category of all given Matter Bodies to the given value.</p>
+<p>This number must be a power of two between 2^0 (= 1) and 2^31.</p>
+<p>Bodies with different collision groups (see #setCollisionGroup) will only collide if their collision
+categories are included in their collision masks (see #setCollidesWith).
+<strong>param</strong>  bodies An array of bodies to update. If falsey it will use all bodies in the world.
+<strong>param</strong>  value Unique category bitfield.
+<strong>returns</strong>  This Matter Physics instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>bodies</code></td><td><code>Phaser.Types.Physics.Matter.MatterBody[]</code></td><td>Required</td></tr><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setcollisiongroup-37">setCollisionGroup <a class="anchor" href="#member-setcollisiongroup-37">#</a></h3><pre class="code" data-lang="ts"><code>setCollisionGroup(bodies: Phaser.Types.Physics.Matter.MatterBody[], value: number): this;</code></pre><p>Sets the collision filter group of all given Matter Bodies to the given value.</p>
+<p>If the group value is zero, or if two Matter Bodies have different group values,
+they will collide according to the usual collision filter rules (see #setCollisionCategory and #setCollidesWith).</p>
+<p>If two Matter Bodies have the same positive group value, they will always collide;
+if they have the same negative group value they will never collide.
+<strong>param</strong>  bodies An array of bodies to update. If falsey it will use all bodies in the world.
+<strong>param</strong>  value Unique group index.
+<strong>returns</strong>  This Matter Physics instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>bodies</code></td><td><code>Phaser.Types.Physics.Matter.MatterBody[]</code></td><td>Required</td></tr><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setcollideswith-38">setCollidesWith <a class="anchor" href="#member-setcollideswith-38">#</a></h3><pre class="code" data-lang="ts"><code>setCollidesWith(bodies: Phaser.Types.Physics.Matter.MatterBody[], categories: number | number[]): this;</code></pre><p>Sets the collision filter mask of all given Matter Bodies to the given value.</p>
+<p>Two Matter Bodies with different collision groups will only collide if each one includes the others
+category in its mask based on a bitwise AND operation: <code>(categoryA &amp; maskB) !== 0</code> and
+<code>(categoryB &amp; maskA) !== 0</code> are both true.
+<strong>param</strong>  bodies An array of bodies to update. If falsey it will use all bodies in the world.
+<strong>param</strong>  categories A unique category bitfield, or an array of them.
+<strong>returns</strong>  This Matter Physics instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>bodies</code></td><td><code>Phaser.Types.Physics.Matter.MatterBody[]</code></td><td>Required</td></tr><tr><td><code>categories</code></td><td><code>number | number[]</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-getmatterbodies-39">getMatterBodies <a class="anchor" href="#member-getmatterbodies-39">#</a></h3><pre class="code" data-lang="ts"><code>getMatterBodies(bodies?: any[]): MatterJS.BodyType[];</code></pre><p>Takes an array and returns a new array made from all of the Matter Bodies found in the original array.</p>
+<p>For example, passing in Matter Game Objects, such as a bunch of Matter Sprites, to this method, would
+return an array containing all of their native Matter Body objects.</p>
+<p>If the <code>bodies</code> argument is falsey, it will return all bodies in the world.
+<strong>param</strong>  bodies An array of objects to extract the bodies from. If falsey, it will return all bodies in the world.
+<strong>returns</strong>  An array of native Matter Body objects.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>bodies</code></td><td><code>any[]</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>MatterJS.BodyType[]</code></p><h3 id="member-setvelocity-40">setVelocity <a class="anchor" href="#member-setvelocity-40">#</a></h3><pre class="code" data-lang="ts"><code>setVelocity(bodies: Phaser.Types.Physics.Matter.MatterBody | Phaser.Types.Physics.Matter.MatterBody[], x: number, y: number): this;</code></pre><p>Sets both the horizontal and vertical linear velocity of the physics bodies.
+<strong>param</strong>  bodies Either a single Body, or an array of bodies to update. If falsey it will use all bodies in the world.
+<strong>param</strong>  x The horizontal linear velocity value.
+<strong>param</strong>  y The vertical linear velocity value.
+<strong>returns</strong>  This Matter Physics instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>bodies</code></td><td><code>Phaser.Types.Physics.Matter.MatterBody | Phaser.Types.Physics.Matter.MatterBody[]</code></td><td>Required</td></tr><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setvelocityx-41">setVelocityX <a class="anchor" href="#member-setvelocityx-41">#</a></h3><pre class="code" data-lang="ts"><code>setVelocityX(bodies: Phaser.Types.Physics.Matter.MatterBody | Phaser.Types.Physics.Matter.MatterBody[], x: number): this;</code></pre><p>Sets just the horizontal linear velocity of the physics bodies.
+The vertical velocity of the body is unchanged.
+<strong>param</strong>  bodies Either a single Body, or an array of bodies to update. If falsey it will use all bodies in the world.
+<strong>param</strong>  x The horizontal linear velocity value.
+<strong>returns</strong>  This Matter Physics instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>bodies</code></td><td><code>Phaser.Types.Physics.Matter.MatterBody | Phaser.Types.Physics.Matter.MatterBody[]</code></td><td>Required</td></tr><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setvelocityy-42">setVelocityY <a class="anchor" href="#member-setvelocityy-42">#</a></h3><pre class="code" data-lang="ts"><code>setVelocityY(bodies: Phaser.Types.Physics.Matter.MatterBody | Phaser.Types.Physics.Matter.MatterBody[], y: number): this;</code></pre><p>Sets just the vertical linear velocity of the physics bodies.
+The horizontal velocity of the body is unchanged.
+<strong>param</strong>  bodies Either a single Body, or an array of bodies to update. If falsey it will use all bodies in the world.
+<strong>param</strong>  y The vertical linear velocity value.
+<strong>returns</strong>  This Matter Physics instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>bodies</code></td><td><code>Phaser.Types.Physics.Matter.MatterBody | Phaser.Types.Physics.Matter.MatterBody[]</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setangularvelocity-43">setAngularVelocity <a class="anchor" href="#member-setangularvelocity-43">#</a></h3><pre class="code" data-lang="ts"><code>setAngularVelocity(bodies: Phaser.Types.Physics.Matter.MatterBody | Phaser.Types.Physics.Matter.MatterBody[], value: number): this;</code></pre><p>Sets the angular velocity of the bodies instantly.
+Position, angle, force etc. are unchanged.
+<strong>param</strong>  bodies Either a single Body, or an array of bodies to update. If falsey it will use all bodies in the world.
+<strong>param</strong>  value The angular velocity.
+<strong>returns</strong>  This Matter Physics instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>bodies</code></td><td><code>Phaser.Types.Physics.Matter.MatterBody | Phaser.Types.Physics.Matter.MatterBody[]</code></td><td>Required</td></tr><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-applyforce-44">applyForce <a class="anchor" href="#member-applyforce-44">#</a></h3><pre class="code" data-lang="ts"><code>applyForce(bodies: Phaser.Types.Physics.Matter.MatterBody | Phaser.Types.Physics.Matter.MatterBody[], force: Phaser.Types.Math.Vector2Like): this;</code></pre><p>Applies a force to a body, at the bodies current position, including resulting torque.
+<strong>param</strong>  bodies Either a single Body, or an array of bodies to update. If falsey it will use all bodies in the world.
+<strong>param</strong>  force A Vector that specifies the force to apply.
+<strong>returns</strong>  This Matter Physics instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>bodies</code></td><td><code>Phaser.Types.Physics.Matter.MatterBody | Phaser.Types.Physics.Matter.MatterBody[]</code></td><td>Required</td></tr><tr><td><code>force</code></td><td><code>Phaser.Types.Math.Vector2Like</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-applyforcefromposition-45">applyForceFromPosition <a class="anchor" href="#member-applyforcefromposition-45">#</a></h3><pre class="code" data-lang="ts"><code>applyForceFromPosition(bodies: Phaser.Types.Physics.Matter.MatterBody | Phaser.Types.Physics.Matter.MatterBody[], position: Phaser.Types.Math.Vector2Like, speed: number, angle?: number): this;</code></pre><p>Applies a force to a body, from the given world position, including resulting torque.
+If no angle is given, the current body angle is used.</p>
+<p>Use very small speed values, such as 0.1, depending on the mass and required velocity.
+<strong>param</strong>  bodies Either a single Body, or an array of bodies to update. If falsey it will use all bodies in the world.
+<strong>param</strong>  position A Vector that specifies the world-space position to apply the force at.
+<strong>param</strong>  speed A speed value to be applied to a directional force.
+<strong>param</strong>  angle The angle, in radians, to apply the force from. Leave undefined to use the current body angle.
+<strong>returns</strong>  This Matter Physics instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>bodies</code></td><td><code>Phaser.Types.Physics.Matter.MatterBody | Phaser.Types.Physics.Matter.MatterBody[]</code></td><td>Required</td></tr><tr><td><code>position</code></td><td><code>Phaser.Types.Math.Vector2Like</code></td><td>Required</td></tr><tr><td><code>speed</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>angle</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-applyforcefromangle-46">applyForceFromAngle <a class="anchor" href="#member-applyforcefromangle-46">#</a></h3><pre class="code" data-lang="ts"><code>applyForceFromAngle(bodies: Phaser.Types.Physics.Matter.MatterBody | Phaser.Types.Physics.Matter.MatterBody[], speed: number, angle?: number): this;</code></pre><p>Apply a force to a body based on the given angle and speed.
+If no angle is given, the current body angle is used.</p>
+<p>Use very small speed values, such as 0.1, depending on the mass and required velocity.
+<strong>param</strong>  bodies Either a single Body, or an array of bodies to update. If falsey it will use all bodies in the world.
+<strong>param</strong>  speed A speed value to be applied to a directional force.
+<strong>param</strong>  angle The angle, in radians, to apply the force from. Leave undefined to use the current body angle.
+<strong>returns</strong>  This Matter Physics instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>bodies</code></td><td><code>Phaser.Types.Physics.Matter.MatterBody | Phaser.Types.Physics.Matter.MatterBody[]</code></td><td>Required</td></tr><tr><td><code>speed</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>angle</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-getconstraintlength-47">getConstraintLength <a class="anchor" href="#member-getconstraintlength-47">#</a></h3><pre class="code" data-lang="ts"><code>getConstraintLength(constraint: MatterJS.ConstraintType): number;</code></pre><p>Returns the length of the given constraint, which is the distance between the two points.
+<strong>param</strong>  constraint The constraint to get the length from.
+<strong>returns</strong>  The length of the constraint.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>constraint</code></td><td><code>MatterJS.ConstraintType</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>number</code></p><h3 id="member-alignbody-48">alignBody <a class="anchor" href="#member-alignbody-48">#</a></h3><pre class="code" data-lang="ts"><code>alignBody(body: Phaser.Types.Physics.Matter.MatterBody, x: number, y: number, align: number): this;</code></pre><p>Aligns a Body, or Matter Game Object, against the given coordinates.</p>
+<p>The alignment takes place using the body bounds, which take into consideration things
+like body scale and rotation.</p>
+<p>Although a Body has a <code>position</code> property, it is based on the center of mass for the body,
+not a dimension based center. This makes aligning bodies difficult, especially if they have
+rotated or scaled. This method will derive the correct position based on the body bounds and
+its center of mass offset, in order to align the body with the given coordinate.</p>
+<p>For example, if you wanted to align a body so it sat in the bottom-center of the
+Scene, and the world was 800 x 600 in size:</p>
+<pre class="code" data-lang="javascript"><code>this.matter.alignBody(body, 400, 600, Phaser.Display.Align.BOTTOM_CENTER);</code></pre>
+<p>You pass in 400 for the x coordinate, because that is the center of the world, and 600 for
+the y coordinate, as that is the base of the world.
+<strong>param</strong>  body The Body to align.
+<strong>param</strong>  x The horizontal position to align the body to.
+<strong>param</strong>  y The vertical position to align the body to.
+<strong>param</strong>  align One of the <code>Phaser.Display.Align</code> constants, such as <code>Phaser.Display.Align.TOP_LEFT</code>.
+<strong>returns</strong>  This Matter Physics instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>body</code></td><td><code>Phaser.Types.Physics.Matter.MatterBody</code></td><td>Required</td></tr><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>align</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#members">Public members (49)</a></aside></div>
+<script src="../../../../../../../../../assets/cm.classic.js"></script><script src="../../../../../../../../../assets/manual.js"></script></body></html>

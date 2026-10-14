@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Joints — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../../index.html"><img src="../../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../../index.html">Babylon documentation library</a><a href="../../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Joints</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h1 id="joints">Joints</h1>
+<p>A joint in a physics engine is a constraining feature between two bodies. This area has the largest differences between physics engines, both in the joints available and in the names used. Not all native joints are available in some plugins.</p>
+<p>Playgrounds are available to check out the code. In the Playgrounds, the physics engine used can be changed by selecting which ones to comment out.</p>
+<p>See <span>How to Use The Physics&#39; Engines</span> for an overall view of setting up and using the three plugins.</p>
+<h2 id="physical-joint-types">Physical Joint Types<a class="anchor" href="#physical-joint-types">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Number</th>
+<th>Joint</th>
+<th>Name</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><p class="muted">Upstream illustration: Hinge (media not bundled).</p></td>
+<td>Hinge</td>
+<td>Single Axis Rotation</td>
+</tr>
+<tr>
+<td>2</td>
+<td><p class="muted">Upstream illustration: Ball and Socket (media not bundled).</p></td>
+<td>Ball and Socket</td>
+<td>Multi Axis Rotation</td>
+</tr>
+<tr>
+<td>3</td>
+<td><p class="muted">Upstream illustration: Cone Twist (media not bundled).</p></td>
+<td>Cone Twist</td>
+<td>Unrestricted rotation (Twist) on One Axis, Limited Rotation (in Cone) On Others</td>
+</tr>
+<tr>
+<td>4</td>
+<td><p class="muted">Upstream illustration: Wheel (media not bundled).</p></td>
+<td>Wheel</td>
+<td>Two Axes Rotation</td>
+</tr>
+<tr>
+<td>5</td>
+<td><p class="muted">Upstream illustration: Slider (media not bundled).</p></td>
+<td>Slider</td>
+<td>Single Axis Translation and Rotation</td>
+</tr>
+<tr>
+<td>6</td>
+<td><p class="muted">Upstream illustration: Prismatic (media not bundled).</p></td>
+<td>Prismatic</td>
+<td>Single Axis Translation Only</td>
+</tr>
+<tr>
+<td>7</td>
+<td><p class="muted">Upstream illustration: Distance (media not bundled).</p></td>
+<td>Distance</td>
+<td>Set Bodies a Fixed Distance Apart</td>
+</tr>
+<tr>
+<td>8</td>
+<td><p class="muted">Upstream illustration: Locked (media not bundled).</p></td>
+<td>Locked</td>
+<td>Bodies Act As One Body</td>
+</tr>
+</tbody></table>
+<h2 id="babylon-js-joints">Babylon.js Joints<a class="anchor" href="#babylon-js-joints">#</a></h2>
+<p>The following table lists the joints in Babylon.js and, where available, their equivalence to each other and their link to the native joints.</p>
+<table>
+<thead>
+<tr>
+<th>Babylon.js Joint</th>
+<th>Cannon Joint</th>
+<th>Oimo Joint</th>
+<th>Ammo Joint</th>
+<th>Helper Class</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>HingeJoint</td>
+<td>HingeConstraint</td>
+<td>HingJoint</td>
+<td>HingeConstraint</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>BallAndSocketJoint</td>
+<td>PointToPointConstraint</td>
+<td>BallAndSocketJoint</td>
+<td>Point2PointConstraint</td>
+<td>no</td>
+</tr>
+<tr>
+<td>WheelJoint</td>
+<td>----</td>
+<td>WheelJoint</td>
+<td>Point2PointConstraint</td>
+<td>Hinge2Joint Only</td>
+</tr>
+<tr>
+<td>SliderJoint</td>
+<td>----</td>
+<td>SliderJoint</td>
+<td>SliderConstraint</td>
+<td>No</td>
+</tr>
+<tr>
+<td>PrismaticJoint</td>
+<td>----</td>
+<td>PrismaticJoint</td>
+<td>----</td>
+<td>No</td>
+</tr>
+<tr>
+<td>DistanceJoint</td>
+<td>DistanceConstraint</td>
+<td>DistanceJoint</td>
+<td>Point2PointConstraint with Added Constraints</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>LockJoint</td>
+<td>LockConstraint</td>
+<td>----</td>
+<td>FixedConstraint</td>
+<td>No</td>
+</tr>
+<tr>
+<td>SpringJoint</td>
+<td>Spring</td>
+<td>----</td>
+<td>----</td>
+<td>No</td>
+</tr>
+</tbody></table>
+<p>The method used to create a joint and connect one body (main) to a second body (connected) is:</p>
+<pre class="code" data-lang="javascript"><code>var joint = new BABYLON.PhysicsJoint(
+  BABYLON.PhysicsJoint.TYPE_OF_JOINT,
+  jointData
+);
+
+mainImpostor.addJoint(connectedImpostor, joint);</code></pre>
+<p>where the <code>jointData</code> object contains the properties for the joint.</p>
+<h3 id="hinge-joint">Hinge Joint<a class="anchor" href="#hinge-joint">#</a></h3>
+<p>For a hinge, the only component of any force that produces movement is one perpendicular to the axis of the hinge. It is possible, however, that a large impulse in another direction can produce a reaction between the two bodies that does produce an impulse component in the perpendicular direction.</p>
+<p>The <code>jointData</code> object for a hinge contains the following properties:</p>
+<ul>
+<li>mainAxis: Vector3; the axis for the main body.</li>
+<li>connectedAxis: Vector3; the axis for the connected body, usually the same as the main axis.</li>
+<li>mainPivot: Vector3; the pivot point for the main body.</li>
+<li>connectedPivot: vector3; the pivot point for the connected body, the negative of the connected body&#39;s position.</li>
+</ul>
+<p>A hinge joint can also be created with a helper class:</p>
+<pre class="code" data-lang="javascript"><code>var joint1 = new BABYLON.HingeJoint(jointData);</code></pre>
+<p><strong><em>PhysicsJoint Playground</em></strong></p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<p><strong><em>Helper Class Playground</em></strong></p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<p>Since a hinge gives movement about only one axis, it would seem to make sense to replace the representation of the hinge with a cylinder. Doing this, reshaping the box, and keeping the sphere mesh impostor as a sphere does produce changes.</p>
+<p>In this case, for all the physics engines, whatever the direction of the impulse, it is applied in a direction perpendicular to the hinge axis.</p>
+<p><strong><em>PhysicsJoint Playground</em></strong></p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<p><strong><em>Helper Class Playground</em></strong></p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<p>You can, of course, use a cylinder impostor for the cylinder mesh.</p>
+<p><strong><em>PhysicsJoint Playground</em></strong></p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<p><strong><em>Helper Class Playground</em></strong></p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<h3 id="ball-and-socket-joint">Ball And Socket Joint<a class="anchor" href="#ball-and-socket-joint">#</a></h3>
+<p>For a ball and socket joint, a force can produce rotation about all three axes.</p>
+<p>The positioning of the connected body is determined by the connected pivot. The <code>jointData</code> object for a ball and socket contains the following properties:</p>
+<ul>
+<li>mainPivot: Vector3; the pivot point for the main body.</li>
+<li>connectedPivot: vector3; the pivot point for the connected body, the negative of the connected body&#39;s position.</li>
+</ul>
+<p><strong><em>PhysicsJoint Playground</em></strong></p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<h3 id="wheel-joint">Wheel Joint<a class="anchor" href="#wheel-joint">#</a></h3>
+<p>For a wheel the force produces rotation about two axes.</p>
+<p>The <code>jointData</code> object for a wheel contains the following properties:</p>
+<ul>
+<li>mainAxis: Vector3; the first axis.</li>
+<li>connectedAxis: Vector3; the second axis.</li>
+<li>mainPivot: Vector3; the pivot point for the main body.</li>
+<li>connectedPivot: vector3; the pivot point for the connected body, the negative of the connected body&#39;s position.</li>
+</ul>
+<p><strong>Note</strong> In the <code>Oimo.js</code> playgrounds changing the contact point of the force will not produce a spin around the axis perpendicular to the sphere&#39;s surface.</p>
+<p><strong><em>PhysicsJoint Playground</em></strong></p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<p>The <code>PhysicsJoint</code> called <code>Hinge2Joint</code> can be used as an alternative. Note, however, that there is no helper called <code>WheelJoint</code>, so the helper must be</p>
+<pre class="code" data-lang="javascript"><code>var joint1 = new BABYLON.Hinge2Joint(jointData);</code></pre>
+<p>When this helper class is used with <code>Ammo.js</code> it forms a <code>BallAndSocketJoint</code> not a <code>WheelJoint</code>. So a change of contact point can produce a spin around the axis perpendicular to the sphere&#39;s surface when using <code>Ammo.js</code>.</p>
+<p><strong><em>Helper Class Playgrounds</em></strong></p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<h3 id="slider-joint">Slider Joint<a class="anchor" href="#slider-joint">#</a></h3>
+<p>Currently <code>Oimo.js</code> only. Any component of force in the direction of the slider axis will move the body along this axis. Any component of force perpendicular to the slider axis will rotate the body around the axis.</p>
+<p>The <code>jointData</code> object for a slider contains the following properties</p>
+<ul>
+<li>mainAxis:Vector3, slider and rotational axis</li>
+<li>collision: Boolean, true if the main and connected bodies react at collision.</li>
+</ul>
+<p><strong><em>PhysicsJoint Playgrounds</em></strong></p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<h3 id="prismatic-joint">Prismatic Joint<a class="anchor" href="#prismatic-joint">#</a></h3>
+<p>Currently <code>Oimo.js</code> only. Only the component of force in the direction of the axis will move the body and the movement will be a translation only along this axis.</p>
+<p>The <code>jointData</code> object for a prismatic joint contains the following properties:</p>
+<ul>
+<li>mainAxis:Vector3, prismatic axis</li>
+<li>collision: Boolean, true if the main and connected bodies react at collision.</li>
+</ul>
+<p><strong><em>PhysicsJoint Playgrounds</em></strong></p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<h3 id="distance-joint">Distance Joint<a class="anchor" href="#distance-joint">#</a></h3>
+<p>The <code>jointData</code> object for a distance joint contains the following properties</p>
+<ul>
+<li>maxDistance: number.</li>
+</ul>
+<p><strong><em>PhysicsJoint Playgrounds</em></strong></p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<p><strong><em>Helper Class Playgrounds</em></strong></p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<h3 id="lockjoint">LockJoint<a class="anchor" href="#lockjoint">#</a></h3>
+<p><code>Cannon.js</code> only. The two connected bodies act as one body.</p>
+<p><strong><em>PhysicsJoint Playgrounds</em></strong></p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<h3 id="spring">Spring<a class="anchor" href="#spring">#</a></h3>
+<p><code>Cannon.js</code> only. The <code>jointData</code> object for a spring contains the following properties:</p>
+<ul>
+<li>length: number.</li>
+<li>stiffness: number.</li>
+<li>damping: number.</li>
+</ul>
+<p><strong><em>PhysicsJoint Playgrounds</em></strong></p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<h2 id="motors">Motors<a class="anchor" href="#motors">#</a></h2>
+<p>A motor requires a target speed (angular velocity) and the maximum force (torque) that can be applied by the motor. It is possible to set a torque that is insufficient for it to reach the target speed. Depending on the shape and mass of the body, the torque has to overcome the body&#39;s moment of inertia. Too low a torque value will make the body struggle and stutter as it tries to reach the target speed. Even when attempting to simulate a virtual motor in zero gravity, with no friction and zero mass for the axle joint turning a cylinder, determining an appropriate torque value can be difficult. Since moment of inertia, which determines torque, also depends on the volume of the body, it is a good idea to keep linear dimensions around 10 or less, though it is probably worth experimenting to obtain what you need. Adding gravity, friction, and further bodies that the motorized body has to move makes it even more difficult. Sometimes all you want in your project is for the motor to turn. This can be achieved by simply setting the target speed (the motor will be over-torqued by default), as in</p>
+<pre class="code" data-lang="javascript"><code>joint.setMotor(speed);</code></pre>
+<p>At other times it will be important to set a value for the torque that limits the motor operation, you can do this with</p>
+<pre class="code" data-lang="javascript"><code>joint.setMotor(speed, force);</code></pre>
+<p>The table below shows the joints that a motor can be added to.</p>
+<table>
+<thead>
+<tr>
+<th>Babylon.js Joint</th>
+<th>Cannon Motor</th>
+<th>Oimo Motor</th>
+<th>Ammo Motor</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BABYLON.PhysicsJoint.HingeJoint</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>BABYLON.PhysicsJoint.WheelJoint</td>
+<td>No</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td>BABYLON.PhysicsJoint.Hinge2Joint</td>
+<td>No</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td>BABYLON.PhysicsJoint.SliderJoint</td>
+<td>No</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+</tbody></table>
+<p>To add a motor to one of these joints simply replace <code>PhysicsJoint</code> with <code>MotorEnabledJoint</code> and set the motor on the joint.</p>
+<pre class="code" data-lang="javascript"><code>var joint = new BABYLON.PhysicsJoint(
+  BABYLON.PhysicsJoint.TYPE_OF_JOINT,
+  jointData
+);
+
+mainImpostor.addJoint(connectedImpostor, joint);</code></pre>
+<p>becomes</p>
+<pre class="code" data-lang="javascript"><code>var joint = new BABYLON.MotorEnabledJoint(BABYLON.PhysicsJoint.TYPE_OF_JOINT, jointData);
+
+mainImpostor.addJoint(connectedImpostor, joint);
+
+joint.setMotor(target speed, maximum torque)</code></pre>
+<p>The helper classes for <code>HingeJoint</code> and <code>Hinge2Joint</code> are already motorised and only <code>setMotor</code> is needed.</p>
+<h2 id="playground-examples">Playground Examples<a class="anchor" href="#playground-examples">#</a></h2>
+<h3 id="hinge-motor-speed-only">Hinge Motor Speed Only<a class="anchor" href="#hinge-motor-speed-only">#</a></h3>
+<p><strong><em>MotorEnabledJoint Playground</em></strong></p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<p><strong><em>Helper Class Playground</em></strong></p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<h3 id="hinge-motor-speed-and-torque-force">Hinge Motor Speed and Torque (Force)<a class="anchor" href="#hinge-motor-speed-and-torque-force">#</a></h3>
+<p>Different engines use differing scales for the torque and a little trial and error is often necessary to determine the required effect.</p>
+<ul>
+<li>For Cannon.js try starting with torque values between 1/100 to 1/10 of the total mass value;</li>
+<li>For Ammo.js try starting with torque values between 1/100 and 1/10 of total mass value;</li>
+<li>For Oimo.js try starting with torque values about 1 to 10 times the total mass value.</li>
+</ul>
+<p>In the hinge motor playgrounds below there are two wheels you can try out different torque values for each wheel to see how they vary. Note that they are in zero gravity, with zero friction and the axel has zero mass. In other situations torque values may need a larger factor than those given above.</p>
+<p><strong><em>MotorEnabledJoint Playground</em></strong></p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<p><strong><em>Helper Class Playground</em></strong></p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<h3 id="wheel-hinge2-motor">Wheel (Hinge2) Motor<a class="anchor" href="#wheel-hinge2-motor">#</a></h3>
+<p><strong><em>MotorEnabledJoint Playgrounds</em></strong></p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<h3 id="slider-motor">Slider Motor<a class="anchor" href="#slider-motor">#</a></h3>
+<p>The motor rotates the body around the slider axis.</p>
+<p><strong><em>MotorEnabledJoint Playground</em></strong></p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#physical-joint-types">Physical Joint Types </a><a href="#babylon-js-joints">Babylon.js Joints </a><a href="#motors">Motors </a><a href="#playground-examples">Playground Examples </a></aside></div>
+<script src="../../../../../../../assets/cm.classic.js"></script><script src="../../../../../../../assets/manual.js"></script></body></html>

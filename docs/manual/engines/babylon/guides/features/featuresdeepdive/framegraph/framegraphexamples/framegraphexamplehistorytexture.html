@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Use an history texture to create an onion-skin renderer — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../../index.html"><img src="../../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../../index.html">Babylon documentation library</a><a href="../../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Use an history texture to create an onion-skin renderer</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="introduction">Introduction<a class="anchor" href="#introduction">#</a></h2>
+<p><p class="muted">Upstream illustration: History Texture in Frame Graphs (media not bundled).</p></p>
+<p>Babylon.js supports a simplified version of history textures: ping-pong textures.</p>
+<p>For more information on this feature, see <a href="../framegraphclassframework/framegraphclassoverview.html">History textures</a>.</p>
+<p>We will use a ping-pong texture to implement onion-skin rendering, which leaves a trail for all moving objects. This effect is achieved by accumulating several renderings over time and blending them appropriately.</p>
+<h2 id="implementing-the-framegraphonionskinobjectrenderertask-class">Implementing the FrameGraphOnionSkinObjectRendererTask class<a class="anchor" href="#implementing-the-framegraphonionskinobjectrenderertask-class">#</a></h2>
+<p>To simplify the implementation, we will extend <code>FrameGraphObjectRendererTask</code> and implement our own <code>record()</code> method with the minimum amount of code needed to show the use of history textures. Notably, we will not reimplement OIT, camera rigs, or bounding-box rendering support: you can refer to the implementation of the <code>FrameGraphObjectRendererTask.record()</code> method if you want to add support for these features.</p>
+<h3 id="initializing-the-full-screen-effect">Initializing the full screen effect<a class="anchor" href="#initializing-the-full-screen-effect">#</a></h3>
+<p>We will apply post-processing to the rendering, which will blend the current output with that of the previous frame.</p>
+<p>To do this, we need to create an effect to encapsulate this shader code:</p>
+<pre class="code" data-lang="typescript"><code>BABYLON.Effect.ShadersStore[&quot;onionSkinPixelShader&quot;] = `
+    uniform sampler2D lastFrame;
+    uniform sampler2D textureSampler;
+
+    void main(void) {
+        vec4 curr = texelFetch(textureSampler, ivec2(gl_FragCoord.xy), 0);
+        vec4 last = texelFetch(lastFrame, ivec2(gl_FragCoord.xy), 0);
+
+        curr.rgb = mix(curr.rgb, last.rgb, 0.8);
+
+        gl_FragColor = curr;
+    }
+`;</code></pre>
+<p>The shader code is very simple: for each pixel, we blend the previous color with the current color. You can change the value 0.8 to strengthen or weaken the effect.</p>
+<p>The effect can be easily created using the <code>EffectWrapper</code> class:</p>
+<pre class="code" data-lang="typescript"><code>export class FrameGraphOnionSkinObjectRendererTask extends BABYLON.FrameGraphObjectRendererTask {
+    protected readonly _effectWrapper: BABYLON.EffectWrapper;
+    protected readonly _drawWrapper: BABYLON.DrawWrapper;
+
+    constructor(name: string, frameGraph: BABYLON.FrameGraph, scene: BABYLON.Scene, options?: BABYLON.ObjectRendererOptions) {
+        super(name, frameGraph, scene, options);
+
+        this._effectWrapper = new BABYLON.EffectWrapper({
+            engine: engine,
+            fragmentShader: &quot;onionSkin&quot;,
+            samplerNames: [&quot;lastFrame&quot;, &quot;textureSampler&quot;],
+            name: &quot;effect wrapper&quot;,
+            useShaderStore: true,
+        });
+        this._drawWrapper = this._effectWrapper.drawWrapper;
+    }
+
+    public record(): BABYLON.FrameGraphRenderPass {
+        // TODO: implement the method
+    }
+}</code></pre>
+<h3 id="implementing-the-record-method">Implementing the record method<a class="anchor" href="#implementing-the-record-method">#</a></h3>
+<p>Let&#39;s implement the <code>record()</code> method.</p>
+<h4 id="checking-input-parameters">Checking input parameters<a class="anchor" href="#checking-input-parameters">#</a></h4>
+<p>First, we perform a number of checks on the input parameters to ensure that we will not generate any errors when running the graph:</p>
+<pre class="code" data-lang="typescript"><code>if (this.targetTexture === undefined || this.objectList === undefined) {
+    throw new Error(`FrameGraphOnionSkinObjectRendererTask ${this.name}: targetTexture and objectList are required`);
+}
+
+const textureManager = this._frameGraph.textureManager;
+const targetTextures = Array.isArray(this.targetTexture) ? this.targetTexture : [this.targetTexture];
+
+if (textureManager.isBackbuffer(targetTextures[0]) || (this.depthTexture !== undefined &amp;&amp; textureManager.isBackbuffer(this.depthTexture))) {
+    throw new Error(`FrameGraphOnionSkinObjectRendererTask ${this.name}: the back buffer color/depth textures are not allowed. Use regular textures instead.`);
+}
+
+const outputTextureDescription = textureManager.getTextureDescription(targetTextures[0]);
+
+let depthEnabled = false;
+
+if (this.depthTexture !== undefined) {
+    const depthTextureDescription = textureManager.getTextureDescription(this.depthTexture);
+    if (depthTextureDescription.options.samples !== outputTextureDescription.options.samples) {
+        throw new Error(`FrameGraphOnionSkinObjectRendererTask ${this.name}: the depth texture and the output texture must have the same number of samples`);
+    }
+
+    depthEnabled = true;
+}
+
+this._textureWidth = outputTextureDescription.size.width;
+this._textureHeight = outputTextureDescription.size.height;</code></pre>
+<p>These checks are fairly basic. Note that we cannot allow the use of the back buffer texture for the <strong>targetTexture</strong> input, as we will be reading this texture during the blending process.</p>
+<h4 id="creating-the-ping-pong-texture">Creating the ping-pong texture<a class="anchor" href="#creating-the-ping-pong-texture">#</a></h4>
+<p>We can now create the ping-pong texture and set it as our output texture:</p>
+<pre class="code" data-lang="typescript"><code>const textureCreationOptions: BABYLON.FrameGraphTextureCreationOptions = {
+    size: outputTextureDescription.size,
+    options: {
+        createMipMaps: outputTextureDescription.options.createMipMaps,
+        types: [BABYLON.Constants.TEXTURETYPE_HALF_FLOAT],
+        formats: [BABYLON.Constants.TEXTUREFORMAT_RGBA],
+        samples: 1,
+        useSRGBBuffers: [false],
+        creationFlags: [0],
+        labels: [&quot;&quot;],
+    },
+    sizeIsPercentage: false,
+    isHistoryTexture: true,
+};
+
+const pingPongHandle = textureManager.createRenderTargetTexture(`${this.name} history`, textureCreationOptions);
+
+textureManager.resolveDanglingHandle(this.outputTexture, pingPongHandle);
+if (this.depthTexture !== undefined) {
+    textureManager.resolveDanglingHandle(this.outputDepthTexture, this.depthTexture);
+}</code></pre>
+<p>We create the texture with the same dimensions as the target texture. Since this is an example, we hardcode the type <strong>TEXTURETYPE_HALF_FLOAT</strong>, but you can let the user choose it via an input parameter of the class. We also set the <strong>isHistoryTexture</strong> option to <em>true</em>, to make it a history texture.</p>
+<p>It is important that we resolve the dangling handle <strong>outputTexture</strong> with <strong>pingPongHandle</strong> and not with <strong>targetTexture</strong>, because the result of the blending process will end up in the writable texture of the ping-pong texture! For more information on dangling handles, see <a href="../framegraphclassframework/framegraphclassoverview.html">Dangling Texture Handles</a>.</p>
+<h4 id="creating-the-render-pass">Creating the render pass<a class="anchor" href="#creating-the-render-pass">#</a></h4>
+<p>We are now ready to create the pass that will be executed on each frame:</p>
+<pre class="code" data-lang="typescript"><code>let pingPongRenderTargetWrapper: BABYLON.FrameGraphRenderTarget | undefined;
+
+const pass = this._frameGraph.addRenderPass(this.name);
+
+pass.setRenderTarget(this.targetTexture);
+pass.setRenderTargetDepth(this.depthTexture);
+pass.setExecuteFunc((context) =&gt; {
+    // Sets the objects/particle systems to render
+    this._renderer.renderList = this.objectList.meshes;
+    this._renderer.particleSystemList = this.objectList.particleSystems;
+
+    // Render the scene into targetTexture (the texture passed to pass.setRenderTarget above)
+    context.setDepthStates(this.depthTest &amp;&amp; depthEnabled, this.depthWrite &amp;&amp; depthEnabled);
+
+    context.render(this._renderer, this._textureWidth, this._textureHeight);
+
+    // Merges the scene with the (readable) ping/pong texture and renders the result into the (writable) ping/pong texture
+    pingPongRenderTargetWrapper = pingPongRenderTargetWrapper || context.createRenderTarget(`${this.name} ping/pong`, pingPongHandle);
+
+    context.bindRenderTarget(pingPongRenderTargetWrapper);
+
+    context.applyFullScreenEffect(this._drawWrapper, () =&gt; {
+        context.bindTextureHandle(this._drawWrapper.effect!, &quot;textureSampler&quot;, targetTextures[0]);
+        context.bindTextureHandle(this._drawWrapper.effect!, &quot;lastFrame&quot;, pingPongHandle);
+    });
+});</code></pre>
+<p>Note that we set the <strong>renderList</strong> and <strong>particleSystemList</strong> properties of the renderer on each frame to ensure that they are always synchronized with the settings defined by the user at the class level (we could use the <strong>objectList</strong> setter to update them, but that would not let us handle changes made to the <strong>objectList.meshes</strong> and <strong>objectList.particleSystems</strong> arrays).</p>
+<p>Next, we render the objects to the current render target (by calling <code>context.render()</code>), which is <strong>targetTexture</strong>, defined by the call <code>pass.setRenderTarget(this.targetTexture);</code>.</p>
+<p>The next step is to merge this render with the previous ping-pong texture we rendered.</p>
+<p>First, we need a render target for the ping-pong texture, which we can create via a call to <code>context.createRenderTarget()</code>. Note that this render target must be created after the textures are allocated, because <code>context.createRenderTarget()</code> must access the real textures. To simplify implementation, we make the call in the execute function of the pass, but we could also do it in a <code>FrameGraphTask.onTexturesAllocatedObservable</code> observer.</p>
+<p>Now that we have the render target, we bind it to be the texture we will render to (<code>context.bindRenderTarget()</code>), then call the <code>context.applyFullScreenEffect()</code> method, which allows us to apply a full-screen effect to the texture. The second parameter of this function is a callback that we can use to set the uniform values used by the shader. Note that we set the ping-pong handle for the <strong>lastFrame</strong> uniform: since we are also rendering to the ping-pong texture, the system knows to bind the read texture and not the write texture.</p>
+<p>The last step is to create the pass used when the task is disabled, which is a simple copy from the input texture to the destination texture:</p>
+<pre class="code" data-lang="typescript"><code>const passDisabled = this._frameGraph.addRenderPass(this.name + &quot;_disabled&quot;, true);
+
+passDisabled.setRenderTarget(this.outputTexture);
+passDisabled.setRenderTargetDepth(this.depthTexture);
+passDisabled.setExecuteFunc((context) =&gt; {
+    context.copyTexture(targetTextures[0]);
+});</code></pre>
+<h2 id="putting-it-all-together">Putting it all together<a class="anchor" href="#putting-it-all-together">#</a></h2>
+<p>This PG uses the class described on this page to create a frame graph that renders objects with onion-skin effect:</p>
+<span class="muted">Online playground (not embedded offline)
+</span><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#introduction">Introduction </a><a href="#implementing-the-framegraphonionskinobjectrenderertask-class">Implementing the FrameGraphOnionSkinObjectRendererTask class </a><a href="#putting-it-all-together">Putting it all together </a></aside></div>
+<script src="../../../../../../../assets/cm.classic.js"></script><script src="../../../../../../../assets/manual.js"></script></body></html>

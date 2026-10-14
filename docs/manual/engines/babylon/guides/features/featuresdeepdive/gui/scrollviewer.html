@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Scroll Viewer — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../index.html"><img src="../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../index.html">Babylon documentation library</a><a href="../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Scroll Viewer</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h1 id="the-scroll-viewer">The Scroll Viewer</h1>
+<p>When you want to keep your user interface small but need to present a lot of information, you can use the <strong>ScrollViewer</strong> to contain it.</p>
+<p><p class="muted">Upstream illustration: ScrollViewer (media not bundled).</p>.</p>
+<p>It consists of vertical and horizontal scroll bars and a viewing area. The information you want to present is created as a control that you add to the scroll viewer and display in the viewing area. If the control fits inside the scroll viewer, no scroll bars are shown.</p>
+<p>From Babylon.js version 4.1 onward, it is possible to use an image for the thumb control and the bars.</p>
+<p><p class="muted">Upstream illustration: ScrollViewer with Image Bars (media not bundled).</p>.</p>
+<h2 id="creating-the-scroll-viewer">Creating the Scroll Viewer<a class="anchor" href="#creating-the-scroll-viewer">#</a></h2>
+<p>The scroll viewer base is a rectangle container that holds the scroll bars and the viewing area. You can create it with or without a name.</p>
+<pre class="code" data-lang="javascript"><code>const myScrollViewer = new BABYLON.GUI.ScrollViewer();
+// OR
+const myScrollViewer = new BABYLON.GUI.ScrollViewer(&quot;name&quot;);</code></pre>
+<p>Then add it to an advanced texture as usual.</p>
+<pre class="code" data-lang="javascript"><code>const myAdvancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI(&quot;UI&quot;);
+myAdvancedTexture.addControl(myScrollViewer);</code></pre>
+<p>You can then create your control or container of controls to add to the scroll viewer using the <strong>addControl</strong> method.</p>
+<pre class="code" data-lang="javascript"><code>myScrollViewer.addControl(myControl);</code></pre>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<p>The default width and height of the scroll viewer are 100% of the parent control.</p>
+<p>The following table shows the additional properties of a scroll viewer.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Default</th>
+<th>Comments</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>barColor</td>
+<td>string</td>
+<td>grey</td>
+<td>Foreground color of the scroll bar and color of the thumb</td>
+</tr>
+<tr>
+<td>barBackground</td>
+<td>string</td>
+<td>transparent</td>
+<td>Background color of the scroll bar and bottom right square</td>
+</tr>
+<tr>
+<td>thumbLength</td>
+<td>number</td>
+<td>0.5</td>
+<td>Proportion of thumb compared to scroll bar length (0 to 0.9)</td>
+</tr>
+<tr>
+<td>barSize</td>
+<td>number</td>
+<td>20</td>
+<td>Height of scroll bar</td>
+</tr>
+</tbody></table>
+<p><strong>NOTE</strong> All padding values for the scroll viewer are set to 0. Any padding should be set on the control added to the scroll viewer.</p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<h2 id="scrollbars">Scrollbars<a class="anchor" href="#scrollbars">#</a></h2>
+<p>Both scrollbars can be reached with:</p>
+<ul>
+<li>horizontalBar</li>
+<li>verticalBar</li>
+</ul>
+<p>You can then set the scrollbar position with <code>scrollViewer.horizontalBar.value</code>. This value must be between 0 and 1.</p>
+<h2 id="image-scrollbars">Image Scrollbars<a class="anchor" href="#image-scrollbars">#</a></h2>
+<p>To use images in the scroll bar, you need to pass a name (which can be an empty string) and a <code>true</code> parameter when creating the scroll viewer.</p>
+<pre class="code" data-lang="javascript"><code>const myScrollViewer = new BABYLON.GUI.ScrollViewer(&quot;&quot;, true);</code></pre>
+<p>Additional properties are available.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Default</th>
+<th>Comments</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>thumbImage<span class="muted">&lt;br/&gt;</span>horizontalThumbImage<span class="muted">&lt;br/&gt;</span>verticalThumbImage</td>
+<td>GUI Image</td>
+<td>none</td>
+<td>Image used for the thumb; required for image scroll bars</td>
+</tr>
+<tr>
+<td>barImage<span class="muted">&lt;br/&gt;</span>horizontalBarImage<span class="muted">&lt;br/&gt;</span>verticalBarImage</td>
+<td>GUI Image</td>
+<td>none</td>
+<td>Image for the scroll bars</td>
+</tr>
+<tr>
+<td>thumbHeight</td>
+<td>number</td>
+<td>1</td>
+<td>Proportion of thumb compared to bar height (0 to 1)</td>
+</tr>
+<tr>
+<td>barImageHeight</td>
+<td>number</td>
+<td>1</td>
+<td>Proportion of barImage compared to bar height (0 to 1)</td>
+</tr>
+<tr>
+<td>scrollBackground</td>
+<td>string</td>
+<td>grey</td>
+<td>background color of scroll bars excluding the bottom right square; useful behind a thin or transparent bar image</td>
+</tr>
+</tbody></table>
+<p>You do not have to have a barImage.</p>
+<p>The images for the vertical bar and thumb are by default rotated copies of those used for the horizontal bar and thumb. You may want to keep the image sizes small if memory is an issue in your project.</p>
+<p>You can also choose to have different images for the vertical and horizontal bar / thumb. In that case, use <code>horizontalThumbImage</code> / <code>verticalThumbImage</code> instead of <code>thumbImage</code> and <code>horizontalBarImage</code> / <code>verticalBarImage</code> instead of <code>barImage</code>.</p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<h2 id="adding-an-adjustable-textblock-window">Adding an Adjustable TextBlock Window<a class="anchor" href="#adding-an-adjustable-textblock-window">#</a></h2>
+<p>When you add a TextBlock of a given size to a scroll viewer, both horizontal and vertical scroll bars are shown as needed.</p>
+<p><p class="muted">Upstream illustration: Contained TextBlock (media not bundled).</p></p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<p>However, you will often need to present text that fits the width of the viewing window and scrolls vertically. This is achieved by setting <code>textWrapping</code> and <code>resizeToFit</code> as follows:</p>
+<pre class="code" data-lang="javascript"><code>myTextBlock.textWrapping = BABYLON.GUI.TextWrapping.WordWrap;
+myTextBlock.resizeToFit = true;</code></pre>
+<p><p class="muted">Upstream illustration: Adjusting TextBlock (media not bundled).</p></p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<h2 id="live-updating-and-child-containers">Live-Updating and Child Containers<a class="anchor" href="#live-updating-and-child-containers">#</a></h2>
+<p>The ScrollViewer accepts only ONE child control. If that single child is a textBlock, then you can modify its <em>.text</em> property (including \n linebreaks), to add/remove text content to/from that single textBlock.</p>
+<p>The ScrollViewer also accepts a single CONTAINER (such as a stackpanel) for its single child. In that container, you may add/remove any type of control(s). For certain types of containers, you might choose to add <code>container.ignoreLayoutWarnings = true;</code>, and you might need to set a non-percentage <em>height</em> value to certain children within the container(s).</p>
+<h2 id="rendering-optimization">Rendering optimization<a class="anchor" href="#rendering-optimization">#</a></h2>
+<p>If you have a lot of controls in your scroll viewer window, you may notice slower rendering.</p>
+<p>To help improve your FPS, you can set <code>myScrollViewer.freezeControls = true</code>. This &quot;freezes&quot; the controls in their current positions in the window and makes rendering faster when the window is scrolled. When controls are frozen, changing their position or size may not work, so if you need to do that, first set <code>freezeControls</code> to <code>false</code>, make your changes, then set <code>freezeControls</code> back to <code>true</code>.</p>
+<p>You can further improve the rendering time by using the <code>setBucketSizes</code> method:</p>
+<pre class="code" data-lang="javascript"><code>myScrollViewer.setBucketSizes(100, 40);</code></pre>
+<p>When <code>freezeControls</code> is true, setting a non-zero bucket size improves performance by updating only visible controls. Bucket sizes are used to subdivide the window area internally into smaller areas to which controls are assigned. So, the size should be roughly equal to the average size of the controls inside the window. To disable buckets, set either width or height (or both) to 0.</p>
+<p>Please note that using this option increases memory usage (the higher the bucket sizes, the less memory is used), which is why it is not enabled by default.</p>
+<p>You can also use the <code>ScrollViewer.forceHorizontalBar</code> and <code>ScrollViewer.forceVerticalBar</code> properties.</p>
+<p>When set to true, they force the display of the corresponding bars. When you know your scroll viewer will end up with visible bars, you can set these properties to true to save some initialization time, because if the scroll viewer itself makes a bar visible during initialization, it triggers a child layout rebuild and adds more time to the initialization process.</p>
+<span class="muted">Online playground (not embedded offline)
+</span><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#creating-the-scroll-viewer">Creating the Scroll Viewer </a><a href="#scrollbars">Scrollbars </a><a href="#image-scrollbars">Image Scrollbars </a><a href="#adding-an-adjustable-textblock-window">Adding an Adjustable TextBlock Window </a><a href="#live-updating-and-child-containers">Live-Updating and Child Containers </a><a href="#rendering-optimization">Rendering optimization </a></aside></div>
+<script src="../../../../../../assets/cm.classic.js"></script><script src="../../../../../../assets/manual.js"></script></body></html>

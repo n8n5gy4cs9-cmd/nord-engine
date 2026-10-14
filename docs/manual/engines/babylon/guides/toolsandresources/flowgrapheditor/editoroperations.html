@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Editor Operations and Shortcuts — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../index.html"><img src="../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../nord/api/api.html">API reference</a><a href="../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../nord/api/api-game.html">Game</a><a href="../../../../../nord/api/api-input.html">Input</a><a href="../../../../../nord/api/api-events.html">Events</a><a href="../../../../../nord/api/api-save.html">Save</a><a href="../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../nord/components/component-text.html">text</a><a href="../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../nord/components/component-light.html">light</a><a href="../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../nord/components/component-model.html">model</a><a href="../../../../../nord/components/component-material.html">material</a><a href="../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../nord/components/component-path.html">path</a><a href="../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../nord/reference/components.html">Component index</a><a href="../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../index.html">Babylon documentation library</a><a href="../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Editor Operations and Shortcuts</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="editor-operations-at-a-glance">Editor Operations At A Glance<a class="anchor" href="#editor-operations-at-a-glance">#</a></h2>
+<p>This page collects the non-block mechanics of the Flow Graph Editor: toolbar actions, keyboard shortcuts, clipboard behavior, graph organization, search, and canvas navigation.</p>
+<p>For execution, debugging, and scene-aware workflows, see <a href="authoringanddebugging.html">Authoring, Validation, and Debugging</a>. For validation rules and property editing, see <a href="validationandproperties.html">Validation and Property Editing</a>.</p>
+<h2 id="graph-tabs">Graph Tabs<a class="anchor" href="#graph-tabs">#</a></h2>
+<p>The editor now supports multiple graphs through a tab strip above the main toolbar.</p>
+<p>These tabs manage separate graph definitions, not separate execution contexts.</p>
+<h3 id="switching-graphs">Switching Graphs<a class="anchor" href="#switching-graphs">#</a></h3>
+<p>Click a tab to make that graph active on the canvas.</p>
+<p>The selected tab controls which graph you edit, run, validate, and inspect.</p>
+<h3 id="adding-renaming-and-closing-tabs">Adding, Renaming, And Closing Tabs<a class="anchor" href="#adding-renaming-and-closing-tabs">#</a></h3>
+<ul>
+<li>Use the <code>+</code> button in the tab strip to create a new graph.</li>
+<li>Double-click a tab name to rename it.</li>
+<li>Use the <code>×</code> button on a tab to close it when more than one graph exists.</li>
+</ul>
+<p>The last remaining graph cannot be closed.</p>
+<p>For the full feature behavior, including save/load semantics and the difference from execution contexts, see <a href="multiplegraphs.html">Multiple Graphs In One Editor</a>.</p>
+<h2 id="toolbar-basics">Toolbar Basics<a class="anchor" href="#toolbar-basics">#</a></h2>
+<p>The toolbar is the main control surface for editing and running a graph.</p>
+<h3 id="undo-and-redo">Undo And Redo<a class="anchor" href="#undo-and-redo">#</a></h3>
+<p>The editor provides explicit undo and redo buttons in the toolbar and also supports the standard keyboard shortcuts.</p>
+<ul>
+<li>Undo is enabled only when there is an action to undo.</li>
+<li>Redo is enabled only when there is an action to replay.</li>
+<li>These controls are useful when experimenting with graph shapes, moving blocks around, or adjusting graph organization.</li>
+</ul>
+<h3 id="execution-and-speed-controls">Execution And Speed Controls<a class="anchor" href="#execution-and-speed-controls">#</a></h3>
+<p>The same toolbar also exposes graph execution controls and time scaling. Those behaviors are described in more detail in <a href="authoringanddebugging.html">Authoring, Validation, and Debugging</a>, but in practice they live alongside editing operations and form part of the main workflow loop.</p>
+<h3 id="execution-context-controls">Execution Context Controls<a class="anchor" href="#execution-context-controls">#</a></h3>
+<p>The toolbar also includes execution-context controls through the <code>Ctx</code> selector and adjacent create, remove, and rename actions.</p>
+<p>Those controls manage multiple runtime instances of the same graph definition, not multiple separate graphs. For the full feature behavior, see <a href="executioncontexts.html">Execution Contexts</a>.</p>
+<h2 id="keyboard-shortcuts">Keyboard Shortcuts<a class="anchor" href="#keyboard-shortcuts">#</a></h2>
+<p>The editor already supports a practical set of shortcuts for frequent graph editing tasks.</p>
+<ul>
+<li><code>Delete</code> / <code>Backspace</code>: Delete the current selection.</li>
+<li><code>Alt+Delete</code> / <code>Alt+Backspace</code>: Delete selected blocks and auto-reconnect surrounding nodes when possible.</li>
+<li><code>Ctrl+Z</code> / <code>Cmd+Z</code>: Undo.</li>
+<li><code>Ctrl+Shift+Z</code> / <code>Cmd+Shift+Z</code>: Redo.</li>
+<li><code>Ctrl+A</code> / <code>Cmd+A</code>: Select all nodes and frames.</li>
+<li><code>Ctrl+C</code> / <code>Cmd+C</code>: Copy selected blocks or frames.</li>
+<li><code>Ctrl+V</code> / <code>Cmd+V</code>: Paste copied content at the cursor position.</li>
+<li><code>Ctrl+G</code> / <code>Cmd+G</code>: Create a smart group from the current selection.</li>
+<li><code>F9</code>: Toggle a breakpoint on the selected execution block.</li>
+<li><code>Ctrl+M</code> / <code>Cmd+M</code>: Create a sticky note.</li>
+<li><code>Ctrl+F</code> / <code>Cmd+F</code>: Open graph search.</li>
+<li><code>Enter</code> in the scene preview input: Load the Playground snippet in the scene preview.</li>
+</ul>
+<p>These shortcuts are worth learning early because they change the editor from a click-heavy tool into a faster iteration surface.</p>
+<h2 id="copy-and-paste">Copy And Paste<a class="anchor" href="#copy-and-paste">#</a></h2>
+<p>The editor supports copying both individual blocks and higher-level graph structures such as frames.</p>
+<h3 id="block-copy-behavior">Block Copy Behavior<a class="anchor" href="#block-copy-behavior">#</a></h3>
+<p>When blocks are copied and pasted:</p>
+<ul>
+<li>Configuration values are preserved.</li>
+<li>Default values for unconnected data inputs are preserved.</li>
+<li>Internal connections between pasted blocks are reconstructed.</li>
+<li>External connections are not recreated automatically.</li>
+</ul>
+<p>That behavior is useful because it lets you duplicate a working graph fragment without accidentally connecting the clone back into the original graph.</p>
+<h3 id="event-blocks">Event Blocks<a class="anchor" href="#event-blocks">#</a></h3>
+<p>Event blocks pasted into the graph are automatically registered with the flow graph, so they remain usable as graph entry points after duplication.</p>
+<h3 id="frame-copy-behavior">Frame Copy Behavior<a class="anchor" href="#frame-copy-behavior">#</a></h3>
+<p>Frames can also be copied and pasted. This is especially useful for repeating a documented graph pattern or creating a variation of an existing grouped interaction.</p>
+<h2 id="smart-groups">Smart Groups<a class="anchor" href="#smart-groups">#</a></h2>
+<p>Smart groups let you wrap a set of blocks inside a collapsed frame and expose the relevant boundary ports automatically.</p>
+<h3 id="creating-a-smart-group">Creating A Smart Group<a class="anchor" href="#creating-a-smart-group">#</a></h3>
+<p>To create one:</p>
+<ol>
+<li>Select two or more blocks.</li>
+<li>Press <code>Ctrl+G</code> or <code>Cmd+G</code>.</li>
+</ol>
+<p>The editor analyzes the selection and creates a frame with exposed inputs and outputs.</p>
+<h3 id="single-execution-block-groups">Single-Execution-Block Groups<a class="anchor" href="#single-execution-block-groups">#</a></h3>
+<p>If the selection contains exactly one execution block plus any number of data blocks, the editor auto-exposes the most useful boundary ports:</p>
+<ul>
+<li>The execution block&#39;s signal input becomes the group entry point.</li>
+<li>Its signal outputs become group exits.</li>
+<li>Unconnected or externally connected data inputs are exposed.</li>
+<li>Data outputs used outside the group are exposed.</li>
+</ul>
+<p>This is the most common grouping pattern and works well for turning a repeated graph fragment into a reusable visual unit.</p>
+<h3 id="multi-execution-block-groups">Multi-Execution-Block Groups<a class="anchor" href="#multi-execution-block-groups">#</a></h3>
+<p>If the selection contains multiple execution blocks, signal ports that cross the group boundary are exposed automatically. After grouping, you can expand the frame and refine the exposed ports if needed.</p>
+<h3 id="ungrouping">Ungrouping<a class="anchor" href="#ungrouping">#</a></h3>
+<p>Deleting the frame removes only the frame container, not the blocks inside it. This means ungrouping preserves the underlying graph structure. If you want to remove the frame and its contents, expand it first and then delete the internal nodes explicitly.</p>
+<h3 id="copying-a-smart-group">Copying A Smart Group<a class="anchor" href="#copying-a-smart-group">#</a></h3>
+<p>Copying and pasting a smart group duplicates:</p>
+<ul>
+<li>The frame itself</li>
+<li>Its internal blocks</li>
+<li>Internal connections</li>
+<li>The current collapsed or expanded state</li>
+<li>The exposed-port configuration</li>
+</ul>
+<h2 id="sticky-notes">Sticky Notes<a class="anchor" href="#sticky-notes">#</a></h2>
+<p>Sticky notes are lightweight annotations for documenting intent directly on the canvas.</p>
+<h3 id="creating-notes">Creating Notes<a class="anchor" href="#creating-notes">#</a></h3>
+<p>Press <code>Ctrl+M</code> or <code>Cmd+M</code> to create a note at the current cursor position.</p>
+<h3 id="editing-notes">Editing Notes<a class="anchor" href="#editing-notes">#</a></h3>
+<ul>
+<li>Double-click the title area to rename the note.</li>
+<li>Click the body area to edit note contents.</li>
+</ul>
+<h3 id="moving-and-resizing">Moving And Resizing<a class="anchor" href="#moving-and-resizing">#</a></h3>
+<ul>
+<li>Drag the title bar to move the note.</li>
+<li>Drag the bottom-right resize handle to change its size.</li>
+</ul>
+<h3 id="selection-and-persistence">Selection And Persistence<a class="anchor" href="#selection-and-persistence">#</a></h3>
+<p>Sticky notes can be selected and deleted like other editable canvas elements. They are serialized with the graph and restored on load, which makes them useful for documenting larger authoring workflows or explaining grouped graph sections to other people.</p>
+<h2 id="find-in-graph">Find In Graph<a class="anchor" href="#find-in-graph">#</a></h2>
+<p>Graph search is built for navigating larger canvases where manually locating a block is slow.</p>
+<h3 id="opening-search">Opening Search<a class="anchor" href="#opening-search">#</a></h3>
+<p>Press <code>Ctrl+F</code> or <code>Cmd+F</code> to open the search UI.</p>
+<h3 id="what-search-matches">What Search Matches<a class="anchor" href="#what-search-matches">#</a></h3>
+<p>Search works against:</p>
+<ul>
+<li>Node display names</li>
+<li>Block class names</li>
+<li>Frame names</li>
+</ul>
+<h3 id="navigating-results">Navigating Results<a class="anchor" href="#navigating-results">#</a></h3>
+<p>Once a query is active:</p>
+<ul>
+<li>Matching items are highlighted.</li>
+<li>The current result is emphasized separately.</li>
+<li>The viewport pans to the active match.</li>
+<li><code>Enter</code> or Down Arrow advances to the next match.</li>
+<li><code>Shift+Enter</code> or Up Arrow moves to the previous match.</li>
+<li>Results wrap when you reach the end.</li>
+</ul>
+<h3 id="closing-search">Closing Search<a class="anchor" href="#closing-search">#</a></h3>
+<p>Press <code>Escape</code> or close the search bar explicitly to clear the visual highlights.</p>
+<h2 id="minimap-and-canvas-navigation">Minimap And Canvas Navigation<a class="anchor" href="#minimap-and-canvas-navigation">#</a></h2>
+<p>When you zoom or pan around the canvas, the editor can display a minimap in the bottom-right corner.</p>
+<p>The minimap shows:</p>
+<ul>
+<li>Nodes</li>
+<li>Frames</li>
+<li>Sticky notes</li>
+<li>The current viewport region</li>
+</ul>
+<p>You can click or drag inside the minimap to move quickly to another area of the graph. This is especially useful once the canvas grows beyond a single screenful of content.</p>
+<p>The minimap auto-hides after a short period of inactivity, which keeps it available without permanently taking over screen space.</p>
+<h2 id="practical-editing-advice">Practical Editing Advice<a class="anchor" href="#practical-editing-advice">#</a></h2>
+<ul>
+<li>Use shortcuts early; they matter more as graphs grow.</li>
+<li>Group related logic before the canvas becomes visually noisy.</li>
+<li>Add sticky notes when a graph section has intent that is not obvious from block names alone.</li>
+<li>Use search and the minimap together when working on larger interaction graphs.</li>
+</ul>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#editor-operations-at-a-glance">Editor Operations At A Glance </a><a href="#graph-tabs">Graph Tabs </a><a href="#toolbar-basics">Toolbar Basics </a><a href="#keyboard-shortcuts">Keyboard Shortcuts </a><a href="#copy-and-paste">Copy And Paste </a><a href="#smart-groups">Smart Groups </a><a href="#sticky-notes">Sticky Notes </a><a href="#find-in-graph">Find In Graph </a><a href="#minimap-and-canvas-navigation">Minimap And Canvas Navigation </a><a href="#practical-editing-advice">Practical Editing Advice </a></aside></div>
+<script src="../../../../../assets/cm.classic.js"></script><script src="../../../../../assets/manual.js"></script></body></html>

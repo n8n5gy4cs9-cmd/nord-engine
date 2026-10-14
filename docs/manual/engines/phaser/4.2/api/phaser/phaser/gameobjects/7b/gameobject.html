@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Phaser.GameObjects.GameObject — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../../../index.html"><img src="../../../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../../../../babylon/9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../index.html">Phaser 4.2.1 API</a><a href="../../../../../../../babylon/guides/index.html">Babylon documentation library</a><a href="../../../../../../4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Phaser.GameObjects.GameObject</h1>
+<p><span class="badge">Underlying Phaser 4.2.1 API</span> <span class="badge">Class</span></p><p class="muted">Official public declarations and JSDoc from <code>phaser</code>. Use with engine objects, not directly on a Nord entity.</p><aside class="box tip"><div class="box-title">The Nord way</div><p><a href="../../../../../../../../nord/manual/2d.html">2D manual</a> · <a href="../../../../../../../../nord/components/component-sprite.html">sprite</a> · <a href="../../../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a> · <a href="../../../../../../../../nord/manual/physics.html">physics</a>. Access raw objects only when the Nord wrapper does not cover your feature. <a href="../../../../../../../../nord/manual/reference.html#escape-hatch">How escape hatches work</a>.</p></aside><h3 id="declaration">GameObject <a class="anchor" href="#declaration">#</a></h3><pre class="code" data-lang="ts"><code>class GameObject extends Phaser.Events.EventEmitter implements Phaser.GameObjects.Components.Filters, Phaser.GameObjects.Components.RenderSteps</code></pre><p>The base class that all Game Objects in Phaser extend.</p>
+<p>A Game Object is anything that can be added to a Scene&#39;s display list and rendered to screen,
+such as a Sprite, Image, Text, or Graphics object. Game Objects are the building blocks of
+every Phaser game — they represent visual entities that live in a Scene, can be positioned,
+scaled, rotated, and interacted with.</p>
+<p>This class provides the core shared functionality used by all Game Objects: lifecycle management
+(active/destroy), data storage via the Data Manager, input handling, physics body attachment,
+display list and update list membership, and event emission.</p>
+<p>You do not instantiate <code>GameObject</code> directly. Instead, use it as the base class for your own
+custom Game Object types by extending it through Phaser&#39;s <code>Class</code> utility, or simply use one
+of the many built-in Game Object types provided by Phaser.</p>
+<h2 id="members">Public members (63)</h2><p>Private, protected and explicitly internal declarations are excluded. Inherited members belong to the base type listed in the declaration.</p><h3 id="member-constructor-0">constructor <a class="anchor" href="#member-constructor-0">#</a></h3><pre class="code" data-lang="ts"><code>constructor(scene: Phaser.Scene, type: string);</code></pre><p><strong>param</strong>  scene The Scene to which this Game Object belongs.
+<strong>param</strong>  type A textual representation of the type of Game Object, i.e. <code>sprite</code>.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>scene</code></td><td><code>Phaser.Scene</code></td><td>Required</td></tr><tr><td><code>type</code></td><td><code>string</code></td><td>Required</td></tr></tbody></table><h3 id="member-scene-1">scene <a class="anchor" href="#member-scene-1">#</a></h3><pre class="code" data-lang="ts"><code>scene: Phaser.Scene;</code></pre><p>A reference to the Scene to which this Game Object belongs.</p>
+<p>Game Objects can only belong to one Scene.</p>
+<p>You should consider this property as being read-only. You cannot move a
+Game Object to another Scene by simply changing it.</p>
+<p><b>Type / return:</b> <code>Phaser.Scene</code></p><h3 id="member-displaylist-2">displayList <a class="anchor" href="#member-displaylist-2">#</a></h3><pre class="code" data-lang="ts"><code>displayList: Phaser.GameObjects.DisplayList | Phaser.GameObjects.Layer;</code></pre><p>Holds a reference to the Display List that contains this Game Object.</p>
+<p>This is set automatically when this Game Object is added to a Scene or Layer.</p>
+<p>You should treat this property as being read-only.</p>
+<p><b>Type / return:</b> <code>Phaser.GameObjects.DisplayList | Phaser.GameObjects.Layer</code></p><h3 id="member-type-3">type <a class="anchor" href="#member-type-3">#</a></h3><pre class="code" data-lang="ts"><code>type: string;</code></pre><p>A textual representation of this Game Object, i.e. <code>sprite</code>.
+Used internally by Phaser but is available for your own custom classes to populate.</p>
+<p><b>Type / return:</b> <code>string</code></p><h3 id="member-state-4">state <a class="anchor" href="#member-state-4">#</a></h3><pre class="code" data-lang="ts"><code>state: number | string;</code></pre><p>The current state of this Game Object.</p>
+<p>Phaser itself will never modify this value, although plugins may do so.</p>
+<p>Use this property to track the state of a Game Object during its lifetime. For example, it could change from
+a state of &#39;moving&#39;, to &#39;attacking&#39;, to &#39;dead&#39;. The state value should be an integer (ideally mapped to a constant
+in your game code), or a string. These are recommended to keep it light and simple, with fast comparisons.
+If you need to store complex data about your Game Object, look at using the Data Component instead.</p>
+<p><b>Type / return:</b> <code>number | string</code></p><h3 id="member-parentcontainer-5">parentContainer <a class="anchor" href="#member-parentcontainer-5">#</a></h3><pre class="code" data-lang="ts"><code>parentContainer: Phaser.GameObjects.Container;</code></pre><p>The parent Container of this Game Object, if it has one.</p>
+<p><b>Type / return:</b> <code>Phaser.GameObjects.Container</code></p><h3 id="member-name-6">name <a class="anchor" href="#member-name-6">#</a></h3><pre class="code" data-lang="ts"><code>name: string;</code></pre><p>The name of this Game Object.
+Empty by default and never populated by Phaser, this is left for developers to use.</p>
+<p><b>Type / return:</b> <code>string</code></p><h3 id="member-active-7">active <a class="anchor" href="#member-active-7">#</a></h3><pre class="code" data-lang="ts"><code>active: boolean;</code></pre><p>The active state of this Game Object.
+A Game Object with an active state of <code>true</code> is processed by the Scenes UpdateList, if added to it.
+An active object is one which is having its logic and internal systems updated.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-tabindex-8">tabIndex <a class="anchor" href="#member-tabindex-8">#</a></h3><pre class="code" data-lang="ts"><code>tabIndex: number;</code></pre><p>The Tab Index of the Game Object.
+Reserved for future use by plugins and the Input Manager.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-data-9">data <a class="anchor" href="#member-data-9">#</a></h3><pre class="code" data-lang="ts"><code>data: Phaser.Data.DataManager;</code></pre><p>A Data Manager.
+It allows you to store, query and get key/value paired information specific to this Game Object.
+<code>null</code> by default. Automatically created if you use <code>getData</code> or <code>setData</code> or <code>setDataEnabled</code>.</p>
+<p><b>Type / return:</b> <code>Phaser.Data.DataManager</code></p><h3 id="member-renderflags-10">renderFlags <a class="anchor" href="#member-renderflags-10">#</a></h3><pre class="code" data-lang="ts"><code>renderFlags: number;</code></pre><p>The flags that are compared against <code>RENDER_MASK</code> to determine if this Game Object will render or not.
+The bits are 0001 | 0010 | 0100 | 1000 set by the components Visible, Alpha, Transform and Texture respectively.
+If those components are not used by your custom class then you can use this bitmask as you wish.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-camerafilter-11">cameraFilter <a class="anchor" href="#member-camerafilter-11">#</a></h3><pre class="code" data-lang="ts"><code>cameraFilter: number;</code></pre><p>A bitmask that controls if this Game Object is drawn by a Camera or not.
+Not usually set directly, instead call <code>Camera.ignore</code>, however you can
+set this property directly using the Camera.id property:</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-vertexroundmode-12">vertexRoundMode <a class="anchor" href="#member-vertexroundmode-12">#</a></h3><pre class="code" data-lang="ts"><code>vertexRoundMode: string;</code></pre><p>The current vertex rounding mode of this Game Object.
+This is used by the WebGL Renderer to determine how to round the vertex positions.
+It can have several values:</p>
+<ul>
+<li><code>off</code> - No rounding is applied.</li>
+<li><code>safe</code> - Rounding is applied if the object is &#39;safe&#39;.</li>
+<li><code>safeAuto</code> - Rounding is applied if the object is &#39;safe&#39; and the camera has <code>roundPixels</code> enabled.</li>
+<li><code>full</code> - Rounding is always applied.</li>
+<li><code>fullAuto</code> - Rounding is always applied if the camera has <code>roundPixels</code> enabled.</li>
+</ul>
+<p>A &#39;safe&#39; object is one that is not rotated or scaled
+by any transform matrix while rendering.
+The effective transform is a simple translation.
+In such cases, rounding will affect all vertices the same way.</p>
+<p>Using full rounding can cause vertices to wobble, because they might
+not be aligned to the pixel grid.
+Full rounding gives a janky look like PS1 games.</p>
+<p>You can use other values if you want to create your own custom rounding modes.</p>
+<p><b>Type / return:</b> <code>string</code></p><h3 id="member-input-13">input <a class="anchor" href="#member-input-13">#</a></h3><pre class="code" data-lang="ts"><code>input: Phaser.Types.Input.InteractiveObject | null;</code></pre><p>If this Game Object is enabled for input then this property will contain an InteractiveObject instance.
+Not usually set directly. Instead call <code>GameObject.setInteractive()</code>.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.Input.InteractiveObject | null</code></p><h3 id="member-body-14">body <a class="anchor" href="#member-body-14">#</a></h3><pre class="code" data-lang="ts"><code>body: Phaser.Physics.Arcade.Body | Phaser.Physics.Arcade.StaticBody | MatterJS.BodyType | null;</code></pre><p>If this Game Object is enabled for Arcade or Matter Physics then this property will contain a reference to a Physics Body.</p>
+<p><b>Type / return:</b> <code>Phaser.Physics.Arcade.Body | Phaser.Physics.Arcade.StaticBody | MatterJS.BodyType | null</code></p><h3 id="member-ignoredestroy-15">ignoreDestroy <a class="anchor" href="#member-ignoredestroy-15">#</a></h3><pre class="code" data-lang="ts"><code>ignoreDestroy: boolean;</code></pre><p>This Game Object will ignore all calls made to its destroy method if this flag is set to <code>true</code>.
+This includes calls that may come from a Group, Container or the Scene itself.
+While it allows you to persist a Game Object across Scenes, please understand you are entirely
+responsible for managing references to and from this Game Object.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-isdestroyed-16">isDestroyed <a class="anchor" href="#member-isdestroyed-16">#</a></h3><pre class="code" data-lang="ts"><code>readonly isDestroyed: boolean;</code></pre><p>Whether this Game Object has been destroyed.
+Check this property to avoid bugs caused by calling methods on a
+destroyed Game Object, e.g. in a Tween or Timer.</p>
+<p>This is a read-only property that is automatically set to <code>true</code>
+when the Game Object is destroyed.
+You should not set this property directly.
+It is set before <code>preDestroy</code> is called or the DESTROY event is emitted.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-setactive-17">setActive <a class="anchor" href="#member-setactive-17">#</a></h3><pre class="code" data-lang="ts"><code>setActive(value: boolean): this;</code></pre><p>Sets the <code>active</code> property of this Game Object and returns this Game Object for further chaining.
+A Game Object with its <code>active</code> property set to <code>true</code> will be updated by the Scenes UpdateList.
+<strong>param</strong>  value True if this Game Object should be set as active, false if not.
+<strong>returns</strong>  This GameObject.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setname-18">setName <a class="anchor" href="#member-setname-18">#</a></h3><pre class="code" data-lang="ts"><code>setName(value: string): this;</code></pre><p>Sets the <code>name</code> property of this Game Object and returns this Game Object for further chaining.
+The <code>name</code> property is not populated by Phaser and is presented for your own use.
+<strong>param</strong>  value The name to be given to this Game Object.
+<strong>returns</strong>  This GameObject.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>string</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setstate-19">setState <a class="anchor" href="#member-setstate-19">#</a></h3><pre class="code" data-lang="ts"><code>setState(value: number | string): this;</code></pre><p>Sets the current state of this Game Object.</p>
+<p>Phaser itself will never modify the State of a Game Object, although plugins may do so.</p>
+<p>For example, a Game Object could change from a state of &#39;moving&#39;, to &#39;attacking&#39;, to &#39;dead&#39;.
+The state value should typically be an integer (ideally mapped to a constant
+in your game code), but could also be a string. It is recommended to keep it light and simple.
+If you need to store complex data about your Game Object, look at using the Data Component instead.
+<strong>param</strong>  value The state of the Game Object.
+<strong>returns</strong>  This GameObject.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number | string</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setdataenabled-20">setDataEnabled <a class="anchor" href="#member-setdataenabled-20">#</a></h3><pre class="code" data-lang="ts"><code>setDataEnabled(): this;</code></pre><p>Adds a Data Manager component to this Game Object.undefined
+<strong>returns</strong>  This GameObject.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-setdata-21">setData <a class="anchor" href="#member-setdata-21">#</a></h3><pre class="code" data-lang="ts"><code>setData&lt;T extends any&gt;(key: (string|T), value?: any): this;</code></pre><p>Allows you to store a key value pair within this Game Objects Data Manager.</p>
+<p>If the Game Object has not been enabled for data (via <code>setDataEnabled</code>) then it will be enabled
+before setting the value.</p>
+<p>If the key doesn&#39;t already exist in the Data Manager then it is created.</p>
+<pre class="code" data-lang="javascript"><code>sprite.setData('name', 'Red Gem Stone');</code></pre>
+<p>You can also pass in an object of key value pairs as the first argument:</p>
+<pre class="code" data-lang="javascript"><code>sprite.setData({ name: 'Red Gem Stone', level: 2, owner: 'Link', gold: 50 });</code></pre>
+<p>To get a value back again you can call <code>getData</code>:</p>
+<pre class="code" data-lang="javascript"><code>sprite.getData('gold');</code></pre>
+<p>Or you can access the value directly via the <code>values</code> property, where it works like any other variable:</p>
+<pre class="code" data-lang="javascript"><code>sprite.data.values.gold += 50;</code></pre>
+<p>When the value is first set, a <code>setdata</code> event is emitted from this Game Object.</p>
+<p>If the key already exists, a <code>changedata</code> event is emitted instead, along an event named after the key.
+For example, if you updated an existing key called <code>PlayerLives</code> then it would emit the event <code>changedata-PlayerLives</code>.
+These events will be emitted regardless if you use this method to set the value, or the direct <code>values</code> setter.</p>
+<p>Please note that the data keys are case-sensitive and must be valid JavaScript Object property strings.
+This means the keys <code>gold</code> and <code>Gold</code> are treated as two unique values within the Data Manager.
+<strong>param</strong>  key The key to set the value for. Or an object of key value pairs. If an object the <code>data</code> argument is ignored.
+<strong>param</strong>  value The value to set for the given key. If an object is provided as the key this argument is ignored.
+<strong>returns</strong>  This GameObject.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>(string|T)</code></td><td>Required</td></tr><tr><td><code>value</code></td><td><code>any</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-incdata-22">incData <a class="anchor" href="#member-incdata-22">#</a></h3><pre class="code" data-lang="ts"><code>incData(key: string, amount?: number): this;</code></pre><p>Increase a value for the given key within this Game Object&#39;s Data Manager. If the key doesn&#39;t already exist in the Data Manager then it is created with a value of 0 before being increased.</p>
+<p>If the Game Object has not been enabled for data (via <code>setDataEnabled</code>) then it will be enabled
+before setting the value.</p>
+<p>If the key doesn&#39;t already exist in the Data Manager then it is created.</p>
+<p>When the value is first set, a <code>setdata</code> event is emitted from this Game Object.
+<strong>param</strong>  key The key to change the value for.
+<strong>param</strong>  amount The amount to increase the given key by. Pass a negative value to decrease the key. Default 1.
+<strong>returns</strong>  This GameObject.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>amount</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-toggledata-23">toggleData <a class="anchor" href="#member-toggledata-23">#</a></h3><pre class="code" data-lang="ts"><code>toggleData(key: string): this;</code></pre><p>Toggle a boolean value for the given key within this Game Object&#39;s Data Manager. If the key doesn&#39;t already exist in the Data Manager then it is created with a value of <code>false</code> before being toggled to <code>true</code>.</p>
+<p>If the Game Object has not been enabled for data (via <code>setDataEnabled</code>) then it will be enabled
+before setting the value.</p>
+<p>If the key doesn&#39;t already exist in the Data Manager then it is created.</p>
+<p>When the value is first set, a <code>setdata</code> event is emitted from this Game Object.
+<strong>param</strong>  key The key to toggle the value for.
+<strong>returns</strong>  This GameObject.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-getdata-24">getData <a class="anchor" href="#member-getdata-24">#</a></h3><pre class="code" data-lang="ts"><code>getData(key: string | string[]): any;</code></pre><p>Retrieves the value for the given key in this Game Objects Data Manager, or undefined if it doesn&#39;t exist.</p>
+<p>You can also access values via the <code>values</code> object. For example, if you had a key called <code>gold</code> you can do either:</p>
+<pre class="code" data-lang="javascript"><code>sprite.getData('gold');</code></pre>
+<p>Or access the value directly:</p>
+<pre class="code" data-lang="javascript"><code>sprite.data.values.gold;</code></pre>
+<p>You can also pass in an array of keys, in which case an array of values will be returned:</p>
+<pre class="code" data-lang="javascript"><code>sprite.getData([ 'gold', 'armor', 'health' ]);</code></pre>
+<p>This approach is useful for destructuring arrays in ES6.
+<strong>param</strong>  key The key of the value to retrieve, or an array of keys.
+<strong>returns</strong>  The value belonging to the given key, or an array of values, the order of which will match the input array.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string | string[]</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>any</code></p><h3 id="member-setinteractive-25">setInteractive <a class="anchor" href="#member-setinteractive-25">#</a></h3><pre class="code" data-lang="ts"><code>setInteractive(hitArea?: Phaser.Types.Input.InputConfiguration | any, callback?: Phaser.Types.Input.HitAreaCallback, dropZone?: boolean): this;</code></pre><p>Pass this Game Object to the Input Manager to enable it for Input.</p>
+<p>Input works by using hit areas, these are nearly always geometric shapes, such as rectangles or circles, that act as the hit area
+for the Game Object. However, you can provide your own hit area shape and callback, should you wish to handle some more advanced
+input detection.</p>
+<p>If no arguments are provided it will try and create a rectangle hit area based on the texture frame the Game Object is using. If
+this isn&#39;t a texture-bound object, such as a Graphics or BitmapText object, this will fail, and you&#39;ll need to provide a specific
+shape for it to use.</p>
+<p>You can also provide an Input Configuration Object as the only argument to this method.
+<strong>param</strong>  hitArea Either an input configuration object, or a geometric shape that defines the hit area for the Game Object. If not given it will try to create a Rectangle based on the texture frame.
+<strong>param</strong>  callback The callback that determines if the pointer is within the Hit Area shape or not. If you provide a shape you must also provide a callback.
+<strong>param</strong>  dropZone Should this Game Object be treated as a drop zone target? Default false.
+<strong>returns</strong>  This GameObject.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>hitArea</code></td><td><code>Phaser.Types.Input.InputConfiguration | any</code></td><td>Optional</td></tr><tr><td><code>callback</code></td><td><code>Phaser.Types.Input.HitAreaCallback</code></td><td>Optional</td></tr><tr><td><code>dropZone</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-disableinteractive-26">disableInteractive <a class="anchor" href="#member-disableinteractive-26">#</a></h3><pre class="code" data-lang="ts"><code>disableInteractive(resetCursor?: boolean): this;</code></pre><p>If this Game Object has previously been enabled for input, this will disable it.</p>
+<p>An object that is disabled for input stops processing or being considered for
+input events, but can be turned back on again at any time by simply calling
+<code>setInteractive()</code> with no arguments provided.</p>
+<p>If want to completely remove interaction from this Game Object then use <code>removeInteractive</code> instead.
+<strong>param</strong>  resetCursor Should the currently active Input cursor, if any, be reset to the default cursor? Default false.
+<strong>returns</strong>  This GameObject.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>resetCursor</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-removeinteractive-27">removeInteractive <a class="anchor" href="#member-removeinteractive-27">#</a></h3><pre class="code" data-lang="ts"><code>removeInteractive(resetCursor?: boolean): this;</code></pre><p>If this Game Object has previously been enabled for input, this will queue it
+for removal, causing it to no longer be interactive. The removal happens on
+the next game step, it is not immediate.</p>
+<p>The Interactive Object that was assigned to this Game Object will be destroyed,
+removed from the Input Manager and cleared from this Game Object.</p>
+<p>If you wish to re-enable this Game Object at a later date you will need to
+re-create its InteractiveObject by calling <code>setInteractive</code> again.</p>
+<p>If you wish to only temporarily stop an object from receiving input then use
+<code>disableInteractive</code> instead, as that toggles the interactive state, where-as
+this erases it completely.</p>
+<p>If you wish to resize a hit area, don&#39;t remove and then set it as being
+interactive. Instead, access the hitarea object directly and resize the shape
+being used. I.e.: <code>sprite.input.hitArea.setSize(width, height)</code> (assuming the
+shape is a Rectangle, which it is by default.)
+<strong>param</strong>  resetCursor Should the currently active Input cursor, if any, be reset to the default cursor? Default false.
+<strong>returns</strong>  This GameObject.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>resetCursor</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-addedtoscene-28">addedToScene <a class="anchor" href="#member-addedtoscene-28">#</a></h3><pre class="code" data-lang="ts"><code>addedToScene(): void;</code></pre><p>This callback is invoked when this Game Object is added to a Scene.</p>
+<p>Can be overridden by custom Game Objects, but be aware of some Game Objects that
+will use this, such as Sprites, to add themselves into the Update List.</p>
+<p>You can also listen for the <code>ADDED_TO_SCENE</code> event from this Game Object.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="member-removedfromscene-29">removedFromScene <a class="anchor" href="#member-removedfromscene-29">#</a></h3><pre class="code" data-lang="ts"><code>removedFromScene(): void;</code></pre><p>This callback is invoked when this Game Object is removed from a Scene.</p>
+<p>Can be overridden by custom Game Objects, but be aware of some Game Objects that
+will use this, such as Sprites, to remove themselves from the Update List.</p>
+<p>You can also listen for the <code>REMOVED_FROM_SCENE</code> event from this Game Object.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="member-update-30">update <a class="anchor" href="#member-update-30">#</a></h3><pre class="code" data-lang="ts"><code>update(...args: any[]): void;</code></pre><p>Override this method in your own custom Game Objects to perform per-frame update logic.
+This method is called by the Scene&#39;s Update List on every game frame, if the Game Object
+is on that list. It is not called automatically — the Game Object must be added to the
+Update List via <code>addToUpdateList</code> or by having a <code>preUpdate</code> method.</p>
+<p>This base implementation is intentionally empty, allowing Game Objects to be used in an
+Object Pool without requiring any update logic.
+<strong>param</strong>  args Any arguments that are passed to the update method.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>...args</code></td><td><code>any[]</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-tojson-31">toJSON <a class="anchor" href="#member-tojson-31">#</a></h3><pre class="code" data-lang="ts"><code>toJSON(): Phaser.Types.GameObjects.JSONGameObject;</code></pre><p>Returns a JSON representation of the Game Object.undefined
+<strong>returns</strong>  A JSON representation of the Game Object.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.JSONGameObject</code></p><h3 id="member-willrender-32">willRender <a class="anchor" href="#member-willrender-32">#</a></h3><pre class="code" data-lang="ts"><code>willRender(camera: Phaser.Cameras.Scene2D.Camera): boolean;</code></pre><p>Compares the renderMask with the renderFlags to see if this Game Object will render or not.
+Also checks the Game Object against the given Cameras exclusion list.
+<strong>param</strong>  camera The Camera to check against this Game Object.
+<strong>returns</strong>  True if the Game Object should be rendered, otherwise false.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>camera</code></td><td><code>Phaser.Cameras.Scene2D.Camera</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-willroundvertices-33">willRoundVertices <a class="anchor" href="#member-willroundvertices-33">#</a></h3><pre class="code" data-lang="ts"><code>willRoundVertices(camera: Phaser.Cameras.Scene2D.Camera, onlyTranslated: boolean): boolean;</code></pre><p>Checks if this Game Object should round its vertices,
+based on the given Camera and the <code>vertexRoundMode</code> of this Game Object.
+This is used by the WebGL Renderer to determine how to round the vertex positions.</p>
+<p>You can override this method in your own custom Game Object classes to provide
+custom logic for vertex rounding.
+<strong>param</strong>  camera The Camera to check against this Game Object.
+<strong>param</strong>  onlyTranslated If true, the object is only translated, not scaled or rotated.
+<strong>returns</strong>  True if the Game Object should be rounded, otherwise false.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>camera</code></td><td><code>Phaser.Cameras.Scene2D.Camera</code></td><td>Required</td></tr><tr><td><code>onlyTranslated</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-setvertexroundmode-34">setVertexRoundMode <a class="anchor" href="#member-setvertexroundmode-34">#</a></h3><pre class="code" data-lang="ts"><code>setVertexRoundMode(mode: string): this;</code></pre><p>Sets the vertex round mode of this Game Object.
+This is used by the WebGL Renderer to determine how to round the vertex positions.
+<strong>param</strong>  mode The vertex round mode to set. Can be &#39;off&#39;, &#39;safe&#39;, &#39;safeAuto&#39;, &#39;full&#39; or &#39;fullAuto&#39;.
+<strong>returns</strong>  This GameObject.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>mode</code></td><td><code>string</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-getindexlist-35">getIndexList <a class="anchor" href="#member-getindexlist-35">#</a></h3><pre class="code" data-lang="ts"><code>getIndexList(): number[];</code></pre><p>Returns an array containing the display list index of either this Game Object, or if it has one,
+its parent Container. It then iterates up through all of the parent containers until it hits the
+root of the display list (which is index 0 in the returned array).</p>
+<p>Used internally by the InputPlugin but also useful if you wish to find out the display depth of
+this Game Object and all of its ancestors.undefined
+<strong>returns</strong>  An array of display list position indexes.</p>
+<p><b>Type / return:</b> <code>number[]</code></p><h3 id="member-addtodisplaylist-36">addToDisplayList <a class="anchor" href="#member-addtodisplaylist-36">#</a></h3><pre class="code" data-lang="ts"><code>addToDisplayList(displayList?: Phaser.GameObjects.DisplayList | Phaser.GameObjects.Layer): this;</code></pre><p>Adds this Game Object to the given Display List.</p>
+<p>If no Display List is specified, it will default to the Display List owned by the Scene to which
+this Game Object belongs.</p>
+<p>A Game Object can only exist on one Display List at any given time, but may move freely between them.</p>
+<p>If this Game Object is already on another Display List when this method is called, it will first
+be removed from it, before being added to the new list.</p>
+<p>You can query which list it is on by looking at the <code>Phaser.GameObjects.GameObject#displayList</code> property.</p>
+<p>If a Game Object isn&#39;t on any display list, it will not be rendered. If you just wish to temporarily
+disable it from rendering, consider using the <code>setVisible</code> method, instead.
+<strong>param</strong>  displayList The Display List to add to. Defaults to the Scene Display List.
+<strong>returns</strong>  This Game Object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>displayList</code></td><td><code>Phaser.GameObjects.DisplayList | Phaser.GameObjects.Layer</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-addtoupdatelist-37">addToUpdateList <a class="anchor" href="#member-addtoupdatelist-37">#</a></h3><pre class="code" data-lang="ts"><code>addToUpdateList(): this;</code></pre><p>Adds this Game Object to the Update List belonging to the Scene.</p>
+<p>When a Game Object is added to the Update List it will have its <code>preUpdate</code> method called
+every game frame. This method is passed two parameters: <code>time</code> and <code>delta</code>.</p>
+<p>If you wish to run your own logic within <code>preUpdate</code> then you should always call
+<code>super.preUpdate(time, delta)</code> within it, or it may fail to process required operations,
+such as Sprite animations.undefined
+<strong>returns</strong>  This Game Object.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-removefromdisplaylist-38">removeFromDisplayList <a class="anchor" href="#member-removefromdisplaylist-38">#</a></h3><pre class="code" data-lang="ts"><code>removeFromDisplayList(): this;</code></pre><p>Removes this Game Object from the Display List it is currently on.</p>
+<p>A Game Object can only exist on one Display List at any given time, but may be freely removed
+and added back at a later stage.</p>
+<p>You can query which list it is on by looking at the <code>Phaser.GameObjects.GameObject#displayList</code> property.</p>
+<p>If a Game Object isn&#39;t on any Display List, it will not be rendered. If you just wish to temporarily
+disable it from rendering, consider using the <code>setVisible</code> method, instead.undefined
+<strong>returns</strong>  This Game Object.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-removefromupdatelist-39">removeFromUpdateList <a class="anchor" href="#member-removefromupdatelist-39">#</a></h3><pre class="code" data-lang="ts"><code>removeFromUpdateList(): this;</code></pre><p>Removes this Game Object from the Scene&#39;s Update List.</p>
+<p>When a Game Object is on the Update List, it will have its <code>preUpdate</code> method called
+every game frame. Calling this method will remove it from the list, preventing this.</p>
+<p>Removing a Game Object from the Update List will stop most internal functions working.
+For example, removing a Sprite from the Update List will prevent it from being able to
+run animations.undefined
+<strong>returns</strong>  This Game Object.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-getdisplaylist-40">getDisplayList <a class="anchor" href="#member-getdisplaylist-40">#</a></h3><pre class="code" data-lang="ts"><code>getDisplayList(): Phaser.GameObjects.GameObject[] | null;</code></pre><p>Returns a reference to the underlying display list <em>array</em> that contains this Game Object,
+which will be either the Scene&#39;s Display List or the internal list belonging
+to its parent Container, if it has one.</p>
+<p>If this Game Object is not on a display list or in a container, it will return <code>null</code>.</p>
+<p>You should be very careful with this method, and understand that it returns a direct reference to the
+internal array used by the Display List. Mutating this array directly can cause all kinds of subtle
+and difficult to debug issues in your game.undefined
+<strong>returns</strong>  The internal Display List array of Game Objects, or <code>null</code>.</p>
+<p><b>Type / return:</b> <code>Phaser.GameObjects.GameObject[] | null</code></p><h3 id="member-destroy-41">destroy <a class="anchor" href="#member-destroy-41">#</a></h3><pre class="code" data-lang="ts"><code>destroy(fromScene?: boolean): void;</code></pre><p>Destroys this Game Object removing it from the Display List and Update List and
+severing all ties to parent resources.</p>
+<p>Also removes itself from the Input Manager and Physics Manager if previously enabled.</p>
+<p>Use this to remove a Game Object from your game if you don&#39;t ever plan to use it again.
+As long as no reference to it exists within your own code it should become free for
+garbage collection by the browser.</p>
+<p>If you just want to temporarily disable an object then look at using the
+Game Object Pool instead of destroying it, as destroyed objects cannot be resurrected.
+<strong>param</strong>  fromScene <code>True</code> if this Game Object is being destroyed by the Scene, <code>false</code> if not. Default false.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>fromScene</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-render-mask-42">RENDER_MASK <a class="anchor" href="#member-render-mask-42">#</a></h3><pre class="code" data-lang="ts"><code>static readonly RENDER_MASK: number;</code></pre><p>The bitmask that <code>GameObject.renderFlags</code> is compared against to determine if the Game Object will render or not.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-filtercamera-43">filterCamera <a class="anchor" href="#member-filtercamera-43">#</a></h3><pre class="code" data-lang="ts"><code>filterCamera: Phaser.Cameras.Scene2D.Camera;</code></pre><p>The Camera used for filters.
+You can use this to alter the perspective of filters.
+It is not necessary to use this camera for ordinary rendering.</p>
+<p>This is only available if you use the <code>enableFilters</code> method.</p>
+<p><b>Type / return:</b> <code>Phaser.Cameras.Scene2D.Camera</code></p><h3 id="member-filters-44">filters <a class="anchor" href="#member-filters-44">#</a></h3><pre class="code" data-lang="ts"><code>readonly filters: Phaser.Types.GameObjects.FiltersInternalExternal | null;</code></pre><p>The filter lists for this Game Object.
+This is an object with <code>internal</code> and <code>external</code> properties.
+Each list is a Phaser.GameObjects.Components.FilterList object.</p>
+<p>This is only available if you use the <code>enableFilters</code> method.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.FiltersInternalExternal | null</code></p><h3 id="member-renderfilters-45">renderFilters <a class="anchor" href="#member-renderfilters-45">#</a></h3><pre class="code" data-lang="ts"><code>renderFilters: boolean;</code></pre><p>Whether any filters should be rendered on this Game Object.
+This is <code>true</code> by default, even if there are no filters yet.
+Disable this to skip filter rendering.</p>
+<p>Use <code>willRenderFilters()</code> to see if there are any active filters.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-maxfiltersize-46">maxFilterSize <a class="anchor" href="#member-maxfiltersize-46">#</a></h3><pre class="code" data-lang="ts"><code>maxFilterSize: Phaser.Math.Vector2;</code></pre><p>The maximum size of the base filter texture.
+Filters may use a larger texture after the base texture is rendered.
+The maximum texture size is at least 4096 in WebGL, based on the hardware.
+You may set this lower to save memory or prevent resizing.</p>
+<p><b>Type / return:</b> <code>Phaser.Math.Vector2</code></p><h3 id="member-filtersautofocus-47">filtersAutoFocus <a class="anchor" href="#member-filtersautofocus-47">#</a></h3><pre class="code" data-lang="ts"><code>filtersAutoFocus: boolean;</code></pre><p>Whether <code>filterCamera</code> should update every frame
+to focus on the Game Object.
+Disable this if you want to manually control the camera.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-filtersfocuscontext-48">filtersFocusContext <a class="anchor" href="#member-filtersfocuscontext-48">#</a></h3><pre class="code" data-lang="ts"><code>filtersFocusContext: boolean;</code></pre><p>Whether the filters should focus on the context,
+rather than attempt to focus on the Game Object.
+This is enabled automatically when enabling filters on objects
+which don&#39;t have well-defined bounds.</p>
+<p>This effectively sets the internal filters to render the same way
+as the external filters.</p>
+<p>This is only used if <code>filtersAutoFocus</code> is enabled.</p>
+<p>The &quot;context&quot; is the framebuffer to which the Game Object is rendered.
+This is usually the main framebuffer, but might be another framebuffer.
+It can even be several different framebuffers if the Game Object is
+rendered multiple times.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-filtersforcecomposite-49">filtersForceComposite <a class="anchor" href="#member-filtersforcecomposite-49">#</a></h3><pre class="code" data-lang="ts"><code>filtersForceComposite: boolean;</code></pre><p>Whether the Filters component should always draw to a framebuffer,
+even if there are no active filters.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-willrenderfilters-50">willRenderFilters <a class="anchor" href="#member-willrenderfilters-50">#</a></h3><pre class="code" data-lang="ts"><code>willRenderFilters(): boolean;</code></pre><p>Whether this Game Object will render filters.
+This is true if it has active filters,
+and if the <code>renderFilters</code> property is also true.undefined
+<strong>returns</strong>  Whether the Game Object will render filters.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-enablefilters-51">enableFilters <a class="anchor" href="#member-enablefilters-51">#</a></h3><pre class="code" data-lang="ts"><code>enableFilters(): this;</code></pre><p>Enable this Game Object to have filters.</p>
+<p>You need to call this method if you want to use the <code>filterCamera</code>
+and <code>filters</code> properties. It sets up the necessary data structures.
+You may disable filter rendering with the <code>renderFilters</code> property.</p>
+<p>This is a WebGL only feature. It will return early if not available.undefined
+<strong>returns</strong>  undefined</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-renderwebglfilters-52">renderWebGLFilters <a class="anchor" href="#member-renderwebglfilters-52">#</a></h3><pre class="code" data-lang="ts"><code>renderWebGLFilters(renderer: Phaser.Renderer.WebGL.WebGLRenderer, gameObject: Phaser.GameObjects.GameObject, drawingContext: Phaser.Renderer.WebGL.DrawingContext, parentMatrix?: Phaser.GameObjects.Components.TransformMatrix, renderStep?: number): Phaser.Types.GameObjects.RenderWebGLStep;</code></pre><p>Render this object using filters.</p>
+<p>This function&#39;s scope is not guaranteed, so it doesn&#39;t refer to <code>this</code>.
+<strong>param</strong>  renderer The WebGL Renderer instance to render with.
+<strong>param</strong>  gameObject The Game Object being rendered.
+<strong>param</strong>  drawingContext The current drawing context.
+<strong>param</strong>  parentMatrix The parent matrix of the Game Object, if it has one.
+<strong>param</strong>  renderStep The index of this function in the Game Object&#39;s list of render processes. Used to support multiple rendering functions. Default 0.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>renderer</code></td><td><code>Phaser.Renderer.WebGL.WebGLRenderer</code></td><td>Required</td></tr><tr><td><code>gameObject</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr><tr><td><code>drawingContext</code></td><td><code>Phaser.Renderer.WebGL.DrawingContext</code></td><td>Required</td></tr><tr><td><code>parentMatrix</code></td><td><code>Phaser.GameObjects.Components.TransformMatrix</code></td><td>Optional</td></tr><tr><td><code>renderStep</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Types.GameObjects.RenderWebGLStep</code></p><h3 id="member-focusfilters-53">focusFilters <a class="anchor" href="#member-focusfilters-53">#</a></h3><pre class="code" data-lang="ts"><code>focusFilters(): this;</code></pre><p>Focus the filter camera.
+This sets the size and position of the filter camera to match the GameObject.
+This is called automatically on render if <code>filtersAutoFocus</code> is enabled.</p>
+<p>This will focus on the GameObject&#39;s raw dimensions if available.
+If the GameObject has no dimensions, this will focus on the context:
+the camera belonging to the DrawingContext used to render the GameObject.
+Context focus occurs during rendering,
+as the context is not known until then.undefined
+<strong>returns</strong>  undefined</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-focusfiltersoncamera-54">focusFiltersOnCamera <a class="anchor" href="#member-focusfiltersoncamera-54">#</a></h3><pre class="code" data-lang="ts"><code>focusFiltersOnCamera(camera: Phaser.Cameras.Scene2D.Camera): this;</code></pre><p>Focus the filter camera on a specific camera.
+This is used internally when <code>filtersFocusContext</code> is enabled.
+<strong>param</strong>  camera The camera to focus on.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>camera</code></td><td><code>Phaser.Cameras.Scene2D.Camera</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-focusfiltersoverride-55">focusFiltersOverride <a class="anchor" href="#member-focusfiltersoverride-55">#</a></h3><pre class="code" data-lang="ts"><code>focusFiltersOverride(x?: number, y?: number, width?: number, height?: number): this;</code></pre><p>Manually override the focus of the filter camera.
+This allows you to set the size and position of the filter camera manually.
+It deactivates <code>filtersAutoFocus</code> when called.</p>
+<p>The camera will set scroll to place the game object at the
+given position within a rectangle of the given width and height.
+For example, calling <code>focusFiltersOverride(400, 200, 800, 600)</code>
+will focus the camera to place the object&#39;s center
+100 pixels above the center of the camera (which is at 400x300).
+<strong>param</strong>  x The x-coordinate of the focus point, relative to the filter size. Default is the center.
+<strong>param</strong>  y The y-coordinate of the focus point, relative to the filter size. Default is the center.
+<strong>param</strong>  width The width of the focus area. Default is the filter width.
+<strong>param</strong>  height The height of the focus area. Default is the filter height.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>width</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setfiltersize-56">setFilterSize <a class="anchor" href="#member-setfiltersize-56">#</a></h3><pre class="code" data-lang="ts"><code>setFilterSize(width: number, height: number): this;</code></pre><p>Set the base size of the filter camera.
+This is the size of the texture that internal filters will be drawn to.
+External filters are drawn to the size of the context (usually the game canvas).</p>
+<p>This is typically the size of the GameObject.
+It is set automatically when the Game Object is rendered
+and <code>filtersAutoFocus</code> is enabled.
+Turn off auto focus to set it manually.</p>
+<p>Technically, larger framebuffers may be used to provide padding.
+This is the size of the final framebuffer used for &quot;internal&quot; rendering.
+<strong>param</strong>  width Base width of the filter texture.
+<strong>param</strong>  height Base height of the filter texture.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>width</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setfiltersautofocus-57">setFiltersAutoFocus <a class="anchor" href="#member-setfiltersautofocus-57">#</a></h3><pre class="code" data-lang="ts"><code>setFiltersAutoFocus(value: boolean): this;</code></pre><p>Sets whether the filter camera should automatically re-focus on the Game Object every frame.
+Sets the <code>filtersAutoFocus</code> property.
+<strong>param</strong>  value Whether filters should be updated every frame.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setfiltersfocuscontext-58">setFiltersFocusContext <a class="anchor" href="#member-setfiltersfocuscontext-58">#</a></h3><pre class="code" data-lang="ts"><code>setFiltersFocusContext(value: boolean): this;</code></pre><p>Set whether the filters should focus on the context.
+Sets the <code>filtersFocusContext</code> property.
+<strong>param</strong>  value Whether the filters should focus on the context.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setfiltersforcecomposite-59">setFiltersForceComposite <a class="anchor" href="#member-setfiltersforcecomposite-59">#</a></h3><pre class="code" data-lang="ts"><code>setFiltersForceComposite(value: boolean): this;</code></pre><p>Set whether the filters should always draw to a framebuffer.
+Sets the <code>filtersForceComposite</code> property.
+<strong>param</strong>  value Whether the object should always draw to a framebuffer, even if there are no active filters.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setrenderfilters-60">setRenderFilters <a class="anchor" href="#member-setrenderfilters-60">#</a></h3><pre class="code" data-lang="ts"><code>setRenderFilters(value: boolean): this;</code></pre><p>Set whether the filters should be rendered.
+Sets the <code>renderFilters</code> property.
+<strong>param</strong>  value Whether the filters should be rendered.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-renderwebglstep-61">renderWebGLStep <a class="anchor" href="#member-renderwebglstep-61">#</a></h3><pre class="code" data-lang="ts"><code>renderWebGLStep(renderer: Phaser.Renderer.WebGL.WebGLRenderer, gameObject: Phaser.GameObjects.GameObject, drawingContext: Phaser.Renderer.WebGL.DrawingContext, parentMatrix?: Phaser.GameObjects.Components.TransformMatrix, renderStep?: number, displayList?: Phaser.GameObjects.GameObject[], displayListIndex?: number): void;</code></pre><p>Run a step in the render process.
+This is called automatically by the Render module.</p>
+<p>In most cases, it just runs the <code>renderWebGL</code> function.</p>
+<p>When <code>_renderSteps</code> has more than one entry,
+such as when Filters are enabled for this object,
+it allows those processes to defer <code>renderWebGL</code>
+and otherwise manage the flow of rendering.
+<strong>param</strong>  renderer The WebGL Renderer instance to render with.
+<strong>param</strong>  gameObject The Game Object being rendered.
+<strong>param</strong>  drawingContext The current drawing context.
+<strong>param</strong>  parentMatrix The parent matrix of the Game Object, if it has one.
+<strong>param</strong>  renderStep Which step of the rendering process should be run? Default 0.
+<strong>param</strong>  displayList The display list which is currently being rendered. If not provided, it will be created with the Game Object.
+<strong>param</strong>  displayListIndex The index of the Game Object within the display list. Default 0.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>renderer</code></td><td><code>Phaser.Renderer.WebGL.WebGLRenderer</code></td><td>Required</td></tr><tr><td><code>gameObject</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr><tr><td><code>drawingContext</code></td><td><code>Phaser.Renderer.WebGL.DrawingContext</code></td><td>Required</td></tr><tr><td><code>parentMatrix</code></td><td><code>Phaser.GameObjects.Components.TransformMatrix</code></td><td>Optional</td></tr><tr><td><code>renderStep</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>displayList</code></td><td><code>Phaser.GameObjects.GameObject[]</code></td><td>Optional</td></tr><tr><td><code>displayListIndex</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-addrenderstep-62">addRenderStep <a class="anchor" href="#member-addrenderstep-62">#</a></h3><pre class="code" data-lang="ts"><code>addRenderStep(fn: Phaser.Types.GameObjects.RenderWebGLStep, index?: number): this;</code></pre><p>Adds a render step function to this Game Object&#39;s WebGL render pipeline.</p>
+<p>The first render step in <code>_renderSteps</code> is run first.
+It should call the next render step in the list.
+This allows render steps to control the rendering flow.
+<strong>param</strong>  fn The render step function to add.
+<strong>param</strong>  index The index in the render list to add the step to. Omit to add to the end.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>fn</code></td><td><code>Phaser.Types.GameObjects.RenderWebGLStep</code></td><td>Required</td></tr><tr><td><code>index</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h2 id="base-types">Base types</h2><p><a href="../../events/58/eventemitter.html">Phaser.Events.EventEmitter</a> · <a href="../components/ac/filters.html">Phaser.GameObjects.Components.Filters</a> · <a href="../components/6d/rendersteps.html">Phaser.GameObjects.Components.RenderSteps</a></p><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#members">Public members (63)</a><a href="#base-types">Base types</a></aside></div>
+<script src="../../../../../../../../assets/cm.classic.js"></script><script src="../../../../../../../../assets/manual.js"></script></body></html>

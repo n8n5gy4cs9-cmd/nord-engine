@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Forces — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../../index.html"><img src="../../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../../index.html">Babylon documentation library</a><a href="../../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Forces</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="how-to-use-forces">How To Use Forces<a class="anchor" href="#how-to-use-forces">#</a></h2>
+<p>This section gives some terminology needed to discuss the use of forces in the three physics engines:</p>
+<ol>
+<li>Cannon.js;</li>
+<li>Oimo.js;</li>
+<li>Ammo.js</li>
+</ol>
+<p>as well as Playground examples to check out the code. In the Playgrounds, the physics engine used can be changed by selecting which ones to comment out.</p>
+<p>See <span>How to Use The Physics&#39; Engines</span> for an overall view of setting up and using the three plugins.</p>
+<h2 id="body">Body<a class="anchor" href="#body">#</a></h2>
+<p>Solids in physics are often referred to as <code>bodies</code>. In the simulation, bodies are made up of two parts: the rendered object and the physics object. The rendered object is a mesh, and the physics object, which holds the data about the body, is called a physics impostor.</p>
+<p><strong>Note:</strong> a box impostor is often preferable when the body is a plane.</p>
+<h2 id="mass">Mass<a class="anchor" href="#mass">#</a></h2>
+<p>This is the amount of matter in the body and is set when the impostor is created. Static bodies should have a mass of zero.</p>
+<pre class="code" data-lang="javascript"><code>new BABYLON.PhysicsImpostor(mesh, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 2 }, scene);</code></pre>
+<h2 id="forces">Forces<a class="anchor" href="#forces">#</a></h2>
+<p>These are gravity, impulses, friction and applied forces.</p>
+<h3 id="gravity">Gravity<a class="anchor" href="#gravity">#</a></h3>
+<p>In the simulations, gravity is a universal force applied throughout the simulation, producing gravitational acceleration. Setting a Vector3 for gravity is, in fact, setting the gravitational acceleration. The default value is <code>(0, -9.807, 0)</code>. Since it is a universal force, it is set in the physics engine either when it is enabled or later.</p>
+<pre class="code" data-lang="javascript"><code>/*When physics is enabled use default gravity*/
+scene.enablePhysics(null, new BABYLON.CannonJSPlugin());
+scene.enablePhysics(null, new BABYLON.OimoJSPlugin());
+
+await Ammo();
+scene.enablePhysics(null, new BABYLON.AmmoJSPlugin());
+
+//set gravity
+scene.enablePhysics(new BABYLON.Vector3(0, -5, 0), new BABYLON.CannonJSPlugin());
+scene.enablePhysics(new BABYLON.Vector3(0, -5, 0), new BABYLON.OimoJSPlugin());
+scene.enablePhysics(new BABYLON.Vector3(0, -5, 0), new BABYLON.AmmoJSPlugin());
+
+/*Get and set gravity*/
+var physicsEngine = scene.enablePhysics(null, new BABYLON.CannonJSPlugin());
+var physicsEngine = scene.enablePhysics(null, new BABYLON.OimoJSPlugin());
+
+await Ammo();
+var physicsEngine = scene.enablePhysics(null, new BABYLON.AmmoJSPlugin());
+
+//Get gravity
+var gravity = physicsEngine.gravity;
+
+//Set gravity
+physicsEngine.setGravity(new BABYLON.Vector3(0, -5, 0));</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><h3 id="impulses">Impulses<a class="anchor" href="#impulses">#</a></h3>
+<p>An impulse is a force applied to a body in an instant, which changes the current linear velocity and/or the angular velocity of the body. Impulses acting at the center of mass of the body will not change the angular velocity. Unless other forces act on it, the body will continue with the new velocities.</p>
+<p>An impulse is applied to a body&#39;s physics impostor.</p>
+<p>Applying an impulse requires a vector giving the magnitude and direction of the impulse and the position vector of the contact point of the impulse. The contact point of the impulse is given in world coordinates.</p>
+<pre class="code" data-lang="javascript"><code>imposter.applyImpulse(impluse_vector, contact_vector);
+
+let localRefPoint = new BABYLON.Vector3(x, y, z);
+
+imposter.applyImpulse(ImpulseVector, mesh.getAbsolutePosition()); //impulse at center of mass
+
+imposter.applyImpulse(ImpulseVector, mesh.getAbsolutePosition().add(localRefPoint)); //impulse at a local point</code></pre>
+<p>The following Playground is initially set up to apply an impulse at the center of mass vertically against gravity, which eventually returns the box to the ground. Leaving the friction at 0 and applying horizontal impulses shows the continuity of movement.</p>
+<span class="muted">Online playground (not embedded offline)</span><h3 id="friction">Friction<a class="anchor" href="#friction">#</a></h3>
+<p>Friction is a property of a body. It is set in the impostor and provides a continuous force between two bodies while they are in contact. You can set friction when creating an impostor and also get and set it later.</p>
+<pre class="code" data-lang="javascript"><code>new BABYLON.PhysicsImpostor(mesh, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 2, friction: 0.4 }, scene); //on creation
+
+var friction = imposter.friction; // get friction;
+imposter.friction = 0.1; //set friction.</code></pre>
+<p>Since friction occurs at the boundary of a body, applying an impulse at the center of mass will produce an angular velocity as well as a linear velocity.</p>
+<p>Revisiting the following Playground, setting friction on <strong>both</strong> bodies, and applying horizontal impulses will show the angular velocity effect.</p>
+<span class="muted">Online playground (not embedded offline)</span><h3 id="applied-forces">Applied Forces<a class="anchor" href="#applied-forces">#</a></h3>
+<p>An applied force only affects the body over the period during which it is applied, which is the duration of the frame interval. With zero friction, a sufficiently large force (to overcome inertia) applied in the first frame interval will set the body in motion. While <code>Cannon.js</code> and <code>Ammo.js</code> have a native apply-force method, <code>Oimo.js</code> does not, so applying a force is replaced internally in Babylon.js with the apply-impulse method, meaning a smaller value has a greater effect.</p>
+<pre class="code" data-lang="javascript"><code>//Force Settings
+var forceDirection = new BABYLON.Vector3(1, 0, 0);
+var forceMagnitude = 50;
+var contactLocalRefPoint = BABYLON.Vector3.Zero();
+
+impostor.applyForce(forceDirection.scale(forceMagnitude), mesh.getAbsolutePosition().add(contactLocalRefPoint));</code></pre>
+<p>The following Playground is initially set up with zero friction and applies an impulse at the center of mass horizontally in the X direction.</p>
+<span class="muted">Online playground (not embedded offline)
+</span><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#how-to-use-forces">How To Use Forces </a><a href="#body">Body </a><a href="#mass">Mass </a><a href="#forces">Forces </a></aside></div>
+<script src="../../../../../../../assets/cm.classic.js"></script><script src="../../../../../../../assets/manual.js"></script></body></html>

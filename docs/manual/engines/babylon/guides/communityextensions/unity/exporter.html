@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Scene Exporter — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../index.html"><img src="../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../nord/api/api.html">API reference</a><a href="../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../nord/api/api-game.html">Game</a><a href="../../../../../nord/api/api-input.html">Input</a><a href="../../../../../nord/api/api-events.html">Events</a><a href="../../../../../nord/api/api-save.html">Save</a><a href="../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../nord/components/component-text.html">text</a><a href="../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../nord/components/component-light.html">light</a><a href="../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../nord/components/component-model.html">model</a><a href="../../../../../nord/components/component-material.html">material</a><a href="../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../nord/components/component-path.html">path</a><a href="../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../nord/reference/components.html">Component index</a><a href="../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../index.html">Babylon documentation library</a><a href="../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Scene Exporter</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><p><strong>Version note:</strong> The exporter interface and available options can change between toolkit releases. The sections below provide an overview of the exporter panel; use the <span>maintained Unity Exporter guide</span> for current editor requirements and installation instructions, and the <span>Babylon Toolkit Editor releases</span> for versioned packages.</p>
+<p>The scene exporter panel is the primary toolkit interface. Open or dock it while configuring and exporting a project.</p>
+<p><p class="muted">Upstream illustration: Scene Exporter (media not bundled).</p></p>
+<h2 id="global-export-options">Global Export Options<a class="anchor" href="#global-export-options">#</a></h2>
+<ul>
+<li><p>Project Bin Path        - Specifies the exported project binary path.</p>
+</li>
+<li><p>Project Build Path      - Specifies the exported project build path.</p>
+</li>
+<li><p>Project Scene Path      - Specifies the exported project scene path.</p>
+</li>
+<li><p>Project Script Path     - Specifies the exported project script path.</p>
+</li>
+<li><p>Project Index Page      - Specifies the exported project index page.</p>
+</li>
+</ul>
+<h2 id="default-engine-options">Default Engine Options<a class="anchor" href="#default-engine-options">#</a></h2>
+<p><p class="muted">Upstream illustration: Engine Options (media not bundled).</p></p>
+<ul>
+<li><p>Enable Physics Engine   - Enables or disables the built-in physics engine.</p>
+</li>
+<li><p>Default Physics Engine  - Specifies the default physics engine for the project.</p>
+</li>
+<li><p>Set Engine Antialias    - Enables or disables the engine antialias option.</p>
+</li>
+<li><p>Adaptive Device Ratio   - Sets the engine to adapt to device ratio.</p>
+</li>
+<li><p>Set Image Encoding      - Enables or disables default image encoding options.</p>
+</li>
+<li><p>Default Texture Format  - Specifies the default image encoding format.</p>
+</li>
+<li><p>Set Texture Quality     - Sets the default texture image quality.</p>
+</li>
+<li><p>Set Mesh Vertex Limit   - Enables or disables the static mesh vertex limit (65000).</p>
+</li>
+</ul>
+<h2 id="terrain-builder-options">Terrain Builder Options<a class="anchor" href="#terrain-builder-options">#</a></h2>
+<p><p class="muted">Upstream illustration: Terrain Options (media not bundled).</p></p>
+<ul>
+<li><p>Terrain Scale Factor    - Sets the shader texture scale factor for all terrain splatmaps.</p>
+</li>
+<li><p>Texture Atlas Size      - Sets the terrain splatmap texture atlas maximum size.</p>
+</li>
+<li><p>Texture Image Scaling   - Sets the mode when scaling tile images to point or bilinear.</p>
+</li>
+<li><p>Shadow Lightmap Index   - Sets the lightmap index channel. Must be 0 or 1.</p>
+</li>
+</ul>
+<h2 id="collision-system-options">Collision System Options<a class="anchor" href="#collision-system-options">#</a></h2>
+<p><p class="muted">Upstream illustration: Collision Options (media not bundled).</p></p>
+<ul>
+<li>Enable Collisions       - Enables the built-in collision mesh system.</li>
+<li>Generate Colliders      - Automatically generates collision meshes for each collider component.</li>
+<li>Collision Visibilty     - Sets the default collision mesh visibility level for debugging.</li>
+<li>Show Debug Colliders    - Shows all collider component collision meshes for debugging.</li>
+<li>Show Debug Sockets      - Shows all socket component collision meshes for debugging.</li>
+<li>Socket Collider Size    - Sets the size of the socket component collision mesh for debugging.</li>
+<li>Default Collider Detail - Sets the collision mesh geometry detail level for all generated mesh colliders.</li>
+</ul>
+<h2 id="lightmap-baking-options">Lightmap Baking Options<a class="anchor" href="#lightmap-baking-options">#</a></h2>
+<p><p class="muted">Upstream illustration: Lightmap Options (media not bundled).</p></p>
+<ul>
+<li><p>Export Lightmaps        - Enables the built-in shadow lightmap baking system.</p>
+</li>
+<li><p>Bake Iterative Maps     - Enables the built-in final lightmap gather and bake option.</p>
+</li>
+<li><p>Coordinates Index       - Sets the default texture coordinate index for lightmaps.</p>
+</li>
+<li><p>Use Material Instance   - Enables or disables material instances for shared material lightmaps.</p>
+</li>
+<li><p>Area Baking Lights      - Includes or excludes lightmap area baking lights in the exported scene.</p>
+</li>
+</ul>
+<h2 id="project-compiler-options">Project Compiler Options<a class="anchor" href="#project-compiler-options">#</a></h2>
+<p><p class="muted">Upstream illustration: Compiler Options (media not bundled).</p></p>
+<ul>
+<li><p>Build Typescript Files  - Enables or disables optional runtime script compiler.</p>
+</li>
+<li><p>Typescript Compiler     - Specifies the default TypeScript compiler location.</p>
+</li>
+<li><p>Node Runtime System     - Specifies the default Node runtime system location.</p>
+</li>
+</ul>
+<h2 id="windows-platform-options">Windows Platform Options<a class="anchor" href="#windows-platform-options">#</a></h2>
+<p><p class="muted">Upstream illustration: Windows Options (media not bundled).</p></p>
+<ul>
+<li><p>Launching Mode          - Specifies the initial UWP application window state.</p>
+</li>
+<li><p>Run App Protocol        - Enables and specifies the UWP application protocol.</p>
+</li>
+<li><p>Xbox Live Services      - Enables the toolkit managed Xbox Live Service API.</p>
+</li>
+<li><p>Xbox Live Plugin        - Launches the toolkit managed Xbox Live Service API NuGet install info.</p>
+</li>
+<li><p>Switch Windows Sandbox  - Launches the toolkit&#39;s local Windows Sandbox Switcher administrative tool.</p>
+</li>
+</ul>
+<h2 id="toolkit-exporter-options">Toolkit Exporter Options<a class="anchor" href="#toolkit-exporter-options">#</a></h2>
+<p><p class="muted">Upstream illustration: Export Options (media not bundled).</p></p>
+<ul>
+<li><p>Attach Unity Editor     - Enables the built-in toolkit play, build, and preview features.</p>
+</li>
+<li><p>Host Preview Server     - Toggles internal and external web server hosting options for the project.</p>
+</li>
+<li><p>Default Server Port     - Specifies the default web server host port for previewing the scene.</p>
+</li>
+<li><p>Remote Server Path      - Specifies the remote server host address for the external server option.</p>
+</li>
+<li><p>Show Render Stats       - Toggles the default page options for debug rendering stats in the project.</p>
+</li>
+<li><p>Set Default Scene       - Sets the index page default scene name option for the project.</p>
+</li>
+<li><p>Enable Main Menu        - Toggles the HTML project main menu page options for the project.</p>
+</li>
+<li><p>Truevision Graphics     - Toggles the native TARGA image file support options for the project.</p>
+</li>
+<li><p>Embed Html Pages        - Toggles options for embedding internal HTML pages into the markup store for the project.</p>
+</li>
+<li><p>Export Http Module      - Enables the web server http scene content management module.</p>
+</li>
+<li><p>Export Web Assembly     - Enables or disables the exported wasm content option.</p>
+</li>
+<li><p>Export Unity Metadata   - Enables or disables the default scene object metadata.</p>
+</li>
+<li><p>Precompress Contents    - Enables or disables the exported precompressed content option.</p>
+</li>
+<li><p>Minify Project Scripts  - Enables or disables the exported script minification option.</p>
+</li>
+<li><p>Debug Exporter Output   - Enables or disables pretty print json and compiler source maps.</p>
+</li>
+</ul>
+<h2 id="scene-builder-options">Scene Builder Options<a class="anchor" href="#scene-builder-options">#</a></h2>
+<p><p class="muted">Upstream illustration: Builder Options (media not bundled).</p></p>
+<ul>
+<li>Compile Script          - Compiles the project&#39;s TypeScript files only, with no previewing.</li>
+<li>Export Scene File       - Exports scene-only content with no compiling or previewing.</li>
+<li>Build And Preview       - Exports a full scene build with compiling and optional previewing.</li>
+<li>Rebuild Editor Project  - Rebuilds the native Unity Editor project source code.</li>
+<li>Launch Preview Window   - Launches the current preview build in the browser.</li>
+</ul>
+<h2 id="output-window">Output Window<a class="anchor" href="#output-window">#</a></h2>
+<p><p class="muted">Upstream illustration: Output Window (media not bundled).</p></p>
+<p>The output window traces the toolkit export progress for every build. Any exported camera, light, or mesh detail information will appear in this window. The output window can be docked in the editor during game development for easy access.</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#global-export-options">Global Export Options </a><a href="#default-engine-options">Default Engine Options </a><a href="#terrain-builder-options">Terrain Builder Options </a><a href="#collision-system-options">Collision System Options </a><a href="#lightmap-baking-options">Lightmap Baking Options </a><a href="#project-compiler-options">Project Compiler Options </a><a href="#windows-platform-options">Windows Platform Options </a><a href="#toolkit-exporter-options">Toolkit Exporter Options </a><a href="#scene-builder-options">Scene Builder Options </a><a href="#output-window">Output Window </a></aside></div>
+<script src="../../../../../assets/cm.classic.js"></script><script src="../../../../../assets/manual.js"></script></body></html>

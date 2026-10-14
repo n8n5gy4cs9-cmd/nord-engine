@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Phaser.Textures.TextureManager — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../../../index.html"><img src="../../../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../../../../babylon/9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../index.html">Phaser 4.2.1 API</a><a href="../../../../../../../babylon/guides/index.html">Babylon documentation library</a><a href="../../../../../../4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Phaser.Textures.TextureManager</h1>
+<p><span class="badge">Underlying Phaser 4.2.1 API</span> <span class="badge">Class</span></p><p class="muted">Official public declarations and JSDoc from <code>phaser</code>. Use with engine objects, not directly on a Nord entity.</p><aside class="box tip"><div class="box-title">The Nord way</div><p><a href="../../../../../../../../nord/manual/2d.html">2D manual</a> · <a href="../../../../../../../../nord/components/component-sprite.html">sprite</a> · <a href="../../../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a> · <a href="../../../../../../../../nord/manual/physics.html">physics</a>. Access raw objects only when the Nord wrapper does not cover your feature. <a href="../../../../../../../../nord/manual/reference.html#escape-hatch">How escape hatches work</a>.</p></aside><h3 id="declaration">TextureManager <a class="anchor" href="#declaration">#</a></h3><pre class="code" data-lang="ts"><code>class TextureManager extends Phaser.Events.EventEmitter</code></pre><p>When Phaser boots it will create an instance of this Texture Manager class.</p>
+<p>It is a global manager that handles all textures in your game. You can access it from within
+a Scene via the <code>this.textures</code> property.</p>
+<p>Its role is as a manager for all textures that your game uses. It can create, update and remove
+textures globally, as well as parse texture data from external files, such as sprite sheets
+and texture atlases.</p>
+<p>Sprites and other texture-based Game Objects get their texture data directly from this class.</p>
+<h2 id="members">Public members (45)</h2><p>Private, protected and explicitly internal declarations are excluded. Inherited members belong to the base type listed in the declaration.</p><h3 id="member-constructor-0">constructor <a class="anchor" href="#member-constructor-0">#</a></h3><pre class="code" data-lang="ts"><code>constructor(game: Phaser.Game);</code></pre><p><strong>param</strong>  game The Phaser.Game instance this Texture Manager belongs to.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>game</code></td><td><code>Phaser.Game</code></td><td>Required</td></tr></tbody></table><h3 id="member-game-1">game <a class="anchor" href="#member-game-1">#</a></h3><pre class="code" data-lang="ts"><code>game: Phaser.Game;</code></pre><p>The Game that the Texture Manager belongs to.</p>
+<p>A game will only ever have one instance of a Texture Manager.</p>
+<p><b>Type / return:</b> <code>Phaser.Game</code></p><h3 id="member-name-2">name <a class="anchor" href="#member-name-2">#</a></h3><pre class="code" data-lang="ts"><code>readonly name: string;</code></pre><p>The internal name of this manager.</p>
+<p><b>Type / return:</b> <code>string</code></p><h3 id="member-list-3">list <a class="anchor" href="#member-list-3">#</a></h3><pre class="code" data-lang="ts"><code>list: object;</code></pre><p>This object contains all Textures that belong to this Texture Manager.</p>
+<p>Textures are identified by string-based keys, which are used as the property
+within this object. Therefore, you can access any texture directly from this
+object without any iteration.</p>
+<p>You should not typically modify this object directly, but instead use the
+methods provided by the Texture Manager to add and remove entries from it.</p>
+<p><b>Type / return:</b> <code>object</code></p><h3 id="member-stamp-4">stamp <a class="anchor" href="#member-stamp-4">#</a></h3><pre class="code" data-lang="ts"><code>readonly stamp: Phaser.GameObjects.Stamp;</code></pre><p>An Image Game Object that belongs to this Texture Manager.</p>
+<p>Used as a drawing stamp within Dynamic Textures.</p>
+<p>This is not part of the display list and doesn&#39;t render.</p>
+<p>Prior to v4.0.0, this was of the type <code>Phaser.GameObjects.Image</code>.</p>
+<p><b>Type / return:</b> <code>Phaser.GameObjects.Stamp</code></p><h3 id="member-stampcrop-5">stampCrop <a class="anchor" href="#member-stampcrop-5">#</a></h3><pre class="code" data-lang="ts"><code>stampCrop: Phaser.Geom.Rectangle;</code></pre><p>The crop Rectangle as used by the Stamp when it needs to crop itself.</p>
+<p><b>Type / return:</b> <code>Phaser.Geom.Rectangle</code></p><h3 id="member-tilesprite-6">tileSprite <a class="anchor" href="#member-tilesprite-6">#</a></h3><pre class="code" data-lang="ts"><code>readonly tileSprite: Phaser.GameObjects.TileSprite;</code></pre><p>A TileSprite Game Object that belongs to this Texture Manager.</p>
+<p>Used for repeated drawing within Dynamic Textures.</p>
+<p>This is not part of the display list and doesn&#39;t render.</p>
+<p><b>Type / return:</b> <code>Phaser.GameObjects.TileSprite</code></p><h3 id="member-silentwarnings-7">silentWarnings <a class="anchor" href="#member-silentwarnings-7">#</a></h3><pre class="code" data-lang="ts"><code>silentWarnings: boolean;</code></pre><p>If this flag is <code>true</code> then the Texture Manager will never emit any
+warnings to the console log that report missing textures.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-checkkey-8">checkKey <a class="anchor" href="#member-checkkey-8">#</a></h3><pre class="code" data-lang="ts"><code>checkKey(key: string): boolean;</code></pre><p>Checks the given texture key and logs a console.error if the key is already in use, then returns false.</p>
+<p>If you wish to avoid the console.warn then use <code>TextureManager.exists</code> instead.
+<strong>param</strong>  key The texture key to check.
+<strong>returns</strong>  <code>true</code> if it&#39;s safe to use the texture key, otherwise <code>false</code>.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-remove-9">remove <a class="anchor" href="#member-remove-9">#</a></h3><pre class="code" data-lang="ts"><code>remove(key: string | Phaser.Textures.Texture): Phaser.Textures.TextureManager;</code></pre><p>Removes a Texture from the Texture Manager and destroys it. This will immediately
+clear all references to it from the Texture Manager, and if it has one, destroy its
+WebGLTexture. This will emit a <code>removetexture</code> event.</p>
+<p>Note: If you have any Game Objects still using this texture they will start throwing
+errors the next time they try to render. Make sure that removing the texture is the final
+step when clearing down to avoid this.
+<strong>param</strong>  key The key of the Texture to remove, or a reference to it.
+<strong>returns</strong>  The Texture Manager.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string | Phaser.Textures.Texture</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Textures.TextureManager</code></p><h3 id="member-removekey-10">removeKey <a class="anchor" href="#member-removekey-10">#</a></h3><pre class="code" data-lang="ts"><code>removeKey(key: string): Phaser.Textures.TextureManager;</code></pre><p>Removes a key from the Texture Manager but does not destroy the Texture that was using the key.
+<strong>param</strong>  key The key to remove from the texture list.
+<strong>returns</strong>  The Texture Manager.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Textures.TextureManager</code></p><h3 id="member-addbase64-11">addBase64 <a class="anchor" href="#member-addbase64-11">#</a></h3><pre class="code" data-lang="ts"><code>addBase64(key: string, data: any): this;</code></pre><p>Adds a new Texture to the Texture Manager created from the given Base64 encoded data.</p>
+<p>It works by creating an <code>Image</code> DOM object, then setting the <code>src</code> attribute to
+the given base64 encoded data. As a result, the process is asynchronous by its nature,
+so be sure to listen for the events this method dispatches before using the texture.
+<strong>param</strong>  key The unique string-based key of the Texture.
+<strong>param</strong>  data The Base64 encoded data.
+<strong>returns</strong>  This Texture Manager instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>data</code></td><td><code>any</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-getbase64-12">getBase64 <a class="anchor" href="#member-getbase64-12">#</a></h3><pre class="code" data-lang="ts"><code>getBase64(key: string, frame?: string | number, type?: string, encoderOptions?: number): string;</code></pre><p>Gets an existing texture frame and converts it into a base64 encoded image and returns the base64 data.</p>
+<p>You can also provide the image type and encoder options.</p>
+<p>This will only work with bitmap based texture frames, such as those created from Texture Atlases.
+It will not work with GL Texture objects, such as Shaders, or Render Textures. For those please
+see the WebGL Snapshot function instead.
+<strong>param</strong>  key The unique string-based key of the Texture.
+<strong>param</strong>  frame The string-based name, or integer based index, of the Frame to get from the Texture.
+<strong>param</strong>  type A DOMString indicating the image format. The default format type is image/png. Default &#39;image/png&#39;.
+<strong>param</strong>  encoderOptions A Number between 0 and 1 indicating the image quality to use for image formats that use lossy compression such as image/jpeg and image/webp. If this argument is anything else, the default value for image quality is used. The default value is 0.92. Other arguments are ignored. Default 0.92.
+<strong>returns</strong>  The base64 encoded data, or an empty string if the texture frame could not be found.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>frame</code></td><td><code>string | number</code></td><td>Optional</td></tr><tr><td><code>type</code></td><td><code>string</code></td><td>Optional</td></tr><tr><td><code>encoderOptions</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>string</code></p><h3 id="member-addimage-13">addImage <a class="anchor" href="#member-addimage-13">#</a></h3><pre class="code" data-lang="ts"><code>addImage(key: string, source: HTMLImageElement, dataSource?: HTMLImageElement | HTMLCanvasElement): Phaser.Textures.Texture | null;</code></pre><p>Adds a new Texture to the Texture Manager created from the given Image element.
+<strong>param</strong>  key The unique string-based key of the Texture.
+<strong>param</strong>  source The source Image element.
+<strong>param</strong>  dataSource An optional data Image element.
+<strong>returns</strong>  The Texture that was created, or <code>null</code> if the key is already in use.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>source</code></td><td><code>HTMLImageElement</code></td><td>Required</td></tr><tr><td><code>dataSource</code></td><td><code>HTMLImageElement | HTMLCanvasElement</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Textures.Texture | null</code></p><h3 id="member-addgltexture-14">addGLTexture <a class="anchor" href="#member-addgltexture-14">#</a></h3><pre class="code" data-lang="ts"><code>addGLTexture(key: string, glTexture: Phaser.Renderer.WebGL.Wrappers.WebGLTextureWrapper): Phaser.Textures.Texture | null;</code></pre><p>Takes a WebGLTextureWrapper and creates a Phaser Texture from it, which is added to the Texture Manager using the given key.</p>
+<p>This allows you to then use the Texture as a normal texture for texture based Game Objects like Sprites.</p>
+<p>This is a WebGL only feature.</p>
+<p>Prior to Phaser 3.80.0, this method took a bare <code>WebGLTexture</code>
+as the <code>glTexture</code> parameter. You must now wrap the <code>WebGLTexture</code> in a
+<code>WebGLTextureWrapper</code> instance before passing it to this method.
+<strong>param</strong>  key The unique string-based key of the Texture.
+<strong>param</strong>  glTexture The source Render Texture.
+<strong>returns</strong>  The Texture that was created, or <code>null</code> if the key is already in use.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>glTexture</code></td><td><code>Phaser.Renderer.WebGL.Wrappers.WebGLTextureWrapper</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Textures.Texture | null</code></p><h3 id="member-addcompressedtexture-15">addCompressedTexture <a class="anchor" href="#member-addcompressedtexture-15">#</a></h3><pre class="code" data-lang="ts"><code>addCompressedTexture(key: string, textureData: Phaser.Types.Textures.CompressedTextureData, atlasData?: object): Phaser.Textures.Texture | null;</code></pre><p>Adds a Compressed Texture to this Texture Manager.</p>
+<p>The texture should typically have been loaded via the <code>CompressedTextureFile</code> loader,
+in order to prepare the correct data object this method requires.</p>
+<p>You can optionally also pass atlas data to this method, in which case a texture atlas
+will be generated from the given compressed texture, combined with the atlas data.
+<strong>param</strong>  key The unique string-based key of the Texture.
+<strong>param</strong>  textureData The Compressed Texture data object.
+<strong>param</strong>  atlasData Optional Texture Atlas data.
+<strong>returns</strong>  The Texture that was created, or <code>null</code> if the key is already in use.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>textureData</code></td><td><code>Phaser.Types.Textures.CompressedTextureData</code></td><td>Required</td></tr><tr><td><code>atlasData</code></td><td><code>object</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Textures.Texture | null</code></p><h3 id="member-addrendertexture-16">addRenderTexture <a class="anchor" href="#member-addrendertexture-16">#</a></h3><pre class="code" data-lang="ts"><code>addRenderTexture(key: string, renderTexture: Phaser.GameObjects.RenderTexture): Phaser.Textures.Texture | null;</code></pre><p>Adds a Render Texture to the Texture Manager using the given key.
+This allows you to then use the Render Texture as a normal texture for texture based Game Objects like Sprites.
+<strong>param</strong>  key The unique string-based key of the Texture.
+<strong>param</strong>  renderTexture The source Render Texture.
+<strong>returns</strong>  The Texture that was created, or <code>null</code> if the key is already in use.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>renderTexture</code></td><td><code>Phaser.GameObjects.RenderTexture</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Textures.Texture | null</code></p><h3 id="member-createcanvas-17">createCanvas <a class="anchor" href="#member-createcanvas-17">#</a></h3><pre class="code" data-lang="ts"><code>createCanvas(key: string, width?: number, height?: number): Phaser.Textures.CanvasTexture | null;</code></pre><p>Creates a new Texture using a blank Canvas element of the size given.</p>
+<p>Canvas elements are automatically pooled and calling this method will
+extract a free canvas from the CanvasPool, or create one if none are available.
+<strong>param</strong>  key The unique string-based key of the Texture.
+<strong>param</strong>  width The width of the Canvas element. Default 256.
+<strong>param</strong>  height The height of the Canvas element. Default 256.
+<strong>returns</strong>  The Canvas Texture that was created, or <code>null</code> if the key is already in use.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>width</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Textures.CanvasTexture | null</code></p><h3 id="member-addcanvas-18">addCanvas <a class="anchor" href="#member-addcanvas-18">#</a></h3><pre class="code" data-lang="ts"><code>addCanvas(key: string, source: HTMLCanvasElement, skipCache?: boolean): Phaser.Textures.CanvasTexture | null;</code></pre><p>Creates a new Canvas Texture object from an existing Canvas element
+and adds it to this Texture Manager, unless <code>skipCache</code> is true.
+<strong>param</strong>  key The unique string-based key of the Texture.
+<strong>param</strong>  source The Canvas element to form the base of the new Texture.
+<strong>param</strong>  skipCache Skip adding this Texture into the Cache? Default false.
+<strong>returns</strong>  The Canvas Texture that was created, or <code>null</code> if the key is already in use.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>source</code></td><td><code>HTMLCanvasElement</code></td><td>Required</td></tr><tr><td><code>skipCache</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Textures.CanvasTexture | null</code></p><h3 id="member-adddynamictexture-19">addDynamicTexture <a class="anchor" href="#member-adddynamictexture-19">#</a></h3><pre class="code" data-lang="ts"><code>addDynamicTexture(key: string | Phaser.Textures.DynamicTexture, width?: number, height?: number, forceEven?: boolean): Phaser.Textures.DynamicTexture | null;</code></pre><p>Creates a Dynamic Texture instance and adds itself to this Texture Manager.</p>
+<p>A Dynamic Texture is a special texture that allows you to draw textures, frames and most kind of
+Game Objects directly to it.</p>
+<p>You can take many complex objects and draw them to this one texture, which can then be used as the
+base texture for other Game Objects, such as Sprites. Should you then update this texture, all
+Game Objects using it will instantly be updated as well, reflecting the changes immediately.</p>
+<p>It&#39;s a powerful way to generate dynamic textures at run-time that are WebGL friendly and don&#39;t invoke
+expensive GPU uploads on each change.</p>
+<p>See the methods available on the <code>DynamicTexture</code> class for more details.</p>
+<p>Optionally, you can also pass a Dynamic Texture instance to this method to have
+it added to the Texture Manager.
+<strong>param</strong>  key The string-based key of this Texture. Must be unique within the Texture Manager. Or, a DynamicTexture instance.
+<strong>param</strong>  width The width of this Dynamic Texture in pixels. Defaults to 256 x 256. Ignored if an instance is passed as the key. Default 256.
+<strong>param</strong>  height The height of this Dynamic Texture in pixels. Defaults to 256 x 256. Ignored if an instance is passed as the key. Default 256.
+<strong>param</strong>  forceEven If the width and height are odd numbers, should they be forced to be even? Ignored if an instance is passed as the key. Default true.
+<strong>returns</strong>  The Dynamic Texture that was created, or <code>null</code> if the key is already in use.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string | Phaser.Textures.DynamicTexture</code></td><td>Required</td></tr><tr><td><code>width</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>forceEven</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Textures.DynamicTexture | null</code></p><h3 id="member-addatlas-20">addAtlas <a class="anchor" href="#member-addatlas-20">#</a></h3><pre class="code" data-lang="ts"><code>addAtlas(key: string, source: HTMLImageElement | HTMLImageElement[] | Phaser.Textures.Texture, data: object | object[], dataSource?: HTMLImageElement | HTMLCanvasElement | HTMLImageElement[] | HTMLCanvasElement[]): Phaser.Textures.Texture | null;</code></pre><p>Adds a Texture Atlas to this Texture Manager.</p>
+<p>In Phaser terminology, a Texture Atlas is a combination of an atlas image and a data file
+describing the frames within it, such as those exported by applications like Texture Packer.</p>
+<p>This method accepts three different atlas data formats:</p>
+<ul>
+<li><strong>JSON Array</strong> — the <code>frames</code> or <code>textures</code> field is an Array. Used by Texture Packer&#39;s
+&quot;JSON Array&quot; and &quot;Phaser (multi-atlas)&quot; exports. Dispatched to <code>addAtlasJSONArray</code>.</li>
+<li><strong>JSON Hash</strong> — the <code>frames</code> field is an Object. Used by Texture Packer&#39;s &quot;JSON Hash&quot; export.
+Dispatched to <code>addAtlasJSONHash</code>.</li>
+<li><strong>Phaser Compact Texture (PCT)</strong> — a decoded PCT data object with a <code>pages</code> array. This is
+the compact line-oriented format loaded by <code>LoaderPlugin#atlasPCT</code>. Dispatched to <code>addAtlasPCT</code>.</li>
+</ul>
+<p>The format is detected automatically from the shape of the <code>data</code> argument. As of Phaser 3.60
+you can use this method to add an atlas data set to an existing Phaser Texture.
+<strong>param</strong>  key The unique string-based key of the Texture.
+<strong>param</strong>  source The source Image element/s, or a Phaser Texture.
+<strong>param</strong>  data The Texture Atlas data/s.
+<strong>param</strong>  dataSource An optional data Image element.
+<strong>returns</strong>  The Texture that was created, or <code>null</code> if the key is already in use.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>source</code></td><td><code>HTMLImageElement | HTMLImageElement[] | Phaser.Textures.Texture</code></td><td>Required</td></tr><tr><td><code>data</code></td><td><code>object | object[]</code></td><td>Required</td></tr><tr><td><code>dataSource</code></td><td><code>HTMLImageElement | HTMLCanvasElement | HTMLImageElement[] | HTMLCanvasElement[]</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Textures.Texture | null</code></p><h3 id="member-addatlasjsonarray-21">addAtlasJSONArray <a class="anchor" href="#member-addatlasjsonarray-21">#</a></h3><pre class="code" data-lang="ts"><code>addAtlasJSONArray(key: string, source: HTMLImageElement | HTMLImageElement[] | Phaser.Textures.Texture, data: object | object[], dataSource?: HTMLImageElement | HTMLCanvasElement | HTMLImageElement[] | HTMLCanvasElement[]): Phaser.Textures.Texture | null;</code></pre><p>Adds a Texture Atlas to this Texture Manager.</p>
+<p>In Phaser terminology, a Texture Atlas is a combination of an atlas image and a JSON data file,
+such as those exported by applications like Texture Packer.</p>
+<p>The frame data of the atlas must be stored in an Array within the JSON.</p>
+<p>This is known as a JSON Array in software such as Texture Packer.</p>
+<p>As of Phaser 3.60 you can use this method to add an atlas data set to an existing Phaser Texture.
+<strong>param</strong>  key The unique string-based key of the Texture.
+<strong>param</strong>  source The source Image element/s, or a Phaser Texture.
+<strong>param</strong>  data The Texture Atlas data/s.
+<strong>param</strong>  dataSource An optional data Image element.
+<strong>returns</strong>  The Texture that was created, or <code>null</code> if the key is already in use.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>source</code></td><td><code>HTMLImageElement | HTMLImageElement[] | Phaser.Textures.Texture</code></td><td>Required</td></tr><tr><td><code>data</code></td><td><code>object | object[]</code></td><td>Required</td></tr><tr><td><code>dataSource</code></td><td><code>HTMLImageElement | HTMLCanvasElement | HTMLImageElement[] | HTMLCanvasElement[]</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Textures.Texture | null</code></p><h3 id="member-addatlasjsonhash-22">addAtlasJSONHash <a class="anchor" href="#member-addatlasjsonhash-22">#</a></h3><pre class="code" data-lang="ts"><code>addAtlasJSONHash(key: string, source: HTMLImageElement | HTMLImageElement[] | Phaser.Textures.Texture, data: object | object[], dataSource?: HTMLImageElement | HTMLCanvasElement | HTMLImageElement[] | HTMLCanvasElement[]): Phaser.Textures.Texture | null;</code></pre><p>Adds a Texture Atlas to this Texture Manager.</p>
+<p>In Phaser terminology, a Texture Atlas is a combination of an atlas image and a JSON data file,
+such as those exported by applications like Texture Packer.</p>
+<p>The frame data of the atlas must be stored in an Object within the JSON.</p>
+<p>This is known as a JSON Hash in software such as Texture Packer.</p>
+<p>As of Phaser 3.60 you can use this method to add an atlas data set to an existing Phaser Texture.
+<strong>param</strong>  key The unique string-based key of the Texture.
+<strong>param</strong>  source The source Image element/s, or a Phaser Texture.
+<strong>param</strong>  data The Texture Atlas data/s.
+<strong>param</strong>  dataSource An optional data Image element.
+<strong>returns</strong>  The Texture that was created, or <code>null</code> if the key is already in use.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>source</code></td><td><code>HTMLImageElement | HTMLImageElement[] | Phaser.Textures.Texture</code></td><td>Required</td></tr><tr><td><code>data</code></td><td><code>object | object[]</code></td><td>Required</td></tr><tr><td><code>dataSource</code></td><td><code>HTMLImageElement | HTMLCanvasElement | HTMLImageElement[] | HTMLCanvasElement[]</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Textures.Texture | null</code></p><h3 id="member-addatlaspct-23">addAtlasPCT <a class="anchor" href="#member-addatlaspct-23">#</a></h3><pre class="code" data-lang="ts"><code>addAtlasPCT(key: string, source: HTMLImageElement | HTMLImageElement[] | Phaser.Textures.Texture, data: object, dataSource?: HTMLImageElement | HTMLCanvasElement | HTMLImageElement[] | HTMLCanvasElement[]): Phaser.Textures.Texture | null;</code></pre><p>Adds a Phaser Compact Texture Atlas (PCT) to this Texture Manager.</p>
+<p>PCT is a compact line-oriented atlas format. A single PCT file can describe multiple atlas
+pages, each referencing a separate texture image. The <code>data</code> argument must be a decoded PCT
+structure as produced by <code>Phaser.Textures.Parsers.PCTDecode</code> — that is, an object containing
+<code>pages</code>, <code>folders</code>, and <code>frames</code> fields. The <code>source</code> argument should be a single Image or an
+Array of Images, one per page, in the same order as the <code>pages</code> field on the decoded data.</p>
+<p>You do not normally need to call this method directly. It is called automatically when the
+<code>LoaderPlugin#atlasPCT</code> method finishes loading a PCT file. You can also use this method to add a
+decoded PCT data set to an existing Phaser Texture.
+<strong>param</strong>  key The unique string-based key of the Texture.
+<strong>param</strong>  source The source Image element(s) — one per PCT page — or an existing Phaser Texture.
+<strong>param</strong>  data The decoded PCT data object.
+<strong>param</strong>  dataSource An optional data Image element (normal map source).
+<strong>returns</strong>  The Texture that was created, or <code>null</code> if the key is already in use.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>source</code></td><td><code>HTMLImageElement | HTMLImageElement[] | Phaser.Textures.Texture</code></td><td>Required</td></tr><tr><td><code>data</code></td><td><code>object</code></td><td>Required</td></tr><tr><td><code>dataSource</code></td><td><code>HTMLImageElement | HTMLCanvasElement | HTMLImageElement[] | HTMLCanvasElement[]</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Textures.Texture | null</code></p><h3 id="member-addatlasxml-24">addAtlasXML <a class="anchor" href="#member-addatlasxml-24">#</a></h3><pre class="code" data-lang="ts"><code>addAtlasXML(key: string, source: HTMLImageElement | Phaser.Textures.Texture, data: object, dataSource?: HTMLImageElement | HTMLCanvasElement | HTMLImageElement[] | HTMLCanvasElement[]): Phaser.Textures.Texture | null;</code></pre><p>Adds a Texture Atlas to this Texture Manager.</p>
+<p>In Phaser terminology, a Texture Atlas is a combination of an atlas image and a data file,
+such as those exported by applications like Texture Packer.</p>
+<p>The frame data of the atlas must be stored in an XML file.</p>
+<p>As of Phaser 3.60 you can use this method to add an atlas data set to an existing Phaser Texture.
+<strong>param</strong>  key The unique string-based key of the Texture.
+<strong>param</strong>  source The source Image element, or a Phaser Texture.
+<strong>param</strong>  data The Texture Atlas XML data.
+<strong>param</strong>  dataSource An optional data Image element.
+<strong>returns</strong>  The Texture that was created, or <code>null</code> if the key is already in use.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>source</code></td><td><code>HTMLImageElement | Phaser.Textures.Texture</code></td><td>Required</td></tr><tr><td><code>data</code></td><td><code>object</code></td><td>Required</td></tr><tr><td><code>dataSource</code></td><td><code>HTMLImageElement | HTMLCanvasElement | HTMLImageElement[] | HTMLCanvasElement[]</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Textures.Texture | null</code></p><h3 id="member-addunityatlas-25">addUnityAtlas <a class="anchor" href="#member-addunityatlas-25">#</a></h3><pre class="code" data-lang="ts"><code>addUnityAtlas(key: string, source: HTMLImageElement, data: object, dataSource?: HTMLImageElement | HTMLCanvasElement | HTMLImageElement[] | HTMLCanvasElement[]): Phaser.Textures.Texture | null;</code></pre><p>Adds a Unity Texture Atlas to this Texture Manager.</p>
+<p>In Phaser terminology, a Texture Atlas is a combination of an atlas image and a data file,
+such as those exported by applications like Texture Packer or Unity.</p>
+<p>The frame data of the atlas must be stored in a Unity YAML file.</p>
+<p>As of Phaser 3.60 you can use this method to add an atlas data set to an existing Phaser Texture.
+<strong>param</strong>  key The unique string-based key of the Texture.
+<strong>param</strong>  source The source Image element.
+<strong>param</strong>  data The Texture Atlas data.
+<strong>param</strong>  dataSource An optional data Image element.
+<strong>returns</strong>  The Texture that was created, or <code>null</code> if the key is already in use.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>source</code></td><td><code>HTMLImageElement</code></td><td>Required</td></tr><tr><td><code>data</code></td><td><code>object</code></td><td>Required</td></tr><tr><td><code>dataSource</code></td><td><code>HTMLImageElement | HTMLCanvasElement | HTMLImageElement[] | HTMLCanvasElement[]</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Textures.Texture | null</code></p><h3 id="member-addspritesheet-26">addSpriteSheet <a class="anchor" href="#member-addspritesheet-26">#</a></h3><pre class="code" data-lang="ts"><code>addSpriteSheet(key: string, source: HTMLImageElement | Phaser.Textures.Texture, config: Phaser.Types.Textures.SpriteSheetConfig, dataSource?: HTMLImageElement | HTMLCanvasElement): Phaser.Textures.Texture | null;</code></pre><p>Adds a Sprite Sheet to this Texture Manager.</p>
+<p>In Phaser terminology a Sprite Sheet is a texture containing different frames, but each frame is the exact
+same size and cannot be trimmed or rotated. This is different to a Texture Atlas, created by tools such as
+Texture Packer, and more akin with the fixed-frame exports you get from apps like Aseprite or old arcade
+games.</p>
+<p>As of Phaser 3.60 you can use this method to add a sprite sheet to an existing Phaser Texture.
+<strong>param</strong>  key The unique string-based key of the Texture. Give an empty string if you provide a Phaser Texture as the 2nd argument.
+<strong>param</strong>  source The source Image element, or a Phaser Texture.
+<strong>param</strong>  config The configuration object for this Sprite Sheet.
+<strong>param</strong>  dataSource An optional data Image element.
+<strong>returns</strong>  The Texture that was created or updated, or <code>null</code> if the key is already in use.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>source</code></td><td><code>HTMLImageElement | Phaser.Textures.Texture</code></td><td>Required</td></tr><tr><td><code>config</code></td><td><code>Phaser.Types.Textures.SpriteSheetConfig</code></td><td>Required</td></tr><tr><td><code>dataSource</code></td><td><code>HTMLImageElement | HTMLCanvasElement</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Textures.Texture | null</code></p><h3 id="member-addspritesheetfromatlas-27">addSpriteSheetFromAtlas <a class="anchor" href="#member-addspritesheetfromatlas-27">#</a></h3><pre class="code" data-lang="ts"><code>addSpriteSheetFromAtlas(key: string, config: Phaser.Types.Textures.SpriteSheetFromAtlasConfig): Phaser.Textures.Texture | null;</code></pre><p>Adds a Sprite Sheet to this Texture Manager, where the Sprite Sheet exists as a Frame within a Texture Atlas.</p>
+<p>In Phaser terminology a Sprite Sheet is a texture containing different frames, but each frame is the exact
+same size and cannot be trimmed or rotated.
+<strong>param</strong>  key The unique string-based key of the Texture.
+<strong>param</strong>  config The configuration object for this Sprite Sheet.
+<strong>returns</strong>  The Texture that was created, or <code>null</code> if the key is already in use.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>config</code></td><td><code>Phaser.Types.Textures.SpriteSheetFromAtlasConfig</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Textures.Texture | null</code></p><h3 id="member-adduint8array-28">addUint8Array <a class="anchor" href="#member-adduint8array-28">#</a></h3><pre class="code" data-lang="ts"><code>addUint8Array(key: string, data: Uint8Array, width: number, height: number): Phaser.Textures.Texture | null;</code></pre><p>Creates a texture from an array of colour data.</p>
+<p>This is only available in WebGL mode.</p>
+<p>If the dimensions provided are powers of two, the resulting texture
+will be automatically set to wrap by the WebGL Renderer.
+<strong>param</strong>  key The unique string-based key of the Texture.
+<strong>param</strong>  data The color data for the texture.
+<strong>param</strong>  width The width of the texture.
+<strong>param</strong>  height The height of the texture.
+<strong>returns</strong>  The Texture that was created, or <code>null</code> if the key is already in use.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>data</code></td><td><code>Uint8Array</code></td><td>Required</td></tr><tr><td><code>width</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Textures.Texture | null</code></p><h3 id="member-addflatcolor-29">addFlatColor <a class="anchor" href="#member-addflatcolor-29">#</a></h3><pre class="code" data-lang="ts"><code>addFlatColor(key: string, width: number, height: number, color?: number, alpha?: number): Phaser.Textures.Texture | null;</code></pre><p>Creates a texture from a color and alpha.
+The texture will be filled with the given color and alpha.</p>
+<p>This may be used as a proxy texture,
+which can later be replaced with a real texture.
+See Phaser.Textures.Texture#setSource
+for more information on replacing the proxy with a real texture.</p>
+<p>This is only available in WebGL mode.
+<strong>param</strong>  key The unique string-based key of the Texture.
+<strong>param</strong>  width The width of the texture.
+<strong>param</strong>  height The height of the texture.
+<strong>param</strong>  color The color of the texture. Default 0x000000.
+<strong>param</strong>  alpha The alpha of the texture. Default 0.
+<strong>returns</strong>  The Texture that was created, or <code>null</code> if the key is already in use or the width or height is not positive.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>width</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>color</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>alpha</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Textures.Texture | null</code></p><h3 id="member-create-30">create <a class="anchor" href="#member-create-30">#</a></h3><pre class="code" data-lang="ts"><code>create(key: string, source: Phaser.Types.Textures.TextureSource | Phaser.Types.Textures.TextureSource[], width?: number, height?: number): Phaser.Textures.Texture | null;</code></pre><p>Creates a new Texture using the given source and dimensions.
+<strong>param</strong>  key The unique string-based key of the Texture.
+<strong>param</strong>  source A source or array of sources that are used to create the texture. Usually Images, but can also be a Canvas or other types.
+<strong>param</strong>  width The width of the Texture. This is optional and automatically derived from the source images.
+<strong>param</strong>  height The height of the Texture. This is optional and automatically derived from the source images.
+<strong>returns</strong>  The Texture that was created, or <code>null</code> if the key is already in use.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>source</code></td><td><code>Phaser.Types.Textures.TextureSource | Phaser.Types.Textures.TextureSource[]</code></td><td>Required</td></tr><tr><td><code>width</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Textures.Texture | null</code></p><h3 id="member-exists-31">exists <a class="anchor" href="#member-exists-31">#</a></h3><pre class="code" data-lang="ts"><code>exists(key: string): boolean;</code></pre><p>Checks the given key to see if a Texture using it exists within this Texture Manager.
+<strong>param</strong>  key The unique string-based key of the Texture.
+<strong>returns</strong>  Returns <code>true</code> if a Texture matching the given key exists in this Texture Manager.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-get-32">get <a class="anchor" href="#member-get-32">#</a></h3><pre class="code" data-lang="ts"><code>get(key: string | Phaser.Textures.Texture | Phaser.Textures.Frame): Phaser.Textures.Texture;</code></pre><p>Returns a Texture from the Texture Manager that matches the given key.</p>
+<p>If the key is <code>undefined</code> it will return the <code>__DEFAULT</code> Texture.</p>
+<p>If the key is an instance of a Texture, it will return the instance.</p>
+<p>If the key is an instance of a Frame, it will return the frames parent Texture instance.</p>
+<p>Finally, if the key is given, but not found, and not a Texture or Frame instance, it will return the <code>__MISSING</code> Texture.
+<strong>param</strong>  key The unique string-based key of the Texture, or a Texture, or Frame instance.
+<strong>returns</strong>  The Texture matching the given key.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string | Phaser.Textures.Texture | Phaser.Textures.Frame</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Textures.Texture</code></p><h3 id="member-cloneframe-33">cloneFrame <a class="anchor" href="#member-cloneframe-33">#</a></h3><pre class="code" data-lang="ts"><code>cloneFrame(key: string, frame: string | number): Phaser.Textures.Frame;</code></pre><p>Takes a Texture key and Frame name and returns a clone of that Frame if found.
+<strong>param</strong>  key The unique string-based key of the Texture.
+<strong>param</strong>  frame The string or index of the Frame to be cloned.
+<strong>returns</strong>  A Clone of the given Frame.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>frame</code></td><td><code>string | number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Textures.Frame</code></p><h3 id="member-getframe-34">getFrame <a class="anchor" href="#member-getframe-34">#</a></h3><pre class="code" data-lang="ts"><code>getFrame(key: string, frame?: string | number): Phaser.Textures.Frame;</code></pre><p>Takes a Texture key and Frame name and returns a reference to that Frame, if found.
+<strong>param</strong>  key The unique string-based key of the Texture.
+<strong>param</strong>  frame The string-based name, or integer based index, of the Frame to get from the Texture.
+<strong>returns</strong>  A Texture Frame object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>frame</code></td><td><code>string | number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Textures.Frame</code></p><h3 id="member-parseframe-35">parseFrame <a class="anchor" href="#member-parseframe-35">#</a></h3><pre class="code" data-lang="ts"><code>parseFrame(key: string | any[] | object | Phaser.Textures.Texture | Phaser.Textures.Frame): Phaser.Textures.Frame;</code></pre><p>Parses the &#39;key&#39; parameter and returns a Texture Frame instance.</p>
+<p>It can accept the following formats:</p>
+<ol>
+<li>A string</li>
+<li>An array where the elements are: [ key, [frame] ]</li>
+<li>An object with the properties: { key, [frame] }</li>
+<li>A Texture instance - which returns the default frame from the Texture</li>
+<li>A Frame instance - returns itself
+<strong>param</strong>  key The key to be parsed.
+<strong>returns</strong>  A Texture Frame object, if found, or undefined if not.</li>
+</ol>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string | any[] | object | Phaser.Textures.Texture | Phaser.Textures.Frame</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Textures.Frame</code></p><h3 id="member-gettexturekeys-36">getTextureKeys <a class="anchor" href="#member-gettexturekeys-36">#</a></h3><pre class="code" data-lang="ts"><code>getTextureKeys(): string[];</code></pre><p>Returns an array with all of the keys of all Textures in this Texture Manager.
+The output array will exclude the <code>__DEFAULT</code>, <code>__MISSING</code>, <code>__WHITE</code>, and <code>__NORMAL</code> keys.undefined
+<strong>returns</strong>  An array containing all of the Texture keys stored in this Texture Manager.</p>
+<p><b>Type / return:</b> <code>string[]</code></p><h3 id="member-getpixel-37">getPixel <a class="anchor" href="#member-getpixel-37">#</a></h3><pre class="code" data-lang="ts"><code>getPixel(x: number, y: number, key: string, frame?: string | number): Phaser.Display.Color | null;</code></pre><p>Given a Texture and an <code>x</code> and <code>y</code> coordinate this method will return a new
+Color object that has been populated with the color and alpha values of the pixel
+at that location in the Texture.
+<strong>param</strong>  x The x coordinate of the pixel within the Texture.
+<strong>param</strong>  y The y coordinate of the pixel within the Texture.
+<strong>param</strong>  key The unique string-based key of the Texture.
+<strong>param</strong>  frame The string or index of the Frame.
+<strong>returns</strong>  A Color object populated with the color values of the requested pixel,
+or <code>null</code> if the coordinates were out of bounds.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>frame</code></td><td><code>string | number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Display.Color | null</code></p><h3 id="member-getpixelalpha-38">getPixelAlpha <a class="anchor" href="#member-getpixelalpha-38">#</a></h3><pre class="code" data-lang="ts"><code>getPixelAlpha(x: number, y: number, key: string, frame?: string | number): number;</code></pre><p>Given a Texture and an <code>x</code> and <code>y</code> coordinate this method will return a value between 0 and 255
+corresponding to the alpha value of the pixel at that location in the Texture. If the coordinate
+is out of bounds it will return null.
+<strong>param</strong>  x The x coordinate of the pixel within the Texture.
+<strong>param</strong>  y The y coordinate of the pixel within the Texture.
+<strong>param</strong>  key The unique string-based key of the Texture.
+<strong>param</strong>  frame The string or index of the Frame.
+<strong>returns</strong>  A value between 0 and 255, or <code>null</code> if the coordinates were out of bounds.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>frame</code></td><td><code>string | number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>number</code></p><h3 id="member-settexture-39">setTexture <a class="anchor" href="#member-settexture-39">#</a></h3><pre class="code" data-lang="ts"><code>setTexture(gameObject: Phaser.GameObjects.GameObject, key: string, frame?: string | number): Phaser.GameObjects.GameObject;</code></pre><p>Sets the given Game Objects <code>texture</code> and <code>frame</code> properties so that it uses
+the Texture and Frame specified in the <code>key</code> and <code>frame</code> arguments to this method.
+<strong>param</strong>  gameObject The Game Object the texture would be set on.
+<strong>param</strong>  key The unique string-based key of the Texture.
+<strong>param</strong>  frame The string or index of the Frame.
+<strong>returns</strong>  The Game Object the texture was set on.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>gameObject</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>frame</code></td><td><code>string | number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.GameObjects.GameObject</code></p><h3 id="member-renametexture-40">renameTexture <a class="anchor" href="#member-renametexture-40">#</a></h3><pre class="code" data-lang="ts"><code>renameTexture(currentKey: string, newKey: string): boolean;</code></pre><p>Changes the key being used by a Texture to the new key provided.</p>
+<p>The old key is removed, allowing it to be re-used.</p>
+<p>Game Objects are linked to Textures by a reference to the Texture object, so
+all existing references will be retained.
+<strong>param</strong>  currentKey The current string-based key of the Texture you wish to rename.
+<strong>param</strong>  newKey The new unique string-based key to use for the Texture.
+<strong>returns</strong>  <code>true</code> if the Texture key was successfully renamed, otherwise <code>false</code>.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>currentKey</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>newKey</code></td><td><code>string</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-each-41">each <a class="anchor" href="#member-each-41">#</a></h3><pre class="code" data-lang="ts"><code>each(callback: EachTextureCallback, scope: object, ...args: any[]): void;</code></pre><p>Passes all Textures to the given callback.
+<strong>param</strong>  callback The callback function to be sent the Textures.
+<strong>param</strong>  scope The value to use as <code>this</code> when executing the callback.
+<strong>param</strong>  args Additional arguments that will be passed to the callback, after the child.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>callback</code></td><td><code>EachTextureCallback</code></td><td>Required</td></tr><tr><td><code>scope</code></td><td><code>object</code></td><td>Required</td></tr><tr><td><code>...args</code></td><td><code>any[]</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-resetstamp-42">resetStamp <a class="anchor" href="#member-resetstamp-42">#</a></h3><pre class="code" data-lang="ts"><code>resetStamp(alpha?: number, tint?: number): Phaser.GameObjects.Image;</code></pre><p>Resets the internal Stamp object, ready for drawing and returns it.
+<strong>param</strong>  alpha The alpha to use. Default 1.
+<strong>param</strong>  tint WebGL only. The tint color to use. Default 0xffffff.
+<strong>returns</strong>  A reference to the Stamp Game Object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>alpha</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>tint</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.GameObjects.Image</code></p><h3 id="member-resettilesprite-43">resetTileSprite <a class="anchor" href="#member-resettilesprite-43">#</a></h3><pre class="code" data-lang="ts"><code>resetTileSprite(alpha?: number, tint?: number): Phaser.GameObjects.TileSprite;</code></pre><p>Resets the internal Tile Sprite object, ready for drawing, and returns it.
+<strong>param</strong>  alpha The alpha to use. Default 1.
+<strong>param</strong>  tint WebGL only. The tint color to use. Default 0xffffff.
+<strong>returns</strong>  A reference to the Tile Sprite Game Object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>alpha</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>tint</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.GameObjects.TileSprite</code></p><h3 id="member-destroy-44">destroy <a class="anchor" href="#member-destroy-44">#</a></h3><pre class="code" data-lang="ts"><code>destroy(): void;</code></pre><p>Destroys the Texture Manager and all Textures stored within it.</p>
+<p><b>Type / return:</b> <code>void</code></p><h2 id="base-types">Base types</h2><p><a href="../../events/58/eventemitter.html">Phaser.Events.EventEmitter</a></p><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#members">Public members (45)</a><a href="#base-types">Base types</a></aside></div>
+<script src="../../../../../../../../assets/cm.classic.js"></script><script src="../../../../../../../../assets/manual.js"></script></body></html>

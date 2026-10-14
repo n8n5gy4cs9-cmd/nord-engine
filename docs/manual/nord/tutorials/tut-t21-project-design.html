@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>T21 Plan a bigger Nord project — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="tutorials.html" class="active" aria-current="page">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Tutorials</div><a href="tutorials.html">Learn by building</a><a href="tut-t01-hello-nord.html">T01 Hello Nord</a><a href="tut-t02-sprite-movement.html">T02 Sprite &amp; movement</a><a href="tut-t03-first-script.html">T03 Your first script</a><a href="tut-t04-platformer.html">T04 Platformer from template</a><a href="tut-t05-physics.html">T05 Physics &amp; collisions</a><a href="tut-t06-tilemaps.html">T06 Tilemaps</a><a href="tut-t07-animation-juice.html">T07 Animation &amp; juice</a><a href="tut-t08-ui-hud.html">T08 UI &amp; HUD</a><a href="tut-t09-audio.html">T09 Audio</a><a href="tut-t10-3d-scene.html">T10 3D scene &amp; camera</a><a href="tut-t11-3d-physics.html">T11 3D physics (FPS)</a><a href="tut-t12-enemy-ai.html">T12 Enemy AI</a><a href="tut-t13-save-load.html">T13 Save &amp; load</a><a href="tut-t14-export-host.html">T14 Export to web &amp; host it</a><a href="tut-t15-mac-app.html">T15 Mac app</a><a href="tut-t16-rust-game.html">T16 Rust/WASM game</a><a href="tut-t17-rust-egui-app.html">T17 Rust egui app</a><a href="tut-t18-library-snippets.html">T18 Writing library snippets</a><a href="tut-t19-notepaint.html">T19 Build notepaint, from a blank folder</a><a href="tut-t20-star-not.html">T20 Build Star-Not, a complete small space adventure</a><a href="tut-t21-project-design.html" class="cur" aria-current="page">T21 Plan a bigger Nord project</a><a href="tut-t22-shader-terrain.html">T22 Put a terrain shader in a Nord app</a></nav><main id="content"><div class="crumb">Tutorials / Nord Engine</div><h1>T21 Plan a bigger Nord project</h1>
+<p>A bigger game becomes manageable when you can say what each part does and where its files belong. You do not need a complicated framework. You need a small game plan, clear names and a working slice before adding more content.</p>
+<p>This guide is text only. Its example project, <strong>Harbour Lights</strong>, is a planning example rather than another bundled game.</p>
+<h2 id="1-write-a-one-page-design">1. Write a one-page design<a class="anchor" href="#1-write-a-one-page-design">#</a></h2>
+<pre class="code" data-lang="text"><code>Title: Harbour Lights
+Genre: small top-down exploration and rescue game
+Player: one harbour pilot steering a repair boat
+Goal: restore three lighthouses and return all stranded crews home
+Core loop: leave harbour → navigate → solve one rescue/repair → return → upgrade
+Session length: 20–30 minutes
+Controls: move, interact, open map, pause
+Failure: boat damage sends you back to harbour; completed rescues remain saved
+Tone: warm, readable, hopeful
+First release: one harbour, three routes, three lighthouse encounters
+Outside scope: open-world ocean, online multiplayer, procedural towns, crafting trees</code></pre>
+<p><strong>Core loop</strong> means the few actions the player repeats. If you cannot describe it in one sentence, reduce the plan until you can. The features should support that loop; a feature is not automatically useful because another game has it.</p>
+<h2 id="2-describe-one-minute-of-play">2. Describe one minute of play<a class="anchor" href="#2-describe-one-minute-of-play">#</a></h2>
+<p>Write a concrete sequence:</p>
+<pre class="code" data-lang="text"><code>The player leaves the harbour.
+A map marker points to a broken lighthouse.
+A narrow route introduces steering around rocks.
+A stranded crew asks for a lift.
+The player docks, restores the light and sees the route become safe.
+Returning to harbour adds one visible rescue and unlocks the next route.</code></pre>
+<p>This tells you what must exist: movement, a camera, rocks, an interaction, a small mission state, feedback and a return path. Build those together before adding twenty different boats.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>A vertical slice is one small piece that works from beginning to end. One complete rescue with a save and result screen teaches you more about your project than ten unfinished levels.</p>
+</aside><h2 id="3-pick-the-nord-tier">3. Pick the Nord tier<a class="anchor" href="#3-pick-the-nord-tier">#</a></h2>
+<p>Use <strong>2D</strong> for this top-down game. That means Nord&#39;s Phaser adapter handles drawing and supported physics. Use Nord components for sprites, bodies, text and cameras; use <code>NordScript</code> for behavior.</p>
+<p>Do not create your own Phaser Game alongside Nord. The project, scene and runtime are already connected. Choose 3D/Babylon or a Rust tier for a concrete need, not because they sound more advanced.</p>
+<h2 id="4-start-with-this-folder-structure">4. Start with this folder structure<a class="anchor" href="#4-start-with-this-folder-structure">#</a></h2>
+<pre class="code" data-lang="text"><code>harbour-lights/
+  nord.project.json             Project settings, start scene and input actions
+  index.html                    Local runtime boot page
+  README.md                     How to open, play and export
+  GUIDE.md                      Controls and player help
+  ASSETS.md                     Asset paths, sources and reuse permissions
+
+  docs/
+    GAME_DESIGN.md              One-page design and scope limits
+    CONTENT.md                  Routes, encounters and reward numbers
+    SAVE_FORMAT.md             Saved progress and its version
+
+  scenes/
+    title.scene.json            Title/menu scene
+    harbour.scene.json          Home port and first playable slice
+    coast-west.scene.json       One route
+    coast-east.scene.json       Another route, added after the first works
+
+  prefabs/
+    boat.prefab.json            Reusable player boat
+    rock.prefab.json            Reusable obstacle
+    lighthouse.prefab.json      Reusable repair location
+    stranded-crew.prefab.json   Reusable rescue location
+
+  scripts/
+    player/
+      boat-controller.js        Read actions and move the boat
+      boat-health.js            Apply damage and recovery
+    camera/
+      follow-boat.js            Follow and frame the player
+    missions/
+      rescue-rules.js           Mission state; no drawing or input code
+      rescue-scene.js           Connect mission state to this scene
+    ui/
+      hud.js                    Show health, cargo and objective
+      pause-menu.js             Pause/resume and save controls
+      results.js                Show the completed rescue
+    services/
+      progress.js               Read/write the versioned save
+      audio.js                  Choose music and named effects
+    data/
+      routes.js                 Route descriptions and rewards
+      boats.js                  Boat speed, hull and upgrade numbers
+
+  assets/
+    sprites/
+      boats.png
+      boats.png.meta.json       Frame sizes and animation names
+      people.png
+      people.png.meta.json
+    maps/
+      harbour.json              Local tilemap file
+      coast-west.json
+    ui/
+      icons.png
+      icons.png.meta.json
+    audio/
+      music/harbour.ogg
+      music/coast.ogg
+      sfx/dock.wav
+      sfx/repair.wav
+    fonts/
+      inter.woff2
+      LICENSE
+
+  .nord-cache/                  Generated previews/autosaves; not source assets
+  dist/                         Exported game; keep separate from editable files</code></pre>
+<p>Create folders when their files exist. Do not make thirty empty folders on day one. A five-file prototype can grow into this structure when its responsibilities become clear.</p>
+<h2 id="5-give-each-module-one-useful-job">5. Give each module one useful job<a class="anchor" href="#5-give-each-module-one-useful-job">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Module</th>
+<th>Owns</th>
+<th>Should not own</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>boat-controller</td>
+<td>Input and movement</td>
+<td>Campaign saves or inventory menus</td>
+</tr>
+<tr>
+<td>rescue-rules</td>
+<td>Which objectives are complete</td>
+<td>Sprite creation or mouse coordinates</td>
+</tr>
+<tr>
+<td>rescue-scene</td>
+<td>Connecting rules to scene entities</td>
+<td>Every mission in the entire game</td>
+</tr>
+<tr>
+<td>hud</td>
+<td>Displaying values</td>
+<td>Deciding whether a rescue counts</td>
+</tr>
+<tr>
+<td>progress</td>
+<td>Save version and storage</td>
+<td>Drawing the map</td>
+</tr>
+<tr>
+<td>routes data</td>
+<td>Route names and numbers</td>
+<td>Frame-by-frame update behavior</td>
+</tr>
+</tbody></table>
+<p>The purpose is to make a change easy to find. For example, change boat speed in boat data; change how speed is applied in the controller; change how speed is displayed in the HUD.</p>
+<h2 id="6-separate-settings-rules-and-presentation">6. Separate settings, rules and presentation<a class="anchor" href="#6-separate-settings-rules-and-presentation">#</a></h2>
+<p>A reusable boat prefab describes its sprite, body and attached scripts. Script attributes expose settings such as speed in the Inspector. The controller applies those settings.</p>
+<p>A mission&#39;s rules can be ordinary JavaScript functions that receive data and return a result. The scene script calls them and then changes Nord entities. This keeps mission logic readable without making every helper inherit from NordScript.</p>
+<p>Star-Not uses this same small separation: <code>sn/data.js</code> holds content and campaign rules; <code>sn/flight.js</code> handles movement; <code>star-not.js</code> connects those pieces to Nord entities and menus.</p>
+<h2 id="7-keep-scene-names-and-file-paths-boring">7. Keep scene names and file paths boring<a class="anchor" href="#7-keep-scene-names-and-file-paths-boring">#</a></h2>
+<p>Use readable names: <code>PlayerBoat</code>, <code>HarbourCamera</code>, <code>WestLighthouse</code>. Avoid <code>Thing7</code> and filenames such as <code>final-final-new2.js</code>.</p>
+<p>Assets use project-relative paths such as <code>assets/sprites/boats.png</code>. Keep the PNG and its metadata together. Exact capitals matter on many hosts. Keep internet URLs out of asset-loading code so an exported game remains offline.</p>
+<h2 id="8-plan-the-save-before-adding-content">8. Plan the save before adding content<a class="anchor" href="#8-plan-the-save-before-adding-content">#</a></h2>
+<p>Write down what needs to survive closing the game:</p>
+<pre class="code" data-lang="text"><code>Save version: 1
+Completed rescue IDs: [west-lighthouse]
+Current harbour upgrade: 1
+Boat selection: starter
+Settings: sound volumes and input preferences
+Checkpoint: harbour</code></pre>
+<p>Do not save live runtime objects such as DOM elements, entity instances or physics bodies. Store IDs and plain data. On load, create the scene normally, then apply the saved progress.</p>
+<p>Choose whether a save restarts an encounter or resumes its exact frame. Tell the player. Star-Not intentionally returns to a planet checkpoint; Notepaint preserves the actual text and picture.</p>
+<h2 id="9-give-the-player-feedback-for-every-rule">9. Give the player feedback for every rule<a class="anchor" href="#9-give-the-player-feedback-for-every-rule">#</a></h2>
+<p>The player should see why an action did or did not work:</p>
+<ul>
+<li>Repair complete → the light turns on, a short sound plays and the objective updates.</li>
+<li>Not enough supplies → the button explains the requirement.</li>
+<li>Damage → health changes visibly; the player can recover.</li>
+<li>A save failed → say it failed and offer a portable export where possible.</li>
+</ul>
+<p>A hidden number is not enough. The game needs an understandable result on screen.</p>
+<h2 id="10-split-the-work-into-small-milestones">10. Split the work into small milestones<a class="anchor" href="#10-split-the-work-into-small-milestones">#</a></h2>
+<pre class="code" data-lang="text"><code>Milestone 1: one boat moves; one camera follows; one harbour loads
+Milestone 2: one route; one obstacle; one interaction
+Milestone 3: one complete rescue; return to harbour; result shown
+Milestone 4: progress saves; pause and help explain the controls
+Milestone 5: two more routes reuse the existing pieces
+Milestone 6: art/audio replacements; readable UI; complete beginning and ending
+Milestone 7: export and distribution instructions</code></pre>
+<p>Finish the first route before multiplying it. A second scene should reuse the boat and mission pieces rather than copy one enormous script with different filenames.</p>
+<h2 id="11-treat-art-and-audio-as-replaceable-content">11. Treat art and audio as replaceable content<a class="anchor" href="#11-treat-art-and-audio-as-replaceable-content">#</a></h2>
+<p>Keep an asset inventory with path, purpose, size/frame contract, source and licence. Document which files are plain authoritative artwork and which are generated.</p>
+<p>Reuse the new example packs if useful: <a href="tut-t19-notepaint.html#5-copy-the-reusable-artwork-and-font">Notepaint&#39;s UI sprites</a> and <a href="tut-t20-star-not.html#6-copy-the-reusable-sprites-and-audio">Star-Not&#39;s game/UI/audio pack</a>. Copy the relevant sidecar and licence. Replace one asset at a stable path before changing a whole code system.</p>
+<h2 id="12-grow-only-when-the-small-game-works-for-a-player">12. Grow only when the small game works for a player<a class="anchor" href="#12-grow-only-when-the-small-game-works-for-a-player">#</a></h2>
+<p>After the first complete slice, ask concrete questions: Is the goal clear? Does movement feel right? Can a player recover from mistakes? Are saves understandable? Does the ending acknowledge what they did?</p>
+<p>Add content that answers those questions. Keep the first release small enough that you can explain its entire structure to another developer in a few minutes.</p>
+<div class="pager"><a href="tut-t20-star-not.html"><small>← Previous</small>T20 Build Star-Not, a complete small space adventure</a><a href="tut-t22-shader-terrain.html"><small>Next →</small>T22 Put a terrain shader in a Nord app</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-write-a-one-page-design">1. Write a one-page design </a><a href="#2-describe-one-minute-of-play">2. Describe one minute of play </a><a href="#3-pick-the-nord-tier">3. Pick the Nord tier </a><a href="#4-start-with-this-folder-structure">4. Start with this folder structure </a><a href="#5-give-each-module-one-useful-job">5. Give each module one useful job </a><a href="#6-separate-settings-rules-and-presentation">6. Separate settings, rules and presentation </a><a href="#7-keep-scene-names-and-file-paths-boring">7. Keep scene names and file paths boring </a><a href="#8-plan-the-save-before-adding-content">8. Plan the save before adding content </a><a href="#9-give-the-player-feedback-for-every-rule">9. Give the player feedback for every rule </a><a href="#10-split-the-work-into-small-milestones">10. Split the work into small milestones </a><a href="#11-treat-art-and-audio-as-replaceable-content">11. Treat art and audio as replaceable content </a><a href="#12-grow-only-when-the-small-game-works-for-a-player">12. Grow only when the small game works for a player </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

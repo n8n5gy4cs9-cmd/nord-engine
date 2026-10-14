@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Phaser.Time.Timeline — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../../../index.html"><img src="../../../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../../../../babylon/9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../index.html">Phaser 4.2.1 API</a><a href="../../../../../../../babylon/guides/index.html">Babylon documentation library</a><a href="../../../../../../4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Phaser.Time.Timeline</h1>
+<p><span class="badge">Underlying Phaser 4.2.1 API</span> <span class="badge">Class</span></p><p class="muted">Official public declarations and JSDoc from <code>phaser</code>. Use with engine objects, not directly on a Nord entity.</p><aside class="box tip"><div class="box-title">The Nord way</div><p><a href="../../../../../../../../nord/manual/2d.html">2D manual</a> · <a href="../../../../../../../../nord/components/component-sprite.html">sprite</a> · <a href="../../../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a> · <a href="../../../../../../../../nord/manual/physics.html">physics</a>. Access raw objects only when the Nord wrapper does not cover your feature. <a href="../../../../../../../../nord/manual/reference.html#escape-hatch">How escape hatches work</a>.</p></aside><h3 id="declaration">Timeline <a class="anchor" href="#declaration">#</a></h3><pre class="code" data-lang="ts"><code>class Timeline extends Phaser.Events.EventEmitter</code></pre><p>A Timeline is a way to schedule events to happen at specific times in the future.</p>
+<p>You can think of it as an event sequencer for your game, allowing you to schedule the
+running of callbacks, events and other actions at specific times in the future.</p>
+<p>A Timeline is a Scene level system, meaning you can have as many Timelines as you like, each
+belonging to a different Scene. You can also have multiple Timelines running at the same time.</p>
+<p>If the Scene is paused, the Timeline will also pause. If the Scene is destroyed, the Timeline
+will be automatically destroyed. However, you can control the Timeline directly, pausing,
+resuming and stopping it at any time.</p>
+<p>Create an instance of a Timeline via the Game Object Factory:</p>
+<pre class="code" data-lang="js"><code>const timeline = this.add.timeline();</code></pre>
+<p>The Timeline always starts paused. You must call <code>play</code> on it to start it running.</p>
+<p>You can also pass in a configuration object on creation, or an array of them:</p>
+<pre class="code" data-lang="js"><code>const timeline = this.add.timeline({
+    at: 1000,
+    run: () =&gt; {
+        this.add.sprite(400, 300, 'logo');
+    }
+});
+
+timeline.play();</code></pre>
+<p>In this example we sequence a few different events:</p>
+<pre class="code" data-lang="js"><code>const timeline = this.add.timeline([
+    {
+        at: 1000,
+        run: () =&gt; { this.logo = this.add.sprite(400, 300, 'logo'); },
+        sound: 'TitleMusic'
+    },
+    {
+        at: 2500,
+        tween: {
+            targets: this.logo,
+            y: 600,
+            yoyo: true
+        },
+        sound: 'Explode'
+    },
+    {
+        at: 8000,
+        event: 'HURRY_PLAYER',
+        target: this.background,
+        set: {
+            tint: 0xff0000
+        }
+    }
+]);
+
+timeline.play();</code></pre>
+<p>The Timeline can also be looped with the repeat method:</p>
+<pre class="code" data-lang="js"><code>timeline.repeat().play();</code></pre>
+<p>There are lots of options available to you via the configuration object. See the
+Phaser.Types.Time.TimelineEventConfig typedef for more details.</p>
+<h2 id="members">Public members (24)</h2><p>Private, protected and explicitly internal declarations are excluded. Inherited members belong to the base type listed in the declaration.</p><h3 id="member-constructor-0">constructor <a class="anchor" href="#member-constructor-0">#</a></h3><pre class="code" data-lang="ts"><code>constructor(scene: Phaser.Scene, config?: Phaser.Types.Time.TimelineEventConfig | Phaser.Types.Time.TimelineEventConfig[]);</code></pre><p><strong>param</strong>  scene The Scene which owns this Timeline.
+<strong>param</strong>  config The configuration object for this Timeline Event, or an array of them.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>scene</code></td><td><code>Phaser.Scene</code></td><td>Required</td></tr><tr><td><code>config</code></td><td><code>Phaser.Types.Time.TimelineEventConfig | Phaser.Types.Time.TimelineEventConfig[]</code></td><td>Optional</td></tr></tbody></table><h3 id="member-scene-1">scene <a class="anchor" href="#member-scene-1">#</a></h3><pre class="code" data-lang="ts"><code>scene: Phaser.Scene;</code></pre><p>The Scene to which this Timeline belongs.</p>
+<p><b>Type / return:</b> <code>Phaser.Scene</code></p><h3 id="member-systems-2">systems <a class="anchor" href="#member-systems-2">#</a></h3><pre class="code" data-lang="ts"><code>systems: Phaser.Scenes.Systems;</code></pre><p>A reference to the Scene Systems.</p>
+<p><b>Type / return:</b> <code>Phaser.Scenes.Systems</code></p><h3 id="member-elapsed-3">elapsed <a class="anchor" href="#member-elapsed-3">#</a></h3><pre class="code" data-lang="ts"><code>elapsed: number;</code></pre><p>The elapsed time counter.</p>
+<p>Treat this as read-only.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-timescale-4">timeScale <a class="anchor" href="#member-timescale-4">#</a></h3><pre class="code" data-lang="ts"><code>timeScale: number;</code></pre><p>The Timeline&#39;s delta time scale.</p>
+<p>Values higher than 1 increase the speed of time, while values smaller than 1 decrease it.
+A value of 0 freezes time and is effectively equivalent to pausing the Timeline.</p>
+<p>This doesn&#39;t affect the delta time scale of any Tweens created by the Timeline.
+You will have to set the <code>timeScale</code> of each Tween or the Tween Manager if you want them to match.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-paused-5">paused <a class="anchor" href="#member-paused-5">#</a></h3><pre class="code" data-lang="ts"><code>paused: boolean;</code></pre><p>Whether the Timeline is paused (<code>true</code>) or active (<code>false</code>).</p>
+<p>When paused, the Timeline will not run any of its actions.</p>
+<p>By default a Timeline is always paused and should be started by
+calling the <code>Timeline.play</code> method.</p>
+<p>You can use the <code>Timeline.pause</code> and <code>Timeline.resume</code> methods to control
+this value in a chainable way.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-complete-6">complete <a class="anchor" href="#member-complete-6">#</a></h3><pre class="code" data-lang="ts"><code>complete: boolean;</code></pre><p>Whether the Timeline is complete (<code>true</code>) or not (<code>false</code>).</p>
+<p>A Timeline is considered complete when all of its events have been run.</p>
+<p>If you wish to reset a Timeline after it has completed, you can do so
+by calling the <code>Timeline.reset</code> method.</p>
+<p>You can also use the <code>Timeline.stop</code> method to stop a running Timeline,
+at any point, without resetting it.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-totalcomplete-7">totalComplete <a class="anchor" href="#member-totalcomplete-7">#</a></h3><pre class="code" data-lang="ts"><code>totalComplete: number;</code></pre><p>The total number of events that have been run.</p>
+<p>This value is reset to zero if the Timeline is restarted.</p>
+<p>Treat this as read-only.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-loop-8">loop <a class="anchor" href="#member-loop-8">#</a></h3><pre class="code" data-lang="ts"><code>loop: number;</code></pre><p>The number of times this timeline should loop.</p>
+<p>If this value is -1 or any negative number, this Timeline will loop indefinitely.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-iteration-9">iteration <a class="anchor" href="#member-iteration-9">#</a></h3><pre class="code" data-lang="ts"><code>iteration: number;</code></pre><p>The number of times this Timeline has looped.</p>
+<p>This value is incremented each loop if looping is enabled.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-events-10">events <a class="anchor" href="#member-events-10">#</a></h3><pre class="code" data-lang="ts"><code>events: Phaser.Types.Time.TimelineEvent[];</code></pre><p>An array of all the Timeline Events.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.Time.TimelineEvent[]</code></p><h3 id="member-preupdate-11">preUpdate <a class="anchor" href="#member-preupdate-11">#</a></h3><pre class="code" data-lang="ts"><code>preUpdate(time: number, delta: number): void;</code></pre><p>Updates the elapsed time counter, if this Timeline is not paused.
+<strong>param</strong>  time The current time. Either a High Resolution Timer value if it comes from Request Animation Frame, or Date.now if using SetTimeout.
+<strong>param</strong>  delta The delta time in ms since the last frame. This is a smoothed and capped value based on the FPS rate.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>time</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>delta</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-update-12">update <a class="anchor" href="#member-update-12">#</a></h3><pre class="code" data-lang="ts"><code>update(time: number, delta: number): void;</code></pre><p>Called automatically by the Scene update step.</p>
+<p>Iterates through all of the Timeline Events and checks to see if they should be run.</p>
+<p>If they should be run, then the event&#39;s callbacks and actions are invoked.</p>
+<p>If the <code>TimelineEvent.once</code> property is <code>true</code> then the event is removed from the Timeline.</p>
+<p>If the <code>TimelineEvent.event</code> property is set then the Timeline emits that event.</p>
+<p>If the <code>TimelineEvent.run</code> property is set then the Timeline invokes that method.</p>
+<p>If the <code>TimelineEvent.loop</code> property is set then the Timeline invokes that method when repeated.</p>
+<p>If the <code>TimelineEvent.target</code> property is set then the Timeline invokes the <code>run</code> method on that target.
+<strong>param</strong>  time The current time. Either a High Resolution Timer value if it comes from Request Animation Frame, or Date.now if using SetTimeout.
+<strong>param</strong>  delta The delta time in ms since the last frame. This is a smoothed and capped value based on the FPS rate.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>time</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>delta</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-play-13">play <a class="anchor" href="#member-play-13">#</a></h3><pre class="code" data-lang="ts"><code>play(fromStart?: boolean): this;</code></pre><p>Starts this Timeline running.</p>
+<p>If the Timeline is already running and the <code>fromStart</code> parameter is <code>true</code>,
+then calling this method will reset the Timeline events as incomplete.</p>
+<p>If you wish to resume a paused Timeline, then use the <code>Timeline.resume</code> method instead.
+<strong>param</strong>  fromStart Reset this Timeline back to the start before playing. Default true.
+<strong>returns</strong>  This Timeline instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>fromStart</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-pause-14">pause <a class="anchor" href="#member-pause-14">#</a></h3><pre class="code" data-lang="ts"><code>pause(): this;</code></pre><p>Pauses this Timeline.</p>
+<p>To resume it again, call the <code>Timeline.resume</code> method or set the <code>Timeline.paused</code> property to <code>false</code>.</p>
+<p>If the Timeline is paused while processing the current game step, then it
+will carry on with all events that are due to run during that step and pause
+from the next game step.</p>
+<p>Note that if any Tweens have been started prior to calling this method, they will <strong>not</strong> be paused as well.undefined
+<strong>returns</strong>  This Timeline instance.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-repeat-15">repeat <a class="anchor" href="#member-repeat-15">#</a></h3><pre class="code" data-lang="ts"><code>repeat(amount?: number | boolean): this;</code></pre><p>Repeats this Timeline.</p>
+<p>If the value for <code>amount</code> is positive, the Timeline will repeat that many additional times.
+For example a value of 1 will actually run this Timeline twice.</p>
+<p>Passing <code>false</code> is equivalent to 0 (no additional repeats). Passing <code>true</code>, <code>undefined</code>, or a negative number will repeat indefinitely.</p>
+<p>If this Timeline had any events set to <code>once</code> that have already been removed,
+they will <strong>not</strong> be repeated each loop.
+<strong>param</strong>  amount Amount of times to repeat, if <code>true</code> or negative it will be infinite. Default -1.
+<strong>returns</strong>  This Timeline instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>amount</code></td><td><code>number | boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-resume-16">resume <a class="anchor" href="#member-resume-16">#</a></h3><pre class="code" data-lang="ts"><code>resume(): this;</code></pre><p>Resumes this Timeline from a paused state.</p>
+<p>The Timeline will carry on from where it left off.</p>
+<p>If you need to reset the Timeline to the start, then call the <code>Timeline.reset</code> method.undefined
+<strong>returns</strong>  This Timeline instance.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-stop-17">stop <a class="anchor" href="#member-stop-17">#</a></h3><pre class="code" data-lang="ts"><code>stop(): this;</code></pre><p>Stops this Timeline.</p>
+<p>This will set the <code>paused</code> and <code>complete</code> properties to <code>true</code>.</p>
+<p>If you wish to reset the Timeline to the start, then call the <code>Timeline.reset</code> method.undefined
+<strong>returns</strong>  This Timeline instance.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-reset-18">reset <a class="anchor" href="#member-reset-18">#</a></h3><pre class="code" data-lang="ts"><code>reset(loop?: boolean): this;</code></pre><p>Resets this Timeline back to the start.</p>
+<p>This will set the elapsed time to zero and set all events to be incomplete.</p>
+<p>If the Timeline had any events that were set to <code>once</code> that have already
+been removed, they will <strong>not</strong> be present again after calling this method.</p>
+<p>If the Timeline isn&#39;t currently running (i.e. it&#39;s paused or complete) then
+calling this method resets those states, the same as calling <code>Timeline.play(true)</code>.</p>
+<p>Any Tweens that were currently running as a result of this Timeline will be stopped.
+<strong>param</strong>  loop Set to <code>true</code> to preserve the loop iteration counters. Used internally when the Timeline auto-repeats. Leave as <code>false</code> to perform a full reset. Default false.
+<strong>returns</strong>  This Timeline instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>loop</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-add-19">add <a class="anchor" href="#member-add-19">#</a></h3><pre class="code" data-lang="ts"><code>add(config: Phaser.Types.Time.TimelineEventConfig | Phaser.Types.Time.TimelineEventConfig[]): this;</code></pre><p>Adds one or more events to this Timeline.</p>
+<p>You can pass in a single configuration object, or an array of them:</p>
+<pre class="code" data-lang="js"><code>const timeline = this.add.timeline({
+    at: 1000,
+    run: () =&gt; {
+        this.add.sprite(400, 300, 'logo');
+    }
+});</code></pre>
+<p><strong>param</strong>  config The configuration object for this Timeline Event, or an array of them.
+<strong>returns</strong>  This Timeline instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>config</code></td><td><code>Phaser.Types.Time.TimelineEventConfig | Phaser.Types.Time.TimelineEventConfig[]</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-clear-20">clear <a class="anchor" href="#member-clear-20">#</a></h3><pre class="code" data-lang="ts"><code>clear(): this;</code></pre><p>Removes all events from this Timeline, resets the elapsed time to zero
+and pauses the Timeline.</p>
+<p>Any Tweens that were currently running as a result of this Timeline will be stopped.undefined
+<strong>returns</strong>  This Timeline instance.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-isplaying-21">isPlaying <a class="anchor" href="#member-isplaying-21">#</a></h3><pre class="code" data-lang="ts"><code>isPlaying(): boolean;</code></pre><p>Returns <code>true</code> if this Timeline is currently playing.</p>
+<p>A Timeline is playing if it is not paused and not complete.undefined
+<strong>returns</strong>  <code>true</code> if this Timeline is playing, otherwise <code>false</code>.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-getprogress-22">getProgress <a class="anchor" href="#member-getprogress-22">#</a></h3><pre class="code" data-lang="ts"><code>getProgress(): number;</code></pre><p>Returns a number between 0 and 1 representing the progress of this Timeline.</p>
+<p>A value of 0 means the Timeline has just started, 0.5 means it&#39;s half way through,
+and 1 means it&#39;s complete.</p>
+<p>If the Timeline has no events, or all events have been removed, this will return <code>NaN</code>.</p>
+<p>If the Timeline is paused, this will return the progress value at the time it was paused.</p>
+<p>Note that the value returned is based on the number of events that have been completed,
+not the &#39;duration&#39; of the events (as this is unknown to the Timeline).undefined
+<strong>returns</strong>  A number between 0 and 1 representing the progress of this Timeline.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-destroy-23">destroy <a class="anchor" href="#member-destroy-23">#</a></h3><pre class="code" data-lang="ts"><code>destroy(): void;</code></pre><p>Destroys this Timeline.</p>
+<p>This will remove all events from the Timeline and stop it from processing.</p>
+<p>Any Tweens that were currently running as a result of this Timeline will be stopped.</p>
+<p>This method is called automatically when the Scene shuts down, but you may
+also call it directly should you need to destroy the Timeline earlier.</p>
+<p><b>Type / return:</b> <code>void</code></p><h2 id="base-types">Base types</h2><p><a href="../../events/58/eventemitter.html">Phaser.Events.EventEmitter</a></p><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#members">Public members (24)</a><a href="#base-types">Base types</a></aside></div>
+<script src="../../../../../../../../assets/cm.classic.js"></script><script src="../../../../../../../../assets/manual.js"></script></body></html>

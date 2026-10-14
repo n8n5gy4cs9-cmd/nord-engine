@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Dynamic Textures — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../../index.html"><img src="../../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../../index.html">Babylon documentation library</a><a href="../../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Dynamic Textures</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><p>A dynamic texture works by creating a canvas onto which you can draw using all the facilities of the <span>HTML5 Canvas</span>.</p>
+<p><p class="muted">Upstream illustration: dynamic texture (media not bundled).</p></p>
+<h2 id="creating-and-applying">Creating and Applying<a class="anchor" href="#creating-and-applying">#</a></h2>
+<p>This is simply achieved using the <code>dynamicTexture</code> function with just three parameters:</p>
+<pre class="code" data-lang="javascript"><code>const myDynamicTexture = new BABYLON.DynamicTexture(name, option, scene);</code></pre>
+<p>though the existing default values of <code>mipmaps</code>, <code>sampling mode</code>, and <code>texture format</code> can be overridden.</p>
+<p>Whereas the name and scene parameters are obvious, the <code>option</code> parameter, which determines the width and height of the dynamic texture, can be one of three values:</p>
+<ol>
+<li>An existing canvas, in which case <code>canvas.width</code> and <code>canvas.height</code> are used;</li>
+<li>An object having the properties <code>width</code> and <code>height</code>;</li>
+<li>A number, in which case both width and height are set to this number.</li>
+</ol>
+<p>Once created, the dynamic texture is used as the <code>diffuseTexture</code> for a material in the usual way:</p>
+<pre class="code" data-lang="javascript"><code>const myMaterial = new BABYLON.StandardMaterial(&quot;Mat&quot;, scene);
+myMaterial.diffuseTexture = myDynamicTexture;
+mesh.material = myMaterial;</code></pre>
+<h2 id="attaching-to-a-canvas">Attaching to a Canvas<a class="anchor" href="#attaching-to-a-canvas">#</a></h2>
+<p>An existing canvas can be used to define the size of a <code>dynamicTexture</code> when passed as an <code>option</code> parameter during creation, as seen above. In addition to referencing the size of the canvas, the created <code>dynamicTexture</code> will also attach itself to that referenced canvas. This means that the <code>dynamicTexture</code> will duplicate whatever is rendered to that referenced canvas when <code>dynamicTexture.update()</code> is called. </p>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="writing-text">Writing Text<a class="anchor" href="#writing-text">#</a></h2>
+<p>A <code>drawText</code> method is available so that text can be written directly onto the dynamic texture.</p>
+<pre class="code" data-lang="javascript"><code>myDynamicTexture.drawText(text, x, y, font, color, canvas color, invertY, update);</code></pre>
+<p>Here are the parameters:</p>
+<ul>
+<li>text: string, the words to be written;</li>
+<li>x: number, distance from the left-hand edge;</li>
+<li>y: number, distance from the top or bottom edge, depending on invertY;</li>
+<li>font: string, font definition in the form font-style, font-size, font_name;</li>
+<li>invertY: boolean, true by default, in which case y is the distance from the top; when false, y is the distance from the bottom and the letters are reversed;</li>
+<li>update: boolean, true by default, the dynamic texture will immediately be updated.</li>
+</ul>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="canvas-methods">Canvas Methods<a class="anchor" href="#canvas-methods">#</a></h2>
+<p>You can obtain the canvas context using</p>
+<pre class="code" data-lang="javascript"><code>const ctx = myDynamicTexture.getContext();</code></pre>
+<p>This exposes all the possibilities of the <span>HTML5 canvas</span> element, giving you full control over drawing, transforming, compositing, and other pixel manipulation to create or update your dynamic texture in real time.</p>
+<h3 id="drawing-curves">Drawing Curves<a class="anchor" href="#drawing-curves">#</a></h3>
+<p>As an example, drawing using a quadratic curve</p>
+<pre class="code" data-lang="javascript"><code>ctx.beginPath();
+ctx.moveTo(75, 25);
+ctx.quadraticCurveTo(25, 25, 25, 62.5);
+ctx.quadraticCurveTo(25, 100, 50, 100);
+ctx.quadraticCurveTo(50, 120, 30, 125);
+ctx.quadraticCurveTo(60, 120, 65, 100);
+ctx.quadraticCurveTo(125, 100, 125, 62.5);
+ctx.quadraticCurveTo(125, 25, 75, 25);
+ctx.stroke();</code></pre>
+<p>To apply the drawing, the dynamic texture needs to be updated.</p>
+<pre class="code" data-lang="javascript"><code>myDynamicTexture.update();</code></pre>
+<p><strong>Note:</strong> use <code>update(false)</code> if you do not want to use <code>invertY</code>.</p>
+<span class="muted">Online playground (not embedded offline)</span><h3 id="images">Images<a class="anchor" href="#images">#</a></h3>
+<p>Images can be added to fill part or the whole of the canvas using the <code>drawImage</code> method. Remember that you will have to wait for the image to load before assigning it to the canvas and update the dynamic texture afterwards.</p>
+<p>For a whole image</p>
+<pre class="code" data-lang="javascript"><code>const img = new Image();
+img.src = 'PATH TO IMAGE';
+img.onload = function() {
+  ctx.drawImage(this, 0, 0);
+  myDynamicTexture.update();
+}</code></pre>
+<p>For part of the image scaled onto part of the canvas</p>
+<pre class="code" data-lang="javascript"><code>const img = new Image();
+img.src = 'PATH TO IMAGE';
+img.onload = function() {
+  ctx.drawImage(this, image start x, image start y, image width, image height, canvas to x, canvas to y, destination width, destination height);
+  myDynamicTexture.update();
+}</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><h3 id="transformations">Transformations<a class="anchor" href="#transformations">#</a></h3>
+<p>Anything that is drawn to a canvas can be transformed using methods like <code>scale</code>, <code>rotate</code>, or <code>translate</code>. It is helpful to <code>save</code> the context before the transformation and then <code>restore</code> the context afterward to ensure the texture updates correctly.</p>
+<pre class="code" data-lang="javascript"><code>const texSize = 512;
+
+ctx.save();
+
+// define position and size of rectangle
+const left = texSize * 0.5 - (texSize * 0.125);
+const top = texSize * 0.5 - (texSize * 0.125);
+const width = 0.25 * texSize;
+const height = 0.25 * texSize;
+
+// translate context to center rotation of rectangle
+const rotationCenterU = width * 0.5 + left;
+const rotationCenterV = height * 0.5 + top;
+ctx.translate(rotationCenterU, rotationCenterV);
+
+// rotate context before drawing
+ctx.rotate(Math.PI/4);
+
+// draw rectangle
+ctx.fillStyle = &quot;Red&quot;;
+ctx.fillRect(-width * 0.5, -height * 0.5, width, height);
+
+ctx.restore();
+</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="playground-combination">Playground Combination<a class="anchor" href="#playground-combination">#</a></h2>
+<p>This playground combines all the above techniques.</p>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="text-and-area-matching">Text and Area Matching<a class="anchor" href="#text-and-area-matching">#</a></h2>
+<p>For a single line of text it is possible to fit the text into a specified area or to fit an area to a specified text.</p>
+<h3 id="fit-text-into-an-area">Fit Text Into an Area<a class="anchor" href="#fit-text-into-an-area">#</a></h3>
+<p>You have a plane with width and height, <code>planeWidth</code> and <code>planeHeight</code>. To form the width and height of the dynamic texture, multiply both the plane width and height by the same number to maintain the aspect ratio. The number you multiply by defines the sharpness of the text; low numbers produce blurred text. Now you can create the dynamic texture.</p>
+<pre class="code" data-lang="javascript"><code>const DTWidth = planeWidth * 60;
+const DTHeight = planeHeight * 60;
+const dynamicTexture = new BABYLON.DynamicTexture(&quot;DynamicTexture&quot;, { width: DTWidth, height: DTHeight }, scene);</code></pre>
+<p>For the next stage, use any font size to write and measure the width of the text on the dynamic texture.</p>
+<pre class="code" data-lang="javascript"><code>const ctx = dynamicTexture.getContext();
+const size = 12; //any value will work
+ctx.font = size + &quot;px &quot; + font_type;
+const textWidth = ctx.measureText(text).width;</code></pre>
+<p>The ratio of text width to the applied font size can then be used with the dynamic texture width to determine the font size that will fit the plane.</p>
+<pre class="code" data-lang="javascript"><code>const ratio = textWidth / size;
+
+const font_size = Math.floor(DTWidth / ratio);</code></pre>
+<p>If you wish you can apply a multiplier to the ratio, the larger the multiplier the smaller the text and bigger margins.</p>
+<pre class="code" data-lang="javascript"><code>const font_size = Math.floor(DTWidth / (ratio * 1.1));</code></pre>
+<p>Now set the font and draw the text.</p>
+<pre class="code" data-lang="javascript"><code>const font = font_size + &quot;px &quot; + font_type;
+dynamicTexture.drawText(text, null, null, font, &quot;#000000&quot;, &quot;#ffffff&quot;, true);</code></pre>
+<p>Finally set and apply the material for the plane.</p>
+<pre class="code" data-lang="javascript"><code>const mat = new BABYLON.StandardMaterial(&quot;mat&quot;, scene);
+mat.diffuseTexture = dynamicTexture;
+plane.material = mat;</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><h3 id="fit-an-area-to-text">Fit an Area to Text<a class="anchor" href="#fit-an-area-to-text">#</a></h3>
+<p>Take a plane mesh of fixed height, <strong>planeHeight</strong>, and some text with a set font size. You can then calculate how wide the plane must be for the text to fit. To do this, you need to know the width the text will take up on a dynamic texture. This is calculated using a temporary dynamic texture and measuring the text.</p>
+<pre class="code" data-lang="javascript"><code>const temp = new BABYLON.DynamicTexture(&quot;DynamicTexture&quot;, 64, scene);
+const tmpctx = temp.getContext();
+tmpctx.font = font;
+const DTWidth = tmpctx.measureText(text).width;</code></pre>
+<p>Choose a height for the dynamic texture, <strong>DTHeight</strong>, and then maintain the aspect ratio of the plane to the dynamic texture:</p>
+<ol>
+<li>calculate the <code>ratio</code> planeHeight:DTHeight;</li>
+<li>use the ratio to calculate the width of the <code>planeWidth</code> = DTWidth * ratio;</li>
+<li>create the dynamic texture to use as material with width and height, DTWidth and DTHeight;</li>
+<li>draw text on dynamic texture;</li>
+<li>create the plane with width and height planeWidth and planeHeight.</li>
+</ol>
+<pre class="code" data-lang="javascript"><code>const planeHeight = 3;
+const DTHeight = 256; //or set as wished
+const ratio = planeHeight / DTHeight;
+const planeWidth = DTWidth * ratio;
+
+const dynamicTexture = new BABYLON.DynamicTexture(&quot;DynamicTexture&quot;, { width: DTWidth, height: DTHeight }, scene, false);
+const mat = new BABYLON.StandardMaterial(&quot;mat&quot;, scene);
+mat.diffuseTexture = dynamicTexture;
+dynamicTexture.drawText(text, null, null, font, &quot;#000000&quot;, &quot;#ffffff&quot;, true); //use of null, null centers the text
+
+const plane = BABYLON.MeshBuilder.CreatePlane(&quot;plane&quot;, { width: planeWidth, height: planeHeight }, scene);
+plane.material = mat;</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="serialization">Serialization<a class="anchor" href="#serialization">#</a></h2>
+<p>The dynamic texture can be serialized with the scene using <code>SceneSerializer.Serialize()</code> or a mesh using <code>SceneSerializer.SerializeMesh()</code>.</p>
+<p><strong>Note:</strong> Be sure that the scene is ready before serialization.</p>
+<p>This playground demonstrates serializing a dynamic texture associated with a material on a mesh:</p>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="dynamic-texture-example">Dynamic Texture Example<a class="anchor" href="#dynamic-texture-example">#</a></h2>
+<p><p class="muted">Upstream illustration: product customization with dynamic texture (media not bundled).</p></p>
+<p>This playground example incorporates a user-manipulated dynamic texture allowing the customization of an asset. This scene demonstrates many of the previous concepts and shows why dynamic textures are a great way to provide users with interactive scene materials.</p>
+<span class="muted">Online playground (not embedded offline)</span><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#creating-and-applying">Creating and Applying </a><a href="#attaching-to-a-canvas">Attaching to a Canvas </a><a href="#writing-text">Writing Text </a><a href="#canvas-methods">Canvas Methods </a><a href="#playground-combination">Playground Combination </a><a href="#text-and-area-matching">Text and Area Matching </a><a href="#serialization">Serialization </a><a href="#dynamic-texture-example">Dynamic Texture Example </a></aside></div>
+<script src="../../../../../../../assets/cm.classic.js"></script><script src="../../../../../../../assets/manual.js"></script></body></html>

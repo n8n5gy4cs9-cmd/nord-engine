@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Creating Procedural Textures — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../../index.html"><img src="../../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../../index.html">Babylon documentation library</a><a href="../../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Creating Procedural Textures</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="using-a-files-based-custom-procedural-texture">Using a Files-Based Custom Procedural Texture<a class="anchor" href="#using-a-files-based-custom-procedural-texture">#</a></h2>
+<p>To use a files-based custom procedural texture, you need to create a folder containing at least 2 files:</p>
+<ul>
+<li>config.json</li>
+<li>custom.fragment.fx</li>
+</ul>
+<p>The config file is a JavaScript Simple Object Notation file containing 4 elements. Here is an example:</p>
+<pre class="code" data-lang="javascript"><code>    {
+     &quot;animate&quot;: false,
+     &quot;refreshrate&quot;: 0,
+     &quot;uniforms&quot;: [
+      {
+          &quot;type&quot;: &quot;float&quot;,
+          &quot;name&quot;: &quot;dirtAmplifier&quot;,
+          &quot;value&quot;: &quot;6.0&quot;
+      }
+  ],
+     &quot;sampler2Ds&quot;: [
+      {
+          &quot;sample2Dname&quot;: &quot;dirt&quot;,
+          &quot;textureRelativeUrl&quot;: &quot;textures/dirt.jpg&quot;
+      },
+      {
+          &quot;sample2Dname&quot;: &quot;grass&quot;,
+          &quot;textureRelativeUrl&quot;: &quot;textures/grass.png&quot;
+      }
+     ]
+    }</code></pre>
+<p>The <strong>animate</strong> property indicates if a time value should be created and increased each time the fragment shader code is executed.</p>
+<p>The <strong>refreshrate</strong> property is set to 0 if you want the texture to render only once. If set to 1, it will render every frame; if set to 2, every two frames; and so on.</p>
+<p><strong>Uniforms</strong> are the values that will be passed from the JavaScript code to the shader code. By setting them this way, you can allow the custom texture user to modify these values at runtime to customize the texture.</p>
+<p>Uniforms can be of type:</p>
+<ul>
+<li><strong>float</strong> (parameters : value)</li>
+<li><strong>Vector2</strong> (parameters: x, y)</li>
+<li><strong>Vector3</strong> (parameters: x, y, z)</li>
+<li><strong>Color3</strong> (parameters: r, g, b)</li>
+<li><strong>Color4</strong> (parameters: r, g, b, a)</li>
+</ul>
+<p><strong>Textures2D</strong> are 2D image files that are passed to the shader code as <strong>sampler2D</strong> variables. They can be read by the shader code and be used to create the final pixel color. You only need to provide a name and the relative path inside the folder.</p>
+<p>The <strong>custom.fragment.fx</strong> file contains the <span>GLSL</span> code. The purpose of this wiki article is not to teach you how to create a fragment shader or how it works. You simply need to know that the code in your main function will be called once for each pixel to be created in the texture. In this main function, you only know the coordinates of the current pixel in the final texture.</p>
+<p>Here is a simple example that sets all pixels to a specific gray.</p>
+<pre class="code" data-lang="javascript"><code>    #ifdef GL_ES
+    precision highp float;
+    #endif
+
+    void main(void) {
+     vec3 color = vec3(0.9, 0.9, 0.9);
+     gl_FragColor = vec4(color, 1.0);
+    }</code></pre>
+<p>Gl_FragColor is the variable in which you put the color you want the pixel to have.
+Here is a more complex example that uses 2 samplers and mixes their colors equally.</p>
+<pre class="code" data-lang="javascript"><code>    #ifdef GL_ES
+    precision highp float;
+    #endif
+
+    varying vec2 vPosition;
+    varying vec2 vUV;
+
+    uniform sampler2D grass;
+    uniform sampler2D dirt;
+
+    void main(void) {
+     vec3 color = mix(texture2D(dirt, vUV).xyz, texture2D(grass, vUV).xyz, 0.5);
+     gl_FragColor = vec4(color, 1.0);
+    }</code></pre>
+<p>To use this custom texture, you need to make your folder available to your Babylon.js HTML/JavaScript files and use a <strong>CustomProceduralTexture</strong> class instead of a standard one. The only difference is that you specify a new parameter: the relative path to the folder containing the custom texture. Babylon.js will automatically read the config.json and custom.fragment.fx files and load everything for you.</p>
+<pre class="code" data-lang="javascript"><code>const texture = new BABYLON.CustomProceduralTexture(&quot;texture&quot;, &quot;./pathtotexture&quot;, 1024, scene);</code></pre>
+<h2 id="using-a-shaderstore-for-shader-storage">Using a ShaderStore for Shader Storage<a class="anchor" href="#using-a-shaderstore-for-shader-storage">#</a></h2>
+<p>You can also use the ShaderStore to write a shader inline and use it in a CustomProceduralTexture.
+This can be done easily using the <strong>BABYLON.Effect.ShaderStore</strong> array:</p>
+<pre class="code" data-lang="javascript"><code>BABYLON.Effect.ShadersStore[&quot;LinesPixelShader&quot;] = &quot;#ifdef GL_ES\n&quot; + &quot;precision highp float;\n&quot; + &quot;#endif\n\n&quot; + &quot;varying vec2 vUV; \n&quot; + &quot;void main(void) {\n&quot; + &quot; gl_FragColor = vec4(vUV.x,vUV.y,-vUV.x, 1.0);\n&quot; + &quot;}\n&quot; + &quot;&quot;;</code></pre>
+<p>Note that your shader name should be suffixed with <strong>PixelShader</strong>, as the Procedural Texture shader is always a pixel shader. Babylon.js will automatically understand that it is a pixel shader.</p>
+<p>To use this shader, you just have to create a CustomProceduralTexture and put the name of your shader in the store instead of the path to the files.</p>
+<pre class="code" data-lang="javascript"><code>const customProcText = new BABYLON.CustomProceduralTexture(&quot;customtext&quot;, &quot;Lines&quot;, 1024, scene);</code></pre>
+<h2 id="using-a-dom-element-for-shader-storage">Using a DOM Element for Shader Storage<a class="anchor" href="#using-a-dom-element-for-shader-storage">#</a></h2>
+<p>Finally, you can also use <strong>DOM Elements</strong> to store your shader. You just have to create a script tag in your HTML file like this:</p>
+<pre class="code" data-lang="html"><code>&lt;script type=&quot;application/pixelShader&quot; id=&quot;LinesPixelShader&quot;&gt;
+  #ifdef GL_ES
+  precision highp float;
+  #endif
+  varying vec2 vUV;
+  void main(void) {
+       gl_FragColor = vec4(vUV.x,vUV.y,-vUV.x, 1.0);
+  }
+&lt;/script&gt;</code></pre>
+<p>To use it, you just have to create a simple object containing one property which is named <strong>fragmentElement</strong> and contains the id identifying the script DOM element.</p>
+<pre class="code" data-lang="javascript"><code>const linesShader = { fragmentElement: &quot;LinesPixelShader&quot; };
+const customProcText = new BABYLON.CustomProceduralTexture(&quot;customtext&quot;, linesShader, 1024, scene);</code></pre>
+<h2 id="using-node-material-to-generate-procedural-texture">Using Node Material to generate procedural texture<a class="anchor" href="#using-node-material-to-generate-procedural-texture">#</a></h2>
+<p>You can use NodeMaterial to generate the shaders for your procedural texture.
+The code to generate it is very simple:</p>
+<pre class="code" data-lang="javascript"><code>BABYLON.NodeMaterial.ParseFromSnippetAsync(&quot;#A7A3UB#1&quot;, scene).then((nodeMaterial) =&gt; {
+  const proceduralTexture = nodeMaterial.createProceduralTexture(256);
+});</code></pre>
+<p>Example: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>More here: <a href="../node-material/nodematerial.html">Creating Procedural Textures</a></p>
+<span class="muted">&lt;Youtube id=&quot;qqMuuSM7GvI&quot;/&gt;</span><p><strong>Note:</strong> When using ShaderStore or a DOM element shader for custom procedural textures, the config.json file is no longer needed. You can simply use setFloat or setVector3 (and so on), and setTexture on the CustomProceduralTexture will provide values and Sampler2D variables to the shader code.</p>
+<p>Feel free to play with this scene here: <span class="muted">Online playground (not embedded offline)</span></p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#using-a-files-based-custom-procedural-texture">Using a Files-Based Custom Procedural Texture </a><a href="#using-a-shaderstore-for-shader-storage">Using a ShaderStore for Shader Storage </a><a href="#using-a-dom-element-for-shader-storage">Using a DOM Element for Shader Storage </a><a href="#using-node-material-to-generate-procedural-texture">Using Node Material to generate procedural texture </a></aside></div>
+<script src="../../../../../../../assets/cm.classic.js"></script><script src="../../../../../../../assets/manual.js"></script></body></html>

@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: MRTK 2.X For Babylon.js — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../index.html"><img src="../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../index.html">Babylon documentation library</a><a href="../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: MRTK 2.X For Babylon.js</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="what-is-mrtk-for-babylon-js">What is MRTK for Babylon.js<a class="anchor" href="#what-is-mrtk-for-babylon-js">#</a></h2>
+<p>MRTK stands for the Mixed Reality Toolkit, a set of features, controls, and components designed to ease and accelerate development for VR and AR applications.</p>
+<p>Documentation currently exists only for MRTK&#39;s <span>Unity</span> and <span>Unreal</span> implementations, so comparisons here refer to those versions.</p>
+<p>This page goes over each MRTK-relevant control and feature present in Babylon.js, showing how each can be used. Many of the controls can also be viewed on the <a href="gui3d.html">3D GUI page</a>, and relevant pages are linked where applicable.</p>
+<h2 id="gui-controls">GUI Controls<a class="anchor" href="#gui-controls">#</a></h2>
+<p>The following Babylon.js controls have roots in MRTK features. As they extend the <code>Control3D</code> class, they all support the basic capabilities that <code>Control3D</code> objects have.</p>
+<p>More on the <code>Control3D</code> class, and 3D GUI elements in general, can be found <a href="gui3d.html">here</a>.</p>
+<p>The following example showcases several of the controls listed, including <code>TouchHolographicButtons</code>, <code>TouchMeshButtons</code>, and the <code>NearMenu</code>. This scene is designed for use in XR and supports <code>WebXRNearInteraction</code>:
+<span class="muted">Online playground (not embedded offline)</span></p>
+<h4 id="holographic-button">Holographic Button<a class="anchor" href="#holographic-button">#</a></h4>
+<p>The <code>HolographicButton</code> class is the standard, familiar button that can be placed and pressed in a 3D environment. It is based on the MRTK <code>ButtonHoloLens1</code> and supports a title, image, and tooltip.</p>
+<h4 id="touch-holographic-button">Touch Holographic Button<a class="anchor" href="#touch-holographic-button">#</a></h4>
+<p>The <code>TouchHolographicButton</code> is akin to MRTK&#39;s <code>PressableButtonHoloLens2</code>. It supports everything that the <code>HolographicButton</code> supports, but has more depth to it, allowing for visual feedback as it is being interacted with. As part of this added depth, it now responds to near interactions by having the button surface depress as the user&#39;s hand/motion controller presses it.</p>
+<h4 id="touch-mesh-button">Touch Mesh Button<a class="anchor" href="#touch-mesh-button">#</a></h4>
+<p>While the <code>TouchMeshButton</code> doesn&#39;t have a direct representation within MRTK, it is a button that offers custom visuals and support for near interactions. This allows for any object to react to near interaction, if desired, which aligns with MRTK&#39;s experimental <code>Hand Physics Service</code>.</p>
+<p>Aside from the customization of its visuals, this button behaves in the same way as the <code>TouchHolographicButton</code>.</p>
+<h4 id="holographic-slate">Holographic Slate<a class="anchor" href="#holographic-slate">#</a></h4>
+<p>The <code>HolographicSlate</code> is a flat panel that can float in a 3D environment, used to display 2D content in XR experiences.</p>
+<p>It consists of a titlebar and content pane. The titlebar has room for a custom title, plus a follow button and close button. The follow button will toggle whether the slate follows the user around or not, and the close button will destroy the slate. The content pane hosts an <code>AdvancedDynamicTexture</code>, which is <a href="gui.html">explained in more detail here</a>.</p>
+<p>See it in action here:
+<span class="muted">Online playground (not embedded offline)</span></p>
+<h4 id="near-menu">Near Menu<a class="anchor" href="#near-menu">#</a></h4>
+<p>The <code>NearMenu</code> is a <code>HolographicMenu</code> with an attached <code>FollowBehavior</code> that tries to stay tethered a set distance from the user at all times.</p>
+<p>It is a menu designed for use in XR experiences and by default stays about half an arm&#39;s length away. It also rotates to try to stay in the user&#39;s field of view.</p>
+<p>The <code>NearMenu</code> also has a pin button that, when pressed, freezes the menu in space. The menu can also be grabbed around the edges to move it (it comes with an attached <code>SixDofDragBehavior</code>), at which point it becomes pinned to maintain its new position.</p>
+<h4 id="hand-menu">Hand Menu<a class="anchor" href="#hand-menu">#</a></h4>
+<p>The <code>HandMenu</code> is a <code>HolographicMenu</code> that is anchored to the user&#39;s hand using a <code>HandConstraintBehavior</code>.</p>
+<p>Its default position lies on the outside of the user&#39;s left hand, such that when their palm is up, the menu is facing them and easily accessible by their right hand.</p>
+<p>The menu can be customized to appear by default on the right hand or either hand, and can also be anchored to a different quadrant of the hand. Only one menu will be visible at a time though, even if both hands are up. More information on this can be found in the <code>HandConstraintBehavior</code>&#39;s section <a href="mrtk.html">here</a>.</p>
+<h4 id="slider-3d">Slider 3D<a class="anchor" href="#slider-3d">#</a></h4>
+<p>The <code>Slider3D</code> is a customizable slider with a 3D presence. The default range of the slider is from <code>0</code> to <code>1</code>, though that can be customized, along with the step count and precision.</p>
+<p>The <code>Slider3D</code> can be created with a backplate, which is determined on creation. After creation, the <code>minimum</code> and <code>maximum</code> values can be adjusted, as well as the <code>step</code> size.</p>
+<p>See it in action here:
+<span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="behaviors-and-gizmos">Behaviors and Gizmos<a class="anchor" href="#behaviors-and-gizmos">#</a></h2>
+<p>Some behaviors and Gizmos are also shared with MRTK components. In MRTK terminology, these are usually referred to as Solvers, Bounds Control, or Object Manipulators. Behaviors and Gizmos are attached to <code>Nodes</code>, <code>TransformNodes</code>, and <code>Meshes</code> in order to provide additional functionality.</p>
+<p>More information on <code>Gizmos</code> can be found <a href="../mesh/gizmo.html">here</a>, while behaviors are covered in more detail <a href="../behaviors/meshbehaviors.html">here</a>.</p>
+<h4 id="sixdof-drag-behavior">SixDof Drag Behavior<a class="anchor" href="#sixdof-drag-behavior">#</a></h4>
+<p>The <code>SixDofDragBehavior</code> is also known as MRTK&#39;s <code>Object Manipulator</code> component. By creating and attaching it to an object in the scene, users can grab, move, and rotate the object. Interacting with a ray-cast input allows the object to be moved in 3 dimensions, while near interaction adds the ability to rotate the object in place.</p>
+<pre class="code" data-lang="javascript"><code>const sixDofDragBehavior = new BABYLON.SixDofDragBehavior();</code></pre>
+<p>To attach a <code>SixDofDragBehavior</code> to a mesh in the scene, simply call the mesh&#39;s <code>addBehavior</code> function:</p>
+<pre class="code" data-lang="javascript"><code>mesh.addBehavior(sixDofDragBehavior);</code></pre>
+<h4 id="follow-behavior">Follow Behavior<a class="anchor" href="#follow-behavior">#</a></h4>
+<p>The <code>FollowBehavior</code> tries to maintain a set distance between the <code>TransformNode</code> it is attached to and the <code>followedCamera</code> target (which defaults to the main camera).</p>
+<p>There are many aspects to this behavior that can be customized. These are the core properties:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>followedCamera</td>
+<td>Camera</td>
+<td>The camera the behavior will try to follow</td>
+</tr>
+<tr>
+<td>defaultDistance</td>
+<td>float</td>
+<td>The starting distance to the camera, in meters</td>
+</tr>
+<tr>
+<td>minimumDistance</td>
+<td>float</td>
+<td>The minimum distance before the behavior starts to move the attached <code>TransformNode</code> further away</td>
+</tr>
+<tr>
+<td>maximumDistance</td>
+<td>float</td>
+<td>The maximum distance before the behavior starts to move the attached <code>TransformNode</code> closer</td>
+</tr>
+<tr>
+<td>verticalMaxDistance</td>
+<td>float</td>
+<td>The maximum height offset allowed between the camera&#39;s position and the <code>TransformNode</code>&#39;s position</td>
+</tr>
+</tbody></table>
+<h4 id="hand-constraint-behavior">Hand Constraint Behavior<a class="anchor" href="#hand-constraint-behavior">#</a></h4>
+<p>The <code>HandConstraintBehavior</code> is a behavior that constrains the attached mesh to a specific location on the user&#39;s hand. The visibility of the attached mesh can be toggled based on the rotation of the hand and how centered it is in the user&#39;s field of view, by setting the <code>handConstraintVisibility</code> property.</p>
+<p>This behavior takes advantage of the <code>WebXREyeTracking</code> feature, allowing the <code>handConstraintVisibility</code> property to check whether the user is actively looking at their hand or the mesh. As a fallback, if no eye data is available, it uses the direction the device is facing instead.</p>
+<p>The following are the core properties that can be set to customize the behavior:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>targetZone</td>
+<td>HandConstraintSide</td>
+<td>An enum that determines which side/quadrant of the hand the mesh is anchored to and offset from</td>
+</tr>
+<tr>
+<td>zoneOrientationMode</td>
+<td>HandConstraintOrientation</td>
+<td>Determines whether the attached mesh&#39;s position should rotate with the hand</td>
+</tr>
+<tr>
+<td>nodeOrientationMode</td>
+<td>HandConstraintOrientation</td>
+<td>Determines whether the attached mesh should rotate with the hand</td>
+</tr>
+<tr>
+<td>handedness</td>
+<td>XRHandedness</td>
+<td>Should the attached mesh only stick to the left hand, or right hand? Defaults to none, allowing it to stick to either hand as they become available.</td>
+</tr>
+</tbody></table>
+<h4 id="bounding-box-gizmo">Bounding Box Gizmo<a class="anchor" href="#bounding-box-gizmo">#</a></h4>
+<p>The <code>BoundingBoxGizmo</code> is also known as MRTK&#39;s <code>Bounds Control</code> component. This creates small objects that surround the attached mesh, which can be interacted with to rotate, scale, and <a href="../../../../9.30/api/babylonjs/babylon/1c/transformnode.html">translate</a> the attached mesh.</p>
+<h2 id="background-features">Background Features<a class="anchor" href="#background-features">#</a></h2>
+<p>These are features that work in the background to enhance the capabilities available to a user.</p>
+<p>General XR features are covered in detail <a href="../webxr/webxrselectedfeatures.html">here</a>, while AR-specific features are covered in detail <a href="../webxr/webxrarfeatures.html">here</a>.</p>
+<h4 id="hand-tracking-and-near-interaction">Hand Tracking and Near Interaction<a class="anchor" href="#hand-tracking-and-near-interaction">#</a></h4>
+<p>The Hand Tracking feature, <code>WebXRHandTracking</code>, is an enhancement to hand inputs for XR devices that support it.</p>
+<p>This feature provides articulated joint tracking, hand meshes, and enables the use of touch interactions using near interaction.</p>
+<p>The <code>WebXRNearInteraction</code> feature is enabled by default on the Babylon playground, and allows for touch interactions when using hands or motion controllers. Touch-supported objects will be able to dynamically react to 3D input, creating a more immersive experience than what basic buttons can provide.</p>
+<p>If the <code>WebXRHandTracking</code> feature is not enabled, then the near interaction model used will be a visible orb that floats in front of the hand (or motion controller). This orb will only be visible while near a component that supports Near Interaction.</p>
+<p>To provide support for Near Interaction to an arbitrary <code>AbstractMesh</code>, simply set the <code>isNearPickable</code> and/or <code>isNearGrabbable</code> properties. <code>isNearPickable</code> will enable near interaction in the form of touch input, whereas <code>isNearGrabbable</code> will allow the object to be grabbed. The main difference here is that touch input triggers a press on touch, but grabbing the object requires touch <em>and</em> a trigger of some kind (pulling the trigger on a controller, or performing a pinch gesture with a hand). At most one of these options should be enabled for a given object at any given time, to prevent unintended interactions.</p>
+<h4 id="eye-tracking">Eye Tracking<a class="anchor" href="#eye-tracking">#</a></h4>
+<p>Disclaimer: The eye-tracking feature is only supported with BabylonNative for now.</p>
+<p>The Eye Tracking feature, <code>WebXREyeTracking</code>, is an opt-in feature for supported XR devices that captures the direction the user&#39;s eyes are facing, and passes that along for developers to use.</p>
+<p>To use it, simply enable the Eye Tracking feature when setting up a project in BabylonNative.</p>
+<p>You then have the option to either listen to an observable, or directly query the component for the latest data. Eye tracking data is always provided as a <code>Ray</code>.</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#what-is-mrtk-for-babylon-js">What is MRTK for Babylon.js </a><a href="#gui-controls">GUI Controls </a><a href="#behaviors-and-gizmos">Behaviors and Gizmos </a><a href="#background-features">Background Features </a></aside></div>
+<script src="../../../../../../assets/cm.classic.js"></script><script src="../../../../../../assets/manual.js"></script></body></html>

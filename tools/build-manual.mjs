@@ -17,9 +17,52 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const check = process.argv.includes('--check');
 const OUT = check ? fs.mkdtempSync(path.join(os.tmpdir(), 'nord-manual-')) : path.join(root, 'docs/manual');
 const SRC = path.join(root, 'docs/manual-src');
+const MANIFEST = '.manual-manifest.json';
 const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+// ---------- incremental output -------------------------------------------------------------------------------------------
+// The manual is committed and commonly synchronized over FTP. Preserve unchanged files and their mtimes so a one-page
+// documentation edit uploads as one page, rather than making every generated file look new.
+let changed = 0, unchanged = 0, removed = 0;
+const expected = new Set();
+const sameBytes = (file, bytes) => fs.existsSync(file) && fs.readFileSync(file).equals(bytes);
+function emit(file, contents) {
+  const rel = file.split(path.sep).join('/');
+  const dest = path.join(OUT, rel);
+  const normalized = typeof contents === 'string' && rel.endsWith('.html')
+    ? contents.replace(/\r\n/g, '\n').replace(/ +\t/g, '\t').replace(/[ \t]+$/gm, '')
+    : contents;
+  const bytes = Buffer.isBuffer(normalized) ? normalized : Buffer.from(normalized);
+  expected.add(rel);
+  if (sameBytes(dest, bytes)) { unchanged++; return; }
+  fs.mkdirSync(path.dirname(dest), { recursive: true });
+  const temp = `${dest}.tmp-${process.pid}`;
+  fs.writeFileSync(temp, bytes);
+  fs.renameSync(temp, dest);
+  changed++;
+}
+function copy(source, target) { emit(target, fs.readFileSync(source)); }
+function copyTree(source, target, filter = () => true) {
+  for (const entry of fs.readdirSync(source, { withFileTypes: true })) {
+    const src = path.join(source, entry.name), rel = path.posix.join(target, entry.name);
+    if (!filter(src)) continue;
+    if (entry.isDirectory()) copyTree(src, rel, filter);
+    else if (entry.isFile()) copy(src, rel);
+  }
+}
+function existingFiles(dir, prefix = '') {
+  if (!fs.existsSync(dir)) return [];
+  const out = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    if (entry.name === '.DS_Store') continue;
+    const rel = path.posix.join(prefix, entry.name);
+    if (entry.isDirectory()) out.push(...existingFiles(path.join(dir, entry.name), rel));
+    else if (entry.isFile()) out.push(rel);
+  }
+  return out;
+}
 
 const require = createRequire(import.meta.url);
 const { marked } = require(path.join(root, 'vendor/marked/marked.umd.js'));
@@ -332,6 +375,14 @@ engineDocs({ root, add, renderMd, esc, slug });
 
 // ---------- layout --------------------------------------------------------------------------------------------------------
 const SECTION_ORDER = ['Start here', 'Manual', 'Tutorials', 'Guides', 'API', 'Components', 'Reference', 'Appendix', 'Engine docs'];
+const SECTION_DIR = {
+  'Start here': 'nord/start', Manual: 'nord/manual', Tutorials: 'nord/tutorials', Guides: 'nord/guides',
+  API: 'nord/api', Components: 'nord/components', Reference: 'nord/reference', Appendix: 'nord/appendix',
+};
+for (const p of pages) {
+  p.legacyFile = p.file;
+  p.file = p.outputFile ?? path.posix.join(SECTION_DIR[p.section] ?? 'nord/reference', p.file);
+}
 pages.sort((a, b) => SECTION_ORDER.indexOf(a.section) - SECTION_ORDER.indexOf(b.section) || a.order - b.order || a.title.localeCompare(b.title));
 const bySection = new Map();
 for (const p of pages) { if (!bySection.has(p.section)) bySection.set(p.section, []); bySection.get(p.section).push(p); }
@@ -350,11 +401,12 @@ const layout = (p, body) => {
   const headings = [...body.matchAll(/<h2 id="([^"]+)">([\s\S]*?)<\/h2>/g)].map(m => [m[1], plain(m[2]).replace(/#$/, '')]);
   const siblings = bySection.get(p.section) ?? [], pos = siblings.indexOf(p);
   const pager = p.file === 'index.html' || p.section === 'Engine docs' ? '' : `<div class="pager">${[siblings[pos - 1], siblings[pos + 1]].map((n, i) => n ? `<a href="${n.file}"><small>${i ? 'Next →' : '← Previous'}</small>${esc(n.title)}</a>` : '<span></span>').join('')}</div>`;
+  const manualRoot = path.posix.relative(path.posix.dirname(p.file), '.') || '.';
   return `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <title>${esc(p.title)} — Nord Engine Docs</title>
-<script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<script>window.NORD_MANUAL_ROOT=${JSON.stringify(manualRoot + '/')};try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
 <link rel="stylesheet" href="assets/manual.css"></head>
 <body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
 <div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
@@ -365,6 +417,22 @@ ${body}${pager}<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · W
 <script src="assets/cm.classic.js"></script><script src="assets/manual.js"></script></body></html>`;
 };
 
+const outputByLegacy = new Map([['index.html', 'index.html'], ...pages.map(p => [p.legacyFile, p.file])]);
+const outputFiles = new Set(outputByLegacy.values());
+function localLinks(html, currentFile) {
+  const currentDir = path.posix.dirname(currentFile);
+  return html.replace(/\b(href|src)="([^"]+)"/g, (whole, attr, url) => {
+    if (!url || url.startsWith('#') || /^(?:[a-z]+:|\/\/)/i.test(url)) return whole;
+    const match = url.match(/^([^?#]+)([?#].*)?$/);
+    if (!match) return whole;
+    const [, original, suffix = ''] = match;
+    const target = outputByLegacy.get(original) ?? (outputFiles.has(original) || /^(?:assets|runtime)\//.test(original) ? original : null);
+    if (!target) return whole;
+    const relative = path.posix.relative(currentDir, target) || path.posix.basename(target);
+    return `${attr}="${relative}${suffix}"`;
+  });
+}
+
 // ---------- write ---------------------------------------------------------------------------------------------------------
 const home = { file: 'index.html', title: 'Make something worth playing.', section: 'Start here', order: 0, summary: '' };
 const homeBody = `<div class="hero"><div class="eyebrow">Your idea. Your game. Your engine.</div><h2>A little engine.<br>A lot to explore.</h2><p class="lead">Build 2D games, 3D worlds and desktop apps. Learn one step at a time, then keep the reference nearby.</p><a class="button-link" href="getting-started.html">Start building →</a><a class="button-link secondary" href="api.html">Browse the API</a></div>
@@ -373,51 +441,77 @@ const homeBody = `<div class="hero"><div class="eyebrow">Your idea. Your game. Y
 <aside class="box tip"><div class="box-title">A little help, whenever you need it</div><p>Beginner explanations are visible by default. The <b>For dummies</b> button hides or shows the purple boxes. Search works offline; press <kbd>/</kbd> to jump to it.</p></aside>`;
 const all = [home, ...pages];
 if (new Set(all.map(p => p.file)).size !== all.length) throw new Error('Duplicate manual output filenames: ' + [...new Set(all.filter((p,i)=>all.findIndex(q=>q.file===p.file)!==i).map(p=>p.file))].join(', '));
-fs.rmSync(OUT, { recursive: true, force: true });
-fs.mkdirSync(path.join(OUT, 'assets'), { recursive: true });
-for (const file of ['robots.txt', '_headers', '.htaccess', 'HOSTING.txt']) fs.copyFileSync(path.join(root, 'tools/manual/hosting', file), path.join(OUT, file));
-const search = [];
+fs.mkdirSync(OUT, { recursive: true });
+const oldManifest = path.join(OUT, MANIFEST);
+const previous = new Set(fs.existsSync(oldManifest) ? JSON.parse(fs.readFileSync(oldManifest, 'utf8')) : existingFiles(OUT));
+for (const file of ['robots.txt', '_headers', '.htaccess', 'HOSTING.txt']) copy(path.join(root, 'tools/manual/hosting', file), file);
+const searchGroups = new Map([['nord', []], ['phaser', []], ['phaser-archive', []], ['babylon', []], ['babylon-guides', []]]);
+const searchGroup = p => p.file.startsWith('engines/phaser/4.2/') ? 'phaser'
+  : p.file.startsWith('engines/phaser/4.1-archive/') ? 'phaser-archive'
+    : p.file.startsWith('engines/babylon/9.30/') ? 'babylon'
+      : p.file.startsWith('engines/babylon/guides/') ? 'babylon-guides' : 'nord';
+let searchCount = 0;
 for (const p of all) {
   const body = p === home ? homeBody : p.html;
-  fs.writeFileSync(path.join(OUT, p.file), layout(p, body));
+  emit(p.file, localLinks(layout(p, body), p.file));
   if (p !== home) {
+    const search = searchGroups.get(searchGroup(p));
     search.push({ f: p.file, t: p.title, s: p.section, x: plain(body).slice(0, 6000) });
     for (const m of p.searchMembers ?? []) search.push({ f: p.file + '#' + m.id, t: p.title + '.' + m.name, s: p.section, x: m.text.slice(0, 1200) });
+    searchCount += 1 + (p.searchMembers?.length ?? 0);
   }
 }
-fs.writeFileSync(path.join(OUT, 'assets/search-index.js'), `window.NORD_SEARCH=${JSON.stringify(search)};`);
-fs.copyFileSync(path.join(SRC, '_manual.css'), path.join(OUT, 'assets/manual.css'));
-fs.copyFileSync(path.join(SRC, '_manual.js'), path.join(OUT, 'assets/manual.js'));
-fs.copyFileSync(path.join(root, 'assets/brand/logo-256.png'), path.join(OUT, 'assets/logo.png'));
-fs.copyFileSync(path.join(root, 'assets/docs/editor-layout.svg'), path.join(OUT, 'assets/editor-layout.svg'));
-fs.copyFileSync(path.join(root, 'vendor/codemirror/cm.bundle.js'), path.join(OUT, 'assets/cm.bundle.js'));
-for (const [source, name] of [['inter/inter-latin-400-normal.woff2', 'inter.woff2'], ['plus-jakarta-sans/plus-jakarta-sans-latin-700-normal.woff2', 'jakarta.woff2'], ['jetbrains-mono/jetbrains-mono-latin-400-normal.woff2', 'mono.woff2']]) fs.copyFileSync(path.join(root, 'vendor/fonts', source), path.join(OUT, 'assets', name));
-fs.cpSync(path.join(root, 'vendor/engine-docs'), path.join(OUT, 'assets/engine-docs'), { recursive: true });
-fs.mkdirSync(path.join(OUT, 'assets/screenshots'), { recursive: true });
-for (const file of ['vallout-03-classic-explore.png', 'automies-2-drive.png', 'xkom-tactical.png', 'manual-hello-nord.png']) fs.copyFileSync(path.join(root, 'docs/screenshots', file), path.join(OUT, 'assets/screenshots', file));
-fs.mkdirSync(path.join(OUT, 'assets/tutorials'), { recursive: true });
-for (const [source, name] of [['notepaint/assets/ui/tools.png', 'notepaint-tools.png'], ['star-not/assets/sprites/space.png', 'star-not-space.png'], ['star-not/assets/ui/portraits.png', 'star-not-ui.png']]) fs.copyFileSync(path.join(root, 'examples', source), path.join(OUT, 'assets/tutorials', name));
+const searchFiles = [];
+for (const [name, search] of searchGroups) {
+  const file = `assets/search/${name}.js`;
+  searchFiles.push(file);
+  emit(file, `window.NORD_SEARCH_PARTS=window.NORD_SEARCH_PARTS||{};window.NORD_SEARCH_PARTS[${JSON.stringify(name)}]=${JSON.stringify(search)};`);
+}
+emit('assets/search-manifest.js', `window.NORD_SEARCH_FILES=${JSON.stringify(searchFiles)};`);
+copy(path.join(SRC, '_manual.css'), 'assets/manual.css');
+copy(path.join(SRC, '_manual.js'), 'assets/manual.js');
+copy(path.join(root, 'assets/brand/logo-256.png'), 'assets/logo.png');
+copy(path.join(root, 'assets/docs/editor-layout.svg'), 'assets/editor-layout.svg');
+copy(path.join(root, 'vendor/codemirror/cm.bundle.js'), 'assets/cm.bundle.js');
+for (const [source, name] of [['inter/inter-latin-400-normal.woff2', 'inter.woff2'], ['plus-jakarta-sans/plus-jakarta-sans-latin-700-normal.woff2', 'jakarta.woff2'], ['jetbrains-mono/jetbrains-mono-latin-400-normal.woff2', 'mono.woff2']]) copy(path.join(root, 'vendor/fonts', source), `assets/${name}`);
+copyTree(path.join(root, 'vendor/engine-docs'), 'assets/engine-docs');
+for (const file of ['vallout-03-classic-explore.png', 'automies-2-drive.png', 'xkom-tactical.png', 'manual-hello-nord.png']) copy(path.join(root, 'docs/screenshots', file), `assets/screenshots/${file}`);
+for (const [source, name] of [['notepaint/assets/ui/tools.png', 'notepaint-tools.png'], ['star-not/assets/sprites/space.png', 'star-not-space.png'], ['star-not/assets/ui/portraits.png', 'star-not-ui.png']]) copy(path.join(root, 'examples', source), `assets/tutorials/${name}`);
 // The vendored bundle is standalone ESM. Expose its exact exports as a classic-script global
 // so syntax highlighting also works when the user double-clicks the offline HTML file.
 const cmSource = read('vendor/codemirror/cm.bundle.js');
 const cmExports = cmSource.match(/export\{([^}]+)\};?\s*$/);
 if (!cmExports) throw new Error('CodeMirror bundle export shape changed');
 const cmObject = cmExports[1].split(',').map(s => { const [local, name = local] = s.trim().split(/\s+as\s+/); return `${name}:${local}`; }).join(',');
-fs.writeFileSync(path.join(OUT, 'assets/cm.classic.js'), `(()=>{${cmSource.slice(0, cmExports.index)};window.NORD_CM={${cmObject}};})();`);
+emit('assets/cm.classic.js', `(()=>{${cmSource.slice(0, cmExports.index)};window.NORD_CM={${cmObject}};})();`);
 // the runnable snippets import the real core runtime
-fs.cpSync(path.join(root, 'runtime/core'), path.join(OUT, 'runtime/core'), { recursive: true, filter: (s) => !s.endsWith('.test.mjs') });
+copyTree(path.join(root, 'runtime/core'), 'runtime/core', s => !s.endsWith('.test.mjs'));
+
+expected.add(MANIFEST);
+emit(MANIFEST, JSON.stringify([...expected].sort(), null, 2) + '\n');
+for (const stale of previous) {
+  if (expected.has(stale) || stale === '.DS_Store') continue;
+  const target = path.join(OUT, stale);
+  if (fs.existsSync(target) && fs.statSync(target).isFile()) { fs.unlinkSync(target); removed++; }
+}
+const removeEmptyDirs = dir => {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) if (entry.isDirectory()) removeEmptyDirs(path.join(dir, entry.name));
+  if (dir !== OUT && fs.readdirSync(dir).length === 0) fs.rmdirSync(dir);
+};
+removeEmptyDirs(OUT);
 
 // ---------- link check ------------------------------------------------------------------------------------------------------
 let bad = 0;
-const files = new Set(fs.readdirSync(OUT));
+const files = new Set(expected);
 const idCache = new Map();
 const ids = f => { if (!idCache.has(f)) idCache.set(f, new Set([...fs.readFileSync(path.join(OUT, f), 'utf8').matchAll(/ id="([^"]+)"/g)].map(m => m[1]))); return idCache.get(f); };
 for (const p of all) {
   const html = fs.readFileSync(path.join(OUT, p.file), 'utf8');
   for (const m of html.matchAll(/href="([^"#:]*)(#[^"]*)?"/g)) {
     const [, f, hash] = m;
-    if (f && !files.has(f) && !f.startsWith('assets/')) { console.error(`broken link in ${p.file}: ${f}`); bad++; }
-    else if (hash && hash.length > 1 && !ids(f || p.file).has(hash.slice(1))) { console.error(`broken anchor in ${p.file}: ${f}${hash}`); bad++; }
+    const target = f ? path.posix.normalize(path.posix.join(path.posix.dirname(p.file), f)) : p.file;
+    if (f && !files.has(target)) { console.error(`broken link in ${p.file}: ${f}`); bad++; }
+    else if (hash && hash.length > 1 && target.endsWith('.html') && !ids(target).has(hash.slice(1))) { console.error(`broken anchor in ${p.file}: ${f}${hash}`); bad++; }
   }
   if (p.section !== 'Engine docs' && /https?:\/\/(?!github\.com\/n8n5gy4cs9-cmd|localhost)/.test(html.replace(/<pre[\s\S]*?<\/pre>/g, '').replace(/<code>[\s\S]*?<\/code>/g, ''))) { console.error(`external URL in ${p.file} (docs must be offline)`); bad++; }
 }
@@ -429,6 +523,6 @@ if (check) { // run every nord-live snippet against the real core runtime
   }
   console.log(`live snippets: ${LIVE.length} run`);
 }
-console.log(`manual: ${all.length} pages, ${search.length} indexed → ${check ? '(temp)' : path.relative(root, OUT)}`);
+console.log(`manual: ${all.length} pages, ${searchCount} indexed; ${changed} changed, ${unchanged} unchanged, ${removed} removed → ${check ? '(temp)' : path.relative(root, OUT)}`);
 if (check) fs.rmSync(OUT, { recursive: true, force: true });
 if (bad) { console.error(`${bad} problem(s)`); process.exit(1); }

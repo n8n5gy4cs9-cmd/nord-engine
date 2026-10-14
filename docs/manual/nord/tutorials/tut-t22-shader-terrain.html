@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>T22 Put a terrain shader in a Nord app — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="tutorials.html" class="active" aria-current="page">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Tutorials</div><a href="tutorials.html">Learn by building</a><a href="tut-t01-hello-nord.html">T01 Hello Nord</a><a href="tut-t02-sprite-movement.html">T02 Sprite &amp; movement</a><a href="tut-t03-first-script.html">T03 Your first script</a><a href="tut-t04-platformer.html">T04 Platformer from template</a><a href="tut-t05-physics.html">T05 Physics &amp; collisions</a><a href="tut-t06-tilemaps.html">T06 Tilemaps</a><a href="tut-t07-animation-juice.html">T07 Animation &amp; juice</a><a href="tut-t08-ui-hud.html">T08 UI &amp; HUD</a><a href="tut-t09-audio.html">T09 Audio</a><a href="tut-t10-3d-scene.html">T10 3D scene &amp; camera</a><a href="tut-t11-3d-physics.html">T11 3D physics (FPS)</a><a href="tut-t12-enemy-ai.html">T12 Enemy AI</a><a href="tut-t13-save-load.html">T13 Save &amp; load</a><a href="tut-t14-export-host.html">T14 Export to web &amp; host it</a><a href="tut-t15-mac-app.html">T15 Mac app</a><a href="tut-t16-rust-game.html">T16 Rust/WASM game</a><a href="tut-t17-rust-egui-app.html">T17 Rust egui app</a><a href="tut-t18-library-snippets.html">T18 Writing library snippets</a><a href="tut-t19-notepaint.html">T19 Build notepaint, from a blank folder</a><a href="tut-t20-star-not.html">T20 Build Star-Not, a complete small space adventure</a><a href="tut-t21-project-design.html">T21 Plan a bigger Nord project</a><a href="tut-t22-shader-terrain.html" class="cur" aria-current="page">T22 Put a terrain shader in a Nord app</a></nav><main id="content"><div class="crumb">Tutorials / Nord Engine</div><h1>T22 Put a terrain shader in a Nord app</h1>
+<p><strong>Example:</strong> <code>examples/shader-terrain/</code> — Shader Terrain Lab. It uses your provided “another synthwave sunset thing” GLSL, preserved as <code>terrain.glsl</code>, with a small WebGL2 host. It has audio, freeze/resume, click picking and a falling cube.</p>
+<h2 id="1-open-the-example-and-press-play">1. Open the example and press Play<a class="anchor" href="#1-open-the-example-and-press-play">#</a></h2>
+<p>Open <code>examples/shader-terrain</code> in NordEditor. Press <strong>Play</strong>. The HTML tier loads <code>index.html</code>, which mounts the app. To recreate it in your own folder, copy the files listed below; no game engine scene is needed.</p>
+<pre class="code" data-lang="text"><code>my-shader-app/
+  nord.project.json
+  index.html
+  app.js
+  _kit.js
+  style.css
+  terrain.glsl
+  assets/audio/ambience.wav</code></pre>
+<p>The project settings and start page are complete here:</p>
+<pre class="code" data-lang="json"><code>{
+  &quot;format&quot;: 1,
+  &quot;name&quot;: &quot;Shader Terrain Lab&quot;,
+  &quot;id&quot;: &quot;com.crowelian.shaderterrain&quot;,
+  &quot;type&quot;: &quot;html&quot;,
+  &quot;engineVersion&quot;: &quot;0.1.0&quot;,
+  &quot;startScene&quot;: &quot;&quot;,
+  &quot;display&quot;: {
+    &quot;width&quot;: 1280,
+    &quot;height&quot;: 720,
+    &quot;scale&quot;: &quot;fit&quot;,
+    &quot;pixelArt&quot;: false,
+    &quot;background&quot;: &quot;#2e3440&quot;
+  },
+  &quot;physics&quot;: {
+    &quot;engine&quot;: &quot;none&quot;,
+    &quot;gravity&quot;: [
+      0,
+      0,
+      0
+    ]
+  },
+  &quot;input&quot;: {
+    &quot;actions&quot;: {
+      &quot;left&quot;: [
+        &quot;KeyA&quot;,
+        &quot;ArrowLeft&quot;
+      ],
+      &quot;right&quot;: [
+        &quot;KeyD&quot;,
+        &quot;ArrowRight&quot;
+      ],
+      &quot;up&quot;: [
+        &quot;KeyW&quot;,
+        &quot;ArrowUp&quot;
+      ],
+      &quot;down&quot;: [
+        &quot;KeyS&quot;,
+        &quot;ArrowDown&quot;
+      ],
+      &quot;jump&quot;: [
+        &quot;Space&quot;,
+        &quot;KeyW&quot;,
+        &quot;ArrowUp&quot;
+      ],
+      &quot;fire&quot;: [
+        &quot;Space&quot;,
+        &quot;Mouse0&quot;
+      ],
+      &quot;interact&quot;: [
+        &quot;KeyE&quot;,
+        &quot;Enter&quot;
+      ]
+    }
+  },
+  &quot;plugins&quot;: [
+    &quot;ui&quot;,
+    &quot;audio&quot;
+  ],
+  &quot;ui&quot;: {
+    &quot;skin&quot;: &quot;cyber&quot;,
+    &quot;theme&quot;: &quot;nord&quot;
+  }
+}
+</code></pre>
+<pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;nord-app-id&quot; content=&quot;com.crowelian.shaderterrain&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;&lt;title&gt;Shader Terrain Lab&lt;/title&gt;
+&lt;style&gt;html,body{margin:0;height:100%;background:#2e3440}#app{height:100vh}&lt;/style&gt;&lt;/head&gt;
+&lt;body&gt;&lt;div id=&quot;app&quot;&gt;&lt;/div&gt;
+&lt;script type=&quot;module&quot;&gt;
+import { mount } from './app.js';
+try { await mount(document.getElementById('app')); window.__nord_ready = true; } catch (e) { console.error(e); window.__nord_error = String(e); }
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
+</code></pre>
+<h2 id="2-keep-the-shader-in-its-own-file">2. Keep the shader in its own file<a class="anchor" href="#2-keep-the-shader-in-its-own-file">#</a></h2>
+<p>Copy <code>examples/shader-terrain/terrain.glsl</code> into your folder. It is the exact pasted source, including its comments and optional defines. It supplies <code>mainImage</code>, <code>trinoise</code>, <code>map</code> and <code>intersect</code>.</p>
+<p>The host supplies WebGL2 uniforms named <code>iResolution</code>, <code>iTime</code> and <code>iTimeDelta</code>, then calls <code>mainImage</code> for each pixel. A full-screen triangle covers the canvas. The original shader&#39;s <code>round()</code> and <code>texture()</code> syntax need WebGL2 rather than a WebGL1-only wrapper.</p>
+<p>The host sets <code>iTimeDelta</code> to zero so the original per-pixel motion-blur jitter does not change the terrain between a rendered pixel and a collision probe.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>A shader tells the graphics chip what colour each pixel should be. It can make a landscape look solid without creating a physical landscape object. Collision therefore needs its own representation of the same surface.</p>
+</aside><h2 id="3-add-the-host-and-styling">3. Add the host and styling<a class="anchor" href="#3-add-the-host-and-styling">#</a></h2>
+<p>Copy <code>examples/shader-terrain/_kit.js</code> to your folder; it is the existing Nord DOM helper. Create <code>app.js</code> and <code>style.css</code> using these complete files:</p>
+<pre class="code" data-lang="javascript"><code>// Plain-HTML Nord example: the owner's exact GLSL + small WebGL2 host and GPU terrain probes.
+import { h } from './_kit.js';
+export async function mount(root) {
+  const css=h('link',{rel:'stylesheet',href:new URL('style.css',import.meta.url).href});document.head.append(css);
+  const canvas=h('canvas',{'aria-label':'Synthwave terrain. Click visible ground to drop a cube.'}),overlay=h('canvas',{class:'terrain-overlay'});
+  const status=h('span',{role:'status'},'Click the terrain to drop a cube.');
+  const audio=new Audio(new URL('assets/audio/ambience.wav',import.meta.url));audio.loop=true;audio.volume=1;
+  let audioContext,analyser,audioSource,audioGain;
+  async function startAudio(){
+    if(!audioContext){audioContext=new AudioContext();analyser=audioContext.createAnalyser();analyser.fftSize=1024;analyser.smoothingTimeConstant=.65;audioSource=audioContext.createMediaElementSource(audio);audioGain=audioContext.createGain();audioGain.gain.value=.22;audioSource.connect(analyser);analyser.connect(audioGain);audioGain.connect(audioContext.destination);}
+    await audioContext.resume();await audio.play();
+  }
+  let sound=false,frozen=false,time=0,last=performance.now(),raf=0,cube=null,dead=false;
+  const pause=h('button',{},'Freeze terrain');pause.onclick=()=&gt;{frozen=!frozen;pause.textContent=frozen?'Resume terrain':'Freeze terrain';if(!frozen)cube=null;};
+  const soundButton=h('button',{},'Enable audio');soundButton.onclick=async()=&gt;{try{if(sound){audio.pause();sound=false;}else{await startAudio();sound=true;}soundButton.textContent=sound?'Mute audio':'Enable audio';}catch{status.textContent='Audio could not start. Click Enable audio again.';}};
+  const drop=h('button',{},'Drop cube');
+  const view=h('div',{class:'terrain-view'},canvas,overlay);
+  root.replaceChildren(h('div',{class:'terrain-app'},h('header',{},h('div',{},h('strong',{},'SYNTHWAVE / TERRAIN LAB'),h('small',{},'A shader is a picture. A matching height probe makes it interactive.')),drop,pause,soundButton),view,h('footer',{},status,h('span',{},'Click ground · scene freezes for contact · Crowelian 2026 + Sonnet'))));
+  const gl=canvas.getContext('webgl2',{alpha:false,antialias:false});
+  if(!gl){status.textContent='WebGL2 is required for this shader.';return{destroy(){css.remove();root.replaceChildren();}};}
+  const original=await(await fetch(new URL('terrain.glsl',import.meta.url))).text();
+  // Preserve terrain.glsl on disk; enable its existing audio branch only for compilation.
+  const reactive=original.replace(/^#define disable_sound_texture_sampling[^\n]*$/m,'');
+  const vertex='#version 300 es\nvoid main(){vec2 p=vec2(float((gl_VertexID&lt;&lt;1)&amp;2),float(gl_VertexID&amp;2));gl_Position=vec4(p*2.-1.,0.,1.);}';
+  const prefix='#version 300 es\nprecision highp float;\nuniform vec3 iResolution;uniform float iTime;uniform float iTimeDelta;uniform sampler2D iChannel0;uniform vec3 iChannelResolution[1];out vec4 result;\n';
+  function shader(type,source){const s=gl.createShader(type);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)){const message=gl.getShaderInfoLog(s);gl.deleteShader(s);throw new Error(message);}return s;}
+  function program(tail){const p=gl.createProgram(),v=shader(gl.VERTEX_SHADER,vertex),f=shader(gl.FRAGMENT_SHADER,prefix+reactive+'\n'+tail);gl.attachShader(p,v);gl.attachShader(p,f);gl.linkProgram(p);gl.deleteShader(v);gl.deleteShader(f);if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(p));return p;}
+  let drawProgram,queryProgram;
+  try{
+    drawProgram=program('void main(){mainImage(result,gl_FragCoord.xy);}');
+    queryProgram=program(`uniform int queryMode;uniform vec2 queryXZ;uniform vec2 queryPixel;
+      vec4 encodeValue(float value,bool hit){float n=floor(clamp(value,0.,1.)*65535.+.5);return vec4(floor(n/256.),mod(n,256.),hit?255.:0.,255.)/255.;}
+      void main(){jTime=mod(iTime,4000.);if(queryMode==0){result=encodeValue((2.*trinoise(queryXZ).x+.25)/2.5,true);return;}
+        vec2 uv=(2.*queryPixel-iResolution.xy)/iResolution.y;vec3 ro=vec3(0.,1.,-20000.+jTime*speed);vec3 rd=normalize(vec3(uv,4./3.));vec2 hit=intersect(ro,rd);result=encodeValue(max(hit.x,0.)/150.,hit.x&gt;=0.);}`);
+  }catch(error){status.textContent='Shader error: '+error.message;return{destroy(){if(drawProgram)gl.deleteProgram(drawProgram);css.remove();root.replaceChildren();}};}
+  const locations=p=&gt;Object.fromEntries(['iResolution','iTime','iTimeDelta','iChannel0','iChannelResolution[0]','queryMode','queryXZ','queryPixel'].map(n=&gt;[n,gl.getUniformLocation(p,n)]));
+  const draw=locations(drawProgram),query=locations(queryProgram),buffer=gl.createFramebuffer(),texture=gl.createTexture(),pixel=new Uint8Array(4);
+  gl.bindTexture(gl.TEXTURE_2D,texture);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,1,1,0,gl.RGBA,gl.UNSIGNED_BYTE,null);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);
+  gl.bindFramebuffer(gl.FRAMEBUFFER,buffer);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,texture,0);
+  // Shadertoy sound layout: row 0 = 512 FFT bins, row 1 = 512 waveform samples.
+  const soundTexture=gl.createTexture(),soundPixels=new Uint8Array(512*2),fft=new Uint8Array(512),wave=new Uint8Array(1024);
+  gl.bindTexture(gl.TEXTURE_2D,soundTexture);gl.texImage2D(gl.TEXTURE_2D,0,gl.R8,512,2,0,gl.RED,gl.UNSIGNED_BYTE,soundPixels);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+  function updateSound(){
+    if(frozen)return; // Hold the same sound snapshot used by the cube's height probes.
+    if(sound&amp;&amp;analyser){analyser.getByteFrequencyData(fft);analyser.getByteTimeDomainData(wave);soundPixels.set(fft);for(let i=0;i&lt;512;i++)soundPixels[512+i]=wave[i*2];}
+    else soundPixels.fill(0);
+    gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,soundTexture);gl.texSubImage2D(gl.TEXTURE_2D,0,0,0,512,2,gl.RED,gl.UNSIGNED_BYTE,soundPixels);
+  }
+  const common=(uniforms)=&gt;{gl.uniform3f(uniforms.iResolution,canvas.width,canvas.height,1);gl.uniform1f(uniforms.iTime,time);gl.uniform1f(uniforms.iTimeDelta,0);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,soundTexture);gl.uniform1i(uniforms.iChannel0,0);gl.uniform3f(uniforms['iChannelResolution[0]'],512,2,1);};
+  function probe(mode,x,z){gl.bindFramebuffer(gl.FRAMEBUFFER,buffer);gl.viewport(0,0,1,1);gl.useProgram(queryProgram);common(query);gl.uniform1i(query.queryMode,mode);gl.uniform2f(query.queryXZ,x,z);gl.uniform2f(query.queryPixel,x,z);gl.drawArrays(gl.TRIANGLES,0,3);gl.readPixels(0,0,1,1,gl.RGBA,gl.UNSIGNED_BYTE,pixel);return{value:(pixel[0]*256+pixel[1])/65535,hit:pixel[2]&gt;0};}
+  const height=(x,z)=&gt;probe(0,x,z).value*2.5-.25;
+  // Match the float arithmetic of the original GLSL camera, which travels along Z at audio-mode speed 5.
+  const cameraZ=()=&gt;Math.fround(-20000+Math.fround(Math.fround(time%4000)*5));
+  function dropAt(x,z,distance=12){
+    frozen=true;pause.textContent='Resume terrain';const half=Math.min(.8,Math.max(.25,distance*.02));
+    const ground=Math.max(height(x,z),height(x-half,z-half),height(x+half,z-half),height(x-half,z+half),height(x+half,z+half));
+    cube={x,z,y:ground+half+3,vy:0,ground,half,landed:false};status.textContent=`Cube falling. Sampled terrain height: ${ground.toFixed(3)}. Scene frozen for a stable contact.`;
+  }
+  drop.onclick=()=&gt;dropAt(3,cameraZ()+12);
+  const pick=event=&gt;{const rect=canvas.getBoundingClientRect(),x=(event.clientX-rect.left)*canvas.width/rect.width,y=canvas.height-(event.clientY-rect.top)*canvas.height/rect.height;const hit=probe(1,x,y);if(!hit.hit){status.textContent='That is sky. Click terrain below the horizon, or use Drop cube.';return;}const distance=hit.value*150,uvX=(2*x-canvas.width)/canvas.height,uvY=(2*y-canvas.height)/canvas.height;const length=Math.hypot(uvX,uvY,4/3);dropAt(distance*uvX/length,cameraZ()+distance*(4/3)/length,distance);};
+  canvas.addEventListener('pointerdown',pick);
+  const context=overlay.getContext('2d');
+  function project(x,y,z){const depth=z-cameraZ();if(depth&lt;=.1)return null;const scale=canvas.height*2/3/depth;return[canvas.width/2+x*scale,canvas.height/2-(y-1)*scale];}
+  function drawCube(){
+    context.clearRect(0,0,overlay.width,overlay.height);if(!cube)return;
+    const vertices=[];for(const z of[-1,1])for(const y of[-1,1])for(const x of[-1,1])vertices.push(project(cube.x+x*cube.half,cube.y+y*cube.half,cube.z+z*cube.half));if(vertices.some(p=&gt;!p))return;
+    const faces=[{ids:[0,1,3,2],fill:'#fa8f58'},{ids:[1,5,7,3],fill:'#ca5eae'},{ids:[2,3,7,6],fill:'#ffe7a5'}];
+    for(const face of faces){context.beginPath();face.ids.forEach((id,i)=&gt;i?context.lineTo(...vertices[id]):context.moveTo(...vertices[id]));context.closePath();context.fillStyle=face.fill;context.fill();context.strokeStyle='#fff3cd';context.lineWidth=1.5;context.stroke();}
+    const contact=project(cube.x,cube.ground,cube.z);if(contact){context.strokeStyle=cube.landed?'#b8ffdc':'#ffe7a5';context.beginPath();context.ellipse(contact[0],contact[1],14,4,0,0,Math.PI*2);context.stroke();}
+  }
+  function resize(){const rect=view.getBoundingClientRect();canvas.width=Math.max(1,Math.floor(rect.width));canvas.height=Math.max(1,Math.floor(rect.height));overlay.width=canvas.width;overlay.height=canvas.height;}
+  const observer=new ResizeObserver(resize);observer.observe(view);resize();
+  function frame(now){if(dead)return;const dt=Math.min(.05,(now-last)/1000);last=now;if(!frozen)time+=dt;updateSound();
+    if(cube&amp;&amp;!cube.landed){cube.vy-=9.8*dt;cube.y+=cube.vy*dt;if(cube.y-cube.half&lt;=cube.ground){cube.y=cube.ground+cube.half;cube.vy=0;cube.landed=true;status.textContent=`Contact: cube bottom = ${cube.ground.toFixed(3)}, sampled terrain height = ${cube.ground.toFixed(3)}. Click another point to drop again.`;}}
+    gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,canvas.width,canvas.height);gl.useProgram(drawProgram);common(draw);gl.drawArrays(gl.TRIANGLES,0,3);drawCube();raf=requestAnimationFrame(frame);
+  }
+  raf=requestAnimationFrame(frame);
+  return{destroy(){dead=true;cancelAnimationFrame(raf);observer.disconnect();canvas.removeEventListener('pointerdown',pick);audio.pause();audio.src='';audioSource?.disconnect();analyser?.disconnect();audioGain?.disconnect();if(audioContext)void audioContext.close();gl.deleteTexture(soundTexture);gl.deleteFramebuffer(buffer);gl.deleteTexture(texture);gl.deleteProgram(drawProgram);gl.deleteProgram(queryProgram);css.remove();root.replaceChildren();}};
+}
+</code></pre>
+<pre class="code" data-lang="css"><code>*{box-sizing:border-box}body{background:#100c24!important;color:#eee8ff;font:14px/1.6 system-ui,sans-serif}.terrain-app{height:100%;display:flex;flex-direction:column}.terrain-app header{display:flex;align-items:center;gap:12px;padding:15px 22px;background:#17102a;border-bottom:1px solid #61426e}.terrain-app header&gt;div{margin-right:auto}.terrain-app strong{display:block;font-size:15px;letter-spacing:2px;color:#ffd897}.terrain-app small{display:block;color:#ad99c1;font-size:11px}.terrain-app button{font:600 12px/1.6 system-ui;border:1px solid #78597d;background:#2c1e42;color:#f4e4ff;padding:8px 13px;border-radius:8px;cursor:pointer}.terrain-app button:hover{background:#50305f}.terrain-app button:focus-visible{outline:3px solid #ffcb8a;outline-offset:3px}.terrain-view{flex:1;min-height:250px;position:relative;overflow:hidden}.terrain-view canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}.terrain-view .terrain-overlay{pointer-events:none}.terrain-app footer{display:flex;justify-content:space-between;gap:15px;padding:10px 22px;color:#c2aed0;font-size:11px;background:#17102a;border-top:1px solid #61426e}@media(max-width:650px){.terrain-app header{flex-wrap:wrap;padding:12px}.terrain-app header&gt;div{width:100%}.terrain-app footer{flex-direction:column;gap:4px;padding:8px 12px}}
+</code></pre>
+<p><code>mount(root)</code> creates the canvases and buttons, compiles the shader, starts a frame loop, and returns a cleanup function. Compile errors appear in the status area. No external scripts are downloaded.</p>
+<h2 id="4-add-the-audio">4. Add the audio<a class="anchor" href="#4-add-the-audio">#</a></h2>
+<p>Copy <code>examples/shader-terrain/assets/audio/ambience.wav</code> to the same path in your project. <strong>Enable audio</strong> starts this original local 16-second loop after a click; <strong>Mute audio</strong> stops it.</p>
+<p>The loop now drives the shader through <strong><code>iChannel0</code></strong>. The host removes <code>#define disable_sound_texture_sampling</code> from the compiled copy; <code>terrain.glsl</code> stays unchanged on disk. This activates the original shader&#39;s audio-reactive terrain and sky, and its slower camera speed of <strong>5</strong>.</p>
+<p>Here is the signal path: <strong>WAV → Web Audio analyser → volume control → speakers</strong>. Each animation frame, the analyser produces 512 frequency bins (FFT) and waveform samples. The host uploads a <strong>512 × 2 red-channel texture</strong>: bottom row = frequency strength, top row = waveform. Both the picture shader and the terrain-probe shader bind this texture to texture unit 0 and set <code>iChannel0</code> to 0. <code>iChannelResolution[0]</code> is <code>(512, 2, 1)</code>. The analyser reads before the quiet speaker volume, so the visual reaction remains visible.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>Click <strong>Enable audio</strong>, then leave the terrain running. The sound now changes the landscape and sky as it plays. <strong>Mute audio</strong> stops playback and clears the sound input on the next unfrozen frame. To use your own music, replace <code>assets/audio/ambience.wav</code> with a local file and keep its filename, or change the URL in <code>app.js</code>. No microphone permission is needed.</p>
+</aside><p>You can explicitly regenerate the default WAV with <code>node tools/gen_shader_audio.mjs</code> in the engine checkout.</p>
+<h2 id="5-click-terrain-or-drop-a-cube">5. Click terrain or drop a cube<a class="anchor" href="#5-click-terrain-or-drop-a-cube">#</a></h2>
+<p>Click visible ground. The host runs the original shader&#39;s <code>intersect()</code> in a <strong>1×1 off-screen framebuffer</strong> to find the ray&#39;s terrain distance. Clicking sky reports that there is no terrain hit. <strong>Drop cube</strong> uses a fixed point ahead of the camera instead.</p>
+<p>The scene freezes both shader time and the audio-texture snapshot after a drop so the terrain remains still while the cube falls. The music can keep playing; its new samples reach the terrain when you resume. Click another point to drop again. <strong>Resume terrain</strong> returns to the original moving shader and clears the old cube.</p>
+<h2 id="6-make-the-contact-agree-with-the-picture">6. Make the contact agree with the picture<a class="anchor" href="#6-make-the-contact-agree-with-the-picture">#</a></h2>
+<p>The original terrain surface is:</p>
+<pre class="code" data-lang="glsl"><code>float height = 2.0 * trinoise(worldXZ).x;</code></pre>
+<p>The host evaluates that <strong>same GLSL function on the GPU</strong> instead of approximating its noise with a different CPU function. It encodes one height in two colour channels and reads it back. The encoded height range is −0.25 to 2.25, so audio displacement below zero is preserved. Five probes—centre plus four corners—give a conservative contact height under the cube&#39;s footprint.</p>
+<p>Gravity changes the cube&#39;s height. When its bottom reaches the sampled ground height, the demo stops it there and displays both values. The cube is projected as a solid box onto a transparent canvas over the shader.</p>
+<p>This is deliberately a small <strong>height-probe demonstration</strong>. It is not a complete terrain physics mesh or full depth-occlusion renderer. For large objects, steep terrain, rolling contact or a character walking everywhere, create a matching mesh/collider or a more complete collision model. A shader image by itself cannot supply a Havok/Matter collider automatically.</p>
+<h2 id="7-export-it">7. Export it<a class="anchor" href="#7-export-it">#</a></h2>
+<p>Use NordEditor <strong>Export… → HTML</strong>, or:</p>
+<pre class="code" data-lang="bash"><code>nord export my-shader-app --target html</code></pre>
+<p>Serve/share the whole output folder, including the GLSL and WAV. The example requires WebGL2. If you change the shader&#39;s camera speed from its active audio-mode value of 5, update the host&#39;s <code>cameraZ()</code> to match, since that function projects the cube and reconstructs clicked positions.</p>
+<p>The provided source did not name an author/licence; the example retains it without inventing an ownership claim. Host code and generated audio are original engine example work, credited Crowelian 2026 + Sonnet.</p>
+<div class="pager"><a href="tut-t21-project-design.html"><small>← Previous</small>T21 Plan a bigger Nord project</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-open-the-example-and-press-play">1. Open the example and press Play </a><a href="#2-keep-the-shader-in-its-own-file">2. Keep the shader in its own file </a><a href="#3-add-the-host-and-styling">3. Add the host and styling </a><a href="#4-add-the-audio">4. Add the audio </a><a href="#5-click-terrain-or-drop-a-cube">5. Click terrain or drop a cube </a><a href="#6-make-the-contact-agree-with-the-picture">6. Make the contact agree with the picture </a><a href="#7-export-it">7. Export it </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

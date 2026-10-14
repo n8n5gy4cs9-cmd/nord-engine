@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: How to export 3DS MAX scene as glTF — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../index.html"><img src="../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../index.html">Babylon documentation library</a><a href="../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: How to export 3DS MAX scene as glTF</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><p>If you have not already installed the babylon plugin for 3DS MAX, you can find all instructions <a href="3dsmax.html">here</a> as well as general information about the plugin.</p>
+<p>With this plugin, you can also export your project to the glTF 2.0 format (<span>https://github.com/KhronosGroup/glTF/</span>).</p>
+<p>All you need to do is choose <strong>gltf</strong> as <strong>Output format</strong>.</p>
+<p><p class="muted">Upstream illustration: glTF export window (media not bundled).</p></p>
+<p>The plugin exports to Babylon format before converting it to glTF.
+The main exported files are the .gltf and .bin files.</p>
+<p>To export to a single .glb file, choose <strong>glb</strong> as <strong>Output format</strong>.</p>
+<h2 id="features">Features<a class="anchor" href="#features">#</a></h2>
+<h2 id="exported-features">Exported features<a class="anchor" href="#exported-features">#</a></h2>
+<p>Since the plugin first exports to Babylon and then converts it to glTF, glTF features are a subset of the <a href="3dsmax.html">Babylon ones</a>.</p>
+<ul>
+<li><p><em>Cameras</em></p>
+<ul>
+<li>zfar</li>
+<li>znear</li>
+<li>yfov (Perspective camera)</li>
+<li>Position / rotation (from nodes)</li>
+</ul>
+</li>
+<li><p><em>Meshes</em></p>
+<ul>
+<li>Geometry: position, normal, color, texture coordinates (2 channels)</li>
+<li>Position / rotation / scaling (from nodes)</li>
+<li>Skin</li>
+<li>Instances</li>
+<li>Morph targets</li>
+<li>Animations: bones, morph weights</li>
+</ul>
+</li>
+<li><p><em>Nodes</em></p>
+<ul>
+<li>Hierarchy</li>
+<li>Position / rotation / scaling</li>
+<li>Animations: position, rotation, scaling</li>
+<li>Custom attributes</li>
+</ul>
+</li>
+<li><p><em>Materials</em></p>
+<ul>
+<li>Standard material (converted to PBR, see below)</li>
+<li>Physical material (PBR)</li>
+<li>Standard Surface Arnold material</li>
+<li>Base color and alpha</li>
+<li>Metalness and roughness</li>
+<li>Emission, ambient occlusion</li>
+<li>Bump mapping</li>
+<li>Multi-materials</li>
+<li>Double-sided materials</li>
+<li>Unlit</li>
+<li>Backface culling</li>
+<li>Opacity/Transparency mode</li>
+<li>Custom attributes</li>
+<li>RGB Multiply map</li>
+</ul>
+</li>
+<li><p><em>Textures</em></p>
+<ul>
+<li>Wrap mode (Clamp, mirror, repeat)</li>
+<li>magFilter, minFilter</li>
+<li>Image format conversion to jpg / png</li>
+<li>Texture transform</li>
+</ul>
+</li>
+<li><p><em>Animations</em></p>
+<ul>
+<li>Export without animations</li>
+<li>Export animations only</li>
+</ul>
+</li>
+</ul>
+<h2 id="conversion-standard-to-pbr-materials">Conversion Standard to PBR materials<a class="anchor" href="#conversion-standard-to-pbr-materials">#</a></h2>
+<p>3DS MAX Standard materials are converted to PBR materials based on their diffuse, specular, opacity and glossiness.</p>
+<p><span>The complete algorithm is detailed here</span></p>
+<p><span>A demo is available here</span></p>
+<p>Note that the conversion duration scales with images size and may have a severe impact on export duration.</p>
+<h2 id="pbr-materials">PBR materials<a class="anchor" href="#pbr-materials">#</a></h2>
+<p>The physical materials are exported to glTF format as PBR materials.</p>
+<p>The relevant parameters are highlighted below and described in the following sections.</p>
+<p><p class="muted">Upstream illustration: 3DS MAX physical material parameters (media not bundled).</p></p>
+<p>Remember that in 3DS MAX, when a map is assigned to a parameter, the basic parameter value is ignored. This behavior is preserved when exporting.</p>
+<h2 id="base-color-and-transparency">Base color and Transparency<a class="anchor" href="#base-color-and-transparency">#</a></h2>
+<p>Only the color of base color is used. The weight of base color is ignored.</p>
+<p>Only the weight of transparency is used. The color of the transparency is ignored, as well as other parameters (depth, thin-walled, transparency roughness).</p>
+<p>In glTF format, the transparency is expressed in alpha (alpha = 1 - transparency).</p>
+<p>The base color RGB and the alpha A are merged together into a single color RGBA:</p>
+<p><p class="muted">Upstream illustration: glTF base color and alpha maps combined (media not bundled).</p></p>
+<p>The 2 maps must have the same size to be merged successfully.</p>
+<p>Note that the duration of this process scales with images size and may have a severe impact on export duration.</p>
+<p>The basic parameter value is used as the default value when a bound map is not provided:</p>
+<p><p class="muted">Upstream illustration: glTF base color map and transparency weight combined (media not bundled).</p></p>
+<h2 id="metalness-and-roughness">Metalness and Roughness<a class="anchor" href="#metalness-and-roughness">#</a></h2>
+<p>The metalness is used.</p>
+<p>The roughness of the material is used. It can be inverted to mean Glossiness - this also affects roughness map. The IOR parameter is ignored.</p>
+<p>The metalness and roughness maps are combined together:</p>
+<p><p class="muted">Upstream illustration: glTF metalness and roughness maps combined (media not bundled).</p></p>
+<p>In 3DS MAX, metalness and roughness maps are black and white images (R=G=B).</p>
+<p>In glTF format, metalness is stored in blue channel, roughness in green.</p>
+<p>The 2 maps must have the same size to be merged successfully.</p>
+<p>Note that the duration of this process scales with image size and may have a severe impact on export duration.</p>
+<p>As with base color and transparency, the basic parameter value is used as the default value when a bound map is not provided.</p>
+<h2 id="emission">Emission<a class="anchor" href="#emission">#</a></h2>
+<p>The exported emission color value is computed based on all 4 parameters: emission weight, color, luminance and Kelvin.</p>
+<p>However, the exported emission color map is identical to the one specified in the generic map. This means that emission weight, luminance, and Kelvin <strong>are not</strong> used. The emission map is assumed to be precomputed.</p>
+<h2 id="ambient-occlusion">Ambient occlusion<a class="anchor" href="#ambient-occlusion">#</a></h2>
+<p>The diffuse roughness map is used as ambient occlusion.</p>
+<h2 id="bump-map">Bump map<a class="anchor" href="#bump-map">#</a></h2>
+<p>The bump map (or normal map) and its weight are used. A tangent-space normal map can be directly connected to the Bump input. Note that glTF does not support height maps. Connecting a height map may yield unexpected results. <strong>Normal Bump map nodes are currently not supported</strong>.</p>
+<h2 id="standard-surface-arnold-material">Standard Surface Arnold material<a class="anchor" href="#standard-surface-arnold-material">#</a></h2>
+<p>The Standard Surface Arnold material is exported to glTF format as a PBR material.</p>
+<p>The relevant parameters are highlighted below.</p>
+<p><p class="muted">Upstream illustration: 3DS Max Standard Surface parameters (media not bundled).</p></p>
+<p>When exporting, if a map is assigned to a parameter, the basic parameter value is ignored.</p>
+<h2 id="base-color-and-transparency">Base color and Transparency<a class="anchor" href="#base-color-and-transparency">#</a></h2>
+<p>In the <em>Basic Parameters</em> and <em>Transparency</em> sections, the base color weight, the base color and the transparency weight values are supported.
+And you can use a map for the base color and the transparency weight (the base color weight map is not supported).</p>
+<p>If you use a map for the base color, then the base color weight is overridden to 1 for the export.
+Also if the base color map and the transparency map are used, they must have the same size in order to be merged successfully.</p>
+<p><em>Note:</em> it is recommended to always set the base color weight to 1.</p>
+<h2 id="metalness-roughness-and-occlusion">Metalness, Roughness and Occlusion<a class="anchor" href="#metalness-roughness-and-occlusion">#</a></h2>
+<p>In the <em>Specular Reflections</em> section, the metalness and the roughness values and maps are supported.
+If both maps are used, they must have the same size to be merged successfully.</p>
+<p>In 3DS Max, metalness and roughness maps are black and white images (R=G=B).
+But in glTF format, the metalness is stored in the blue channel and the roughness in the green one (the red channel is for the occlusion).
+So during the export the metalness and roughness maps are merged in one map using their respective channel.</p>
+<h3 id="metalness-and-roughness">Metalness and roughness<a class="anchor" href="#metalness-and-roughness">#</a></h3>
+<p>If you use one of the two maps, then the exporter creates a new map using the provided map and the value of the other parameter.</p>
+<p>If you use two different maps, then the exporter merges them in one map.</p>
+<h3 id="metalness-roughness-and-occlusion-all-in-one-map">Metalness, roughness and occlusion all in one map<a class="anchor" href="#metalness-roughness-and-occlusion-all-in-one-map">#</a></h3>
+<p>Alternatively, you can provide a single texture used in both <em>Metalness</em> and <em>Roughness</em> to set an extra attribute: Ambient Occlusion.</p>
+<p>The Ambient Occlusion cannot be set in the Standard Surface material. Thus you cannot take it into account when rendering with Arnold.</p>
+<p>However, this feature is exported, and you can hopefully use it in an engine of your choice, provided it takes it into account (Babylon does!). Since there isn&#39;t a dedicated channel for Occlusion, the trick is to use a single file for multiple purposes, called an ORM texture.</p>
+<p>Such texture defines:</p>
+<ul>
+<li>the <strong>O</strong>cclusion in Red channel and is assigned to none of the material attributes</li>
+<li>the <strong>R</strong>oughness in Green channel and is assigned to the material <em>Roughness</em></li>
+<li>the <strong>M</strong>etalness in Blue channel and is assigned to the material <em>Metalness</em></li>
+</ul>
+<p><p class="muted">Upstream illustration: glTF ORM map (media not bundled).</p></p>
+<p>In this case the exporter does not merge textures, but instead assumes the texture provided is already merged.</p>
+<p>You can see how to get <a href="maya-to-gltf.html">a merged ORM texture here</a>.</p>
+<h2 id="emission">Emission<a class="anchor" href="#emission">#</a></h2>
+<p>In the <em>Emission section</em>, the emission weight and the emission color values are supported. But only the emission color map is supported.
+If the emission color map is used, then the emission weight and the emission color values are ignored.</p>
+<h2 id="normal">Normal<a class="anchor" href="#normal">#</a></h2>
+<p>In the <em>Special Features</em> section, only the normal map is supported.</p>
+<h2 id="what-you-should-know">What you should know<a class="anchor" href="#what-you-should-know">#</a></h2>
+<h2 id="babylon-properties">Babylon properties<a class="anchor" href="#babylon-properties">#</a></h2>
+<p>Most Babylon properties are not used when exporting to glTF format. The only one that matters is:</p>
+<ul>
+<li><strong>Do not export</strong>: Self-explanatory, this object/light/camera won’t be exported. False by default.</li>
+</ul>
+<h2 id="lights">Lights<a class="anchor" href="#lights">#</a></h2>
+<p>Lights are not supported in glTF 2.0. An empty node is exported in place of light only when it is relevant to do so (when a light has a mesh or a camera as descendant).<br>There is a glTF lights extension, <span>KHR_lights_punctual</span> that is in the process of ratification, so should be considered experimental. It can be enabled by turning on the KHR_lights_punctual extension checkbox.</p>
+<h2 id="left-to-right-handed-coordinate-system">Left to right handed coordinate system<a class="anchor" href="#left-to-right-handed-coordinate-system">#</a></h2>
+<p>As glTF export relies on conversion from Babylon, the coordinate system changes from left-handed (Babylon) to right-handed (glTF).
+To do this simply, a root node named &quot;root&quot; is added to the scene. All nodes are set as descendants of this root node. It has specific rotation and scaling to handle the conversion.</p>
+<h2 id="consideration-about-skins">Consideration about skins<a class="anchor" href="#consideration-about-skins">#</a></h2>
+<p>In glTF, a skin is bound to a node. The skeleton (root bone) of a skin should be positioned at the origin, without rotation or scaling. The node to which the skin is applied is responsible for its transformation (<a href="../../../../9.30/api/babylonjs/babylon/1c/transformnode.html">translation</a>, rotation, scale).</p>
+<h2 id="textures-image-format">Textures image format<a class="anchor" href="#textures-image-format">#</a></h2>
+<p>glTF 2.0 only supports the following image formats: jpg and png. You are advised to use those formats for your textures when exporting to glTF.</p>
+<p>Note that the exporter also supports textures with bmp, gif, tga, tif and dds formats. But, those textures will be automatically converted to png/jpg by the exporter to follow glTF specifications.</p>
+<h2 id="texture-transform">Texture transform<a class="anchor" href="#texture-transform">#</a></h2>
+<p>glTF 2.0 supports the <span>KHR_texture_transform extension</span>. When enabled during export, it is set to required, meaning that the loader is expected to support the extension. Disabling the extension checkbox from the exporter window will export textures without applying the texture transform, which may look visually incorrect when loading into a glTF importer.</p>
+<h2 id="environment-texture">Environment texture<a class="anchor" href="#environment-texture">#</a></h2>
+<p>To enjoy PBR material rendering, you should have an environment texture in your scene. The plugin exports the environment map if any is provided in 3DS MAX.</p>
+<p>However, glTF format does not support this feature and the environment map needs to be added manually in client implementations. The Babylon Sandbox, see below, provides such feature.</p>
+<h2 id="double-sided-material">Double sided material<a class="anchor" href="#double-sided-material">#</a></h2>
+<p>The handling of the double sided material mimics the Babylon format. <a href="3dsmax.html">Detailed explanations here</a>.</p>
+<h2 id="babylon-material-attributes">Babylon material attributes<a class="anchor" href="#babylon-material-attributes">#</a></h2>
+<p>Native materials are enhanced to have extra attributes under Babylon attributes section.</p>
+<p><p class="muted">Upstream illustration: 3DS MAX babylon material attributes (media not bundled).</p></p>
+<p>Most Babylon attributes are common to all materials:</p>
+<ul>
+<li><strong>Unlit</strong>: A material can be exported as Unlit, meaning independent of lighting. This implies that light-relative attributes or textures are not exported: ambient, specular, emissive, bump mapping, and reflection texture. Additionally, in glTF, the <strong>KHR_materials_unlit</strong> extension is added to the material. <span>More details on this extension here</span>. During export, enable the <em>KHR_materials_unlit</em> checkbox.</li>
+<li><strong>Backface Culling</strong>: When true, the back faces are not rendered. When false, back faces are rendered using the same material as the front faces. <strong>This property is native to the Standard material and is called <em>2-Sided</em>.</strong></li>
+<li><strong>Opacity/Transparency Mode</strong>: You can select how transparency is handled for this material among 3 choices:<ul>
+<li><em>Opaque</em>: The alpha color and texture are ignored during export process.</li>
+<li><em>Cutoff</em>: The alpha cutoff value is 0.5 (not exported as it is the glTF default value). Alpha values under this threshold are fully transparent. Alpha values above this threshold are fully opaque.</li>
+<li><em>Blend</em>: This is how 3ds Max handles transparency when rendering. This is the default mode for any material with an alpha color or texture.</li>
+</ul>
+</li>
+</ul>
+<h2 id="custom-attributes">Custom attributes<a class="anchor" href="#custom-attributes">#</a></h2>
+<p>Attributes defined by you, the user, are exported as well!</p>
+<p>Almost all types of parameters are supported (<em>Float</em>, <em>Color</em>, <em>Boolean</em>...). The only exceptions are <em>Texture</em>, <em>Node</em> and <em>Material</em> types.
+All nodes (meshes, lights...) and materials have their custom attributes exported.</p>
+<p>To define custom attributes either use the Parameter Editor window or scripting:</p>
+<p><p class="muted">Upstream illustration: 3DS MAX custom attributes parameter editor (media not bundled).</p></p>
+<p>Custom attributes are exported under <em>extras</em>:</p>
+<p><p class="muted">Upstream illustration: 3DS MAX custom attributes glTF (media not bundled).</p></p>
+<p>Note that the custom attributes are added to the node, not to the mesh or light component itself.</p>
+<p>Following types have particularities you should know:</p>
+<ul>
+<li><em>Angle</em> : Set in degrees (°) in 3ds Max but exported as radians. Ex: 360° =&gt; 3.1416 rads</li>
+<li><em>Array</em> : An array in 3ds Max is an enumeration of values. Each value has an incremental index, starting from 1. Only one value can be selected. The index of selection is exported, not the displayed value.</li>
+<li><em>Color</em> and <em>FRGBA</em> : Exported in base 1 as all other colors. Ex: Red (255,0,0) =&gt; (1,0,0)</li>
+<li><em>Percent</em> : Exported in base 1 as well. Ex: 80% =&gt; 0.8</li>
+<li><em>Texture</em> : <strong>Not supported</strong>. Custom attributes are exported as row values. Thus textures are exported under babylon format instead of glTF format. Bitmaps associated to textures are not exported.</li>
+</ul>
+<h2 id="shell-material">Shell material<a class="anchor" href="#shell-material">#</a></h2>
+<p>In 3DS Max, the <em>Shell material</em> is a container for other materials and controls which material is used in which rendering.</p>
+<p>It contains two materials:</p>
+<ul>
+<li><em>Original Material</em> used for rendering (for example Arnold, Mental ray, V-Ray)</li>
+<li><em>Baked Material</em> exported by the Babylonjs exporter</li>
+</ul>
+<p><p class="muted">Upstream illustration: 3DS Max Shell material parameters (media not bundled).</p></p>
+<h2 id="directx-shader-material">DirectX Shader material<a class="anchor" href="#directx-shader-material">#</a></h2>
+<p>In 3DS Max the DirectX shader material is used to represent more accurately how the material will render in another application. That is why only the material contained in its <em>Software Render Style</em> section is exported. All other parameters are ignored.</p>
+<p><p class="muted">Upstream illustration: 3DS Max DirectX Shader parameters (media not bundled).</p></p>
+<p>More information on how you could use this material in conjunction with the Shell material in the discussion <span>here</span>.</p>
+<h2 id="draco-compression">Draco compression<a class="anchor" href="#draco-compression">#</a></h2>
+<p>On the export form, the <em>Use Draco compression</em> option enables the Draco compression. It needs <span>Node.js</span> and <span>gltf-pipeline</span> in order to work.</p>
+<p>To install the Node.js, go to the web site download and install it.
+Then, to install gltf-pipeline, open a normal shell (cmd.exe or powershell.exe) and run the following command: <code>npm install -g gltf-pipeline</code>.
+Once they are installed, check the <em>Use Draco compression</em> option and the compression will be done automatically at the end of the export.</p>
+<h2 id="how-to-export-3d-model-with-animation-to-babylon-gltf-format">How to export 3D model with animation to .babylon / .gltf format<a class="anchor" href="#how-to-export-3d-model-with-animation-to-babylon-gltf-format">#</a></h2>
+<h2 id="single-animation-clip">Single animation clip<a class="anchor" href="#single-animation-clip">#</a></h2>
+<p>You can export all animations of the objects in your scene into a single animation clip following these steps:</p>
+<ol>
+<li><p>Open FBX / DAE or any other 3D model with animations in 3ds Max</p>
+</li>
+<li><p>Check / Apply texture to model</p>
+</li>
+<li><p>Go to “Time Configuration” window and change “Start Time:”, “End Time” under “Animation” section properly.</p>
+</li>
+</ol>
+<p><p class="muted">Upstream illustration: 3ds Time Configuration Window (media not bundled).</p></p>
+<ol start="4">
+<li>Right click on the imported 3D model. Navigate “Babylon... &gt; Babylon Properties” and open the “Babylon.js Object Properties” window as below.</li>
+</ol>
+<p><p class="muted">Upstream illustration: 3ds Babylon Plugin Properties Window (media not bundled).</p></p>
+<ol start="5">
+<li><p>Update the “From:”, “To:” fields under “Animations” section with expected animation frames to be exported</p>
+</li>
+<li><p>Open “Babylon Exporter” window from menu “Babylon &gt; Babylon File Exporter ...” as below.</p>
+</li>
+</ol>
+<p><p class="muted">Upstream illustration: 3ds Babylon Exporter (media not bundled).</p></p>
+<h2 id="multiple-animation-clips">Multiple animation clips<a class="anchor" href="#multiple-animation-clips">#</a></h2>
+<p>You can also export multiple animation clips and play one of them depending on the situation. For example, a character might have &quot;Walk&quot;, &quot;Run&quot;, and &quot;Jump&quot; animations, each spread along the timeline.</p>
+<p>To set up the animation clips (also called animation groups), right-click your scene and choose Babylon -&gt; Babylon Animation Groups, which opens the Animation Groups window.</p>
+<p><p class="muted">Upstream illustration: 3ds animation groups window (media not bundled).</p></p>
+<p>Features are explained below:</p>
+<ul>
+<li><p>Create / delete an animation group</p>
+</li>
+<li><p>Set a name</p>
+</li>
+<li><p>Set start and end frames. Values out of timeline bounds are automatically clamped at runtime.</p>
+</li>
+<li><p>Add / remove node selection. This acts as a layer per animation group: only added nodes will be part of the animation group. This is useful when you export a complex scene and want to animate only a small part of it.</p>
+</li>
+<li><p><strong>Export non-animated node targets</strong> option: when checked, all added nodes will be part of the animation group. Nodes that are not actually animated (no key in the timeline) will have a fake scale animation exported. This option might be useful if you want to add an in-game behavior to all the nodes of an animation group, such as toggling visibility.</p>
+</li>
+</ul>
+<p>When updating an input field or the animation nodes, changes are highlighted through a color. Press the <em>Confirm</em> button to submit changes.</p>
+<p>Note that when updating the scene hierarchy, like deleting a node, while the Animation Group window is opened, the Animation Nodes frame is not updated. Close the Animation Groups window and re-open it to take hierarchy updates into account.</p>
+<h2 id="try-it-out">Try it out!<a class="anchor" href="#try-it-out">#</a></h2>
+<p>Export your own scene from 3DS MAX to glTF format and load it into the <span>Babylon Sandbox</span>. Or load them via scripts using the <a href="../importers/gltf.html">babylon loader</a>.</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#features">Features </a><a href="#exported-features">Exported features </a><a href="#conversion-standard-to-pbr-materials">Conversion Standard to PBR materials </a><a href="#pbr-materials">PBR materials </a><a href="#base-color-and-transparency">Base color and Transparency </a><a href="#metalness-and-roughness">Metalness and Roughness </a><a href="#emission">Emission </a><a href="#ambient-occlusion">Ambient occlusion </a><a href="#bump-map">Bump map </a><a href="#standard-surface-arnold-material">Standard Surface Arnold material </a><a href="#base-color-and-transparency">Base color and Transparency </a><a href="#metalness-roughness-and-occlusion">Metalness, Roughness and Occlusion </a><a href="#emission">Emission </a><a href="#normal">Normal </a><a href="#what-you-should-know">What you should know </a><a href="#babylon-properties">Babylon properties </a><a href="#lights">Lights </a><a href="#left-to-right-handed-coordinate-system">Left to right handed coordinate system </a><a href="#consideration-about-skins">Consideration about skins </a><a href="#textures-image-format">Textures image format </a><a href="#texture-transform">Texture transform </a><a href="#environment-texture">Environment texture </a><a href="#double-sided-material">Double sided material </a><a href="#babylon-material-attributes">Babylon material attributes </a><a href="#custom-attributes">Custom attributes </a><a href="#shell-material">Shell material </a><a href="#directx-shader-material">DirectX Shader material </a><a href="#draco-compression">Draco compression </a><a href="#how-to-export-3d-model-with-animation-to-babylon-gltf-format">How to export 3D model with animation to .babylon / .gltf format </a><a href="#single-animation-clip">Single animation clip </a><a href="#multiple-animation-clips">Multiple animation clips </a><a href="#try-it-out">Try it out! </a></aside></div>
+<script src="../../../../../../assets/cm.classic.js"></script><script src="../../../../../../assets/manual.js"></script></body></html>

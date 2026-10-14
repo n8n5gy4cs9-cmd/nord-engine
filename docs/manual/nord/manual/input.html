@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Input — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="welcome.html" class="active" aria-current="page">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Manual</div><a href="welcome.html">Welcome</a><a href="editor-tour.html">Editor tour</a><a href="projects-scenes.html">Projects &amp; scenes</a><a href="scripting.html">Scripting</a><a href="2d.html">2D games</a><a href="3d.html">3D games</a><a href="physics.html">Physics</a><a href="audio.html">Audio</a><a href="ui.html">UI &amp; HUD</a><a href="input.html" class="cur" aria-current="page">Input</a><a href="assets.html">Assets</a><a href="library.html">The library</a><a href="rust-wasm.html">Rust / WASM</a><a href="export.html">Export &amp; hosting</a><a href="performance.html">Performance &amp; debugging</a><a href="reference.html">Reference overview</a><a href="desktop-apps.html">Desktop apps</a></nav><main id="content"><div class="crumb">Manual / Nord Engine</div><h1>Input</h1>
+<p>Input connects a player’s keys, pointer, touch or gamepad to game actions. Give actions names such as left and jump so game code can stay simple.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>down means a button is held. pressed means it just became held this frame. Use down for walking and pressed for a single jump or menu action.</p>
+</aside><p>Scripts never read raw keys. You declare <strong>actions</strong> in the project and ask about the action:</p>
+<pre class="code" data-lang="json"><code>&quot;input&quot;: { &quot;actions&quot;: {
+  &quot;jump&quot;:  [&quot;Space&quot;, &quot;ArrowUp&quot;, &quot;Gamepad0&quot;],
+  &quot;left&quot;:  [&quot;KeyA&quot;, &quot;ArrowLeft&quot;, &quot;GamepadLeft&quot;],
+  &quot;right&quot;: [&quot;KeyD&quot;, &quot;ArrowRight&quot;, &quot;GamepadRight&quot;],
+  &quot;fire&quot;:  [&quot;Mouse0&quot;]
+} }</code></pre>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>An <strong>action</strong> is a job name (&quot;jump&quot;) that several buttons can trigger. Your code says &quot;was <em>jump</em> pressed?&quot; and doesn&#39;t care whether it was the spacebar or a gamepad button — so players can remap keys without you changing the game.</p>
+</aside><table>
+<thead>
+<tr>
+<th>Call</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>input.down(&#39;jump&#39;)</code></td>
+<td>held this frame</td>
+</tr>
+<tr>
+<td><code>input.pressed(&#39;jump&#39;)</code></td>
+<td>went down this frame</td>
+</tr>
+<tr>
+<td><code>input.released(&#39;jump&#39;)</code></td>
+<td>went up this frame</td>
+</tr>
+<tr>
+<td><code>input.axis(&#39;left&#39;,&#39;right&#39;)</code></td>
+<td>−1, 0 or 1</td>
+</tr>
+<tr>
+<td><code>input.vec(&#39;left&#39;,&#39;right&#39;,&#39;up&#39;,&#39;down&#39;)</code></td>
+<td>normalised 2D vector (analog stick wins when pushed)</td>
+</tr>
+<tr>
+<td><code>input.key(&#39;KeyW&#39;)</code></td>
+<td>raw key code (debug)</td>
+</tr>
+<tr>
+<td><code>input.pointer</code></td>
+<td><code>{ x, y, worldX, worldY, down }</code> — canvas and world coordinates</td>
+</tr>
+<tr>
+<td><code>input.stick</code></td>
+<td>analog left stick <code>[x, y]</code></td>
+</tr>
+</tbody></table>
+<p><strong>Codes</strong> are <code>KeyboardEvent.code</code> names (<code>KeyA</code>, <code>Space</code>, <code>ArrowLeft</code>, <code>ShiftLeft</code>…), <code>Mouse0/1/2</code>, <code>Gamepad0…n</code> (button index) and
+<code>GamepadLeft/Right/Up/Down</code> (left stick past 50 %). Gamepads are polled each frame (first connected pad; dead-zone 0.2).</p>
+<h2 id="rebinding">Rebinding<a class="anchor" href="#rebinding">#</a></h2>
+<p><code>input.actions</code> is a plain object — change it at runtime: <code>this.input.actions.jump = [&#39;KeyZ&#39;]</code> and persist it with <code>this.save.set(&#39;bindings&#39;, this.input.actions)</code>.
+Build a settings screen with <code>game.ui</code> (the library&#39;s <code>ui-settings.js</code> covers volume).</p>
+<h2 id="touch">Touch<a class="anchor" href="#touch">#</a></h2>
+<p>Pointer events cover touch (<code>input.pointer</code>). Add a virtual joystick and on-screen buttons (<code>input.setVirtual(&#39;jump&#39;, true)</code> while held).</p>
+<aside class="box tip"><div class="box-title">Tip</div><p>Use <code>fixedUpdate</code> for physics-related input (jumping) and <code>update</code> for everything else; <code>pressed</code> is evaluated once per rendered frame, so read it in <code>update</code> if you must not miss a tap.</p>
+</aside><h2 id="mobile-and-on-screen-controls">Mobile and on-screen controls<a class="anchor" href="#mobile-and-on-screen-controls">#</a></h2>
+<p>For a complete code-drawn joystick plus hold buttons, see <strong><a href="../guides/mobile-controls.html">Mobile and on-screen touch controls</a></strong>. It includes the existing virtual joystick, reusable button code, action mapping, pointer cancellation/cleanup, desktop pointer testing, and the Star-Not touch example.</p>
+<div class="pager"><a href="ui.html"><small>← Previous</small>UI &amp; HUD</a><a href="assets.html"><small>Next →</small>Assets</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#rebinding">Rebinding </a><a href="#touch">Touch </a><a href="#mobile-and-on-screen-controls">Mobile and on-screen controls </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

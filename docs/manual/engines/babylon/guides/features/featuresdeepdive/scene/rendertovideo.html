@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Render Scenes To Video. — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../index.html"><img src="../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../index.html">Babylon documentation library</a><a href="../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Render Scenes To Video.</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="record-a-scene-to-a-video">Record a Scene to a Video<a class="anchor" href="#record-a-scene-to-a-video">#</a></h2>
+<p>First, you may ask why it is better than an external video capture tool.</p>
+<p>As the HTML5 standard continues to evolve, modern browsers can now directly record a stream generated from a canvas. This ensures that no framerate drop occurs during recording, and it all happens automatically in the browser.</p>
+<h2 id="how-to-record-with-the-inspector">How to record with the Inspector<a class="anchor" href="#how-to-record-with-the-inspector">#</a></h2>
+<p>A new action has been added to the Tools tab of the inspector. You can find a Start Recording Video button in compatible browsers.</p>
+<p><p class="muted">Upstream illustration: InspectorTools (media not bundled).</p></p>
+<p>This records 7 seconds of video by default. You can press the button again at any time during the recording session to stop it earlier.</p>
+<h2 id="how-to-record-by-code">How to record by code<a class="anchor" href="#how-to-record-by-code">#</a></h2>
+<h3 id="check-support">Check support<a class="anchor" href="#check-support">#</a></h3>
+<p>Because browser support is still limited, recording the canvas should always be preceded by a capability check. You can use this code to ensure that the required APIs are available in your browser:</p>
+<pre class="code" data-lang="javascript"><code>if (BABYLON.VideoRecorder.IsSupported(engine)) {
+    var recorder = new BABYLON.VideoRecorder(engine);
+}</code></pre>
+<h3 id="simple-record">Simple Record<a class="anchor" href="#simple-record">#</a></h3>
+<p>In order to record your currently displayed scene, you can simply use this code:</p>
+<pre class="code" data-lang="javascript"><code>if (BABYLON.VideoRecorder.IsSupported(engine)) {
+    var recorder = new BABYLON.VideoRecorder(engine);
+    recorder.startRecording();
+}</code></pre>
+<p>You can see a <span class="muted">Online playground (not embedded offline)</span></p>
+<p>This will by default record 7 seconds of video to a file name &quot;babylonjs.webm&quot;.</p>
+<h3 id="changing-default-file-name">Changing default File Name<a class="anchor" href="#changing-default-file-name">#</a></h3>
+<p>You can pass the file name to the startRecording API:</p>
+<pre class="code" data-lang="javascript"><code>if (BABYLON.VideoRecorder.IsSupported(engine)) {
+    var recorder = new BABYLON.VideoRecorder(engine);
+    recorder.startRecording(&quot;test.webm&quot;);
+}</code></pre>
+<p>You can see a live version here: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>This will by default record 7 seconds of video to a file name &quot;test.webm&quot;.</p>
+<h3 id="changing-default-record-time">Changing default Record Time<a class="anchor" href="#changing-default-record-time">#</a></h3>
+<p>You can pass the default time in seconds to the startRecording API:</p>
+<pre class="code" data-lang="javascript"><code>if (BABYLON.VideoRecorder.IsSupported(engine)) {
+    var recorder = new BABYLON.VideoRecorder(engine);
+    recorder.startRecording(&quot;test.webm&quot;, 2);
+}</code></pre>
+<p>You can see a live demo here: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>This will by default record 2 seconds of video to a file name &quot;test.webm&quot;.</p>
+<h3 id="stop-video-before-the-record-time">Stop video before the Record Time<a class="anchor" href="#stop-video-before-the-record-time">#</a></h3>
+<p>Once a recording is in progress, you can stop it earlier by using the <code>stopRecording</code> API:</p>
+<pre class="code" data-lang="javascript"><code>if (BABYLON.VideoRecorder.IsSupported(engine)) {
+    var recorder = new BABYLON.VideoRecorder(engine);
+    recorder.startRecording();
+    setTimeout(() =&gt; {
+        recorder.stopRecording()
+    }, 500);
+}</code></pre>
+<p>You can see a live version here: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>This will record 500 milliseconds of video to a file name &quot;babylonjs.webm&quot;.</p>
+<h3 id="when-does-recording-end">When does recording end<a class="anchor" href="#when-does-recording-end">#</a></h3>
+<p>To detect the end of the recording (either by reaching the record time or being manually stopped), you can use the promise returned by the <code>startRecording</code> API:</p>
+<pre class="code" data-lang="javascript"><code>if (BABYLON.VideoRecorder.IsSupported(engine)) {
+    var recorder = new BABYLON.VideoRecorder(engine);
+    recorder.startRecording().then(() =&gt; {
+        alert(&quot;done&quot;);
+    });
+}</code></pre>
+<p>You can see a live version here: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>This will record 7 seconds of video to a file name &quot;babylonjs.webm&quot; and display the &quot;done&quot; message.</p>
+<h3 id="how-not-to-download-the-file-automatically">How not to download the file automatically<a class="anchor" href="#how-not-to-download-the-file-automatically">#</a></h3>
+<p>Passing <code>null</code> as the fileName will prevent the download from happening automatically and, as in the previous section, you can rely on the promise returned by <code>startRecording</code> to deal with the video data on your own:</p>
+<pre class="code" data-lang="javascript"><code>if (BABYLON.VideoRecorder.IsSupported(engine)) {
+    var recorder = new BABYLON.VideoRecorder(engine);
+    recorder.startRecording(null, 1).then((videoBlob) =&gt; {
+        // Do Something with the videoBlob.
+    });
+}</code></pre>
+<p>You can see a live version here: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>This will record 1 second of video to a blob.</p>
+<h2 id="limitations">Limitations<a class="anchor" href="#limitations">#</a></h2>
+<p>Video recording is based on both the MediaRecorder and Canvas.captureStream() APIs, which are still not broadly supported. Recording support is therefore limited by the browser&#39;s ability to record a canvas.</p>
+<p>The second limitation is that the file format you can record to is currently limited to webm. You cannot directly record to .mp4 or .mov with this method so far.</p>
+<p>Let&#39;s hope that wider browser and file format support will be added soon.</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#record-a-scene-to-a-video">Record a Scene to a Video </a><a href="#how-to-record-with-the-inspector">How to record with the Inspector </a><a href="#how-to-record-by-code">How to record by code </a><a href="#limitations">Limitations </a></aside></div>
+<script src="../../../../../../assets/cm.classic.js"></script><script src="../../../../../../assets/manual.js"></script></body></html>

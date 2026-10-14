@@ -3,7 +3,7 @@
   "tagline": "Rust-based game/app engine + editor that exports static HTML web games and a native Mac app",
   "author": "Crowelian 2026 + Sonnet",
   "version": "0.0.1",
-  "updated": "2026-10-13",
+  "updated": "2026-10-14",
   "branch": "main",
   "statusValues": [
     "todo",
@@ -1310,6 +1310,12 @@
       "id": "M7-19",
       "milestone": "M7",
       "title": "Add manual noindex metadata and server upload files",
+      "status": "done"
+    },
+    {
+      "id": "M7-20",
+      "milestone": "M7",
+      "title": "Organize manual output into folders and rebuild only changed files",
       "status": "done"
     },
     {

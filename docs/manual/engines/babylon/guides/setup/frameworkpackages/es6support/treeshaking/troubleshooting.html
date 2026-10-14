@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Troubleshooting Pure Imports — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../../index.html"><img src="../../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../../index.html">Babylon documentation library</a><a href="../../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Troubleshooting Pure Imports</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="common-errors">Common Errors<a class="anchor" href="#common-errors">#</a></h2>
+<h3 id="quot-x-needs-to-be-imported-before-as-it-contains-a-side-effect-required-by-your-code-quot">&quot;X needs to be imported before as it contains a side-effect required by your code&quot;<a class="anchor" href="#quot-x-needs-to-be-imported-before-as-it-contains-a-side-effect-required-by-your-code-quot">#</a></h3>
+<p>This means your code reached a feature that requires registration, but the matching registration function has not been called.</p>
+<p>For example:</p>
+<pre class="code" data-lang="text"><code>Uncaught StandardMaterial needs to be imported before as it contains a side-effect required by your code.</code></pre>
+<p>Import and call the corresponding registration function:</p>
+<pre class="code" data-lang="typescript"><code>import { RegisterStandardMaterial } from &quot;@babylonjs/core/pure&quot;;
+
+RegisterStandardMaterial();</code></pre>
+<p>Common triggers include:</p>
+<table>
+<thead>
+<tr>
+<th>Error message</th>
+<th>Registration needed</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>StandardMaterial needs to be imported...</code></td>
+<td><code>RegisterStandardMaterial()</code></td>
+</tr>
+<tr>
+<td><code>ImageProcessingConfiguration needs to be imported...</code></td>
+<td><code>RegisterImageProcessingConfiguration()</code></td>
+</tr>
+<tr>
+<td><code>ColorCurves needs to be imported...</code></td>
+<td><code>RegisterColorCurves()</code></td>
+</tr>
+<tr>
+<td><code>Texture needs to be imported...</code></td>
+<td><code>RegisterTexture()</code></td>
+</tr>
+<tr>
+<td><code>FresnelParameters needs to be imported...</code></td>
+<td><code>RegisterFresnelParameters()</code></td>
+</tr>
+<tr>
+<td><code>Ray needs to be imported...</code></td>
+<td><code>RegisterRay()</code></td>
+</tr>
+<tr>
+<td><code>CubeTexture needs to be imported...</code></td>
+<td><code>RegisterCubeTexture()</code></td>
+</tr>
+<tr>
+<td><code>InstancedMesh needs to be imported...</code></td>
+<td><code>RegisterInstancedMesh()</code></td>
+</tr>
+</tbody></table>
+<h3 id="typeerror-scene-enablephysics-is-not-a-function">TypeError: scene.enablePhysics is not a function<a class="anchor" href="#typeerror-scene-enablephysics-is-not-a-function">#</a></h3>
+<p>The physics component has not been registered. The <code>enablePhysics</code> method only becomes available after registration:</p>
+<pre class="code" data-lang="typescript"><code>import { RegisterJoinedPhysicsEngineComponent } from &quot;@babylonjs/core/pure&quot;;
+import &quot;@babylonjs/core/Physics/joinedPhysicsEngineComponent.types&quot;;
+
+RegisterJoinedPhysicsEngineComponent();</code></pre>
+<h3 id="engine-methods-missing-or-textures-not-loading">Engine methods missing or textures not loading<a class="anchor" href="#engine-methods-missing-or-textures-not-loading">#</a></h3>
+<p>Engine extensions have not been registered. When using pure imports, the engine starts with minimal functionality. Texture loading, alpha blending, render targets, and other engine capabilities are optional extensions.</p>
+<p>Register engine extensions using one of the tiered helpers:</p>
+<pre class="code" data-lang="typescript"><code>import { RegisterStandardEngineExtensions } from &quot;@babylonjs/core/pure&quot;;
+
+RegisterStandardEngineExtensions();</code></pre>
+<p>For advanced features such as compute shaders, cube textures, or multiview, use <code>RegisterFullEngineExtensions()</code> instead. See <a href="../treeshaking.html">Engine Registration Tiers</a> for details.</p>
+<h3 id="typeerror-scene-pick-is-not-a-function-or-createpickingray">TypeError: scene.pick is not a function (or createPickingRay)<a class="anchor" href="#typeerror-scene-pick-is-not-a-function-or-createpickingray">#</a></h3>
+<p>Picking functionality depends on ray registration:</p>
+<pre class="code" data-lang="typescript"><code>import { RegisterRay } from &quot;@babylonjs/core/pure&quot;;
+
+RegisterRay();</code></pre>
+<h3 id="typescript-error-property-39-enablephysics-39-does-not-exist-on-type-39-scene-39">TypeScript error: Property &#39;enablePhysics&#39; does not exist on type &#39;Scene&#39;<a class="anchor" href="#typescript-error-property-39-enablephysics-39-does-not-exist-on-type-39-scene-39">#</a></h3>
+<p>The runtime feature may be registered, but TypeScript still needs the type augmentation:</p>
+<pre class="code" data-lang="typescript"><code>import &quot;@babylonjs/core/Physics/joinedPhysicsEngineComponent.types&quot;;</code></pre>
+<p>Use <code>.types</code> imports for features that augment classes with additional methods or properties.</p>
+<h3 id="cascading-errors-fix-one-hit-the-next">Cascading Errors (Fix One, Hit the Next)<a class="anchor" href="#cascading-errors-fix-one-hit-the-next">#</a></h3>
+<p>Some features have dependencies. You might fix one missing registration and then see another error when a dependent feature is reached.</p>
+<p>To resolve this:</p>
+<ol>
+<li>Use <code>CheckMissingImports()</code> during development to discover unregistered stubs.</li>
+<li>Prefer registration functions that handle their required transitive dependencies.</li>
+<li>For scene loading, register the material, texture, and parser types that your assets use.</li>
+</ol>
+<p>A common serialized-scene setup looks like this:</p>
+<pre class="code" data-lang="typescript"><code>import { RegisterStandardMaterial, RegisterPBRMaterial, RegisterImageProcessingConfiguration, RegisterTexture, RegisterFresnelParameters } from &quot;@babylonjs/core/pure&quot;;
+
+RegisterStandardMaterial();
+RegisterPBRMaterial();
+RegisterImageProcessingConfiguration();
+RegisterTexture();
+RegisterFresnelParameters();</code></pre>
+<h3 id="materials-appear-black-or-default-after-loading">Materials Appear Black or Default After Loading<a class="anchor" href="#materials-appear-black-or-default-after-loading">#</a></h3>
+<p>The material class was not registered, so deserialization could not recreate it correctly. Register the material type used by your content:</p>
+<pre class="code" data-lang="typescript"><code>import { RegisterPBRMaterial } from &quot;@babylonjs/core/pure&quot;;
+
+RegisterPBRMaterial();</code></pre>
+<h3 id="shader-compilation-error-include-quot-x-quot-not-found">Shader compilation error: include &quot;X&quot; not found<a class="anchor" href="#shader-compilation-error-include-quot-x-quot-not-found">#</a></h3>
+<p>A shader include has not been registered in the shader store. Register the material or effect that owns the shader dependency:</p>
+<pre class="code" data-lang="typescript"><code>import { RegisterStandardMaterial } from &quot;@babylonjs/core/pure&quot;;
+
+RegisterStandardMaterial();</code></pre>
+<p>For custom shaders, import the shader include module your shader needs.</p>
+<h2 id="diagnostic-tools">Diagnostic Tools<a class="anchor" href="#diagnostic-tools">#</a></h2>
+<h3 id="checkmissingimports">CheckMissingImports<a class="anchor" href="#checkmissingimports">#</a></h3>
+<p><code>CheckMissingImports</code> probes known stubs and reports side-effect modules that have not been registered:</p>
+<pre class="code" data-lang="typescript"><code>import { CheckMissingImports } from &quot;@babylonjs/core/Misc/checkMissingImports&quot;;
+
+const missing = CheckMissingImports();
+if (missing.length &gt; 0) {
+  console.log(&quot;You may need to register:&quot;, missing);
+}</code></pre>
+<p>It can check stubs for parser registration, scene factory methods, scene picking, texture factories, mesh parsers, and node factories.</p>
+<p><strong>What it checks</strong>:</p>
+<ul>
+<li>SerializationHelper parser stubs such as ImageProcessingConfiguration, FresnelParameters, ColorCurves, and Texture.</li>
+<li>Scene factory stubs such as DefaultMaterialFactory and CollisionCoordinatorFactory.</li>
+<li>Scene picking stubs such as Ray and createPickingRay.</li>
+<li>Texture factory stubs such as CubeTexture, MirrorTexture, RenderTargetTexture, and VideoTexture.</li>
+<li>Mesh parser stubs such as InstancedMesh, GroundMesh, LinesMesh, TrailMesh, and GaussianSplattingMesh.</li>
+<li>Node factory stubs such as AnimationRange.</li>
+</ul>
+<p>Not every reported module is required. The report lists what is available but unregistered, so only import the features your application actually uses.</p>
+<h3 id="side-effect-warning-stubs">Side-Effect Warning Stubs<a class="anchor" href="#side-effect-warning-stubs">#</a></h3>
+<p>When pure imports are used, augmented prototype methods can be represented by lightweight stubs until registration occurs. These stubs make missing side effects easier to diagnose and allow feature-detection checks to remain safe.</p>
+<p>These stubs:</p>
+<ul>
+<li>Return <code>undefined</code>, so feature-detection code like <code>if (scene.getPhysicsEngine())</code> works correctly.</li>
+<li>Do not log warnings by default, because internal engine code may probe optional features frequently.</li>
+<li>Produce a clear <code>TypeError</code> if you try to use the return value as an object.</li>
+</ul>
+<p>For example, code such as <code>if (scene.getPhysicsEngine()) { ... }</code> can evaluate to <code>false</code> when physics is not registered, instead of crashing during a feature check.</p>
+<p>To debug a pure-import scene and see which missing side-effect registrations are actually being called, enable runtime stub warnings during development:</p>
+<pre class="code" data-lang="typescript"><code>import { SetMissingSideEffectWarningsEnabled } from &quot;@babylonjs/core/Misc/devTools&quot;;
+
+SetMissingSideEffectWarningsEnabled(true);</code></pre>
+<p>With this enabled, each missing side-effect stub logs at most once:</p>
+<pre class="code" data-lang="text"><code>[Babylon.js] Scene.getPhysicsEngine() requires a side-effect import. See: https://doc.babylonjs.com/setup/frameworkPackages/es6Support/treeShaking</code></pre>
+<p>If your code intentionally probes optional augmented APIs, suppress warnings around that synchronous probe:</p>
+<pre class="code" data-lang="typescript"><code>import { SuppressMissingSideEffectWarnings } from &quot;@babylonjs/core/Misc/devTools&quot;;
+
+SuppressMissingSideEffectWarnings(() =&gt; {
+  scene.getPhysicsEngine?.();
+});</code></pre>
+<p>Use runtime warnings as a development diagnostic. For a broad startup report of all known unregistered stubs, use <code>CheckMissingImports()</code> instead.</p>
+<h2 id="performance-considerations">Performance Considerations<a class="anchor" href="#performance-considerations">#</a></h2>
+<h3 id="registration-timing">Registration Timing<a class="anchor" href="#registration-timing">#</a></h3>
+<p>Register side effects before you use them. A common pattern is to group application registrations near the top of your entry point:</p>
+<pre class="code" data-lang="typescript"><code>import { RegisterStandardMaterial, RegisterRay, RegisterJoinedPhysicsEngineComponent } from &quot;@babylonjs/core/pure&quot;;
+
+RegisterStandardMaterial();
+RegisterRay();
+RegisterJoinedPhysicsEngineComponent();</code></pre>
+<h3 id="bundle-size-impact">Bundle Size Impact<a class="anchor" href="#bundle-size-impact">#</a></h3>
+<p>Registration functions are typically small. The main bundle-size benefit comes from not importing the modules your application does not need.</p>
+<table>
+<thead>
+<tr>
+<th>Approach</th>
+<th>Approximate Bundle Size</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>@babylonjs/core</code> (everything)</td>
+<td>~6+ MB minified</td>
+</tr>
+<tr>
+<td><code>@babylonjs/core/pure</code> (typical app)</td>
+<td>~1.5-3 MB minified</td>
+</tr>
+<tr>
+<td>Minimal scene (pure, few registrations)</td>
+<td>~1-1.5 MB minified</td>
+</tr>
+</tbody></table>
+<h2 id="migration-checklist">Migration Checklist<a class="anchor" href="#migration-checklist">#</a></h2>
+<p>When converting an existing project to pure imports:</p>
+<ol>
+<li>Switch value imports to <code>.pure</code> paths or the pure barrel.</li>
+<li>Identify bare side-effect imports such as <code>import &quot;@babylonjs/core/...&quot;</code>.</li>
+<li>Replace each side-effect import with the matching <code>RegisterXxx</code> import and call.</li>
+<li>Add <code>.types</code> imports for type augmentations you use.</li>
+<li>Run <code>CheckMissingImports()</code> during development.</li>
+<li>Test asset loading, picking, physics, XR, materials, and any optional systems your app uses.</li>
+<li>Remove <code>CheckMissingImports()</code> from production code.</li>
+</ol>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#common-errors">Common Errors </a><a href="#diagnostic-tools">Diagnostic Tools </a><a href="#performance-considerations">Performance Considerations </a><a href="#migration-checklist">Migration Checklist </a></aside></div>
+<script src="../../../../../../../assets/cm.classic.js"></script><script src="../../../../../../../assets/manual.js"></script></body></html>

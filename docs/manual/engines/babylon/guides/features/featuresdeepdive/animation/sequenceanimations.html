@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Sequencing Animations — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../index.html"><img src="../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../index.html">Babylon documentation library</a><a href="../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Sequencing Animations</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><p>One straightforward method of combining a number of clips to form a cartoon is to give start times to each animation clip.</p>
+<h2 id="design">Design<a class="anchor" href="#design">#</a></h2>
+<h3 id="overview">Overview<a class="anchor" href="#overview">#</a></h3>
+<p>The camera shows a building with a door. The camera moves closer to the door and stops. The door swings open and the camera enters the room. As the camera enters the room, lights come on in the room. The door closes and the camera sweeps around the room.</p>
+<p>Since the aim is to show how the movie clip is made, the room and door will be made simply with meshes and no textures.</p>
+<h3 id="performers">Performers<a class="anchor" href="#performers">#</a></h3>
+<p>Camera - Universal<br>Door - Hinged on right hand side, opening inwards<br>Spot Lights - with spheres to show position</p>
+<h3 id="sequence-timetable">Sequence Timetable<a class="anchor" href="#sequence-timetable">#</a></h3>
+<p><p class="muted">Upstream illustration: Time Table (media not bundled).</p></p>
+<p>For each performer you create an animation with key points for each timed event.</p>
+<h3 id="animations">Animations<a class="anchor" href="#animations">#</a></h3>
+<p><em>For the Camera</em><br>Moving the camera changes the position (a Vector3) of the camera. Sweeping the camera around is a rotation around the y axis (a float).</p>
+<p>Since an animation can only change one property, two animations are needed for the camera.</p>
+<p>For the camera movement, the key points will be: at time 0 the camera starts away from the building and moves toward and down until it is just outside the door at time 3 seconds.<br>The camera will hold its position for 2 seconds as the door opens then at time 5 seconds will move forward into the room at an angle away from the door, stopping at time 8 seconds.</p>
+<p>There will be no rotation of the camera for 9 seconds, then the camera will take until time 14 seconds to rotate 180 degrees to face the door.</p>
+<p>Key values for the camera will be its positions at frames 0, 3, 5 and 8 seconds and its rotation at 0, 9 and 14 seconds.</p>
+<pre class="code" data-lang="javascript"><code>//for camera move forward
+const movein = new BABYLON.Animation(&quot;movein&quot;, &quot;position&quot;, frameRate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+
+const movein_keys = [];
+
+movein_keys.push({
+  frame: 0,
+  value: new BABYLON.Vector3(0, 5, -30),
+});
+
+movein_keys.push({
+  frame: 3 * frameRate,
+  value: new BABYLON.Vector3(0, 2, -10),
+});
+
+movein_keys.push({
+  frame: 5 * frameRate,
+  value: new BABYLON.Vector3(0, 2, -10),
+});
+
+movein_keys.push({
+  frame: 8 * frameRate,
+  value: new BABYLON.Vector3(-2, 2, 3),
+});
+
+movein.setKeys(movein_keys);
+
+//for camera to sweep round
+const rotate = new BABYLON.Animation(&quot;rotate&quot;, &quot;rotation.y&quot;, frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+
+const rotate_keys = [];
+
+rotate_keys.push({
+  frame: 0,
+  value: 0,
+});
+
+rotate_keys.push({
+  frame: 9 * frameRate,
+  value: 0,
+});
+
+rotate_keys.push({
+  frame: 14 * frameRate,
+  value: Math.PI,
+});
+
+rotate.setKeys(rotate_keys);</code></pre>
+<p><em>For the door</em><br>The door will sweep around a hinge about the y axis with a floating-point rotation. The opening and closing rotations will each take 2 seconds.</p>
+<p>Key points will be at times 0, 3, 5, 13, and 15 seconds.</p>
+<p>Key values for the sweep will be its rotation about the y axis at the key frames.</p>
+<pre class="code" data-lang="javascript"><code>//for door to open and close
+const sweep = new BABYLON.Animation(&quot;sweep&quot;, &quot;rotation.y&quot;, frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+
+const sweep_keys = [];
+
+sweep_keys.push({
+  frame: 0,
+  value: 0,
+});
+
+sweep_keys.push({
+  frame: 3 * frameRate,
+  value: 0,
+});
+
+sweep_keys.push({
+  frame: 5 * frameRate,
+  value: Math.PI / 3,
+});
+
+sweep_keys.push({
+  frame: 13 * frameRate,
+  value: Math.PI / 3,
+});
+
+sweep_keys.push({
+  frame: 15 * frameRate,
+  value: 0,
+});
+
+sweep.setKeys(sweep_keys);</code></pre>
+<p><em>For Lights</em>
+The lights will vary in intensity (float). These will be an array of spotlights.</p>
+<p>Key points for the lights are: remaining off for 7 seconds, coming to full intensity at 10 seconds, and staying there until going off at 14 seconds.</p>
+<pre class="code" data-lang="javascript"><code>//for light to brighten and dim
+const lightDimmer = new BABYLON.Animation(&quot;dimmer&quot;, &quot;intensity&quot;, frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+
+const light_keys = [];
+
+light_keys.push({
+  frame: 0,
+  value: 0,
+});
+
+light_keys.push({
+  frame: 7 * frameRate,
+  value: 0,
+});
+
+light_keys.push({
+  frame: 10 * frameRate,
+  value: 1,
+});
+
+light_keys.push({
+  frame: 14 * frameRate,
+  value: 1,
+});
+
+light_keys.push({
+  frame: 15 * frameRate,
+  value: 0,
+});
+
+lightDimmer.setKeys(light_keys);</code></pre>
+<h2 id="cartoon">Cartoon<a class="anchor" href="#cartoon">#</a></h2>
+<p>Now just run all the clips simultaneously.</p>
+<pre class="code" data-lang="javascript"><code>scene.beginDirectAnimation(camera, [movein, rotate], 0, 25 * frameRate, false);
+scene.beginDirectAnimation(hinge, [sweep], 0, 25 * frameRate, false);
+scene.beginDirectAnimation(spotLights[0], [lightDimmer], 0, 25 * frameRate, false);
+scene.beginDirectAnimation(spotLights[1], [lightDimmer.clone()], 0, 25 * frameRate, false);</code></pre>
+<span class="muted">Online playground (not embedded offline)
+</span><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#design">Design </a><a href="#cartoon">Cartoon </a></aside></div>
+<script src="../../../../../../assets/cm.classic.js"></script><script src="../../../../../../assets/manual.js"></script></body></html>

@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Creating A GreasedLine — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../../../index.html"><img src="../../../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../../../index.html">Babylon documentation library</a><a href="../../../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Creating A GreasedLine</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="greasedline">GreasedLine<a class="anchor" href="#greasedline">#</a></h2>
+<p><code>GreasedLine</code> is a special type of line that uses a regular mesh with triangles to display a line of any width. It incorporates custom shaders designed to ensure that the mesh always faces the camera, resulting in consistent thickness from all perspectives. The shaders are provided through a plugin material. You can use <code>StandardMaterial</code> or <code>PBRMaterial</code> with <code>GreasedLine</code>, so you can use any property of the material to stylize your line. <code>GreasedLine</code> also features dashing, multicolored lines with sampling options, color blending options, variable width on both sides of the line (upper and lower parts), visibility (what percentage of the line is visible), point coordinate offsets, instance mode (you can add more lines to an instance and they will be drawn in one draw call), and lazy mode. The values for these features are animatable. You can also translate, rotate, and scale the line because it&#39;s a mesh.</p>
+<h2 id="create-a-greasedline">Create a GreasedLine<a class="anchor" href="#create-a-greasedline">#</a></h2>
+<p>The easiest, preferred and recommended way to create a <code>GreasedLine</code> is to use the <code>CreateGreasedLine</code> function:</p>
+<pre class="code" data-lang="javascript"><code>function CreateGreasedLine(name: string, options: GreasedLineMeshBuilderOptions, materialOptions?: Nullable&lt;GreasedLineMaterialBuilderOptions&gt;, scene?: Nullable&lt;Scene&gt;)</code></pre>
+<p>The simplest usage is:</p>
+<pre class="code" data-lang="javascript"><code>const line = BABYLON.CreateGreasedLine(&quot;name&quot;, { points });</code></pre>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><h2 id="dispose-a-greasedline">Dispose a GreasedLine<a class="anchor" href="#dispose-a-greasedline">#</a></h2>
+<p>Please note that the <code>dispose</code> function doesn&#39;t dispose the material created for the line by default. You have to set the <code>disposeMaterialAndTextures</code> parameter to <code>true</code> in the <code>dispose</code> function if you want to dispose the associated material and textures as well.</p>
+<h3 id="greasedlinemeshbuilderoptions">GreasedLineMeshBuilderOptions<a class="anchor" href="#greasedlinemeshbuilderoptions">#</a></h3>
+<p>You will find an explanation of these options below this code snippet.</p>
+<pre class="code" data-lang="javascript"><code>points: GreasedLinePoints;
+pointsOptions?: GreasedLinePointsOptions;
+widths?: number[];
+widthDistribution?: GreasedLineMeshWidthDistribution;
+instance?: GreasedLineMesh;
+updatable?: boolean;
+uvs?: number[];
+lazy?: boolean;</code></pre>
+<h4 id="points"><strong>points</strong><a class="anchor" href="#points">#</a></h4>
+<p>Points of the line specified as x, y, z coordinates. <em>All the points connected are called a line. The part of the line between two points is called a line segment in this documentation.</em></p>
+<p><code>points</code> can be of type <code>number[]</code>, <code>number[][]</code>, <code>Vector3[]</code>, <code>Vector3[][]</code>, <code>Float32Array</code>, or <code>Float32Array[]</code>.</p>
+<p>If you want to draw only one contiguous line you can use 1D arrays or <code>Float32Array</code>. If you want to draw multiple lines you have to use 2D arrays or <code>Float32Array[]</code>.</p>
+<p>To draw multiple disconnected lines using a flat <code>Float32Array</code>, you can specify the <code>pointsOptions.stride</code> property in the <code>GreasedLineMeshBuilderOptions</code> object. This value sets how many entries from the <code>Float32Array</code> will be used to create one line. One entry = 3 float values.</p>
+<span class="muted">Online playground (not embedded offline)</span><pre class="code" data-lang="javascript"><code>const points =
+[
+    0, 0, 0,
+    1, 0, 0,
+    1, 1, 0
+]
+// x, y, z,
+// x, y, z, ...
+
+// is the same as
+const points =
+[
+    new BABYLON.Vector3(0,0,0)
+    new BABYLON.Vector3(1,0,0)
+    new BABYLON.Vector3(1,1,0)
+]</code></pre>
+<p><em>It&#39;s a good habit to format your <code>number</code> coordinates for better readability.</em></p>
+<p>We recommend using <code>number</code> or <code>Float32Array</code> objects when possible to avoid the unnecessary creation of temporary <code>Vector3</code> objects holding the points, especially if you are creating the coordinates dynamically on the fly. The coordinates are converted to <code>number[][]</code> internally, so <code>number[]</code> or <code>number[][]</code> are the fastest options.</p>
+<p>To draw two or more lines at once, you can define the points as:</p>
+<pre class="code" data-lang="javascript"><code>const points = [
+  [0, 0, 0, 1, 0, 0],
+  [0, 1, 0, 1, 1, 0],
+];</code></pre>
+<p>You can draw more lines at once by using the <code>instance</code> option. See the <strong>Instance mode</strong> example below.</p>
+<p>You need to specify at least two points to draw a line, obviously.</p>
+<p><em>Do not use sharp-angle connected long lines because they can be distorted by perspective. Use smaller line segments.</em> There are helper functions available in <code>BABYLON.GreasedLineTools</code> for that. See the GreasedLineTools section for more info. Another option is to create two lines and add them to one instance, or add them as separate lines like this (this approach can cause small quirks where the lines &#39;connect&#39; to each other when using dash mode, depending on your line width):</p>
+<pre class="code" data-lang="javascript"><code>const points = [
+  [-10, 0, 0, 0, 10, 0],
+  [0, 10, 0, 10, 0, 0],
+];</code></pre>
+<p>There is another option to avoid distortion when drawing thick, connected, long line segments: you need to duplicate each position, as demonstrated here:</p>
+<span class="muted">Online playground (not embedded offline)</span><p>Please note that the <code>points</code> property is not updatable, unlike when using a <code>LineMesh</code>. You have to use the <code>offsets</code> property on the line instance to update point positions without recreating the mesh. Updating the <code>offsets</code> doesn&#39;t involve any calculations and updates only one vertex buffer. See the Offsets section below and the PG example Offsetting line vertices.</p>
+<p>However, there are two public methods available on the line instance for manipulating the points. Both of these functions will destroy the mesh and create a new one. This point-manipulation method is slower, but if you are not dealing with a lot of lines, it should not cause FPS issues.</p>
+<pre class="code" data-lang="javascript"><code>addPoints(points: number[][]) // ads points to the existing ones and recreates the mesh
+setPoints(points: number[][]) // sets the points and recreates the mesh - the number of points must be the same as in the original line</code></pre>
+<p><em>If you are using the right-handed coordinate system, please create the lines after you switch the scene to it.</em></p>
+<p><em>If you modify the number of points in the line, you have to set the widths for the new lines or line segments before calling either of these two methods.</em></p>
+<h4 id="widths-and-widthdistribution"><strong>widths</strong> and <strong>widthDistribution</strong><a class="anchor" href="#widths-and-widthdistribution">#</a></h4>
+<p>You can specify two width multiplier values for each point in your line. These values are multiplied with the <code>width</code> of the line to draw the resulting line. The first value specifies the width multiplier of the line below the line and the second above the line. These values are not normalized so if you use a value of 2, 2 the line will be twice the width at that point. <em>There must be exactly the same count of width pair values as there are points.</em></p>
+<p>The <code>CreateGreasedLine</code> function uses the function <code>CompleteGreasedLineWidthTable</code> to fill the missing values, if any. You can use the <code>widthDistribution</code> option to set the method used to automatically fill the <code>widths</code> table.</p>
+<p>You can choose from these values:</p>
+<pre class="code" data-lang="javascript"><code>enum GreasedLineMeshWidthDistribution {
+    WIDTH_DISTRIBUTION_NONE = 0,
+    WIDTH_DISTRIBUTION_REPEAT = 1,
+    WIDTH_DISTRIBUTION_EVEN = 2,
+    WIDTH_DISTRIBUTION_START = 3,
+    WIDTH_DISTRIBUTION_END = 4,
+    WIDTH_DISTRIBUTION_START_END = 5,
+}</code></pre>
+<p>The default for this option is <code>WIDTH_DISTRIBUTION_START</code>.</p>
+<p>Let&#39;s see an example:</p>
+<pre class="code" data-lang="javascript"><code>const points = [0, 0, 0, 1, 0, 0];
+const widths = [2, 2];
+const line = BABYLON.CreateGreasedLine(&quot;line&quot;, { points, widths });
+// the width table will be filled as [2, 2, 1, 1]</code></pre>
+<p>You can use the function <code>CompleteGreasedLineWidthTable</code> manually and set the <code>widthDistribution</code> to <code>WIDTH_DISTRIBUTION_NONE</code>. If you prepared the width table with the correct number of entries, set <code>widthDistribution</code> to <code>WIDTH_DISTRIBUTION_NONE</code> as well.</p>
+<p>Please have a look at the API docs for more explanation about the width distribution modes.</p>
+<p><em>You might wonder, as you continue reading, why you&#39;ll find the <code>width</code> option specified in <code>materialOptions</code> and <code>widths</code> here. It&#39;s because the <code>options</code> object contains all the mesh-related options, and <code>width</code> is used when creating the material, so it is material-related.</em></p>
+<span class="muted">Online playground (not embedded offline)</span><h4 id="instance"><strong>instance</strong><a class="anchor" href="#instance">#</a></h4>
+<p>You can add lines to an existing line whenever you want. All you need to do is specify the <code>instance</code> option and set a <code>GreasedLineMesh</code> instance on it. Every time you add a new line, all the data needed to render the line will be recalculated and the buffers will be updated. If you are adding many lines to an instance, use the <code>lazy</code> option. <em>Lines added to an instance are joined with the existing mesh</em>. See the examples for code.</p>
+<span class="muted">Online playground (not embedded offline)</span><h4 id="updatable"><strong>updatable</strong><a class="anchor" href="#updatable">#</a></h4>
+<p>If you want to update your line mesh after it was created, set this option to <code>true</code> when creating the line. This applies to <code>offsets</code>, <code>segmentWidths</code>, and <code>colorPointers</code>. This option doesn&#39;t affect the line materials, which can be updated at any time. Set this value to <code>false</code> if you don&#39;t intend to update the line mesh, for better performance. If you are adding lines to an existing line instance, you have to set this option on the line that was created first.</p>
+<h4 id="uvs"><strong>uvs</strong><a class="anchor" href="#uvs">#</a></h4>
+<p>You can set your custom UVs when creating the line.</p>
+<h4 id="lazy"><strong>lazy</strong><a class="anchor" href="#lazy">#</a></h4>
+<p>You can disable recalculating line data and updating the buffers when adding a new line to a line instance by setting this option to true. This option is always used with the <code>instance</code> option specified. If you&#39;re done adding new lines, you just need to call <code>line.updateLazy()</code> to recalculate the data and update the buffers. See the examples for code.</p>
+<span class="muted">Online playground (not embedded offline)</span><h3 id="greasedlinematerialbuilderoptions">GreasedLineMaterialBuilderOptions<a class="anchor" href="#greasedlinematerialbuilderoptions">#</a></h3>
+<pre class="code" data-lang="javascript"><code>createAndAssignMaterial?: boolean;
+width?: number;
+sizeAttenuation?: boolean;
+materialType?: GreasedLineMeshMaterialType;
+color?: Color3;
+colorMode?: GreasedLineMeshColorMode;
+colors?: Color3[];
+colorDistribution?: GreasedLineMeshColorDistribution;
+colorDistributionType?: GreasedLineMeshColorDistributionType;
+useColors?: boolean;
+colorsSampling?: number;
+useDash?: boolean;
+dashCount?: number;
+dashOffset?: number;
+dashRatio?: number;
+visibility?: number;
+resolution?: Vector2;
+cameraFacing?: boolean;</code></pre>
+<h4 id="createandassignmaterial"><strong>createAndAssignMaterial</strong><a class="anchor" href="#createandassignmaterial">#</a></h4>
+<p>If set to true a new material will be created and a new material plugin will be attached to the material. The material will be set on the mesh. If the <code>instance</code> option is specified in the mesh options, no material will be created/assigned. If you omit <code>GreasedLineMaterialBuilderOptions</code> when calling <code>CreateGreasedLine</code> it behaves as if this option was set to true so it creates the material and the plugin. <strong>The default value is true. You can share the material between multiple lines so if you don&#39;t need a new material, set this to <code>false</code> to save resources and gain performance.</strong></p>
+<h4 id="width"><strong>width</strong><a class="anchor" href="#width">#</a></h4>
+<p>Line width in scene units unless <code>sizeAttenuation</code> is true. You can override the default value:</p>
+<pre class="code" data-lang="javascript"><code>GreasedLineMaterialDefaults.DEFAULT_WIDTH_ATTENUATED = 10;
+GreasedLineMaterialDefaults.DEFAULT_WIDTH = 0.5;</code></pre>
+<p>All lines created after setting this value and not providing a <code>width</code> option will use this value as the default one.</p>
+<h4 id="sizeattenuation"><strong>sizeAttenuation</strong><a class="anchor" href="#sizeattenuation">#</a></h4>
+<p>If true, the line width will always be the same regardless of the distance from the camera. The upper line has constant width no matter how far it is from the camera. This PG also demonstrates how to use default values:</p>
+<span class="muted">Online playground (not embedded offline)</span><h4 id="materialtype"><strong>materialType</strong><a class="anchor" href="#materialtype">#</a></h4>
+<p>Type of the material to use to render the line. Default is <code>StandardMaterial</code>. Currently you can choose from:</p>
+<pre class="code" data-lang="javascript"><code>enum GreasedLineMeshMaterialType {
+    MATERIAL_TYPE_STANDARD = 0,
+    MATERIAL_TYPE_PBR = 1,
+    MATERIAL_TYPE_SIMPLE = 2
+}</code></pre>
+<p>The first two materials are implemented using material plugins. The simple material is based on a shader material. It is super fast but supports only plain colors without lighting.</p>
+<h4 id="color"><strong>color</strong><a class="anchor" href="#color">#</a></h4>
+<p>Color of the line. Applies to all line segments. Defaults to White. You can change the default color to any other color.</p>
+<pre class="code" data-lang="javascript"><code>BABYLON.GreasedLinePluginMaterial.DEFAULT_COLOR = BABYLON.Color3.Green();</code></pre>
+<h4 id="colormode"><strong>colorMode</strong><a class="anchor" href="#colormode">#</a></h4>
+<p>Color mode of the line. Applies to all line segments. The pixel color from the material shader will be modified with the value of <code>color</code> using the colorMode. The default mode is <code>GreasedLineMeshColorMode.SET</code>. This means it will set the color regardless of the color from the material shader. To be more precise, it sets the color to the exact value and doesn&#39;t care about the color information from the material (textures, lighting, ...).</p>
+<p>You can choose from and the names are self-explanatory:</p>
+<pre class="code" data-lang="javascript"><code>enum GreasedLineMeshColorMode {
+    COLOR_MODE_SET = 0,
+    COLOR_MODE_ADD = 1,
+    COLOR_MODE_MULTIPLY = 2,
+}</code></pre>
+<p>Please note a difference: <code>MATERIAL_TYPE_SIMPLE</code> mixes the <code>color</code> and <code>colors</code> of the greased line material. <code>MATERIAL_TYPE_STANDARD</code> and <code>MATERIAL_TYPE_PBR</code> mix the color from the base material with the <code>color</code> or the <code>colors</code> of the greased line material.</p>
+<span class="muted">Online playground (not embedded offline)</span><h4 id="colors-and-colordistribution"><strong>colors</strong> and <strong>colorDistribution</strong><a class="anchor" href="#colors-and-colordistribution">#</a></h4>
+<p>An array of colors for the line segments. The maximum number of colors supported for one line instance depends on the maximum texture width your GPU can support (we use 1D textures here for maximum performance). The minimum for all WebGL systems is 4k. On most modern desktop GPUs it is 16k. Each color in the array represents a line segment color. <em>There must be exactly the same number of colors in the array as there are line segments in the line.</em></p>
+<p>The <code>CreateGreasedLine</code> function uses the function <code>CompleteGreasedLineColorTable</code> to fill the missing values, if any. You can use the <code>colorDistribution</code> option to set the method used to automatically fill the <code>colors</code> table.</p>
+<p>You can choose from these values:</p>
+<pre class="code" data-lang="javascript"><code>enum GreasedLineMeshColorDistribution {
+    COLOR_DISTRIBUTION_NONE = 0,
+    COLOR_DISTRIBUTION_REPEAT = 1,
+    COLOR_DISTRIBUTION_EVEN = 2,
+    COLOR_DISTRIBUTION_START = 3,
+    COLOR_DISTRIBUTION_END = 4,
+    COLOR_DISTRIBUTION_START_END = 5,
+}</code></pre>
+<p>The default for this option is <code>COLOR_MODE_START</code>.</p>
+<p>Let&#39;s see an example (you will end up with a half-red, half-white line).</p>
+<pre class="code" data-lang="javascript"><code>const points = [0, 0, 0, 1, 0, 0, 2, 0, 0];
+const colors = [BABYLON.Color3.Red()];
+const line = BABYLON.CreateGreasedLine(&quot;line&quot;, { points }, { colors });
+// the color table will be filled as [red, white] - white is the default</code></pre>
+<p><em>The colors are used only when the option <code>useColors</code> is set to <code>true</code> and you do not set the <code>color</code> option. There is one exception; see the documentation for the <code>useColors</code> option below.</em></p>
+<p>The color blending of the colors depends on <code>colorMode</code> option.</p>
+<span class="muted">Online playground (not embedded offline)</span><h4 id="colordistributiontype"><strong>colorDistributionType</strong><a class="anchor" href="#colordistributiontype">#</a></h4>
+<p>The method used to distribute the colors along the line. You can use segment distribution, where each segment uses one color from the color table. Or you can use line distribution, where the colors are distributed evenly along the line while ignoring the segments.</p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><p>When running on WebGPU/WGSL you must use RGBA textures:
+<span class="muted">Online playground (not embedded offline)</span></p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><h4 id="colorssampling"><strong>colorsSampling</strong><a class="anchor" href="#colorssampling">#</a></h4>
+<p>Sampling type of the colors texture. Defaults to NEAREST_NEAREST. The line segment will be distinctly colored. If you use for example LINEAR_LINEAR you&#39;ll get a smooth color gradient.</p>
+<span class="muted">Online playground (not embedded offline)</span><h4 id="usecolors"><strong>useColors</strong><a class="anchor" href="#usecolors">#</a></h4>
+<p>If true, <code>colors</code> are used, otherwise they&#39;re ignored.</p>
+<p>There is a scenario when you need to set <code>useColors</code> to <code>true</code> and set the <code>color</code> option as well. Look at the PG:</p>
+<span class="muted">Online playground (not embedded offline)</span><h4 id="usedash"><strong>useDash</strong><a class="anchor" href="#usedash">#</a></h4>
+<p>If true, dashing is used.</p>
+<span class="muted">Online playground (not embedded offline)</span><h4 id="dashcount"><strong>dashCount</strong><a class="anchor" href="#dashcount">#</a></h4>
+<p>Number of dashes in the line. If you add more lines, all of them will use this dash count and they are not treated as one line.</p>
+<h4 id="dashratio"><strong>dashRatio</strong><a class="anchor" href="#dashratio">#</a></h4>
+<p>Length of the dash. 0 to 1. 0.5 means half empty, half drawn.</p>
+<h4 id="dashoffset"><strong>dashOffset</strong><a class="anchor" href="#dashoffset">#</a></h4>
+<p>Offset of the dashes along the line. 0 to 1. Normalized value.</p>
+<h4 id="visibility"><strong>visibility</strong><a class="anchor" href="#visibility">#</a></h4>
+<p>Sets the line length visibility. Normalized value.
+0 - 0% of the line will be visible.
+1 - 100% of the line will be visible.</p>
+<span class="muted">Online playground (not embedded offline)</span><h4 id="resolution"><strong>resolution</strong><a class="anchor" href="#resolution">#</a></h4>
+<p>Rendering resolution. There may be special occasions when you want to change the resolution. In most cases do not set this value.</p>
+<h4 id="camerafacing"><strong>cameraFacing</strong><a class="anchor" href="#camerafacing">#</a></h4>
+<p>Whether to use camera facing for the line. Defaults to <code>true</code>. If set to <code>true</code>, you have to use the <code>GreasedLineMesh</code> class to create the mesh. If set to <code>false</code>, you have to use the <code>GreasedLineRibbonMesh</code> class. The builder function automatically takes care of this decision and sets this value to <code>false</code> if <code>ribbonOptions</code> is present in the <code>GreasedLineBuilderMeshOptions</code>.</p>
+<h2 id="greasedline-materials">GreasedLine materials<a class="anchor" href="#greasedline-materials">#</a></h2>
+<p><code>GreasedLine</code> uses <code>StandardMaterial</code>, <code>PBRMaterial</code>, or <code>ShaderMaterial</code> (<code>MATERIAL_TYPE_SIMPLE</code>) as the base material for rendering. It also uses a <code>GreasedLinePluginMaterial</code>, which plugs into the base material and provides the additional features of <code>GreasedLine</code>.</p>
+<p>If you want to alter the properties of the material, you need to use <code>line.material</code>, but if you want to change the <code>GreasedLine</code>-specific material properties, you need to do it on the <code>line.greasedMaterial</code> object. All three materials implement the <code>IGreasedLineMaterial</code> interface:</p>
+<pre class="code" data-lang="javascript"><code>/**
+ * Interface which defines the available methods for a GreasedLineMaterial
+ */
+export interface IGreasedLineMaterial {
+  /**
+   * Normalized value of how much of the line will be visible
+   * 0 - 0% of the line will be visible
+   * 1 - 100% of the line will be visible
+   */
+  visibility: number;
+
+  /**
+   * Line base width. At each point the line width is calculated by widths[pointIndex] * width
+   */
+  width: number;
+
+  /**
+   * Turns on/off dash mode
+   */
+  useDash: boolean;
+
+  /**
+   * @see GreasedLinePluginMaterial.setDashCount
+   * Number of dashes in the line.
+   * Defaults to 1.
+   */
+  dashCount: number;
+
+  /**
+   * Dash offset
+   */
+  dashOffset: number;
+
+  /**
+   * Length of the dash. 0 to 1. 0.5 means half empty, half drawn.
+   */
+  dashRatio: number;
+
+  /**
+   * Whether to use the colors option to colorize the line
+   */
+  useColors: boolean;
+
+  /**
+   * The mixing mode of the color paramater. Default value is GreasedLineMeshColorMode.SET. MATERIAL_TYPE_SIMPLE supports only the default value/mode.
+   * @see GreasedLineMeshColorMode
+   */
+  colorMode: GreasedLineMeshColorMode;
+
+  /**
+   * Colors of the line segments.
+   * Defaults to empty.
+   */
+  colors: Nullable&lt;Color3[]&gt;;
+
+  /**
+   * If false then width units = scene units. If true then line will width be reduced.
+   * Defaults to false.
+   */
+  sizeAttenuation: boolean;
+
+  /**
+   * Color of the line. Applies to all line segments.
+   * Defaults to White.
+   * MATERIAL_TYPE_STANDARD and MATERIAL_TYPE_PBR material's shaders will get recompiled if there was no color set and you set a color or when there was a color set and you set it to null.
+   */
+  color: Nullable&lt;Color3&gt;;
+
+  /**
+   * The method used to distribute the colors along the line.
+   * You can use segment distribution when each segment will use on color from the color table.
+   * Or you can use line distribution when the colors are distributed evenly along the line ignoring the segments.
+   */
+  colorsDistributionType: GreasedLineMeshColorDistributionType;
+
+  /**
+   * Defaults to engine.getRenderWidth() and engine.getRenderHeight()
+   * Rendering resolution
+   */
+  resolution: Vector2;
+
+  /**
+   * Allows to change the color without marking the material dirty.
+   * MATERIAL_TYPE_STANDARD and MATERIAL_TYPE_PBR material's shaders will get recompiled if there was no color set and you set a color or when there was a color set and you set it to null. Use the flag to not to recompile immediately.
+   * @param value the color
+   * @param doNotMarkDirty the flag
+   */
+  setColor(value: Nullable&lt;Color3&gt;, doNotMarkDirty?: boolean): void;
+
+  /**
+   *
+   * @param colors colors array
+   * @param lazy if true the colors texture will not be updated
+   * @param forceNewTexture forces to create a new colors texture
+   */
+  setColors(colors: Nullable&lt;Color3[]&gt;, lazy: boolean, forceNewTexture?: boolean): void;
+
+  /**
+   * Creates and sets the colors texture from the colors array which was created in lazy mode
+   */
+  updateLazy(): void;
+}</code></pre>
+<p>All other properties must be defined when creating the line.</p>
+<p>As you can see in the comment of the <code>color</code> public property, the shader gets recompiled if there are specific changes of this property. A real life scenario: You might want to draw textured lines. On a specific event you want to colorize the texture. In this case create the line with <code>color</code> set to <code>Color3.White()</code> and set the <code>colorMode</code> to <code>GreasedLineColorMode.COLOR_MODE_MULTIPLY</code>. The result will be the same as not setting a <code>color</code>. However now you can change the <code>color</code> to for example <code>rgb(0.5, 0.5, 0.5)</code> to dim the texture colors without shader recompilation. This doesn&#39;t apply to <code>MATERIAL_TYPE_SIMPLE</code> because this material supports only <code>GreasedLineColorMode.COLOR_MODE_SET</code> so there will be no shader recompilation upon changes of the <code>color</code> property at all.</p>
+<p><strong>Materials can be shared between line instances.</strong> If you create a line and the other should have the same material options, then create the other line(s) by setting the <code>createAndAssignMaterial</code> option to <code>false</code> and simply set the material:</p>
+<pre class="code" data-lang="javascript"><code>const points1 = [-1, 0, 0, 1, 0, 0];
+const line1 = BABYLON.CreateGreasedLine(&quot;line1&quot;, { points: points1 });
+
+const points2 = [-1, 1, 0, 1, 1, 0];
+const line2 = BABYLON.CreateGreasedLine(&quot;line2&quot;, { points: points2 }, { createAndAssignMaterial: false });
+
+line2.material = line1.material;</code></pre>
+<h2 id="examples">Examples<a class="anchor" href="#examples">#</a></h2>
+<p>The best way to show the possibilities of <code>GreasedLine</code> is to go through the following examples.</p>
+<h3 id="basic-code-snippets-with-standardmaterial">Basic code snippets with StandardMaterial<a class="anchor" href="#basic-code-snippets-with-standardmaterial">#</a></h3>
+<h4 id="line-with-no-material-settings-default-width-default-color">Line with no material settings, default width, default color<a class="anchor" href="#line-with-no-material-settings-default-width-default-color">#</a></h4>
+<pre class="code" data-lang="javascript"><code>const points = [-1, 0, 0, 1, 0, 0];
+const line = BABYLON.CreateGreasedLine(&quot;line&quot;, { points });</code></pre>
+<h4 id="lines-with-no-material-settings-default-width-default-color">Lines with no material settings, default width, default color<a class="anchor" href="#lines-with-no-material-settings-default-width-default-color">#</a></h4>
+<pre class="code" data-lang="javascript"><code>const points = [
+  [-1, 0, 0, 1, 0, 0],
+  [-1, 1, 0, 1, 1, 0],
+];
+const lines = BABYLON.CreateGreasedLine(&quot;lines&quot;, { points });</code></pre>
+<h4 id="line-with-a-color-specified">Line with a color specified<a class="anchor" href="#line-with-a-color-specified">#</a></h4>
+<pre class="code" data-lang="javascript"><code>const points = [-1, 0, 0, 1, 0, 0];
+const line = BABYLON.CreateGreasedLine(&quot;line&quot;, { points }, { color: BABYLON.Color3.Red() });</code></pre>
+<p>You can set the default color:</p>
+<pre class="code" data-lang="javascript"><code>GreasedLineMaterialDefaults.DEFAULT_COLOR = BABYLON.Color3.Red();</code></pre>
+<p>Please note that the color will be cloned so changing this value will not affect the existing lines.</p>
+<h4 id="line-with-a-width-specified">Line with a width specified<a class="anchor" href="#line-with-a-width-specified">#</a></h4>
+<pre class="code" data-lang="javascript"><code>const points = [-1, 0, 0, 1, 0, 0];
+const line = BABYLON.CreateGreasedLine(&quot;line&quot;, { points }, { width: 0.5 });</code></pre>
+<h4 id="line-with-multiple-colors">Line with multiple colors<a class="anchor" href="#line-with-multiple-colors">#</a></h4>
+<pre class="code" data-lang="javascript"><code>const points = [-1, 0, 0, 1, 0, 0];
+const colors = [BABYLON.Color3.Red(), BABYLON.Color3.Yellow()];
+const line = BABYLON.CreateGreasedLine(&quot;line&quot;, { points }, { useColors: true, colors });</code></pre>
+<h4 id="line-with-multiple-widths">Line with multiple widths<a class="anchor" href="#line-with-multiple-widths">#</a></h4>
+<pre class="code" data-lang="javascript"><code>const points = [-1, 0, 0, -0.5, 0, 0, 0, 0, 0, 0.5, 0, 0, 1, 0, 0];
+const widths = [1, 1, 2, 2, 3, 3, 2, 2];
+const line = BABYLON.CreateGreasedLine(&quot;line&quot;, { points, widths });</code></pre>
+<h4 id="instance-mode">Instance mode<a class="anchor" href="#instance-mode">#</a></h4>
+<pre class="code" data-lang="javascript"><code>const points = [-1, 0, 0, 1, 0, 0];
+const line = BABYLON.CreateGreasedLine(&quot;line&quot;, { points });
+
+const points2 = [-1, 1, 0, 1, 1, 0];
+BABYLON.CreateGreasedLine(&quot;line&quot;, { instance: line, points: points2 });</code></pre>
+<h4 id="lazy-mode">Lazy mode<a class="anchor" href="#lazy-mode">#</a></h4>
+<pre class="code" data-lang="javascript"><code>const points = [-1, 0, 0, 1, 0, 0];
+const line = BABYLON.CreateGreasedLine(&quot;line&quot;, { lazy: true, points });
+
+const points2 = [-1, 1, 0, 1, 1, 0];
+BABYLON.CreateGreasedLine(&quot;line&quot;, { instance: line, lazy: true, points: points2 });
+
+const points3 = [-1, -1, 0, 1, -1, 0];
+BABYLON.CreateGreasedLine(&quot;line&quot;, { instance: line, lazy: true, points: points3 });
+
+line.updateLazy();</code></pre>
+<h4 id="dashed-line">Dashed line<a class="anchor" href="#dashed-line">#</a></h4>
+<pre class="code" data-lang="javascript"><code>const points = [-1, 0, 0, 1, 0, 0];
+const line = BABYLON.CreateGreasedLine(&quot;line&quot;, { points }, { useDash: true, dashCount: 4, dashRatio: 0.5 });</code></pre>
+<h4 id="line-visibility">Line visibility<a class="anchor" href="#line-visibility">#</a></h4>
+<pre class="code" data-lang="javascript"><code>const points = [-1, 0, 0, 1, 0, 0];
+const line = BABYLON.CreateGreasedLine(&quot;line&quot;, { points }, { visibility: 0.5 });</code></pre>
+<h4 id="offsets">Offsets<a class="anchor" href="#offsets">#</a></h4>
+<p>You can offset the vertices of the line. <strong>Keep in mind that there are 2 vertices per point and the line must be updatable</strong>. If your line disappears after calling this function, it means you haven&#39;t provided enough offsets. There is a function <code>BABYLON.GreasedLineTools.GetPointsCountInfo(points: number[][]): { total: number; counts: number[] }</code> that will tell you the exact counts. Just pass your line&#39;s <code>points</code> option to this function.</p>
+<pre class="code" data-lang="javascript"><code>const points = [-1, 0, 0, 1, 0, 0];
+const line = BABYLON.CreateGreasedLine(&quot;line&quot;, { points, updatable: true });
+
+const offsets = [-0.3, -0.3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+line.offsets = offsets;</code></pre>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)
+Online playground (not embedded offline)</span><h4 id="adding-setting-points-to-an-existing-greasedline-instance">Adding/setting points to an existing GreasedLine instance<a class="anchor" href="#adding-setting-points-to-an-existing-greasedline-instance">#</a></h4>
+<p>You can add points to an existing GreasedLine instance. The width table is extended automatically to match the vertex count, and the new widths are set to 1. You have to replace these values manually after the points are added, if needed. You can do this by setting the values on the <code>line.widths</code> array.</p>
+<p>The color table, if <code>useColors</code> is <code>true</code>, must be extended manually. Please pay attention to the code in the PG and the comments on how to correctly extend the color table.</p>
+<p>The line must be created with the <code>updatable: true</code> option.</p>
+<p>Have a look at the PG called Adding and setting points on an existing instance at the end of the page.</p>
+<h4 id="line-transformations">Line transformations<a class="anchor" href="#line-transformations">#</a></h4>
+<pre class="code" data-lang="javascript"><code>const points = [-1, 0, 0, 1, 0, 0];
+const line = BABYLON.CreateGreasedLine(&quot;line&quot;, { points });
+
+line.position.x = 2;
+line.rotation.z = Math.PI / 2;
+line.scaling = new BABYLON.Vector3(2, 2, 2);</code></pre>
+<h4 id="drawing-arcs">Drawing arcs<a class="anchor" href="#drawing-arcs">#</a></h4>
+<pre class="code" data-lang="javascript"><code>const f = new BABYLON.Vector3(-0.5 + Math.random(), -0.5 + Math.random(), -0.5 + Math.random()).scale(20);
+const s = new BABYLON.Vector3(-0.5 + Math.random(), -0.5 + Math.random(), -0.5 + Math.random()).scale(20);
+const t = new BABYLON.Vector3(-0.5 + Math.random(), -0.5 + Math.random(), -0.5 + Math.random()).scale(20);
+
+const arc = BABYLON.Curve3.ArcThru3Points(f, s, t);
+const arcLine = BABYLON.CreateGreasedLine(&quot;arc&quot;, { points: arc.getPoints() });</code></pre>
+<h4 id="line-with-texture">Line with texture<a class="anchor" href="#line-with-texture">#</a></h4>
+<pre class="code" data-lang="javascript"><code>const points1 = [-6, 0, 0, 6, 0, 0];
+const line1 = BABYLON.CreateGreasedLine(&quot;line1&quot;, { points: points1 }, { width: 1, colorMode: BABYLON.GreasedLineMeshColorMode.COLOR_MODE_MULTIPLY });
+
+const texture = new BABYLON.Texture(&quot;/textures/amiga.jpg&quot;, scene);
+texture.uScale = 10;
+
+line1.material.emissiveTexture = texture;</code></pre>
+<p>The default <code>color</code> is white and the default <code>colorMode</code> is <code>BABYLON.GreasedLineMeshColorMode.COLOR_MODE_SET</code> so you need to set <code>colorMode</code> to <code>BABYLON.GreasedLineMeshColorMode.COLOR_MODE_MULTIPLY</code> to render the texture visible or you can remove the color by setting its value to <code>null</code> if you don&#39;t want to do color blending at all. <strong>Setting the color from <code>null</code> to a value or setting from a value to <code>null</code> will recompile the shader.</strong></p>
+<pre class="code" data-lang="javascript"><code>const points1 = [-6, 0, 0, 6, 0, 0];
+const line1 = BABYLON.CreateGreasedLine(&quot;line1&quot;, { points: points1 }, { width: 1 });
+line1.greasedLineMaterial.color = null;
+
+const texture = new BABYLON.Texture(&quot;/textures/amiga.jpg&quot;, scene);
+texture.uScale = 10;
+
+line1.material.emissiveTexture = texture;</code></pre>
+<h4 id="setting-line-color-using-its-material">Setting line color using its material<a class="anchor" href="#setting-line-color-using-its-material">#</a></h4>
+<p>You have to set a <code>colorMode</code> option or set the <code>color</code> to <code>null</code>. <strong>Setting the color from <code>null</code> to a value or setting from a value to <code>null</code> will recompile the shader.</strong></p>
+<pre class="code" data-lang="javascript"><code>const points1 = [-6, 0, 0, 6, 0, 0];
+const line1 = BABYLON.CreateGreasedLine(&quot;line1&quot;, { points: points1 }, { width: 1 });
+line1.greasedLineMaterial.color = null;
+line1.material.emissiveColor = BABYLON.Color3.Red();</code></pre>
+<h4 id="glowing-line">Glowing line<a class="anchor" href="#glowing-line">#</a></h4>
+<p>You have to set a <code>colorMode</code> option or set the <code>color</code> to <code>null</code>. <strong>Setting the color from <code>null</code> to a value or setting from a value to <code>null</code> will recompile the shader.</strong></p>
+<pre class="code" data-lang="javascript"><code>const points1 = [-6, 0, 0, 6, 0, 0];
+const line1 = BABYLON.CreateGreasedLine(&quot;line1&quot;, { points: points1 }, { width: 1 });
+line1.greasedLineMaterial.color = null;
+line1.material.emissiveColor = BABYLON.Color3.Red();
+
+const gl = new BABYLON.GlowLayer(&quot;glow&quot;, scene, {
+  blurKernelSize: 32,
+});
+gl.intensity = 1.8;
+gl.referenceMeshToUseItsOwnMaterial(line1);</code></pre>
+<h4 id="line-using-pbrmaterial">Line using PBRMaterial<a class="anchor" href="#line-using-pbrmaterial">#</a></h4>
+<p>All you have to do is set the <code>materialType</code> to <code>BABYLON.GreasedLineMeshMaterialType.MATERIAL_TYPE_PBR</code> and set the <code>colorMode</code> to <code>BABYLON.GreasedLineMeshColorMode.COLOR_MODE_MULTIPLY</code>. Do not set the <code>color</code> to <code>null</code> as it was the case with <code>StandardMaterial</code> unless you set the base color of the line another way, for example by setting a texture on <code>PBRMaterial</code>.</p>
+<pre class="code" data-lang="javascript"><code>const points = [-1, 0, 0, 1, 0, 0];
+const line = BABYLON.CreateGreasedLine(
+  &quot;line&quot;,
+  { points },
+  {
+    materialType: BABYLON.GreasedLineMeshMaterialType.MATERIAL_TYPE_PBR,
+    colorMode: BABYLON.GreasedLineMeshColorMode.COLOR_MODE_MULTIPLY,
+  },
+);
+
+const pbrMaterial = line.material;
+// set your PBR material properties here</code></pre>
+<h4 id="text-using-greasedline">Text using GreasedLine<a class="anchor" href="#text-using-greasedline">#</a></h4>
+<p>You can draw text with Greased Line as well.</p>
+<pre class="code" data-lang="javascript"><code>const fontData = await (await fetch(&quot;https://assets.babylonjs.com/fonts/Droid Sans_Regular.json&quot;)).json();
+
+const points = BABYLON.GreasedLineTools.GetPointsFromText(
+  &quot;BabylonJS&quot;,
+  16, // size
+  16, // resolution
+  fontData, // typeface.js font
+);
+
+const textLines = BABYLON.CreateGreasedLine(&quot;textLines&quot;, { points });</code></pre>
+<p>Read more about the <code>GetPointsFromText</code> function below and check out the example PG.</p>
+<h2 id="greasedlinetools">GreasedLineTools<a class="anchor" href="#greasedlinetools">#</a></h2>
+<p><code>GreasedLineTools</code> contains useful helper functions that will help you easily handle common tasks when using <code>GreasedLine</code>. Refer to the API for details.</p>
+<h3 id="meshes-to-lines">Meshes to lines<a class="anchor" href="#meshes-to-lines">#</a></h3>
+<p>You can easily draw a wireframe of a mesh like this:</p>
+<pre class="code" data-lang="javascript"><code>const sphere = BABYLON.MeshBuilder.CreateSphere(&quot;sphere&quot;, { segments: 32, diameter: 2 }, scene);
+const sphereLines = BABYLON.CreateGreasedLine(&quot;sphereLines&quot;, { points: BABYLON.GreasedLineTools.MeshesToLines([sphere]) });</code></pre>
+<p>You can use a <code>predicate</code> as the second parameter of this function to modify the line points returned from this function. The predicate is called once for a face (once for every third index).</p>
+<span class="muted">Online playground (not embedded offline)</span><pre class="code" data-lang="javascript"><code>predicate?: (
+    p1: Vector3,
+    p2: Vector3,
+    p3: Vector3,
+    indiceIndex: number,
+    vertexIndex: number,
+    mesh: AbstractMesh,
+    meshIndex: number,
+    vertices: FloatArray,
+    indices: IndicesArray
+) =&gt; Vector3[]
+
+const predicate = (p1, p2, p3, ix, vx) =&gt; {
+    if (vx % 4 === 0) {
+        return [p1, p2, p3, p1]
+    }
+    return false
+}
+
+const points = BABYLON.GreasedLineTools.MeshesToLines([sphere], predicate)</code></pre>
+<h3 id="convert-number-to-vector3-and-vice-versa">Convert number[] to Vector3[] and vice versa<a class="anchor" href="#convert-number-to-vector3-and-vice-versa">#</a></h3>
+<p>You will often face situations where you need to convert your point coordinates, mainly when using <code>GreasedLineTools</code> functions. There are two helper functions for that:</p>
+<pre class="code" data-lang="javascript"><code>BABYLON.GreasedLineTools.ToVector3Array(points: number[])
+BABYLON.GreasedLineTools.ToNumberArray(array: Vector3[])</code></pre>
+<h3 id="getting-the-count-of-points-in-your-line-instance">Getting the count of points in your line instance<a class="anchor" href="#getting-the-count-of-points-in-your-line-instance">#</a></h3>
+<p>You will face certain tasks, such as creating color textures or offset buffers, and you will need to know how many points the line instance was created from. This is especially true if you use the functions below, which divide and segmentize your lines, because you can easily lose track of the exact counts. You get the total number of points and the number of points in each line in the line instance.</p>
+<pre class="code" data-lang="javascript"><code>BABYLON.GreasedLineTools.GetPointsCountInfo(points: number[][]): { total: number; counts: number[] }</code></pre>
+<p>is here to help.</p>
+<h3 id="dividing-a-line-to-smaller-segments">Dividing a line to smaller segments<a class="anchor" href="#dividing-a-line-to-smaller-segments">#</a></h3>
+<p>You may want to divide your line to smaller pieces (to segments) for example for assigning different colors to the segments or setting different width on the segment or manipulating the offset of that smaller segment.</p>
+<pre class="code" data-lang="javascript"><code>const pointsOriginal = BABYLON.GreasedLineTools.ToVector3Array([0, 0, 0, 1, 0, 0]);
+const points = BABYLON.GreasedLineTools.SegmentizeLineBySegmentLength(pointsOriginal, 0.25);
+const points2 = BABYLON.GreasedLineTools.SegmentizeLineBySegmentCount(pointsOriginal, 4);</code></pre>
+<p>The line will be divided into 4 pieces because the line length is 1 and we asked for 0.25-long segments when using the first function, or you can provide the number of segments using the second function. Check the playgrounds for real-life examples.</p>
+<h3 id="finding-the-last-visible-position-on-the-line-when-using-the-visibility-option">Finding the last visible position on the line when using the visibility option<a class="anchor" href="#finding-the-last-visible-position-on-the-line-when-using-the-visibility-option">#</a></h3>
+<p>The visibility option allows you to render only part of the line. You can use this option to reveal your line by incrementing its value. Remember, the value of this option must be normalized so it must be between 0 and 1. For example you may want to display a marker where the line ends. You can use the <code>BABYLON.GreasedLineTools.GetPositionOnLineByVisibility(lineSegments: { point1: Vector3; point2: Vector3; length: number }[], lineLength: number, visbility: number, localSpace = false)</code> function for this. Examine the example Playground how to deal with this function.</p>
+<h3 id="getting-points-from-text-and-a-typeface-js-font-the-getpointsfromtext-function">Getting points from text and a typeface.js font - the GetPointsFromText function<a class="anchor" href="#getting-points-from-text-and-a-typeface-js-font-the-getpointsfromtext-function">#</a></h3>
+<p>You can draw texts using <code>GreasedLine</code>. See the example code snippet above and the PG below.</p>
+<pre class="code" data-lang="javascript"><code>GreasedLineTools.GetPointsFromText(text: string, size: number, resolution: number, fontData: IFontData, z = 0, includeInner = true): number[][]</code></pre>
+<p>The <code>size</code> is the height of the text in BabylonJS units.
+Keep the <code>resolution</code> as low as possible without losing details. Start at low values such as 4 and go up to 32-64 (or you can use 1 to get a cool low-resolution vector font).
+<code>fontData</code> is the same object you would use with <code>BABYLON.MeshBuilder.CreateText</code>. You can generate your typeface.js font <span>here</span>.</p>
+<h3 id="other-functions">Other functions<a class="anchor" href="#other-functions">#</a></h3>
+<p>There are other useful functions like getting points for drawing a circle/oval, an arc, drawing arrows, getting line length, etc. Check the source code, the API and/or the playgrounds.</p>
+<p><strong>As an overall rule, always cache your parameters when calling functions. These functions located in <code>GreasedLineTools</code> may be CPU-intensive, so avoid using them in the render loop, or cache as much as possible. For example, convert your <code>number</code> coordinates to <code>Vector3</code> coordinates once and store the result. Get the line length only once and buffer the value, etc.</strong></p>
+<h2 id="picking-and-intersections">Picking and intersections<a class="anchor" href="#picking-and-intersections">#</a></h2>
+<p>You can use the <code>findAllIntersections(ray)</code> function on a <code>GreasedLineMesh</code> object to find the intersections of the ray and the line. You can fine-tune the intersection sensitivity by altering the value of the public property <code>intersectionTreshold</code>.</p>
+<h2 id="example-playgrounds">Example playgrounds<a class="anchor" href="#example-playgrounds">#</a></h2>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)
+Online playground (not embedded offline)
+Online playground (not embedded offline)
+Online playground (not embedded offline)
+Online playground (not embedded offline)
+Online playground (not embedded offline)
+Online playground (not embedded offline)
+Online playground (not embedded offline)
+Online playground (not embedded offline)
+Online playground (not embedded offline)
+Online playground (not embedded offline)
+Online playground (not embedded offline)
+Online playground (not embedded offline)
+Online playground (not embedded offline)
+Online playground (not embedded offline)
+</span><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#greasedline">GreasedLine </a><a href="#create-a-greasedline">Create a GreasedLine </a><a href="#dispose-a-greasedline">Dispose a GreasedLine </a><a href="#greasedline-materials">GreasedLine materials </a><a href="#examples">Examples </a><a href="#greasedlinetools">GreasedLineTools </a><a href="#picking-and-intersections">Picking and intersections </a><a href="#example-playgrounds">Example playgrounds </a></aside></div>
+<script src="../../../../../../../../assets/cm.classic.js"></script><script src="../../../../../../../../assets/manual.js"></script></body></html>

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Getting started — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html" class="active" aria-current="page">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Start here</div><a href="getting-started.html" class="cur" aria-current="page">Getting started</a><a href="how-nord-works.html">How Nord works</a><a href="developer-basics.html">Programming for dummy developers</a></nav><main id="content"><div class="crumb">Start here / Nord Engine</div><h1>Getting started</h1>
+<p>You do not need to understand the engine to get a first result. Start with something that already runs, make one small change, and play it again.</p>
+<h2 id="1-open-nord">1. Open Nord<a class="anchor" href="#1-open-nord">#</a></h2>
+<p>Open <strong>NordEditor.app</strong> if you have a built copy. Working from this repository on macOS? <code>./run.sh</code> launches the editor; <code>./build.sh</code> creates the app. The first screen is the <strong>project hub</strong>: it lets you create a project, open one, or explore examples.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>A <strong>project</strong> is a folder containing your game. Keep the whole folder: the scene files, scripts and pictures belong together. The editor is the application you use to work on that folder.</p>
+</aside><h2 id="2-pick-a-small-starting-point">2. Pick a small starting point<a class="anchor" href="#2-pick-a-small-starting-point">#</a></h2>
+<p>In the hub, create a <strong>2D game</strong> from a starter template. For a first experiment, use <strong>Platformer</strong>. Choose a folder you can find again, such as <code>Projects/my-first-game</code>.</p>
+<p>You can also open <strong>Examples</strong>, but make a separate project copy before experimenting. With <strong>USE CACHED CONTENT</strong> off, an example opens its current source files. <a href="../manual/editor-tour.html#current-example-content">See how example copies work</a>.</p>
+<p>Prefer the terminal? These commands create and run a starter project:</p>
+<pre class="code" data-lang="bash"><code>nord new my-first-game -t platformer
+nord serve my-first-game</code></pre>
+<p>Open the local address printed by <code>nord serve</code>. Leave that terminal running while you work. You only need a build when you want to export the project.</p>
+<h2 id="3-press-play-before-changing-anything">3. Press Play before changing anything<a class="anchor" href="#3-press-play-before-changing-anything">#</a></h2>
+<p>Press <strong>▶ Play</strong> or <strong>Cmd+R</strong>. Try the controls described by the template. This gives you a working starting point. Press <strong>■ Stop</strong> or <strong>Cmd+.</strong> to return to editing.</p>
+<aside class="box tip"><div class="box-title">Tip</div><p>If the game fails before you change anything, open <strong>Console</strong> and read the first error. Fixing the starting project first makes later mistakes much easier to understand.</p>
+</aside><h2 id="4-make-one-visible-change">4. Make one visible change<a class="anchor" href="#4-make-one-visible-change">#</a></h2>
+<p>Select an entity in <strong>Hierarchy</strong>. The <strong>Inspector</strong> shows its settings. Try changing its position, or change the text on a text entity. Save with <strong>Cmd+S</strong>, then press Play again.</p>
+<p>The goal is simple: <strong>you changed a setting, and you can see the result</strong>. Keep this loop: change → save → play → observe.</p>
+<table>
+<thead>
+<tr>
+<th>Where you click</th>
+<th>What it means</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Hierarchy</td>
+<td>Choose the thing you want to change.</td>
+</tr>
+<tr>
+<td>Inspector</td>
+<td>Change that thing&#39;s settings.</td>
+</tr>
+<tr>
+<td>Scene view</td>
+<td>Arrange things before the game runs.</td>
+</tr>
+<tr>
+<td>Game view</td>
+<td>See what a player will actually see.</td>
+</tr>
+<tr>
+<td>Console</td>
+<td>Read messages and errors from the game.</td>
+</tr>
+</tbody></table>
+<h2 id="5-build-your-first-tiny-scene">5. Build your first tiny scene<a class="anchor" href="#5-build-your-first-tiny-scene">#</a></h2>
+<p>Follow <a href="../tutorials/tut-t01-hello-nord.html">T01: Hello Nord</a>. It puts words on screen, shows the exact values to enter and gives you a visible success check. Then <a href="../tutorials/tut-t02-sprite-movement.html">T02</a> adds a picture and movement.</p>
+<p>You can learn scripts later. First get comfortable choosing an entity, changing a component and pressing Play.</p>
+<h2 id="6-keep-a-copy-you-can-share">6. Keep a copy you can share<a class="anchor" href="#6-keep-a-copy-you-can-share">#</a></h2>
+<p>When your project runs, use <strong>Export…</strong> in the editor, or:</p>
+<pre class="code" data-lang="bash"><code>nord build my-first-game</code></pre>
+<p>Your web build goes into the project&#39;s <code>dist</code> folder. Share <strong>the whole folder</strong>, including its assets. Most builds should be served by a web server; double-clicking <code>index.html</code> is not the same as serving it. <a href="../manual/export.html">Export and hosting</a> explains the available modes.</p>
+<h2 id="if-you-get-stuck">If you get stuck<a class="anchor" href="#if-you-get-stuck">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>What you see</th>
+<th>Try this</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A blank screen</td>
+<td>Check Console. Confirm the project has a start scene and visible entities inside the camera view.</td>
+</tr>
+<tr>
+<td>Your change disappeared</td>
+<td>Save the scene or script. Check that you reopened your own project folder.</td>
+</tr>
+<tr>
+<td>A picture will not load</td>
+<td>Check its project-relative path and exact filename, including capitals.</td>
+</tr>
+<tr>
+<td>No sound</td>
+<td>Click or tap the game once. Browsers wait for a player gesture before allowing audio.</td>
+</tr>
+<tr>
+<td>Code changed but a helper did not</td>
+<td>Stop and Play again, or reload the browser. Imported helper modules need a full reload.</td>
+</tr>
+</tbody></table>
+<p>Next: <a href="how-nord-works.html">How Nord works</a>, or go straight to <a href="../tutorials/tut-t01-hello-nord.html">the first tutorial</a>.</p>
+<div class="pager"><span></span><a href="how-nord-works.html"><small>Next →</small>How Nord works</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-open-nord">1. Open Nord </a><a href="#2-pick-a-small-starting-point">2. Pick a small starting point </a><a href="#3-press-play-before-changing-anything">3. Press Play before changing anything </a><a href="#4-make-one-visible-change">4. Make one visible change </a><a href="#5-build-your-first-tiny-scene">5. Build your first tiny scene </a><a href="#6-keep-a-copy-you-can-share">6. Keep a copy you can share </a><a href="#if-you-get-stuck">If you get stuck </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

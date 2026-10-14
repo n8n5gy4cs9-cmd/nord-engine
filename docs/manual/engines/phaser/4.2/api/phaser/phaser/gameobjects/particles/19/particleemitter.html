@@ -1,0 +1,1159 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Phaser.GameObjects.Particles.ParticleEmitter — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../../../../index.html"><img src="../../../../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../../../../../babylon/9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../../index.html">Phaser 4.2.1 API</a><a href="../../../../../../../../babylon/guides/index.html">Babylon documentation library</a><a href="../../../../../../../4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Phaser.GameObjects.Particles.ParticleEmitter</h1>
+<p><span class="badge">Underlying Phaser 4.2.1 API</span> <span class="badge">Class</span></p><p class="muted">Official public declarations and JSDoc from <code>phaser</code>. Use with engine objects, not directly on a Nord entity.</p><aside class="box tip"><div class="box-title">The Nord way</div><p><a href="../../../../../../../../../nord/manual/2d.html">2D manual</a> · <a href="../../../../../../../../../nord/components/component-sprite.html">sprite</a> · <a href="../../../../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a> · <a href="../../../../../../../../../nord/manual/physics.html">physics</a>. Access raw objects only when the Nord wrapper does not cover your feature. <a href="../../../../../../../../../nord/manual/reference.html#escape-hatch">How escape hatches work</a>.</p></aside><h3 id="declaration">ParticleEmitter <a class="anchor" href="#declaration">#</a></h3><pre class="code" data-lang="ts"><code>class ParticleEmitter extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.AlphaSingle, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Lighting, Phaser.GameObjects.Components.Mask, Phaser.GameObjects.Components.RenderNodes, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Texture, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible</code></pre><p>A Particle Emitter is a special kind of Game Object that controls a pool of Phaser.GameObjects.Particles.Particle Particles.</p>
+<p>Particle Emitters are created via a configuration object. The properties of this object
+can be specified in a variety of formats, giving you plenty of scope over the values they
+return, leading to complex visual effects. Here are the different forms of configuration
+value you can give:</p>
+<h2 id="an-explicit-static-value">An explicit static value:<a class="anchor" href="#an-explicit-static-value">#</a></h2>
+<pre class="code" data-lang="js"><code>x: 400</code></pre>
+<p>The x value will always be 400 when the particle is spawned.</p>
+<h2 id="a-random-value">A random value:<a class="anchor" href="#a-random-value">#</a></h2>
+<pre class="code" data-lang="js"><code>x: [ 100, 200, 300, 400 ]</code></pre>
+<p>The x value will be one of the 4 elements in the given array, picked at random on emission.</p>
+<h2 id="a-custom-callback">A custom callback:<a class="anchor" href="#a-custom-callback">#</a></h2>
+<pre class="code" data-lang="js"><code>x: (particle, key, t, value) =&gt; {
+  return value + 50;
+}</code></pre>
+<p>The x value is the result of calling this function. This is only used when the
+particle is emitted, so it provides its initial starting value. It is not used
+when the particle is updated (see the onUpdate callback for that)</p>
+<h2 id="a-start-end-object">A start / end object:<a class="anchor" href="#a-start-end-object">#</a></h2>
+<p>This allows you to control the change in value between the given start and
+end parameters over the course of the particles lifetime:</p>
+<pre class="code" data-lang="js"><code>scale: { start: 0, end: 1 }</code></pre>
+<p>The particle scale will start at 0 when emitted and ease to a scale of 1
+over the course of its lifetime. You can also specify the ease function
+used for this change (the default is Linear):</p>
+<pre class="code" data-lang="js"><code>scale: { start: 0, end: 1, ease: 'bounce.out' }</code></pre>
+<h2 id="a-start-end-random-object">A start / end random object:<a class="anchor" href="#a-start-end-random-object">#</a></h2>
+<p>The start and end object can have an optional <code>random</code> parameter.
+This forces it to pick a random value between the two values and use
+this as the starting value, then easing to the &#39;end&#39; parameter over
+its lifetime.</p>
+<pre class="code" data-lang="js"><code>scale: { start: 4, end: 0.5, random: true }</code></pre>
+<p>The particle will start with a random scale between 0.5 and 4 and then
+scale to the end value over its lifetime. You can combine the above
+with the <code>ease</code> parameter as well to control the value easing.</p>
+<h2 id="an-interpolation-object">An interpolation object:<a class="anchor" href="#an-interpolation-object">#</a></h2>
+<p>You can provide an array of values which will be used for interpolation
+during the particles lifetime. You can also define the interpolation
+function to be used. There are three provided: <code>linear</code> (the default),
+<code>bezier</code> and <code>catmull</code>, or you can provide your own function.</p>
+<pre class="code" data-lang="js"><code>x: { values: [ 50, 500, 200, 800 ], interpolation: 'catmull' }</code></pre>
+<p>The particle scale will interpolate from 50 when emitted to 800 via the other
+points over the course of its lifetime. You can also specify an ease function
+used to control the rate of change through the values (the default is Linear):</p>
+<pre class="code" data-lang="js"><code>x: { values: [ 50, 500, 200, 800 ], interpolation: 'catmull', ease: 'bounce.out }</code></pre>
+<h2 id="a-stepped-emitter-object">A stepped emitter object:<a class="anchor" href="#a-stepped-emitter-object">#</a></h2>
+<p>The <code>steps</code> parameter allows you to control the placement of sequential
+particles across the start-end range:</p>
+<pre class="code" data-lang="js"><code>x: { steps: 32, start: 0, end: 576 }</code></pre>
+<p>Here we have a range of 576 (start to end). This is divided into 32 steps.</p>
+<p>The first particle will emit at the x position of 0. The next will emit
+at the next &#39;step&#39; along, which would be 18. The following particle will emit
+at the next step, which is 36, and so on. Because the range of 576 has been
+divided by 32, creating 18 pixels steps. When a particle reaches the &#39;end&#39;
+value the next one will start from the beginning again.</p>
+<h2 id="a-stepped-emitter-object-with-yoyo">A stepped emitter object with yoyo:<a class="anchor" href="#a-stepped-emitter-object-with-yoyo">#</a></h2>
+<p>You can add the optional <code>yoyo</code> property to a stepped object:</p>
+<pre class="code" data-lang="js"><code>x: { steps: 32, start: 0, end: 576, yoyo: true }</code></pre>
+<p>As with the stepped emitter, particles are emitted in sequence, from &#39;start&#39;
+to &#39;end&#39; in step sized jumps. Normally, when a stepped emitter reaches the
+end it snaps around to the start value again. However, if you provide the &#39;yoyo&#39;
+parameter then when it reaches the end it will reverse direction and start
+emitting back down to &#39;start&#39; again. Depending on the effect you require this
+can often look better.</p>
+<h2 id="a-min-max-object">A min / max object:<a class="anchor" href="#a-min-max-object">#</a></h2>
+<p>This allows you to pick a random float value between the min and max properties:</p>
+<pre class="code" data-lang="js"><code>x: { min: 100, max: 700 }</code></pre>
+<p>The x value will be a random float between min and max.</p>
+<p>You can force it select an integer by setting the &#39;int&#39; flag:</p>
+<pre class="code" data-lang="js"><code>x: { min: 100, max: 700, int: true }</code></pre>
+<p>Or, you could use the &#39;random&#39; array approach (see below)</p>
+<h2 id="a-random-object">A random object:<a class="anchor" href="#a-random-object">#</a></h2>
+<p>This allows you to pick a random integer value between the first and second array elements:</p>
+<pre class="code" data-lang="js"><code>x: { random: [ 100, 700 ] }</code></pre>
+<p>The x value will be a random integer between 100 and 700 as it takes the first
+element in the &#39;random&#39; array as the &#39;min&#39; value and the 2nd element as the &#39;max&#39; value.</p>
+<h2 id="custom-onemit-and-onupdate-callbacks">Custom onEmit and onUpdate callbacks:<a class="anchor" href="#custom-onemit-and-onupdate-callbacks">#</a></h2>
+<p>If the above won&#39;t give you the effect you&#39;re after, you can provide your own
+callbacks that will be used when the particle is both emitted and updated:</p>
+<pre class="code" data-lang="js"><code>x: {
+  onEmit: (particle, key, t, value) =&gt; {
+    return value;
+  },
+  onUpdate: (particle, key, t, value) =&gt; {
+    return value;
+  }
+}</code></pre>
+<p>You can provide either one or both functions. The <code>onEmit</code> is called at the
+start of the particles life and defines the value of the property on birth.</p>
+<p>The <code>onUpdate</code> function is called every time the Particle Emitter updates
+until the particle dies. Both must return a value.</p>
+<p>The properties are:</p>
+<p>particle - A reference to the Particle instance.
+key - The string based key of the property, i.e. &#39;x&#39; or &#39;lifespan&#39;.
+t - The current normalized lifetime of the particle, between 0 (birth) and 1 (death).
+value - The current property value. At a minimum you should return this.</p>
+<p>By using the above configuration options you have an unlimited amount of
+control over how your particles behave.</p>
+<h2 id="v3-60-differences">v3.60 Differences<a class="anchor" href="#v3-60-differences">#</a></h2>
+<p>Prior to v3.60 Phaser used a <code>ParticleEmitterManager</code>. This was removed in v3.60
+and now calling <code>this.add.particles</code> returns a <code>ParticleEmitter</code> instance instead.</p>
+<p>In order to streamline memory and the display list we have removed the
+<code>ParticleEmitterManager</code> entirely. When you call <code>this.add.particles</code> you&#39;re now
+creating a <code>ParticleEmitter</code> instance, which is being added directly to the
+display list and can be manipulated just like any other Game Object, i.e.
+scaled, rotated, positioned, added to a Container, etc. It now extends the
+<code>GameObject</code> base class, meaning it&#39;s also an event emitter, which allowed us
+to create some handy new events for particles.</p>
+<p>So, to create an emitter, you now give it an xy coordinate, a texture and an
+emitter configuration object (you can also set this later, but most commonly
+you&#39;d do it on creation). I.e.:</p>
+<pre class="code" data-lang="js"><code>const emitter = this.add.particles(100, 300, 'flares', {
+  frame: 'red',
+  angle: { min: -30, max: 30 },
+  speed: 150
+});</code></pre>
+<p>This will create a &#39;red flare&#39; emitter at 100 x 300.</p>
+<p>Please update your code to ensure it adheres to the new function signatures.</p>
+<h2 id="members">Public members (217)</h2><p>Private, protected and explicitly internal declarations are excluded. Inherited members belong to the base type listed in the declaration.</p><h3 id="member-constructor-0">constructor <a class="anchor" href="#member-constructor-0">#</a></h3><pre class="code" data-lang="ts"><code>constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string | Phaser.Textures.Texture, config?: Phaser.Types.GameObjects.Particles.ParticleEmitterConfig);</code></pre><p><strong>param</strong>  scene The Scene to which this Game Object belongs. A Game Object can only belong to one Scene at a time.
+<strong>param</strong>  x The horizontal position of this Game Object in the world.
+<strong>param</strong>  y The vertical position of this Game Object in the world.
+<strong>param</strong>  texture The key, or instance of the Texture this Game Object will use to render with, as stored in the Texture Manager.
+<strong>param</strong>  config Settings for this emitter.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>scene</code></td><td><code>Phaser.Scene</code></td><td>Required</td></tr><tr><td><code>x</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>texture</code></td><td><code>string | Phaser.Textures.Texture</code></td><td>Optional</td></tr><tr><td><code>config</code></td><td><code>Phaser.Types.GameObjects.Particles.ParticleEmitterConfig</code></td><td>Optional</td></tr></tbody></table><h3 id="member-particleclass-1">particleClass <a class="anchor" href="#member-particleclass-1">#</a></h3><pre class="code" data-lang="ts"><code>particleClass: Function;</code></pre><p>The Particle Class which will be emitted by this Emitter.</p>
+<p><b>Type / return:</b> <code>Function</code></p><h3 id="member-config-2">config <a class="anchor" href="#member-config-2">#</a></h3><pre class="code" data-lang="ts"><code>config: Phaser.Types.GameObjects.Particles.ParticleEmitterConfig;</code></pre><p>An internal object holding the configuration for the Emitter.</p>
+<p>These are populated as part of the Emitter configuration parsing.</p>
+<p>You typically do not access them directly, but instead use the
+<code>ParticleEmitter.setConfig</code> or <code>ParticleEmitter.updateConfig</code> methods.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.Particles.ParticleEmitterConfig</code></p><h3 id="member-ops-3">ops <a class="anchor" href="#member-ops-3">#</a></h3><pre class="code" data-lang="ts"><code>ops: Phaser.Types.GameObjects.Particles.ParticleEmitterOps;</code></pre><p>An internal object holding all of the EmitterOp instances.</p>
+<p>These are populated as part of the Emitter configuration parsing.</p>
+<p>You typically do not access them directly, but instead use the
+provided getters and setters on this class, such as <code>ParticleEmitter.speedX</code> etc.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.Particles.ParticleEmitterOps</code></p><h3 id="member-radial-4">radial <a class="anchor" href="#member-radial-4">#</a></h3><pre class="code" data-lang="ts"><code>radial: boolean;</code></pre><p>A radial emitter will emit particles in all directions between angle min and max,
+using Phaser.GameObjects.Particles.ParticleEmitter#speed as the value. If set to false then this acts as a point Emitter.
+A point emitter will emit particles only in the direction derived from the speedX and speedY values.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-gravityx-5">gravityX <a class="anchor" href="#member-gravityx-5">#</a></h3><pre class="code" data-lang="ts"><code>gravityX: number;</code></pre><p>Horizontal acceleration applied to emitted particles, in pixels per second squared.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-gravityy-6">gravityY <a class="anchor" href="#member-gravityy-6">#</a></h3><pre class="code" data-lang="ts"><code>gravityY: number;</code></pre><p>Vertical acceleration applied to emitted particles, in pixels per second squared.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-acceleration-7">acceleration <a class="anchor" href="#member-acceleration-7">#</a></h3><pre class="code" data-lang="ts"><code>acceleration: boolean;</code></pre><p>Whether accelerationX and accelerationY are non-zero. Set automatically during configuration.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-moveto-8">moveTo <a class="anchor" href="#member-moveto-8">#</a></h3><pre class="code" data-lang="ts"><code>moveTo: boolean;</code></pre><p>Whether moveToX and moveToY are set. Set automatically during configuration.</p>
+<p>When true the particles move toward the moveToX and moveToY coordinates and arrive at the end of their life.
+Emitter angle, speedX, and speedY are ignored.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-emitcallback-9">emitCallback <a class="anchor" href="#member-emitcallback-9">#</a></h3><pre class="code" data-lang="ts"><code>emitCallback: Phaser.Types.GameObjects.Particles.ParticleEmitterCallback | null;</code></pre><p>A function to call when a particle is emitted.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.Particles.ParticleEmitterCallback | null</code></p><h3 id="member-emitcallbackscope-10">emitCallbackScope <a class="anchor" href="#member-emitcallbackscope-10">#</a></h3><pre class="code" data-lang="ts"><code>emitCallbackScope: any | null;</code></pre><p>The calling context for Phaser.GameObjects.Particles.ParticleEmitter#emitCallback.</p>
+<p><b>Type / return:</b> <code>any | null</code></p><h3 id="member-deathcallback-11">deathCallback <a class="anchor" href="#member-deathcallback-11">#</a></h3><pre class="code" data-lang="ts"><code>deathCallback: Phaser.Types.GameObjects.Particles.ParticleDeathCallback | null;</code></pre><p>A function to call when a particle dies.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.Particles.ParticleDeathCallback | null</code></p><h3 id="member-deathcallbackscope-12">deathCallbackScope <a class="anchor" href="#member-deathcallbackscope-12">#</a></h3><pre class="code" data-lang="ts"><code>deathCallbackScope: any | null;</code></pre><p>The calling context for Phaser.GameObjects.Particles.ParticleEmitter#deathCallback.</p>
+<p><b>Type / return:</b> <code>any | null</code></p><h3 id="member-maxparticles-13">maxParticles <a class="anchor" href="#member-maxparticles-13">#</a></h3><pre class="code" data-lang="ts"><code>maxParticles: number;</code></pre><p>Set to hard limit the amount of particle objects this emitter is allowed to create
+in total. This is the number of <code>Particle</code> instances it can create, not the number
+of &#39;alive&#39; particles.</p>
+<p>0 means unlimited.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-maxaliveparticles-14">maxAliveParticles <a class="anchor" href="#member-maxaliveparticles-14">#</a></h3><pre class="code" data-lang="ts"><code>maxAliveParticles: number;</code></pre><p>The maximum number of alive and rendering particles this emitter will update.
+When this limit is reached, a particle needs to die before another can be emitted.</p>
+<p>0 means no limits.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-stopafter-15">stopAfter <a class="anchor" href="#member-stopafter-15">#</a></h3><pre class="code" data-lang="ts"><code>stopAfter: number;</code></pre><p>If set, either via the Emitter config, or by directly setting this property,
+the Particle Emitter will stop emitting particles once this total has been
+reached. It will then enter a &#39;stopped&#39; state, firing the <code>STOP</code>
+event. Note that entering a stopped state doesn&#39;t mean all the particles
+have finished, just that it&#39;s not emitting any further ones.</p>
+<p>To know when the final particle expires, listen for the COMPLETE event.</p>
+<p>Use this if you wish to launch an exact number of particles and then stop
+your emitter afterwards.</p>
+<p>The counter is reset each time the <code>ParticleEmitter.start</code> method is called.</p>
+<p>0 means the emitter will not stop based on total emitted particles.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-duration-16">duration <a class="anchor" href="#member-duration-16">#</a></h3><pre class="code" data-lang="ts"><code>duration: number;</code></pre><p>The number of milliseconds this emitter will emit particles for when in flow mode,
+before it stops emission. A value of 0 (the default) means there is no duration.</p>
+<p>When the duration expires the <code>STOP</code> event is emitted. Note that entering a
+stopped state doesn&#39;t mean all the particles have finished, just that it&#39;s
+not emitting any further ones.</p>
+<p>To know when the final particle expires, listen for the COMPLETE event.</p>
+<p>The counter is reset each time the <code>ParticleEmitter.start</code> method is called.</p>
+<p>0 means the emitter will not stop based on duration.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-frequency-17">frequency <a class="anchor" href="#member-frequency-17">#</a></h3><pre class="code" data-lang="ts"><code>frequency: number;</code></pre><p>For a flow emitter, the time interval (&gt;= 0) between particle flow cycles in ms.
+A value of 0 means there is one particle flow cycle for each logic update (the maximum flow frequency). This is the default setting.
+For an exploding emitter, this value will be -1.
+Calling Phaser.GameObjects.Particles.ParticleEmitter#flow also puts the emitter in flow mode (frequency &gt;= 0).
+Calling Phaser.GameObjects.Particles.ParticleEmitter#explode also puts the emitter in explode mode (frequency = -1).</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-emitting-18">emitting <a class="anchor" href="#member-emitting-18">#</a></h3><pre class="code" data-lang="ts"><code>emitting: boolean;</code></pre><p>Controls if the emitter is currently emitting a particle flow (when frequency &gt;= 0).</p>
+<p>Already alive particles will continue to update until they expire.</p>
+<p>Controlled by Phaser.GameObjects.Particles.ParticleEmitter#start and Phaser.GameObjects.Particles.ParticleEmitter#stop.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-particlebringtotop-19">particleBringToTop <a class="anchor" href="#member-particlebringtotop-19">#</a></h3><pre class="code" data-lang="ts"><code>particleBringToTop: boolean;</code></pre><p>Newly emitted particles are added to the top of the particle list, i.e. rendered above those already alive.</p>
+<p>Set to false to send them to the back.</p>
+<p>Also see the <code>sortOrder</code> property for more complex particle sorting.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-timescale-20">timeScale <a class="anchor" href="#member-timescale-20">#</a></h3><pre class="code" data-lang="ts"><code>timeScale: number;</code></pre><p>The time rate applied to active particles, affecting lifespan, movement, and tweens. Values larger than 1 are faster than normal.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-emitzones-21">emitZones <a class="anchor" href="#member-emitzones-21">#</a></h3><pre class="code" data-lang="ts"><code>emitZones: Phaser.Types.GameObjects.Particles.EmitZoneObject[];</code></pre><p>An array containing Particle Emission Zones. These can be either EdgeZones or RandomZones.</p>
+<p>Particles are emitted from a randomly selected zone from this array.</p>
+<p>Prior to Phaser v3.60 an Emitter could only have one single Emission Zone.
+In 3.60 they can now have an array of Emission Zones.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.Particles.EmitZoneObject[]</code></p><h3 id="member-deathzones-22">deathZones <a class="anchor" href="#member-deathzones-22">#</a></h3><pre class="code" data-lang="ts"><code>deathZones: Phaser.GameObjects.Particles.Zones.DeathZone[];</code></pre><p>An array containing Particle Death Zone objects. A particle is immediately killed as soon as its x/y coordinates
+intersect with any of the configured Death Zones.</p>
+<p>Prior to Phaser v3.60 an Emitter could only have one single Death Zone.
+In 3.60 they can now have an array of Death Zones.</p>
+<p><b>Type / return:</b> <code>Phaser.GameObjects.Particles.Zones.DeathZone[]</code></p><h3 id="member-viewbounds-23">viewBounds <a class="anchor" href="#member-viewbounds-23">#</a></h3><pre class="code" data-lang="ts"><code>viewBounds: Phaser.Geom.Rectangle | null;</code></pre><p>An optional Rectangle object that is used during rendering to cull Particles from
+display. For example, if your particles are limited to only move within a 300x300
+sized area from their origin, then you can set this Rectangle to those dimensions.</p>
+<p>The renderer will check to see if the <code>viewBounds</code> Rectangle intersects with the
+Camera bounds during the render step and if not it will skip rendering the Emitter
+entirely.</p>
+<p>This allows you to create many emitters in a Scene without the cost of
+rendering if the contents aren&#39;t visible.</p>
+<p>Note that the Emitter will not perform any checks to see if the Particles themselves
+are outside of these bounds, or not. It will simply check the bounds against the
+camera. Use the <code>getBounds</code> method with the <code>advance</code> parameter to help define
+the location and placement of the view bounds.</p>
+<p><b>Type / return:</b> <code>Phaser.Geom.Rectangle | null</code></p><h3 id="member-follow-24">follow <a class="anchor" href="#member-follow-24">#</a></h3><pre class="code" data-lang="ts"><code>follow: Phaser.Types.Math.Vector2Like | null;</code></pre><p>A Game Object whose position is used as the particle origin.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.Math.Vector2Like | null</code></p><h3 id="member-followoffset-25">followOffset <a class="anchor" href="#member-followoffset-25">#</a></h3><pre class="code" data-lang="ts"><code>followOffset: Phaser.Math.Vector2;</code></pre><p>The offset of the particle origin from the Phaser.GameObjects.Particles.ParticleEmitter#follow target.</p>
+<p><b>Type / return:</b> <code>Phaser.Math.Vector2</code></p><h3 id="member-trackvisible-26">trackVisible <a class="anchor" href="#member-trackvisible-26">#</a></h3><pre class="code" data-lang="ts"><code>trackVisible: boolean;</code></pre><p>Whether the emitter&#39;s Phaser.GameObjects.Particles.ParticleEmitter#visible state will track
+the Phaser.GameObjects.Particles.ParticleEmitter#follow target&#39;s visibility state.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-frames-27">frames <a class="anchor" href="#member-frames-27">#</a></h3><pre class="code" data-lang="ts"><code>frames: Phaser.Textures.Frame[];</code></pre><p>The texture frames assigned to particles.</p>
+<p><b>Type / return:</b> <code>Phaser.Textures.Frame[]</code></p><h3 id="member-randomframe-28">randomFrame <a class="anchor" href="#member-randomframe-28">#</a></h3><pre class="code" data-lang="ts"><code>randomFrame: boolean;</code></pre><p>Whether texture Phaser.GameObjects.Particles.ParticleEmitter#frames are selected at random.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-framequantity-29">frameQuantity <a class="anchor" href="#member-framequantity-29">#</a></h3><pre class="code" data-lang="ts"><code>frameQuantity: number;</code></pre><p>The number of consecutive particles that receive a single texture frame (per frame cycle).</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-anims-30">anims <a class="anchor" href="#member-anims-30">#</a></h3><pre class="code" data-lang="ts"><code>anims: string[];</code></pre><p>The animations assigned to particles.</p>
+<p><b>Type / return:</b> <code>string[]</code></p><h3 id="member-randomanim-31">randomAnim <a class="anchor" href="#member-randomanim-31">#</a></h3><pre class="code" data-lang="ts"><code>randomAnim: boolean;</code></pre><p>Whether animations Phaser.GameObjects.Particles.ParticleEmitter#anims are selected at random.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-animquantity-32">animQuantity <a class="anchor" href="#member-animquantity-32">#</a></h3><pre class="code" data-lang="ts"><code>animQuantity: number;</code></pre><p>The number of consecutive particles that receive a single animation (per frame cycle).</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-skipping-33">skipping <a class="anchor" href="#member-skipping-33">#</a></h3><pre class="code" data-lang="ts"><code>skipping: boolean;</code></pre><p>An internal property used to tell when the emitter is in fast-forward mode.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-worldmatrix-34">worldMatrix <a class="anchor" href="#member-worldmatrix-34">#</a></h3><pre class="code" data-lang="ts"><code>worldMatrix: Phaser.GameObjects.Components.TransformMatrix;</code></pre><p>An internal Transform Matrix used to cache this emitters world matrix.</p>
+<p><b>Type / return:</b> <code>Phaser.GameObjects.Components.TransformMatrix</code></p><h3 id="member-sortproperty-35">sortProperty <a class="anchor" href="#member-sortproperty-35">#</a></h3><pre class="code" data-lang="ts"><code>sortProperty: string;</code></pre><p>Optionally sort the particles before they render based on this
+property. The property must exist on the <code>Particle</code> class, such
+as <code>y</code>, <code>lifeT</code>, <code>scaleX</code>, etc.</p>
+<p>When set this overrides the <code>particleBringToTop</code> setting.</p>
+<p>To reset this and disable sorting, set this property to an empty string.</p>
+<p><b>Type / return:</b> <code>string</code></p><h3 id="member-sortorderasc-36">sortOrderAsc <a class="anchor" href="#member-sortorderasc-36">#</a></h3><pre class="code" data-lang="ts"><code>sortOrderAsc: boolean;</code></pre><p>When <code>sortProperty</code> is defined this controls the sorting order,
+either ascending or descending. Toggle to control the visual effect.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-sortcallback-37">sortCallback <a class="anchor" href="#member-sortcallback-37">#</a></h3><pre class="code" data-lang="ts"><code>sortCallback: Phaser.Types.GameObjects.Particles.ParticleSortCallback | null;</code></pre><p>The callback used to sort the particles. Only used if <code>sortProperty</code>
+has been set. Set this via the <code>setSortCallback</code> method.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.Particles.ParticleSortCallback | null</code></p><h3 id="member-processors-38">processors <a class="anchor" href="#member-processors-38">#</a></h3><pre class="code" data-lang="ts"><code>processors: Phaser.Structs.List&lt;Phaser.GameObjects.Particles.ParticleProcessor&gt;;</code></pre><p>A list of Particle Processors being managed by this Emitter.</p>
+<p><b>Type / return:</b> <code>Phaser.Structs.List&lt;Phaser.GameObjects.Particles.ParticleProcessor&gt;</code></p><h3 id="member-tintmode-39">tintMode <a class="anchor" href="#member-tintmode-39">#</a></h3><pre class="code" data-lang="ts"><code>tintMode: Phaser.TintModes;</code></pre><p>The tint mode used by the Particles in this Emitter.</p>
+<p>Available modes are:</p>
+<ul>
+<li>Phaser.TintModes.MULTIPLY (default)</li>
+<li>Phaser.TintModes.FILL</li>
+<li>Phaser.TintModes.ADD</li>
+<li>Phaser.TintModes.SCREEN</li>
+<li>Phaser.TintModes.OVERLAY</li>
+<li>Phaser.TintModes.HARD_LIGHT</li>
+</ul>
+<p><b>Type / return:</b> <code>Phaser.TintModes</code></p><h3 id="member-addedtoscene-40">addedToScene <a class="anchor" href="#member-addedtoscene-40">#</a></h3><pre class="code" data-lang="ts"><code>addedToScene(): void;</code></pre><p>Called when this Game Object is added to a Scene. Registers this emitter
+with the Scene&#39;s update list so it receives <code>preUpdate</code> calls each frame.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="member-removedfromscene-41">removedFromScene <a class="anchor" href="#member-removedfromscene-41">#</a></h3><pre class="code" data-lang="ts"><code>removedFromScene(): void;</code></pre><p>Called when this Game Object is removed from a Scene. Unregisters this
+emitter from the Scene&#39;s update list so it no longer receives <code>preUpdate</code> calls.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="member-setconfig-42">setConfig <a class="anchor" href="#member-setconfig-42">#</a></h3><pre class="code" data-lang="ts"><code>setConfig(config: Phaser.Types.GameObjects.Particles.ParticleEmitterConfig): this;</code></pre><p>Takes an Emitter Configuration file and resets this Emitter, using any
+properties defined in the config to then set it up again.
+<strong>param</strong>  config Settings for this emitter.
+<strong>returns</strong>  This Particle Emitter.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>config</code></td><td><code>Phaser.Types.GameObjects.Particles.ParticleEmitterConfig</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-updateconfig-43">updateConfig <a class="anchor" href="#member-updateconfig-43">#</a></h3><pre class="code" data-lang="ts"><code>updateConfig(config: Phaser.Types.GameObjects.Particles.ParticleEmitterConfig): this;</code></pre><p>Takes an existing Emitter Configuration file and updates this Emitter.
+Existing properties are overridden while new properties are added. The
+updated configuration is then passed to the <code>setConfig</code> method to reset
+the Emitter with the updated configuration.
+<strong>param</strong>  config Settings for this emitter.
+<strong>returns</strong>  This Particle Emitter.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>config</code></td><td><code>Phaser.Types.GameObjects.Particles.ParticleEmitterConfig</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-tojson-44">toJSON <a class="anchor" href="#member-tojson-44">#</a></h3><pre class="code" data-lang="ts"><code>toJSON(): Phaser.Types.GameObjects.JSONGameObject;</code></pre><p>Creates a description of this emitter suitable for JSON serialization.undefined
+<strong>returns</strong>  A JSON representation of the Game Object.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.JSONGameObject</code></p><h3 id="member-resetcounters-45">resetCounters <a class="anchor" href="#member-resetcounters-45">#</a></h3><pre class="code" data-lang="ts"><code>resetCounters(frequency: number, on: boolean): void;</code></pre><p>Resets the internal counter trackers.</p>
+<p>You shouldn&#39;t ever need to call this directly.
+<strong>param</strong>  frequency The frequency counter.
+<strong>param</strong>  on Set the complete flag.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>frequency</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>on</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-startfollow-46">startFollow <a class="anchor" href="#member-startfollow-46">#</a></h3><pre class="code" data-lang="ts"><code>startFollow(target: Phaser.Types.Math.Vector2Like, offsetX?: number, offsetY?: number, trackVisible?: boolean): this;</code></pre><p>Continuously moves the particle origin to follow a Game Object&#39;s position.
+<strong>param</strong>  target The Object to follow.
+<strong>param</strong>  offsetX Horizontal offset of the particle origin from the Game Object. Default 0.
+<strong>param</strong>  offsetY Vertical offset of the particle origin from the Game Object. Default 0.
+<strong>param</strong>  trackVisible Whether the emitter&#39;s visible state will track the target&#39;s visible state. Default false.
+<strong>returns</strong>  This Particle Emitter.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>target</code></td><td><code>Phaser.Types.Math.Vector2Like</code></td><td>Required</td></tr><tr><td><code>offsetX</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>offsetY</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>trackVisible</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-stopfollow-47">stopFollow <a class="anchor" href="#member-stopfollow-47">#</a></h3><pre class="code" data-lang="ts"><code>stopFollow(): this;</code></pre><p>Stops following a Game Object.undefined
+<strong>returns</strong>  This Particle Emitter.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-getframe-48">getFrame <a class="anchor" href="#member-getframe-48">#</a></h3><pre class="code" data-lang="ts"><code>getFrame(): Phaser.Textures.Frame;</code></pre><p>Chooses a texture frame from Phaser.GameObjects.Particles.ParticleEmitter#frames.undefined
+<strong>returns</strong>  The texture frame.</p>
+<p><b>Type / return:</b> <code>Phaser.Textures.Frame</code></p><h3 id="member-setemitterframe-49">setEmitterFrame <a class="anchor" href="#member-setemitterframe-49">#</a></h3><pre class="code" data-lang="ts"><code>setEmitterFrame(frames: any[] | string | number | Phaser.Types.GameObjects.Particles.ParticleEmitterFrameConfig, pickRandom?: boolean, quantity?: number): this;</code></pre><p>Sets a pattern for assigning texture frames to emitted particles. The <code>frames</code> configuration can be any of:</p>
+<p>frame: 0
+frame: &#39;red&#39;
+frame: [ 0, 1, 2, 3 ]
+frame: [ &#39;red&#39;, &#39;green&#39;, &#39;blue&#39;, &#39;pink&#39;, &#39;white&#39; ]
+frame: { frames: [ &#39;red&#39;, &#39;green&#39;, &#39;blue&#39;, &#39;pink&#39;, &#39;white&#39; ], [cycle: bool], [quantity: int] }
+<strong>param</strong>  frames One or more texture frames, or a configuration object.
+<strong>param</strong>  pickRandom Whether frames should be assigned at random from <code>frames</code>. Default true.
+<strong>param</strong>  quantity The number of consecutive particles that will receive each frame. Default 1.
+<strong>returns</strong>  This Particle Emitter.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>frames</code></td><td><code>any[] | string | number | Phaser.Types.GameObjects.Particles.ParticleEmitterFrameConfig</code></td><td>Required</td></tr><tr><td><code>pickRandom</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>quantity</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-getanim-50">getAnim <a class="anchor" href="#member-getanim-50">#</a></h3><pre class="code" data-lang="ts"><code>getAnim(): string;</code></pre><p>Chooses an animation from Phaser.GameObjects.Particles.ParticleEmitter#anims, if populated.undefined
+<strong>returns</strong>  The animation to play, or <code>null</code> if there aren&#39;t any.</p>
+<p><b>Type / return:</b> <code>string</code></p><h3 id="member-setanim-51">setAnim <a class="anchor" href="#member-setanim-51">#</a></h3><pre class="code" data-lang="ts"><code>setAnim(anims: string | string[] | Phaser.Types.GameObjects.Particles.ParticleEmitterAnimConfig, pickRandom?: boolean, quantity?: number): this;</code></pre><p>Sets a pattern for assigning animations to emitted particles. The <code>anims</code> configuration can be any of:</p>
+<p>anim: &#39;red&#39;
+anim: [ &#39;red&#39;, &#39;green&#39;, &#39;blue&#39;, &#39;pink&#39;, &#39;white&#39; ]
+anim: { anims: [ &#39;red&#39;, &#39;green&#39;, &#39;blue&#39;, &#39;pink&#39;, &#39;white&#39; ], [cycle: bool], [quantity: int] }</p>
+<p>Call this method at least once before any particles are created, or set <code>anim</code> in the Particle Emitter&#39;s configuration when creating the Emitter.
+<strong>param</strong>  anims One or more animations, or a configuration object.
+<strong>param</strong>  pickRandom Whether animations should be assigned at random from <code>anims</code>. If a config object is given, this parameter is ignored. Default true.
+<strong>param</strong>  quantity The number of consecutive particles that will receive each animation. If a config object is given, this parameter is ignored. Default 1.
+<strong>returns</strong>  This Particle Emitter.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>anims</code></td><td><code>string | string[] | Phaser.Types.GameObjects.Particles.ParticleEmitterAnimConfig</code></td><td>Required</td></tr><tr><td><code>pickRandom</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>quantity</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setradial-52">setRadial <a class="anchor" href="#member-setradial-52">#</a></h3><pre class="code" data-lang="ts"><code>setRadial(value?: boolean): this;</code></pre><p>Turns Phaser.GameObjects.Particles.ParticleEmitter#radial particle movement on or off.
+<strong>param</strong>  value Radial mode (true) or point mode (false). Default true.
+<strong>returns</strong>  This Particle Emitter.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-addparticlebounds-53">addParticleBounds <a class="anchor" href="#member-addparticlebounds-53">#</a></h3><pre class="code" data-lang="ts"><code>addParticleBounds(x: number | Phaser.Types.GameObjects.Particles.ParticleEmitterBounds | Phaser.Types.GameObjects.Particles.ParticleEmitterBoundsAlt, y?: number, width?: number, height?: number, collideLeft?: boolean, collideRight?: boolean, collideTop?: boolean, collideBottom?: boolean): Phaser.GameObjects.Particles.ParticleBounds;</code></pre><p>Creates a Particle Bounds processor and adds it to this Emitter.</p>
+<p>This processor will check to see if any of the active Particles hit
+the defined boundary, as specified by a Rectangle shape in world-space.</p>
+<p>If so, they are &#39;rebounded&#39; back again by having their velocity adjusted.</p>
+<p>The strength of the rebound is controlled by the <code>Particle.bounce</code>
+property.</p>
+<p>You should be careful to ensure that you emit particles within a bounds,
+if set, otherwise it will lead to unpredictable visual results as the
+particles are hastily repositioned.</p>
+<p>The Particle Bounds processor is returned from this method. If you wish
+to modify the area you can directly change its <code>bounds</code> property, along
+with the <code>collideLeft</code> etc values.</p>
+<p>To disable the bounds you can either set its <code>active</code> property to <code>false</code>,
+or if you no longer require it, call <code>ParticleEmitter.removeParticleProcessor</code>.
+<strong>param</strong>  x The x-coordinate of the left edge of the boundary, or an object representing a rectangle.
+<strong>param</strong>  y The y-coordinate of the top edge of the boundary.
+<strong>param</strong>  width The width of the boundary.
+<strong>param</strong>  height The height of the boundary.
+<strong>param</strong>  collideLeft Whether particles interact with the left edge of the bounds. Default true.
+<strong>param</strong>  collideRight Whether particles interact with the right edge of the bounds. Default true.
+<strong>param</strong>  collideTop Whether particles interact with the top edge of the bounds. Default true.
+<strong>param</strong>  collideBottom Whether particles interact with the bottom edge of the bounds. Default true.
+<strong>returns</strong>  The Particle Bounds processor.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number | Phaser.Types.GameObjects.Particles.ParticleEmitterBounds | Phaser.Types.GameObjects.Particles.ParticleEmitterBoundsAlt</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>width</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>collideLeft</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>collideRight</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>collideTop</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>collideBottom</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.GameObjects.Particles.ParticleBounds</code></p><h3 id="member-setparticlespeed-54">setParticleSpeed <a class="anchor" href="#member-setparticlespeed-54">#</a></h3><pre class="code" data-lang="ts"><code>setParticleSpeed(x: number, y?: number): this;</code></pre><p>Sets the initial radial speed of emitted particles.</p>
+<p>Changes the emitter to radial mode.
+<strong>param</strong>  x The horizontal speed of the emitted Particles.
+<strong>param</strong>  y The vertical speed of emitted Particles. If not set it will use the <code>x</code> value. Default x.
+<strong>returns</strong>  This Particle Emitter.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setparticlescale-55">setParticleScale <a class="anchor" href="#member-setparticlescale-55">#</a></h3><pre class="code" data-lang="ts"><code>setParticleScale(x?: number, y?: number): this;</code></pre><p>Sets the vertical and horizontal scale of the emitted particles.</p>
+<p>You can also set the scale of the entire emitter via <code>setScale</code>.
+<strong>param</strong>  x The horizontal scale of the emitted Particles. Default 1.
+<strong>param</strong>  y The vertical scale of emitted Particles. If not set it will use the <code>x</code> value. Default x.
+<strong>returns</strong>  This Particle Emitter.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setparticlegravity-56">setParticleGravity <a class="anchor" href="#member-setparticlegravity-56">#</a></h3><pre class="code" data-lang="ts"><code>setParticleGravity(x: number, y: number): this;</code></pre><p>Sets the gravity applied to emitted particles.
+<strong>param</strong>  x Horizontal acceleration due to gravity, in pixels per second squared. Set to zero for no gravity.
+<strong>param</strong>  y Vertical acceleration due to gravity, in pixels per second squared. Set to zero for no gravity.
+<strong>returns</strong>  This Particle Emitter.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setparticlealpha-57">setParticleAlpha <a class="anchor" href="#member-setparticlealpha-57">#</a></h3><pre class="code" data-lang="ts"><code>setParticleAlpha(value: Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType | Phaser.Types.GameObjects.Particles.EmitterOpOnUpdateType): this;</code></pre><p>Sets the opacity (alpha) of emitted particles.</p>
+<p>You can also set the alpha of the entire emitter via <code>setAlpha</code>.
+<strong>param</strong>  value A value between 0 (transparent) and 1 (opaque).
+<strong>returns</strong>  This Particle Emitter.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType | Phaser.Types.GameObjects.Particles.EmitterOpOnUpdateType</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setparticletint-58">setParticleTint <a class="anchor" href="#member-setparticletint-58">#</a></h3><pre class="code" data-lang="ts"><code>setParticleTint(value: Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType | Phaser.Types.GameObjects.Particles.EmitterOpOnUpdateType): this;</code></pre><p>Sets the color tint of emitted particles.</p>
+<p>This is a WebGL only feature.
+<strong>param</strong>  value A value between 0 and 0xffffff.
+<strong>returns</strong>  This Particle Emitter.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType | Phaser.Types.GameObjects.Particles.EmitterOpOnUpdateType</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setemitterangle-59">setEmitterAngle <a class="anchor" href="#member-setemitterangle-59">#</a></h3><pre class="code" data-lang="ts"><code>setEmitterAngle(value: Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType): this;</code></pre><p>Sets the angle of a Phaser.GameObjects.Particles.ParticleEmitter#radial particle stream.</p>
+<p>The value is given in degrees using Phaser&#39;s right-handed coordinate system.
+<strong>param</strong>  value The angle of the initial velocity of emitted particles, in degrees.
+<strong>returns</strong>  This Particle Emitter.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setparticlelifespan-60">setParticleLifespan <a class="anchor" href="#member-setparticlelifespan-60">#</a></h3><pre class="code" data-lang="ts"><code>setParticleLifespan(value: Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType): this;</code></pre><p>Sets the lifespan of newly emitted particles in milliseconds.
+<strong>param</strong>  value The lifespan of a particle, in ms.
+<strong>returns</strong>  This Particle Emitter.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setquantity-61">setQuantity <a class="anchor" href="#member-setquantity-61">#</a></h3><pre class="code" data-lang="ts"><code>setQuantity(quantity: Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType): this;</code></pre><p>Sets the number of particles released at each flow cycle or explosion.
+<strong>param</strong>  quantity The number of particles to release at each flow cycle or explosion.
+<strong>returns</strong>  This Particle Emitter.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>quantity</code></td><td><code>Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setfrequency-62">setFrequency <a class="anchor" href="#member-setfrequency-62">#</a></h3><pre class="code" data-lang="ts"><code>setFrequency(frequency: number, quantity?: Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType): this;</code></pre><p>Sets the emitter&#39;s Phaser.GameObjects.Particles.ParticleEmitter#frequency
+and Phaser.GameObjects.Particles.ParticleEmitter#quantity.
+<strong>param</strong>  frequency The time interval (&gt;= 0) of each flow cycle, in ms; or -1 to put the emitter in explosion mode.
+<strong>param</strong>  quantity The number of particles to release at each flow cycle or explosion.
+<strong>returns</strong>  This Particle Emitter.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>frequency</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>quantity</code></td><td><code>Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-adddeathzone-63">addDeathZone <a class="anchor" href="#member-adddeathzone-63">#</a></h3><pre class="code" data-lang="ts"><code>addDeathZone(config: Phaser.Types.GameObjects.Particles.DeathZoneObject | Phaser.Types.GameObjects.Particles.DeathZoneObject[]): Phaser.GameObjects.Particles.Zones.DeathZone[];</code></pre><p>Adds a new Particle Death Zone to this Emitter.</p>
+<p>A particle is immediately killed as soon as its x/y coordinates intersect
+with any of the configured Death Zones.</p>
+<p>The <code>source</code> can be a Geometry Shape, such as a Circle, Rectangle or Triangle.
+Any valid object from the <code>Phaser.Geometry</code> namespace is allowed, as long as
+it supports a <code>contains</code> function. You can set the <code>type</code> to be either <code>onEnter</code>
+or <code>onLeave</code>.</p>
+<p>A single Death Zone instance can only exist once within this Emitter, but can belong
+to multiple Emitters.
+<strong>param</strong>  config A Death Zone configuration object, a Death Zone instance, a valid Geometry object or an array of them.
+<strong>returns</strong>  An array of the Death Zones that were added to this Emitter.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>config</code></td><td><code>Phaser.Types.GameObjects.Particles.DeathZoneObject | Phaser.Types.GameObjects.Particles.DeathZoneObject[]</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.GameObjects.Particles.Zones.DeathZone[]</code></p><h3 id="member-removedeathzone-64">removeDeathZone <a class="anchor" href="#member-removedeathzone-64">#</a></h3><pre class="code" data-lang="ts"><code>removeDeathZone(zone: Phaser.GameObjects.Particles.Zones.DeathZone): this;</code></pre><p>Removes the given Particle Death Zone from this Emitter.
+<strong>param</strong>  zone The Death Zone that should be removed from this Emitter.
+<strong>returns</strong>  This Particle Emitter.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>zone</code></td><td><code>Phaser.GameObjects.Particles.Zones.DeathZone</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-cleardeathzones-65">clearDeathZones <a class="anchor" href="#member-cleardeathzones-65">#</a></h3><pre class="code" data-lang="ts"><code>clearDeathZones(): this;</code></pre><p>Clear all Death Zones from this Particle Emitter.undefined
+<strong>returns</strong>  This Particle Emitter.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-addemitzone-66">addEmitZone <a class="anchor" href="#member-addemitzone-66">#</a></h3><pre class="code" data-lang="ts"><code>addEmitZone(zone: Phaser.Types.GameObjects.Particles.EmitZoneData | Phaser.Types.GameObjects.Particles.EmitZoneData[]): Phaser.Types.GameObjects.Particles.EmitZoneObject[];</code></pre><p>Adds a new Particle Emission Zone to this Emitter.</p>
+<p>An Phaser.Types.GameObjects.Particles.ParticleEmitterEdgeZoneConfig EdgeZone places particles on its edges.
+Its Phaser.Types.GameObjects.Particles.EdgeZoneSource source can be a Curve, Path, Circle, Ellipse, Line, Polygon, Rectangle, or Triangle;
+or any object with a suitable Phaser.Types.GameObjects.Particles.EdgeZoneSourceCallback getPoints method.</p>
+<p>A Phaser.Types.GameObjects.Particles.ParticleEmitterRandomZoneConfig RandomZone places the particles randomly within its interior.
+Its Phaser.GameObjects.Particles.Zones.RandomZone#source source can be a Circle, Ellipse, Line, Polygon, Rectangle, or Triangle; or any object with a suitable Phaser.Types.GameObjects.Particles.RandomZoneSourceCallback getRandomPoint method.</p>
+<p>An Emission Zone can only exist once within this Emitter.
+<strong>param</strong>  zone An Emission Zone configuration object, a RandomZone or EdgeZone instance, or an array of them.
+<strong>returns</strong>  An array of the Emission Zones that were added to this Emitter.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>zone</code></td><td><code>Phaser.Types.GameObjects.Particles.EmitZoneData | Phaser.Types.GameObjects.Particles.EmitZoneData[]</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Types.GameObjects.Particles.EmitZoneObject[]</code></p><h3 id="member-removeemitzone-67">removeEmitZone <a class="anchor" href="#member-removeemitzone-67">#</a></h3><pre class="code" data-lang="ts"><code>removeEmitZone(zone: Phaser.GameObjects.Particles.Zones.EdgeZone | Phaser.GameObjects.Particles.Zones.RandomZone): this;</code></pre><p>Removes the given Particle Emission Zone from this Emitter.
+<strong>param</strong>  zone The Emission Zone that should be removed from this Emitter.
+<strong>returns</strong>  This Particle Emitter.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>zone</code></td><td><code>Phaser.GameObjects.Particles.Zones.EdgeZone | Phaser.GameObjects.Particles.Zones.RandomZone</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-clearemitzones-68">clearEmitZones <a class="anchor" href="#member-clearemitzones-68">#</a></h3><pre class="code" data-lang="ts"><code>clearEmitZones(): this;</code></pre><p>Clear all Emission Zones from this Particle Emitter.undefined
+<strong>returns</strong>  This Particle Emitter.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-getemitzone-69">getEmitZone <a class="anchor" href="#member-getemitzone-69">#</a></h3><pre class="code" data-lang="ts"><code>getEmitZone(particle: Phaser.GameObjects.Particles.Particle): void;</code></pre><p>Takes the given particle and sets its x/y coordinates to match the next available
+emission zone, if any have been configured. This method is called automatically
+as part of the <code>Particle.fire</code> process.</p>
+<p>The Emit Zones are iterated in sequence. Once a zone has had a particle emitted
+from it, then the next zone is used and so on, in a loop.
+<strong>param</strong>  particle The particle to set the emission zone for.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>particle</code></td><td><code>Phaser.GameObjects.Particles.Particle</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-getdeathzone-70">getDeathZone <a class="anchor" href="#member-getdeathzone-70">#</a></h3><pre class="code" data-lang="ts"><code>getDeathZone(particle: Phaser.GameObjects.Particles.Particle): boolean;</code></pre><p>Takes the given particle and checks to see if any of the configured Death Zones
+will kill it and returns the result. This method is called automatically as part
+of the <code>Particle.update</code> process.
+<strong>param</strong>  particle The particle to test against the Death Zones.
+<strong>returns</strong>  <code>true</code> if the particle should be killed, otherwise <code>false</code>.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>particle</code></td><td><code>Phaser.GameObjects.Particles.Particle</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-setemitzone-71">setEmitZone <a class="anchor" href="#member-setemitzone-71">#</a></h3><pre class="code" data-lang="ts"><code>setEmitZone(zone: number | Phaser.GameObjects.Particles.Zones.EdgeZone | Phaser.GameObjects.Particles.Zones.RandomZone): this;</code></pre><p>Changes the currently active Emission Zone. The zones should have already
+been added to this Emitter either via the emitter config, or the
+<code>addEmitZone</code> method.</p>
+<p>Call this method by passing either a numeric zone index value, or
+the zone instance itself.</p>
+<p>Prior to v3.60 an Emitter could only have a single Emit Zone and this
+method was how you set it. From 3.60 and up it now performs a different
+function and swaps between all available active zones.
+<strong>param</strong>  zone The Emit Zone to set as the active zone.
+<strong>returns</strong>  This Particle Emitter.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>zone</code></td><td><code>number | Phaser.GameObjects.Particles.Zones.EdgeZone | Phaser.GameObjects.Particles.Zones.RandomZone</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-addparticleprocessor-72">addParticleProcessor <a class="anchor" href="#member-addparticleprocessor-72">#</a></h3><pre class="code" data-lang="ts"><code>addParticleProcessor&lt;T extends Phaser.GameObjects.Particles.ParticleProcessor&gt;(processor: T): T;</code></pre><p>Adds a Particle Processor, such as a Gravity Well, to this Emitter.</p>
+<p>It will start processing particles from the next update as long as its <code>active</code>
+property is set.
+<strong>param</strong>  processor The Particle Processor to add to this Emitter Manager.
+<strong>returns</strong>  The Particle Processor that was added to this Emitter Manager.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>processor</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T</code></p><h3 id="member-removeparticleprocessor-73">removeParticleProcessor <a class="anchor" href="#member-removeparticleprocessor-73">#</a></h3><pre class="code" data-lang="ts"><code>removeParticleProcessor&lt;T extends Phaser.GameObjects.Particles.ParticleProcessor&gt;(processor: T): T | null;</code></pre><p>Removes a Particle Processor from this Emitter.</p>
+<p>The Processor must belong to this Emitter to be removed.</p>
+<p>It is not destroyed when removed, allowing you to move it to another Emitter Manager,
+so if you no longer require it you should call its <code>destroy</code> method directly.
+<strong>param</strong>  processor The Particle Processor to remove from this Emitter Manager.
+<strong>returns</strong>  The Particle Processor that was removed, or null if it could not be found.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>processor</code></td><td><code>T</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>T | null</code></p><h3 id="member-getprocessors-74">getProcessors <a class="anchor" href="#member-getprocessors-74">#</a></h3><pre class="code" data-lang="ts"><code>getProcessors(): Phaser.GameObjects.Particles.ParticleProcessor[];</code></pre><p>Gets all active Particle Processors.undefined
+<strong>returns</strong>  - An array of active Particle Processors.</p>
+<p><b>Type / return:</b> <code>Phaser.GameObjects.Particles.ParticleProcessor[]</code></p><h3 id="member-creategravitywell-75">createGravityWell <a class="anchor" href="#member-creategravitywell-75">#</a></h3><pre class="code" data-lang="ts"><code>createGravityWell(config: Phaser.Types.GameObjects.Particles.GravityWellConfig): Phaser.GameObjects.Particles.GravityWell;</code></pre><p>Creates a new Gravity Well, adds it to this Emitter and returns a reference to it.
+<strong>param</strong>  config Configuration settings for the Gravity Well to create.
+<strong>returns</strong>  The Gravity Well that was created.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>config</code></td><td><code>Phaser.Types.GameObjects.Particles.GravityWellConfig</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.GameObjects.Particles.GravityWell</code></p><h3 id="member-reserve-76">reserve <a class="anchor" href="#member-reserve-76">#</a></h3><pre class="code" data-lang="ts"><code>reserve(count: number): this;</code></pre><p>Creates inactive particles and adds them to this emitter&#39;s pool.</p>
+<p>If <code>ParticleEmitter.maxParticles</code> is set it will limit the
+value passed to this method to make sure it&#39;s not exceeded.
+<strong>param</strong>  count The number of particles to create.
+<strong>returns</strong>  This Particle Emitter.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>count</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-getaliveparticlecount-77">getAliveParticleCount <a class="anchor" href="#member-getaliveparticlecount-77">#</a></h3><pre class="code" data-lang="ts"><code>getAliveParticleCount(): number;</code></pre><p>Gets the number of active (in-use) particles in this emitter.undefined
+<strong>returns</strong>  The number of particles with <code>active=true</code>.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-getdeadparticlecount-78">getDeadParticleCount <a class="anchor" href="#member-getdeadparticlecount-78">#</a></h3><pre class="code" data-lang="ts"><code>getDeadParticleCount(): number;</code></pre><p>Gets the number of inactive (available) particles in this emitter.undefined
+<strong>returns</strong>  The number of particles with <code>active=false</code>.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-getparticlecount-79">getParticleCount <a class="anchor" href="#member-getparticlecount-79">#</a></h3><pre class="code" data-lang="ts"><code>getParticleCount(): number;</code></pre><p>Gets the total number of particles in this emitter.undefined
+<strong>returns</strong>  The number of particles, including both alive and dead.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-atlimit-80">atLimit <a class="anchor" href="#member-atlimit-80">#</a></h3><pre class="code" data-lang="ts"><code>atLimit(): boolean;</code></pre><p>Whether this emitter is at either its hard-cap limit (maxParticles), if set, or
+the max allowed number of &#39;alive&#39; particles (maxAliveParticles).undefined
+<strong>returns</strong>  Returns <code>true</code> if this Emitter is at its limit, or <code>false</code> if no limit, or below the <code>maxParticles</code> level.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-onparticleemit-81">onParticleEmit <a class="anchor" href="#member-onparticleemit-81">#</a></h3><pre class="code" data-lang="ts"><code>onParticleEmit(callback: Phaser.Types.GameObjects.Particles.ParticleEmitterCallback, context?: any): this;</code></pre><p>Sets a function to call for each newly emitted particle.
+<strong>param</strong>  callback The function.
+<strong>param</strong>  context The calling context.
+<strong>returns</strong>  This Particle Emitter.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>callback</code></td><td><code>Phaser.Types.GameObjects.Particles.ParticleEmitterCallback</code></td><td>Required</td></tr><tr><td><code>context</code></td><td><code>any</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-onparticledeath-82">onParticleDeath <a class="anchor" href="#member-onparticledeath-82">#</a></h3><pre class="code" data-lang="ts"><code>onParticleDeath(callback: Phaser.Types.GameObjects.Particles.ParticleDeathCallback, context?: any): this;</code></pre><p>Sets a function to call for each particle death.
+<strong>param</strong>  callback The function.
+<strong>param</strong>  context The function&#39;s calling context.
+<strong>returns</strong>  This Particle Emitter.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>callback</code></td><td><code>Phaser.Types.GameObjects.Particles.ParticleDeathCallback</code></td><td>Required</td></tr><tr><td><code>context</code></td><td><code>any</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-killall-83">killAll <a class="anchor" href="#member-killall-83">#</a></h3><pre class="code" data-lang="ts"><code>killAll(): this;</code></pre><p>Deactivates every particle in this emitter immediately.</p>
+<p>These particles are killed but do not emit an event or callback.undefined
+<strong>returns</strong>  This Particle Emitter.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-foreachalive-84">forEachAlive <a class="anchor" href="#member-foreachalive-84">#</a></h3><pre class="code" data-lang="ts"><code>forEachAlive(callback: Phaser.Types.GameObjects.Particles.ParticleEmitterCallback, context: any): this;</code></pre><p>Calls a function for each active particle in this emitter. The function is
+sent two parameters: a reference to the Particle instance and to this Emitter.
+<strong>param</strong>  callback The function.
+<strong>param</strong>  context The function&#39;s calling context.
+<strong>returns</strong>  This Particle Emitter.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>callback</code></td><td><code>Phaser.Types.GameObjects.Particles.ParticleEmitterCallback</code></td><td>Required</td></tr><tr><td><code>context</code></td><td><code>any</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-foreachdead-85">forEachDead <a class="anchor" href="#member-foreachdead-85">#</a></h3><pre class="code" data-lang="ts"><code>forEachDead(callback: Phaser.Types.GameObjects.Particles.ParticleEmitterCallback, context: any): this;</code></pre><p>Calls a function for each inactive particle in this emitter.
+<strong>param</strong>  callback The function.
+<strong>param</strong>  context The function&#39;s calling context.
+<strong>returns</strong>  This Particle Emitter.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>callback</code></td><td><code>Phaser.Types.GameObjects.Particles.ParticleEmitterCallback</code></td><td>Required</td></tr><tr><td><code>context</code></td><td><code>any</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-start-86">start <a class="anchor" href="#member-start-86">#</a></h3><pre class="code" data-lang="ts"><code>start(advance?: number, duration?: number): this;</code></pre><p>Enables emitting, sets Phaser.GameObjects.Particles.ParticleEmitter#emitting to <code>true</code>, and resets the flow counter.</p>
+<p>If this emitter is in flow mode (frequency &gt;= 0; the default), the particle flow will start (or restart).</p>
+<p>If this emitter is in explode mode (frequency = -1), nothing will happen.
+Use Phaser.GameObjects.Particles.ParticleEmitter#explode or Phaser.GameObjects.Particles.ParticleEmitter#flow instead.</p>
+<p>Calling this method will emit the <code>START</code> event.
+<strong>param</strong>  advance Advance this number of ms in time through the emitter. Default 0.
+<strong>param</strong>  duration Limit this emitter to only emit particles for the given number of ms. Setting this parameter will override any duration already set in the Emitter configuration object. Default 0.
+<strong>returns</strong>  This Particle Emitter.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>advance</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>duration</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-stop-87">stop <a class="anchor" href="#member-stop-87">#</a></h3><pre class="code" data-lang="ts"><code>stop(kill?: boolean): this;</code></pre><p>Turns Phaser.GameObjects.Particles.ParticleEmitter#emitting off the emitter and
+stops it from emitting further particles. Currently alive particles will remain
+active until they naturally expire unless you set the <code>kill</code> parameter to <code>true</code>.</p>
+<p>Calling this method will emit the <code>STOP</code> event. When the final particle has
+expired the <code>COMPLETE</code> event will be emitted.
+<strong>param</strong>  kill Kill all particles immediately (true), or leave them to die after their lifespan expires? (false, the default) Default false.
+<strong>returns</strong>  This Particle Emitter.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>kill</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-pause-88">pause <a class="anchor" href="#member-pause-88">#</a></h3><pre class="code" data-lang="ts"><code>pause(): this;</code></pre><p>Phaser.GameObjects.Particles.ParticleEmitter#active Deactivates the emitter.undefined
+<strong>returns</strong>  This Particle Emitter.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-resume-89">resume <a class="anchor" href="#member-resume-89">#</a></h3><pre class="code" data-lang="ts"><code>resume(): this;</code></pre><p>Phaser.GameObjects.Particles.ParticleEmitter#active Activates the emitter.undefined
+<strong>returns</strong>  This Particle Emitter.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-setsortproperty-90">setSortProperty <a class="anchor" href="#member-setsortproperty-90">#</a></h3><pre class="code" data-lang="ts"><code>setSortProperty(property?: string, ascending?: boolean): this;</code></pre><p>Set the property by which active particles are sorted prior to be rendered.</p>
+<p>It allows you to control the rendering order of the particles.</p>
+<p>This can be any valid property of the <code>Particle</code> class, such as <code>y</code>, <code>alpha</code>
+or <code>lifeT</code>.</p>
+<p>The &#39;alive&#39; particles array is sorted in place each game frame. Setting a
+sort property will override the <code>particleBringToTop</code> setting.</p>
+<p>If you wish to use your own sorting function, see <code>setSortCallback</code> instead.
+<strong>param</strong>  property The property on the <code>Particle</code> class to sort by.
+<strong>param</strong>  ascending Should the particles be sorted in ascending or descending order? Default true.
+<strong>returns</strong>  This Particle Emitter.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>property</code></td><td><code>string</code></td><td>Optional</td></tr><tr><td><code>ascending</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setsortcallback-91">setSortCallback <a class="anchor" href="#member-setsortcallback-91">#</a></h3><pre class="code" data-lang="ts"><code>setSortCallback(callback?: Phaser.Types.GameObjects.Particles.ParticleSortCallback): this;</code></pre><p>Sets a callback to be used to sort the particles before rendering each frame.</p>
+<p>This allows you to define your own logic and behavior in the callback.</p>
+<p>The callback will be sent two parameters: the two Particles being compared,
+and must adhere to the criteria of the <code>compareFn</code> in <code>Array.sort</code>:</p>
+<p>(online reference)</p>
+<p>Call this method with no parameters to reset the sort callback.</p>
+<p>Setting your own callback will override both the <code>particleBringToTop</code> and
+<code>sortProperty</code> settings of this Emitter.
+<strong>param</strong>  callback The callback to invoke when the particles are sorted. Leave undefined to reset to the default.
+<strong>returns</strong>  This Particle Emitter.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>callback</code></td><td><code>Phaser.Types.GameObjects.Particles.ParticleSortCallback</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-depthsort-92">depthSort <a class="anchor" href="#member-depthsort-92">#</a></h3><pre class="code" data-lang="ts"><code>depthSort(): this;</code></pre><p>Sorts active particles with Phaser.GameObjects.Particles.ParticleEmitter#depthSortCallback.undefined
+<strong>returns</strong>  This Particle Emitter.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-depthsortcallback-93">depthSortCallback <a class="anchor" href="#member-depthsortcallback-93">#</a></h3><pre class="code" data-lang="ts"><code>depthSortCallback(a: object, b: object): number;</code></pre><p>Calculates the difference of two particles, for sorting them by depth.
+<strong>param</strong>  a The first particle.
+<strong>param</strong>  b The second particle.
+<strong>returns</strong>  The difference of a and b&#39;s y coordinates.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>a</code></td><td><code>object</code></td><td>Required</td></tr><tr><td><code>b</code></td><td><code>object</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>number</code></p><h3 id="member-flow-94">flow <a class="anchor" href="#member-flow-94">#</a></h3><pre class="code" data-lang="ts"><code>flow(frequency: number, count?: Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType, stopAfter?: number): this;</code></pre><p>Puts the emitter in flow mode (frequency &gt;= 0) and starts (or restarts) a particle flow.</p>
+<p>To resume a flow at the current frequency and quantity, use Phaser.GameObjects.Particles.ParticleEmitter#start instead.
+<strong>param</strong>  frequency The time interval (&gt;= 0) of each flow cycle, in ms.
+<strong>param</strong>  count The number of particles to emit at each flow cycle. Default 1.
+<strong>param</strong>  stopAfter Stop this emitter from firing any more particles once this value is reached. Set to zero for unlimited. Setting this parameter will override any <code>stopAfter</code> value already set in the Emitter configuration object.
+<strong>returns</strong>  This Particle Emitter.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>frequency</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>count</code></td><td><code>Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType</code></td><td>Optional</td></tr><tr><td><code>stopAfter</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-explode-95">explode <a class="anchor" href="#member-explode-95">#</a></h3><pre class="code" data-lang="ts"><code>explode(count?: number, x?: number, y?: number): Phaser.GameObjects.Particles.Particle | undefined;</code></pre><p>Puts the emitter in explode mode (frequency = -1), stopping any current particle flow, and emits several particles all at once.
+<strong>param</strong>  count The number of Particles to emit. Default this.quantity.
+<strong>param</strong>  x The x coordinate to emit the Particles from. Default this.x.
+<strong>param</strong>  y The y coordinate to emit the Particles from. Default this.y.
+<strong>returns</strong>  The most recently emitted Particle, or <code>undefined</code> if the emitter is at its limit.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>count</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>x</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.GameObjects.Particles.Particle | undefined</code></p><h3 id="member-emitparticleat-96">emitParticleAt <a class="anchor" href="#member-emitparticleat-96">#</a></h3><pre class="code" data-lang="ts"><code>emitParticleAt(x?: number, y?: number, count?: number): Phaser.GameObjects.Particles.Particle | undefined;</code></pre><p>Emits particles at the given position. If no position is given, it will
+emit from this Emitters current location.
+<strong>param</strong>  x The x coordinate to emit the Particles from. Default this.x.
+<strong>param</strong>  y The y coordinate to emit the Particles from. Default this.y.
+<strong>param</strong>  count The number of Particles to emit. Default this.quantity.
+<strong>returns</strong>  The most recently emitted Particle, or <code>undefined</code> if the emitter is at its limit.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>count</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.GameObjects.Particles.Particle | undefined</code></p><h3 id="member-emitparticle-97">emitParticle <a class="anchor" href="#member-emitparticle-97">#</a></h3><pre class="code" data-lang="ts"><code>emitParticle(count?: number, x?: number, y?: number): Phaser.GameObjects.Particles.Particle | undefined;</code></pre><p>Emits particles at a given position (or the emitters current position).
+<strong>param</strong>  count The number of Particles to emit. Default this.quantity.
+<strong>param</strong>  x The x coordinate to emit the Particles from. Default this.x.
+<strong>param</strong>  y The y coordinate to emit the Particles from. Default this.y.
+<strong>returns</strong>  The most recently emitted Particle, or <code>undefined</code> if the emitter is at its limit.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>count</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>x</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.GameObjects.Particles.Particle | undefined</code></p><h3 id="member-fastforward-98">fastForward <a class="anchor" href="#member-fastforward-98">#</a></h3><pre class="code" data-lang="ts"><code>fastForward(time: number, delta?: number): this;</code></pre><p>Fast forwards this Particle Emitter and all of its particles.</p>
+<p>Works by running the Emitter <code>preUpdate</code> handler in a loop until the <code>time</code>
+has been reached at <code>delta</code> steps per loop.</p>
+<p>All callbacks and emitter related events that would normally be fired
+will still be invoked.</p>
+<p>You can make an emitter &#39;fast forward&#39; via the emitter config using the
+<code>advance</code> property. Set this value to the number of ms you wish the
+emitter to be fast-forwarded by. Or, call this method post-creation.
+<strong>param</strong>  time The number of ms to advance the Particle Emitter by.
+<strong>param</strong>  delta The amount of delta to use for each step. Defaults to 1000 / 60.
+<strong>returns</strong>  This Particle Emitter.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>time</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>delta</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-preupdate-99">preUpdate <a class="anchor" href="#member-preupdate-99">#</a></h3><pre class="code" data-lang="ts"><code>preUpdate(time: number, delta: number): void;</code></pre><p>Updates this emitter and its particles.
+<strong>param</strong>  time The current timestamp as generated by the Request Animation Frame or SetTimeout.
+<strong>param</strong>  delta The delta time, in ms, elapsed since the last frame.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>time</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>delta</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-overlap-100">overlap <a class="anchor" href="#member-overlap-100">#</a></h3><pre class="code" data-lang="ts"><code>overlap(target: Phaser.Geom.Rectangle | Phaser.Physics.Arcade.Body): Phaser.GameObjects.Particles.Particle[];</code></pre><p>Takes either a Rectangle Geometry object or an Arcade Physics Body and tests
+to see if it intersects with any currently alive Particle in this Emitter.</p>
+<p>Overlapping particles are returned in an array, where you can perform further
+processing on them. If nothing overlaps then the array will be empty.
+<strong>param</strong>  target A Rectangle or Arcade Physics Body to check for intersection against all alive particles.
+<strong>returns</strong>  An array of Particles that overlap with the given target.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>target</code></td><td><code>Phaser.Geom.Rectangle | Phaser.Physics.Arcade.Body</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.GameObjects.Particles.Particle[]</code></p><h3 id="member-getbounds-101">getBounds <a class="anchor" href="#member-getbounds-101">#</a></h3><pre class="code" data-lang="ts"><code>getBounds(padding?: number, advance?: number, delta?: number, output?: Phaser.Geom.Rectangle): Phaser.Geom.Rectangle;</code></pre><p>Returns a bounds Rectangle calculated from the bounds of all currently
+<em>active</em> Particles in this Emitter. If this Emitter has only just been
+created and not yet rendered, then calling this method will return a Rectangle
+with a max safe integer for dimensions. Use the <code>advance</code> parameter to
+avoid this.</p>
+<p>Typically it takes a few seconds for a flow Emitter to &#39;warm up&#39;. You can
+use the <code>advance</code> and <code>delta</code> parameters to force the Emitter to
+&#39;fast forward&#39; in time to try and allow the bounds to be more accurate,
+as it will calculate the bounds based on the particle bounds across all
+timesteps, giving a better result.</p>
+<p>You can also use the <code>padding</code> parameter to increase the size of the
+bounds. Emitters with a lot of randomness in terms of direction or lifespan
+can often return a bounds smaller than their possible maximum. By using
+the <code>padding</code> (and <code>advance</code> if needed) you can help limit this.
+<strong>param</strong>  padding The amount of padding, in pixels, to add to the bounds Rectangle.
+<strong>param</strong>  advance The number of ms to advance the Particle Emitter by. Defaults to 0, i.e. not used.
+<strong>param</strong>  delta The amount of delta to use for each step. Defaults to 1000 / 60.
+<strong>param</strong>  output The Rectangle to store the results in. If not given a new one will be created.
+<strong>returns</strong>  A Rectangle containing the calculated bounds of this Emitter.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>padding</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>advance</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>delta</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>output</code></td><td><code>Phaser.Geom.Rectangle</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Geom.Rectangle</code></p><h3 id="member-createemitter-102">createEmitter <a class="anchor" href="#member-createemitter-102">#</a></h3><pre class="code" data-lang="ts"><code>createEmitter(): void;</code></pre><p>Prints a warning to the console if you mistakenly call this function
+thinking it works the same way as Phaser v3.55.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="member-particlex-103">particleX <a class="anchor" href="#member-particlex-103">#</a></h3><pre class="code" data-lang="ts"><code>particleX: Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType | Phaser.Types.GameObjects.Particles.EmitterOpOnUpdateType;</code></pre><p>The x coordinate the particles are emitted from.</p>
+<p>This is relative to the Emitters x coordinate and that of any parent.</p>
+<p>Accessing this property should typically return a number.
+However, it can be set to any valid EmitterOp onEmit type.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType | Phaser.Types.GameObjects.Particles.EmitterOpOnUpdateType</code></p><h3 id="member-particley-104">particleY <a class="anchor" href="#member-particley-104">#</a></h3><pre class="code" data-lang="ts"><code>particleY: Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType | Phaser.Types.GameObjects.Particles.EmitterOpOnUpdateType;</code></pre><p>The y coordinate the particles are emitted from.</p>
+<p>This is relative to the Emitters y coordinate and that of any parent.</p>
+<p>Accessing this property should typically return a number.
+However, it can be set to any valid EmitterOp onEmit type.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType | Phaser.Types.GameObjects.Particles.EmitterOpOnUpdateType</code></p><h3 id="member-accelerationx-105">accelerationX <a class="anchor" href="#member-accelerationx-105">#</a></h3><pre class="code" data-lang="ts"><code>accelerationX: Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType;</code></pre><p>The horizontal acceleration applied to emitted particles, in pixels per second squared.</p>
+<p>Accessing this property should typically return a number.
+However, it can be set to any valid EmitterOp onEmit type.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType</code></p><h3 id="member-accelerationy-106">accelerationY <a class="anchor" href="#member-accelerationy-106">#</a></h3><pre class="code" data-lang="ts"><code>accelerationY: Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType;</code></pre><p>The vertical acceleration applied to emitted particles, in pixels per second squared.</p>
+<p>Accessing this property should typically return a number.
+However, it can be set to any valid EmitterOp onEmit type.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType</code></p><h3 id="member-maxvelocityx-107">maxVelocityX <a class="anchor" href="#member-maxvelocityx-107">#</a></h3><pre class="code" data-lang="ts"><code>maxVelocityX: Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType;</code></pre><p>The maximum horizontal velocity emitted particles can reach, in pixels per second.</p>
+<p>Accessing this property should typically return a number.
+However, it can be set to any valid EmitterOp onEmit type.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType</code></p><h3 id="member-maxvelocityy-108">maxVelocityY <a class="anchor" href="#member-maxvelocityy-108">#</a></h3><pre class="code" data-lang="ts"><code>maxVelocityY: Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType;</code></pre><p>The maximum vertical velocity emitted particles can reach, in pixels per second.</p>
+<p>Accessing this property should typically return a number.
+However, it can be set to any valid EmitterOp onEmit type.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType</code></p><h3 id="member-speed-109">speed <a class="anchor" href="#member-speed-109">#</a></h3><pre class="code" data-lang="ts"><code>speed: Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType;</code></pre><p>The initial speed of emitted particles, in pixels per second.</p>
+<p>If using this as a getter it will return the <code>speedX</code> value.</p>
+<p>If using it as a setter it will update both <code>speedX</code> and <code>speedY</code> to the
+given value.</p>
+<p>Accessing this property should typically return a number.
+However, it can be set to any valid EmitterOp onEmit type.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType</code></p><h3 id="member-speedx-110">speedX <a class="anchor" href="#member-speedx-110">#</a></h3><pre class="code" data-lang="ts"><code>speedX: Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType;</code></pre><p>The initial horizontal speed of emitted particles, in pixels per second.</p>
+<p>Accessing this property should typically return a number.
+However, it can be set to any valid EmitterOp onEmit type.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType</code></p><h3 id="member-speedy-111">speedY <a class="anchor" href="#member-speedy-111">#</a></h3><pre class="code" data-lang="ts"><code>speedY: Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType;</code></pre><p>The initial vertical speed of emitted particles, in pixels per second.</p>
+<p>Accessing this property should typically return a number.
+However, it can be set to any valid EmitterOp onEmit type.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType</code></p><h3 id="member-movetox-112">moveToX <a class="anchor" href="#member-movetox-112">#</a></h3><pre class="code" data-lang="ts"><code>moveToX: Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType;</code></pre><p>The x coordinate emitted particles move toward, when Phaser.GameObjects.Particles.ParticleEmitter#moveTo is true.</p>
+<p>Accessing this property should typically return a number.
+However, it can be set to any valid EmitterOp onEmit type.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType</code></p><h3 id="member-movetoy-113">moveToY <a class="anchor" href="#member-movetoy-113">#</a></h3><pre class="code" data-lang="ts"><code>moveToY: Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType;</code></pre><p>The y coordinate emitted particles move toward, when Phaser.GameObjects.Particles.ParticleEmitter#moveTo is true.</p>
+<p>Accessing this property should typically return a number.
+However, it can be set to any valid EmitterOp onEmit type.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType</code></p><h3 id="member-bounce-114">bounce <a class="anchor" href="#member-bounce-114">#</a></h3><pre class="code" data-lang="ts"><code>bounce: Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType;</code></pre><p>The amount of velocity particles will use when rebounding off the
+emitter bounds, if set. A value of 0 means no bounce. A value of 1
+means a full rebound.</p>
+<p>Accessing this property should typically return a number.
+However, it can be set to any valid EmitterOp onEmit type.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType</code></p><h3 id="member-particlescalex-115">particleScaleX <a class="anchor" href="#member-particlescalex-115">#</a></h3><pre class="code" data-lang="ts"><code>particleScaleX: Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType;</code></pre><p>The horizontal scale of emitted particles.</p>
+<p>This is relative to the Emitters scale and that of any parent.</p>
+<p>Accessing this property should typically return a number.
+However, it can be set to any valid EmitterOp onEmit type.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType</code></p><h3 id="member-particlescaley-116">particleScaleY <a class="anchor" href="#member-particlescaley-116">#</a></h3><pre class="code" data-lang="ts"><code>particleScaleY: Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType;</code></pre><p>The vertical scale of emitted particles.</p>
+<p>This is relative to the Emitters scale and that of any parent.</p>
+<p>Accessing this property should typically return a number.
+However, it can be set to any valid EmitterOp onEmit type.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType</code></p><h3 id="member-particlecolor-117">particleColor <a class="anchor" href="#member-particlecolor-117">#</a></h3><pre class="code" data-lang="ts"><code>particleColor: Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType;</code></pre><p>A color tint value that is applied to the texture of the emitted
+particle. The value should be given in hex format, i.e. 0xff0000
+for a red tint, and should not include the alpha channel.</p>
+<p>Tints are multiplicative by default, meaning a tint value of white
+(0xffffff) will effectively reset the tint to nothing.</p>
+<p>Modify the <code>ParticleEmitter.tintMode</code> property to change the tint mode.</p>
+<p>When you define the color via the Emitter config you should give
+it as an array of color values. The Particle will then interpolate
+through these colors over the course of its lifespan. Setting this
+will override any <code>tint</code> value that may also be given.</p>
+<p>This is a WebGL only feature.</p>
+<p>Accessing this property should typically return a number.
+However, it can be set to any valid EmitterOp onEmit type.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType</code></p><h3 id="member-colorease-118">colorEase <a class="anchor" href="#member-colorease-118">#</a></h3><pre class="code" data-lang="ts"><code>colorEase: string;</code></pre><p>Controls the easing function used when you have created an
+Emitter that uses the <code>color</code> property to interpolate the
+tint of Particles over their lifetime.</p>
+<p>Setting this has no effect if you haven&#39;t also applied a
+<code>particleColor</code> to this Emitter.</p>
+<p><b>Type / return:</b> <code>string</code></p><h3 id="member-particletint-119">particleTint <a class="anchor" href="#member-particletint-119">#</a></h3><pre class="code" data-lang="ts"><code>particleTint: Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType;</code></pre><p>A color tint value that is applied to the texture of the emitted
+particle. The value should be given in hex format, i.e. 0xff0000
+for a red tint, and should not include the alpha channel.</p>
+<p>Tints are multiplicative by default, meaning a tint value of white
+(0xffffff) will effectively reset the tint to nothing.</p>
+<p>Modify the <code>ParticleEmitter.tintMode</code> property to change the tint mode.</p>
+<p>The <code>tint</code> value will be overridden if a <code>color</code> array is provided.</p>
+<p>This is a WebGL only feature.</p>
+<p>Accessing this property should typically return a number.
+However, it can be set to any valid EmitterOp onEmit type.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType</code></p><h3 id="member-particlealpha-120">particleAlpha <a class="anchor" href="#member-particlealpha-120">#</a></h3><pre class="code" data-lang="ts"><code>particleAlpha: Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType;</code></pre><p>The alpha value of the emitted particles. This is a value
+between 0 and 1. Particles with alpha zero are invisible
+and are therefore not rendered, but are still processed
+by the Emitter.</p>
+<p>Accessing this property should typically return a number.
+However, it can be set to any valid EmitterOp onEmit type.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType</code></p><h3 id="member-lifespan-121">lifespan <a class="anchor" href="#member-lifespan-121">#</a></h3><pre class="code" data-lang="ts"><code>lifespan: Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType;</code></pre><p>The lifespan of the emitted particles. This value is given
+in milliseconds and defaults to 1000ms (1 second). When a
+particle reaches this amount it is killed.</p>
+<p>Accessing this property should typically return a number.
+However, it can be set to any valid EmitterOp onEmit type.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType</code></p><h3 id="member-particleangle-122">particleAngle <a class="anchor" href="#member-particleangle-122">#</a></h3><pre class="code" data-lang="ts"><code>particleAngle: Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType;</code></pre><p>The angle at which the particles are emitted. The values are
+given in degrees. This allows you to control the direction
+of the emitter. If you wish instead to change the rotation
+of the particles themselves, see the <code>particleRotate</code> property.</p>
+<p>Accessing this property should typically return a number.
+However, it can be set to any valid EmitterOp onEmit type.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType</code></p><h3 id="member-particlerotate-123">particleRotate <a class="anchor" href="#member-particlerotate-123">#</a></h3><pre class="code" data-lang="ts"><code>particleRotate: Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType;</code></pre><p>The rotation (or angle) of each particle when it is emitted.
+The value is given in degrees and uses a right-handed
+coordinate system, where 0 degrees points to the right, 90 degrees
+points down and -90 degrees points up.</p>
+<p>Accessing this property should typically return a number.
+However, it can be set to any valid EmitterOp onEmit type.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType</code></p><h3 id="member-quantity-124">quantity <a class="anchor" href="#member-quantity-124">#</a></h3><pre class="code" data-lang="ts"><code>quantity: Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType;</code></pre><p>The number of particles that are emitted each time an emission
+occurs, i.e. from one &#39;explosion&#39; or each frame in a &#39;flow&#39; cycle.</p>
+<p>The default is 1.</p>
+<p>Accessing this property should typically return a number.
+However, it can be set to any valid EmitterOp onEmit type.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType</code></p><h3 id="member-delay-125">delay <a class="anchor" href="#member-delay-125">#</a></h3><pre class="code" data-lang="ts"><code>delay: Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType;</code></pre><p>The number of milliseconds to wait after emission before
+the particles start updating. This allows you to emit particles
+that appear &#39;static&#39; or still on-screen and then, after this value,
+begin to move.</p>
+<p>Accessing this property should typically return a number.
+However, it can be set to any valid EmitterOp onEmit type.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType</code></p><h3 id="member-hold-126">hold <a class="anchor" href="#member-hold-126">#</a></h3><pre class="code" data-lang="ts"><code>hold: Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType;</code></pre><p>The number of milliseconds to wait after a particle has finished
+its life before it will be removed. This allows you to &#39;hold&#39; a
+particle on the screen once it has reached its final state
+before it then vanishes.</p>
+<p>Note that all particle updates will cease, including changing
+alpha, scale, movement or animation.</p>
+<p>Accessing this property should typically return a number.
+However, it can be set to any valid EmitterOp onEmit type.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.Particles.EmitterOpOnEmitType</code></p><h3 id="member-flowcounter-127">flowCounter <a class="anchor" href="#member-flowcounter-127">#</a></h3><pre class="code" data-lang="ts"><code>flowCounter: number;</code></pre><p>The internal flow counter.</p>
+<p>Treat this property as read-only.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-framecounter-128">frameCounter <a class="anchor" href="#member-framecounter-128">#</a></h3><pre class="code" data-lang="ts"><code>frameCounter: number;</code></pre><p>The internal frame counter.</p>
+<p>Treat this property as read-only.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-animcounter-129">animCounter <a class="anchor" href="#member-animcounter-129">#</a></h3><pre class="code" data-lang="ts"><code>animCounter: number;</code></pre><p>The internal animation counter.</p>
+<p>Treat this property as read-only.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-elapsed-130">elapsed <a class="anchor" href="#member-elapsed-130">#</a></h3><pre class="code" data-lang="ts"><code>elapsed: number;</code></pre><p>The internal elapsed counter.</p>
+<p>Treat this property as read-only.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-stopcounter-131">stopCounter <a class="anchor" href="#member-stopcounter-131">#</a></h3><pre class="code" data-lang="ts"><code>stopCounter: number;</code></pre><p>The internal stop counter.</p>
+<p>Treat this property as read-only.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-completeflag-132">completeFlag <a class="anchor" href="#member-completeflag-132">#</a></h3><pre class="code" data-lang="ts"><code>completeFlag: boolean;</code></pre><p>The internal complete flag.</p>
+<p>Treat this property as read-only.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-zoneindex-133">zoneIndex <a class="anchor" href="#member-zoneindex-133">#</a></h3><pre class="code" data-lang="ts"><code>zoneIndex: number;</code></pre><p>The internal zone index.</p>
+<p>Treat this property as read-only.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-zonetotal-134">zoneTotal <a class="anchor" href="#member-zonetotal-134">#</a></h3><pre class="code" data-lang="ts"><code>zoneTotal: number;</code></pre><p>The internal zone total.</p>
+<p>Treat this property as read-only.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-currentframe-135">currentFrame <a class="anchor" href="#member-currentframe-135">#</a></h3><pre class="code" data-lang="ts"><code>currentFrame: number;</code></pre><p>The current frame index.</p>
+<p>Treat this property as read-only.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-currentanim-136">currentAnim <a class="anchor" href="#member-currentanim-136">#</a></h3><pre class="code" data-lang="ts"><code>currentAnim: number;</code></pre><p>The current animation index.</p>
+<p>Treat this property as read-only.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-predestroy-137">preDestroy <a class="anchor" href="#member-predestroy-137">#</a></h3><pre class="code" data-lang="ts"><code>preDestroy(): void;</code></pre><p>Destroys this Particle Emitter and all Particles it owns.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="member-filtercamera-138">filterCamera <a class="anchor" href="#member-filtercamera-138">#</a></h3><pre class="code" data-lang="ts"><code>filterCamera: Phaser.Cameras.Scene2D.Camera;</code></pre><p>The Camera used for filters.
+You can use this to alter the perspective of filters.
+It is not necessary to use this camera for ordinary rendering.</p>
+<p>This is only available if you use the <code>enableFilters</code> method.</p>
+<p><b>Type / return:</b> <code>Phaser.Cameras.Scene2D.Camera</code></p><h3 id="member-filters-139">filters <a class="anchor" href="#member-filters-139">#</a></h3><pre class="code" data-lang="ts"><code>readonly filters: Phaser.Types.GameObjects.FiltersInternalExternal | null;</code></pre><p>The filter lists for this Game Object.
+This is an object with <code>internal</code> and <code>external</code> properties.
+Each list is a Phaser.GameObjects.Components.FilterList object.</p>
+<p>This is only available if you use the <code>enableFilters</code> method.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.GameObjects.FiltersInternalExternal | null</code></p><h3 id="member-renderfilters-140">renderFilters <a class="anchor" href="#member-renderfilters-140">#</a></h3><pre class="code" data-lang="ts"><code>renderFilters: boolean;</code></pre><p>Whether any filters should be rendered on this Game Object.
+This is <code>true</code> by default, even if there are no filters yet.
+Disable this to skip filter rendering.</p>
+<p>Use <code>willRenderFilters()</code> to see if there are any active filters.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-maxfiltersize-141">maxFilterSize <a class="anchor" href="#member-maxfiltersize-141">#</a></h3><pre class="code" data-lang="ts"><code>maxFilterSize: Phaser.Math.Vector2;</code></pre><p>The maximum size of the base filter texture.
+Filters may use a larger texture after the base texture is rendered.
+The maximum texture size is at least 4096 in WebGL, based on the hardware.
+You may set this lower to save memory or prevent resizing.</p>
+<p><b>Type / return:</b> <code>Phaser.Math.Vector2</code></p><h3 id="member-filtersautofocus-142">filtersAutoFocus <a class="anchor" href="#member-filtersautofocus-142">#</a></h3><pre class="code" data-lang="ts"><code>filtersAutoFocus: boolean;</code></pre><p>Whether <code>filterCamera</code> should update every frame
+to focus on the Game Object.
+Disable this if you want to manually control the camera.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-filtersfocuscontext-143">filtersFocusContext <a class="anchor" href="#member-filtersfocuscontext-143">#</a></h3><pre class="code" data-lang="ts"><code>filtersFocusContext: boolean;</code></pre><p>Whether the filters should focus on the context,
+rather than attempt to focus on the Game Object.
+This is enabled automatically when enabling filters on objects
+which don&#39;t have well-defined bounds.</p>
+<p>This effectively sets the internal filters to render the same way
+as the external filters.</p>
+<p>This is only used if <code>filtersAutoFocus</code> is enabled.</p>
+<p>The &quot;context&quot; is the framebuffer to which the Game Object is rendered.
+This is usually the main framebuffer, but might be another framebuffer.
+It can even be several different framebuffers if the Game Object is
+rendered multiple times.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-filtersforcecomposite-144">filtersForceComposite <a class="anchor" href="#member-filtersforcecomposite-144">#</a></h3><pre class="code" data-lang="ts"><code>filtersForceComposite: boolean;</code></pre><p>Whether the Filters component should always draw to a framebuffer,
+even if there are no active filters.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-willrenderfilters-145">willRenderFilters <a class="anchor" href="#member-willrenderfilters-145">#</a></h3><pre class="code" data-lang="ts"><code>willRenderFilters(): boolean;</code></pre><p>Whether this Game Object will render filters.
+This is true if it has active filters,
+and if the <code>renderFilters</code> property is also true.undefined
+<strong>returns</strong>  Whether the Game Object will render filters.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-enablefilters-146">enableFilters <a class="anchor" href="#member-enablefilters-146">#</a></h3><pre class="code" data-lang="ts"><code>enableFilters(): this;</code></pre><p>Enable this Game Object to have filters.</p>
+<p>You need to call this method if you want to use the <code>filterCamera</code>
+and <code>filters</code> properties. It sets up the necessary data structures.
+You may disable filter rendering with the <code>renderFilters</code> property.</p>
+<p>This is a WebGL only feature. It will return early if not available.undefined
+<strong>returns</strong>  undefined</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-renderwebglfilters-147">renderWebGLFilters <a class="anchor" href="#member-renderwebglfilters-147">#</a></h3><pre class="code" data-lang="ts"><code>renderWebGLFilters(renderer: Phaser.Renderer.WebGL.WebGLRenderer, gameObject: Phaser.GameObjects.GameObject, drawingContext: Phaser.Renderer.WebGL.DrawingContext, parentMatrix?: Phaser.GameObjects.Components.TransformMatrix, renderStep?: number): Phaser.Types.GameObjects.RenderWebGLStep;</code></pre><p>Render this object using filters.</p>
+<p>This function&#39;s scope is not guaranteed, so it doesn&#39;t refer to <code>this</code>.
+<strong>param</strong>  renderer The WebGL Renderer instance to render with.
+<strong>param</strong>  gameObject The Game Object being rendered.
+<strong>param</strong>  drawingContext The current drawing context.
+<strong>param</strong>  parentMatrix The parent matrix of the Game Object, if it has one.
+<strong>param</strong>  renderStep The index of this function in the Game Object&#39;s list of render processes. Used to support multiple rendering functions. Default 0.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>renderer</code></td><td><code>Phaser.Renderer.WebGL.WebGLRenderer</code></td><td>Required</td></tr><tr><td><code>gameObject</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr><tr><td><code>drawingContext</code></td><td><code>Phaser.Renderer.WebGL.DrawingContext</code></td><td>Required</td></tr><tr><td><code>parentMatrix</code></td><td><code>Phaser.GameObjects.Components.TransformMatrix</code></td><td>Optional</td></tr><tr><td><code>renderStep</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Types.GameObjects.RenderWebGLStep</code></p><h3 id="member-focusfilters-148">focusFilters <a class="anchor" href="#member-focusfilters-148">#</a></h3><pre class="code" data-lang="ts"><code>focusFilters(): this;</code></pre><p>Focus the filter camera.
+This sets the size and position of the filter camera to match the GameObject.
+This is called automatically on render if <code>filtersAutoFocus</code> is enabled.</p>
+<p>This will focus on the GameObject&#39;s raw dimensions if available.
+If the GameObject has no dimensions, this will focus on the context:
+the camera belonging to the DrawingContext used to render the GameObject.
+Context focus occurs during rendering,
+as the context is not known until then.undefined
+<strong>returns</strong>  undefined</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-focusfiltersoncamera-149">focusFiltersOnCamera <a class="anchor" href="#member-focusfiltersoncamera-149">#</a></h3><pre class="code" data-lang="ts"><code>focusFiltersOnCamera(camera: Phaser.Cameras.Scene2D.Camera): this;</code></pre><p>Focus the filter camera on a specific camera.
+This is used internally when <code>filtersFocusContext</code> is enabled.
+<strong>param</strong>  camera The camera to focus on.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>camera</code></td><td><code>Phaser.Cameras.Scene2D.Camera</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-focusfiltersoverride-150">focusFiltersOverride <a class="anchor" href="#member-focusfiltersoverride-150">#</a></h3><pre class="code" data-lang="ts"><code>focusFiltersOverride(x?: number, y?: number, width?: number, height?: number): this;</code></pre><p>Manually override the focus of the filter camera.
+This allows you to set the size and position of the filter camera manually.
+It deactivates <code>filtersAutoFocus</code> when called.</p>
+<p>The camera will set scroll to place the game object at the
+given position within a rectangle of the given width and height.
+For example, calling <code>focusFiltersOverride(400, 200, 800, 600)</code>
+will focus the camera to place the object&#39;s center
+100 pixels above the center of the camera (which is at 400x300).
+<strong>param</strong>  x The x-coordinate of the focus point, relative to the filter size. Default is the center.
+<strong>param</strong>  y The y-coordinate of the focus point, relative to the filter size. Default is the center.
+<strong>param</strong>  width The width of the focus area. Default is the filter width.
+<strong>param</strong>  height The height of the focus area. Default is the filter height.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>width</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setfiltersize-151">setFilterSize <a class="anchor" href="#member-setfiltersize-151">#</a></h3><pre class="code" data-lang="ts"><code>setFilterSize(width: number, height: number): this;</code></pre><p>Set the base size of the filter camera.
+This is the size of the texture that internal filters will be drawn to.
+External filters are drawn to the size of the context (usually the game canvas).</p>
+<p>This is typically the size of the GameObject.
+It is set automatically when the Game Object is rendered
+and <code>filtersAutoFocus</code> is enabled.
+Turn off auto focus to set it manually.</p>
+<p>Technically, larger framebuffers may be used to provide padding.
+This is the size of the final framebuffer used for &quot;internal&quot; rendering.
+<strong>param</strong>  width Base width of the filter texture.
+<strong>param</strong>  height Base height of the filter texture.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>width</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setfiltersautofocus-152">setFiltersAutoFocus <a class="anchor" href="#member-setfiltersautofocus-152">#</a></h3><pre class="code" data-lang="ts"><code>setFiltersAutoFocus(value: boolean): this;</code></pre><p>Sets whether the filter camera should automatically re-focus on the Game Object every frame.
+Sets the <code>filtersAutoFocus</code> property.
+<strong>param</strong>  value Whether filters should be updated every frame.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setfiltersfocuscontext-153">setFiltersFocusContext <a class="anchor" href="#member-setfiltersfocuscontext-153">#</a></h3><pre class="code" data-lang="ts"><code>setFiltersFocusContext(value: boolean): this;</code></pre><p>Set whether the filters should focus on the context.
+Sets the <code>filtersFocusContext</code> property.
+<strong>param</strong>  value Whether the filters should focus on the context.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setfiltersforcecomposite-154">setFiltersForceComposite <a class="anchor" href="#member-setfiltersforcecomposite-154">#</a></h3><pre class="code" data-lang="ts"><code>setFiltersForceComposite(value: boolean): this;</code></pre><p>Set whether the filters should always draw to a framebuffer.
+Sets the <code>filtersForceComposite</code> property.
+<strong>param</strong>  value Whether the object should always draw to a framebuffer, even if there are no active filters.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setrenderfilters-155">setRenderFilters <a class="anchor" href="#member-setrenderfilters-155">#</a></h3><pre class="code" data-lang="ts"><code>setRenderFilters(value: boolean): this;</code></pre><p>Set whether the filters should be rendered.
+Sets the <code>renderFilters</code> property.
+<strong>param</strong>  value Whether the filters should be rendered.
+<strong>returns</strong>  undefined</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-renderwebglstep-156">renderWebGLStep <a class="anchor" href="#member-renderwebglstep-156">#</a></h3><pre class="code" data-lang="ts"><code>renderWebGLStep(renderer: Phaser.Renderer.WebGL.WebGLRenderer, gameObject: Phaser.GameObjects.GameObject, drawingContext: Phaser.Renderer.WebGL.DrawingContext, parentMatrix?: Phaser.GameObjects.Components.TransformMatrix, renderStep?: number, displayList?: Phaser.GameObjects.GameObject[], displayListIndex?: number): void;</code></pre><p>Run a step in the render process.
+This is called automatically by the Render module.</p>
+<p>In most cases, it just runs the <code>renderWebGL</code> function.</p>
+<p>When <code>_renderSteps</code> has more than one entry,
+such as when Filters are enabled for this object,
+it allows those processes to defer <code>renderWebGL</code>
+and otherwise manage the flow of rendering.
+<strong>param</strong>  renderer The WebGL Renderer instance to render with.
+<strong>param</strong>  gameObject The Game Object being rendered.
+<strong>param</strong>  drawingContext The current drawing context.
+<strong>param</strong>  parentMatrix The parent matrix of the Game Object, if it has one.
+<strong>param</strong>  renderStep Which step of the rendering process should be run? Default 0.
+<strong>param</strong>  displayList The display list which is currently being rendered. If not provided, it will be created with the Game Object.
+<strong>param</strong>  displayListIndex The index of the Game Object within the display list. Default 0.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>renderer</code></td><td><code>Phaser.Renderer.WebGL.WebGLRenderer</code></td><td>Required</td></tr><tr><td><code>gameObject</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr><tr><td><code>drawingContext</code></td><td><code>Phaser.Renderer.WebGL.DrawingContext</code></td><td>Required</td></tr><tr><td><code>parentMatrix</code></td><td><code>Phaser.GameObjects.Components.TransformMatrix</code></td><td>Optional</td></tr><tr><td><code>renderStep</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>displayList</code></td><td><code>Phaser.GameObjects.GameObject[]</code></td><td>Optional</td></tr><tr><td><code>displayListIndex</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-addrenderstep-157">addRenderStep <a class="anchor" href="#member-addrenderstep-157">#</a></h3><pre class="code" data-lang="ts"><code>addRenderStep(fn: Phaser.Types.GameObjects.RenderWebGLStep, index?: number): this;</code></pre><p>Adds a render step function to this Game Object&#39;s WebGL render pipeline.</p>
+<p>The first render step in <code>_renderSteps</code> is run first.
+It should call the next render step in the list.
+This allows render steps to control the rendering flow.
+<strong>param</strong>  fn The render step function to add.
+<strong>param</strong>  index The index in the render list to add the step to. Omit to add to the end.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>fn</code></td><td><code>Phaser.Types.GameObjects.RenderWebGLStep</code></td><td>Required</td></tr><tr><td><code>index</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-clearalpha-158">clearAlpha <a class="anchor" href="#member-clearalpha-158">#</a></h3><pre class="code" data-lang="ts"><code>clearAlpha(): this;</code></pre><p>Clears the alpha value associated with this Game Object.</p>
+<p>Immediately sets the alpha back to 1 (fully opaque).undefined
+<strong>returns</strong>  This Game Object instance.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-setalpha-159">setAlpha <a class="anchor" href="#member-setalpha-159">#</a></h3><pre class="code" data-lang="ts"><code>setAlpha(value?: number): this;</code></pre><p>Set the Alpha level of this Game Object. The alpha controls the opacity of the Game Object as it renders.
+Alpha values are provided as a float between 0, fully transparent, and 1, fully opaque.
+<strong>param</strong>  value The alpha value applied across the whole Game Object. Default 1.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-alpha-160">alpha <a class="anchor" href="#member-alpha-160">#</a></h3><pre class="code" data-lang="ts"><code>alpha: number;</code></pre><p>The alpha value of the Game Object.</p>
+<p>This is a global value, impacting the entire Game Object, not just a region of it.
+The value is clamped to the range [0, 1]. Setting alpha to 0 also clears the render
+flag, preventing the Game Object from being drawn until the alpha is raised above 0 again.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-blendmode-161">blendMode <a class="anchor" href="#member-blendmode-161">#</a></h3><pre class="code" data-lang="ts"><code>blendMode: Phaser.BlendModes | string | number;</code></pre><p>Sets the Blend Mode being used by this Game Object.</p>
+<p>This can be a const, such as <code>Phaser.BlendModes.SCREEN</code>, or an integer, such as 4 (for Overlay)</p>
+<p>Under WebGL only the following Blend Modes are available:</p>
+<ul>
+<li>NORMAL</li>
+<li>ADD</li>
+<li>MULTIPLY</li>
+<li>SCREEN</li>
+<li>ERASE</li>
+</ul>
+<p>Canvas has more available depending on browser support.</p>
+<p>You can also create your own custom Blend Modes in WebGL.</p>
+<p>Blend modes have different effects under Canvas and WebGL, and from browser to browser, depending
+on support. Blend Modes also cause a WebGL batch flush should it encounter a new blend mode. For these
+reasons try to be careful about the construction of your Scene and the frequency with which blend modes
+are used.</p>
+<p><b>Type / return:</b> <code>Phaser.BlendModes | string | number</code></p><h3 id="member-setblendmode-162">setBlendMode <a class="anchor" href="#member-setblendmode-162">#</a></h3><pre class="code" data-lang="ts"><code>setBlendMode(value: string | Phaser.BlendModes | number): this;</code></pre><p>Sets the Blend Mode being used by this Game Object.</p>
+<p>This can be a const, such as <code>Phaser.BlendModes.SCREEN</code>, or an integer, such as 4 (for Overlay)</p>
+<p>Under WebGL only the following Blend Modes are available:</p>
+<ul>
+<li>NORMAL</li>
+<li>ADD</li>
+<li>MULTIPLY</li>
+<li>SCREEN</li>
+<li>ERASE (only works when rendering to a framebuffer, like a Render Texture)</li>
+</ul>
+<p>Canvas has more available depending on browser support.</p>
+<p>You can also create your own custom Blend Modes in WebGL.</p>
+<p>Blend modes have different effects under Canvas and WebGL, and from browser to browser, depending
+on support. Blend Modes also cause a WebGL batch flush should it encounter a new blend mode. For these
+reasons try to be careful about the construction of your Scene and the frequency with which blend modes
+are used.
+<strong>param</strong>  value The BlendMode value. Either a string, a CONST or a number.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>string | Phaser.BlendModes | number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-depth-163">depth <a class="anchor" href="#member-depth-163">#</a></h3><pre class="code" data-lang="ts"><code>depth: number;</code></pre><p>The depth of this Game Object within the Scene. Ensure this value is only ever set to a number data-type.</p>
+<p>The depth is also known as the &#39;z-index&#39; in some environments, and allows you to change the rendering order
+of Game Objects, without actually moving their position in the display list.</p>
+<p>The default depth is zero. A Game Object with a higher depth
+value will always render in front of one with a lower value.</p>
+<p>Setting the depth will queue a depth sort event within the Scene.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-setdepth-164">setDepth <a class="anchor" href="#member-setdepth-164">#</a></h3><pre class="code" data-lang="ts"><code>setDepth(value: number): this;</code></pre><p>Sets the depth of this Game Object. If the <code>value</code> argument is not provided, the depth defaults to <code>0</code>.</p>
+<p>The depth is also known as the &#39;z-index&#39; in some environments, and allows you to change the rendering order
+of Game Objects, without actually moving their position in the display list.</p>
+<p>A Game Object with a higher depth value will always render in front of one with a lower value.</p>
+<p>Setting the depth will queue a depth sort event within the Scene.
+<strong>param</strong>  value The depth of this Game Object. Ensure this value is only ever a number data-type.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-settotop-165">setToTop <a class="anchor" href="#member-settotop-165">#</a></h3><pre class="code" data-lang="ts"><code>setToTop(): this;</code></pre><p>Sets this Game Object to be at the top of the display list, or the top of its parent container.</p>
+<p>Being at the top means it will render on top of everything else.</p>
+<p>This method does not change this Game Objects <code>depth</code> value, it simply alters its list position.undefined
+<strong>returns</strong>  This Game Object instance.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-settoback-166">setToBack <a class="anchor" href="#member-settoback-166">#</a></h3><pre class="code" data-lang="ts"><code>setToBack(): this;</code></pre><p>Sets this Game Object to the back of the display list, or the back of its parent container.</p>
+<p>Being at the back means it will render below everything else.</p>
+<p>This method does not change this Game Objects <code>depth</code> value, it simply alters its list position.undefined
+<strong>returns</strong>  This Game Object instance.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-setabove-167">setAbove <a class="anchor" href="#member-setabove-167">#</a></h3><pre class="code" data-lang="ts"><code>setAbove(gameObject: Phaser.GameObjects.GameObject): this;</code></pre><p>Move this Game Object so that it appears above the given Game Object.</p>
+<p>This means it will render immediately after the other object in the display list.</p>
+<p>Both objects must belong to the same display list, or parent container.</p>
+<p>This method does not change this Game Objects <code>depth</code> value, it simply alters its list position.
+<strong>param</strong>  gameObject The Game Object that this Game Object will be moved to be above.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>gameObject</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setbelow-168">setBelow <a class="anchor" href="#member-setbelow-168">#</a></h3><pre class="code" data-lang="ts"><code>setBelow(gameObject: Phaser.GameObjects.GameObject): this;</code></pre><p>Move this Game Object so that it appears below the given Game Object.</p>
+<p>This means it will render immediately under the other object in the display list.</p>
+<p>Both objects must belong to the same display list, or parent container.</p>
+<p>This method does not change this Game Objects <code>depth</code> value, it simply alters its list position.
+<strong>param</strong>  gameObject The Game Object that this Game Object will be moved to be below.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>gameObject</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-lighting-169">lighting <a class="anchor" href="#member-lighting-169">#</a></h3><pre class="code" data-lang="ts"><code>readonly lighting: boolean;</code></pre><p>Controls whether this Game Object participates in the WebGL lighting system.
+When <code>true</code>, the object will respond to dynamic lights added via the Lights plugin,
+using normal maps to calculate per-pixel diffuse lighting.</p>
+<p>This flag is used to select the appropriate WebGL shader at render time.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-selfshadow-170">selfShadow <a class="anchor" href="#member-selfshadow-170">#</a></h3><pre class="code" data-lang="ts"><code>selfShadow: Object;</code></pre><p>Configuration object controlling self-shadowing for this Game Object.
+Self-shadowing causes surfaces to cast contact shadows on themselves based on
+the normal map, giving the appearance of depth. It is only active when
+<code>lighting</code> is also enabled.</p>
+<p>If <code>enabled</code> is <code>null</code>, the value from the game config option <code>render.selfShadow</code>
+is used instead.</p>
+<p>This object is used to select and configure the appropriate WebGL shader at render time.</p>
+<p><b>Type / return:</b> <code>Object</code></p><h3 id="member-setlighting-171">setLighting <a class="anchor" href="#member-setlighting-171">#</a></h3><pre class="code" data-lang="ts"><code>setLighting(enable: boolean): this;</code></pre><p>Enables or disables WebGL-based per-pixel lighting for this Game Object.
+When enabled, the object will respond to dynamic lights added to the scene
+via the Lights plugin, using a normal map for lighting calculations.
+Disabling lighting restores the standard unlit rendering path.
+<strong>param</strong>  enable <code>true</code> to use lighting, or <code>false</code> to disable it.
+<strong>returns</strong>  This GameObject instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>enable</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setselfshadow-172">setSelfShadow <a class="anchor" href="#member-setselfshadow-172">#</a></h3><pre class="code" data-lang="ts"><code>setSelfShadow(enabled?: boolean | undefined, penumbra?: number, diffuseFlatThreshold?: number): this;</code></pre><p>Configures the self-shadowing properties of this Game Object.
+Self-shadowing uses the normal map to cast contact shadows on the surface itself,
+giving the impression of depth and raised detail. It is only active when
+<code>lighting</code> is also enabled on this Game Object.</p>
+<p>Parameters that are <code>undefined</code> are left unchanged, allowing partial updates.
+<strong>param</strong>  enabled <code>true</code> to use self-shadowing, <code>false</code> to disable it, <code>null</code> to use the game default from <code>config.render.selfShadow</code>, or <code>undefined</code> to keep the setting.
+<strong>param</strong>  penumbra The penumbra value for the shadow. Lower is sharper but more jagged. Default is 0.5.
+<strong>param</strong>  diffuseFlatThreshold The texture brightness threshold at which the diffuse lighting will be considered flat. Range is 0-1. Default is 1/3.
+<strong>returns</strong>  This GameObject instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>enabled</code></td><td><code>boolean | undefined</code></td><td>Optional</td></tr><tr><td><code>penumbra</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>diffuseFlatThreshold</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-mask-173">mask <a class="anchor" href="#member-mask-173">#</a></h3><pre class="code" data-lang="ts"><code>mask: Phaser.Display.Masks.GeometryMask;</code></pre><p>The Mask this Game Object is using during render, or <code>null</code> if no mask has been set.</p>
+<p><b>Type / return:</b> <code>Phaser.Display.Masks.GeometryMask</code></p><h3 id="member-setmask-174">setMask <a class="anchor" href="#member-setmask-174">#</a></h3><pre class="code" data-lang="ts"><code>setMask(mask: Phaser.Display.Masks.GeometryMask): this;</code></pre><p>Sets the mask that this Game Object will use to render with.</p>
+<p>The mask must have been previously created and must be a GeometryMask.
+This only works in the Canvas Renderer.
+In WebGL, use a Mask filter instead (see Phaser.GameObjects.Components.FilterList#addMask).</p>
+<p>If a mask is already set on this Game Object it will be immediately replaced.</p>
+<p>Masks are positioned in global space and are not relative to the Game Object to which they
+are applied. The reason for this is that multiple Game Objects can all share the same mask.</p>
+<p>Masks have no impact on physics or input detection. They are purely a rendering component
+that allows you to limit what is visible during the render pass.
+<strong>param</strong>  mask The mask this Game Object will use when rendering.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>mask</code></td><td><code>Phaser.Display.Masks.GeometryMask</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-clearmask-175">clearMask <a class="anchor" href="#member-clearmask-175">#</a></h3><pre class="code" data-lang="ts"><code>clearMask(destroyMask?: boolean): this;</code></pre><p>Clears the mask that this Game Object was using.</p>
+<p>This only works in the Canvas Renderer.
+In WebGL, use a Mask filter instead (see Phaser.GameObjects.Components.FilterList#addMask).
+<strong>param</strong>  destroyMask Destroy the mask before clearing it? Default false.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>destroyMask</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-creategeometrymask-176">createGeometryMask <a class="anchor" href="#member-creategeometrymask-176">#</a></h3><pre class="code" data-lang="ts"><code>createGeometryMask&lt;G extends Phaser.GameObjects.Graphics, S extends Phaser.GameObjects.Shape&gt;(graphics?: Phaser.GameObjects.Graphics | Phaser.GameObjects.Shape): Phaser.Display.Masks.GeometryMask;</code></pre><p>Creates and returns a Geometry Mask. This mask can be used by any Game Object,
+including this one.</p>
+<p>To create the mask you need to pass in a reference to a Graphics Game Object.</p>
+<p>If you do not provide a graphics object, and this Game Object is an instance
+of a Graphics object, then it will use itself to create the mask.</p>
+<p>This means you can call this method to create a Geometry Mask from any Graphics Game Object.</p>
+<p>This only works in the Canvas Renderer.
+In WebGL, use a Mask filter instead (see Phaser.GameObjects.Components.FilterList#addMask).
+<strong>param</strong>  graphics A Graphics Game Object, or any kind of Shape Game Object. The geometry within it will be used as the mask.
+<strong>returns</strong>  This Geometry Mask that was created.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>graphics</code></td><td><code>Phaser.GameObjects.Graphics | Phaser.GameObjects.Shape</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Display.Masks.GeometryMask</code></p><h3 id="member-customrendernodes-177">customRenderNodes <a class="anchor" href="#member-customrendernodes-177">#</a></h3><pre class="code" data-lang="ts"><code>customRenderNodes: object;</code></pre><p>Customized WebGL render nodes of this Game Object.
+RenderNodes are responsible for managing the rendering process of this Game Object.
+A default set of RenderNodes is coded into the engine,
+but the renderer will check this object first to see if a custom node has been set.</p>
+<p><b>Type / return:</b> <code>object</code></p><h3 id="member-defaultrendernodes-178">defaultRenderNodes <a class="anchor" href="#member-defaultrendernodes-178">#</a></h3><pre class="code" data-lang="ts"><code>defaultRenderNodes: object;</code></pre><p>The default RenderNodes for this Game Object.
+RenderNodes are responsible for managing the rendering process of this Game Object.
+These are the nodes that are used if no custom ones are set.</p>
+<p>RenderNodes are identified by a unique key for their role.</p>
+<p>Common role keys include:</p>
+<ul>
+<li>&#39;Submitter&#39;: responsible for running other node roles for each element.</li>
+<li>&#39;Transformer&#39;: responsible for providing vertex coordinates for an element.</li>
+<li>&#39;Texturer&#39;: responsible for handling textures for an element.</li>
+</ul>
+<p><b>Type / return:</b> <code>object</code></p><h3 id="member-rendernodedata-179">renderNodeData <a class="anchor" href="#member-rendernodedata-179">#</a></h3><pre class="code" data-lang="ts"><code>renderNodeData: object;</code></pre><p>An object to store render node specific data in, to be read by the render nodes this Game Object uses.</p>
+<p>Render nodes store their data under their own name, not their role.</p>
+<p><b>Type / return:</b> <code>object</code></p><h3 id="member-initrendernodes-180">initRenderNodes <a class="anchor" href="#member-initrendernodes-180">#</a></h3><pre class="code" data-lang="ts"><code>initRenderNodes(defaultNodes: Map&lt;string, string&gt;): void;</code></pre><p>Initializes the render nodes for this Game Object.</p>
+<p>This method is called when the Game Object is added to the Scene.
+It is responsible for setting up the default render nodes
+this Game Object will use.
+<strong>param</strong>  defaultNodes The default render nodes to set for this Game Object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>defaultNodes</code></td><td><code>Map&lt;string, string&gt;</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-setrendernoderole-181">setRenderNodeRole <a class="anchor" href="#member-setrendernoderole-181">#</a></h3><pre class="code" data-lang="ts"><code>setRenderNodeRole(key: string, renderNode: string | Phaser.Renderer.WebGL.RenderNodes.RenderNode | null, renderNodeData?: object, copyData?: boolean): this;</code></pre><p>Sets the RenderNode for a given role.</p>
+<p>Also sets the relevant render node data object, if specified.</p>
+<p>If the node cannot be set, no changes are made.
+<strong>param</strong>  key The key of the role to set the render node for.
+<strong>param</strong>  renderNode The render node to set on this Game Object. Either a string, or a RenderNode instance. If <code>null</code>, the render node is removed, along with its data.
+<strong>param</strong>  renderNodeData An object to store render node specific data in, to be read by the render nodes this Game Object uses.
+<strong>param</strong>  copyData Should the data be copied from the <code>renderNodeData</code> object? Default false.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>renderNode</code></td><td><code>string | Phaser.Renderer.WebGL.RenderNodes.RenderNode | null</code></td><td>Required</td></tr><tr><td><code>renderNodeData</code></td><td><code>object</code></td><td>Optional</td></tr><tr><td><code>copyData</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setrendernodedata-182">setRenderNodeData <a class="anchor" href="#member-setrendernodedata-182">#</a></h3><pre class="code" data-lang="ts"><code>setRenderNodeData(renderNode: string | Phaser.Renderer.WebGL.RenderNodes.RenderNode, key: string, value: any): this;</code></pre><p>Sets or removes a property in the data object for a specific render node within <code>renderNodeData</code>.</p>
+<p>If <code>key</code> is not set, it is created. If it is set, it is updated.</p>
+<p>If <code>value</code> is undefined and <code>key</code> exists, the key is removed.
+<strong>param</strong>  renderNode The render node to set the data for. If a string, it should be the name of the render node.
+<strong>param</strong>  key The key of the property to set.
+<strong>param</strong>  value The value to set the property to.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>renderNode</code></td><td><code>string | Phaser.Renderer.WebGL.RenderNodes.RenderNode</code></td><td>Required</td></tr><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>value</code></td><td><code>any</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-scrollfactorx-183">scrollFactorX <a class="anchor" href="#member-scrollfactorx-183">#</a></h3><pre class="code" data-lang="ts"><code>scrollFactorX: number;</code></pre><p>The horizontal scroll factor of this Game Object.</p>
+<p>The scroll factor controls the influence of the movement of a Camera upon this Game Object.</p>
+<p>When a camera scrolls it will change the location at which this Game Object is rendered on-screen.
+It does not change the Game Objects actual position values.</p>
+<p>A value of 1 means it will move exactly in sync with a camera.
+A value of 0 means it will not move at all, even if the camera moves.
+Other values control the degree to which the camera movement is mapped to this Game Object.</p>
+<p>Please be aware that scroll factor values other than 1 are not taken into consideration when
+calculating physics collisions. Bodies always collide based on their world position, but changing
+the scroll factor is a visual adjustment to where the textures are rendered, which can offset
+them from physics bodies if not accounted for in your code.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-scrollfactory-184">scrollFactorY <a class="anchor" href="#member-scrollfactory-184">#</a></h3><pre class="code" data-lang="ts"><code>scrollFactorY: number;</code></pre><p>The vertical scroll factor of this Game Object.</p>
+<p>The scroll factor controls the influence of the movement of a Camera upon this Game Object.</p>
+<p>When a camera scrolls it will change the location at which this Game Object is rendered on-screen.
+It does not change the Game Objects actual position values.</p>
+<p>A value of 1 means it will move exactly in sync with a camera.
+A value of 0 means it will not move at all, even if the camera moves.
+Other values control the degree to which the camera movement is mapped to this Game Object.</p>
+<p>Please be aware that scroll factor values other than 1 are not taken into consideration when
+calculating physics collisions. Bodies always collide based on their world position, but changing
+the scroll factor is a visual adjustment to where the textures are rendered, which can offset
+them from physics bodies if not accounted for in your code.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-setscrollfactor-185">setScrollFactor <a class="anchor" href="#member-setscrollfactor-185">#</a></h3><pre class="code" data-lang="ts"><code>setScrollFactor(x: number, y?: number): this;</code></pre><p>Sets the horizontal and vertical scroll factor of this Game Object. If only the <code>x</code> value is
+provided, it is applied to both axes. This is a convenience method for setting <code>scrollFactorX</code>
+and <code>scrollFactorY</code> in a single call.</p>
+<p>The scroll factor controls the influence of the movement of a Camera upon this Game Object.</p>
+<p>When a camera scrolls it will change the location at which this Game Object is rendered on-screen.
+It does not change the Game Objects actual position values.</p>
+<p>A value of 1 means it will move exactly in sync with a camera.
+A value of 0 means it will not move at all, even if the camera moves.
+Other values control the degree to which the camera movement is mapped to this Game Object.</p>
+<p>Please be aware that scroll factor values other than 1 are not taken into consideration when
+calculating physics collisions. Bodies always collide based on their world position, but changing
+the scroll factor is a visual adjustment to where the textures are rendered, which can offset
+them from physics bodies if not accounted for in your code.
+<strong>param</strong>  x The horizontal scroll factor of this Game Object.
+<strong>param</strong>  y The vertical scroll factor of this Game Object. If not set it will use the <code>x</code> value. Default x.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-texture-186">texture <a class="anchor" href="#member-texture-186">#</a></h3><pre class="code" data-lang="ts"><code>texture: Phaser.Textures.Texture | Phaser.Textures.CanvasTexture;</code></pre><p>The Texture this Game Object is using to render with.</p>
+<p><b>Type / return:</b> <code>Phaser.Textures.Texture | Phaser.Textures.CanvasTexture</code></p><h3 id="member-frame-187">frame <a class="anchor" href="#member-frame-187">#</a></h3><pre class="code" data-lang="ts"><code>frame: Phaser.Textures.Frame;</code></pre><p>The Texture Frame this Game Object is using to render with.</p>
+<p><b>Type / return:</b> <code>Phaser.Textures.Frame</code></p><h3 id="member-settexture-188">setTexture <a class="anchor" href="#member-settexture-188">#</a></h3><pre class="code" data-lang="ts"><code>setTexture(key: string | Phaser.Textures.Texture, frame?: string | number, updateSize?: boolean, updateOrigin?: boolean): this;</code></pre><p>Sets the texture and frame this Game Object will use to render with.</p>
+<p>Textures are referenced by their string-based keys, as stored in the Texture Manager.</p>
+<p>Calling this method will modify the <code>width</code> and <code>height</code> properties of your Game Object.</p>
+<p>It will also change the <code>origin</code> if the Frame has a custom pivot point, as exported from packages like Texture Packer.
+<strong>param</strong>  key The key of the texture to be used, as stored in the Texture Manager, or a Texture instance.
+<strong>param</strong>  frame The name or index of the frame within the Texture.
+<strong>param</strong>  updateSize Should this call adjust the size of the Game Object? Default true.
+<strong>param</strong>  updateOrigin Should this call change the origin of the Game Object? Default true.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string | Phaser.Textures.Texture</code></td><td>Required</td></tr><tr><td><code>frame</code></td><td><code>string | number</code></td><td>Optional</td></tr><tr><td><code>updateSize</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>updateOrigin</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setframe-189">setFrame <a class="anchor" href="#member-setframe-189">#</a></h3><pre class="code" data-lang="ts"><code>setFrame(frame: string | number | Phaser.Textures.Frame, updateSize?: boolean, updateOrigin?: boolean): this;</code></pre><p>Sets the frame this Game Object will use to render with.</p>
+<p>If you pass a string or index then the Frame has to belong to the current Texture being used
+by this Game Object.</p>
+<p>If you pass a Frame instance, then the Texture being used by this Game Object will also be updated.</p>
+<p>Calling <code>setFrame</code> will modify the <code>width</code> and <code>height</code> properties of your Game Object.</p>
+<p>It will also change the <code>origin</code> if the Frame has a custom pivot point, as exported from packages like Texture Packer.
+<strong>param</strong>  frame The name or index of the frame within the Texture, or a Frame instance.
+<strong>param</strong>  updateSize Should this call adjust the size of the Game Object? Default true.
+<strong>param</strong>  updateOrigin Should this call adjust the origin of the Game Object? Default true.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>frame</code></td><td><code>string | number | Phaser.Textures.Frame</code></td><td>Required</td></tr><tr><td><code>updateSize</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>updateOrigin</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-hastransformcomponent-190">hasTransformComponent <a class="anchor" href="#member-hastransformcomponent-190">#</a></h3><pre class="code" data-lang="ts"><code>readonly hasTransformComponent: boolean;</code></pre><p>A property indicating that a Game Object has this component.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-x-191">x <a class="anchor" href="#member-x-191">#</a></h3><pre class="code" data-lang="ts"><code>x: number;</code></pre><p>The x position of this Game Object.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-y-192">y <a class="anchor" href="#member-y-192">#</a></h3><pre class="code" data-lang="ts"><code>y: number;</code></pre><p>The y position of this Game Object.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-z-193">z <a class="anchor" href="#member-z-193">#</a></h3><pre class="code" data-lang="ts"><code>z: number;</code></pre><p>The z position of this Game Object.</p>
+<p>Note: The z position does not control the rendering order of 2D Game Objects. Use
+Phaser.GameObjects.Components.Depth#depth instead.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-w-194">w <a class="anchor" href="#member-w-194">#</a></h3><pre class="code" data-lang="ts"><code>w: number;</code></pre><p>The w position of this Game Object.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-scale-195">scale <a class="anchor" href="#member-scale-195">#</a></h3><pre class="code" data-lang="ts"><code>scale: number;</code></pre><p>This is a special setter that allows you to set both the horizontal and vertical scale of this Game Object
+to the same value, at the same time. When reading this value the result returned is <code>(scaleX + scaleY) / 2</code>.</p>
+<p>Use of this property implies you wish the horizontal and vertical scales to be equal to each other. If this
+isn&#39;t the case, use the <code>scaleX</code> or <code>scaleY</code> properties instead.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-scalex-196">scaleX <a class="anchor" href="#member-scalex-196">#</a></h3><pre class="code" data-lang="ts"><code>scaleX: number;</code></pre><p>The horizontal scale of this Game Object.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-scaley-197">scaleY <a class="anchor" href="#member-scaley-197">#</a></h3><pre class="code" data-lang="ts"><code>scaleY: number;</code></pre><p>The vertical scale of this Game Object.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-angle-198">angle <a class="anchor" href="#member-angle-198">#</a></h3><pre class="code" data-lang="ts"><code>angle: number;</code></pre><p>The angle of this Game Object as expressed in degrees.</p>
+<p>Phaser uses a right-hand clockwise rotation system, where 0 is right, 90 is down, 180/-180 is left
+and -90 is up.</p>
+<p>If you prefer to work in radians, see the <code>rotation</code> property instead.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-rotation-199">rotation <a class="anchor" href="#member-rotation-199">#</a></h3><pre class="code" data-lang="ts"><code>rotation: number;</code></pre><p>The angle of this Game Object in radians.</p>
+<p>Phaser uses a right-hand clockwise rotation system, where 0 is right, PI/2 is down, +-PI is left
+and -PI/2 is up.</p>
+<p>If you prefer to work in degrees, see the <code>angle</code> property instead.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-setposition-200">setPosition <a class="anchor" href="#member-setposition-200">#</a></h3><pre class="code" data-lang="ts"><code>setPosition(x?: number, y?: number, z?: number, w?: number): this;</code></pre><p>Sets the position of this Game Object.
+<strong>param</strong>  x The x position of this Game Object. Default 0.
+<strong>param</strong>  y The y position of this Game Object. If not set it will use the <code>x</code> value. Default x.
+<strong>param</strong>  z The z position of this Game Object. Default 0.
+<strong>param</strong>  w The w position of this Game Object. Default 0.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>z</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>w</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-copyposition-201">copyPosition <a class="anchor" href="#member-copyposition-201">#</a></h3><pre class="code" data-lang="ts"><code>copyPosition(source: Phaser.Types.Math.Vector2Like | Phaser.Types.Math.Vector3Like | Phaser.Types.Math.Vector4Like): this;</code></pre><p>Copies an object&#39;s coordinates to this Game Object&#39;s position.
+<strong>param</strong>  source An object with numeric &#39;x&#39;, &#39;y&#39;, &#39;z&#39;, or &#39;w&#39; properties. Undefined values are not copied.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>source</code></td><td><code>Phaser.Types.Math.Vector2Like | Phaser.Types.Math.Vector3Like | Phaser.Types.Math.Vector4Like</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setrandomposition-202">setRandomPosition <a class="anchor" href="#member-setrandomposition-202">#</a></h3><pre class="code" data-lang="ts"><code>setRandomPosition(x?: number, y?: number, width?: number, height?: number): this;</code></pre><p>Sets the position of this Game Object to be a random position within the confines of
+the given area.</p>
+<p>If no area is specified a random position between 0 x 0 and the game width x height is used instead.</p>
+<p>The position does not factor in the size of this Game Object, meaning that only the origin is
+guaranteed to be within the area.
+<strong>param</strong>  x The x position of the top-left of the random area. Default 0.
+<strong>param</strong>  y The y position of the top-left of the random area. Default 0.
+<strong>param</strong>  width The width of the random area.
+<strong>param</strong>  height The height of the random area.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>width</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setrotation-203">setRotation <a class="anchor" href="#member-setrotation-203">#</a></h3><pre class="code" data-lang="ts"><code>setRotation(radians?: number): this;</code></pre><p>Sets the rotation of this Game Object.
+<strong>param</strong>  radians The rotation of this Game Object, in radians. Default 0.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>radians</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setangle-204">setAngle <a class="anchor" href="#member-setangle-204">#</a></h3><pre class="code" data-lang="ts"><code>setAngle(degrees?: number): this;</code></pre><p>Sets the angle of this Game Object.
+<strong>param</strong>  degrees The rotation of this Game Object, in degrees. Default 0.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>degrees</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setscale-205">setScale <a class="anchor" href="#member-setscale-205">#</a></h3><pre class="code" data-lang="ts"><code>setScale(x?: number, y?: number): this;</code></pre><p>Sets the scale of this Game Object.
+<strong>param</strong>  x The horizontal scale of this Game Object. Default 1.
+<strong>param</strong>  y The vertical scale of this Game Object. If not set it will use the <code>x</code> value. Default x.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setx-206">setX <a class="anchor" href="#member-setx-206">#</a></h3><pre class="code" data-lang="ts"><code>setX(value?: number): this;</code></pre><p>Sets the x position of this Game Object.
+<strong>param</strong>  value The x position of this Game Object. Default 0.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-sety-207">setY <a class="anchor" href="#member-sety-207">#</a></h3><pre class="code" data-lang="ts"><code>setY(value?: number): this;</code></pre><p>Sets the y position of this Game Object.
+<strong>param</strong>  value The y position of this Game Object. Default 0.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setz-208">setZ <a class="anchor" href="#member-setz-208">#</a></h3><pre class="code" data-lang="ts"><code>setZ(value?: number): this;</code></pre><p>Sets the z position of this Game Object.</p>
+<p>Note: The z position does not control the rendering order of 2D Game Objects. Use
+Phaser.GameObjects.Components.Depth#setDepth instead.
+<strong>param</strong>  value The z position of this Game Object. Default 0.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setw-209">setW <a class="anchor" href="#member-setw-209">#</a></h3><pre class="code" data-lang="ts"><code>setW(value?: number): this;</code></pre><p>Sets the w position of this Game Object.
+<strong>param</strong>  value The w position of this Game Object. Default 0.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-getlocaltransformmatrix-210">getLocalTransformMatrix <a class="anchor" href="#member-getlocaltransformmatrix-210">#</a></h3><pre class="code" data-lang="ts"><code>getLocalTransformMatrix(tempMatrix?: Phaser.GameObjects.Components.TransformMatrix): Phaser.GameObjects.Components.TransformMatrix;</code></pre><p>Gets the local transform matrix for this Game Object.
+<strong>param</strong>  tempMatrix The matrix to populate with the values from this Game Object.
+<strong>returns</strong>  The populated Transform Matrix.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>tempMatrix</code></td><td><code>Phaser.GameObjects.Components.TransformMatrix</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.GameObjects.Components.TransformMatrix</code></p><h3 id="member-getworldtransformmatrix-211">getWorldTransformMatrix <a class="anchor" href="#member-getworldtransformmatrix-211">#</a></h3><pre class="code" data-lang="ts"><code>getWorldTransformMatrix(tempMatrix?: Phaser.GameObjects.Components.TransformMatrix, parentMatrix?: Phaser.GameObjects.Components.TransformMatrix): Phaser.GameObjects.Components.TransformMatrix;</code></pre><p>Gets the world transform matrix for this Game Object, factoring in any parent Containers.
+<strong>param</strong>  tempMatrix The matrix to populate with the values from this Game Object.
+<strong>param</strong>  parentMatrix A temporary matrix to hold parent values during the calculations.
+<strong>returns</strong>  The populated Transform Matrix.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>tempMatrix</code></td><td><code>Phaser.GameObjects.Components.TransformMatrix</code></td><td>Optional</td></tr><tr><td><code>parentMatrix</code></td><td><code>Phaser.GameObjects.Components.TransformMatrix</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.GameObjects.Components.TransformMatrix</code></p><h3 id="member-getlocalpoint-212">getLocalPoint <a class="anchor" href="#member-getlocalpoint-212">#</a></h3><pre class="code" data-lang="ts"><code>getLocalPoint(x: number, y: number, point?: Phaser.Math.Vector2, camera?: Phaser.Cameras.Scene2D.Camera): Phaser.Math.Vector2;</code></pre><p>Takes the given <code>x</code> and <code>y</code> coordinates and converts them into local space for this
+Game Object, taking into account parent and local transforms, and the Display Origin.</p>
+<p>The returned Vector2 contains the translated point in its properties.</p>
+<p>A Camera needs to be provided in order to handle modified scroll factors. If no
+camera is specified, it will use the <code>main</code> camera from the Scene to which this
+Game Object belongs.
+<strong>param</strong>  x The x position to translate.
+<strong>param</strong>  y The y position to translate.
+<strong>param</strong>  point A Vector2, or point-like object, to store the results in.
+<strong>param</strong>  camera The Camera which is being tested against. If not given will use the Scene default camera.
+<strong>returns</strong>  The translated point.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>point</code></td><td><code>Phaser.Math.Vector2</code></td><td>Optional</td></tr><tr><td><code>camera</code></td><td><code>Phaser.Cameras.Scene2D.Camera</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Math.Vector2</code></p><h3 id="member-getworldpoint-213">getWorldPoint <a class="anchor" href="#member-getworldpoint-213">#</a></h3><pre class="code" data-lang="ts"><code>getWorldPoint(point?: Phaser.Math.Vector2, tempMatrix?: Phaser.GameObjects.Components.TransformMatrix, parentMatrix?: Phaser.GameObjects.Components.TransformMatrix): Phaser.Math.Vector2;</code></pre><p>Gets the world position of this Game Object, factoring in any parent Containers.
+<strong>param</strong>  point A Vector2, or point-like object, to store the result in.
+<strong>param</strong>  tempMatrix A temporary matrix to hold the Game Object&#39;s values.
+<strong>param</strong>  parentMatrix A temporary matrix to hold parent values.
+<strong>returns</strong>  The world position of this Game Object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>point</code></td><td><code>Phaser.Math.Vector2</code></td><td>Optional</td></tr><tr><td><code>tempMatrix</code></td><td><code>Phaser.GameObjects.Components.TransformMatrix</code></td><td>Optional</td></tr><tr><td><code>parentMatrix</code></td><td><code>Phaser.GameObjects.Components.TransformMatrix</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Math.Vector2</code></p><h3 id="member-getparentrotation-214">getParentRotation <a class="anchor" href="#member-getparentrotation-214">#</a></h3><pre class="code" data-lang="ts"><code>getParentRotation(): number;</code></pre><p>Gets the sum total rotation of all of this Game Object&#39;s parent Containers.</p>
+<p>The returned value is in radians and will be zero if this Game Object has no parent container.undefined
+<strong>returns</strong>  The sum total rotation, in radians, of all parent containers of this Game Object.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-visible-215">visible <a class="anchor" href="#member-visible-215">#</a></h3><pre class="code" data-lang="ts"><code>visible: boolean;</code></pre><p>The visible state of the Game Object.</p>
+<p>An invisible Game Object will skip rendering, but will still process update logic.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-setvisible-216">setVisible <a class="anchor" href="#member-setvisible-216">#</a></h3><pre class="code" data-lang="ts"><code>setVisible(value: boolean): this;</code></pre><p>Sets the visibility of this Game Object.</p>
+<p>An invisible Game Object will skip rendering, but will still process update logic.
+<strong>param</strong>  value The visible state of the Game Object.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h2 id="base-types">Base types</h2><p><a href="../../7b/gameobject.html">Phaser.GameObjects.GameObject</a> · <a href="../../components/75/alphasingle.html">Phaser.GameObjects.Components.AlphaSingle</a> · <a href="../../components/25/blendmode.html">Phaser.GameObjects.Components.BlendMode</a> · <a href="../../components/d4/depth.html">Phaser.GameObjects.Components.Depth</a> · <a href="../../components/13/lighting.html">Phaser.GameObjects.Components.Lighting</a> · <a href="../../components/07/mask.html">Phaser.GameObjects.Components.Mask</a> · <a href="../../components/34/rendernodes.html">Phaser.GameObjects.Components.RenderNodes</a> · <a href="../../components/da/scrollfactor.html">Phaser.GameObjects.Components.ScrollFactor</a> · <a href="../../components/19/texture.html">Phaser.GameObjects.Components.Texture</a> · <a href="../../components/3b/transform.html">Phaser.GameObjects.Components.Transform</a> · <a href="../../components/4a/visible.html">Phaser.GameObjects.Components.Visible</a></p><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#an-explicit-static-value">An explicit static value: </a><a href="#a-random-value">A random value: </a><a href="#a-custom-callback">A custom callback: </a><a href="#a-start-end-object">A start / end object: </a><a href="#a-start-end-random-object">A start / end random object: </a><a href="#an-interpolation-object">An interpolation object: </a><a href="#a-stepped-emitter-object">A stepped emitter object: </a><a href="#a-stepped-emitter-object-with-yoyo">A stepped emitter object with yoyo: </a><a href="#a-min-max-object">A min / max object: </a><a href="#a-random-object">A random object: </a><a href="#custom-onemit-and-onupdate-callbacks">Custom onEmit and onUpdate callbacks: </a><a href="#v3-60-differences">v3.60 Differences </a><a href="#members">Public members (217)</a><a href="#base-types">Base types</a></aside></div>
+<script src="../../../../../../../../../assets/cm.classic.js"></script><script src="../../../../../../../../../assets/manual.js"></script></body></html>

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Getting Started With The Flow Graph Editor — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../index.html"><img src="../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../nord/api/api.html">API reference</a><a href="../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../nord/api/api-game.html">Game</a><a href="../../../../../nord/api/api-input.html">Input</a><a href="../../../../../nord/api/api-events.html">Events</a><a href="../../../../../nord/api/api-save.html">Save</a><a href="../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../nord/components/component-text.html">text</a><a href="../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../nord/components/component-light.html">light</a><a href="../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../nord/components/component-model.html">model</a><a href="../../../../../nord/components/component-material.html">material</a><a href="../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../nord/components/component-path.html">path</a><a href="../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../nord/reference/components.html">Component index</a><a href="../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../index.html">Babylon documentation library</a><a href="../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Getting Started With The Flow Graph Editor</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="the-basic-workflow">The Basic Workflow<a class="anchor" href="#the-basic-workflow">#</a></h2>
+<p>The Flow Graph Editor is built around a tight loop:</p>
+<ol>
+<li>Load or prepare a scene.</li>
+<li>Add blocks and connect them into one or more graphs.</li>
+<li>Run the graph against the scene.</li>
+<li>Inspect behavior, adjust the graph, and validate again.</li>
+<li>Save the graph to a file or snippet when it is ready.</li>
+</ol>
+<h2 id="starting-from-the-default-scene">Starting From The Default Scene<a class="anchor" href="#starting-from-the-default-scene">#</a></h2>
+<p>When the editor opens without a scene snippet, it starts with a simple default scene so you can experiment immediately. The default setup includes an orbit camera, a light, a ground plane, and a few primitive meshes.</p>
+<p>This is useful for learning the editor, testing small logic chains, and verifying block behavior before you move to a real project scene.</p>
+<h2 id="loading-a-scene">Loading A Scene<a class="anchor" href="#loading-a-scene">#</a></h2>
+<p>The editor supports two practical ways to load a scene for testing:</p>
+<h3 id="babylon-js-playground-snippet">Babylon.js Playground Snippet<a class="anchor" href="#babylon-js-playground-snippet">#</a></h3>
+<p>You can load a Playground snippet into the Scene Preview panel by entering:</p>
+<ul>
+<li>A snippet ID such as <code>ABC123</code></li>
+<li>A versioned snippet ID such as <code>ABC123#5</code></li>
+<li>A full Playground URL</li>
+</ul>
+<p>Once the scene loads, its meshes, cameras, lights, animation groups, and other objects become available to blocks and property pickers that depend on scene context.</p>
+<p>That scene context is separate from the editor&#39;s execution contexts. The loaded scene provides assets and object references, while execution contexts provide separate runtime state for the same graph logic.</p>
+<h3 id="local-scene-file">Local Scene File<a class="anchor" href="#local-scene-file">#</a></h3>
+<p>You can also drag and drop scene files directly into the Scene Preview pane. This is useful when iterating on local assets or testing flow graphs against scenes that are not yet published to Playground.</p>
+<p>Supported scene-loading workflows currently include Babylon scene files and glTF or GLB assets. For glTF scenes with external resources, drop the referenced files together.</p>
+<p>When a glTF asset contains <code>KHR_interactivity</code>, the editor imports every behavior graph into a separate tab. It selects the asset&#39;s default graph when that graph can run, keeps invalid graphs available for inspection, and reports source-path diagnostics in the log. Imported <code>KHR_interactivity</code> graphs cannot currently be saved or reloaded as Flow Graph JSON because they depend on runtime services owned by the source asset. See <a href="../../features/featuresdeepdive/importers/gltf/khrinteractivity.html">Loading KHR_interactivity Assets</a> for the full runtime and editor behavior.</p>
+<h2 id="scene-context-and-execution-contexts">Scene Context And Execution Contexts<a class="anchor" href="#scene-context-and-execution-contexts">#</a></h2>
+<p>The editor now supports more than one execution context for the same graph.</p>
+<p>The distinction is:</p>
+<ul>
+<li>The <strong>scene context</strong> is the scene you loaded for preview and asset resolution.</li>
+<li>An <strong>execution context</strong> is one independent runtime instance of the graph, with its own variable state.</li>
+</ul>
+<p>In the current implementation, execution contexts share the same scene context but keep separate variables and runtime inspection state.</p>
+<p>For the dedicated reference, see <a href="executioncontexts.html">Execution Contexts</a>.</p>
+<h2 id="working-with-multiple-graphs">Working With Multiple Graphs<a class="anchor" href="#working-with-multiple-graphs">#</a></h2>
+<p>The editor can also keep multiple graph definitions open in the same session.</p>
+<p>Those graphs appear as tabs above the toolbar. Each tab is a separate graph, while still sharing the same loaded scene context for preview and asset resolution.</p>
+<p>This is different from execution contexts:</p>
+<ul>
+<li>Multiple graphs give you separate graph definitions in one session.</li>
+<li>Execution contexts give one selected graph multiple runtime instances.</li>
+</ul>
+<p>Saving and loading preserves the full graph-tab session rather than collapsing everything back into a single graph.</p>
+<p>For the dedicated feature reference, see <a href="multiplegraphs.html">Multiple Graphs In One Editor</a>.</p>
+<h2 id="building-the-first-graph">Building The First Graph<a class="anchor" href="#building-the-first-graph">#</a></h2>
+<p>The editor works with two broad block types:</p>
+<ul>
+<li>Execution blocks drive control flow when events or signals fire.</li>
+<li>Data blocks compute or expose values that feed the execution graph.</li>
+</ul>
+<p>A common first graph looks like this:</p>
+<ol>
+<li>Add an event block that starts the interaction.</li>
+<li>Add one or more data blocks to provide values or references.</li>
+<li>Connect those values into an action block.</li>
+<li>Run the graph and inspect the result in the preview scene.</li>
+</ol>
+<p>If you already know the runtime concepts, this maps directly to the Flow Graph model described in <a href="../../features/featuresdeepdive/flowgraph/flowgraphbasicconcepts.html">Flow Graph Basic Concepts</a>.</p>
+<h2 id="saving-and-restoring-graphs">Saving And Restoring Graphs<a class="anchor" href="#saving-and-restoring-graphs">#</a></h2>
+<p>The editor supports both local files and Babylon.js snippets.</p>
+<h3 id="save-to-file">Save To File<a class="anchor" href="#save-to-file">#</a></h3>
+<p>Saving to file downloads the graph as JSON. This is the most direct option when you want to keep graphs under local version control, share them outside the snippet service, or archive intermediate work.</p>
+<h3 id="save-to-snippet-server">Save To Snippet Server<a class="anchor" href="#save-to-snippet-server">#</a></h3>
+<p>Saving to the Babylon.js snippet server uploads the graph and returns a snippet ID that you can reuse later. If your graph is associated with a Playground scene snippet, that scene reference is stored alongside the graph so the editor can restore the testing context more easily.</p>
+<h3 id="load-from-file-or-snippet">Load From File Or Snippet<a class="anchor" href="#load-from-file-or-snippet">#</a></h3>
+<p>Previously saved graphs can be restored from either a local JSON file or a snippet ID. This makes it easy to switch between experiments, share a graph with collaborators, or move between quick prototypes and longer-lived documentation examples.</p>
+<h2 id="practical-advice-for-early-graphs">Practical Advice For Early Graphs<a class="anchor" href="#practical-advice-for-early-graphs">#</a></h2>
+<ul>
+<li>Start from a small scene and a single interaction.</li>
+<li>Prefer a short graph that you can run and debug immediately.</li>
+<li>Load a real scene only after the core interaction pattern is proven.</li>
+<li>Save often when trying different graph shapes.</li>
+</ul>
+<p>The next step is learning the tools that make larger graphs manageable: execution controls, validation, search, grouping, and runtime debugging.</p>
+<ul>
+<li>If you want a concrete first walkthrough, start with <a href="firstgraphexample.html">Example - Your First Runnable Graph</a>.</li>
+<li>Read <a href="multiplegraphs.html">Multiple Graphs In One Editor</a> if you want to organize several graph definitions in one editor session.</li>
+<li>Continue with <a href="authoringanddebugging.html">Authoring, Validation, and Debugging</a> for the main authoring workflow.</li>
+<li>Read <a href="executioncontexts.html">Execution Contexts</a> if you want to run the same graph logic with separate runtime state.</li>
+<li>Use <a href="editoroperations.html">Editor Operations and Shortcuts</a> as the reference for grouping, clipboard behavior, notes, search, and navigation.</li>
+<li>Use <a href="validationandproperties.html">Validation and Property Editing</a> when you need the rules behind graph validation and block configuration.</li>
+</ul>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#the-basic-workflow">The Basic Workflow </a><a href="#starting-from-the-default-scene">Starting From The Default Scene </a><a href="#loading-a-scene">Loading A Scene </a><a href="#scene-context-and-execution-contexts">Scene Context And Execution Contexts </a><a href="#working-with-multiple-graphs">Working With Multiple Graphs </a><a href="#building-the-first-graph">Building The First Graph </a><a href="#saving-and-restoring-graphs">Saving And Restoring Graphs </a><a href="#practical-advice-for-early-graphs">Practical Advice For Early Graphs </a></aside></div>
+<script src="../../../../../assets/cm.classic.js"></script><script src="../../../../../assets/manual.js"></script></body></html>

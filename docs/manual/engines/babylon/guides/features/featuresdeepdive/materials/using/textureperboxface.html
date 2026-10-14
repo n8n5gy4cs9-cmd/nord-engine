@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Map Materials to Individual Mesh Faces — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../../index.html"><img src="../../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../../index.html">Babylon documentation library</a><a href="../../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Map Materials to Individual Mesh Faces</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><p>This method is only available when creating a mesh using the <em>MeshBuilder</em> method.</p>
+<p>The following meshes have identifiable faces when created with the <em>MeshBuilder</em> method: box, cylinder, extruded polygon, and polyhedron. They have the <em>faceUV</em> and <em>faceColors</em> parameters in their options. This means that each face can have a different texture or color. For colors, a particular color is mapped to a particular face. For textures, part of the image file is mapped to a particular face. This can be done with any image, and it is often useful to use a texture atlas containing a number of images combined into one file.</p>
+<p>If you are concerned about the orientation of the images on the faces, it may be necessary to use different orientations for the separate images in the source file.</p>
+<p>Using these methods on the meshes above means there is no need for submaterials or submeshes.</p>
+<p>As a prerequisite, you may want to learn more about UV mapping on <span>Wikipedia</span>.</p>
+<h2 id="face-numbers">Face Numbers<a class="anchor" href="#face-numbers">#</a></h2>
+<p>The playground below shows that face numbering for <code>MeshBuilder.CreateBox</code> is as follows:</p>
+<ul>
+<li>side 0 faces the positive z direction</li>
+<li>side 1 faces the negative z direction</li>
+<li>side 2 faces the positive x direction</li>
+<li>side 3 faces the negative x direction</li>
+<li>side 4 faces the positive y direction</li>
+<li>side 5 faces the negative y direction</li>
+</ul>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="texture-atlas">Texture Atlas<a class="anchor" href="#texture-atlas">#</a></h2>
+<p>A texture atlas, also known as a <em>sprite sheet</em> or <em>sprite atlas</em>, contains a range of images, as in the example below.</p>
+<p><p class="muted">Upstream illustration: Sprite Atlas (media not bundled).</p></p>
+<p>In this atlas there are 24 different images in 4 rows of 6. Each sprite image is mapped onto a face using uv coordinates. The u coordinate goes horizontally left to right from 0 to 1 and the v coordinate goes vertically bottom to top from 0 to 1.</p>
+<p>To map part of the image, the bottom-left coordinates and top-right coordinates are used. Using (0, 0) and (1, 1) uses the whole texture atlas. In this case, there are six sprites in a row and four in a column, so divide the image into a grid and mark the axes as below.</p>
+<p><p class="muted">Upstream illustration: Sprite Atlas with Grid (media not bundled).</p></p>
+<p>Consider the sprite in the grid space marked with a *. Counting the columns as <code>0, 1, 2, 3, 4, 5</code> and the rows as <code>0, 1, 2, 3</code>, it is in column 2 and row 1, so the bottom left is <code>(2 * 1/6, 1 * 1/4) = (2/6, 1/4)</code> and the top right is <code>((2 + 1) * 1/6, (1 + 1) * 1/4) = (3/6, 2/4)</code>.</p>
+<p>In general for this texture atlas a sprite in column <code>c</code> and row <code>r</code> will have coordinates bottom left <code>(c * 1/6, r * 1/4)</code> and top right <code>((c + 1) * 1/6, (r + 1) * 1/4)</code>. With faces of the mesh numbered from 0 when you want to map face f to the sprite at grid (c, r) take an array faceUV and put</p>
+<pre class="code" data-lang="javascript"><code>faceUV[f] = ((c * 1) / 6, (r * 1) / 4, ((c + 1) * 1) / 6, ((r + 1) * 1) / 4);</code></pre>
+<p>Assigning the texture atlas as a texture material to the mesh is done as usual</p>
+<pre class="code" data-lang="javascript"><code>const mat = new BABYLON.StandardMaterial(&quot;mat&quot;, scene);
+const texture = new BABYLON.Texture(&quot;URL of Texture Atlas&quot;, scene);
+mat.diffuseTexture = texture;
+
+mesh.material = mat;</code></pre>
+<h2 id="colors">Colors<a class="anchor" href="#colors">#</a></h2>
+<p>To apply a color to a face <code>f</code>, just use a <code>faceColors</code> array and assign a color.</p>
+<pre class="code" data-lang="javascript"><code>faceColors[f] = new BABYLON.Color4(r, g, b, a);</code></pre>
+<p>For colors only no material is needed.</p>
+<p>These colors are BJS Color4-class values. The Color4 alpha values become active if we set <code>hasVertexAlpha = true</code> :</p>
+<h2 id="combine-colors-and-textures">Combine Colors and Textures<a class="anchor" href="#combine-colors-and-textures">#</a></h2>
+<p>You can even combine the vertex colors with a colored material.</p>
+<pre class="code" data-lang="javascript"><code>faceUV[f] = ((c * 1) / 6, (r * 1) / 4, ((c + 1) * 1) / 6, ((r + 1) * 1) / 4);
+faceColors[f] = new BABYLON.Color4(r, g, b, a);</code></pre>
+<h2 id="examples-of-per-face-material">Examples of Per Face Material<a class="anchor" href="#examples-of-per-face-material">#</a></h2>
+<p>The box example demonstrates the full scope of this feature. At least one example is provided for each of the other mesh types that can use <em>faceUV</em> and <em>faceColors</em>.</p>
+<h2 id="box-faceuv">Box - faceUV<a class="anchor" href="#box-faceuv">#</a></h2>
+<p>A box has six faces so only the bottom row, row 0, of the texture atlas above is used on the box in these examples.</p>
+<p>To map sprites 0 to 5 onto faces 0 to 5 it is sufficient for the face number to match the column number and to set the row number to 0.</p>
+<pre class="code" data-lang="javascript"><code>const columns = 6; // 6 columns
+const rows = 4; // 4 rows
+
+const faceUV = new Array(6);
+
+for (let i = 0; i &lt; 6; i++) {
+  faceUV[i] = new BABYLON.Vector4(i / columns, 0, (i + 1) / columns, 1 / rows);
+}</code></pre>
+<p>Then this array is passed to the <em>faceUV</em> option to be used in the <em>MeshBuilder.CreateBox()</em> method along with any options for the size of the box and the material formed with the given texture atlas.</p>
+<pre class="code" data-lang="javascript"><code>const options = {
+  width: 10,
+  height: 3,
+  depth: 5,
+  faceUV: faceUV,
+};
+
+const box = BABYLON.MeshBuilder.CreateBox(&quot;box&quot;, options, scene);
+
+const mat = new BABYLON.StandardMaterial(&quot;mat&quot;, scene);
+const texture = new BABYLON.Texture(&quot;URL of Texture Atlas&quot;, scene);
+mat.diffuseTexture = texture;
+box.material = mat;</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><p>You do not have to map all the faces. If you want just one face with an image, map only that face.</p>
+<p>Take the alien sprite on row 0 and column 3 and just map this sprite to face 1.</p>
+<pre class="code" data-lang="javascript"><code>const columns = 6; // 6 columns
+const rows = 4; // 4 rows
+
+const faceUV = new Array(6);
+
+faceUV[1] = new BABYLON.Vector4(3 / columns, 0, (3 + 1) / columns, 1 / rows);</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><p>As you view the box in the above playground from different angles you will notice that the whole texture atlas is applied to all the other faces, that is the default value <code>(0, 0, 1, 1)</code>. When you want to display just the one sprite on the one face and leave the others blank then you need to set all the other faceUV values to <code>(0, 0, 0, 0)</code>.</p>
+<pre class="code" data-lang="javascript"><code>const columns = 6; // 6 columns
+const rows = 4; // 4 rows
+
+const faceUV = new Array(6);
+
+//set all values to zero
+for (let i = 0; i &lt; 6; i++) {
+  faceUV[i] = new BABYLON.Vector4(0, 0, 0, 0);
+}
+
+//overwrite wanted face with sprite coordinates
+faceUV[1] = new BABYLON.Vector4(3 / columns, 0, (3 + 1) / columns, 1 / rows);</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><p>Of course, you can do this with one, two, three, four, or five box faces.</p>
+<p>If you want to add some all-over color to the box, just add a <em>diffuseColor</em> to your material.</p>
+<span class="muted">Online playground (not embedded offline)</span><p>You can also use one texture atlas to apply two different images from the same sheet onto two different meshes.</p>
+<span class="muted">Online playground (not embedded offline)</span><p>Looking more closely at the face images around the sides, you will see that some images are rotated by 90 degrees relative to others. Unfortunately, if you want all images around the sides to have the same orientation, this is not possible by adjusting only the UV coordinates. What can be done by swapping coordinates is covered next, followed by a method that adjusts the texture atlas to orient the images on the sides.</p>
+<h3 id="how-to-orientate-a-sprite-on-a-face-with-faceuv">How To Orientate a Sprite on a Face with faceUV<a class="anchor" href="#how-to-orientate-a-sprite-on-a-face-with-faceuv">#</a></h3>
+<p>Because of how UV coordinates are interpreted it is possible to reflect a sprite horizontally, vertically or both (which is the same as an 180 degree rotation). Any other rotation has to be dealt with by rotating the sprite within the texture atlas.</p>
+<p>Consider the alien with bottom left and top right coordinates for UV as shown.</p>
+<p><p class="muted">Upstream illustration: alien sprite (media not bundled).</p></p>
+<p>To set this to face one in its current orientation you would use</p>
+<pre class="code" data-lang="javascript"><code>faceUV[1] = new BABYLON.Vector4(Ubottom_left, Vbottom_left, Utop_right, Vtop_right);</code></pre>
+<p>To reflect in a vertical line swap the horizontal, U, coordinates.</p>
+<pre class="code" data-lang="javascript"><code>faceUV[1] = new BABYLON.Vector4(Utop_right, Vbottom_left, Ubottom_left, Vtop_right);</code></pre>
+<p>To reflect in a horizontal line swap the vertical, V, coordinates.</p>
+<pre class="code" data-lang="javascript"><code>faceUV[1] = new BABYLON.Vector4(Ubottom_left, Vtop_right, Utop_right, Vbottom_left);</code></pre>
+<p>To reflect in both horizontal and vertical lines, swap the U coordinates and also swap the V coordinates.</p>
+<pre class="code" data-lang="javascript"><code>faceUV = new BABYLON.Vector4(Utop_right, Vtop_right, Ubottom_left, Vbottom_left);</code></pre>
+<p>You can use the images on the other faces in the following playground to check the change on orientation of the alien sprite in all the reflections.</p>
+<span class="muted">Online playground (not embedded offline)</span><p>Since a Vector4 has the properties x, y, z, w (in that order), setting</p>
+<pre class="code" data-lang="javascript"><code>faceUV[1] = new BABYLON.Vector4(Ubottom_left, Vbottom_left, Utop_right, Vtop_right);</code></pre>
+<p>means</p>
+<pre class="code" data-lang="javascript"><code>faceUV[1].x = Ubottom_left;
+faceUV[1].y = Vbottom_left;
+faceUV[1].z = Utop_right;
+faceUV[1].w = Vtop_right;</code></pre>
+<p>which gives another way to swap coordinates. For example, to reflect in a vertical line, do</p>
+<pre class="code" data-lang="javascript"><code>const temp = faceUV[1].x;
+faceUV[f].x = faceUV[f].z;
+faceUV[f].z = temp;</code></pre>
+<h3 id="how-to-orientate-a-sprite-on-a-face-with-the-texture-atlas-from-version-4-0">How To Orientate a Sprite on a Face with the Texture Atlas From Version 4.0<a class="anchor" href="#how-to-orientate-a-sprite-on-a-face-with-the-texture-atlas-from-version-4-0">#</a></h3>
+<p>Three new optional parameters were added to <code>CreateBox</code> in the V4.0 update:</p>
+<ul>
+<li>wrap - boolean (default = false), when true all vertical sides (0, 1, 2, 3) will apply image textures in the correct upright direction, and the two horizontal sides (4, 5) will apply image textures so that when the box is rotated around the x axis and these sides become vertical, the applied image textures will keep their original orientations;</li>
+<li>topBaseAt - integer, 0, 1, 2, 3, (default = 1), the bottom (base) of the image for the top of the box is next to the side with the number given;</li>
+<li>bottomBaseAt - integer, 0, 1, 2, 3, (default = 0), the bottom (base) of the image for the bottom of the box is next to the side with the number given.</li>
+</ul>
+<p>In the following playground, the two boxes at the top do not use the wrap parameter, and the results are backward compatible with earlier versions of Babylon.js. The lower boxes have wrap set to true.</p>
+<span class="muted">Online playground (not embedded offline)</span><p>The next playground shows the use of non-default values for topBaseAt and bottomBaseAt.</p>
+<span class="muted">Online playground (not embedded offline)
+Online playground (not embedded offline)</span><h3 id="how-to-orientate-a-sprite-on-a-face-with-the-texture-atlas-before-version-4-0">How To Orientate a Sprite on a Face with the Texture Atlas Before Version 4.0<a class="anchor" href="#how-to-orientate-a-sprite-on-a-face-with-the-texture-atlas-before-version-4-0">#</a></h3>
+<p>Here consider just the orientation of the sides as viewed in the playground below.</p>
+<p>Take the following texture atlas</p>
+<p><p class="muted">Upstream illustration: letters (media not bundled).</p></p>
+<p>and apply it to a cube to give the playground below</p>
+<span class="muted">Online playground (not embedded offline)</span><p>Looking at the playground tells you two things</p>
+<ol>
+<li>Which face is number 0, which is number 1 and so on by matching letter to number</li>
+<li>Going round the sides the orientations vary by 90 degrees.</li>
+</ol>
+<p>As you saw in the previous section it is possible to doubly reflect A so it is the right way up. It is not possible to do this with C and D. To have A, B, C, and D all the same way up the texture atlas itself has to be changed.</p>
+<p>A is rotated 180 degrees and C and D are rotated 90 degrees counter clockwise. Taking this into account change the texture atlas to</p>
+<p><p class="muted">Upstream illustration: rotated letters (media not bundled).</p></p>
+<p>resulting in the following playground</p>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="box-facecolors">Box - faceColors<a class="anchor" href="#box-facecolors">#</a></h2>
+<p>For this, no material is needed.</p>
+<p>Define a 6-element array <em>faceColors</em> (one entry for each box face) and set the color of the faces you want.</p>
+<pre class="code" data-lang="javascript"><code>const faceColors = new Array(6);
+
+faceColors[4] = new BABYLON.Color4(1, 0, 0, 1); // red top
+faceColors[1] = new BABYLON.Color4(0, 1, 0, 1); // green front</code></pre>
+<p>Then pass this array to the <em>MeshBuilder.CreateBox()</em> method with the new <em>faceColors</em> parameter of options.</p>
+<pre class="code" data-lang="javascript"><code>const options = {
+  width: 10,
+  height: 3,
+  depth: 5,
+  faceColors: faceColors,
+};
+
+const box = BABYLON.MeshBuilder.CreateBox(&quot;box&quot;, options, scene);</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><p>These colors are BJS Color4-class values. The Color4 alpha values become active if you set <code>hasVertexAlpha = true</code> for the box.</p>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="box-mix-face-textures-and-colors">Box - Mix Face Textures and Colors<a class="anchor" href="#box-mix-face-textures-and-colors">#</a></h2>
+<p>Finally, you can also mix per-face colors with per-face textures, and/or mix either with the material&#39;s standard colors.</p>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="cylinder">Cylinder<a class="anchor" href="#cylinder">#</a></h2>
+<p>A cylinder has three surfaces: the top, the bottom, and the tube joining them. For the face options, face 0 is the bottom, face 1 is the tube, and face 2 is the top.</p>
+<p>The following texture image is split into two parts, an approximation to a top and the label. The bottom will be colored just using faceColors and so the bottom face uv coordinates will be 0, 0, 0, 0.</p>
+<p><p class="muted">Upstream illustration: can label and top (media not bundled).</p></p>
+<p>The label part has width 866 pixels and height 319 pixels.</p>
+<p>So you need the tube surface to have the same height-to-width ratio.</p>
+<p>When you create a cylinder with a default diameter of 1, the rectangle wrapping around the tube surface will have a width of &pi;.</p>
+<p>Letting h be the height of the cylinder then to not distort the aspect ratio of the image wrapped around the cylinder keep the ratios h/&pi; and 319/866 the same.</p>
+<p>So make h = &pi; * 319/866 = 1.16 to 2 decimal places.</p>
+<p>Also note that because of how a cylinder&#39;s mesh is constructed, the horizontal coordinates (U) are swapped in faceUV[1] for the wrapped image to correct the reflection of the image.</p>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="extruded-polygon">Extruded Polygon<a class="anchor" href="#extruded-polygon">#</a></h2>
+<p>An extruded polygon has three surfaces: top, bottom, and extruded sides. Face 0 is the top, face 1 is the extruded sides, and face 2 is the bottom.</p>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="polyhedra">Polyhedra<a class="anchor" href="#polyhedra">#</a></h2>
+<p>You can use a texture atlas with all polyhedra; however, without very careful consideration of the nature of the texture atlas, the results can look a little random.</p>
+<span class="muted">Online playground (not embedded offline)</span><p>Using each sprite as a texture rather than as part of a picture makes more sense.</p>
+<span class="muted">Online playground (not embedded offline)</span><p>Just colors work well.</p>
+<span class="muted">Online playground (not embedded offline)
+</span><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#face-numbers">Face Numbers </a><a href="#texture-atlas">Texture Atlas </a><a href="#colors">Colors </a><a href="#combine-colors-and-textures">Combine Colors and Textures </a><a href="#examples-of-per-face-material">Examples of Per Face Material </a><a href="#box-faceuv">Box - faceUV </a><a href="#box-facecolors">Box - faceColors </a><a href="#box-mix-face-textures-and-colors">Box - Mix Face Textures and Colors </a><a href="#cylinder">Cylinder </a><a href="#extruded-polygon">Extruded Polygon </a><a href="#polyhedra">Polyhedra </a></aside></div>
+<script src="../../../../../../../assets/cm.classic.js"></script><script src="../../../../../../../assets/manual.js"></script></body></html>

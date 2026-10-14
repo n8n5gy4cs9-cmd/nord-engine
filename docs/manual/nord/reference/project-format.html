@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Project format — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../api/api.html">API reference</a><a href="../api/api-namespaces.html">game.* namespaces</a><a href="../api/api-nordscript.html">NordScript</a><a href="../api/api-entity.html">Entity</a><a href="../api/api-scene.html">Scene</a><a href="../api/api-game.html">Game</a><a href="../api/api-input.html">Input</a><a href="../api/api-events.html">Events</a><a href="../api/api-save.html">Save</a><a href="../api/api-audio.html">Audio</a><a href="../api/api-ui.html">UI</a><a href="../api/api-scheduler.html">Scheduler</a><a href="../api/api-rng.html">Rng</a><a href="../api/api-pool.html">Pool</a><a href="../api/api-loader.html">Loader</a><a href="../api/api-memorystorage.html">MemoryStorage</a><a href="../api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../api/api-matteradapter.html">MatterAdapter</a><a href="../api/api-havokadapter.html">HavokAdapter</a><a href="../api/api-helpers.html">Math &amp; helpers</a><a href="../api/api-exports.html">All Nord public exports</a><a href="../api/api-desktop.html">Desktop bridge</a><a href="../api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../components/component-sprite.html">sprite</a><a href="../components/component-animatedSprite.html">animatedSprite</a><a href="../components/component-text.html">text</a><a href="../components/component-tilemap.html">tilemap</a><a href="../components/component-parallax.html">parallax</a><a href="../components/component-particles.html">particles</a><a href="../components/component-camera.html">camera</a><a href="../components/component-light.html">light</a><a href="../components/component-mesh.html">mesh</a><a href="../components/component-model.html">model</a><a href="../components/component-material.html">material</a><a href="../components/component-skybox.html">skybox</a><a href="../components/component-postProcess.html">postProcess</a><a href="../components/component-rigidbody.html">rigidbody</a><a href="../components/component-collider.html">collider</a><a href="../components/component-trigger.html">trigger</a><a href="../components/component-audioSource.html">audioSource</a><a href="../components/component-audioListener.html">audioListener</a><a href="../components/component-uiPanel.html">uiPanel</a><a href="../components/component-uiLabel.html">uiLabel</a><a href="../components/component-uiImage.html">uiImage</a><a href="../components/component-uiBar.html">uiBar</a><a href="../components/component-uiButton.html">uiButton</a><a href="../components/component-path.html">path</a><a href="../components/component-spawner.html">spawner</a></details><details open><summary>Reference</summary><a href="project-format.html" class="cur" aria-current="page">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../engines/babylon/9.30/index.html">Babylon 9.30.0 API</a><a href="../../engines/phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../engines/babylon/guides/index.html">Babylon documentation library</a><a href="../../engines/phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Reference / Nord Engine</div><h1>Project format</h1>
+<p>All files are UTF-8 JSON, pretty-printed (2 spaces), stable key order, trailing newline.</p>
+<h2 id="project-folder">Project folder<a class="anchor" href="#project-folder">#</a></h2>
+<pre class="code" data-lang=""><code>my-game/
+├─ nord.project.json
+├─ scenes/main.scene.json
+├─ prefabs/player.prefab.json
+├─ scripts/player.js            # JS scripts (ES modules); or src/ for Rust tiers
+├─ assets/…                     # images, audio, models, fonts, tilemaps
+├─ .nord-cache/                 # thumbs, import cache (gitignored)
+└─ dist/                        # build output (gitignored)</code></pre>
+<h2 id="nord-project-json">nord.project.json<a class="anchor" href="#nord-project-json">#</a></h2>
+<pre class="code" data-lang="json"><code>{
+  &quot;format&quot;: 1,
+  &quot;name&quot;: &quot;My Game&quot;,
+  &quot;id&quot;: &quot;com.crowelian.mygame&quot;,
+  &quot;type&quot;: &quot;2d&quot;,                       // 2d | 3d | wasm-game | wasm-app | html
+  &quot;engineVersion&quot;: &quot;0.1.0&quot;,
+  &quot;startScene&quot;: &quot;scenes/main.scene.json&quot;,
+  &quot;display&quot;: { &quot;width&quot;: 1280, &quot;height&quot;: 720, &quot;scale&quot;: &quot;fit&quot;, &quot;pixelArt&quot;: false, &quot;background&quot;: &quot;#101418&quot; },
+  &quot;physics&quot;: { &quot;engine&quot;: &quot;arcade&quot;, &quot;gravity&quot;: [0, 980, 0] },   // arcade|matter|havok|rapier|none
+  &quot;input&quot;: { &quot;actions&quot;: { &quot;jump&quot;: [&quot;Space&quot;, &quot;Gamepad0&quot;], &quot;left&quot;: [&quot;KeyA&quot;,&quot;ArrowLeft&quot;] } },
+  &quot;plugins&quot;: [&quot;ui&quot;, &quot;audio&quot;],         // optional nord.js modules to include
+  &quot;export&quot;: { &quot;web&quot;: { &quot;singleFile&quot;: false, &quot;minify&quot;: true }, &quot;mac&quot;: { &quot;bundleId&quot;: &quot;com.crowelian.mygame&quot;, &quot;icon&quot;: &quot;assets/icon.png&quot; } }
+}</code></pre>
+<h2 id="scene-scene-json">Scene (<code>*.scene.json</code>)<a class="anchor" href="#scene-scene-json">#</a></h2>
+<pre class="code" data-lang="json"><code>{
+  &quot;format&quot;: 1,
+  &quot;name&quot;: &quot;main&quot;,
+  &quot;settings&quot;: { &quot;ambient&quot;: &quot;#222233&quot;, &quot;skybox&quot;: null, &quot;gravity&quot;: null },
+  &quot;entities&quot;: [
+    {
+      &quot;id&quot;: &quot;k3j9x0a1&quot;,                // unique 8-char base36
+      &quot;name&quot;: &quot;Player&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [&quot;player&quot;],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: { &quot;pos&quot;: [100, 300, 0], &quot;rot&quot;: [0, 0, 0], &quot;scale&quot;: [1, 1, 1] },
+      &quot;components&quot;: [
+        { &quot;type&quot;: &quot;sprite&quot;, &quot;texture&quot;: &quot;assets/sprites/player.png&quot;, &quot;frame&quot;: 0, &quot;tint&quot;: &quot;#ffffff&quot;, &quot;flipX&quot;: false },
+        { &quot;type&quot;: &quot;rigidbody&quot;, &quot;mode&quot;: &quot;dynamic&quot;, &quot;mass&quot;: 1, &quot;drag&quot;: 0.1 },
+        { &quot;type&quot;: &quot;collider&quot;, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: [16, 24], &quot;trigger&quot;: false }
+      ],
+      &quot;scripts&quot;: [
+        { &quot;path&quot;: &quot;scripts/player.js&quot;, &quot;attributes&quot;: { &quot;speed&quot;: 220, &quot;jumpForce&quot;: 520 } }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null                    // or { &quot;path&quot;: &quot;prefabs/x.prefab.json&quot;, &quot;overrides&quot;: {…} }
+    }
+  ]
+}</code></pre>
+<p>Units: 2D = pixels, y down; 3D = metres, y up, left-handed (Babylon default). Rotation = degrees (Euler XYZ).</p>
+<h2 id="built-in-components-v1">Built-in components (v1)<a class="anchor" href="#built-in-components-v1">#</a></h2>
+<p><code>sprite, animatedSprite, text, tilemap, particles, camera, light, mesh (primitive), model (glTF), material, rigidbody, collider, audioSource, audioListener, uiPanel/uiButton/uiLabel/uiImage/uiBar, trigger, path, spawner</code>.
+Each component has a JSON schema <code>{ type, fields:[{name,type,default,min,max,enum,label}] }</code> in
+<code>runtime/core/components/*.schema.json</code>; the <strong>inspector is generated from schemas</strong> (same for script <code>attributes</code>).
+Attribute types: <code>number, int, bool, string, color, vec2, vec3, enum, entity, asset(image|audio|model|json|prefab), curve, array&lt;T&gt;</code>.</p>
+<h2 id="prefab">Prefab<a class="anchor" href="#prefab">#</a></h2>
+<p>Same as a scene with a single root entity: <code>{ &quot;format&quot;:1, &quot;root&quot;: {entity…} }</code>.</p>
+<h2 id="asset-metadata">Asset metadata<a class="anchor" href="#asset-metadata">#</a></h2>
+<p>Sidecar <code>assets/foo.png.meta.json</code> only when non-default: <code>{ &quot;type&quot;:&quot;spritesheet&quot;,&quot;frameWidth&quot;:32,&quot;frameHeight&quot;:32, &quot;anims&quot;:{&quot;walk&quot;:{&quot;frames&quot;:[0,3],&quot;fps&quot;:10,&quot;loop&quot;:true}}, &quot;filter&quot;:&quot;nearest&quot;, &quot;tags&quot;:[&quot;character&quot;] }</code>.</p>
+<h2 id="library-index-library-index-json">Library index (<code>library/INDEX.json</code>)<a class="anchor" href="#library-index-library-index-json">#</a></h2>
+<p><code>[{ &quot;id&quot;:&quot;controller.platformer2d&quot;, &quot;title&quot;:&quot;…&quot;, &quot;category&quot;:&quot;controllers&quot;, &quot;tags&quot;:[], &quot;tier&quot;:[&quot;2d&quot;], &quot;file&quot;:&quot;…&quot;, &quot;description&quot;:&quot;…&quot;, &quot;attributes&quot;:[…], &quot;requires&quot;:[&quot;physics.arcade&quot;], &quot;demo&quot;:&quot;examples/…&quot;, &quot;source&quot;:&quot;original|&lt;upstream&gt;&quot; }]</code></p>
+<h2 id="attribute-types">Attribute types<a class="anchor" href="#attribute-types">#</a></h2>
+<p>Used by script <code>static attributes</code> and component schemas (the inspector draws a widget for each).</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>JSON value</th>
+<th>Options</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>number</code></td>
+<td>float</td>
+<td><code>min</code>, <code>max</code>, <code>step</code>, <code>default</code>, <code>label</code></td>
+</tr>
+<tr>
+<td><code>int</code></td>
+<td>integer</td>
+<td><code>min</code>, <code>max</code></td>
+</tr>
+<tr>
+<td><code>bool</code></td>
+<td>true/false</td>
+<td></td>
+</tr>
+<tr>
+<td><code>string</code></td>
+<td>text</td>
+<td></td>
+</tr>
+<tr>
+<td><code>color</code></td>
+<td><code>&quot;#rrggbb&quot;</code> (3–8 hex digits accepted)</td>
+<td></td>
+</tr>
+<tr>
+<td><code>vec2</code> / <code>vec3</code></td>
+<td><code>[x, y]</code> / <code>[x, y, z]</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>enum</code></td>
+<td>one of <code>options</code></td>
+<td><code>options: [...]</code> (script attributes)</td>
+</tr>
+<tr>
+<td><code>entity</code></td>
+<td>entity name or id</td>
+<td></td>
+</tr>
+<tr>
+<td><code>asset</code></td>
+<td>project-relative path</td>
+<td><code>assetType</code>: <code>image</code> <code>audio</code> <code>model</code> <code>json</code> <code>prefab</code></td>
+</tr>
+<tr>
+<td><code>curve</code></td>
+<td>list of <code>[t, value]</code> points</td>
+<td></td>
+</tr>
+<tr>
+<td><code>array</code></td>
+<td>list of values</td>
+<td>element type</td>
+</tr>
+</tbody></table>
+<p>Invalid values fall back to the default with a console warning; numbers are clamped to <code>min</code>/<code>max</code>; unknown attribute names warn.</p>
+<div class="pager"><span></span><a href="components.html"><small>Next →</small>Component index</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#project-folder">Project folder </a><a href="#nord-project-json">nord.project.json </a><a href="#scene-scene-json">Scene ( *.scene.json ) </a><a href="#built-in-components-v1">Built-in components (v1) </a><a href="#prefab">Prefab </a><a href="#asset-metadata">Asset metadata </a><a href="#library-index-library-index-json">Library index ( library/INDEX.json ) </a><a href="#attribute-types">Attribute types </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

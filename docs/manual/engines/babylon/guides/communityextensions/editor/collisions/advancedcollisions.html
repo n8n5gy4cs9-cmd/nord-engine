@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Advanced Collisions — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../index.html"><img src="../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../index.html">Babylon documentation library</a><a href="../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Advanced Collisions</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="setting-advanced-collisions">Setting Advanced Collisions<a class="anchor" href="#setting-advanced-collisions">#</a></h2>
+<p>Checking collisions on complex objects can have a big impact on performance, even for cameras and meshes
+using the <code>.moveWithCollisions</code> method. The editor provides a tool to easily set up collision shapes on any mesh object in the scene
+in order to improve performance.</p>
+<h2 id="introduction">Introduction<a class="anchor" href="#introduction">#</a></h2>
+<h3 id="basic-collisions">Basic Collisions<a class="anchor" href="#basic-collisions">#</a></h3>
+<p>By default, Babylon.JS checks for collisions using a complex algorithm that checks collisions per triangle for each mesh near the camera
+or the mesh being moved with collisions. Sometimes, checking collisions on the bounding box is more than sufficient.</p>
+<p>The method would consist of:</p>
+<ul>
+<li>Create by code a new cube mesh or sphere mesh (named <code>collider</code>)</li>
+<li>Add the collider as a child of the mesh</li>
+<li>Apply the bounding box properties of the mesh to the collider</li>
+<li>Disable collisions on the mesh and enable collisions on the collider.</li>
+</ul>
+<p>In that way, the collider will always follow the transform of the mesh, and the camera will only check collisions on the cube or sphere collider
+instead of checking collisions on the entire mesh per triangle.</p>
+<h3 id="advanced-collisions">Advanced Collisions<a class="anchor" href="#advanced-collisions">#</a></h3>
+<p>Let&#39;s imagine a more complex scenario where box and sphere collisions are not sufficient: <strong>the stairs</strong>. In that case, only &quot;per triangle&quot; collisions will allow you to go upstairs in a natural way.</p>
+<p>If the stairs 3D model is too complex, and in order to save performance, the solution would be to provide
+(or generate on the fly) a less detailed 3D model for the stairs.</p>
+<p>The method would consist of creating a lower level-of-detail object for the source mesh (instead of a cube or sphere), made by an
+artist or using the <a href="../../../features/featuresdeepdive/mesh/simplifyingmeshes.html">Auto-LOD Simplification Tool of Babylon.JS</a>
+and perform the same next steps for <code>Basic Collisions</code>.</p>
+<p>The problem here is that generating a lower level of detail takes time, and simplifying a mesh using the simplification method
+is asynchronous.</p>
+<h3 id="editor-to-the-rescue">Editor To The Rescue<a class="anchor" href="#editor-to-the-rescue">#</a></h3>
+<p>The editor provides a tool to generate these <code>colliders</code> for each mesh to save time and improve performance.</p>
+<h2 id="editing-advanced-collisions">Editing Advanced Collisions<a class="anchor" href="#editing-advanced-collisions">#</a></h2>
+<p>To edit advanced collisions, select a mesh in the graph, scroll in the inspector to find the <code>Collisions</code> section,
+and click the <code>Edit Advanced Collisions...</code> button. When clicked, a new tool opens over the inspector showing the current
+state of the object&#39;s collisions.</p>
+<p><p class="muted">Upstream illustration: AdvancedCollisions (media not bundled).</p></p>
+<h2 id="understanding-the-tool">Understanding The Tool<a class="anchor" href="#understanding-the-tool">#</a></h2>
+<p>Once opened, the tool shows the current collision state of the object (here <code>None</code>). To select a collider type,
+just open the list box and select the desired collider type. Each time a collider type is changed, the mesh&#39;s collision component
+is updated in the preview and shown in red.</p>
+<p><em>Note: For meshes that have instances, each time a collider type is changed, all instances are updated to introduce the new collider
+component.</em></p>
+<h3 id="cube-collider">Cube Collider<a class="anchor" href="#cube-collider">#</a></h3>
+<p>The <code>Cube</code> collider is the most performant collider and allows collisions to be checked only on the bounding box of the mesh.</p>
+<p><p class="muted">Upstream illustration: CubeColliderTool (media not bundled).</p></p>
+<p>In other words, just imagine that the following model will have collisions checked as if it were a cube instead of a complex mesh:</p>
+<p><p class="muted">Upstream illustration: CubeCollider (media not bundled).</p></p>
+<h3 id="sphere-collider">Sphere Collider<a class="anchor" href="#sphere-collider">#</a></h3>
+<p>As with the <code>Cube</code> collider, the <code>Sphere</code> collider checks collisions on the bounding sphere of the mesh
+instead of the bounding box of the mesh. In some cases, that collider can be useful, especially if the moving platform is a sphere.</p>
+<h3 id="lod-collider">LOD Collider<a class="anchor" href="#lod-collider">#</a></h3>
+<p>Taking the specific scenario example (the stairs), the tool allows you to create an Auto-LOD according to a few properties.
+It uses the <code>QuadraticErrorSimplification</code> implementation in Babylon.JS and allows you to pre-generate the lower level of detail
+that will be saved as well as the rest of the scene. In other words, no extra work is needed.</p>
+<p>To understand the properties, check the
+<a href="../../../features/featuresdeepdive/mesh/simplifyingmeshes.html">following documentation</a>
+for the <code>Optimize Mesh</code> property and the
+<a href="../../../features/featuresdeepdive/mesh/simplifyingmeshes.html">following documentation</a>
+for the quality property.</p>
+<p>For information, the tool shows the base vertex count vs. the LOD vertex count. This can help you understand how much the mesh
+has been simplified. Take care not to simplify too much in order to keep the overall topology of the mesh in the case of, for example,
+the stairs.</p>
+<p>In most cases, setting the quality as &quot;0.01&quot; works where the vertices count can change from <code>77 424</code> to <code>882</code>.</p>
+<p><p class="muted">Upstream illustration: LODColliderTool (media not bundled).</p></p>
+<p>Once the properties are set, just click the <code>Compute...</code> button to generate the LOD, and an overlay appears to indicate that the
+algorithm is working. Once done, the <code>Infos</code> section is updated to show the new vertex count value, and the collider mesh in the preview
+is updated as well:</p>
+<p><p class="muted">Upstream illustration: LODCollider (media not bundled).</p></p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#setting-advanced-collisions">Setting Advanced Collisions </a><a href="#introduction">Introduction </a><a href="#editing-advanced-collisions">Editing Advanced Collisions </a><a href="#understanding-the-tool">Understanding The Tool </a></aside></div>
+<script src="../../../../../../assets/cm.classic.js"></script><script src="../../../../../../assets/manual.js"></script></body></html>

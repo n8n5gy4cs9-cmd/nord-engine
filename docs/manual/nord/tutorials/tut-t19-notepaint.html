@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>T19 Build notepaint, from a blank folder — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="tutorials.html" class="active" aria-current="page">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Tutorials</div><a href="tutorials.html">Learn by building</a><a href="tut-t01-hello-nord.html">T01 Hello Nord</a><a href="tut-t02-sprite-movement.html">T02 Sprite &amp; movement</a><a href="tut-t03-first-script.html">T03 Your first script</a><a href="tut-t04-platformer.html">T04 Platformer from template</a><a href="tut-t05-physics.html">T05 Physics &amp; collisions</a><a href="tut-t06-tilemaps.html">T06 Tilemaps</a><a href="tut-t07-animation-juice.html">T07 Animation &amp; juice</a><a href="tut-t08-ui-hud.html">T08 UI &amp; HUD</a><a href="tut-t09-audio.html">T09 Audio</a><a href="tut-t10-3d-scene.html">T10 3D scene &amp; camera</a><a href="tut-t11-3d-physics.html">T11 3D physics (FPS)</a><a href="tut-t12-enemy-ai.html">T12 Enemy AI</a><a href="tut-t13-save-load.html">T13 Save &amp; load</a><a href="tut-t14-export-host.html">T14 Export to web &amp; host it</a><a href="tut-t15-mac-app.html">T15 Mac app</a><a href="tut-t16-rust-game.html">T16 Rust/WASM game</a><a href="tut-t17-rust-egui-app.html">T17 Rust egui app</a><a href="tut-t18-library-snippets.html">T18 Writing library snippets</a><a href="tut-t19-notepaint.html" class="cur" aria-current="page">T19 Build notepaint, from a blank folder</a><a href="tut-t20-star-not.html">T20 Build Star-Not, a complete small space adventure</a><a href="tut-t21-project-design.html">T21 Plan a bigger Nord project</a><a href="tut-t22-shader-terrain.html">T22 Put a terrain shader in a Nord app</a></nav><main id="content"><div class="crumb">Tutorials / Nord Engine</div><h1>T19 Build notepaint, from a blank folder</h1>
+<p><strong>Result:</strong> a working notepad and paint app in one window. Each document keeps its words and picture together. You can create, search, rename, duplicate, delete, import and export documents. Drawing includes eight tools and undo/redo.</p>
+<p><strong>Already-built example:</strong> <code>examples/notepaint/</code>. The editable engine source is <code>tools/examples/notepaint/</code>; the example folder is generated from it. For this lesson, make your own folder so you can edit freely. You need the <code>nord</code> CLI and a current engine checkout for the reusable artwork.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>HTML makes the page. CSS makes it look good. JavaScript handles buttons, drawing and saving. Nord&#39;s <strong>HTML tier</strong> serves and exports those files; this app does not need Phaser, Babylon or a game scene.</p>
+</aside><h2 id="1-decide-what-a-finished-app-means">1. Decide what a finished app means<a class="anchor" href="#1-decide-what-a-finished-app-means">#</a></h2>
+<p>Write a short plan before coding:</p>
+<blockquote>
+<p>A document has a title, plain text and one picture. The app must keep them together, save locally, and let the user take a portable copy away. A person should be able to understand the screen without reading source code.</p>
+</blockquote>
+<p>That gives you three small pieces: storage, drawing and the interface. Keep them separate because they change for different reasons. Do not add accounts, networking, rich text or layers to this first version.</p>
+<h2 id="2-make-the-project-folder">2. Make the project folder<a class="anchor" href="#2-make-the-project-folder">#</a></h2>
+<p>Create a folder called <code>my-notepaint</code>. Inside it make this structure:</p>
+<pre class="code" data-lang="text"><code>my-notepaint/
+  nord.project.json
+  index.html
+  app.js
+  store.js
+  drawing.js
+  style.css
+  _kit.js
+  assets/
+    ui/tools.png
+    ui/tools.png.meta.json
+    fonts/inter.woff2
+    fonts/LICENSE</code></pre>
+<p>The four JavaScript files are code. The CSS file is appearance. The assets folder holds files that can be reused or replaced. Keep filenames and capitals exactly the same as the imports below.</p>
+<p>For a larger app, see <a href="tut-t21-project-design.html">Plan a larger Nord project</a>. This small app deliberately keeps its files close together.</p>
+<h2 id="3-add-the-nord-project-settings">3. Add the Nord project settings<a class="anchor" href="#3-add-the-nord-project-settings">#</a></h2>
+<p>Create <code>nord.project.json</code>. Copy this complete file. <code>type: &quot;html&quot;</code> selects plain HTML; the empty startScene is intentional because the app has no game scene.</p>
+<pre class="code" data-lang="json"><code>{
+  &quot;format&quot;: 1,
+  &quot;name&quot;: &quot;notepaint&quot;,
+  &quot;id&quot;: &quot;com.crowelian.notepaint&quot;,
+  &quot;type&quot;: &quot;html&quot;,
+  &quot;engineVersion&quot;: &quot;0.1.0&quot;,
+  &quot;startScene&quot;: &quot;&quot;,
+  &quot;display&quot;: {
+    &quot;width&quot;: 1280,
+    &quot;height&quot;: 800,
+    &quot;scale&quot;: &quot;fit&quot;,
+    &quot;pixelArt&quot;: false,
+    &quot;background&quot;: &quot;#2e3440&quot;
+  },
+  &quot;physics&quot;: {
+    &quot;engine&quot;: &quot;none&quot;,
+    &quot;gravity&quot;: [
+      0,
+      0,
+      0
+    ]
+  },
+  &quot;input&quot;: {
+    &quot;actions&quot;: {
+      &quot;left&quot;: [
+        &quot;KeyA&quot;,
+        &quot;ArrowLeft&quot;
+      ],
+      &quot;right&quot;: [
+        &quot;KeyD&quot;,
+        &quot;ArrowRight&quot;
+      ],
+      &quot;up&quot;: [
+        &quot;KeyW&quot;,
+        &quot;ArrowUp&quot;
+      ],
+      &quot;down&quot;: [
+        &quot;KeyS&quot;,
+        &quot;ArrowDown&quot;
+      ],
+      &quot;jump&quot;: [
+        &quot;Space&quot;,
+        &quot;KeyW&quot;,
+        &quot;ArrowUp&quot;
+      ],
+      &quot;fire&quot;: [
+        &quot;Space&quot;,
+        &quot;Mouse0&quot;
+      ],
+      &quot;interact&quot;: [
+        &quot;KeyE&quot;,
+        &quot;Enter&quot;
+      ]
+    }
+  },
+  &quot;plugins&quot;: [
+    &quot;ui&quot;,
+    &quot;audio&quot;
+  ],
+  &quot;ui&quot;: {
+    &quot;skin&quot;: &quot;cyber&quot;,
+    &quot;theme&quot;: &quot;nord&quot;
+  }
+}
+</code></pre>
+<h2 id="4-add-the-page-that-starts-the-app">4. Add the page that starts the app<a class="anchor" href="#4-add-the-page-that-starts-the-app">#</a></h2>
+<p>Create <code>index.html</code>. This page gives the app a root element, imports <code>mount()</code> from app.js, and calls it. <code>mount</code> means “put this application inside that element.”</p>
+<pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;nord-app-id&quot; content=&quot;com.crowelian.notepaint&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;&lt;title&gt;notepaint&lt;/title&gt;
+&lt;style&gt;html,body{margin:0;height:100%;background:#2e3440}#app{height:100vh}&lt;/style&gt;&lt;/head&gt;
+&lt;body&gt;&lt;div id=&quot;app&quot;&gt;&lt;/div&gt;
+&lt;script type=&quot;module&quot;&gt;
+import { mount } from './app.js';
+try { await mount(document.getElementById('app')); window.__nord_ready = true; } catch (e) { console.error(e); window.__nord_error = String(e); }
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
+</code></pre>
+<p>Do not add CDN scripts. Everything this application needs stays in its own folder.</p>
+<h2 id="5-copy-the-reusable-artwork-and-font">5. Copy the reusable artwork and font<a class="anchor" href="#5-copy-the-reusable-artwork-and-font">#</a></h2>
+<p>From the engine checkout, copy these files into your own folder:</p>
+<table>
+<thead>
+<tr>
+<th>Copy from</th>
+<th>Paste to</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>examples/notepaint/assets/ui/tools.png</code></td>
+<td><code>my-notepaint/assets/ui/tools.png</code></td>
+</tr>
+<tr>
+<td><code>examples/notepaint/assets/ui/tools.png.meta.json</code></td>
+<td>Same name inside your UI folder</td>
+</tr>
+<tr>
+<td><code>examples/notepaint/assets/fonts/inter.woff2</code></td>
+<td>Your fonts folder</td>
+</tr>
+<tr>
+<td><code>examples/notepaint/assets/fonts/LICENSE</code></td>
+<td>Your fonts folder; keep the licence</td>
+</tr>
+</tbody></table>
+<p>You can use a file manager; no image editor is required. The picture contains sixteen separate UI symbols. The app selects a symbol by its row and column, rather than downloading sixteen files.</p>
+<figure class="shot"><img src="../../assets/tutorials/notepaint-tools.png" alt="Notepaint's original 4 by 4 sheet of paper, drawing, undo and file icons" loading="lazy"><figcaption>Reusable UI sprites: examples/notepaint/assets/ui/tools.png. These are source assets, not a screenshot of the finished application.</figcaption></figure><p>Read <code>examples/notepaint/assets.md</code> for the numbered inventory; <code>ART_DIRECTION.md</code> records the exact built-in ImageGen prompt. The original art is MIT; Inter is OFL-1.1.</p>
+<h2 id="6-add-the-small-dom-helper">6. Add the small DOM helper<a class="anchor" href="#6-add-the-small-dom-helper">#</a></h2>
+<p>Create <code>_kit.js</code> using the code below, or copy <code>examples/notepaint/_kit.js</code>. This reuses Nord&#39;s existing app helper. The function <code>h(tag, properties, children...)</code> creates elements. Text children become text, so document titles and notes are not treated as HTML.</p>
+<p>Only <code>h</code> is imported by this app. The other functions belong to the shared engine kit and do not change this app&#39;s layout.</p>
+<pre class="code" data-lang="javascript"><code>// Shared helpers for the app kits (not a library item). Tiny DOM builder + themed base CSS using the Nord UI variables.
+export const css = `.nk{font:15px/1.4 var(--nord-font-ui,Inter,system-ui,sans-serif);color:var(--nord-fg,#eceff4);background:var(--nord-bg,#2e3440);padding:16px;box-sizing:border-box;height:100%;overflow:auto}
+.nk *{box-sizing:border-box}.nk h2{margin:0 0 12px;font-size:20px}.nk button,.nk input,.nk select,.nk textarea{font:inherit;color:inherit;background:var(--nord-panel,#3b4252);border:1px solid var(--nord-border,#4c566a);border-radius:6px;padding:6px 10px}
+.nk button{cursor:pointer;background:var(--nord-accent,#88c0d0);color:var(--nord-bg,#2e3440);border:0;font-weight:600}.nk button.ghost{background:transparent;color:inherit;border:1px solid var(--nord-border,#4c566a)}
+.nk .row{display:flex;gap:8px;align-items:center;margin-bottom:8px}.nk .card{background:var(--nord-panel,#3b4252);border:1px solid var(--nord-border,#4c566a);border-radius:8px;padding:10px;margin-bottom:8px}
+.nk .grow{flex:1}.nk .muted{opacity:.6}`;
+let injected = false;
+export function h(tag, props = {}, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(props ?? {})) { if (k.startsWith('on')) el.addEventListener(k.slice(2), v); else if (k === 'class') el.className = v; else if (k === 'style' &amp;&amp; typeof v === 'object') Object.assign(el.style, v); else if (v !== false &amp;&amp; v != null) el.setAttribute(k, v === true ? '' : v); }
+  el.append(...kids.flat().filter((x) =&gt; x != null &amp;&amp; x !== false));
+  return el;
+}
+export function shell(root, title) {
+  if (!injected) { document.head.append(h('style', {}, css)); injected = true; }
+  root.replaceChildren(); const box = h('div', { class: 'nk' }, h('h2', {}, title)); root.append(box); return box;
+}
+export const store = (key, init) =&gt; { let v = init; try { v = JSON.parse(localStorage.getItem(key)) ?? init; } catch {} return { get: () =&gt; v, set: (n) =&gt; { v = n; try { localStorage.setItem(key, JSON.stringify(v)); } catch {} } }; };
+</code></pre>
+<h2 id="7-design-one-document">7. Design one document<a class="anchor" href="#7-design-one-document">#</a></h2>
+<p>Each document has these values:</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Why it exists</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>A unique name the database uses internally. Two documents can have the same visible title.</td>
+</tr>
+<tr>
+<td>title</td>
+<td>The visible name on the left and above the editors.</td>
+</tr>
+<tr>
+<td>text</td>
+<td>The plain text from the textarea.</td>
+</tr>
+<tr>
+<td>image</td>
+<td>A PNG stored as a data URL: the picture bytes travel with the document.</td>
+</tr>
+<tr>
+<td>updatedAt</td>
+<td>A timestamp for ordering recently edited documents.</td>
+</tr>
+</tbody></table>
+<p>IndexedDB is a browser database. It can hold larger pictures more comfortably than putting every PNG into a tiny localStorage string. It still belongs to this browser and address, so portable export remains necessary.</p>
+<h2 id="8-create-store-js">8. Create store.js<a class="anchor" href="#8-create-store-js">#</a></h2>
+<p>Paste the complete file. <code>openNotebook()</code> opens the database, creates a documents store the first time, and gives the app all/put/remove operations.</p>
+<p>A <strong>transaction</strong> is one database operation that either finishes or fails. Saving reports success only after the transaction finishes, not merely after requesting a write. <code>readDocument</code> checks a portable import before accepting it. <code>download</code> creates a local download and releases its temporary URL afterwards.</p>
+<pre class="code" data-lang="javascript"><code>// IndexedDB keeps text and pictures together without a server or external library.
+export async function openNotebook() {
+  const db = await new Promise((resolve, reject) =&gt; {
+    const request = indexedDB.open('nord.notepaint', 1);
+    request.onupgradeneeded = () =&gt; request.result.createObjectStore('documents', { keyPath: 'id' });
+    request.onsuccess = () =&gt; resolve(request.result);
+    request.onerror = () =&gt; reject(request.error);
+  });
+  const transact = (mode, action) =&gt; new Promise((resolve, reject) =&gt; {
+    const tx = db.transaction('documents', mode);
+    const request = action(tx.objectStore('documents'));
+    tx.oncomplete = () =&gt; resolve(request.result);
+    tx.onerror = () =&gt; reject(tx.error);
+    tx.onabort = () =&gt; reject(tx.error ?? new Error('Save cancelled'));
+  });
+  return {
+    all: () =&gt; transact('readonly', s =&gt; s.getAll()),
+    put: doc =&gt; transact('readwrite', s =&gt; s.put(doc)),
+    remove: id =&gt; transact('readwrite', s =&gt; s.delete(id)),
+    close: () =&gt; db.close(),
+  };
+}
+export const newDocument = (title = 'Untitled') =&gt; ({ id: globalThis.crypto?.randomUUID?.() ?? Date.now().toString(36) + '-' + Math.random().toString(36).slice(2), title, text: '', image: '', updatedAt: Date.now() });
+export function download(name, content, type) {
+  const url = URL.createObjectURL(new Blob([content], { type }));
+  const link = document.createElement('a'); link.href = url; link.download = name; link.click();
+  setTimeout(() =&gt; URL.revokeObjectURL(url), 1000);
+}
+export function readDocument(value) {
+  if (value?.format !== 'notepaint' || value.version !== 1 || !value.document || typeof value.document.text !== 'string' || typeof value.document.title !== 'string') throw new Error('Choose a Notepaint .json document.');
+  const d = value.document;
+  if (d.image &amp;&amp; (typeof d.image !== 'string' || !d.image.startsWith('data:image/png;base64,') || d.image.length &gt; 12000000)) throw new Error('The drawing must be an embedded PNG under 12 MB.');
+  if (d.text.length &gt; 1000000) throw new Error('The note is too large (maximum 1 million characters).');
+  return { ...newDocument(d.title.slice(0, 120)), text: d.text, image: d.image || '' };
+}
+</code></pre>
+<h2 id="9-understand-the-drawing-canvas">9. Understand the drawing canvas<a class="anchor" href="#9-understand-the-drawing-canvas">#</a></h2>
+<p>The drawing has a fixed <strong>960×640</strong> working area. CSS can display it smaller. Pointer coordinates therefore need converting from screen pixels into canvas pixels:</p>
+<pre class="code" data-lang="javascript"><code>const x = (event.clientX - rect.left) * canvas.width / rect.width;
+const y = (event.clientY - rect.top) * canvas.height / rect.height;</code></pre>
+<p>Without this conversion, the brush would draw in the wrong place whenever the window shrinks. Pointer events support a mouse, touchscreen and pen with the same handlers.</p>
+<h2 id="10-add-drawing-js">10. Add drawing.js<a class="anchor" href="#10-add-drawing-js">#</a></h2>
+<p>Paste the complete file. Read it in these groups:</p>
+<ol>
+<li><strong>Settings:</strong> the chosen tool, ink and brush size.</li>
+<li><strong>Snapshots:</strong> undo saves the canvas before a complete action. Redo holds the image that undo replaced. History is capped at twenty pictures.</li>
+<li><strong>Freehand tools:</strong> pencil/brush/eraser draw short segments as the pointer moves. Eraser draws white because this app uses an opaque white page.</li>
+<li><strong>Shapes:</strong> line/rectangle/ellipse restore the before-picture each move, then draw one fresh preview. This avoids leaving a trail of rectangles.</li>
+<li><strong>Fill:</strong> walk connected pixels of exactly the starting colour, changing each once. A typed-array queue avoids recursive calls that could overflow.</li>
+<li><strong>Load:</strong> decode a picture, preserve its shape, centre it and fit it within the page. A revision number stops an old image load from replacing a newer document.</li>
+<li><strong>Cleanup:</strong> remove pointer listeners when the app closes.</li>
+</ol>
+<pre class="code" data-lang="javascript"><code>// Extends the engine's library/apps/paint.js pointer-coordinate and snapshot approach.
+export function createDrawing(canvas, changed) {
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  const undo = [], redo = [];
+  let tool = 'brush', color = '#253949', size = 7, active = null, revision = 0;
+  const image = () =&gt; ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const pos = event =&gt; {
+    const r = canvas.getBoundingClientRect();
+    return { x: Math.max(0, Math.min(canvas.width - 1, (event.clientX - r.left) * canvas.width / r.width)), y: Math.max(0, Math.min(canvas.height - 1, (event.clientY - r.top) * canvas.height / r.height)) };
+  };
+  const blank = () =&gt; { ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, canvas.width, canvas.height); };
+  const checkpoint = () =&gt; { undo.push(image()); if (undo.length &gt; 20) undo.shift(); redo.length = 0; };
+  const finish = () =&gt; { revision++; changed({ undo: undo.length, redo: redo.length }); };
+  const stroke = (a, b, pressure = 1) =&gt; {
+    ctx.strokeStyle = tool === 'eraser' ? '#ffffff' : color; ctx.fillStyle = ctx.strokeStyle;
+    ctx.lineWidth = (tool === 'pencil' ? 2 : size) * (pressure || 1); ctx.lineCap = ctx.lineJoin = 'round';
+    ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x + 0.01, b.y); ctx.stroke();
+  };
+  function fill(point) {
+    const img = image(), pixels = img.data, w = canvas.width, h = canvas.height;
+    const start = Math.floor(point.y) * w + Math.floor(point.x), at = start * 4;
+    const target = Array.from(pixels.slice(at, at + 4));
+    const next = [parseInt(color.slice(1, 3), 16), parseInt(color.slice(3, 5), 16), parseInt(color.slice(5, 7), 16), 255];
+    if (target.every((v, i) =&gt; v === next[i])) return;
+    const queue = new Uint32Array(w * h), seen = new Uint8Array(w * h); let head = 0, tail = 1;
+    queue[0] = start; seen[start] = 1;
+    const push = p =&gt; { if (!seen[p]) { seen[p] = 1; queue[tail++] = p; } };
+    while (head &lt; tail) {
+      const p = queue[head++], i = p * 4;
+      if (!target.every((v, k) =&gt; pixels[i + k] === v)) continue;
+      next.forEach((v, k) =&gt; { pixels[i + k] = v; });
+      const x = p % w, y = Math.floor(p / w);
+      if (x &gt; 0) push(p - 1); if (x &lt; w - 1) push(p + 1); if (y &gt; 0) push(p - w); if (y &lt; h - 1) push(p + w);
+    }
+    ctx.putImageData(img, 0, 0);
+  }
+  const down = event =&gt; {
+    if (event.button !== 0 || active) return; event.preventDefault(); const p = pos(event);
+    if (tool === 'picker') { const pixel = ctx.getImageData(Math.floor(p.x), Math.floor(p.y), 1, 1).data; color = '#' + [...pixel.slice(0, 3)].map(n =&gt; n.toString(16).padStart(2, '0')).join(''); changed({ color }); return; }
+    checkpoint();
+    if (tool === 'fill') { fill(p); finish(); return; }
+    canvas.setPointerCapture(event.pointerId); active = { id: event.pointerId, start: p, previous: p, before: undo.at(-1) };
+    if (['brush', 'pencil', 'eraser'].includes(tool)) stroke(p, p, event.pointerType === 'pen' ? event.pressure : 1);
+  };
+  const move = event =&gt; {
+    if (!active || event.pointerId !== active.id) return; const p = pos(event);
+    if (['brush', 'pencil', 'eraser'].includes(tool)) { stroke(active.previous, p, event.pointerType === 'pen' ? event.pressure : 1); active.previous = p; return; }
+    ctx.putImageData(active.before, 0, 0); ctx.strokeStyle = color; ctx.lineWidth = size; ctx.lineCap = 'round';
+    const a = active.start; ctx.beginPath();
+    if (tool === 'line') { ctx.moveTo(a.x, a.y); ctx.lineTo(p.x, p.y); }
+    if (tool === 'rectangle') ctx.rect(a.x, a.y, p.x - a.x, p.y - a.y);
+    if (tool === 'ellipse') ctx.ellipse((a.x + p.x) / 2, (a.y + p.y) / 2, Math.abs(p.x - a.x) / 2, Math.abs(p.y - a.y) / 2, 0, 0, Math.PI * 2);
+    ctx.stroke();
+  };
+  const up = event =&gt; { if (active?.id !== event.pointerId) return; active = null; finish(); };
+  const cancel = () =&gt; { if (!active) return; ctx.putImageData(active.before, 0, 0); undo.pop(); active = null; };
+  canvas.addEventListener('pointerdown', down); canvas.addEventListener('pointermove', move); canvas.addEventListener('pointerup', up); canvas.addEventListener('pointercancel', cancel);
+  blank();
+  return {
+    settings(o) { cancel(); tool = o.tool ?? tool; color = o.color ?? color; size = o.size ?? size; },
+    undo() { cancel(); if (undo.length) { redo.push(image()); ctx.putImageData(undo.pop(), 0, 0); finish(); } },
+    redo() { cancel(); if (redo.length) { undo.push(image()); ctx.putImageData(redo.pop(), 0, 0); finish(); } },
+    clear() { cancel(); checkpoint(); blank(); finish(); },
+    png() { return canvas.toDataURL('image/png'); },
+    async load(url, remember = false) {
+      cancel(); const token = ++revision;
+      if (!remember) { undo.length = 0; redo.length = 0; }
+      if (!url) { blank(); return; }
+      const picture = new Image(); picture.src = url; await picture.decode();
+      if (token !== revision) return;
+      if (remember) checkpoint(); blank();
+      const scale = Math.min(canvas.width / picture.width, canvas.height / picture.height);
+      ctx.drawImage(picture, (canvas.width - picture.width * scale) / 2, (canvas.height - picture.height * scale) / 2, picture.width * scale, picture.height * scale);
+      if (remember) finish();
+    },
+    destroy() { canvas.removeEventListener('pointerdown', down); canvas.removeEventListener('pointermove', move); canvas.removeEventListener('pointerup', up); canvas.removeEventListener('pointercancel', cancel); },
+  };
+}
+</code></pre><aside class="box dummies"><div class="box-title">For dummy developers</div><p>A snapshot is a copy of the picture before your brush stroke. Undo puts that copy back. This is easy to understand, but it uses memory, so this small app limits its history instead of keeping every brush movement forever.</p>
+</aside><h2 id="11-add-style-css">11. Add style.css<a class="anchor" href="#11-add-style-css">#</a></h2>
+<p>Paste the complete stylesheet. The main layout has a notebook list and a workspace. Inside the workspace, the note and picture sit beside each other on a wide window and stack on a smaller window.</p>
+<p>The white paper, gentle green controls and coral/mint sprites give the app one consistent look. Buttons have text or accessible labels. The textarea allows text selection. The drawing canvas disables browser touch scrolling only inside the canvas.</p>
+<p>The <code>.np-sprite</code> rule displays a 4×4 atlas with <code>background-size: 400% 400%</code>. <code>icon(index)</code> chooses the position. This lets you reuse the PNG without editing or cropping it.</p>
+<pre class="code" data-lang="css"><code>@font-face{font-family:NPInter;src:url('assets/fonts/inter.woff2')}*{box-sizing:border-box}body{background:#f5f1e8!important;color:#253949;font-family:NPInter,system-ui,sans-serif}button,input,textarea,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid #157e7a;outline-offset:3px}button:disabled{opacity:.35;cursor:default}.np-app{height:100%;display:flex;flex-direction:column;min-height:600px}.np-header{display:flex;gap:14px;align-items:center;padding:18px 25px;background:#fffcf6;border-bottom:1px solid #ddd9ce}.np-brand{display:flex;gap:10px;align-items:center;margin-right:auto}.np-brand b{font-size:23px;letter-spacing:-1px}.np-brand small{display:block;font-size:11px;letter-spacing:.15em;color:#71807e;text-transform:uppercase}.np-button{display:inline-flex;gap:7px;align-items:center;justify-content:center;border:1px solid #dad8ce;background:#fffcf6;color:#253949;border-radius:9px;padding:9px 12px;font-size:12px;font-weight:600}.np-button:hover{background:#e8f1e9;border-color:#78b1a1}.np-button.primary{background:#267e72;border-color:#267e72;color:white}.np-sprite{display:inline-block;width:24px;height:24px;flex:none;background-image:url('assets/ui/tools.png');background-size:400% 400%;background-repeat:no-repeat}.np-brand .np-sprite{width:42px;height:42px}.np-body{flex:1;min-height:0;display:grid;grid-template-columns:220px minmax(0,1fr)}.np-sidebar{background:#eeeee3;border-right:1px solid #dad8ce;padding:20px 15px;display:flex;flex-direction:column;gap:14px}.np-sidebar h2{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#6f7d75;margin:0}.np-search{border:1px solid #d0d5c6;background:#f9faf4;padding:10px;border-radius:8px;width:100%;font-size:12px}.np-docs{overflow:auto;flex:1}.np-doc{display:block;width:100%;text-align:left;border:1px solid transparent;background:transparent;padding:12px;border-radius:9px;margin-bottom:6px;color:#253949}.np-doc strong{display:block;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.np-doc small{font-size:11px;color:#71807e;display:block;margin-top:5px}.np-doc.active{background:#fffcf6;border-color:#c9d4c5;box-shadow:0 2px 5px #25394908}.np-sidebar-actions{display:flex;gap:7px;flex-wrap:wrap}.np-workspace{min-width:0;padding:22px 24px;display:flex;flex-direction:column;gap:16px}.np-title-row{display:flex;align-items:center;gap:10px}.np-title{border:0;background:transparent;font-size:23px;font-weight:600;color:#253949;min-width:0;flex:1;outline-offset:2px}.np-tag{background:#e6efe5;color:#477659;font-size:10px;font-weight:700;padding:6px 9px;border-radius:5px;letter-spacing:.05em;white-space:nowrap}.np-editors{display:grid;grid-template-columns:minmax(220px,.7fr) minmax(360px,1.3fr);gap:20px;flex:1;min-height:0}.np-note,.np-paint{background:#fffcf6;border:1px solid #ddd9ce;border-radius:13px;display:flex;flex-direction:column;min-width:0;overflow:hidden}.np-panel-head{display:flex;gap:8px;align-items:center;padding:12px 15px;border-bottom:1px solid #e5e0d6;font-size:12px;font-weight:600}.np-panel-head small{margin-left:auto;font-size:10px;font-weight:400;color:#7c867d}.np-text{background:linear-gradient(#fffcf6 31px,#ece9de 32px);background-size:100% 32px;border:0;resize:none;flex:1;min-height:360px;line-height:32px;padding:17px 19px;color:#253949;font-size:14px;user-select:text}.np-tools{display:flex;flex-wrap:wrap;gap:5px;padding:10px;border-bottom:1px solid #e5e0d6}.np-tool{width:35px;height:35px;display:grid;place-items:center;padding:4px;border:1px solid transparent;border-radius:7px;background:transparent}.np-tool.active{background:#e3eee4;border-color:#86b79e}.np-options{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid #e5e0d6;font-size:11px;color:#697b74}.np-options input[type=color]{width:33px;height:27px;border:0;background:transparent;padding:0}.np-options input[type=range]{width:90px;accent-color:#267e72}.np-swatches{display:flex;gap:5px;margin-left:auto}.np-swatches button{border:1px solid #25394922;width:20px;height:20px;border-radius:50%;padding:0}.np-canvas-wrap{flex:1;overflow:auto;display:flex;align-items:center;justify-content:center;padding:20px;background-color:#ecebdf;background-image:radial-gradient(#c9c9bb .8px,transparent .8px);background-size:12px 12px;min-height:260px}.np-canvas{max-width:100%;height:auto;touch-action:none;background:white;box-shadow:0 6px 25px #25394918;cursor:crosshair}.np-footer{display:flex;justify-content:space-between;gap:20px;background:#fffcf6;border-top:1px solid #ddd9ce;padding:9px 24px;font-size:11px;color:#71807e}.np-status{color:#267e72}.np-error{color:#bb4739}.np-toast{position:fixed;bottom:48px;left:50%;transform:translateX(-50%);padding:11px 20px;background:#253949;color:#fff;border-radius:9px;box-shadow:0 3px 16px #0003;font-size:13px;z-index:5;max-width:90vw}.np-help{border:1px solid #ddd9ce;border-radius:14px;padding:25px;max-width:600px;background:#fffcf6;color:#253949}.np-help::backdrop{background:#25394966}.np-help h2{margin-top:0}.np-help p,.np-help li{font-size:14px;line-height:1.7}@media(max-width:1050px){.np-body{grid-template-columns:180px minmax(0,1fr)}.np-editors{grid-template-columns:1fr}.np-text{min-height:230px}.np-workspace{overflow:auto}.np-header{flex-wrap:wrap;gap:8px;padding:12px 16px}.np-brand{width:100%;margin-bottom:4px}.np-app{min-height:0}.np-canvas-wrap{flex:none}}@media(max-width:650px){.np-body{grid-template-columns:1fr;overflow:auto}.np-sidebar{border-right:0;border-bottom:1px solid #dad8ce;padding:12px}.np-docs{max-height:130px}.np-workspace{padding:15px}.np-footer{font-size:10px;padding:8px 12px}.np-swatches{margin-left:0}.np-tag{display:none}}
+</code></pre>
+<h2 id="12-connect-the-app-in-app-js">12. Connect the app in app.js<a class="anchor" href="#12-connect-the-app-in-app-js">#</a></h2>
+<p>Paste this complete file. Its flow is:</p>
+<ol>
+<li>Create the visible elements and the drawing controller.</li>
+<li>Open storage and load existing documents. If browser storage is blocked, keep the current session usable and explain that export is required.</li>
+<li>Select a document: finish saving the previous one, load both text and picture, then re-enable the workspace.</li>
+<li>On a text edit or completed drawing action, schedule autosave after a short pause. A save queue preserves the order of database writes.</li>
+<li>Build the sidebar from document data. Search looks through title and text; it does not delete hidden results.</li>
+<li>Wire the buttons to new/duplicate/delete, drawing tools and import/export.</li>
+<li>Add shortcuts and remove listeners when the app is destroyed.</li>
+</ol>
+<pre class="code" data-lang="javascript"><code>import { h } from './_kit.js';
+import { openNotebook, newDocument, download, readDocument } from './store.js';
+import { createDrawing } from './drawing.js';
+
+const TOOLS = ['pencil', 'brush', 'eraser', 'fill', 'line', 'rectangle', 'ellipse', 'picker'];
+const PALETTE = ['#253949', '#267e72', '#f08b62', '#f2c86b', '#9c84bb', '#4a8db7', '#ffffff'];
+const icon = index =&gt; h('span', { class: 'np-sprite', 'aria-hidden': true, style: { backgroundPosition: `${index % 4 * 100 / 3}% ${Math.floor(index / 4) * 100 / 3}%` } });
+const button = (label, index, onClick, primary = false) =&gt; h('button', { class: 'np-button' + (primary ? ' primary' : ''), onclick: onClick, title: label }, icon(index), label);
+const filename = title =&gt; (title.trim().replace(/[&lt;&gt;:&quot;/\\|?*\x00-\x1f]/g, '-').slice(0, 80) || 'Untitled');
+
+export async function mount(root) {
+  const style = h('link', { rel: 'stylesheet', href: new URL('style.css', import.meta.url).href }); document.head.append(style);
+  let db, documents = [], current, timer, toastTimer, queue = Promise.resolve(), loading = true, disposed = false;
+  let activeTool = 'brush', activeColor = PALETTE[0], activeSize = 7;
+  const status = h('span', { class: 'np-status', role: 'status', 'aria-live': 'polite' }, 'Opening your notebook…');
+  const message = text =&gt; { toast.textContent = text; toast.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() =&gt; { toast.hidden = true; }, 4200); };
+  const title = h('input', { class: 'np-title', maxlength: 120, 'aria-label': 'Document title' });
+  const note = h('textarea', { class: 'np-text', spellcheck: true, placeholder: 'An idea, a shopping list, a story…', 'aria-label': 'Note text' });
+  const count = h('small', {}, '0 words');
+  const canvas = h('canvas', { class: 'np-canvas', width: 960, height: 640, tabindex: 0, 'aria-label': 'Drawing canvas. Choose a tool, then draw with mouse, pen or touch.' });
+  const search = h('input', { class: 'np-search', type: 'search', placeholder: 'Find a note…', 'aria-label': 'Search documents' });
+  const list = h('div', { class: 'np-docs' });
+  const undo = button('Undo', 12, () =&gt; drawing.undo()), redo = button('Redo', 13, () =&gt; drawing.redo()); undo.disabled = redo.disabled = true;
+  const color = h('input', { type: 'color', value: activeColor, 'aria-label': 'Ink colour' });
+  const size = h('input', { type: 'range', min: 1, max: 40, value: activeSize, 'aria-label': 'Brush size' });
+  const sizeText = h('span', {}, '7 px');
+  const toast = h('div', { class: 'np-toast', hidden: true, role: 'status' });
+  const importFile = h('input', { type: 'file', accept: '.json,.txt,.md,image/png,image/jpeg,image/webp', hidden: true });
+  const help = h('dialog', { class: 'np-help' }, h('h2', {}, 'A notebook, with room to draw.'),
+    h('p', {}, 'Every document holds a plain-text note and a 960 × 640 drawing. Both are saved together in this browser. No account or internet connection is needed.'),
+    h('ul', {}, h('li', {}, 'Choose a document on the left, or make a new one. Rename it above the two pages.'), h('li', {}, 'Choose a drawing tool. Drag for lines and shapes; click for fill or colour picker. Eraser paints white.'), h('li', {}, 'Undo/Redo applies to the drawing. When typing, your browser handles text undo.'), h('li', {}, 'Export document saves a .notepaint.json file containing text AND drawing. TXT and PNG save the individual parts.'), h('li', {}, 'Import a document to add it to your notebook. Text imports become new notes; image imports replace the active drawing after confirmation.'), h('li', {}, 'Browser data is local to this address. Export files before clearing browser data or moving to another computer.')),
+    button('Back to my notebook', 15, () =&gt; help.close()));
+  const drawing = createDrawing(canvas, info =&gt; {
+    if (info.color) { activeColor = info.color; color.value = activeColor; setTool('brush'); message('Colour picked. Brush is ready.'); return; }
+    undo.disabled = !info.undo; redo.disabled = !info.redo; schedule();
+  });
+  const toolButtons = TOOLS.map((tool, index) =&gt; h('button', { class: 'np-tool', title: tool[0].toUpperCase() + tool.slice(1), 'aria-label': tool, 'aria-pressed': tool === activeTool, onclick: () =&gt; setTool(tool) }, icon(index + 4)));
+  function setTool(tool) { activeTool = tool; drawing.settings({ tool, color: activeColor, size: activeSize }); toolButtons.forEach((b, i) =&gt; { b.classList.toggle('active', TOOLS[i] === tool); b.setAttribute('aria-pressed', String(TOOLS[i] === tool)); }); }
+  function drawList() {
+    const term = search.value.toLowerCase();
+    list.replaceChildren(...documents.filter(d =&gt; (d.title + ' ' + d.text).toLowerCase().includes(term)).sort((a, b) =&gt; b.updatedAt - a.updatedAt).map(d =&gt; h('button', { class: 'np-doc' + (d.id === current?.id ? ' active' : ''), 'aria-current': d.id === current?.id ? 'true' : 'false', onclick: () =&gt; select(d) }, h('strong', {}, d.title || 'Untitled'), h('small', {}, d.text.replace(/\s+/g, ' ').slice(0, 35) || 'A fresh page, just for you'))));
+    if (!list.children.length) list.append(h('small', {}, 'No matching documents.'));
+  }
+  function capture() { if (!current || loading) return null; current.title = title.value || 'Untitled'; current.text = note.value; current.image = drawing.png(); current.updatedAt = Date.now(); return { ...current }; }
+  function persist() {
+    clearTimeout(timer); timer = null; const doc = capture(); if (!doc) return queue;
+    status.textContent = 'Saving…'; status.className = 'np-status';
+    queue = queue.catch(() =&gt; {}).then(() =&gt; db.put(doc)).then(() =&gt; { if (!disposed &amp;&amp; current?.id === doc.id) status.textContent = db.memory ? 'Session only — export to keep' : 'Saved on this device'; }).catch(error =&gt; { status.className = 'np-error'; status.textContent = 'Save failed — export your work'; message('Could not save: ' + error.message); });
+    drawList(); return queue;
+  }
+  function schedule() {
+    if (loading) return; status.textContent = 'Unsaved changes…'; clearTimeout(timer); timer = setTimeout(persist, 450);
+    count.textContent = `${note.value.trim().split(/\s+/).filter(Boolean).length} words · ${note.value.length} characters`;
+  }
+  async function select(doc) {
+    if (loading) return; await persist(); if (disposed) return;
+    loading = true; workspace.inert = true; current = doc; title.value = doc.title; note.value = doc.text;
+    try { await drawing.load(doc.image); } catch { message('This drawing could not be opened. Your note is still available.'); drawing.load(''); }
+    loading = false; workspace.inert = false; undo.disabled = redo.disabled = true; count.textContent = `${note.value.trim().split(/\s+/).filter(Boolean).length} words · ${note.value.length} characters`; drawList();
+  }
+  async function add(doc) { await persist(); documents.push(doc); try { await db.put({ ...doc }); } catch (error) { message('Could not save locally. Export this document to keep it: ' + error.message); } await select(doc); }
+  const newButton = button('New document', 0, () =&gt; add(newDocument()), true);
+  const duplicate = button('Duplicate', 0, async () =&gt; { await persist(); if (current) await add({ ...current, id: newDocument().id, title: current.title + ' copy', updatedAt: Date.now() }); });
+  const remove = button('Delete', 14, async () =&gt; {
+    if (!current || !confirm(`Delete “${current.title}” and its drawing? This cannot be undone.`)) return;
+    try {
+      await persist(); const id = current.id; await db.remove(id);
+      documents = documents.filter(d =&gt; d.id !== id); current = null;
+      if (!documents.length) { const doc = newDocument(); documents.push(doc); await db.put(doc); }
+      await select(documents[0]);
+    } catch (error) { message('Could not delete: ' + error.message); }
+  });
+  const exportDocument = () =&gt; { capture(); if (current) { download(filename(current.title) + '.notepaint.json', JSON.stringify({ format: 'notepaint', version: 1, document: current }, null, 2), 'application/json'); message('Document exported: text and drawing together.'); } };
+  const header = h('header', { class: 'np-header' }, h('div', { class: 'np-brand' }, icon(15), h('div', {}, h('b', {}, 'notepaint'), h('small', {}, 'Little ideas. Big colours.'))), button('Import', 1, () =&gt; importFile.click()), button('Export document', 2, exportDocument, true), button('TXT', 3, () =&gt; download(filename(current?.title || 'Note') + '.txt', note.value, 'text/plain;charset=utf-8')), button('PNG', 3, () =&gt; canvas.toBlob(blob =&gt; blob &amp;&amp; download(filename(current?.title || 'Drawing') + '.png', blob, 'image/png'))), button('Help', 15, () =&gt; help.showModal()));
+  const swatches = h('div', { class: 'np-swatches' }, ...PALETTE.map(value =&gt; h('button', { title: value, 'aria-label': 'Use colour ' + value, style: { background: value }, onclick: () =&gt; { activeColor = value; color.value = value; drawing.settings({ color: value }); } })));
+  const workspace = h('main', { class: 'np-workspace' }, h('div', { class: 'np-title-row' }, title, h('span', { class: 'np-tag' }, 'ONE IDEA · TWO PAGES')),
+    h('div', { class: 'np-editors' }, h('section', { class: 'np-note' }, h('div', { class: 'np-panel-head' }, icon(0), 'The words', count), note),
+      h('section', { class: 'np-paint' }, h('div', { class: 'np-panel-head' }, icon(5), 'The picture', h('small', {}, '960 × 640 · mouse, pen or touch')), h('div', { class: 'np-tools' }, toolButtons, undo, redo, button('Clear', 14, () =&gt; { if (confirm('Clear this drawing? You can undo it.')) drawing.clear(); })), h('div', { class: 'np-options' }, 'Ink', color, 'Size', size, sizeText, swatches), h('div', { class: 'np-canvas-wrap' }, canvas))));
+  const app = h('div', { class: 'np-app' }, header, h('div', { class: 'np-body' }, h('aside', { class: 'np-sidebar' }, h('h2', {}, 'Your notebook'), newButton, search, list, h('div', { class: 'np-sidebar-actions' }, duplicate, remove)), workspace), h('footer', { class: 'np-footer' }, status, h('span', {}, 'Cmd/Ctrl+S export · drawing undo: Cmd/Ctrl+Z · Crowelian 2026 + Sonnet')), importFile, help, toast);
+  root.replaceChildren(app); workspace.inert = true; newButton.disabled = true;
+  title.addEventListener('input', schedule); note.addEventListener('input', schedule); search.addEventListener('input', drawList);
+  color.addEventListener('input', () =&gt; { activeColor = color.value; drawing.settings({ color: activeColor }); });
+  size.addEventListener('input', () =&gt; { activeSize = Number(size.value); sizeText.textContent = activeSize + ' px'; drawing.settings({ size: activeSize }); });
+  importFile.addEventListener('change', async () =&gt; {
+    const file = importFile.files[0]; importFile.value = ''; if (!file) return;
+    try {
+      if (file.size &gt; 16000000) throw new Error('Choose a file under 16 MB.');
+      if (file.type.startsWith('image/')) {
+        if (!confirm('Replace the current drawing with this image? You can undo the change.')) return;
+        const url = URL.createObjectURL(file); try { await drawing.load(url, true); } finally { URL.revokeObjectURL(url); } await persist();
+      } else if (file.name.endsWith('.json')) await add(readDocument(JSON.parse(await file.text())));
+      else { const doc = newDocument(file.name.replace(/\.[^.]+$/, '')); doc.text = await file.text(); await add(doc); }
+      message('Imported. Your existing documents are kept.');
+    } catch (error) { message(error.message); }
+  });
+  const keydown = event =&gt; {
+    if (loading || !(event.ctrlKey || event.metaKey)) return;
+    if (event.key.toLowerCase() === 's') { event.preventDefault(); persist(); exportDocument(); }
+    if (event.key.toLowerCase() === 'z' &amp;&amp; !['TEXTAREA', 'INPUT'].includes(document.activeElement.tagName)) { event.preventDefault(); event.shiftKey ? drawing.redo() : drawing.undo(); }
+    if (event.key.toLowerCase() === 'y' &amp;&amp; !['TEXTAREA', 'INPUT'].includes(document.activeElement.tagName)) { event.preventDefault(); drawing.redo(); }
+  };
+  const saveBeforeLeaving = event =&gt; { if (timer) { event.preventDefault(); event.returnValue = ''; persist(); } };
+  const visibility = () =&gt; { if (document.hidden) persist(); };
+  document.addEventListener('keydown', keydown); window.addEventListener('beforeunload', saveBeforeLeaving); document.addEventListener('visibilitychange', visibility);
+  try { db = await openNotebook(); documents = await db.all(); }
+  catch { const memory = new Map(); db = { memory: true, put: async doc =&gt; memory.set(doc.id, doc), remove: async id =&gt; memory.delete(id), close() {} }; message('Browser storage is unavailable. Export documents to keep your work.'); }
+  if (!documents.length) { const doc = newDocument('A little room for ideas'); doc.text = 'Welcome to notepaint.\n\nWrite on the left. Draw on the right.\n\nTry a brush, a colour, and a little doodle.\n\nYour words and picture stay together. Export a document to take them with you.'; documents.push(doc); await db.put(doc); }
+  loading = false; await select(documents[0]); newButton.disabled = false; setTool('brush'); status.textContent = db.memory ? 'Session only — export to keep' : 'Saved on this device';
+  return { destroy() { persist(); disposed = true; clearTimeout(timer); clearTimeout(toastTimer); document.removeEventListener('keydown', keydown); window.removeEventListener('beforeunload', saveBeforeLeaving); document.removeEventListener('visibilitychange', visibility); drawing.destroy(); queue.finally(() =&gt; db.close()); style.remove(); root.replaceChildren(); } };
+}
+</code></pre>
+<h2 id="13-understand-import-and-export">13. Understand import and export<a class="anchor" href="#13-understand-import-and-export">#</a></h2>
+<p><strong>Export document</strong> writes one <code>.notepaint.json</code> file. It contains the title, text and PNG. Importing that file creates a new document instead of replacing another one by accident.</p>
+<p><strong>TXT</strong> exports the note. <strong>PNG</strong> exports the picture. Importing a text file adds a new note. Importing an image asks before replacing the active drawing, and the image replacement can be undone.</p>
+<p>An export is a real portable backup. “Saved on this device” is a local browser save. Explain the distinction in your own apps too.</p>
+<h2 id="14-open-your-app">14. Open your app<a class="anchor" href="#14-open-your-app">#</a></h2>
+<p>From the directory containing your project:</p>
+<pre class="code" data-lang="bash"><code>nord serve my-notepaint</code></pre>
+<p>Open the local address the command prints. Leave the terminal running while you edit. This serves local files; it does not upload your notebook anywhere.</p>
+<p>You should see a notebook list, a note page, drawing tools and a white drawing page. If an icon is missing, check the PNG path. If an import fails, the app displays the reason. If the whole page cannot start, read the browser Console for the first missing file or syntax error.</p>
+<h2 id="15-export-the-finished-app">15. Export the finished app<a class="anchor" href="#15-export-the-finished-app">#</a></h2>
+<p>When you choose to share it, use NordEditor Export or:</p>
+<pre class="code" data-lang="bash"><code>nord export my-notepaint --target html</code></pre>
+<p>Keep your editable folder separately. Share the complete exported folder. Browser storage at a new address starts as a separate notebook, so import your portable document files there.</p>
+<h2 id="16-grow-it-carefully">16. Grow it carefully<a class="anchor" href="#16-grow-it-carefully">#</a></h2>
+<p>Add one useful feature at a time: an image-size selector, a simple brush preset or an “export all documents” command. First write down what the user should see and what must happen to their existing data.</p>
+<p>For a bigger project, <a href="tut-t21-project-design.html">the next design guide</a> shows an actual folder plan and how to divide a game into small responsibilities. The same approach works for this app: data rules in one place, storage in one place, and the screen in one place.</p>
+<div class="pager"><a href="tut-t18-library-snippets.html"><small>← Previous</small>T18 Writing library snippets</a><a href="tut-t20-star-not.html"><small>Next →</small>T20 Build Star-Not, a complete small space adventure</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-decide-what-a-finished-app-means">1. Decide what a finished app means </a><a href="#2-make-the-project-folder">2. Make the project folder </a><a href="#3-add-the-nord-project-settings">3. Add the Nord project settings </a><a href="#4-add-the-page-that-starts-the-app">4. Add the page that starts the app </a><a href="#5-copy-the-reusable-artwork-and-font">5. Copy the reusable artwork and font </a><a href="#6-add-the-small-dom-helper">6. Add the small DOM helper </a><a href="#7-design-one-document">7. Design one document </a><a href="#8-create-store-js">8. Create store.js </a><a href="#9-understand-the-drawing-canvas">9. Understand the drawing canvas </a><a href="#10-add-drawing-js">10. Add drawing.js </a><a href="#11-add-style-css">11. Add style.css </a><a href="#12-connect-the-app-in-app-js">12. Connect the app in app.js </a><a href="#13-understand-import-and-export">13. Understand import and export </a><a href="#14-open-your-app">14. Open your app </a><a href="#15-export-the-finished-app">15. Export the finished app </a><a href="#16-grow-it-carefully">16. Grow it carefully </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Export Maya scene as glTF — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../index.html"><img src="../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../index.html">Babylon documentation library</a><a href="../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Export Maya scene as glTF</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h1 id="how-to-export-a-maya-scene-as-gltf">How to export a Maya scene as glTF</h1>
+<p>If you have not already installed the Babylon plugin for Maya, you can find all instructions <a href="maya.html">here</a> as well as general information about the plugin.</p>
+<p>With this plugin, you can also export your project to glTF 2.0 format (<span>https://github.com/KhronosGroup/glTF/</span>).</p>
+<p>The exporter converts Maya scene data to glTF&#39;s coordinate conventions, and the Babylon.js loader converts glTF to the scene&#39;s selected handedness. See <a href="../mesh/transforms/coordinatesystems.html">Coordinate Systems and Handedness</a> before adding a manual axis flip.</p>
+<p>All you need to do is choose <strong>gltf</strong> as <strong>Output format</strong>.</p>
+<p><p class="muted">Upstream illustration: glTF export window (media not bundled).</p></p>
+<p>The plugin exports to Babylon format before converting it to glTF.
+The main exported files are the .gltf and .bin files.</p>
+<p>To export to a single .glb file, choose <strong>glb</strong> as <strong>Output format</strong>.</p>
+<h2 id="features">Features<a class="anchor" href="#features">#</a></h2>
+<h2 id="exported-features">Exported features<a class="anchor" href="#exported-features">#</a></h2>
+<p>Since the plugin first exports to Babylon and then converts it to glTF, glTF features are a subset of the <a href="maya.html">babylon ones</a>.</p>
+<ul>
+<li><p><em>Cameras</em></p>
+<ul>
+<li>zfar</li>
+<li>znear</li>
+<li>yfov (Perspective camera)</li>
+<li>Position / rotation (from nodes)</li>
+</ul>
+</li>
+<li><p><em>Meshes</em></p>
+<ul>
+<li>Geometry: position, normal, color, texture coordinates (2 channels)</li>
+<li>Position / rotation / scaling (from nodes)</li>
+<li>Skin</li>
+<li>Instances</li>
+<li>Morph targets</li>
+<li>Animations: bones, morph weights</li>
+</ul>
+</li>
+<li><p><em>Nodes</em></p>
+<ul>
+<li>Hierarchy</li>
+<li>Position / rotation / scaling</li>
+<li>Animations: position, rotation, scaling</li>
+<li>Custom attributes</li>
+</ul>
+</li>
+<li><p><em>Materials</em>
+_ Standard materials (Lambert, Phong, PhongE and Blinn are converted to PBR, see below)
+    _ Color
+    * Transparency</p>
+<ul>
+<li>Bump mapping
+_ Specular color and power
+_ PBR materials (Stingray PBS, AiStandardSurface)
+_ Base color &amp; opacity
+_ Normal
+_ Metallic
+_ Roughness
+_ Emissive
+    _ Multi-materials
+_ Double sided materials
+_ Unlit
+_ Backface culling
+_ Opacity/Transparency mode * Custom attributes</li>
+</ul>
+</li>
+<li><p><em>Textures</em></p>
+<ul>
+<li>Wrap mode (Clamp, mirror, repeat)</li>
+<li>magFilter, minFilter</li>
+<li>Image format conversion to jpg / png</li>
+</ul>
+</li>
+</ul>
+<h2 id="conversion-standard-to-pbr-materials">Conversion Standard to PBR materials<a class="anchor" href="#conversion-standard-to-pbr-materials">#</a></h2>
+<p>Maya Standard materials (Lambert, Phong, PhongE and Blinn) are converted to PBR materials based on their color, specular, transparency and glossiness (specular power).</p>
+<p><span>The complete algorithm is detailed here</span></p>
+<p><span>A demo is available here</span></p>
+<p>Note that the conversion duration scales with image size and may have a severe impact on export duration.</p>
+<h2 id="pbr-materials">PBR materials<a class="anchor" href="#pbr-materials">#</a></h2>
+<p>For best results with glTF format, you are advised to use one of the following materials, as they are the closest to the glTF PBR material model (Physically Based Rendering).</p>
+<p>Currently, two PBR materials are exported:</p>
+<ul>
+<li>Stingray PBS: easy to use but Arnold doesn&#39;t render this material. Mostly here for legacy use with older Maya files.</li>
+<li>AiStandardSurface: Arnold material defining Metalness and Roughness. Not as intuitive as the previous one but this documentation will provide you some useful guidelines.</li>
+</ul>
+<h2 id="stingray-pbs">Stingray PBS<a class="anchor" href="#stingray-pbs">#</a></h2>
+<p>The relevant parameters are highlighted below and described in the following sections.</p>
+<p><p class="muted">Upstream illustration: Maya Stingray PBS material parameters (media not bundled).</p></p>
+<h2 id="preset-material">Preset Material<a class="anchor" href="#preset-material">#</a></h2>
+<p>You can choose between <em>presets/Standard</em> and <em>presets/Standard Transparent</em>. The only difference is the presence of an opacity attribute and an opacity map checkbox.</p>
+<h2 id="attributes">Attributes<a class="anchor" href="#attributes">#</a></h2>
+<p>The first attributes are checkboxes. When one is checked, the exporter will ignore the linked attribute and will only use the map.</p>
+<p>This behavior is the same in Maya in most cases; see below.</p>
+<p>Other attributes (Base Color, Metallic...) are default values used when the corresponding checkboxes are unchecked.</p>
+<p>Note that UV attributes are not used by the exporter and should instead be set up in each fileTexture connected to the material.</p>
+<h2 id="textures">Textures<a class="anchor" href="#textures">#</a></h2>
+<p>When a <em>Use XXXX Map</em> checkbox is checked, the corresponding texture is used instead of the attribute value.</p>
+<p>The following maps have special handling.</p>
+<h2 id="base-color-and-opacity-as-map">Base color and Opacity as map<a class="anchor" href="#base-color-and-opacity-as-map">#</a></h2>
+<p>When preset material is set to transparent, the texture in <em>Color Map</em> is used both for base color and opacity.</p>
+<p>In Maya, if <em>Use Color Map</em> is checked while <em>Use Opacity Map</em> is not, the opacity attribute is used instead of the alpha defined in the texture, and vice versa.</p>
+<p>However, <strong>the exporter does not follow this behaviour. As long as <em>Use Color Map</em> or <em>Use Opacity Map</em> is checked, both are considered checked</strong>. This means that Color Map should contain the final data (both RGB and Alpha). In this case, the exporter will not use the Base Color or Opacity attribute. This also means that opacity must be setup in alpha channel, not in RGB.</p>
+<p>When both checkboxes are unchecked, the attributes are used as normal.</p>
+<h2 id="metallic-and-roughness">Metallic and Roughness<a class="anchor" href="#metallic-and-roughness">#</a></h2>
+<p>In glTF format, the metallic and roughness maps are combined together:</p>
+<p><p class="muted">Upstream illustration: glTF metallic and roughness maps combined (media not bundled).</p></p>
+<p>In Maya, metallic and roughness maps are black and white images (R=G=B).</p>
+<p>In glTF format, metallic is stored in blue channel, roughness in green.</p>
+<p>The 2 maps must have the same size to be merged successfully. Otherwise, the log panel will display the error &quot;Metallic and roughness maps should have same dimensions&quot; and the merged texture will be irrelevant.</p>
+<p>If only one of the 2 maps is used, the attribute value is applied to all pixels when creating merged texture. This behaviour is the same in Maya.</p>
+<p>Note that the duration of this process scales with image size and may have a severe impact on export duration.</p>
+<p>You can also merge your metallic and roughness maps and use this file for both properties in Maya:</p>
+<p><p class="muted">Upstream illustration: glTF metallic and roughness maps combined (media not bundled).</p></p>
+<p>That way, the exporter won&#39;t merge the metallic and roughness map, and the export will be faster.</p>
+<p>You can see how to get <a href="maya-to-gltf.html">a merged MR texture here</a>.</p>
+<h2 id="metallic-roughness-amp-occlusion">Metallic, Roughness &amp; Occlusion<a class="anchor" href="#metallic-roughness-amp-occlusion">#</a></h2>
+<p>As seen before, in glTF format, the metallic and roughness maps are combined together using the blue and green channel.</p>
+<p>For the ambient occlusion map, the red channel is going to be used:</p>
+<p><p class="muted">Upstream illustration: glTF metallic, roughness and ambient occlusion maps combined (media not bundled).</p></p>
+<p>You can merge the metallic, roughness, and occlusion maps in order to use only one texture for all three:</p>
+<p><p class="muted">Upstream illustration: glTF metallic, roughness and ambient occlusion maps combined (media not bundled).</p></p>
+<p>That way, the result will be lighter than using an Ambient Occlusion map and a Metallic Roughness map.</p>
+<p>You can see how to get <a href="maya-to-gltf.html">a merged ORM texture here</a>.</p>
+<h2 id="emission">Emission<a class="anchor" href="#emission">#</a></h2>
+<p>If <em>Use Emissive Map</em> attribute is checked, the emissive color and the emissive intensity are ignored by the exporter.</p>
+<p>Thus the emissive map is assumed to be already premultiplied by the emissive intensity.</p>
+<h2 id="aistandardsurface">AiStandardSurface<a class="anchor" href="#aistandardsurface">#</a></h2>
+<p>The relevant parameters are highlighted below and described in the following sections.</p>
+<p><p class="muted">Upstream illustration: glTF AiStandardSurface material parameters (media not bundled).</p></p>
+<p>Remember to use Arnold lights when rendering with Arnold or your scene will look black! <em>Physical Sky</em> is a good all-around option if you don&#39;t know which one to use.</p>
+<h2 id="base-color-amp-opacity">Base color &amp; Opacity<a class="anchor" href="#base-color-amp-opacity">#</a></h2>
+<p>The base color and opacity can be set either by value or using a texture.</p>
+<p>You can use 2 different textures (one for base color and one for opacity) or a single texture with merged data. Each method is detailed below.</p>
+<p>Note that by default, the <em>Base Weight</em> attribute is set to 0.8. This means that for example a pure white (255, 255, 255) will not appear as white as you would expect (only 204, 204, 204). This attribute is taken into account when exporting, but <strong>you should probably set <em>Base Weight</em> value to 1</strong> if you are new to Arnold rendering.</p>
+<p><strong>IMPORTANT</strong></p>
+<p>In order to make material opacity relevant, you must specify meshes to not be <em>Opaque</em>:</p>
+<p><p class="muted">Upstream illustration: glTF Arnold opaque in shader editor (media not bundled).</p></p>
+<p>This Arnold attribute must be unchecked for each mesh you wish material opacity to be taken into account.</p>
+<p>Babylon and glTF formats don&#39;t have such Mesh attribute. When facing a case where a transparent material is assigned to both opaque and non opaque meshes, the exporter gets around this limitation by duplicating the material. One is assigned to opaque meshes, and all its opacity attributes are erased. The other is assigned to non opaque meshes, and all its opacity attributes remain untouched.</p>
+<h3 id="textures-split">Textures split<a class="anchor" href="#textures-split">#</a></h3>
+<p>You can use 2 different textures, one for <em>Base Color</em> and one for <em>Opacity</em>.</p>
+<p><p class="muted">Upstream illustration: glTF AiStandardSurface hypershade base color and alpha maps split (media not bundled).</p></p>
+<p>The material <em>Opacity</em> is bound to the file texture <em>Out Transparency</em>.</p>
+<p>In glTF format, a single texture is used to describe both parameters. The exporter automatically combines them together:</p>
+<p><p class="muted">Upstream illustration: glTF base color and alpha maps combined (media not bundled).</p></p>
+<p>If a map is not provided, the attribute value is applied to all pixels when creating merged texture.</p>
+<p>Note that the 2 maps must have the same size to be merged successfully. Otherwise, the log panel will display the error &quot;Base color and opacity maps should have same dimensions&quot; and the merged texture will be irrelevant.</p>
+<p>Also, the duration of this process scales with image size and may have a severe impact on export duration.</p>
+<h3 id="textures-already-merged">Textures already merged<a class="anchor" href="#textures-already-merged">#</a></h3>
+<p>Alternatively, you can provide a single texture used in both <em>Base color</em> and <em>Opacity</em>. In this case, the map is assumed to be already merged.</p>
+<p><p class="muted">Upstream illustration: glTF AiStandardSurface hypershade and base color and alpha maps already merged (media not bundled).</p></p>
+<p>The material <em>Opacity</em> is bound to the file texture <em>Out Transparency</em>.</p>
+<h2 id="metalness-amp-roughness">Metalness &amp; Roughness<a class="anchor" href="#metalness-amp-roughness">#</a></h2>
+<p>The metalness (or metallic) and specular roughness can be set either by value or using textures.</p>
+<p>You can use 2 black and white textures or a single colored texture with merged data. Each method is detailed below.</p>
+<h3 id="metalness-amp-roughness-split">Metalness &amp; Roughness split<a class="anchor" href="#metalness-amp-roughness-split">#</a></h3>
+<p>You can use 2 different textures, one for <em>Metalness</em> and one for <em>Specular Roughness</em>. Those maps are black and white images (R=G=B).</p>
+<p><p class="muted">Upstream illustration: glTF AiStandardSurface hypershade metallic and roughness split (media not bundled).</p></p>
+<p>Note that when setting a map by clicking on the <p class="muted">Upstream illustration: glTF Maya texture shortcut icon (media not bundled).</p> icon next to <em>Metalness</em> or <em>Specular Roughness</em> attribute in the material editor window, the default file texture channel is <em>Out Alpha</em>. You may need to remove the link and instead use one of the <em>Out Color</em> channel. Even though any <em>Out Color</em> channel would be correct because they are all equal, as a best practice you should use the blue one for <em>Metalness</em> and the green one for <em>Specular Roughness</em>.</p>
+<p>In glTF format, a single texture is used to describe both parameters: metallic is stored in blue channel, roughness in green. The exporter automatically combines metalness and roughness maps together:</p>
+<p><p class="muted">Upstream illustration: glTF metallic and roughness maps combined (media not bundled).</p></p>
+<p>If a map is not provided, the attribute value is applied to all pixels when creating merged texture.</p>
+<p>Note that the 2 maps must have the same size to be merged successfully. Otherwise, the log panel will display the error &quot;Metallic and roughness maps should have same dimensions&quot; and the merged texture will be irrelevant.</p>
+<p>Also, the duration of this process scales with image size and may have a severe impact on export duration.</p>
+<h3 id="metalness-roughness-amp-occlusion-all-together">Metalness, Roughness &amp; Occlusion all together<a class="anchor" href="#metalness-roughness-amp-occlusion-all-together">#</a></h3>
+<p>Alternatively, you can provide a single texture used in both <em>Metalness</em> and <em>Specular Roughness</em>. This texture actually holds a sneaky extra attribute...Ambient Occlusion!</p>
+<p>The Ambient Occlusion cannot be set in AiStandardSurface material. Thus you cannot take it into account when rendering with Arnold.</p>
+<p>However, this feature is exported and you can hopefully use it in an engine of your choice, provided it takes it into account (Babylon does!). Since there isn&#39;t a dedicated channel for Occlusion, the trick is to use a single file for multiple purposes called ORM texture.</p>
+<p>Such texture defines:</p>
+<ul>
+<li>the <strong>O</strong>cclusion in Red channel and is assigned to none of the material attributes</li>
+<li>the <strong>R</strong>oughness in Green channel and is assigned to the material <em>Specular Roughness</em></li>
+<li>the <strong>M</strong>etalness in Blue channel and is assigned to the material <em>Metalness</em></li>
+</ul>
+<p><p class="muted">Upstream illustration: glTF AiStandardSurface hypershade ORM map (media not bundled).</p></p>
+<p>The exporter does not merge textures for you, but instead assumes the texture provided is already merged.</p>
+<p>You can see how to get <a href="maya-to-gltf.html">a merged ORM texture here</a>.</p>
+<h2 id="emission">Emission<a class="anchor" href="#emission">#</a></h2>
+<p>The emission color can be set either by value or using a texture.</p>
+<p><strong>IMPORTANT</strong></p>
+<p>In order to make material emission relevant, you must specify a value for material <em>Emission Weight</em>. This attribute is taken into account when exporting, but <strong>you should probably set <em>Emission Weight</em> value to 1</strong> if you are new to Arnold rendering.</p>
+<h2 id="bump-mapping">Bump Mapping<a class="anchor" href="#bump-mapping">#</a></h2>
+<p>The bump mapping (or normal camera) can only be set using a texture.</p>
+<h2 id="what-you-should-know">What you should know<a class="anchor" href="#what-you-should-know">#</a></h2>
+<h2 id="lights">Lights<a class="anchor" href="#lights">#</a></h2>
+<p>Lights are not supported in glTF 2.0. An empty node is exported in place of light only when it is relevant to do so (when a light has a mesh or a camera as descendant).</p>
+<h2 id="textures-image-format">Textures image format<a class="anchor" href="#textures-image-format">#</a></h2>
+<p>glTF 2.0 only supports the following image formats: jpg and png. You are advised to use those formats for your textures when exporting to glTF.</p>
+<p>Note that the exporter also supports textures with bmp, gif, tga, tif and dds formats. But, those textures will be automatically converted to png/jpg by the exporter to follow glTF specifications.</p>
+<h2 id="environment-texture">Environment texture<a class="anchor" href="#environment-texture">#</a></h2>
+<p>To enjoy PBR material rendering, you should have an environment texture in your scene. Currently the plugin does not export any environment map and one must be added manually in client implementations. The Babylon Sandbox provides such a feature.</p>
+<h2 id="get-a-merged-occlusion-roughness-metallic-texture">Get a merged occlusion/roughness/metallic texture<a class="anchor" href="#get-a-merged-occlusion-roughness-metallic-texture">#</a></h2>
+<p>To obtain such texture, either:</p>
+<ul>
+<li>create the image manually, using 1 channel from each of the 3 images, with a software like Photoshop.</li>
+</ul>
+<p><p class="muted">Upstream illustration: glTF occlusion, roughness and metallic maps combined (media not bundled).</p></p>
+<ul>
+<li>export the textures from a 3D painting software using ORM configuration. From Substance Painter:</li>
+</ul>
+<p><p class="muted">Upstream illustration: glTF substance painter export window with ORM configuration (media not bundled).</p></p>
+<p>Using <em>Unreal Engine 4 (Packed)</em> configuration, the occlusion, roughness and metallic are combined together into a single ORM texture.</p>
+<h2 id="draco-compression">Draco compression<a class="anchor" href="#draco-compression">#</a></h2>
+<p>On the export form, the <em>Use Draco compression</em> option enables the Draco compression. It needs <span>Node.js</span> and <span>gltf-pipeline</span> in order to work.</p>
+<p>To install Node.js, go to the website, download it, and install it.
+Then, to install gltf-pipeline, open a normal shell (cmd.exe or powershell.exe) and run the following command: <code>npm install -g gltf-pipeline</code>.
+Once they are installed, check the <em>Use Draco compression</em> option and the compression will be performed automatically at the end of the export.</p>
+<h2 id="double-sided-material">Double sided material<a class="anchor" href="#double-sided-material">#</a></h2>
+<p>The handling of the double sided material mimics the Babylon format. <a href="maya.html">Detailed explanations here</a>.</p>
+<h2 id="babylon-material-attributes">Babylon material attributes<a class="anchor" href="#babylon-material-attributes">#</a></h2>
+<p>Native materials are enhanced to have extra attributes in a dedicated node. A Babylon attribute node is created after the first export using the material.</p>
+<p>Here is an example for 3 different materials:</p>
+<p><p class="muted">Upstream illustration: Maya babylon material attributes nodes (media not bundled).</p></p>
+<p><p class="muted">Upstream illustration: Maya babylon material attributes details (media not bundled).</p></p>
+<p>Most Babylon attributes are common to all materials:</p>
+<ul>
+<li><strong>Unlit</strong>: A material can be exported as Unlit, meaning independent of lighting. This implies that light-relative attributes or textures are not exported: ambient, specular, emissive, bump mapping and reflection texture. Additionally, in glTF, the <strong>KHR_materials_unlit</strong> extension is added to the material. <span>More details on this extension here</span>. During export, enable the <em>KHR_materials_unlit</em> checkbox.</li>
+<li><strong>Backface Culling</strong>: When true, the back faces are not rendered. When false, back faces are rendered using the same material as front faces.</li>
+<li><strong>Opacity/Transparency Mode</strong>: You can select how transparency is handled for this material among 3 choices:<ul>
+<li><em>Opaque</em>: The alpha color and texture are ignored during export process.</li>
+<li><em>Cutoff</em>: The alpha cutoff value is 0.5. Alpha values under this threshold are fully transparent. Alpha values above this threshold are fully opaque.</li>
+<li><em>Blend</em>: This is how Maya handles transparency when rendering. This is the default mode for any material with an alpha color or texture.</li>
+</ul>
+</li>
+</ul>
+<h2 id="custom-attributes">Custom attributes<a class="anchor" href="#custom-attributes">#</a></h2>
+<p>You can add custom attributes to Meshes, Materials, Lights, and Cameras with the attributes window (<em>Modify &gt; Add Attribute...</em>), which adds them to the extra attributes of those objects.</p>
+<p><p class="muted">Upstream illustration: native attributes window (media not bundled).</p></p>
+<p>In glTF, the custom attributes are added as extras.</p>
+<p><p class="muted">Upstream illustration: custom attributes as extras (media not bundled).</p></p>
+<p>Note that the custom attributes are added to the node, not to the mesh or light component itself.</p>
+<p>The following types have specific behaviors you should know about:</p>
+<ul>
+<li><em>bool</em> : is equal to 0 or 1.</li>
+<li><em>enum</em> : corresponds to the index of your Maya enum.</li>
+</ul>
+<h2 id="how-to-export-multiple-animation-clips-to-gltf-format">How to export multiple animation clips to .gltf format<a class="anchor" href="#how-to-export-multiple-animation-clips-to-gltf-format">#</a></h2>
+<p>You can export multiple animation clips and play one of them depending on the situation. For example, a character would have &quot;Walk&quot;, &quot;Run&quot; and &quot;Jump&quot; animations, each spread along the timeline.</p>
+<p>To set up the animation clips (also named animation groups) click on the <strong>Babylon</strong> tab on the top menu, and click on <strong>Animation groups</strong>.</p>
+<p><p class="muted">Upstream illustration: Maya animation groups window (media not bundled).</p></p>
+<p>Features are explained below:</p>
+<ul>
+<li><p>Create / delete an animation group</p>
+</li>
+<li><p>Set a name</p>
+</li>
+<li><p>Set start and end frames. Values out of timeline bounds are automatically clamped at runtime.</p>
+</li>
+<li><p><strong>Export non-animated node targets</strong> option: when checked, nodes that are actually not animated (no key in the timeline) will have a fake scale animation exported. This option might be useful if you want to add an in-game behavior to all the nodes of an animation group, such as toggling visibility.</p>
+</li>
+</ul>
+<p>When updating an input field, changes are highlighted in red. Press the <em>Confirm</em> button to submit changes.</p>
+<h2 id="try-it-out">Try it out<a class="anchor" href="#try-it-out">#</a></h2>
+<p>Export your own scene from Maya to glTF format and load it into the <span>Babylon Sandbox</span>. Or load it via scripts using the <a href="../importers/gltf.html">Babylon loader</a>.</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#features">Features </a><a href="#exported-features">Exported features </a><a href="#conversion-standard-to-pbr-materials">Conversion Standard to PBR materials </a><a href="#pbr-materials">PBR materials </a><a href="#stingray-pbs">Stingray PBS </a><a href="#preset-material">Preset Material </a><a href="#attributes">Attributes </a><a href="#textures">Textures </a><a href="#base-color-and-opacity-as-map">Base color and Opacity as map </a><a href="#metallic-and-roughness">Metallic and Roughness </a><a href="#metallic-roughness-amp-occlusion">Metallic, Roughness Occlusion </a><a href="#emission">Emission </a><a href="#aistandardsurface">AiStandardSurface </a><a href="#base-color-amp-opacity">Base color Opacity </a><a href="#metalness-amp-roughness">Metalness Roughness </a><a href="#emission">Emission </a><a href="#bump-mapping">Bump Mapping </a><a href="#what-you-should-know">What you should know </a><a href="#lights">Lights </a><a href="#textures-image-format">Textures image format </a><a href="#environment-texture">Environment texture </a><a href="#get-a-merged-occlusion-roughness-metallic-texture">Get a merged occlusion/roughness/metallic texture </a><a href="#draco-compression">Draco compression </a><a href="#double-sided-material">Double sided material </a><a href="#babylon-material-attributes">Babylon material attributes </a><a href="#custom-attributes">Custom attributes </a><a href="#how-to-export-multiple-animation-clips-to-gltf-format">How to export multiple animation clips to .gltf format </a><a href="#try-it-out">Try it out </a></aside></div>
+<script src="../../../../../../assets/cm.classic.js"></script><script src="../../../../../../assets/manual.js"></script></body></html>

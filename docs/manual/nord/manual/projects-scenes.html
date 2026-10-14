@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Projects &amp; scenes — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="welcome.html" class="active" aria-current="page">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Manual</div><a href="welcome.html">Welcome</a><a href="editor-tour.html">Editor tour</a><a href="projects-scenes.html" class="cur" aria-current="page">Projects &amp; scenes</a><a href="scripting.html">Scripting</a><a href="2d.html">2D games</a><a href="3d.html">3D games</a><a href="physics.html">Physics</a><a href="audio.html">Audio</a><a href="ui.html">UI &amp; HUD</a><a href="input.html">Input</a><a href="assets.html">Assets</a><a href="library.html">The library</a><a href="rust-wasm.html">Rust / WASM</a><a href="export.html">Export &amp; hosting</a><a href="performance.html">Performance &amp; debugging</a><a href="reference.html">Reference overview</a><a href="desktop-apps.html">Desktop apps</a></nav><main id="content"><div class="crumb">Manual / Nord Engine</div><h1>Projects &amp; scenes</h1>
+<p>A project keeps your game’s files together. A scene describes the things in one level or screen; an entity is one of those things.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>Start with one scene. Add one entity, give it a text or sprite component, and save. Use a prefab later when you need several copies of the same object.</p>
+</aside><p>A project is a folder of plain files — everything is JSON, scripts and assets, so it works with git and any text editor.</p>
+<pre class="code" data-lang=""><code>my-game/
+├─ nord.project.json        # project settings
+├─ scenes/main.scene.json   # entities
+├─ prefabs/player.prefab.json
+├─ scripts/player.js        # ES modules (or src/ for Rust tiers)
+├─ assets/…
+├─ .nord-cache/             # thumbnails (git-ignored)
+└─ dist/                    # build output (git-ignored)</code></pre>
+<p>The complete field reference is in <a href="../reference/project-format.html">Project format</a>. This chapter explains the ideas.</p>
+<h2 id="entities">Entities<a class="anchor" href="#entities">#</a></h2>
+<p>An <strong>entity</strong> has a name, id, tags, a layer, a <strong>transform</strong> (position, rotation in degrees, scale), <strong>components</strong> and <strong>scripts</strong>, and may have <strong>children</strong>.
+Child transforms are relative to the parent. Units: <strong>2D = pixels, y down; 3D = metres, y up, left-handed.</strong></p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>An entity is an empty box. On its own it does nothing. You make it a player by putting a <strong>sprite</strong> component (what it looks like), a
+<strong>rigidbody</strong> (it obeys physics) and a <strong>script</strong> (what it does) into the box.</p>
+</aside><h2 id="components">Components<a class="anchor" href="#components">#</a></h2>
+<p>Components give an entity data and behaviour: <code>sprite</code>, <code>rigidbody</code>, <code>light</code>, <code>camera</code>… The list is in the <a href="../reference/components.html">component index</a>.
+They are plain JSON in the scene: <code>{ &quot;type&quot;: &quot;sprite&quot;, &quot;texture&quot;: &quot;assets/sprites/hero.png&quot; }</code>.</p>
+<h2 id="scripts">Scripts<a class="anchor" href="#scripts">#</a></h2>
+<p>Scripts are JavaScript modules attached to entities (<code>&quot;scripts&quot;: [{ &quot;path&quot;: &quot;scripts/player.js&quot;, &quot;attributes&quot;: { &quot;speed&quot;: 220 } }]</code>).
+See <a href="scripting.html">Scripting</a>. A script&#39;s <code>static attributes</code> show up in the inspector.</p>
+<h2 id="tags-and-layers">Tags and layers<a class="anchor" href="#tags-and-layers">#</a></h2>
+<p><code>tags</code> are free-form labels: <code>entity.hasTag(&#39;enemy&#39;)</code>, <code>scene.findByTag(&#39;coin&#39;)</code>. <code>layer</code> is an integer used for ordering/filtering by the backend.</p>
+<h2 id="prefabs">Prefabs<a class="anchor" href="#prefabs">#</a></h2>
+<p>A prefab is a saved entity (with children). Scenes reference it with <code>&quot;prefab&quot;: { &quot;path&quot;: &quot;prefabs/coin.prefab.json&quot;, &quot;overrides&quot;: {…} }</code>.
+<code>overrides</code> is <strong>deep-merged</strong> onto the prefab root; an object with numeric keys patches array items by index
+(<code>{&quot;components&quot;: {&quot;0&quot;: {&quot;tint&quot;: &quot;#f00&quot;}}}</code>). Instance fields (<code>name</code>, <code>transform</code>, <code>tags</code>, <code>enabled</code>) win over the prefab&#39;s.
+At runtime: <code>await this.scene.spawn(&#39;prefabs/bullet.prefab.json&#39;, { pos: [x, y, 0], overrides: {…} })</code>.</p>
+<h2 id="scenes">Scenes<a class="anchor" href="#scenes">#</a></h2>
+<p>A scene is one JSON file. <code>game.loadScene(path)</code> swaps scenes; the start scene is <code>startScene</code> in the project file.
+Scene <code>settings</code> hold ambient colour, skybox and gravity overrides.</p>
+<aside class="box tip"><div class="box-title">Tip</div><p>Hand-editing JSON is fine — <code>nord check</code> validates ids, tags and missing files, and the editor shows the same problems.</p>
+</aside>
+<div class="pager"><a href="editor-tour.html"><small>← Previous</small>Editor tour</a><a href="scripting.html"><small>Next →</small>Scripting</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#entities">Entities </a><a href="#components">Components </a><a href="#scripts">Scripts </a><a href="#tags-and-layers">Tags and layers </a><a href="#prefabs">Prefabs </a><a href="#scenes">Scenes </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

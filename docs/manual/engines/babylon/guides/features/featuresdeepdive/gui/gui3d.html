@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Babylon 3D GUI — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../index.html"><img src="../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../index.html">Babylon documentation library</a><a href="../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Babylon 3D GUI</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="how-to-use-babylon-3d-gui">How To Use Babylon 3D GUI<a class="anchor" href="#how-to-use-babylon-3d-gui">#</a></h2>
+<p>The Babylon.js 3D GUI library is an extension you can use to generate 3D interactive user interfaces.</p>
+<p>The latest version can be found on our CDN at <span>https://cdn.babylonjs.com/gui/babylon.gui.js</span>.</p>
+<span class="muted">&lt;Alert severity=&quot;warning&quot; title=&quot;Warning&quot; description=&quot;The CDN should not be used in production environments. The purpose of our CDN is to serve Babylon packages to users learning how to use the platform or running small experiments. Once you've built an application and are ready to share it with the world at large, you should serve all packages from your own CDN.&quot;/&gt;</span><p>And the source code is available on the main Babylon.js repo: <span>https://github.com/BabylonJS/Babylon.js/tree/master/packages/dev/gui</span>.</p>
+<h2 id="introduction">Introduction<a class="anchor" href="#introduction">#</a></h2>
+<p>Babylon.GUI uses meshes to create an interactive user interface that is fully integrated into your scene.</p>
+<h2 id="gui3dmanager">GUI3DManager<a class="anchor" href="#gui3dmanager">#</a></h2>
+<p>To begin with 3D GUI, you need to instantiate a <code>GUI3DManager</code> which will be responsible for connecting all the controls together:</p>
+<pre class="code" data-lang="javascript"><code>const manager = new BABYLON.GUI.GUI3DManager(scene);</code></pre>
+<p>The manager only requires the scene to work on. Once instantiated, the manager will create a utility layer which is a specific child scene that will host all the meshes used to render the controls. This way, your main scene won&#39;t get populated by the utility meshes.</p>
+<p>You can reach the utility layer with <code>manager.utilityLayer</code>.</p>
+<p>Once you have a manager, you can start adding controls with <code>manager.addControl(control)</code>. All controls will be added to the <code>manager.rootContainer</code>.</p>
+<p>Please also note that the following functions are available:</p>
+<ul>
+<li><code>containsControl()</code>: Gets a boolean indicating if the given control is in the root child list.</li>
+<li><code>removeControl()</code>: Removes a control from the root child list.</li>
+</ul>
+<p>The manager also supports a scaling option, <code>manager.useRealisticScaling</code>, that scales all added controls to a size more comfortable for XR interactions. Alternatively, a custom scaling can be applied to all controls by setting the value of <code>manager.controlScaling</code>. Scaling effects done in these ways can be overridden by updating the control&#39;s scale normally. Setting either of these values will apply the change to all existing and future controls the manager owns.</p>
+<h2 id="containers">Containers<a class="anchor" href="#containers">#</a></h2>
+<p>A container is used to organize controls in the scene. The base class for all containers is the <code>Container3D</code> class. The <code>manager.rootContainer</code> is a <code>Container3D</code> object.</p>
+<p>All containers provide the following functions to handle controls:</p>
+<ul>
+<li><code>addControl()</code>: Adds a control to the children of this container</li>
+<li><code>containsControl()</code>: Gets a boolean indicating if the given control is in the root child list</li>
+<li><code>removeControl()</code>: Removes a control from the root child list</li>
+</ul>
+<p>By default, all containers update their layout every time you add a new control to them. But you can optimize this behavior if you plan to add multiple controls in a row with <code>container.blockLayout = true</code>:</p>
+<pre class="code" data-lang="javascript"><code>panel.blockLayout = true;
+for (let index = 0; index &lt; 30; index++) {
+  const button = new BABYLON.GUI.Button3D(&quot;click me&quot;);
+  panel.addControl(button);
+}
+panel.blockLayout = false;</code></pre>
+<p>The <code>Container3D</code> class will do nothing regarding layout of its controls. You need to use one of its children to get a specialized layout mechanism.</p>
+<p>All specialized containers must implement the following function to provide a layout mechanism:</p>
+<ul>
+<li><code>_arrangeChildren()</code>: This function is called every time a new control is added. This is where child classes can decide how to organize controls</li>
+</ul>
+<h3 id="stackpanel">StackPanel<a class="anchor" href="#stackpanel">#</a></h3>
+<p>The <code>StackPanel</code> container can be used to stack items either horizontally or vertically:</p>
+<pre class="code" data-lang="javascript"><code>const panel = new BABYLON.GUI.StackPanel3D();
+panel.isVertical = true;</code></pre>
+<p>The panel will automatically arrange its content every time you add a new control.</p>
+<p>You can specify the distance between elements with <code>panel.margin = 0.02</code>.</p>
+<p>See it in action here: <span class="muted">Online playground (not embedded offline)</span></p>
+<h3 id="volumebasedpanel">VolumeBasedPanel<a class="anchor" href="#volumebasedpanel">#</a></h3>
+<p>VolumeBasedPanels are containers used to distribute items on the surface of a volume (like a sphere or cylinder).</p>
+<p>The panels automatically arrange their content every time you add a new control.</p>
+<p>The panels can either be row or column first depending on which property you use:</p>
+<pre class="code" data-lang="javascript"><code>panel.columns = 5; // The panel will automatically compute the number of rows based on number of child controls</code></pre>
+<p>or</p>
+<pre class="code" data-lang="javascript"><code>panel.rows = 5; // The panel will automatically compute the number of columns based on number of child controls</code></pre>
+<p>By default a VolumeBasedPanel is set up with panel.columns = 10;</p>
+<p>You can specify the distance between elements with <code>panel.margin = 0.02</code>.</p>
+<p>You can also control how each cell is oriented:</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>BABYLON.Container3D.UNSET_ORIENTATION</td>
+<td>Control rotation will remain unchanged</td>
+</tr>
+<tr>
+<td>1</td>
+<td>BABYLON.Container3D.FACEORIGIN_ORIENTATION</td>
+<td>Control will rotate to make it look at sphere central axis</td>
+</tr>
+<tr>
+<td>2</td>
+<td>BABYLON.Container3D.FACEORIGINREVERSED_ORIENTATION</td>
+<td>Control will rotate to make it look back at sphere central axis</td>
+</tr>
+<tr>
+<td>3</td>
+<td>BABYLON.Container3D.FACEFORWARD_ORIENTATION</td>
+<td>Control will rotate to look at z axis (0, 0, 1)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>BABYLON.Container3D.FACEFORWARDREVERSED_ORIENTATION</td>
+<td>Control will rotate to look at negative z axis (0, 0, -1)</td>
+</tr>
+</tbody></table>
+<h4 id="spherepanel">SpherePanel<a class="anchor" href="#spherepanel">#</a></h4>
+<p>The <code>SpherePanel</code> container can be used to dispatch items on the surface of a sphere:</p>
+<pre class="code" data-lang="javascript"><code>const panel = new BABYLON.GUI.SpherePanel();
+panel.radius = 5;</code></pre>
+<p>The radius property is used to define the radius of the hosting sphere.</p>
+<p>See it in action here: <span class="muted">Online playground (not embedded offline)</span></p>
+<p><p class="muted">Upstream illustration: SpherePanel (media not bundled).</p></p>
+<h4 id="cylinderpanel">CylinderPanel<a class="anchor" href="#cylinderpanel">#</a></h4>
+<p>The <code>CylinderPanel</code> container can be used to distribute items on the surface of a cylinder:</p>
+<pre class="code" data-lang="javascript"><code>const panel = new BABYLON.GUI.CylinderPanel();
+panel.radius = 5;</code></pre>
+<p>The radius property is used to define the radius of the hosting cylinder.</p>
+<p>See it in action here: <span class="muted">Online playground (not embedded offline)</span></p>
+<p><p class="muted">Upstream illustration: CylinderPanel (media not bundled).</p></p>
+<h4 id="planepanel">PlanePanel<a class="anchor" href="#planepanel">#</a></h4>
+<p>The <code>PlanePanel</code> container can be used to distribute items on the surface of a plane:</p>
+<pre class="code" data-lang="javascript"><code>const panel = new BABYLON.GUI.PlanePanel();</code></pre>
+<p>See it in action here: <span class="muted">Online playground (not embedded offline)</span></p>
+<p><p class="muted">Upstream illustration: PlanePanel (media not bundled).</p></p>
+<h4 id="scatterpanel">ScatterPanel<a class="anchor" href="#scatterpanel">#</a></h4>
+<p>The <code>ScatterPanel</code> container can be used to dispatch items using a randomized planar mapping:</p>
+<pre class="code" data-lang="javascript"><code>const panel = new BABYLON.GUI.ScatterPanel();
+panel.iterations = 100;</code></pre>
+<p>The <code>iterations</code> property is used to define the number of iterations used to scatter the controls (100 by default).</p>
+<p><p class="muted">Upstream illustration: ScatterPanel (media not bundled).</p></p>
+<p>See it in action here: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="controls">Controls<a class="anchor" href="#controls">#</a></h2>
+<p>All controls inherit from the <code>Control3D</code> class which provides a set of basic features:</p>
+<ul>
+<li><code>position</code>: Gets or sets the control position in world space</li>
+<li><code>scaling</code>: Gets or sets the control scaling in world space</li>
+<li><code>parent</code>: Gets or sets the parent container</li>
+<li><code>isVisible</code>: Gets or sets a boolean indicating if the control is visible</li>
+<li><code>node</code>: Gets the transform node used by this control</li>
+<li><code>mesh</code>: Gets the mesh used to render this control</li>
+</ul>
+<p>You can attach a control to a mesh or transform node from your scene with:</p>
+<pre class="code" data-lang="javascript"><code>control.linkToTransformNode(anchor);</code></pre>
+<p>This way the control will always follow the linked node or mesh. Please note that in this case, the <code>position</code> and <code>scaling</code> properties are considered local to the new parent node or mesh.
+When linking a control to a transform node, please make sure that the control was first added to a container or to the root manager.</p>
+<p>Some observables are also available to help track control state:</p>
+<ul>
+<li><code>onPointerEnterObservable</code>: An event triggered when pointer enters the control</li>
+<li><code>onPointerOutObservable</code>: An event triggered when the pointer moves out of the control</li>
+<li><code>onPointerDownObservable</code>: An event triggered when the pointer taps the control</li>
+<li><code>onPointerUpObservable</code>: An event triggered when pointer is up</li>
+<li><code>onPointerClickObservable</code>: An event triggered when a control is clicked on (with a mouse)</li>
+<li><code>onPointerMoveObservable</code>: An event triggered when the pointer moves over the control</li>
+</ul>
+<p>All controls can also be the target of <a href="../behaviors.html">behaviors</a> so they expose the associated properties and functions:</p>
+<ul>
+<li><code>behaviors</code>: Gets the list of attached behaviors</li>
+<li><code>addBehavior()</code>: Attach a behavior to the control</li>
+<li><code>removeBehavior()</code>: Remove an attached behavior</li>
+<li><code>getBehaviorByName()</code>: Gets an attached behavior by name</li>
+</ul>
+<p>All controls can also define a callback for when a specific event occurs. These callbacks let the user define an animation for the control. Here is the list of available callbacks:</p>
+<ul>
+<li><code>pointerEnterAnimation</code>: Callback used to start pointer enter animation</li>
+<li><code>pointerOutAnimation</code>: Callback used to start pointer out animation</li>
+<li><code>pointerDownAnimation</code>: Callback used to start pointer down animation</li>
+<li><code>pointerUpAnimation</code>: Callback used to start pointer up animation</li>
+</ul>
+<p>All these callbacks are empty by default and will be implemented by specialized controls.</p>
+<h3 id="button3d">Button3D<a class="anchor" href="#button3d">#</a></h3>
+<p><code>Button3D</code> is a class used to create 3D buttons.</p>
+<p>A button is a control with default animations for enter/out/down and up events.
+It is based on 2D GUI content.</p>
+<p>You can specify the content through the <code>content</code> property and set it to any regular <a href="../gui.html">2D GUI content</a>:</p>
+<pre class="code" data-lang="javascript"><code>const button = new BABYLON.GUI.Button3D(&quot;reset&quot;);
+
+const text = new BABYLON.GUI.TextBlock();
+text.text = &quot;reset&quot;;
+text.color = &quot;white&quot;;
+text.fontSize = 24;
+button.content = text;</code></pre>
+<p>By default the <code>Button3D</code> control uses a 512x512 AdvancedDynamicTexture to render its content.
+You can use the following properties to change the texture resolution:</p>
+<ul>
+<li><code>contentResolution</code>: Gets or sets the texture resolution used to render content (512 by default)</li>
+<li><code>contentScaleRatio</code>: Gets or sets the texture scale ratio used to render content (2 by default)</li>
+</ul>
+<p>See it in action here: <span class="muted">Online playground (not embedded offline)</span></p>
+<h3 id="meshbutton3d">MeshButton3D<a class="anchor" href="#meshbutton3d">#</a></h3>
+<p>This class is used to create an interactive object that uses a mesh from the current scene for rendering.</p>
+<pre class="code" data-lang="javascript"><code>const pushButton = new BABYLON.GUI.MeshButton3D(mesh, &quot;pushButton&quot;);</code></pre>
+<p>Once created, you can use the new MeshButton3D to add animations:</p>
+<pre class="code" data-lang="javascript"><code>pushButton.pointerEnterAnimation = () =&gt; {
+  mesh.material.albedoColor = hoverColor;
+};
+pushButton.pointerOutAnimation = () =&gt; {
+  mesh.material.albedoColor = new BABYLON.Color3(0.5, 0.19, 0);
+};</code></pre>
+<p>See it in action here: <span class="muted">Online playground (not embedded offline)</span></p>
+<h3 id="holographicbutton">HolographicButton<a class="anchor" href="#holographicbutton">#</a></h3>
+<p>The <code>HolographicButton</code> is a specialized button that mimics the Mixed Reality Toolkit holographic button.</p>
+<p>An <code>HolographicButton</code> can be defined with two properties:</p>
+<ul>
+<li><code>text</code>: Gets or sets text for the button</li>
+<li><code>imageUrl</code>: Gets or sets the image URL for the button</li>
+</ul>
+<p><p class="muted">Upstream illustration: Babylon.GUI (media not bundled).</p></p>
+<p>See it in action here: <span class="muted">Online playground (not embedded offline)</span></p>
+<p>Please note that you can overwrite the default content but you need to do it after the call to addControl:</p>
+<pre class="code" data-lang="javascript"><code>const button = new BABYLON.GUI.HolographicButton(&quot;reset&quot;);
+panel.addControl(button);
+
+// Must be done AFTER addControl in order to overwrite the default content
+const text1 = new BABYLON.GUI.TextBlock();
+text1.text = &quot;Reset&quot;;
+text1.color = &quot;Red&quot;;
+text1.fontSize = 48;
+button.content = text1;</code></pre>
+<h3 id="touchholographicbutton">TouchHolographicButton<a class="anchor" href="#touchholographicbutton">#</a></h3>
+<p>The <code>TouchHolographicButton</code> is a newer version of <code>HolographicButton</code> that is better suited for HoloLens 2 volumetric interactions.<br>It has the same use as <code>HolographicButton</code>:</p>
+<pre class="code" data-lang="javascript"><code>const button = new BABYLON.GUI.TouchHolographicButton(&quot;reset&quot;);
+panel.addControl(button);
+
+// Must be done AFTER addControl in order to overwrite the default content
+const text1 = new BABYLON.GUI.TextBlock();
+text1.text = &quot;Reset&quot;;
+text1.color = &quot;Red&quot;;
+text1.fontSize = 48;
+button.content = text1;</code></pre>
+<p>The main functional difference between the <code>TouchHolographicButton</code> and <code>HolographicButton</code> is that the <code>TouchHolographicButton</code> supports near interactions (such as touching the button directly with hand tracking).</p>
+<h3 id="holographicslate">HolographicSlate<a class="anchor" href="#holographicslate">#</a></h3>
+<p>The <code>HolographicSlate</code> is used to display content. It can be dragged around, rotated, and scaled. With one pointer, you have to use the handles to rotate and scale the slate; with two pointers, you can pinch and twist the title bar to rotate and scale it.</p>
+<p>The <code>HolographicSlate</code> hosts an <code>AdvancedDynamicTexture</code> to display content, simply set the <code>content</code> property to a <code>Control</code> or collection of <code>Control</code>s to adjust what is displayed. It also has an adjustable title bar at the top that can display a title by setting the <code>title</code> property.</p>
+<p>The dimensions can be manually set at any time, but are also updated when the user adjusts the slate using the handles around the outside of the slate. The dimensions will never go below the minimum dimensions in either direction, but the minimum dimensions can be set separately. If using the slate handles to resize, the aspect ratio will be maintained even when trying to resize smaller than the minimum.</p>
+<pre class="code" data-lang="javascript"><code>// Create the 3D UI manager
+const manager = new BABYLON.GUI.GUI3DManager(scene);
+
+// Let's add a slate
+const slate = new BABYLON.GUI.HolographicSlate(&quot;down&quot;);
+slate.title = &quot;Checkers&quot;;
+slate.minDimensions = new BABYLON.Vector2(5, 5);
+slate.dimensions = new BABYLON.Vector2(10, 10);
+slate.titleBarHeight = 1.5;
+manager.addControl(slate);
+// Must be done AFTER addControl in order to overwrite the default content
+slate.content = new BABYLON.GUI.Image(&quot;checkers&quot;, &quot;./textures/Checker_Albedo.png&quot;);</code></pre>
+<p>Content inside the slate can also be scrolled in X or Y directions. Use the <code>contentResolution</code> property to manipulate the resolution of the texture.</p>
+<p>The slate natively provides two <code>TouchHolographicButton</code>s on the top right: the leftmost enables the <a href="../behaviors/meshbehaviors.html">FollowBehavior</a> for the slate, and the rightmost destroys the slate.</p>
+<span class="muted">Online playground (not embedded offline)</span><h3 id="near-menu">Near Menu<a class="anchor" href="#near-menu">#</a></h3>
+<p>The <code>NearMenu</code> is a small control that displays buttons close to the user. By default, it follows the user with <a href="../behaviors/meshbehaviors.html">FollowBehavior</a>. It can be pinned in the world either by using the pin button, or whenever the user drags the backplate.</p>
+<p>Below, an example of a horizontal 3-button near menu.</p>
+<pre class="code" data-lang="javascript"><code>// Create the 3D UI manager
+const manager = new BABYLON.GUI.GUI3DManager(scene);
+
+// Let's add a slate
+const near = new BABYLON.GUI.NearMenu(&quot;near&quot;);
+manager.addControl(near);
+
+const button0 = new BABYLON.GUI.TouchHolographicButton(&quot;button0&quot;);
+button0.imageUrl = &quot;./textures/IconFollowMe.png&quot;;
+button0.text = &quot;Button 0&quot;;
+near.addButton(button0);
+
+const button1 = new BABYLON.GUI.TouchHolographicButton(&quot;button1&quot;);
+button1.imageUrl = &quot;./textures/IconClose.png&quot;;
+button1.text = &quot;Button 1&quot;;
+near.addButton(button1);
+
+const button2 = new BABYLON.GUI.TouchHolographicButton(&quot;button2&quot;);
+button2.imageUrl = &quot;./textures/IconFollowMe.png&quot;;
+button2.text = &quot;Button 2&quot;;
+near.addButton(button2);</code></pre>
+<p>As <code>NearMenu</code> is a child class of <code>VolumeBasedPanel</code>, the direction of the layout can be changed by tweaking the parameters <code>rows</code> and <code>columns</code>.</p>
+<p>For example, to make a near menu with <code>n</code> buttons vertical, use :</p>
+<pre class="code" data-lang="javascript"><code>near.rows = n;</code></pre>
+<h3 id="hand-menu">Hand Menu<a class="anchor" href="#hand-menu">#</a></h3>
+<p>The <code>HandMenu</code> is a <code>NearMenu</code> that uses the <a href="../behaviors/meshbehaviors.html">HandConstraintBehavior</a>. It is useful for XR experiences to always have a 3D menu in hand range.</p>
+<p>By default, the <code>HandMenu</code> positions itself on the outer side of the user&#39;s left hand and only activates when the user both has their palm facing them and is looking at their hand. These defaults can be changed by modifying the properties on the <code>HandConstraintBehavior</code> attached to the <code>HandMenu</code>.</p>
+<h3 id="custom-controls">Custom controls<a class="anchor" href="#custom-controls">#</a></h3>
+<p>You can create your own custom control by inheriting from the <code>Control3D</code> class and implementing the following functions:</p>
+<ul>
+<li><code>_createNode()</code>: Called on controls to create a transform node or a mesh to represent the control</li>
+<li><code>_affectMaterial()</code>: Called on controls to prepare and affect a material if a mesh is used to represent the control</li>
+</ul>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#how-to-use-babylon-3d-gui">How To Use Babylon 3D GUI </a><a href="#introduction">Introduction </a><a href="#gui3dmanager">GUI3DManager </a><a href="#containers">Containers </a><a href="#controls">Controls </a></aside></div>
+<script src="../../../../../../assets/cm.classic.js"></script><script src="../../../../../../assets/manual.js"></script></body></html>

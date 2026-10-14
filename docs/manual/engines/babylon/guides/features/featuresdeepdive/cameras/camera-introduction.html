@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Camera Introduction — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../index.html"><img src="../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../index.html">Babylon documentation library</a><a href="../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Camera Introduction</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="cameras">Cameras<a class="anchor" href="#cameras">#</a></h2>
+<p>Of the many cameras available in Babylon.js, the three most used are probably the <a href="../../../../9.30/api/babylonjs/babylon/ff/universalcamera.html">Universal Camera</a>, used for &quot;first-person&quot; movement, <a href="../../../../9.30/api/babylonjs/babylon/a9/arcrotatecamera.html">ArcRotateCamera</a>, an orbital camera, and <a href="../../../../9.30/api/babylonjs/babylon/76/webxrcamera.html">WebXRCamera</a>, used for modern virtual reality experiences.</p>
+<p>To allow user input, a camera must be attached to the canvas using:</p>
+<pre class="code" data-lang="javascript"><code>camera.attachControl(canvas, true);</code></pre>
+<p>The second parameter is optional and defaults to <code>false</code>, which prevents default actions on a canvas event. Set to <code>true</code> to allow canvas default actions.</p>
+<h3 id="notes">Notes<a class="anchor" href="#notes">#</a></h3>
+<ol>
+<li>A <a href="../input/gamepads.html">Gamepad</a> may be used as a controller.</li>
+<li>For touch control, either <span>PEP</span> or <span>hand.js</span> is needed.</li>
+</ol>
+<h2 id="universal-camera">Universal Camera<a class="anchor" href="#universal-camera">#</a></h2>
+<p>This was introduced with version 2.3 of Babylon.js and is controlled by the keyboard, mouse, touch, or <a href="../input/gamepads.html">gamepad</a> depending on the input device used, with no need for the controller to be specified. This extends and replaces the <a href="../../../../9.30/api/babylonjs/babylon/ec/freecamera.html">Free Camera</a>, the <a href="../../../../9.30/api/babylonjs/babylon/fa/touchcamera.html">Touch Camera</a> and the <a href="../../../../9.30/api/babylonjs/babylon/a3/gamepadcamera.html">Gamepad Camera</a>, which are all still available.</p>
+<p>The Universal Camera is now the default camera used by Babylon.js, and it’s your best choice if you’d like to have an FPS-like control in your scene. All demos on <span>babylonjs.com</span> utilize the Universal Camera. Plug an Xbox controller into your PC and you&#39;ll be able to use it to navigate most of the demos.</p>
+<p>The default actions are:</p>
+<ol>
+<li><p>Keyboard - The left and right arrow keys move the camera left and right, and the up and down arrow keys move it forward and backward;</p>
+</li>
+<li><p>Mouse - Rotates the camera around its axes;</p>
+</li>
+<li><p>Touch - Swipe left and right to move the camera left and right, and swipe up and down to move it forward and backward;</p>
+</li>
+<li><p><a href="../input/gamepads.html">Gamepad</a> - Corresponds to the connected device.</p>
+</li>
+</ol>
+<p>Optional actions are:</p>
+<ol>
+<li>MouseWheel - The scroll wheel on a mouse or scroll actions on a touchpad. <span class="muted">Online playground (not embedded offline)</span></li>
+</ol>
+<h3 id="note">Note<a class="anchor" href="#note">#</a></h3>
+<p>Using keys in the Playground requires you to click inside the rendering area to give it the focus.</p>
+<h3 id="constructing-a-universal-camera">Constructing a Universal Camera<a class="anchor" href="#constructing-a-universal-camera">#</a></h3>
+<pre class="code" data-lang="javascript"><code>// Parameters : name, position, scene
+const camera = new BABYLON.UniversalCamera(&quot;UniversalCamera&quot;, new BABYLON.Vector3(0, 0, -10), scene);
+
+// Targets the camera to a particular position. In this case the scene origin
+camera.setTarget(BABYLON.Vector3.Zero());
+
+// Attach the camera to the canvas
+camera.attachControl(canvas, true);</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="arc-rotate-camera">Arc Rotate Camera<a class="anchor" href="#arc-rotate-camera">#</a></h2>
+<p>This camera always points toward a given target position and can be rotated around that target, with the target as the center of rotation. It can be controlled with cursors and a mouse, or with touch events.</p>
+<p>Think of this camera as orbiting its target position, or more imaginatively as a satellite orbiting the Earth. Its position relative to the target (&quot;Earth&quot;) can be set by three parameters:</p>
+<ul>
+<li><a href="../../../../9.30/api/babylonjs/babylon/a9/arcrotatecamera.html">alpha</a> (the longitudinal rotation, in radians),</li>
+<li><a href="../../../../9.30/api/babylonjs/babylon/a9/arcrotatecamera.html">beta</a> (the latitudinal rotation, in radians), and</li>
+<li><a href="../../../../9.30/api/babylonjs/babylon/a9/arcrotatecamera.html">radius</a> (the distance from the target).</li>
+</ul>
+<p>Here is an illustration:</p>
+<p><p class="muted">Upstream illustration: arc rotate camera (media not bundled).</p></p>
+<p>Setting <code>beta</code> to 0 or PI can, for technical reasons, cause problems, so in this situation, <code>beta</code> is offset by 0.1 radians (about 0.6 degrees).</p>
+<p><code>beta</code> increases in a clockwise direction, while <code>alpha</code> increases counter-clockwise.</p>
+<p>The position of the camera can also be set from a vector, which will override any current value for <code>alpha</code>, <code>beta</code> and <code>radius</code>. This can be much easier than calculating the required angles.</p>
+<p>Whether using the keyboard, mouse, or touch swipes, left/right directions change <code>alpha</code>, and up/down directions change <code>beta</code>.</p>
+<p>The following optional <code>ArcRotateCamera</code> properties can also be handy:</p>
+<ul>
+<li><p><strong>zoomToMouseLocation</strong> - if set to <code>true</code> will cause mouse wheel to zoom in or out centered on
+current mouse location instead of a fixed camera.target location. This makes it easy to explore
+all corners of a large scene. Setting this means that the mouse wheel input controller will be
+changing the camera.target position during mouse wheel zooming. When this is <code>true</code> the zoom
+operation using the mouse wheel is doing both zooming and a small amount of panning at the same
+time.</p>
+</li>
+<li><p><strong>wheelDeltaPercentage</strong> - if set to non-zero value will cause the zooming amount to be set to a
+percentage of the camera radius. This means the zoom slows down as you get closer to the target
+object which is nice because it means you can be more precise about camera placement while you
+explore your object up close.</p>
+</li>
+</ul>
+<p>Here&#39;s a Playground that shows how the camera moves, including what happens when the upVector (direction that camera treats as &quot;up&quot;) is changed:</p>
+<span class="muted">  Online playground (not embedded offline)</span><h3 id="constructing-an-arc-rotate-camera">Constructing an Arc Rotate Camera<a class="anchor" href="#constructing-an-arc-rotate-camera">#</a></h3>
+<pre class="code" data-lang="javascript"><code>// Parameters: name, alpha, beta, radius, target position, scene
+const camera = new BABYLON.ArcRotateCamera(&quot;Camera&quot;, 0, 0, 10, new BABYLON.Vector3(0, 0, 0), scene);
+
+// Positions the camera overwriting alpha, beta, radius
+camera.setPosition(new BABYLON.Vector3(0, 0, 20));
+
+// This attaches the camera to the canvas
+camera.attachControl(canvas, true);</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><p>By default, panning with an <code>ArcRotateCamera</code> is also possible by using <span class="muted">&lt;kbd&gt;</span>Ctrl<span class="muted">&lt;/kbd&gt;</span> + <span class="muted">&lt;kbd&gt;</span>left mouse button<span class="muted">&lt;/kbd&gt;</span>. You can use <span class="muted">&lt;kbd&gt;</span>right mouse button<span class="muted">&lt;/kbd&gt;</span> instead by setting <code>useCtrlForPanning</code> to <code>false</code> in the <code>attachControl</code> call:</p>
+<pre class="code" data-lang="javascript"><code>camera.attachControl(canvas, noPreventDefault, useCtrlForPanning);</code></pre>
+<p>If required, you can also completely deactivate panning by setting:</p>
+<pre class="code" data-lang="javascript"><code>camera.panningSensibility = 0;</code></pre>
+<p>Here&#39;s a demo demonstrating some of these things, along with other features of the ArcRotateCamera:</p>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="followcamera">FollowCamera<a class="anchor" href="#followcamera">#</a></h2>
+<p>The <a href="../../../../9.30/api/babylonjs/babylon/2d/followcamera.html">FollowCamera</a> does exactly what its name suggests. Give it a mesh as a target, and from whatever position it is currently at, it will move to a goal position from which to view the target. When the target moves, so will the Follow Camera.</p>
+<p>The initial position of the Follow Camera is set when it is created, and the goal position is set with three parameters:</p>
+<ol>
+<li><p><a href="../../../../9.30/api/babylonjs/babylon/2d/followcamera.html">radius</a>: the distance from the target</p>
+</li>
+<li><p><a href="../../../../9.30/api/babylonjs/babylon/2d/followcamera.html">heightOffset</a>: the height above the target;</p>
+</li>
+<li><p><a href="../../../../9.30/api/babylonjs/babylon/2d/followcamera.html">rotationOffset</a>: the goal angle in degrees around the target in the x-y plane.</p>
+</li>
+</ol>
+<p>The speed with which the camera moves to a goal position is set through its acceleration (<a href="../../../../9.30/api/babylonjs/babylon/2d/followcamera.html">cameraAcceleration</a>) up to a maximum speed (<a href="../../../../9.30/api/babylonjs/babylon/2d/followcamera.html">maxCameraSpeed</a>).</p>
+<h3 id="constructing-a-follow-camera">Constructing a Follow Camera<a class="anchor" href="#constructing-a-follow-camera">#</a></h3>
+<pre class="code" data-lang="javascript"><code>// Parameters: name, position, scene
+const camera = new BABYLON.FollowCamera(&quot;FollowCam&quot;, new BABYLON.Vector3(0, 10, -10), scene);
+
+// The goal distance of camera from target
+camera.radius = 30;
+
+// The goal height of camera above local origin (centre) of target
+camera.heightOffset = 10;
+
+// The goal rotation of camera around local origin (centre) of target in x y plane
+camera.rotationOffset = 0;
+
+// Acceleration of camera in moving from current to goal position
+camera.cameraAcceleration = 0.005;
+
+// The speed at which acceleration is halted
+camera.maxCameraSpeed = 10;
+
+// This attaches the camera to the canvas
+camera.attachControl(canvas, true);
+
+// NOTE:: SET CAMERA TARGET AFTER THE TARGET'S CREATION AND NOTE CHANGE FROM BABYLONJS V 2.5
+// targetMesh created here.
+camera.target = targetMesh; // version 2.4 and earlier
+camera.lockedTarget = targetMesh; //version 2.5 onwards</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="anaglyphcameras">AnaglyphCameras<a class="anchor" href="#anaglyphcameras">#</a></h2>
+<p>The <a href="../../../../9.30/api/babylonjs/babylon/74/anaglyphuniversalcamera.html">AnaglyphUniversalCamera</a> and <a href="../../../../9.30/api/babylonjs/babylon/d1/anaglypharcrotatecamera.html">AnaglyphArcRotateCamera</a> extend the Universal and Arc Rotate Cameras for use with red and cyan 3D glasses. They use post-processing filtering techniques.</p>
+<h3 id="constructing-an-anaglyph-universal-camera">Constructing an Anaglyph Universal Camera<a class="anchor" href="#constructing-an-anaglyph-universal-camera">#</a></h3>
+<pre class="code" data-lang="javascript"><code>// Parameters : name, position, eyeSpace, scene
+const camera = new BABYLON.AnaglyphUniversalCamera(&quot;af_cam&quot;, new BABYLON.Vector3(0, 1, -15), 0.033, scene);</code></pre>
+<h3 id="constructing-an-anaglyph-arcrotatecamera">Constructing an Anaglyph ArcRotateCamera<a class="anchor" href="#constructing-an-anaglyph-arcrotatecamera">#</a></h3>
+<pre class="code" data-lang="javascript"><code>// Parameters : name, alpha, beta, radius, target, eyeSpace, scene
+const camera = new BABYLON.AnaglyphArcRotateCamera(&quot;aar_cam&quot;, -Math.PI / 2, Math.PI / 4, 20, BABYLON.Vector3.Zero(), 0.033, scene);</code></pre>
+<p>The <code>eyeSpace</code> parameter sets the amount of shift between the left-eye view and the right-eye view. Once you are wearing your 3D glasses, you might want to experiment with this float value.</p>
+<p>You can learn all about anaglyphs by visiting a <span>Wikipedia page that explains it thoroughly</span>.</p>
+<h2 id="device-orientation-camera">Device Orientation Camera<a class="anchor" href="#device-orientation-camera">#</a></h2>
+<p>The <a href="../../../../9.30/api/babylonjs/babylon/5a/deviceorientationcamera.html">DeviceOrientationCamera</a> is specifically designed to react to device orientation events such as a modern mobile device being tilted forward, back, left, or right.</p>
+<h3 id="constructing-a-device-orientation-camera">Constructing a Device Orientation Camera<a class="anchor" href="#constructing-a-device-orientation-camera">#</a></h3>
+<pre class="code" data-lang="javascript"><code>// Parameters : name, position, scene
+const camera = new BABYLON.DeviceOrientationCamera(&quot;DevOr_camera&quot;, new BABYLON.Vector3(0, 0, 0), scene);
+
+// Targets the camera to a particular position
+camera.setTarget(new BABYLON.Vector3(0, 0, -10));
+
+// Sets the sensitivity of the camera to movement and rotation
+camera.angularSensibility = 10;
+camera.moveSensibility = 10;
+
+// Attach the camera to the canvas
+camera.attachControl(canvas, true);</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="virtual-joysticks-camera">Virtual Joysticks Camera<a class="anchor" href="#virtual-joysticks-camera">#</a></h2>
+<p>The <a href="../../../../9.30/api/babylonjs/babylon/6f/virtualjoystickscamera.html">VirtualJoysticksCamera</a> is specifically designed to react to virtual joystick events. Virtual joysticks are on-screen 2D graphics that are used to control the camera or other scene items.</p>
+<h3 id="video">Video<a class="anchor" href="#video">#</a></h3>
+<span class="muted">&lt;Youtube id=&quot;53Piiy71lB0&quot;/&gt;</span><p><p class="muted">Upstream illustration: Screenshot of the Virtual Joysticks Camera in action on Espilit (media not bundled).</p></p>
+<h3 id="complete-sample">Complete sample<a class="anchor" href="#complete-sample">#</a></h3>
+<p>Here is a complete sample that loads the Espilit demo and switches the default camera to a virtual joysticks camera:</p>
+<pre class="code" data-lang="javascript"><code>document.addEventListener(&quot;DOMContentLoaded&quot;, startGame, false);
+function startGame() {
+  if (BABYLON.Engine.isSupported()) {
+    const canvas = document.getElementById(&quot;renderCanvas&quot;);
+    const engine = new BABYLON.Engine(canvas, true);
+
+    BABYLON.LoadSceneAsync(&quot;Espilit/Espilit.babylon&quot;, engine).then(function (newScene) {
+
+      const VJC = new BABYLON.VirtualJoysticksCamera(&quot;VJC&quot;, newScene.activeCamera.position, newScene);
+      VJC.rotation = newScene.activeCamera.rotation;
+      VJC.checkCollisions = newScene.activeCamera.checkCollisions;
+      VJC.applyGravity = newScene.activeCamera.applyGravity;
+
+      // Wait for textures and shaders to be ready
+      newScene.executeWhenReady(function () {
+        newScene.activeCamera = VJC;
+        // Attach camera to canvas inputs
+        newScene.activeCamera.attachControl(canvas);
+        // Once the scene is loaded, just register a render loop to render it
+        engine.runRenderLoop(function () {
+          newScene.render();
+        }),
+      }),
+    });,
+  }
+}</code></pre>
+<p>If you switch back to another camera, don’t forget to call <code>dispose()</code> first. The <code>VirtualJoysticks</code> are creating a 2D canvas on top of the 3D WebGL canvas to draw the joysticks with cyan and yellow circles. If you forget to call <code>dispose()</code>, the 2D canvas will remain and will continue to handle touch events.</p>
+<h2 id="vr-device-orientation-cameras">VR Device Orientation Cameras<a class="anchor" href="#vr-device-orientation-cameras">#</a></h2>
+<p>The <a href="../../../../9.30/api/babylonjs/babylon/f7/vrdeviceorientationfreecamera.html">VRDeviceOrientationFreeCamera</a>, <a href="../../../../9.30/api/babylonjs/babylon/8b/vrdeviceorientationarcrotatecamera.html">VRDeviceOrientationArcRotateCamera</a>, and <a href="../../../../9.30/api/babylonjs/babylon/68/vrdeviceorientationgamepadcamera.html">VRDeviceOrientationGamepadCamera</a> are a newer set of cameras that extend the cameras above to handle device orientation from a VR device.</p>
+<p>Example (requires a VR device):</p>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="constructing-a-vr-device-orientation-free-camera">Constructing a VR Device Orientation Free Camera<a class="anchor" href="#constructing-a-vr-device-orientation-free-camera">#</a></h2>
+<pre class="code" data-lang="javascript"><code>// Parameters: name, position, scene, compensateDistortion, vrCameraMetrics
+const camera = new BABYLON.VRDeviceOrientationFreeCamera(&quot;Camera&quot;, new BABYLON.Vector3(-6.7, 1.2, -1.3), scene);</code></pre>
+<h3 id="constructing-a-vr-device-orientation-arc-rotate-camera">Constructing a VR Device Orientation Arc Rotate Camera<a class="anchor" href="#constructing-a-vr-device-orientation-arc-rotate-camera">#</a></h3>
+<pre class="code" data-lang="javascript"><code>// Parameters: name, alpha, beta, radius, target, scene, compensateDistortion, vrCameraMetrics
+const camera = new BABYLON.VRDeviceOrientationArcRotateCamera(&quot;Camera&quot;, Math.PI / 2, Math.PI / 4, 25, new BABYLON.Vector3(0, 0, 0), scene);</code></pre>
+<h3 id="constructing-a-vr-device-orientation-gamepad-camera">Constructing a VR Device Orientation Gamepad Camera<a class="anchor" href="#constructing-a-vr-device-orientation-gamepad-camera">#</a></h3>
+<pre class="code" data-lang="javascript"><code>// Parameters: name, position, scene, compensateDistortion, vrCameraMetrics
+const camera = new BABYLON.VRDeviceOrientationGamepadCamera(&quot;Camera&quot;, new BABYLON.Vector3(-10, 5, 14));</code></pre>
+<h2 id="webvr-free-camera">WebVR Free Camera<a class="anchor" href="#webvr-free-camera">#</a></h2>
+<p><strong>NOTE:</strong> WebVR has been removed from Babylon.js as of version 7.0. Please use <a href="../webxr/introtowebxr.html">WebXR</a> instead.</p>
+<p>The <code>WebVRFreeCamera</code> is no longer available. To create VR experiences, use the WebXR experience helper:</p>
+<pre class="code" data-lang="javascript"><code>// Create a default XR experience with immersive VR support
+const xrHelper = await scene.createDefaultXRExperienceAsync({
+  floorMeshes: [ground],
+});</code></pre>
+<p>See <a href="../webxr/introtowebxr.html">Introduction to WebXR</a> for full documentation.</p>
+<h2 id="flycamera">FlyCamera<a class="anchor" href="#flycamera">#</a></h2>
+<p><a href="../../../../9.30/api/babylonjs/babylon/da/flycamera.html">FlyCamera</a> imitates free movement in 3D space, think &quot;a ghost in space.&quot; It comes with an option to gradually correct Roll, and also an option to mimic banked-turns.</p>
+<p>Its defaults are:</p>
+<ol>
+<li><p>Keyboard - The <span class="muted">&lt;kbd&gt;</span>A<span class="muted">&lt;/kbd&gt;</span> and <span class="muted">&lt;kbd&gt;</span>D<span class="muted">&lt;/kbd&gt;</span> keys move the camera left and right. The <span class="muted">&lt;kbd&gt;</span>W<span class="muted">&lt;/kbd&gt;</span> and <span class="muted">&lt;kbd&gt;</span>S<span class="muted">&lt;/kbd&gt;</span> keys move it forward and backward. The <span class="muted">&lt;kbd&gt;</span>E<span class="muted">&lt;/kbd&gt;</span> and <span class="muted">&lt;kbd&gt;</span>Q<span class="muted">&lt;/kbd&gt;</span> keys move it up and down.</p>
+</li>
+<li><p>Mouse - Rotates the camera about the Pitch and Yaw (X, Y) axes with the camera as the origin. Holding the <span class="muted">&lt;kbd&gt;</span>right mouse button<span class="muted">&lt;/kbd&gt;</span> rotates the camera about the Roll (Z) axis with the camera as the origin.</p>
+</li>
+</ol>
+<h3 id="constructing-a-fly-camera">Constructing a Fly Camera<a class="anchor" href="#constructing-a-fly-camera">#</a></h3>
+<pre class="code" data-lang="javascript"><code>// Parameters: name, position, scene
+const camera = new BABYLON.FlyCamera(&quot;FlyCamera&quot;, new BABYLON.Vector3(0, 5, -10), scene);
+
+// Airplane like rotation, with faster roll correction and banked-turns.
+// Default is 100. A higher number means slower correction.
+camera.rollCorrect = 10;
+// Default is false.
+camera.bankedTurn = true;
+// Defaults to 90° in radians in how far banking will roll the camera.
+camera.bankedTurnLimit = Math.PI / 2;
+// How much of the Yawing (turning) will affect the Rolling (banked-turn.)
+// Less than 1 will reduce the Rolling, and more than 1 will increase it.
+camera.bankedTurnMultiplier = 1;
+
+// This attaches the camera to the canvas
+camera.attachControl(canvas, true);</code></pre>
+<h2 id="clipping-planes-and-infinite-perspective">Clipping Planes and Infinite Perspective<a class="anchor" href="#clipping-planes-and-infinite-perspective">#</a></h2>
+<p>Cameras in Babylon.js have <a href="../scene/clipplanes.html">clipping planes</a> that specify a visual range in the scene that will be rendered. Anything outside of that range will not be rendered. For example, setting the camera&#39;s far clipping plane to 100 like this:</p>
+<pre class="code" data-lang="javascript"><code>camera.maxZ = 100;</code></pre>
+<p>will not render anything past 100 units from the camera. The same is true of the near clipping plane as well. For example, setting the near clipping plane to 10 like this:</p>
+<pre class="code" data-lang="javascript"><code>camera.minZ = 10;</code></pre>
+<p>will not render anything closer than 10 units from the camera.</p>
+<p>In some cases, you may not want to clip the rendering of your scene. You may want your scene to effectively render out to infinity. This can be done by setting the far clipping plane to 0 like this:</p>
+<pre class="code" data-lang="javascript"><code>camera.maxZ = 0;</code></pre>
+<p>Just a friendly warning, setting the far clipping plane to infinity can reduce depth precision, so use this carefully!</p>
+<h2 id="customizing-inputs">Customizing inputs<a class="anchor" href="#customizing-inputs">#</a></h2>
+<p>The cameras rely upon user inputs to move the camera. If you are happy with the camera presets Babylon.js is giving you, just stick with it.</p>
+<p>If you want to change user inputs based on user preferences, customize one of the existing presets, or use custom input mechanisms. Those cameras have an input manager that is designed for these advanced scenarios. Read <a href="customizingcamerainputs.html">customizing camera inputs</a> to learn more about tweaking inputs on your cameras.</p>
+<h2 id="correcting-perspective-projection">Correcting perspective projection<a class="anchor" href="#correcting-perspective-projection">#</a></h2>
+<p>If you are doing applications like architectural rendering, you may encounter the need to compensate for perspective tilting of vertical lines.
+Let&#39;s consider this case: you are rendering a tall building from a human eye point of view. Naturally, vertical lines will converge toward a vanishing point, like in <span>this playground</span>: <p class="muted">Upstream illustration: Screenshot of the tilted vertical lines (media not bundled).</p>.</p>
+<p>While this is realistic, it may be visually unappealing. If the angle between those lines stays quite low, it may be worth considering perspective correction using <code>camera.applyVerticalCorrection()</code>. This method will automatically compute the vertical correction to apply based on the current camera pitch angle: <p class="muted">Upstream illustration: Screenshot of the corrected vertical lines (media not bundled).</p>.</p>
+<p>And if you want further control over the camera projection plane tilt, you can adjust the <code>camera.projectionPlaneTilt</code> property.
+See <span>this forum post</span> for more information.</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#cameras">Cameras </a><a href="#universal-camera">Universal Camera </a><a href="#arc-rotate-camera">Arc Rotate Camera </a><a href="#followcamera">FollowCamera </a><a href="#anaglyphcameras">AnaglyphCameras </a><a href="#device-orientation-camera">Device Orientation Camera </a><a href="#virtual-joysticks-camera">Virtual Joysticks Camera </a><a href="#vr-device-orientation-cameras">VR Device Orientation Cameras </a><a href="#constructing-a-vr-device-orientation-free-camera">Constructing a VR Device Orientation Free Camera </a><a href="#webvr-free-camera">WebVR Free Camera </a><a href="#flycamera">FlyCamera </a><a href="#clipping-planes-and-infinite-perspective">Clipping Planes and Infinite Perspective </a><a href="#customizing-inputs">Customizing inputs </a><a href="#correcting-perspective-projection">Correcting perspective projection </a></aside></div>
+<script src="../../../../../../assets/cm.classic.js"></script><script src="../../../../../../assets/manual.js"></script></body></html>

@@ -4,6 +4,11 @@ Upload everything in docs/manual/, including hidden .htaccess.
 Every generated manual page has a robots noindex/nofollow/noarchive meta tag.
 This works on static hosting without special server configuration.
 
+The first upload after the folder-layout migration must replace the old remote
+manual (or use FTP mirror mode with remote deletion) so obsolete flat HTML files
+do not remain. After that, the builder preserves unchanged file timestamps and
+an FTP sync only needs to upload changed files and delete explicitly stale ones.
+
 Apache: the included .htaccess also sets X-Robots-Tag when mod_headers is enabled
 and the host allows Header directives in .htaccess.
 Netlify / Cloudflare Pages: _headers sets X-Robots-Tag for all deployed paths.

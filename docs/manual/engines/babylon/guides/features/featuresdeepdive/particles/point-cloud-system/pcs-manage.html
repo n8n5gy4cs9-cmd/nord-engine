@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Managing A Point Cloud System — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../../index.html"><img src="../../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../../index.html">Babylon documentation library</a><a href="../../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Managing A Point Cloud System</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h1 id="pcs-management">PCS Management</h1>
+<p>As you can see above, the <code>setParticles()</code> function is used in the Babylon.js render loop to provide behavior for the PCS.</p>
+<p>The available custom functions of the PCS are:</p>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>initParticles()</td>
+<td>sets the initial particle properties.</td>
+</tr>
+<tr>
+<td>updateParticle(particle)</td>
+<td>sets the particle properties. This function is called per particle by <code>PCS.setParticles()</code></td>
+</tr>
+<tr>
+<td>recycleParticle(particle)</td>
+<td>re-sets the particle properties. This function is called conditionally per particle by <code>PCS.updateParticles()</code></td>
+</tr>
+<tr>
+<td>beforeUpdateParticles()</td>
+<td>lets you do things within the call to <code>PCS.setParticles()</code> just before iterating over all the particles.</td>
+</tr>
+<tr>
+<td>afterUpdateParticles()</td>
+<td>lets you do things within the call to <code>PCS.setParticles()</code> just after the iteration over all the particles is done.</td>
+</tr>
+</tbody></table>
+<p>The pseudo-code for <code>setParticles</code> is:</p>
+<pre class="code" data-lang="javascript"><code>function setParticles() {
+    beforeUpdateParticles();
+    for (let p = 0; p &lt; nbParticles; p++) {
+        updateParticles(particles[p]);
+    }
+    afterUpdateParticles();
+}</code></pre>
+<p>The particle properties that can be set are shown below.</p>
+<p>Available PCS properties are</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Usage</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>particles</td>
+<td>An array containing all the particles. You iterate over this array in the <code>initParticles()</code> function, for instance.</td>
+<td></td>
+</tr>
+<tr>
+<td>nbParticles</td>
+<td>The number of particles in the PCS.</td>
+<td></td>
+</tr>
+<tr>
+<td>counter</td>
+<td>A counter for your own usage</td>
+<td>0</td>
+</tr>
+<tr>
+<td>computeParticleRotation</td>
+<td>Allows (default) or prevents <code>setParticles()</code> from computing <code>particle.rotation</code></td>
+<td>true</td>
+</tr>
+<tr>
+<td>computeParticleTexture</td>
+<td>Allows (default) or prevents <code>setParticles()</code> from computing <code>particle.uvs</code></td>
+<td>true</td>
+</tr>
+<tr>
+<td>computeParticleColor</td>
+<td>Allows (default) or prevents <code>setParticles()</code> from computing <code>particle.color</code></td>
+<td>true</td>
+</tr>
+<tr>
+<td>computeBoundingBox</td>
+<td>Allows or prevents (default) <code>setParticles()</code> from computing the PCS mesh bounding box</td>
+<td>false</td>
+</tr>
+</tbody></table>
+<p>The particle properties for color, uvs, and rotation are set either during the addition phase or by using <code>initParticles</code> and then <code>setParticles</code>. Updating particle properties requires <code>updateParticle</code>, which is called by <code>setParticles</code>. Setting the <strong><em>compute</em></strong> properties to <code>false</code> prevents <code>setParticles()</code> from updating the relevant particle property when it is called. Setting one or more of these to <code>false</code> can increase FPS, especially when <code>setParticles</code> is called repeatedly within the render loop.</p>
+<p>If you no longer need your PCS, you can dispose of it to free memory.</p>
+<pre class="code" data-lang="javascript"><code>PCS.dispose();
+PCS = null; // tells the garbage collector the reference can be also cleaned up</code></pre>
+<h2 id="start-and-end-indexes-for-setparticles">Start and End Indexes for setParticles()<a class="anchor" href="#start-and-end-indexes-for-setparticles">#</a></h2>
+<p>For performance reasons, you may not want to compute the properties of all the particles on each frame. There are three optional parameters for <code>setParticles()</code> that you can use to choose a range of particles to compute: <code>start</code>, <code>end</code>, and <code>update</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Definition</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>start</td>
+<td><em>(number)</em> the index from where to start to iterate in the <code>particles</code> array</td>
+<td>0</td>
+</tr>
+<tr>
+<td>stop</td>
+<td><em>(number)</em> the index (included) where to stop to iterate in the<span class="muted">&lt;br/&gt;</span><code>particles</code> array</td>
+<td>nbParticles - 1</td>
+</tr>
+<tr>
+<td>update</td>
+<td><em>(boolean)</em> to force the PCS mesh vertex buffer to be updated</td>
+<td>true</td>
+</tr>
+</tbody></table>
+<p>If you pass an <code>end</code> value greater than <code>nbParticles - 1</code>, the iteration will stop at <code>nbParticles - 1</code> to prevent access to undefined elements.</p>
+<p>Example 1: to update only 10,000 particle meshes every three frames</p>
+<ul>
+<li>frame 1 : <code>setParticles(0, 3300, false)</code> computes everything for particles from 0 to 3300 and doesn&#39;t update the mesh.</li>
+<li>frame 2 : <code>setParticles(3301, 6600, false)</code> computes everything for particles from 3301 to 6600 and doesn&#39;t update the mesh.</li>
+<li>frame 3 : <code>setParticles(6601, 9999, true)</code> computes everything for particles from 6601 to 9999 and finally updates the mesh.</li>
+</ul>
+<p>In this playground, change <em>invSpeed</em> (line 29) to change the speed.</p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<p>Example 2: you could keep, say, the first 5,000 particles unused and compute particle behavior only for the last 5,000 in your global pool. <code>setParticles(5000, 9999, true)</code> computes everything for particles from 5,000 to 9,999 and updates the mesh.</p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<h2 id="hints-and-tips">Hints and Tips<a class="anchor" href="#hints-and-tips">#</a></h2>
+<p>A PCS can iterate over a very large number of particles during a call to <code>updateParticle</code>, so it is helpful to avoid any apparent pauses in scene generation. The JavaScript Garbage Collector can start cleaning in the middle of what you want to be a smooth animation and cause lag. One way to reduce this is to avoid creating new objects in loops that execute often, where particles are created or updated.</p>
+<p>For example, consider a PCS with, say, 30000 particles where you change their velocities</p>
+<pre class="code" data-lang="javascript"><code>pcs.updateParticle = function (particle) {
+    var accel = new BABYLON.Vector3(0, 0.5, 0);
+    particle.velocity = particle.velocity.add(accel);
+    // ...
+};</code></pre>
+<p>will create two new <code>Vector3</code> objects each call, or 60 000 new objects over the course of the update.</p>
+<p>Instead, make your update loops reuse variables that are declared outside the loop, and don&#39;t call any methods inside the loop that create new objects, for example</p>
+<pre class="code" data-lang="javascript"><code>var accel = new BABYLON.Vector3(0, 0.5, 0);
+pcs.updateParticle = function (particle) {
+    particle.velocity.addInPlace(accel);
+    // ...
+};</code></pre>
+<p>A PCS also has a <code>vars</code> property, which is an object that you can use to store any variables you want to reuse. Any variables you store there will share the PCS lifecycle, and get cleaned up when you dispose it:</p>
+<pre class="code" data-lang="javascript"><code>pcs.vars.tempVector = new BABYLON.Vector3(0, 0, 0);
+// ...
+pcs.dispose(); // cleans explicitly all your PCS.vars !</code></pre>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#start-and-end-indexes-for-setparticles">Start and End Indexes for setParticles() </a><a href="#hints-and-tips">Hints and Tips </a></aside></div>
+<script src="../../../../../../../assets/cm.classic.js"></script><script src="../../../../../../../assets/manual.js"></script></body></html>

@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Scripting — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="welcome.html" class="active" aria-current="page">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Manual</div><a href="welcome.html">Welcome</a><a href="editor-tour.html">Editor tour</a><a href="projects-scenes.html">Projects &amp; scenes</a><a href="scripting.html" class="cur" aria-current="page">Scripting</a><a href="2d.html">2D games</a><a href="3d.html">3D games</a><a href="physics.html">Physics</a><a href="audio.html">Audio</a><a href="ui.html">UI &amp; HUD</a><a href="input.html">Input</a><a href="assets.html">Assets</a><a href="library.html">The library</a><a href="rust-wasm.html">Rust / WASM</a><a href="export.html">Export &amp; hosting</a><a href="performance.html">Performance &amp; debugging</a><a href="reference.html">Reference overview</a><a href="desktop-apps.html">Desktop apps</a></nav><main id="content"><div class="crumb">Manual / Nord Engine</div><h1>Scripting</h1>
+<p>A script adds behavior to an entity: movement, a reaction to a button, or rules for your game. New to code? Read <a href="../start/developer-basics.html">Programming for dummy developers</a> first.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>Attach the Spinner example below to an entity with a visible picture, press Play, and watch it turn. Change speed in the Inspector to try a different speed. Attributes are settings, not a second script.</p>
+</aside><p>Scripts are ES modules whose default export extends <code>NordScript</code>. The one import is <code>nord</code>:</p>
+<pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
+
+export default class Spinner extends NordScript {
+  static attributes = {
+    speed: { type: 'number', default: 90, min: 0, max: 720, label: 'Degrees per second' },
+  };
+  update(dt) {
+    this.entity.rot[2] += this.attrs.speed * dt;
+    this.entity.touch();          // tell the backend we edited the array in place
+  }
+}</code></pre>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>A script is a list of instructions glued onto an entity. The engine calls your functions at the right moments
+(<code>start</code> when the level begins, <code>update</code> every picture/frame, …). <code>dt</code> is &quot;how many seconds since the last frame&quot; — multiply by it so things move at the same speed on slow and fast computers.</p>
+</aside><h2 id="lifecycle">Lifecycle<a class="anchor" href="#lifecycle">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Hook</th>
+<th>When</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>init()</code></td>
+<td>once, after construction, before any <code>start()</code></td>
+</tr>
+<tr>
+<td><code>start()</code></td>
+<td>once, when the scene begins (all entities exist). Spawned entities start on the next frame</td>
+</tr>
+<tr>
+<td><code>update(dt)</code></td>
+<td>every frame, seconds</td>
+</tr>
+<tr>
+<td><code>fixedUpdate(dt)</code></td>
+<td>fixed 60 Hz — use for physics-related logic</td>
+</tr>
+<tr>
+<td><code>lateUpdate(dt)</code></td>
+<td>after every <code>update</code> (cameras, followers)</td>
+</tr>
+<tr>
+<td><code>onEnable()</code> / <code>onDisable()</code></td>
+<td>entity enabled / disabled</td>
+</tr>
+<tr>
+<td><code>onDestroy()</code></td>
+<td>entity destroyed</td>
+</tr>
+<tr>
+<td><code>onCollisionEnter(other, contact)</code> / <code>onCollisionExit(other)</code></td>
+<td>solid contact (<code>other</code> is an Entity)</td>
+</tr>
+<tr>
+<td><code>onTriggerEnter(other)</code> / <code>onTriggerExit(other)</code></td>
+<td>overlap with a <code>trigger</code> / trigger collider</td>
+</tr>
+<tr>
+<td><code>onHotReload(oldState)</code></td>
+<td>after the file was hot-swapped</td>
+</tr>
+</tbody></table>
+<p>An exception in any hook is caught, shown in the Console (and an on-screen overlay) and the game keeps running.</p>
+<h2 id="attributes">Attributes<a class="anchor" href="#attributes">#</a></h2>
+<p><code>static attributes</code> declares inspector-editable parameters. Types: <code>number, int, bool, string, color, vec2, vec3, enum (options), entity, asset (assetType), curve, array</code>.
+Values from the scene are validated, clamped to <code>min</code>/<code>max</code>, and unknown keys warn. Read them from <code>this.attrs</code>.
+Full table: <a href="../reference/project-format.html#attribute-types">Project format → attribute types</a>.</p>
+<h2 id="the-entity-api">The entity API<a class="anchor" href="#the-entity-api">#</a></h2>
+<p><code>this.entity</code> has: <code>name, id, tags, enabled, parent, children, pos, rot, scale, worldPos</code>, <code>find(name)</code>, <code>findByTag(tag)</code>, <code>hasTag</code>, <code>getComponent(type)</code>,
+<code>addComponent(type, data)</code>, <code>set(type, key, value)</code>, <code>getScript(Class)</code>, <code>addScript</code>, <code>on/off/emit</code>, <code>destroy()</code>, <code>clone()</code>, and <code>native</code> (escape hatch).
+Reference: <a href="../api/api-entity.html">Entity</a>.</p>
+<p>Position arrays can be replaced (<code>e.pos = [x, y, 0]</code>, syncs automatically) or edited in place followed by <code>e.touch()</code>.</p>
+<h2 id="events">Events<a class="anchor" href="#events">#</a></h2>
+<p>Two buses: the <strong>global</strong> one (<code>this.events</code> / <code>game.events</code>) and a <strong>per-entity</strong> one (<code>entity.on/emit</code>). Handlers are removed with the function returned by <code>on</code>.</p>
+<div class="live"><pre class="live-src">const bus = new nord.Events();
+const off = bus.on('score', (n) =&gt; log('score +' + n));
+bus.emit('score', 10);
+off();
+bus.emit('score', 5);   // nobody is listening
+log('done');</pre></div>
+<h2 id="timers-and-tweens">Timers and tweens<a class="anchor" href="#timers-and-tweens">#</a></h2>
+<p><code>this.after(sec, fn)</code>, <code>this.every(sec, fn)</code> and <code>this.tween(target, to, opts)</code> all return a <strong>cancel</strong> function and respect <code>game.timeScale</code>.
+Easing names: see <a href="../api/api-helpers.html#ease">Math &amp; helpers</a>.</p>
+<div class="live"><pre class="live-src">const s = new nord.Scheduler();
+const box = { x: 0 };
+s.tween(box, { x: 100 }, { duration: 1, ease: 'cubicOut', onComplete: () =&gt; log('tween done at x=' + box.x) });
+s.after(0.5, () =&gt; log('half a second: x=' + Math.round(box.x)));
+for (let i = 0; i &lt; 70; i++) s.update(1 / 60);   // the engine does this for you</pre></div>
+<h2 id="spawning-and-finding">Spawning and finding<a class="anchor" href="#spawning-and-finding">#</a></h2>
+<pre class="code" data-lang="js"><code>const bullet = await this.scene.spawn('prefabs/bullet.prefab.json', { pos: this.entity.worldPos });
+const boss = this.scene.find('Boss');            // by name
+const coins = this.scene.findByTag('coin');
+this.game.loadScene('scenes/level2.scene.json');</code></pre>
+<h2 id="hot-reload">Hot reload<a class="anchor" href="#hot-reload">#</a></h2>
+<p>When you save a <code>.js</code> script during Play (or via <code>nord serve</code>), Nord re-imports it with a cache-buster and <strong>swaps the prototype of every live instance</strong>,
+keeping its fields. Attributes are re-resolved against the new class. Define <code>onHotReload(oldState)</code> if you need to rebuild something (for example re-create DOM).
+Imports <em>of</em> the script (helper modules) are not re-fetched — reload the page for those. A syntax error leaves the game untouched and shows the error.</p>
+<h2 id="debugging">Debugging<a class="anchor" href="#debugging">#</a></h2>
+<ul>
+<li><code>console.log</code> in a game shows up in the editor Console with a clickable <code>file.js:line</code>.</li>
+<li>Errors show on screen (red overlay at the bottom; click to dismiss) and in <code>game.errors</code>.</li>
+<li>The library has <code>util-debug.js</code> (FPS/entity counters) — see the <a href="../reference/library-catalog.html#utilities">catalog</a>.</li>
+<li>Use <code>game.timeScale = 0.1</code> to watch fast things; <code>game.pause()</code> to freeze.</li>
+</ul>
+<h2 id="scripts-in-rust">Scripts in Rust<a class="anchor" href="#scripts-in-rust">#</a></h2>
+<p>The Rust tiers use a <code>Script</code> trait instead — see <a href="rust-wasm.html">Rust / WASM</a>.</p>
+<div class="pager"><a href="projects-scenes.html"><small>← Previous</small>Projects &amp; scenes</a><a href="2d.html"><small>Next →</small>2D games</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#lifecycle">Lifecycle </a><a href="#attributes">Attributes </a><a href="#the-entity-api">The entity API </a><a href="#events">Events </a><a href="#timers-and-tweens">Timers and tweens </a><a href="#spawning-and-finding">Spawning and finding </a><a href="#hot-reload">Hot reload </a><a href="#debugging">Debugging </a><a href="#scripts-in-rust">Scripts in Rust </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

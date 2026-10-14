@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Creating New Blocks — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../index.html"><img src="../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../index.html">Babylon documentation library</a><a href="../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Creating New Blocks</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="overview">Overview<a class="anchor" href="#overview">#</a></h2>
+<p>There are two ways you can create and use blocks for Smart Filters:</p>
+<ol>
+<li>With annotated GLSL code</li>
+<li>With TypeScript + GLSL code</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Annotated GLSL</th>
+<th>TS + GLSL</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Can use block in your own project</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Can contribute block to @babylonjs/smart-filters-blocks</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Can load directly in the Smart Filters Editor (SFE)</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Can do custom logic in your bind function <span class="muted">&lt;br/&gt;</span>(e.g. math or packing multiple inputs into a single uniform)</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+</tbody></table>
+<h2 id="designing-your-block">Designing Your Block<a class="anchor" href="#designing-your-block">#</a></h2>
+<h3 id="terminology">Terminology<a class="anchor" href="#terminology">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Definition</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Design Time</td>
+<td>When you are instantiating blocks, connecting them, and setting initial values of properties and input blocks</td>
+</tr>
+<tr>
+<td>Runtime</td>
+<td>Begins after you have called createRuntimeAsync() and are working with the SmartFilterRuntime returned - at this point input block values can be changed, but changes to block properties will have no effect on that instance of the SmartFilterRuntime</td>
+</tr>
+</tbody></table>
+<h3 id="uniforms-vs-consts">Uniforms vs. Consts<a class="anchor" href="#uniforms-vs-consts">#</a></h3>
+<p>In a Smart Filter block, input connection points become uniforms, and properties of the block become consts.</p>
+<table>
+<thead>
+<tr>
+<th>Pick</th>
+<th>When</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Uniform</td>
+<td>If the value needs to be settable at runtime (for example, to achieve an animation)</td>
+</tr>
+<tr>
+<td>Const</td>
+<td>If the value will never need to be changed at runtime. The benefit of a const is that the shader compiler can better optimize the code since it knows the value will never change.</td>
+</tr>
+</tbody></table>
+<h2 id="important-glsl-coding-requirements">Important GLSL Coding Requirements<a class="anchor" href="#important-glsl-coding-requirements">#</a></h2>
+<span class="muted">&lt;Alert severity=&quot;info&quot;&gt;
+Regardless of which approach you use for building your blocks, you need to make sure that the GLSL code for the block follows these requirements so that it is compatible with the Smart Filter optimizer.
+&lt;/Alert&gt;</span><p>These requirements ensure the optimizer can collapse sections of the Smart Filter into a single draw call while minimizing code size and ensuring correctness:</p>
+<ol>
+<li><p>Helper functions (any function in the fragment shader other than the main function) must not directly access uniforms</p>
+<ul>
+<li>Instead, pass uniform values into the helper function</li>
+<li>Note: Helper functions may access const and define values</li>
+</ul>
+</li>
+<li><p>Only read from textures in the main function, do not pass a sampler2D into a helper function for it to read from</p>
+</li>
+<li><p>Reduce the texture2D() calls when possible</p>
+<ul>
+<li>For example, instead of:</li>
+</ul>
+<pre class="code" data-lang="GLSL"><code>if (mode == 1.) {
+  color = texture2D(input, vUV);
+} else {
+  color = texture2D(input, 1 - vUV);
+}</code></pre>
+<ul>
+<li>do this:</li>
+</ul>
+<pre class="code" data-lang="GLSL"><code>if (mode == 1.) {
+  uvToUse = vUV;
+} else {
+  uvToUse = 1 - vUV;
+}
+color = texture2D(input, uvToUse);</code></pre>
+</li>
+<li><p>Be sure your fragment shaders return values in the 0-1 range</p>
+<ul>
+<li><span class="muted">&lt;b&gt;</span>Why:<span class="muted">&lt;/b&gt;</span> You can&#39;t rely on intermediate textures for clamping your values, because when your block is included in a Smart Filter and run through the optimizer, it
+will return its value directly to the next block in the Smart Filter instead of writing to an intermediate texture.</li>
+<li><span class="muted">&lt;b&gt;</span>Debugging tip:<span class="muted">&lt;/b&gt;</span> If you see visual differences in the Smart Filter Editor when testing a Smart Filter and toggling the optimizer on and off, you can enable the &quot;Clamp Return Values&quot; debug mode (directly below the Optimize Smart Filter toggle) to have it inject clamps for you when it connects blocks. If that removes the inconsistency when toggling the optimizer on and off, that indicates you have a block that needs to clamp its output to be compatible with the optimizer.</li>
+</ul>
+</li>
+</ol>
+<h3 id="testing-optimizer-compatibility">Testing Optimizer Compatibility<a class="anchor" href="#testing-optimizer-compatibility">#</a></h3>
+<p>If you use the Annotated GLSL Code method, you can easily test that your block is optimizer-compatible by adding it to a Smart Filter in the Smart Filter Editor and then turning on the &quot;Optimize Smart Filter&quot; toggle in the Options pane on the right. Any errors will be displayed in the console at the bottom. See the following sections for more details.</p>
+<h2 id="using-annotated-glsl-code">Using Annotated GLSL Code<a class="anchor" href="#using-annotated-glsl-code">#</a></h2>
+<p>This approach doesn&#39;t support custom vertex shaders or custom binding logic, but is the easiest to get started with and you can load these blocks directly into the <span>Smart Filters Editor</span>.</p>
+<h3 id="naming-convention">Naming Convention<a class="anchor" href="#naming-convention">#</a></h3>
+<p>The Smart Filters core comes with a build tool to convert these annotated GLSL files into TypeScript classes. If you plan to use your block in a package, such as @babylonjs/smart-filters-blocks, or in your own project that will use these tools, you should follow this naming convention:</p>
+<p><code>blackAndWhiteBlock.block.glsl</code></p>
+<h3 id="getting-started">Getting Started<a class="anchor" href="#getting-started">#</a></h3>
+<p>The easiest way to create a custom block using annotated GLSL code is to:</p>
+<ol>
+<li>Author the file in the editor of your choice</li>
+<li>Open the <span>Smart Filters Editor</span></li>
+<li>Click &quot;Add&quot; under &quot;Custom Blocks&quot; then select your GLSL file</li>
+<li>Watch the console UI at the bottom of the editor for any errors</li>
+<li>Drag your block into the Smart Filter and wire it up</li>
+<li>To see changes, just modify your GLSL file, click &quot;Add&quot; under &quot;Custom Blocks&quot; again, and select it<ul>
+<li>Your new block definition will be loaded and the current Smart Filter rebuilt, so you&#39;ll see your changes immediately</li>
+</ul>
+</li>
+</ol>
+<h3 id="sample">Sample<a class="anchor" href="#sample">#</a></h3>
+<pre class="code" data-lang="annotated-GLSL"><code>// { &quot;smartFilterBlockType&quot;: &quot;SerializedTintBlock&quot; }
+
+uniform sampler2D input;
+// { &quot;default&quot;: { &quot;r&quot;: 1, &quot;g&quot;: 0, &quot;b&quot;: 0 } }
+uniform vec3 tint;
+// { &quot;default&quot;: 0.25 }
+uniform float amount;
+
+vec4 mainImage(vec2 vUV) { // main
+    vec4 color = texture2D(input, vUV);
+    vec3 tinted = mix(color.rgb, tint, amount);
+    return vec4(tinted, color.a);
+}</code></pre>
+<h3 id="creating-block-properties">Creating Block Properties<a class="anchor" href="#creating-block-properties">#</a></h3>
+<p>Block properties are consts in the GLSL. If you want to introduce a block property (which unlike a uniform can only be set before the runtime is created), you can add an annotation directly above the const declaration like this:</p>
+<pre class="code" data-lang="annotated-GLSL"><code>// { &quot;property&quot;: true }
+const float mode = 1.;</code></pre>
+<p>When the block is selected in the Smart Filters Editor, you&#39;ll see the mode appear in the properties panel on the right:
+<p class="muted">Upstream illustration: SFE (media not bundled).</p></p>
+<p>You can optionally supply a list of values to appear in a dropdown like this:</p>
+<pre class="code" data-lang="annotated-GLSL"><code>// { &quot;property&quot;: { &quot;options&quot;: { &quot;Normal&quot;: 0, &quot;Crazy&quot;: 1, &quot;Odd&quot;: 2 } } }
+const float mode = 1.;</code></pre>
+<p>And it will appear like this in the Smart Filters Editor:</p>
+<p><p class="muted">Upstream illustration: SFE (media not bundled).</p></p>
+<h3 id="annotation-requirements">Annotation Requirements<a class="anchor" href="#annotation-requirements">#</a></h3>
+<ol>
+<li>The file must start with a // comment containing a serialized JSON object of type <code>GlslHeader</code><ul>
+<li>The smartFilterBlockType property is required</li>
+<li>See <span>shaderConverter.ts</span> for the full object definition</li>
+</ul>
+</li>
+<li>There must be a single main function which takes in a vec2 named vUV and returns a vec4, and it must have a comment on its line like this:
+<code>// main</code></li>
+<li>Functions must be declared with the open curly brace on the same line as the function name</li>
+<li>Any uniforms that should have the same value across all instances of the same block should have a comment on their line like this:
+<code>// single</code></li>
+<li>Uniforms can have metadata, such as a default value if no connection is made to their corresponding connection point<ul>
+<li>In the line immediately above the uniform declaration, start with a // comment followed by a JSON object</li>
+<li>The supported metadata is described in the <code>UniformMetadataProperties</code> type in <span>shaderConverter.ts</span></li>
+</ul>
+</li>
+</ol>
+<h3 id="using-your-block">Using Your Block<a class="anchor" href="#using-your-block">#</a></h3>
+<h4 id="in-the-smart-filters-editor">In the Smart Filters Editor<a class="anchor" href="#in-the-smart-filters-editor">#</a></h4>
+<ol>
+<li>You can use it right away in the <span>Smart Filters Editor</span> by clicking &quot;Add&quot; in &quot;Custom Blocks&quot;</li>
+</ol>
+<h4 id="contributing-it-to-the-smart-filters-block-library">Contributing it to the Smart Filters block library<a class="anchor" href="#contributing-it-to-the-smart-filters-block-library">#</a></h4>
+<ol>
+<li>Clone <span>BabylonJS/Babylon.js</span></li>
+<li>Add your .glsl file to the appropriate path in packages/dev/smartFilterBlocks/src/blocks</li>
+<li>Ensure it has a namespace defined in the <code>GlslHeader</code> which matches the path</li>
+<li>The build will create a blackAndWhiteBlock.block.ts file from your blackAndWhiteBlock.block.glsl file</li>
+<li>Ensure that auto generated blackAndWhiteBlock.block.ts file is exported from the appropriate index.ts files</li>
+<li>To test your block in a local build of the Smart Filter Editor, either:<ul>
+<li>Select <code>Smart Filter Editor development (Edge)</code> or <code>Smart Filter Editor development (Chrome)</code> in Visual Studio Code&#39;s <code>Run and Debug</code> menu then hit F5</li>
+<li>Run <code>npm run watch:assets:smart-filters</code> in a terminal, then <code>npm run watch:source:smart-filters</code> in another terminal, and finally <code>npm run serve -w @tools/smart-filters-editor</code> in a third terminal</li>
+</ul>
+</li>
+<li>Create a Pull Request</li>
+</ol>
+<h4 id="in-your-own-project-build-time-deserialization">In Your Own Project (Build Time Deserialization)<a class="anchor" href="#in-your-own-project-build-time-deserialization">#</a></h4>
+<p>When you have the blocks available at build time, it&#39;s advantageous to deserialize them at that point so the work doesn&#39;t have to be done at runtime. You also get the benefit of property accessors for input connection points.</p>
+<ol>
+<li>See <em>Configuring Your Build</em> below</li>
+<li>Your annotated GLSL (e.g. blackAndWhiteBlock.block.glsl) is converted into a TypeScript class by the build (e.g. blackAndWhiteBlock.block.ts)</li>
+<li>You can then import that class and use it in your Smart Filters:</li>
+</ol>
+<pre class="code" data-lang="typescript"><code>import { BlackAndWhiteBlock } from &quot;./blackAndWhiteBlock.block.js&quot;;
+
+const block = new BlackAndWhiteBlock(smartFilter, &quot;B&amp;W Block&quot;);</code></pre>
+<h4 id="in-your-own-project-runtime-deserialization">In Your Own Project (Runtime Deserialization)<a class="anchor" href="#in-your-own-project-runtime-deserialization">#</a></h4>
+<p>Runtime deserialization is easier, and necessary if you need to consume blocks that are not available at build time, but it is slower when loading the block for the first time.</p>
+<p>Here&#39;s how it is done:</p>
+<pre class="code" data-lang="typescript"><code>const blockDefinition = importCustomBlockDefinition(serializedAnnotatedGlsl);
+const block = CustomShaderBlock.Create(smartFilter, &quot;Name Of This Instance&quot;, blockDefinition);
+// Access the block inputs connection points via block.inputs and the output connection point via .output</code></pre>
+<h2 id="using-typescript-glsl-code">Using TypeScript + GLSL Code<a class="anchor" href="#using-typescript-glsl-code">#</a></h2>
+<p>Use this approach if you need a custom vertex shader, custom binding logic, or do not need to load the block implementation dynamically at runtime in your application.</p>
+<h3 id="naming-convention">Naming Convention<a class="anchor" href="#naming-convention">#</a></h3>
+<p>The Smart Filters core comes with a build tool to convert your GLSL files into TypeScript files that export a <code>ShaderProgram</code> your TypeScript block class can use. If you plan to use your block in a package, such as @babylonjs/smart-filters-blocks, or in your own project that will use these tools, you should follow this naming convention:</p>
+<p><code>compositionBlock.fragment.glsl</code></p>
+<h3 id="adding-to-the-babylon-blocks-library">Adding to the Babylon Blocks Library<a class="anchor" href="#adding-to-the-babylon-blocks-library">#</a></h3>
+<ol>
+<li>Clone <span>BabylonJS/Babylon.js</span></li>
+<li>Run <code>npm install</code></li>
+<li>Now create a TypeScript and GLSL file for your block<ul>
+<li>See compositionBlock.ts and compositionBlock.fragment.glsl as examples</li>
+</ul>
+</li>
+<li>Note that the TypeScript file imports a compositionBlock.fragment.js file which the build auto-generates from the .glsl file</li>
+<li>Add an entry to <span>builtInBlockRegistrations.ts</span></li>
+<li>To test your block in a local build of the Smart Filter Editor, either:<ul>
+<li>Select <code>Smart Filter Editor development (Edge)</code> or <code>Smart Filter Editor development (Chrome)</code> in Visual Studio Code&#39;s <code>Run and Debug</code> menu then hit F5</li>
+<li>Run <code>npm run watch:assets:smart-filters</code> in a terminal, then <code>npm run watch:source:smart-filters</code> in another terminal, and finally <code>npm run serve -w @tools/smart-filters-editor</code> in a third terminal</li>
+</ul>
+</li>
+</ol>
+<h3 id="adding-to-your-own-project">Adding to Your Own Project<a class="anchor" href="#adding-to-your-own-project">#</a></h3>
+<ol>
+<li>See <em>Configuring Your Build</em> below</li>
+<li>You&#39;ll create a TypeScript file for your block (e.g. compositionBlock.ts) as well as a fragment shader file (e.g. compositionBlock.fragment.glsl)</li>
+<li>You&#39;ll import the ShaderProgram and uniforms list from the file that buildShader.js creates at build time (e.g. compositionBlock.fragment.js) like this:</li>
+</ol>
+<pre class="code" data-lang="typescript"><code>import { uniforms, shaderProgram } from &quot;./compositionBlock.fragment.js&quot;;</code></pre>
+<h3 id="block-design-requirements">Block Design Requirements<a class="anchor" href="#block-design-requirements">#</a></h3>
+<ol>
+<li>The main fragment shader function must take in <code>vec2 vUV</code> (the name must match)</li>
+<li>You can choose if you want your shader block to be disableable<ul>
+<li>Disableable means that it will have a disabled input connection point, and will automatically pass the main input texture through to the output if the block is disabled</li>
+<li>This is helpful in applications that may allow the user to turn many effects on and off, since this allows effects to be disabled instantly without the need to build a new Smart Filter runtime</li>
+<li>There are different disable strategies you can choose to get the best shader performance, based on the details of your block (see <code>BlockDisableStrategy</code> in <span>disableableShaderBlock.ts</span>)</li>
+<li>Do not use the <code>AutoSample</code> strategy if your shader modifies <code>vUV</code> before sampling the main input texture. <code>AutoSample</code> samples the texture with the original <code>vUV</code>; use the <code>Manual</code> strategy instead</li>
+<li>You must specify a main input when creating a disableable shader block<ul>
+<li>In your fragment shader, you must put <code>// main</code> on the line that declares the uniform to be treated as the main input texture</li>
+</ul>
+</li>
+<li>If you choose the manual strategy, your fragment shader must check a uniform named <code>disabled</code>, which the system will add for you, and if it is true, return texture2D(your_main_input_texture, vUV)</li>
+</ul>
+</li>
+<li>Uniform names must match connection point names</li>
+<li>The ShaderBinding.bind() function must not assume texture inputs will be defined<ul>
+<li>If the Smart Filter has been optimized, texture inputs may be replaced with return values from other blocks instead of texture uniforms</li>
+<li>For example, don&#39;t have logic that branches based on if the texture input was defined</li>
+</ul>
+</li>
+</ol>
+<h3 id="creating-block-properties">Creating Block Properties<a class="anchor" href="#creating-block-properties">#</a></h3>
+<p>To create a property mapped to a const in a TypeScript + GLSL Code block, follow these steps:</p>
+<ol>
+<li>Annotate the const in the GLSL code like this:</li>
+</ol>
+<pre class="code" data-lang="annotated-GLSL"><code>// { &quot;property&quot;: true }
+const float mode = 1.;</code></pre>
+<ol start="2">
+<li>Add a property to your new block&#39;s class (with optional editableInPropertyPage metadata to make it visible in the Smart Filters Editor):</li>
+</ol>
+<pre class="code" data-lang="typescript"><code>@editableInPropertyPage(&quot;Mode&quot;, PropertyTypeForEdition.List, &quot;PROPERTIES&quot;, {
+    notifiers: { rebuild: true },
+    options: [
+        { label: &quot;Normal&quot;, value: 0 },
+        { label: &quot;Crazy&quot;, value: 1 },
+        { label: &quot;Odd&quot;, value: 2 },
+    ],
+})
+public mode: number = 1;
+</code></pre>
+<ol start="3">
+<li>Override getShaderProgram() in the new block&#39;s class</li>
+</ol>
+<pre class="code" data-lang="typescript"><code>/**
+ * Gets the shader program to use to render the block.
+ * This adds the per-instance const values to the shader program.
+ * @returns The shader program to use to render the block
+ */
+public override getShaderProgram() {
+    const staticShaderProgram = super.getShaderProgram();
+
+    // Since we are making changes only for this instance of the block, and
+    // the disableableShaderProgram is static, we make a copy and modify that.
+    const shaderProgramForThisInstance = CloneShaderProgram(staticShaderProgram);
+    shaderProgramForThisInstance.fragment.constPerInstance = `const float _mode_ = ${this.mode.toFixed(1)};`;
+
+    return shaderProgramForThisInstance;
+}</code></pre>
+<p>It will then appear in the Smart Filters Editor like this:</p>
+<p><p class="muted">Upstream illustration: SFE (media not bundled).</p></p>
+<h4 id="important-notes">Important Notes<a class="anchor" href="#important-notes">#</a></h4>
+<span class="muted">&lt;Alert severity=&quot;info&quot;&gt;</span><ol>
+<li>In your getShaderProgram() override, you must call CloneShaderProgram to ensure that the value you set is not applied to other instances of your new block type.</li>
+<li>In the string you set constPerInstance to, you must add underscores before and after the symbol name you used in your GLSL</li>
+</ol>
+<span class="muted">&lt;/Alert&gt;</span><h3 id="configuring-your-build">Configuring Your Build<a class="anchor" href="#configuring-your-build">#</a></h3>
+<p>If you plan to include your new block in your own project and want to deserialize it at build time instead of runtime for the best performance, you can use build tools supplied by the Smart Filters core.</p>
+<ol>
+<li>As part of your build, you&#39;ll need to run a tool called <code>buildShaders.js</code> and pass it a path to your blocks and the name of the Smart Filters package as parameters. Use scripts similar to these in your package.json (update ./src/blocks to the path where your block files can be found):</li>
+</ol>
+<pre class="code" data-lang="package.json"><code>&quot;build&quot;: &quot;npm run build:runTools &amp;&amp; npm run build:blocks&quot;,
+&quot;build:runTools&quot;: &quot;node ./node_modules/@babylonjs/smart-filters/dist/utils/buildTools/buildShaders.js ./src/blocks @babylonjs/smart-filters&quot;,
+&quot;build:blocks&quot;: &quot;tsc -p ./tsconfig.build.json&quot;,</code></pre>
+<ol start="2">
+<li>You can also use the provided <span>watchShaders.js</span> file for watch mode<ul>
+<li>Note you&#39;ll need to reference the js version of the utility in your node_modules folder</li>
+</ul>
+</li>
+<li>Add these lines to your <code>.gitignore</code> file so that these auto-generated files aren&#39;t committed to your repo:</li>
+</ol>
+<pre class="code" data-lang="text"><code>**/*.fragment.ts
+**/*.block.ts</code></pre>
+<ol>
+<li>If you use VSCode, we suggest that you add this to your <code>.vscode/settings.json</code> file so that these auto-generated files don&#39;t appear in your editor:</li>
+</ol>
+<pre class="code" data-lang="json"><code>&quot;files.exclude&quot;: {
+    &quot;**/*.fragment.ts&quot;: true,
+    &quot;**/*.block.ts&quot;: true
+},</code></pre>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#overview">Overview </a><a href="#designing-your-block">Designing Your Block </a><a href="#important-glsl-coding-requirements">Important GLSL Coding Requirements </a><a href="#using-annotated-glsl-code">Using Annotated GLSL Code </a><a href="#using-typescript-glsl-code">Using TypeScript + GLSL Code </a></aside></div>
+<script src="../../../../../../assets/cm.classic.js"></script><script src="../../../../../../assets/manual.js"></script></body></html>

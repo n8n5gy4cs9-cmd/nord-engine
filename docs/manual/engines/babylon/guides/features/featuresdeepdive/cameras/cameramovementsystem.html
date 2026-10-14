@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Camera Movement and Input System — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../index.html"><img src="../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../index.html">Babylon documentation library</a><a href="../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Camera Movement and Input System</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><span class="muted">&lt;Alert severity=&quot;info&quot; title=&quot;Supported cameras&quot;&gt;
+  This system is currently available on **`ArcRotateCamera`** and **`GeospatialCamera`**. The other built-in cameras (`FreeCamera`, `UniversalCamera`, `FollowCamera`, `FlyCamera`, VR / touch-joystick inputs, etc.) are being ported over and will adopt the same `camera.movement` / `camera.movement.input` surface in subsequent releases. Until then, those cameras continue to use the legacy plugin-style input manager documented in [Customizing Camera Inputs](/features/featuresDeepDive/cameras/customizingCameraInputs).
+&lt;/Alert&gt;</span><h2 id="overview">Overview<a class="anchor" href="#overview">#</a></h2>
+<p><code>ArcRotateCamera</code> and <code>GeospatialCamera</code> route every frame&#39;s input through a small two-layer system:</p>
+<ol>
+<li><strong><code>InputMapper</code></strong> — a declarative table (the <strong>inputMap</strong>) of rules that translate a physical input event (a pointer button + modifier, a key code, a wheel scroll) into a logical <strong>interaction</strong> (<code>&quot;pan&quot;</code>, <code>&quot;rotate&quot;</code>, <code>&quot;zoom&quot;</code>).</li>
+<li><strong><code>CameraMovement</code></strong> — a per-camera physics layer that accumulates per-frame pixel deltas, applies inertial decay, and produces framerate-independent movement deltas that the camera applies each frame.</li>
+</ol>
+<p>Both objects are accessible from the camera:</p>
+<pre class="code" data-lang="javascript"><code>const mapper = camera.movement.input;          // InputMapper instance
+const movement = camera.movement;              // CameraMovement instance (subclass per camera)</code></pre>
+<p>This page covers what each layer does, when to use which API, and the back-compatibility story with legacy flags. For the older plugin-style input manager (<code>camera.inputs</code>), see <a href="customizingcamerainputs.html">Customizing Camera Inputs</a>.</p>
+<h2 id="why-two-layers">Why two layers<a class="anchor" href="#why-two-layers">#</a></h2>
+<p>The legacy approach had a separate boolean or numeric property for every customization: <code>useCtrlForPanning</code>, <code>panningMouseButton</code>, <code>useAltToZoom</code>, <code>multiTouchPanAndZoom</code>, <code>inertia</code>, <code>panningInertia</code>, <code>inertialAlphaOffset</code>, … and each input class had hardcoded button-to-action logic. Adding a new gesture (say, &quot;shift + middle-drag should zoom&quot;) meant a new flag, another <code>if</code> in every relevant input class, and often cross-input snooping.</p>
+<p>Splitting things into a declarative inputMap and a separate physics layer means:</p>
+<ul>
+<li>Each input class becomes a thin translator: it observes the DOM, looks up the matching inputMap entry, and dispatches to the typed handler.</li>
+<li>Adding a new gesture is a single <code>setInteraction</code> or <code>addEntry</code> call in your own scene code — no new framework property and no engine release needed.</li>
+<li>Inertia and decay live in one place and produce framerate-independent motion regardless of whether the user is at 60Hz, 144Hz, or single-stepping.</li>
+</ul>
+<h2 id="the-inputmap">The inputMap<a class="anchor" href="#the-inputmap">#</a></h2>
+<p>The inputMap is a plain ordered array of entries. Each entry has a <code>source</code> (<code>&quot;pointer&quot; | &quot;wheel&quot; | &quot;touch&quot; | &quot;keyboard&quot;</code>), an <code>interaction</code> string ( <code>&quot;pan&quot; | &quot;rotate&quot; | &quot;zoom&quot;</code> for the built-in cameras), optional <strong>conditions</strong> that gate when it matches (button, key, modifiers), and optional <strong>sensitivity</strong> multipliers.</p>
+<p>Resolution is <strong>first-match-wins</strong>. The mapper walks the array in order and returns the first entry whose source and conditions match the current input. <strong>Order matters: more specific entries must come before less specific ones.</strong></p>
+<h3 id="arcrotatecamera-defaults">ArcRotateCamera defaults<a class="anchor" href="#arcrotatecamera-defaults">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>Conditions</th>
+<th>Interaction</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>pointer</code></td>
+<td><code>button: 0</code>, <code>ctrl</code></td>
+<td><code>pan</code></td>
+</tr>
+<tr>
+<td><code>pointer</code></td>
+<td><code>button: 0</code></td>
+<td><code>rotate</code></td>
+</tr>
+<tr>
+<td><code>pointer</code></td>
+<td><code>button: 2</code></td>
+<td><code>pan</code></td>
+</tr>
+<tr>
+<td><code>wheel</code></td>
+<td><em>(any)</em></td>
+<td><code>zoom</code></td>
+</tr>
+<tr>
+<td><code>keyboard</code></td>
+<td><code>+ -</code> (codes 187, 107, 189, 109)</td>
+<td><code>zoom</code></td>
+</tr>
+<tr>
+<td><code>keyboard</code></td>
+<td><code>ctrl</code> + nav key</td>
+<td><code>pan</code></td>
+</tr>
+<tr>
+<td><code>keyboard</code></td>
+<td><code>alt</code> + nav key</td>
+<td><code>zoom</code></td>
+</tr>
+<tr>
+<td><code>keyboard</code></td>
+<td>nav key only</td>
+<td><code>rotate</code></td>
+</tr>
+</tbody></table>
+<h3 id="geospatialcamera-defaults">GeospatialCamera defaults<a class="anchor" href="#geospatialcamera-defaults">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>Conditions</th>
+<th>Interaction</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>pointer</code></td>
+<td><code>button: 0</code></td>
+<td><code>pan</code> (drag globe)</td>
+</tr>
+<tr>
+<td><code>pointer</code></td>
+<td><code>button: 1</code></td>
+<td><code>rotate</code> (tilt)</td>
+</tr>
+<tr>
+<td><code>pointer</code></td>
+<td><code>button: 2</code></td>
+<td><code>rotate</code> (tilt)</td>
+</tr>
+<tr>
+<td><code>wheel</code></td>
+<td><em>(any)</em></td>
+<td><code>zoom</code></td>
+</tr>
+<tr>
+<td><code>keyboard</code></td>
+<td><code>+ -</code> (codes 187, 107, 189, 109)</td>
+<td><code>zoom</code></td>
+</tr>
+<tr>
+<td><code>keyboard</code></td>
+<td><code>ctrl</code> + nav key</td>
+<td><code>rotate</code></td>
+</tr>
+<tr>
+<td><code>keyboard</code></td>
+<td><code>alt</code> + nav key</td>
+<td><code>rotate</code></td>
+</tr>
+<tr>
+<td><code>keyboard</code></td>
+<td>nav key only</td>
+<td><code>pan</code></td>
+</tr>
+</tbody></table>
+<p>The keyboard rows above describe what happens when a <strong>registered navigation key</strong> is pressed. Each input class subscribes to a small set of key codes (<code>keysUp</code>, <code>keysDown</code>, <code>keysLeft</code>, <code>keysRight</code>, plus <code>keysReset</code>, <code>keysZoomIn</code>, <code>keysZoomOut</code> where applicable) and only consults the inputMap for those keys — pressing an unrelated key (like <code>Q</code> or <code>Tab</code>) does nothing. So a row like <code>keyboard | nav key only | rotate</code> means &quot;when the user presses one of the registered navigation keys with no modifier held, dispatch rotate&quot;, not &quot;any key on the keyboard rotates&quot;.</p>
+<h2 id="when-to-use-which-api">When to use which API<a class="anchor" href="#when-to-use-which-api">#</a></h2>
+<p>The InputMapper exposes a small surface of mutation methods. Picking the right one keeps your code intent clear.</p>
+<p>For a single, runnable reference that exercises every API in this section with inline commentary, see the <strong>InputMapper API tour playground</strong>: <span class="muted">Online playground (not embedded offline)</span></p>
+<table>
+<thead>
+<tr>
+<th>You want to…</th>
+<th>Use</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Set up an input combo to do a specific interaction (whether or not the combo already has a distinct entry in the map)</td>
+<td><code>setInteraction</code></td>
+<td>Mutates the matched entry&#39;s <code>interaction</code> in place when the entry is at least as specific as the request; otherwise inserts a new, more-specific entry via <code>addEntry</code> so the new mapping wins for that combo without clobbering broader entries.</td>
+</tr>
+<tr>
+<td>Insert one or more raw entries explicitly (e.g. seeding an editor&#39;s &quot;user bindings&quot; list, or rebuilding a known mapping from scratch)</td>
+<td><code>addEntry</code></td>
+<td>Inserts at the correct position by specificity. Use when you want full control over what&#39;s inserted (sensitivity, axis overrides) rather than letting <code>setInteraction</code> synthesize an entry from the conditions.</td>
+</tr>
+<tr>
+<td>Bulk-swap interactions on every entry that matches some conditions (e.g. all keys currently bound to pan should become rotate)</td>
+<td><code>setInteractions</code> (plural)</td>
+<td>Updates every matching entry; returns the count.</td>
+</tr>
+<tr>
+<td>Tweak a property on an existing entry (e.g. change wheel-zoom sensitivity)</td>
+<td><code>getEntry</code> then mutate</td>
+<td>Returns a reference to the live entry.</td>
+</tr>
+<tr>
+<td>Get every entry matching a description</td>
+<td><code>getEntries</code></td>
+<td>Useful for bulk sensitivity tuning or auditing.</td>
+</tr>
+<tr>
+<td>Restore the default mappings after experimenting</td>
+<td><code>resetInputMap</code></td>
+<td>Calls the factory the camera registered at construction time.</td>
+</tr>
+</tbody></table>
+<p><code>setInteraction</code> is the right starting point for &quot;I want input X to do Y&quot; because it does the safe thing whether or not the combo already exists. <code>addEntry</code> is reserved for the rarer cases where you want to construct the entry explicitly (for example to set <code>sensitivity</code>/<code>sensitivityX</code>/<code>sensitivityY</code> at insertion time, or to seed a batch of bindings).</p>
+<h3 id="example-setinteraction-swap-an-existing-binding">Example: <code>setInteraction</code> (swap an existing binding)<a class="anchor" href="#example-setinteraction-swap-an-existing-binding">#</a></h3>
+<p>ArcRotateCamera already has both <code>{ button: 0, modifiers: { ctrl: true }, interaction: &quot;pan&quot; }</code> and <code>{ button: 0, interaction: &quot;rotate&quot; }</code> in its default map. You can flip them so plain left-drag pans and ctrl+left-drag rotates:</p>
+<pre class="code" data-lang="javascript"><code>const input = camera.movement.input;
+
+// Make plain left-drag pan instead of rotate
+input.setInteraction(&quot;pointer&quot;, { button: 0 }, &quot;pan&quot;);
+
+// Make ctrl+left-drag rotate instead of pan
+input.setInteraction(&quot;pointer&quot;, { button: 0, modifiers: { ctrl: true } }, &quot;rotate&quot;);</code></pre>
+<p>Live playground: <span class="muted">Online playground (not embedded offline)</span></p>
+<h3 id="example-setinteraction-introducing-a-new-combo">Example: <code>setInteraction</code> introducing a new combo<a class="anchor" href="#example-setinteraction-introducing-a-new-combo">#</a></h3>
+<p>GeospatialCamera does <strong>not</strong> have a ctrl-modified pointer entry by default. Asking for <code>setInteraction(&quot;pointer&quot;, { button: 0, modifiers: { ctrl: true } }, &quot;rotate&quot;)</code> against its default map matches the catch-all <code>{ button: 0, interaction: &quot;pan&quot; }</code>, but that catch-all is <em>broader</em> than the request — it doesn&#39;t constrain ctrl. <code>setInteraction</code> detects this and inserts a new specific entry instead of mutating the catch-all:</p>
+<pre class="code" data-lang="javascript"><code>// Same call works on either camera. On ArcRotate it mutates the existing
+// ctrl-modified entry; on Geospatial it adds a new specific entry.
+camera.movement.input.setInteraction(
+    &quot;pointer&quot;,
+    { button: 0, modifiers: { ctrl: true } },
+    &quot;rotate&quot;
+);</code></pre>
+<p>After this call on GeospatialCamera, ctrl + left-drag rotates and unmodified left-drag still pans.</p>
+<p>Live playground: <span class="muted">Online playground (not embedded offline)</span></p>
+<h3 id="example-getentry-tweak-sensitivity">Example: <code>getEntry</code> (tweak sensitivity)<a class="anchor" href="#example-getentry-tweak-sensitivity">#</a></h3>
+<p><code>getEntry</code> returns a reference to the live entry, so any property you mutate sticks:</p>
+<pre class="code" data-lang="javascript"><code>// Half-speed wheel zoom
+const wheelZoom = camera.movement.input.getEntry(&quot;wheel&quot;, &quot;zoom&quot;);
+if (wheelZoom) {
+    wheelZoom.sensitivity = 0.5;
+}
+
+// Asymmetric pointer rotate (twice as sensitive horizontally)
+const pointerRotate = camera.movement.input.getEntry(&quot;pointer&quot;, &quot;rotate&quot;);
+if (pointerRotate) {
+    pointerRotate.sensitivityX = 1 / 500;
+    pointerRotate.sensitivityY = 1 / 1000;
+}</code></pre>
+<p>The pointer entries support per-axis <code>sensitivityX</code> / <code>sensitivityY</code> overrides that fall back to the base <code>sensitivity</code> if unset.</p>
+<p>Live playground: <span class="muted">Online playground (not embedded offline)</span></p>
+<h3 id="example-resetinputmap-restore-defaults">Example: <code>resetInputMap</code> (restore defaults)<a class="anchor" href="#example-resetinputmap-restore-defaults">#</a></h3>
+<p>Useful when an editor or settings panel wants a &quot;Restore defaults&quot; affordance:</p>
+<pre class="code" data-lang="javascript"><code>camera.movement.input.resetInputMap();</code></pre>
+<p>This calls the same factory the camera used at construction time, so you get back exactly the table at the top of this page.</p>
+<h3 id="direct-array-manipulation">Direct array manipulation<a class="anchor" href="#direct-array-manipulation">#</a></h3>
+<p>The inputMap is a plain <code>public</code> array. For advanced cases you can read or mutate it directly — push, splice, replace it entirely. <code>addEntry</code> is just sugar for &quot;insert at the right specificity bucket&quot;; if you need different ordering, splice manually. <code>resetInputMap</code> always reverts to the default factory regardless of how you mutated it.</p>
+<h2 id="conditions-matching-modifiers-buttons-and-keys">Conditions: matching modifiers, buttons, and keys<a class="anchor" href="#conditions-matching-modifiers-buttons-and-keys">#</a></h2>
+<p>A condition object specifies which input states should match the entry. <strong>Omitted fields are wildcards</strong> — they don&#39;t constrain matching.</p>
+<pre class="code" data-lang="javascript"><code>{ source: &quot;pointer&quot;, button: 0, interaction: &quot;pan&quot; }
+// Matches: any left-click with or without modifiers.
+
+{ source: &quot;pointer&quot;, button: 0, modifiers: { ctrl: true }, interaction: &quot;pan&quot; }
+// Matches: left-click with ctrl pressed. Other modifiers are wildcards
+// (alt and shift may be either pressed or not).
+
+{ source: &quot;pointer&quot;, button: 0, modifiers: { ctrl: true, alt: false }, interaction: &quot;pan&quot; }
+// Matches: left-click with ctrl pressed AND alt NOT pressed. Shift is a wildcard.</code></pre>
+<p>Modifier matching is per-key, not all-or-nothing. An entry that only specifies <code>ctrl: true</code> doesn&#39;t care about alt or shift. To require a modifier <em>not</em> be pressed, set it explicitly to <code>false</code>.</p>
+<p>The <code>key</code> field on keyboard entries can be a single key code or an array. Useful for binding a group of related keys to the same interaction:</p>
+<pre class="code" data-lang="javascript"><code>{ source: &quot;keyboard&quot;, key: [187, 107, 189, 109], interaction: &quot;zoom&quot; }
+// Bind +, numpad+, -, numpad- all to zoom.</code></pre>
+<h2 id="movement-system">Movement system<a class="anchor" href="#movement-system">#</a></h2>
+<p><code>camera.movement</code> (instance of <code>ArcRotateCameraMovement</code> or <code>GeospatialCameraMovement</code>) owns the physics layer. The contract per frame is:</p>
+<ol>
+<li>Input classes resolve their events through the inputMap and call into typed handlers (<code>handlers.pan</code>, <code>handlers.rotate</code>, <code>handlers.zoom</code>).</li>
+<li>Those handlers add per-frame pixel deltas to the accumulators (<code>panAccumulatedPixels</code>, <code>rotationAccumulatedPixels</code>, <code>zoomAccumulatedPixels</code>).</li>
+<li>The camera&#39;s <code>_checkInputs</code> calls <code>computeCurrentFrameDeltas()</code> which applies inertia and produces <code>panDeltaCurrentFrame</code> / <code>rotationDeltaCurrentFrame</code> / <code>zoomDeltaCurrentFrame</code>.</li>
+<li>The camera applies those deltas to its own state (alpha/beta/radius for arc-rotate, position/orientation for geospatial).</li>
+</ol>
+<p>You usually don&#39;t touch this layer directly — you tune it through the configuration properties below.</p>
+<h3 id="speed-properties">Speed properties<a class="anchor" href="#speed-properties">#</a></h3>
+<p>How much movement (radians, world-units) one pixel of accumulated input should produce:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Default</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>speed</code></td>
+<td><code>1</code></td>
+<td>Master multiplier on all movement (pan, rotate, zoom).</td>
+</tr>
+<tr>
+<td><code>panSpeed</code></td>
+<td><code>1</code></td>
+<td>Coordinate-units of pan per pixel.</td>
+</tr>
+<tr>
+<td><code>rotationXSpeed</code></td>
+<td><code>1</code> (arc) / <code>π/500</code> (geo)</td>
+<td>Radians of rotation per pixel along X (alpha / yaw).</td>
+</tr>
+<tr>
+<td><code>rotationYSpeed</code></td>
+<td><code>1</code> (arc) / <code>π/500</code> (geo)</td>
+<td>Radians of rotation per pixel along Y (beta / pitch).</td>
+</tr>
+<tr>
+<td><code>zoomSpeed</code></td>
+<td><code>1</code> (arc) / <code>2</code> (geo)</td>
+<td>Coordinate-units of zoom per pixel.</td>
+</tr>
+</tbody></table>
+<p>These all multiply each per-frame velocity. Increasing one of them makes that axis feel &quot;faster&quot; without changing how long the inertial glide tail lasts.</p>
+<h3 id="inertia-properties">Inertia properties<a class="anchor" href="#inertia-properties">#</a></h3>
+<p>Per-frame velocity-decay factors (<code>0</code> = instant stop, <code>0.9</code> = legacy-style smooth glide, <code>1</code> = never decays):</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>panInertia</code></td>
+<td><code>0.9</code> (arc) / <code>0</code> (geo)</td>
+<td>Decay applied to pan velocity each frame.</td>
+</tr>
+<tr>
+<td><code>rotationInertia</code></td>
+<td><code>0.9</code> (arc) / <code>0</code> (geo)</td>
+<td>Decay applied to rotation velocity each frame.</td>
+</tr>
+<tr>
+<td><code>zoomInertia</code></td>
+<td><code>0.9</code></td>
+<td>Decay applied to zoom velocity each frame.</td>
+</tr>
+</tbody></table>
+<p>On <code>ArcRotateCamera</code>, <code>rotationInertia</code> and <code>zoomInertia</code> are kept in sync with the legacy <code>camera.inertia</code> accessor. <code>panInertia</code> mirrors <code>camera.panningInertia</code>, which itself defaults to <code>camera.inertia</code>. If you want to drive the inertias independently (e.g. tight-feeling rotation but a long zoom glide), assign to <code>camera.movement.zoomInertia</code> inside <code>scene.onBeforeRenderObservable</code> so your value isn&#39;t overwritten by the legacy sync.</p>
+<h3 id="framerate-independence">Framerate independence<a class="anchor" href="#framerate-independence">#</a></h3>
+<p>The new system is calibrated so the same accumulated input produces the same total camera motion regardless of the actual frame rate. The math:</p>
+<ul>
+<li>A single per-frame <code>*= inertia</code> decay (legacy behavior) is replaced by <code>Math.pow(inertia, dt / referenceFrameDuration)</code>, where <code>referenceFrameDuration = 1000 / referenceFrameRate</code>.</li>
+<li>Each per-frame input contribution is scaled by an inputScale factor that keeps the steady-state of a held drag identical to the legacy 60fps total at any actual framerate.</li>
+</ul>
+<p><code>referenceFrameRate</code> defaults to <code>60</code> so that <code>inertia: 0.9</code> at 60fps reproduces legacy feel exactly. You only need to change it if your app was tuned at a non-60Hz refresh rate under the legacy framerate-dependent math and you want to preserve that exact decay characteristic at the new reference rate:</p>
+<pre class="code" data-lang="javascript"><code>camera.movement.referenceFrameRate = 144;   // legacy decay calibrated to 144Hz</code></pre>
+<p>For most apps the default is correct.</p>
+<p>For custom code that needs to use the same framerate-independent decay (e.g. your own decaying accumulator coupled to the camera), use the helpers:</p>
+<pre class="code" data-lang="javascript"><code>const decay = camera.movement.getFrameIndependentDecay(0.9);     // pow(0.9, dt/refFrameDuration)
+const inputScale = camera.movement.getFrameIndependentInputScale(0.9);  // (1 - decay) / (1 - 0.9)</code></pre>
+<h2 id="backward-compatibility">Backward compatibility<a class="anchor" href="#backward-compatibility">#</a></h2>
+<p>Existing apps don&#39;t need to change. Default end-user behavior — orbit, pan, zoom — is unchanged.</p>
+<p>The legacy boolean / numeric flags continue to work and are bridged to the inputMap automatically:</p>
+<ul>
+<li><code>camera.useCtrlForPanning = false</code> removes the ctrl-modified pointer pan entry.</li>
+<li><code>camera.panningMouseButton = 1</code> rebinds the right-button pan entry to the middle button.</li>
+<li><code>camera.useAltToZoom = false</code> removes the alt-modified keyboard zoom entry.</li>
+<li><code>camera.inertia = 0.5</code> flows through to <code>camera.movement.rotationInertia</code> and <code>camera.movement.zoomInertia</code>.</li>
+<li><code>camera.panningInertia</code> flows through to <code>camera.movement.panInertia</code>.</li>
+<li><code>camera.inertialAlphaOffset</code>, <code>camera.inertialBetaOffset</code>, <code>camera.inertialRadiusOffset</code>, <code>camera.inertialPanningX</code>, <code>camera.inertialPanningY</code> are still read and written. Direct writes to these properties still cause the camera to move with inertia.</li>
+</ul>
+<p>If you mix legacy flag changes and direct inputMap edits, the legacy flag setters re-sync the inputMap each time they are written. If you intend to fully customize via the inputMap, make your inputMap edits <em>after</em> any legacy flag assignments, or just stop touching the legacy flags entirely.</p>
+<h2 id="custom-interactions-and-handlers">Custom interactions and handlers<a class="anchor" href="#custom-interactions-and-handlers">#</a></h2>
+<p>The interaction strings (<code>&quot;pan&quot;</code>, <code>&quot;rotate&quot;</code>, <code>&quot;zoom&quot;</code>) are typed against each camera subclass&#39;s <code>Handlers</code> shape (<code>ArcRotateHandlers</code>, <code>GeospatialHandlers</code>). To customize what an interaction <em>does</em> rather than what triggers it, override the relevant function on <code>camera.movement.input.handlers</code> instead of editing the inputMap. For example, to make rotate also play a sound:</p>
+<pre class="code" data-lang="javascript"><code>const originalRotate = camera.movement.input.handlers.rotate;
+camera.movement.input.handlers.rotate = function (x, y) {
+    playClickSound();
+    originalRotate(x, y);
+};</code></pre>
+<p>The handler signature differs per camera (arc-rotate&#39;s <code>pan</code> takes <code>(deltaX, deltaY)</code>; geospatial&#39;s <code>pan</code> is an object with <code>start</code>/<code>update</code>/<code>stop</code> lifecycle methods). Check the type of the <code>handlers</code> field on <code>camera.movement.input</code> for the exact shape on the camera you&#39;re using.</p>
+<h2 id="notes">Notes<a class="anchor" href="#notes">#</a></h2>
+<ul>
+<li>Touch input on <code>ArcRotateCamera</code> and <code>GeospatialCamera</code> (single-touch drag, multi-touch pan + pinch) routes through the same inputMap as pointer input. Multi-touch entries use the <code>&quot;touch&quot;</code> source with an optional <code>touchCount</code> condition.</li>
+<li>Gamepad input on <code>ArcRotateCamera</code> feeds the same accumulators as pointer input, so it benefits from the same inertia and framerate-independence work.</li>
+</ul>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#overview">Overview </a><a href="#why-two-layers">Why two layers </a><a href="#the-inputmap">The inputMap </a><a href="#when-to-use-which-api">When to use which API </a><a href="#conditions-matching-modifiers-buttons-and-keys">Conditions: matching modifiers, buttons, and keys </a><a href="#movement-system">Movement system </a><a href="#backward-compatibility">Backward compatibility </a><a href="#custom-interactions-and-handlers">Custom interactions and handlers </a><a href="#notes">Notes </a></aside></div>
+<script src="../../../../../../assets/cm.classic.js"></script><script src="../../../../../../assets/manual.js"></script></body></html>

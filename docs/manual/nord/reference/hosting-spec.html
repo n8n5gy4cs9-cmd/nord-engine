@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Hosting notes — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../api/api.html">API reference</a><a href="../api/api-namespaces.html">game.* namespaces</a><a href="../api/api-nordscript.html">NordScript</a><a href="../api/api-entity.html">Entity</a><a href="../api/api-scene.html">Scene</a><a href="../api/api-game.html">Game</a><a href="../api/api-input.html">Input</a><a href="../api/api-events.html">Events</a><a href="../api/api-save.html">Save</a><a href="../api/api-audio.html">Audio</a><a href="../api/api-ui.html">UI</a><a href="../api/api-scheduler.html">Scheduler</a><a href="../api/api-rng.html">Rng</a><a href="../api/api-pool.html">Pool</a><a href="../api/api-loader.html">Loader</a><a href="../api/api-memorystorage.html">MemoryStorage</a><a href="../api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../api/api-matteradapter.html">MatterAdapter</a><a href="../api/api-havokadapter.html">HavokAdapter</a><a href="../api/api-helpers.html">Math &amp; helpers</a><a href="../api/api-exports.html">All Nord public exports</a><a href="../api/api-desktop.html">Desktop bridge</a><a href="../api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../components/component-sprite.html">sprite</a><a href="../components/component-animatedSprite.html">animatedSprite</a><a href="../components/component-text.html">text</a><a href="../components/component-tilemap.html">tilemap</a><a href="../components/component-parallax.html">parallax</a><a href="../components/component-particles.html">particles</a><a href="../components/component-camera.html">camera</a><a href="../components/component-light.html">light</a><a href="../components/component-mesh.html">mesh</a><a href="../components/component-model.html">model</a><a href="../components/component-material.html">material</a><a href="../components/component-skybox.html">skybox</a><a href="../components/component-postProcess.html">postProcess</a><a href="../components/component-rigidbody.html">rigidbody</a><a href="../components/component-collider.html">collider</a><a href="../components/component-trigger.html">trigger</a><a href="../components/component-audioSource.html">audioSource</a><a href="../components/component-audioListener.html">audioListener</a><a href="../components/component-uiPanel.html">uiPanel</a><a href="../components/component-uiLabel.html">uiLabel</a><a href="../components/component-uiImage.html">uiImage</a><a href="../components/component-uiBar.html">uiBar</a><a href="../components/component-uiButton.html">uiButton</a><a href="../components/component-path.html">path</a><a href="../components/component-spawner.html">spawner</a></details><details open><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html" class="cur" aria-current="page">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../engines/babylon/9.30/index.html">Babylon 9.30.0 API</a><a href="../../engines/phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../engines/babylon/guides/index.html">Babylon documentation library</a><a href="../../engines/phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Reference / Nord Engine</div><h1>Hosting notes</h1>
+<p><code>nord build &lt;project&gt;</code> writes a <strong>static folder</strong> (default <code>&lt;project&gt;/dist</code>): <code>index.html</code>, <code>nord.json</code>, <code>scenes/ scripts/ assets/</code>, <code>runtime/</code>, <code>vendor/</code>.
+Nothing is fetched from the internet — upload the folder anywhere that serves static files.</p>
+<pre class="code" data-lang=""><code>nord build my-game                       # folder build
+nord build my-game --minify --optimize   # smaller (needs Node; --optimize recompresses PNGs, WAV→MP3 with ffmpeg)
+nord build my-game --zip                 # also my-game/dist.zip for itch.io style uploads
+nord build my-game --single-file         # one index.html (+ vendor/fonts) that also opens from file://</code></pre>
+<table>
+<thead>
+<tr>
+<th>Where</th>
+<th>How</th>
+<th>Tested</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Local, quick</strong></td>
+<td><code>cd dist &amp;&amp; python3 -m http.server 8000</code> → <a href="http://localhost:8000">http://localhost:8000</a></td>
+<td>yes (<code>node tools/e2e.mjs export-python-http</code>: 3D build incl. Havok <code>.wasm</code>)</td>
+</tr>
+<tr>
+<td><strong>Double-click / <code>file://</code></strong></td>
+<td>build with <code>--single-file</code>; <code>index.html</code> works from the file system (ES modules and <code>fetch</code> do <em>not</em> work from <code>file://</code>, so folder builds need a server)</td>
+<td>yes (<code>export-single-2d/3d</code>, loaded from <code>file://</code>)</td>
+</tr>
+<tr>
+<td><strong>itch.io</strong></td>
+<td><code>--zip</code>, upload the zip as &quot;HTML&quot;, tick <em>This file will be played in the browser</em>, set the viewport to the game&#39;s display size. Use the folder build (not single-file)</td>
+<td>zip layout tested, upload is manual</td>
+</tr>
+<tr>
+<td><strong>GitHub Pages</strong></td>
+<td>commit <code>dist/</code> to a <code>gh-pages</code> branch (or <code>/docs</code>) and enable Pages. Paths are relative, so project sub-paths (<code>user.github.io/repo/</code>) work</td>
+<td>relative paths verified; Pages itself untested</td>
+</tr>
+<tr>
+<td><strong>nginx</strong></td>
+<td><code>root /srv/game;</code> — make sure <code>.wasm</code> is served as <code>application/wasm</code> (default <code>mime.types</code> has it) and <code>.js</code> as <code>text/javascript</code></td>
+<td>mime requirements covered by the python test</td>
+</tr>
+<tr>
+<td><strong>Netlify / Cloudflare Pages / S3</strong></td>
+<td>upload the folder; no server config needed</td>
+<td>untested</td>
+</tr>
+</tbody></table>
+<h2 id="notes">Notes<a class="anchor" href="#notes">#</a></h2>
+<ul>
+<li>Every output is checked for external <code>http(s)://</code> references (the <strong>offline guarantee</strong>); the build fails if your own files contain one. Allow a host on purpose with a <code>.offline-allow</code> file in the project.</li>
+<li>Audio needs a user gesture in browsers; the runtime unlocks it on the first click/key.</li>
+<li><code>nord.json</code> lists every file with size + sha256 (cache busting / integrity checks).</li>
+<li><code>--single-file</code> inlines scripts, scenes and assets as <code>data:</code> URIs: great for small games, big for large asset sets. UI fonts stay as separate files in <code>vendor/fonts/</code>.</li>
+<li>macOS app: <code>nord bundle-mac my-game</code> wraps the build with the prebuilt <code>nord-player</code> (see EXPORT_TARGETS.md).</li>
+</ul>
+<div class="pager"><a href="export-targets-spec.html"><small>← Previous</small>Export targets spec</a><a href="desktop-apps-spec.html"><small>Next →</small>Desktop apps spec</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#notes">Notes </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

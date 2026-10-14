@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Introduction to what's new in NavigationPlugin V2 — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../../../index.html"><img src="../../../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../../../index.html">Babylon documentation library</a><a href="../../../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Introduction to what's new in NavigationPlugin V2</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h1 id="introduction-to-navigationplugin-v2">Introduction to NavigationPlugin V2</h1>
+<p>The Babylon.js Navigation Plugin <strong>V2</strong> builds on V1 with <strong>new parameters</strong>, <strong>additional utility functions</strong>, and <strong>performance improvements</strong>.</p>
+<p>It offers finer control over navmesh generation, per-query filtering, debugging, and path post-processing while remaining backward compatible where it matters.</p>
+<p><em>Note: Get familiar with NavigationPlugin V1 before you start reading about the new features in V2. Everything in the V1 docs applies to V2 as well.</em></p>
+<h2 id="new-navigation-mesh-parameters">New Navigation Mesh Parameters<a class="anchor" href="#new-navigation-mesh-parameters">#</a></h2>
+<p>V2 introduces additional parameters to fine-tune navmesh generation. In addition to all parameters available in V1, you can now use these additional ones:</p>
+<pre class="code" data-lang="ts"><code>{
+    offMeshConnections: IOffMeshConnection[],
+    keepIntermediates: boolean,
+    maxObstacles: number,
+    expectedLayersPerTile: number,
+    tileCacheMeshProcess: TileCacheMeshProcess
+}</code></pre>
+<p><span>Read more about the new parameters</span></p>
+<h2 id="the-options-parameter-per-query">The <code>options</code> Parameter (per-query)<a class="anchor" href="#the-options-parameter-per-query">#</a></h2>
+<p>Most plugin query functions accept an optional options object to pass query-specific settings down to Recast/Detour. Common properties include:</p>
+<pre class="code" data-lang="ts"><code>options?: {
+    filter?: QueryFilter;
+    halfExtents?: IVector3Like;
+    // optionally other request-specific params depending on the function
+}</code></pre>
+<p><span>Read more about the new options parameter</span></p>
+<h2 id="offmeshconnections">OffMeshConnections<a class="anchor" href="#offmeshconnections">#</a></h2>
+<p>Defines custom connections between points on the mesh. These can represent <strong>teleports, jump links, or one-way passages</strong> that agents can use.</p>
+<p><span>Read more about OffMeshConnections</span></p>
+<h2 id="exposed-tilecache-navmeshquery-and-intermediates">Exposed tileCache, navMeshQuery and intermediates<a class="anchor" href="#exposed-tilecache-navmeshquery-and-intermediates">#</a></h2>
+<p><code>await navigationPlugin.createNavMeshAsync()</code> returns the following type:</p>
+<pre class="code" data-lang="ts"><code>/**
+ * Result of a navigation mesh creation.
+ */
+export type CreateNavMeshResult = Nullable&lt;{
+  /**
+   * Navigation mesh
+   */
+  navMesh: NavMesh;
+  /**
+   * Navigation mesh query
+   */
+  navMeshQuery: NavMeshQuery;
+  /**
+   * Intermediates generated during the NavMesh creation process.
+   * @remarks This is only available if the `keepIntermediates` parameter is set to true in the `INavMeshParametersV2`.
+   * It can be used for debugging or visualization purposes.
+   */
+  intermediates?: GeneratorIntermediates;
+  /**
+   * Tile cache generated during the NavMesh creation process.
+   * @remarks This is only available if the `maxObstacles` parameter is set to a value greater than 0 in the `INavMeshParametersV2`. Defaults `maxObstacles` to 128.
+   * It can be used for obstacle avoidance and dynamic navigation mesh updates.
+   * @see {@link INavMeshParametersV2}
+   */
+  tileCache?: TileCache;
+}&gt;;</code></pre>
+<p>so you can access these objects directly. They are also exposed via getters on the <code>navigationPlugin</code> object.</p>
+<h3 id="navmeshquery">navMeshQuery<a class="anchor" href="#navmeshquery">#</a></h3>
+<p>The <code>navMeshQuery</code> object provides pathfinding and spatial queries on a built navigation mesh.
+It is the primary interface for working with agents and movement once the navmesh has been created.</p>
+<h4 id="what-is-it-good-for">What is it good for?<a class="anchor" href="#what-is-it-good-for">#</a></h4>
+<p>A NavMeshQuery is mainly used to:</p>
+<ul>
+<li>Find paths between two positions on the navmesh.</li>
+<li>Clamp positions to the nearest valid polygon (e.g., snap a point onto the navmesh).</li>
+<li>Check reachability and test whether a position lies on the navmesh.</li>
+<li>Perform raycasts across the navmesh to simulate line-of-sight or bullet traces.</li>
+<li>Query random positions on the navmesh (useful for AI wandering).</li>
+<li>Handle multiple agents via QueryFilter (define which areas they can walk on, and how costly each area is).</li>
+<li>etc.</li>
+</ul>
+<h3 id="tilecache">tileCache<a class="anchor" href="#tilecache">#</a></h3>
+<p><span>Read more</span></p>
+<h3 id="intermediates">intermediates<a class="anchor" href="#intermediates">#</a></h3>
+<p><span>Read more</span></p>
+<h2 id="the-navigation-debugger">The Navigation Debugger<a class="anchor" href="#the-navigation-debugger">#</a></h2>
+<p>It provides an interactive overlay for developers to better understand why agents behave the way they do, and makes tuning navmesh parameters much easier.</p>
+<p>You can use <strong>Navigation Debugger</strong> to inspect:</p>
+<ul>
+<li>The generated navmesh (tiles &amp; layers)</li>
+<li>Off-mesh connections (teleports / jump links)</li>
+<li>Intermediate build data (if <code>keepIntermediates: true</code>)</li>
+</ul>
+<p><span>Read more about the Navigation Debugger</span></p>
+<h2 id="raycasting">Raycasting<a class="anchor" href="#raycasting">#</a></h2>
+<p>You can now use <code>navigationPlugin.raycast(startPoint, endPoint)</code> to perform raycasting through a navigation mesh.</p>
+<p>Examples of usage:</p>
+<ul>
+<li>Line-of-sight or shooting checks: for example, is there an obstacle between the player and an enemy? Can it see the player? Can the player shoot at it?</li>
+<li>Smooth steering: you can start to steer your agents even before they reach a non-navigable part of the navmesh.</li>
+<li>NPCs moving randomly can avoid starting to walk into walls.</li>
+</ul>
+<h2 id="new-utility-functions">New Utility Functions<a class="anchor" href="#new-utility-functions">#</a></h2>
+<p>V2 adds helper utility functions to post-process paths. You can use these functions to create L-shaped paths or smooth the curves of a path.</p>
+<p><span>Read more about the new utility functions</span></p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#new-navigation-mesh-parameters">New Navigation Mesh Parameters </a><a href="#the-options-parameter-per-query">The options Parameter (per-query) </a><a href="#offmeshconnections">OffMeshConnections </a><a href="#exposed-tilecache-navmeshquery-and-intermediates">Exposed tileCache, navMeshQuery and intermediates </a><a href="#the-navigation-debugger">The Navigation Debugger </a><a href="#raycasting">Raycasting </a><a href="#new-utility-functions">New Utility Functions </a></aside></div>
+<script src="../../../../../../../../assets/cm.classic.js"></script><script src="../../../../../../../../assets/manual.js"></script></body></html>

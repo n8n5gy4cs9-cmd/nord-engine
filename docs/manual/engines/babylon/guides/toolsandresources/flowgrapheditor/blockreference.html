@@ -1,0 +1,864 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Block Reference — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../index.html"><img src="../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../nord/api/api.html">API reference</a><a href="../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../nord/api/api-game.html">Game</a><a href="../../../../../nord/api/api-input.html">Input</a><a href="../../../../../nord/api/api-events.html">Events</a><a href="../../../../../nord/api/api-save.html">Save</a><a href="../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../nord/components/component-text.html">text</a><a href="../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../nord/components/component-light.html">light</a><a href="../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../nord/components/component-model.html">model</a><a href="../../../../../nord/components/component-material.html">material</a><a href="../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../nord/components/component-path.html">path</a><a href="../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../nord/reference/components.html">Component index</a><a href="../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../index.html">Babylon documentation library</a><a href="../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Block Reference</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="about-this-reference">About This Reference<a class="anchor" href="#about-this-reference">#</a></h2>
+<p>This page is a first-pass reference for the current block surface of the Flow Graph Editor. It is organized by the same broad families used by the editor palette.</p>
+<p>The descriptions here are intentionally short. Their purpose is to help you identify the right block quickly, not to replace the runtime Flow Graph documentation.</p>
+<p>For deeper write-ups on the largest authoring families, continue with <a href="eventblocks.html">Event Blocks</a>, <a href="controlflowblocks.html">Control Flow Blocks</a>, <a href="animationblocks.html">Animation Blocks</a>, <a href="physicsblocks.html">Physics Blocks</a>, <a href="audioblocks.html">Audio Blocks</a>, <a href="dataaccessblocks.html">Data Access Blocks</a>, and <a href="utilityblocks.html">Utility Blocks</a>.</p>
+<h2 id="events">Events<a class="anchor" href="#events">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Block</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>SceneReadyEvent</code></td>
+<td>Fires once the scene is ready for graph interaction.</td>
+</tr>
+<tr>
+<td><code>SceneTickEvent</code></td>
+<td>Fires every scene tick, making it useful for per-frame logic.</td>
+</tr>
+<tr>
+<td><code>MeshPickEvent</code></td>
+<td>Fires when a configured mesh is picked.</td>
+</tr>
+<tr>
+<td><code>PointerDownEvent</code></td>
+<td>Fires when a pointer-down interaction occurs.</td>
+</tr>
+<tr>
+<td><code>PointerUpEvent</code></td>
+<td>Fires when a pointer-up interaction occurs.</td>
+</tr>
+<tr>
+<td><code>PointerMoveEvent</code></td>
+<td>Fires while the pointer moves.</td>
+</tr>
+<tr>
+<td><code>PointerOverEvent</code></td>
+<td>Fires when the pointer moves over a target.</td>
+</tr>
+<tr>
+<td><code>PointerOutEvent</code></td>
+<td>Fires when the pointer leaves a target.</td>
+</tr>
+<tr>
+<td><code>ReceiveCustomEvent</code></td>
+<td>Starts logic in response to a named custom event and payload.</td>
+</tr>
+<tr>
+<td><code>SendCustomEvent</code></td>
+<td>Emits a named custom event with optional payload data.</td>
+</tr>
+</tbody></table>
+<h2 id="control-flow">Control Flow<a class="anchor" href="#control-flow">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Block</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Branch</code></td>
+<td>Routes execution based on a boolean condition.</td>
+</tr>
+<tr>
+<td><code>ForLoop</code></td>
+<td>Repeats execution over a numeric range with a loop index.</td>
+</tr>
+<tr>
+<td><code>WhileLoop</code></td>
+<td>Repeats execution while a condition remains true.</td>
+</tr>
+<tr>
+<td><code>Switch</code></td>
+<td>Routes execution to case-specific outputs.</td>
+</tr>
+<tr>
+<td><code>Sequence</code></td>
+<td>Fires multiple outputs in sequence from a single trigger.</td>
+</tr>
+<tr>
+<td><code>MultiGate</code></td>
+<td>Distributes repeated triggers across multiple outputs according to gate state.</td>
+</tr>
+<tr>
+<td><code>FlipFlop</code></td>
+<td>Alternates between outputs on successive activations.</td>
+</tr>
+<tr>
+<td><code>DoN</code></td>
+<td>Allows execution only a limited number of times.</td>
+</tr>
+<tr>
+<td><code>WaitAll</code></td>
+<td>Waits for multiple required signals before continuing.</td>
+</tr>
+<tr>
+<td><code>SetDelay</code></td>
+<td>Schedules execution to continue after a delay.</td>
+</tr>
+<tr>
+<td><code>CancelDelay</code></td>
+<td>Cancels a previously scheduled delay.</td>
+</tr>
+<tr>
+<td><code>CallCounter</code></td>
+<td>Counts how many times the block has been triggered.</td>
+</tr>
+<tr>
+<td><code>Debounce</code></td>
+<td>Suppresses rapid repeat triggers until activity settles.</td>
+</tr>
+<tr>
+<td><code>Throttle</code></td>
+<td>Limits how often execution is allowed to continue.</td>
+</tr>
+</tbody></table>
+<h2 id="animation">Animation<a class="anchor" href="#animation">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Block</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>PlayAnimation</code></td>
+<td>Starts a configured animation group.</td>
+</tr>
+<tr>
+<td><code>StopAnimation</code></td>
+<td>Stops the configured animation group.</td>
+</tr>
+<tr>
+<td><code>PauseAnimation</code></td>
+<td>Pauses a running animation group.</td>
+</tr>
+<tr>
+<td><code>Interpolation</code></td>
+<td>Interpolates values or states over time.</td>
+</tr>
+</tbody></table>
+<h2 id="physics">Physics<a class="anchor" href="#physics">#</a></h2>
+<h3 id="physics-events">Physics Events<a class="anchor" href="#physics-events">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Block</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>PhysicsCollisionEvent</code></td>
+<td>Fires when the configured physics body collides and exposes collision details.</td>
+</tr>
+</tbody></table>
+<h3 id="physics-actions">Physics Actions<a class="anchor" href="#physics-actions">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Block</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ApplyForce</code></td>
+<td>Applies a continuous force at a world-space location.</td>
+</tr>
+<tr>
+<td><code>ApplyImpulse</code></td>
+<td>Applies an instantaneous impulse to a physics body.</td>
+</tr>
+<tr>
+<td><code>SetLinearVelocity</code></td>
+<td>Sets the body&#39;s linear velocity directly.</td>
+</tr>
+<tr>
+<td><code>SetAngularVelocity</code></td>
+<td>Sets the body&#39;s angular velocity directly.</td>
+</tr>
+<tr>
+<td><code>SetPhysicsMotionType</code></td>
+<td>Switches the body between supported motion types.</td>
+</tr>
+</tbody></table>
+<h3 id="physics-data">Physics Data<a class="anchor" href="#physics-data">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Block</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>GetLinearVelocity</code></td>
+<td>Reads the current linear velocity of a physics body.</td>
+</tr>
+<tr>
+<td><code>GetAngularVelocity</code></td>
+<td>Reads the current angular velocity of a physics body.</td>
+</tr>
+<tr>
+<td><code>GetPhysicsMassProperties</code></td>
+<td>Reads mass, center of mass, and inertia information.</td>
+</tr>
+</tbody></table>
+<h2 id="audio">Audio<a class="anchor" href="#audio">#</a></h2>
+<h3 id="audio-actions">Audio Actions<a class="anchor" href="#audio-actions">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Block</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>PlaySound</code></td>
+<td>Starts audio playback with configurable playback options.</td>
+</tr>
+<tr>
+<td><code>StopSound</code></td>
+<td>Stops the sound immediately.</td>
+</tr>
+<tr>
+<td><code>PauseSound</code></td>
+<td>Pauses a playing sound or resumes a paused one.</td>
+</tr>
+<tr>
+<td><code>SetSoundVolume</code></td>
+<td>Sets the sound&#39;s volume.</td>
+</tr>
+</tbody></table>
+<h3 id="audio-events">Audio Events<a class="anchor" href="#audio-events">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Block</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>SoundEndedEvent</code></td>
+<td>Fires when a sound finishes playback.</td>
+</tr>
+</tbody></table>
+<h3 id="audio-data">Audio Data<a class="anchor" href="#audio-data">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Block</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>GetSoundVolume</code></td>
+<td>Reads the sound&#39;s current volume.</td>
+</tr>
+<tr>
+<td><code>IsSoundPlaying</code></td>
+<td>Returns whether the sound is currently playing or starting.</td>
+</tr>
+</tbody></table>
+<h2 id="math">Math<a class="anchor" href="#math">#</a></h2>
+<h3 id="constants">Constants<a class="anchor" href="#constants">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Block</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>E</code></td>
+<td>Outputs Euler&#39;s number.</td>
+</tr>
+<tr>
+<td><code>PI</code></td>
+<td>Outputs $\pi$.</td>
+</tr>
+<tr>
+<td><code>Inf</code></td>
+<td>Outputs an infinity value.</td>
+</tr>
+<tr>
+<td><code>NaN</code></td>
+<td>Outputs a not-a-number value.</td>
+</tr>
+<tr>
+<td><code>Random</code></td>
+<td>Outputs a random numeric value.</td>
+</tr>
+</tbody></table>
+<h3 id="arithmetic">Arithmetic<a class="anchor" href="#arithmetic">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Block</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Add</code></td>
+<td>Adds two values.</td>
+</tr>
+<tr>
+<td><code>Subtract</code></td>
+<td>Subtracts one value from another.</td>
+</tr>
+<tr>
+<td><code>Multiply</code></td>
+<td>Multiplies values together.</td>
+</tr>
+<tr>
+<td><code>Divide</code></td>
+<td>Divides one value by another.</td>
+</tr>
+<tr>
+<td><code>Modulo</code></td>
+<td>Returns the remainder of a division.</td>
+</tr>
+<tr>
+<td><code>Negation</code></td>
+<td>Negates the input value.</td>
+</tr>
+<tr>
+<td><code>Abs</code></td>
+<td>Returns the absolute value.</td>
+</tr>
+<tr>
+<td><code>Sign</code></td>
+<td>Returns the sign of the input.</td>
+</tr>
+<tr>
+<td><code>Min</code></td>
+<td>Returns the smaller of the inputs.</td>
+</tr>
+<tr>
+<td><code>Max</code></td>
+<td>Returns the larger of the inputs.</td>
+</tr>
+<tr>
+<td><code>Clamp</code></td>
+<td>Restricts a value to a min/max range.</td>
+</tr>
+<tr>
+<td><code>Saturate</code></td>
+<td>Clamps a value to the 0 to 1 range.</td>
+</tr>
+<tr>
+<td><code>MathInterpolation</code></td>
+<td>Interpolates between numeric values.</td>
+</tr>
+<tr>
+<td><code>Power</code></td>
+<td>Raises a value to a power.</td>
+</tr>
+<tr>
+<td><code>SquareRoot</code></td>
+<td>Returns the square root of the input.</td>
+</tr>
+<tr>
+<td><code>CubeRoot</code></td>
+<td>Returns the cube root of the input.</td>
+</tr>
+</tbody></table>
+<h3 id="rounding">Rounding<a class="anchor" href="#rounding">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Block</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Floor</code></td>
+<td>Rounds down to the nearest lower integer.</td>
+</tr>
+<tr>
+<td><code>Ceil</code></td>
+<td>Rounds up to the nearest higher integer.</td>
+</tr>
+<tr>
+<td><code>Round</code></td>
+<td>Rounds to the nearest integer.</td>
+</tr>
+<tr>
+<td><code>Trunc</code></td>
+<td>Removes the fractional component.</td>
+</tr>
+<tr>
+<td><code>Fract</code></td>
+<td>Returns the fractional component only.</td>
+</tr>
+</tbody></table>
+<h3 id="trigonometry">Trigonometry<a class="anchor" href="#trigonometry">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Block</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Sin</code></td>
+<td>Returns the sine of the input.</td>
+</tr>
+<tr>
+<td><code>Cos</code></td>
+<td>Returns the cosine of the input.</td>
+</tr>
+<tr>
+<td><code>Tan</code></td>
+<td>Returns the tangent of the input.</td>
+</tr>
+<tr>
+<td><code>ASin</code></td>
+<td>Returns the inverse sine.</td>
+</tr>
+<tr>
+<td><code>ACos</code></td>
+<td>Returns the inverse cosine.</td>
+</tr>
+<tr>
+<td><code>ATan</code></td>
+<td>Returns the inverse tangent.</td>
+</tr>
+<tr>
+<td><code>ATan2</code></td>
+<td>Returns the angle derived from two directional components.</td>
+</tr>
+<tr>
+<td><code>Sinh</code></td>
+<td>Returns the hyperbolic sine.</td>
+</tr>
+<tr>
+<td><code>Cosh</code></td>
+<td>Returns the hyperbolic cosine.</td>
+</tr>
+<tr>
+<td><code>Tanh</code></td>
+<td>Returns the hyperbolic tangent.</td>
+</tr>
+<tr>
+<td><code>ASinh</code></td>
+<td>Returns the inverse hyperbolic sine.</td>
+</tr>
+<tr>
+<td><code>ACosh</code></td>
+<td>Returns the inverse hyperbolic cosine.</td>
+</tr>
+<tr>
+<td><code>ATanh</code></td>
+<td>Returns the inverse hyperbolic tangent.</td>
+</tr>
+<tr>
+<td><code>DegToRad</code></td>
+<td>Converts degrees to radians.</td>
+</tr>
+<tr>
+<td><code>RadToDeg</code></td>
+<td>Converts radians to degrees.</td>
+</tr>
+</tbody></table>
+<h3 id="logarithmic">Logarithmic<a class="anchor" href="#logarithmic">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Block</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Exponential</code></td>
+<td>Raises Euler&#39;s number to the given power.</td>
+</tr>
+<tr>
+<td><code>Log</code></td>
+<td>Returns the natural logarithm.</td>
+</tr>
+<tr>
+<td><code>Log2</code></td>
+<td>Returns the base-2 logarithm.</td>
+</tr>
+<tr>
+<td><code>Log10</code></td>
+<td>Returns the base-10 logarithm.</td>
+</tr>
+</tbody></table>
+<h3 id="comparison">Comparison<a class="anchor" href="#comparison">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Block</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Equality</code></td>
+<td>Compares two values for equality.</td>
+</tr>
+<tr>
+<td><code>LessThan</code></td>
+<td>Returns whether the first value is less than the second.</td>
+</tr>
+<tr>
+<td><code>LessThanOrEqual</code></td>
+<td>Returns whether the first value is less than or equal to the second.</td>
+</tr>
+<tr>
+<td><code>GreaterThan</code></td>
+<td>Returns whether the first value is greater than the second.</td>
+</tr>
+<tr>
+<td><code>GreaterThanOrEqual</code></td>
+<td>Returns whether the first value is greater than or equal to the second.</td>
+</tr>
+<tr>
+<td><code>IsNaN</code></td>
+<td>Returns whether the input is NaN.</td>
+</tr>
+<tr>
+<td><code>IsInf</code></td>
+<td>Returns whether the input is infinite.</td>
+</tr>
+<tr>
+<td><code>Conditional</code></td>
+<td>Selects between outputs based on a condition.</td>
+</tr>
+</tbody></table>
+<h2 id="vector-and-matrix">Vector And Matrix<a class="anchor" href="#vector-and-matrix">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Block</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Length</code></td>
+<td>Returns the magnitude of a vector-like input.</td>
+</tr>
+<tr>
+<td><code>Normalize</code></td>
+<td>Normalizes a vector input.</td>
+</tr>
+<tr>
+<td><code>Dot</code></td>
+<td>Computes the dot product.</td>
+</tr>
+<tr>
+<td><code>Cross</code></td>
+<td>Computes the cross product.</td>
+</tr>
+<tr>
+<td><code>Rotate2D</code></td>
+<td>Rotates a 2D value by an angle.</td>
+</tr>
+<tr>
+<td><code>Rotate3D</code></td>
+<td>Rotates a 3D value using a rotation input.</td>
+</tr>
+<tr>
+<td><code>Transpose</code></td>
+<td>Transposes a matrix.</td>
+</tr>
+<tr>
+<td><code>Determinant</code></td>
+<td>Computes the determinant of a matrix.</td>
+</tr>
+<tr>
+<td><code>InvertMatrix</code></td>
+<td>Inverts a matrix when possible.</td>
+</tr>
+<tr>
+<td><code>MatrixMultiplication</code></td>
+<td>Multiplies matrices together.</td>
+</tr>
+</tbody></table>
+<h2 id="bitwise">Bitwise<a class="anchor" href="#bitwise">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Block</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>BitwiseAnd</code></td>
+<td>Applies a bitwise AND operation.</td>
+</tr>
+<tr>
+<td><code>BitwiseOr</code></td>
+<td>Applies a bitwise OR operation.</td>
+</tr>
+<tr>
+<td><code>BitwiseXor</code></td>
+<td>Applies a bitwise XOR operation.</td>
+</tr>
+<tr>
+<td><code>BitwiseNot</code></td>
+<td>Inverts the bits of the input.</td>
+</tr>
+<tr>
+<td><code>BitwiseLeftShift</code></td>
+<td>Shifts bits left by the given amount.</td>
+</tr>
+<tr>
+<td><code>BitwiseRightShift</code></td>
+<td>Shifts bits right by the given amount.</td>
+</tr>
+<tr>
+<td><code>LeadingZeros</code></td>
+<td>Counts leading zero bits.</td>
+</tr>
+<tr>
+<td><code>TrailingZeros</code></td>
+<td>Counts trailing zero bits.</td>
+</tr>
+<tr>
+<td><code>OneBitsCounter</code></td>
+<td>Counts the number of set bits.</td>
+</tr>
+</tbody></table>
+<h2 id="data-conversion">Data Conversion<a class="anchor" href="#data-conversion">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Block</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>CombineVector2</code></td>
+<td>Builds a Vector2 from component inputs.</td>
+</tr>
+<tr>
+<td><code>CombineVector3</code></td>
+<td>Builds a Vector3 from component inputs.</td>
+</tr>
+<tr>
+<td><code>CombineVector4</code></td>
+<td>Builds a Vector4 from component inputs.</td>
+</tr>
+<tr>
+<td><code>ExtractVector2</code></td>
+<td>Breaks a Vector2 into its components.</td>
+</tr>
+<tr>
+<td><code>ExtractVector3</code></td>
+<td>Breaks a Vector3 into its components.</td>
+</tr>
+<tr>
+<td><code>ExtractVector4</code></td>
+<td>Breaks a Vector4 into its components.</td>
+</tr>
+<tr>
+<td><code>CombineMatrix</code></td>
+<td>Builds a matrix from matrix-oriented inputs.</td>
+</tr>
+<tr>
+<td><code>ExtractMatrix</code></td>
+<td>Extracts matrix-oriented data from a matrix input.</td>
+</tr>
+<tr>
+<td><code>TransformVector</code></td>
+<td>Transforms a vector using a transform input.</td>
+</tr>
+<tr>
+<td><code>TransformCoordinates</code></td>
+<td>Transforms coordinates through a matrix or transform context.</td>
+</tr>
+<tr>
+<td><code>TransformCoordinatesSystem</code></td>
+<td>Converts coordinates between supported coordinate systems.</td>
+</tr>
+<tr>
+<td><code>CombineMatrix2D</code></td>
+<td>Builds a 2D-oriented matrix representation.</td>
+</tr>
+<tr>
+<td><code>CombineMatrix3D</code></td>
+<td>Builds a 3D-oriented matrix representation.</td>
+</tr>
+<tr>
+<td><code>ExtractMatrix2D</code></td>
+<td>Extracts 2D transform components.</td>
+</tr>
+<tr>
+<td><code>ExtractMatrix3D</code></td>
+<td>Extracts 3D transform components.</td>
+</tr>
+<tr>
+<td><code>Conjugate</code></td>
+<td>Computes the conjugate of a supported input such as a quaternion.</td>
+</tr>
+<tr>
+<td><code>AngleBetween</code></td>
+<td>Computes the angle between compatible directional inputs.</td>
+</tr>
+<tr>
+<td><code>QuaternionFromAxisAngle</code></td>
+<td>Builds a quaternion from an axis-angle representation.</td>
+</tr>
+<tr>
+<td><code>AxisAngleFromQuaternion</code></td>
+<td>Extracts axis-angle data from a quaternion.</td>
+</tr>
+<tr>
+<td><code>QuaternionFromDirections</code></td>
+<td>Builds a quaternion from directional inputs.</td>
+</tr>
+<tr>
+<td><code>MatrixDecompose</code></td>
+<td>Decomposes a matrix into transform components.</td>
+</tr>
+<tr>
+<td><code>MatrixCompose</code></td>
+<td>Composes a matrix from transform components.</td>
+</tr>
+<tr>
+<td><code>BooleanToFloat</code></td>
+<td>Converts a boolean to a float representation.</td>
+</tr>
+<tr>
+<td><code>BooleanToInt</code></td>
+<td>Converts a boolean to an integer representation.</td>
+</tr>
+<tr>
+<td><code>FloatToBoolean</code></td>
+<td>Converts a float to a boolean representation.</td>
+</tr>
+<tr>
+<td><code>IntToBoolean</code></td>
+<td>Converts an integer to a boolean representation.</td>
+</tr>
+<tr>
+<td><code>IntToFloat</code></td>
+<td>Converts an integer to a float.</td>
+</tr>
+<tr>
+<td><code>FloatToInt</code></td>
+<td>Converts a float to an integer.</td>
+</tr>
+</tbody></table>
+<h2 id="data-access">Data Access<a class="anchor" href="#data-access">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Block</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Constant</code></td>
+<td>Outputs a configured constant value of a chosen type.</td>
+</tr>
+<tr>
+<td><code>GetProperty</code></td>
+<td>Reads a property from a target object.</td>
+</tr>
+<tr>
+<td><code>SetProperty</code></td>
+<td>Writes a property value to a target object.</td>
+</tr>
+<tr>
+<td><code>GetVariable</code></td>
+<td>Reads a graph variable.</td>
+</tr>
+<tr>
+<td><code>SetVariable</code></td>
+<td>Writes one or more graph variables.</td>
+</tr>
+<tr>
+<td><code>GetAsset</code></td>
+<td>Retrieves a named asset from the loaded scene.</td>
+</tr>
+<tr>
+<td><code>JsonPointerParser</code></td>
+<td>Reads structured data using a JSON pointer path.</td>
+</tr>
+<tr>
+<td><code>ArrayIndex</code></td>
+<td>Returns the item at a configured array index.</td>
+</tr>
+<tr>
+<td><code>IndexOf</code></td>
+<td>Returns the index of an item inside a collection.</td>
+</tr>
+<tr>
+<td><code>DataSwitch</code></td>
+<td>Routes or selects data based on configured cases.</td>
+</tr>
+</tbody></table>
+<h2 id="keyboard">Keyboard<a class="anchor" href="#keyboard">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Block</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>IsKeyPressed</code></td>
+<td>Reports whether a specific key is currently pressed.</td>
+</tr>
+</tbody></table>
+<h2 id="utility">Utility<a class="anchor" href="#utility">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Block</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ConsoleLog</code></td>
+<td>Writes a value or message to the console for debugging.</td>
+</tr>
+<tr>
+<td><code>Easing</code></td>
+<td>Applies a supported easing function to a value.</td>
+</tr>
+<tr>
+<td><code>BezierCurveEasing</code></td>
+<td>Evaluates a Bezier-based easing curve.</td>
+</tr>
+<tr>
+<td><code>Context</code></td>
+<td>Exposes flow-graph context data to the graph.</td>
+</tr>
+<tr>
+<td><code>CodeExecution</code></td>
+<td>Bridges a graph step to a code-driven execution hook.</td>
+</tr>
+<tr>
+<td><code>FunctionReference</code></td>
+<td>Holds or exposes a function reference for other graph logic.</td>
+</tr>
+<tr>
+<td><code>DebugBlock</code></td>
+<td>Passes data through while recording and displaying observed values.</td>
+</tr>
+</tbody></table>
+<h2 id="keeping-this-reference-fresh">Keeping This Reference Fresh<a class="anchor" href="#keeping-this-reference-fresh">#</a></h2>
+<p>This page should evolve together with the palette.</p>
+<ul>
+<li>Add new blocks as they land in the editor.</li>
+<li>Keep descriptions short and behavior-oriented.</li>
+<li>Split very large families into dedicated pages if a family outgrows a single section.</li>
+</ul>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#about-this-reference">About This Reference </a><a href="#events">Events </a><a href="#control-flow">Control Flow </a><a href="#animation">Animation </a><a href="#physics">Physics </a><a href="#audio">Audio </a><a href="#math">Math </a><a href="#vector-and-matrix">Vector And Matrix </a><a href="#bitwise">Bitwise </a><a href="#data-conversion">Data Conversion </a><a href="#data-access">Data Access </a><a href="#keyboard">Keyboard </a><a href="#utility">Utility </a><a href="#keeping-this-reference-fresh">Keeping This Reference Fresh </a></aside></div>
+<script src="../../../../../assets/cm.classic.js"></script><script src="../../../../../assets/manual.js"></script></body></html>

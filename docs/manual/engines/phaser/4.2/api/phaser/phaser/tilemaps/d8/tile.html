@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Phaser.Tilemaps.Tile — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../../../index.html"><img src="../../../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../../../../babylon/9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../index.html">Phaser 4.2.1 API</a><a href="../../../../../../../babylon/guides/index.html">Babylon documentation library</a><a href="../../../../../../4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Phaser.Tilemaps.Tile</h1>
+<p><span class="badge">Underlying Phaser 4.2.1 API</span> <span class="badge">Class</span></p><p class="muted">Official public declarations and JSDoc from <code>phaser</code>. Use with engine objects, not directly on a Nord entity.</p><aside class="box tip"><div class="box-title">The Nord way</div><p><a href="../../../../../../../../nord/manual/2d.html">2D manual</a> · <a href="../../../../../../../../nord/components/component-sprite.html">sprite</a> · <a href="../../../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a> · <a href="../../../../../../../../nord/manual/physics.html">physics</a>. Access raw objects only when the Nord wrapper does not cover your feature. <a href="../../../../../../../../nord/manual/reference.html#escape-hatch">How escape hatches work</a>.</p></aside><h3 id="declaration">Tile <a class="anchor" href="#declaration">#</a></h3><pre class="code" data-lang="ts"><code>class Tile implements Phaser.GameObjects.Components.AlphaSingle, Phaser.GameObjects.Components.Flip, Phaser.GameObjects.Components.Visible</code></pre><p>A Tile is a representation of a single tile within a Tilemap layer. Each tile has a position
+within the map grid (in tile coordinates), a size in pixels, collision flags for each of its
+four edges, optional custom properties imported from the Tiled map editor, and an optional
+collision callback. Tiles are lightweight data objects - they do not extend GameObject - so
+their pixel positions are stored relative to the layer origin and do not factor in camera
+scroll, layer scale, or layer position. Use the <code>getLeft</code>, <code>getRight</code>, <code>getTop</code>, <code>getBottom</code>,
+and <code>getBounds</code> methods to obtain world-space coordinates that account for those transforms.</p>
+<p>Tiles are created and managed by <code>TilemapLayer</code> and should not normally be instantiated
+directly. You can access them via <code>TilemapLayer.getTileAt</code> or similar Tilemap methods.</p>
+<h2 id="members">Public members (68)</h2><p>Private, protected and explicitly internal declarations are excluded. Inherited members belong to the base type listed in the declaration.</p><h3 id="member-constructor-0">constructor <a class="anchor" href="#member-constructor-0">#</a></h3><pre class="code" data-lang="ts"><code>constructor(layer: Phaser.Tilemaps.LayerData, index: number, x: number, y: number, width: number, height: number, baseWidth: number, baseHeight: number);</code></pre><p><strong>param</strong>  layer The LayerData object in the Tilemap that this tile belongs to.
+<strong>param</strong>  index The unique index of this tile within the map.
+<strong>param</strong>  x The x coordinate of this tile in tile coordinates.
+<strong>param</strong>  y The y coordinate of this tile in tile coordinates.
+<strong>param</strong>  width Width of the tile in pixels.
+<strong>param</strong>  height Height of the tile in pixels.
+<strong>param</strong>  baseWidth The base width a tile in the map (in pixels). Tiled maps support
+multiple tileset sizes within one map, but they are still placed at intervals of the base
+tile width.
+<strong>param</strong>  baseHeight The base height of the tile in pixels. Tiled maps
+support multiple tileset sizes within one map, but they are still placed at intervals of the
+base tile height.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>layer</code></td><td><code>Phaser.Tilemaps.LayerData</code></td><td>Required</td></tr><tr><td><code>index</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>width</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>baseWidth</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>baseHeight</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><h3 id="member-layer-1">layer <a class="anchor" href="#member-layer-1">#</a></h3><pre class="code" data-lang="ts"><code>layer: Phaser.Tilemaps.LayerData;</code></pre><p>The LayerData in the Tilemap data that this tile belongs to.</p>
+<p><b>Type / return:</b> <code>Phaser.Tilemaps.LayerData</code></p><h3 id="member-index-2">index <a class="anchor" href="#member-index-2">#</a></h3><pre class="code" data-lang="ts"><code>index: number;</code></pre><p>The index of this tile within the map data corresponding to the tileset, or -1 if this
+represents a blank tile.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-x-3">x <a class="anchor" href="#member-x-3">#</a></h3><pre class="code" data-lang="ts"><code>x: number;</code></pre><p>The x map coordinate of this tile in tile units.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-y-4">y <a class="anchor" href="#member-y-4">#</a></h3><pre class="code" data-lang="ts"><code>y: number;</code></pre><p>The y map coordinate of this tile in tile units.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-width-5">width <a class="anchor" href="#member-width-5">#</a></h3><pre class="code" data-lang="ts"><code>width: number;</code></pre><p>The width of the tile in pixels.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-height-6">height <a class="anchor" href="#member-height-6">#</a></h3><pre class="code" data-lang="ts"><code>height: number;</code></pre><p>The height of the tile in pixels.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-right-7">right <a class="anchor" href="#member-right-7">#</a></h3><pre class="code" data-lang="ts"><code>right: number;</code></pre><p>The right of the tile in pixels.</p>
+<p>Set in the <code>updatePixelXY</code> method.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-bottom-8">bottom <a class="anchor" href="#member-bottom-8">#</a></h3><pre class="code" data-lang="ts"><code>bottom: number;</code></pre><p>The bottom of the tile in pixels.</p>
+<p>Set in the <code>updatePixelXY</code> method.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-basewidth-9">baseWidth <a class="anchor" href="#member-basewidth-9">#</a></h3><pre class="code" data-lang="ts"><code>baseWidth: number;</code></pre><p>The map&#39;s base width of a tile in pixels. Tiled maps support multiple tileset sizes
+within one map, but they are still placed at intervals of the base tile size.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-baseheight-10">baseHeight <a class="anchor" href="#member-baseheight-10">#</a></h3><pre class="code" data-lang="ts"><code>baseHeight: number;</code></pre><p>The map&#39;s base height of a tile in pixels. Tiled maps support multiple tileset sizes
+within one map, but they are still placed at intervals of the base tile size.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-pixelx-11">pixelX <a class="anchor" href="#member-pixelx-11">#</a></h3><pre class="code" data-lang="ts"><code>pixelX: number;</code></pre><p>The x coordinate of the top left of this tile in pixels. This is relative to the top left
+of the layer this tile is being rendered within. This property does NOT factor in camera
+scroll, layer scale or layer position.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-pixely-12">pixelY <a class="anchor" href="#member-pixely-12">#</a></h3><pre class="code" data-lang="ts"><code>pixelY: number;</code></pre><p>The y coordinate of the top left of this tile in pixels. This is relative to the top left
+of the layer this tile is being rendered within. This property does NOT factor in camera
+scroll, layer scale or layer position.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-properties-13">properties <a class="anchor" href="#member-properties-13">#</a></h3><pre class="code" data-lang="ts"><code>properties: any;</code></pre><p>Tile specific properties. These usually come from Tiled.</p>
+<p><b>Type / return:</b> <code>any</code></p><h3 id="member-rotation-14">rotation <a class="anchor" href="#member-rotation-14">#</a></h3><pre class="code" data-lang="ts"><code>rotation: number;</code></pre><p>The rotation angle of this tile.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-collideleft-15">collideLeft <a class="anchor" href="#member-collideleft-15">#</a></h3><pre class="code" data-lang="ts"><code>collideLeft: boolean;</code></pre><p>Whether the tile should collide with any object on the left side.</p>
+<p>This property is used by Arcade Physics only, however, you can also use it
+in your own checks.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-collideright-16">collideRight <a class="anchor" href="#member-collideright-16">#</a></h3><pre class="code" data-lang="ts"><code>collideRight: boolean;</code></pre><p>Whether the tile should collide with any object on the right side.</p>
+<p>This property is used by Arcade Physics only, however, you can also use it
+in your own checks.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-collideup-17">collideUp <a class="anchor" href="#member-collideup-17">#</a></h3><pre class="code" data-lang="ts"><code>collideUp: boolean;</code></pre><p>Whether the tile should collide with any object on the top side.</p>
+<p>This property is used by Arcade Physics only, however, you can also use it
+in your own checks.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-collidedown-18">collideDown <a class="anchor" href="#member-collidedown-18">#</a></h3><pre class="code" data-lang="ts"><code>collideDown: boolean;</code></pre><p>Whether the tile should collide with any object on the bottom side.</p>
+<p>This property is used by Arcade Physics only, however, you can also use it
+in your own checks.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-faceleft-19">faceLeft <a class="anchor" href="#member-faceleft-19">#</a></h3><pre class="code" data-lang="ts"><code>faceLeft: boolean;</code></pre><p>Whether the tile&#39;s left edge is interesting for collisions.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-faceright-20">faceRight <a class="anchor" href="#member-faceright-20">#</a></h3><pre class="code" data-lang="ts"><code>faceRight: boolean;</code></pre><p>Whether the tile&#39;s right edge is interesting for collisions.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-facetop-21">faceTop <a class="anchor" href="#member-facetop-21">#</a></h3><pre class="code" data-lang="ts"><code>faceTop: boolean;</code></pre><p>Whether the tile&#39;s top edge is interesting for collisions.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-facebottom-22">faceBottom <a class="anchor" href="#member-facebottom-22">#</a></h3><pre class="code" data-lang="ts"><code>faceBottom: boolean;</code></pre><p>Whether the tile&#39;s bottom edge is interesting for collisions.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-collisioncallback-23">collisionCallback <a class="anchor" href="#member-collisioncallback-23">#</a></h3><pre class="code" data-lang="ts"><code>collisionCallback: Function;</code></pre><p>An optional callback function that is invoked when an Arcade Physics body collides with
+this tile. The callback must return <code>true</code> for collision processing to take place. Set
+via <code>setCollisionCallback</code>.</p>
+<p><b>Type / return:</b> <code>Function</code></p><h3 id="member-collisioncallbackcontext-24">collisionCallbackContext <a class="anchor" href="#member-collisioncallbackcontext-24">#</a></h3><pre class="code" data-lang="ts"><code>collisionCallbackContext: object;</code></pre><p>The context in which the collision callback will be called.</p>
+<p><b>Type / return:</b> <code>object</code></p><h3 id="member-tint-25">tint <a class="anchor" href="#member-tint-25">#</a></h3><pre class="code" data-lang="ts"><code>tint: number;</code></pre><p>The tint to apply to this tile. Note: tint is currently a single color value instead of
+the 4 corner tint component on other GameObjects.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-tint2-26">tint2 <a class="anchor" href="#member-tint2-26">#</a></h3><pre class="code" data-lang="ts"><code>tint2: number;</code></pre><p>The secondary tint to apply to this tile.
+Used in two-color tint modes.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-tintmode-27">tintMode <a class="anchor" href="#member-tintmode-27">#</a></h3><pre class="code" data-lang="ts"><code>tintMode: Phaser.TintModes;</code></pre><p>The tint mode.</p>
+<p>Available modes are:</p>
+<ul>
+<li>Phaser.TintModes.MULTIPLY (default)</li>
+<li>Phaser.TintModes.FILL</li>
+<li>Phaser.TintModes.ADD</li>
+<li>Phaser.TintModes.SCREEN</li>
+<li>Phaser.TintModes.OVERLAY</li>
+<li>Phaser.TintModes.HARD_LIGHT</li>
+<li>Phaser.TintModes.MULTIPLY_TWO</li>
+</ul>
+<p><b>Type / return:</b> <code>Phaser.TintModes</code></p><h3 id="member-physics-28">physics <a class="anchor" href="#member-physics-28">#</a></h3><pre class="code" data-lang="ts"><code>physics: object;</code></pre><p>An empty object where physics-engine specific information (e.g. bodies) may be stored.</p>
+<p><b>Type / return:</b> <code>object</code></p><h3 id="member-containspoint-29">containsPoint <a class="anchor" href="#member-containspoint-29">#</a></h3><pre class="code" data-lang="ts"><code>containsPoint(x: number, y: number): boolean;</code></pre><p>Check if the given x and y world coordinates are within this Tile. This does not factor in
+camera scroll, layer scale or layer position.
+<strong>param</strong>  x The x coordinate to test.
+<strong>param</strong>  y The y coordinate to test.
+<strong>returns</strong>  True if the coordinates are within this Tile, otherwise false.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-copy-30">copy <a class="anchor" href="#member-copy-30">#</a></h3><pre class="code" data-lang="ts"><code>copy(tile: Phaser.Tilemaps.Tile): this;</code></pre><p>Copies the tile data and properties from the given Tile to this Tile. This copies everything
+except for position and interesting face calculations.
+<strong>param</strong>  tile The tile to copy from.
+<strong>returns</strong>  This Tile object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>tile</code></td><td><code>Phaser.Tilemaps.Tile</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-getcollisiongroup-31">getCollisionGroup <a class="anchor" href="#member-getcollisiongroup-31">#</a></h3><pre class="code" data-lang="ts"><code>getCollisionGroup(): object | null;</code></pre><p>The collision group for this Tile, defined within the Tileset. This returns a reference to
+the collision group stored within the Tileset, so any modification of the returned object
+will impact all tiles that have the same index as this tile.undefined
+<strong>returns</strong>  The collision group for this Tile, as defined in the Tileset, or <code>null</code> if no group was defined.</p>
+<p><b>Type / return:</b> <code>object | null</code></p><h3 id="member-gettiledata-32">getTileData <a class="anchor" href="#member-gettiledata-32">#</a></h3><pre class="code" data-lang="ts"><code>getTileData(): object | null;</code></pre><p>The tile data for this Tile, defined within the Tileset. This typically contains Tiled
+collision data, tile animations and terrain information. This returns a reference to the tile
+data stored within the Tileset, so any modification of the returned object will impact all
+tiles that have the same index as this tile.undefined
+<strong>returns</strong>  The tile data for this Tile, as defined in the Tileset, or <code>null</code> if no data was defined.</p>
+<p><b>Type / return:</b> <code>object | null</code></p><h3 id="member-getleft-33">getLeft <a class="anchor" href="#member-getleft-33">#</a></h3><pre class="code" data-lang="ts"><code>getLeft(camera?: Phaser.Cameras.Scene2D.Camera): number;</code></pre><p>Gets the world X position of the left side of the tile, factoring in the layer&#39;s position,
+scale and scroll.
+<strong>param</strong>  camera The Camera to use to perform the check.
+<strong>returns</strong>  The left (x) value of this tile.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>camera</code></td><td><code>Phaser.Cameras.Scene2D.Camera</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>number</code></p><h3 id="member-getright-34">getRight <a class="anchor" href="#member-getright-34">#</a></h3><pre class="code" data-lang="ts"><code>getRight(camera?: Phaser.Cameras.Scene2D.Camera): number;</code></pre><p>Gets the world X position of the right side of the tile, factoring in the layer&#39;s position,
+scale and scroll.
+<strong>param</strong>  camera The Camera to use to perform the check.
+<strong>returns</strong>  The right (x) value of this tile.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>camera</code></td><td><code>Phaser.Cameras.Scene2D.Camera</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>number</code></p><h3 id="member-gettop-35">getTop <a class="anchor" href="#member-gettop-35">#</a></h3><pre class="code" data-lang="ts"><code>getTop(camera?: Phaser.Cameras.Scene2D.Camera): number;</code></pre><p>Gets the world Y position of the top side of the tile, factoring in the layer&#39;s position,
+scale and scroll.
+<strong>param</strong>  camera The Camera to use to perform the check.
+<strong>returns</strong>  The top (y) value of this tile.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>camera</code></td><td><code>Phaser.Cameras.Scene2D.Camera</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>number</code></p><h3 id="member-getbottom-36">getBottom <a class="anchor" href="#member-getbottom-36">#</a></h3><pre class="code" data-lang="ts"><code>getBottom(camera?: Phaser.Cameras.Scene2D.Camera): number;</code></pre><p>Gets the world Y position of the bottom side of the tile, factoring in the layer&#39;s position,
+scale and scroll.
+<strong>param</strong>  camera The Camera to use to perform the check.
+<strong>returns</strong>  The bottom (y) value of this tile.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>camera</code></td><td><code>Phaser.Cameras.Scene2D.Camera</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>number</code></p><h3 id="member-getbounds-37">getBounds <a class="anchor" href="#member-getbounds-37">#</a></h3><pre class="code" data-lang="ts"><code>getBounds(camera?: Phaser.Cameras.Scene2D.Camera, output?: Phaser.Geom.Rectangle): Phaser.Geom.Rectangle | object;</code></pre><p>Gets the world rectangle bounding box for the tile, factoring in the layer&#39;s position,
+scale and scroll.
+<strong>param</strong>  camera The Camera to use to perform the check.
+<strong>param</strong>  output Optional Rectangle object to store the results in.
+<strong>returns</strong>  The bounds of this Tile.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>camera</code></td><td><code>Phaser.Cameras.Scene2D.Camera</code></td><td>Optional</td></tr><tr><td><code>output</code></td><td><code>Phaser.Geom.Rectangle</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Geom.Rectangle | object</code></p><h3 id="member-getcenterx-38">getCenterX <a class="anchor" href="#member-getcenterx-38">#</a></h3><pre class="code" data-lang="ts"><code>getCenterX(camera?: Phaser.Cameras.Scene2D.Camera): number;</code></pre><p>Gets the world X position of the center of the tile, factoring in the layer&#39;s position,
+scale and scroll.
+<strong>param</strong>  camera The Camera to use to perform the check.
+<strong>returns</strong>  The center x position of this Tile.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>camera</code></td><td><code>Phaser.Cameras.Scene2D.Camera</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>number</code></p><h3 id="member-getcentery-39">getCenterY <a class="anchor" href="#member-getcentery-39">#</a></h3><pre class="code" data-lang="ts"><code>getCenterY(camera?: Phaser.Cameras.Scene2D.Camera): number;</code></pre><p>Gets the world Y position of the center of the tile, factoring in the layer&#39;s position,
+scale and scroll.
+<strong>param</strong>  camera The Camera to use to perform the check.
+<strong>returns</strong>  The center y position of this Tile.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>camera</code></td><td><code>Phaser.Cameras.Scene2D.Camera</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>number</code></p><h3 id="member-intersects-40">intersects <a class="anchor" href="#member-intersects-40">#</a></h3><pre class="code" data-lang="ts"><code>intersects(x: number, y: number, right: number, bottom: number): boolean;</code></pre><p>Check for intersection with this tile. This does not factor in camera scroll, layer scale or
+layer position.
+<strong>param</strong>  x The left edge of the rectangle to intersect with, in pixels.
+<strong>param</strong>  y The top edge of the rectangle to intersect with, in pixels.
+<strong>param</strong>  right The right edge of the rectangle to intersect with, in pixels.
+<strong>param</strong>  bottom The bottom edge of the rectangle to intersect with, in pixels.
+<strong>returns</strong>  <code>true</code> if the Tile intersects with the given dimensions, otherwise <code>false</code>.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>right</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>bottom</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-isinteresting-41">isInteresting <a class="anchor" href="#member-isinteresting-41">#</a></h3><pre class="code" data-lang="ts"><code>isInteresting(collides: boolean, faces: boolean): boolean;</code></pre><p>Checks whether this tile is considered &quot;interesting&quot; based on the provided criteria. A tile
+is interesting if it has active collision flags on any side, if it has an interesting face,
+or both, depending on the arguments passed. This is used internally by the tilemap collision
+system to quickly filter tiles that need further processing.
+<strong>param</strong>  collides If true, will consider the tile interesting if it collides on any side.
+<strong>param</strong>  faces If true, will consider the tile interesting if it has an interesting face.
+<strong>returns</strong>  True if the Tile is interesting, otherwise false.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>collides</code></td><td><code>boolean</code></td><td>Required</td></tr><tr><td><code>faces</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-resetcollision-42">resetCollision <a class="anchor" href="#member-resetcollision-42">#</a></h3><pre class="code" data-lang="ts"><code>resetCollision(recalculateFaces?: boolean): this;</code></pre><p>Resets all collision status flags on this tile to <code>false</code>, clearing any collisions set on
+each of its four edges. If <code>recalculateFaces</code> is true (the default), the interesting face
+flags for this tile and its neighbors in the layer are also recalculated.
+<strong>param</strong>  recalculateFaces Whether or not to recalculate interesting faces for this tile and its neighbors. Default true.
+<strong>returns</strong>  This Tile object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>recalculateFaces</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-resetfaces-43">resetFaces <a class="anchor" href="#member-resetfaces-43">#</a></h3><pre class="code" data-lang="ts"><code>resetFaces(): this;</code></pre><p>Resets all four interesting face flags (<code>faceTop</code>, <code>faceBottom</code>, <code>faceLeft</code>, <code>faceRight</code>)
+to <code>false</code>. Unlike <code>resetCollision</code>, this does not affect the collision flags and does not
+trigger a face recalculation on neighboring tiles.undefined
+<strong>returns</strong>  This Tile object instance.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-setcollision-44">setCollision <a class="anchor" href="#member-setcollision-44">#</a></h3><pre class="code" data-lang="ts"><code>setCollision(left: boolean, right?: boolean, up?: boolean, down?: boolean, recalculateFaces?: boolean): this;</code></pre><p>Sets the collision flags for each side of this tile and updates the interesting faces list.
+<strong>param</strong>  left Indicating collide with any object on the left.
+<strong>param</strong>  right Indicating collide with any object on the right.
+<strong>param</strong>  up Indicating collide with any object on the top.
+<strong>param</strong>  down Indicating collide with any object on the bottom.
+<strong>param</strong>  recalculateFaces Whether or not to recalculate interesting faces for this tile and its neighbors. Default true.
+<strong>returns</strong>  This Tile object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>left</code></td><td><code>boolean</code></td><td>Required</td></tr><tr><td><code>right</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>up</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>down</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>recalculateFaces</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setcollisioncallback-45">setCollisionCallback <a class="anchor" href="#member-setcollisioncallback-45">#</a></h3><pre class="code" data-lang="ts"><code>setCollisionCallback(callback: Function, context: object): this;</code></pre><p>Set a callback to be called when this tile is hit by an object. The callback must return true for
+collision processing to take place.
+<strong>param</strong>  callback Callback function.
+<strong>param</strong>  context Callback will be called within this context.
+<strong>returns</strong>  This Tile object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>callback</code></td><td><code>Function</code></td><td>Required</td></tr><tr><td><code>context</code></td><td><code>object</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setsize-46">setSize <a class="anchor" href="#member-setsize-46">#</a></h3><pre class="code" data-lang="ts"><code>setSize(tileWidth: number, tileHeight: number, baseWidth: number, baseHeight: number): this;</code></pre><p>Sets the size of the tile and updates its pixelX and pixelY.
+<strong>param</strong>  tileWidth The width of the tile in pixels.
+<strong>param</strong>  tileHeight The height of the tile in pixels.
+<strong>param</strong>  baseWidth The base width a tile in the map (in pixels).
+<strong>param</strong>  baseHeight The base height of the tile in pixels.
+<strong>returns</strong>  This Tile object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>tileWidth</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>tileHeight</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>baseWidth</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>baseHeight</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-updatepixelxy-47">updatePixelXY <a class="anchor" href="#member-updatepixelxy-47">#</a></h3><pre class="code" data-lang="ts"><code>updatePixelXY(): this;</code></pre><p>Used internally. Updates the tile&#39;s world XY position based on the current tile size.undefined
+<strong>returns</strong>  This Tile object instance.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-destroy-48">destroy <a class="anchor" href="#member-destroy-48">#</a></h3><pre class="code" data-lang="ts"><code>destroy(): void;</code></pre><p>Destroys this tile by nullifying its collision callback and custom properties, releasing
+references that could otherwise prevent garbage collection.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="member-cancollide-49">canCollide <a class="anchor" href="#member-cancollide-49">#</a></h3><pre class="code" data-lang="ts"><code>readonly canCollide: boolean;</code></pre><p>True if this tile can collide on any of its faces or has a collision callback set.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-collides-50">collides <a class="anchor" href="#member-collides-50">#</a></h3><pre class="code" data-lang="ts"><code>readonly collides: boolean;</code></pre><p>True if this tile can collide on any of its faces.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-hasinterestingface-51">hasInterestingFace <a class="anchor" href="#member-hasinterestingface-51">#</a></h3><pre class="code" data-lang="ts"><code>readonly hasInterestingFace: boolean;</code></pre><p>True if this tile has any interesting faces.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-tileset-52">tileset <a class="anchor" href="#member-tileset-52">#</a></h3><pre class="code" data-lang="ts"><code>readonly tileset: Phaser.Tilemaps.Tileset | null;</code></pre><p>The tileset that contains this Tile. This is null if accessed from a LayerData instance
+before the tile is placed in a TilemapLayer, or if the tile has an index that doesn&#39;t correspond
+to any of the map&#39;s tilesets.</p>
+<p><b>Type / return:</b> <code>Phaser.Tilemaps.Tileset | null</code></p><h3 id="member-tilemaplayer-53">tilemapLayer <a class="anchor" href="#member-tilemaplayer-53">#</a></h3><pre class="code" data-lang="ts"><code>readonly tilemapLayer: Phaser.Tilemaps.TilemapLayer | null;</code></pre><p>The tilemap layer that contains this Tile. This will only return null if accessed from a
+LayerData instance before the tile is placed within a TilemapLayer.</p>
+<p><b>Type / return:</b> <code>Phaser.Tilemaps.TilemapLayer | null</code></p><h3 id="member-tilemap-54">tilemap <a class="anchor" href="#member-tilemap-54">#</a></h3><pre class="code" data-lang="ts"><code>readonly tilemap: Phaser.Tilemaps.Tilemap | null;</code></pre><p>The tilemap that contains this Tile. This will only return null if accessed from a LayerData
+instance before the tile is placed within a TilemapLayer.</p>
+<p><b>Type / return:</b> <code>Phaser.Tilemaps.Tilemap | null</code></p><h3 id="member-clearalpha-55">clearAlpha <a class="anchor" href="#member-clearalpha-55">#</a></h3><pre class="code" data-lang="ts"><code>clearAlpha(): this;</code></pre><p>Clears the alpha value associated with this Game Object.</p>
+<p>Immediately sets the alpha back to 1 (fully opaque).undefined
+<strong>returns</strong>  This Game Object instance.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-setalpha-56">setAlpha <a class="anchor" href="#member-setalpha-56">#</a></h3><pre class="code" data-lang="ts"><code>setAlpha(value?: number): this;</code></pre><p>Set the Alpha level of this Game Object. The alpha controls the opacity of the Game Object as it renders.
+Alpha values are provided as a float between 0, fully transparent, and 1, fully opaque.
+<strong>param</strong>  value The alpha value applied across the whole Game Object. Default 1.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-alpha-57">alpha <a class="anchor" href="#member-alpha-57">#</a></h3><pre class="code" data-lang="ts"><code>alpha: number;</code></pre><p>The alpha value of the Game Object.</p>
+<p>This is a global value, impacting the entire Game Object, not just a region of it.
+The value is clamped to the range [0, 1]. Setting alpha to 0 also clears the render
+flag, preventing the Game Object from being drawn until the alpha is raised above 0 again.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-flipx-58">flipX <a class="anchor" href="#member-flipx-58">#</a></h3><pre class="code" data-lang="ts"><code>flipX: boolean;</code></pre><p>The horizontally flipped state of the Game Object.</p>
+<p>A Game Object that is flipped horizontally will render inverted on the horizontal axis.
+Flipping always takes place from the middle of the texture and does not impact the scale value.
+If this Game Object has a physics body, it will not change the body. This is a rendering toggle only.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-flipy-59">flipY <a class="anchor" href="#member-flipy-59">#</a></h3><pre class="code" data-lang="ts"><code>flipY: boolean;</code></pre><p>The vertically flipped state of the Game Object.</p>
+<p>A Game Object that is flipped vertically will render inverted on the vertical axis (i.e. upside down).
+Flipping always takes place from the middle of the texture and does not impact the scale value.
+If this Game Object has a physics body, it will not change the body. This is a rendering toggle only.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-toggleflipx-60">toggleFlipX <a class="anchor" href="#member-toggleflipx-60">#</a></h3><pre class="code" data-lang="ts"><code>toggleFlipX(): this;</code></pre><p>Toggles the horizontal flipped state of this Game Object.</p>
+<p>A Game Object that is flipped horizontally will render inverted on the horizontal axis.
+Flipping always takes place from the middle of the texture and does not impact the scale value.
+If this Game Object has a physics body, it will not change the body. This is a rendering toggle only.undefined
+<strong>returns</strong>  This Game Object instance.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-toggleflipy-61">toggleFlipY <a class="anchor" href="#member-toggleflipy-61">#</a></h3><pre class="code" data-lang="ts"><code>toggleFlipY(): this;</code></pre><p>Toggles the vertical flipped state of this Game Object.</p>
+<p>A Game Object that is flipped vertically will render inverted on the vertical axis.
+Flipping always takes place from the middle of the texture and does not impact the scale value.
+If this Game Object has a physics body, it will not change the body. This is a rendering toggle only.undefined
+<strong>returns</strong>  This Game Object instance.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-setflipx-62">setFlipX <a class="anchor" href="#member-setflipx-62">#</a></h3><pre class="code" data-lang="ts"><code>setFlipX(value: boolean): this;</code></pre><p>Sets the horizontal flipped state of this Game Object.</p>
+<p>A Game Object that is flipped horizontally will render inverted on the horizontal axis.
+Flipping always takes place from the middle of the texture and does not impact the scale value.
+If this Game Object has a physics body, it will not change the body. This is a rendering toggle only.
+<strong>param</strong>  value The flipped state. <code>false</code> for no flip, or <code>true</code> to be flipped.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setflipy-63">setFlipY <a class="anchor" href="#member-setflipy-63">#</a></h3><pre class="code" data-lang="ts"><code>setFlipY(value: boolean): this;</code></pre><p>Sets the vertical flipped state of this Game Object.</p>
+<p>A Game Object that is flipped vertically will render inverted on the vertical axis.
+Flipping always takes place from the middle of the texture and does not impact the scale value.
+If this Game Object has a physics body, it will not change the body. This is a rendering toggle only.
+<strong>param</strong>  value The flipped state. <code>false</code> for no flip, or <code>true</code> to be flipped.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setflip-64">setFlip <a class="anchor" href="#member-setflip-64">#</a></h3><pre class="code" data-lang="ts"><code>setFlip(x: boolean, y: boolean): this;</code></pre><p>Sets the horizontal and vertical flipped state of this Game Object.</p>
+<p>A Game Object that is flipped will render inverted on the flipped axis.
+Flipping always takes place from the middle of the texture and does not impact the scale value.
+If this Game Object has a physics body, it will not change the body. This is a rendering toggle only.
+<strong>param</strong>  x The horizontal flipped state. <code>false</code> for no flip, or <code>true</code> to be flipped.
+<strong>param</strong>  y The vertical flipped state. <code>false</code> for no flip, or <code>true</code> to be flipped.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>boolean</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-resetflip-65">resetFlip <a class="anchor" href="#member-resetflip-65">#</a></h3><pre class="code" data-lang="ts"><code>resetFlip(): this;</code></pre><p>Resets the horizontal and vertical flipped state of this Game Object back to their default un-flipped state.undefined
+<strong>returns</strong>  This Game Object instance.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-visible-66">visible <a class="anchor" href="#member-visible-66">#</a></h3><pre class="code" data-lang="ts"><code>visible: boolean;</code></pre><p>The visible state of the Game Object.</p>
+<p>An invisible Game Object will skip rendering, but will still process update logic.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-setvisible-67">setVisible <a class="anchor" href="#member-setvisible-67">#</a></h3><pre class="code" data-lang="ts"><code>setVisible(value: boolean): this;</code></pre><p>Sets the visibility of this Game Object.</p>
+<p>An invisible Game Object will skip rendering, but will still process update logic.
+<strong>param</strong>  value The visible state of the Game Object.
+<strong>returns</strong>  This Game Object instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h2 id="base-types">Base types</h2><p><a href="../../gameobjects/components/75/alphasingle.html">Phaser.GameObjects.Components.AlphaSingle</a> · <a href="../../gameobjects/components/d3/flip.html">Phaser.GameObjects.Components.Flip</a> · <a href="../../gameobjects/components/4a/visible.html">Phaser.GameObjects.Components.Visible</a></p><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#members">Public members (68)</a><a href="#base-types">Base types</a></aside></div>
+<script src="../../../../../../../../assets/cm.classic.js"></script><script src="../../../../../../../../assets/manual.js"></script></body></html>

@@ -1,0 +1,1441 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Node Particle Editor Blocks — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../index.html"><img src="../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../nord/api/api.html">API reference</a><a href="../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../nord/api/api-game.html">Game</a><a href="../../../../../nord/api/api-input.html">Input</a><a href="../../../../../nord/api/api-events.html">Events</a><a href="../../../../../nord/api/api-save.html">Save</a><a href="../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../nord/components/component-text.html">text</a><a href="../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../nord/components/component-light.html">light</a><a href="../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../nord/components/component-model.html">model</a><a href="../../../../../nord/components/component-material.html">material</a><a href="../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../nord/components/component-path.html">path</a><a href="../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../nord/reference/components.html">Component index</a><a href="../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../index.html">Babylon documentation library</a><a href="../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Node Particle Editor Blocks</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="what-to-expect">What to Expect<a class="anchor" href="#what-to-expect">#</a></h2>
+<p>This page is a breakdown of each block available in the Node Particle Editor. The blocks are listed in the same order by group as they appear in the tool&#39;s block list. The reason for this order is that there may be some generalities that apply to all blocks in a group and those will be listed once rather than repeating them for each block. For each block we will discuss all inputs, outputs, properties, and considerations to ensure all requirements for using a block are highlighted.</p>
+<h2 id="system-nodes">System Nodes<a class="anchor" href="#system-nodes">#</a></h2>
+<p>System node blocks provide the core system configuration and global values used throughout the particle graph. Every graph requires a System block, and the other blocks in this group provide time-based and positional system-level data.</p>
+<span class="muted">&lt;H3Image title=&quot;System&quot; image=&quot;/img/tools/npe/systemNode.webp&quot; alt=&quot;System node&quot;/&gt;</span><p>This is the core block that finalizes the particle system configuration. Every particle system graph must have exactly one System block, and it must be the last block in the chain. It manages particle capacity, rendering settings, blend modes, and emission rates. All emitter and update chains must eventually connect to this block. The block also handles sub-emitter triggers through the onStart and onEnd inputs, allowing particle systems to spawn other particle systems.</p>
+<h4 id="properties">Properties<a class="anchor" href="#properties">#</a></h4>
+<ul>
+<li><strong>blendMode</strong> defines how particles blend with the scene background. Options are ONEONE, STANDARD, ADD, MULTIPLY, and MULTIPLYADD.</li>
+<li><strong>capacity</strong> sets the maximum number of particles that can exist simultaneously.</li>
+<li><strong>manualEmitCount</strong> overrides the automatic particle emission count. Set to -1 to disable manual control.</li>
+<li><strong>startDelay</strong> sets the delay in milliseconds before the particle system starts emitting.</li>
+<li><strong>updateSpeed</strong> sets the frequency of particle updates in seconds. A value of 0.0167 corresponds to approximately 60 updates per second.</li>
+<li><strong>preWarmCycles</strong> sets the number of update cycles to run before rendering begins. This is useful for having particles already visible when the system starts.</li>
+<li><strong>preWarmStepOffset</strong> sets the time step multiplier for pre-warm cycles.</li>
+<li><strong>isBillboardBased</strong> determines whether particles should always face the camera.</li>
+<li><strong>billBoardMode</strong> sets how particles orient to the camera. Options are ALL which faces the camera completely, Y which rotates around the Y-axis only, STRETCHED which elongates based on velocity, and STRETCHED_LOCAL which stretches in local space.</li>
+<li><strong>isLocal</strong> determines whether particles exist in local space or world space.</li>
+<li><strong>disposeOnStop</strong> automatically disposes the particle system when it stops.</li>
+<li><strong>doNotStart</strong> prevents the particle system from starting automatically.</li>
+<li><strong>renderingGroupId</strong> sets the rendering group ID for controlling render order.</li>
+<li><strong>customShader</strong> is a custom shader configuration object for advanced rendering.</li>
+<li><strong>emitter</strong> is the mesh or position that serves as the emitter origin.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>particle</strong> is the particle stream from emitter and update blocks and is required for the system to function.</li>
+<li><strong>emitRate</strong> is an integer value setting the number of particles emitted per second.</li>
+<li><strong>texture</strong> is the sprite texture applied to particles and is required for the system to render.</li>
+<li><strong>translationPivot</strong> is a Vector2 value setting the texture pivot point for rotation.</li>
+<li><strong>textureMask</strong> is a Color4 value that acts as a color mask applied to the texture.</li>
+<li><strong>targetStopDuration</strong> is a Float value setting the duration in seconds for the system to fade out when stopped.</li>
+<li><strong>onStart</strong> accepts a System connection to trigger another particle system when this one starts.</li>
+<li><strong>onEnd</strong> accepts a System connection to trigger another particle system when this one stops.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>system</strong> is the finalized particle system instance and can be connected to other system inputs or used as the final output.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Time&quot; image=&quot;/img/tools/npe/timeNode.webp&quot; alt=&quot;Time node&quot;/&gt;</span><p>This block provides the current system time in milliseconds. It gives access to the global elapsed time since the particle system started and is useful for creating time-based animations, oscillations, or synchronized effects. Combine with trigonometry blocks like Sin or Cos for wave patterns, or with math blocks for custom timing functions.</p>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the current time in milliseconds as a Float value.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Delta&quot; image=&quot;/img/tools/npe/deltaNode.webp&quot; alt=&quot;Delta node&quot;/&gt;</span><p>This block provides the frame time based on FPS and update speed. This value is a constant and does not measure the time since the last frame. It is essential for frame-rate-independent particle behaviors and should be used to scale velocity, rotation speed, or any time-dependent calculation so that the result is consistent regardless of frame rate.</p>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the delta time as a constant value for all frames, based on update speed and renderer FPS, as a Float value.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Emitter Position&quot; image=&quot;/img/tools/npe/emitterPositionNode.webp&quot; alt=&quot;Emitter Position node&quot;/&gt;
+This block provides the world-space position of the particle system emitter. It is useful for calculating distances from the emitter, creating effects relative to the emitter origin, or implementing custom attraction or repulsion toward the emitter. The value updates each frame if the emitter is moving.</span><h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the emitter position in world space as a Vector3 value.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Camera Position&quot; image=&quot;/img/tools/npe/cameraPositionNode.webp&quot; alt=&quot;Camera Position node&quot;/&gt;
+This block provides the world-space position of the active camera in the scene. It is useful for view-dependent effects such as particles that react to camera distance, billboard adjustments, or depth-based fading. Combine with math blocks to calculate camera-to-particle distances.</span><h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the active camera position in world space as a Vector3 value.</li>
+</ul>
+<h2 id="setup">Setup<a class="anchor" href="#setup">#</a></h2>
+<p>Setup blocks handle particle creation and sprite sheet configuration. Every particle system graph needs a Create Particle block as the starting point for its emission chain.</p>
+<span class="muted">&lt;H3Image title=&quot;Create Particle&quot; image=&quot;/img/tools/npe/createParticleNode.webp&quot; alt=&quot;Create Particle node&quot;/&gt;
+This block creates new particles and initializes their properties. It is the first block in an emission chain and must be placed before shape emitter blocks.</span><h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>emitPower</strong> is a Float value that acts as a multiplier for emission velocity.</li>
+<li><strong>lifeTime</strong> is a Float value setting the particle lifespan in seconds.</li>
+<li><strong>color</strong> is a Color4 value setting the initial particle color.</li>
+<li><strong>colorDead</strong> is a Color4 value setting the end-of-life particle color.</li>
+<li><strong>scale</strong> sets the particle scale and accepts either a Vector2 for independent X and Y scaling or a Float which applies uniformly.</li>
+<li><strong>angle</strong> is a Float value setting the initial rotation angle in radians.</li>
+<li><strong>size</strong> is a Float value setting the particle size.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>particle</strong> is the created particle system instance ready to be connected to a shape emitter block.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Setup Sprite Sheet&quot; image=&quot;/img/tools/npe/setupSpriteSheetNode.webp&quot; alt=&quot;Setup Sprite Sheet node&quot;/&gt;
+This block configures sprite sheet animation for particles, enabling animated sprite effects. It is used in conjunction with a texture input on the System block where the texture should contain a sprite sheet as a grid of sprite frames. All sprite parameters are configured through the properties panel.</span><h4 id="properties">Properties<a class="anchor" href="#properties">#</a></h4>
+<ul>
+<li><strong>start</strong> sets the starting sprite cell index for animation.</li>
+<li><strong>end</strong> sets the ending sprite cell index for animation.</li>
+<li><strong>width</strong> sets the width of each sprite cell in pixels.</li>
+<li><strong>height</strong> sets the height of each sprite cell in pixels.</li>
+<li><strong>spriteCellChangeSpeed</strong> sets the speed of sprite cell animation.</li>
+<li><strong>loop</strong> determines whether sprite animation should loop.</li>
+<li><strong>randomStartCell</strong> determines whether the starting cell is randomized for each particle.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>particle</strong> is the particle system to configure sprite sheets for and is required.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the particle system with sprite sheet animation configured.</li>
+</ul>
+<h2 id="shapes">Shapes<a class="anchor" href="#shapes">#</a></h2>
+<p>Shape blocks define the spatial distribution of particles, controlling where they spawn and in which direction they move initially. Every particle system needs at least one shape emitter block connected after the Create Particle block. All shape blocks take a particle input and output a particle type that flows through the graph to update blocks and eventually to the System block.</p>
+<span class="muted">&lt;H3Image title=&quot;Box Shape&quot; image=&quot;/img/tools/npe/boxShapeNode.webp&quot; alt=&quot;Box Shape node&quot;/&gt;
+This emitter creates particles at random positions within a box volume with customizable directional vectors. Particles spawn at random positions within the box defined by minEmitBox and maxEmitBox, and initial direction vectors are randomized between direction1 and direction2 vectors.</span><h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>particle</strong> is the particle system to apply the box emitter to and is required.</li>
+<li><strong>direction1</strong> is a Vector3 value setting the minimum direction vector for randomization.</li>
+<li><strong>direction2</strong> is a Vector3 value setting the maximum direction vector for randomization.</li>
+<li><strong>minEmitBox</strong> is a Vector3 value setting the minimum corner of the emission box.</li>
+<li><strong>maxEmitBox</strong> is a Vector3 value setting the maximum corner of the emission box.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the particle system with the box emitter applied.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Cone Shape&quot; image=&quot;/img/tools/npe/coneShapeNode.webp&quot; alt=&quot;Cone Shape node&quot;/&gt;
+This emitter creates particles from a cone shape with customizable spread angle and radius range. When emitFromSpawnPointOnly is false, particles spawn along the cone surface. The directionRandomizer is automatically used unless both direction1 and direction2 inputs are connected, which override the automatic direction calculation.</span><h4 id="properties">Properties<a class="anchor" href="#properties">#</a></h4>
+<ul>
+<li><strong>emitFromSpawnPointOnly</strong> when enabled causes particles to emit only from the cone apex instead of the cone surface.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>particle</strong> is the particle system to apply the cone emitter to and is required.</li>
+<li><strong>radius</strong> is a Float value setting the radius of the cone base.</li>
+<li><strong>angle</strong> is a Float value setting the cone spread angle in radians.</li>
+<li><strong>radiusRange</strong> is a Float value between 0 (surface only) and 1 (full volume) that controls the randomization factor for spawn radius.</li>
+<li><strong>heightRange</strong> is a Float value between 0 and 1 that controls the randomization factor for spawn height along the cone.</li>
+<li><strong>directionRandomizer</strong> is a Float value between 0 and 1 that adds randomness to the initial direction.</li>
+<li><strong>direction1</strong> is a Vector3 value setting the custom direction range minimum.</li>
+<li><strong>direction2</strong> is a Vector3 value setting the custom direction range maximum.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the particle system with the cone emitter applied.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Sphere Shape&quot; image=&quot;/img/tools/npe/sphereShapeNode.webp&quot; alt=&quot;Sphere Shape node&quot;/&gt;
+This emitter creates particles from a spherical surface with optional hemispheric mode. It uses proper spherical distribution with polar coordinates to ensure even particle distribution across the sphere surface. When isHemispheric is enabled, emission is restricted to the top half of the sphere.</span><h4 id="properties">Properties<a class="anchor" href="#properties">#</a></h4>
+<ul>
+<li><strong>isHemispheric</strong> when enabled restricts emission to the top hemisphere of the sphere.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>particle</strong> is the particle system to apply the sphere emitter to and is required.</li>
+<li><strong>radius</strong> is a Float value setting the sphere radius.</li>
+<li><strong>radiusRange</strong> is a Float value between 0 (surface only) and 1 (full volume) that controls the randomization factor for spawn radius.</li>
+<li><strong>directionRandomizer</strong> is a Float value between 0 and 1 that adds randomness to the initial direction.</li>
+<li><strong>direction1</strong> is a Vector3 value setting the custom direction range minimum.</li>
+<li><strong>direction2</strong> is a Vector3 value setting the custom direction range maximum.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the particle system with the sphere emitter applied.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Point Shape&quot; image=&quot;/img/tools/npe/pointShapeNode.webp&quot; alt=&quot;Point Shape node&quot;/&gt;</span><p>This is the simplest emitter block. All particles spawn at the emitter origin and the block only controls the initial direction which is randomized between direction1 and direction2.</p>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>particle</strong> is the particle system to apply the point emitter to and is required.</li>
+<li><strong>direction1</strong> is a Vector3 value setting the minimum direction vector for randomization.</li>
+<li><strong>direction2</strong> is a Vector3 value setting the maximum direction vector for randomization.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the particle system with the point emitter applied.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Custom Shape&quot; image=&quot;/img/tools/npe/customShapeNode.webp&quot; alt=&quot;Custom Shape node&quot;/&gt;</span><p>This emitter allows complete control over particle emission using custom user-defined generator functions. These functions must be assigned programmatically in code, not through the UI. If particleDestinationGenerator is provided without particleDirectionGenerator, particle direction is automatically calculated from the destination and lifetime.</p>
+<h4 id="properties-assignable-functions">Properties (Assignable Functions)<a class="anchor" href="#properties-assignable-functions">#</a></h4>
+<ul>
+<li><strong>particlePositionGenerator</strong> is a custom function to generate particle positions with signature <code>(index: number, particle: Particle | null, outPosition: Vector3) =&gt; void</code>.</li>
+<li><strong>particleDestinationGenerator</strong> is a custom function to generate particle destination positions with the same signature.</li>
+<li><strong>particleDirectionGenerator</strong> is a custom function to generate particle initial directions with the same signature.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>particle</strong> is the particle system to apply the custom emitter to and is required.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the particle system with the custom emitter applied.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Cylinder Shape&quot; image=&quot;/img/tools/npe/cylinderShapeNode.webp&quot; alt=&quot;Cylinder Shape node&quot;/&gt;</span><p>This emitter creates particles from a cylinder surface with proper circular distribution. It uses a spherical distribution algorithm for circular positioning to avoid clustering. Direction is based on surface normals unless custom direction inputs are connected.</p>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>particle</strong> is the particle system to apply the cylinder emitter to and is required.</li>
+<li><strong>radius</strong> is a Float value setting the cylinder radius.</li>
+<li><strong>height</strong> is a Float value setting the cylinder height.</li>
+<li><strong>radiusRange</strong> is a Float value between 0 (surface only) and 1 (full volume) that controls the randomization factor for spawn radius.</li>
+<li><strong>directionRandomizer</strong> is a Float value between 0 and 1 that adds randomness to the initial direction.</li>
+<li><strong>direction1</strong> is a Vector3 value setting the custom direction range minimum.</li>
+<li><strong>direction2</strong> is a Vector3 value setting the custom direction range maximum.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the particle system with the cylinder emitter applied.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Mesh Shape&quot; image=&quot;/img/tools/npe/meshShapeNode.webp&quot; alt=&quot;Mesh Shape node&quot;/&gt;</span><p>This emitter creates particles from a mesh surface using random triangles with barycentric interpolation. It caches vertex positions, normals, and color data from the source mesh for efficient sampling and uses barycentric coordinates to smoothly distribute particles across triangle surfaces.</p>
+<h4 id="properties">Properties<a class="anchor" href="#properties">#</a></h4>
+<ul>
+<li><strong>useMeshNormalsForDirection</strong> when enabled uses vertex normals from the mesh for particle initial direction.</li>
+<li><strong>useMeshColorForColor</strong> when enabled uses vertex colors from the mesh for particle colors.</li>
+<li><strong>serializedCachedData</strong> when enabled includes cached mesh data in serialization for offline use.</li>
+<li><strong>worldSpace</strong> when enabled applies the mesh world transform matrix to particle positions.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>particle</strong> is the particle system to apply the mesh emitter to and is required.</li>
+<li><strong>direction1</strong> is a Vector3 value setting the fallback minimum direction if not using mesh normals.</li>
+<li><strong>direction2</strong> is a Vector3 value setting the fallback maximum direction if not using mesh normals.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the particle system with the mesh emitter applied.</li>
+</ul>
+<h2 id="updates">Updates<a class="anchor" href="#updates">#</a></h2>
+<p>Update blocks update particle properties during their lifetime. They are placed between emitter blocks and the System block to create dynamic particle behaviors. Update blocks execute every frame for each active particle, allowing properties like color, size, position, and rotation to change over time. Multiple update blocks can be chained together to create complex behaviors, and the order matters as blocks execute in the order they are connected.</p>
+<span class="muted">&lt;H3Image title=&quot;Update Direction&quot; image=&quot;/img/tools/npe/updateDirectionNode.webp&quot; alt=&quot;Update Direction node&quot;/&gt;</span><p>This block updates the particle velocity direction during simulation. It only executes if the direction input is connected. It can be used to create wind effects, vortices, or attraction and repulsion behaviors when combined with math blocks.</p>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>particle</strong> is the particle stream to update and is required.</li>
+<li><strong>direction</strong> is a Vector3 value providing the new direction vector to apply to particles. This input must be connected for the block to activate.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the updated particle stream.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Update Position&quot; image=&quot;/img/tools/npe/updatePositionNode.webp&quot; alt=&quot;Update Position node&quot;/&gt;</span><p>This block updates particle position during simulation and will ignore parameters set during particle creation unless contextual inputs like position and scaled direction are part of the graph connected to this block&#39;s input. It only executes if the position input is connected and can be used for completely custom particle paths or to constrain particles to specific surfaces.</p>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>particle</strong> is the particle stream to update and is required.</li>
+<li><strong>position</strong> is a Vector3 value providing the new position to apply to particles. This input must be connected for the block to activate.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the updated particle stream.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Update Color&quot; image=&quot;/img/tools/npe/updateColorNode.webp&quot; alt=&quot;Update Color node&quot;/&gt;</span><p>This block updates particle color during simulation and will ignore parameters set during particle creation unless contextual inputs like current color and color step are part of the graph connected to this block&#39;s input. It only executes if the color input is connected and is useful for creating dynamic color effects based on gradients, noise, or other procedural sources.</p>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>particle</strong> is the particle stream to update and is required.</li>
+<li><strong>color</strong> is a Color4 value providing the new color to apply to particles. This input must be connected for the block to activate.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the updated particle stream.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Update Scale&quot; image=&quot;/img/tools/npe/updateScaleNode.webp&quot; alt=&quot;Update Scale node&quot;/&gt;</span><p>This block updates particle scale during simulation and will ignore parameters set during particle creation unless contextual inputs like current scale are part of the graph connected to this block&#39;s input. It provides separate control over X and Y dimensions, allowing particles to stretch or squash. It is useful for creating motion blur effects or non-uniform particle shapes.</p>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>particle</strong> is the particle stream to update and is required.</li>
+<li><strong>scale</strong> is a Vector2 value providing the new scale to apply to particles. This input must be connected for the block to activate.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the updated particle stream.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Update Size&quot; image=&quot;/img/tools/npe/updateSizeNode.webp&quot; alt=&quot;Update Size node&quot;/&gt;</span><p>This block updates particle size during simulation and will ignore parameters set during particle creation unless contextual inputs like current size are part of the graph connected to this block&#39;s input. It is a scalar size adjustment that affects particle scale uniformly and is commonly used with gradients to fade particles in and out or pulse based on lifetime.</p>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>particle</strong> is the particle stream to update and is required.</li>
+<li><strong>size</strong> is a Float value providing the new size to apply to particles. This input must be connected for the block to activate.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the updated particle stream.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Update Angle&quot; image=&quot;/img/tools/npe/updateAngleNode.webp&quot; alt=&quot;Update Angle node&quot;/&gt;</span><p>This block updates particle rotation angle during simulation. It sets the rotation of the particle&#39;s quad using its local pivot point and will ignore parameters set for angle in particle creation unless the contextual input for angle is part of the graph connected to this block&#39;s input. This block is useful for spinning particles or aligning particles with their direction of motion.</p>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>particle</strong> is the particle stream to update and is required.</li>
+<li><strong>angle</strong> is a Float value providing the new rotation angle in radians to apply to particles. This input must be connected for the block to activate.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the updated particle stream.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Update Age&quot; image=&quot;/img/tools/npe/updateAgeNode.webp&quot; alt=&quot;Update Age node&quot;/&gt;</span><p>This block updates particle age during simulation and will ignore parameters set during particle creation unless contextual inputs like current age are part of the graph connected to this block&#39;s input. It only executes if the age input is connected and can be used to create custom lifetime behaviors or synchronize particles with external timers.</p>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>particle</strong> is the particle stream to update and is required.</li>
+<li><strong>age</strong> is a Float value providing the new age value to set for particles. This input must be connected for the block to activate.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the updated particle stream.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Basic Color Update&quot; image=&quot;/img/tools/npe/basicColorUpdateNode.webp&quot; alt=&quot;Basic Color Update node&quot;/&gt;</span><p>This block is necessary to interpolate a particle&#39;s color between the color input and the colorDead input on the Create Particle block. If this block is not included in the graph the particle will only inherit the value from the color input and the colorDead input will be ignored. This block uses the particle&#39;s color step value calculated from the lifetime of the particle. Each frame, the block adds the particle&#39;s scaled color step to its current color and clamps alpha to a minimum of zero. This is the standard way to interpolate color from the initial color toward the dead color over the particle&#39;s lifetime. This block has no additional inputs beyond the particle stream as it uses the color step values computed from the initial color and colorDead set in the Create Particle block.</p>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>particle</strong> is the particle stream to update and is required.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the updated particle stream.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Basic Position Update&quot; image=&quot;/img/tools/npe/basicPositionUpdateNode.webp&quot; alt=&quot;Basic Position Update node&quot;/&gt;</span><p>This block applies the default position update each frame using the particle&#39;s direction and direction scale using the emitPower input on the Create Particle block and a direction calculated from the emitter shape block. Each frame, it adds the direction vector scaled by the direction scale to the particle position. This is the standard velocity-based movement for particles. This block has no additional inputs beyond the particle stream as it uses the direction values set during particle creation and any modifications from other update blocks.</p>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>particle</strong> is the particle stream to update and is required.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the updated particle stream.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Basic Sprite Update&quot; image=&quot;/img/tools/npe/basicSpriteUpdateNode.webp&quot; alt=&quot;Basic Sprite Update node&quot;/&gt;</span><p>This block updates the sprite sheet cell index each frame, automatically advancing through the sprite animation. It uses the sprite parameters configured in the Setup Sprite Sheet block to determine animation speed, looping, and cell boundaries. This block has no additional inputs beyond the particle stream.</p>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>particle</strong> is the particle stream to update and is required.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the updated particle stream.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Update Sprite Cell Index&quot; image=&quot;/img/tools/npe/updateSpriteCellIndexNode.webp&quot; alt=&quot;Update Sprite Cell Index node&quot;/&gt;</span><p>This block replaces the Sprite Cell Change Speed value on the Setup Sprite Sheet block to update the sprite sheet cell index according to the graph attached to this block&#39;s input. This allows fine control over which sprite frame is displayed at any point in the particle&#39;s lifetime. It is useful for creating custom animation patterns or synchronizing sprite animation with other particle properties. Float values connected to the <code>cellIndex</code> input are floored to an integer.</p>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>particle</strong> is the particle stream to update and is required.</li>
+<li><strong>cellIndex</strong> is an integer value setting the new sprite cell index to display. This input must be connected for the block to activate.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the updated particle stream.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Update Flow Map&quot; image=&quot;/img/tools/npe/updateFlowMapNode.webp&quot; alt=&quot;Update Flow Map node&quot;/&gt;</span><p>This block updates particle movement using a flow map texture, creating flowing or swirling patterns. It reads RGB values from the flow map texture to determine particle movement direction where Red, Green, and Blue channels encode XYZ direction. It is useful for creating water flow, wind fields, or guided particle paths.</p>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>particle</strong> is the particle stream to update and is required.</li>
+<li><strong>flowMap</strong> is a texture where RGB values encode direction for particle flow.</li>
+<li><strong>strength</strong> is a Float value controlling the flow map influence strength.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the updated particle stream.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Update Noise&quot; image=&quot;/img/tools/npe/updateNoiseNode.webp&quot; alt=&quot;Update Noise node&quot;/&gt;</span><p>This block applies noise to particle velocities for organic randomness. It uses a noise texture to add natural-looking randomness to particle motion by modifying particle direction. The strength is a Vector3 allowing independent control over each axis. It is possible to make this noise dynamic by updating the texture connected to the noiseTexture input of this block each render loop in the code driving the scene. This can be useful for smoke, fire, and magical effects.</p>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>particle</strong> is the particle stream to update and is required.</li>
+<li><strong>noiseTexture</strong> is a procedural noise texture providing the noise pattern.</li>
+<li><strong>strength</strong> is a Vector3 value controlling the noise intensity per axis.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the updated particle stream.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Update Attractor&quot; image=&quot;/img/tools/npe/updateAttractorNode.webp&quot; alt=&quot;Update Attractor node&quot;/&gt;</span><p>This block applies attraction or repulsion forces to particles toward or away from a single target point. It uses inverse-distance-squared falloff to create gravitational-like effects where particles closer to the attractor experience stronger forces. The force is added to the existing particle velocity rather than replacing it, and the strength can be negative for repulsion. Use multiples of this block to create several attractors, one per block, or update the position input in real time to create complex particle motion as they move across a scene.</p>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>particle</strong> is the particle stream to update and is required.</li>
+<li><strong>attractor</strong> is a Vector3 value setting the target position for attraction or repulsion.</li>
+<li><strong>strength</strong> is a Float value controlling the force strength where positive values attract and negative values repel.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the updated particle stream.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Align Angle&quot; image=&quot;/img/tools/npe/alignAngleNode.webp&quot; alt=&quot;Align Angle node&quot;/&gt;</span><p>This block updates particle rotation to match their direction of movement by calculating the rotation angle from the particle velocity direction in camera view space. The alignment property allows adding a constant offset to the calculated angle. It is useful for making elongated particles like sparks or streaks point in their direction of travel and works best with STRETCHED billboard mode.</p>
+<h4 id="properties">Properties<a class="anchor" href="#properties">#</a></h4>
+<ul>
+<li><strong>alignment</strong> is the angle offset in radians applied after the alignment calculation. The value ranges from 0 to 2π.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>particle</strong> is the particle stream to update and is required.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the updated particle stream with aligned angles.</li>
+</ul>
+<h2 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h2>
+<p>Input blocks provide constant values that can be edited in the properties panel and accessed from code at runtime. They are the source of numeric values, colors, vectors, and textures that drive particle behavior. All input blocks can be named and accessed programmatically to dynamically change values at runtime.</p>
+<span class="muted">&lt;H3Image title=&quot;Float&quot; image=&quot;/img/tools/npe/floatNode.webp&quot; alt=&quot;Float node&quot;/&gt;</span><p>This input block represents a Float value. The value can be set in the properties panel.</p>
+<h4 id="properties">Properties<a class="anchor" href="#properties">#</a></h4>
+<ul>
+<li><strong>Min</strong> provides the minimum value constraint. Adding a min value will add a slider control to the value property and on the value in the inspector if Display in the Inspector is checked.</li>
+<li><strong>Max</strong> provides the maximum value constraint. Adding a max value will add a slider control to the value property and on the value in the inspector if Display in the Inspector is checked.</li>
+<li><strong>Value</strong> is the Float value set on the block.</li>
+<li><strong>Mode</strong> allows the user to select between user-defined, contextual, or system values for this block.</li>
+<li><strong>Visible on frame</strong> toggles the display of this block&#39;s value in the Inputs section of the frame when the frame is collapsed.</li>
+<li><strong>Display in the Inspector</strong> toggles the display of this block&#39;s name and an editable value in the inputs section for the node particle system in the inspector.</li>
+<li><strong>Inspector Group</strong> is an optional string that can be assigned to create a group for this block in the inspector. Assigning the same string to multiple blocks will display them under a common group name.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the Float value set on the block.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Vector2&quot; image=&quot;/img/tools/npe/vector2Node.webp&quot; alt=&quot;Vector2 node&quot;/&gt;</span><p>This input block represents a Vector2 value. The value can be set in the properties panel by expanding the input fields for each component.</p>
+<h4 id="properties">Properties<a class="anchor" href="#properties">#</a></h4>
+<ul>
+<li><strong>Value</strong> is the Vector2 value set on the block.</li>
+<li><strong>Mode</strong> allows the user to select between user-defined, contextual, or system values for this block.</li>
+<li><strong>Visible on frame</strong> toggles the display of this block&#39;s value in the Inputs section of the frame when the frame is collapsed.</li>
+<li><strong>Display in the Inspector</strong> toggles the display of this block&#39;s name and an editable value in the inputs section for the node particle system in the inspector.</li>
+<li><strong>Inspector Group</strong> is an optional string that can be assigned to create a group for this block in the inspector. Assigning the same string to multiple blocks will display them under a common group name.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the Vector2 value set on the block.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Vector3&quot; image=&quot;/img/tools/npe/vector3Node.webp&quot; alt=&quot;Vector3 node&quot;/&gt;</span><p>This input block represents a Vector3 value. The value can be set in the properties panel by expanding the input fields for each component.</p>
+<h4 id="properties">Properties<a class="anchor" href="#properties">#</a></h4>
+<ul>
+<li><strong>Value</strong> is the Vector3 value set on the block.</li>
+<li><strong>Mode</strong> allows the user to select between user-defined, contextual, or system values for this block.</li>
+<li><strong>Visible on frame</strong> toggles the display of this block&#39;s value in the Inputs section of the frame when the frame is collapsed.</li>
+<li><strong>Display in the Inspector</strong> toggles the display of this block&#39;s name and an editable value in the inputs section for the node particle system in the inspector.</li>
+<li><strong>Inspector Group</strong> is an optional string that can be assigned to create a group for this block in the inspector. Assigning the same string to multiple blocks will display them under a common group name.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the Vector3 value set on the block.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Int&quot; image=&quot;/img/tools/npe/intNode.webp&quot; alt=&quot;Int node&quot;/&gt;</span><p>This input block represents an integer value. The value can be set in the properties panel.</p>
+<h4 id="properties">Properties<a class="anchor" href="#properties">#</a></h4>
+<ul>
+<li><strong>Value</strong> is the integer value set on the block.</li>
+<li><strong>Mode</strong> allows the user to select between user-defined, contextual, or system values for this block.</li>
+<li><strong>Visible on frame</strong> toggles the display of this block&#39;s value in the Inputs section of the frame when the frame is collapsed.</li>
+<li><strong>Display in the Inspector</strong> toggles the display of this block&#39;s name and an editable value in the inputs section for the node particle system in the inspector.</li>
+<li><strong>Inspector Group</strong> is an optional string that can be assigned to create a group for this block in the inspector. Assigning the same string to multiple blocks will display them under a common group name.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the integer value set on the block.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Texture&quot; image=&quot;/img/tools/npe/textureNode.webp&quot; alt=&quot;Texture node&quot;/&gt;</span><p>This block provides a texture that can be used as input to the System block, flow map blocks, noise blocks, or any other block requiring texture input. Textures can be loaded from URLs or selected from scene assets.</p>
+<h4 id="properties">Properties<a class="anchor" href="#properties">#</a></h4>
+<ul>
+<li><strong>Load</strong> opens a dialogue window to load a texture from local storage into the texture block.</li>
+<li><strong>Serialize cached data</strong> will serialize the texture loaded into memory so it can be written into the JSON for this particle node graph when saved. Note that saving to the snippet server ignores this toggle, as no serialized data is saved to the snippet server.</li>
+<li><strong>Invert Y</strong> enables the texture to be flipped on the Y axis to account for either DirectX or OpenGL standards for which pixel of a texture is read first.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the texture resource.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Color4&quot; image=&quot;/img/tools/npe/color4Node.webp&quot; alt=&quot;Color4 node&quot;/&gt;</span><p>This input block represents an RGBA color value. The value can be set using the color picker in the properties panel.</p>
+<h4 id="properties">Properties<a class="anchor" href="#properties">#</a></h4>
+<ul>
+<li><strong>Value</strong> is the Color4 value set on the block.</li>
+<li><strong>Mode</strong> allows the user to select between user-defined, contextual, or system values for this block.</li>
+<li><strong>Visible on frame</strong> toggles the display of this block&#39;s value in the Inputs section of the frame when the frame is collapsed.</li>
+<li><strong>Display in the Inspector</strong> toggles the display of this block&#39;s name and an editable value in the inputs section for the node particle system in the inspector.</li>
+<li><strong>Inspector Group</strong> is an optional string that can be assigned to create a group for this block in the inspector. Assigning the same string to multiple blocks will display them under a common group name.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the Color4 value set on the block.</li>
+</ul>
+<h2 id="contextual">Contextual<a class="anchor" href="#contextual">#</a></h2>
+<p>Contextual blocks provide read access to per-particle properties during the update phase. They output the current value of a particle attribute and are used to build expressions that reference particle state. All contextual blocks have a single output and no inputs as they read the current particle&#39;s data at evaluation time. These blocks are essential for creating dynamic particle behaviors that respond to each particle&#39;s individual state.</p>
+<span class="muted">&lt;H3Image title=&quot;Position&quot; image=&quot;/img/tools/npe/positionNode.webp&quot; alt=&quot;Position node&quot;/&gt;</span><p>This contextual block returns the current position of the particle as a Vector3 value.</p>
+<h4 id="properties">Properties<a class="anchor" href="#properties">#</a></h4>
+<ul>
+<li><strong>Mode</strong> allows the user to select between user-defined, contextual, or system values for this block.</li>
+<li><strong>Contextual Value</strong> allows the user to select which contextual value for the particle is referenced when Mode is set to Contextual Value.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the particle&#39;s current position as a Vector3 value.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Direction&quot; image=&quot;/img/tools/npe/directionNode.webp&quot; alt=&quot;Direction node&quot;/&gt;</span><p>This contextual block returns the current direction or velocity vector of the particle as a Vector3 value.</p>
+<h4 id="properties">Properties<a class="anchor" href="#properties">#</a></h4>
+<ul>
+<li><strong>Mode</strong> allows the user to select between user-defined, contextual, or system values for this block.</li>
+<li><strong>Contextual Value</strong> allows the user to select which contextual value for the particle is referenced when Mode is set to Contextual Value.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the particle&#39;s current direction vector as a Vector3 value.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Direction Scale&quot; image=&quot;/img/tools/npe/directionScaleNode.webp&quot; alt=&quot;Direction Scale node&quot;/&gt;</span><p>This contextual block returns the direction scale factor of the particle, which is the multiplier applied to direction when computing position updates.</p>
+<h4 id="properties">Properties<a class="anchor" href="#properties">#</a></h4>
+<ul>
+<li><strong>Mode</strong> allows the user to select between user-defined, contextual, or system values for this block.</li>
+<li><strong>Contextual Value</strong> allows the user to select which contextual value for the particle is referenced when Mode is set to Contextual Value.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the particle&#39;s direction scale as a Float value.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Scaled Direction&quot; image=&quot;/img/tools/npe/scaledDirectionNode.webp&quot; alt=&quot;Scaled Direction node&quot;/&gt;</span><p>This contextual block returns the direction vector already multiplied by the direction scale. This is the effective velocity used in position updates.</p>
+<h4 id="properties">Properties<a class="anchor" href="#properties">#</a></h4>
+<ul>
+<li><strong>Mode</strong> allows the user to select between user-defined, contextual, or system values for this block.</li>
+<li><strong>Contextual Value</strong> allows the user to select which contextual value for the particle is referenced when Mode is set to Contextual Value.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the particle&#39;s scaled direction vector as a Vector3 value.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Color&quot; image=&quot;/img/tools/npe/colorNode.webp&quot; alt=&quot;Color node&quot;/&gt;</span><p>This contextual block returns the current color of the particle.</p>
+<h4 id="properties">Properties<a class="anchor" href="#properties">#</a></h4>
+<ul>
+<li><strong>Mode</strong> allows the user to select between user-defined, contextual, or system values for this block.</li>
+<li><strong>Contextual Value</strong> allows the user to select which contextual value for the particle is referenced when Mode is set to Contextual Value.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the particle&#39;s current color as a Color4 value.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Age&quot; image=&quot;/img/tools/npe/ageNode.webp&quot; alt=&quot;Age node&quot;/&gt;</span><p>This contextual block returns the current age of the particle in seconds since it was created.</p>
+<h4 id="properties">Properties<a class="anchor" href="#properties">#</a></h4>
+<ul>
+<li><strong>Mode</strong> allows the user to select between user-defined, contextual, or system values for this block.</li>
+<li><strong>Contextual Value</strong> allows the user to select which contextual value for the particle is referenced when Mode is set to Contextual Value.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the particle&#39;s age in seconds as a Float value.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Lifetime&quot; image=&quot;/img/tools/npe/lifetimeNode.webp&quot; alt=&quot;Lifetime node&quot;/&gt;</span><p>This contextual block returns the total lifetime of the particle in seconds as set by the Create Particle block.</p>
+<h4 id="properties">Properties<a class="anchor" href="#properties">#</a></h4>
+<ul>
+<li><strong>Mode</strong> allows the user to select between user-defined, contextual, or system values for this block.</li>
+<li><strong>Contextual Value</strong> allows the user to select which contextual value for the particle is referenced when Mode is set to Contextual Value.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the particle&#39;s total lifetime in seconds as a Float value.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Scale&quot; image=&quot;/img/tools/npe/scaleNode.webp&quot; alt=&quot;Scale node&quot;/&gt;</span><p>This contextual block returns the current scale of the particle.</p>
+<h4 id="properties">Properties<a class="anchor" href="#properties">#</a></h4>
+<ul>
+<li><strong>Mode</strong> allows the user to select between user-defined, contextual, or system values for this block.</li>
+<li><strong>Contextual Value</strong> allows the user to select which contextual value for the particle is referenced when Mode is set to Contextual Value.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the particle&#39;s current scale as a Vector2 value.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Size&quot; image=&quot;/img/tools/npe/sizeNode.webp&quot; alt=&quot;Size node&quot;/&gt;</span><p>This contextual block returns the current uniform size of the particle.</p>
+<h4 id="properties">Properties<a class="anchor" href="#properties">#</a></h4>
+<ul>
+<li><strong>Mode</strong> allows the user to select between user-defined, contextual, or system values for this block.</li>
+<li><strong>Contextual Value</strong> allows the user to select which contextual value for the particle is referenced when Mode is set to Contextual Value.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the particle&#39;s current size as a Float value.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Age Gradient&quot; image=&quot;/img/tools/npe/ageGradientNode.webp&quot; alt=&quot;Age Gradient node&quot;/&gt;</span><p>This contextual block returns the particle&#39;s age divided by its lifetime, giving a normalized value from 0 at birth to 1 at death. This is the most commonly used contextual block for driving gradients and interpolation over a particle&#39;s life. Connect it to the gradient input of Lerp, Gradient, or Gradient Value blocks to create time-based transitions.</p>
+<h4 id="properties">Properties<a class="anchor" href="#properties">#</a></h4>
+<ul>
+<li><strong>Mode</strong> allows the user to select between user-defined, contextual, or system values for this block.</li>
+<li><strong>Contextual Value</strong> allows the user to select which contextual value for the particle is referenced when Mode is set to Contextual Value.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the particle&#39;s normalized age as a Float value in the range of 0 to 1.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Angle&quot; image=&quot;/img/tools/npe/angleNode.webp&quot; alt=&quot;Angle node&quot;/&gt;</span><p>This contextual block returns the current rotation angle of the particle in radians.</p>
+<h4 id="properties">Properties<a class="anchor" href="#properties">#</a></h4>
+<ul>
+<li><strong>Mode</strong> allows the user to select between user-defined, contextual, or system values for this block.</li>
+<li><strong>Contextual Value</strong> allows the user to select which contextual value for the particle is referenced when Mode is set to Contextual Value.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the particle&#39;s current rotation angle as a Float value.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Initial Color&quot; image=&quot;/img/tools/npe/initialColorNode.webp&quot; alt=&quot;Initial Color node&quot;/&gt;
+This contextual block returns the initial color that was assigned to the particle at creation time.</span><h4 id="properties">Properties<a class="anchor" href="#properties">#</a></h4>
+<ul>
+<li><strong>Mode</strong> allows the user to select between user-defined, contextual, or system values for this block.</li>
+<li><strong>Contextual Value</strong> allows the user to select which contextual value for the particle is referenced when Mode is set to Contextual Value.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the particle&#39;s initial color as a Color4 value.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Color Dead&quot; image=&quot;/img/tools/npe/colorDeadNode.webp&quot; alt=&quot;Color Dead node&quot;/&gt;</span><p>This contextual block returns the dead color that was assigned to the particle at creation time. This is the target color the particle will reach at the end of its lifetime.</p>
+<h4 id="properties">Properties<a class="anchor" href="#properties">#</a></h4>
+<ul>
+<li><strong>Mode</strong> allows the user to select between user-defined, contextual, or system values for this block.</li>
+<li><strong>Contextual Value</strong> allows the user to select which contextual value for the particle is referenced when Mode is set to Contextual Value.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the particle&#39;s dead color as a Color4 value.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Sprite Cell End&quot; image=&quot;/img/tools/npe/spriteCellEndNode.webp&quot; alt=&quot;Sprite Cell End node&quot;/&gt;</span><p>This contextual block returns the ending sprite cell index for the particle&#39;s sprite animation.</p>
+<h4 id="properties">Properties<a class="anchor" href="#properties">#</a></h4>
+<ul>
+<li><strong>Mode</strong> allows the user to select between user-defined, contextual, or system values for this block.</li>
+<li><strong>Contextual Value</strong> allows the user to select which contextual value for the particle is referenced when Mode is set to Contextual Value.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the sprite cell end index as an Int value.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Sprite Cell Start&quot; image=&quot;/img/tools/npe/spriteCellStartNode.webp&quot; alt=&quot;Sprite Cell Start node&quot;/&gt;</span><p>This contextual block returns the starting sprite cell index for the particle&#39;s sprite animation.</p>
+<h4 id="properties">Properties<a class="anchor" href="#properties">#</a></h4>
+<ul>
+<li><strong>Mode</strong> allows the user to select between user-defined, contextual, or system values for this block.</li>
+<li><strong>Contextual Value</strong> allows the user to select which contextual value for the particle is referenced when Mode is set to Contextual Value.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the sprite cell start index as an Int value.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Sprite Cell Index&quot; image=&quot;/img/tools/npe/spriteCellIndexNode.webp&quot; alt=&quot;Sprite Cell Index node&quot;/&gt;</span><p>This contextual block returns the current sprite cell index being displayed for the particle.</p>
+<h4 id="properties">Properties<a class="anchor" href="#properties">#</a></h4>
+<ul>
+<li><strong>Mode</strong> allows the user to select between user-defined, contextual, or system values for this block.</li>
+<li><strong>Contextual Value</strong> allows the user to select which contextual value for the particle is referenced when Mode is set to Contextual Value.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the current sprite cell index as an Int value.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Initial Direction&quot; image=&quot;/img/tools/npe/initialDirectionNode.webp&quot; alt=&quot;Initial Direction node&quot;/&gt;</span><p>This contextual block returns the initial direction vector that was assigned to the particle at creation time.</p>
+<h4 id="properties">Properties<a class="anchor" href="#properties">#</a></h4>
+<ul>
+<li><strong>Mode</strong> allows the user to select between user-defined, contextual, or system values for this block.</li>
+<li><strong>Contextual Value</strong> allows the user to select which contextual value for the particle is referenced when Mode is set to Contextual Value.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the particle&#39;s initial direction as a Vector3 value.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Color Step&quot; image=&quot;/img/tools/npe/colorStepNode.webp&quot; alt=&quot;Color Step node&quot;/&gt;</span><p>This contextual block returns the color step value which is the per-frame color change that is applied by the Basic Color Update block. The color step is computed from the difference between the initial color and dead color divided by the particle&#39;s lifetime.</p>
+<h4 id="properties">Properties<a class="anchor" href="#properties">#</a></h4>
+<ul>
+<li><strong>Mode</strong> allows the user to select between user-defined, contextual, or system values for this block.</li>
+<li><strong>Contextual Value</strong> allows the user to select which contextual value for the particle is referenced when Mode is set to Contextual Value.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the particle&#39;s color step as a Color4 value.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Scaled Color Step&quot; image=&quot;/img/tools/npe/scaledColorStepNode.webp&quot; alt=&quot;Scaled Color Step node&quot;/&gt;</span><p>This contextual block returns the color step value already scaled by the system&#39;s update speed.</p>
+<h4 id="properties">Properties<a class="anchor" href="#properties">#</a></h4>
+<ul>
+<li><strong>Mode</strong> allows the user to select between user-defined, contextual, or system values for this block.</li>
+<li><strong>Contextual Value</strong> allows the user to select which contextual value for the particle is referenced when Mode is set to Contextual Value.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the particle&#39;s scaled color step as a Color4 value.</li>
+</ul>
+<h2 id="math-standard">Math: Standard<a class="anchor" href="#math-standard">#</a></h2>
+<p>These blocks are simple mathematical operations like add, subtract, min, max, or round. The blocks in this section are some of the most used blocks in any particle graph. They are very straightforward, but many of the blocks in this set support multiple types including Float, Int, Vector2, Vector3, and Color4 and operate component-wise on vectors and colors.</p>
+<span class="muted">&lt;H3Image title=&quot;Add&quot; image=&quot;/img/tools/npe/addNode.webp&quot; alt=&quot;Add node&quot;/&gt;</span><p>This is a simple math block which adds two inputs together. This block can support Float, Int, Vector2, Vector3, and Color4 types, though the block cannot add mixed types with the exception of one case. A float value can be connected to the right input of this block and that value will be used for the operation on each channel of the type connected to the left input. The type of the block first connected to an input determines the type for the block output, but a float can be connected to the right input in any case regardless of the type that has automatically been set.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Operation</strong> determines which math operation to perform on the inputs to this block. Pre-set to Add.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>left</strong> is connected to a block providing the first value to be used in the operation.</li>
+<li><strong>right</strong> is connected to a block providing the second value to be used in the operation.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the sum of the left and right inputs and matches the type of the value connected to the left input.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Divide&quot; image=&quot;/img/tools/npe/divideNode.webp&quot; alt=&quot;Divide node&quot;/&gt;</span><p>This is a simple math block which divides the left input by the right input. This block can support Float, Int, Vector2, Vector3, and Color4 types, though the block cannot divide mixed types with the exception of one case. A float value can be connected to the right input of this block and that value will be used for the operation on each channel of the type connected to the left input. The type of the block first connected to an input determines the type for the block output, but a float can be connected to the right input in any case regardless of the type that has automatically been set.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Operation</strong> determines which math operation to perform on the inputs to this block. Pre-set to Divide.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>left</strong> is connected to a block providing the dividend.</li>
+<li><strong>right</strong> is connected to a block providing the divisor.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the quotient of the left input divided by the right input and matches the type of the value connected to the left input.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Max&quot; image=&quot;/img/tools/npe/maxNode.webp&quot; alt=&quot;Max node&quot;/&gt;</span><p>This is a simple math block which returns the larger value between the left input and the right input. This block can support Float, Int, Vector2, Vector3, and Color4 types, though the block cannot evaluate mixed types with the exception of one case. A float value can be connected to the right input of this block and that value will be used for the operation on each channel of the type connected to the left input. The type of the block first connected to an input determines the type for the block output, but a float can be connected to the right input in any case regardless of the type that has automatically been set.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Operation</strong> determines which math operation to perform on the inputs to this block. Pre-set to Max.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>left</strong> is connected to a block providing the first value to be used in the evaluation.</li>
+<li><strong>right</strong> is connected to a block providing the second value to be used in the evaluation.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the larger value between the left input and the right input and matches the type of the value connected to the left input.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Min&quot; image=&quot;/img/tools/npe/minNode.webp&quot; alt=&quot;Min node&quot;/&gt;</span><p>This is a simple math block which returns the smaller value between the left input and the right input. This block can support Float, Int, Vector2, Vector3, and Color4 types, though the block cannot evaluate mixed types with the exception of one case. A float value can be connected to the right input of this block and that value will be used for the operation on each channel of the type connected to the left input. The type of the block first connected to an input determines the type for the block output, but a float can be connected to the right input in any case regardless of the type that has automatically been set.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Operation</strong> determines which math operation to perform on the inputs to this block. Pre-set to Min.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>left</strong> is connected to a block providing the first value to be used in the evaluation.</li>
+<li><strong>right</strong> is connected to a block providing the second value to be used in the evaluation.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the smaller value between the left input and the right input and matches the type of the value connected to the left input.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Multiply&quot; image=&quot;/img/tools/npe/multiplyNode.webp&quot; alt=&quot;Multiply node&quot;/&gt;</span><p>This is a simple math block which multiplies the left input and the right input. This block can support Float, Int, Vector2, Vector3, and Color4 types, though the block cannot multiply mixed types with the exception of one case. A float value can be connected to the right input of this block and that value will be used for the operation on each channel of the type connected to the left input. The type of the block first connected to an input determines the type for the block output, but a float can be connected to the right input in any case regardless of the type that has automatically been set.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Operation</strong> determines which math operation to perform on the inputs to this block. Pre-set to Multiply.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>left</strong> is connected to a block providing the first value to be used in the operation.</li>
+<li><strong>right</strong> is connected to a block providing the second value to be used in the operation.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the product of the left input multiplied by the right input and matches the type of the value connected to the left input.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Subtract&quot; image=&quot;/img/tools/npe/subtractNode.webp&quot; alt=&quot;Subtract node&quot;/&gt;</span><p>This is a simple math block which subtracts the right input from the left input. This block can support Float, Int, Vector2, Vector3, and Color4 types, though the block cannot evaluate mixed types with the exception of one case. A float value can be connected to the right input of this block and that value will be used for the operation on each channel of the type connected to the left input. The type of the block first connected to an input determines the type for the block output, but a float can be connected to the right input in any case regardless of the type that has automatically been set.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Operation</strong> determines which math operation to perform on the inputs to this block. Pre-set to Subtract.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>left</strong> is connected to a block providing the value to subtract from.</li>
+<li><strong>right</strong> is connected to a block providing the value to subtract.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the difference of the right input subtracted from the left input and matches the type of the value connected to the left input.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Modulo&quot; image=&quot;/img/tools/npe/moduloNode.webp&quot; alt=&quot;Modulo node&quot;/&gt;</span><p>This is a simple math block which returns the remainder of the division of the left input by the right input. This block only supports Float and Int types. The type of the block first connected to an input determines the type for the block output.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Operation</strong> determines which math operation to perform on the inputs to this block. Pre-set to Modulo.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>left</strong> is connected to a block providing the dividend.</li>
+<li><strong>right</strong> is connected to a block providing the divisor.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the remainder of the left input divided by the right input and matches the type of the value connected to the left input.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Pow&quot; image=&quot;/img/tools/npe/powNode.webp&quot; alt=&quot;Pow node&quot;/&gt;</span><p>This is a simple math block which raises the left input to the power of the right input. This block only supports Float and Int types. The type of the block first connected to an input determines the type for the block output.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Operation</strong> determines which math operation to perform on the inputs to this block. Pre-set to Pow.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>left</strong> is connected to a block providing the base value.</li>
+<li><strong>right</strong> is connected to a block providing the exponent.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the result of the left input raised to the power of the right input and matches the type of the value connected to the left input.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Negate&quot; image=&quot;/img/tools/npe/negateNode.webp&quot; alt=&quot;Negate node&quot;/&gt;</span><p>This is a simple function which changes the sign of the input by multiplying it by -1. This block can support Float, Int, Vector2, Vector3, and Color4 types and operates component-wise. The type for the block connected to the input determines the type for the block output.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Operation</strong> determines which math operation to perform on the inputs to this block. Pre-set to Negate.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>input</strong> is connected to a block providing a value to be negated.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the negated value from the input and matches the type of the value connected to <code>input</code>.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;One Minus&quot; image=&quot;/img/tools/npe/oneMinusNode.webp&quot; alt=&quot;One Minus node&quot;/&gt;</span><p>This is a shortcut function which subtracts the input value from 1. When this function is applied to a value in the range of 0 to 1 the result will be an inversion of the input on that scale. This is useful for inverting normalized values such as converting an age gradient that goes from 0 to 1 into one that goes from 1 to 0 for fade-out effects. This block can support Float, Int, Vector2, Vector3, and Color4 types. The type for the block connected to the input determines the type for the block output.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Operation</strong> determines which math operation to perform on the inputs to this block. Pre-set to OneMinus.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>input</strong> is connected to a block providing a value to be used in the function.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the transformed value from the input and matches the type of the value connected to <code>input</code>.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Reciprocal&quot; image=&quot;/img/tools/npe/reciprocalNode.webp&quot; alt=&quot;Reciprocal node&quot;/&gt;</span><p>This is a shortcut function which divides 1 by the input value. This block can support Float, Int, Vector2, Vector3, and Color4 types. The type for the block connected to the input determines the type for the block output.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Operation</strong> determines which math operation to perform on the inputs to this block. Pre-set to Reciprocal.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>input</strong> is connected to a block providing a value to be used in the function.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the transformed value from the input and matches the type of the value connected to <code>input</code>.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Sign&quot; image=&quot;/img/tools/npe/signNode.webp&quot; alt=&quot;Sign node&quot;/&gt;</span><p>This is a simple function to return whether an input is positive, negative, or exactly zero. If the input is negative this block will return a value of -1. If the input is exactly zero, the block will return a value of 0. If the value is positive the block will return a value of 1. This block can support Float, Int, Vector2, Vector3, and Color4 types and operates component-wise. The type for the block connected to the input determines the type for the block output.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Operation</strong> determines which math operation to perform on the inputs to this block. Pre-set to Sign.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>input</strong> is connected to a block providing a value to be used in the function.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> returns -1 for a negative value in input, 0 for a value of zero in input, and 1 for a positive value in input.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Sqrt&quot; image=&quot;/img/tools/npe/sqrtNode.webp&quot; alt=&quot;Sqrt node&quot;/&gt;</span><p>This is a simple function to return the principal square root of a nonnegative value connected to the input port. This block can support Float, Int, Vector2, Vector3, and Color4 types and operates component-wise. The type for the block connected to the input determines the type for the block output.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Operation</strong> determines which math operation to perform on the inputs to this block. Pre-set to Sqrt.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>input</strong> is connected to a block providing a value to be used in the function.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the principal square root of the input value in a type that matches the input value type.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Round&quot; image=&quot;/img/tools/npe/roundNode.webp&quot; alt=&quot;Round node&quot;/&gt;</span><p>This is a simple function which transforms the input to the nearest whole number. This block can support Float, Int, Vector2, Vector3, and Color4 types and operates component-wise. The type for the block connected to the input determines the type for the block output.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Operation</strong> determines which math operation to perform on the inputs to this block. Pre-set to Round.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>input</strong> is connected to a block providing a value to be used in the function.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the rounded value from the input and matches the type of the value connected to <code>input</code>.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Floor&quot; image=&quot;/img/tools/npe/floorNode.webp&quot; alt=&quot;Floor node&quot;/&gt;</span><p>This is a simple function which transforms the input to the largest whole number that is less than or equal to the input. This block can support Float, Int, Vector2, Vector3, and Color4 types and operates component-wise. The type for the block connected to the input determines the type for the block output.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Operation</strong> determines which math operation to perform on the inputs to this block. Pre-set to Floor.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>input</strong> is connected to a block providing a value to be used in the function.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the transformed value from the input and matches the type of the value connected to <code>input</code>.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Ceiling&quot; image=&quot;/img/tools/npe/ceilingNode.webp&quot; alt=&quot;Ceiling node&quot;/&gt;</span><p>This is a simple function which transforms the input to the smallest whole number that is greater than or equal to the input. This block can support Float, Int, Vector2, Vector3, and Color4 types and operates component-wise. The type for the block connected to the input determines the type for the block output.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Operation</strong> determines which math operation to perform on the inputs to this block. Pre-set to Ceiling.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>input</strong> is connected to a block providing a value to be used in the function.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the transformed value from the input and matches the type of the value connected to <code>input</code>.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Float To Int&quot; image=&quot;/img/tools/npe/floatToIntNode.webp&quot; alt=&quot;Float To Int node&quot;/&gt;</span><p>This block converts a floating-point value to an integer using a configurable operation. The operation property controls how the decimal portion is handled. It is useful for sprite cell indices or discrete parameter values.</p>
+<h4 id="properties">Properties<a class="anchor" href="#properties">#</a></h4>
+<ul>
+<li><strong>operation</strong> sets the conversion method and can be set to Round, Ceil, Floor, or Truncate.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>input</strong> is connected to a block providing a Float value to be converted.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the converted integer value.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Dot&quot; image=&quot;/img/tools/npe/dotNode.webp&quot; alt=&quot;Dot node&quot;/&gt;</span><p>This block computes the dot product of two Vector3 inputs, returning a scalar value. The dot product returns the cosine of the angle between two vectors when those vectors are normalized. It is useful for angle calculations, projection, and determining how parallel two vectors are.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Operation</strong> determines which math operation to perform on the inputs to this block. Pre-set to Dot.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>left</strong> is connected to a block providing the first Vector3 value.</li>
+<li><strong>right</strong> is connected to a block providing the second Vector3 value.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the dot product of the two vectors as a Float value.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Distance&quot; image=&quot;/img/tools/npe/distanceNode.webp&quot; alt=&quot;Distance node&quot;/&gt;</span><p>This block computes the Euclidean distance between two Vector3 positions. It is useful for proximity checks, distance-based fading, or triggering behaviors when particles are within a certain range of a target.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Operation</strong> determines which math operation to perform on the inputs to this block. Pre-set to Distance.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>left</strong> is connected to a block providing the first Vector3 position.</li>
+<li><strong>right</strong> is connected to a block providing the second Vector3 position.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the distance between the two positions as a Float value.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Clamp&quot; image=&quot;/img/tools/npe/clampNode.webp&quot; alt=&quot;Clamp node&quot;/&gt;</span><p>This is a simple function which limits the input value to the range set by the minimum and maximum inputs. If the input is below the minimum, it is clamped to the minimum value. If it is over the maximum value, it is clamped to the maximum value. This block can support Float, Int, Vector2, Vector3, and Color4 types. The type for the block connected to the value input determines the type for the block output.</p>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>value</strong> is connected to a block providing the value to be clamped.</li>
+<li><strong>min</strong> is a Float value setting the minimum allowed value.</li>
+<li><strong>max</strong> is a Float value setting the maximum allowed value.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the clamped value from the input and matches the type of the value connected to the <code>value</code> input.</li>
+</ul>
+<h2 id="math-scientific">Math: Scientific<a class="anchor" href="#math-scientific">#</a></h2>
+<p>These blocks are a collection of more complex mathematical functions, mostly trigonometric. They are all very straightforward blocks with one input and one output. All blocks in this set can support Float, Int, Vector2, Vector3, and Color4 types and operate component-wise.</p>
+<span class="muted">&lt;H3Image title=&quot;Abs&quot; image=&quot;/img/tools/npe/absNode.webp&quot; alt=&quot;Abs node&quot;/&gt;</span><p>This is a simple function to return the absolute value of the input, which is always a positive value. This block can support Float, Int, Vector2, Vector3, and Color4 types. The type for the block connected to the input determines the type for the block output.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Operation</strong> determines which math operation to perform on the inputs to this block. Pre-set to Abs.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>input</strong> is connected to a block providing a value to be used in the function.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the absolute value of the input value in a type that matches the input value type.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;ArcCos&quot; image=&quot;/img/tools/npe/arcCosNode.webp&quot; alt=&quot;ArcCos node&quot;/&gt;</span><p>This function returns the inverse cosine of the input value. The input should be in the range of -1 to 1 and the result is in radians. This block can support Float, Int, Vector2, Vector3, and Color4 types. The type for the block connected to the input determines the type for the block output.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Operation</strong> determines which math operation to perform on the inputs to this block. Pre-set to ArcCos.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>input</strong> is connected to a block providing a value to be used in the function.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the inverse cosine of the input value in a type that matches the input value type.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;ArcSin&quot; image=&quot;/img/tools/npe/arcSinNode.webp&quot; alt=&quot;ArcSin node&quot;/&gt;</span><p>This function returns the inverse sine of the input value. The input should be in the range of -1 to 1 and the result is in radians. This block can support Float, Int, Vector2, Vector3, and Color4 types. The type for the block connected to the input determines the type for the block output.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Operation</strong> determines which math operation to perform on the inputs to this block. Pre-set to ArcSin.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>input</strong> is connected to a block providing a value to be used in the function.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the inverse sine of the input value in a type that matches the input value type.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;ArcTan&quot; image=&quot;/img/tools/npe/arcTanNode.webp&quot; alt=&quot;ArcTan node&quot;/&gt;</span><p>This function returns the inverse tangent of the input value with the result in radians. This block can support Float, Int, Vector2, Vector3, and Color4 types. The type for the block connected to the input determines the type for the block output.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Operation</strong> determines which math operation to perform on the inputs to this block. Pre-set to ArcTan.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>input</strong> is connected to a block providing a value to be used in the function.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the inverse tangent of the input value in a type that matches the input value type.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Cos&quot; image=&quot;/img/tools/npe/cosNode.webp&quot; alt=&quot;Cos node&quot;/&gt;</span><p>This function returns the cosine of the input angle in radians. This block can support Float, Int, Vector2, Vector3, and Color4 types. The type for the block connected to the input determines the type for the block output.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Operation</strong> determines which math operation to perform on the inputs to this block. Pre-set to Cos.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>input</strong> is connected to a block providing an angle in radians to be used in the function.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the cosine of the input value in a type that matches the input value type.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Exp&quot; image=&quot;/img/tools/npe/expNode.webp&quot; alt=&quot;Exp node&quot;/&gt;</span><p>This function returns e raised to the power of the input value. This block can support Float, Int, Vector2, Vector3, and Color4 types. The type for the block connected to the input determines the type for the block output.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Operation</strong> determines which math operation to perform on the inputs to this block. Pre-set to Exp.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>input</strong> is connected to a block providing a value to be used as the exponent.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is e raised to the power of the input value in a type that matches the input value type.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Exp2&quot; image=&quot;/img/tools/npe/exp2Node.webp&quot; alt=&quot;Exp2 node&quot;/&gt;</span><p>This function returns 2 raised to the power of the input value. This block can support Float, Int, Vector2, Vector3, and Color4 types. The type for the block connected to the input determines the type for the block output.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Operation</strong> determines which math operation to perform on the inputs to this block. Pre-set to Exp2.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>input</strong> is connected to a block providing a value to be used as the exponent.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is 2 raised to the power of the input value in a type that matches the input value type.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Log&quot; image=&quot;/img/tools/npe/logNode.webp&quot; alt=&quot;Log node&quot;/&gt;</span><p>This function returns the natural logarithm of the input value. The input must be positive. This block can support Float, Int, Vector2, Vector3, and Color4 types. The type for the block connected to the input determines the type for the block output.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Operation</strong> determines which math operation to perform on the inputs to this block. Pre-set to Log.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>input</strong> is connected to a block providing a value to be used in the function.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the natural logarithm of the input value in a type that matches the input value type.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Sin&quot; image=&quot;/img/tools/npe/sinNode.webp&quot; alt=&quot;Sin node&quot;/&gt;</span><p>This function returns the sine of the input angle in radians. This block can support Float, Int, Vector2, Vector3, and Color4 types. The type for the block connected to the input determines the type for the block output.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Operation</strong> determines which math operation to perform on the inputs to this block. Pre-set to Sin.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>input</strong> is connected to a block providing an angle in radians to be used in the function.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the sine of the input value in a type that matches the input value type.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Tan&quot; image=&quot;/img/tools/npe/tanNode.webp&quot; alt=&quot;Tan node&quot;/&gt;</span><p>This function returns the tangent of the input angle in radians. This block can support Float, Int, Vector2, Vector3, and Color4 types. The type for the block connected to the input determines the type for the block output.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Operation</strong> determines which math operation to perform on the inputs to this block. Pre-set to Tan.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>input</strong> is connected to a block providing an angle in radians to be used in the function.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the tangent of the input value in a type that matches the input value type.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;To Degrees&quot; image=&quot;/img/tools/npe/toDegreesNode.webp&quot; alt=&quot;To Degrees node&quot;/&gt;</span><p>This function converts a value from radians to degrees. This block can support Float, Int, Vector2, Vector3, and Color4 types. The type for the block connected to the input determines the type for the block output.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Operation</strong> determines which math operation to perform on the inputs to this block. Pre-set to ToDegrees.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>input</strong> is connected to a block providing an angle in radians to be converted.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the angle converted to degrees in a type that matches the input value type.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;To Radians&quot; image=&quot;/img/tools/npe/toRadiansNode.webp&quot; alt=&quot;To Radians node&quot;/&gt;</span><p>This function converts a value from degrees to radians. This block can support Float, Int, Vector2, Vector3, and Color4 types. The type for the block connected to the input determines the type for the block output.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Operation</strong> determines which math operation to perform on the inputs to this block. Pre-set to ToRadians.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>input</strong> is connected to a block providing an angle in degrees to be converted.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the angle converted to radians in a type that matches the input value type.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Fract&quot; image=&quot;/img/tools/npe/fractNode.webp&quot; alt=&quot;Fract node&quot;/&gt;</span><p>This function returns only the fractional part of a floating-point number. For a value of 3.7 the result would be 0.7. This is useful for creating repeating patterns, wrapping values, or extracting the decimal portion for oscillation effects. This block can support Float, Int, Vector2, Vector3, and Color4 types and operates component-wise. The type for the block connected to the input determines the type for the block output.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Operation</strong> determines which math operation to perform on the inputs to this block. Pre-set to Fract.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>input</strong> is connected to a block providing a value to be used in the function.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the fractional part of the input value in a type that matches the input value type.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Vector Length&quot; image=&quot;/img/tools/npe/vectorLengthNode.webp&quot; alt=&quot;Vector Length node&quot;/&gt;</span><p>This block calculates the length or magnitude of a vector. It computes the Euclidean distance from the origin and is useful for speed calculations such as finding the length of a direction vector, distance checks, or normalizing vectors when combined with division.</p>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>input</strong> is connected to a block providing a Vector2 or Vector3 value to measure.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the length of the input vector as a Float value.</li>
+</ul>
+<h2 id="logical">Logical<a class="anchor" href="#logical">#</a></h2>
+<p>Logical blocks are used to branch a particle graph by performing a test between two Float values. If the test between the two values meets the condition set by the block, a value of true is returned and the block connected to the ifTrue port is passed to the output. Otherwise, the block connected to the ifFalse port is passed to the output. There are common properties that are shared by all logical blocks as follows.</p>
+<ul>
+<li><strong>ifTrue and ifFalse</strong> ports on each logical block do not need to be connected to anything for the block to function. If a block is connected to ifTrue or ifFalse, that value will be passed when the appropriate condition is met. If nothing is connected to ifTrue or ifFalse, the block will output 1.0 and 0.0 respectively. This allows for successive logical tests by testing if the previous logical test was true or false without the need to wire Float blocks for ifTrue and ifFalse in the graph.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Equal&quot; image=&quot;/img/tools/npe/equalNode.webp&quot; alt=&quot;Equal node&quot;/&gt;</span><p>This logical block tests if the Float value in the left port and the right port are both equal to one another within the epsilon tolerance. If the test returns true, the value of ifTrue is passed otherwise the value of ifFalse is passed.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Test</strong> is the type of logical operation to perform on the inputs. Pre-set to Equal.</li>
+<li><strong>epsilon</strong> is a Float value that provides tolerance for the floating-point comparison.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>left</strong> is connected to a block providing a Float value to be used in the test.</li>
+<li><strong>right</strong> can be connected to a block providing a Float value to be used in the test.</li>
+<li><strong>ifTrue</strong> can be connected to any data type but needs to be the same data type as connected to ifFalse and will determine the data type for the output port on this block. If nothing is connected, the value assumed by ifTrue is 1.0.</li>
+<li><strong>ifFalse</strong> can be connected to any data type but needs to be the same data type as connected to ifTrue and will determine the data type for the output port on this block. If nothing is connected, the value assumed by ifFalse is 0.0.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the value attached to ifTrue if the test returns true or the value attached to ifFalse if the test returns false. If a port for ifTrue or ifFalse is not connected, the output passes either 1.0 or 0.0 for that condition based on if the unconnected port is ifTrue or ifFalse.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Not Equal&quot; image=&quot;/img/tools/npe/notEqualNode.webp&quot; alt=&quot;Not Equal node&quot;/&gt;</span><p>This logical block tests if the Float value in the left port and the right port are not equal to one another outside the epsilon tolerance. If the test returns true, the value of ifTrue is passed otherwise the value of ifFalse is passed.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Test</strong> is the type of logical operation to perform on the inputs. Pre-set to NotEqual.</li>
+<li><strong>epsilon</strong> is a Float value that provides tolerance for the floating-point comparison.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>left</strong> is connected to a block providing a Float value to be used in the test.</li>
+<li><strong>right</strong> can be connected to a block providing a Float value to be used in the test.</li>
+<li><strong>ifTrue</strong> can be connected to any data type but needs to be the same data type as connected to ifFalse and will determine the data type for the output port on this block. If nothing is connected, the value assumed by ifTrue is 1.0.</li>
+<li><strong>ifFalse</strong> can be connected to any data type but needs to be the same data type as connected to ifTrue and will determine the data type for the output port on this block. If nothing is connected, the value assumed by ifFalse is 0.0.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the value attached to ifTrue if the test returns true or the value attached to ifFalse if the test returns false. If a port for ifTrue or ifFalse is not connected, the output passes either 1.0 or 0.0 for that condition based on if the unconnected port is ifTrue or ifFalse.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Less Than&quot; image=&quot;/img/tools/npe/lessThanNode.webp&quot; alt=&quot;Less Than node&quot;/&gt;
+This logical block tests if the Float value in the left port is less than the Float value in the right port. If the test returns true, the value of ifTrue is passed otherwise the value of ifFalse is passed.</span><h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Test</strong> is the type of logical operation to perform on the inputs. Pre-set to LessThan.</li>
+<li><strong>epsilon</strong> is a Float value that provides tolerance for the floating-point comparison.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>left</strong> is connected to a block providing a Float value to be used in the test.</li>
+<li><strong>right</strong> can be connected to a block providing a Float value to be used in the test.</li>
+<li><strong>ifTrue</strong> can be connected to any data type but needs to be the same data type as connected to ifFalse and will determine the data type for the output port on this block. If nothing is connected, the value assumed by ifTrue is 1.0.</li>
+<li><strong>ifFalse</strong> can be connected to any data type but needs to be the same data type as connected to ifTrue and will determine the data type for the output port on this block. If nothing is connected, the value assumed by ifFalse is 0.0.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the value attached to ifTrue if the test returns true or the value attached to ifFalse if the test returns false. If a port for ifTrue or ifFalse is not connected, the output passes either 1.0 or 0.0 for that condition based on if the unconnected port is ifTrue or ifFalse.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Less Or Equal&quot; image=&quot;/img/tools/npe/lessOrEqualNode.webp&quot; alt=&quot;Less Or Equal node&quot;/&gt;</span><p>This logical block tests if the Float value in the left port is less than or equal to the Float value in the right port. If the test returns true, the value of ifTrue is passed otherwise the value of ifFalse is passed.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Test</strong> is the type of logical operation to perform on the inputs. Pre-set to LessOrEqual.</li>
+<li><strong>epsilon</strong> is a Float value that provides tolerance for the floating-point comparison.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>left</strong> is connected to a block providing a Float value to be used in the test.</li>
+<li><strong>right</strong> can be connected to a block providing a Float value to be used in the test.</li>
+<li><strong>ifTrue</strong> can be connected to any data type but needs to be the same data type as connected to ifFalse and will determine the data type for the output port on this block. If nothing is connected, the value assumed by ifTrue is 1.0.</li>
+<li><strong>ifFalse</strong> can be connected to any data type but needs to be the same data type as connected to ifTrue and will determine the data type for the output port on this block. If nothing is connected, the value assumed by ifFalse is 0.0.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the value attached to ifTrue if the test returns true or the value attached to ifFalse if the test returns false. If a port for ifTrue or ifFalse is not connected, the output passes either 1.0 or 0.0 for that condition based on if the unconnected port is ifTrue or ifFalse.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Greater Than&quot; image=&quot;/img/tools/npe/greaterThanNode.webp&quot; alt=&quot;Greater Than node&quot;/&gt;</span><p>This logical block tests if the Float value in the left port is greater than the Float value in the right port. If the test returns true, the value of ifTrue is passed otherwise the value of ifFalse is passed.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Test</strong> is the type of logical operation to perform on the inputs. Pre-set to GreaterThan.</li>
+<li><strong>epsilon</strong> is a Float value that provides tolerance for the floating-point comparison.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>left</strong> is connected to a block providing a Float value to be used in the test.</li>
+<li><strong>right</strong> can be connected to a block providing a Float value to be used in the test.</li>
+<li><strong>ifTrue</strong> can be connected to any data type but needs to be the same data type as connected to ifFalse and will determine the data type for the output port on this block. If nothing is connected, the value assumed by ifTrue is 1.0.</li>
+<li><strong>ifFalse</strong> can be connected to any data type but needs to be the same data type as connected to ifTrue and will determine the data type for the output port on this block. If nothing is connected, the value assumed by ifFalse is 0.0.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the value attached to ifTrue if the test returns true or the value attached to ifFalse if the test returns false. If a port for ifTrue or ifFalse is not connected, the output passes either 1.0 or 0.0 for that condition based on if the unconnected port is ifTrue or ifFalse.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Greater Or Equal&quot; image=&quot;/img/tools/npe/greaterOrEqualNode.webp&quot; alt=&quot;Greater Or Equal node&quot;/&gt;</span><p>This logical block tests if the Float value in the left port is greater than or equal to the Float value in the right port. If the test returns true, the value of ifTrue is passed otherwise the value of ifFalse is passed.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Test</strong> is the type of logical operation to perform on the inputs. Pre-set to GreaterOrEqual.</li>
+<li><strong>epsilon</strong> is a Float value that provides tolerance for the floating-point comparison.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>left</strong> is connected to a block providing a Float value to be used in the test.</li>
+<li><strong>right</strong> can be connected to a block providing a Float value to be used in the test.</li>
+<li><strong>ifTrue</strong> can be connected to any data type but needs to be the same data type as connected to ifFalse and will determine the data type for the output port on this block. If nothing is connected, the value assumed by ifTrue is 1.0.</li>
+<li><strong>ifFalse</strong> can be connected to any data type but needs to be the same data type as connected to ifTrue and will determine the data type for the output port on this block. If nothing is connected, the value assumed by ifFalse is 0.0.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the value attached to ifTrue if the test returns true or the value attached to ifFalse if the test returns false. If a port for ifTrue or ifFalse is not connected, the output passes either 1.0 or 0.0 for that condition based on if the unconnected port is ifTrue or ifFalse.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Xor&quot; image=&quot;/img/tools/npe/xorNode.webp&quot; alt=&quot;Xor node&quot;/&gt;</span><p>This logical block tests if exactly one of the left port or the right port contains a Float value not equal to 0.0, but not both. If the test returns true, the value of ifTrue is passed otherwise the value of ifFalse is passed.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Test</strong> is the type of logical operation to perform on the inputs. Pre-set to Xor.</li>
+<li><strong>epsilon</strong> is a Float value that provides tolerance for the floating-point comparison.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>left</strong> is connected to a block providing a Float value to be used in the test.</li>
+<li><strong>right</strong> can be connected to a block providing a Float value to be used in the test.</li>
+<li><strong>ifTrue</strong> can be connected to any data type but needs to be the same data type as connected to ifFalse and will determine the data type for the output port on this block. If nothing is connected, the value assumed by ifTrue is 1.0.</li>
+<li><strong>ifFalse</strong> can be connected to any data type but needs to be the same data type as connected to ifTrue and will determine the data type for the output port on this block. If nothing is connected, the value assumed by ifFalse is 0.0.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the value attached to ifTrue if the test returns true or the value attached to ifFalse if the test returns false. If a port for ifTrue or ifFalse is not connected, the output passes either 1.0 or 0.0 for that condition based on if the unconnected port is ifTrue or ifFalse.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Or&quot; image=&quot;/img/tools/npe/orNode.webp&quot; alt=&quot;Or node&quot;/&gt;</span><p>This logical block tests whether either the left port or the right port contains a Float value not equal to 0.0. If the test returns true, the value of ifTrue is passed; otherwise, the value of ifFalse is passed.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Test</strong> is the type of logical operation to perform on the inputs. Pre-set to Or.</li>
+<li><strong>epsilon</strong> is a Float value that provides tolerance for the floating-point comparison.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>left</strong> is connected to a block providing a Float value to be used in the test.</li>
+<li><strong>right</strong> can be connected to a block providing a Float value to be used in the test.</li>
+<li><strong>ifTrue</strong> can be connected to any data type but needs to be the same data type as connected to ifFalse and will determine the data type for the output port on this block. If nothing is connected, the value assumed by ifTrue is 1.0.</li>
+<li><strong>ifFalse</strong> can be connected to any data type but needs to be the same data type as connected to ifTrue and will determine the data type for the output port on this block. If nothing is connected, the value assumed by ifFalse is 0.0.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the value attached to ifTrue if the test returns true or the value attached to ifFalse if the test returns false. If a port for ifTrue or ifFalse is not connected, the output passes either 1.0 or 0.0 for that condition based on if the unconnected port is ifTrue or ifFalse.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;And&quot; image=&quot;/img/tools/npe/andNode.webp&quot; alt=&quot;And node&quot;/&gt;</span><p>This logical block tests if the Float value in the left port and the right port are both not equal to 0.0. If the test returns true, the value of ifTrue is passed otherwise the value of ifFalse is passed.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Test</strong> is the type of logical operation to perform on the inputs. Pre-set to And.</li>
+<li><strong>epsilon</strong> is a Float value that provides tolerance for the floating-point comparison.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>left</strong> is connected to a block providing a Float value to be used in the test.</li>
+<li><strong>right</strong> can be connected to a block providing a Float value to be used in the test.</li>
+<li><strong>ifTrue</strong> can be connected to any data type but needs to be the same data type as connected to ifFalse and will determine the data type for the output port on this block. If nothing is connected, the value assumed by ifTrue is 1.0.</li>
+<li><strong>ifFalse</strong> can be connected to any data type but needs to be the same data type as connected to ifTrue and will determine the data type for the output port on this block. If nothing is connected, the value assumed by ifFalse is 0.0.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the value attached to ifTrue if the test returns true or the value attached to ifFalse if the test returns false. If a port for ifTrue or ifFalse is not connected, the output passes either 1.0 or 0.0 for that condition based on if the unconnected port is ifTrue or ifFalse.</li>
+</ul>
+<h2 id="interpolation">Interpolation<a class="anchor" href="#interpolation">#</a></h2>
+<p>Interpolation blocks derive a value based on an input value range or an input value limit. They are essential for creating time-based particle effects and smooth transitions.</p>
+<span class="muted">&lt;H3Image title=&quot;Lerp&quot; image=&quot;/img/tools/npe/lerpNode.webp&quot; alt=&quot;Lerp node&quot;/&gt;</span><p>This block will derive a value between the two input values based on the gradient value. It works with Float, Vector2, Vector3, and Color4 types.</p>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>left</strong> is a value that can be of any supported type and will be returned if the value for gradient is set to 0.</li>
+<li><strong>right</strong> is a value that can be of any supported type and will be returned if the value for gradient is set to 1.</li>
+<li><strong>gradient</strong> is a value of type float which determines the output value between the left and right inputs. A value passed to the gradient input that is not in the range of 0 to 1 will allow the value returned to fall outside the range of the left input to the right input.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the value that will match the type of the left and right input values and is a value derived from the range of the left input to the right input at the position of the gradient.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Gradient Value&quot; image=&quot;/img/tools/npe/gradientValueNode.webp&quot; alt=&quot;Gradient Value node&quot;/&gt;</span><p>This block defines a single value entry in a gradient. It is used as input to the Gradient block to define value stops at specific positions along the gradient. This block does not function alone and must be connected to a Gradient block&#39;s value inputs.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Reference</strong> sets the position of this value in the gradient on a scale of 0 to 1.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>value</strong> is the value at this gradient position and can be of type Float, Vector2, Vector3, or Color4.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the gradient entry which converts to the appropriate gradient type for connection to a Gradient block.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Gradient&quot; image=&quot;/img/tools/npe/gradientNode.webp&quot; alt=&quot;Gradient node&quot;/&gt;</span><p>This block interpolates between multiple Gradient Value entries based on an input gradient position. Connect the Age Gradient contextual block to the gradient input for lifetime-based transitions. The block dynamically adds new value inputs as Gradient Value blocks are connected.</p>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>gradient</strong> is a Float value that determines where in the gradient to sample. A value of 0 samples the beginning and a value of 1 samples the end.</li>
+<li><strong>value0</strong>, <strong>value1</strong>, and so on are gradient value entries from Gradient Value blocks. New inputs are dynamically added as Gradient Value blocks are connected.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the interpolated value at the sampled position and matches the type of the connected gradient value entries.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;NLerp&quot; image=&quot;/img/tools/npe/nlerpNode.webp&quot; alt=&quot;NLerp node&quot;/&gt;
+This block will derive a normalized value between the two input values based on the gradient value. It performs linear interpolation and then normalizes the result. This is more efficient than spherical interpolation for direction vectors when approximate results are acceptable.</span><h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>left</strong> is a value that can be of any supported type and will be returned if the value for gradient is set to 0.</li>
+<li><strong>right</strong> is a value that can be of any supported type and will be returned if the value for gradient is set to 1.</li>
+<li><strong>gradient</strong> is a value of type float which determines the output value between the left and right inputs.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the value that will match the type of the left and right input values and is a normalized value derived from the range of the left input to the right input at the position of the gradient.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Smooth Step&quot; image=&quot;/img/tools/npe/smoothStepNode.webp&quot; alt=&quot;Smooth Step node&quot;/&gt;</span><p>This block will return a gradient value between 0 and 1 depending on how the input value compares with edge0 and edge1. It uses the formula 3x² - 2x³ for smooth transitions which produces a more natural-looking result than linear interpolation for fades and transitions. This block can support Float, Int, Vector2, Vector3, and Color4 types, though the block cannot operate on mixed types with the exception of one case. A float value can be connected to the right input of this block and that value will be used for the operation on each channel of the type connected to the left input. The type of the block first connected to an input determines the type for the block output, but a float can be connected to the right input in any case regardless of the type that has automatically been set.</p>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>value</strong> is a value that can be of any input type and will be evaluated against edge0 and edge1.</li>
+<li><strong>edge0</strong> is a value of Float type and sets the threshold for the lower limit of the transition.</li>
+<li><strong>edge1</strong> is a value of Float type and sets the threshold for the upper limit of the transition.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is a value between 0 and 1 that matches the input type. If the input value is less than edge0, the output value will be 0. If the input value is between edge0 and edge1, the output will be a smooth interpolation. If the input value is greater than or equal to edge1, the output value will be 1.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Step&quot; image=&quot;/img/tools/npe/stepNode.webp&quot; alt=&quot;Step node&quot;/&gt;
+This block will return a value of 0 or 1 depending on if the input value is less than or greater than the value connected to edge. It creates hard transitions without interpolation and is useful for binary decisions, triggers, or creating discrete states in particle behavior. This block can support Float, Int, Vector2, Vector3, and Color4 types, though the block cannot operate on mixed types with the exception of one case. A float value can be connected to the right input of this block and that value will be used for the operation on each channel of the type connected to the left input. The type of the block first connected to an input determines the type for the block output, but a float can be connected to the right input in any case regardless of the type that has automatically been set.</span><h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>value</strong> is a value that can be of any input type and will be evaluated against the value connected to edge.</li>
+<li><strong>edge</strong> is a value of Float type and sets the threshold for the comparison with the input value.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is a value of either 0 if the value input is less than the edge input or 1 if the value input is equal to or greater than the edge input.</li>
+</ul>
+<h2 id="misc">Misc<a class="anchor" href="#misc">#</a></h2>
+<p>Miscellaneous utility blocks for type conversion, randomization, debugging, graph organization, and special effects.</p>
+<span class="muted">&lt;H3Image title=&quot;Converter&quot; image=&quot;/img/tools/npe/converterNode.webp&quot; alt=&quot;Converter node&quot;/&gt;</span><p>This block decomposes and recomposes values between Color4, Vector3, Vector2, and individual Float components. It enables bidirectional conversion allowing extraction of individual components from vectors and colors as well as constructing them from individual values. Input values take priority from higher-dimensional inputs so a connected Color4 will populate all component outputs.</p>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>color</strong> is a Color4 value to decompose.</li>
+<li><strong>xyz</strong> is a Vector3 value to decompose.</li>
+<li><strong>xy</strong> is a Vector2 value to decompose.</li>
+<li><strong>zw</strong> is a Vector2 value mapped to z and w components.</li>
+<li><strong>x</strong> is a Float value for the X or R component.</li>
+<li><strong>y</strong> is a Float value for the Y or G component.</li>
+<li><strong>z</strong> is a Float value for the Z or B component.</li>
+<li><strong>w</strong> is a Float value for the W or A component.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>color</strong> is the recomposed Color4 from components.</li>
+<li><strong>xyz</strong> is the recomposed Vector3 from components.</li>
+<li><strong>xy</strong> is X and Y as a Vector2.</li>
+<li><strong>zw</strong> is Z and W as a Vector2.</li>
+<li><strong>x</strong> is the X or R component as a float.</li>
+<li><strong>y</strong> is the Y or G component as a float.</li>
+<li><strong>z</strong> is the Z or B component as a float.</li>
+<li><strong>w</strong> is the W or A component as a float.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Random&quot; image=&quot;/img/tools/npe/randomNode.webp&quot; alt=&quot;Random node&quot;/&gt;</span><p>This block generates random values within a specified range. It supports Float, Vector2, Vector3, and Color4 types with component-wise randomization. The lockMode property controls when random values are regenerated which is important for controlling consistency of randomization across particles and frames.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>lockMode</strong> controls when random values are regenerated. The options are None which generates a new value every evaluation, PerParticle which caches a value per particle, PerSystem which uses the same value for all particles in one update, and OncePerParticle which generates a value once at particle birth that never changes.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>min</strong> is connected to a block providing the minimum random value.</li>
+<li><strong>max</strong> is connected to a block providing the maximum random value.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is a random value between <code>min</code> and <code>max</code> and matches the type of the values connected to <code>min</code> and <code>max</code>.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Debug&quot; image=&quot;/img/tools/npe/debugNode.webp&quot; alt=&quot;Debug node&quot;/&gt;</span><p>This block outputs debug information to the console for troubleshooting. The value passes through unchanged, allowing debug blocks to be inserted anywhere in the flow for inspection without affecting particle behavior.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Reference</strong> sets the number of recent values to keep in the debug log.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>input</strong> is connected to any block whose value needs to be inspected.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the pass-through of the input value in the same type.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Elbow&quot; image=&quot;/img/tools/npe/elbowNode.webp&quot; alt=&quot;Elbow node&quot;/&gt;</span><p>This is a purely organizational block that helps route wires for better graph readability. It has no functional impact on particle behavior and simply passes values through while allowing wires to be bent and routed for clarity. It can be quickly added to wires by option or alt-clicking on a wire.</p>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>input</strong> is connected to any block whose wire needs to be routed.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the same value as the input in the same type.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Teleport In&quot; image=&quot;/img/tools/npe/teleportInNode.webp&quot; alt=&quot;Teleport In node&quot;/&gt;</span><p>This block creates an entry point that sends data to one or more corresponding Teleport Out blocks without a visible wire. It reduces wire clutter by allowing data to jump across the graph without visible connections. A single Teleport In can feed multiple Teleport Out blocks, effectively duplicating the data stream. The data type is preserved through the teleport. To distinguish each Teleport In block, give it a unique name, which will be added to a list of possible connections found in a Teleport Out block&#39;s properties.</p>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>input</strong> is connected to any block whose value should be teleported.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Teleport Out&quot; image=&quot;/img/tools/npe/teleportOutNode.webp&quot; alt=&quot;Teleport Out node&quot;/&gt;</span><p>This block receives data from a corresponding Teleport In block. It must be linked to a Teleport In block which can be selected from the properties panel. The output type matches the input type of the corresponding Teleport In block.</p>
+<h4 id="properties">Properties<a class="anchor" href="#properties">#</a></h4>
+<ul>
+<li><strong>Entry point</strong> is a list of all Teleport In blocks in the graph. Choosing a specific Teleport In block will connect the value and type from the connected Teleport In block to this Teleport Out block.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the value received from the linked Teleport In block and matches the type of the teleported value.</li>
+</ul>
+<span class="muted">&lt;H3Image title=&quot;Local Variable&quot; image=&quot;/img/tools/npe/localVariableNode.webp&quot; alt=&quot;Local Variable node&quot;/&gt;</span><p>This block stores and reuses a value to avoid redundant calculations and improve graph readability. It acts like a variable in code by storing a snapshot of the value that can be reused multiple times without recalculating. It is useful for organizing complex graphs, avoiding duplicate calculations, and improving performance when the same computed value is needed in multiple places.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Scope</strong> determines when the stored value is captured. The options are Particle which captures the value per particle and Loop which captures the value once per system update loop.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>input</strong> is connected to any block whose value should be stored.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the stored value in the same type as the input.</li>
+</ul>
+<h2 id="triggers">Triggers<a class="anchor" href="#triggers">#</a></h2>
+<p>Trigger blocks enable sub-emitter functionality, allowing particle systems to spawn other particle systems based on conditions.</p>
+<span class="muted">&lt;H3Image title=&quot;Trigger&quot; image=&quot;/img/tools/npe/triggerNode.webp&quot; alt=&quot;Trigger node&quot;/&gt;</span><p>This block triggers a sub-emitter particle system when a condition is met during particle updates. When the condition input evaluates to a non-zero value, the block spawns a clone of the connected system at the current particle&#39;s position. The limit property prevents excessive sub-emitter spawning and the delay property rate-limits trigger activations. Sub-emitters are automatically disposed when the parent system is disposed. Connect a separate System block with its own particle graph to the system input to define the sub-emitter behavior.</p>
+<h4 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h4>
+<ul>
+<li><strong>Max Simultaneous</strong> sets the maximum number of simultaneously active sub-emitter instances. A value of 0 means unlimited.</li>
+<li><strong>Delay Between calls (ms)</strong> sets the minimum delay in milliseconds between trigger activations.</li>
+</ul>
+<h4 id="inputs">Inputs<a class="anchor" href="#inputs">#</a></h4>
+<ul>
+<li><strong>input</strong> is the particle stream to monitor and is required.</li>
+<li><strong>condition</strong> is a Float value that triggers the sub-emitter when it is non-zero.</li>
+<li><strong>system</strong> is the particle system to spawn when triggered and is required.</li>
+</ul>
+<h4 id="outputs">Outputs<a class="anchor" href="#outputs">#</a></h4>
+<ul>
+<li><strong>output</strong> is the pass-through of the input particle stream.</li>
+</ul>
+<h2 id="tips-for-using-blocks-effectively">Tips for Using Blocks Effectively<a class="anchor" href="#tips-for-using-blocks-effectively">#</a></h2>
+<ol>
+<li><strong>Start Simple</strong> — Begin with a Create Particle, Shape, and System flow then add complexity.</li>
+<li><strong>Use Frames</strong> — Group related blocks in frames for organization, especially complex update chains. Collapse frames to save space in the graph and help reduce visual complexity. Hold Shift while clicking the expand frame button to open the frame in pop-out mode and isolate the editable graph to just the frame&#39;s contents.</li>
+<li><strong>Test Incrementally</strong> — Add blocks one at a time and check the preview to understand each effect.</li>
+<li><strong>Leverage Gradients</strong> — Use Gradient and Gradient Value blocks with the Age Gradient contextual block for smooth lifetime transitions.</li>
+<li><strong>Combine Updates</strong> — Chain multiple update blocks for complex behaviors such as Color then Size then Position.</li>
+<li><strong>Debug Often</strong> — Use Debug blocks to verify values are in expected ranges.</li>
+<li><strong>Optimize with Teleports</strong> — Use Teleport In and Out blocks to reduce wire clutter in complex graphs.</li>
+<li><strong>Save Custom Frames</strong> — Export useful block combinations as custom frames for reuse.</li>
+<li><strong>Name Everything</strong> — Give blocks meaningful names for easier debugging and code access.</li>
+<li><strong>Check Console</strong> — Always monitor the console for errors about missing connections or invalid values.</li>
+</ol>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#what-to-expect">What to Expect </a><a href="#system-nodes">System Nodes </a><a href="#setup">Setup </a><a href="#shapes">Shapes </a><a href="#updates">Updates </a><a href="#inputs">Inputs </a><a href="#contextual">Contextual </a><a href="#math-standard">Math: Standard </a><a href="#math-scientific">Math: Scientific </a><a href="#logical">Logical </a><a href="#interpolation">Interpolation </a><a href="#misc">Misc </a><a href="#triggers">Triggers </a><a href="#tips-for-using-blocks-effectively">Tips for Using Blocks Effectively </a></aside></div>
+<script src="../../../../../assets/cm.classic.js"></script><script src="../../../../../assets/manual.js"></script></body></html>

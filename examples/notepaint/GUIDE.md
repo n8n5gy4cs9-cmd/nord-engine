@@ -10,7 +10,7 @@
 8. Browser saves belong to the current address/browser profile. Export portable files before moving computers, clearing browser data or changing the serving address.
 
 ## Rebuild it
-The complete step-by-step manual is `docs/manual/tut-t19-notepaint.html`. It gives the folder layout, every source file, explains the data/drawing/app layers, and includes a larger-project organization guide.
+The complete step-by-step manual is `docs/manual/nord/tutorials/tut-t19-notepaint.html`. It gives the folder layout, every source file, explains the data/drawing/app layers, and includes a larger-project organization guide.
 
 Source: `tools/examples/notepaint/`. Regenerate the runnable example with `node tools/gen_examples.mjs notepaint`. Files in `examples/notepaint/` are generated copies.
 

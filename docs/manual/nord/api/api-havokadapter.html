@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>HavokAdapter — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">API</div><details open><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html" class="cur" aria-current="page">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../components/component-sprite.html">sprite</a><a href="../components/component-animatedSprite.html">animatedSprite</a><a href="../components/component-text.html">text</a><a href="../components/component-tilemap.html">tilemap</a><a href="../components/component-parallax.html">parallax</a><a href="../components/component-particles.html">particles</a><a href="../components/component-camera.html">camera</a><a href="../components/component-light.html">light</a><a href="../components/component-mesh.html">mesh</a><a href="../components/component-model.html">model</a><a href="../components/component-material.html">material</a><a href="../components/component-skybox.html">skybox</a><a href="../components/component-postProcess.html">postProcess</a><a href="../components/component-rigidbody.html">rigidbody</a><a href="../components/component-collider.html">collider</a><a href="../components/component-trigger.html">trigger</a><a href="../components/component-audioSource.html">audioSource</a><a href="../components/component-audioListener.html">audioListener</a><a href="../components/component-uiPanel.html">uiPanel</a><a href="../components/component-uiLabel.html">uiLabel</a><a href="../components/component-uiImage.html">uiImage</a><a href="../components/component-uiBar.html">uiBar</a><a href="../components/component-uiButton.html">uiButton</a><a href="../components/component-path.html">path</a><a href="../components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../reference/project-format.html">Project format</a><a href="../reference/components.html">Component index</a><a href="../reference/cli.html">Command line (nord)</a><a href="../reference/library-catalog.html">Library catalog</a><a href="../reference/templates-examples.html">Templates &amp; examples</a><a href="../reference/rust-tier-spec.html">Rust tier spec</a><a href="../reference/export-targets-spec.html">Export targets spec</a><a href="../reference/hosting-spec.html">Hosting notes</a><a href="../reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../reference/packaging.html">Packaging</a><a href="../reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../engines/babylon/9.30/index.html">Babylon 9.30.0 API</a><a href="../../engines/phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../engines/babylon/guides/index.html">Babylon documentation library</a><a href="../../engines/phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">API / Nord Engine</div><h1>HavokAdapter</h1>
+<p class="lead">3D physics (Havok) — <code>this.physics</code> in 3D games.</p>
+<p class="muted">Source: <code>runtime/babylon/physics.js</code></p>
+<pre class="code" data-lang="js"><code>constructor(backend, hk, gravity)</code></pre>
+<h2 id="instance-fields">Instance fields</h2><table><thead><tr><th>Field</th><th>Meaning</th></tr></thead><tbody><tr><td><code>B</code></td><td>Created by the constructor in runtime/babylon/physics.js.</td></tr><tr><td><code>backend</code></td><td>The current rendering adapter.</td></tr><tr><td><code>scene</code></td><td>The containing or current scene.</td></tr><tr><td><code>plugin</code></td><td>Created by the constructor in runtime/babylon/physics.js.</td></tr><tr><td><code>engine</code></td><td>Created by the constructor in runtime/babylon/physics.js.</td></tr><tr><td><code>bodies</code></td><td>Created by the constructor in runtime/babylon/physics.js.</td></tr><tr><td><code>dirty</code></td><td>Created by the constructor in runtime/babylon/physics.js.</td></tr><tr><td><code>touching</code></td><td>Created by the constructor in runtime/babylon/physics.js.</td></tr></tbody></table><h2 id="methods">Methods</h2>
+<dl class="api"><dt id="m-build"><a class="member-link" href="#m-build" aria-label="Link to build">#</a><code>build(e)</code></dt><dd><details><summary>How this method works</summary><pre class="code" data-lang="js"><code>build(e) { this.dirty.add(e); }</code></pre></details></dd><dt id="m-flushDirty"><a class="member-link" href="#m-flushDirty" aria-label="Link to flushDirty">#</a><code>flushDirty()</code></dt><dd><details><summary>How this method works</summary><pre class="code" data-lang="js"><code>flushDirty() { for (const e of [...this.dirty]) { this.dirty.delete(e); if (!e.destroyed &amp;&amp; e.native) this.create(e); } }</code></pre></details></dd><dt id="m-rec"><a class="member-link" href="#m-rec" aria-label="Link to rec">#</a><code>rec(e)</code></dt><dd><details><summary>How this method works</summary><pre class="code" data-lang="js"><code>rec(e) { if (this.dirty.has(e)) this.flushDirty(); return this.bodies.get(e); }
+
+  /** World-space extents of the entity's meshes, used when the collider has no explicit size. */
+  #bounds(e) {
+    const B = this.B; let min = null, max = null;
+    for (const m of e.__meshes ?? []) {
+      m.computeWorldMatrix(true);
+      const bb = m.getBoundingInfo().boundingBox;
+      min = min ? B.Vector3.Minimize(min, bb.minimumWorld) : bb.minimumWorld.clone();
+      max = max ? B.Vector3.Maximize(max, bb.maximumWorld) : bb.maximumWorld.clone();
+    }
+    return min ? max.subtract(min).asArray() : [1, 1, 1];
+  }</code></pre></details></dd><dt id="m-create"><a class="member-link" href="#m-create" aria-label="Link to create">#</a><code>create(e)</code></dt><dd><details><summary>How this method works</summary><pre class="code" data-lang="js"><code>create(e) {
+    const B = this.B, node = e.native;
+    this.forget(e);
+    const rb = e.getComponent('rigidbody')?.data ?? null, col = e.getComponent('collider')?.data ?? null;
+    const sc = node.absoluteScaling ?? node.scaling;
+    const cfg = {
+      mode: rb?.mode ?? 'static', mass: rb?.mass ?? 1, drag: rb?.drag ?? 0.05, angularDrag: rb?.angularDrag ?? 0.1, bounce: rb?.bounce ?? 0, friction: rb?.friction ?? 0.5,
+      gravityScale: rb?.gravityScale ?? 1, fixedRotation: !!rb?.fixedRotation, trigger: !!col?.trigger, shape: col?.shape ?? 'box',
+    };
+    const bounds = col?.size ? col.size.map((v, i) =&gt; v * Math.abs([sc.x, sc.y, sc.z][i])) : this.#bounds(e);
+    cfg.extents = bounds;
+    const center = new B.Vector3(...(col?.offset ?? [0, 0, 0]));
+    let shape;
+    if (cfg.shape === 'sphere') shape = new B.PhysicsShapeSphere(center, col?.radius ?? Math.max(...bounds) / 2, this.scene);
+    else if (cfg.shape === 'capsule') { const r = col?.radius ?? Math.min(bounds[0], bounds[2]) / 2, hh = Math.max(bounds[1] / 2 - r, 0); shape = new B.PhysicsShapeCapsule(center.add(new B.Vector3(0, -hh, 0)), center.add(new B.Vector3(0, hh, 0)), r, this.scene); }
+    else if (cfg.shape === 'cylinder') shape = new B.PhysicsShapeCylinder(center.add(new B.Vector3(0, -bounds[1] / 2, 0)), center.add(new B.Vector3(0, bounds[1] / 2, 0)), bounds[0] / 2, this.scene);
+    else shape = new B.PhysicsShapeBox(center, B.Quaternion.Identity(), new B.Vector3(...bounds), this.scene);
+    shape.isTrigger = cfg.trigger;
+    shape.material = { friction: cfg.friction, restitution: cfg.bounce };
+    const motion = { static: B.PhysicsMotionType.STATIC, dynamic: B.PhysicsMotionType.DYNAMIC, kinematic: B.PhysicsMotionType.ANIMATED }[cfg.mode] ?? B.PhysicsMotionType.STATIC;
+    const body = new B.PhysicsBody(node, motion, false, this.scene);
+    body.shape = shape;
+    if (cfg.mode === 'dynamic') {
+      body.setMassProperties(cfg.fixedRotation ? { mass: cfg.mass, inertia: B.Vector3.ZeroReadOnly } : { mass: cfg.mass });
+      body.setLinearDamping(cfg.drag); body.setAngularDamping(cfg.angularDrag);
+      if (cfg.gravityScale !== 1) body.setGravityFactor(cfg.gravityScale);
+    }
+    body.setCollisionCallbackEnabled(true); body.setCollisionEndedCallbackEnabled(true);
+    this.bodies.set(e, { body, shape, cfg });
+  }</code></pre></details></dd><dt id="m-forget"><a class="member-link" href="#m-forget" aria-label="Link to forget">#</a><code>forget(e)</code></dt><dd><details><summary>How this method works</summary><pre class="code" data-lang="js"><code>forget(e) {
+    this.dirty.delete(e);
+    const r = this.bodies.get(e);
+    if (r) { try { r.body.dispose(); r.shape.dispose(); } catch { /* already gone */ } this.bodies.delete(e); }
+  }</code></pre></details></dd><dt id="m-step"><a class="member-link" href="#m-step" aria-label="Link to step">#</a><code>step()</code></dt><dd><details><summary>How this method works</summary><pre class="code" data-lang="js"><code>step() { this.flushDirty(); }
+  #writeBack() {
+    for (const [e, r] of this.bodies) {
+      if (r.cfg.mode !== 'dynamic' || e.destroyed) continue;
+      const n = e.native;
+      e.t.pos[0] = n.position.x; e.t.pos[1] = n.position.y; e.t.pos[2] = n.position.z;
+      if (!r.cfg.fixedRotation &amp;&amp; n.rotationQuaternion) { const r3 = n.rotationQuaternion.toEulerAngles(); e.t.rot[0] = r3.x * R2D; e.t.rot[1] = r3.y * R2D; e.t.rot[2] = r3.z * R2D; }
+    }
+  }
+  /** Entity transform was set from script: push it into Havok for the next step (pre-step sync is off by default), zeroing velocity for dynamic bodies. */</code></pre></details></dd><dt id="m-teleported"><a class="member-link" href="#m-teleported" aria-label="Link to teleported">#</a><code>teleported(e, keepVelocity = false)</code></dt><dd>Entity transform was set from script: push it into Havok for the next step (pre-step sync is off by default), zeroing velocity for dynamic bodies.</dd><dt id="m-setVelocity"><a class="member-link" href="#m-setVelocity" aria-label="Link to setVelocity">#</a><code>setVelocity(e, x, y, z)</code></dt><dd><details><summary>How this method works</summary><pre class="code" data-lang="js"><code>setVelocity(e, x, y, z) {
+    const r = this.rec(e); if (!r) return;
+    const c = r.body.getLinearVelocity();
+    r.body.setLinearVelocity(new this.B.Vector3(x ?? c.x, y ?? c.y, z ?? c.z));
+  }</code></pre></details></dd><dt id="m-velocity"><a class="member-link" href="#m-velocity" aria-label="Link to velocity">#</a><code>velocity(e)</code></dt><dd><details><summary>How this method works</summary><pre class="code" data-lang="js"><code>velocity(e) { const r = this.rec(e); return r ? r.body.getLinearVelocity().asArray() : [0, 0, 0]; }</code></pre></details></dd><dt id="m-applyImpulse"><a class="member-link" href="#m-applyImpulse" aria-label="Link to applyImpulse">#</a><code>applyImpulse(e, ix, iy, iz)</code></dt><dd><details><summary>How this method works</summary><pre class="code" data-lang="js"><code>applyImpulse(e, ix, iy, iz) { const r = this.rec(e); if (r) r.body.applyImpulse(new this.B.Vector3(ix, iy, iz), e.native.getAbsolutePosition()); }</code></pre></details></dd><dt id="m-setGravity"><a class="member-link" href="#m-setGravity" aria-label="Link to setGravity">#</a><code>setGravity(x, y, z)</code></dt><dd><details><summary>How this method works</summary><pre class="code" data-lang="js"><code>setGravity(x, y, z) { this.engine.setGravity(new this.B.Vector3(x, y, z)); }
+  /** Cast a ray; returns { entity, point, normal, distance } or null. `ignore` = entity to skip (e.g. the caster). */</code></pre></details></dd><dt id="m-raycast"><a class="member-link" href="#m-raycast" aria-label="Link to raycast">#</a><code>raycast(from, to, { ignore = null } = {})</code></dt><dd>Cast a ray; returns { entity, point, normal, distance } or null. `ignore` = entity to skip (e.g. the caster).</dd><dt id="m-isGrounded"><a class="member-link" href="#m-isGrounded" aria-label="Link to isGrounded">#</a><code>isGrounded(e, tolerance = 0.12)</code></dt><dd><details><summary>How this method works</summary><pre class="code" data-lang="js"><code>isGrounded(e, tolerance = 0.12) {
+    const r = this.rec(e); if (!r) return false;
+    const p = e.native.getAbsolutePosition(), half = r.cfg.extents[1] / 2;
+    // start just inside our own shape (rays ignore the shape they start in) so a resting body never starts inside the ground
+    const hit = this.raycast([p.x, p.y - half + 0.05, p.z], [p.x, p.y - half - tolerance, p.z], { ignore: e });
+    return !!hit;
+  }</code></pre></details></dd><dt id="m-enable"><a class="member-link" href="#m-enable" aria-label="Link to enable">#</a><code>enable(e, on)</code></dt><dd><details><summary>How this method works</summary><pre class="code" data-lang="js"><code>enable(e, on) { if (on) this.dirty.add(e); else { const r = this.bodies.get(e); if (r) this.forget(e); } }</code></pre></details></dd><dt id="m-teleport"><a class="member-link" href="#m-teleport" aria-label="Link to teleport">#</a><code>teleport(e, x, y, z)</code></dt><dd><details><summary>How this method works</summary><pre class="code" data-lang="js"><code>teleport(e, x, y, z) { e.pos = [x, y, z]; }</code></pre></details></dd></dl>
+<div class="pager"><a href="api-matteradapter.html"><small>← Previous</small>MatterAdapter</a><a href="api-helpers.html"><small>Next →</small>Math &amp; helpers</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#instance-fields">Instance fields</a><a href="#methods">Methods</a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

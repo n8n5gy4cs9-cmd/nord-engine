@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Phaser archive: Phaser.Scale.ScaleManager — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../index.html"><img src="../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../nord/api/api.html">API reference</a><a href="../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../nord/api/api-game.html">Game</a><a href="../../../../../nord/api/api-input.html">Input</a><a href="../../../../../nord/api/api-events.html">Events</a><a href="../../../../../nord/api/api-save.html">Save</a><a href="../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../nord/components/component-text.html">text</a><a href="../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../nord/components/component-light.html">light</a><a href="../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../nord/components/component-model.html">model</a><a href="../../../../../nord/components/component-material.html">material</a><a href="../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../nord/components/component-path.html">path</a><a href="../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../nord/reference/components.html">Component index</a><a href="../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../babylon/9.30/index.html">Babylon 9.30.0 API</a><a href="../../../4.2/index.html">Phaser 4.2.1 API</a><a href="../../../../babylon/guides/index.html">Babylon documentation library</a><a href="../../index.html">Phaser documentation archive</a></details><a href="../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Phaser archive: Phaser.Scale.ScaleManager</h1>
+<p><span class="badge">Phaser 4.1.0 archive</span> · <a href="../../../4.2/index.html">Matching 4.2.1 API</a></p><p>The Scale Manager handles the scaling, resizing and alignment of the game canvas.</p>
+<p>The way scaling is handled is by setting the game canvas to a fixed size, which is defined in the
+game configuration. You also define the parent container in the game config. If no parent is given,
+it will default to using the document body. The Scale Manager will then look at the available space
+within the <em>parent</em> and scale the canvas accordingly. Scaling is handled by setting the canvas CSS
+width and height properties, leaving the width and height of the canvas element itself untouched.
+Scaling is therefore achieved by keeping the core canvas the same size and &#39;stretching&#39;
+it via its CSS properties. This gives the same result and speed as using the <code>transform-scale</code> CSS
+property, without the need for browser prefix handling.</p>
+<p>The calculations for the scale are heavily influenced by the bounding parent size, which is the computed
+dimensions of the canvas&#39;s parent. The CSS rules of the parent element play an important role in the
+operation of the Scale Manager. For example, if the parent has no defined width or height, then actions
+like auto-centering will fail to achieve the required result. The Scale Manager works in tandem with the
+CSS you set-up on the page hosting your game, rather than taking control of it.</p>
+<h4 id="parent-and-display-canvas-containment-guidelines">Parent and Display canvas containment guidelines:<a class="anchor" href="#parent-and-display-canvas-containment-guidelines">#</a></h4>
+<ul>
+<li><p>Style the Parent element (of the game canvas) to control the Parent size and thus the games size and layout.</p>
+</li>
+<li><p>The Parent element&#39;s CSS styles should <em>effectively</em> apply maximum (and minimum) bounding behavior.</p>
+</li>
+<li><p>The Parent element should <em>not</em> apply a padding as this is not accounted for.
+If a padding is required apply it to the Parent&#39;s parent or apply a margin to the Parent.
+If you need to add a border, margin or any other CSS around your game container, then use a parent element and
+apply the CSS to this instead, otherwise you&#39;ll be constantly resizing the shape of the game container.</p>
+</li>
+<li><p>The Display canvas layout CSS styles (i.e. margins, size) should not be altered / specified as
+they may be updated by the Scale Manager.</p>
+</li>
+</ul>
+<h4 id="scale-modes">Scale Modes<a class="anchor" href="#scale-modes">#</a></h4>
+<p>The way the scaling is handled is determined by the <code>scaleMode</code> property. The default is <code>NONE</code>,
+which prevents Phaser from scaling or touching the canvas, or its parent, at all. In this mode, you are
+responsible for all scaling. The other scaling modes afford you automatic scaling.</p>
+<p>If you wish to scale your game so that it always fits into the available space within the parent, you
+should use the scale mode <code>FIT</code>. Look at the documentation for other scale modes to see what options are
+available. Here is a basic config showing how to set this scale mode:</p>
+<pre class="code" data-lang="javascript"><code>scale: {
+    parent: 'yourgamediv',
+    mode: Phaser.Scale.FIT,
+    width: 800,
+    height: 600
+}</code></pre>
+<p>Place the <code>scale</code> config object within your game config.</p>
+<p>If you wish for the canvas to be resized directly, so that the canvas itself fills the available space
+(i.e. it isn&#39;t scaled, it&#39;s resized) then use the <code>RESIZE</code> scale mode. This will give you a 1:1 mapping
+of canvas pixels to game size. In this mode CSS isn&#39;t used to scale the canvas, it&#39;s literally adjusted
+to fill all available space within the parent. You should be extremely careful about the size of the
+canvas you&#39;re creating when doing this, as the larger the area, the more work the GPU has to do and it&#39;s
+very easy to hit fill-rate limits quickly.</p>
+<p>For complex, custom-scaling requirements, you should probably consider using the <code>RESIZE</code> scale mode,
+with your own limitations in place re: canvas dimensions and managing the scaling with the game scenes
+yourself. For the vast majority of games, however, the <code>FIT</code> mode is likely to be the most used.</p>
+<p>Please appreciate that the Scale Manager cannot perform miracles. All it does is scale your game canvas
+as best it can, based on what it can infer from its surrounding area. There are all kinds of environments
+where it&#39;s up to you to guide and help the canvas position itself, especially when built into rendering
+frameworks like React and Vue. If your page requires meta tags to prevent user scaling gestures, or such
+like, then it&#39;s up to you to ensure they are present in the html.</p>
+<h4 id="centering">Centering<a class="anchor" href="#centering">#</a></h4>
+<p>You can also have the game canvas automatically centered. Again, this relies heavily on the parent being
+properly configured and styled, as the centering offsets are based entirely on the available space
+within the parent element. Centering is disabled by default, or can be applied horizontally, vertically,
+or both. Here&#39;s an example:</p>
+<pre class="code" data-lang="javascript"><code>scale: {
+    parent: 'yourgamediv',
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+    width: 800,
+    height: 600
+}</code></pre>
+<h4 id="fullscreen-api">Fullscreen API<a class="anchor" href="#fullscreen-api">#</a></h4>
+<p>If the browser supports it, you can send your game into fullscreen mode. In this mode, the game will fill
+the entire display, removing all browser UI and anything else present on the screen. It will remain in this
+mode until your game either disables it, or until the user tabs out or presses ESCape if on desktop. It&#39;s a
+great way to achieve a desktop-game like experience from the browser, but it does require a modern browser
+to handle it. Some mobile browsers also support this.</p>
+<h2 id="constructor">Constructor</h2><pre class="code" data-lang="ts"><code>ScaleManager(game)</code></pre><table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>game</code></td><td><code>Phaser.Game</code></td><td>A reference to the Phaser.Game instance.</td></tr></tbody></table><h2 id="members">members</h2><h3 id="members-0">_resetZoom</h3><pre class="code" data-lang="ts"><code>_resetZoom</code></pre><p>Internal flag set when the game zoom factor is modified.</p>
+<h3 id="members-1">autoCenter</h3><pre class="code" data-lang="ts"><code>autoCenter</code></pre><p>Automatically center the canvas within the parent? The different centering modes are:</p>
+<ol>
+<li>No centering.</li>
+<li>Center both horizontally and vertically.</li>
+<li>Center horizontally.</li>
+<li>Center vertically.</li>
+</ol>
+<p>Please be aware that in order to center the game canvas, you must have specified a parent
+that has a size set, or the canvas parent is the document.body.</p>
+<h3 id="members-2">autoRound</h3><pre class="code" data-lang="ts"><code>autoRound</code></pre><p>If set, the canvas sizes will be automatically passed through Math.floor.
+This results in rounded pixel display values, which is important for performance on legacy
+and low powered devices, but at the cost of not achieving a &#39;perfect&#39; fit in some browser windows.</p>
+<h3 id="members-3">baseSize</h3><pre class="code" data-lang="ts"><code>baseSize</code></pre><p>The Base Size component.</p>
+<p>The modified game size, which is the auto-rounded gameSize, used to set the canvas width and height
+(but not the CSS style)</p>
+<h3 id="members-4">canvas</h3><pre class="code" data-lang="ts"><code>canvas</code></pre><p>A reference to the HTML Canvas Element that Phaser uses to render the game.</p>
+<h3 id="members-5">canvasBounds</h3><pre class="code" data-lang="ts"><code>canvasBounds</code></pre><p>The DOM bounds of the canvas element.</p>
+<h3 id="members-6">dirty</h3><pre class="code" data-lang="ts"><code>dirty</code></pre><p>The dirty state of the Scale Manager.
+Set if there is a change between the parent size and the current size.</p>
+<h3 id="members-7">displayScale</h3><pre class="code" data-lang="ts"><code>displayScale</code></pre><p>The scale factor between the baseSize and the canvasBounds.</p>
+<h3 id="members-8">displaySize</h3><pre class="code" data-lang="ts"><code>displaySize</code></pre><p>The Display Size component.</p>
+<p>The size used for the canvas style, factoring in the scale mode, parent and other values.</p>
+<h3 id="members-9">fullscreen</h3><pre class="code" data-lang="ts"><code>fullscreen</code></pre><p>A reference to the Device.Fullscreen object.</p>
+<h3 id="members-10">fullscreenTarget</h3><pre class="code" data-lang="ts"><code>fullscreenTarget</code></pre><p>The DOM Element which is sent into fullscreen mode.</p>
+<h3 id="members-11">game</h3><pre class="code" data-lang="ts"><code>game</code></pre><p>A reference to the Phaser.Game instance.</p>
+<h3 id="members-12">gameSize</h3><pre class="code" data-lang="ts"><code>gameSize</code></pre><p>The Game Size component.</p>
+<p>The un-modified game size, as requested in the game config (the raw width / height),
+as used for world bounds, cameras, etc</p>
+<h3 id="members-13">height</h3><pre class="code" data-lang="ts"><code>height</code></pre><p>The game height.</p>
+<p>This is typically the size given in the game configuration.</p>
+<h3 id="members-14">isFullscreen</h3><pre class="code" data-lang="ts"><code>isFullscreen</code></pre><p>Is the browser currently in fullscreen mode or not?</p>
+<h3 id="members-15">isGameLandscape</h3><pre class="code" data-lang="ts"><code>isGameLandscape</code></pre><p>Are the game dimensions landscape? (i.e. wider than they are tall)</p>
+<p>This is different to the device itself being in a landscape orientation.</p>
+<h3 id="members-16">isGamePortrait</h3><pre class="code" data-lang="ts"><code>isGamePortrait</code></pre><p>Are the game dimensions portrait? (i.e. taller than they are wide)</p>
+<p>This is different to the device itself being in a portrait orientation.</p>
+<h3 id="members-17">isLandscape</h3><pre class="code" data-lang="ts"><code>isLandscape</code></pre><p>Is the device in a landscape orientation as reported by the Orientation API?
+This value is usually only available on mobile devices.</p>
+<h3 id="members-18">isPortrait</h3><pre class="code" data-lang="ts"><code>isPortrait</code></pre><p>Is the device in a portrait orientation as reported by the Orientation API?
+This value is usually only available on mobile devices.</p>
+<h3 id="members-19">orientation</h3><pre class="code" data-lang="ts"><code>orientation</code></pre><p>The current device orientation.</p>
+<p>Orientation events are dispatched via the Device Orientation API, typically only on mobile browsers.</p>
+<h3 id="members-20">parent</h3><pre class="code" data-lang="ts"><code>parent</code></pre><p>The parent object of the Canvas. Often a div, or the browser window, or nothing in non-browser environments.</p>
+<p>This is set in the Game Config as the <code>parent</code> property. If undefined (or just not present), it will default
+to use the document body. If specifically set to <code>null</code> Phaser will ignore all parent operations.</p>
+<h3 id="members-21">parentIsWindow</h3><pre class="code" data-lang="ts"><code>parentIsWindow</code></pre><p>Is the parent element the browser window?</p>
+<h3 id="members-22">parentSize</h3><pre class="code" data-lang="ts"><code>parentSize</code></pre><p>The Parent Size component.</p>
+<h3 id="members-23">resizeInterval</h3><pre class="code" data-lang="ts"><code>resizeInterval</code></pre><p>How many milliseconds should elapse before checking if the browser size has changed?</p>
+<p>Most modern browsers dispatch a &#39;resize&#39; event, which the Scale Manager will listen for.
+However, older browsers fail to do this, or do it consistently, so we fall back to a
+more traditional &#39;size check&#39; based on a time interval. You can control how often it is
+checked here.</p>
+<h3 id="members-24">scaleMode</h3><pre class="code" data-lang="ts"><code>scaleMode</code></pre><p>The game scale mode.</p>
+<h3 id="members-25">width</h3><pre class="code" data-lang="ts"><code>width</code></pre><p>The game width.</p>
+<p>This is typically the size given in the game configuration.</p>
+<h3 id="members-26">zoom</h3><pre class="code" data-lang="ts"><code>zoom</code></pre><p>The game zoom factor.</p>
+<p>This value allows you to multiply your games base size by the given zoom factor.
+This is then used when calculating the display size, even in <code>NONE</code> situations.
+If you don&#39;t want Phaser to touch the canvas style at all, this value should be 1.</p>
+<p>Can also be set to <code>MAX_ZOOM</code> in which case the zoom value will be derived based
+on the game size and available space within the parent.</p>
+<h2 id="methods">methods</h2><h3 id="methods-0">addListener</h3><pre class="code" data-lang="ts"><code>addListener(event, fn, context?)</code></pre><p>Add a listener for a given event.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>event</code></td><td><code>string | symbol</code></td><td>The event name.</td></tr><tr><td><code>fn</code></td><td><code>function</code></td><td>The listener function.</td></tr><tr><td><code>context</code></td><td><code>*</code></td><td>Optional. The context to invoke the listener with. Default: <code>this</code></td></tr></tbody></table><p>Returns: <code>Phaser.Scale.ScaleManager</code> `this`.</p><h3 id="methods-1">boot</h3><pre class="code" data-lang="ts"><code>boot()</code></pre><p>The Boot handler is called by Phaser.Game when it first starts up.
+The renderer is available by now and the canvas has been added to the DOM.</p>
+<h3 id="methods-2">destroy</h3><pre class="code" data-lang="ts"><code>destroy()</code></pre><p>Destroys this Scale Manager, releasing all references to external resources.
+Once destroyed, the Scale Manager cannot be used again.</p>
+<h3 id="methods-3">emit</h3><pre class="code" data-lang="ts"><code>emit(event, ...args?)</code></pre><p>Calls each of the listeners registered for a given event.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>event</code></td><td><code>string | symbol</code></td><td>The event name.</td></tr><tr><td><code>args</code></td><td><code>*</code></td><td>Optional. Additional arguments that will be passed to the event handler.</td></tr></tbody></table><p>Returns: <code>boolean</code> `true` if the event had listeners, else `false`.</p><h3 id="methods-4">eventNames</h3><pre class="code" data-lang="ts"><code>eventNames()</code></pre><p>Return an array listing the events for which the emitter has registered listeners.</p>
+<p>Returns: <code>Array.&lt;(string|symbol)&gt;</code> </p><h3 id="methods-5">getFullscreenTarget</h3><pre class="code" data-lang="ts"><code>getFullscreenTarget()</code></pre><p>An internal method that gets the target element that is used when entering fullscreen mode.</p>
+<p>Returns: <code>object</code> The fullscreen target element.</p><h3 id="methods-6">getMaxZoom</h3><pre class="code" data-lang="ts"><code>getMaxZoom()</code></pre><p>Calculates and returns the largest possible zoom factor, based on the current
+parent and game sizes. If the parent has no dimensions (i.e. an unstyled div),
+or is smaller than the un-zoomed game, then this will return a value of 1 (no zoom)</p>
+<p>Returns: <code>number</code> The maximum possible zoom factor. At a minimum this value is always at least 1.</p><h3 id="methods-7">getParent</h3><pre class="code" data-lang="ts"><code>getParent(config)</code></pre><p>Determines the parent element of the game canvas, if any, based on the game configuration.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>config</code></td><td><code>Phaser.Types.Core.GameConfig</code></td><td>The Game configuration object.</td></tr></tbody></table><h3 id="methods-8">getParentBounds</h3><pre class="code" data-lang="ts"><code>getParentBounds()</code></pre><p>Calculates the size of the parent bounds and updates the <code>parentSize</code>
+properties, only if the canvas has a dom parent.</p>
+<p>Returns: <code>boolean</code> `true` if the parent bounds have changed size or position, otherwise `false`.</p><h3 id="methods-9">getViewPort</h3><pre class="code" data-lang="ts"><code>getViewPort(camera?, out?)</code></pre><p>Calculates and returns a Rectangle representing the currently visible area of the game canvas,
+accounting for the canvas position, parent bounds, and display scale. If the canvas extends
+beyond the visible area of the parent, the rectangle is clipped accordingly.</p>
+<p>An optional Camera can be provided, in which case the returned rectangle is further adjusted
+to account for the camera&#39;s zoom level and scroll position.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>camera</code></td><td><code>Phaser.Cameras.Scene2D.Camera</code></td><td>Optional. The camera to factor into the viewport calculation. If provided, the rectangle is adjusted for the camera's zoom and scroll.</td></tr><tr><td><code>out</code></td><td><code>Phaser.Geom.Rectangle</code></td><td>Optional. An optional Rectangle to store the result in. If not provided, a new Rectangle is created.</td></tr></tbody></table><p>Returns: <code>Phaser.Geom.Rectangle</code> The Rectangle of visible area.</p><h3 id="methods-10">leaveFullScreenSuccessHandler</h3><pre class="code" data-lang="ts"><code>leaveFullScreenSuccessHandler()</code></pre><p>The browser has successfully left fullscreen mode.</p>
+<h3 id="methods-11">listenerCount</h3><pre class="code" data-lang="ts"><code>listenerCount(event)</code></pre><p>Return the number of listeners listening to a given event.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>event</code></td><td><code>string | symbol</code></td><td>The event name.</td></tr></tbody></table><p>Returns: <code>number</code> The number of listeners.</p><h3 id="methods-12">listeners</h3><pre class="code" data-lang="ts"><code>listeners(event)</code></pre><p>Return the listeners registered for a given event.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>event</code></td><td><code>string | symbol</code></td><td>The event name.</td></tr></tbody></table><p>Returns: <code>Array.&lt;function()&gt;</code> The registered listeners.</p><h3 id="methods-13">lockOrientation</h3><pre class="code" data-lang="ts"><code>lockOrientation(orientation)</code></pre><p>Attempts to lock the orientation of the web browser using the Screen Orientation API.</p>
+<p>This API is only available on modern mobile browsers.
+See (online reference) for details.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>orientation</code></td><td><code>string</code></td><td>The orientation you'd like to lock the browser in. Should be an API string such as 'landscape', 'landscape-primary', 'portrait', etc.</td></tr></tbody></table><p>Returns: <code>boolean</code> `true` if the orientation was successfully locked, otherwise `false`.</p><h3 id="methods-14">off</h3><pre class="code" data-lang="ts"><code>off(event, fn?, context?, once?)</code></pre><p>Remove the listeners of a given event.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>event</code></td><td><code>string | symbol</code></td><td>The event name.</td></tr><tr><td><code>fn</code></td><td><code>function</code></td><td>Optional. Only remove the listeners that match this function.</td></tr><tr><td><code>context</code></td><td><code>*</code></td><td>Optional. Only remove the listeners that have this context.</td></tr><tr><td><code>once</code></td><td><code>boolean</code></td><td>Optional. Only remove one-time listeners.</td></tr></tbody></table><p>Returns: <code>Phaser.Scale.ScaleManager</code> `this`.</p><h3 id="methods-15">on</h3><pre class="code" data-lang="ts"><code>on(event, fn, context?)</code></pre><p>Add a listener for a given event.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>event</code></td><td><code>string | symbol</code></td><td>The event name.</td></tr><tr><td><code>fn</code></td><td><code>function</code></td><td>The listener function.</td></tr><tr><td><code>context</code></td><td><code>*</code></td><td>Optional. The context to invoke the listener with. Default: <code>this</code></td></tr></tbody></table><p>Returns: <code>Phaser.Scale.ScaleManager</code> `this`.</p><h3 id="methods-16">once</h3><pre class="code" data-lang="ts"><code>once(event, fn, context?)</code></pre><p>Add a one-time listener for a given event. The listener is automatically removed
+the first time the event is emitted, so it will never be called more than once.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>event</code></td><td><code>string | symbol</code></td><td>The event name.</td></tr><tr><td><code>fn</code></td><td><code>function</code></td><td>The listener function.</td></tr><tr><td><code>context</code></td><td><code>*</code></td><td>Optional. The context to invoke the listener with. Default: <code>this</code></td></tr></tbody></table><p>Returns: <code>Phaser.Scale.ScaleManager</code> `this`.</p><h3 id="methods-17">onFullScreenChange</h3><pre class="code" data-lang="ts"><code>onFullScreenChange()</code></pre><p>Triggered when a fullscreenchange event is dispatched by the DOM.</p>
+<h3 id="methods-18">onFullScreenError</h3><pre class="code" data-lang="ts"><code>onFullScreenError()</code></pre><p>Triggered when a fullscreenerror event is dispatched by the DOM.</p>
+<h3 id="methods-19">parseConfig</h3><pre class="code" data-lang="ts"><code>parseConfig(config)</code></pre><p>Parses the game configuration to set-up the scale defaults.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>config</code></td><td><code>Phaser.Types.Core.GameConfig</code></td><td>The Game configuration object.</td></tr></tbody></table><h3 id="methods-20">preBoot</h3><pre class="code" data-lang="ts"><code>preBoot()</code></pre><p>Called <em>before</em> the canvas object is created and added to the DOM.</p>
+<h3 id="methods-21">refresh</h3><pre class="code" data-lang="ts"><code>refresh(previousWidth?, previousHeight?)</code></pre><p>Refreshes the internal scale values, bounds sizes and orientation checks.</p>
+<p>Once finished, dispatches the resize event.</p>
+<p>This is called automatically by the Scale Manager when the browser window size changes,
+as long as it is using a Scale Mode other than &#39;NONE&#39;.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>previousWidth</code></td><td><code>number</code></td><td>Optional. The previous width of the game. Only set if the gameSize has changed.</td></tr><tr><td><code>previousHeight</code></td><td><code>number</code></td><td>Optional. The previous height of the game. Only set if the gameSize has changed.</td></tr></tbody></table><p>Returns: <code>Phaser.Scale.ScaleManager</code> The Scale Manager instance.</p><h3 id="methods-22">removeAllListeners</h3><pre class="code" data-lang="ts"><code>removeAllListeners(event?)</code></pre><p>Remove all listeners, or those of the specified event.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>event</code></td><td><code>string | symbol</code></td><td>Optional. The event name.</td></tr></tbody></table><p>Returns: <code>Phaser.Scale.ScaleManager</code> `this`.</p><h3 id="methods-23">removeFullscreenTarget</h3><pre class="code" data-lang="ts"><code>removeFullscreenTarget()</code></pre><p>Removes the fullscreen target that was added to the DOM.</p>
+<h3 id="methods-24">removeListener</h3><pre class="code" data-lang="ts"><code>removeListener(event, fn?, context?, once?)</code></pre><p>Remove the listeners of a given event.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>event</code></td><td><code>string | symbol</code></td><td>The event name.</td></tr><tr><td><code>fn</code></td><td><code>function</code></td><td>Optional. Only remove the listeners that match this function.</td></tr><tr><td><code>context</code></td><td><code>*</code></td><td>Optional. Only remove the listeners that have this context.</td></tr><tr><td><code>once</code></td><td><code>boolean</code></td><td>Optional. Only remove one-time listeners.</td></tr></tbody></table><p>Returns: <code>Phaser.Scale.ScaleManager</code> `this`.</p><h3 id="methods-25">resize</h3><pre class="code" data-lang="ts"><code>resize(width, height)</code></pre><p>Call this to modify the size of the Phaser canvas element directly.
+You should only use this if you are using the <code>NONE</code> scale mode,
+it will update all internal components completely.</p>
+<p>If all you want to do is change the size of the parent, see the <code>setParentSize</code> method.</p>
+<p>If all you want is to change the base size of the game, but still have the Scale Manager
+manage all the scaling (i.e. you&#39;re <strong>not</strong> using <code>NONE</code>), then see the <code>setGameSize</code> method.</p>
+<p>This method will set the <code>gameSize</code>, <code>baseSize</code> and <code>displaySize</code> components to the given
+dimensions. It will then resize the canvas width and height to the values given, by
+directly setting the properties. Finally, if you have set the Scale Manager zoom value
+to anything other than 1 (the default), it will set the canvas CSS width and height to
+be the given size multiplied by the zoom factor (the canvas pixel size remains untouched).</p>
+<p>If you have enabled <code>autoCenter</code>, it is then passed to the <code>updateCenter</code> method and
+the margins are set, allowing the canvas to be centered based on its parent element
+alone. Finally, the <code>displayScale</code> is adjusted and the RESIZE event dispatched.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>width</code></td><td><code>number</code></td><td>The new width of the game.</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>The new height of the game.</td></tr></tbody></table><p>Returns: <code>Phaser.Scale.ScaleManager</code> The Scale Manager instance.</p><h3 id="methods-26">setGameSize</h3><pre class="code" data-lang="ts"><code>setGameSize(width, height)</code></pre><p>This method will set a new size for your game.</p>
+<p>It should only be used if you&#39;re looking to change the base size of your game and are using
+one of the Scale Manager scaling modes, i.e. <code>FIT</code>. If you&#39;re using <code>NONE</code> and wish to
+change the game and canvas size directly, then please use the <code>resize</code> method instead.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>width</code></td><td><code>number</code></td><td>The new width of the game.</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>The new height of the game.</td></tr></tbody></table><p>Returns: <code>Phaser.Scale.ScaleManager</code> The Scale Manager instance.</p><h3 id="methods-27">setMaxZoom</h3><pre class="code" data-lang="ts"><code>setMaxZoom()</code></pre><p>Sets the zoom to be the maximum possible based on the <em>current</em> parent size.</p>
+<p>Returns: <code>Phaser.Scale.ScaleManager</code> The Scale Manager instance.</p><h3 id="methods-28">setParentSize</h3><pre class="code" data-lang="ts"><code>setParentSize(width, height)</code></pre><p>This method will set the size of the Parent Size component, which is used in scaling
+and centering calculations. You only need to call this method if you have explicitly
+disabled the use of a parent in your game config, but still wish to take advantage of
+other Scale Manager features.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>width</code></td><td><code>number</code></td><td>The new width of the parent.</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>The new height of the parent.</td></tr></tbody></table><p>Returns: <code>Phaser.Scale.ScaleManager</code> The Scale Manager instance.</p><h3 id="methods-29">setSnap</h3><pre class="code" data-lang="ts"><code>setSnap(snapWidth?, snapHeight?)</code></pre><p>By setting a Snap value, when the browser size is modified, its dimensions will automatically
+be snapped to the nearest grid slice, using floor. For example, if you have snap value of 16,
+and the width changes to 68, then it will snap down to 64 (the closest multiple of 16 when floored)</p>
+<p>This mode is best used with the <code>FIT</code> scale mode.</p>
+<p>Call this method with no arguments to reset the snap values.</p>
+<p>Calling this method automatically invokes <code>ScaleManager.refresh</code> which emits a <code>RESIZE</code> event.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>snapWidth</code></td><td><code>number</code></td><td>Optional. The amount to snap the width to. If you don't want to snap the width, pass a value of zero. Default: <code>0</code></td></tr><tr><td><code>snapHeight</code></td><td><code>number</code></td><td>Optional. The amount to snap the height to. If not provided it will use the `snapWidth` value. If you don't want to snap the height, pass a value of zero. Default: <code>snapWidth</code></td></tr></tbody></table><p>Returns: <code>Phaser.Scale.ScaleManager</code> The Scale Manager instance.</p><h3 id="methods-30">setZoom</h3><pre class="code" data-lang="ts"><code>setZoom(value)</code></pre><p>Sets the zoom value of the Scale Manager.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>number</code></td><td>The new zoom value of the game.</td></tr></tbody></table><p>Returns: <code>Phaser.Scale.ScaleManager</code> The Scale Manager instance.</p><h3 id="methods-31">shutdown</h3><pre class="code" data-lang="ts"><code>shutdown()</code></pre><p>Removes all listeners from this EventEmitter. This method is called automatically
+by the Scene Systems when the parent Scene shuts down, ensuring that all event
+bindings are cleared and no stale references remain.</p>
+<h3 id="methods-32">startFullscreen</h3><pre class="code" data-lang="ts"><code>startFullscreen(fullscreenOptions?)</code></pre><p>Sends a request to the browser to ask it to go in to full screen mode, using the (online reference) Fullscreen API.</p>
+<p>If the browser does not support this, a <code>FULLSCREEN_UNSUPPORTED</code> event will be emitted.</p>
+<p>This method <em>must</em> be called from a <code>pointerup</code> user-input gesture (<strong>not</strong> <code>pointerdown</code>). You cannot launch
+games fullscreen without this, as most browsers block it. Games within an iframe will also be blocked
+from fullscreen unless the iframe has the <code>allowfullscreen</code> attribute.</p>
+<p>On touch devices, such as Android and iOS Safari, you should always use <code>pointerup</code> and NOT <code>pointerdown</code>,
+otherwise the request will fail unless the document in which your game is embedded has already received
+some form of touch input, which you cannot guarantee. Activating fullscreen via <code>pointerup</code> circumvents
+this issue.</p>
+<p>Performing an action that navigates to another page, or opens another tab, will automatically cancel
+fullscreen mode, as will the user pressing the ESC key. To cancel fullscreen mode directly from your game,
+i.e. by clicking an icon, call the <code>stopFullscreen</code> method.</p>
+<p>A browser can only send one DOM element into fullscreen. You can control which element this is by
+setting the <code>fullscreenTarget</code> property in your game config, or changing the property in the Scale Manager.
+Note that the game canvas <em>must</em> be a child of the target. If you do not give a target, Phaser will
+automatically create a blank <code>&lt;div&gt;</code> element and move the canvas into it, before going fullscreen.
+When it leaves fullscreen, the div will be removed.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>fullscreenOptions</code></td><td><code>object</code></td><td>Optional. The FullscreenOptions dictionary is used to provide configuration options when entering full screen.</td></tr></tbody></table><h3 id="methods-33">startListeners</h3><pre class="code" data-lang="ts"><code>startListeners()</code></pre><p>An internal method that starts the different DOM event listeners running.</p>
+<h3 id="methods-34">step</h3><pre class="code" data-lang="ts"><code>step(time, delta)</code></pre><p>Internal method, called automatically by the game step.
+Monitors the elapsed time and resize interval to see if a parent bounds check needs to take place.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>time</code></td><td><code>number</code></td><td>The time value from the most recent Game step. Typically a high-resolution timer value, or Date.now().</td></tr><tr><td><code>delta</code></td><td><code>number</code></td><td>The delta value since the last frame. This is smoothed to avoid delta spikes by the TimeStep class.</td></tr></tbody></table><h3 id="methods-35">stopFullscreen</h3><pre class="code" data-lang="ts"><code>stopFullscreen()</code></pre><p>Calling this method will cancel fullscreen mode, if the browser has entered it.</p>
+<h3 id="methods-36">stopListeners</h3><pre class="code" data-lang="ts"><code>stopListeners()</code></pre><p>Stops all DOM event listeners.</p>
+<h3 id="methods-37">toggleFullscreen</h3><pre class="code" data-lang="ts"><code>toggleFullscreen(fullscreenOptions?)</code></pre><p>Toggles the fullscreen mode. If already in fullscreen, calling this will cancel it.
+If not in fullscreen, this will request the browser to enter fullscreen mode.</p>
+<p>If the browser does not support this, a <code>FULLSCREEN_UNSUPPORTED</code> event will be emitted.</p>
+<p>This method <em>must</em> be called from a <code>pointerup</code> user-input gesture (<strong>not</strong> <code>pointerdown</code>). You cannot launch
+games fullscreen without this, as most browsers block it. Games within an iframe will also be blocked
+from fullscreen unless the iframe has the <code>allowfullscreen</code> attribute.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>fullscreenOptions</code></td><td><code>object</code></td><td>Optional. The FullscreenOptions dictionary is used to provide configuration options when entering full screen.</td></tr></tbody></table><h3 id="methods-38">transformX</h3><pre class="code" data-lang="ts"><code>transformX(pageX)</code></pre><p>Transforms the pageX value into the scaled coordinate space of the Scale Manager.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>pageX</code></td><td><code>number</code></td><td>The DOM pageX value.</td></tr></tbody></table><p>Returns: <code>number</code> The translated value.</p><h3 id="methods-39">transformY</h3><pre class="code" data-lang="ts"><code>transformY(pageY)</code></pre><p>Transforms the pageY value into the scaled coordinate space of the Scale Manager.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td><code>pageY</code></td><td><code>number</code></td><td>The DOM pageY value.</td></tr></tbody></table><p>Returns: <code>number</code> The translated value.</p><h3 id="methods-40">updateBounds</h3><pre class="code" data-lang="ts"><code>updateBounds()</code></pre><p>Updates the <code>canvasBounds</code> rectangle to match the bounding client rectangle of the
+canvas element being used to track input events.</p>
+<h3 id="methods-41">updateCenter</h3><pre class="code" data-lang="ts"><code>updateCenter()</code></pre><p>Calculates and updates the canvas CSS style in order to center it within the
+bounds of its parent. If you have explicitly set parent to be <code>null</code> in your
+game config then this method will likely give incorrect results unless you have called the
+<code>setParentSize</code> method first.</p>
+<p>It works by modifying the canvas CSS <code>marginLeft</code> and <code>marginTop</code> properties.</p>
+<p>If they have already been set by your own style sheet, or code, this will overwrite them.</p>
+<p>To prevent the Scale Manager from centering the canvas, either do not set the
+<code>autoCenter</code> property in your game config, or make sure it is set to <code>NO_CENTER</code>.</p>
+<h3 id="methods-42">updateOrientation</h3><pre class="code" data-lang="ts"><code>updateOrientation()</code></pre><p>Internal method that checks the current screen orientation, only if the internal check flag is set.</p>
+<p>If the orientation has changed it updates the orientation property and then dispatches the orientation change event.</p>
+<h3 id="methods-43">updateScale</h3><pre class="code" data-lang="ts"><code>updateScale()</code></pre><p>Internal method that manages updating the size components based on the scale mode.</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#constructor">Constructor</a><a href="#members">members</a><a href="#methods">methods</a></aside></div>
+<script src="../../../../../assets/cm.classic.js"></script><script src="../../../../../assets/manual.js"></script></body></html>

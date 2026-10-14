@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Cheat sheet — export — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="cookbook.html" class="active" aria-current="page">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Guides</div><details open><summary>Guides</summary><a href="cookbook.html">Cookbook</a><a href="mobile-controls.html">Mobile and on-screen touch controls</a><a href="cheat-sheet-nordjs.html">Cheat sheet — nord.js</a><a href="cheat-sheet-export.html" class="cur" aria-current="page">Cheat sheet — export</a><a href="glossary.html">Glossary</a><a href="shortcuts.html">Keyboard shortcuts</a></details><details><summary>Appendix</summary><a href="../appendix/appendix.html">Appendix</a><a href="../appendix/decisions.html">Design decisions</a><a href="../appendix/known-issues.html">Known issues</a><a href="../appendix/changelog.html">Changelog</a></details></nav><main id="content"><div class="crumb">Guides / Nord Engine</div><h1>Cheat sheet — export</h1>
+<table>
+<thead>
+<tr>
+<th>Goal</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Check project</td>
+<td><code>nord check .</code></td>
+</tr>
+<tr>
+<td>Dev server (live reload)</td>
+<td><code>nord serve . -p 4173</code></td>
+</tr>
+<tr>
+<td>Web build</td>
+<td><code>nord build .</code> → <code>dist/</code></td>
+</tr>
+<tr>
+<td>Smaller</td>
+<td><code>nord build . --minify --optimize</code></td>
+</tr>
+<tr>
+<td>itch.io zip</td>
+<td><code>nord build . --zip</code></td>
+</tr>
+<tr>
+<td>Double-clickable</td>
+<td><code>nord build . --single-file</code></td>
+</tr>
+<tr>
+<td>Rust game / app</td>
+<td><code>nord export . --target web-wasm-game</code> / <code>web-wasm-app</code></td>
+</tr>
+<tr>
+<td>Dev build of Rust</td>
+<td><code>nord build-rust .</code></td>
+</tr>
+<tr>
+<td>Mac app</td>
+<td><code>nord bundle-mac . --name &quot;My Game&quot; --icon icon.png --dmg</code></td>
+</tr>
+<tr>
+<td>Offline scan</td>
+<td><code>nord check-offline dist</code></td>
+</tr>
+<tr>
+<td>Toolchain advice</td>
+<td><code>nord doctor</code></td>
+</tr>
+<tr>
+<td>Details: <a href="../manual/export.html">Export &amp; hosting</a>, <a href="../reference/cli.html">CLI</a>.</td>
+<td></td>
+</tr>
+</tbody></table>
+<div class="pager"><a href="cheat-sheet-nordjs.html"><small>← Previous</small>Cheat sheet — nord.js</a><a href="glossary.html"><small>Next →</small>Glossary</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

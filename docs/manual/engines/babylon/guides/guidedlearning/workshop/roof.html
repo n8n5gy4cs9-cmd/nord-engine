@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Adding a Roof to a House Built from Plans — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../index.html"><img src="../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../nord/api/api.html">API reference</a><a href="../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../nord/api/api-game.html">Game</a><a href="../../../../../nord/api/api-input.html">Input</a><a href="../../../../../nord/api/api-events.html">Events</a><a href="../../../../../nord/api/api-save.html">Save</a><a href="../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../nord/components/component-text.html">text</a><a href="../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../nord/components/component-light.html">light</a><a href="../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../nord/components/component-model.html">model</a><a href="../../../../../nord/components/component-material.html">material</a><a href="../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../nord/components/component-path.html">path</a><a href="../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../nord/reference/components.html">Component index</a><a href="../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../index.html">Babylon documentation library</a><a href="../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Adding a Roof to a House Built from Plans</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><p>For any house, there is a range of different types of roof that can be added, so there is no automatic way to use the footprint of a house to build a roof directly. However with a little bit of manual design there are methods that can complete the build. Here we present two ways to design and create a hip roof. The example used is based on the <a href="house.html">design</a> and <a href="house-use.html">coding</a> of this <span>house</span>.</p>
+<p><strong>Please note that some functions used in this project use Earcut, so in non-playground projects, you will have to add a reference to the <span>CDN</span> or download the <span>npm package</span></strong></p>
+<h2 id="design-whole-roof">Design Whole Roof<a class="anchor" href="#design-whole-roof">#</a></h2>
+<p>In this case the <strong>rise</strong>, or roof height, is the same for all sections of the roof.</p>
+<p>The <strong>footprint</strong> for the house defines the inner walls of the house, from which the data for the outer walls is calculated. A roof overhangs the outer walls. The footprint of the roof, or <strong>roofprint</strong>, defines the corners of this overhang. In <em>Fig 1</em>, the black area shows the thickness, or <strong>ply</strong>, of the house walls, and the red area shows the <strong>overhang</strong> of the roofprint.</p>
+<p><p class="muted">Upstream illustration: overhang (media not bundled).</p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fig 1</p>
+<p>Since in creating the house the <em>ply</em>, house <em>height</em> and the footprint <em>corners</em> have already been created they are used to create the roofprint, as in</p>
+<pre class="code" data-lang="javascript"><code>var overhang = 0.2;
+var overlap = ply + overhang;
+var wholeRoofprint = roofprint(corners, overlap, height);</code></pre>
+<p>The function <strong>roofprint</strong> returns a list of Vector3s representing the corners of the roof floor in counter-clockwise order.</p>
+<p>Using the roofprint the floor of the roof (or top ceiling) can be added as a mesh.</p>
+<p>PG: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="plan-of-roof">Plan of Roof<a class="anchor" href="#plan-of-roof">#</a></h2>
+<p>Though it is possibly more accurate to use the roofprint as a guide to a plan for the roof it is probably easier (in terms of coordinates) to use the original footprint. All you need to do is draw, in a plan diagram, the planes of the roof. An <strong>apex</strong> is a highest point on the roof where planes meet. The plan diagram in <em>Fig 2</em> shows the floorprint corners numbered C0, C1, C2 etc and the apexes numbered in sequence using A0, A1 etc. <em>Fig 2</em> is drawn to scale based on the original base data. </p>
+<p><p class="muted">Upstream illustration: roof plan (media not bundled).</p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fig 2</p>
+<pre class="code" data-lang="javascript"><code>var baseData = [-3, -2,  -1, -4,  1, -4,  3, -2,  5, -2,  5, 1,  2, 1,  2, 3,  -3, 3];</code></pre>
+<p>The red dashed lines show the axes.</p>
+<p>From the diagram the roof apex data can be read off and the coordinate pairs placed in the array in sequence order. First pair is from A0, the second from A1 etc.</p>
+<pre class="code" data-lang="javascript"><code>var roofApexData = [0, -2,  0, -0.5,  0, 2,  4.5, -0.5];</code></pre>
+<p>This data then needs to be turned into an array, <strong>apexes</strong> for example, of Vector2s that will be used as the second parameter of the <strong>roof</strong> function.</p>
+<pre class="code" data-lang="javascript"><code>var apexes = [];
+
+for(let i = 0; i &lt; roofApexData.length / 2; i++) {
+	apexes.push(new BABYLON.Vector2(roofApexData[2 * i], roofApexData[2 * i + 1]))
+}</code></pre>
+<p>Each roof plane can be described using the corner and apex labels. The planes should be drawn so that they are described with either 3 or 4 labels. Each plane is set as an array using the labels in a counter clockwise order with corner labels coming first. Remember that the corner labels are already in counter clockwise order. An array of planes is then formed containing all the plane data arrays.</p>
+<pre class="code" data-lang="javascript"><code>var planes = [
+	[&quot;C0&quot;, &quot;C1&quot;, &quot;A0&quot;],
+	[&quot;C1&quot;, &quot;C2&quot;, &quot;A0&quot;],
+	[&quot;C2&quot;, &quot;C3&quot;, &quot;A0&quot;],
+	[&quot;C3&quot;, &quot;A1&quot;, &quot;A0&quot;],
+	[&quot;C3&quot;, &quot;C4&quot;, &quot;A3&quot;, &quot;A1&quot;],
+	[&quot;C4&quot;, &quot;C5&quot;, &quot;A3&quot;],
+	[&quot;C5&quot;, &quot;C6&quot;, &quot;A1&quot;, &quot;A3&quot;],
+	[&quot;C6&quot;, &quot;C7&quot;, &quot;A2&quot;, &quot;A1&quot;],
+	[&quot;C7&quot;, &quot;C8&quot;, &quot;A2&quot;],
+	[&quot;C8&quot;, &quot;C0&quot;, &quot;A0&quot;, &quot;A2&quot;]
+]</code></pre>
+<p>The roof function can then be applied to produce the sections, or planes, of the roof. </p>
+<p>This takes the parameters as shown</p>
+<pre class="code" data-lang="javascript"><code>roof(roofprint, apexes, planes, rise, height, uvbase)</code></pre>
+<p>The <strong>rise</strong> is the distance from the roof floor to an apex, the height is the height of the house.</p>
+<p>The roof function creates uv values for each plane based on the size of the plane. So a plane that is twice as big as another will have double the uv values. For this to work, the parameter <em>uvbase</em> has to be larger than the maximum width and height of all the planes. As a rule of thumb use a value about the width (horizontal) of the largest plane.</p>
+<p>The roof function creates the mesh of the roof.</p>
+<p>In the example the roof mesh is built using</p>
+<pre class="code" data-lang="javascript"><code>var roofSection = roof(wholeRoofprint, apexes, planes, 2, height, 5.6);</code></pre>
+<p>PG: <span class="muted">Online playground (not embedded offline)</span></p>
+<h2 id="design-roof-in-sections">Design Roof In Sections<a class="anchor" href="#design-roof-in-sections">#</a></h2>
+<p>When you want different parts of the roof to have different heights then although it is possible to choose suitable apexes and planes it is much more difficult to determine the apex where a low roof meets the plane of a higher roof. For example in <em>Fig 3</em> it is possible to calculate the x coordinate of apex A using 3D vector geometry.</p>
+<p><p class="muted">Upstream illustration: roof planes meet (media not bundled).</p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fig 3</p>
+<p>The simplest solution however is to use values that extend the small roof into the large roof.</p>
+<p>Following this method and using the original floor plan, the plan for the lower roof section will cover the red area as in <em>Fig 4</em>.</p>
+<p><p class="muted">Upstream illustration: overlap 1 (media not bundled).</p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fig 4</p>
+<p>To help prevent Z fighting, the plan for the higher roof will be reduced so that parts of it will fall inside the lower roof.</p>
+<p>The plan drawing for the main roof is now as in <em>Fig 5</em> and for the smaller roof as in <em>Fig 6</em></p>
+<p><p class="muted">Upstream illustration: main roof (media not bundled).</p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fig 5</p>
+<p><p class="muted">Upstream illustration: smaller roof (media not bundled).</p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fig 6</p>
+<p>Specific corners to be used by the <em>roofprint</em> function have to be created for the main and the small roof. The original corners are used to create the whole roofprint in order to construct the roof floor.</p>
+<pre class="code" data-lang="javascript"><code>var wholeRoofprint = roofprint(corners, overlap, height);
+var mainRoofprint = roofprint(mainCorners, overlap, height);
+var smallRoofprint = roofprint(smallCorners, overlap, height);
+
+var ceiling = roofFloor(wholeRoofprint);</code></pre>
+<p>Apex arrays have to be formed for both the main and small roof.</p>
+<pre class="code" data-lang="javascript"><code>var apexes = [];
+
+for(let i = 0; i &lt; roofApexData.length / 2; i++) {
+	apexes.push(new BABYLON.Vector2(roofApexData[2 * i], roofApexData[2 * i + 1]))
+}
+
+var smallApexes = [];
+
+for(let i = 0; i &lt; smallRoofApexData.length / 2; i++) {
+	smallApexes.push(new BABYLON.Vector2(smallRoofApexData[2 * i], smallRoofApexData[2 * i + 1]))
+}</code></pre>
+<p>In the same way, two plane arrays are needed, one for each roof.</p>
+<pre class="code" data-lang="javascript"><code>var planes = [
+		[&quot;C0&quot;, &quot;C1&quot;, &quot;A0&quot;],
+		[&quot;C1&quot;, &quot;C2&quot;, &quot;A0&quot;],
+		[&quot;C2&quot;, &quot;C3&quot;, &quot;A0&quot;],
+		[&quot;C3&quot;, &quot;C4&quot;, &quot;A1&quot;, &quot;A0&quot;],
+		[&quot;C4&quot;, &quot;C5&quot;, &quot;A1&quot;],
+		[&quot;C5&quot;, &quot;C0&quot;, &quot;A0&quot;, &quot;A1&quot;]
+	]
+
+	var smallPlanes = [
+		[&quot;C0&quot;, &quot;C1&quot;, &quot;A1&quot;, &quot;A0&quot;],
+		[&quot;C1&quot;, &quot;C2&quot;, &quot;A1&quot;],
+		[&quot;C2&quot;, &quot;C3&quot;, &quot;A0&quot;, &quot;A1&quot;]
+	]</code></pre>
+<p>Then, finally, both roof sections can be created:</p>
+<pre class="code" data-lang="javascript"><code>var roofSection = roof(mainRoofprint, apexes, planes, 2, height, 5.1);
+var smallRoofSection = roof(smallRoofprint, smallApexes, smallPlanes, 2, height - 1, 5.1);</code></pre>
+<p>PG: <span class="muted">Online playground (not embedded offline)</span></p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#design-whole-roof">Design Whole Roof </a><a href="#plan-of-roof">Plan of Roof </a><a href="#design-roof-in-sections">Design Roof In Sections </a></aside></div>
+<script src="../../../../../assets/cm.classic.js"></script><script src="../../../../../assets/manual.js"></script></body></html>

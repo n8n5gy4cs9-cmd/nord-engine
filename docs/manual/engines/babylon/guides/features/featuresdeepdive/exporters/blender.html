@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Blender to Babylon.js exporter — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../index.html"><img src="../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../index.html">Babylon documentation library</a><a href="../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Blender to Babylon.js exporter</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><p>The Blender export plugin can be found on <span>github repository</span>. We assume you&#39;re using the latest version.</p>
+<p>Note that v6 is for Blender 2.8 (currently in beta), v5 for Blender 2.79b or below can be found in the <code>deprecated</code> folder.</p>
+<h2 id="installation">Installation<a class="anchor" href="#installation">#</a></h2>
+<p>This add-on uses the standard Blender installation procedure:</p>
+<ul>
+<li>Download the <span>last version from Github</span> (click on the zip file with the appropriate exporter version you&#39;d like to download: <em>Blender2Babylon-X.X.zip</em> and then hit the &quot;Download&quot; button).</li>
+<li>In Blender, go to <code>File</code> menu &gt; <code>User Preferences</code>.</li>
+<li>Switch to the <code>Add-ons</code> tab.</li>
+<li>(optional) If you already have an old version installed, search for <em>Babylon.js</em> in the filter, expand the info for the Babylon.js add-on, and click the <code>Remove</code> button.</li>
+<li>Click the <code>Install from File...</code> button at the bottom.</li>
+<li>Select the zip file and click the <code>Install Add-on from File...</code> button.</li>
+<li>Check the box to enable it.</li>
+<li>Click <code>Save User Settings</code> to enable it at every Blender launch.</li>
+</ul>
+<p><p class="muted">Upstream illustration: blender user preferences (media not bundled).</p></p>
+<h2 id="features">Features<a class="anchor" href="#features">#</a></h2>
+<h3 id="scene">Scene<a class="anchor" href="#scene">#</a></h3>
+<p><p class="muted">Upstream illustration: Blender scene properties panel (media not bundled).</p></p>
+<table>
+<thead>
+<tr>
+<th>Blender</th>
+<th><a href="../../../../9.30/api/babylonjs/babylon/66/scene.html">BJS equivalent</a></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Scene <p class="muted">Upstream illustration: scene (media not bundled).</p></td>
+<td><span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>Camera: set scene activeCamera<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span></td>
+</tr>
+<tr>
+<td>Exporter panel<p class="muted">Upstream illustration: exporter-scene-options (media not bundled).</p></td>
+<td><span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span><code>Export</code>: <span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span><code>All</code>: the entire file will be exported<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span><code>Selected</code>: only the selection will be exported<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span><code>Layers</code>: hidden layers will not be exported<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span><span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span><code>Max Decimal Precision</code>: how values are rounded during export<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span></td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="world">World<a class="anchor" href="#world">#</a></h3>
+<p><p class="muted">Upstream illustration: Blender world properties panel (media not bundled).</p></p>
+<h4 id="blender-render">Blender Render<a class="anchor" href="#blender-render">#</a></h4>
+<table>
+<thead>
+<tr>
+<th>Blender</th>
+<th><a href="../../../../9.30/api/babylonjs/babylon/66/scene.html">BJS equivalent</a></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>World <p class="muted">Upstream illustration: world-br (media not bundled).</p></td>
+<td><span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>Horizon Color: scene clearColor<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span>Ambient Color: scene ambientColor<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span></td>
+</tr>
+<tr>
+<td>Exporter panel <p class="muted">Upstream illustration: mist (media not bundled).</p></td>
+<td><span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>Mist: when Blender Render Mist is enabled, you have access to Fog Mode &amp; Fog Density parameters<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span></td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="object">Object<a class="anchor" href="#object">#</a></h3>
+<p><p class="muted">Upstream illustration: Blender object properties panel (media not bundled).</p></p>
+<table>
+<thead>
+<tr>
+<th>Blender</th>
+<th>BJS equivalent</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><p class="muted">Upstream illustration: header (media not bundled).</p></td>
+<td><span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>object name will be exported as-is<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span></td>
+</tr>
+<tr>
+<td>Transform <p class="muted">Upstream illustration: transform (media not bundled).</p></td>
+<td><span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>Position<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span>Rotation<span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>XYZ Euler<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span>Quaternion<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span><span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span>Scale<span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>do not forget to apply Scale before exporting: &#39;Ctrl&#39; + &#39;A&#39; &gt; &#39;Scale&#39;<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span><span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span></td>
+</tr>
+<tr>
+<td>Relations <p class="muted">Upstream illustration: relations (media not bundled).</p></td>
+<td><span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>parenting is supported<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span></td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="constraints">Constraints<a class="anchor" href="#constraints">#</a></h3>
+<p><p class="muted">Upstream illustration: Blender constraints properties panel (media not bundled).</p></p>
+<table>
+<thead>
+<tr>
+<th>Blender</th>
+<th>BJS equivalent</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><p class="muted">Upstream illustration: constraints (media not bundled).</p></td>
+<td><span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>Track To: useful when using ArcRotate camera <a href="blender-tips.html">(tip)</a><span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span></td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="cameras">Cameras<a class="anchor" href="#cameras">#</a></h3>
+<p><p class="muted">Upstream illustration: Blender cameras properties panel (media not bundled).</p></p>
+<table>
+<thead>
+<tr>
+<th>Blender</th>
+<th><a href="../../../../9.30/api/babylonjs/babylon/86/camera.html">BJS equivalent</a></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Lens<p class="muted">Upstream illustration: lens (media not bundled).</p></td>
+<td><span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>Field of View: fov<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span>Clipping: minZ &amp; maxZ<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span></td>
+</tr>
+<tr>
+<td>Exporter panel <p class="muted">Upstream illustration: exporter-cameras-options (media not bundled).</p></td>
+<td><span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>Camera Type, choose between:<span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>Arc Rotate <a href="blender-tips.html">(tip)</a><span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span>Device Orientation<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span>Follow<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span>Gamepad<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span>Touch<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span>Universal<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span>Virtual Joysticks<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span>VR Dev Orientation Free<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span>Web VR Free<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span><span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span></td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="lights">Lights<a class="anchor" href="#lights">#</a></h3>
+<p><p class="muted">Upstream illustration: Blender lights properties panel (media not bundled).</p></p>
+<table>
+<thead>
+<tr>
+<th>Blender</th>
+<th><a href="../../../../9.30/api/babylonjs/babylon/15/light.html">BJS equivalent</a></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Lamp <p class="muted">Upstream illustration: lamp (media not bundled).</p></td>
+<td><span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>Sun as Directional, Area as Point, other named like in BJS<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span>This Layer Only: <a href="../../../../9.30/api/babylonjs/babylon/15/light.html">includedOnlyMeshes</a><span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span>when Sphere is checked, Distance value is exported as range<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span></td>
+</tr>
+<tr>
+<td>Spot Shape (only available when light type is Spot) <p class="muted">Upstream illustration: spot-shape (media not bundled).</p></td>
+<td><span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>Size: Angle<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span>Blend: value * 2 = exponent<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span></td>
+</tr>
+<tr>
+<td>Exporter panel <p class="muted">Upstream illustration: exporter-lights-options (media not bundled).</p></td>
+<td><span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>Shadow Map (only for directional lights):<span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>None<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span>Standard<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span>Poisson<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span>ESM<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span>Blur ESM<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span><span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span></td>
+</tr>
+</tbody></table>
+<h3 id="meshes">Meshes<a class="anchor" href="#meshes">#</a></h3>
+<p><p class="muted">Upstream illustration: Blender meshes properties panel (media not bundled).</p></p>
+<table>
+<thead>
+<tr>
+<th>Blender</th>
+<th><a href="../../../../9.30/api/babylonjs/babylon/86/mesh.html">BJS equivalent</a></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Normals <p class="muted">Upstream illustration: normals (media not bundled).</p></td>
+<td>Auto Smooth is often used by Blender users, but it is not supported. Use an edge split modifier instead, see <a href="blender-tips.html">tip</a>.</td>
+</tr>
+<tr>
+<td>UV Maps <p class="muted">Upstream illustration: uv-maps (media not bundled).</p></td>
+<td><span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>UVMap: coordinatesIndex<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span>limited to 2 channels<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span></td>
+</tr>
+<tr>
+<td>Vertex Colors <p class="muted">Upstream illustration: vertex-colors (media not bundled).</p></td>
+<td><span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>if multiple layers exist, they will be merged<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span></td>
+</tr>
+<tr>
+<td>Exporter panel <p class="muted">Upstream illustration: exporter-meshes-options (media not bundled).</p></td>
+<td><span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span><strong>Tags</strong>: allow using <a href="../../../../9.30/api/babylonjs/babylon/66/scene.html">scene.getMeshesByTags()</a><span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span><strong>Materials</strong>:<span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span><strong>Name Space</strong>: automatically add a suffix to the mesh materials. Default is Blender filename.<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span><span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span><strong>Procedural Textures / Cycles Baking</strong>: texture baking settings when using procedural textures (Blender Render) or Cycles<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span></td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="materials">Materials<a class="anchor" href="#materials">#</a></h3>
+<p><p class="muted">Upstream illustration: Blender materials properties panel (media not bundled).</p></p>
+<h4 id="general">General<a class="anchor" href="#general">#</a></h4>
+<ul>
+<li>as you can see in the BJS mesh panel, materials will be suffixed with the <em>.babylon</em> filename,</li>
+<li>other options can be found on this mesh panel, like max simultaneous lights, texture size for baking, etc,</li>
+<li>texture baking will be automatic when:<ul>
+<li>cycles render is the current render engine,</li>
+<li>procedural textures are used.</li>
+</ul>
+</li>
+</ul>
+<h4 id="blender-render-on-babylon-js">Blender Render on Babylon.js<a class="anchor" href="#blender-render-on-babylon-js">#</a></h4>
+<table>
+<thead>
+<tr>
+<th>Blender</th>
+<th><a href="../../../../9.30/api/babylonjs/babylon/a7/standardmaterial.html">BJS equivalent</a></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><p class="muted">Upstream illustration: header (media not bundled).</p></td>
+<td><span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>multi-materials are supported<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span></td>
+</tr>
+<tr>
+<td>Diffuse <p class="muted">Upstream illustration: diffuse (media not bundled).</p></td>
+<td><span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>color intensity is multiplied by intensity value<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span></td>
+</tr>
+<tr>
+<td>Specular <p class="muted">Upstream illustration: specular (media not bundled).</p></td>
+<td><span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>color intensity is multiplied by intensity value<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span>Hardness: specularPower<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span></td>
+</tr>
+<tr>
+<td>Shading <p class="muted">Upstream illustration: shading (media not bundled).</p></td>
+<td><span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>Emit: diffuse color * value<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span>Ambient: diffuse color * value<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span></td>
+</tr>
+<tr>
+<td>Transparency <p class="muted">Upstream illustration: transparency (media not bundled).</p></td>
+<td><span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>when enabled, set alpha value under <em>Z Transparency</em><span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span></td>
+</tr>
+</tbody></table>
+<h5 id="specials">Specials<a class="anchor" href="#specials">#</a></h5>
+<ul>
+<li>you can temporarily switch to Blender Game to gain access to some materials settings:</li>
+</ul>
+<p><p class="muted">Upstream illustration: blender-game (media not bundled).</p></p>
+<table>
+<thead>
+<tr>
+<th>Blender</th>
+<th><a href="../../../../9.30/api/babylonjs/babylon/a7/standardmaterial.html">BJS equivalent</a></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Game Settings <p class="muted">Upstream illustration: game-settings (media not bundled).</p></td>
+<td><span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>Backface culling: true by default<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span>Face Orientation:<span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>Normal<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span>Billboard<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span><span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span></td>
+</tr>
+</tbody></table>
+<h4 id="cycles-render">Cycles Render<a class="anchor" href="#cycles-render">#</a></h4>
+<table>
+<thead>
+<tr>
+<th>Blender</th>
+<th>BJS equivalent</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Node Editor <p class="muted">Upstream illustration: cycles node (media not bundled).</p></td>
+<td>Exporter will do automatic baking, and try to detect some nodes: <span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>Diffuse BSDF<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span>Ambient Occlusion<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span></td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="textures">Textures<a class="anchor" href="#textures">#</a></h3>
+<p><p class="muted">Upstream illustration: Blender textures properties panel (media not bundled).</p></p>
+<h4 id="general">General<a class="anchor" href="#general">#</a></h4>
+<ul>
+<li>Blender can handle packed images, even if there isn&#39;t a source file on disk, but you have to unpack them all before export,</li>
+<li>about automatic baking, see <a href="blender.html">Materials</a>.</li>
+</ul>
+<h4 id="blender-render">Blender Render<a class="anchor" href="#blender-render">#</a></h4>
+<table>
+<thead>
+<tr>
+<th>Blender</th>
+<th>BJS equivalent</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><p class="muted">Upstream illustration: header (media not bundled).</p></td>
+<td><span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>multiple textures can be assigned<span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>if two textures are assigned to the same Influence (see below), automatic baking will be used<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span><span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span>this name is only used in Blender<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span></td>
+</tr>
+<tr>
+<td>Texture Type <p class="muted">Upstream illustration: type-image (media not bundled).</p></td>
+<td><span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>as seen above, this name is only used in Blender<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span>texture type:<span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>for image file, choose <em>Image or Movie</em><span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span>for procedural textures, choose any one but <em>voxel data</em>, <em>point density</em>, <em>ocean</em><span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span><span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span></td>
+</tr>
+<tr>
+<td>Image <p class="muted">Upstream illustration: image (media not bundled).</p></td>
+<td><span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>texture filename will be texture name in BJS<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span></td>
+</tr>
+<tr>
+<td>Image Sampling <p class="muted">Upstream illustration: image-sampling (media not bundled).</p></td>
+<td><span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>Use Alpha: hasAlpha<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span></td>
+</tr>
+<tr>
+<td>Image Mapping <p class="muted">Upstream illustration: image-mapping (media not bundled).</p></td>
+<td><span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>Extension: choosing <em>Clip</em> will set Wrap value to 0<span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span></td>
+</tr>
+<tr>
+<td>Mapping <p class="muted">Upstream illustration: mapping (media not bundled).</p></td>
+<td><span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>Coordinates: choosing between <span class="muted">&lt;ul&gt;</span><span class="muted">&lt;li&gt;</span>UV: <a href="../../../../9.30/api/babylonjs/babylon/ef/texture.html">EXPLICIT_MODE</a><span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span>Reflection: by setting <em>Projection</em> to <em>Sphere</em>, you gain access to spheremaps through <a href="../../../../9.30/api/babylonjs/babylon/ef/texture.html">SPHERICAL_MODE</a><span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span><span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span>Offset X and Y: <a href="../../../../9.30/api/babylonjs/babylon/ef/texture.html">uOffset</a> and <a href="../../../../9.30/api/babylonjs/babylon/ef/texture.html">vOffset</a><span class="muted">&lt;/li&gt;</span><span class="muted">&lt;li&gt;</span>Size X and Y: <a href="../../../../9.30/api/babylonjs/babylon/ef/texture.html">uScale</a> and <a href="../../../../9.30/api/babylonjs/babylon/ef/texture.html">vScale</a><span class="muted">&lt;/li&gt;</span><span class="muted">&lt;/ul&gt;</span></td>
+</tr>
+<tr>
+<td>Influence <p class="muted">Upstream illustration: influence (media not bundled).</p></td>
+<td>Be sure to enable only one influence by texture, to avoid automatic baking.</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="commons-amp-good-practices">Commons &amp; Good practices<a class="anchor" href="#commons-amp-good-practices">#</a></h3>
+<ul>
+<li>you should export one <em>.babylon</em> file per animated object to make your life easier, both in BJS and when handling the timeline in Blender. See <a href="blender-tips.html">tip</a> for a basic workflow.</li>
+<li>before starting animation in Blender, be sure your objects have their transformations applied! (3DView &gt; Object &gt; Apply)</li>
+</ul>
+<h3 id="classic-animations">Classic Animations<a class="anchor" href="#classic-animations">#</a></h3>
+<p>You will find an example in this <span>.zip archive</span>. 3D source files are in the <code>sources</code> folder, and the BJS app is in the <code>BJS</code> folder.</p>
+<p>In <code>sources</code>, we have our master scene, with only static objects (on layer 1), and just so we can see it, we have the logo linked on layer 6. When exporting, make sure only layer 1 is active, as we have checked in the <span>scene panel</span> <em>Export only selected layers</em>.</p>
+<p>Once exported, you can see in <code>BJS/index.html</code> that we create our main scene using this <code>.babylon</code>: line 36</p>
+<pre class="code" data-lang="javascript"><code>BABYLON.LoadSceneAsync(&quot;01.master-static-scene.babylon&quot;, engine).then(function (scene) {});</code></pre>
+<p>The same goes for our animated object in <code>sources/02.classic-animation.blend</code>: layer 1 is for our object, layer 6 is just for us to see the main scene in our <em>.blend</em>. <em>Export only selected layers</em> is used to help us export only the first layer to Babylon.</p>
+<p>Once exported, we can import our meshes inside the <code>onSuccess</code> callback of the loader above. Check on <code>BJS/index.html</code>, line 64:</p>
+<pre class="code" data-lang="javascript"><code>BABYLON.ImportMeshAsync(&quot;02.classic-animation.babylon&quot;, scene).then(function (result) {});</code></pre>
+<p>Now, you already have a basic scene with animations auto-playing in it.</p>
+<h3 id="armatures">Armatures<a class="anchor" href="#armatures">#</a></h3>
+<ul>
+<li>you can use any Blender rotation mode you want; the animation will essentially be baked during export</li>
+</ul>
+<hr>
+<h2 id="try-it-out">Try it out<a class="anchor" href="#try-it-out">#</a></h2>
+<p>Once your scene is exported, you have multiple solutions to test it:</p>
+<ul>
+<li>do a quick check in the <span>sandbox</span></li>
+<li>edit the file through the <span>editor</span></li>
+<li>use the <span>viewer</span></li>
+<li>script your own app using the <a href="../importers/loadingfiletypes.html">loader</a></li>
+</ul>
+<h3 id="example">Example<a class="anchor" href="#example">#</a></h3>
+<h4 id="simple-scene">Simple scene<a class="anchor" href="#simple-scene">#</a></h4>
+<p>Let&#39;s say you have exported your first scene. In this example we will use <span>blend files of the BJS logo</span>:</p>
+<ul>
+<li>export the Babylon file into a folder</li>
+<li>create a file named <em>index.html</em>, and copy the code above:</li>
+</ul>
+<pre class="code" data-lang="html"><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Default .babylon loading scene&lt;/title&gt;
+    &lt;meta charset=&quot;UTF-8&quot; /&gt;
+    &lt;!-- this link to the preview online version of BJS --&gt;
+    &lt;script src=&quot;https://preview.babylonjs.com/babylon.js&quot;&gt;&lt;/script&gt;
+    &lt;!-- this is needed for BJS to load scene files --&gt;
+    &lt;script src=&quot;https://preview.babylonjs.com/loaders/babylonjs.loaders.js&quot;&gt;&lt;/script&gt;
+    &lt;style&gt;
+      html,
+      body {
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        color: white;
+      }
+
+      #canvas {
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+      }
+    &lt;/style&gt;
+  &lt;/head&gt;
+
+  &lt;body&gt;
+    &lt;canvas id=&quot;canvas&quot;&gt;&lt;/canvas&gt;
+    &lt;script type=&quot;text/javascript&quot;&gt;
+      const canvas = document.getElementById(&quot;canvas&quot;);
+      const engine = new BABYLON.Engine(canvas, true);
+
+      // here the doc for Load function: //doc.babylonjs.com/typedoc/classes/babylon.sceneloader#load
+      BABYLON.LoadSceneAsync(&quot;babylonJS_logo_v3.babylon&quot;, engine).then(function (scene) {
+        //as this .babylon example hasn't camera in it, we have to create one
+        const camera = new BABYLON.ArcRotateCamera(&quot;Camera&quot;, 1, 1, 4, BABYLON.Vector3.Zero(), scene);
+        camera.attachControl(canvas, false);
+
+        scene.clearColor = new BABYLON.Color3(1, 1, 1);
+        scene.ambientColor = new BABYLON.Color3.White();
+
+        engine.runRenderLoop(function () {
+          scene.render();
+        });
+
+        window.addEventListener(&quot;resize&quot;, function () {
+          engine.resize();
+        });
+      });
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p><p class="muted">Upstream illustration: babylon default folder example (media not bundled).</p></p>
+<ul>
+<li>double-click on the <em>index.html</em> file... profit!<ul>
+<li>some browsers may not allow loading the scene for security reasons (e.g.: Chrome). In this case, you have to open the HTML file through a web server (local or not), or try another browser (e.g.: Firefox, Edge).</li>
+</ul>
+</li>
+</ul>
+<p><p class="muted">Upstream illustration: blender babylon scene loaded in BJS (media not bundled).</p></p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#installation">Installation </a><a href="#features">Features </a><a href="#try-it-out">Try it out </a></aside></div>
+<script src="../../../../../../assets/cm.classic.js"></script><script src="../../../../../../assets/manual.js"></script></body></html>

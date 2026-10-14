@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Export &amp; hosting — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="welcome.html" class="active" aria-current="page">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Manual</div><a href="welcome.html">Welcome</a><a href="editor-tour.html">Editor tour</a><a href="projects-scenes.html">Projects &amp; scenes</a><a href="scripting.html">Scripting</a><a href="2d.html">2D games</a><a href="3d.html">3D games</a><a href="physics.html">Physics</a><a href="audio.html">Audio</a><a href="ui.html">UI &amp; HUD</a><a href="input.html">Input</a><a href="assets.html">Assets</a><a href="library.html">The library</a><a href="rust-wasm.html">Rust / WASM</a><a href="export.html" class="cur" aria-current="page">Export &amp; hosting</a><a href="performance.html">Performance &amp; debugging</a><a href="reference.html">Reference overview</a><a href="desktop-apps.html">Desktop apps</a></nav><main id="content"><div class="crumb">Manual / Nord Engine</div><h1>Export &amp; hosting</h1>
+<p>Export creates a copy for players. A web build contains HTML, runtime code and assets; a desktop bundle adds the application shell.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>Share the whole output folder, not just index.html. Keep your editable project separately. Most web builds need a local or hosted web server; use the special single-file mode when you need its supported behavior.</p>
+</aside><p><code>nord build &lt;project&gt;</code> (alias <code>nord export</code>) writes a <strong>static folder</strong> — default <code>&lt;project&gt;/dist</code> — that needs nothing from the internet.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>Exporting is &quot;exhaling&quot; your project into one plain folder of files. Any web host, USB stick or <code>python3 -m http.server</code> can serve that folder, and anyone with a browser can play it.</p>
+</aside><h2 id="targets">Targets<a class="anchor" href="#targets">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Target</th>
+<th>Output</th>
+<th>Runtime shipped</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>html</code></td>
+<td>folder</td>
+<td>none (your HTML/JS)</td>
+</tr>
+<tr>
+<td><code>web-2d</code></td>
+<td>folder</td>
+<td>nord.js + Phaser</td>
+</tr>
+<tr>
+<td><code>web-3d</code></td>
+<td>folder</td>
+<td>nord.js + Babylon packages used + Havok wasm</td>
+</tr>
+<tr>
+<td><code>web-wasm-game</code></td>
+<td>folder</td>
+<td><code>game.wasm</code> + macroquad bundle</td>
+</tr>
+<tr>
+<td><code>web-wasm-app</code></td>
+<td>folder</td>
+<td>eframe wasm + glue</td>
+</tr>
+<tr>
+<td>mac app</td>
+<td><code>Name.app</code> (+ <code>.dmg</code>)</td>
+<td>NordPlayer shell wrapping any of the above</td>
+</tr>
+<tr>
+<td><code>-t auto</code> (default) picks from the project <code>type</code>. <code>nord doctor</code> recommends one.</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id="common-options">Common options<a class="anchor" href="#common-options">#</a></h2>
+<pre class="code" data-lang=""><code>nord build my-game --minify              # smaller JS/JSON
+nord build my-game --optimize            # lossless PNG recompress, WAV→MP3 if ffmpeg is installed
+nord build my-game --zip                 # also dist.zip (itch.io style)
+nord build my-game --single-file         # one index.html that opens from file://
+nord build my-game -o ../site            # custom output folder</code></pre>
+<p>In the editor: <strong>Project → Export…</strong> shows the same options and a size report.</p>
+<h2 id="output-layout">Output layout<a class="anchor" href="#output-layout">#</a></h2>
+<pre class="code" data-lang=""><code>dist/  index.html  nord.json  scenes/ prefabs/ scripts/ assets/  runtime/  vendor/</code></pre>
+<p><code>nord.json</code> lists every file with size and sha256. All paths are relative, so sub-folder hosting works.</p>
+<h2 id="hosting">Hosting<a class="anchor" href="#hosting">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Where</th>
+<th>How</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Local</td>
+<td><code>cd dist &amp;&amp; python3 -m http.server 8000</code></td>
+</tr>
+<tr>
+<td>Double-click</td>
+<td>build with <code>--single-file</code> (folder builds need a server: browsers block modules/<code>fetch</code> on <code>file://</code>)</td>
+</tr>
+<tr>
+<td>itch.io</td>
+<td><code>--zip</code>, upload as HTML, tick <em>played in the browser</em>, set viewport to the game size</td>
+</tr>
+<tr>
+<td>GitHub Pages</td>
+<td>commit <code>dist/</code> to <code>gh-pages</code> (or <code>/docs</code>) and enable Pages</td>
+</tr>
+<tr>
+<td>nginx</td>
+<td><code>root /srv/game;</code> and serve <code>.wasm</code> as <code>application/wasm</code> (default mime types do)</td>
+</tr>
+<tr>
+<td>Netlify / Cloudflare Pages / S3</td>
+<td>upload the folder</td>
+</tr>
+<tr>
+<td>Full notes: <code>docs/HOSTING.md</code>.</td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id="mac-app">Mac app<a class="anchor" href="#mac-app">#</a></h2>
+<pre class="code" data-lang=""><code>nord bundle-mac my-game --name &quot;My Game&quot; --icon icon.png --dmg</code></pre>
+<p>Wraps the web build in <code>NordPlayer</code> (a wry+tao window shell) and generates the icon set; ad-hoc code signing happens on macOS. Window size, fullscreen and persistent storage follow the project settings.
+<code>export.mac.bundleId</code> and <code>export.mac.icon</code> live in <code>nord.project.json</code>.</p>
+<h2 id="the-offline-guarantee">The offline guarantee<a class="anchor" href="#the-offline-guarantee">#</a></h2>
+<p>Every build is scanned for external <code>http(s)://</code> references and <strong>fails</strong> if your own files contain one (<code>nord check-offline &lt;dir&gt;</code>). Allow a host on purpose with a <code>.offline-allow</code> file.</p>
+<aside class="box warn"><div class="box-title">Careful</div><p>Not done yet: texture-atlas packing and lossy PNG quantisation (task M4-11). The macOS shell and CI bundle step are verified on macOS CI only — see <code>docs/KNOWN_ISSUES.md</code>.</p>
+</aside>
+<div class="pager"><a href="rust-wasm.html"><small>← Previous</small>Rust / WASM</a><a href="performance.html"><small>Next →</small>Performance &amp; debugging</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#targets">Targets </a><a href="#common-options">Common options </a><a href="#output-layout">Output layout </a><a href="#hosting">Hosting </a><a href="#mac-app">Mac app </a><a href="#the-offline-guarantee">The offline guarantee </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

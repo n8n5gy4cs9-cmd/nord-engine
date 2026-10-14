@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 174/186 tasks (94%)** · updated 2026-10-13
+**Overall: 175/187 tasks (94%)** · updated 2026-10-14
 
 | Milestone | Progress |
 |---|---|
@@ -14,7 +14,7 @@
 | M4 Export | 8/11 (73%) |
 | M5 Rust/WASM | 9/9 (100%) |
 | M6 Library | 42/42 (100%) |
-| M7 Docs | 19/19 (100%) |
+| M7 Docs | 20/20 (100%) |
 | M8 Polish & portability | 13/20 (65%) |
 | M9 Desktop apps | 16/16 (100%) |
 
@@ -206,6 +206,7 @@ _manual, guides, tutorials, in-editor docs_
 - [x] **M7-17** Short terrain shader app tutorial covering Play, export and interaction
 - [x] **M7-18** Visible mobile touch-control guide and reusable Star-Not joystick/buttons
 - [x] **M7-19** Add manual noindex metadata and server upload files
+- [x] **M7-20** Organize manual output into folders and rebuild only changed files
 
 ## M8 — Polish & portability
 _dmg, CI, Windows, Linux, perf_

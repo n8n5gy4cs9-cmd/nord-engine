@@ -65,7 +65,13 @@ for (const pre of document.querySelectorAll('pre.code')) {
 // ---- search (index is a plain script so it works from file:// and the editor webview)
 const q = document.getElementById('q'), res = document.getElementById('results');
 let idx = null;
-const loadIdx = () => idx ?? (idx = new Promise((ok) => { const s = document.createElement('script'); s.src = 'assets/search-index.js'; s.onload = () => ok(window.NORD_SEARCH); s.onerror = () => ok([]); document.head.append(s); }));
+const manualRoot = window.NORD_MANUAL_ROOT ?? '';
+const script = src => new Promise(ok => { const s = document.createElement('script'); s.src = manualRoot + src; s.onload = () => ok(true); s.onerror = () => ok(false); document.head.append(s); });
+const loadIdx = () => idx ?? (idx = (async () => {
+  if (!await script('assets/search-manifest.js')) return [];
+  await Promise.all((window.NORD_SEARCH_FILES ?? []).map(script));
+  return Object.values(window.NORD_SEARCH_PARTS ?? {}).flat();
+})());
 const esc = (s) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
 q.addEventListener('input', async () => {
   const query = q.value;
@@ -80,7 +86,7 @@ q.addEventListener('input', async () => {
   }
   if (q.value !== query) return;
   hits.sort((a, b) => b[0] - a[0]);
-  res.innerHTML = hits.slice(0, 12).map(([, p]) => { const i = p.x.toLowerCase().indexOf(terms[0]); const snip = i >= 0 ? p.x.slice(Math.max(0, i - 40), i + 100) : p.x.slice(0, 100); return `<a href="${p.f}"><b>${esc(p.t)}</b> <small>${p.s}</small><small>${esc(snip)}…</small></a>`; }).join('') || '<a>No results</a>';
+  res.innerHTML = hits.slice(0, 12).map(([, p]) => { const i = p.x.toLowerCase().indexOf(terms[0]); const snip = i >= 0 ? p.x.slice(Math.max(0, i - 40), i + 100) : p.x.slice(0, 100); return `<a href="${manualRoot + p.f}"><b>${esc(p.t)}</b> <small>${p.s}</small><small>${esc(snip)}…</small></a>`; }).join('') || '<a>No results</a>';
   res.hidden = false;
 });
 document.addEventListener('click', (e) => { if (!res.contains(e.target) && e.target !== q) res.hidden = true; });
@@ -89,7 +95,7 @@ document.addEventListener('keydown', (e) => { if (e.key === '/' && document.acti
 // ---- runnable snippets: CodeMirror (vendored) editor + sandboxed iframe running the real core runtime
 const lives = document.querySelectorAll('.live');
 if (lives.length) {
-  const core = new URL('runtime/core/index.js', location.href).href;
+  const core = new URL(manualRoot + 'runtime/core/index.js', location.href).href;
   for (const box of lives) {
     const pre = box.querySelector('.live-src'), code = pre.textContent;
     const bar = document.createElement('div'); bar.className = 'live-bar';

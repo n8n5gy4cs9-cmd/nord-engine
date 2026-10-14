@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Multi-Platform Compressed Textures — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../../index.html"><img src="../../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../../index.html">Babylon documentation library</a><a href="../../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Multi-Platform Compressed Textures</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="compressed-textures-for-gpu">Compressed Textures for GPU<a class="anchor" href="#compressed-textures-for-gpu">#</a></h2>
+<p>There are special texture formats optimized for use by graphics processors. They differ from formats whose primary purpose is to hold / transmit image data for use on a CPU. Examples of image formats are .JPG and .PNG. GPU-targeted formats may not be ones you are likely to have heard of. The file extensions for some of them are also not well established.</p>
+<h2 id="advantages-of-compressed-textures">Advantages of Compressed Textures<a class="anchor" href="#advantages-of-compressed-textures">#</a></h2>
+<p>Unlike image file formats, the data in compressed textures is passed to the graphics hardware in its compressed form. A .JPG can be very small on disk, but it gets expanded by the CPU on its way to the GPU. Retaining the compressed form is what gives these formats their advantages. They are:</p>
+<ul>
+<li>They have a smaller RAM footprint. This is most helpful for mobile devices that share memory between CPU and graphics cores. Since textures are multi-dimensional, space requirements can escalate very quickly for scenes with many large textures. Higher-end mobile devices have been able to support up to 4k x 4k textures for some time. These allow for scenes where the camera can approach things, like a highly detailed object without a repeating pattern, without looking blurry when very close.</li>
+<li>More compressed image &quot;blocks&quot; can fit into the processor cache at any one time. Caching / data access patterns are very important for high-performance computing (HPC), and graphics is a form of it.</li>
+<li>Finally, they can lower battery usage, especially during loading. Image formats need to be unpacked. Back when .JPG was designed, battery-powered computers were mostly just luggables. The problems being addressed were network speed and disk space. Who cared then how much CPU was required for reconstituting an image, as long as it was much faster than the network? Further, mipmaps (ever smaller versions for each power of 2 less in dimensions) need to be generated for image types. Mipmaps can be built into compressed texture formats.</li>
+</ul>
+<h2 id="the-catch">The Catch<a class="anchor" href="#the-catch">#</a></h2>
+<p>There is more than one format for compressed textures. Due to their low-level hardware implementation, support for a given format cannot be added like a software driver update. Support is built right into the circuitry. This is less of a problem when building an iOS-, Android-, or DirectX-targeted application. For a BJS scene that should ideally run on any device / browser, this is a big problem. Having separate HTML pages for different devices is not really an acceptable solution.</p>
+<h2 id="the-solution">The Solution<a class="anchor" href="#the-solution">#</a></h2>
+<p>Starting with Babylon.js v3.0, the compressed texture formats supported by a browser / device can be <span>detected</span>. This is done when <code>const engine = new BABYLON.Engine(...);</code> is encountered. So now your engine instance knows which compressed formats could be used here. That does not solve that different devices will report different results though.</p>
+<p>You can also use this playground: <span class="muted">Online playground (not embedded offline)</span> to test which format is supported on your devices.</p>
+<p>There is no getting around the fact that you need to provide multiple versions of each texture in different formats (more on that later). The only way to do that is to have different files for each variant, obviously, but the naming structure must be formalized so the image format file described in a .babylon file can be substituted programmatically. The image format file for each texture still needs to be on the server as well, in cases where it needs to be used.</p>
+<h3 id="khronos-texture-container-format-ktx-files">Khronos Texture Container Format, <span>.KTX</span> files<a class="anchor" href="#khronos-texture-container-format-ktx-files">#</a></h3>
+<p>Now would be a good time to add the aside that, because this data is not directly used by CPUs and GPUs do not actually &quot;read&quot; files, there may or may not be an actual native file format for a given compression format. Even for those that do have an associated file format, writing separate load code for each would be tedious and would require support.</p>
+<p>Enter compressed texture container files, which can handle multiple or even all texture types. There are a few container file formats as well (.DDS, .PVR, and .KTX). Container files can also have all the mipmaps of a texture inside them. BJS implements this feature using KTX container files. KTX is specifically designed for OpenGL and pushes all the arcane code needed to handle any format OpenGL supports onto the file encoder / generator, even for future formats, without us doing anything other than adding extension detection, like ASTC.</p>
+<p>Here is a chart of all the formats currently possible for WebGL, listed in the order chosen when hardware supports multiple formats (tie breakers):</p>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Extension</th>
+<th>Description</th>
+<th>Alpha Capable</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ASTC</td>
+<td>*-astc.ktx</td>
+<td>Newly approved for WebGL, most powerful, cross-platform. Implemented in many newer processors, but not exposed by any browsers yet.</td>
+<td>Always</td>
+</tr>
+<tr>
+<td>DXT</td>
+<td>*-dxt.ktx</td>
+<td>Direct X, available primarily on Desktop Operating Systems.</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>PVRTC</td>
+<td>*-pvrtc.ktx</td>
+<td>Proprietary. Power VR chips (includes all Apple iOS processors). Must be square.</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>ETC2</td>
+<td>*-etc2.ktx</td>
+<td>ETC1 + alpha capable. Required by WebGL 2 (or at least OpenGL ES 3, on which WebGL 2 is based).</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>ATC</td>
+<td>*-atc.ktx</td>
+<td>Format originating at AMD. No encoder which supports .KTX found at this time.</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>ETC1</td>
+<td>*etc1.ktx</td>
+<td>Wide support among older mobile devices. Need to fall back to images for .PNG files.</td>
+<td>No</td>
+</tr>
+</tbody></table>
+<p>Once your engine instance is established, you need to indicate the compressed formats that you have put on the server from which it can pick from. This should probably be done very early, as follows:</p>
+<pre class="code" data-lang="javascript"><code>// order &amp; case do not matter
+const available = [&quot;-astc.ktx&quot;, &quot;-dxt.ktx&quot;, &quot;-pvrtc.ktx&quot;, &quot;-etc2.ktx&quot;, &quot;-etc1.ktx&quot;];
+const formatUsed = engine.setTextureFormatToUse(available);</code></pre>
+<h2 id="generation-using-pvrtextool">Generation using <span>PVRTexTool</span><a class="anchor" href="#generation-using-pvrtextool">#</a></h2>
+<p>There are multiple encoder programs for .KTX files (see .KTX link above). Most also provide for batch processing, since many formats are very CPU intense. PVRTexTool has been narrowed down for providing additional support. It has a lot going for it, including both a GUI &amp; command line interface for Windows, OSX, and Linux. It is also the only encoder which does PVRTC format, which is needed on iOS.</p>
+<p>If you are going to do the encoding on your own in the PVRTexTool GUI tool, there are a few things to keep in mind:</p>
+<ul>
+<li>The texture must be encoded with the Y-axis flipped. (&#39;Vertical Flipped&#39; checkbox at bottom of Encode window)</li>
+<li>PVRTC textures must be square for iOS. (&#39;Make Square&#39; button in the Toolbox window using Resize tool)</li>
+<li>ASTC support is dropped in from an <span>external program</span> from ARM that you put on the path. (See PVRTexTool <span>manual</span>, section 1.2.1)</li>
+<li>DXT support is done with &#39;BCx&#39; names. (Better UI design for WebGL has been <span>requested</span>.)</li>
+<li>Indicating to generate mipmaps should really be done as well. (checkbox to the left of &#39;Vertical Flipped&#39;)</li>
+<li>Always use a Linear-RGB encoding type.</li>
+<li>Not sure a power of 2 size is absolutely required, but scripts below size up to the next power of 2 size.</li>
+</ul>
+<h3 id="dos-batch-scripts-for-pvrtextool">DOS batch scripts for PVRTexTool<a class="anchor" href="#dos-batch-scripts-for-pvrtextool">#</a></h3>
+<p>There are 2 batch scripts in the <span>BJS repo</span>. They both require PVRTexToolCLI.exe to be put on the execution path, just as the ASTC drop-in was. Doing both at the same time, and locating these 2 .BAT files in the same place, seems like a good idea.</p>
+<h4 id="make-ktx-batch-bat">make-ktx-batch.bat<a class="anchor" href="#make-ktx-batch-bat">#</a></h4>
+<p>This script goes through the current directory and writes a <code>ktx-batch.bat</code> file there. When you then call <code>ktx-batch.bat</code>, it will make an ASTC, DXT, PVRTC, ETC2, and ETC1 file for each .JPG and .PNG in the directory. Note that a .PNG extension indicates that an alpha-capable subtype should be used. ETC1 does not support alpha, so the .PNG will be used as a fallback if ETC1 ends up being chosen.</p>
+<p>There is a single argument that indicates the quality of the texture. Specify D for developer-level quality, Q for production quality. Tip: unless you are testing whether this fixes hanging issues on mobile devices, you could delay enabling this until all your textures are finalized. Also, do not rely on the results you get from using D on a desktop. DXT does not really have variable quality.</p>
+<h4 id="ktx-files-bat">ktx-files.bat<a class="anchor" href="#ktx-files-bat">#</a></h4>
+<p>This script will create the 5 variations of an image file. It can run for a very long time for the Q setting. The ASTC type will use 100% of all your cores, so your system can become pretty unusable. It&#39;s a good idea to kick it off at the end of the day. Also, due to the running time, it will skip any files that already exist. To redo files, delete the existing versions first.</p>
+<p>To recap (in a command shell):</p>
+<pre class="code" data-lang="dos"><code>cd my-directory-with-images
+make-ktx-batch Q
+ktx-batch</code></pre>
+<h3 id="node-js-script-for-pvrtextool">Node.js script for PVRTexTool<a class="anchor" href="#node-js-script-for-pvrtextool">#</a></h3>
+<p>This is a script that generates PVRTC, ETC1, ETC2, and ASTC textures from PNG and JPG files. It can run on Node.js. It can also be configured to generate all texture types or specific ones. More information about how to install and configure the script can be found <span>here</span>.</p>
+<h3 id="basis-file-format">Basis file format<a class="anchor" href="#basis-file-format">#</a></h3>
+<p>Another way to store compressed image textures is through the .basis file format.</p>
+<p>See: <span>https://github.com/BinomialLLC/basis_universal</span></p>
+<p>Basis Universal is a &quot;supercompressed&quot; GPU texture and texture video compression system that outputs a highly compressed intermediate file format (.basis) that can be quickly transcoded to a wide variety of GPU texture compression formats: PVRTC1 4bpp RGB, BC7 mode 6 RGB, BC1-5, ETC1, and ETC2. We will be adding ASTC RGB or RGBA, BC7 mode 4/5 RGBA, and PVRTC1 4bpp RGBA next. Basis files support non-uniform texture arrays, so cubemaps, volume textures, texture arrays, mipmap levels, video sequences, or arbitrary texture &quot;tiles&quot; can be stored in a single file. The compressor is able to exploit color and pattern correlations across the entire file, so multiple images with mipmaps can be stored very efficiently in a single file.</p>
+<p>Basic example: <span class="muted">Online playground (not embedded offline)</span>
+Basis vs png example scene: <span class="muted">Online playground (not embedded offline)</span></p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#compressed-textures-for-gpu">Compressed Textures for GPU </a><a href="#advantages-of-compressed-textures">Advantages of Compressed Textures </a><a href="#the-catch">The Catch </a><a href="#the-solution">The Solution </a><a href="#generation-using-pvrtextool">Generation using PVRTexTool </a></aside></div>
+<script src="../../../../../../../assets/cm.classic.js"></script><script src="../../../../../../../assets/manual.js"></script></body></html>

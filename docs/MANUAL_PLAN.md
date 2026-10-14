@@ -1,10 +1,12 @@
 # Manual, guides & tutorials plan (M7)
 
-**Status: implemented.** `node tools/build-manual.mjs` builds `docs/manual/` (committed, so the editor Docs tab works without a build) from `docs/manual-src/*.md` (+ `_namespaces.json`, `tools/manual/components-data.mjs`) and the repo sources (runtime JSDoc/comments, `schema.rs`, CLI doc comments, `library/INDEX.json`, templates/examples, shortcuts, `docs/*.md`). `--check` builds to a temp dir, runs every `nord-live` snippet against the real core runtime, and fails on broken links/anchors or external URLs. Markdown extras: `::: dummies|tip|warn|todo` boxes, ```` ```nord-live ````, heading ids `{#id}`. After changing any source above, rebuild and commit `docs/manual/`. Desktop apps are documented after M9.
+**Status: implemented.** `node tools/build-manual.mjs` updates `docs/manual/` (committed, so the editor Docs tab works without a build) from `docs/manual-src/*.md` (+ `_namespaces.json`, `tools/manual/components-data.mjs`) and the repo sources (runtime JSDoc/comments, `schema.rs`, CLI doc comments, `library/INDEX.json`, templates/examples, shortcuts, `docs/*.md`). The builder compares bytes and writes only changed output files; unchanged files keep their modification times for fast FTP synchronization. A generated manifest removes only stale builder-owned files. `--check` builds to a temp dir, runs every `nord-live` snippet against the real core runtime, and fails on broken links/anchors or external URLs. Markdown extras: `::: dummies|tip|warn|todo` boxes, ```` ```nord-live ````, heading ids `{#id}`. After changing any source above, run the updater and commit its changed files. Desktop apps are documented after M9.
 
 Output: `docs/manual/` — static HTML, offline, built by `tools/build-manual.mjs` from Markdown in `docs/manual-src/`
 (vendored `marked`; syntax via CodeMirror in read-only mode; "Run" buttons for live examples using the vendored runtime).
 Visual: `assets/docs/` graphics (banner, section icons, diagrams). Same viewer embedded in the editor (Docs tab).
+
+Generated HTML is foldered by ownership and subject: `nord/{start,manual,tutorials,guides,api,components,reference,appendix}/`, `engines/phaser/{4.2,4.1-archive}/`, and `engines/babylon/{9.30,guides}/`. Large engine packages use namespace/hash buckets so no directory contains thousands of files. Search data is split into stable Nord/engine shards, so a small Nord edit does not rewrite the full engine index. The HTML shell and styling stay shared and relative-path safe for both `file://` and `/__docs/`.
 
 ## Live code blocks
 Fenced block ```` ```nord-live ```` → renders an editable CodeMirror + running preview iframe (Phaser/Babylon vendored). "Copy to project" button.

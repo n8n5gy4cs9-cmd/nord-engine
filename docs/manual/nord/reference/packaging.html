@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Packaging — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../api/api.html">API reference</a><a href="../api/api-namespaces.html">game.* namespaces</a><a href="../api/api-nordscript.html">NordScript</a><a href="../api/api-entity.html">Entity</a><a href="../api/api-scene.html">Scene</a><a href="../api/api-game.html">Game</a><a href="../api/api-input.html">Input</a><a href="../api/api-events.html">Events</a><a href="../api/api-save.html">Save</a><a href="../api/api-audio.html">Audio</a><a href="../api/api-ui.html">UI</a><a href="../api/api-scheduler.html">Scheduler</a><a href="../api/api-rng.html">Rng</a><a href="../api/api-pool.html">Pool</a><a href="../api/api-loader.html">Loader</a><a href="../api/api-memorystorage.html">MemoryStorage</a><a href="../api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../api/api-matteradapter.html">MatterAdapter</a><a href="../api/api-havokadapter.html">HavokAdapter</a><a href="../api/api-helpers.html">Math &amp; helpers</a><a href="../api/api-exports.html">All Nord public exports</a><a href="../api/api-desktop.html">Desktop bridge</a><a href="../api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../components/component-sprite.html">sprite</a><a href="../components/component-animatedSprite.html">animatedSprite</a><a href="../components/component-text.html">text</a><a href="../components/component-tilemap.html">tilemap</a><a href="../components/component-parallax.html">parallax</a><a href="../components/component-particles.html">particles</a><a href="../components/component-camera.html">camera</a><a href="../components/component-light.html">light</a><a href="../components/component-mesh.html">mesh</a><a href="../components/component-model.html">model</a><a href="../components/component-material.html">material</a><a href="../components/component-skybox.html">skybox</a><a href="../components/component-postProcess.html">postProcess</a><a href="../components/component-rigidbody.html">rigidbody</a><a href="../components/component-collider.html">collider</a><a href="../components/component-trigger.html">trigger</a><a href="../components/component-audioSource.html">audioSource</a><a href="../components/component-audioListener.html">audioListener</a><a href="../components/component-uiPanel.html">uiPanel</a><a href="../components/component-uiLabel.html">uiLabel</a><a href="../components/component-uiImage.html">uiImage</a><a href="../components/component-uiBar.html">uiBar</a><a href="../components/component-uiButton.html">uiButton</a><a href="../components/component-path.html">path</a><a href="../components/component-spawner.html">spawner</a></details><details open><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html" class="cur" aria-current="page">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../engines/babylon/9.30/index.html">Babylon 9.30.0 API</a><a href="../../engines/phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../engines/babylon/guides/index.html">Babylon documentation library</a><a href="../../engines/phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Reference / Nord Engine</div><h1>Packaging</h1>
+<p>Nord does <strong>resource swap</strong>, not per-app compilation: a prebuilt <code>nord-player</code> (wry + tao shell, plus the <code>nord-desktop</code> backend) is copied and
+your exported web build is placed next to it as <code>game/</code>. Build the player once per OS: <code>cargo build --release -p nord-player --features shell</code>
+(macOS: WKWebView; Windows: WebView2 — preinstalled on Win 10/11; Linux: <code>libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev libxdo-dev</code>).</p>
+<table>
+<thead>
+<tr>
+<th>Target</th>
+<th>Command</th>
+<th>Output</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>macOS</td>
+<td><code>nord bundle-mac &lt;project&gt; [--dmg] [--icon icon.png]</code></td>
+<td><code>&lt;Name&gt;.app</code> (+ <code>.dmg</code>), ad-hoc signed on a Mac</td>
+</tr>
+<tr>
+<td>Windows</td>
+<td><code>nord bundle-portable &lt;project&gt; --os windows --player &lt;nord-player.exe&gt;</code></td>
+<td><code>&lt;Name&gt;/&lt;Name&gt;.exe + game/ + icon.ico + register.reg</code>, <code>&lt;Name&gt;-windows.zip</code></td>
+</tr>
+<tr>
+<td>Linux</td>
+<td><code>nord bundle-portable &lt;project&gt; --os linux --player &lt;nord-player&gt;</code></td>
+<td><code>&lt;name&gt;/&lt;name&gt; + game/ + &lt;name&gt;.desktop + &lt;name&gt;.png</code>, <code>&lt;name&gt;-linux.tar.gz</code></td>
+</tr>
+<tr>
+<td>Web</td>
+<td><code>nord export &lt;project&gt;</code></td>
+<td>static folder / zip</td>
+</tr>
+</tbody></table>
+<p><code>nord bundle-portable</code> can run on any OS (it only copies files); the <em>player binary</em> must be built for the target OS (CI does this, see
+<code>.github/workflows/ci.yml</code>). Engine itself: <code>./build.sh</code> → <code>dist/Nord Engine.app</code>, <code>dist/windows/</code>, <code>dist/linux/</code>.</p>
+<h2 id="manifest-fields-that-affect-packaging-nord-project-json-desktop">Manifest fields that affect packaging (<code>nord.project.json</code> → <code>desktop</code>)<a class="anchor" href="#manifest-fields-that-affect-packaging-nord-project-json-desktop">#</a></h2>
+<pre class="code" data-lang="json"><code>&quot;desktop&quot;: {
+  &quot;permissions&quot;: { &quot;…&quot;: &quot;see DESKTOP_APPS.md&quot; },
+  &quot;singleInstance&quot;: true,
+  &quot;schemes&quot;: [&quot;nordnotes&quot;],
+  &quot;fileTypes&quot;: [{ &quot;name&quot;: &quot;Markdown&quot;, &quot;ext&quot;: [&quot;md&quot;, &quot;markdown&quot;], &quot;mime&quot;: &quot;text/markdown&quot; }]
+}</code></pre>
+<ul>
+<li><strong>macOS</strong> → <code>CFBundleURLTypes</code> / <code>CFBundleDocumentTypes</code> in Info.plist (double-click / <code>open -a</code> / <code>nordnotes://…</code> reach the app as the <code>open</code> event + <code>app.launch()</code>).</li>
+<li><strong>Linux</strong> → <code>MimeType=</code> + <code>x-scheme-handler/…</code> in the <code>.desktop</code> file; install it to <code>~/.local/share/applications/</code> and run <code>update-desktop-database</code>.</li>
+<li><strong>Windows</strong> → <code>register.reg</code> (HKCU). Edit the <code>C:\Path\To\…</code> install path, double-click to register file types and URL schemes. An installer should do this itself.</li>
+<li>Version shown in the bundle comes from <code>nord.json.version</code> (falls back to the engine version). Icon: <code>--icon</code>, else <code>icon.png</code> in the project, else the Nord logo.</li>
+</ul>
+<h2 id="macos-signing-notarisation-dmg">macOS: signing, notarisation, dmg<a class="anchor" href="#macos-signing-notarisation-dmg">#</a></h2>
+<p><code>nord bundle-mac</code> / <code>build.sh</code> sign <strong>ad-hoc</strong> (<code>codesign -s -</code>): fine on your own Mac; a downloaded copy needs right-click → Open. To distribute:</p>
+<ol>
+<li>Join the Apple Developer Program; create a <em>Developer ID Application</em> certificate (Xcode → Settings → Accounts → Manage Certificates).</li>
+<li>Sign with the hardened runtime (needed for notarisation; the player needs no special entitlements — it uses WKWebView and no JIT of its own):
+<code>codesign --force --deep --options runtime --timestamp --sign &quot;Developer ID Application: NAME (TEAMID)&quot; &quot;App.app&quot;</code></li>
+<li>Zip and notarise: <code>ditto -c -k --keepParent App.app App.zip</code>, then
+<code>xcrun notarytool submit App.zip --apple-id you@x.com --team-id TEAMID --password &lt;app-specific-password&gt; --wait</code>
+(store credentials once with <code>xcrun notarytool store-credentials</code>).</li>
+<li>Staple: <code>xcrun stapler staple App.app</code>; check: <code>spctl -a -vvv -t install App.app</code>.</li>
+<li>dmg: <code>hdiutil create -volname &quot;App&quot; -srcfolder App.app -ov -format UDZO App.dmg</code>, then sign + notarise + staple the dmg too
+(<code>codesign --sign &quot;Developer ID…&quot; App.dmg</code>; <code>notarytool submit App.dmg …</code>; <code>stapler staple App.dmg</code>).</li>
+<li>Apps that read user folders (Documents, Downloads…) trigger the OS permission prompts automatically; add <code>NSDesktopFolderUsageDescription</code>-style keys
+only if you extend Info.plist yourself. Sandboxing (<code>com.apple.security.app-sandbox</code>) is optional and <strong>not</strong> enabled: our permission manifest is an
+application-level guard, not an OS sandbox (ADR-020).
+<em>Not verifiable on Linux; steps follow Apple&#39;s documented flow — report problems.</em></li>
+</ol>
+<h2 id="windows">Windows<a class="anchor" href="#windows">#</a></h2>
+<ul>
+<li>Portable zip works as is (WebView2 runtime ships with Windows 10/11; for older systems bundle Microsoft&#39;s evergreen bootstrapper).</li>
+<li>SmartScreen warns for unsigned executables. Sign with <code>signtool sign /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 /a App.exe</code> (a code-signing certificate is needed).</li>
+<li>Installer (optional, later): Inno Setup / WiX wrapping the folder; write the <code>register.reg</code> entries from there; autostart is done by the app via <code>app.setAutostart()</code> (HKCU\…\Run).</li>
+</ul>
+<h2 id="linux">Linux<a class="anchor" href="#linux">#</a></h2>
+<ul>
+<li><code>tar.gz</code> runs anywhere with webkit2gtk-4.1 + gtk3 installed. <code>.desktop</code> + icon → <code>~/.local/share/applications</code>, <code>~/.local/share/icons</code>.</li>
+<li>AppImage (optional): put the folder in an AppDir (<code>AppRun</code> → the exe), add the <code>.desktop</code> and icon, run <code>appimagetool</code>; <code>.deb</code>: <code>dpkg-deb --build</code> of <code>/opt/&lt;name&gt;</code> + <code>/usr/share/applications/&lt;name&gt;.desktop</code> (depends: <code>libwebkit2gtk-4.1-0, libgtk-3-0, libayatana-appindicator3-1</code>).</li>
+<li>Wayland: global shortcuts and tray icons depend on the compositor; X11/XWayland always works.</li>
+</ul>
+<h2 id="auto-update-strategy-only-opt-in">Auto-update (strategy only, opt-in)<a class="anchor" href="#auto-update-strategy-only-opt-in">#</a></h2>
+<p>Not built in. Recommended: the app checks a JSON file with <code>desktop.http.fetch</code> (declare the host in <code>permissions.net</code>), downloads the new bundle with the same API
+into <code>appData</code>, verifies a SHA-256 from the signed manifest, then asks the user (<code>dialog.confirm</code>) and reveals/launches it (<code>shell.reveal</code>). Never self-modify a signed bundle in place.</p>
+<div class="pager"><a href="desktop-apps-spec.html"><small>← Previous</small>Desktop apps spec</a><a href="engine-docs.html"><small>Next →</small>Phaser &amp; Babylon documentation</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#manifest-fields-that-affect-packaging-nord-project-json-desktop">Manifest fields that affect packaging ( nord.project.json → desktop ) </a><a href="#macos-signing-notarisation-dmg">macOS: signing, notarisation, dmg </a><a href="#windows">Windows </a><a href="#linux">Linux </a><a href="#auto-update-strategy-only-opt-in">Auto-update (strategy only, opt-in) </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

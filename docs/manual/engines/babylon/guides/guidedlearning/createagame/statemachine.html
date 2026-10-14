@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Setting Up A State Machine — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../index.html"><img src="../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../nord/api/api.html">API reference</a><a href="../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../nord/api/api-game.html">Game</a><a href="../../../../../nord/api/api-input.html">Input</a><a href="../../../../../nord/api/api-events.html">Events</a><a href="../../../../../nord/api/api-save.html">Save</a><a href="../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../nord/components/component-text.html">text</a><a href="../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../nord/components/component-light.html">light</a><a href="../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../nord/components/component-model.html">model</a><a href="../../../../../nord/components/component-material.html">material</a><a href="../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../nord/components/component-path.html">path</a><a href="../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../nord/reference/components.html">Component index</a><a href="../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../index.html">Babylon documentation library</a><a href="../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Setting Up A State Machine</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><p>It&#39;s definitely possible to use a single scene for the entire application, but for my game, I wanted to separate the states into individual scenes. So, I created a state machine to handle rendering the different scenes in the game.</p>
+<h2 id="app-ts">App.ts<a class="anchor" href="#app-ts">#</a></h2>
+<p>Recall from the <a href="gettingsetup.html">Create a Scene</a> section of the getting set up tutorial that we made an app.ts file. This is going to be our main file that handles our scene creation and rendering. Starting with the constructor, we&#39;re going to break up our scene creation and render-loop call into separate functions.</p>
+<h2 id="states">States<a class="anchor" href="#states">#</a></h2>
+<p>How I went about this was by outlining all of the different scenes I would need for the game:</p>
+<ul>
+<li>START</li>
+<li>CUTSCENE</li>
+<li>GAME</li>
+<li>LOSE</li>
+</ul>
+<p>The reason there&#39;s no win or pause state is because those still use the game scene, so it still needs to be able to render the game scene. I&#39;ve made those two &quot;states&quot; GUI overlays.
+Now that we know what states we want, we can go ahead and create an enum for them. The enum simply assigns names to the states and encodes them as numbers. We also want to create a class variable <strong>_state</strong> to store the current state that we&#39;re in. Now, our app.ts should look something like this:</p>
+<pre class="code" data-lang="javascript"><code>//...imports here
+
+//enum for states
+enum State { START = 0, GAME = 1, LOSE = 2, CUTSCENE = 3 }
+
+class App {
+    // General Entire Application
+    private _scene: Scene;
+    private _canvas: HTMLCanvasElement;
+    private _engine: Engine;
+
+    //Scene - related
+    private _state: number = 0;
+
+    constructor() {
+        this._canvas = this._createCanvas();
+
+        // initialize babylon scene and engine
+        this._engine = new Engine(this._canvas, true);
+        this._scene = new Scene(this._engine);
+
+        var camera: ArcRotateCamera = new ArcRotateCamera(&quot;Camera&quot;, Math.PI / 2, Math.PI / 2, 2, Vector3.Zero(), this._scene);
+        camera.attachControl(this._canvas, true);
+        var light1: HemisphericLight = new HemisphericLight(&quot;light1&quot;, new Vector3(1, 1, 0), this._scene);
+        var sphere: Mesh = MeshBuilder.CreateSphere(&quot;sphere&quot;, { diameter: 1 }, this._scene);
+
+        // hide/show the Inspector
+        window.addEventListener(&quot;keydown&quot;, (ev) =&gt; {
+            // Shift+Ctrl+Alt+I
+            if (ev.shiftKey &amp;&amp; ev.ctrlKey &amp;&amp; ev.altKey &amp;&amp; ev.keyCode === 73) {
+                if (this._scene.debugLayer.isVisible()) {
+                    this._scene.debugLayer.hide();
+                } else {
+                    this._scene.debugLayer.show();
+                }
+            }
+        });
+
+        // run the main render loop
+        this._engine.runRenderLoop(() =&gt; {
+            this._scene.render();
+        });
+    }
+}
+new App();
+</code></pre>
+<p>I&#39;ve also gone ahead and created a separate function for creating our canvas called <span>_createCanvas</span>. Additionally, here is where we&#39;ll be starting to include the use of class variables (denoted by the <em>this</em> keyword).</p>
+<h2 id="goto-functions">GoTo Functions<a class="anchor" href="#goto-functions">#</a></h2>
+<h3 id="scene-setup">Scene Setup<a class="anchor" href="#scene-setup">#</a></h3>
+<p>The goTo functions will be in charge of setting up the scene and consist of things that happen only once.</p>
+<p>Let&#39;s start with <span>_goToStart</span> for a simple example of how to set up a scene.</p>
+<pre class="code" data-lang="javascript"><code>this._engine.displayLoadingUI();</code></pre>
+<p>Have the loading UI show while our start scene is loading.</p>
+<pre class="code" data-lang="javascript"><code>this._scene.detachControl();
+let scene = new Scene(this._engine);
+scene.clearColor = new Color4(0, 0, 0, 1);
+let camera = new FreeCamera(&quot;camera1&quot;, new Vector3(0, 0, 0), scene);
+camera.setTarget(Vector3.Zero());</code></pre>
+<p>Create the scene and camera. Any camera should be fine since it&#39;ll be fixed at the center of the scene, so I just went with the FreeCamera.</p>
+<pre class="code" data-lang="javascript"><code>//...do gui related stuff
+
+//--SCENE FINISHED LOADING--
+await scene.whenReadyAsync();
+this._engine.hideLoadingUI();
+//lastly set the current state to the start state and set the scene to the start scene
+this._scene.dispose();
+this._scene = scene;
+this._state = State.START;</code></pre>
+<p>When the scene is ready, we hide the loading UI, dispose of the current stored scene and then switch scenes and change the state to render the new scene.</p>
+<p><strong>VSCode users: At any point, if you see an error for Babylon-specific components (like Color4 and FreeCamera...), hover over it and you should see a Quick Fix option. This will add it to your imports for you. If you don&#39;t see this, you can just manually add it to your imports at the top of the file.</strong></p>
+<h3 id="gui-setup">GUI setup<a class="anchor" href="#gui-setup">#</a></h3>
+<p>For now, we&#39;ll make a simple fullscreenUI with a button to transition between scenes. GUI elements will need to be imported <code>from &quot;@babylonjs/gui&quot;</code>.</p>
+<pre class="code" data-lang="javascript"><code>//... scene setup
+
+//create a fullscreen ui for all of our GUI elements
+const guiMenu = AdvancedDynamicTexture.CreateFullscreenUI(&quot;UI&quot;);
+guiMenu.idealHeight = 720; //fit our fullscreen ui to this height
+
+//create a simple button
+const startBtn = Button.CreateSimpleButton(&quot;start&quot;, &quot;PLAY&quot;);
+startBtn.width = 0.2;
+startBtn.height = &quot;40px&quot;;
+startBtn.color = &quot;white&quot;;
+startBtn.top = &quot;-14px&quot;;
+startBtn.thickness = 0;
+startBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
+guiMenu.addControl(startBtn);
+
+//this handles interactions with the start button attached to the scene
+startBtn.onPointerDownObservable.add(() =&gt; {
+    this._goToCutScene();
+    scene.detachControl(); //observables disabled
+});</code></pre>
+<p>Here, what we&#39;re doing is creating an AdvancedDynamicTexture fullscreenUI. This is what&#39;s going to hold all of our GUI elements. We then create a simple button and add an observable to detect when we click on it. This will trigger our scene to call goToCutScene. We want to make sure that we detach the controls since it&#39;s possible that, as we hold down the mouse, goToCutScene gets called multiple times.</p>
+<h2 id="other-states">Other States<a class="anchor" href="#other-states">#</a></h2>
+<p>The lose state will follow a similar format, but for organizational and performance purposes, the cutscene and game states have slightly different structures.</p>
+<h3 id="gotolose">goToLose<a class="anchor" href="#gotolose">#</a></h3>
+<pre class="code" data-lang="javascript"><code>private async _goToLose(): Promise&lt;void&gt; {
+    this._engine.displayLoadingUI();
+
+    //--SCENE SETUP--
+    this._scene.detachControl();
+    let scene = new Scene(this._engine);
+    scene.clearColor = new Color4(0, 0, 0, 1);
+    let camera = new FreeCamera(&quot;camera1&quot;, new Vector3(0, 0, 0), scene);
+    camera.setTarget(Vector3.Zero());
+
+    //--GUI--
+    const guiMenu = AdvancedDynamicTexture.CreateFullscreenUI(&quot;UI&quot;);
+    const mainBtn = Button.CreateSimpleButton(&quot;mainmenu&quot;, &quot;MAIN MENU&quot;);
+    mainBtn.width = 0.2;
+    mainBtn.height = &quot;40px&quot;;
+    mainBtn.color = &quot;white&quot;;
+    guiMenu.addControl(mainBtn);
+    //this handles interactions with the start button attached to the scene
+    mainBtn.onPointerUpObservable.add(() =&gt; {
+        this._goToStart();
+    });
+
+    //--SCENE FINISHED LOADING--
+    await scene.whenReadyAsync();
+    this._engine.hideLoadingUI(); //when the scene is ready, hide loading
+    //lastly set the current state to the lose state and set the scene to the lose scene
+    this._scene.dispose();
+    this._scene = scene;
+    this._state = State.LOSE;
+}</code></pre>
+<h3 id="gotocutscene">goToCutScene<a class="anchor" href="#gotocutscene">#</a></h3>
+<p>The cutscene is set up normally along with the GUI; however, what we do while in this state is what allows our game to be loaded properly. If you take a look at the <span>_goToCutScene</span> function, the scene setup is the same, but <span>scene finished loading</span> is slightly different. Notice how we don&#39;t have the hideLoadingUI. For now, we need to put this in, but in the final version I actually removed it since I hide it once my animations have finished loading and then trigger it to show once we&#39;ve completed the dialogue, while the game is still loading.</p>
+<p>The most important aspect is what we do after that:</p>
+<pre class="code" data-lang="javascript"><code>var finishedLoading = false;
+await this._setUpGame().then((res) =&gt; {
+    finishedLoading = true;
+});</code></pre>
+<p>Essentially, this is telling the code to wait until <strong>_setUpGame</strong> has completed its tasks and then set <em>finishedLoading</em> to true. At this point, it may seem unnecessary since we haven&#39;t brought in our animation, nor are we loading any heavy assets, but it&#39;s very important once we&#39;ve gotten to that stage in the development process.</p>
+<p>This was an important discovery that ultimately led me to change the structure of importing and loading assets for my game to this. If we don&#39;t wait for our assets to finish importing, the async functions will tell our code to continue while the assets load in the background. This can ultimately break our transitions between scenes, as we&#39;d be moving on before things were fully loaded. I discovered this happening when playtesting the web-hosted version of my game:</p>
+<ol>
+<li>Safari had several issues relating to sounds and scene transitions</li>
+<li>Assets were taking a long time to load and thus showed undefined mesh errors</li>
+</ol>
+<p>For testing purposes, we&#39;ll add in a <em>next</em> button that takes us straight to the game state:</p>
+<pre class="code" data-lang="javascript"><code>//--PROGRESS DIALOGUE--
+const next = Button.CreateSimpleButton(&quot;next&quot;, &quot;NEXT&quot;);
+next.color = &quot;white&quot;;
+next.thickness = 0;
+next.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
+next.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
+next.width = &quot;64px&quot;;
+next.height = &quot;64px&quot;;
+next.top = &quot;-3%&quot;;
+next.left = &quot;-12%&quot;;
+cutScene.addControl(next);
+
+next.onPointerUpObservable.add(() =&gt; {
+    this._goToGame();
+});</code></pre>
+<h3 id="setupgame">_setUpGame<a class="anchor" href="#setupgame">#</a></h3>
+<p>The only thing we need to worry about here for now is:</p>
+<pre class="code" data-lang="javascript"><code>private async _setUpGame() {
+    let scene = new Scene(this._engine);
+    this._gamescene = scene;
+
+    //...load assets
+}</code></pre>
+<p><span>_setUpGame</span> is where we are pre-creating the game scene and where we start to load all of our assets.</p>
+<h3 id="gotogame">goToGame<a class="anchor" href="#gotogame">#</a></h3>
+<p>If you look at the <span>_goToGame</span> function, we&#39;ve actually encapsulated the camera setup and gui setup into their own functions. For now you can use the default UI and camera like so:</p>
+<pre class="code" data-lang="javascript"><code>private async _goToGame(){
+    //--SETUP SCENE--
+    this._scene.detachControl();
+    let scene = this._gamescene;
+    scene.clearColor = new Color4(0.01568627450980392, 0.01568627450980392, 0.20392156862745098); // a color that fit the overall color scheme better
+    let camera: ArcRotateCamera = new ArcRotateCamera(&quot;Camera&quot;, Math.PI / 2, Math.PI / 2, 2, Vector3.Zero(), scene);
+    camera.setTarget(Vector3.Zero());
+
+    //--GUI--
+    const playerUI = AdvancedDynamicTexture.CreateFullscreenUI(&quot;UI&quot;);
+    //dont detect any inputs from this ui while the game is loading
+    scene.detachControl();
+
+    //create a simple button
+    const loseBtn = Button.CreateSimpleButton(&quot;lose&quot;, &quot;LOSE&quot;);
+    loseBtn.width = 0.2
+    loseBtn.height = &quot;40px&quot;;
+    loseBtn.color = &quot;white&quot;;
+    loseBtn.top = &quot;-14px&quot;;
+    loseBtn.thickness = 0;
+    loseBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
+    playerUI.addControl(loseBtn);
+
+    //this handles interactions with the start button attached to the scene
+    loseBtn.onPointerDownObservable.add(() =&gt; {
+        this._goToLose();
+        scene.detachControl(); //observables disabled
+    });
+
+    //temporary scene objects
+    var light1: HemisphericLight = new HemisphericLight(&quot;light1&quot;, new Vector3(1, 1, 0), scene);
+    var sphere: Mesh = MeshBuilder.CreateSphere(&quot;sphere&quot;, { diameter: 1 }, scene);
+
+    //get rid of start scene, switch to gamescene and change states
+    this._scene.dispose();
+    this._state = State.GAME;
+    this._scene = scene;
+    this._engine.hideLoadingUI();
+    //the game is ready, attach control back
+    this._scene.attachControl();
+}</code></pre>
+<p>What we&#39;re doing here is setting up the scene normally and adding a simple button to test going to the lose state.</p>
+<p>We&#39;ve also moved our light and sphere objects to this function, using this specific <code>scene</code>.</p>
+<h2 id="switching-states">Switching States<a class="anchor" href="#switching-states">#</a></h2>
+<p>Now that we have our scenes set up, how do we actually render and switch between them?! Within the constructor of App.ts, we want to call <span>main</span>.</p>
+<h3 id="main">Main<a class="anchor" href="#main">#</a></h3>
+<p>The main function is where we&#39;ll be setting up our state machine. This will replace our current <code>this._engine.runRenderLoop</code> that we set up when we first <a href="gettingsetup.html">created the scene</a>.</p>
+<pre class="code" data-lang="javascript"><code>private async _main(): Promise&lt;void&gt; {
+    await this._goToStart();
+
+    // Register a render loop to repeatedly render the scene
+    this._engine.runRenderLoop(() =&gt; {
+        switch (this._state) {
+            case State.START:
+                this._scene.render();
+                break;
+            case State.CUTSCENE:
+                this._scene.render();
+                break;
+            case State.GAME:
+                this._scene.render();
+                break;
+            case State.LOSE:
+                this._scene.render();
+                break;
+            default: break;
+        }
+    });
+
+    //resize if the screen is resized/rotated
+    window.addEventListener('resize', () =&gt; {
+        this._engine.resize();
+    });
+}</code></pre>
+<p>We first call <em>await _goToStart</em> to ensure that our scene is ready to be rendered.</p>
+<p>What this switch statement does is tell our render loop how to behave based on the state that we&#39;re in. It might seem a little unnecessary to always call <em>this._scene</em> in each state, but this actually holds a reference to our current scene. Recall that we dispose of what <em>this._scene</em> was, do other detachments to that scene, create a new scene, and then reassign <em>this._scene</em> to the new scene. You could definitely use variables that reference your different scenes, but I thought this would be better since we&#39;re disposing of the scenes when not in use, and this ensures that we&#39;re rendering the right scene in the right state.</p>
+<p>Now, when we run our game and progress through the states, we should see our sphere! The app.ts file should look something like <span>this</span> now. This is a simple, working state machine! You can modify it for whatever states you&#39;ll need.</p>
+<p>If you&#39;re having trouble getting through the states, open the browser&#39;s inspector to see what error is being shown in the console (you might need to comment out the styling of the canvas to be able to open the inspector).</p>
+<h2 id="resources">Resources<a class="anchor" href="#resources">#</a></h2>
+<p><strong>Files Used:</strong></p>
+<ul>
+<li><span>app.ts</span></li>
+</ul>
+<p><strong>Follow Along:</strong></p>
+<ul>
+<li><span>sampleApp.ts</span></li>
+</ul>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#app-ts">App.ts </a><a href="#states">States </a><a href="#goto-functions">GoTo Functions </a><a href="#other-states">Other States </a><a href="#switching-states">Switching States </a><a href="#resources">Resources </a></aside></div>
+<script src="../../../../../assets/cm.classic.js"></script><script src="../../../../../assets/manual.js"></script></body></html>

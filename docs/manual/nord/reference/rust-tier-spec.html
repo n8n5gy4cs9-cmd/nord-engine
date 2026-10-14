@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Rust tier spec — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../api/api.html">API reference</a><a href="../api/api-namespaces.html">game.* namespaces</a><a href="../api/api-nordscript.html">NordScript</a><a href="../api/api-entity.html">Entity</a><a href="../api/api-scene.html">Scene</a><a href="../api/api-game.html">Game</a><a href="../api/api-input.html">Input</a><a href="../api/api-events.html">Events</a><a href="../api/api-save.html">Save</a><a href="../api/api-audio.html">Audio</a><a href="../api/api-ui.html">UI</a><a href="../api/api-scheduler.html">Scheduler</a><a href="../api/api-rng.html">Rng</a><a href="../api/api-pool.html">Pool</a><a href="../api/api-loader.html">Loader</a><a href="../api/api-memorystorage.html">MemoryStorage</a><a href="../api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../api/api-matteradapter.html">MatterAdapter</a><a href="../api/api-havokadapter.html">HavokAdapter</a><a href="../api/api-helpers.html">Math &amp; helpers</a><a href="../api/api-exports.html">All Nord public exports</a><a href="../api/api-desktop.html">Desktop bridge</a><a href="../api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../components/component-sprite.html">sprite</a><a href="../components/component-animatedSprite.html">animatedSprite</a><a href="../components/component-text.html">text</a><a href="../components/component-tilemap.html">tilemap</a><a href="../components/component-parallax.html">parallax</a><a href="../components/component-particles.html">particles</a><a href="../components/component-camera.html">camera</a><a href="../components/component-light.html">light</a><a href="../components/component-mesh.html">mesh</a><a href="../components/component-model.html">model</a><a href="../components/component-material.html">material</a><a href="../components/component-skybox.html">skybox</a><a href="../components/component-postProcess.html">postProcess</a><a href="../components/component-rigidbody.html">rigidbody</a><a href="../components/component-collider.html">collider</a><a href="../components/component-trigger.html">trigger</a><a href="../components/component-audioSource.html">audioSource</a><a href="../components/component-audioListener.html">audioListener</a><a href="../components/component-uiPanel.html">uiPanel</a><a href="../components/component-uiLabel.html">uiLabel</a><a href="../components/component-uiImage.html">uiImage</a><a href="../components/component-uiBar.html">uiBar</a><a href="../components/component-uiButton.html">uiButton</a><a href="../components/component-path.html">path</a><a href="../components/component-spawner.html">spawner</a></details><details open><summary>Reference</summary><a href="project-format.html">Project format</a><a href="components.html">Component index</a><a href="cli.html">Command line (nord)</a><a href="library-catalog.html">Library catalog</a><a href="templates-examples.html">Templates &amp; examples</a><a href="rust-tier-spec.html" class="cur" aria-current="page">Rust tier spec</a><a href="export-targets-spec.html">Export targets spec</a><a href="hosting-spec.html">Hosting notes</a><a href="desktop-apps-spec.html">Desktop apps spec</a><a href="packaging.html">Packaging</a><a href="engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../engines/babylon/9.30/index.html">Babylon 9.30.0 API</a><a href="../../engines/phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../engines/babylon/guides/index.html">Babylon documentation library</a><a href="../../engines/phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Reference / Nord Engine</div><h1>Rust tier spec</h1>
+<p>Two project types besides JS: <strong><code>wasm-game</code></strong> (macroquad + rapier2d, same scene JSON as the JS tier) and <strong><code>wasm-app</code></strong> (eframe/egui). Both run
+natively (<code>cargo run</code>) and in the browser. Decision record: ADR-019.</p>
+<h2 id="project-layout">Project layout<a class="anchor" href="#project-layout">#</a></h2>
+<pre class="code" data-lang=""><code>my-game/
+├─ nord.project.json     type: &quot;wasm-game&quot; | &quot;wasm-app&quot;
+├─ Cargo.toml            bin &quot;game&quot; (or &quot;app&quot;); depends on nord-runtime-wasm / nord-app-wasm by path; own [workspace]
+├─ src/main.rs           scripts + `launch(Registry…)`
+├─ scenes/ prefabs/ assets/   exactly like the JS tier (wasm-game)
+└─ index.html            dev page for `nord serve` (loads target/web/…); export writes its own</code></pre>
+<p>The path dependency (<code>../../crates/nord-runtime-wasm</code>) is relative to the engine checkout; New Project / hub example copies rewrite it to the
+absolute engine path.</p>
+<h2 id="building">Building<a class="anchor" href="#building">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>What</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>dev build (writes <code>target/web/game.wasm</code> or <code>app.js</code>+<code>app_bg.wasm</code>)</td>
+<td><code>nord build-rust [dir] [--release]</code> / editor <strong>Build Rust</strong></td>
+</tr>
+<tr>
+<td>web export (static folder + optional zip)</td>
+<td><code>nord export dir --target web-wasm-game | web-wasm-app [--optimize] [--zip]</code></td>
+</tr>
+<tr>
+<td>native run</td>
+<td><code>cargo run</code> in the project folder</td>
+</tr>
+<tr>
+<td>Needs <code>rustup target add wasm32-unknown-unknown</code>. <code>wasm-app</code> also needs the <code>wasm-bindgen</code> CLI **with the same version as the <code>wasm-bindgen</code> crate in</td>
+<td></td>
+</tr>
+<tr>
+<td>your Cargo.lock** (<code>cargo install wasm-bindgen-cli --version X</code>). <code>--optimize</code> uses <code>wasm-opt</code> (binaryen) when installed.</td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id="script-api-nord-runtime-wasm">Script API (<code>nord_runtime_wasm</code>)<a class="anchor" href="#script-api-nord-runtime-wasm">#</a></h2>
+<pre class="code" data-lang="rust"><code>struct Player { speed: f32 }
+impl Script for Player {
+    fn fixed_update(&amp;mut self, ctx: &amp;mut Ctx, dt: f32) { ctx.set_velocity(Some(ctx.input().axis(&quot;left&quot;,&quot;right&quot;) * self.speed), None); }
+    fn on_trigger_enter(&amp;mut self, ctx: &amp;mut Ctx, other: EntityId) { if ctx.has_tag(other, &quot;coin&quot;) { ctx.destroy(other); ctx.emit(&quot;score&quot;, 1.0); } }
+}
+fn main() { launch(Registry::new().register(&quot;player&quot;, |a: &amp;Attrs| Box::new(Player { speed: a.f32(&quot;speed&quot;, 130.0) })).prefab(&quot;prefabs/bullet.prefab.json&quot;)); }</code></pre>
+<p>Hooks: <code>start, update, fixed_update(60 Hz), on_destroy, on_collision_enter/exit, on_trigger_enter/exit, on_event(name, value), ui(egui)</code>.
+<code>Ctx</code>: <code>pos/set_pos, velocity/set_velocity(x?,y?), impulse, grounded, find/find_tag, has_tag, destroy, spawn_prefab(path,pos), emit(name,value), play(sound,vol), set_text, set_tint, play_anim, flip_x, overlap_box, camera_shake/follow/zoom, input() (axis/vec/down/pressed/released/pointer), rand(), restart()</code>.
+Everything the JSON mentions (textures, sounds, prefabs, tilemaps) is preloaded; code-only assets are listed with <code>Registry::prefab/sound/texture</code>.</p>
+<h2 id="supported-components-2d-subset">Supported components (2D subset)<a class="anchor" href="#supported-components-2d-subset">#</a></h2>
+<p><code>sprite, animatedSprite</code> (sheet meta + anims), <code>text</code>, <code>tilemap</code> (+ static collider runs for <code>collides</code>), <code>parallax</code>, <code>particles</code> (CPU emitter), <code>camera</code>
+(follow/lerp/bounds/zoom), <code>rigidbody</code> (static/dynamic/kinematic), <code>collider</code> (box/circle/capsule, trigger), <code>trigger</code>, <code>uiLabel/uiBar/uiButton/uiPanel</code> (egui),
+<code>audioSource</code> (autoplay). Not yet: lights, 3D, spawner/path components, joints, animation events.
+Units: pixels, y down, degrees; physics runs in metres at 32 px/m. Collider offsets are relative to the entity centre (sprites are centre-origin).</p>
+<h2 id="limits-gotchas">Limits / gotchas<a class="anchor" href="#limits-gotchas">#</a></h2>
+<ul>
+<li>Audio is .wav/.ogg only (macroquad). Export does not convert mp3.</li>
+<li>macroquad&#39;s JS bundle logs a harmless <code>register_plugin is not defined</code> error (quad_net section).</li>
+<li>The runtime needs the page to serve <code>nord.project.json</code>, scenes and assets next to <code>index.html</code> (the export does).</li>
+</ul>
+<h2 id="bevy-template-optional-m8-06">Bevy template (optional, M8-06)<a class="anchor" href="#bevy-template-optional-m8-06">#</a></h2>
+<p><code>rust-bevy-game</code> (hub / <code>nord new -t rust-bevy-game</code>) is a <code>wasm-app</code> project whose <code>src/main.rs</code> is a slim Bevy app (WebGL2, canvas <code>#the_canvas_id</code>). It uses the same <code>nord build-rust</code> / <code>nord export --target web-wasm-app</code> path as the egui template. Bevy has its own ECS and does not read Nord scenes; prefer <code>rust-2d-game</code> for small games.</p>
+<div class="pager"><a href="templates-examples.html"><small>← Previous</small>Templates &amp; examples</a><a href="export-targets-spec.html"><small>Next →</small>Export targets spec</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#project-layout">Project layout </a><a href="#building">Building </a><a href="#script-api-nord-runtime-wasm">Script API ( nord_runtime_wasm ) </a><a href="#supported-components-2d-subset">Supported components (2D subset) </a><a href="#limits-gotchas">Limits / gotchas </a><a href="#bevy-template-optional-m8-06">Bevy template (optional, M8-06) </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

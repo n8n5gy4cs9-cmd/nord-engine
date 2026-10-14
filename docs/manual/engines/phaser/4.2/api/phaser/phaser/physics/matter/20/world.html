@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Phaser.Physics.Matter.World — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../../../../index.html"><img src="../../../../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../../../../../babylon/9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../../index.html">Phaser 4.2.1 API</a><a href="../../../../../../../../babylon/guides/index.html">Babylon documentation library</a><a href="../../../../../../../4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Phaser.Physics.Matter.World</h1>
+<p><span class="badge">Underlying Phaser 4.2.1 API</span> <span class="badge">Class</span></p><p class="muted">Official public declarations and JSDoc from <code>phaser</code>. Use with engine objects, not directly on a Nord entity.</p><aside class="box tip"><div class="box-title">The Nord way</div><p><a href="../../../../../../../../../nord/manual/2d.html">2D manual</a> · <a href="../../../../../../../../../nord/components/component-sprite.html">sprite</a> · <a href="../../../../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a> · <a href="../../../../../../../../../nord/manual/physics.html">physics</a>. Access raw objects only when the Nord wrapper does not cover your feature. <a href="../../../../../../../../../nord/manual/reference.html#escape-hatch">How escape hatches work</a>.</p></aside><h3 id="declaration">World <a class="anchor" href="#declaration">#</a></h3><pre class="code" data-lang="ts"><code>class World extends Phaser.Events.EventEmitter</code></pre><p>The Matter World class is responsible for managing one single instance of a Matter Physics World for Phaser.</p>
+<p>Access this via <code>this.matter.world</code> from within a Scene.</p>
+<p>This class creates a Matter JS World Composite along with the Matter JS Engine during instantiation. It also
+handles delta timing, bounds, body and constraint creation and debug drawing.</p>
+<p>If you wish to access the Matter JS World object directly, see the <code>localWorld</code> property.
+If you wish to access the Matter Engine directly, see the <code>engine</code> property.</p>
+<p>This class is an Event Emitter and will proxy <em>all</em> Matter JS events, as they are received.</p>
+<h2 id="members">Public members (51)</h2><p>Private, protected and explicitly internal declarations are excluded. Inherited members belong to the base type listed in the declaration.</p><h3 id="member-constructor-0">constructor <a class="anchor" href="#member-constructor-0">#</a></h3><pre class="code" data-lang="ts"><code>constructor(scene: Phaser.Scene, config: Phaser.Types.Physics.Matter.MatterWorldConfig);</code></pre><p><strong>param</strong>  scene The Scene to which this Matter World instance belongs.
+<strong>param</strong>  config The Matter World configuration object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>scene</code></td><td><code>Phaser.Scene</code></td><td>Required</td></tr><tr><td><code>config</code></td><td><code>Phaser.Types.Physics.Matter.MatterWorldConfig</code></td><td>Required</td></tr></tbody></table><h3 id="member-scene-1">scene <a class="anchor" href="#member-scene-1">#</a></h3><pre class="code" data-lang="ts"><code>scene: Phaser.Scene;</code></pre><p>The Scene to which this Matter World instance belongs.</p>
+<p><b>Type / return:</b> <code>Phaser.Scene</code></p><h3 id="member-engine-2">engine <a class="anchor" href="#member-engine-2">#</a></h3><pre class="code" data-lang="ts"><code>engine: MatterJS.Engine;</code></pre><p>An instance of the MatterJS Engine.</p>
+<p><b>Type / return:</b> <code>MatterJS.Engine</code></p><h3 id="member-localworld-3">localWorld <a class="anchor" href="#member-localworld-3">#</a></h3><pre class="code" data-lang="ts"><code>localWorld: MatterJS.World;</code></pre><p>A <code>World</code> composite object that will contain all simulated bodies and constraints.</p>
+<p><b>Type / return:</b> <code>MatterJS.World</code></p><h3 id="member-walls-4">walls <a class="anchor" href="#member-walls-4">#</a></h3><pre class="code" data-lang="ts"><code>walls: Phaser.Types.Physics.Matter.MatterWalls;</code></pre><p>An object containing the 4 wall bodies that bound the physics world.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.Physics.Matter.MatterWalls</code></p><h3 id="member-enabled-5">enabled <a class="anchor" href="#member-enabled-5">#</a></h3><pre class="code" data-lang="ts"><code>enabled: boolean;</code></pre><p>A flag that toggles if the world is enabled or not.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-getdelta-6">getDelta <a class="anchor" href="#member-getdelta-6">#</a></h3><pre class="code" data-lang="ts"><code>getDelta: Function;</code></pre><p>This function is called every time the core game loop steps, which is bound to the
+Request Animation Frame frequency unless otherwise modified.</p>
+<p>The function is passed two values: <code>time</code> and <code>delta</code>, both of which come from the game step values.</p>
+<p>It must return a number. This number is used as the delta value passed to Matter.Engine.update.</p>
+<p>You can override this function with your own to define your own timestep.</p>
+<p>If you need to update the Engine multiple times in a single game step then call
+<code>World.update</code> as many times as required. Each call will trigger the <code>getDelta</code> function.
+If you wish to have full control over when the Engine updates then see the property <code>autoUpdate</code>.</p>
+<p>You can also adjust the number of iterations that Engine.update performs.
+Use the Scene Matter Physics config object to set the following properties:</p>
+<p>positionIterations (defaults to 6)
+velocityIterations (defaults to 4)
+constraintIterations (defaults to 2)</p>
+<p>Adjusting these values can help performance in certain situations, depending on the physics requirements
+of your game.</p>
+<p><b>Type / return:</b> <code>Function</code></p><h3 id="member-runner-7">runner <a class="anchor" href="#member-runner-7">#</a></h3><pre class="code" data-lang="ts"><code>runner: Phaser.Types.Physics.Matter.MatterRunnerConfig;</code></pre><p>The Matter JS Runner Configuration object.</p>
+<p>This object is populated via the Matter Configuration object&#39;s <code>runner</code> property and is
+updated constantly during the game step.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.Physics.Matter.MatterRunnerConfig</code></p><h3 id="member-autoupdate-8">autoUpdate <a class="anchor" href="#member-autoupdate-8">#</a></h3><pre class="code" data-lang="ts"><code>autoUpdate: boolean;</code></pre><p>Automatically call Engine.update every time the game steps.
+If you disable this then you are responsible for calling <code>World.step</code> directly from your game.
+If you call <code>set60Hz</code> or <code>set30Hz</code> then <code>autoUpdate</code> is reset to <code>true</code>.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-drawdebug-9">drawDebug <a class="anchor" href="#member-drawdebug-9">#</a></h3><pre class="code" data-lang="ts"><code>drawDebug: boolean;</code></pre><p>A flag that controls if the debug graphics will be drawn to or not.</p>
+<p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-debuggraphic-10">debugGraphic <a class="anchor" href="#member-debuggraphic-10">#</a></h3><pre class="code" data-lang="ts"><code>debugGraphic: Phaser.GameObjects.Graphics;</code></pre><p>An instance of the Graphics object the debug bodies are drawn to, if enabled.</p>
+<p><b>Type / return:</b> <code>Phaser.GameObjects.Graphics</code></p><h3 id="member-debugconfig-11">debugConfig <a class="anchor" href="#member-debugconfig-11">#</a></h3><pre class="code" data-lang="ts"><code>debugConfig: Phaser.Types.Physics.Matter.MatterDebugConfig;</code></pre><p>The debug configuration object.</p>
+<p>The values stored in this object are read from the Matter World Config <code>debug</code> property.</p>
+<p>When a new Body or Constraint is <em>added to the World</em>, they are given the values stored in this object,
+unless they have their own <code>render</code> object set that will override them.</p>
+<p>Note that while you can modify the values of properties in this object at run-time, it will not change
+any of the Matter objects <em>already added</em>. It will only impact objects newly added to the world, or one
+that is removed and then re-added at a later time.</p>
+<p><b>Type / return:</b> <code>Phaser.Types.Physics.Matter.MatterDebugConfig</code></p><h3 id="member-setcompositerenderstyle-12">setCompositeRenderStyle <a class="anchor" href="#member-setcompositerenderstyle-12">#</a></h3><pre class="code" data-lang="ts"><code>setCompositeRenderStyle(composite: MatterJS.CompositeType): this;</code></pre><p>Sets the debug render style for the children of the given Matter Composite.</p>
+<p>Composites themselves do not render, but they can contain bodies, constraints and other composites that may do.
+So the children of this composite are passed to the <code>setBodyRenderStyle</code>, <code>setCompositeRenderStyle</code> and
+<code>setConstraintRenderStyle</code> methods accordingly.
+<strong>param</strong>  composite The Matter Composite to set the render style on.
+<strong>returns</strong>  This Matter World instance for method chaining.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>composite</code></td><td><code>MatterJS.CompositeType</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setbodyrenderstyle-13">setBodyRenderStyle <a class="anchor" href="#member-setbodyrenderstyle-13">#</a></h3><pre class="code" data-lang="ts"><code>setBodyRenderStyle(body: MatterJS.BodyType, lineColor?: number, lineOpacity?: number, lineThickness?: number, fillColor?: number, fillOpacity?: number): this;</code></pre><p>Sets the debug render style for the given Matter Body.</p>
+<p>If you are using this on a Phaser Game Object, such as a Matter Sprite, then pass in the body property
+to this method, not the Game Object itself.</p>
+<p>If you wish to skip a parameter, so it retains its current value, pass <code>false</code> for it.</p>
+<p>If you wish to reset the Body render colors to the defaults found in the World Debug Config, then call
+this method with just the <code>body</code> parameter provided and no others.
+<strong>param</strong>  body The Matter Body to set the render style on.
+<strong>param</strong>  lineColor The line color. If <code>null</code> it will use the World Debug Config value.
+<strong>param</strong>  lineOpacity The line opacity, between 0 and 1. If <code>null</code> it will use the World Debug Config value.
+<strong>param</strong>  lineThickness The line thickness. If <code>null</code> it will use the World Debug Config value.
+<strong>param</strong>  fillColor The fill color. If <code>null</code> it will use the World Debug Config value.
+<strong>param</strong>  fillOpacity The fill opacity, between 0 and 1. If <code>null</code> it will use the World Debug Config value.
+<strong>returns</strong>  This Matter World instance for method chaining.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>body</code></td><td><code>MatterJS.BodyType</code></td><td>Required</td></tr><tr><td><code>lineColor</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>lineOpacity</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>lineThickness</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>fillColor</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>fillOpacity</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-setconstraintrenderstyle-14">setConstraintRenderStyle <a class="anchor" href="#member-setconstraintrenderstyle-14">#</a></h3><pre class="code" data-lang="ts"><code>setConstraintRenderStyle(constraint: MatterJS.ConstraintType, lineColor?: number, lineOpacity?: number, lineThickness?: number, pinSize?: number, anchorColor?: number, anchorSize?: number): this;</code></pre><p>Sets the debug render style for the given Matter Constraint.</p>
+<p>If you are using this on a Phaser Game Object, then pass in the constraint property
+to this method, not the Game Object itself.</p>
+<p>If you wish to skip a parameter, so it retains its current value, pass <code>false</code> for it.</p>
+<p>If you wish to reset the Constraint render colors to the defaults found in the World Debug Config, then call
+this method with just the <code>constraint</code> parameter provided and no others.
+<strong>param</strong>  constraint The Matter Constraint to set the render style on.
+<strong>param</strong>  lineColor The line color. If <code>null</code> it will use the World Debug Config value.
+<strong>param</strong>  lineOpacity The line opacity, between 0 and 1. If <code>null</code> it will use the World Debug Config value.
+<strong>param</strong>  lineThickness The line thickness. If <code>null</code> it will use the World Debug Config value.
+<strong>param</strong>  pinSize If this constraint is a pin, this sets the size of the pin circle. If <code>null</code> it will use the World Debug Config value.
+<strong>param</strong>  anchorColor The color used when rendering this constraints anchors.  If <code>null</code> it will use the World Debug Config value.
+<strong>param</strong>  anchorSize The size of the anchor circle, if this constraint has anchors. If <code>null</code> it will use the World Debug Config value.
+<strong>returns</strong>  This Matter World instance for method chaining.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>constraint</code></td><td><code>MatterJS.ConstraintType</code></td><td>Required</td></tr><tr><td><code>lineColor</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>lineOpacity</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>lineThickness</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>pinSize</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>anchorColor</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>anchorSize</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-seteventsproxy-15">setEventsProxy <a class="anchor" href="#member-seteventsproxy-15">#</a></h3><pre class="code" data-lang="ts"><code>setEventsProxy(): void;</code></pre><p>This internal method acts as a proxy between all of the Matter JS events and then re-emits them
+via this class.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="member-setbounds-16">setBounds <a class="anchor" href="#member-setbounds-16">#</a></h3><pre class="code" data-lang="ts"><code>setBounds(x?: number, y?: number, width?: number, height?: number, thickness?: number, left?: boolean, right?: boolean, top?: boolean, bottom?: boolean): Phaser.Physics.Matter.World;</code></pre><p>Sets the bounds of the Physics world to match the given world pixel dimensions.</p>
+<p>You can optionally set which &#39;walls&#39; to create: left, right, top or bottom.
+If none of the walls are given it will default to use the walls settings it had previously.
+I.e. if you previously told it to not have the left or right walls, and you then adjust the world size
+the newly created bounds will also not have the left and right walls.
+Explicitly state them in the parameters to override this.
+<strong>param</strong>  x The x coordinate of the top-left corner of the bounds. Default 0.
+<strong>param</strong>  y The y coordinate of the top-left corner of the bounds. Default 0.
+<strong>param</strong>  width The width of the bounds.
+<strong>param</strong>  height The height of the bounds.
+<strong>param</strong>  thickness The thickness of each wall, in pixels. Default 64.
+<strong>param</strong>  left If true will create the left bounds wall. Default true.
+<strong>param</strong>  right If true will create the right bounds wall. Default true.
+<strong>param</strong>  top If true will create the top bounds wall. Default true.
+<strong>param</strong>  bottom If true will create the bottom bounds wall. Default true.
+<strong>returns</strong>  This Matter World object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>width</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>thickness</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>left</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>right</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>top</code></td><td><code>boolean</code></td><td>Optional</td></tr><tr><td><code>bottom</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Physics.Matter.World</code></p><h3 id="member-updatewall-17">updateWall <a class="anchor" href="#member-updatewall-17">#</a></h3><pre class="code" data-lang="ts"><code>updateWall(add: boolean, position?: string, x?: number, y?: number, width?: number, height?: number): void;</code></pre><p>Updates the 4 rectangle bodies that were created, if <code>setBounds</code> was set in the Matter config, to use
+the new positions and sizes. This method is usually only called internally via the <code>setBounds</code> method.
+<strong>param</strong>  add <code>true</code> if the walls are being added or updated, <code>false</code> to remove them from the world.
+<strong>param</strong>  position Either <code>left</code>, <code>right</code>, <code>top</code> or <code>bottom</code>. Only optional if <code>add</code> is <code>false</code>.
+<strong>param</strong>  x The horizontal position to place the walls at. Only optional if <code>add</code> is <code>false</code>.
+<strong>param</strong>  y The vertical position to place the walls at. Only optional if <code>add</code> is <code>false</code>.
+<strong>param</strong>  width The width of the walls, in pixels. Only optional if <code>add</code> is <code>false</code>.
+<strong>param</strong>  height The height of the walls, in pixels. Only optional if <code>add</code> is <code>false</code>.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>add</code></td><td><code>boolean</code></td><td>Required</td></tr><tr><td><code>position</code></td><td><code>string</code></td><td>Optional</td></tr><tr><td><code>x</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>width</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-createdebuggraphic-18">createDebugGraphic <a class="anchor" href="#member-createdebuggraphic-18">#</a></h3><pre class="code" data-lang="ts"><code>createDebugGraphic(): Phaser.GameObjects.Graphics;</code></pre><p>Creates a Phaser.GameObjects.Graphics object that is used to render all of the debug bodies and joints to.</p>
+<p>This method is called automatically by the constructor, if debugging has been enabled.</p>
+<p>The created Graphics object is automatically added to the Scene at 0x0 and given a depth of <code>Number.MAX_VALUE</code>,
+so it renders above all else in the Scene.</p>
+<p>The Graphics object is assigned to the <code>debugGraphic</code> property of this class and <code>drawDebug</code> is enabled.undefined
+<strong>returns</strong>  The newly created Graphics object.</p>
+<p><b>Type / return:</b> <code>Phaser.GameObjects.Graphics</code></p><h3 id="member-disablegravity-19">disableGravity <a class="anchor" href="#member-disablegravity-19">#</a></h3><pre class="code" data-lang="ts"><code>disableGravity(): this;</code></pre><p>Sets the world gravity and gravity scale to 0.undefined
+<strong>returns</strong>  This Matter World object.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-setgravity-20">setGravity <a class="anchor" href="#member-setgravity-20">#</a></h3><pre class="code" data-lang="ts"><code>setGravity(x?: number, y?: number, scale?: number): this;</code></pre><p>Sets the world&#39;s gravity to the values given.</p>
+<p>Gravity effects all bodies in the world, unless they have the <code>ignoreGravity</code> flag set.
+<strong>param</strong>  x The world gravity x component. Default 0.
+<strong>param</strong>  y The world gravity y component. Default 1.
+<strong>param</strong>  scale The gravity scale factor. Default 0.001.
+<strong>returns</strong>  This Matter World object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>scale</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-create-21">create <a class="anchor" href="#member-create-21">#</a></h3><pre class="code" data-lang="ts"><code>create(x: number, y: number, width: number, height: number, options: object): MatterJS.BodyType;</code></pre><p>Creates a rectangle Matter body and adds it to the world.
+<strong>param</strong>  x The horizontal position of the body in the world.
+<strong>param</strong>  y The vertical position of the body in the world.
+<strong>param</strong>  width The width of the body.
+<strong>param</strong>  height The height of the body.
+<strong>param</strong>  options Optional Matter configuration object.
+<strong>returns</strong>  The Matter.js body that was created.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>width</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>options</code></td><td><code>object</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>MatterJS.BodyType</code></p><h3 id="member-add-22">add <a class="anchor" href="#member-add-22">#</a></h3><pre class="code" data-lang="ts"><code>add(object: object | object[]): this;</code></pre><p>Adds a Matter JS object, or array of objects, to the world.</p>
+<p>The objects should be valid Matter JS entities, such as a Body, Composite or Constraint.</p>
+<p>Triggers <code>beforeAdd</code> and <code>afterAdd</code> events.
+<strong>param</strong>  object Can be single object, or an array, and can be a body, composite or constraint.
+<strong>returns</strong>  This Matter World object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>object</code></td><td><code>object | object[]</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-remove-23">remove <a class="anchor" href="#member-remove-23">#</a></h3><pre class="code" data-lang="ts"><code>remove(object: object | object[], deep?: boolean): this;</code></pre><p>Removes a Matter JS object, or array of objects, from the world.</p>
+<p>The objects should be valid Matter JS entities, such as a Body, Composite or Constraint.</p>
+<p>Triggers <code>beforeRemove</code> and <code>afterRemove</code> events.
+<strong>param</strong>  object Can be single object, or an array, and can be a body, composite or constraint.
+<strong>param</strong>  deep Optionally search the objects children and recursively remove those as well. Default false.
+<strong>returns</strong>  This Matter World object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>object</code></td><td><code>object | object[]</code></td><td>Required</td></tr><tr><td><code>deep</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-removeconstraint-24">removeConstraint <a class="anchor" href="#member-removeconstraint-24">#</a></h3><pre class="code" data-lang="ts"><code>removeConstraint(constraint: MatterJS.ConstraintType | MatterJS.ConstraintType[], deep?: boolean): this;</code></pre><p>Removes a Matter JS constraint, or array of constraints, from the world.</p>
+<p>Triggers <code>beforeRemove</code> and <code>afterRemove</code> events.
+<strong>param</strong>  constraint A Matter JS Constraint, or an array of constraints, to be removed.
+<strong>param</strong>  deep Optionally search the objects children and recursively remove those as well. Default false.
+<strong>returns</strong>  This Matter World object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>constraint</code></td><td><code>MatterJS.ConstraintType | MatterJS.ConstraintType[]</code></td><td>Required</td></tr><tr><td><code>deep</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-converttilemaplayer-25">convertTilemapLayer <a class="anchor" href="#member-converttilemaplayer-25">#</a></h3><pre class="code" data-lang="ts"><code>convertTilemapLayer(tilemapLayer: Phaser.Tilemaps.TilemapLayer, options?: object): this;</code></pre><p>Adds <code>MatterTileBody</code> instances for all the colliding tiles within the given tilemap layer.</p>
+<p>Set the appropriate tiles in your layer to collide before calling this method!</p>
+<p>If you modify the map after calling this method, i.e. via a function like <code>putTileAt</code> then
+you should call the <code>Phaser.Physics.Matter.World.convertTiles</code> function directly, passing
+it an array of the tiles you&#39;ve added to your map.
+<strong>param</strong>  tilemapLayer The Tilemap Layer containing the tiles to convert.
+<strong>param</strong>  options Options to be passed to the MatterTileBody constructor. {@see Phaser.Physics.Matter.TileBody}
+<strong>returns</strong>  This Matter World object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>tilemapLayer</code></td><td><code>Phaser.Tilemaps.TilemapLayer</code></td><td>Required</td></tr><tr><td><code>options</code></td><td><code>object</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-converttiles-26">convertTiles <a class="anchor" href="#member-converttiles-26">#</a></h3><pre class="code" data-lang="ts"><code>convertTiles(tiles: Phaser.Tilemaps.Tile[], options?: object): this;</code></pre><p>Creates <code>MatterTileBody</code> instances for all of the given tiles. This creates bodies regardless of whether the
+tiles are set to collide or not, or if they have a body already, or not.</p>
+<p>If you wish to pass an array of tiles that may already have bodies, you should filter the array before hand.
+<strong>param</strong>  tiles An array of tiles.
+<strong>param</strong>  options Options to be passed to the MatterTileBody constructor. {@see Phaser.Physics.Matter.TileBody}
+<strong>returns</strong>  This Matter World object.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>tiles</code></td><td><code>Phaser.Tilemaps.Tile[]</code></td><td>Required</td></tr><tr><td><code>options</code></td><td><code>object</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-nextgroup-27">nextGroup <a class="anchor" href="#member-nextgroup-27">#</a></h3><pre class="code" data-lang="ts"><code>nextGroup(isNonColliding?: boolean): number;</code></pre><p>Returns the next unique group index for which bodies will collide.
+If <code>isNonColliding</code> is <code>true</code>, returns the next unique group index for which bodies will not collide.
+<strong>param</strong>  isNonColliding If <code>true</code>, returns the next unique group index for which bodies will <em>not</em> collide. Default false.
+<strong>returns</strong>  Unique category bitfield</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>isNonColliding</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>number</code></p><h3 id="member-nextcategory-28">nextCategory <a class="anchor" href="#member-nextcategory-28">#</a></h3><pre class="code" data-lang="ts"><code>nextCategory(): number;</code></pre><p>Returns the next unique category bitfield (starting after the initial default category 0x0001).
+There are 32 available.undefined
+<strong>returns</strong>  Unique category bitfield</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-pause-29">pause <a class="anchor" href="#member-pause-29">#</a></h3><pre class="code" data-lang="ts"><code>pause(): this;</code></pre><p>Pauses this Matter World instance and sets <code>enabled</code> to <code>false</code>.</p>
+<p>A paused world will not run any simulations for the duration it is paused.undefined
+<strong>returns</strong>  This Matter World object.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-resume-30">resume <a class="anchor" href="#member-resume-30">#</a></h3><pre class="code" data-lang="ts"><code>resume(): this;</code></pre><p>Resumes this Matter World instance from a paused state and sets <code>enabled</code> to <code>true</code>.undefined
+<strong>returns</strong>  This Matter World object.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-update-31">update <a class="anchor" href="#member-update-31">#</a></h3><pre class="code" data-lang="ts"><code>update(time: number, delta: number): void;</code></pre><p>The internal update method. This is called automatically by the parent Scene.</p>
+<p>Moves the simulation forward in time by delta ms. Uses <code>World.correction</code> value as an optional number that
+specifies the time correction factor to apply to the update. This can help improve the accuracy of the
+simulation in cases where delta is changing between updates. The value of correction is defined as <code>delta / lastDelta</code>,
+i.e. the percentage change of delta over the last step. Therefore the value is always 1 (no correction) when
+delta is constant (or when no correction is desired, which is the default).
+See the paper on Time Corrected Verlet for more information.</p>
+<p>Triggers <code>beforeUpdate</code> and <code>afterUpdate</code> events. Triggers <code>collisionStart</code>, <code>collisionActive</code> and <code>collisionEnd</code> events.</p>
+<p>If the World is paused, <code>update</code> is still run, but exits early and does not update the Matter Engine.
+<strong>param</strong>  time The current time. Either a High Resolution Timer value if it comes from Request Animation Frame, or Date.now if using SetTimeout.
+<strong>param</strong>  delta The delta time in ms since the last frame. This is a smoothed and capped value based on the FPS rate.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>time</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>delta</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-step-32">step <a class="anchor" href="#member-step-32">#</a></h3><pre class="code" data-lang="ts"><code>step(delta?: number): void;</code></pre><p>Manually advances the physics simulation by one iteration.</p>
+<p>You can optionally pass in the <code>delta</code> and <code>correction</code> values to be used by Engine.update.
+If undefined they use the Matter defaults of 60Hz and no correction.</p>
+<p>Calling <code>step</code> directly bypasses any checks of <code>enabled</code> or <code>autoUpdate</code>.</p>
+<p>It also ignores any custom <code>getDelta</code> functions, as you should be passing the delta
+value in to this call.</p>
+<p>You can adjust the number of iterations that Engine.update performs internally.
+Use the Scene Matter Physics config object to set the following properties:</p>
+<p>positionIterations (defaults to 6)
+velocityIterations (defaults to 4)
+constraintIterations (defaults to 2)</p>
+<p>Adjusting these values can help performance in certain situations, depending on the physics requirements
+of your game.
+<strong>param</strong>  delta The delta value. Default 16.666.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>delta</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-update60hz-33">update60Hz <a class="anchor" href="#member-update60hz-33">#</a></h3><pre class="code" data-lang="ts"><code>update60Hz(): number;</code></pre><p>Runs the Matter Engine.update at a fixed timestep of 60Hz.undefined
+<strong>returns</strong>  The delta value to be passed to Engine.update.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-update30hz-34">update30Hz <a class="anchor" href="#member-update30hz-34">#</a></h3><pre class="code" data-lang="ts"><code>update30Hz(): number;</code></pre><p>Runs the Matter Engine.update at a fixed timestep of 30Hz.undefined
+<strong>returns</strong>  The delta value to be passed to Engine.update.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-has-35">has <a class="anchor" href="#member-has-35">#</a></h3><pre class="code" data-lang="ts"><code>has(body: MatterJS.Body | Phaser.GameObjects.GameObject): boolean;</code></pre><p>Returns <code>true</code> if the given body can be found within the World.
+<strong>param</strong>  body The Matter Body, or Game Object, to search for within the world.
+<strong>returns</strong>  <code>true</code> if the body was found in the world, otherwise <code>false</code>.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>body</code></td><td><code>MatterJS.Body | Phaser.GameObjects.GameObject</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>boolean</code></p><h3 id="member-getallbodies-36">getAllBodies <a class="anchor" href="#member-getallbodies-36">#</a></h3><pre class="code" data-lang="ts"><code>getAllBodies(): MatterJS.BodyType[];</code></pre><p>Returns all the bodies in the Matter World, including all bodies in children, recursively.undefined
+<strong>returns</strong>  An array of all the Matter JS Bodies in this World.</p>
+<p><b>Type / return:</b> <code>MatterJS.BodyType[]</code></p><h3 id="member-getallconstraints-37">getAllConstraints <a class="anchor" href="#member-getallconstraints-37">#</a></h3><pre class="code" data-lang="ts"><code>getAllConstraints(): MatterJS.ConstraintType[];</code></pre><p>Returns all the constraints in the Matter World, including all constraints in children, recursively.undefined
+<strong>returns</strong>  An array of all the Matter JS Constraints in this World.</p>
+<p><b>Type / return:</b> <code>MatterJS.ConstraintType[]</code></p><h3 id="member-getallcomposites-38">getAllComposites <a class="anchor" href="#member-getallcomposites-38">#</a></h3><pre class="code" data-lang="ts"><code>getAllComposites(): MatterJS.CompositeType[];</code></pre><p>Returns all the composites in the Matter World, including all composites in children, recursively.undefined
+<strong>returns</strong>  An array of all the Matter JS Composites in this World.</p>
+<p><b>Type / return:</b> <code>MatterJS.CompositeType[]</code></p><h3 id="member-rendergrid-39">renderGrid <a class="anchor" href="#member-rendergrid-39">#</a></h3><pre class="code" data-lang="ts"><code>renderGrid(grid: MatterJS.Grid, graphics: Phaser.GameObjects.Graphics, lineColor: number, lineOpacity: number): this;</code></pre><p>Renders the Engine Broadphase Controller Grid to the given Graphics instance.</p>
+<p>The debug renderer calls this method if the <code>showBroadphase</code> config value is set.</p>
+<p>This method is used internally by the Matter Debug Renderer, but is also exposed publically should
+you wish to render the Grid to your own Graphics instance.
+<strong>param</strong>  grid The Matter Grid to be rendered.
+<strong>param</strong>  graphics The Graphics object to render to.
+<strong>param</strong>  lineColor The line color.
+<strong>param</strong>  lineOpacity The line opacity, between 0 and 1.
+<strong>returns</strong>  This Matter World instance for method chaining.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>grid</code></td><td><code>MatterJS.Grid</code></td><td>Required</td></tr><tr><td><code>graphics</code></td><td><code>Phaser.GameObjects.Graphics</code></td><td>Required</td></tr><tr><td><code>lineColor</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>lineOpacity</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-renderseparations-40">renderSeparations <a class="anchor" href="#member-renderseparations-40">#</a></h3><pre class="code" data-lang="ts"><code>renderSeparations(pairs: MatterJS.Pair[], graphics: Phaser.GameObjects.Graphics, lineColor: number): this;</code></pre><p>Renders the list of Pair separations to the given Graphics instance.</p>
+<p>The debug renderer calls this method if the <code>showSeparations</code> config value is set.</p>
+<p>This method is used internally by the Matter Debug Renderer, but is also exposed publically should
+you wish to render pair separations to your own Graphics instance.
+<strong>param</strong>  pairs An array of Matter Pairs to be rendered.
+<strong>param</strong>  graphics The Graphics object to render to.
+<strong>param</strong>  lineColor The line color.
+<strong>returns</strong>  This Matter World instance for method chaining.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>pairs</code></td><td><code>MatterJS.Pair[]</code></td><td>Required</td></tr><tr><td><code>graphics</code></td><td><code>Phaser.GameObjects.Graphics</code></td><td>Required</td></tr><tr><td><code>lineColor</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-rendercollisions-41">renderCollisions <a class="anchor" href="#member-rendercollisions-41">#</a></h3><pre class="code" data-lang="ts"><code>renderCollisions(pairs: MatterJS.Pair[], graphics: Phaser.GameObjects.Graphics, lineColor: number): this;</code></pre><p>Renders the list of collision points and normals to the given Graphics instance.</p>
+<p>The debug renderer calls this method if the <code>showCollisions</code> config value is set.</p>
+<p>This method is used internally by the Matter Debug Renderer, but is also exposed publically should
+you wish to render collision points and normals to your own Graphics instance.
+<strong>param</strong>  pairs An array of Matter Pairs to be rendered.
+<strong>param</strong>  graphics The Graphics object to render to.
+<strong>param</strong>  lineColor The line color.
+<strong>returns</strong>  This Matter World instance for method chaining.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>pairs</code></td><td><code>MatterJS.Pair[]</code></td><td>Required</td></tr><tr><td><code>graphics</code></td><td><code>Phaser.GameObjects.Graphics</code></td><td>Required</td></tr><tr><td><code>lineColor</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-renderbodybounds-42">renderBodyBounds <a class="anchor" href="#member-renderbodybounds-42">#</a></h3><pre class="code" data-lang="ts"><code>renderBodyBounds(bodies: any[], graphics: Phaser.GameObjects.Graphics, lineColor: number, lineOpacity: number): void;</code></pre><p>Renders the bounds of an array of Bodies to the given Graphics instance.</p>
+<p>If the body is a compound body, it will render the bounds for the parent compound.</p>
+<p>The debug renderer calls this method if the <code>showBounds</code> config value is set.</p>
+<p>This method is used internally by the Matter Debug Renderer, but is also exposed publically should
+you wish to render bounds to your own Graphics instance.
+<strong>param</strong>  bodies An array of bodies from the localWorld.
+<strong>param</strong>  graphics The Graphics object to render to.
+<strong>param</strong>  lineColor The line color.
+<strong>param</strong>  lineOpacity The line opacity, between 0 and 1.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>bodies</code></td><td><code>any[]</code></td><td>Required</td></tr><tr><td><code>graphics</code></td><td><code>Phaser.GameObjects.Graphics</code></td><td>Required</td></tr><tr><td><code>lineColor</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>lineOpacity</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-renderbodyaxes-43">renderBodyAxes <a class="anchor" href="#member-renderbodyaxes-43">#</a></h3><pre class="code" data-lang="ts"><code>renderBodyAxes(bodies: any[], graphics: Phaser.GameObjects.Graphics, showAxes: boolean, lineColor: number, lineOpacity: number): void;</code></pre><p>Renders either all axes, or a single axis indicator, for an array of Bodies, to the given Graphics instance.</p>
+<p>The debug renderer calls this method if the <code>showAxes</code> or <code>showAngleIndicator</code> config values are set.</p>
+<p>This method is used internally by the Matter Debug Renderer, but is also exposed publically should
+you wish to render body axes to your own Graphics instance.
+<strong>param</strong>  bodies An array of bodies from the localWorld.
+<strong>param</strong>  graphics The Graphics object to render to.
+<strong>param</strong>  showAxes If <code>true</code> it will render all body axes. If <code>false</code> it will render a single axis indicator.
+<strong>param</strong>  lineColor The line color.
+<strong>param</strong>  lineOpacity The line opacity, between 0 and 1.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>bodies</code></td><td><code>any[]</code></td><td>Required</td></tr><tr><td><code>graphics</code></td><td><code>Phaser.GameObjects.Graphics</code></td><td>Required</td></tr><tr><td><code>showAxes</code></td><td><code>boolean</code></td><td>Required</td></tr><tr><td><code>lineColor</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>lineOpacity</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-renderbodyvelocity-44">renderBodyVelocity <a class="anchor" href="#member-renderbodyvelocity-44">#</a></h3><pre class="code" data-lang="ts"><code>renderBodyVelocity(bodies: any[], graphics: Phaser.GameObjects.Graphics, lineColor: number, lineOpacity: number, lineThickness: number): void;</code></pre><p>Renders a velocity indicator for an array of Bodies, to the given Graphics instance.</p>
+<p>The debug renderer calls this method if the <code>showVelocity</code> config value is set.</p>
+<p>This method is used internally by the Matter Debug Renderer, but is also exposed publically should
+you wish to render velocity indicators to your own Graphics instance.
+<strong>param</strong>  bodies An array of bodies from the localWorld.
+<strong>param</strong>  graphics The Graphics object to render to.
+<strong>param</strong>  lineColor The line color.
+<strong>param</strong>  lineOpacity The line opacity, between 0 and 1.
+<strong>param</strong>  lineThickness The line thickness.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>bodies</code></td><td><code>any[]</code></td><td>Required</td></tr><tr><td><code>graphics</code></td><td><code>Phaser.GameObjects.Graphics</code></td><td>Required</td></tr><tr><td><code>lineColor</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>lineOpacity</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>lineThickness</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-renderbody-45">renderBody <a class="anchor" href="#member-renderbody-45">#</a></h3><pre class="code" data-lang="ts"><code>renderBody(body: MatterJS.BodyType, graphics: Phaser.GameObjects.Graphics, showInternalEdges: boolean, lineColor?: number, lineOpacity?: number, lineThickness?: number, fillColor?: number, fillOpacity?: number): this;</code></pre><p>Renders a single Matter Body to the given Phaser Graphics Game Object.</p>
+<p>This method is used internally by the Matter Debug Renderer, but is also exposed publically should
+you wish to render a Body to your own Graphics instance.</p>
+<p>If you don&#39;t wish to render a line around the body, set the <code>lineColor</code> parameter to <code>null</code>.
+Equally, if you don&#39;t wish to render a fill, set the <code>fillColor</code> parameter to <code>null</code>.
+<strong>param</strong>  body The Matter Body to be rendered.
+<strong>param</strong>  graphics The Graphics object to render to.
+<strong>param</strong>  showInternalEdges Render internal edges of the polygon?
+<strong>param</strong>  lineColor The line color.
+<strong>param</strong>  lineOpacity The line opacity, between 0 and 1.
+<strong>param</strong>  lineThickness The line thickness. Default 1.
+<strong>param</strong>  fillColor The fill color.
+<strong>param</strong>  fillOpacity The fill opacity, between 0 and 1.
+<strong>returns</strong>  This Matter World instance for method chaining.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>body</code></td><td><code>MatterJS.BodyType</code></td><td>Required</td></tr><tr><td><code>graphics</code></td><td><code>Phaser.GameObjects.Graphics</code></td><td>Required</td></tr><tr><td><code>showInternalEdges</code></td><td><code>boolean</code></td><td>Required</td></tr><tr><td><code>lineColor</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>lineOpacity</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>lineThickness</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>fillColor</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>fillOpacity</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-renderconvexhull-46">renderConvexHull <a class="anchor" href="#member-renderconvexhull-46">#</a></h3><pre class="code" data-lang="ts"><code>renderConvexHull(body: MatterJS.BodyType, graphics: Phaser.GameObjects.Graphics, hullColor: number, lineThickness?: number): this;</code></pre><p>Renders the Convex Hull for a single Matter Body to the given Phaser Graphics Game Object.</p>
+<p>This method is used internally by the Matter Debug Renderer, but is also exposed publically should
+you wish to render a Body hull to your own Graphics instance.
+<strong>param</strong>  body The Matter Body to be rendered.
+<strong>param</strong>  graphics The Graphics object to render to.
+<strong>param</strong>  hullColor The color used to render the hull.
+<strong>param</strong>  lineThickness The hull line thickness. Default 1.
+<strong>returns</strong>  This Matter World instance for method chaining.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>body</code></td><td><code>MatterJS.BodyType</code></td><td>Required</td></tr><tr><td><code>graphics</code></td><td><code>Phaser.GameObjects.Graphics</code></td><td>Required</td></tr><tr><td><code>hullColor</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>lineThickness</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-renderconstraint-47">renderConstraint <a class="anchor" href="#member-renderconstraint-47">#</a></h3><pre class="code" data-lang="ts"><code>renderConstraint(constraint: MatterJS.ConstraintType, graphics: Phaser.GameObjects.Graphics, lineColor: number, lineOpacity: number, lineThickness: number, pinSize: number, anchorColor: number, anchorSize: number): this;</code></pre><p>Renders a single Matter Constraint, such as a Pin or a Spring, to the given Phaser Graphics Game Object.</p>
+<p>This method is used internally by the Matter Debug Renderer, but is also exposed publically should
+you wish to render a Constraint to your own Graphics instance.
+<strong>param</strong>  constraint The Matter Constraint to render.
+<strong>param</strong>  graphics The Graphics object to render to.
+<strong>param</strong>  lineColor The line color.
+<strong>param</strong>  lineOpacity The line opacity, between 0 and 1.
+<strong>param</strong>  lineThickness The line thickness.
+<strong>param</strong>  pinSize If this constraint is a pin, this sets the size of the pin circle.
+<strong>param</strong>  anchorColor The color used when rendering this constraints anchors. Set to <code>null</code> to not render anchors.
+<strong>param</strong>  anchorSize The size of the anchor circle, if this constraint has anchors and is rendering them.
+<strong>returns</strong>  This Matter World instance for method chaining.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>constraint</code></td><td><code>MatterJS.ConstraintType</code></td><td>Required</td></tr><tr><td><code>graphics</code></td><td><code>Phaser.GameObjects.Graphics</code></td><td>Required</td></tr><tr><td><code>lineColor</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>lineOpacity</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>lineThickness</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>pinSize</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>anchorColor</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>anchorSize</code></td><td><code>number</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-resetcollisionids-48">resetCollisionIDs <a class="anchor" href="#member-resetcollisionids-48">#</a></h3><pre class="code" data-lang="ts"><code>resetCollisionIDs(): void;</code></pre><p>Resets the internal collision IDs that Matter.JS uses for Body collision groups.</p>
+<p>You should call this before destroying your game if you need to restart the game
+again on the same page, without first reloading the page. Or, if you wish to
+consistently destroy a Scene that contains Matter.js and then run it again
+later in the same game.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="member-shutdown-49">shutdown <a class="anchor" href="#member-shutdown-49">#</a></h3><pre class="code" data-lang="ts"><code>shutdown(): void;</code></pre><p>Will remove all Matter physics event listeners and clear the matter physics world,
+engine and any debug graphics, if any.</p>
+<p><b>Type / return:</b> <code>void</code></p><h3 id="member-destroy-50">destroy <a class="anchor" href="#member-destroy-50">#</a></h3><pre class="code" data-lang="ts"><code>destroy(): void;</code></pre><p>Will remove all Matter physics event listeners and clear the matter physics world,
+engine and any debug graphics, if any.</p>
+<p>After destroying the world it cannot be re-used again.</p>
+<p><b>Type / return:</b> <code>void</code></p><h2 id="base-types">Base types</h2><p><a href="../../../events/58/eventemitter.html">Phaser.Events.EventEmitter</a></p><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#members">Public members (51)</a><a href="#base-types">Base types</a></aside></div>
+<script src="../../../../../../../../../assets/cm.classic.js"></script><script src="../../../../../../../../../assets/manual.js"></script></body></html>

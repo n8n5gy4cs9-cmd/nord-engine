@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Performance &amp; debugging — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="welcome.html" class="active" aria-current="page">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Manual</div><a href="welcome.html">Welcome</a><a href="editor-tour.html">Editor tour</a><a href="projects-scenes.html">Projects &amp; scenes</a><a href="scripting.html">Scripting</a><a href="2d.html">2D games</a><a href="3d.html">3D games</a><a href="physics.html">Physics</a><a href="audio.html">Audio</a><a href="ui.html">UI &amp; HUD</a><a href="input.html">Input</a><a href="assets.html">Assets</a><a href="library.html">The library</a><a href="rust-wasm.html">Rust / WASM</a><a href="export.html">Export &amp; hosting</a><a href="performance.html" class="cur" aria-current="page">Performance &amp; debugging</a><a href="reference.html">Reference overview</a><a href="desktop-apps.html">Desktop apps</a></nav><main id="content"><div class="crumb">Manual / Nord Engine</div><h1>Performance &amp; debugging</h1>
+<p>When a game is slow, first find what takes time. Look for expensive scripts, too many drawn objects or large assets, then change one thing and compare.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>A frame is one picture of the game. At 60 frames per second, each frame has about 16.7 milliseconds to finish. Do not optimize code just because it looks complicated; measure the slowdown first.</p>
+</aside><aside class="box dummies"><div class="box-title">For dummy developers</div><p>Games feel smooth when every frame finishes in ~16 ms (60 fps). Most slowness comes from doing too much <em>every frame</em> — too many objects, too big pictures, creating and throwing away things constantly.</p>
+</aside><h2 id="rules-of-thumb">Rules of thumb<a class="anchor" href="#rules-of-thumb">#</a></h2>
+<ul>
+<li><strong>Reuse, don&#39;t recreate.</strong> Use <code>Pool</code> (<code>new nord.Pool(factory, reset)</code>) or the library&#39;s <code>util-pool.js</code> for bullets, particles and damage numbers; <code>spawn</code> is async and does JSON work.</li>
+<li><strong>Textures:</strong> keep power-of-two-ish sizes, pack small sprites into one sheet, avoid 4K backgrounds in 2D. <code>nord build --optimize</code> recompresses PNGs losslessly.</li>
+<li><strong>Physics:</strong> use <code>static</code> for anything that never moves; prefer <code>arcade</code> over <code>matter</code> unless you need rotation/polygons; keep triggers small in number.</li>
+<li><strong>Scripts:</strong> avoid allocating arrays in <code>update</code>; cache <code>find()</code> results in <code>start()</code>; use <code>fixedUpdate</code> only for physics-coupled code.</li>
+<li><strong>3D:</strong> one shadow-casting light, shadow map 1024, share materials/models, limit <code>postProcess</code> effects, keep particles capped (<code>capacity</code>).</li>
+<li><strong>DOM UI:</strong> update labels only when the value changes.</li>
+</ul>
+<h2 id="measuring">Measuring<a class="anchor" href="#measuring">#</a></h2>
+<ul>
+<li><code>util-debug.js</code> (library) shows FPS/entity counts.</li>
+<li>Browser dev tools: when running with <code>nord serve</code>, open the URL in Chrome/Safari for the Performance tab.</li>
+<li><code>game.time.delta</code> gives the last frame time; the scheduler clamps big spikes to 0.25 s so a hiccup can&#39;t explode the simulation.</li>
+<li><code>nord build</code> prints a size report; keep an eye on audio — music is usually the biggest asset.</li>
+</ul>
+<h2 id="timing-facts">Timing facts<a class="anchor" href="#timing-facts">#</a></h2>
+<p>The scene runs <code>fixedUpdate</code> at a fixed 60 Hz with at most 5 catch-up steps per frame, then <code>update</code>, component updates and <code>lateUpdate</code> once per frame. Tweens/timers use the scaled <code>dt</code>.</p>
+<h2 id="debugging-checklist">Debugging checklist<a class="anchor" href="#debugging-checklist">#</a></h2>
+<ol>
+<li>Red overlay or Console error? Click the <code>file:line</code>.</li>
+<li><code>nord check</code> — missing files, duplicate ids, bad scripts.</li>
+<li>Blank canvas on export? Serve over http (not <code>file://</code>) unless you used <code>--single-file</code>.</li>
+<li>Audio silent? It needs a first click/key — queued sounds then play.</li>
+</ol>
+<div class="pager"><a href="export.html"><small>← Previous</small>Export &amp; hosting</a><a href="reference.html"><small>Next →</small>Reference overview</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#rules-of-thumb">Rules of thumb </a><a href="#measuring">Measuring </a><a href="#timing-facts">Timing facts </a><a href="#debugging-checklist">Debugging checklist </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

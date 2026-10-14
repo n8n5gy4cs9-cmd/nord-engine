@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Phaser.Textures.DynamicTexture — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../../../index.html"><img src="../../../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../../../../babylon/9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../index.html">Phaser 4.2.1 API</a><a href="../../../../../../../babylon/guides/index.html">Babylon documentation library</a><a href="../../../../../../4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Phaser.Textures.DynamicTexture</h1>
+<p><span class="badge">Underlying Phaser 4.2.1 API</span> <span class="badge">Class</span></p><p class="muted">Official public declarations and JSDoc from <code>phaser</code>. Use with engine objects, not directly on a Nord entity.</p><aside class="box tip"><div class="box-title">The Nord way</div><p><a href="../../../../../../../../nord/manual/2d.html">2D manual</a> · <a href="../../../../../../../../nord/components/component-sprite.html">sprite</a> · <a href="../../../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a> · <a href="../../../../../../../../nord/manual/physics.html">physics</a>. Access raw objects only when the Nord wrapper does not cover your feature. <a href="../../../../../../../../nord/manual/reference.html#escape-hatch">How escape hatches work</a>.</p></aside><h3 id="declaration">DynamicTexture <a class="anchor" href="#declaration">#</a></h3><pre class="code" data-lang="ts"><code>class DynamicTexture extends Phaser.Textures.Texture</code></pre><p>A Dynamic Texture is a special texture that allows you to draw textures, frames and most kind of
+Game Objects directly to it.</p>
+<p>You can take many complex objects and draw them to this one texture, which can then be used as the
+base texture for other Game Objects, such as Sprites. Should you then update this texture, all
+Game Objects using it will instantly be updated as well, reflecting the changes immediately.</p>
+<p>It&#39;s a powerful way to generate dynamic textures at run-time that are WebGL friendly and don&#39;t invoke
+expensive GPU uploads on each change.</p>
+<pre class="code" data-lang="js"><code>const t = this.textures.addDynamicTexture('player', 64, 128);
+// draw objects to t
+this.add.sprite(x, y, 'player');
+this.render();</code></pre>
+<p>Because this is a standard Texture within Phaser, you can add frames to it, meaning you can use it
+to generate sprite sheets, texture atlases or tile sets.</p>
+<p>Under WebGL1, a FrameBuffer, which is what this Dynamic Texture uses internally, cannot be anti-aliased.
+This means that when drawing objects such as Shapes or Graphics instances to this texture, they may appear
+to be drawn with no aliasing around the edges. This is a technical limitation of WebGL1. To get around it,
+create your shape as a texture in an art package, then draw that to this texture.</p>
+<p>If you activate mipmap support in your game, it will not automatically
+be applied to DynamicTextures.
+This is because regenerating the mipmap for a texture
+costs over 10 microseconds, a big performance loss for a single frame.
+If you want to render your DynamicTextures with mipmaps,
+you must also activate the render config option <code>mipmapRegeneration</code>.</p>
+<p>In the event that the WebGL context is lost, this DynamicTexture will
+lose its contents. Once context is restored (signalled by the <code>restorewebgl</code>
+event), you can choose to redraw the contents of the DynamicTexture.
+You are responsible for the redrawing logic.</p>
+<h2 id="members">Public members (30)</h2><p>Private, protected and explicitly internal declarations are excluded. Inherited members belong to the base type listed in the declaration.</p><h3 id="member-constructor-0">constructor <a class="anchor" href="#member-constructor-0">#</a></h3><pre class="code" data-lang="ts"><code>constructor(manager: Phaser.Textures.TextureManager, key: string, width?: number, height?: number, forceEven?: boolean);</code></pre><p><strong>param</strong>  manager A reference to the Texture Manager this Texture belongs to.
+<strong>param</strong>  key The unique string-based key of this Texture.
+<strong>param</strong>  width The width of this Dynamic Texture in pixels. Defaults to 256 x 256. Default 256.
+<strong>param</strong>  height The height of this Dynamic Texture in pixels. Defaults to 256 x 256. Default 256.
+<strong>param</strong>  forceEven Force the given width and height to be rounded to even values. This significantly improves the rendering quality. Set to false if you know you need an odd sized texture. Default true.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>manager</code></td><td><code>Phaser.Textures.TextureManager</code></td><td>Required</td></tr><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>width</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>forceEven</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><h3 id="member-type-1">type <a class="anchor" href="#member-type-1">#</a></h3><pre class="code" data-lang="ts"><code>readonly type: string;</code></pre><p>The internal data type of this object.</p>
+<p><b>Type / return:</b> <code>string</code></p><h3 id="member-renderer-2">renderer <a class="anchor" href="#member-renderer-2">#</a></h3><pre class="code" data-lang="ts"><code>renderer: Phaser.Renderer.Canvas.CanvasRenderer | Phaser.Renderer.WebGL.WebGLRenderer;</code></pre><p>A reference to either the Canvas or WebGL Renderer that the Game instance is using.</p>
+<p><b>Type / return:</b> <code>Phaser.Renderer.Canvas.CanvasRenderer | Phaser.Renderer.WebGL.WebGLRenderer</code></p><h3 id="member-width-3">width <a class="anchor" href="#member-width-3">#</a></h3><pre class="code" data-lang="ts"><code>width: number;</code></pre><p>The width of this Dynamic Texture.</p>
+<p>Treat this property as read-only. Use the <code>setSize</code> method to change the size.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-height-4">height <a class="anchor" href="#member-height-4">#</a></h3><pre class="code" data-lang="ts"><code>height: number;</code></pre><p>The height of this Dynamic Texture.</p>
+<p>Treat this property as read-only. Use the <code>setSize</code> method to change the size.</p>
+<p><b>Type / return:</b> <code>number</code></p><h3 id="member-commandbuffer-5">commandBuffer <a class="anchor" href="#member-commandbuffer-5">#</a></h3><pre class="code" data-lang="ts"><code>commandBuffer: any[];</code></pre><p>An array of commands that are used to draw to this Dynamic Texture.
+This is flushed by the <code>render</code> method.
+The <code>clear</code> method will also clear this array, then store itself.</p>
+<p><b>Type / return:</b> <code>any[]</code></p><h3 id="member-canvas-6">canvas <a class="anchor" href="#member-canvas-6">#</a></h3><pre class="code" data-lang="ts"><code>canvas: HTMLCanvasElement;</code></pre><p>A reference to the Rendering Context belonging to the Canvas Element this Dynamic Texture is drawing to.</p>
+<p><b>Type / return:</b> <code>HTMLCanvasElement</code></p><h3 id="member-context-7">context <a class="anchor" href="#member-context-7">#</a></h3><pre class="code" data-lang="ts"><code>readonly context: CanvasRenderingContext2D;</code></pre><p>The 2D Canvas Rendering Context.</p>
+<p><b>Type / return:</b> <code>CanvasRenderingContext2D</code></p><h3 id="member-camera-8">camera <a class="anchor" href="#member-camera-8">#</a></h3><pre class="code" data-lang="ts"><code>camera: Phaser.Cameras.Scene2D.Camera;</code></pre><p>An internal Camera that can be used to move around this Dynamic Texture.</p>
+<p>Control it just like you would any Scene Camera. The difference is that it only impacts
+the placement of <strong>Game Objects</strong> (not textures) that you then draw to this texture.</p>
+<p>You can scroll, zoom and rotate this Camera.</p>
+<p><b>Type / return:</b> <code>Phaser.Cameras.Scene2D.Camera</code></p><h3 id="member-drawingcontext-9">drawingContext <a class="anchor" href="#member-drawingcontext-9">#</a></h3><pre class="code" data-lang="ts"><code>drawingContext: Phaser.Renderer.WebGL.DrawingContext;</code></pre><p>The drawing context of this Dynamic Texture.
+This contains the framebuffer that the Dynamic Texture is drawing to.</p>
+<p><b>Type / return:</b> <code>Phaser.Renderer.WebGL.DrawingContext</code></p><h3 id="member-setsize-10">setSize <a class="anchor" href="#member-setsize-10">#</a></h3><pre class="code" data-lang="ts"><code>setSize(width: number, height?: number, forceEven?: boolean): this;</code></pre><p>Resizes this Dynamic Texture to the new dimensions given.</p>
+<p>In WebGL it will destroy and then re-create the frame buffer being used by this Dynamic Texture.
+In Canvas it will resize the underlying canvas DOM element.</p>
+<p>Both approaches will erase everything currently drawn to this texture.</p>
+<p>If the dimensions given are the same as those already being used, calling this method will do nothing.
+<strong>param</strong>  width The new width of this Dynamic Texture.
+<strong>param</strong>  height The new height of this Dynamic Texture. If not specified, will be set the same as the <code>width</code>. Default width.
+<strong>param</strong>  forceEven Force the given width and height to be rounded to even values. This significantly improves the rendering quality. Set to false if you know you need an odd sized texture. Default true.
+<strong>returns</strong>  This Dynamic Texture.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>width</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>forceEven</code></td><td><code>boolean</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-render-11">render <a class="anchor" href="#member-render-11">#</a></h3><pre class="code" data-lang="ts"><code>render(): this;</code></pre><p>Render the buffered drawing commands to this Dynamic Texture.
+You must do this in order to see anything drawn to it.undefined
+<strong>returns</strong>  This Dynamic Texture instance.</p>
+<p><b>Type / return:</b> <code>this</code></p><h3 id="member-fill-12">fill <a class="anchor" href="#member-fill-12">#</a></h3><pre class="code" data-lang="ts"><code>fill(rgb: number, alpha?: number, x?: number, y?: number, width?: number, height?: number): this;</code></pre><p>Fills this Dynamic Texture with the given color.</p>
+<p>By default it will fill the entire texture, however you can set it to fill a specific
+rectangular area by using the x, y, width and height arguments.</p>
+<p>The color should be given in hex format, i.e. 0xff0000 for red, 0x00ff00 for green, etc.
+<strong>param</strong>  rgb The color to fill this Dynamic Texture with, such as 0xff0000 for red.
+<strong>param</strong>  alpha The alpha value used by the fill. Default 1.
+<strong>param</strong>  x The left coordinate of the fill rectangle. Default 0.
+<strong>param</strong>  y The top coordinate of the fill rectangle. Default 0.
+<strong>param</strong>  width The width of the fill rectangle. Default this.width.
+<strong>param</strong>  height The height of the fill rectangle. Default this.height.
+<strong>returns</strong>  This Dynamic Texture instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>rgb</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>alpha</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>x</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>width</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-clear-13">clear <a class="anchor" href="#member-clear-13">#</a></h3><pre class="code" data-lang="ts"><code>clear(x?: number, y?: number, width?: number, height?: number): this;</code></pre><p>Clears a portion or everything from this Dynamic Texture by erasing it and resetting it back to
+a blank, transparent, texture. To clear an area, specify the <code>x</code>, <code>y</code>, <code>width</code> and <code>height</code>.
+<strong>param</strong>  x The left coordinate of the area to clear. Default 0.
+<strong>param</strong>  y The top coordinate of the area to clear. Default 0.
+<strong>param</strong>  width The width of the area to clear. Default this.width.
+<strong>param</strong>  height The height of the area to clear. Default this.height.
+<strong>returns</strong>  This Dynamic Texture instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>width</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-stamp-14">stamp <a class="anchor" href="#member-stamp-14">#</a></h3><pre class="code" data-lang="ts"><code>stamp(key: string, frame?: string | number, x?: number, y?: number, config?: Phaser.Types.Textures.StampConfig): this;</code></pre><p>Takes the given texture key and frame and then stamps it at the given
+x and y coordinates. You can use the optional &#39;config&#39; argument to provide
+lots more options about how the stamp is applied, including the alpha,
+tint, angle, scale and origin.</p>
+<p>By default, the frame will stamp on the x/y coordinates based on its center.</p>
+<p>If you wish to stamp from the top-left, set the config <code>originX</code> and
+<code>originY</code> properties both to zero.</p>
+<p>This method ignores the <code>camera</code> property of the Dynamic Texture.
+<strong>param</strong>  key The key of the texture to be used, as stored in the Texture Manager.
+<strong>param</strong>  frame The name or index of the frame within the Texture. Set to <code>null</code> to skip this argument if not required.
+<strong>param</strong>  x The x position to draw the frame at. Default 0.
+<strong>param</strong>  y The y position to draw the frame at. Default 0.
+<strong>param</strong>  config The stamp configuration object, allowing you to set the alpha, tint, angle, scale and origin of the stamp.
+<strong>returns</strong>  This Dynamic Texture instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>frame</code></td><td><code>string | number</code></td><td>Optional</td></tr><tr><td><code>x</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>config</code></td><td><code>Phaser.Types.Textures.StampConfig</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-erase-15">erase <a class="anchor" href="#member-erase-15">#</a></h3><pre class="code" data-lang="ts"><code>erase(entries: any, x?: number, y?: number, alpha?: number, tint?: number): this;</code></pre><p>Draws the given object, or an array of objects, to this Dynamic Texture using a blend mode of ERASE.
+This has the effect of erasing any filled pixels present in the objects from this texture.</p>
+<p>This method uses the <code>draw</code> method internally,
+and the parameters behave the same way.
+<strong>param</strong>  entries Any renderable Game Object, or Group, Container, Display List, Render Texture, Texture Frame, or an array of any of these.
+<strong>param</strong>  x The x position to draw the Frame at, or the offset applied to the object. Default 0.
+<strong>param</strong>  y The y position to draw the Frame at, or the offset applied to the object. Default 0.
+<strong>param</strong>  alpha The alpha value. Only used when drawing Texture Frames to this texture. Game Objects use their own alpha. Default 1.
+<strong>param</strong>  tint The tint color value. Only used when drawing Texture Frames to this texture. Game Objects use their own tint. WebGL only. Default 0xffffff.
+<strong>returns</strong>  This Dynamic Texture instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>entries</code></td><td><code>any</code></td><td>Required</td></tr><tr><td><code>x</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>alpha</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>tint</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-draw-16">draw <a class="anchor" href="#member-draw-16">#</a></h3><pre class="code" data-lang="ts"><code>draw(entries: any, x?: number, y?: number, alpha?: number, tint?: number): this;</code></pre><p>Draws the given object, or an array of objects, to this Dynamic Texture.</p>
+<p>It can accept any of the following:</p>
+<ul>
+<li>Any renderable Game Object, such as a Sprite, Text, Graphics or TileSprite.</li>
+<li>Tilemap Layers.</li>
+<li>A Group. The contents of which will be iterated and drawn in turn.</li>
+<li>A Container. The contents of which will be iterated fully, and drawn in turn.</li>
+<li>A Scene Display List. Pass in <code>Scene.children</code> to draw the whole list.</li>
+<li>Another Dynamic Texture, or a Render Texture.</li>
+<li>A Texture Frame instance.</li>
+<li>A string. This is used to look-up the texture from the Texture Manager.</li>
+</ul>
+<p>Note 1: You cannot draw a Dynamic Texture to itself.</p>
+<p>Note 2: GameObjects will use the camera, while textures and frames will not.
+Textures and frames are drawn using the <code>stamp</code> method.</p>
+<p>If passing in a Group or Container it will only draw children that return <code>true</code>
+when their <code>willRender()</code> method is called. I.e. a Container with 10 children,
+5 of which have <code>visible=false</code> will only draw the 5 visible ones.</p>
+<p>If passing in an array of Game Objects it will draw them all, regardless if
+they pass a <code>willRender</code> check or not.</p>
+<p>You can pass in a string in which case it will look for a texture in the Texture
+Manager matching that string, and draw the base frame. If you need to specify
+exactly which frame to draw then use the method <code>drawFrame</code> instead.</p>
+<p>You can pass in the <code>x</code> and <code>y</code> coordinates to draw the objects at. The use of
+the coordinates differ based on what objects are being drawn. If the object is
+a Group, Container or Display List, the coordinates are <em>added</em> to the positions
+of the children. For all other types of object, the coordinates are exact.
+For textures and frames, the <code>x</code> and <code>y</code> values are the middle of the texture.</p>
+<p>The <code>alpha</code> and <code>tint</code> values are only used by Texture Frames.
+Game Objects use their own alpha and tint values when being drawn.
+<strong>param</strong>  entries Any renderable Game Object, or Group, Container, Display List, other Render Texture, Texture Frame or an array of any of these.
+<strong>param</strong>  x The x position to draw the Frame at, or the offset applied to the object. Default 0.
+<strong>param</strong>  y The y position to draw the Frame at, or the offset applied to the object. Default 0.
+<strong>param</strong>  alpha The alpha value. Only used when drawing Texture Frames to this texture. Game Objects use their own alpha. Default 1.
+<strong>param</strong>  tint The tint color value. Only used when drawing Texture Frames to this texture. Game Objects use their own tint. WebGL only. Default 0xffffff.
+<strong>returns</strong>  This Dynamic Texture instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>entries</code></td><td><code>any</code></td><td>Required</td></tr><tr><td><code>x</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>alpha</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>tint</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-capture-17">capture <a class="anchor" href="#member-capture-17">#</a></h3><pre class="code" data-lang="ts"><code>capture(entry: Phaser.GameObjects.GameObject, config: Phaser.Types.Textures.CaptureConfig): this;</code></pre><p>Draws the given object to this Dynamic Texture.
+This allows you to draw the object as it appears in the game world,
+or with various parameter overrides in the config.
+<strong>param</strong>  entry Any renderable GameObject.
+<strong>param</strong>  config The configuration object for the capture.
+<strong>returns</strong>  This Dynamic Texture instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>entry</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr><tr><td><code>config</code></td><td><code>Phaser.Types.Textures.CaptureConfig</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-startcapture-18">startCapture <a class="anchor" href="#member-startcapture-18">#</a></h3><pre class="code" data-lang="ts"><code>startCapture(entry: Phaser.GameObjects.GameObject, config: Phaser.Types.Textures.CaptureConfig): Phaser.Types.Textures.CaptureConfig;</code></pre><p>Prepares an object to be rendered using the <code>capture</code> method.
+This method is called automatically during rendering.
+Do not call it directly.
+<strong>param</strong>  entry The object to set up for capture.
+<strong>param</strong>  config The configuration object for the capture.
+<strong>returns</strong>  A configuration object containing the appropriate parent transform in <code>transform</code>, and the cached object properties in any fields that were overridden.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>entry</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr><tr><td><code>config</code></td><td><code>Phaser.Types.Textures.CaptureConfig</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>Phaser.Types.Textures.CaptureConfig</code></p><h3 id="member-finishcapture-19">finishCapture <a class="anchor" href="#member-finishcapture-19">#</a></h3><pre class="code" data-lang="ts"><code>finishCapture(entry: Phaser.GameObjects.GameObject, cacheConfig: Phaser.Types.Textures.CaptureConfig): void;</code></pre><p>Restores the object properties that were overridden during the <code>capture</code> method.
+This method is called automatically during rendering.
+Do not call it directly.
+<strong>param</strong>  entry The GameObject to restore the properties on.
+<strong>param</strong>  cacheConfig The cached properties to restore.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>entry</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr><tr><td><code>cacheConfig</code></td><td><code>Phaser.Types.Textures.CaptureConfig</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-repeat-20">repeat <a class="anchor" href="#member-repeat-20">#</a></h3><pre class="code" data-lang="ts"><code>repeat(key: string, frame?: string | number, x?: number, y?: number, width?: number, height?: number, config?: Phaser.Types.GameObjects.TileSprite.TileSpriteConfig): this;</code></pre><p>Takes the given Texture Frame and draws it to this Dynamic Texture as a fill pattern,
+i.e. in a grid-layout based on the frame dimensions.
+It uses a <code>TileSprite</code> internally to draw the frame repeatedly.</p>
+<p>Textures are referenced by their string-based keys, as stored in the Texture Manager.</p>
+<p>You can optionally provide a position, width, height, alpha and tint value to apply to
+the frames before they are drawn. The position controls the top-left where the repeating
+fill will start from. The width and height control the size of the filled area.</p>
+<p>The position can be negative if required, but the dimensions cannot.</p>
+<p>This method respects the camera settings of the Dynamic Texture.
+<strong>param</strong>  key The key of the texture to be used, as stored in the Texture Manager.
+<strong>param</strong>  frame The name or index of the frame within the Texture. Set to <code>null</code> to skip this argument if not required.
+<strong>param</strong>  x The x position to start drawing the frames from (can be negative to offset). Default 0.
+<strong>param</strong>  y The y position to start drawing the frames from (can be negative to offset). Default 0.
+<strong>param</strong>  width The width of the area to repeat the frame within. Defaults to the width of this Dynamic Texture. Default this.width.
+<strong>param</strong>  height The height of the area to repeat the frame within. Defaults to the height of this Dynamic Texture. Default this.height.
+<strong>param</strong>  config The configuration object for the TileSprite which repeats the texture, allowing you to set further properties on it.
+<strong>returns</strong>  This Dynamic Texture instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>key</code></td><td><code>string</code></td><td>Required</td></tr><tr><td><code>frame</code></td><td><code>string | number</code></td><td>Optional</td></tr><tr><td><code>x</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>width</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Optional</td></tr><tr><td><code>config</code></td><td><code>Phaser.Types.GameObjects.TileSprite.TileSpriteConfig</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-preserve-21">preserve <a class="anchor" href="#member-preserve-21">#</a></h3><pre class="code" data-lang="ts"><code>preserve(preserve: boolean): this;</code></pre><p>Sets the preserve flag for this Dynamic Texture.
+Ordinarily, after each render, the command buffer is cleared.
+When this flag is set to <code>true</code>, the command buffer is preserved between renders.
+This makes it possible to repeat the same drawing commands on each render.</p>
+<p>Make sure to call <code>clear()</code> at the start if you don&#39;t want to accumulate
+drawing detail over the top of itself.
+<strong>param</strong>  preserve Whether to preserve the command buffer after rendering.
+<strong>returns</strong>  This Dynamic Texture instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>preserve</code></td><td><code>boolean</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-callback-22">callback <a class="anchor" href="#member-callback-22">#</a></h3><pre class="code" data-lang="ts"><code>callback(callback: Function): this;</code></pre><p>Adds a callback to run during the render process.
+This callback runs as a step in the command buffer.
+It can be used to set up conditions for the next draw step.</p>
+<p>Note that this will only execute after <code>render()</code> is called.
+<strong>param</strong>  callback A callback function to run during the render process.
+<strong>returns</strong>  This Dynamic Texture instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>callback</code></td><td><code>Function</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-snapshotarea-23">snapshotArea <a class="anchor" href="#member-snapshotarea-23">#</a></h3><pre class="code" data-lang="ts"><code>snapshotArea(x: number, y: number, width: number, height: number, callback: Phaser.Types.Renderer.Snapshot.SnapshotCallback, type?: string, encoderOptions?: number): this;</code></pre><p>Takes a snapshot of the given area of this Dynamic Texture.</p>
+<p>The snapshot is taken immediately, but the results are returned via the given callback.</p>
+<p>To capture the whole Dynamic Texture see the <code>snapshot</code> method.
+To capture just a specific pixel, see the <code>snapshotPixel</code> method.</p>
+<p>Snapshots work by using the WebGL <code>readPixels</code> feature to grab every pixel from the frame buffer
+into an ArrayBufferView. It then parses this, copying the contents to a temporary Canvas and finally
+creating an Image object from it, which is the image returned to the callback provided.</p>
+<p>All in all, this is a computationally expensive and blocking process, which gets more expensive
+the larger the resolution this Dynamic Texture has, so please be careful how you employ this in your game.
+<strong>param</strong>  x The x coordinate to grab from.
+<strong>param</strong>  y The y coordinate to grab from.
+<strong>param</strong>  width The width of the area to grab.
+<strong>param</strong>  height The height of the area to grab.
+<strong>param</strong>  callback The Function to invoke after the snapshot image is created.
+<strong>param</strong>  type The format of the image to create, usually <code>image/png</code> or <code>image/jpeg</code>. Default &#39;image/png&#39;.
+<strong>param</strong>  encoderOptions The image quality, between 0 and 1. Used for image formats with lossy compression, such as <code>image/jpeg</code>. Default 0.92.
+<strong>returns</strong>  This Dynamic Texture instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>width</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>height</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>callback</code></td><td><code>Phaser.Types.Renderer.Snapshot.SnapshotCallback</code></td><td>Required</td></tr><tr><td><code>type</code></td><td><code>string</code></td><td>Optional</td></tr><tr><td><code>encoderOptions</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-snapshot-24">snapshot <a class="anchor" href="#member-snapshot-24">#</a></h3><pre class="code" data-lang="ts"><code>snapshot(callback: Phaser.Types.Renderer.Snapshot.SnapshotCallback, type?: string, encoderOptions?: number): this;</code></pre><p>Takes a snapshot of the whole of this Dynamic Texture.</p>
+<p>The snapshot is taken immediately, but the results are returned via the given callback.</p>
+<p>To capture a portion of this Dynamic Texture see the <code>snapshotArea</code> method.
+To capture just a specific pixel, see the <code>snapshotPixel</code> method.</p>
+<p>Snapshots work by using the WebGL <code>readPixels</code> feature to grab every pixel from the frame buffer
+into an ArrayBufferView. It then parses this, copying the contents to a temporary Canvas and finally
+creating an Image object from it, which is the image returned to the callback provided.</p>
+<p>All in all, this is a computationally expensive and blocking process, which gets more expensive
+the larger the resolution this Dynamic Texture has, so please be careful how you employ this in your game.
+<strong>param</strong>  callback The Function to invoke after the snapshot image is created.
+<strong>param</strong>  type The format of the image to create, usually <code>image/png</code> or <code>image/jpeg</code>. Default &#39;image/png&#39;.
+<strong>param</strong>  encoderOptions The image quality, between 0 and 1. Used for image formats with lossy compression, such as <code>image/jpeg</code>. Default 0.92.
+<strong>returns</strong>  This Dynamic Texture instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>callback</code></td><td><code>Phaser.Types.Renderer.Snapshot.SnapshotCallback</code></td><td>Required</td></tr><tr><td><code>type</code></td><td><code>string</code></td><td>Optional</td></tr><tr><td><code>encoderOptions</code></td><td><code>number</code></td><td>Optional</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-snapshotpixel-25">snapshotPixel <a class="anchor" href="#member-snapshotpixel-25">#</a></h3><pre class="code" data-lang="ts"><code>snapshotPixel(x: number, y: number, callback: Phaser.Types.Renderer.Snapshot.SnapshotCallback): this;</code></pre><p>Takes a snapshot of the given pixel from this Dynamic Texture.</p>
+<p>The snapshot is taken immediately, but the results are returned via the given callback.</p>
+<p>To capture the whole Dynamic Texture see the <code>snapshot</code> method.
+To capture a portion of this Dynamic Texture see the <code>snapshotArea</code> method.</p>
+<p>Unlike the two other snapshot methods, this one will send your callback a <code>Color</code> object
+containing the color data for the requested pixel. It doesn&#39;t need to create an internal
+Canvas or Image object, so is a lot faster to execute, using less memory than the other snapshot methods.
+<strong>param</strong>  x The x coordinate of the pixel to get.
+<strong>param</strong>  y The y coordinate of the pixel to get.
+<strong>param</strong>  callback The Function to invoke after the snapshot pixel data is extracted.
+<strong>returns</strong>  This Dynamic Texture instance.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>x</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>y</code></td><td><code>number</code></td><td>Required</td></tr><tr><td><code>callback</code></td><td><code>Phaser.Types.Renderer.Snapshot.SnapshotCallback</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>this</code></p><h3 id="member-getwebgltexture-26">getWebGLTexture <a class="anchor" href="#member-getwebgltexture-26">#</a></h3><pre class="code" data-lang="ts"><code>getWebGLTexture(): Phaser.Renderer.WebGL.Wrappers.WebGLTextureWrapper | null;</code></pre><p>Returns the underlying WebGLTextureWrapper, if not running in Canvas mode.undefined
+<strong>returns</strong>  The underlying WebGLTextureWrapper, if not running in Canvas mode.</p>
+<p><b>Type / return:</b> <code>Phaser.Renderer.WebGL.Wrappers.WebGLTextureWrapper | null</code></p><h3 id="member-renderwebgl-27">renderWebGL <a class="anchor" href="#member-renderwebgl-27">#</a></h3><pre class="code" data-lang="ts"><code>renderWebGL(renderer: Phaser.Renderer.WebGL.WebGLRenderer, src: Phaser.GameObjects.Image, camera: Phaser.Cameras.Scene2D.Camera, parentMatrix: Phaser.GameObjects.Components.TransformMatrix): void;</code></pre><p>Sets this Dynamic Texture onto the TextureManager.Stamp
+and then calls its render method.
+<strong>param</strong>  renderer A reference to the current active WebGL renderer.
+<strong>param</strong>  src The Game Object being rendered in this call.
+<strong>param</strong>  camera The Camera that is rendering the Game Object.
+<strong>param</strong>  parentMatrix This transform matrix is defined if the game object is nested</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>renderer</code></td><td><code>Phaser.Renderer.WebGL.WebGLRenderer</code></td><td>Required</td></tr><tr><td><code>src</code></td><td><code>Phaser.GameObjects.Image</code></td><td>Required</td></tr><tr><td><code>camera</code></td><td><code>Phaser.Cameras.Scene2D.Camera</code></td><td>Required</td></tr><tr><td><code>parentMatrix</code></td><td><code>Phaser.GameObjects.Components.TransformMatrix</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-rendercanvas-28">renderCanvas <a class="anchor" href="#member-rendercanvas-28">#</a></h3><pre class="code" data-lang="ts"><code>renderCanvas(renderer: Phaser.Renderer.Canvas.CanvasRenderer | Phaser.Renderer.WebGL.WebGLRenderer, mask: Phaser.GameObjects.GameObject, camera: Phaser.Cameras.Scene2D.Camera): void;</code></pre><p>This is a NOOP method. Dynamic Textures cannot render themselves to the Canvas Renderer directly.
+<strong>param</strong>  renderer The Canvas Renderer which would be rendered to.
+<strong>param</strong>  mask The masked Game Object which would be rendered.
+<strong>param</strong>  camera The Camera to render to.</p>
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Required / default</th></tr></thead><tbody><tr><td><code>renderer</code></td><td><code>Phaser.Renderer.Canvas.CanvasRenderer | Phaser.Renderer.WebGL.WebGLRenderer</code></td><td>Required</td></tr><tr><td><code>mask</code></td><td><code>Phaser.GameObjects.GameObject</code></td><td>Required</td></tr><tr><td><code>camera</code></td><td><code>Phaser.Cameras.Scene2D.Camera</code></td><td>Required</td></tr></tbody></table><p><b>Type / return:</b> <code>void</code></p><h3 id="member-destroy-29">destroy <a class="anchor" href="#member-destroy-29">#</a></h3><pre class="code" data-lang="ts"><code>destroy(): void;</code></pre><p>Destroys this Texture and releases references to its sources and frames.</p>
+<p><b>Type / return:</b> <code>void</code></p><h2 id="base-types">Base types</h2><p><a href="../ad/texture.html">Phaser.Textures.Texture</a></p><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#members">Public members (30)</a><a href="#base-types">Base types</a></aside></div>
+<script src="../../../../../../../../assets/cm.classic.js"></script><script src="../../../../../../../../assets/manual.js"></script></body></html>

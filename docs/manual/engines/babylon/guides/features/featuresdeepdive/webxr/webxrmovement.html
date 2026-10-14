@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: WebXR Movement — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../index.html"><img src="../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../index.html">Babylon documentation library</a><a href="../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: WebXR Movement</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="movement-module">Movement Module<a class="anchor" href="#movement-module">#</a></h2>
+<p>The movement feature allows movement in the scene with controllers. It is separate from the teleportation module and is not designed to be used at the same time.</p>
+<p>In order to enable this feature you must first ensure that teleportation is not switched on.</p>
+<p>Teleportation can be disabled in the default XR experience:</p>
+<pre class="code" data-lang="javascript"><code>const xr = await scene.createDefaultXRExperienceAsync({
+  disableTeleportation: true,
+});</code></pre>
+<p>You can also disable teleportation manually before enabling the movement feature.</p>
+<pre class="code" data-lang="javascript"><code>const featureManager = xrHelper.baseExperience.featuresManager;
+featureManager.disableFeature(BABYLON.WebXRFeatureName.TELEPORTATION);</code></pre>
+<p>The movement feature enables the camera&#39;s position to be changed with the controllers.
+Default configuration (can be changed in the options below):</p>
+<ol>
+<li>Left controller - rotate counterclockwise or clockwise</li>
+<li>Right controller - move forward/backward/left/right</li>
+</ol>
+<pre class="code" data-lang="javascript"><code>const featureManager = xrHelper.baseExperience.featuresManager;
+
+featureManager.enableFeature(BABYLON.WebXRFeatureName.MOVEMENT, &quot;latest&quot;, {
+  xrInput: xrHelper.input,
+});</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><p>It is also possible to use the controller to set the movement direction. To do that, you need to disable the head-direction settings. You can optionally define which hand will control the rotation:</p>
+<pre class="code" data-lang="javascript"><code>const featureManager = xrHelper.baseExperience.featuresManager;
+
+const movementFeature = featureManager.enableFeature(BABYLON.WebXRFeatureName.MOVEMENT, &quot;latest&quot;, {
+  xrInput: xr.input,
+  // add options here
+  movementOrientationFollowsViewerPose: false, // default true
+  movementOrientationFollowsController: true, // enable controller direction
+  orientationPreferredHandedness: &quot;left&quot;, // the preferred hand for rotation. Defaults to right. If hand is not found it will use the first found controller.
+});</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><h3 id="movement-configuration-options">Movement Configuration Options<a class="anchor" href="#movement-configuration-options">#</a></h3>
+<p>The current options for the plugin can always be found in the <span>WebXR movement feature source code</span>. Most of them are explained here.</p>
+<p>One important option is <code>movementOrientationFollowsViewerPose</code>, which defaults to <code>true</code>. When configured to <code>false</code>, the forward direction will not adjust to the viewer pose, but only to the controller rotation. This can be useful for experiences where the viewer pose should not affect movement direction. For example, if you are moving forward and look left, you should not drift left but continue straight. You can try this in the playground above by changing the option.</p>
+<p>The controllers themselves can be configured differently. For example, if you want to swap which hand controls rotation and which controls movement, override the <code>customRegistrationConfigurations</code> array. The feature handles movement and rotation state automatically and ignores them when rotation (<code>rotationEnabled</code>) or movement (<code>movementEnabled</code>) is not enabled. Speed is controlled by <code>rotationSpeed</code> and <code>movementSpeed</code>.</p>
+<p>This swaps the handedness of the default configuration while maintaining the feature sensitivity thresholds:</p>
+<pre class="code" data-lang="javascript"><code>const swappedHandednessConfiguration = [
+  {
+    allowedComponentTypes: [BABYLON.WebXRControllerComponent.THUMBSTICK_TYPE, BABYLON.WebXRControllerComponent.TOUCHPAD_TYPE],
+    forceHandedness: &quot;right&quot;,
+    axisChangedHandler: (axes, movementState, featureContext, xrInput) =&gt; {
+      movementState.rotateX = Math.abs(axes.x) &gt; featureContext.rotationThreshold ? axes.x : 0;
+      movementState.rotateY = Math.abs(axes.y) &gt; featureContext.rotationThreshold ? axes.y : 0;
+    },
+  },
+  {
+    allowedComponentTypes: [WebXRControllerComponent.THUMBSTICK_TYPE, WebXRControllerComponent.TOUCHPAD_TYPE],
+    forceHandedness: &quot;left&quot;,
+    axisChangedHandler: (axes, movementState, featureContext, xrInput) =&gt; {
+      movementState.moveX = Math.abs(axes.x) &gt; featureContext.movementThreshold ? axes.x : 0;
+      movementState.moveY = Math.abs(axes.y) &gt; featureContext.movementThreshold ? axes.y : 0;
+    },
+  },
+];
+
+const featureManager = xrHelper.baseExperience.featuresManager;
+
+featureManager.enableFeature(BABYLON.WebXRFeatureName.MOVEMENT, &quot;latest&quot;, {
+  xrInput: xrHelper.input,
+  customRegistrationConfigurations: swappedHandednessConfiguration,
+});</code></pre>
+<p>Other useful options are to change movement and rotation speed and to enable/disable movement (<code>movementEnabled</code>) and rotation (<code>rotationEnabled</code>), but these ones are also available on the feature itself to change at runtime. The threshold options determine the sensitivity when the input is accepted - the default is 0.25, which prevents accidental movements and jittering.</p>
+<h2 id="walking-locomotion">Walking Locomotion<a class="anchor" href="#walking-locomotion">#</a></h2>
+<p><code>WebXRWalkingLocomition</code> is an experimental Babylon.js capability which
+enables users to traverse VR spaces by &quot;walking in place.&quot;</p>
+<pre class="code" data-lang="javascript"><code>scene.createDefaultXRExperienceAsync({ disableTeleportation: true }).then((xr) =&gt; {
+  const xrRoot = new BABYLON.TransformNode(&quot;xrRoot&quot;, scene);
+  xr.baseExperience.camera.parent = xrRoot;
+  xr.baseExperience.featuresManager.enableFeature(BABYLON.WebXRFeatureName.WALKING_LOCOMOTION, &quot;latest&quot;, { locomotionTarget: xrRoot });
+});</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><p>While it is highly recommended to move the <code>WebXRCamera</code>&#39;s parent
+node in order to avoid conflating virtual positional data with XR
+sensory readings, it is also possible to move the <code>WebXRCamera</code>
+itself.</p>
+<pre class="code" data-lang="javascript"><code>scene.createDefaultXRExperienceAsync({ disableTeleportation: true }).then((xr) =&gt; {
+  xr.baseExperience.featuresManager.enableFeature(BABYLON.WebXRFeatureName.WALKING_LOCOMOTION, &quot;latest&quot;, { locomotionTarget: xr.baseExperience.camera.parent });
+});</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><p>To move, simply face in the direction you want to go and &quot;walk in place,&quot;
+lifting and replacing each foot in turn much as you would if you were
+actually walking forward. This is a control technique and is not expected
+to work &quot;magically&quot;; it may take a small amount of practice to perform a
+motion that the system recognizes as walking.</p>
+<p>Under the hood, what the XR system is actually reacting to is the user&#39;s
+head motion, specifically the characteristic back-and-forth &quot;rocking&quot;
+motion traced by most people&#39;s heads when walking in place (or, for
+example, on a treadmill). Because of this, walking-in-place motions which
+keep the head stationary, or which cause the head to move erratically,
+will not be recognized as &quot;walking&quot; by the <code>WebXRWalkingLocomotion</code>
+feature. However, once a recognizable motion is performed, it should be
+very easy and comfortable to replicate. Walking detection of a recognizable
+motion should also be resilient to head orientation; because walking is
+recognized from the movement of the head (at a guesstimated &quot;nape of the
+neck&quot; position, which remains relatively stationary as the head rotates),
+looking around while performing a recognizable &quot;walking in place&quot; motion
+will not disrupt the locomotion feature.</p>
+<h3 id="when-to-use-this-feature">When to Use This Feature<a class="anchor" href="#when-to-use-this-feature">#</a></h3>
+<p><code>WebXRWalkingLocomotion</code> is a form of <em>continuous traversal</em>, similar to
+walking around in real life and distinct from <em>discontinuous traversal</em>
+alternatives such as teleportation. The most common example of continuous
+traversal in VR, as in other forms of interactive 3D, is controller-based
+and typically leverages a thumbstick to sort of &quot;slide&quot; the user around
+the world in a continuous manner. Many users find this &quot;sliding&quot; effect
+to be uncomfortable in VR, and for this reason teleportation is often
+chosen as the default traversal alternative in VR applications.</p>
+<p>However, there are times when teleportation and other discontinuous
+traversal techniques are unsuitable, and in such circumstances
+<code>WebXRWalkingLocomotion</code> can serve as an alternative to controller-based
+continuous traversal. Early tests indicate that walking locomotion can
+feel noticeably more comfortable than controller-based continuous
+traversal, perhaps because the familiar &quot;walking&quot; motion reduces the
+dissonance between the visual and vestibular stimuli presented to the
+user.</p>
+<p>It is also notable that <code>WebXRWalkingLocomotion</code>, because it assesses only
+head motion, can be used entirely controller-free. This is particularly
+powerful in combination with <code>WebXRHandTracking</code> because it allows for a
+fully traversal-enabled VR experience where users can use their natural
+hands without any controllers at all. This is not possible using other
+traversal technologies without customizing the virtual space to support
+point-to-point navigation and/or advanced hand gestures.</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#movement-module">Movement Module </a><a href="#walking-locomotion">Walking Locomotion </a></aside></div>
+<script src="../../../../../../assets/cm.classic.js"></script><script src="../../../../../../assets/manual.js"></script></body></html>

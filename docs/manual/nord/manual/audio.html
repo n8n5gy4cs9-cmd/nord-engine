@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Audio — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="welcome.html" class="active" aria-current="page">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Manual</div><a href="welcome.html">Welcome</a><a href="editor-tour.html">Editor tour</a><a href="projects-scenes.html">Projects &amp; scenes</a><a href="scripting.html">Scripting</a><a href="2d.html">2D games</a><a href="3d.html">3D games</a><a href="physics.html">Physics</a><a href="audio.html" class="cur" aria-current="page">Audio</a><a href="ui.html">UI &amp; HUD</a><a href="input.html">Input</a><a href="assets.html">Assets</a><a href="library.html">The library</a><a href="rust-wasm.html">Rust / WASM</a><a href="export.html">Export &amp; hosting</a><a href="performance.html">Performance &amp; debugging</a><a href="reference.html">Reference overview</a><a href="desktop-apps.html">Desktop apps</a></nav><main id="content"><div class="crumb">Manual / Nord Engine</div><h1>Audio</h1>
+<p>Add short sounds for actions and music for atmosphere. Keep the files in your project, choose a volume, and let the player enable audio with a click or tap.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>If sound is silent on first load, click the game once. Browsers require a player gesture. Try one short sound before setting up looping music or crossfades.</p>
+</aside><p><code>this.audio</code> is a WebAudio manager with four <strong>buses</strong>: <code>master → music / sfx / ui</code>. Calls made before the player&#39;s first click/key are <strong>queued and replayed</strong> (browsers block audio until a gesture).
+Missing or blocked audio never throws into game code.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>Think of buses as volume knobs: one knob for music, one for effects, one for menus, and a big master knob over all of them.</p>
+</aside><pre class="code" data-lang="js"><code>this.audio.play('assets/audio/sfx/jump.wav');                       // one-shot
+const h = this.audio.play('assets/audio/sfx/engine.wav', { loop: true, volume: 0.4, rate: 1.2, pan: -0.5 });
+h.stop();
+this.audio.music('assets/audio/music/music_adventure.mp3', { fade: 1.5 });  // crossfade
+this.audio.stopMusic({ fade: 0.5 });
+this.audio.volume('music', 0.5);     // 0..1, persisted
+this.audio.mute('sfx', true);</code></pre>
+<ul>
+<li><code>bus</code> option: <code>&#39;sfx&#39;</code> (default), <code>&#39;music&#39;</code>, <code>&#39;ui&#39;</code>.</li>
+<li>Volumes and mutes are saved per game in localStorage and restored on start.</li>
+<li>Preload with <code>this.audio.preload([...paths])</code> to avoid first-play latency.</li>
+<li>The <a href="../components/component-audioSource.html"><code>audioSource</code></a> component attaches a clip to an entity (<code>autoplay</code>, <code>loop</code>, <code>bus</code>) and exposes <code>play()</code>/<code>stop()</code>.</li>
+<li>UI sounds <code>click</code> and <code>hover</code> (<code>assets/audio/sfx/click.wav</code>, <code>hover.wav</code>) play automatically for <code>game.ui</code> buttons.</li>
+<li>Library: <code>util-sfx.js</code> (event-name → sound map via <code>events.emit(&#39;sfx&#39;, &#39;hit&#39;)</code>), <code>ui-settings.js</code> (volume sliders).</li>
+</ul>
+<aside class="box tip"><div class="box-title">Tip</div><p>MP3 adds ~25 ms of encoder delay, so use <strong>OGG or WAV</strong> for gapless loops. The Rust tier supports WAV/OGG only.</p>
+</aside><p>Audio is not spatialised yet (<code>audioListener</code> is a placeholder).</p>
+<h2 id="touch-to-start">Touch-to-start gate (<code>touchToStart</code>)<a class="anchor" href="#touch-to-start">#</a></h2>
+<p>Browsers refuse to play sound until the player has clicked, tapped or pressed a key. Nord queues early <code>audio.play</code>/<code>audio.music</code> calls and replays them after the first gesture, but a title screen with music still sits silent until then — and the player&#39;s very first click would also hit your menu by accident.</p>
+<p><code>touchToStart</code> fixes both. It is a ready-made, <strong>opt-in</strong> helper exported from <code>nord</code> (<code>runtime/core/start-gate.js</code>): a full-screen &quot;TOUCH / CLICK TO ENABLE AUDIO&quot; overlay that waits for the first gesture, <strong>swallows that gesture and its release</strong> (so no menu button is pressed through it), unlocks audio so the queued title music starts, then removes itself. The next click or key is normal game input. Your current screen, camera and project settings are not touched. X-KOM 2026 and Vallout 2 both use it.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>It is the &quot;Press any key&quot; screen you know from old games. The game is already drawn behind it; the first touch only switches the sound on and then gets out of the way.</p>
+</aside><h3 id="add-it-to-a-game-3-steps">Add it to a game (3 steps)<a class="anchor" href="#add-it-to-a-game-3-steps">#</a></h3>
+<ol>
+<li><strong>Import</strong> it from <code>nord</code>.</li>
+<li><strong>Build your title screen and queue the title music first</strong>, then install the gate as the last step of setup.</li>
+<li><strong>Destroy</strong> it in <code>onDestroy()</code>, and keep a reference so your own input code can ignore input while <code>startGate.active</code> is true.</li>
+</ol>
+<pre class="code" data-lang="js"><code>import { NordScript, touchToStart } from 'nord';
+
+export default class MyGame extends NordScript {
+  start() {
+    this.showTitle();                                  // draw the title + this.audio.music('assets/audio/music/title.mp3')
+    this.startGate = touchToStart(this.game, {
+      title: 'MY GAME',                                // big heading (default 'READY')
+      label: 'TOUCH / CLICK TO ENABLE AUDIO',          // small caption (also the aria-label)
+    });
+  }
+  update(dt) {
+    if (this.startGate?.active) return;                // optional: pause game logic while the gate is up
+    // ...
+  }
+  onKey(e) {
+    if (this.startGate?.active) return;                // optional: ignore your own key handlers too
+    // ...
+  }
+  onDestroy() { this.startGate?.destroy(); }           // removes the overlay and every listener
+}</code></pre>
+<h3 id="options-and-handle">Options and handle<a class="anchor" href="#options-and-handle">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>parent</code></td>
+<td><code>document.body</code></td>
+<td>element the overlay is appended to</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td><code>&#39;READY&#39;</code></td>
+<td>heading text</td>
+</tr>
+<tr>
+<td><code>label</code></td>
+<td><code>&#39;TOUCH OR CLICK TO START AUDIO&#39;</code></td>
+<td>caption + accessible label</td>
+</tr>
+</tbody></table>
+<p>Returns <code>{ active, destroy() }</code>. <code>active</code> is <code>true</code> until the first gesture. Without a DOM (tests, Rust tier) it returns an inactive no-op handle.</p>
+<h3 id="good-to-know">Good to know<a class="anchor" href="#good-to-know">#</a></h3>
+<ul>
+<li>The first <strong>pointer-down, touch-start or key-down</strong> dismisses it; its release and synthetic click are swallowed for about half a second, so a tap cannot &quot;fall through&quot; to a button. Modifier combos (Ctrl/Cmd/Alt + key) and key auto-repeat are ignored.</li>
+<li>The gate does not choose music or change screens. Start the music yourself <em>before</em> installing it; it is replayed when audio unlocks.</li>
+<li>Skip it when you jump straight into gameplay (a <code>?start=</code> or <code>?nogate</code> URL switch is handy for automated tests, which cannot see the overlay&#39;s first click). Example: <code>if (!new URLSearchParams(location.search).has(&#39;nogate&#39;)) this.startGate = touchToStart(this.game, { title: &#39;MY GAME&#39; });</code></li>
+<li>In automated browser tests, click once on the page (<code>page.mouse.click</code>) when <code>[data-nord-start-gate]</code> exists.</li>
+<li>It is not installed by default; games that do not call it are unchanged.</li>
+</ul>
+<div class="pager"><a href="physics.html"><small>← Previous</small>Physics</a><a href="ui.html"><small>Next →</small>UI &amp; HUD</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#touch-to-start">Touch-to-start gate ( touchToStart ) </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

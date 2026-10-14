@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Observables — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../index.html"><img src="../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../index.html">Babylon documentation library</a><a href="../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Observables</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="how-to-use-observables">How To Use Observables<a class="anchor" href="#how-to-use-observables">#</a></h2>
+<p>For many of you creating Babylon.js projects, only <a href="../gui.html">GUI</a> and <a href="observables.html">scene</a> Observables will be needed, particularly <a href="../scene/interactwithscenes.html">scene.onPointerObservable</a>.</p>
+<h2 id="introduction">Introduction<a class="anchor" href="#introduction">#</a></h2>
+<p>Babylon.js provides a lot of events (like scene.beforeRender), and before v2.4 there was no unified way to handle them.
+Starting with v2.4, we introduced (without breaking backward compatibility of course) a new pattern: the Observables.</p>
+<p>There are two parts: the <a href="../../../../9.30/api/babylonjs/babylon/0a/observable.html">Observable</a> and the <a href="../../../../9.30/api/babylonjs/babylon/c7/observer.html">Observer</a>. The Observable is a property of an object that represents a given event (like beforeRender, for instance).
+Users who want to run their own code in response to such an event will register an Observer with the appropriate Observable. Then it&#39;s the Observable&#39;s job to execute the Observers when appropriate.</p>
+<p>The implementer uses an Observable to create a property that will trigger all registered observers. The generic type T is used to communicate a given data type from the Observable to the Observer.</p>
+<p>Most users will simply add their own Observers to the Observables that Babylon.js provides. But it is also possible to create your own Observables (a simple example of which is below). For those who want to delve deeper, please see the <a href="../../../../9.30/api/babylonjs/babylon/0a/observable.html">API</a>.</p>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)
+An Observable, `onXChange`, is added to the master sphere. The two minion spheres and the actions they perform form the two Observers, which react when a change in the master's x position is observed.</span></li>
+</ul>
+<h2 id="observable-methods-and-properties">Observable Methods and Properties<a class="anchor" href="#observable-methods-and-properties">#</a></h2>
+<p>The following are available:</p>
+<ul>
+<li><a href="../../../../9.30/api/babylonjs/babylon/0a/observable.html">add</a>(): to add an Observer</li>
+<li><a href="../../../../9.30/api/babylonjs/babylon/0a/observable.html">addOnce</a>(): to add an Observer which will be executed once and then removed</li>
+<li><a href="../../../../9.30/api/babylonjs/babylon/0a/observable.html">remove</a>(): to remove a previously registered Observer</li>
+<li><a href="../../../../9.30/api/babylonjs/babylon/0a/observable.html">removeCallback</a>(): same as above, but by giving the callback instead of the Observer instance</li>
+<li><a href="../../../../9.30/api/babylonjs/babylon/0a/observable.html">notifyObservers</a>(): used to notify all registered Observers</li>
+<li><a href="../../../../9.30/api/babylonjs/babylon/0a/observable.html">notifyObserversWithPromise</a>(): calling this will execute each callback, expecting it to be a promise or return a value. If at any point in the chain one function fails, the promise will fail and execution will not continue.</li>
+<li><a href="../../../../9.30/api/babylonjs/babylon/0a/observable.html">hasObservers</a>: a property that returns true if at least one Observer is registered</li>
+<li><a href="../../../../9.30/api/babylonjs/babylon/0a/observable.html">hasSpecificMask</a>(mask): a function that returns true if at least one Observer is registered with this mask</li>
+<li><a href="../../../../9.30/api/babylonjs/babylon/0a/observable.html">clear</a>() to remove all Observers</li>
+<li><a href="../../../../9.30/api/babylonjs/babylon/0a/observable.html">clone</a>() to simply clone the object but not the registered Observers.</li>
+</ul>
+<p>The following static methods are available:</p>
+<ul>
+<li><a href="../../../../9.30/api/babylonjs/babylon/0a/observable.html">FromPromise</a>(): to create an Observable from a Promise.</li>
+</ul>
+<p>Many Babylon.js objects have a range of available Observables. Here is an <span>unordered list</span> from the Documentation search facility, with links to the API.</p>
+<h2 id="creating-an-observable">Creating An Observable<a class="anchor" href="#creating-an-observable">#</a></h2>
+<p>It is not necessary to create a new Observable in order to add an Observer to an Observable that Babylon.js provides, but you may wish to create your own Observables. In particular, Observables can be very useful for connecting external libraries to Babylon.js:</p>
+<pre class="code" data-lang="javascript"><code>import { io } from &quot;socket.io-client&quot;;
+
+const socket = io(&quot;/admin&quot;);
+
+const onConnectObservable = new Observable();
+const text1 = new BABYLON.GUI.TextBlock();
+
+socket.on(&quot;connect&quot;, () =&gt; {
+  onConnectObservable.notifyObservers();
+});
+
+onConnectObservable.add(() =&gt; {
+  text1.text = &quot;Connected&quot;;
+});</code></pre>
+<p>There is also a utility method <code>Observable.FromPromise</code> to create an Observable from a Promise:</p>
+<pre class="code" data-lang="javascript"><code>const onStatusObservable = Observable.FromPromise(axios(&quot;/ping&quot;).then((response) =&gt; response.statusText));
+
+onStatusObservable.add((statusText) =&gt; {
+  text1.text = &quot;Server status: &quot; + statusText;
+});</code></pre>
+<p>Creating your own Observables can help reduce coupling between different components. Instead of a hierarchy of components depending on each other, you can create multiple independent components and then simply connect them using a single parent component.</p>
+<h2 id="add-an-observer">Add An Observer<a class="anchor" href="#add-an-observer">#</a></h2>
+<p>An Observer consists of an object set to watch the Observable and the object&#39;s reaction to the observation.</p>
+<p>In the following example, the sphere and its scale change create an Observer through the Observable.<a href="../../../../9.30/api/babylonjs/babylon/0a/observable.html">add</a>() method.</p>
+<p>Use the Observable that notifies its Observers before the scene starts rendering each frame.</p>
+<pre class="code" data-lang="javascript"><code>const alpha = 0;
+scene.onBeforeRenderObservable.add(function () {
+  sphere.scaling.y = Math.cos(alpha);
+
+  alpha += 0.01;
+});</code></pre>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<p>To remove an Observer, you need to store it during its creation so you can refer to it with remove. The following example removes the Observer before it is notified for even the first rendered frame.</p>
+<pre class="code" data-lang="javascript"><code>const alpha = 0;
+const observer = scene.onBeforeRenderObservable.add(function () {
+  sphere.scaling.y = Math.cos(alpha);
+
+  alpha += 0.01;
+});
+
+scene.onBeforeRenderObservable.remove(observer);</code></pre>
+<ul>
+<li><span class="muted">Online playground (not embedded offline)</span></li>
+</ul>
+<p>The following example removes the Observer during the rendering cycle. Since it is not possible to remove an Observer that does not exist, you need to check whether the Observable still has that Observer.</p>
+<pre class="code" data-lang="javascript"><code>const alpha = 0;
+const observer = scene.onBeforeRenderObservable.add(function () {
+  sphere.scaling.y = Math.cos(alpha);
+
+  alpha += 0.01;
+
+  if (scene.onBeforeRenderObservable.hasObservers &amp;&amp; alpha &gt; 3) {
+    scene.onBeforeRenderObservable.remove(observer);
+  }
+});</code></pre>
+<h2 id="scene-observables">Scene Observables<a class="anchor" href="#scene-observables">#</a></h2>
+<p>The Babylon.js Scene object has over 20 observables that &#39;fire&#39; under various conditions. Most of them are checked on each frame/render in a deterministic order. Below is a list of Scene observables checked during each render loop, in the order they are checked:</p>
+<ul>
+<li><a href="../../../../9.30/api/babylonjs/babylon/66/scene.html">onBeforeAnimationsObservable</a></li>
+<li><a href="../../../../9.30/api/babylonjs/babylon/66/scene.html">onAfterAnimationsObservable</a></li>
+<li><a href="../../../../9.30/api/babylonjs/babylon/66/scene.html">onBeforePhysicsObservable</a></li>
+<li><a href="../../../../9.30/api/babylonjs/babylon/66/scene.html">onAfterPhysicsObservable</a></li>
+<li><a href="../../../../9.30/api/babylonjs/babylon/66/scene.html">onBeforeRenderObservable</a></li>
+<li><a href="../../../../9.30/api/babylonjs/babylon/66/scene.html">onBeforeRenderTargetsRenderObservable</a></li>
+<li><a href="../../../../9.30/api/babylonjs/babylon/66/scene.html">onAfterRenderTargetsRenderObservable</a></li>
+<li><a href="../../../../9.30/api/babylonjs/babylon/66/scene.html">onBeforeCameraRenderObservable</a></li>
+<li><a href="../../../../9.30/api/babylonjs/babylon/66/scene.html">onBeforeActiveMeshesEvaluationObservable</a></li>
+<li><a href="../../../../9.30/api/babylonjs/babylon/66/scene.html">onAfterActiveMeshesEvaluationObservable</a></li>
+<li><a href="../../../../9.30/api/babylonjs/babylon/66/scene.html">onBeforeParticlesRenderingObservable</a></li>
+<li><a href="../../../../9.30/api/babylonjs/babylon/66/scene.html">onAfterParticlesRenderingObservable</a></li>
+<li><a href="../../../../9.30/api/babylonjs/babylon/66/scene.html">onBeforeDrawPhaseObservable</a></li>
+<li><a href="../../../../9.30/api/babylonjs/babylon/66/scene.html">onAfterDrawPhaseObservable</a></li>
+<li><a href="../../../../9.30/api/babylonjs/babylon/66/scene.html">onAfterCameraRenderObservable</a></li>
+<li><a href="../../../../9.30/api/babylonjs/babylon/66/scene.html">onAfterRenderObservable</a></li>
+</ul>
+<p>The Scene object also has observables: onReady, onDataLoaded, and onDispose, but they are not triggered during rendering.</p>
+<p>Also, <a href="../../../../9.30/api/babylonjs/babylon/66/scene.html">onBeforeStepObservable</a> and <a href="../../../../9.30/api/babylonjs/babylon/66/scene.html">onAfterStepObservable</a> are available when using <a href="../animation/advanced-animations.html">deterministic lock step</a>.</p>
+<p>However, possibly the most useful Observable is the one that checks what is happening to the screen pointer, whether by mouse, finger, or controller: <a href="../../../../9.30/api/babylonjs/babylon/66/scene.html">scene.onPointerObservable</a>. For more details, have a look at the <a href="../scene/interactwithscenes.html">Interactions HowTo</a>.</p>
+<h2 id="observable-based-countdown-function">Observable-based countdown function<a class="anchor" href="#observable-based-countdown-function">#</a></h2>
+<p>Starting with Babylon 4.2, a new way to set a delayed function call was added. This method calculates the delay using observables. Think of it as a setTimeout function, but inside the Babylon context. The best way to explain it is with an example:</p>
+<pre class="code" data-lang="javascript"><code>// classic set timeout:
+setTimeout(() =&gt; {
+  // code running here is not guaranteed to be called inside the render loop
+  // Actually, it is most likely that it will be called OUTSIDE the render loop
+}, 3000);
+
+// the new and simple way
+BABYLON.setAndStartTimer({
+  timeout: 3000,
+  contextObservable: scene.onBeforeRenderObservable,
+  onEnded: () =&gt; {
+    // code running here is guaranteed to run inside the beforeRender loop
+  },
+});</code></pre>
+<h3 id="setandstarttimer">setAndStartTimer<a class="anchor" href="#setandstarttimer">#</a></h3>
+<p>As you can see in the example, the Babylon countdown timer takes an observable as context. This observable is the most important part of the code: it is the context in which the remaining time functions will be called, and it is responsible for calculating the delta time until the timer finishes. To explain it simply, these are the steps for the function we implemented before:</p>
+<ol>
+<li>set time = 0, add an observer to scene.onBeforeRenderObservable</li>
+<li>wait for the observer to be called.</li>
+<li>in the observer - check if time-passed-since-start &gt; timeout</li>
+<li>If not, go to 2</li>
+<li>If yes, call onEnded, remove the observer</li>
+<li>We are done</li>
+</ol>
+<p>A full example of the function&#39;s API:</p>
+<pre class="code" data-lang="javascript"><code>BABYLON.setAndStartTimer({
+  timeout: 3000,
+  contextObservable: scene.onBeforeRenderObservable,
+  breakCondition: () =&gt; {
+    // this will check if we need to break before the timeout has reached
+    return scene.isDisposed();
+  },
+  onEnded: (data) =&gt; {
+    // this will run when the timeout has passed
+  },
+  onTick: (data) =&gt; {
+    // this will run
+  },
+  onAborted: (data) =&gt; {
+    // this function will run when the break condition has met (premature ending)
+  },
+});</code></pre>
+<p>In theory, any observable can be used here, but some do not really make sense. If, for example, we use the pointer down observable, it might take a long time until the observer is called again, making it impractical. But if you need to process pointer-down input for the next 2 minutes, you can use it this way:</p>
+<pre class="code" data-lang="javascript"><code>let gameIsOn = true;
+BABYLON.setAndStartTimer({
+    timeout: 2 * 60 * 1000,
+    contextObservable: scene.onPointerObservable,
+    observableParameters: { mask: BABYLON.PointerEventTypes.POINTERDOWN },
+    breakCondition: () =&gt; {
+        // break if the game ended prior to this timeout
+        return !gameIsOn;
+    },
+    onEnded: () { console.log('time is over'); },
+    onTick: (data) =&gt; {
+        // data.payload is the pointerInfo object from the onPointerObservable
+        doSomethingWithTheData(data);
+    }
+});</code></pre>
+<p>A more practical example is making the user touch something for 3 seconds while indicating that the 3 seconds are being counted:</p>
+<pre class="code" data-lang="javascript"><code>const guiButton = // created a GUI button
+const guiButtonMaterial = ... // get the material
+let pressed = false;
+scene.onPointerDown = () =&gt; {
+    pressed = true;
+    BABYLON.setAndStartTimer({
+        timeout: 2 * 60 * 1000,
+        contextObservable: scene.onBeforeRenderObservable,
+        breakCondition: () =&gt; {
+            // break if no longer pressed
+            return !pressed;
+        },
+        onEnded: () {
+            console.log('Button pressed!');
+            // back to a black button
+            guiButtonMaterial.diffuseColor.set(0,0,0);
+         },
+        onTick: (data) =&gt; {
+            // turn it slowly green on each call to the registered observer
+            guiButtonMaterial.diffuseColor.set(0,data.completeRate,0);
+        },
+        onAborted: () =&gt; {
+            // Aborted, back to a black button
+            guiButtonMaterial.diffuseColor.set(0,0,0);
+        }
+    });
+}
+
+scene.onPointerUp = () =&gt; {
+    pressed = false;
+}</code></pre>
+<h3 id="advanced-timer">Advanced Timer<a class="anchor" href="#advanced-timer">#</a></h3>
+<p>Apart from this quick function, you can use the AdvancedTimer class, which offers a bit more flexibility but is also much more verbose. The object itself is reusable, so it can eventually save a few unnecessary calls and object creations. The last example using AdvancedTimer looks like this:</p>
+<pre class="code" data-lang="javascript"><code>const guiButton = // created a GUI button
+const guiButtonMaterial = ... // get the material
+const advancedTimer : BABYLON.AdvancedTimer&lt;Scene&gt; = new BABYLON.AdvancedTimer({
+    timeout: 3000,
+    contextObservable: scene.onBeforeRenderObservable
+});
+advancedTimer.onEachCountObservable.add(() =&gt; {
+    // turn it slowly green on each call to the registered observer
+    guiButtonMaterial.diffuseColor.set(0,data.completeRate,0);
+});
+advancedTimer.onTimerAbortedObservable.add(() =&gt; {
+    // Aborted, back to a black button
+    guiButtonMaterial.diffuseColor.set(0,0,0);
+});
+advancedTimer.onTimerEndedObservable.add(() =&gt; {
+    // back to a black button
+    guiButtonMaterial.diffuseColor.set(0,0,0);
+    console.log('Button pressed!');
+});
+
+scene.onPointerDown = () =&gt; {
+    advancedTimer.start();
+}
+
+scene.onPointerUp = () =&gt; {
+    advancedTimer.stop();
+}</code></pre>
+<h2 id="usage-with-rxjs">Usage with RxJS<a class="anchor" href="#usage-with-rxjs">#</a></h2>
+<p><span>RxJS</span> is a common library for handling Observables which are compliant with the <span>current ECMAScript Observable proposal</span>. It provides a wide range of operators, allowing for advanced execution patterns.</p>
+<p>The following (TypeScript) code can be used to convert a Babylon Observable into its RxJS equivalent:</p>
+<pre class="code" data-lang="typescript"><code>/**
+ * Wraps a Babylon Observable into an rxjs Observable
+ *
+ * @param bjsObservable The Babylon Observable you want to observe
+ * @example
+ * ```
+ * import { Engine, Scene, AbstractMesh } from '@babylonjs/core'
+ *
+ * const canvas = document.getElementById('canvas') as HTMLCanvasElement
+ * const engine = new Engine(canvas)
+ * const scene = new Scene(engine)
+ *
+ * const render$: Observable&lt;Scene&gt; = fromBabylonObservable(scene.onAfterRenderObservable)
+ * const onMeshAdded$: Observable&lt;AbstractMesh&gt; = fromBabylonObservable(scene.onNewMeshAddedObservable)
+ * ```
+ */
+export function fromBabylonObservable&lt;T&gt;(bjsObservable: BJSObservable&lt;T&gt;): Observable&lt;T&gt; {
+  return new Observable&lt;T&gt;((subscriber) =&gt; {
+    if (!(bjsObservable instanceof BJSObservable)) {
+      throw new TypeError(&quot;the object passed in must be a Babylon Observable&quot;);
+    }
+
+    const handler = bjsObservable.add((v) =&gt; subscriber.next(v));
+
+    return () =&gt; bjsObservable.remove(handler);
+  });
+}</code></pre>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#how-to-use-observables">How To Use Observables </a><a href="#introduction">Introduction </a><a href="#observable-methods-and-properties">Observable Methods and Properties </a><a href="#creating-an-observable">Creating An Observable </a><a href="#add-an-observer">Add An Observer </a><a href="#scene-observables">Scene Observables </a><a href="#observable-based-countdown-function">Observable-based countdown function </a><a href="#usage-with-rxjs">Usage with RxJS </a></aside></div>
+<script src="../../../../../../assets/cm.classic.js"></script><script src="../../../../../../assets/manual.js"></script></body></html>

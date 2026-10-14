@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>3D games — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="welcome.html" class="active" aria-current="page">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Manual</div><a href="welcome.html">Welcome</a><a href="editor-tour.html">Editor tour</a><a href="projects-scenes.html">Projects &amp; scenes</a><a href="scripting.html">Scripting</a><a href="2d.html">2D games</a><a href="3d.html" class="cur" aria-current="page">3D games</a><a href="physics.html">Physics</a><a href="audio.html">Audio</a><a href="ui.html">UI &amp; HUD</a><a href="input.html">Input</a><a href="assets.html">Assets</a><a href="library.html">The library</a><a href="rust-wasm.html">Rust / WASM</a><a href="export.html">Export &amp; hosting</a><a href="performance.html">Performance &amp; debugging</a><a href="reference.html">Reference overview</a><a href="desktop-apps.html">Desktop apps</a></nav><main id="content"><div class="crumb">Manual / Nord Engine</div><h1>3D games</h1>
+<p>A 3D scene needs something to look at and a camera to see it. Nord components create the models, materials and lights in Babylon for you.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>Start with a box, a camera pointed at it and a light. Press Play before adding an imported model. If the box is missing, check the camera before changing the material.</p>
+</aside><p>3D projects (<code>&quot;type&quot;: &quot;3d&quot;</code>) run on Babylon.js with Havok physics. Units are metres, <strong>y up, left-handed</strong>; rotation is Euler degrees (XYZ).</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>3D is the same entity-and-component idea, plus a third direction: <strong>y</strong> is <em>up</em>, <strong>z</strong> is <em>forward</em>. A &quot;mesh&quot; is the shape,
+a &quot;material&quot; is its paint, a &quot;light&quot; lets you see it.</p>
+</aside><h2 id="building-blocks">Building blocks<a class="anchor" href="#building-blocks">#</a></h2>
+<ul>
+<li><a href="../components/component-mesh.html"><code>mesh</code></a> — box, sphere, cylinder, capsule, torus, plane, ground. Perfect for greyboxing.</li>
+<li><a href="../components/component-model.html"><code>model</code></a> — a glTF/GLB. Models are instanced; animations are named clips (<code>play(&#39;walk&#39;)</code>).</li>
+<li><a href="../components/component-material.html"><code>material</code></a> — PBR: <code>color</code>, <code>metallic</code>, <code>roughness</code>, textures, <code>emissive</code>, <code>alpha</code>, <code>unlit</code>.</li>
+<li><a href="../components/component-light.html"><code>light</code></a> — directional (sun), point, spot, hemispheric (ambient sky). <code>castShadows</code> on a directional/spot light enables shadows for everything with <code>castShadow</code>.</li>
+<li><a href="../components/component-skybox.html"><code>skybox</code></a> — cube map folder (<code>assets/skybox/day</code>, <code>sunset</code>, <code>night</code> ship with the engine).</li>
+<li><a href="../components/component-postProcess.html"><code>postProcess</code></a> — bloom, FXAA/MSAA, vignette, tonemap, grain.</li>
+<li><a href="../components/component-particles.html"><code>particles</code></a> — Babylon particle system with the same component name as 2D.</li>
+</ul>
+<h2 id="cameras">Cameras<a class="anchor" href="#cameras">#</a></h2>
+<p>A <a href="../components/component-camera.html"><code>camera</code></a> entity creates a Babylon camera: <code>type: &quot;orbit&quot;</code> (follows <code>follow</code>, optional mouse control) or a free camera attached to the entity (first person: put the camera as a child of the player body).
+Switch with <code>getComponent(&#39;camera&#39;).activate()</code>. Library: <code>fps3d.js</code>, <code>third-person3d.js</code>, <code>orbit-cam.js</code>, <code>fly-cam.js</code>, <code>rts-cam.js</code>.</p>
+<h2 id="animation">Animation<a class="anchor" href="#animation">#</a></h2>
+<p><code>model.play(name, { loop, speed })</code>. Clip names come from the glTF; <code>getComponent(&#39;model&#39;).animations</code> lists them. Blend by switching clips with short tweens on speed if you need to.
+The Kenney pack in <code>assets/packs/kenney-platformer-3d/</code> has a rigged character to experiment with (<a href="assets.html#optional-packs">Assets</a>).</p>
+<h2 id="3d-ui">3D UI<a class="anchor" href="#3d-ui">#</a></h2>
+<p>Use the DOM layer (<code>game.ui</code>, see <a href="ui.html">UI</a>) for HUDs. For labels floating above entities, <code>game.gui.worldLabel(entity, &#39;Bob&#39;)</code> (Babylon GUI).</p>
+<h2 id="picking-and-rays">Picking and rays<a class="anchor" href="#picking-and-rays">#</a></h2>
+<p><code>game.physics.raycast(from, to, { ignore })</code> returns the first physics hit with the entity. The library has <code>interact-ray.js</code> and <code>physics-hitscan.js</code>.</p>
+<h2 id="performance-tips">Performance tips<a class="anchor" href="#performance-tips">#</a></h2>
+<p>Reuse materials and models (instancing is automatic), keep shadow map size modest (1024 default), prefer one directional light with shadows, and use <code>postProcess</code> sparingly on laptops.
+See <a href="performance.html">Performance</a>.</p>
+<h2 id="a-real-3d-scene">A real 3D scene<a class="anchor" href="#a-real-3d-scene">#</a></h2>
+<figure class="shot"><img src="../../assets/screenshots/automies-2-drive.png" alt="Automies driving game with a car, roads and city buildings" loading="lazy"><figcaption>Automies uses Nord’s Babylon runtime. Models and materials form the city; scripts control driving and the camera. Open the bundled automies example to see the pieces.</figcaption></figure>
+<div class="pager"><a href="2d.html"><small>← Previous</small>2D games</a><a href="physics.html"><small>Next →</small>Physics</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#building-blocks">Building blocks </a><a href="#cameras">Cameras </a><a href="#animation">Animation </a><a href="#3d-ui">3D UI </a><a href="#picking-and-rays">Picking and rays </a><a href="#performance-tips">Performance tips </a><a href="#a-real-3d-scene">A real 3D scene </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

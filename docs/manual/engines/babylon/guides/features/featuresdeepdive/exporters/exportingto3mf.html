@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: exportingTo3MF — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../index.html"><img src="../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../index.html">Babylon documentation library</a><a href="../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: exportingTo3MF</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h1 id="exporting-to-3mf">Exporting to 3MF</h1>
+<h2 id="what-is-3mf">What is 3MF?<a class="anchor" href="#what-is-3mf">#</a></h2>
+<p>3MF (3D Manufacturing Format) is an open, XML-based file format designed for additive manufacturing and 3D printing workflows. Unlike formats such as STL, 3MF is a versatile container that carries geometry, units, materials, colors, metadata, and structural relationships in a single zip-based package (OPC — Open Packaging Conventions). It is natively supported by most modern slicers, CAD tools, and manufacturing pipelines.</p>
+<p>Because 3MF is designed to faithfully represent manufacturing intent, a Babylon.js scene may need to be prepared before exporting. For example, you may want to apply world transforms, merge or split meshes by material, assign meaningful names, set a specific unit, or strip rendering-only data that has no manufacturing meaning. The exporter works directly on the meshes you pass to it, so you remain in full control of what goes into the file.</p>
+<hr>
+<h2 id="installation-and-prerequisites">Installation and prerequisites<a class="anchor" href="#installation-and-prerequisites">#</a></h2>
+<p>The serializer relies on <span>fflate</span> for zip compression. By default it loads fflate lazily from a CDN:</p>
+<pre class="code" data-lang="typescript"><code>// Override the CDN URL before creating any serializer instance (optional)
+import { ThreeMfSerializerGlobalConfiguration } from &quot;babylonjs-serializers&quot;;
+ThreeMfSerializerGlobalConfiguration.FFLATEUrl = &quot;https://cdn.example.com/fflate.js&quot;;</code></pre>
+<p>If fflate is already present on <code>globalThis.fflate</code> (bundled by your application), the dynamic load is skipped automatically.</p>
+<hr>
+<h2 id="basic-usage">Basic usage<a class="anchor" href="#basic-usage">#</a></h2>
+<h3 id="serialize-to-a-memory-buffer">Serialize to a memory buffer<a class="anchor" href="#serialize-to-a-memory-buffer">#</a></h3>
+<p>The simplest way to export one or more meshes is <code>ThreeMf.SerializeToMemoryAsync</code>. It buffers the entire 3MF archive into a <code>Uint8Array</code> that you can then save or upload.</p>
+<pre class="code" data-lang="typescript"><code>import { ThreeMfSerializer, ThreeMf } from &quot;babylonjs-serializers&quot;;
+
+const serializer = new ThreeMfSerializer();
+
+const buffer = await ThreeMf.SerializeToMemoryAsync(serializer, mesh1, mesh2);
+
+if (buffer) {
+    // Save as a file in the browser
+    const blob = new Blob([buffer], { type: &quot;application/octet-stream&quot; });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement(&quot;a&quot;);
+    a.href = url;
+    a.download = &quot;model.3mf&quot;;
+    a.click();
+    URL.revokeObjectURL(url);
+}</code></pre>
+<h3 id="stream-to-a-custom-sink">Stream to a custom sink<a class="anchor" href="#stream-to-a-custom-sink">#</a></h3>
+<p>For large scenes or environments where you want to avoid buffering the entire archive in memory (e.g., writing directly to a Node.js file stream), use <code>serializeAsync</code> with a sink callback:</p>
+<pre class="code" data-lang="typescript"><code>import { ThreeMfSerializer } from &quot;babylonjs-serializers&quot;;
+import { createWriteStream } from &quot;fs&quot;;
+
+const serializer = new ThreeMfSerializer({ unit: ST_Unit.millimeter });
+const chunks: Uint8Array[] = [];
+
+await serializer.serializeAsync(
+    (err, chunk, final) =&gt; {
+        // append chunk to your stream / buffer
+        chunks.push(chunk);
+    },
+    mesh1,
+    mesh2
+);</code></pre>
+<hr>
+<h2 id="serializer-options">Serializer options<a class="anchor" href="#serializer-options">#</a></h2>
+<p>Options are passed as an object to the <code>ThreeMfSerializer</code> constructor. All fields are optional.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>unit</code></td>
+<td><code>ST_Unit</code></td>
+<td><code>ST_Unit.meter</code></td>
+<td>Unit used for all coordinates in the exported file. Must match the scale of your scene.</td>
+</tr>
+<tr>
+<td><code>exportInstances</code></td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>When <code>true</code>, <code>InstancedMesh</code> objects are exported as additional build items that reference the shared geometry of their source mesh — no geometry duplication. When <code>false</code>, instances are silently ignored.</td>
+</tr>
+<tr>
+<td><code>metadata</code></td>
+<td><code>Record&lt;string, string&gt;</code></td>
+<td><code>undefined</code></td>
+<td>Arbitrary key/value pairs written as model-level metadata. Standard keys include <code>Title</code>, <code>Designer</code>, <code>Description</code>, <code>Copyright</code>, <code>LicenseTerms</code>, <code>CreationDate</code>, <code>ModificationDate</code>, and <code>Application</code>.</td>
+</tr>
+</tbody></table>
+<h3 id="units">Units<a class="anchor" href="#units">#</a></h3>
+<p>The <code>ST_Unit</code> enum provides the full set of units supported by the 3MF specification:</p>
+<pre class="code" data-lang="typescript"><code>import { ST_Unit } from &quot;babylonjs-serializers&quot;;
+
+// Available values
+ST_Unit.micron
+ST_Unit.millimeter  // most common for desktop 3D printing
+ST_Unit.centimeter
+ST_Unit.inch
+ST_Unit.foot
+ST_Unit.meter       // default for ThreeMfSerializer</code></pre>
+<blockquote>
+<p><strong>Important:</strong> The unit does not rescale coordinates. It declares to the consuming application how to interpret the raw numbers in the file. Make sure the unit you choose matches the actual scale of your mesh vertices.</p>
+</blockquote>
+<h3 id="example-millimeter-export-with-metadata">Example: millimeter export with metadata<a class="anchor" href="#example-millimeter-export-with-metadata">#</a></h3>
+<pre class="code" data-lang="typescript"><code>import { ThreeMfSerializer, ST_Unit, ThreeMf } from &quot;babylonjs-serializers&quot;;
+
+const serializer = new ThreeMfSerializer({
+    unit: ST_Unit.millimeter,
+    metadata: {
+        Title: &quot;My Part&quot;,
+        Designer: &quot;Jane Doe&quot;,
+        Description: &quot;Bracket assembly for prototype v2&quot;,
+        CreationDate: new Date().toISOString().slice(0, 10),
+    },
+});
+
+const buffer = await ThreeMf.SerializeToMemoryAsync(serializer, bracket);</code></pre>
+<h3 id="example-exporting-instances">Example: exporting instances<a class="anchor" href="#example-exporting-instances">#</a></h3>
+<p>When a scene contains many copies of the same object created with <code>Mesh.createInstance()</code>, enabling <code>exportInstances</code> avoids duplicating geometry for every copy:</p>
+<pre class="code" data-lang="typescript"><code>const serializer = new ThreeMfSerializer({ exportInstances: true });
+
+// sourceMesh is exported once as a resource object.
+// each InstancedMesh becomes a separate build item pointing to that object.
+const buffer = await ThreeMf.SerializeToMemoryAsync(serializer, sourceMesh, ...sourceMesh.instances);</code></pre>
+<hr>
+<h2 id="preparing-your-scene-for-export">Preparing your scene for export<a class="anchor" href="#preparing-your-scene-for-export">#</a></h2>
+<p>Because 3MF targets manufacturing workflows, some aspects of a typical Babylon.js scene may need attention before exporting:</p>
+<ul>
+<li><strong>Apply transforms:</strong> The serializer uses each mesh&#39;s current world matrix. If you want a &quot;baked&quot; export with no runtime transform, call <code>mesh.bakeCurrentTransformIntoVertices()</code> beforehand.</li>
+<li><strong>Units and scale:</strong> If your scene is in centimeters but the slicer expects millimeters, either rescale the meshes or choose <code>ST_Unit.centimeter</code> so the consumer can convert correctly.</li>
+<li><strong>Submeshes and materials:</strong> Each Babylon.js <code>SubMesh</code> is exported as its own 3MF object resource. This allows downstream tools to assign per-object colors or materials. If you want a single object per mesh, merge submeshes before exporting.</li>
+<li><strong>Names:</strong> Object names in the exported file come from <code>mesh.name</code>. Give meshes meaningful names to make the 3MF easier to work with in slicer or CAD software.</li>
+<li><strong>Non-manifold geometry:</strong> 3MF consumers typically require watertight (manifold) geometry for printing. Validate and repair meshes as needed before export.</li>
+</ul>
+<hr>
+<h2 id="advanced-using-the-builders-directly">Advanced: using the builders directly<a class="anchor" href="#advanced-using-the-builders-directly">#</a></h2>
+<p>The serializer internally uses a set of fluent builder classes. You can use these directly if you need to construct a 3MF file from raw geometry data (independent of any Babylon.js mesh):</p>
+<pre class="code" data-lang="typescript"><code>import {
+    ThreeMfModelBuilder,
+    ThreeMfMeshBuilder,
+    ThreeMfMaterialBuilder,
+    ThreeMfDocumentBuilder,
+    ST_Unit,
+} from &quot;babylonjs-serializers&quot;;
+
+// 1. Define a material group
+const material = new ThreeMfMaterialBuilder(1)
+    .withColor(&quot;Red&quot;, { r: 0.8, g: 0.1, b: 0.1 })
+    .withColor(&quot;Blue&quot;, { r: 0.1, g: 0.1, b: 0.8 })
+    .build();
+
+// 2. Define a mesh resource (positions: flat x,y,z array; indices: flat i,j,k array)
+const mesh = new ThreeMfMeshBuilder(2)
+    .withName(&quot;Cube&quot;)
+    .withData({ positions: [...], indices: [...] })
+    .withMaterial(1, 0) // reference material group id=1, entry index 0
+    .build();
+
+// 3. Assemble the model
+const model = new ThreeMfModelBuilder()
+    .withUnit(ST_Unit.millimeter)
+    .withMetaData(&quot;Title&quot;, &quot;My Model&quot;)
+    .withMaterial(material)
+    .withMesh(mesh)
+    .withBuild(2) // add mesh id=2 to the build list
+    .build();
+
+// 4. Wrap in an OPC document
+const document = new ThreeMfDocumentBuilder()
+    .withModel(model)
+    .build();</code></pre>
+<h3 id="builder-reference">Builder reference<a class="anchor" href="#builder-reference">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Builder</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ThreeMfModelBuilder</code></td>
+<td>Assembles the root 3MF model: unit, metadata, resources (meshes + materials), and build items.</td>
+</tr>
+<tr>
+<td><code>ThreeMfMeshBuilder</code></td>
+<td>Creates a mesh resource object from a flat positions array and a flat indices array. Accepts an optional vertex/triangle post-process handler.</td>
+</tr>
+<tr>
+<td><code>ThreeMfMaterialBuilder</code></td>
+<td>Creates a <code>basematerials</code> resource group. Colors are expressed as linear RGB and converted to sRGB hex automatically.</td>
+</tr>
+<tr>
+<td><code>ThreeMfComponentsBuilder</code></td>
+<td>Creates a composite object made of references to other resource objects with per-component transforms.</td>
+</tr>
+<tr>
+<td><code>ThreeMfDocumentBuilder</code></td>
+<td>Wraps a model into a full OPC document (content types + relationships + model part).</td>
+</tr>
+</tbody></table>
+<h3 id="threemfmeshbuilder-post-process-handlers"><code>ThreeMfMeshBuilder</code> post-process handlers<a class="anchor" href="#threemfmeshbuilder-post-process-handlers">#</a></h3>
+<p>If you need to transform individual vertices or triangles during export (e.g., to remap coordinates or inject per-triangle property references), you can attach handlers:</p>
+<pre class="code" data-lang="typescript"><code>const mesh = new ThreeMfMeshBuilder(id)
+    .withData(data)
+    .withPostProcessHandlers(
+        (vertex) =&gt; {
+            // transform or annotate the vertex
+            return vertex;
+        },
+        (triangle) =&gt; {
+            // assign per-triangle material references
+            triangle.pid = materialGroupId;
+            triangle.p1 = 0;
+            return triangle;
+        }
+    )
+    .build();</code></pre>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#what-is-3mf">What is 3MF? </a><a href="#installation-and-prerequisites">Installation and prerequisites </a><a href="#basic-usage">Basic usage </a><a href="#serializer-options">Serializer options </a><a href="#preparing-your-scene-for-export">Preparing your scene for export </a><a href="#advanced-using-the-builders-directly">Advanced: using the builders directly </a></aside></div>
+<script src="../../../../../../assets/cm.classic.js"></script><script src="../../../../../../assets/manual.js"></script></body></html>

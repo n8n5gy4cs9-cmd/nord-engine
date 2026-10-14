@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Introduction To Blend Modes — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../../index.html"><img src="../../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../../index.html">Babylon documentation library</a><a href="../../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Introduction To Blend Modes</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><p>A <em>blend mode</em> determines how, when rendering a mesh, new on-screen pixels will be mixed with existing pixels.</p>
+<p>This may sound trivial as most of the time new pixels simply replace existing ones, which is not really what we may call <em>blending</em> at all. However, in the case of alpha-blended meshes, new pixels do not simply overwrite existing ones: they are <em>combined</em> according to how transparent the mesh is. This is an example of the most simple blending operation available (and also the default one): <code>BABYLON.Engine.ALPHA_COMBINE</code>.</p>
+<p>Other blend modes exist, and allow you to achieve advanced visual effects.</p>
+<h2 id="available-blend-modes">Available Blend Modes<a class="anchor" href="#available-blend-modes">#</a></h2>
+<p>All the available blend modes are listed below:</p>
+<table>
+<thead>
+<tr>
+<th>Blend Mode</th>
+<th>Effect</th>
+<th>Additional Info</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>BABYLON.Engine.ALPHA_COMBINE</code></td>
+<td>This is the default blend mode for alpha-blended meshes. Blending is modulated by the alpha value of the pixel being drawn.</td>
+<td>This is the default blend mode.</td>
+</tr>
+<tr>
+<td><code>BABYLON.Engine.ALPHA_ADD</code></td>
+<td>This blend mode will effectively <em>add</em> the new pixel and existing pixel values, giving off a ghost-like effect and brightening what&#39;s behind the mesh.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>BABYLON.Engine.ALPHA_SUBTRACT</code></td>
+<td>The new pixel value is subtracted from the existing one, giving off an &quot;inverted color&quot; effect.</td>
+<td>Blending is <strong>not</strong> modulated by alpha value.</td>
+</tr>
+<tr>
+<td><code>BABYLON.Engine.ALPHA_MULTIPLY</code></td>
+<td>The new and existing pixel values are multiplied, thus what&#39;s behind the rendered mesh is darkened. This is more or less the opposite of the ALPHA_ADD effect.</td>
+<td>Blending is <strong>not</strong> modulated by alpha value.</td>
+</tr>
+<tr>
+<td><code>BABYLON.Engine.ALPHA_MAXIMIZED</code></td>
+<td>This blend mode is similar to ALPHA_ADD, but gives off a less vibrant and saturated effect.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>BABYLON.Engine.ALPHA_ONEONE</code></td>
+<td>This blend mode is very similar to ALPHA_ADD, except that it is not modulated by alpha value. Used internally for various visual effects.</td>
+<td>Blending is <strong>not</strong> modulated by alpha value.</td>
+</tr>
+</tbody></table>
+<p>Please note that the blending operations are in fact simple mathematical operations done separately on the R, G, and B components of the pixel values, each one between 0 and 1. As such, having a green mesh (R=0, G=1, B=0) set with ALPHA_SUBTRACT drawn over a yellow one (R=1, G=1, B=0) will give a red value (R=1, G=0, B=0).</p>
+<h2 id="how-to-use-blend-modes">How to Use Blend Modes<a class="anchor" href="#how-to-use-blend-modes">#</a></h2>
+<p>Blend modes are used by manipulating the <code>alphaMode</code> property of materials and setting it to one of the constants listed above.</p>
+<p><strong>This property will only be used when the rendered mesh is alpha-blended.</strong> This is very important, because since the <code>alphaMode</code> property will have absolutely no effect on an opaque mesh, you will need to make sure your mesh is <em>alpha-blended</em> to use it.</p>
+<p>You can force an opaque mesh to be alpha-blended by making it very slightly transparent, like so:</p>
+<pre class="code" data-lang="javascript"><code>mesh.visibility = 0.9999;</code></pre>
+<p>Or you can assign an opacity texture to its material (even if the opacity texture has no alpha channel):</p>
+<pre class="code" data-lang="javascript"><code>material.opacityTexture = material.diffuseTexture;</code></pre>
+<h2 id="examples">Examples<a class="anchor" href="#examples">#</a></h2>
+<p>Here is a screenshot showing the previously mentioned blend modes:</p>
+<p><p class="muted">Upstream illustration: Available Blend Modes (media not bundled).</p></p>
+<p>This playground showcases the available blend modes in action: <span class="muted">Online playground (not embedded offline)</span></p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#available-blend-modes">Available Blend Modes </a><a href="#how-to-use-blend-modes">How to Use Blend Modes </a><a href="#examples">Examples </a></aside></div>
+<script src="../../../../../../../assets/cm.classic.js"></script><script src="../../../../../../../assets/manual.js"></script></body></html>

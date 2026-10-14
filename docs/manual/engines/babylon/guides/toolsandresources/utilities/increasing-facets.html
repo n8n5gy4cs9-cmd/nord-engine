@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Increasing Facets — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../index.html"><img src="../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../nord/api/api.html">API reference</a><a href="../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../nord/api/api-game.html">Game</a><a href="../../../../../nord/api/api-input.html">Input</a><a href="../../../../../nord/api/api-events.html">Events</a><a href="../../../../../nord/api/api-save.html">Save</a><a href="../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../nord/components/component-text.html">text</a><a href="../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../nord/components/component-light.html">light</a><a href="../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../nord/components/component-model.html">model</a><a href="../../../../../nord/components/component-material.html">material</a><a href="../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../nord/components/component-path.html">path</a><a href="../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../nord/reference/components.html">Component index</a><a href="../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../index.html">Babylon documentation library</a><a href="../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Increasing Facets</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="increasing-vertices-of-a-mesh">Increasing Vertices of a Mesh<a class="anchor" href="#increasing-vertices-of-a-mesh">#</a></h2>
+<p>The appearance of a soft body or the effect of a shader depends on the number of facets a mesh has. Some meshes,
+such as a ground or sphere, can have smaller or larger numbers of facets depending on the parameters set during their
+creation. For other meshes, such as a box or disc, there may be little or no choice. In these circumstances, it can
+be useful to have a function that increases the facets.</p>
+<p>If n is the number of points per side added to each side of a facet, the number of facets is increased by (n + 1)<span class="muted">&lt;sup&gt;</span>2<span class="muted">&lt;/sup&gt;</span>.</p>
+<p><strong>NOTE</strong> From Babylon.js version 4.0 onwards this utility now exists as a standard method on a mesh.</p>
+<pre class="code" data-lang="javascript"><code>mesh.increaseVertices(n);</code></pre>
+<h2 id="the-playground">The Playground<a class="anchor" href="#the-playground">#</a></h2>
+<p>The disc at the top left has the number of facets it had when it was created. The one at the lower right has had its facets increased.</p>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="prior-to-version-4-0">Prior to Version 4.0<a class="anchor" href="#prior-to-version-4-0">#</a></h2>
+<p>Use the function below. Any examples found in the Playground used the term &#39;increaseFacets&#39; rather than &#39;increaseVertices&#39;.</p>
+<h2 id="the-function">The Function<a class="anchor" href="#the-function">#</a></h2>
+<pre class="code" data-lang="javascript"><code>BABYLON.Mesh.prototype.increaseFacets = function(pps) { //pps points per side
+    var _gaps = pps+1;
+    var _n = _gaps + 1;
+    var _fvs =[];
+    for(let _i=0; _i&lt;_n; _i++) {
+        _fvs[_i] = [];
+    }
+    var _A,_B;
+    var _d ={x:0,y:0,z:0};
+    var _u ={x:0,y:0};
+    var _indices = [];
+    var _vertexIndex = [];
+    var _side = [];
+	var _l; //holds lengths
+    var _uvs = this.getVerticesData(BABYLON.VertexBuffer.UVKind);
+    var _meshIndices = this.getIndices();
+    var _positions = this.getVerticesData(BABYLON.VertexBuffer.PositionKind);
+    var _normals =[];
+
+    for(let _i = 0; _i&lt;_meshIndices.length; _i+=3) {
+        _vertexIndex[0] = _meshIndices[_i];
+        _vertexIndex[1] = _meshIndices[_i + 1];
+        _vertexIndex[2] = _meshIndices[_i + 2];
+        for(let _j = 0; _j&lt;3; _j++) {
+            _A = _vertexIndex[_j];
+            _B = _vertexIndex[(_j+1)%3];
+            if(_side[_A] === undefined  &amp;&amp; _side[_B] ===  undefined) {
+                _side[_A] = [];
+                _side[_B] = [];
+            }
+            else {
+                if(_side[_A] === undefined) {
+                    _side[_A] = [];
+                }
+                if(_side[_B] === undefined) {
+                    _side[_B] = [];
+                }
+            }
+            if(_side[_A][_B]  === undefined  &amp;&amp; _side[_B][_A] === undefined) {
+                _side[_A][_B] = [];
+                _d.x = (_positions[3 * _B] - _positions[3 * _A])/_gaps;
+                _d.y = (_positions[3 * _B + 1] - _positions[3 * _A + 1])/_gaps;
+                _d.z = (_positions[3 * _B + 2] - _positions[3 * _A + 2])/_gaps;
+                _u.x = (_uvs[2*_B] - _uvs[2*_A])/_gaps;
+                _u.y = (_uvs[2*_B + 1] - _uvs[2*_A + 1])/_gaps;
+                _side[_A][_B].push(_A);
+                for(let _k=1; _k&lt;_gaps; _k++) {
+                    _side[_A][_B].push(_positions.length/3);
+                    _positions.push(_positions[3 * _A] + _k*_d.x, _positions[3 * _A + 1] + _k*_d.y, _positions[3 * _A + 2] + _k*_d.z);
+                    _uvs.push(_uvs[2*_A] + _k*_u.x, _uvs[2*_A + 1] + _k*_u.y);
+                }
+                _side[_A][_B].push(_B);
+                _side[_B][_A]=[];
+                _l = _side[_A][_B].length;
+                for(let _a=0; _a&lt;_l; _a++) {
+                    _side[_B][_A][_a] = _side[_A][_B][_l-1-_a];
+                }
+            }
+            else {
+                if(_side[_A][_B] === undefined) {
+                    _side[_A][_B]=[];
+                    _l = _side[_B][_A].length;
+                    for(let _a=0; _a&lt;_l; _a++) {
+                        _side[_A][_B][_a] = _side[_B][_A][_l-1-_a];
+                    }
+                }
+                if(_side[_B][_A] === undefined) {
+                    _side[_B][_A]=[];
+                    _l = _side[_A][_B].length;
+                    for(let _a=0; _a&lt;_l; _a++) {
+                        _side[_B][_A][_a] = _side[_A][_B][_l-1-_a];
+                    }
+                }
+            }
+        }
+        _fvs[0][0] = _meshIndices[_i];
+        _fvs[1][0] = _side[_meshIndices[_i]][_meshIndices[_i + 1]][1];
+        _fvs[1][1] = _side[_meshIndices[_i]][_meshIndices[_i + 2]][1];
+        for(let _k = 2; _k&lt;_gaps; _k++) {
+            _fvs[_k][0] = _side[_meshIndices[_i]][_meshIndices[_i + 1]][_k];
+            _fvs[_k][_k] = _side[_meshIndices[_i]][_meshIndices[_i + 2]][_k];
+            _d.x = (_positions[3 * _fvs[_k][_k]] - _positions[3 * _fvs[_k][0]])/_k;
+            _d.y = (_positions[3 * _fvs[_k][_k] + 1] - _positions[3 * _fvs[_k][0] + 1])/_k;
+            _d.z = (_positions[3 * _fvs[_k][_k] + 2] - _positions[3 * _fvs[_k][0] + 2])/_k;
+            _u.x = (_uvs[2*_fvs[_k][_k]] - _uvs[2*_fvs[_k][0]])/_k;
+            _u.y = (_uvs[2*_fvs[_k][_k] + 1] - _uvs[2*_fvs[_k][0] + 1])/_k;
+            for(let _j = 1; _j&lt;_k; _j++) {
+                _fvs[_k][_j] = _positions.length/3;
+                _positions.push(_positions[3 * _fvs[_k][0]] + _j*_d.x, _positions[3 * _fvs[_k][0] + 1] + _j*_d.y, _positions[3 * _fvs[_k][0] + 2] + _j*_d.z);
+                _uvs.push(_uvs[2*_fvs[_k][0]] + _j*_u.x, _uvs[2*_fvs[_k][0] + 1] + _j*_u.y);
+            }
+        }
+        _fvs[_gaps] = _side[_meshIndices[_i + 1]][_meshIndices[_i + 2]];
+
+        _indices.push(_fvs[0][0],_fvs[1][0],_fvs[1][1]);
+        for(let _k = 1; _k&lt;_gaps; _k++) {
+            for(let _j = 0; _j&lt;_k; _j++) {
+                _indices.push(_fvs[_k][_j],_fvs[_k+1][_j],_fvs[_k+1][_j+1]);
+                _indices.push(_fvs[_k][_j],_fvs[_k+1][_j+1],_fvs[_k][_j+1]);
+            }
+            _indices.push(_fvs[_k][_j],_fvs[_k+1][_j],_fvs[_k+1][_j+1]);
+        }
+
+    }
+
+    var vertexData = new BABYLON.VertexData();
+    vertexData.positions = _positions;
+    vertexData.indices = _indices;
+    vertexData.uvs = _uvs;
+
+    BABYLON.VertexData.ComputeNormals(_positions, _indices, _normals);
+    vertexData.normals = _normals;
+
+    vertexData.applyToMesh(this);
+
+}</code></pre>
+<h2 id="the-playground">The Playground<a class="anchor" href="#the-playground">#</a></h2>
+<p>The disc at the top left has the number of facets it had when it was created. The one at the lower right has had its facets increased.</p>
+<span class="muted">Online playground (not embedded offline)</span><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#increasing-vertices-of-a-mesh">Increasing Vertices of a Mesh </a><a href="#the-playground">The Playground </a><a href="#prior-to-version-4-0">Prior to Version 4.0 </a><a href="#the-function">The Function </a><a href="#the-playground">The Playground </a></aside></div>
+<script src="../../../../../assets/cm.classic.js"></script><script src="../../../../../assets/manual.js"></script></body></html>

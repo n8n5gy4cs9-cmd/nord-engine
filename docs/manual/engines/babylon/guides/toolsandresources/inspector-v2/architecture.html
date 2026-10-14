@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Architecture — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../index.html"><img src="../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../nord/api/api.html">API reference</a><a href="../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../nord/api/api-game.html">Game</a><a href="../../../../../nord/api/api-input.html">Input</a><a href="../../../../../nord/api/api-events.html">Events</a><a href="../../../../../nord/api/api-save.html">Save</a><a href="../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../nord/components/component-text.html">text</a><a href="../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../nord/components/component-light.html">light</a><a href="../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../nord/components/component-model.html">model</a><a href="../../../../../nord/components/component-material.html">material</a><a href="../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../nord/components/component-path.html">path</a><a href="../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../nord/reference/components.html">Component index</a><a href="../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../index.html">Babylon documentation library</a><a href="../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Architecture</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><p>The most important things to know about the Inspector architecture are:</p>
+<ol>
+<li>It uses React for all the UI, and specifically uses React function components and React hooks.</li>
+<li>It uses a modular architecture, meaning it is composed of a graph of loosely coupled &quot;services.&quot;</li>
+</ol>
+<p>You can add new &quot;services&quot; that consume other services to add new features. This allows for things like adding new panes alongside Scene Explorer and the Properties pane, or adding new toolbar items. Each of these features is itself a &quot;service.&quot; This is what enables the Inspector&#39;s extensibility.</p>
+<h2 id="service-definitions">Service Definitions<a class="anchor" href="#service-definitions">#</a></h2>
+<p>A service is defined via the <code>ServiceDefinition</code> type. For example, an absolutely minimal service definition could look like this:</p>
+<pre class="code" data-lang="ts"><code>export const MyServiceDefinition: ServiceDefinition&lt;[], []&gt; = {
+    // Helpful for debugging, and sometimes used in UI.
+    friendlyName: &quot;My Service&quot;,
+
+    // The factory function is responsible for instantiating a service.
+    factory: () =&gt; {
+        console.log(&quot;My Service was instantiated!&quot;);
+    },
+};</code></pre>
+<p>This service can then be added to the Inspector via the options as a <a href="../inspector-v2.html">static extension</a>:</p>
+<pre class="code" data-lang="ts"><code>ShowInspector(scene, {
+    serviceDefinitions: [MyServiceDefinition],
+});</code></pre>
+<p>When Inspector is shown, the service factory function is called. In the example above, a message is logged to the console.</p>
+<p>A service factory function can return an object, and this object can optionally implement <code>IDisposable</code>. If it does, the <code>dispose</code> function will be called when the service is removed. This would happen when the Inspector is hidden, but could also happen when a <a href="../inspector-v2.html">dynamic extension</a> is uninstalled. For example:</p>
+<pre class="code" data-lang="ts"><code>export const MyServiceDefinition: ServiceDefinition&lt;[], []&gt; = {
+    // Helpful for debugging, and sometimes used in UI.
+    friendlyName: &quot;My Service&quot;,
+
+    // The factory function is responsible for instantiating a service.
+    factory: () =&gt; {
+        console.log(&quot;My Service was instantiated!&quot;);
+        return {
+            dispose: () =&gt; console.log(&quot;My Service was disposed!&quot;),
+        };
+    },
+};</code></pre>
+<p>To do something more useful, a service will typically &quot;consume&quot; other services and interact with them. To understand how to consume a service, it&#39;s important to understand how a consumable service is implemented.</p>
+<h2 id="consuming-services">Consuming Services<a class="anchor" href="#consuming-services">#</a></h2>
+<p>A service that is intended to be consumed by other services uses two concepts:</p>
+<p><strong>Service Contracts</strong> - these are types (typically interfaces) that some other service can consume (depend on). As an interface/type, this is a TypeScript compile-time construct.</p>
+<p><strong>Service Identity</strong> - these are JavaScript <code>Symbol</code>s that represent a globally unique runtime identity for a service. They are needed to resolve dependencies (consume other services) at runtime.</p>
+<p>From a typing standpoint (compile-time), a Service Contract is associated with a Service Identity through the <code>IService</code> interface. For example:</p>
+<pre class="code" data-lang="ts"><code>export const OtherServiceIdentity = Symbol(&quot;Other Service&quot;);
+export interface IOtherService extends IService&lt;typeof OtherServiceIdentity&gt; {
+    doSomethingAmazing(): void;
+}</code></pre>
+<p>This allows for strong type checking at compile time to prevent mistakes where there are mismatches between service contracts (compile time) and service identities (runtime).</p>
+<p>&quot;Other Service&quot; would have its own <code>ServiceDefinition</code> similar to the example above for &quot;My Service.&quot; We can modify the &quot;My Service&quot; <code>ServiceDefinition</code> to consume &quot;Other Service&quot; as follows:</p>
+<pre class="code" data-lang="ts"><code>// ServiceDefinition&lt;Produced, Consumed&gt;
+// The first tuple lists service contracts this service produces (empty here — it produces nothing yet).
+// The second tuple lists service contracts this service consumes (depends on).
+export const MyServiceDefinition: ServiceDefinition&lt;[], [IOtherService]&gt; = {
+    // Helpful for debugging, and sometimes used in UI.
+    friendlyName: &quot;My Service&quot;,
+
+    // The runtime identity of the consumed services.
+    consumes: [OtherServiceIdentity],
+
+    // The factory function is responsible for instantiating a service.
+    factory: (otherService) =&gt; {
+        console.log(&quot;My Service was instantiated!&quot;);
+        otherService.doSomethingAmazing();
+        return {
+            dispose: () =&gt; console.log(&quot;My Service was disposed!&quot;),
+        };
+    },
+};</code></pre>
+<p>Notice the following from the example above:</p>
+<ol>
+<li><code>IOtherService</code> was added to the second tuple type parameter on the first line:
+<code>export const MyServiceDefinition: ServiceDefinition&lt;[], [IOtherService]&gt;</code></li>
+<li>A <code>consumes</code> property was added with a tuple containing the runtime identity of &quot;Other Service.&quot;</li>
+<li>The &quot;Other Service&quot; instance was added as a parameter to the factory function.</li>
+<li>The factory function uses the <code>otherService</code> argument to call the <code>doSomethingAmazing</code> function from &quot;Other Service.&quot;</li>
+</ol>
+<p>To consume multiple other services, the tuples simply have multiple entries and the factory function has multiple parameters. The order must match across them, and the <code>ServiceDefinition</code> will type check this. If there is a mistake, you will see a compile-time error.</p>
+<h2 id="producing-services">Producing Services<a class="anchor" href="#producing-services">#</a></h2>
+<p>When configuring a <code>ServiceDefinition</code>, in addition to consuming services, you can also <em>produce</em> services, which makes them available to be consumed by other services. A concrete example of this is Scene Explorer, which consumes the &quot;shell service&quot; to insert a side pane, and also produces a service that makes it possible for other services/extensions to insert additional sections into Scene Explorer.</p>
+<p>We can add a new service contract and identity for &quot;My Service,&quot; and then update its <code>ServiceDefinition</code> to produce this new service contract as follows:</p>
+<pre class="code" data-lang="ts"><code>export const MyServiceIdentity = Symbol(&quot;My Service&quot;);
+export interface IMyService extends IService&lt;typeof MyServiceIdentity&gt; {
+    showAlert(message: string): void;
+}
+
+export const MyServiceDefinition: ServiceDefinition&lt;[IMyService], [IOtherService]&gt; = {
+    // Helpful for debugging, and sometimes used in UI.
+    friendlyName: &quot;My Service&quot;,
+
+    // The runtime identity of the consumed services.
+    consumes: [OtherServiceIdentity],
+
+    // The runtime identity of the produced services.
+    produces: [MyServiceIdentity],
+
+    // The factory function is responsible for instantiating a service.
+    // Now this factory function must return an object that implements IMyService.
+    factory: (otherService) =&gt; {
+        console.log(&quot;My Service was instantiated!&quot;);
+        otherService.doSomethingAmazing();
+        return {
+            showAlert: (message: string) =&gt; alert(message),
+            dispose: () =&gt; console.log(&quot;My Service was disposed!&quot;),
+        };
+    },
+};</code></pre>
+<p>Notice the following from the example above:</p>
+<ol>
+<li>A unique runtime service identity symbol (<code>MyServiceIdentity</code>) was added and exported.</li>
+<li>An interface (<code>IMyService</code>) for &quot;My Service&quot; was added that exposes one function.</li>
+<li><code>IMyService</code> was added to the first tuple type parameter on the first line: <code>export const MyServiceDefinition: ServiceDefinition&lt;[IMyService], [IOtherService]&gt;</code></li>
+<li>A <code>produces</code> property was added with a tuple containing the runtime identity of &quot;My Service.&quot;</li>
+<li>The factory function now returns an object that implements the <code>IMyService</code> interface, and the <code>ServiceDefinition</code> will type check this. If the returned object does not implement <em>all</em> produced service contracts, you will see a compile-time error.</li>
+</ol>
+<h2 id="anonymous-objects-vs-classes">Anonymous Objects vs. Classes<a class="anchor" href="#anonymous-objects-vs-classes">#</a></h2>
+<p>In the example above, the service instance returned from the service factory function is an anonymous object defined inline in the factory function. If you prefer, for example when the service logic becomes more complex, you can also use a class. This is done by using the <code>ConstructorFactory</code> helper function. For example, if we wanted to make &quot;My Service&quot; a class, we could do so as follows:</p>
+<pre class="code" data-lang="ts"><code>export const MyServiceIdentity = Symbol(&quot;My Service&quot;);
+export interface IMyService extends IService&lt;typeof MyServiceIdentity&gt; {
+    showAlert(message: string): void;
+}
+
+class MyService implements IMyService, IDisposable {
+    public constructor(otherService: IOtherService) {
+        console.log(&quot;My Service was instantiated!&quot;);
+        otherService.doSomethingAmazing();
+    }
+
+    public showAlert(message: string) {
+        alert(message);
+    }
+
+    public dispose() {
+        console.log(&quot;My Service was disposed!&quot;);
+    }
+}
+
+export const MyServiceDefinition: ServiceDefinition&lt;[IMyService], [IOtherService]&gt; = {
+    // Helpful for debugging, and sometimes used in UI.
+    friendlyName: &quot;My Service&quot;,
+
+    // The runtime identity of the consumed services.
+    consumes: [OtherServiceIdentity],
+
+    // The runtime identity of the produced services.
+    produces: [MyServiceIdentity],
+
+    // The factory function is responsible for instantiating a service.
+    // Now this factory function must return an object that implements IMyService.
+    factory: ConstructorFactory(MyService),
+};</code></pre>
+<p>And again, this is all type checked. If anything is incorrect with the constructor parameters or the interfaces implemented by the class, you will see a compile-time error.</p>
+<h2 id="static-extensions">Static Extensions<a class="anchor" href="#static-extensions">#</a></h2>
+<p>As previously described, <code>ServiceDefinition</code>s can be passed directly to the <code>ShowInspector</code> function, e.g.:</p>
+<pre class="code" data-lang="ts"><code>ShowInspector(scene, {
+    serviceDefinitions: [MyServiceDefinition],
+});</code></pre>
+<p>This <code>ServiceDefinition</code>&#39;s factory function will be called immediately, and the service will be instantiated. If it injects extra UI (side panes, toolbar items, etc.), it will immediately be visible. This is called a &quot;static extension.&quot;</p>
+<h2 id="dynamic-extensions">Dynamic Extensions<a class="anchor" href="#dynamic-extensions">#</a></h2>
+<p>Unlike &quot;static extensions,&quot; &quot;dynamic extensions&quot; must be explicitly installed by the user from the extensions dialog before they are instantiated and potentially visible in the UI. &quot;Dynamic extensions&quot; are preferred over &quot;static extensions&quot; when:</p>
+<ul>
+<li>The extension adds scenario-specific UI that is not useful in all cases and would otherwise contribute to making the UI overwhelming.</li>
+<li>The extension is large (either directly, or in that it pulls in a lot of dependencies) and it is preferable to defer downloading it until the user opts into it.</li>
+</ul>
+<p>The simplest way to add dynamic extensions is to use the <code>BuiltInsExtensionFeed</code>, which allows dynamic imports so extensions can be code-split into separate chunks by your bundler and downloaded only the first time they are installed. Continuing with our previous example, we&#39;d first move &quot;My Service&quot; into a separate file/module so it can be dynamically imported:</p>
+<pre class="code" data-lang="ts"><code>export const MyServiceIdentity = Symbol(&quot;My Service&quot;);
+export interface IMyService extends IService&lt;typeof MyServiceIdentity&gt; {
+    showAlert(message: string): void;
+}
+
+const MyServiceDefinition: ServiceDefinition&lt;[IMyService], [IOtherService]&gt; = {
+    // Helpful for debugging, and sometimes used in UI.
+    friendlyName: &quot;My Service&quot;,
+
+    // The runtime identity of the consumed services.
+    consumes: [OtherServiceIdentity],
+
+    // The runtime identity of the produced services.
+    produces: [MyServiceIdentity],
+
+    // The factory function is responsible for instantiating a service.
+    // Now this factory function must return an object that implements IMyService.
+    factory: (otherService) =&gt; {
+        console.log(&quot;My Service was instantiated!&quot;);
+        otherService.doSomethingAmazing();
+        return {
+            showAlert: (message: string) =&gt; alert(message),
+            dispose: () =&gt; console.log(&quot;My Service was disposed!&quot;),
+        };
+    },
+};
+
+// The module should have a default export that provides a collection of ServiceDefinitions.
+export default {
+    // Just one ServiceDefinition for this example, but this could be a set of services that collectively compose the &quot;extension.&quot;
+    serviceDefinitions: [MyServiceDefinition],
+} as const;</code></pre>
+<p>Notice the new default export at the very bottom of the file/module.</p>
+<p>Now we can set up our <code>BuiltInsExtensionFeed</code> to dynamically import this module:</p>
+<pre class="code" data-lang="ts"><code>ShowInspector(scene, {
+    // Just one additional extension feed, but you can add as many feeds as you want.
+    extensionFeeds: [
+        // Here we use BuiltInsExtensionFeed as a simple way of introducing a dynamic extension.
+        new BuiltInsExtensionFeed(&quot;My Extension Feed&quot;, [
+            {
+                name: &quot;My Service&quot;,
+                description: &quot;Does something nifty.&quot;,
+                keywords: [&quot;something&quot;, &quot;nifty&quot;],
+                getExtensionModuleAsync: async () =&gt; await import(&quot;./myService&quot;),
+            },
+        ]),
+    ],
+});</code></pre>
+<p>Now when the user presses the extensions button in the Inspector, the extensions dialog will show this new &quot;My Service&quot; extension and allow it to be dynamically installed.</p>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#service-definitions">Service Definitions </a><a href="#consuming-services">Consuming Services </a><a href="#producing-services">Producing Services </a><a href="#anonymous-objects-vs-classes">Anonymous Objects vs. Classes </a><a href="#static-extensions">Static Extensions </a><a href="#dynamic-extensions">Dynamic Extensions </a></aside></div>
+<script src="../../../../../assets/cm.classic.js"></script><script src="../../../../../assets/manual.js"></script></body></html>

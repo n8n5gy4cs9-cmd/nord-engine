@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Geospatial Camera — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../index.html"><img src="../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../index.html">Babylon documentation library</a><a href="../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Geospatial Camera</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h1 id="geospatial-camera">Geospatial Camera</h1>
+<h2 id="overview">Overview<a class="anchor" href="#overview">#</a></h2>
+<p>The <code>GeospatialCamera</code> is designed for orbiting a spherical planet centered at the world origin. It provides map-like interactions out of the box — drag to pan the globe, scroll to zoom toward the cursor, and right-click/middle-click to tilt. The camera is not tied to Earth specifically; you can supply any planet radius to orbit any spherical body.</p>
+<p>The camera uses an <strong>ECEF (Earth-Centered, Earth-Fixed)</strong> coordinate system where the planet center is at the world origin and positions on the surface are expressed as 3D cartesian coordinates.</p>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="quick-start">Quick Start<a class="anchor" href="#quick-start">#</a></h2>
+<pre class="code" data-lang="javascript"><code>const camera = new BABYLON.GeospatialCamera(&quot;geoCam&quot;, scene, {
+    planetRadius: 6371000, // Earth's radius in meters
+});
+camera.attachControl(canvas);</code></pre>
+<p>This creates a camera orbiting a sphere of the given radius. By default:</p>
+<ul>
+<li>The camera starts at a distance of <code>4 × planetRadius</code> looking down at the surface.</li>
+<li>Mouse, mouse wheel, and keyboard inputs are automatically attached, as well as a default &#39;flight behavior&#39; that allows &#39;flying to&#39; a given point along an arc.</li>
+</ul>
+<h2 id="core-concepts">Core Concepts<a class="anchor" href="#core-concepts">#</a></h2>
+<h3 id="properties">Properties<a class="anchor" href="#properties">#</a></h3>
+<p>The geospatial camera describes its orientation using four properties:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>center</code></td>
+<td><code>Vector3</code></td>
+<td>The point on the globe the camera is anchored to (in ECEF world coordinates). This is a point along the look-at vector that is pickable using the provided &#39;pick predicate&#39; (or any mesh if no pick predicate is provided).</td>
+</tr>
+<tr>
+<td><code>radius</code></td>
+<td><code>number</code></td>
+<td>The distance from the camera to the center point.</td>
+</tr>
+<tr>
+<td><code>yaw</code></td>
+<td><code>number</code></td>
+<td>Rotation around the geocentric normal (radians). 0 = north, π/2 = east.</td>
+</tr>
+<tr>
+<td><code>pitch</code></td>
+<td><code>number</code></td>
+<td>Angle from looking straight at planet center. 0 = looking down, π/2 = looking at horizon.</td>
+</tr>
+</tbody></table>
+<p>All four properties are readable and writable. Setting any of them immediately recomputes the camera&#39;s position, look-at direction, and up vector while respecting limits.</p>
+<pre class="code" data-lang="javascript"><code>// Move the camera to look at a specific point on the globe
+camera.center = new BABYLON.Vector3(6371000, 0, 0); // point on the surface
+
+// Zoom in
+camera.radius = 50000;
+
+// Tilt to look at the horizon
+camera.pitch = Math.PI / 4; // 45 degrees
+
+// Rotate to face east
+camera.yaw = Math.PI / 2;</code></pre>
+<h3 id="how-the-view-matrix-is-computed">How the View Matrix Is Computed<a class="anchor" href="#how-the-view-matrix-is-computed">#</a></h3>
+<p>Internally, the camera computes its position and orientation from the four core properties:</p>
+<ol>
+<li>A <strong>local basis</strong> (east, north, up) is derived at the <code>center</code> point from its geocentric normal.</li>
+<li>The <strong>lookAt direction</strong> is computed from <code>yaw</code> and <code>pitch</code> using the local basis.</li>
+<li>The <strong>camera position</strong> is placed at <code>center - lookAt × radius</code>.</li>
+<li>The <strong>up vector</strong> is aligned with the geocentric up, with a fallback to the horizontal direction when looking straight down.</li>
+</ol>
+<h2 id="input-controls">Input Controls<a class="anchor" href="#input-controls">#</a></h2>
+<p>The camera ships with three input handlers, all attached by default:</p>
+<h3 id="mouse-touch-geospatialcamerapointersinput">Mouse / Touch (<code>GeospatialCameraPointersInput</code>)<a class="anchor" href="#mouse-touch-geospatialcamerapointersinput">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Mouse</th>
+<th>Touch</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Pan / drag globe</strong></td>
+<td>Left click + drag</td>
+<td>Single finger drag</td>
+</tr>
+<tr>
+<td><strong>Tilt (yaw/pitch)</strong></td>
+<td>Right click + drag</td>
+<td>Two-finger pan</td>
+</tr>
+<tr>
+<td><strong>Zoom</strong></td>
+<td>Mouse wheel</td>
+<td>Pinch</td>
+</tr>
+<tr>
+<td><strong>Fly to point</strong></td>
+<td>Double click on globe</td>
+<td>Double tap on globe</td>
+</tr>
+</tbody></table>
+<p>Drag behavior keeps the point under the cursor anchored to the globe by constructing a drag plane at the initial pick point&#39;s distance from the planet center, then computing frame-to-frame deltas in local (east/north/up) space.</p>
+<p>Configurable properties:</p>
+<pre class="code" data-lang="javascript"><code>const pointerInput = camera.inputs.attached[&quot;pointers&quot;];
+pointerInput.pitchSensitivity = 1.0; // Pitch rotation sensitivity
+pointerInput.yawSensitivity = 1.0; // Yaw rotation sensitivity
+pointerInput.pinchToPanMax = 20; // Pixel threshold to distinguish pinch from pan</code></pre>
+<h3 id="mouse-wheel-geospatialcameramousewheelinput">Mouse Wheel (<code>GeospatialCameraMouseWheelInput</code>)<a class="anchor" href="#mouse-wheel-geospatialcameramousewheelinput">#</a></h3>
+<p>Handles scroll wheel zoom. By default, zooms toward the point on the globe under the cursor. Falls back to zooming along the look-at vector when the cursor is off the globe.</p>
+<h3 id="keyboard-geospatialcamerakeyboardinput">Keyboard (<code>GeospatialCameraKeyboardInput</code>)<a class="anchor" href="#keyboard-geospatialcamerakeyboardinput">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Keys</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Arrow keys</td>
+<td>Pan the globe</td>
+</tr>
+<tr>
+<td>Ctrl + Arrow keys</td>
+<td>Tilt (yaw/pitch rotation)</td>
+</tr>
+<tr>
+<td><code>+</code> / <code>-</code> (or numpad <code>+</code> / <code>-</code>)</td>
+<td>Zoom in / out</td>
+</tr>
+</tbody></table>
+<p>Configurable properties:</p>
+<pre class="code" data-lang="javascript"><code>const keyboardInput = camera.inputs.attached[&quot;keyboard&quot;];
+keyboardInput.panSensitivity = 1.0;
+keyboardInput.rotationSensitivity = 1.0;
+keyboardInput.zoomSensitivity = 1.0;</code></pre>
+<h2 id="movement-pipeline">Movement Pipeline<a class="anchor" href="#movement-pipeline">#</a></h2>
+<p>User input flows through a layered pipeline: <strong>input sensitivity</strong> (per-device scaling) → <strong>velocity &amp; inertia</strong> (frame-rate-independent smoothing) → <strong>speed × multiplier</strong> (conversion to world-space movement). All configurable values are listed below.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Location</th>
+<th>Default</th>
+<th>Description</th>
+<th>When to modify</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Input Sensitivity</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>pitchSensitivity</code></td>
+<td>Pointer input</td>
+<td><code>1.0</code></td>
+<td>Scales pointer Y delta for pitch</td>
+<td>Mouse/touch tilt feels too fast or slow</td>
+</tr>
+<tr>
+<td><code>yawSensitivity</code></td>
+<td>Pointer input</td>
+<td><code>1.0</code></td>
+<td>Scales pointer X delta for yaw</td>
+<td>Mouse/touch yaw feels too fast or slow</td>
+</tr>
+<tr>
+<td><code>pinchToPanMax</code></td>
+<td>Pointer input</td>
+<td><code>20</code></td>
+<td>Pixel threshold: pinch vs pan</td>
+<td>Touch gestures are being confused</td>
+</tr>
+<tr>
+<td><code>rotationSensitivity</code></td>
+<td>Keyboard input</td>
+<td><code>1.0</code></td>
+<td>Pixel delta per key for rotation</td>
+<td>Keyboard tilt feels too fast or slow</td>
+</tr>
+<tr>
+<td><code>panSensitivity</code></td>
+<td>Keyboard input</td>
+<td><code>1.0</code></td>
+<td>Pixel offset per key for panning</td>
+<td>Keyboard pan feels too fast or slow</td>
+</tr>
+<tr>
+<td><code>zoomSensitivity</code></td>
+<td>Keyboard input</td>
+<td><code>1.0</code></td>
+<td>Scroll delta per key for zoom</td>
+<td>Keyboard zoom feels too fast or slow</td>
+</tr>
+<tr>
+<td><strong>Speed</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>zoomSpeed</code></td>
+<td><code>movement</code></td>
+<td><code>2</code></td>
+<td>Base zoom rate (all devices)</td>
+<td>All zoom feels too fast or slow</td>
+</tr>
+<tr>
+<td><code>panSpeed</code></td>
+<td><code>movement</code></td>
+<td><code>1</code></td>
+<td>Base pan rate (all devices)</td>
+<td>All panning feels too fast or slow</td>
+</tr>
+<tr>
+<td><code>rotationXSpeed</code></td>
+<td><code>movement</code></td>
+<td><code>π/500</code></td>
+<td>Radians of pitch per velocity unit</td>
+<td>All pitch rotation feels too fast or slow</td>
+</tr>
+<tr>
+<td><code>rotationYSpeed</code></td>
+<td><code>movement</code></td>
+<td><code>π/500</code></td>
+<td>Radians of yaw per velocity unit</td>
+<td>All yaw rotation feels too fast or slow</td>
+</tr>
+<tr>
+<td><strong>Multipliers</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>_zoomSpeedMultiplier</code></td>
+<td><code>movement</code></td>
+<td>Auto</td>
+<td>Applied to zoom each frame. Override per-frame to implement custom zoom behavior (e.g. radius-based speed, altitude curves)</td>
+<td>You want full control over how zoom scales with context</td>
+</tr>
+<tr>
+<td><code>_panSpeedMultiplier</code></td>
+<td><code>movement</code></td>
+<td>Auto</td>
+<td>Applied to pan each frame. Override per-frame to implement custom pan behavior (e.g. latitude dampening, terrain-aware speed)</td>
+<td>You want full control over how pan scales with context</td>
+</tr>
+<tr>
+<td><strong>Inertia</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>zoomInertia</code></td>
+<td><code>movement</code></td>
+<td><code>0.9</code></td>
+<td>Zoom velocity decay (<code>0</code> = instant stop, <code>0.95</code> = long glide)</td>
+<td>Zoom coasting feels too long or abrupt</td>
+</tr>
+<tr>
+<td><code>panInertia</code></td>
+<td><code>movement</code></td>
+<td><code>0</code></td>
+<td>Pan velocity decay</td>
+<td>You want the globe to drift after drag</td>
+</tr>
+<tr>
+<td><code>rotationInertia</code></td>
+<td><code>movement</code></td>
+<td><code>0</code></td>
+<td>Rotation velocity decay</td>
+<td>You want tilt to coast after releasing</td>
+</tr>
+</tbody></table>
+<pre class="code" data-lang="javascript"><code>// Per-device: make mouse tilt twice as fast
+camera.inputs.attached[&quot;pointers&quot;].pitchSensitivity = 2.0;
+
+// Global: make all zoom faster, add pan glide
+camera.movement.zoomSpeed = 4;
+camera.movement.panInertia = 0.9;</code></pre>
+<h3 id="zoom-to-cursor">Zoom-to-Cursor<a class="anchor" href="#zoom-to-cursor">#</a></h3>
+<p>By default, zooming moves the camera toward the point on the globe under the cursor rather than along the look-at vector. This can be toggled:</p>
+<pre class="code" data-lang="javascript"><code>camera.movement.zoomToCursor = false; // Zoom along look-at vector instead</code></pre>
+<h3 id="pick-predicate">Pick Predicate<a class="anchor" href="#pick-predicate">#</a></h3>
+<p>The movement system raycasts against the scene to determine zoom targets and drag planes. You can filter which meshes are picked:</p>
+<pre class="code" data-lang="javascript"><code>camera.movement.pickPredicate = (mesh) =&gt; mesh.name === &quot;globe&quot;;</code></pre>
+<p>This can also be set in the constructor options:</p>
+<pre class="code" data-lang="javascript"><code>const camera = new BABYLON.GeospatialCamera(&quot;geoCam&quot;, scene, {
+    planetRadius: 6371000,
+    pickPredicate: (mesh) =&gt; mesh.name === &quot;globe&quot;,
+});</code></pre>
+<h2 id="limits-geospatiallimits">Limits (<code>GeospatialLimits</code>)<a class="anchor" href="#limits-geospatiallimits">#</a></h2>
+<p>The camera enforces configurable limits to constrain navigation:</p>
+<pre class="code" data-lang="javascript"><code>const limits = camera.limits;
+
+// Distance limits
+limits.radiusMin = 100; // Minimum distance from center (prevents going below surface)
+limits.radiusMax = 50000000; // Maximum distance from center
+
+// Pitch limits (radians)
+limits.pitchMin = 0.001; // Minimum pitch (nearly straight down)
+limits.pitchMax = Math.PI / 2 - 0.01; // Maximum pitch (nearly at horizon)
+
+// Yaw limits (radians) — default is unconstrained
+limits.yawMin = -Infinity;
+limits.yawMax = Infinity;</code></pre>
+<h3 id="pitch-dampening-at-high-altitude">Pitch Dampening at High Altitude<a class="anchor" href="#pitch-dampening-at-high-altitude">#</a></h3>
+<p>The camera can automatically restrict pitch as you zoom out, forcing the view to look straight down when far from the surface. This prevents disorienting tilted views at high altitudes:</p>
+<pre class="code" data-lang="javascript"><code>// Pitch is fully allowed below 2× planet radius,
+// fully disabled (forced to pitchMin) above 4× planet radius,
+// and interpolated between.
+limits.pitchDisabledRadiusScale = new BABYLON.Vector2(2, 4);
+
+// Disable this behavior:
+limits.pitchDisabledRadiusScale = undefined;</code></pre>
+<h3 id="planet-radius">Planet Radius<a class="anchor" href="#planet-radius">#</a></h3>
+<p>The planet radius is accessible and can be updated:</p>
+<pre class="code" data-lang="javascript"><code>limits.planetRadius = 6371000; // Earth radius in meters</code></pre>
+<h2 id="animated-flights-flytoasync">Animated Flights (<code>flyToAsync</code>)<a class="anchor" href="#animated-flights-flytoasync">#</a></h2>
+<p>The camera supports smooth animated transitions between viewpoints:</p>
+<pre class="code" data-lang="javascript"><code>// Fly to a new location with specific yaw, pitch, radius, and center
+await camera.flyToAsync(
+    Math.PI / 4, // target yaw (radians)
+    Math.PI / 6, // target pitch (radians)
+    100000, // target radius
+    new BABYLON.Vector3(6371000, 0, 0), // target center (ECEF)
+    2000, // flight duration in ms
+    new BABYLON.CubicEase(), // optional easing function
+    0.3 // optional center hop scale (parabolic arc height)
+);</code></pre>
+<p>Any parameter can be <code>undefined</code> to keep the current value:</p>
+<pre class="code" data-lang="javascript"><code>// Fly to a different center without changing yaw, pitch, or radius
+await camera.flyToAsync(undefined, undefined, undefined, newCenter, 1500);</code></pre>
+<h3 id="fly-to-a-point">Fly to a Point<a class="anchor" href="#fly-to-a-point">#</a></h3>
+<p>A convenience method moves the camera toward a specific world-space point:</p>
+<pre class="code" data-lang="javascript"><code>// Fly 50% of the way toward the clicked point
+await camera.flyToPointAsync(pickedPoint, 0.5, 1000);</code></pre>
+<h3 id="updating-a-flight-in-progress">Updating a Flight In-Progress<a class="anchor" href="#updating-a-flight-in-progress">#</a></h3>
+<p>You can redirect an active flight animation without restarting it:</p>
+<pre class="code" data-lang="javascript"><code>camera.updateFlyToDestination(newYaw, newPitch, newRadius, newCenter);</code></pre>
+<p>This updates the target properties and uses the remaining duration from the original <code>flyToAsync</code> call.</p>
+<h3 id="center-hop-arc-animation">Center Hop (Arc Animation)<a class="anchor" href="#center-hop-arc-animation">#</a></h3>
+<p>When providing a <code>centerHopScale</code> to <code>flyToAsync</code>, the center animation follows a parabolic arc that peaks at the midpoint of the flight. The hop height is proportional to the distance between the start and end centers, scaled by the provided value. This creates a visually appealing &quot;bounce&quot; effect for long-distance flights.</p>
+<h3 id="double-click-double-tap-to-zoom">Double-Click / Double-Tap to Zoom<a class="anchor" href="#double-click-double-tap-to-zoom">#</a></h3>
+<p>By default, double-clicking or double-tapping on the globe triggers a <code>flyToPointAsync</code> that flies 50% closer to the clicked point.</p>
+<h2 id="collision-detection">Collision Detection<a class="anchor" href="#collision-detection">#</a></h2>
+<p>The camera supports basic collision checking:</p>
+<pre class="code" data-lang="javascript"><code>camera.checkCollisions = true;
+
+// Optionally apply a custom per-frame collision offset
+camera.perFrameCollisionOffset = new BABYLON.Vector3(0, 10, 0);</code></pre>
+<p>When enabled, the camera uses the scene&#39;s collision coordinator to detect intersections and adjusts the camera position to avoid passing through geometry.</p>
+<h2 id="geospatial-clipping-behavior">Geospatial Clipping Behavior<a class="anchor" href="#geospatial-clipping-behavior">#</a></h2>
+<p>The <code>GeospatialClippingBehavior</code> automatically adjusts near and far clip planes based on the camera&#39;s altitude above the planet surface. This optimizes depth buffer precision — near objects remain sharp when close to the surface, while distant objects (up to the horizon) remain visible when zoomed out.</p>
+<pre class="code" data-lang="javascript"><code>const clippingBehavior = new BABYLON.GeospatialClippingBehavior();
+camera.addBehavior(clippingBehavior);</code></pre>
+<p>The behavior calculates:</p>
+<ul>
+<li><strong>Near plane</strong>: <code>altitude × 0.001</code> (minimum of 1 unit)</li>
+<li><strong>Far plane</strong>: Horizon distance + 10% of planet radius, using the formula <code>√(2Rh + h²)</code> where <code>R</code> is the planet radius and <code>h</code> is altitude</li>
+</ul>
+<h2 id="architecture-summary">Architecture Summary<a class="anchor" href="#architecture-summary">#</a></h2>
+<p>The geospatial camera is composed of several classes that work together:</p>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Responsibility</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong><code>GeospatialCamera</code></strong></td>
+<td>Core camera. Manages yaw/pitch/radius/center, computes view matrix, applies inputs each frame, handles flyTo animations.</td>
+</tr>
+<tr>
+<td><strong><code>GeospatialCameraMovement</code></strong></td>
+<td>Extends <code>CameraMovement</code>. Globe drag-plane raycasting, latitude-based pan dampening, altitude-aware zoom scaling, zoom-to-cursor picking.</td>
+</tr>
+<tr>
+<td><strong><code>CameraMovement</code></strong></td>
+<td>Base movement class. Converts pixel deltas into frame-rate-independent movement deltas with configurable speed, inertia, and per-frame multipliers.</td>
+</tr>
+<tr>
+<td><strong><code>GeospatialLimits</code></strong></td>
+<td>Enforces radius, pitch, and yaw constraints. Provides altitude-based pitch dampening.</td>
+</tr>
+<tr>
+<td><strong><code>GeospatialCameraInputsManager</code></strong></td>
+<td>Input manager that wires up pointer, mouse wheel, and keyboard inputs.</td>
+</tr>
+<tr>
+<td><strong><code>GeospatialCameraPointersInput</code></strong></td>
+<td>Mouse/touch input: drag globe, tilt, pinch-to-zoom, double-tap to fly.</td>
+</tr>
+<tr>
+<td><strong><code>GeospatialCameraMouseWheelInput</code></strong></td>
+<td>Mouse wheel zoom input.</td>
+</tr>
+<tr>
+<td><strong><code>GeospatialCameraKeyboardInput</code></strong></td>
+<td>Arrow keys for pan/rotate, +/- for zoom.</td>
+</tr>
+<tr>
+<td><strong><code>GeospatialClippingBehavior</code></strong></td>
+<td>Behavior that auto-adjusts near/far clip planes based on altitude for optimal depth precision.</td>
+</tr>
+<tr>
+<td><strong><code>InterpolatingBehavior</code></strong></td>
+<td>Behavior that powers <code>flyToAsync</code> animations. Automatically interrupted by user input.</td>
+</tr>
+</tbody></table>
+<h2 id="api-reference">API Reference<a class="anchor" href="#api-reference">#</a></h2>
+<h3 id="constructor">Constructor<a class="anchor" href="#constructor">#</a></h3>
+<pre class="code" data-lang="typescript"><code>new GeospatialCamera(name: string, scene: Scene, options: GeospatialCameraOptions)</code></pre>
+<h4 id="geospatialcameraoptions"><code>GeospatialCameraOptions</code><a class="anchor" href="#geospatialcameraoptions">#</a></h4>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>planetRadius</code></td>
+<td><code>number</code></td>
+<td>Yes</td>
+<td>Radius of the planet being orbited.</td>
+</tr>
+<tr>
+<td><code>pickPredicate</code></td>
+<td><code>MeshPredicate</code></td>
+<td>No</td>
+<td>Predicate for raycasting. Can be updated later via <code>camera.movement.pickPredicate</code>.</td>
+</tr>
+</tbody></table>
+<h3 id="properties">Properties<a class="anchor" href="#properties">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>center</code></td>
+<td><code>Vector3</code></td>
+<td>The anchor point on the globe (get/set).</td>
+</tr>
+<tr>
+<td><code>yaw</code></td>
+<td><code>number</code></td>
+<td>Rotation around geocentric normal in radians (get/set).</td>
+</tr>
+<tr>
+<td><code>pitch</code></td>
+<td><code>number</code></td>
+<td>Angle from looking at planet center in radians (get/set).</td>
+</tr>
+<tr>
+<td><code>radius</code></td>
+<td><code>number</code></td>
+<td>Distance from camera to center (get/set).</td>
+</tr>
+<tr>
+<td><code>limits</code></td>
+<td><code>GeospatialLimits</code></td>
+<td>The limits object (readonly).</td>
+</tr>
+<tr>
+<td><code>movement</code></td>
+<td><code>GeospatialCameraMovement</code></td>
+<td>The movement controller (readonly).</td>
+</tr>
+<tr>
+<td><code>checkCollisions</code></td>
+<td><code>boolean</code></td>
+<td>Enable/disable collision detection. Default <code>false</code>.</td>
+</tr>
+<tr>
+<td><code>perFrameCollisionOffset</code></td>
+<td><code>Vector3</code></td>
+<td>Custom collision offset applied each frame.</td>
+</tr>
+</tbody></table>
+<h3 id="functions">Functions<a class="anchor" href="#functions">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>flyToAsync(yaw?, pitch?, radius?, center?, durationMs?, easingFn?, centerHopScale?)</code></td>
+<td>Animate camera to target properties. Returns a <code>Promise&lt;void&gt;</code>.</td>
+</tr>
+<tr>
+<td><code>flyToPointAsync(destination, distanceScale?, durationMs?, easingFn?, centerHopScale?)</code></td>
+<td>Fly toward a world-space point by a fraction of the distance.</td>
+</tr>
+<tr>
+<td><code>updateFlyToDestination(yaw?, pitch?, radius?, center?)</code></td>
+<td>Redirect an in-progress flight animation.</td>
+</tr>
+<tr>
+<td><code>zoomToPoint(targetPoint, distance)</code></td>
+<td>Zoom toward a specific point by a given distance.</td>
+</tr>
+<tr>
+<td><code>zoomAlongLookAt(distance)</code></td>
+<td>Zoom along the look-at vector by a given distance.</td>
+</tr>
+<tr>
+<td><code>attachControl(noPreventDefault?)</code></td>
+<td>Attach all input handlers.</td>
+</tr>
+<tr>
+<td><code>detachControl()</code></td>
+<td>Detach all input handlers.</td>
+</tr>
+</tbody></table>
+<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#overview">Overview </a><a href="#quick-start">Quick Start </a><a href="#core-concepts">Core Concepts </a><a href="#input-controls">Input Controls </a><a href="#movement-pipeline">Movement Pipeline </a><a href="#limits-geospatiallimits">Limits ( GeospatialLimits ) </a><a href="#animated-flights-flytoasync">Animated Flights ( flyToAsync ) </a><a href="#collision-detection">Collision Detection </a><a href="#geospatial-clipping-behavior">Geospatial Clipping Behavior </a><a href="#architecture-summary">Architecture Summary </a><a href="#api-reference">API Reference </a></aside></div>
+<script src="../../../../../../assets/cm.classic.js"></script><script src="../../../../../../assets/manual.js"></script></body></html>

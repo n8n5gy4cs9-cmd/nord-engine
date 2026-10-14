@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Babylon guide: Introduction To Lights — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../../../../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../../../../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../../../../../index.html"><img src="../../../../../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../../../../../../nord/start/getting-started.html">Start here</a><a href="../../../../../../nord/manual/welcome.html">Manual</a><a href="../../../../../../nord/tutorials/tutorials.html">Tutorials</a><a href="../../../../../../nord/guides/cookbook.html">Guides</a><a href="../../../../../../nord/api/api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../../../../../index.html">Documentation home</a><div class="nav-label">API</div><details><summary>API</summary><a href="../../../../../../nord/api/api.html">API reference</a><a href="../../../../../../nord/api/api-namespaces.html">game.* namespaces</a><a href="../../../../../../nord/api/api-nordscript.html">NordScript</a><a href="../../../../../../nord/api/api-entity.html">Entity</a><a href="../../../../../../nord/api/api-scene.html">Scene</a><a href="../../../../../../nord/api/api-game.html">Game</a><a href="../../../../../../nord/api/api-input.html">Input</a><a href="../../../../../../nord/api/api-events.html">Events</a><a href="../../../../../../nord/api/api-save.html">Save</a><a href="../../../../../../nord/api/api-audio.html">Audio</a><a href="../../../../../../nord/api/api-ui.html">UI</a><a href="../../../../../../nord/api/api-scheduler.html">Scheduler</a><a href="../../../../../../nord/api/api-rng.html">Rng</a><a href="../../../../../../nord/api/api-pool.html">Pool</a><a href="../../../../../../nord/api/api-loader.html">Loader</a><a href="../../../../../../nord/api/api-memorystorage.html">MemoryStorage</a><a href="../../../../../../nord/api/api-arcadeadapter.html">ArcadeAdapter</a><a href="../../../../../../nord/api/api-matteradapter.html">MatterAdapter</a><a href="../../../../../../nord/api/api-havokadapter.html">HavokAdapter</a><a href="../../../../../../nord/api/api-helpers.html">Math &amp; helpers</a><a href="../../../../../../nord/api/api-exports.html">All Nord public exports</a><a href="../../../../../../nord/api/api-desktop.html">Desktop bridge</a><a href="../../../../../../nord/api/api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../../../../../../nord/components/component-sprite.html">sprite</a><a href="../../../../../../nord/components/component-animatedSprite.html">animatedSprite</a><a href="../../../../../../nord/components/component-text.html">text</a><a href="../../../../../../nord/components/component-tilemap.html">tilemap</a><a href="../../../../../../nord/components/component-parallax.html">parallax</a><a href="../../../../../../nord/components/component-particles.html">particles</a><a href="../../../../../../nord/components/component-camera.html">camera</a><a href="../../../../../../nord/components/component-light.html">light</a><a href="../../../../../../nord/components/component-mesh.html">mesh</a><a href="../../../../../../nord/components/component-model.html">model</a><a href="../../../../../../nord/components/component-material.html">material</a><a href="../../../../../../nord/components/component-skybox.html">skybox</a><a href="../../../../../../nord/components/component-postProcess.html">postProcess</a><a href="../../../../../../nord/components/component-rigidbody.html">rigidbody</a><a href="../../../../../../nord/components/component-collider.html">collider</a><a href="../../../../../../nord/components/component-trigger.html">trigger</a><a href="../../../../../../nord/components/component-audioSource.html">audioSource</a><a href="../../../../../../nord/components/component-audioListener.html">audioListener</a><a href="../../../../../../nord/components/component-uiPanel.html">uiPanel</a><a href="../../../../../../nord/components/component-uiLabel.html">uiLabel</a><a href="../../../../../../nord/components/component-uiImage.html">uiImage</a><a href="../../../../../../nord/components/component-uiBar.html">uiBar</a><a href="../../../../../../nord/components/component-uiButton.html">uiButton</a><a href="../../../../../../nord/components/component-path.html">path</a><a href="../../../../../../nord/components/component-spawner.html">spawner</a></details><details><summary>Reference</summary><a href="../../../../../../nord/reference/project-format.html">Project format</a><a href="../../../../../../nord/reference/components.html">Component index</a><a href="../../../../../../nord/reference/cli.html">Command line (nord)</a><a href="../../../../../../nord/reference/library-catalog.html">Library catalog</a><a href="../../../../../../nord/reference/templates-examples.html">Templates &amp; examples</a><a href="../../../../../../nord/reference/rust-tier-spec.html">Rust tier spec</a><a href="../../../../../../nord/reference/export-targets-spec.html">Export targets spec</a><a href="../../../../../../nord/reference/hosting-spec.html">Hosting notes</a><a href="../../../../../../nord/reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../../../../../../nord/reference/packaging.html">Packaging</a><a href="../../../../../../nord/reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../../../9.30/index.html">Babylon 9.30.0 API</a><a href="../../../../../phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../../index.html">Babylon documentation library</a><a href="../../../../../phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../../../../../../nord/reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">Engine docs / Nord Engine</div><h1>Babylon guide: Introduction To Lights</h1>
+<p><span class="badge">Official Babylon guide · source snapshot</span></p><aside class="box warn"><div class="box-title">Read this as an underlying-engine guide</div><p>The prose snapshot can describe newer features. Nord's API pages match <b>9.30.0</b>. Start with <a href="../../../../../../nord/manual/3d.html">3D manual</a> · <a href="../../../../../../nord/components/component-mesh.html">mesh</a> · <a href="../../../../../../nord/components/component-model.html">model</a> · <a href="../../../../../../nord/components/component-camera.html">camera</a> for Nord scene files and scripts. Online playgrounds, videos and upstream images are not embedded in this offline edition.</p></aside><h2 id="lights">Lights<a class="anchor" href="#lights">#</a></h2>
+<p>Lights are used, as you would expect, to affect how meshes are seen, in terms of both illumination and color.
+All meshes allow light to pass through them unless shadow generation is activated. The default number of allowed lights is
+four, but this can be increased.</p>
+<p><p class="muted">Upstream illustration: Elements (media not bundled).</p></p>
+<p><em>A pretty sphere with multiple lights</em></p>
+<h2 id="types-of-lights">Types of Lights<a class="anchor" href="#types-of-lights">#</a></h2>
+<p>There are five types of lights that can be used, each with a range of lighting properties.</p>
+<h3 id="the-point-light">The Point Light<a class="anchor" href="#the-point-light">#</a></h3>
+<p>A point light is a light defined by a unique point in world space. The light is emitted in every direction from this point. A good example of a point light is a standard light bulb.</p>
+<pre class="code" data-lang="javascript"><code>const light = new BABYLON.PointLight(&quot;pointLight&quot;, new BABYLON.Vector3(1, 10, 1), scene);</code></pre>
+<h3 id="the-directional-light">The Directional Light<a class="anchor" href="#the-directional-light">#</a></h3>
+<p>A directional light is defined by a direction (what a surprise!). The light is emitted from everywhere in the specified direction and has an infinite range.
+An example of a directional light is a distant planet lit by the apparently parallel lines of light from its sun. Light shining downward will light
+the top of an object.</p>
+<pre class="code" data-lang="javascript"><code>const light = new BABYLON.DirectionalLight(&quot;DirectionalLight&quot;, new BABYLON.Vector3(0, -1, 0), scene);</code></pre>
+<h3 id="the-spot-light">The Spot Light<a class="anchor" href="#the-spot-light">#</a></h3>
+<p>A spot light is defined by a position, a direction, an angle, and an exponent. These values define a cone of light starting from the position, emitting toward the direction.</p>
+<p>The angle, in radians, defines the size (field of illumination) of the spotlight&#39;s conical beam, and the exponent defines how quickly the light decays with distance (reach).</p>
+<p><em>A simple use of a spot light</em></p>
+<pre class="code" data-lang="javascript"><code>const light = new BABYLON.SpotLight(&quot;spotLight&quot;, new BABYLON.Vector3(0, 30, -10), new BABYLON.Vector3(0, -1, 0), Math.PI / 3, 2, scene);</code></pre>
+<h3 id="the-hemispheric-light">The Hemispheric Light<a class="anchor" href="#the-hemispheric-light">#</a></h3>
+<p>A hemispheric light is an easy way to simulate ambient environmental light. A hemispheric light is defined by a direction, usually &#39;up&#39; toward the sky. However, the full effect is achieved by setting the color properties.</p>
+<pre class="code" data-lang="javascript"><code>const light = new BABYLON.HemisphericLight(&quot;HemiLight&quot;, new BABYLON.Vector3(0, 1, 0), scene);</code></pre>
+<h3 id="the-rectangular-area-light">The Rectangular Area Light<a class="anchor" href="#the-rectangular-area-light">#</a></h3>
+<p>A rectangular area light is defined by its position, width, and height. It emits light from the resulting surface towards the -Z direction. Even though the RectAreaLight class itself does not have a direction component, it can be attached to a transform node to be rotated and moved around.</p>
+<pre class="code" data-lang="javascript"><code>const light = new BABYLON.RectAreaLight(&quot;areaLight&quot;, new BABYLON.Vector3(0, 1, 0), 2, 2, scene);</code></pre>
+<p>One important thing to note is that, due to differences in implementation, StandardMaterial will reflect light based on its &quot;roughness&quot; value (instead of specular power, as with other lights). This difference in behavior is significant, and you should set the correct roughness value in the scene to achieve the desired look.</p>
+<p>Also, the current implementation for RectAreaLight does not cast shadows, but we plan to implement this in the future.</p>
+<h3 id="using-emission-textures-with-rectarealight">Using emission textures with RectAreaLight<a class="anchor" href="#using-emission-textures-with-rectarealight">#</a></h3>
+<p>Emission textures can be used as light sources for RectAreaLight by assigning them to the <code>.emissionTexture</code> property. However, these textures require pre-processing to work properly.</p>
+<p>Pre-processing can be done offline (recommended) or at runtime using <code>AreaLightTextureTools</code>. Runtime processing takes several seconds for typical texture sizes (1024 or 2048), so offline processing is preferred for production use. The runtime tool is provided for prototyping and experimentation.</p>
+<p>Here&#39;s how to use an emission texture at runtime:</p>
+<pre class="code" data-lang="javascript"><code>// AreaLightTextureTools can be created once and reused for processing multiple textures.
+const textureProcessor = new BABYLON.AreaLightTextureTools(engine);
+
+// Create your RectAreaLight
+const light = new BABYLON.RectAreaLight(&quot;areaLight&quot;, new BABYLON.Vector3(0, 1, 0), 2, 2, scene);
+
+// Image that you want to use as emission.
+const emissionTexture = new BABYLON.Texture(textureURL, scene);
+
+// Preprocess the texture to get the one that should be used by RectAreaLight
+light.emissionTexture = await textureProcessor.processAsync(emissionTexture);</code></pre>
+<p>We also provide an offline tool that can directly pre-process emission textures: <span>Babylon Texture Tools</span>. By going to the &quot;Area Light&quot; tab, users can drag and drop a PNG into the tool and use the &quot;Render&quot; button to generate the pre-processed texture. The resulting texture can be directly assigned to <code>light.emissionTexture</code> without any additional steps.</p>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="color-properties">Color Properties<a class="anchor" href="#color-properties">#</a></h2>
+<p>There are three properties of lights that affect color. Two of these, <em>diffuse</em> and <em>specular</em>, apply to all light types; the third, <em>groundColor</em>, applies only to a Hemispheric Light.</p>
+<ol>
+<li>Diffuse gives the basic color to an object;</li>
+<li>Specular produces a highlight color on an object.</li>
+</ol>
+<p>In these playgrounds, see how the specular color (green) is combined with the diffuse color (red) to produce a yellow highlight.</p>
+<span class="muted">Online playground (not embedded offline)</span><span class="muted">Online playground (not embedded offline)</span><span class="muted">Online playground (not embedded offline)</span><span class="muted">Online playground (not embedded offline)</span><span class="muted">Online playground (not embedded offline)</span><p>For a hemispheric light, the <em>groundColor</em> is the light in the opposite direction from the one specified during creation.
+You can think of the <em>diffuse</em> and <em>specular</em> light as coming from the center of the object in the given direction, and the <em>groundColor</em> light as coming from the opposite direction.</p>
+<span class="muted">Online playground (not embedded offline)</span><p>White hemispheric light with a black groundColor is a useful lighting method.</p>
+<h3 id="intersecting-lights-colors">Intersecting Lights Colors<a class="anchor" href="#intersecting-lights-colors">#</a></h3>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="limitations">Limitations<a class="anchor" href="#limitations">#</a></h2>
+<p>Babylon.js allows you to create and register as many lights as you choose, but note that a single material can only handle a defined number of simultaneous lights (by default, this value is 4, which means the first four enabled lights in the scene&#39;s lights list).
+You can change this number with this code:</p>
+<pre class="code" data-lang="javascript"><code>const material = new BABYLON.StandardMaterial(&quot;mat&quot;, scene);
+material.maxSimultaneousLights = 6;</code></pre>
+<p>But beware! By default, all meshes are considered lit by all lights, even when they are not physically lit. Calculating whether a mesh can be lit by a light would be too time-consuming. Also, with more dynamic lights, Babylon.js generates larger shaders, which may not be compatible with low-end devices such as phones or small tablets. In this case, Babylon.js will try to recompile shaders with fewer lights.</p>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="on-off-or-dimmer">On, Off or Dimmer<a class="anchor" href="#on-off-or-dimmer">#</a></h2>
+<p>Every light can be switched off using</p>
+<pre class="code" data-lang="javascript"><code>light.setEnabled(false);</code></pre>
+<p>and switched on with</p>
+<pre class="code" data-lang="javascript"><code>light.setEnabled(true);</code></pre>
+<p>Want to dim or brighten the light? Then set the <em>intensity</em> property (default value is 1).</p>
+<pre class="code" data-lang="javascript"><code>light0.intensity = 0.5;
+light1.intensity = 2.4;</code></pre>
+<p>For point and spot lights, you can set how far the light reaches using the <em>range</em> property.</p>
+<pre class="code" data-lang="javascript"><code>light.range = 100;</code></pre>
+<h2 id="choosing-meshes-to-light">Choosing Meshes to Light<a class="anchor" href="#choosing-meshes-to-light">#</a></h2>
+<p>When a light is created, all current meshes will be lit by it. There are two ways to exclude some meshes from being lit.
+A mesh can be added to the <em>excludedMeshes</em> array, or the meshes that should not be excluded can be added to the <em>includedOnlyMeshes</em> array. The number of meshes to exclude can help determine which method to use. In the following example, two meshes are excluded from <em>light0</em> and twenty-three from <em>light1</em>. Commenting out lines 26 and 27 in turn will show the individual effect.</p>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="lighting-normals">Lighting Normals<a class="anchor" href="#lighting-normals">#</a></h2>
+<p>How lights react to a mesh depends on values set for each mesh vertex, called <em>normals</em>, shown in the picture below as arrows indicating the direction of the lighting normals. The picture shows two planes and two lights. One light is a spot light and the other is a point light. The front face of each plane is the one you see when the <em>normals</em> point toward you; the back face is the opposite side.</p>
+<p><p class="muted">Upstream illustration: Elements (media not bundled).</p></p>
+<p><em>A blue back-faced plane and a blue front-faced plane, with a spot light and point light</em></p>
+<p>As you can see, the lights only affect the front face and not the back face.</p>
+<h2 id="lightmaps">Lightmaps<a class="anchor" href="#lightmaps">#</a></h2>
+<p>Complex lighting can be computationally expensive to compute at runtime. To save on computation, lightmaps may be used to store calculated lighting in a texture which will be applied to a given mesh.</p>
+<pre class="code" data-lang="javascript"><code>const lightmap = new BABYLON.Texture(&quot;lightmap.png&quot;, scene);
+const material = new BABYLON.StandardMaterial(&quot;material&quot;, scene);
+material.lightmapTexture = lightmap;</code></pre>
+<p>Note: To use the texture as a shadow map instead of a lightmap, set the material.useLightmapAsShadowmap field to true.</p>
+<p>The way that the scene lights are blended with the lightmap is based on the lightmapMode of the lights in the scene.</p>
+<pre class="code" data-lang="javascript"><code>light.lightmapMode = BABYLON.Light.LIGHTMAP_DEFAULT;</code></pre>
+<p>This causes the lightmap texture to be blended after the lighting from this light is applied.</p>
+<pre class="code" data-lang="javascript"><code>light.lightmapMode = BABYLON.Light.LIGHTMAP_SPECULAR;</code></pre>
+<p>This is the same as LIGHTMAP_DEFAULT except only the specular lighting and shadows from the light will be applied.</p>
+<pre class="code" data-lang="javascript"><code>light.lightmapMode = BABYLON.Light.LIGHTMAP_SHADOWSONLY;</code></pre>
+<p>This is the same as LIGHTMAP_DEFAULT except only the shadows cast from this light will be applied.</p>
+<span class="muted">Online playground (not embedded offline)</span><h2 id="projection-texture">Projection Texture<a class="anchor" href="#projection-texture">#</a></h2>
+<p>In some cases, it is useful to define the diffuse color of the light (Diffuse gives the basic color to an object) from a texture instead of a constant color. Imagine trying to simulate the light effects inside a cathedral. The light going through the stained glass will be projected onto the ground. The same is true for light coming from a projector or the light effects you see in a disco.</p>
+<p>In order to support this feature, you can rely on the <code>projectionTexture</code> property of the lights. This is only supported by the <strong>SpotLight</strong> so far.</p>
+<pre class="code" data-lang="javascript"><code>const spotLight = new BABYLON.SpotLight(&quot;spot02&quot;, new BABYLON.Vector3(30, 40, 30), new BABYLON.Vector3(-1, -2, -1), 1.1, 16, scene);
+spotLight.projectionTexture = new BABYLON.Texture(&quot;textures/stainedGlass.png&quot;, scene);</code></pre>
+<span class="muted">Online playground (not embedded offline)</span><span class="muted">&lt;Youtube id=&quot;qqMuuSM7GvI&quot;/&gt;</span><p>In order to control the projection orientation and range, you can also rely on the following properties:</p>
+<ul>
+<li><code>projectionTextureLightNear</code> : near range of the texture projection. If a plane is before this range in light space, there is no texture projection.</li>
+<li><code>projectionTextureLightFar</code> : far range of the texture projection. If a plane is beyond this range in light space, there is no texture projection.</li>
+<li><code>projectionTextureUpDirection</code> : helps define the light space, which is oriented toward the light direction and aligned with the up direction.</li>
+</ul>
+<p>The projected information is multiplied against the normal light values to better fit Babylon.js lighting. It also affects only the diffuse value. So, it might be necessary to change the specular color of the light to better fit the scene.</p>
+<h2 id="ies-profile">IES Profile<a class="anchor" href="#ies-profile">#</a></h2>
+<p>Starting with Babylon v7.40.0, you can specify an <span>IES light</span> profile for your <strong>SpotLight</strong>.</p>
+<p>This controls, based on the <span>IES specification</span>, how the light falloff should be rendered.</p>
+<p>To do so, you have to set the <code>spotLight.iesProfileTexture</code> to a texture loaded from an <code>.ies</code> file.</p>
+<pre class="code" data-lang=""><code>light.iesProfileTexture = new BABYLON.Texture(&quot;https://assets.babylonjs.com/meshes/EXT_lights_ies/LightProfile.ies&quot;);</code></pre>
+<span class="muted">Online playground (not embedded offline)
+</span><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#lights">Lights </a><a href="#types-of-lights">Types of Lights </a><a href="#color-properties">Color Properties </a><a href="#limitations">Limitations </a><a href="#on-off-or-dimmer">On, Off or Dimmer </a><a href="#choosing-meshes-to-light">Choosing Meshes to Light </a><a href="#lighting-normals">Lighting Normals </a><a href="#lightmaps">Lightmaps </a><a href="#projection-texture">Projection Texture </a><a href="#ies-profile">IES Profile </a></aside></div>
+<script src="../../../../../../assets/cm.classic.js"></script><script src="../../../../../../assets/manual.js"></script></body></html>
