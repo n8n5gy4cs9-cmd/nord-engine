@@ -1,0 +1,29 @@
+UPLOAD THE MANUAL WITHOUT SEARCH INDEXING
+
+Upload everything in docs/manual/, including hidden .htaccess.
+Every generated manual page has a robots noindex/nofollow/noarchive meta tag.
+This works on static hosting without special server configuration.
+
+Apache: the included .htaccess also sets X-Robots-Tag when mod_headers is enabled
+and the host allows Header directives in .htaccess.
+Netlify / Cloudflare Pages: _headers sets X-Robots-Tag for all deployed paths.
+If you combine this folder with another site, scope its /* rule to your manual
+path (for example /manual/*) in that site's root _headers file.
+Nginx: add inside the location serving the manual:
+  add_header X-Robots-Tag "noindex, nofollow, noarchive" always;
+These headers also cover copied upstream HTML and other assets without meta tags.
+
+robots.txt is recognized only at the domain root, e.g. https://example.com/robots.txt.
+If uploading the manual under /manual/, do not overwrite an existing site's
+robots.txt. Make sure its rules allow Google to fetch the manual so it can see
+noindex. The included robots.txt deliberately allows crawling: blocking crawling
+can prevent Google from reading noindex and leave a URL in search results.
+Do not put a nonstandard Noindex directive in robots.txt.
+
+If URLs already appear in Google, noindex takes effect after recrawling.
+Use Google Search Console's Removals tool if faster temporary removal is needed.
+These instructions keep compliant search engines from indexing; they are not
+access control. Use server authentication if access should be private.
+
+Google reference:
+https://developers.google.com/search/docs/crawling-indexing/block-indexing

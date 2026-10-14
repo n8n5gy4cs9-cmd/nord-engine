@@ -352,6 +352,7 @@ const layout = (p, body) => {
   const pager = p.file === 'index.html' || p.section === 'Engine docs' ? '' : `<div class="pager">${[siblings[pos - 1], siblings[pos + 1]].map((n, i) => n ? `<a href="${n.file}"><small>${i ? 'Next →' : '← Previous'}</small>${esc(n.title)}</a>` : '<span></span>').join('')}</div>`;
   return `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
 <title>${esc(p.title)} — Nord Engine Docs</title>
 <script>try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
 <link rel="stylesheet" href="assets/manual.css"></head>
@@ -374,6 +375,7 @@ const all = [home, ...pages];
 if (new Set(all.map(p => p.file)).size !== all.length) throw new Error('Duplicate manual output filenames: ' + [...new Set(all.filter((p,i)=>all.findIndex(q=>q.file===p.file)!==i).map(p=>p.file))].join(', '));
 fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(path.join(OUT, 'assets'), { recursive: true });
+for (const file of ['robots.txt', '_headers', '.htaccess', 'HOSTING.txt']) fs.copyFileSync(path.join(root, 'tools/manual/hosting', file), path.join(OUT, file));
 const search = [];
 for (const p of all) {
   const body = p === home ? homeBody : p.html;

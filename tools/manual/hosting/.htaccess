@@ -1,0 +1,4 @@
+# Apache: applies only within this manual directory. Requires mod_headers.
+<IfModule mod_headers.c>
+  Header always set X-Robots-Tag "noindex, nofollow, noarchive"
+</IfModule>

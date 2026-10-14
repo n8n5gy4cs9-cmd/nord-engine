@@ -1,5 +1,7 @@
 # Changelog
 
+- 2026-10-13: Added noindex/nofollow/noarchive to every generated manual page, plus robots.txt, Apache .htaccess, static-host _headers and upload instructions. Hosting files survive manual regeneration. No tests run per owner.
+
 - 2026-10-13: Shader Terrain Lab now feeds live Web Audio FFT/waveform data into iChannel0, enabling the supplied audio-reactive shader branch. GPU picking/collision shares the same sound snapshot; freeze holds both time and texture, with the audio-mode camera speed and signed-height encoding kept consistent. Tutorial/guide updated. No tests or runtime runs per owner.
 
 - 2026-10-13 (M6-39/40/41, M7-15/16/17/18, M8-20): Added notepaint (complete notes + paint HTML app), Star-Not (solar-system adventure, exactly three races, diplomacy/combat/checkpoints/endings, keyboard/gamepad combat co-op and code-drawn touch controls), and Shader Terrain Lab (owner GLSL, generated ambience, GPU picking/height probes and falling cube). Added full reconstruction tutorials, asset reuse inventories/prompts, text-only larger-project design/folder guide, and visible mobile-control guide. Added native editor word wrap/line-height/letter-spacing settings and manual code wrap toggles with 1.6 spacing. Example/manual outputs generated; no tests or native builds per owner.

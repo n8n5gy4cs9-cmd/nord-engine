@@ -1,0 +1,5 @@
+# Pages use noindex meta tags and X-Robots-Tag headers.
+# Crawlers must be able to fetch pages to see those instructions.
+# Do not add Disallow: / if your goal is removal from search results.
+User-agent: *
+Allow: /
