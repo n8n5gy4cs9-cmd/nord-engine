@@ -13,6 +13,9 @@ your exported web build is placed next to it as `game/`. Build the player once p
 
 `nord bundle-portable` can run on any OS (it only copies files); the *player binary* must be built for the target OS (CI does this, see
 `.github/workflows/ci.yml`). Engine itself: `./build.sh` → `dist/Nord Engine.app`, `dist/windows/`, `dist/linux/`.
+Windows cross-build: `./build-win.sh` (MinGW on macOS/Linux; MSVC on Windows). The portable
+release includes the complete guide as `docs/manual.zip`, served directly by the Docs tab,
+plus all examples, assets, templates and export/runtime sources. The complete Windows build guide is appended below (source: `docs/BUILD_WINDOWS.md`).
 
 ## Manifest fields that affect packaging (`nord.project.json` → `desktop`)
 ```json

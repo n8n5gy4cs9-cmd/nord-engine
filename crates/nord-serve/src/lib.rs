@@ -73,7 +73,7 @@ pub fn engine_root() -> Option<PathBuf> {
     {
         return Some(res);
     }
-    let starts = [std::env::current_dir().ok(), std::env::current_exe().ok()];
+    let starts = [std::env::current_exe().ok(), std::env::current_dir().ok()];
     starts
         .into_iter()
         .flatten()
@@ -94,10 +94,14 @@ fn file_response(p: &Path) -> Response {
     } else {
         p.to_path_buf()
     };
-    let Ok(mut bytes) = std::fs::read(&p) else {
+    let Ok(bytes) = std::fs::read(&p) else {
         return StatusCode::NOT_FOUND.into_response();
     };
-    let mime = mime_guess::from_path(&p).first_or_octet_stream();
+    content_response(&p, bytes)
+}
+
+fn content_response(p: &Path, mut bytes: Vec<u8>) -> Response {
+    let mime = mime_guess::from_path(p).first_or_octet_stream();
     if mime.essence_str() == "text/html" {
         let s = String::from_utf8_lossy(&bytes).into_owned();
         let s = match s.rfind("</body>") {
@@ -119,6 +123,9 @@ fn file_response(p: &Path) -> Response {
 async fn static_files(State(a): State<App>, uri: Uri) -> Response {
     let path = uri.path();
     let (base, rel) = if let Some(r) = path.strip_prefix("/__docs/") {
+        if !a.engine.join("docs/manual/index.html").is_file() {
+            return archived_manual(&a.engine, r);
+        }
         (a.engine.join("docs/manual"), r)
     } else if path == "/__edit" {
         (a.engine.join("editor/viewport"), "edit.html")
@@ -134,6 +141,26 @@ async fn static_files(State(a): State<App>, uri: Uri) -> Response {
     match safe_join(&base, rel) {
         Some(p) => file_response(&p),
         None => StatusCode::BAD_REQUEST.into_response(),
+    }
+}
+
+fn archived_manual(engine: &Path, rel: &str) -> Response {
+    use std::io::Read;
+    if safe_join(Path::new("manual"), rel).is_none() {
+        return StatusCode::BAD_REQUEST.into_response();
+    }
+    let rel = if rel.is_empty() { "index.html" } else { rel };
+    let read = || -> Option<Vec<u8>> {
+        let file = std::fs::File::open(engine.join("docs/manual.zip")).ok()?;
+        let mut archive = zip::ZipArchive::new(file).ok()?;
+        let mut entry = archive.by_name(rel).ok()?;
+        let mut bytes = Vec::new();
+        entry.read_to_end(&mut bytes).ok()?;
+        Some(bytes)
+    };
+    match read() {
+        Some(bytes) => content_response(Path::new(rel), bytes),
+        None => StatusCode::NOT_FOUND.into_response(),
     }
 }
 
@@ -468,6 +495,57 @@ pub async fn run(project: PathBuf, engine: PathBuf, port: u16) -> anyhow::Result
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[tokio::test]
+    async fn serves_zipped_manual_without_extracting_files() {
+        use std::io::Write;
+        let d = std::env::temp_dir().join(format!("nord-doczip-{}", std::process::id()));
+        std::fs::create_dir_all(d.join("docs")).unwrap();
+        let file = std::fs::File::create(d.join("docs/manual.zip")).unwrap();
+        let mut zip = zip::ZipWriter::new(file);
+        let options = zip::write::SimpleFileOptions::default()
+            .compression_method(zip::CompressionMethod::Deflated);
+        for (path, body) in [
+            ("index.html", "<html>Guide</html>"),
+            ("assets/search.js", "window.search=[]"),
+            ("nord/guides/test.html", "<html>Nested</html>"),
+        ] {
+            zip.start_file(path, options).unwrap();
+            zip.write_all(body.as_bytes()).unwrap();
+        }
+        zip.finish().unwrap();
+        let (r, _) = router(d.clone(), d.clone());
+        let l = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let port = l.local_addr().unwrap().port();
+        tokio::spawn(async move { axum::serve(l, r).await.unwrap() });
+        let c = reqwest::Client::new();
+        for (path, mime, body) in [
+            ("index.html", "text/html", "Guide"),
+            ("assets/search.js", "javascript", "window.search=[]"),
+            ("nord/guides/test.html", "text/html", "Nested"),
+        ] {
+            let response = c
+                .get(format!("http://127.0.0.1:{port}/__docs/{path}"))
+                .send()
+                .await
+                .unwrap();
+            assert_eq!(response.status(), StatusCode::OK);
+            assert!(response.headers()[header::CONTENT_TYPE]
+                .to_str()
+                .unwrap()
+                .contains(mime));
+            assert!(response.text().await.unwrap().contains(body));
+        }
+        assert_eq!(
+            archived_manual(&d, "../secret").status(),
+            StatusCode::BAD_REQUEST
+        );
+        assert_eq!(
+            archived_manual(&d, "missing.html").status(),
+            StatusCode::NOT_FOUND
+        );
+        assert!(!d.join("docs/manual").exists());
+    }
 
     #[tokio::test]
     async fn changed_assets_are_served_fresh_at_the_same_url() {

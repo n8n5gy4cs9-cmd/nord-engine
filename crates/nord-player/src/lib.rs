@@ -2,6 +2,17 @@
 //! `nord://game/` protocol. Unit-tested on any OS; the window itself lives in `main.rs` behind the `shell` feature.
 use std::path::{Path, PathBuf};
 
+/// Wry maps `nord://game/` to `http://nord.game/` on Windows WebView2.
+pub fn is_game_navigation(url: &str) -> bool {
+    url.starts_with("nord://game/")
+        || url.starts_with("about:")
+        || ["http://nord.game", "https://nord.game"]
+            .iter()
+            .any(|origin| {
+                url == *origin || url.strip_prefix(origin).is_some_and(|s| s.starts_with('/'))
+            })
+}
+
 #[derive(Debug, PartialEq)]
 pub struct Manifest {
     pub name: String,
@@ -89,6 +100,26 @@ fn decode(s: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn navigation_accepts_webview2_game_origin_only() {
+        for url in [
+            "nord://game/index.html",
+            "http://nord.game/index.html",
+            "https://nord.game/page.html",
+            "about:blank",
+        ] {
+            assert!(is_game_navigation(url), "{url}");
+        }
+        for url in [
+            "http://nord.game.evil/index.html",
+            "http://nord.game@evil/index.html",
+            "https://example.com/",
+            "nord://other/index.html",
+        ] {
+            assert!(!is_game_navigation(url), "{url}");
+        }
+    }
 
     fn game() -> PathBuf {
         static N: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);

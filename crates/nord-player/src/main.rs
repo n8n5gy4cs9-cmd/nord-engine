@@ -78,12 +78,7 @@ mod shell {
             })
             .with_url(url)
             // desktop apps may only show their own pages; external links go through shell.openUrl
-            .with_navigation_handler(|u| {
-                u.starts_with("nord://")
-                    || u.starts_with("about:")
-                    || u.starts_with("http://nord.localhost")
-                    || u.starts_with("https://nord.localhost")
-            })
+            .with_navigation_handler(|u| nord_player::is_game_navigation(&u))
             .with_new_window_req_handler(|_| false)
             .with_ipc_handler(move |req| ipc(req.into_body()))
             .with_drag_drop_handler(move |e| {

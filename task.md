@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 175/187 tasks (94%)** · updated 2026-10-14
+**Overall: 177/187 tasks (95%)** · updated 2026-10-16
 
 | Milestone | Progress |
 |---|---|
@@ -15,7 +15,7 @@
 | M5 Rust/WASM | 9/9 (100%) |
 | M6 Library | 42/42 (100%) |
 | M7 Docs | 20/20 (100%) |
-| M8 Polish & portability | 13/20 (65%) |
+| M8 Polish & portability | 15/20 (75%) |
 | M9 Desktop apps | 16/16 (100%) |
 
 ## Next up
@@ -212,14 +212,14 @@ _manual, guides, tutorials, in-editor docs_
 _dmg, CI, Windows, Linux, perf_
 
 - [x] **M8-01** .dmg packaging + notarisation notes
-- [ ] **M8-02** Windows build (Tauri/WebView2) + path audit
+- [x] **M8-02** Windows build (egui/WebView2) + path audit
 - [x] **M8-03** Linux build (WebKitGTK) + AppImage/deb
 - [ ] **M8-04** Performance pass (viewport fps, startup time, export size)
 - [x] **M8-05** Dockable panels (optional), light theme
 - [x] **M8-06** Optional: Bevy template, PlayCanvas engine as 4th web tier
 - [ ] **M8-07** Optional: TypeScript support in code editor
 - [ ] **M8-08** Bug-bash all examples + KNOWN_ISSUES cleanup
-- [ ] **M8-09** build.sh: Windows build into dist/windows/ (exe + resources, zip/installer)
+- [x] **M8-09** build.sh: Windows build into dist/windows/ (exe + resources, zip/installer)
 - [x] **M8-10** build.sh: Linux build into dist/linux/ (tar.gz/AppImage)
 - [x] **M8-11** Fix hub scrolling + templates for webview: kanban pointer drag, mouse-capture script (lock+hide, Esc), fps/third-person/fly-cam use it
 - [x] **M8-12** Play-mode tint + status bar (one-sentence activity, compile progress) + hub per-column scroll

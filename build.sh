@@ -30,6 +30,12 @@ for a in "$@"; do
   esac
 done
 
+# Use the same complete Windows packaging path for native and cross builds.
+case "$(uname -s)" in
+  MINGW*|MSYS*|CYGWIN*)
+    if [ "$WEBVIEW" = 1 ]; then exec ./build-win.sh msvc; fi ;;
+esac
+
 # ---- step 1: generated docs (needs Node 18+) --------------------------------------------------------------------------
 command -v node >/dev/null || { echo "node not found (needed for the manual: tools/build-manual.mjs). Install Node 18+." >&2; exit 1; }
 echo "==> building the manual (node tools/build-manual.mjs)"

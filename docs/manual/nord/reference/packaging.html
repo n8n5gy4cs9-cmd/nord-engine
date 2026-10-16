@@ -42,7 +42,10 @@ your exported web build is placed next to it as <code>game/</code>. Build the pl
 </tr>
 </tbody></table>
 <p><code>nord bundle-portable</code> can run on any OS (it only copies files); the <em>player binary</em> must be built for the target OS (CI does this, see
-<code>.github/workflows/ci.yml</code>). Engine itself: <code>./build.sh</code> → <code>dist/Nord Engine.app</code>, <code>dist/windows/</code>, <code>dist/linux/</code>.</p>
+<code>.github/workflows/ci.yml</code>). Engine itself: <code>./build.sh</code> → <code>dist/Nord Engine.app</code>, <code>dist/windows/</code>, <code>dist/linux/</code>.
+Windows cross-build: <code>./build-win.sh</code> (MinGW on macOS/Linux; MSVC on Windows). The portable
+release includes the complete guide as <code>docs/manual.zip</code>, served directly by the Docs tab,
+plus all examples, assets, templates and export/runtime sources. The complete Windows build guide is appended below (source: <code>docs/BUILD_WINDOWS.md</code>).</p>
 <h2 id="manifest-fields-that-affect-packaging-nord-project-json-desktop">Manifest fields that affect packaging (<code>nord.project.json</code> → <code>desktop</code>)<a class="anchor" href="#manifest-fields-that-affect-packaging-nord-project-json-desktop">#</a></h2>
 <pre class="code" data-lang="json"><code>&quot;desktop&quot;: {
   &quot;permissions&quot;: { &quot;…&quot;: &quot;see DESKTOP_APPS.md&quot; },
@@ -88,5 +91,47 @@ application-level guard, not an OS sandbox (ADR-020).
 <h2 id="auto-update-strategy-only-opt-in">Auto-update (strategy only, opt-in)<a class="anchor" href="#auto-update-strategy-only-opt-in">#</a></h2>
 <p>Not built in. Recommended: the app checks a JSON file with <code>desktop.http.fetch</code> (declare the host in <code>permissions.net</code>), downloads the new bundle with the same API
 into <code>appData</code>, verifies a SHA-256 from the signed manifest, then asks the user (<code>dialog.confirm</code>) and reveals/launches it (<code>shell.reveal</code>). Never self-modify a signed bundle in place.</p>
+<h1 id="build-nord-engine-for-windows">Build Nord Engine for Windows</h1>
+<p>From macOS/Linux, run <code>./build-win.sh</code>. This uses the same x64 MinGW approach as
+NordCraft, NordBound and nordSoldPow. One-time setup on macOS:</p>
+<pre class="code" data-lang="sh"><code>brew install mingw-w64
+rustup target add x86_64-pc-windows-gnu
+./build-win.sh</code></pre>
+<p>Linux: install <code>mingw-w64</code>, Rust/rustup, Node 18+ and Python 3.8+, then add the
+same Rust target. On Windows, install Rust&#39;s MSVC toolchain, Visual Studio C++
+build tools with Windows SDK, Git Bash, Node and Python, then run:</p>
+<pre class="code" data-lang="sh"><code>rustup target add x86_64-pc-windows-msvc
+./build-win.sh msvc</code></pre>
+<p><code>./build.sh</code> on Windows also selects this MSVC build. Mac <code>./build.sh</code> keeps its
+existing app/signing/DMG flow. <code>CARGO_TARGET_DIR</code> is respected by build-win.sh.</p>
+<p>Output: <code>dist/windows/NordEngine/</code> and <code>dist/windows/NordEngine-&lt;version&gt;-windows.zip</code>.
+The build enables the editor&#39;s embedded webview and the player&#39;s native shell.
+Extract the whole release before launching <code>NordEngine.cmd</code> or <code>nord-editor.exe</code>.
+Windows 10/11 x64 needs Microsoft Edge WebView2 Runtime installed. The editor has
+an Open in browser fallback if embedding fails; the exported player needs WebView2.</p>
+<p>The folder includes editor/CLI/player, all examples and original assets, templates,
+library, all vendored runtime tiers (including PlayCanvas), shared assets, Rust
+runtime sources and export helpers. The x64 WebView2 loader is included beside the EXEs and follows Windows game/app exports.
+MinGW support DLLs are copied when imported. MSVC builds link the C runtime statically.
+Every copied resource is SHA-256 compared with its source; both ZIPs are CRC-checked.
+Finder <code>._*</code> files, caches and build outputs are excluded.</p>
+<p>The entire offline guide is <strong><code>docs/manual.zip</code></strong>, with no loose HTML tree. The Docs
+tab serves its pages, search scripts, fonts and images directly from the ZIP through
+the loopback server, without extracting thousands of files. To read independently,
+extract that ZIP and open its <code>index.html</code>; live module examples need a local server.</p>
+<p>JS/HTML projects need no Rust/Node tools to play or export normally. Rust examples
+need Rust plus <code>wasm32-unknown-unknown</code>; egui apps also need the matching wasm-bindgen
+CLI. Minify/single-file exports require Node. These are developer build prerequisites,
+not missing assets. The included source tree preserves path dependencies for Rust
+examples and templates. See <code>RUST_TIER.md</code>.</p>
+<p>Engine resources are found beside the executable before the launch working directory
+(<code>NORD_ROOT</code> remains an explicit override). Settings and cached example copies go to
+<code>%APPDATA%\NordEngine</code>, or <code>NORD_CONFIG_DIR</code> when set. Older Windows settings may be
+copied from <code>%HOME%\.config\nord</code> into that folder. macOS/Linux paths are unchanged.</p>
+<p>Windows release CI builds with MSVC, exercises the packaged CLI from outside the
+checkout, exports an included example and uploads the ZIP. The normal CI matrix
+also runs Rust tests on Windows. A successful cross-build does not verify actual
+WebView2 startup, graphics/audio/input, menus, tray or file dialogs: those still need
+a real Windows session. See <code>KNOWN_ISSUES.md</code> for verification results.</p>
 <div class="pager"><a href="desktop-apps-spec.html"><small>← Previous</small>Desktop apps spec</a><a href="engine-docs.html"><small>Next →</small>Phaser &amp; Babylon documentation</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#manifest-fields-that-affect-packaging-nord-project-json-desktop">Manifest fields that affect packaging ( nord.project.json → desktop ) </a><a href="#macos-signing-notarisation-dmg">macOS: signing, notarisation, dmg </a><a href="#windows">Windows </a><a href="#linux">Linux </a><a href="#auto-update-strategy-only-opt-in">Auto-update (strategy only, opt-in) </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

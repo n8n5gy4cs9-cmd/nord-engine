@@ -122,6 +122,19 @@ fn pid_alive(pid: u32) -> bool {
             .output()
             .map(|o| o.status.success() && !o.stdout.is_empty())
             .unwrap_or(true)
+    } else if cfg!(target_os = "windows") {
+        std::process::Command::new("tasklist")
+            .args(["/FI", &format!("PID eq {pid}"), "/FO", "CSV", "/NH"])
+            .output()
+            .map(|o| {
+                !o.status.success()
+                    || String::from_utf8_lossy(&o.stdout).lines().any(|line| {
+                        line.split(',')
+                            .nth(1)
+                            .is_some_and(|p| p.trim_matches('"') == pid.to_string())
+                    })
+            })
+            .unwrap_or(true)
     } else {
         std::process::Command::new("kill")
             .args(["-0", &pid.to_string()])
@@ -141,6 +154,10 @@ impl Drop for ProjectLock {
 pub fn config_dir() -> PathBuf {
     if let Some(d) = std::env::var_os("NORD_CONFIG_DIR") {
         return d.into();
+    }
+    #[cfg(target_os = "windows")]
+    if let Some(d) = std::env::var_os("APPDATA") {
+        return PathBuf::from(d).join("NordEngine");
     }
     let home = std::env::var_os("HOME")
         .map(PathBuf::from)
@@ -189,7 +206,12 @@ mod tests {
         let d = tmp("lock");
         let l = ProjectLock::acquire(&d).unwrap();
         // same pid re-acquire is treated as stale-self; simulate foreign live pid (pid 1)
-        fs::write(d.join(".nord-cache/lock"), "1").unwrap();
+        let system_pid = if cfg!(target_os = "windows") {
+            "4"
+        } else {
+            "1"
+        };
+        fs::write(d.join(".nord-cache/lock"), system_pid).unwrap();
         assert!(ProjectLock::acquire(&d).is_err());
         drop(l); // removes file
         assert!(ProjectLock::acquire(&d).is_ok());

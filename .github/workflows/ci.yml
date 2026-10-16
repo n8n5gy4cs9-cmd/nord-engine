@@ -9,8 +9,6 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-14, windows-latest]
     runs-on: ${{ matrix.os }}
-    # windows-latest is new (M8-09/M9-16) and has never been run by the owner: report, but do not block
-    continue-on-error: ${{ matrix.os == 'windows-latest' }}
     defaults:
       run:
         shell: bash
@@ -48,15 +46,9 @@ jobs:
         if: runner.os == 'Windows'
         continue-on-error: true
         run: node tools/player-smoke.mjs target/release/nord-player.exe
-      - name: Windows portable build (build.sh)
-        if: runner.os == 'Windows'
-        run: ./build.sh
       - name: Linux portable build (build.sh)
         if: runner.os == 'Linux'
         run: ./build.sh
-      - if: runner.os == 'Windows'
-        uses: actions/upload-artifact@v4
-        with: { name: nord-engine-windows, path: dist/windows/*.zip, retention-days: 7 }
       - if: runner.os == 'Linux'
         uses: actions/upload-artifact@v4
         with: { name: nord-engine-linux, path: dist/linux/*.tar.gz, retention-days: 7 }
@@ -78,6 +70,28 @@ jobs:
       - if: runner.os == 'macOS'
         uses: actions/upload-artifact@v4
         with: { name: nord-player-sample-game, path: dist/games/Playground 3D.app, retention-days: 7 }
+  windows-release:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - uses: dtolnay/rust-toolchain@stable
+        with: { targets: x86_64-pc-windows-msvc }
+      - uses: Swatinem/rust-cache@v2
+      - run: ./build-win.sh msvc
+      - name: Packaged CLI finds resources outside the checkout
+        run: |
+          cd "$RUNNER_TEMP"
+          "$GITHUB_WORKSPACE/dist/windows/NordEngine/nord.exe" doctor
+          "$GITHUB_WORKSPACE/dist/windows/NordEngine/nord.exe" build "$GITHUB_WORKSPACE/dist/windows/NordEngine/examples/platformer" -o "$RUNNER_TEMP/nord-example"
+      - uses: actions/upload-artifact@v4
+        with: { name: nord-engine-windows, path: dist/windows/*.zip, retention-days: 7, if-no-files-found: error }
   js-e2e:
     runs-on: ubuntu-latest
     steps:

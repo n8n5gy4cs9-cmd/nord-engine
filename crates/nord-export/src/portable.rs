@@ -147,6 +147,22 @@ pub fn bundle(dist: &Path, engine: &Path, o: &Opts) -> Result<PathBuf> {
         slug(&name)
     };
     fs::copy(&player, folder.join(&exe))?;
+    if o.os == Os::Windows {
+        if let Some(dir) = player.parent() {
+            for name in [
+                "WebView2Loader.dll",
+                "libgcc_s_seh-1.dll",
+                "libwinpthread-1.dll",
+                "libstdc++-6.dll",
+                "libssp-0.dll",
+            ] {
+                let dll = dir.join(name);
+                if dll.is_file() {
+                    fs::copy(&dll, folder.join(name))?;
+                }
+            }
+        }
+    }
     #[cfg(unix)]
     {
         use std::os::unix::fs::PermissionsExt;
@@ -281,6 +297,7 @@ mod tests {
         )
         .unwrap();
         fs::write(d.join("player"), "bin").unwrap();
+        fs::write(d.join("WebView2Loader.dll"), "loader").unwrap();
         for os in [Os::Windows, Os::Linux] {
             let out = d.join(format!("out-{os:?}"));
             fs::create_dir_all(&out).unwrap();
@@ -301,6 +318,7 @@ mod tests {
             match os {
                 Os::Windows => assert!(
                     f.join("My App.exe").exists()
+                        && f.join("WebView2Loader.dll").exists()
                         && f.join("register.reg").exists()
                         && out.join("My App-windows.zip").exists()
                 ),

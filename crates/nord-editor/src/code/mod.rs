@@ -420,7 +420,11 @@ fn body(st: &mut EditorState, cs: &mut CodeState, ui: &mut Ui) {
 
     let th = st.themes.theme(&st.settings.theme).clone();
     let (fsz, tab) = (st.settings.code_font_size, st.settings.tab_width.max(1));
-    let metrics = (st.settings.code_word_wrap, st.settings.code_line_height.clamp(1.0, 2.2), st.settings.code_letter_spacing.clamp(0.0, 2.0));
+    let metrics = (
+        st.settings.code_word_wrap,
+        st.settings.code_line_height.clamp(1.0, 2.2),
+        st.settings.code_letter_spacing.clamp(0.0, 2.0),
+    );
     let split = cs.split.filter(|s| *s < cs.docs.len());
     let status = {
         let d = &cs.docs[cs.active];
@@ -477,7 +481,17 @@ fn body(st: &mut EditorState, cs: &mut CodeState, ui: &mut Ui) {
                 );
             });
         }
-        None => pane(cs, ui, cs.active, "L", &th, fsz, tab, metrics, &mut clicked_problem),
+        None => pane(
+            cs,
+            ui,
+            cs.active,
+            "L",
+            &th,
+            fsz,
+            tab,
+            metrics,
+            &mut clicked_problem,
+        ),
     }
 }
 
@@ -530,7 +544,10 @@ fn toolbar(st: &mut EditorState, cs: &mut CodeState, ui: &mut Ui) {
                 }
             }
         }
-        if ui.checkbox(&mut st.settings.code_word_wrap, "Word wrap").changed() {
+        if ui
+            .checkbox(&mut st.settings.code_word_wrap, "Word wrap")
+            .changed()
+        {
             st.settings.save();
         }
         ui.checkbox(&mut cs.minimap, "Minimap");
@@ -869,7 +886,11 @@ fn pane(
     if doc.hl.as_ref().is_none_or(|(h, _)| *h != hkey) {
         let job = if doc.text.len() > MAX_HIGHLIGHT {
             let mut job = egui::text::LayoutJob::default();
-            job.append(&doc.text, 0.0, egui::TextFormat::simple(font.clone(), pal.fg));
+            job.append(
+                &doc.text,
+                0.0,
+                egui::TextFormat::simple(font.clone(), pal.fg),
+            );
             job
         } else {
             highlight::layout_job(&doc.text, doc.lang, &pal, font.clone())
@@ -913,7 +934,11 @@ fn pane(
                         let mut display_job = (*job).clone();
                         display_job.wrap.max_width = if word_wrap { text_w } else { f32::INFINITY };
                         if display_job.sections.is_empty() {
-                            display_job.append("", 0.0, egui::TextFormat::simple(font.clone(), pal.fg));
+                            display_job.append(
+                                "",
+                                0.0,
+                                egui::TextFormat::simple(font.clone(), pal.fg),
+                            );
                         }
                         for section in &mut display_job.sections {
                             section.format.line_height = Some(row_h);
@@ -931,7 +956,11 @@ fn pane(
                                 display_job.clone()
                             } else if big {
                                 let mut layout = egui::text::LayoutJob::default();
-                                layout.append(source, 0.0, egui::TextFormat::simple(font.clone(), pal.fg));
+                                layout.append(
+                                    source,
+                                    0.0,
+                                    egui::TextFormat::simple(font.clone(), pal.fg),
+                                );
                                 layout
                             } else {
                                 highlight::layout_job(source, lang, &pal, font.clone())
@@ -1027,11 +1056,14 @@ fn pane(
                             .cursor_range
                             .map(|c| edit::line_of(&doc.text, c.primary.ccursor.index));
                         let line_ranges = edit::line_ranges(&doc.text);
-                        let line_rects: Vec<Rect> = line_ranges.iter().map(|(start, end)| {
-                            let a = out.galley.pos_from_ccursor(CCursor::new(*start));
-                            let b = out.galley.pos_from_ccursor(CCursor::new(*end));
-                            Rect::from_min_max(a.min, Pos2::new(b.max.x.max(a.max.x), b.max.y))
-                        }).collect();
+                        let line_rects: Vec<Rect> = line_ranges
+                            .iter()
+                            .map(|(start, end)| {
+                                let a = out.galley.pos_from_ccursor(CCursor::new(*start));
+                                let b = out.galley.pos_from_ccursor(CCursor::new(*end));
+                                Rect::from_min_max(a.min, Pos2::new(b.max.x.max(a.max.x), b.max.y))
+                            })
+                            .collect();
                         for (l, line_rect) in line_rects.iter().enumerate() {
                             let y = out.galley_pos.y + line_rect.min.y;
                             if !ui.is_rect_visible(Rect::from_min_size(
@@ -1124,7 +1156,9 @@ fn pane(
                         }
                         // Squiggles follow every visual row of a wrapped logical line.
                         for pr in &doc.problems {
-                            let Some((start, end)) = line_ranges.get(pr.line) else { continue; };
+                            let Some((start, end)) = line_ranges.get(pr.line) else {
+                                continue;
+                            };
                             let first = out.galley.from_ccursor(CCursor::new(*start)).rcursor.row;
                             let last = out.galley.from_ccursor(CCursor::new(*end)).rcursor.row;
                             for row in &out.galley.rows[first..=last] {
@@ -1138,11 +1172,19 @@ fn pane(
                                     x += 3.0;
                                     up = !up;
                                 }
-                                p.add(egui::Shape::line(pts, Stroke::new(1.0_f32, hex(&th.ui.bad))));
+                                p.add(egui::Shape::line(
+                                    pts,
+                                    Stroke::new(1.0_f32, hex(&th.ui.bad)),
+                                ));
                                 if ui.rect_contains_pointer(rect) {
-                                    egui::show_tooltip_at_pointer(ui.ctx(), ui.layer_id(), Id::new(("prob", pr.line)), |ui| {
-                                        ui.colored_label(hex(&th.ui.bad), &pr.msg);
-                                    });
+                                    egui::show_tooltip_at_pointer(
+                                        ui.ctx(),
+                                        ui.layer_id(),
+                                        Id::new(("prob", pr.line)),
+                                        |ui| {
+                                            ui.colored_label(hex(&th.ui.bad), &pr.msg);
+                                        },
+                                    );
                                 }
                             }
                         }

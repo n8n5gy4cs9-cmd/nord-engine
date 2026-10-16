@@ -37,11 +37,12 @@ pub fn find_player(engine: &Path) -> Option<PathBuf> {
     let mut c = vec![];
     if let Ok(exe) = std::env::current_exe() {
         if let Some(d) = exe.parent() {
-            c.push(d.join("nord-player"));
+            c.push(d.join(format!("nord-player{}", std::env::consts::EXE_SUFFIX)));
             c.push(d.join("../Resources/NordPlayer.app"));
         }
     }
     c.push(engine.join("NordPlayer.app"));
+    c.push(engine.join(format!("nord-player{}", std::env::consts::EXE_SUFFIX)));
     for p in ["target/release/nord-player", "target/debug/nord-player"] {
         c.push(engine.join(p));
     }

@@ -21,6 +21,7 @@
 | Vendor integrity | `node tools/vendor.mjs --verify` (sha256 vs VENDOR.json) | CI |
 | Task consistency | `node tools/tasks.mjs check` | CI |
 | Manual | `node tools/build-manual.mjs --check` (links, anchors, offline, runs `nord-live` snippets) — in CI | M7 |
+| Windows packaging | `./build-win.sh` cross-builds all three EXEs, compares all bundled resources by SHA-256 and CRC-checks both archives; Windows release CI also builds with MSVC and runs the packaged CLI outside the checkout | Windows release |
 | Native / mac | GitHub Actions `macos-14` builds `nord-editor`, `nord-player`; manual smoke on M1 Max | M3+ |
 
 Sandbox limits (Linux cloud container): no macOS, no display/WKWebView. egui renders headless via kittest; viewport JS tested in Chromium; the rest via macOS CI.

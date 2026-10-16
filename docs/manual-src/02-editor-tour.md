@@ -65,10 +65,9 @@ The editor's settings folder contains saved example/tutorial copies as well as y
 |---|---|---|
 | macOS | `$HOME/.config/nord/`, normally `/Users/<user>/.config/nord/` | `/Users/<user>/.config/nord/examples/<example-name>/` |
 | Linux | `$HOME/.config/nord/`, normally `/home/<user>/.config/nord/` | `/home/<user>/.config/nord/examples/<example-name>/` |
-| Windows, with `HOME` set | `%HOME%\.config\nord\` | `%HOME%\.config\nord\examples\<example-name>\` |
-| Windows, with `HOME` unset | `.config\nord\` under the editor's launch working directory | `.config\nord\examples\<example-name>\` under that directory |
+| Windows | `%APPDATA%\NordEngine\` | `%APPDATA%\NordEngine\examples\<example-name>\` |
 
-The current editor does not automatically select Windows `%APPDATA%` or `%USERPROFILE%`, macOS `~/Library/Application Support`, or Linux `$XDG_CONFIG_HOME`. For a predictable Windows location, set `NORD_CONFIG_DIR` to an absolute path such as `C:\Users\<user>\AppData\Roaming\NordEngine` before launching the editor. If `HOME` is unset on macOS or Linux, the same working-directory fallback applies.
+Windows uses `%APPDATA%\NordEngine` by default, including when launched by double-click. `NORD_CONFIG_DIR` overrides it. If `%APPDATA%` is absent, the older `$HOME/.config/nord` fallback applies. macOS and Linux keep `$HOME/.config/nord` (or `.config/nord` under the launch directory if `HOME` is unset); macOS `~/Library/Application Support` and Linux `$XDG_CONFIG_HOME` are not selected automatically. Existing Windows settings under the older HOME/working-directory location can be copied into `%APPDATA%\NordEngine`.
 
 Inside the settings folder:
 

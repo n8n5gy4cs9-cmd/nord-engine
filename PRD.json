@@ -3,7 +3,7 @@
   "tagline": "Rust-based game/app engine + editor that exports static HTML web games and a native Mac app",
   "author": "Crowelian 2026 + Sonnet",
   "version": "0.0.1",
-  "updated": "2026-10-14",
+  "updated": "2026-10-16",
   "branch": "main",
   "statusValues": [
     "todo",
@@ -1327,8 +1327,8 @@
     {
       "id": "M8-02",
       "milestone": "M8",
-      "title": "Windows build (Tauri/WebView2) + path audit",
-      "status": "todo"
+      "title": "Windows build (egui/WebView2) + path audit",
+      "status": "done"
     },
     {
       "id": "M8-03",
@@ -1370,7 +1370,7 @@
       "id": "M8-09",
       "milestone": "M8",
       "title": "build.sh: Windows build into dist/windows/ (exe + resources, zip/installer)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M8-10",

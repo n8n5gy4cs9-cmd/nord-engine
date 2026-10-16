@@ -3410,6 +3410,7 @@ dependencies = [
  "serde_json",
  "tokio",
  "tokio-stream",
+ "zip",
 ]
 
 [[package]]

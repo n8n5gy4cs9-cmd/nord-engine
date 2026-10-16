@@ -58,7 +58,8 @@ pub fn render_md(ui: &mut Ui, text: &str) {
 /// Returns the manual URL if the HTML manual exists (caller embeds it).
 pub fn manual_url(st: &mut EditorState) -> Option<String> {
     let engine = st.engine_root.clone()?;
-    if !engine.join("docs/manual/index.html").exists() {
+    if !engine.join("docs/manual/index.html").exists() && !engine.join("docs/manual.zip").is_file()
+    {
         return None;
     }
     st.ensure_server().map(|b| format!("{b}/__docs/index.html"))
