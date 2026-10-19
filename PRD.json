@@ -1654,7 +1654,7 @@
       "id": "M10-03",
       "milestone": "M10",
       "title": "Event sheet compiler: JSON -> nord.js module (and interpreter fallback for hot-reload), source maps for debugger",
-      "status": "in_progress"
+      "status": "done"
     },
     {
       "id": "M10-04",

@@ -299,3 +299,36 @@ test('hot reload of an edited event sheet keeps variables and group state', asyn
   g.tick(1 / 60); assert.equal(V(g, 'n'), 5, 'group stayed disabled');
   g.scene.eventSheet.groups.get('G').active = true; g.tick(1 / 60); assert.equal(V(g, 'n'), 15, 'new logic is live');
 });
+
+// ---- ahead-of-time compiler (M10-03)
+test('compiler: generated JS gives exactly the interpreter\'s results; the runner uses it; source map present', async () => {
+  const { compileSheet } = await import('./eventsheet/compile.js');
+  const { compile } = await import('./eventsheet/expr.js');
+  const { pathToFileURL, fileURLToPath } = await import('node:url');
+  const exprUrl = pathToFileURL(fileURLToPath(new URL('./eventsheet/expr.js', import.meta.url))).href;
+  const texts = ['1 + 2 * 3', '2 ^ 3 ^ 2', '"a" & a & "b"', 'a > 2 ? 10 : 20', '-a + abs(-2)', 'a = 3 && !0', 'floor(sqrt(17))', 'clamp(9, 0, 5)', 'sin(90) + cos(0)', 'Hero.X + Enemy(2).Y * 2',
+    'Hero.Platform.Facing < 0', 'Functions.Add(1, a)', 'Mouse.X - dt', 'random(5) + random(2, 4)', 'len("héllo") & left("abc", 2)', 'a != 3 || b <= 1', '"5" + 2', 'Hero.Platform.Foo(3, "x")', 'zeropad(7, 3)', '!a', 'a % 4 + b / 2 - 1', 'choose(1, 2, 3)', 'lerp(0, 10, 0.25)'];
+  const events = [{ type: 'event', conditions: [], actions: texts.map((t) => ({ object: 'System', id: 'set-var', params: { variable: 'x', value: t } })), children: [{ type: 'event', conditions: [{ object: 'System', id: 'compare-two-values', params: { first: 'a', comparison: '>', second: '1' } }], actions: [] }] }];
+  const { code, map, count } = compileSheet({ format: 1, events }, 'events/t.events.json', { engineImport: exprUrl });
+  assert.equal(count, texts.length + 3, 'every distinct param text that parses is compiled once ("x", "a", "1" too; the raw comparison ">" is skipped)');
+  assert.ok(code.includes('sourceMappingURL=data:application/json;base64,') && map.sources[0] === 'events/t.events.json' && map.mappings.split(';').length > 5);
+  const mod = await import(`data:text/javascript;base64,${Buffer.from(code).toString('base64')}`);
+  const env = {
+    name: (n) => ({ a: 3, b: 1 })[n] ?? 7, random: (x = 1, y) => (y === undefined ? 0.5 * x : x + 0.5 * (y - x)), call: (n, a) => `${n}(${a})`.length,
+    prop: (t, i, n) => `${t}.${i}.${n}`.length, bprop: (t, i, b, n) => `${t}.${i}.${b}.${n}`.length - 20, method: (t, n, a) => `${t}.${n}(${a})`.length, bmethod: (t, b, n, a) => `${t}.${b}.${n}(${a})`.length,
+  };
+  const real = Math.random; Math.random = () => 0.25;
+  try { for (const t of texts) assert.ok(Object.is(compile(t)(env), mod.exprs[t](env)), `same result for: ${t}  (${compile(t)(env)} vs ${mod.exprs[t](env)})`); } finally { Math.random = real; }
+  // the runner prefers the compiled table when the sheet says "compiled"; counted through a wrapper
+  let used = 0;
+  const wrapped = Object.fromEntries(Object.entries(mod.exprs).map(([k, f]) => [k, (e) => { used++; return f(e); }]));
+  files.sheet = { format: 1, compiled: 'sheet.compiled.js', events: [{ type: 'variable', name: 'n', valueType: 'number', value: 0 }, ev([sys('every-tick')], [setv('n', '1 + 2 * 3')])] };
+  files.s = { name: 's', settings: { eventSheet: 'sheet' }, entities: [] };
+  const g = new Game({ id: 'x', startScene: 's' }, { fetchJSON: async (p) => structuredClone(files[p]), importScript: async () => ({ exprs: wrapped }), storage: new MemoryStorage(), onError: (e) => { throw e; } });
+  await g.loadScene('s'); g.tick(1 / 60);
+  assert.equal(V(g, 'n'), 7); assert.equal(used, 1, 'compiled expression was used');
+  // a missing/broken compiled module only falls back to interpretation (with a warning)
+  const warns = []; const g2 = new Game({ id: 'x', startScene: 's' }, { fetchJSON: async (p) => structuredClone(files[p]), importScript: async () => { throw new Error('404'); }, storage: new MemoryStorage(), onError: (e) => { throw e; } });
+  g2.warn = (m) => warns.push(m); await g2.loadScene('s'); g2.tick(1 / 60);
+  assert.equal(V(g2, 'n'), 7); assert.equal(warns.length, 1);
+});

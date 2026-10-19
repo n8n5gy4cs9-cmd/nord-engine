@@ -92,6 +92,9 @@ enum Cmd {
         /// Installable offline web app: manifest + service worker
         #[arg(long)]
         pwa: bool,
+        /// Keep event sheets as JSON (interpreted at runtime) instead of compiling them to JavaScript
+        #[arg(long)]
+        no_compile_events: bool,
     },
     /// Addon SDK: pack a folder into a .nordaddon, install one into a project, list a project's addons
     Addon {
@@ -342,6 +345,7 @@ fn main() -> anyhow::Result<()> {
             optimize,
             zip,
             pwa,
+            no_compile_events,
         } => {
             let engine =
                 nord_serve::engine_root().context("engine root not found (set NORD_ROOT)")?;
@@ -356,6 +360,7 @@ fn main() -> anyhow::Result<()> {
                     optimize,
                     zip,
                     pwa,
+                    compile_events: !no_compile_events,
                 },
             )?;
             print!("{}", r.summary());

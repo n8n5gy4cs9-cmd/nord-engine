@@ -80,6 +80,8 @@ pub struct Opts {
     pub zip: bool,
     /// Installable offline web app: `manifest.webmanifest` + `sw.js` (precache, cache-first) + registration in index.html.
     pub pwa: bool,
+    /// Compile event sheets to JavaScript in the build output (needs Node; skipped with a note when unavailable). On by default.
+    pub compile_events: bool,
 }
 
 impl Default for Opts {
@@ -92,6 +94,7 @@ impl Default for Opts {
             optimize: false,
             zip: false,
             pwa: false,
+            compile_events: true,
         }
     }
 }
@@ -278,6 +281,25 @@ fn run_node(engine: &Path, spec: &serde_json::Value, tmp: &Path) -> Result<()> {
         );
     }
     Ok(())
+}
+
+/// `node tools/compile-sheets.mjs <out> --annotate`; `None` when the build has no event sheets.
+fn compile_event_sheets(engine: &Path, out: &Path) -> Result<Option<String>> {
+    let mut files = vec![];
+    walk(out, "", &mut files, &|r| r.starts_with("vendor/") || r.starts_with("runtime/"));
+    if !files.iter().any(|(_, r)| r.ends_with(".events.json")) {
+        return Ok(None);
+    }
+    let script = engine.join("tools/compile-sheets.mjs");
+    if !script.exists() {
+        bail!("tools/compile-sheets.mjs not found");
+    }
+    let o = Command::new("node").arg(&script).arg(out).arg("--annotate").output().context("Node.js not found")?;
+    if !o.status.success() {
+        bail!("{}", String::from_utf8_lossy(&o.stderr).trim());
+    }
+    let text = String::from_utf8_lossy(&o.stdout);
+    Ok(Some(format!("event sheets: {}", text.lines().last().unwrap_or("compiled").trim())))
 }
 
 fn mime(path: &str) -> &'static str {
@@ -655,6 +677,15 @@ pub fn build(project: &Path, engine: &Path, o: &Opts) -> Result<Report> {
             "minify: {} JS file(s) + {n} JSON file(s)",
             files.len()
         ));
+    }
+
+    // 5a. event sheets → JavaScript (ahead of time); the runtime falls back to interpreting when a module is missing
+    if o.compile_events && !o.single_file && out.join("runtime/core/eventsheet/expr.js").exists() {
+        match compile_event_sheets(engine, &out) {
+            Ok(Some(msg)) => notes.push(msg),
+            Ok(None) => {}
+            Err(e) => notes.push(format!("event sheets not compiled (they run interpreted): {e}")),
+        }
     }
 
     // 5b. PWA: manifest + service worker (before nord.json so both are covered by the file list)

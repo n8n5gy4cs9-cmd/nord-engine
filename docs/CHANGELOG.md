@@ -1,5 +1,7 @@
 # Changelog
 
+- 2026-10-19 (M10-03): **Event sheet compiler** — expressions compile ahead of time to JavaScript (`compile.js`, `tools/compile-sheets.mjs`) with a source map; `nord build` does it by default (`--no-compile-events`), the runner uses the table and keeps the interpreter as the fallback (also for hot reload). Equivalence tests (23 expressions, `Object.is`) + a Chromium test of a compiled export (`tools/compiled-export-test.mjs`).
+
 - 2026-10-19 (M10-14): Layout editor finished — drag an object type onto the Overview map to place an instance, click the map to move the viewport, saved camera **Views** (the 2D viewport now reports its camera), tests (model, kittest, Chromium).
 
 - 2026-10-19 (M10-21): **Timeline editor** — Timeline tab (tracks, keyframes on a strip, named/bezier easing with preview, event markers, scrub, undo) over the existing timeline runtime. Tests: 3 unit + 1 kittest.

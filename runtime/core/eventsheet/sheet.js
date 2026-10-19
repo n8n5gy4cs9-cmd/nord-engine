@@ -63,7 +63,11 @@ export class EventSheet {
     const flat = (list) => list.flatMap((e) => (e.type === 'include' ? flat(sheets[e.path].events ?? []) : [{ ...e, children: e.children && flat(e.children) }]));
     const data = { ...sheets[path], events: flat(sheets[path].events ?? []) };
     for (const e of data.events) if (e.children === undefined) delete e.children;
-    return new EventSheet(scene, data, sheets);
+    const sheet = new EventSheet(scene, data, sheets);
+    if (data.compiled) { // `nord build` / tools/compile-sheets.mjs add "compiled": "<path>.compiled.js"; a broken or missing module just means "interpret"
+      try { sheet.aot = (await scene.game.importScript(data.compiled)).exprs; } catch (err) { scene.game.warn(`[nord] compiled sheet ${data.compiled} not used: ${err.message}`); }
+    }
+    return sheet;
   }
 
   #index(list) {
@@ -305,7 +309,8 @@ export class EventSheet {
   evalExpr(v) {
     if (v === undefined || v === null) return 0;
     if (typeof v !== 'string') return v;
-    return compiled(v)(this.env);
+    const aot = this.aot?.[v]; // ahead-of-time compiled expression (see compile.js); the interpreter handles everything else
+    return aot ? aot(this.env) : compiled(v)(this.env);
   }
   withCur(type, inst, fn) {
     const prev = this.cur.get(type);

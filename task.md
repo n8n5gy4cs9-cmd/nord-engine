@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 214/243 tasks (88%)** · updated 2026-10-19
+**Overall: 215/243 tasks (88%)** · updated 2026-10-19
 
 | Milestone | Progress |
 |---|---|
@@ -17,7 +17,7 @@
 | M7 Docs | 20/20 (100%) |
 | M8 Polish & portability | 15/20 (75%) |
 | M9 Desktop apps | 16/16 (100%) |
-| M10 Construct-style editor | 32/35 (91%) |
+| M10 Construct-style editor | 33/35 (94%) |
 | M11 Web editor | 0/16 (0%) |
 
 ## Next up
@@ -264,7 +264,7 @@ _features cloned from Construct 3's editor (construct.net/en/make-games/games-ed
 
 - [x] **M10-01** Spec: docs/CONSTRUCT_PARITY.md — map each Construct 3 editor feature to Nord equivalent, scope + non-goals (no copying Construct code/assets; clean-room, original names where practical)
 - [x] **M10-02** Event sheet format: JSON schema (events/conditions/actions/groups/functions/vars) + PROJECT_FORMAT.md section + versioning
-- [~] **M10-03** Event sheet compiler: JSON -> nord.js module (and interpreter fallback for hot-reload), source maps for debugger
+- [x] **M10-03** Event sheet compiler: JSON -> nord.js module (and interpreter fallback for hot-reload), source maps for debugger
 - [x] **M10-04** Event sheet editor panel (egui): add/edit/delete/reorder events, condition/action picker dialog with search, drag&drop, collapse, comments, disable, colour groups, undo/redo
 - [x] **M10-05** Event sheet: object picker + parameter widgets (expression editor w/ autocomplete, expressions, object/instance/layer/animation/audio pickers)
 - [x] **M10-06** Event sheet: system conditions/actions (every tick, on start of layout, trigger once, compare var, for-each, repeat, while, pick by comparison/evaluate/random, else, wait, go to layout, set timescale)

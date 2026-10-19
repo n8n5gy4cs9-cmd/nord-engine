@@ -14,6 +14,7 @@ pub struct ExportUi {
     pub optimize: bool,
     pub zip: bool,
     pub pwa: bool,
+    pub compile_events: bool,
     /// empty = `<project>/dist`
     pub out: String,
     running: Option<Receiver<Result<(String, PathBuf), String>>>,
@@ -31,6 +32,7 @@ impl Default for ExportUi {
             optimize: false,
             zip: false,
             pwa: false,
+            compile_events: true,
             out: String::new(),
             running: None,
             last_out: None,
@@ -61,6 +63,7 @@ pub fn start(st: &mut EditorState) {
         optimize: e.optimize,
         zip: e.zip,
         pwa: e.pwa,
+        compile_events: e.compile_events,
     };
     let (tx, rx) = channel();
     std::thread::spawn(move || {
@@ -132,6 +135,7 @@ pub fn window(st: &mut EditorState, ctx: &egui::Context) {
             ui.checkbox(&mut e.single_file, "Single file (one index.html, works from file://)");
             ui.checkbox(&mut e.optimize, "Optimise assets (lossless PNG, WAV→MP3 if ffmpeg is installed)");
             ui.checkbox(&mut e.zip, "Also write a .zip (itch.io style upload)");
+            ui.add_enabled(!e.single_file, egui::Checkbox::new(&mut e.compile_events, "Compile event sheets to JavaScript (needs Node; faster start, no expression parsing)"));
             ui.add_enabled(!e.single_file, egui::Checkbox::new(&mut e.pwa, "Installable offline web app (PWA: manifest + service worker)"));
             ui.separator();
             ui.horizontal(|ui| {

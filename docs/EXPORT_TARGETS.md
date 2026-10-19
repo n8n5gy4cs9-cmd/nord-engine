@@ -52,3 +52,5 @@ fullscreen toggle (Cmd+Ctrl+F), persistent localStorage in app data dir.
 Needs https or `localhost` to install (browser rule); from `file://` the game runs, the service worker is skipped. Not available with `--single-file` or Rust/WASM targets (refused with a clear message).
 Verified headless: `node tools/pwa-test.mjs` builds the event-sheets example, registers the worker, goes offline with the server stopped and reloads. Not verified: install prompts on real phones / Safari.
 **Export checks** (shown in the report/dialog): build over 100 MB, any non-engine file over 8 MB, external-host references (existing offline scan), missing assets (existing validation). itch.io / Mac / Win / Linux presets use the existing `--zip`, `bundle-mac` and `bundle-portable`.
+
+`nord build` also compiles event sheets to JavaScript when Node is available (see docs/EVENT_SHEETS.md → Compiler); `--no-compile-events` keeps them as JSON.
