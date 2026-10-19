@@ -1,5 +1,7 @@
 # Changelog
 
+- 2026-10-19 (M10-35): **Rendering plugin objects** (Phaser): `tiledBackground`, `ninePatch`, `spriteFont`, `drawingCanvas`, `video` components + event-sheet object actions (canvas draw, video control); `docs/PLUGIN_OBJECTS.md`, headless WebGL test `tools/plugin-objects-test.mjs`.
+
 - 2026-10-19 (M10-24): **Preview** — phone/tablet preview on the LAN (`nord_serve::start_lan`, toolbar "Phone" with QR, `nord serve --lan`): token-protected, game files only, live reload, phone console → editor Console; event sheets hot-reload keeping variables (`Game.hotReloadSheet`); game-size presets in the Project tab. Tests: LAN guard (token, hidden paths, shutdown), QR, kittest, hot-reload. Not verified: a real phone / Safari.
 
 - 2026-10-19 (M10-29): **Event-sheet starter templates** — es-platformer, es-topdown-shooter, es-endless-runner, es-lights-out, es-menu-starter (templates + examples, no scripts), each playtested headless (`tools/es-templates-test.mjs`). Runtime: **Events** plugin (On game event / Emit event), UI buttons/labels follow `textKey` and *Set text*, UI centre anchor.

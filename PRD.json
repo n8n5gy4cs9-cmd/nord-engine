@@ -1846,7 +1846,7 @@
       "id": "M10-35",
       "milestone": "M10",
       "title": "Rendering plugin objects: Tiled Background, 9-Patch, Spritefont, Drawing Canvas, Video",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M11-01",

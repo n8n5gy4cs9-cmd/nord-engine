@@ -12,7 +12,7 @@ const SCALE = (P) => ({ fit: P.Scale.FIT, fill: P.Scale.ENVELOP, stretch: P.Scal
 function assetsOf(data) {
   const out = { tex: [], map: [] };
   for (const c of data.components ?? []) {
-    if (['sprite', 'animatedSprite', 'particles', 'parallax'].includes(c.type) && c.texture) out.tex.push(c.texture);
+    if (['sprite', 'animatedSprite', 'particles', 'parallax', 'tiledBackground', 'ninePatch', 'spriteFont'].includes(c.type) && c.texture) out.tex.push(c.texture);
     if (c.type === 'tilemap') { if (c.tileset) out.tex.push(c.tileset); if (c.map) out.map.push(c.map); }
   }
   return out;

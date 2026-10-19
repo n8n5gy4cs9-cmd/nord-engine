@@ -1,6 +1,7 @@
 // Phaser 2D components. Each registers via registerComponent(type, { create, update?, destroy? }).
 // Visual components add their game object to the entity's container (entity.native).
 import { registerComponent } from '../core/index.js';
+import { registerExtraComponents } from './components-extra.js';
 
 const hex = (c, d = 0xffffff) => (typeof c === 'string' && /^#[0-9a-f]{6}/i.test(c) ? parseInt(c.slice(1, 7), 16) : d);
 const BLEND = { normal: 0, add: 1, multiply: 2, screen: 3 };
@@ -189,6 +190,8 @@ export function registerPhaserComponents(backend) {
     },
     destroy(comp) { backend.scene.lights.removeLight(comp.light); },
   });
+
+  registerExtraComponents(backend, track);
 
   // physics components create/refresh the body on the entity container
   const phys = (e) => { if (backend.physics) backend.physics.build(e); };

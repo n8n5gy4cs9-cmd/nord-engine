@@ -972,6 +972,70 @@
      ]
     },
     {
+     "id": "canvas-clear",
+     "params": []
+    },
+    {
+     "id": "canvas-fill",
+     "params": [
+      "color"
+     ]
+    },
+    {
+     "id": "canvas-draw-rect",
+     "params": [
+      "x",
+      "y",
+      "width",
+      "height",
+      "color"
+     ]
+    },
+    {
+     "id": "canvas-draw-circle",
+     "params": [
+      "x",
+      "y",
+      "radius",
+      "color"
+     ]
+    },
+    {
+     "id": "canvas-draw-line",
+     "params": [
+      "x1",
+      "y1",
+      "x2",
+      "y2",
+      "color",
+      "width"
+     ]
+    },
+    {
+     "id": "video-play",
+     "params": [
+      "loop"
+     ]
+    },
+    {
+     "id": "video-pause",
+     "params": []
+    },
+    {
+     "id": "video-resume",
+     "params": []
+    },
+    {
+     "id": "video-stop",
+     "params": []
+    },
+    {
+     "id": "video-seek",
+     "params": [
+      "time"
+     ]
+    },
+    {
      "id": "destroy",
      "params": []
     }
