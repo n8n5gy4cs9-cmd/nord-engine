@@ -12,6 +12,7 @@ pub mod inspector;
 pub mod layout;
 pub mod library;
 pub mod palette;
+pub mod particles;
 pub mod preview;
 pub mod project;
 pub mod settings;

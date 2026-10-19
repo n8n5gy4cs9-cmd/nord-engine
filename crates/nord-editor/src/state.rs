@@ -248,6 +248,7 @@ pub struct EditorState {
     pub project_ui: crate::panels::project::ProjectUi,
     pub layout_ui: crate::panels::layout::LayoutUi,
     pub sprite: crate::panels::sprite::SpriteUi,
+    pub particles_ui: crate::panels::particles::ParticlesUi,
     /// phone/tablet preview server while it is on (dropping it stops the server)
     pub lan: Option<nord_serve::Lan>,
     pub lan_log_seen: usize,
@@ -325,6 +326,7 @@ impl EditorState {
             project_ui: Default::default(),
             layout_ui: Default::default(),
             sprite: Default::default(),
+            particles_ui: Default::default(),
             lan: None,
             lan_log_seen: 0,
             lan_open: false,

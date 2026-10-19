@@ -1,5 +1,7 @@
 # Changelog
 
+- 2026-10-19 (M10-20): **Particle editor** — Particles tab with live preview, 11 presets, property curves (scale/opacity over life), colour gradient, spin, spawn radius; runtime support for curves/gradient/spin/zone/gravityX. `docs/PARTICLES.md`.
+
 - 2026-10-19 (M10-18): **Tilemap editor v2** — new tilemap from a tileset, brushes (paint, rectangle, fill, random, terrain/auto-tile with 16-mask rules), multiple layers (add/rename/reorder/hide/delete), tile collision list, animated tiles (editor + runtime), hidden layers honoured at runtime. `docs/TILEMAP_EDITOR.md`.
 
 - 2026-10-19 (M10-15/16/17): **Sprite editor** (paint tools, palette, undo, save; origin, named image points, collision polygon with auto-trace, per-frame properties → `.meta.json`; runtime: sprite origin from metadata, `Obj.PointX("name")`/`PointY`) and **animation editor v2** (speed, ping-pong, repeat, repeat-to, tags, frame list with durations, onion skin, GIF import; runtime support incl. per-frame events). Docs `SPRITE_EDITOR.md`, `ANIMATION_EDITOR.md`; tests: pixel/gif/frame_at unit tests, kittest, Chromium (`plugin-objects-test`, `eventsheet-demo-test`).

@@ -20,6 +20,7 @@ pub enum Tab {
     Code,
     Animation,
     Sprite,
+    Particles,
     Events,
     Layout,
     History,
@@ -40,6 +41,7 @@ impl Tab {
             Tab::Code => "Code",
             Tab::Animation => "Anim & Tiles",
             Tab::Sprite => "Sprite",
+            Tab::Particles => "Particles",
             Tab::Events => "Event sheets",
             Tab::Layout => "Layout",
             Tab::History => "History",
@@ -53,7 +55,7 @@ impl Tab {
 }
 
 pub fn default_dock() -> DockState<Tab> {
-    let mut dock = DockState::new(vec![Tab::Scene, Tab::Game, Tab::Code, Tab::Events, Tab::Animation, Tab::Sprite]);
+    let mut dock = DockState::new(vec![Tab::Scene, Tab::Game, Tab::Code, Tab::Events, Tab::Animation, Tab::Sprite, Tab::Particles]);
     let s = dock.main_surface_mut();
     let [center, _] = s.split_left(NodeIndex::root(), 0.18, vec![Tab::Hierarchy]);
     let [center, _] = s.split_right(center, 0.78, vec![Tab::Inspector, Tab::Layout]);
@@ -548,6 +550,7 @@ impl App {
                     Tab::Code,
                     Tab::Animation,
                     Tab::Sprite,
+                    Tab::Particles,
                     Tab::Events,
                     Tab::Layout,
                     Tab::History,
@@ -764,6 +767,7 @@ impl TabViewer for Viewer<'_> {
             Tab::Code => crate::code::ui(st, ui),
             Tab::Animation => panels::animation::ui(st, ui),
             Tab::Sprite => panels::sprite::ui(st, ui),
+            Tab::Particles => panels::particles::ui(st, ui),
             Tab::Events => panels::events::ui(st, ui),
             Tab::Layout => panels::layout::ui(st, ui),
             Tab::History => panels::history::ui(st, ui),

@@ -131,14 +131,21 @@ export function registerPhaserComponents(backend) {
 
   registerComponent('particles', {
     create(e, d, comp) {
+      // curves (editor: Particles tab): scaleCurve / alphaCurve = values over the particle's life (interpolated); otherwise start→end
+      const op = (curve, a, b) => (curve?.length >= 2 ? { values: curve, interpolation: 'linear' } : { start: a, end: b });
+      const life = d.lifespan ?? 800;
       const em = ps.add.particles(0, 0, backend.texKey(d.texture), {
-        lifespan: d.lifespan ?? 800,
+        lifespan: life,
         speed: { min: d.speed?.[0] ?? 40, max: d.speed?.[1] ?? 120 },
         angle: { min: d.angle?.[0] ?? 0, max: d.angle?.[1] ?? 360 },
-        scale: { start: d.scale?.[0] ?? 1, end: d.scale?.[1] ?? 0 },
-        alpha: { start: d.alpha?.[0] ?? 1, end: d.alpha?.[1] ?? 0 },
+        scale: op(d.scaleCurve, d.scale?.[0] ?? 1, d.scale?.[1] ?? 0),
+        alpha: op(d.alphaCurve, d.alpha?.[0] ?? 1, d.alpha?.[1] ?? 0),
+        gravityX: d.gravityX ?? 0,
         gravityY: d.gravityY ?? 0,
-        tint: d.tint ? hex(d.tint) : undefined,
+        ...(d.spin ? { rotate: { start: 0, end: (d.spin * life) / 1000 } } : {}),
+        ...(d.emitRadius ? { emitZone: { type: 'random', source: new globalThis.Phaser.Geom.Circle(0, 0, d.emitRadius) } } : {}),
+        ...(d.tint && d.tintEnd ? { color: [hex(d.tint), hex(d.tintEnd)], colorEase: 'linear' } : {}),
+        tint: d.tint && !d.tintEnd ? hex(d.tint) : undefined,
         blendMode: d.blend === 'normal' ? 0 : 1,
         frequency: d.frequency ?? 60, quantity: d.quantity ?? 1,
         emitting: d.emitting !== false && !d.burst,

@@ -28,6 +28,7 @@ scene.entities = [
   ent('Pivot', 300, 250, [{ type: 'animatedSprite', texture: 'assets/sprites/hero.png', anim: 'idle' }]),
   ent('Anim', 100, 120, [{ type: 'animatedSprite', texture: 'assets/sprites/hero.png', anim: 'pp' }]),
   ent('Map', 40, 320, [{ type: 'tilemap', map: 'assets/maps/t.tilemap.json', tileset: 'assets/sprites/tileset_platformer.png' }]),
+  ent('Sparks', 220, 330, [{ type: 'particles', texture: 'assets/sprites/coin.png', lifespan: 600, scaleCurve: [0, 1, 0], alphaCurve: [0, 1, 0], tint: '#ff0000', tintEnd: '#0000ff', spin: 180, gravityX: 20, emitRadius: 6, frequency: 20 }]),
   ent('Movie', 560, 60, [{ type: 'video', src: 'assets/video/test.webm', size: [160, 90], loop: true, muted: true }]),
 ];
 fs.writeFileSync(sceneFile, JSON.stringify(scene));
@@ -49,6 +50,8 @@ const { errors } = await withPage(dir, async (page) => {
   assert.equal(tmv.hiddenLayer, false, 'hidden tilemap layer is not shown');
   const seen = await ev(async () => { const c = __nord.scene.find('Map').getComponent('tilemap'); const set = new Set(); for (let i = 0; i < 12; i++) { set.add(c.layers[0].getTileAt(0, 0).index); await new Promise((r) => setTimeout(r, 60)); } return [...set]; });
   assert.ok(seen.length >= 2 && seen.every((i) => [1, 4, 5].includes(i)), `animated tile cycles ${seen}`);
+  const pr = await ev(async () => { const em = __nord.scene.find('Sparks').getComponent('particles').emitter; await new Promise((r) => setTimeout(r, 400)); return { alive: em.getAliveParticleCount(), mid: (() => { const p = em.getAliveParticleCount() ? em.emitters ?? null : null; return !!p || true; })() }; });
+  assert.ok(pr.alive > 0, 'particles with curves/colour/spin/zone are emitted');
   assert.equal(await ev(() => __nord.scene.find('Font').getComponent('spriteFont').count), 4, 'sprite font lays out 4 glyphs');
   await ev(() => __nord.scene.find('Font').set('spriteFont', 'text', 'HAB'));
   assert.equal(await ev(() => __nord.scene.find('Font').getComponent('spriteFont').count), 3, 'text change relayouts');

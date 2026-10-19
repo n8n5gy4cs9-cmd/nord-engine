@@ -1232,3 +1232,31 @@ fn tilemap_v2_ui_renders_every_brush_and_layer_controls() {
     h.run_steps(2);
     assert_eq!(h.state().anim.map_json["layers"].as_array().unwrap().len(), 2);
 }
+
+#[test]
+fn particles_panel_adds_component_applies_presets_and_edits_with_undo() {
+    let d = example_copy("part", "event-sheets");
+    let mut st = EditorState::new();
+    st.open_project(&d).unwrap();
+    let id = st.scene.as_ref().unwrap().entities.iter().find(|e| e.name == "Message").unwrap().id.clone();
+    st.select(Some(id.clone()));
+    let mut h = Harness::builder()
+        .with_size(egui::vec2(1100.0, 800.0))
+        .build_ui_state(|ui, st: &mut EditorState| panels::particles::ui(st, ui), st);
+    loaders(&h);
+    h.run_steps(2);
+    h.get_by_label_contains("Add particles component").click();
+    h.run_steps(3);
+    let comp = |h: &Harness<'_, EditorState>| h.state().scene.as_ref().unwrap().entities.iter().find(|e| e.id == id).unwrap().components.iter().find(|c| c.kind == "particles").cloned();
+    assert_eq!(comp(&h).unwrap().fields["lifespan"], 400.0);
+    // apply the "fire" preset through the combo, then edit a value through the model and check undo
+    h.get_all_by_role(egui::accesskit::Role::ComboBox).next().unwrap().click();
+    h.run_steps(2);
+    h.get_by_label("fire").click();
+    h.run_steps(3);
+    assert_eq!(comp(&h).unwrap().fields["lifespan"], 700.0);
+    assert_eq!(comp(&h).unwrap().fields["tintEnd"], "#7a1010");
+    h.state_mut().do_undo();
+    h.run_steps(2);
+    assert_eq!(comp(&h).unwrap().fields["lifespan"], 400.0, "preset change is one undo step");
+}

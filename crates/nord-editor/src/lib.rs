@@ -5,6 +5,7 @@ pub mod gif_import;
 pub mod icons;
 pub mod layout;
 pub mod panels;
+pub mod particles;
 pub mod pixel;
 pub mod scene_ops;
 pub mod schema;
