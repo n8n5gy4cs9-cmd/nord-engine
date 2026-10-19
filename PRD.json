@@ -1708,13 +1708,13 @@
       "id": "M10-12",
       "milestone": "M10",
       "title": "Layout editor: layer panel (add/rename/reorder/lock/hide, parallax, scale rate, opacity, blend mode, transparent, background colour, force own texture)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M10-13",
       "milestone": "M10",
       "title": "Layout editor: rulers/guides, snapping options, alignment/distribute for multi-select, layout properties (size, unbounded scrolling, event sheet link), multiple layouts + layout switching",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M10-14",

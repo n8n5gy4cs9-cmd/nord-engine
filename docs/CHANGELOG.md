@@ -1,5 +1,7 @@
 # Changelog
 
+- 2026-10-19 (M10-12/13, M10-14 partly): **Layout editor** — Layout tab (layers with visible/lock/opacity/parallax/blend/background and reorder, layout size + unbounded scrolling + event sheet link, guides, align/distribute, object types with *Sync instances*, overview map, layouts list); 2D viewport rulers, guides (drag out of rulers, snap), locked/hidden layers; runtime layer properties + camera bounds from layout size; undo now covers scene settings. Tests: 4 unit + 1 kittest, viewport (Chromium + real `nord serve`), layers at runtime. See `docs/LAYOUT_EDITOR.md` for what is not done (drag-to-place, per-layer scale rate).
+
 - 2026-10-19 (M10-32): **Multiplayer** (optional) — WebRTC peer-to-peer (`runtime/core/multiplayer.js`, event-sheet *Multiplayer* plugin) with a signalling relay in `nord serve` and the LAN preview server; template/example **es-multiplayer**; tests: relay (Rust) and a two-page WebRTC test in Chromium. `docs/MULTIPLAYER.md`.
 
 - 2026-10-19 (M10-35): **Rendering plugin objects** (Phaser): `tiledBackground`, `ninePatch`, `spriteFont`, `drawingCanvas`, `video` components + event-sheet object actions (canvas draw, video control); `docs/PLUGIN_OBJECTS.md`, headless WebGL test `tools/plugin-objects-test.mjs`.

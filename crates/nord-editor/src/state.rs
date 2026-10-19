@@ -246,6 +246,7 @@ pub struct EditorState {
     pub events: crate::panels::events::EventsUi,
     pub history_ui: crate::panels::history::HistoryUi,
     pub project_ui: crate::panels::project::ProjectUi,
+    pub layout_ui: crate::panels::layout::LayoutUi,
     /// phone/tablet preview server while it is on (dropping it stops the server)
     pub lan: Option<nord_serve::Lan>,
     pub lan_log_seen: usize,
@@ -321,6 +322,7 @@ impl EditorState {
             events: Default::default(),
             history_ui: Default::default(),
             project_ui: Default::default(),
+            layout_ui: Default::default(),
             lan: None,
             lan_log_seen: 0,
             lan_open: false,
@@ -440,7 +442,20 @@ impl EditorState {
         let Some(s) = self.scene.as_mut() else {
             return false;
         };
-        let changed = self.undo.apply(&mut s.entities, label, key, f);
+        let changed = self.undo.apply(s, label, key, |sc| f(&mut sc.entities));
+        if changed {
+            self.dirty = true;
+            self.rev += 1;
+        }
+        changed
+    }
+
+    /// Like `edit`, but the closure sees the whole scene (settings such as layers are undone together with the entities).
+    pub fn edit_scene(&mut self, label: &str, key: Option<&str>, f: impl FnOnce(&mut Scene)) -> bool {
+        let Some(s) = self.scene.as_mut() else {
+            return false;
+        };
+        let changed = self.undo.apply(s, label, key, f);
         if changed {
             self.dirty = true;
             self.rev += 1;
@@ -450,7 +465,7 @@ impl EditorState {
 
     pub fn do_undo(&mut self) {
         if let Some(s) = self.scene.as_mut() {
-            if let Some(l) = self.undo.undo(&mut s.entities) {
+            if let Some(l) = self.undo.undo(s) {
                 self.dirty = true;
                 self.rev += 1;
                 self.toast(format!("Undo: {l}"));
@@ -460,7 +475,7 @@ impl EditorState {
 
     pub fn do_redo(&mut self) {
         if let Some(s) = self.scene.as_mut() {
-            if let Some(l) = self.undo.redo(&mut s.entities) {
+            if let Some(l) = self.undo.redo(s) {
                 self.dirty = true;
                 self.rev += 1;
                 self.toast(format!("Redo: {l}"));
@@ -865,6 +880,22 @@ impl EditorState {
             Some("select") => {
                 let id = m["id"].as_str().map(String::from);
                 self.select(id);
+            }
+            Some("guide") => {
+                // dragged out of / back into a ruler: add, move (from → to) or delete (to == null) a guide line
+                let ax = m["axis"].as_str().unwrap_or("x").to_string();
+                let (from, to) = (m["from"].as_f64(), m["to"].as_f64());
+                self.edit_scene("Guide", None, |s| {
+                    let (mut gx, mut gy) = crate::layout::guides(s);
+                    let list = if ax == "x" { &mut gx } else { &mut gy };
+                    if let Some(f) = from {
+                        list.retain(|g| (*g - f).abs() > 1e-9);
+                    }
+                    if let Some(t) = to {
+                        list.push(t);
+                    }
+                    crate::layout::set_guides(s, gx, gy);
+                });
             }
             Some("transform") => {
                 let Some(id) = m["id"].as_str() else { return };

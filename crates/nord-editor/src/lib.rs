@@ -2,6 +2,7 @@
 pub mod app;
 pub mod code;
 pub mod icons;
+pub mod layout;
 pub mod panels;
 pub mod scene_ops;
 pub mod schema;

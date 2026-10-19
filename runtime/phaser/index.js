@@ -6,6 +6,7 @@ import { createEffect } from './effects.js';
 import { registerPhaserComponents } from './components.js';
 import { ArcadeAdapter, MatterAdapter } from './physics.js';
 
+const BLEND_MODES = { normal: 0, add: 1, multiply: 2, screen: 3 };
 const SCALE = (P) => ({ fit: P.Scale.FIT, fill: P.Scale.ENVELOP, stretch: P.Scale.RESIZE, none: P.Scale.NONE });
 
 /** Collect every asset path (by kind) that an entity's components reference. */
@@ -174,6 +175,43 @@ class Backend {
     for (const pad of navigator.getGamepads?.() ?? []) if (pad) { g.input.pollGamepad(pad); break; }
     this.physics?.flushDirty();
     g.tick(dt);
+    if (g.scene?.settings?.layers) this.#applyLayers(g.scene);
+    else if (this._bg?.size) for (const r of this._bg.values()) r.setVisible(false); // previous scene's layer backgrounds
+  }
+
+  /**
+   * Layer properties (scene.settings.layers[<layer number>]): visible, opacity, parallax [x, y] (Phaser scroll factor: 0 = fixed to the screen,
+   * 1 = moves with the world), blend (normal/add/multiply/screen), background (colour fill when transparent === false).
+   * Applied each frame so events/scripts that change `scene.settings.layers[...]` take effect immediately.
+   */
+  #applyLayers(scene) {
+    const layers = scene.settings.layers, P = globalThis.Phaser;
+    const key = (L) => `${L.parallax?.[0] ?? 1},${L.parallax?.[1] ?? 1},${L.blend ?? 'normal'}`;
+    for (const e of scene.all()) {
+      const L = layers[e.layer], c = e.native;
+      if (!c || !L) continue;
+      c.setVisible(e.enabled && L.visible !== false);
+      c.setAlpha(L.opacity ?? 1);
+      const k = key(L);
+      if (e._layerKey !== k) { // only when the layer's parallax/blend changed
+        e._layerKey = k;
+        c.setScrollFactor(L.parallax?.[0] ?? 1, L.parallax?.[1] ?? 1);
+        const mode = BLEND_MODES[L.blend ?? 'normal'] ?? 0;
+        for (const comp of e.components) for (const v of comp.visuals ?? []) v.setBlendMode?.(mode);
+      }
+    }
+    this.#layerBackgrounds(scene, layers, P);
+  }
+  #layerBackgrounds(scene, layers, P) {
+    this._bg ??= new Map();
+    for (const [id, L] of Object.entries(layers)) {
+      const want = L.transparent === false && L.background && L.visible !== false;
+      let r = this._bg.get(id);
+      if (!want) { r?.setVisible(false); continue; }
+      if (!r) { r = this.scene.add.rectangle(0, 0, this.width, this.height, 0).setOrigin(0).setScrollFactor(0); this._bg.set(id, r); }
+      r.setVisible(true).setFillStyle(parseInt(String(L.background).replace('#', '').slice(0, 6), 16) || 0, L.opacity ?? 1).setDepth(Number(id) * 1000 - 500);
+    }
+    for (const [id, r] of this._bg) if (!layers[id]) r.setVisible(false);
   }
 
   cameraApi() {

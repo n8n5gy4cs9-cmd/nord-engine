@@ -1119,3 +1119,35 @@ fn phone_preview_starts_shows_a_window_and_stops() {
     h.run_steps(3);
     assert!(h.state().lan.is_none());
 }
+
+#[test]
+fn layout_panel_layers_arrange_and_undo() {
+    let d = example_copy("layout", "event-sheets");
+    let mut st = EditorState::new();
+    st.open_project(&d).unwrap();
+    let mut h = Harness::builder()
+        .with_size(egui::vec2(900.0, 1000.0))
+        .build_ui_state(|ui, st: &mut EditorState| panels::layout::ui(st, ui), st);
+    loaders(&h);
+    h.run_steps(3);
+    let n0 = nord_editor::layout::layers(h.state().scene.as_ref().unwrap()).len();
+    h.get_by_label("＋ Layer").click();
+    h.run_steps(3);
+    assert_eq!(nord_editor::layout::layers(h.state().scene.as_ref().unwrap()).len(), n0 + 1);
+    // undo restores the settings together with the entities
+    h.state_mut().do_undo();
+    h.run_steps(2);
+    assert_eq!(nord_editor::layout::layers(h.state().scene.as_ref().unwrap()).len(), n0);
+    // align two objects through the panel
+    let ids: Vec<String> = h.state().scene.as_ref().unwrap().entities.iter().filter(|e| e.name.starts_with("Coin")).take(3).map(|e| e.id.clone()).collect();
+    assert!(ids.len() >= 3);
+    h.state_mut().selection = ids.clone();
+    h.run_steps(2);
+    // the section is collapsed by default: open it by expanding the header
+    h.get_by_label("Arrange selection").click();
+    h.run_steps(2);
+    h.get_by_label_contains("Left").click();
+    h.run_steps(2);
+    let xs: Vec<f64> = ids.iter().map(|id| h.state().scene.as_ref().unwrap().entities.iter().find(|e| &e.id == id).unwrap().transform.pos[0]).collect();
+    assert!(xs.windows(2).all(|w| (w[0] - w[1]).abs() < 1e-9), "aligned: {xs:?}");
+}

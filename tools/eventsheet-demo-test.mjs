@@ -84,6 +84,15 @@ const { errors } = await withPage(`${ROOT}/examples/event-sheets`, async (page) 
   await wait(500);
   await page.screenshot({ path: `${out}/9-effects.png` });
   await ev(() => __nord.effects.clear('scene'));
+
+  // layers: opacity, visibility, parallax (scroll factor) and a background colour
+  await ev(() => { __nord.scene.settings.layers = { 0: { name: 'World', opacity: 0.5 }, 1: { name: 'HUD', parallax: [0, 0], visible: true }, 2: { name: 'Back', transparent: false, background: '#bf616a', opacity: 1, visible: true } }; });
+  await wait(300);
+  const lay = await ev(() => { const h = __nord.scene.find('Hero'), hud = __nord.scene.find('Hud'); return { alpha: h.native.alpha, sfx: hud.native.scrollFactorX, bg: __nord.backend._bg.get('2')?.visible }; });
+  assert.equal(lay.alpha, 0.5); assert.equal(lay.sfx, 0); assert.equal(lay.bg, true);
+  await ev(() => { __nord.scene.settings.layers[0].visible = false; }); await wait(200);
+  assert.equal(await ev(() => __nord.scene.find('Hero').native.visible), false, 'hidden layer hides its objects');
+  await page.screenshot({ path: `${out}/10-layers.png` });
 });
 assert.deepEqual(errors, [], errors.join('\n'));
 console.log('event-sheets demo OK');

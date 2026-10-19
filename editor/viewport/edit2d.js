@@ -110,6 +110,8 @@ function hitTest(it, wx, wy) {
 export function pickAt(sx, sy) {
   const [wx, wy] = toWorld(sx, sy);
   for (let i = items.length - 1; i >= 0; i--) {
+    const L = layerOf(items[i].e);
+    if (L && (L.locked || L.visible === false)) continue; // locked / hidden layers cannot be picked
     if (items[i].e.enabled !== false && hitTest(items[i], wx, wy)) return items[i].e.id;
   }
   return null;
@@ -138,9 +140,16 @@ function drawGrid() {
   ctx.strokeStyle = 'rgba(90,255,120,.5)'; ctx.beginPath(); ctx.moveTo(ox + .5, 0); ctx.lineTo(ox + .5, H); ctx.stroke();
 }
 
+const RULER = 16;
+const layerOf = (e) => state.scene?.settings?.layers?.[e.layer ?? 0];
+const guides = () => ({ x: state.scene?.settings?.guides?.x ?? [], y: state.scene?.settings?.guides?.y ?? [] });
+const nearGuide = (axis, v) => { const r = 6 / cam.zoom; let best = null; for (const g of guides()[axis]) if (Math.abs(g - v) <= r && (best === null || Math.abs(g - v) < Math.abs(best - v))) best = g; return best; };
+
 function drawEntity(it) {
   const { e, w } = it;
-  if (e.enabled === false) ctx.globalAlpha = 0.35;
+  const L = layerOf(e);
+  if (L && L.visible === false) return; // hidden layer (runtime-visible flag too)
+  ctx.globalAlpha = (e.enabled === false ? 0.35 : 1) * (L?.opacity ?? 1);
   const [sx, sy] = toScreen(w.x, w.y);
   ctx.save();
   ctx.translate(sx, sy);
@@ -205,6 +214,41 @@ function drawEntity(it) {
   }
   ctx.restore();
   ctx.globalAlpha = 1;
+}
+
+function drawGuides() {
+  ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(0,200,255,.75)';
+  const g = guides();
+  for (const x of g.x) { const [sx] = toScreen(x, 0); ctx.beginPath(); ctx.moveTo(Math.round(sx) + .5, 0); ctx.lineTo(Math.round(sx) + .5, H); ctx.stroke(); }
+  for (const y of g.y) { const [, sy] = toScreen(0, y); ctx.beginPath(); ctx.moveTo(0, Math.round(sy) + .5); ctx.lineTo(W, Math.round(sy) + .5); ctx.stroke(); }
+  if (drag?.kind === 'guide' && drag.value != null) { // the guide being dragged
+    ctx.setLineDash([4, 3]);
+    if (drag.axis === 'x') { const [sx] = toScreen(drag.value, 0); ctx.beginPath(); ctx.moveTo(sx + .5, 0); ctx.lineTo(sx + .5, H); ctx.stroke(); }
+    else { const [, sy] = toScreen(0, drag.value); ctx.beginPath(); ctx.moveTo(0, sy + .5); ctx.lineTo(W, sy + .5); ctx.stroke(); }
+    ctx.setLineDash([]);
+  }
+}
+
+/** Rulers along the top and left edge with world coordinates; drag out of them to create guides. */
+function drawRulers() {
+  ctx.fillStyle = 'rgba(24,28,36,.92)'; ctx.fillRect(0, 0, W, RULER); ctx.fillRect(0, 0, RULER, H);
+  const step = [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000].find((s) => s * cam.zoom >= 50) ?? 5000;
+  ctx.fillStyle = '#9aa4b5'; ctx.strokeStyle = '#4a5365'; ctx.font = '9px sans-serif'; ctx.lineWidth = 1;
+  const [x0, y0] = toWorld(0, 0), [x1, y1] = toWorld(W, H);
+  ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+  for (let x = Math.floor(x0 / step) * step; x <= x1; x += step) {
+    const [sx] = toScreen(x, 0); if (sx < RULER) continue;
+    ctx.beginPath(); ctx.moveTo(Math.round(sx) + .5, RULER - 6); ctx.lineTo(Math.round(sx) + .5, RULER); ctx.stroke();
+    ctx.fillText(String(Math.round(x)), sx + 2, 2);
+  }
+  ctx.save(); ctx.textBaseline = 'bottom';
+  for (let y = Math.floor(y0 / step) * step; y <= y1; y += step) {
+    const [, sy] = toScreen(0, y); if (sy < RULER) continue;
+    ctx.beginPath(); ctx.moveTo(RULER - 6, Math.round(sy) + .5); ctx.lineTo(RULER, Math.round(sy) + .5); ctx.stroke();
+    ctx.save(); ctx.translate(2, sy - 2); ctx.rotate(-Math.PI / 2); ctx.textAlign = 'left'; ctx.fillText(String(Math.round(y)), 0, 9); ctx.restore();
+  }
+  ctx.restore();
+  ctx.fillStyle = '#1b1f27'; ctx.fillRect(0, 0, RULER, RULER);
 }
 
 function drawTilemaps() {
@@ -277,7 +321,9 @@ export function draw() {
   if (d) { const [x0, y0] = toScreen(0, 0); ctx.strokeStyle = 'rgba(79,163,255,.6)'; ctx.lineWidth = 1; ctx.strokeRect(x0 + .5, y0 + .5, d.width * cam.zoom, d.height * cam.zoom); }
   drawTilemaps();
   for (const it of items) drawEntity(it);
+  drawGuides();
   drawGizmo();
+  drawRulers();
   const hudEl = document.getElementById('hud');
   const [mx, my] = toWorld(mouse.x, mouse.y);
   hudEl.textContent = `2D · ${Math.round(cam.zoom * 100)}% · ${Math.round(mx)}, ${Math.round(my)} · ${state.settings.tool}${state.settings.snap ? ' · snap' : ''}`;
@@ -325,6 +371,12 @@ function onDown(ev) {
   }
   if (ev.button !== 0) return;
   canvas.setPointerCapture?.(ev.pointerId);
+  // rulers create guides; an existing guide line can be dragged (drop it on a ruler to delete it)
+  if ((sy < RULER) !== (sx < RULER)) { drag = { kind: 'guide', axis: sy < RULER ? 'y' : 'x', value: null, from: null }; return; }
+  for (const axis of ['x', 'y']) for (const g of guides()[axis]) {
+    const [gx, gy] = toScreen(axis === 'x' ? g : 0, axis === 'y' ? g : 0);
+    if (Math.abs(axis === 'x' ? sx - gx : sy - gy) <= 3) { drag = { kind: 'guide', axis, value: g, from: g }; return; }
+  }
   const h = handleAt(sx, sy);
   const it = selected();
   if (h && it) { startDrag(h, it, sx, sy); return; }
@@ -354,6 +406,7 @@ function onMove(ev) {
   const sx = ev.clientX - r.left, sy = ev.clientY - r.top;
   mouse = { x: sx, y: sy };
   if (!drag) { draw(); return; }
+  if (drag.kind === 'guide') { const [wx, wy] = toWorld(sx, sy); drag.value = Math.round(drag.axis === 'x' ? wx : wy); drag.overRuler = drag.axis === 'x' ? sx < RULER : sy < RULER; draw(); return; }
   if (drag.kind === 'pan') {
     cam.x = drag.cx - (sx - drag.sx) / cam.zoom; cam.y = drag.cy - (sy - drag.sy) / cam.zoom; draw(); return;
   }
@@ -374,7 +427,9 @@ function onMove(ev) {
       const a = -p.rot * R, c = Math.cos(a), s = Math.sin(a);
       lx = (dx * c - dy * s) / (p.sx || 1); ly = (dx * s + dy * c) / (p.sy || 1);
     }
-    e.transform.pos = [snapTo(drag.t0.pos[0] + lx, state.settings.snapMove), snapTo(drag.t0.pos[1] + ly, state.settings.snapMove), drag.t0.pos[2]];
+    let nx = snapTo(drag.t0.pos[0] + lx, state.settings.snapMove), ny = snapTo(drag.t0.pos[1] + ly, state.settings.snapMove);
+    if (!p) { const gx = nearGuide('x', nx), gy = nearGuide('y', ny); if (gx !== null) nx = gx; if (gy !== null) ny = gy; } // snap to guides
+    e.transform.pos = [nx, ny, drag.t0.pos[2]];
   } else if (drag.kind === 'rot') {
     const a = Math.atan2(wy - drag.w0.y, wx - drag.w0.x);
     let deg = drag.t0.rot[2] + (a - drag.a0) / R;
@@ -393,6 +448,11 @@ function onMove(ev) {
 }
 
 function onUp() {
+  if (drag?.kind === 'guide') {
+    const g = drag; drag = null;
+    if (g.value != null || g.from != null) send({ t: 'guide', axis: g.axis, from: g.from, to: g.overRuler || g.value == null ? null : g.value });
+    draw(); return;
+  }
   if (drag && drag.kind !== 'pan' && drag.moved !== false) emit(true);
   drag = null;
 }
@@ -427,7 +487,7 @@ export function thumbs() { /* models are only rendered by the 3D viewport */ }
 
 // ---------- test hooks ----------
 export const api = {
-  cam, toScreen, toWorld, pickAt,
+  cam, toScreen, toWorld, pickAt, RULER,
   screenOf: (id) => { const it = items.find((i) => i.e.id === id); return it ? toScreen(it.w.x, it.w.y) : null; },
   items: () => items.map((i) => ({ id: i.e.id, x: i.w.x, y: i.w.y })),
 };

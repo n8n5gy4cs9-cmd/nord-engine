@@ -130,7 +130,9 @@ export function registerPhaserComponents(backend) {
       comp.cam = ps.cameras.main;
       const cam = comp.cam;
       cam.setZoom(d.zoom ?? 1);
+      const ls = e.scene.settings?.layoutSize; // Layout properties: the camera stays inside the layout unless scrolling is unbounded
       if (d.bounds) cam.setBounds(...d.bounds);
+      else if (ls && !e.scene.settings?.unboundedScrolling) cam.setBounds(0, 0, ls.width, ls.height);
       if (d.deadzone) cam.setDeadzone(d.deadzone[0], d.deadzone[1]);
       if (d.background) cam.setBackgroundColor(d.background);
       backend.cameraComp = comp;
