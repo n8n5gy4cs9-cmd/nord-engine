@@ -52,6 +52,10 @@ pub struct Asset {
     pub meta: Option<Value>,
 }
 
+pub fn sha256_bytes(b: &[u8]) -> String {
+    Sha256::digest(b).iter().map(|x| format!("{x:02x}")).collect()
+}
+
 pub fn sha256_file(p: &Path) -> Result<String> {
     let bytes = std::fs::read(p).map_err(|e| io::io_err(p, e))?;
     Ok(Sha256::digest(&bytes)

@@ -13,6 +13,7 @@ pub struct ExportUi {
     pub single_file: bool,
     pub optimize: bool,
     pub zip: bool,
+    pub pwa: bool,
     /// empty = `<project>/dist`
     pub out: String,
     running: Option<Receiver<Result<(String, PathBuf), String>>>,
@@ -29,6 +30,7 @@ impl Default for ExportUi {
             single_file: false,
             optimize: false,
             zip: false,
+            pwa: false,
             out: String::new(),
             running: None,
             last_out: None,
@@ -58,6 +60,7 @@ pub fn start(st: &mut EditorState) {
         single_file: e.single_file,
         optimize: e.optimize,
         zip: e.zip,
+        pwa: e.pwa,
     };
     let (tx, rx) = channel();
     std::thread::spawn(move || {
@@ -129,6 +132,7 @@ pub fn window(st: &mut EditorState, ctx: &egui::Context) {
             ui.checkbox(&mut e.single_file, "Single file (one index.html, works from file://)");
             ui.checkbox(&mut e.optimize, "Optimise assets (lossless PNG, WAV→MP3 if ffmpeg is installed)");
             ui.checkbox(&mut e.zip, "Also write a .zip (itch.io style upload)");
+            ui.add_enabled(!e.single_file, egui::Checkbox::new(&mut e.pwa, "Installable offline web app (PWA: manifest + service worker)"));
             ui.separator();
             ui.horizontal(|ui| {
                 if ui.add_enabled(!busy, egui::Button::new("Export")).clicked() {

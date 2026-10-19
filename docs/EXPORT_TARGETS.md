@@ -46,3 +46,9 @@ for the `--single-file` or `file-safe` mode (inline JSON + scripts, no `fetch` o
 ## Mac wrapper
 See ARCHITECTURE §7. `NordPlayer` = wry+tao shell, no devtools in release, window config from `nord.json.display`,
 fullscreen toggle (Cmd+Ctrl+F), persistent localStorage in app data dir.
+
+## PWA / installable offline web app (M10-28)
+`nord build --pwa` (editor: Export → "Installable offline web app") adds to a folder build: `manifest.webmanifest` (name, `start_url`, `display` = fullscreen, background/theme colour, icon from `export.web.icon` → `<project>/icon.png` → the Nord logo), `sw.js` (precaches every file; cache name changes with the content so an update replaces the old cache; cache-first) and the registration + manifest tags in `index.html`. Options in `nord.project.json`: `"export": { "web": { "icon": "icon.png", "pwa": { "display": "standalone", "orientation": "landscape", "shortName": "MyGame" } } }`.
+Needs https or `localhost` to install (browser rule); from `file://` the game runs, the service worker is skipped. Not available with `--single-file` or Rust/WASM targets (refused with a clear message).
+Verified headless: `node tools/pwa-test.mjs` builds the event-sheets example, registers the worker, goes offline with the server stopped and reloads. Not verified: install prompts on real phones / Safari.
+**Export checks** (shown in the report/dialog): build over 100 MB, any non-engine file over 8 MB, external-host references (existing offline scan), missing assets (existing validation). itch.io / Mac / Win / Linux presets use the existing `--zip`, `bundle-mac` and `bundle-portable`.

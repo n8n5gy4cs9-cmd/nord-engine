@@ -97,4 +97,10 @@ w('events/main.events.json', { format: 1, name: 'main', events: [
   ] },
   E([sys('every-tick')], [A('Hud', 'set-text', { text: '"Coins " & coins & "   Lives " & lives' })]),
 ] });
-console.log('wrote', root);
+// make the example self-contained (exports validate against the project folder): copy every engine asset the files reference
+const engineRoot = path.resolve(root, '../..');
+const seen = new Set();
+const scan = (dir) => { for (const f of fs.readdirSync(dir, { withFileTypes: true })) { const p = path.join(dir, f.name); if (f.isDirectory()) { if (f.name !== 'assets') scan(p); } else if (/\.json$/.test(f.name)) for (const m of fs.readFileSync(p, 'utf8').matchAll(/assets\/[\w\-./]+\.(?:png|wav|ogg|mp3)/g)) seen.add(m[0]); } };
+scan(root);
+for (const a of seen) for (const f of [a, `${a}.meta.json`]) { const src = path.join(engineRoot, f), dst = path.join(root, f); if (fs.existsSync(src) && !fs.existsSync(dst)) { fs.mkdirSync(path.dirname(dst), { recursive: true }); fs.copyFileSync(src, dst); } }
+console.log('wrote', root, `(+${seen.size} engine assets)`);

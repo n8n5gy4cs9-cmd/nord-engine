@@ -385,6 +385,95 @@
    ]
   },
   {
+   "name": "Timeline",
+   "kind": "plugin",
+   "conditions": [
+    {
+     "id": "on-finished",
+     "params": [
+      "timeline"
+     ],
+     "raw": [
+      "timeline"
+     ],
+     "trigger": true
+    },
+    {
+     "id": "on-event",
+     "params": [
+      "timeline",
+      "name"
+     ],
+     "raw": [
+      "timeline",
+      "name"
+     ],
+     "trigger": true
+    },
+    {
+     "id": "is-playing",
+     "params": [
+      "timeline"
+     ],
+     "raw": [
+      "timeline"
+     ]
+    }
+   ],
+   "actions": [
+    {
+     "id": "play",
+     "params": [
+      "timeline"
+     ],
+     "raw": [
+      "timeline"
+     ]
+    },
+    {
+     "id": "pause",
+     "params": [
+      "timeline"
+     ],
+     "raw": [
+      "timeline"
+     ]
+    },
+    {
+     "id": "resume",
+     "params": [
+      "timeline"
+     ],
+     "raw": [
+      "timeline"
+     ]
+    },
+    {
+     "id": "stop",
+     "params": [
+      "timeline"
+     ],
+     "raw": [
+      "timeline"
+     ]
+    },
+    {
+     "id": "set-time",
+     "params": [
+      "timeline",
+      "time"
+     ],
+     "raw": [
+      "timeline"
+     ]
+    }
+   ],
+   "expressions": [
+    "Time",
+    "Progress"
+   ]
+  },
+  {
    "name": "Effects",
    "kind": "plugin",
    "conditions": [],

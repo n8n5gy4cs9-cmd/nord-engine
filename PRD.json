@@ -1804,7 +1804,7 @@
       "id": "M10-28",
       "milestone": "M10",
       "title": "Export presets: PWA (manifest + service worker offline), Web zip, itch.io, Mac/Win/Linux via existing players; export wizard with checks (size, offline scan, missing assets)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M10-29",

@@ -9,6 +9,7 @@ import { EventSheet } from './eventsheet/sheet.js';
 import { I18n, Accessibility } from './i18n.js';
 import { Debugger } from './debug.js';
 import { Effects } from './effects.js';
+import { Timelines } from './timeline.js';
 
 export class Game {
   /**
@@ -94,6 +95,7 @@ export class Game {
     }
     this.effects.addAll('scene', scene.settings.effects);
     for (const e of scene.all()) if (e._effectData?.length) this.effects.addAll(e, e._effectData);
+    if (scene.settings.timelines) scene.systems.push(scene.timelines = new Timelines(scene, scene.settings.timelines));
     const sheet = scene.settings.eventSheet ?? scene.data.eventSheet;
     if (sheet) scene.systems.push(scene.eventSheet = await EventSheet.load(scene, sheet));
     scene.start();

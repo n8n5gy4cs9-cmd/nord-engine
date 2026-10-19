@@ -77,6 +77,8 @@ pub struct Opts {
     pub optimize: bool,
     /// Also write `<out>.zip`.
     pub zip: bool,
+    /// Installable offline web app: `manifest.webmanifest` + `sw.js` (precache, cache-first) + registration in index.html.
+    pub pwa: bool,
 }
 
 impl Default for Opts {
@@ -88,6 +90,7 @@ impl Default for Opts {
             single_file: false,
             optimize: false,
             zip: false,
+            pwa: false,
         }
     }
 }
@@ -475,6 +478,9 @@ pub fn build(project: &Path, engine: &Path, o: &Opts) -> Result<Report> {
             proj.kind.as_str()
         );
     }
+    if o.pwa && (o.single_file || matches!(target, Target::WasmGame | Target::WasmApp)) {
+        bail!("--pwa needs a folder build (web-2d / web-3d / web-3d-pc / html); single-file and Rust/WASM exports cannot register a service worker");
+    }
     if target == Target::Html && (o.single_file || o.minify) {
         bail!("--single-file/--minify apply to the web-2d / web-3d / web-3d-pc targets; html projects are copied as you wrote them");
     }
@@ -650,6 +656,12 @@ pub fn build(project: &Path, engine: &Path, o: &Opts) -> Result<Report> {
         ));
     }
 
+    // 5b. PWA: manifest + service worker (before nord.json so both are covered by the file list)
+    if o.pwa {
+        write_pwa(&project, engine, &out, &proj)?;
+        notes.push("pwa: manifest.webmanifest + sw.js (offline after first load, needs https or localhost)".into());
+    }
+
     // 6. manifest (folder builds)
     if !o.single_file {
         write_manifest(&out, &proj, target, &pl)?;
@@ -663,6 +675,7 @@ pub fn build(project: &Path, engine: &Path, o: &Opts) -> Result<Report> {
         .map(|(p, r)| (r.clone(), fs::metadata(p).map_or(0, |m| m.len())))
         .collect();
     sizes.sort_by(|a, b| b.1.cmp(&a.1).then(a.0.cmp(&b.0)));
+    notes.extend(size_checks(&sizes));
     let zip = if o.zip {
         Some(write_zip(&out, &files)?)
     } else {
@@ -774,6 +787,81 @@ fn css_safe(s: &str) -> String {
     } else {
         "#101418".into()
     }
+}
+
+/// Export wizard checks: things worth knowing before uploading (shown in the report / export dialog).
+pub fn size_checks(files: &[(String, u64)]) -> Vec<String> {
+    let mb = |n: u64| n as f64 / 1048576.0;
+    let total: u64 = files.iter().map(|f| f.1).sum();
+    let mut notes = vec![];
+    if mb(total) > 100.0 {
+        notes.push(format!("check: build is {:.0} MB — large for the web; try --optimize, shorter music, smaller textures", mb(total)));
+    }
+    for (p, n) in files.iter().filter(|(p, n)| mb(*n) > 8.0 && !p.starts_with("vendor/") && !p.starts_with("runtime/")).take(5) {
+        notes.push(format!("check: {p} is {:.1} MB", mb(*n)));
+    }
+    notes
+}
+
+fn pwa_icon(project: &Path, engine: &Path, proj: &nord_core::Project) -> Option<PathBuf> {
+    let configured = proj.export.get("web").and_then(|w| w["icon"].as_str()).map(|s| project.join(s));
+    [configured, Some(project.join("icon.png")), Some(engine.join("assets/brand/logo-512.png"))]
+        .into_iter()
+        .flatten()
+        .find(|p| p.is_file())
+}
+
+/// `manifest.webmanifest`, `sw.js` and the tags in index.html that make the build installable and playable offline.
+fn write_pwa(project: &Path, engine: &Path, out: &Path, proj: &nord_core::Project) -> Result<()> {
+    let web = proj.export.get("web").and_then(|w| w.get("pwa")).cloned().unwrap_or_default();
+    let display = web["display"].as_str().unwrap_or("fullscreen");
+    let bg = css_safe(&proj.display.background);
+    let mut icons = vec![];
+    if let Some(src) = pwa_icon(project, engine, proj) {
+        fs::create_dir_all(out.join("icons"))?;
+        fs::copy(&src, out.join("icons/app-icon.png"))?;
+        let (w, h) = image::image_dimensions(&src).unwrap_or((512, 512));
+        icons.push(serde_json::json!({"src":"icons/app-icon.png","sizes":format!("{w}x{h}"),"type":"image/png","purpose":"any"}));
+    }
+    let short: String = proj.name.chars().take(12).collect();
+    let mut m = serde_json::json!({
+        "name": proj.name, "short_name": web["shortName"].as_str().unwrap_or(&short),
+        "start_url": "./", "scope": "./", "display": display,
+        "background_color": bg, "theme_color": bg, "icons": icons,
+    });
+    if let Some(o) = web["orientation"].as_str() {
+        m["orientation"] = serde_json::json!(o);
+    }
+    io::write_atomic(&out.join("manifest.webmanifest"), serde_json::to_string_pretty(&m)?.as_bytes())?;
+
+    // service worker: precache every file of this build; the cache name changes when any file changes, so updates replace old caches
+    let mut files = vec![];
+    walk(out, "", &mut files, &|r| r == "sw.js");
+    let mut list: Vec<String> = vec!["./".into()];
+    let mut stamp = String::new();
+    for (p, r) in &files {
+        list.push(r.clone());
+        stamp += &format!("{r}:{};", fs::metadata(p).map_or(0, |m| m.len()));
+    }
+    let hash = assets::sha256_bytes(stamp.as_bytes());
+    let sw = format!(
+        "// generated by `nord build --pwa`\nconst CACHE = 'nord-{id}-{ver}';\nconst FILES = {files};\n\
+self.addEventListener('install', (e) => {{ e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES)).then(() => self.skipWaiting())); }});\n\
+self.addEventListener('activate', (e) => {{ e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k.startsWith('nord-{id}-') && k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim())); }});\n\
+self.addEventListener('fetch', (e) => {{ if (e.request.method !== 'GET') return; e.respondWith(caches.match(e.request, {{ ignoreSearch: true }}).then((hit) => hit || fetch(e.request))); }});\n",
+        id = proj.id,
+        ver = &hash[..12.min(hash.len())],
+        files = serde_json::to_string(&list)?,
+    );
+    io::write_atomic(&out.join("sw.js"), sw.as_bytes())?;
+
+    let idx = out.join("index.html");
+    let html = fs::read_to_string(&idx).context("index.html")?;
+    let head = format!("<link rel=\"manifest\" href=\"manifest.webmanifest\"><meta name=\"theme-color\" content=\"{bg}\">");
+    let reg = "<script>if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('sw.js').catch(() => {});</script>";
+    let html = html.replacen("</head>", &format!("{head}</head>"), 1).replacen("</body>", &format!("{reg}</body>"), 1);
+    io::write_atomic(&idx, html.as_bytes())?;
+    Ok(())
 }
 
 fn write_manifest(out: &Path, p: &nord_core::Project, target: Target, pl: &Plan) -> Result<()> {
@@ -1031,6 +1119,34 @@ mod tests {
         )
         .unwrap_err();
         assert!(e.to_string().contains("Cargo.toml"), "{e}");
+    }
+
+    #[test]
+    fn pwa_export_writes_manifest_service_worker_and_registers_it() {
+        let d = tmp("pwa");
+        let proj = d.join("game");
+        nord_core::project::create(&proj, ProjectType::TwoD).unwrap();
+        let out = d.join("out");
+        let r = build(&proj, &engine(), &Opts { out: Some(out.clone()), pwa: true, ..Opts::default() }).unwrap();
+        assert!(r.notes.iter().any(|n| n.starts_with("pwa:")));
+        let m: serde_json::Value = serde_json::from_slice(&fs::read(out.join("manifest.webmanifest")).unwrap()).unwrap();
+        assert_eq!(m["display"], "fullscreen");
+        assert_eq!(m["start_url"], "./");
+        assert!(out.join(m["icons"][0]["src"].as_str().unwrap()).is_file());
+        let sw = fs::read_to_string(out.join("sw.js")).unwrap();
+        assert!(sw.contains("\"runtime/phaser/index.js\"") && sw.contains("manifest.webmanifest") && !sw.contains("\"sw.js\""));
+        let html = fs::read_to_string(out.join("index.html")).unwrap();
+        assert!(html.contains("rel=\"manifest\"") && html.contains("serviceWorker"));
+        // single-file builds cannot be PWAs
+        let e = build(&proj, &engine(), &Opts { out: Some(d.join("o2")), pwa: true, single_file: true, ..Opts::default() }).unwrap_err();
+        assert!(format!("{e}").contains("--pwa"));
+    }
+
+    #[test]
+    fn size_checks_flag_big_files() {
+        let n = size_checks(&[("assets/music/a.mp3".into(), 20 << 20), ("vendor/x.js".into(), 30 << 20)]);
+        assert_eq!(n.len(), 1 + 0);
+        assert!(n.iter().any(|s| s.contains("a.mp3")));
     }
 
     #[test]

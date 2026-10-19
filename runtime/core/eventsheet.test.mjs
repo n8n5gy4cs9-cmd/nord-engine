@@ -239,3 +239,25 @@ test('debugger: breakpoint pauses when the event runs, step advances one frame, 
   assert.ok(s.objects === 1 && s.costs.length >= 2 && s.frameMs >= 0);
   assert.ok(d.ran.has('1'));
 });
+
+// ---- timelines (M10-21)
+test('timeline: keyframes ease, events fire once, finish trigger, loop, pause/seek; bezier + sample', async () => {
+  const { sample, bezier } = await import('./timeline.js');
+  assert.equal(sample([{ t: 0, v: 0 }, { t: 2, v: 10 }], 1), 5);
+  assert.equal(sample([{ t: 0, v: 0 }, { t: 2, v: 10, ease: 'quadIn' }], 1), 2.5);
+  assert.equal(sample([{ t: 1, v: 3 }], 0), 3);
+  const b = bezier(0.25, 0.1, 0.25, 1); assert.ok(b(0.5) > 0.5 && b(0) === 0 && b(1) === 1);
+  files.sheet = { format: 1, events: [{ type: 'variable', name: 'ev', valueType: 'number', value: 0 }, { type: 'variable', name: 'fin', valueType: 'number', value: 0 },
+    ev([C('Timeline', 'on-event', { timeline: 'intro', name: 'ping' })], [{ object: 'System', id: 'add-to-var', params: { variable: 'ev', value: '1' } }]),
+    ev([C('Timeline', 'on-finished', { timeline: 'intro' })], [setv('fin', '1')]),
+    ev([sys('on-start-of-layout')], [{ object: 'Timeline', id: 'play', params: { timeline: 'intro' } }])] };
+  files.s = { name: 's', settings: { eventSheet: 'sheet', timelines: { intro: { duration: 1, tracks: [{ target: 'Box', property: 'x', keys: [{ t: 0, v: 0 }, { t: 1, v: 100 }] }, { target: 'Box', property: 'var:hp', keys: [{ t: 0, v: 10 }, { t: 1, v: 0 }] }], events: [{ t: 0.5, name: 'ping' }] } } }, entities: [E('Box', 0, 0, { vars: { hp: 10 } })] };
+  const g = mk(); await g.loadScene('s');
+  for (let i = 0; i < 30; i++) g.tick(1 / 60); // 0.5s
+  const box = g.scene.find('Box');
+  assert.ok(Math.abs(box.pos[0] - 50) < 3, `x≈50 (${box.pos[0]})`); assert.ok(Math.abs(box.vars.hp - 5) < 0.5);
+  g.scene.timelines.pause('intro'); const x = box.pos[0]; for (let i = 0; i < 10; i++) g.tick(1 / 60); assert.equal(box.pos[0], x);
+  g.scene.timelines.resume('intro');
+  for (let i = 0; i < 40; i++) g.tick(1 / 60);
+  assert.equal(box.pos[0], 100); assert.equal(V(g, 'ev'), 1); assert.equal(V(g, 'fin'), 1); assert.equal(g.scene.timelines.isPlaying('intro'), false);
+});

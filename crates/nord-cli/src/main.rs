@@ -65,6 +65,9 @@ enum Cmd {
         /// Also write <out>.zip (for itch.io style uploads)
         #[arg(long)]
         zip: bool,
+        /// Installable offline web app: manifest + service worker
+        #[arg(long)]
+        pwa: bool,
     },
     /// Build a Rust (wasm-game / wasm-app) project for `nord serve`: cargo build → target/web/
     BuildRust {
@@ -275,6 +278,7 @@ fn main() -> anyhow::Result<()> {
             single_file,
             optimize,
             zip,
+            pwa,
         } => {
             let engine =
                 nord_serve::engine_root().context("engine root not found (set NORD_ROOT)")?;
@@ -288,6 +292,7 @@ fn main() -> anyhow::Result<()> {
                     single_file,
                     optimize,
                     zip,
+                    pwa,
                 },
             )?;
             print!("{}", r.summary());

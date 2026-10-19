@@ -4,6 +4,7 @@ export { Entity, registerComponent, components } from './entity.js';
 export { Scene, applyOverrides, FIXED_DT } from './scene.js';
 export { Game } from './game.js';
 export { I18n, Accessibility, COLORBLIND, colorMatrixValues } from './i18n.js';
+export { Timelines, bezier, sample } from './timeline.js';
 export { Effects, EFFECT_TYPES } from './effects.js';
 export { Debugger, attachDebugOverlay } from './debug.js';
 export { Events } from './events.js';

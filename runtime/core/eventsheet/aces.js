@@ -142,6 +142,21 @@ registerPlugin('Mouse', {
   },
   expressions: { X: (r) => r.game.input.pointer.worldX, Y: (r) => r.game.input.pointer.worldY },
 });
+registerPlugin('Timeline', {
+  conditions: {
+    'on-finished': { params: ['timeline'], raw: ['timeline'], trigger: true, test: (r, p) => r.firing.data.timeline === p.timeline },
+    'on-event': { params: ['timeline', 'name'], raw: ['timeline', 'name'], trigger: true, test: (r, p) => r.firing.data.timeline === p.timeline && r.firing.data.name === p.name },
+    'is-playing': { params: ['timeline'], raw: ['timeline'], test: (r, p) => !!r.scene.timelines?.isPlaying(p.timeline) },
+  },
+  actions: {
+    play: { params: ['timeline'], raw: ['timeline'], run: (r, p) => { r.scene.timelines?.play(p.timeline); } },
+    pause: { params: ['timeline'], raw: ['timeline'], run: (r, p) => { r.scene.timelines?.pause(p.timeline); } },
+    resume: { params: ['timeline'], raw: ['timeline'], run: (r, p) => { r.scene.timelines?.resume(p.timeline); } },
+    stop: { params: ['timeline'], raw: ['timeline'], run: (r, p) => { r.scene.timelines?.stop(p.timeline); } },
+    'set-time': { params: ['timeline', 'time'], raw: ['timeline'], run: (r, p) => { r.scene.timelines?.seek(p.timeline, p.time); } },
+  },
+  expressions: { Time: (r, a) => r.scene.timelines?.time(a[0]) ?? 0, Progress: (r, a) => r.scene.timelines?.progress(a[0]) ?? 0 },
+});
 registerPlugin('Effects', { // scene-wide (camera) effects; per-object ones are object ACEs
   actions: {
     'add-effect': { params: ['type'], raw: ['type'], run: (r, p) => { r.game.effects.add('scene', p.type); } },
