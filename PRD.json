@@ -1798,7 +1798,7 @@
       "id": "M10-27",
       "milestone": "M10",
       "title": "Addon SDK: JS addon format (plugin/behavior/effect) + `nord addon pack/install`, editor loads metadata, docs + sample addon",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M10-28",

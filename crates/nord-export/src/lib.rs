@@ -2,6 +2,7 @@
 //!
 //! Pipeline: validate → stage (project files + runtime + vendored libs + generated index.html) → optimise (optional)
 //! → minify | single-file bundle (Node + vendored esbuild-wasm, optional) → nord.json manifest → offline check → zip.
+pub mod addon;
 pub mod mac;
 pub mod portable;
 pub mod rust;

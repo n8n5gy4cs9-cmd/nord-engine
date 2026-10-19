@@ -95,6 +95,9 @@ pub struct Project {
     pub ui: Map<String, Value>,
     #[serde(default)]
     pub plugins: Vec<String>,
+    /// Installed addons (folders under `addons/` with an `addon.json`), loaded by the runtime before the first scene (docs/ADDONS.md).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub addons: Vec<String>,
     /// Export settings are kept free-form (`web`, `mac`, …) so unknown keys survive round trips.
     #[serde(default)]
     pub export: Map<String, Value>,
@@ -121,6 +124,7 @@ impl Project {
             input: Input::default(),
             ui: Map::new(),
             plugins: vec![],
+            addons: vec![],
             export: Map::new(),
             desktop: Map::new(),
         }

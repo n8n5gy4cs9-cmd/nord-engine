@@ -1,0 +1,9 @@
+{
+  "id": "dice",
+  "name": "Dice and Wobble (sample addon)",
+  "version": "1.0.0",
+  "type": "mixed",
+  "author": "Crowelian 2026 + Sonnet",
+  "license": "MIT",
+  "description": "Sample addon: a Dice plugin (Roll expression, roll action + trigger), a Wobble behavior and a 'warm' scene effect. Copy it as a starting point for your own."
+}

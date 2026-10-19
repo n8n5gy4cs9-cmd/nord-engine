@@ -10,6 +10,7 @@ import { I18n, Accessibility } from './i18n.js';
 import { Debugger } from './debug.js';
 import { Effects } from './effects.js';
 import { Timelines } from './timeline.js';
+import { loadAddons } from './addons.js';
 
 export class Game {
   /**
@@ -79,7 +80,7 @@ export class Game {
     return true;
   }
   async loadScene(path = this.project.startScene) {
-    if (!this._i18nReady) { this._i18nReady = true; await this.i18n.init(); }
+    if (!this._i18nReady) { this._i18nReady = true; await this.i18n.init(); await loadAddons(this); }
     const kept = (this.scene?.roots ?? []).flatMap((r) => [...r.all()]).filter((e) => e.behavior('Persist') && !e.parent).map((e) => e.toJSON());
     this.effects.clear('scene'); this.effects.prune();
     this.scene?.destroy();

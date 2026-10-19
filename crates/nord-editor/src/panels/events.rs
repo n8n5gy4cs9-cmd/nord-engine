@@ -6,7 +6,7 @@ use crate::state::{EditorState, LogLevel};
 use egui::{Color32, RichText, Ui};
 use nord_core::assets::AssetType;
 use serde_json::{json, Value};
-use std::sync::OnceLock;
+use std::sync::RwLock;
 use std::time::{Duration, Instant};
 
 pub type Path = Vec<usize>;
@@ -50,25 +50,53 @@ fn aces(v: &Value) -> Vec<Ace> {
         .unwrap_or_default()
 }
 
+fn parse_groups(v: &Value) -> Vec<Group> {
+    v["groups"]
+        .as_array()
+        .map(|g| {
+            g.iter()
+                .map(|g| Group {
+                    name: g["name"].as_str().unwrap_or("").into(),
+                    kind: g["kind"].as_str().unwrap_or("").into(),
+                    conditions: aces(&g["conditions"]),
+                    actions: aces(&g["actions"]),
+                    expressions: strings(&g["expressions"]),
+                })
+                .collect()
+        })
+        .unwrap_or_default()
+}
+
+fn base_json() -> Value {
+    serde_json::from_str(include_str!("../../assets/aces.json")).unwrap_or(Value::Null)
+}
+
+static CATALOG: RwLock<Option<&'static [Group]>> = RwLock::new(None);
+
+/// The ACE catalog: the engine's (assets/aces.json) plus the open project's addons (`.nord/aces.json`, see `set_project_aces`).
 pub fn catalog() -> &'static [Group] {
-    static C: OnceLock<Vec<Group>> = OnceLock::new();
-    C.get_or_init(|| {
-        let v: Value = serde_json::from_str(include_str!("../../assets/aces.json")).unwrap_or(Value::Null);
-        v["groups"]
-            .as_array()
-            .map(|g| {
-                g.iter()
-                    .map(|g| Group {
-                        name: g["name"].as_str().unwrap_or("").into(),
-                        kind: g["kind"].as_str().unwrap_or("").into(),
-                        conditions: aces(&g["conditions"]),
-                        actions: aces(&g["actions"]),
-                        expressions: strings(&g["expressions"]),
-                    })
-                    .collect()
-            })
-            .unwrap_or_default()
-    })
+    if let Some(c) = *CATALOG.read().unwrap() {
+        return c;
+    }
+    let mut w = CATALOG.write().unwrap();
+    *w.get_or_insert_with(|| Box::leak(parse_groups(&base_json()).into_boxed_slice()))
+}
+
+/// Merge addon groups (from `tools/export-aces.mjs --project`) into the catalog; `None` restores the engine catalog.
+/// The merged list is leaked (a few KB per project open) so `catalog()` can stay a plain `&'static [Group]`.
+pub fn set_project_aces(extra: Option<&Value>) {
+    let extra_groups = extra.map(parse_groups).unwrap_or_default();
+    if extra_groups.is_empty() && CATALOG.read().unwrap().is_none() {
+        return;
+    }
+    let mut all = parse_groups(&base_json());
+    for g in extra_groups {
+        match all.iter().position(|x| x.kind == g.kind && x.name == g.name) {
+            Some(i) => all[i] = g,
+            None => all.push(g),
+        }
+    }
+    *CATALOG.write().unwrap() = Some(Box::leak(all.into_boxed_slice()));
 }
 
 /// "set-animation" → "Set animation"
@@ -319,6 +347,8 @@ impl EventsUi {
             self.doc["events"] = json!([]);
         }
         self.path = Some(rel.into());
+        let extra: Option<Value> = nord_core::io::load_json(&root.join(".nord/aces.json")).ok();
+        set_project_aces(extra.as_ref());
         self.undo.clear();
         self.redo.clear();
         self.dirty = false;
@@ -456,6 +486,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
     let mut save = false;
     let mut create = false;
     let mut attach = false;
+    let mut refresh = false;
     ui.horizontal_wrapped(|ui| {
         egui::ComboBox::from_id_salt("sheet")
             .selected_text(st.events.path.clone().unwrap_or_else(|| "(choose event sheet)".into()))
@@ -483,10 +514,20 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         if ui.add_enabled(!st.events.redo.is_empty(), egui::Button::new("Redo")).clicked() {
             st.events.redo();
         }
+        let has_addons = st.project.as_ref().is_some_and(|p| !p.addons.is_empty());
+        if ui.add_enabled(has_addons, egui::Button::new("Refresh addons")).on_hover_text("re-reads the project's addons so their conditions/actions appear in the picker (needs Node)").clicked() {
+            refresh = true;
+        }
         if st.events.dirty {
             ui.weak("unsaved •");
         }
     });
+    if refresh {
+        match refresh_addon_aces(&root) {
+            Ok(msg) => st.toast(msg),
+            Err(e) => st.log(LogLevel::Error, format!("addons: {e}")),
+        }
+    }
     if create {
         let name = st.events.new_name.trim().replace(' ', "-");
         let rel = format!("events/{name}.events.json");
@@ -574,6 +615,25 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
     if std::mem::take(&mut st.events.skip_record) {
     } else if st.events.doc != before {
         st.events.record(before);
+    }
+}
+
+/// Run `node tools/export-aces.mjs --project <root>` and load the result into the catalog.
+fn refresh_addon_aces(root: &std::path::Path) -> Result<String, String> {
+    let engine = nord_serve::engine_root().ok_or("engine folder not found (set NORD_ROOT)")?;
+    let out = std::process::Command::new("node")
+        .arg(engine.join("tools/export-aces.mjs"))
+        .arg("--project")
+        .arg(root)
+        .output()
+        .map_err(|e| format!("could not run node: {e}"))?;
+    let text = String::from_utf8_lossy(&out.stdout).trim().to_string();
+    let extra: Option<Value> = nord_core::io::load_json(&root.join(".nord/aces.json")).ok();
+    set_project_aces(extra.as_ref());
+    if out.status.success() {
+        Ok(text)
+    } else {
+        Err(format!("{text} {}", String::from_utf8_lossy(&out.stderr).trim()))
     }
 }
 
@@ -1059,6 +1119,17 @@ mod tests {
         assert_eq!(t.len(), 2);
         assert_eq!(t[1]["name"], "c");
         assert_eq!(t[1]["children"][0]["name"], "score");
+    }
+
+    #[test]
+    fn project_addons_extend_the_catalog() {
+        let extra = json!({"groups":[{"name":"Dice","kind":"plugin","conditions":[],"actions":[{"id":"roll","params":["sides"]}],"expressions":["Roll"]}]});
+        set_project_aces(Some(&extra));
+        assert!(catalog().iter().any(|g| g.name == "Dice" && g.actions[0].id == "roll"));
+        assert!(catalog().iter().any(|g| g.name == "System"), "engine groups stay");
+        assert!(search(catalog(), false, "dice roll").iter().any(|(g, _)| g.name == "Dice"));
+        set_project_aces(Some(&json!({"groups":[]})));
+        assert!(!catalog().iter().any(|g| g.name == "Dice"));
     }
 
     #[test]

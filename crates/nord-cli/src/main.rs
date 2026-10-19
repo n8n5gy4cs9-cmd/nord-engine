@@ -12,6 +12,27 @@ struct Cli {
 }
 
 #[derive(Subcommand)]
+enum AddonCmd {
+    /// Zip an addon folder (needs addon.json) into <id>-<version>.nordaddon
+    Pack {
+        dir: PathBuf,
+        #[arg(short, long)]
+        out: Option<PathBuf>,
+    },
+    /// Install a .nordaddon file or addon folder into <project>/addons/<id> and register it
+    Install {
+        source: PathBuf,
+        #[arg(short, long, default_value = ".")]
+        project: PathBuf,
+    },
+    /// List the addons registered in a project
+    List {
+        #[arg(default_value = ".")]
+        project: PathBuf,
+    },
+}
+
+#[derive(Subcommand)]
 enum Cmd {
     /// Print engine info
     Info,
@@ -68,6 +89,11 @@ enum Cmd {
         /// Installable offline web app: manifest + service worker
         #[arg(long)]
         pwa: bool,
+    },
+    /// Addon SDK: pack a folder into a .nordaddon, install one into a project, list a project's addons
+    Addon {
+        #[command(subcommand)]
+        cmd: AddonCmd,
     },
     /// Build a Rust (wasm-game / wasm-app) project for `nord serve`: cargo build → target/web/
     BuildRust {
@@ -265,6 +291,28 @@ fn main() -> anyhow::Result<()> {
             }
             println!("OK");
         }
+        Cmd::Addon { cmd } => match cmd {
+            AddonCmd::Pack { dir, out } => {
+                let f = nord_export::addon::pack(&dir, out.as_deref())?;
+                println!("packed {}", f.display());
+            }
+            AddonCmd::Install { source, project } => {
+                let m = nord_export::addon::install(&source, &project)?;
+                println!("installed {} {} ({}) → addons/{}", m.name, m.version, m.kind, m.id);
+            }
+            AddonCmd::List { project } => {
+                let (ok, bad) = nord_export::addon::list(&project);
+                for m in &ok {
+                    println!("{:<20} {:<8} {:<9} {}", m.id, m.version, m.kind, m.name);
+                }
+                for b in bad {
+                    eprintln!("problem: {b}");
+                }
+                if ok.is_empty() {
+                    println!("(no addons)");
+                }
+            }
+        },
         Cmd::Serve { project, port } => {
             let engine =
                 nord_serve::engine_root().context("engine root not found (set NORD_ROOT)")?;

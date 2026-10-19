@@ -261,3 +261,25 @@ test('timeline: keyframes ease, events fire once, finish trigger, loop, pause/se
   for (let i = 0; i < 40; i++) g.tick(1 / 60);
   assert.equal(box.pos[0], 100); assert.equal(V(g, 'ev'), 1); assert.equal(V(g, 'fin'), 1); assert.equal(g.scene.timelines.isPlaying('intro'), false);
 });
+
+// ---- addons (M10-27)
+test('addon: plugin + behavior + effect register from project.addons; a broken addon is skipped', async () => {
+  const mods = {
+    'addons/ok/main.js': { register: (nord) => {
+      nord.registerPlugin('Dice2', { expressions: { Six: () => 6 }, actions: { 'set-x': { params: ['v'], run: (r, p) => { r.setVar('got', p.v); } } } });
+      class Hop extends nord.Behavior { tick() { this.entity.vars.hops = (this.entity.vars.hops ?? 0) + 1; } }
+      nord.registerBehavior('Hop', Hop, {});
+      nord.registerEffect('warm2', { defaults: { value: 1 }, css: (p) => `sepia(${p.value})` });
+    } },
+    'addons/bad/addon.js': { register: () => { throw new Error('boom'); } },
+  };
+  files['addons/ok/addon.json'] = { id: 'ok', main: 'main.js' }; files['addons/bad/addon.json'] = { id: 'bad' };
+  files.sheet = { format: 1, events: [{ type: 'variable', name: 'got', valueType: 'number', value: 0 }, ev([sys('on-start-of-layout')], [setv('got', 'Dice2.Six + 1')])] };
+  files.s = { name: 's', settings: { eventSheet: 'sheet' }, entities: [E('A', 0, 0, { behaviors: [{ type: 'Hop' }] })] };
+  const errs = [];
+  const g = new Game({ id: 'x', startScene: 's', addons: ['addons/bad', 'addons/ok'] }, { fetchJSON: async (p) => structuredClone(files[p]), importScript: async (p) => mods[p], storage: new MemoryStorage(), onError: (e) => errs.push(e.message) });
+  await g.loadScene('s'); g.tick(1 / 60);
+  assert.equal(V(g, 'got'), 7); assert.equal([...g.scene.all()][0].vars.hops, 1);
+  assert.deepEqual(errs, ['boom']); assert.deepEqual(g.addons.map((a) => a.id), ['ok']);
+  const { EFFECT_TYPES } = await import('./index.js'); assert.equal(EFFECT_TYPES.warm2.value, 1);
+});

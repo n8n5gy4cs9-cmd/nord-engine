@@ -17,6 +17,9 @@ const CSS_FILTER = {
   brightness: (p) => `brightness(${p.value})`, contrast: (p) => `contrast(${p.value})`, saturate: (p) => `saturate(${p.value})`,
   hue: (p) => `hue-rotate(${p.degrees}deg)`, grayscale: (p) => `grayscale(${p.value})`, sepia: (p) => `sepia(${p.value})`, negative: (p) => `invert(${p.value})`,
 };
+const CUSTOM = new Map(); // addon effects with their own implementation
+/** Addons: registerEffect('warm', { defaults: { value: 1 }, css: (p) => `sepia(${p.value})` }) — css works on the scene level on every tier; create(target, params, game) → { set, setEnabled, remove } for anything else. */
+export function registerEffect(type, def) { EFFECT_TYPES[type] = { ...def.defaults }; if (def.css) CSS_FILTER[type] = def.css; if (def.create) CUSTOM.set(type, def.create); }
 const hexNum = (c) => (typeof c === 'number' ? c : parseInt(String(c).replace('#', '').slice(0, 6), 16) || 0);
 export { hexNum };
 
@@ -48,7 +51,7 @@ export class Effects {
     const defaults = EFFECT_TYPES[type];
     if (!defaults) { this.game.warn(`[nord] unknown effect '${type}'`); return null; }
     const h = { type, target, params: { ...defaults, ...given }, enabled: true, impl: null, game: this.game };
-    const native = this.game.backend?.createEffect?.(target, type, h.params);
+    const native = CUSTOM.get(type)?.(target, h.params, this.game) ?? this.game.backend?.createEffect?.(target, type, h.params);
     if (native) h.impl = native;
     else if (target === 'scene' && this.canvas) {
       this.list.push(h); // so the CSS filter stack sees it
