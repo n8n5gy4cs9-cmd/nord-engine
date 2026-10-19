@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>T23 2D lights and real shadows — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="tutorials.html" class="active" aria-current="page">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Tutorials</div><a href="tutorials.html">Learn by building</a><a href="tut-t01-hello-nord.html">T01 Hello Nord</a><a href="tut-t02-sprite-movement.html">T02 Sprite &amp; movement</a><a href="tut-t03-first-script.html">T03 Your first script</a><a href="tut-t04-platformer.html">T04 Platformer from template</a><a href="tut-t05-physics.html">T05 Physics &amp; collisions</a><a href="tut-t06-tilemaps.html">T06 Tilemaps</a><a href="tut-t07-animation-juice.html">T07 Animation &amp; juice</a><a href="tut-t08-ui-hud.html">T08 UI &amp; HUD</a><a href="tut-t09-audio.html">T09 Audio</a><a href="tut-t10-3d-scene.html">T10 3D scene &amp; camera</a><a href="tut-t11-3d-physics.html">T11 3D physics (FPS)</a><a href="tut-t12-enemy-ai.html">T12 Enemy AI</a><a href="tut-t13-save-load.html">T13 Save &amp; load</a><a href="tut-t14-export-host.html">T14 Export to web &amp; host it</a><a href="tut-t15-mac-app.html">T15 Mac app</a><a href="tut-t16-rust-game.html">T16 Rust/WASM game</a><a href="tut-t17-rust-egui-app.html">T17 Rust egui app</a><a href="tut-t18-library-snippets.html">T18 Writing library snippets</a><a href="tut-t19-notepaint.html">T19 Build notepaint, from a blank folder</a><a href="tut-t20-star-not.html">T20 Build Star-Not, a complete small space adventure</a><a href="tut-t21-project-design.html">T21 Plan a bigger Nord project</a><a href="tut-t22-shader-terrain.html">T22 Put a terrain shader in a Nord app</a><a href="tut-t23-light-shadows.html" class="cur" aria-current="page">T23 2D lights and real shadows</a></nav><main id="content"><div class="crumb">Tutorials / Nord Engine</div><h1>T23 2D lights and real shadows</h1>
+<p><strong>Example:</strong> <code>examples/light2d/</code> — <em>Crypt of Embers</em>. A dark crypt lit only by what you carry: light four braziers, burn the shades with your beam, hide behind pillars. Everything is built from three reusable library scripts you can drop into <strong>any 2D project</strong>.</p>
+<h2 id="1-copy-paste-kit-2-minutes">1. Copy-paste kit (2 minutes)<a class="anchor" href="#1-copy-paste-kit-2-minutes">#</a></h2>
+<ol>
+<li>Copy these three files from <code>library/scripts/</code> into your project&#39;s <code>scripts/</code> folder (or insert them from the editor <strong>Library</strong> panel: <em>2D lighting &amp; shadows</em>, <em>2D light source</em>, <em>2D shadow caster</em>).</li>
+<li>Add this entity to your scene (one per scene; any name, any position). It makes the scene dark:</li>
+</ol>
+<pre class="code" data-lang="json"><code>{ &quot;name&quot;: &quot;Light2D&quot;, &quot;transform&quot;: { &quot;pos&quot;: [0, 0, 0] },
+  &quot;scripts&quot;: [{ &quot;path&quot;: &quot;scripts/light2d.js&quot;, &quot;attributes&quot;: { &quot;ambient&quot;: &quot;#14172b&quot;, &quot;force&quot;: 1, &quot;shadowStrength&quot;: 1, &quot;softness&quot;: 1 } }] }</code></pre>
+<ol start="3">
+<li>Add a light to anything: put the script on a torch, the player, a lamp…</li>
+</ol>
+<pre class="code" data-lang="json"><code>{ &quot;path&quot;: &quot;scripts/light2d-source.js&quot;, &quot;attributes&quot;: { &quot;color&quot;: &quot;#ffb25a&quot;, &quot;radius&quot;: 200, &quot;intensity&quot;: 1, &quot;flicker&quot;: 0.25, &quot;softness&quot;: 4 } }</code></pre>
+<ol start="4">
+<li>Make walls, crates and pillars cast shadows (size comes from the sprite or collider):</li>
+</ol>
+<pre class="code" data-lang="json"><code>{ &quot;path&quot;: &quot;scripts/light2d-occluder.js&quot;, &quot;attributes&quot;: {} }</code></pre>
+<p>Use <code>&quot;shape&quot;: &quot;circle&quot;, &quot;radius&quot;: 22</code> for round things.</p>
+<p>That is all. Press <strong>Play</strong>: the scene is dark, lights glow and the occluders throw shadows. Anything on <strong>layer 1 or higher</strong>, and the whole HUD, is drawn above the darkness.</p>
+<h3 id="the-three-files">The three files<a class="anchor" href="#the-three-files">#</a></h3>
+<pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;fx.light2d&quot;,&quot;title&quot;:&quot;2D lighting &amp; shadows (system)&quot;,&quot;category&quot;:&quot;fx&quot;,&quot;tier&quot;:[&quot;2d&quot;],&quot;tags&quot;:[&quot;light&quot;,&quot;shadow&quot;,&quot;darkness&quot;,&quot;lightmap&quot;,&quot;lantern&quot;,&quot;flashlight&quot;,&quot;game-ready&quot;],&quot;description&quot;:&quot;Dark-scene 2D lighting with real shadows. Put this on ONE entity (any name), add fx.light2d-source to lights (point or cone/flashlight, flicker, soft shadows) and fx.light2d-occluder to walls/pillars/crates. Renders a small lightmap multiplied over the world (HUD/UI and layer&gt;=1 entities stay bright). Gameplay can query light with game.light2d.lightAt(x, y).&quot;}
+import { NordScript } from 'nord';
+
+const TAU = Math.PI * 2, EPS = 2e-4;
+const wrap = (a) =&gt; { a %= TAU; return a &gt; Math.PI ? a - TAU : a &lt; -Math.PI ? a + TAU : a; };
+
+/** Distance along a ray (origin ox,oy; direction dx,dy) to the nearest segment in the flat list `s[0..n)` (x1,y1,x2,y2 …); Infinity if none. */
+export function castRay(ox, oy, dx, dy, s, n) {
+  let best = Infinity;
+  for (let i = 0; i &lt; n; i += 4) {
+    const x1 = s[i], y1 = s[i + 1], ex = s[i + 2] - x1, ey = s[i + 3] - y1, den = dx * ey - dy * ex;
+    if (den &gt; -1e-9 &amp;&amp; den &lt; 1e-9) continue;
+    const wx = x1 - ox, wy = y1 - oy, t = (wx * ey - wy * ex) / den, u = (wx * dy - wy * dx) / den;
+    if (t &gt; 1e-6 &amp;&amp; u &gt;= 0 &amp;&amp; u &lt;= 1 &amp;&amp; t &lt; best) best = t;
+  }
+  return best;
+}
+/** True when nothing in the segment list blocks the straight line from (ax,ay) to (bx,by). */
+export function clear(ax, ay, bx, by, s, n) {
+  const dx = bx - ax, dy = by - ay, d = Math.hypot(dx, dy);
+  return d &lt; 1e-6 || castRay(ax, ay, dx / d, dy / d, s, n) &gt;= d - 0.75;
+}
+
+/**
+ * Shared per-game state: registered lights + occluders, settings and queries. Created lazily by `light2d(game)` so the system,
+ * sources and occluders can start in any order. Exposed as `game.light2d` for gameplay code.
+ */
+export class Light2DWorld {
+  constructor() {
+    this.lights = new Set(); this.occluders = new Set();
+    this.version = 0; this.shadows = true; this.samples = 3;
+    this.ambient = [0.08, 0.09, 0.16]; // lightmap base colour 0..1 (darkness level of unlit areas)
+    this.force = 1; this.shadowStrength = 1; this.softness = 1; // global: light brightness x, shadow darkness 0..1, soft-shadow size x
+    this.stats = { ms: 0, lights: 0, drawn: 0, occluders: 0, segments: 0, rays: 0 };
+    this._buf = []; this._pt = { level: 0, dx: 0, dy: 0 };
+  }
+  /** Number of enabled occluders (part of every cache key, so enabling/disabling one invalidates shadows). */
+  enabledCount() { let n = 0; for (const o of this.occluders) if (o.entity.enabled) n++; return n; }
+  /** Copy the segments of enabled occluders whose bounds touch the box into `out` (cleared first); returns the flat length. */
+  segmentsIn(x0, y0, x1, y1, out) {
+    out.length = 0;
+    for (const o of this.occluders) {
+      const b = o.bb; if (!o.entity.enabled || b[2] &lt; x0 || b[0] &gt; x1 || b[3] &lt; y0 || b[1] &gt; y1) continue;
+      for (const v of o.segs) out.push(v);
+    }
+    return out.length;
+  }
+  /** Light level at a world point, summed over all lights with line of sight (0 = dark; ~1 = fully lit). */
+  lightAt(x, y) { return this.sample(x, y).level; }
+  /** Like lightAt but also returns `dx,dy`, the unit direction towards the light(s) (weighted). The returned object is reused. */
+  sample(x, y) {
+    const r = this._pt; let level = 0, sx = 0, sy = 0;
+    for (const l of this.lights) {
+      if (!l.entity.enabled || !l.on) continue;
+      const dx = x - l.x, dy = y - l.y, d = Math.hypot(dx, dy), R = l.radius;
+      if (d &gt;= R) continue;
+      let k = l.i * (1 - d / R) ** l.falloff;
+      if (l.angle &lt; 359) { const half = (l.angle * Math.PI) / 360, off = Math.abs(wrap(Math.atan2(dy, dx) - l.dir)); k *= Math.max(0, Math.min(1, (half - off) / (half * 0.3))); }
+      if (k &lt;= 0.001) continue;
+      if (l.shadows &amp;&amp; this.shadows) { const n = l.refreshSegs(this); if (!clear(l.x, l.y, x, y, l.segs, n)) continue; }
+      level += k; sx += (l.x - x) / (d || 1) * k; sy += (l.y - y) / (d || 1) * k;
+    }
+    const m = Math.hypot(sx, sy) || 1; r.level = level; r.dx = sx / m; r.dy = sy / m; return r;
+  }
+}
+export const light2d = (game) =&gt; (game.light2d ??= new Light2DWorld());
+
+export default class Light2D extends NordScript {
+  static attributes = {
+    ambient: { type: 'color', default: '#14172b', label: 'Ambient colour (what unlit areas look like; #ffffff = no darkness)' },
+    scale: { type: 'number', default: 0.5, min: 0.15, max: 1, label: 'Lightmap resolution (1 = full, 0.5 = half, cheaper + softer)' },
+    force: { type: 'number', default: 1, min: 0, max: 4, label: 'Light force: brightness multiplier for every light (visual only)' },
+    shadowStrength: { type: 'number', default: 1, min: 0, max: 1, label: 'Shadow strength (1 = black shadows, 0 = no visible shadows)' },
+    softness: { type: 'number', default: 1, min: 0, max: 4, label: 'Shadow softness multiplier (0 = hard; scales each light\'s own softness)' },
+    shadows: { type: 'bool', default: true },
+    softShadows: { type: 'int', default: 3, min: 1, max: 8, label: 'Samples for soft shadows / cone edges' },
+    depth: { type: 'number', default: 500, label: 'Draw depth (entities on layer &gt;= 1 draw above the darkness)' },
+  };
+  start() {
+    const a = this.attrs, b = this.game.backend, ps = b?.scene, P = globalThis.Phaser;
+    this.world = light2d(this.game);
+    if (!ps || !P) { console.warn('[light2d] needs the Phaser 2D backend'); return; }
+    const w = this.world; w.shadows = a.shadows; w.samples = a.softShadows; w.force = a.force; w.shadowStrength = a.shadowStrength; w.softness = a.softness; this.setAmbient(a.ambient);
+    this.ps = ps; this.key = `__light2d_${Math.random().toString(36).slice(2, 8)}`;
+    this.lw = Math.max(16, Math.round(b.width * a.scale)); this.lh = Math.max(16, Math.round(b.height * a.scale));
+    this.tex = ps.textures.createCanvas(this.key, this.lw, this.lh); this.ctx = this.tex.getContext();
+    this.img = ps.add.image(b.width / 2, b.height / 2, this.key).setScrollFactor(0).setDepth(a.depth).setBlendMode(P.BlendModes.MULTIPLY);
+    this.hook = () =&gt; this.render(); ps.events.on('prerender', this.hook);
+  }
+  onDestroy() {
+    try { this.ps?.events.off('prerender', this.hook); this.img?.destroy(); this.ps?.textures.remove(this.key); } catch { /* scene already gone */ }
+    this.world?.lights.clear(); this.world?.occluders.clear();
+  }
+  /** Set the ambient (unlit) colour from '#rrggbb'. Brighter = less dark. */
+  setAmbient(hex) { const n = parseInt(hex.slice(1, 7), 16); this.world.ambient = [(n &gt;&gt; 16) / 255, ((n &gt;&gt; 8) &amp; 255) / 255, (n &amp; 255) / 255]; }
+  /** Live tuning, all clamped: setLook({ force, shadowStrength, softness, ambient: '#rrggbb' }). Returns the resulting values. */
+  setLook({ force, shadowStrength, softness, ambient } = {}) {
+    const w = this.world, c = (v, lo, hi) =&gt; Math.min(hi, Math.max(lo, v));
+    if (force !== undefined) w.force = c(force, 0, 4);
+    if (shadowStrength !== undefined) w.shadowStrength = c(shadowStrength, 0, 1);
+    if (softness !== undefined) w.softness = c(softness, 0, 4);
+    if (ambient !== undefined) this.setAmbient(ambient);
+    return { force: w.force, shadowStrength: w.shadowStrength, softness: w.softness };
+  }
+  toggleShadows(on = !this.world.shadows) { this.world.shadows = on; return on; }
+
+  render() {
+    const t0 = performance.now(), w = this.world, ctx = this.ctx, cam = this.ps.cameras.main;
+    const vw = cam.width / cam.zoom, vh = cam.height / cam.zoom, left = cam.scrollX + cam.width / 2 - vw / 2, top = cam.scrollY + cam.height / 2 - vh / 2;
+    this.img.setDisplaySize(vw, vh);
+    const sx = this.lw / vw, sy = this.lh / vh, st = w.stats; st.lights = w.lights.size; st.occluders = w.occluders.size; st.drawn = 0; st.segments = 0; st.rays = 0;
+    ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
+    ctx.fillStyle = `rgb(${Math.round(w.ambient[0] * 255)},${Math.round(w.ambient[1] * 255)},${Math.round(w.ambient[2] * 255)})`;
+    ctx.fillRect(0, 0, this.lw, this.lh);
+    ctx.globalCompositeOperation = 'lighter';
+    const count = w.enabledCount(), V = { left, top, sx, sy, count };
+    for (const l of w.lights) {
+      if (!l.entity.enabled || !l.on || l.i &lt;= 0.002 || l.r &lt;= 1) continue;
+      if (l.x + l.r &lt; left || l.x - l.r &gt; left + vw || l.y + l.r &lt; top || l.y - l.r &gt; top + vh) continue;
+      this.drawLight(ctx, l, V); st.drawn++;
+    }
+    ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
+    this.tex.refresh();
+    st.ms = st.ms * 0.9 + (performance.now() - t0) * 0.1;
+  }
+
+  drawLight(ctx, l, V) {
+    const w = this.world, { left, top, sx, sy } = V, cx = (l.x - left) * sx, cy = (l.y - top) * sy, rr = l.r * sx, st = w.stats;
+    const I = l.i * w.force, k = I &gt; 1 ? I : 1, c = l.rgb, a0 = Math.min(1, I);
+    const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, rr);
+    for (let s = 0; s &lt;= 5; s++) { const t = s / 5; g.addColorStop(t, `rgba(${Math.min(255, c[0] * k) | 0},${Math.min(255, c[1] * k) | 0},${Math.min(255, c[2] * k) | 0},${(a0 * (1 - t) ** l.falloff).toFixed(3)})`); }
+    ctx.fillStyle = g;
+    const cone = l.angle &lt; 359, shadowed = l.shadows &amp;&amp; w.shadows;
+    if (!shadowed &amp;&amp; !cone) { ctx.globalAlpha = 1; ctx.beginPath(); ctx.arc(cx, cy, rr, 0, TAU); ctx.fill(); return; }
+    const cache = l.shape(w, V.count);
+    st.segments += cache.nseg; st.rays += cache.rays;
+    const str = w.shadowStrength; // weaker shadows: first lay down the light as if nothing blocked it
+    if (shadowed &amp;&amp; str &lt; 1) {
+      ctx.globalAlpha = 1 - str; ctx.beginPath();
+      if (cone) { const h = (l.angle * Math.PI) / 360; ctx.moveTo(cx, cy); ctx.arc(cx, cy, rr, l.dir - h, l.dir + h); ctx.closePath(); } else ctx.arc(cx, cy, rr, 0, TAU);
+      ctx.fill();
+    }
+    ctx.globalAlpha = (shadowed ? str : 1) / cache.polys.length;
+    for (const p of cache.polys) {
+      ctx.beginPath(); ctx.moveTo((p[0] - left) * sx, (p[1] - top) * sy);
+      for (let j = 2; j &lt; p.length; j += 2) ctx.lineTo((p[j] - left) * sx, (p[j + 1] - top) * sy);
+      ctx.closePath(); ctx.fill();
+    }
+    ctx.globalAlpha = shadowed ? str : 1;
+    for (const b of cache.bodies) { // lit tops of walls/pillars facing the light
+      ctx.beginPath(); ctx.moveTo((b[0] - left) * sx, (b[1] - top) * sy);
+      for (let j = 2; j &lt; b.length; j += 2) ctx.lineTo((b[j] - left) * sx, (b[j + 1] - top) * sy);
+      ctx.closePath(); ctx.fill();
+    }
+  }
+}
+</code></pre>
+<pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;fx.light2d-source&quot;,&quot;title&quot;:&quot;2D light source (point / cone / flashlight)&quot;,&quot;category&quot;:&quot;fx&quot;,&quot;tier&quot;:[&quot;2d&quot;],&quot;tags&quot;:[&quot;light&quot;,&quot;shadow&quot;,&quot;torch&quot;,&quot;flashlight&quot;,&quot;flicker&quot;,&quot;game-ready&quot;],&quot;requires&quot;:[&quot;fx.light2d&quot;],&quot;description&quot;:&quot;A shadow-casting light on this entity: colour, intensity, radius, falloff, optional cone (flashlight) that aims at the pointer / movement / entity rotation, flicker and soft shadows. Needs fx.light2d (copy light2d.js next to it) on any entity. Edit at runtime: script.on, .intensity, .radius, .angle, .color, .setColor('#rrggbb').&quot;}
+import { NordScript } from 'nord';
+import { light2d, castRay, clear } from './light2d.js';
+
+const TAU = Math.PI * 2, EPS = 2e-4, same = (a, b) =&gt; a &amp;&amp; a.length === b.length &amp;&amp; a.every((v, i) =&gt; v === b[i]);
+const wrap = (a) =&gt; { a %= TAU; return a &gt; Math.PI ? a - TAU : a &lt; -Math.PI ? a + TAU : a; };
+
+export default class LightSource2D extends NordScript {
+  static attributes = {
+    color: { type: 'color', default: '#ffd9a0' },
+    intensity: { type: 'number', default: 1, min: 0, max: 4 },
+    radius: { type: 'number', default: 160, min: 4, label: 'Radius (world units)' },
+    falloff: { type: 'number', default: 1.6, min: 0.3, max: 6, label: 'Falloff (1 = linear, higher = tighter glow)' },
+    shadows: { type: 'bool', default: true },
+    softness: { type: 'number', default: 0, min: 0, label: 'Light size for soft shadows (px, 0 = hard)' },
+    angle: { type: 'number', default: 360, min: 5, max: 360, label: 'Cone angle in degrees (360 = point light)' },
+    aim: { type: 'enum', options: ['fixed', 'pointer', 'move'], default: 'fixed', label: 'Cone direction: entity rotation / mouse / movement' },
+    direction: { type: 'number', default: 0, label: 'Cone direction offset (deg, 0 = right, 90 = down)' },
+    turn: { type: 'number', default: 0, min: 0, label: 'Max turn speed (deg/s, 0 = instant)' },
+    offset: { type: 'vec2', default: [0, 0] },
+    flicker: { type: 'number', default: 0, min: 0, max: 1, label: 'Flicker amount (campfire = 0.25)' },
+    flickerSpeed: { type: 'number', default: 9, min: 0 },
+    on: { type: 'bool', default: true },
+  };
+  isLight2D = true;
+  init() { // fields gameplay code may change at runtime
+    const a = this.attrs;
+    Object.assign(this, { on: a.on, intensity: a.intensity, radius: a.radius, falloff: a.falloff, shadows: a.shadows, softness: a.softness, angle: a.angle });
+    this.setColor(a.color);
+    this.dir = (a.direction * Math.PI) / 180; this.t = Math.random() * 100; this.last = null;
+    this.i = this.intensity; this.r = this.radius; this.moveDir = this.dir;
+    this.#place();
+    this.world = light2d(this.game); this.world.lights.add(this);
+  }
+  onDestroy() { this.world?.lights.delete(this); }
+  setColor(hex) { this.color = hex; const n = parseInt(hex.slice(1, 7), 16); this.rgb = [(n &gt;&gt; 16) &amp; 255, (n &gt;&gt; 8) &amp; 255, n &amp; 255]; }
+  #place() { const w = this.entity.worldPos, o = this.attrs.offset; this.x = w[0] + o[0]; this.y = w[1] + o[1]; }
+
+  update(dt) {
+    const a = this.attrs; this.#place(); this.t += dt;
+    // flicker: layered sines + a little noise; the shadow shape uses the steady radius, only brightness and glow size wobble
+    const f = a.flicker ? 1 - a.flicker * (0.5 + 0.5 * (Math.sin(this.t * a.flickerSpeed) * 0.5 + Math.sin(this.t * a.flickerSpeed * 2.3 + 1.7) * 0.3 + (Math.random() - 0.5) * 0.4)) : 1;
+    this.i = this.intensity * f; this.r = this.radius * (a.flicker ? 0.97 + 0.03 * f : 1);
+    if (this.angle &gt;= 359) return;
+    let want = this.dir;
+    if (a.aim === 'pointer') want = Math.atan2(this.input.pointer.worldY - this.y, this.input.pointer.worldX - this.x);
+    else if (a.aim === 'move') {
+      if (this.last &amp;&amp; Math.hypot(this.x - this.last[0], this.y - this.last[1]) &gt; 0.2) this.moveDir = Math.atan2(this.y - this.last[1], this.x - this.last[0]);
+      this.last = [this.x, this.y]; want = this.moveDir;
+    } else want = ((this.entity.rot[2] + a.direction) * Math.PI) / 180;
+    const d = wrap(want - this.dir), max = a.turn ? (a.turn * Math.PI * dt) / 180 : Infinity;
+    this.dir = wrap(this.dir + Math.max(-max, Math.min(max, d)));
+  }
+
+  /** Segments of the occluders near this light (refreshed only when the light, an occluder or the enabled set changed). */
+  refreshSegs(w, count = w.enabledCount()) {
+    const s = (this._s ??= { key: null, segs: [] }), R = this.radius, key = [Math.round(this.x * 4), Math.round(this.y * 4), R, w.version, count];
+    if (!same(s.key, key)) { s.key = key; w.segmentsIn(this.x - R, this.y - R, this.x + R, this.y + R, s.segs); }
+    this.segs = s.segs; return s.segs.length;
+  }
+
+  /** Visibility polygons (one per soft-shadow sample) + lit occluder bodies, cached until something relevant changes. */
+  shape(w, count) {
+    const n = this.refreshSegs(w, count), S = this.softness * w.softness, cone = this.angle &lt; 359, shadowed = this.shadows &amp;&amp; w.shadows, ns = S &gt; 0 || cone ? w.samples : 1;
+    const key = [...this._s.key, Math.round(this.dir * 2000), this.angle, S, ns, shadowed ? 1 : 0];
+    if (this._p &amp;&amp; same(this._p.key, key)) return this._p;
+    const R = this.radius, half = cone ? (this.angle * Math.PI) / 360 : Math.PI, edge = cone ? half * 0.12 : 0, B = R * 1.2;
+    const list = shadowed ? this._s.segs.slice(0, n) : [];
+    list.push(this.x - B, this.y - B, this.x + B, this.y - B, this.x + B, this.y - B, this.x + B, this.y + B, this.x + B, this.y + B, this.x - B, this.y + B, this.x - B, this.y + B, this.x - B, this.y - B);
+    const polys = []; let rays = 0;
+    for (let k = 0; k &lt; ns; k++) {
+      const jitter = ns &gt; 1 &amp;&amp; S &gt; 0 ? S : 0, ja = (k / ns) * TAU + 0.7, ox = this.x + Math.cos(ja) * jitter, oy = this.y + Math.sin(ja) * jitter;
+      const dir = this.dir + (ns &gt; 1 ? (k / (ns - 1) - 0.5) * 2 * edge : 0), rel = [];
+      const add = (r) =&gt; { if (!cone || Math.abs(r) &lt;= half) rel.push(r); };
+      for (let i = 0; i &lt; list.length; i += 4) { const r = wrap(Math.atan2(list[i + 1] - oy, list[i] - ox) - dir); add(wrap(r - EPS)); add(wrap(r + EPS)); }
+      if (cone) rel.push(-half, half);
+      rel.sort((p, q) =&gt; p - q);
+      const pts = cone ? [ox, oy] : [];
+      for (const r of rel) {
+        const dx = Math.cos(dir + r), dy = Math.sin(dir + r), d = castRay(ox, oy, dx, dy, list, list.length);
+        pts.push(ox + dx * (d === Infinity ? B * 2 : d), oy + dy * (d === Infinity ? B * 2 : d));
+      }
+      polys.push(pts); rays += rel.length;
+    }
+    const bodies = [];
+    if (shadowed) for (const o of w.occluders) {
+      if (!o.lit || !o.entity.enabled || o.bb[2] &lt; this.x - R || o.bb[0] &gt; this.x + R || o.bb[3] &lt; this.y - R || o.bb[1] &gt; this.y + R) continue;
+      for (let i = 0; i &lt; o.pts.length; i += 2) { // lit when at least one (slightly outward-nudged) corner is seen
+        const dx = o.pts[i] - o.cx, dy = o.pts[i + 1] - o.cy, m = Math.hypot(dx, dy) || 1, px = o.pts[i] + (dx / m) * 1.5, py = o.pts[i + 1] + (dy / m) * 1.5;
+        if (cone &amp;&amp; Math.abs(wrap(Math.atan2(py - this.y, px - this.x) - this.dir)) &gt; half + edge) continue;
+        if (clear(this.x, this.y, px, py, this._s.segs, n)) { bodies.push(o.pts); break; }
+      }
+    }
+    return (this._p = { key, polys, bodies, rays, nseg: n });
+  }
+}
+</code></pre>
+<pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;fx.light2d-occluder&quot;,&quot;title&quot;:&quot;2D shadow caster (wall / pillar / crate)&quot;,&quot;category&quot;:&quot;fx&quot;,&quot;tier&quot;:[&quot;2d&quot;],&quot;tags&quot;:[&quot;shadow&quot;,&quot;light&quot;,&quot;wall&quot;,&quot;occluder&quot;,&quot;game-ready&quot;],&quot;requires&quot;:[&quot;fx.light2d&quot;],&quot;description&quot;:&quot;Makes this entity block 2D light (box or circle). Size comes from the script, else the sprite/collider size × scale. Moves, rotates and enable/disable are picked up automatically (set static = true for walls to skip the per-frame check). The body itself is lit when a light sees it (lit = true).&quot;}
+import { NordScript } from 'nord';
+import { light2d } from './light2d.js';
+
+export default class Occluder2D extends NordScript {
+  static attributes = {
+    shape: { type: 'enum', options: ['box', 'circle'], default: 'box' },
+    size: { type: 'vec2', default: [0, 0], label: 'Box size (0,0 = from sprite/collider)' },
+    radius: { type: 'number', default: 0, min: 0, label: 'Circle radius (0 = from size)' },
+    lit: { type: 'bool', default: true, label: 'Light the body itself (tops of walls)' },
+    static: { type: 'bool', default: true, label: 'Never moves (skip the per-frame check)' },
+  };
+  init() { this.world = light2d(this.game); this.sig = null; this.rebuild(); this.world.occluders.add(this); this.world.version++; }
+  onDestroy() { this.world?.occluders.delete(this); this.world &amp;&amp; this.world.version++; }
+  update() { if (!this.attrs.static) this.rebuild(); }
+
+  rebuild() {
+    const e = this.entity, a = this.attrs, w = e.worldPos, rot = e.rot[2], sc = e.scale;
+    const sig = `${w[0]},${w[1]},${rot},${sc[0]},${sc[1]}`;
+    if (sig === this.sig) return; this.sig = sig;
+    const src = e.getComponent('sprite')?.data.size ?? e.getComponent('collider')?.data.size ?? [32, 32];
+    const sz = a.size[0] &gt; 0 ? a.size : src, cx = w[0], cy = w[1], pts = [];
+    if (a.shape === 'circle') {
+      const r = (a.radius &gt; 0 ? a.radius : sz[0] / 2) * Math.abs(sc[0]);
+      for (let i = 0; i &lt; 12; i++) pts.push(cx + Math.cos((i / 12) * Math.PI * 2) * r, cy + Math.sin((i / 12) * Math.PI * 2) * r);
+    } else {
+      const hw = (sz[0] * Math.abs(sc[0])) / 2, hh = (sz[1] * Math.abs(sc[1])) / 2, c = Math.cos((rot * Math.PI) / 180), s = Math.sin((rot * Math.PI) / 180);
+      for (const [x, y] of [[-hw, -hh], [hw, -hh], [hw, hh], [-hw, hh]]) pts.push(cx + x * c - y * s, cy + x * s + y * c);
+    }
+    const segs = []; for (let i = 0; i &lt; pts.length; i += 2) { const j = (i + 2) % pts.length; segs.push(pts[i], pts[i + 1], pts[j], pts[j + 1]); }
+    const xs = pts.filter((_, i) =&gt; i % 2 === 0), ys = pts.filter((_, i) =&gt; i % 2 === 1);
+    Object.assign(this, { pts, segs, cx, cy, lit: a.lit, bb: [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)] });
+    if (this.world.occluders.has(this)) this.world.version++;
+  }
+}
+</code></pre>
+<h2 id="2-the-dials-how-dark-how-bright-how-soft">2. The dials: how dark, how bright, how soft<a class="anchor" href="#2-the-dials-how-dark-how-bright-how-soft">#</a></h2>
+<p>All dials live on the <code>light2d.js</code> entity and can be changed in the inspector <strong>or at runtime</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Dial</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ambient</code></td>
+<td>Colour of unlit areas. <code>#000000</code> pitch black, <code>#14172b</code> crypt, <code>#ffffff</code> no darkness (day). Tint it blue for night, orange for dusk.</td>
+</tr>
+<tr>
+<td><code>force</code></td>
+<td>Light force: multiplies every light&#39;s brightness (0 = lights off, 1 = normal, up to 4).</td>
+</tr>
+<tr>
+<td><code>shadowStrength</code></td>
+<td>1 = black shadows, 0.5 = shadows half-lit by their light, 0 = shadows invisible.</td>
+</tr>
+<tr>
+<td><code>softness</code></td>
+<td>Multiplies every light&#39;s own <code>softness</code>. 0 = razor hard shadows, 1 = as authored, 3 = very soft.</td>
+</tr>
+<tr>
+<td><code>scale</code></td>
+<td>Lightmap resolution: 0.5 (default) is cheap and soft, 1 is sharper.</td>
+</tr>
+<tr>
+<td><code>softShadows</code></td>
+<td>Samples for soft edges (1–8). More = smoother, slightly slower.</td>
+</tr>
+</tbody></table>
+<p>Per light (<code>light2d-source.js</code>): <code>color</code>, <code>intensity</code>, <code>radius</code>, <code>falloff</code> (1 linear, higher = tighter glow), <code>shadows</code>, <code>softness</code>, <code>angle</code> (360 = point light, 50 = flashlight cone), <code>aim</code> (<code>fixed</code>, <code>pointer</code>, <code>move</code>), <code>flicker</code>, <code>on</code>.</p>
+<p>Change them from a script:</p>
+<pre class="code" data-lang="js"><code>const sys = [...this.scene.all()].flatMap((e) =&gt; e.scripts).find((s) =&gt; s.setLook);
+sys.setLook({ force: 1.6, shadowStrength: 0.7, softness: 2, ambient: '#2b2f52' }); // darker/lighter scene at will
+sys.toggleShadows();
+const lamp = this.scene.find('Lamp').scripts.find((s) =&gt; s.isLight2D);
+lamp.intensity = 2; lamp.radius = 260; lamp.setColor('#8fb8ff'); lamp.on = false;</code></pre>
+<p>In Crypt of Embers hold <code>[</code> <code>]</code> (force), <code>;</code> <code>&#39;</code> (shadow strength), <code>,</code> <code>.</code> (softness), press <code>B</code> for darkness and <code>L</code> for shadows on/off, <code>H</code> for the live stats panel.</p>
+<h2 id="3-build-it-step-by-step">3. Build it step by step<a class="anchor" href="#3-build-it-step-by-step">#</a></h2>
+<ol>
+<li><strong>Dark crypt.</strong> One <code>Light2D</code> entity, <code>ambient</code> very dark. The floor is a single big sprite.</li>
+<li><strong>Walls.</strong> Each wall is one entity with a static collider and <code>light2d-occluder.js</code>; brick sprites are children. One occluder per wall keeps shadows cheap.</li>
+<li><strong>The hero&#39;s light.</strong> Two child entities of the hero: <code>Halo</code> (point light) and <code>Beam</code> (<code>angle: 54</code>, <code>aim: &quot;pointer&quot;</code>, <code>turn</code> speed limit for smooth swinging). <code>lantern.js</code> turns the beam on while you hold fire and drains oil.</li>
+<li><strong>Braziers.</strong> A small flickering light that <code>brazier.js</code> boosts when lit (it just changes <code>radius</code> and <code>intensity</code> on the light script).</li>
+<li><strong>Gameplay from light.</strong> <code>game.light2d.lightAt(x, y)</code> returns how lit a world point is, with line of sight, so walls block it. <code>shade.js</code> burns when the level is high and chases in the dark. <code>sample(x, y)</code> also gives the direction to the light.</li>
+</ol>
+<pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
+
+// The hero's light: a steady halo plus a flashlight beam (hold fire = Mouse0 / Space) that costs oil. Keys 1-5 swap the beam colour.
+// Children named 'Halo' and 'Beam' carry the fx.light2d-source scripts; oil flasks emit the global event 'oil-flask'.
+const COLORS = ['#fff1c9', '#8fb8ff', '#8dffa6', '#d896ff', '#ff6a5a'];
+export default class Lantern extends NordScript {
+  static attributes = {
+    maxOil: { type: 'number', default: 100, min: 1 },
+    beamDrain: { type: 'number', default: 6, min: 0, label: 'Oil per second while the beam is on' },
+    haloDrain: { type: 'number', default: 0.35, min: 0 },
+    flask: { type: 'number', default: 35, min: 0, label: 'Oil restored per flask' },
+  };
+  isLantern = true;
+  start() {
+    const light = (n) =&gt; this.entity.find(n)?.scripts.find((s) =&gt; s.isLight2D);
+    this.halo = light('Halo'); this.beam = light('Beam');
+    this.oil = this.attrs.maxOil; this.dead = false; this.color = 0; this.k = 0;
+    this.baseHalo = this.halo.radius; this.baseBeam = this.beam.radius;
+    this.offs = [this.events.on('oil-flask', () =&gt; { this.oil = Math.min(this.attrs.maxOil, this.oil + this.attrs.flask); this.events.emit('toast', { text: 'Oil +' + this.attrs.flask, color: '#ffc34d' }); }), this.events.on('died', () =&gt; { this.dead = true; })];
+  }
+  onDestroy() { this.offs?.forEach((o) =&gt; o()); }
+  update(dt) {
+    const a = this.attrs;
+    for (let i = 0; i &lt; 5; i++) if (this.input.pressed('c' + (i + 1))) { this.color = i; this.beam.setColor(COLORS[i]); this.events.emit('toast', { text: 'Beam colour ' + (i + 1), color: COLORS[i] }); }
+    const firing = !this.dead &amp;&amp; this.input.down('fire') &amp;&amp; this.oil &gt; 0.5;
+    this.k += ((firing ? 1 : 0) - this.k) * Math.min(1, 12 * dt); // the beam eases on/off
+    this.beam.on = this.k &gt; 0.02; this.beam.intensity = 1.25 * this.k;
+    this.oil = Math.max(0, this.oil - (this.dead ? 0 : a.haloDrain + (firing ? a.beamDrain : 0)) * dt);
+    const low = Math.min(1, this.oil / 25); // the halo shrinks and gutters as the oil runs out
+    this.halo.radius = this.baseHalo * (0.45 + 0.55 * low); this.halo.intensity = this.dead ? 0.15 : 0.45 + 0.35 * low;
+    this.halo.attrs.flicker = this.oil &lt; 25 ? 0.35 : 0.1;
+    this.events.emit('oil', { oil: this.oil, max: a.maxOil, firing });
+  }
+}
+</code></pre>
+<pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
+
+// A shade lives in the dark: it is invisible except for its eyes, sprints at the hero in darkness and burns up in light. Light must
+// reach it (walls and pillars cast real shadows), so hiding it behind a pillar and sweeping the beam is the game. Uses game.light2d.
+export default class Shade extends NordScript {
+  static attributes = {
+    speed: { type: 'number', default: 100, min: 0 },
+    sight: { type: 'number', default: 340, min: 0 },
+    hp: { type: 'number', default: 1, min: 0.1 },
+    burn: { type: 'number', default: 1.1, min: 0, label: 'Damage per second at full light' },
+    threshold: { type: 'number', default: 0.35, min: 0, label: 'Light level that hurts it' },
+    recoil: { type: 'number', default: 0.65, min: 0, label: 'Light level that makes it flee (weaker light only burns it)' },
+    contactDamage: { type: 'number', default: 1 },
+  };
+  start() {
+    this.hp = this.attrs.hp; this.vx = 0; this.vy = 0; this.cd = 0; this.t = Math.random() * 9; this.dead = false;
+    this.stuck = 0; this.side = 0; this.last = [...this.entity.pos]; this.lit = 0; this.eyes = this.entity.children[0];
+  }
+  update(dt) {
+    if (this.dead) return;
+    const a = this.attrs, e = this.entity, world = this.game.light2d, p = this.scene.findByTag('player')[0];
+    this.t += dt; this.cd -= dt;
+    const s = world.sample(e.pos[0], e.pos[1]); this.lit = s.level;
+    const hurt = s.level &gt; a.threshold;
+    let mul = 0, dx = 0, dy = 0;
+    if (hurt) { this.hp -= Math.min(1.5, s.level) * a.burn * dt; if (this.hp &lt;= 0) return this.die(); }
+    if (s.level &gt; a.recoil) { dx = -s.dx; dy = -s.dy; mul = 0.7; } // strong light (beam, lit brazier): recoil away from it
+    else if (p &amp;&amp; !p.destroyed) { // otherwise hunt, even through a dim halo
+      const px = p.pos[0] - e.pos[0], py = p.pos[1] - e.pos[1], d = Math.hypot(px, py);
+      if (d &lt; a.sight) { dx = px / d; dy = py / d; mul = d &lt; 150 ? 1.45 : 1; }
+      if (d &lt; 26 &amp;&amp; this.cd &lt;= 0) { this.cd = 1; p.emit('damage', { amount: a.contactDamage, from: e }); this.events.emit('sfx', 'hit'); }
+    }
+    // stuck behind a pillar/wall: slide sideways for a moment
+    const moved = Math.hypot(e.pos[0] - this.last[0], e.pos[1] - this.last[1]); this.last = [...e.pos];
+    this.stuck = mul &amp;&amp; moved &lt; a.speed * dt * 0.25 ? this.stuck + dt : 0;
+    if (this.stuck &gt; 0.3) { this.side = (this.side || (Math.random() &lt; 0.5 ? 1 : -1)); this.stuck = 0; this.sideT = 0.8; }
+    if ((this.sideT = (this.sideT ?? 0) - dt) &gt; 0) { const ox = dx; dx = dx * 0.35 - dy * this.side * 0.95; dy = dy * 0.35 + ox * this.side * 0.95; } else this.side = 0;
+    this.vx = dx * a.speed * mul; this.vy = dy * a.speed * mul;
+    const w = 1 + Math.sin(this.t * 7) * 0.07 + (hurt ? Math.sin(this.t * 60) * 0.12 : 0); e.scale = [w, w, 1];
+    this.eyes?.set('sprite', 'tint', hurt ? '#ffffff' : '#ff3b30');
+  }
+  fixedUpdate() { if (!this.dead) this.physics.setVelocity(this.entity, this.vx, this.vy); }
+  die() {
+    this.dead = true; this.physics.setVelocity(this.entity, 0, 0); this.events.emit('score', 100); this.events.emit('sfx', 'explosion'); this.events.emit('shade:dead', this.entity);
+    const k = { v: 1 }; this.tween(k, { v: 0 }, { duration: 0.3, onUpdate: () =&gt; { this.entity.scale = [k.v * 1.4, k.v * 1.4, 1]; }, onComplete: () =&gt; this.entity.destroy() });
+  }
+}
+</code></pre><aside class="box tip"><div class="box-title">Tip</div><p>The shadow shape is computed once per light and only recomputed when that light or an occluder nearby moves, so many static torches cost almost nothing. Mark moving crates <code>&quot;static&quot;: false</code> on the occluder.</p>
+</aside><h2 id="4-performance-checklist">4. Performance checklist<a class="anchor" href="#4-performance-checklist">#</a></h2>
+<ul>
+<li>Prefer a few big lights over many small ones; a light off-screen is skipped.</li>
+<li>Lights with <code>shadows: false</code> (pickup glints) are just a gradient.</li>
+<li>Lower <code>softShadows</code> or raise <code>scale</code> softness only if the lightmap time in the Light Lab (<code>H</code>) gets high; a typical scene is about 1 ms.</li>
+</ul>
+<h2 id="5-try-next">5. Try next<a class="anchor" href="#5-try-next">#</a></h2>
+<p>Swap the ambient to <code>#7a86b8</code> for a moonlit yard, give a lamp <code>angle: 90</code> and <code>aim: &quot;fixed&quot;</code> as a spotlight on a rotating entity, or animate <code>force</code> for lightning with <code>this.tween</code>.</p>
+<div class="pager"><a href="tut-t22-shader-terrain.html"><small>← Previous</small>T22 Put a terrain shader in a Nord app</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-copy-paste-kit-2-minutes">1. Copy-paste kit (2 minutes) </a><a href="#2-the-dials-how-dark-how-bright-how-soft">2. The dials: how dark, how bright, how soft </a><a href="#3-build-it-step-by-step">3. Build it step by step </a><a href="#4-performance-checklist">4. Performance checklist </a><a href="#5-try-next">5. Try next </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

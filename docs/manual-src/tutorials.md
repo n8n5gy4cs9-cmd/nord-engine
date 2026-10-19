@@ -36,3 +36,5 @@ A tutorial is a guided exercise. The **Manual** explains a feature in more depth
 These guides include the shipped source files, explain each construction step, and show where to find reusable artwork/audio. The larger-project guide is a text-only game design and folder example.
 
 [Shader Terrain Lab: render a shader, add audio and drop a cube](tut-t22-shader-terrain.html) · [Mobile/touch joystick and buttons](mobile-controls.html)
+
+[T23 Dark scenes with 2D lights and real shadows: Crypt of Embers, plus a copy-paste lighting kit](tut-t23-light-shadows.html)

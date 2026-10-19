@@ -54,7 +54,7 @@ Blank 2D · Blank 3D · Platformer · Top-down adventure · Shooter · Puzzle (m
 
 ## K. Example projects (complete, in `examples/`, each with README)
 Games 2D: Pong · Breakout · Snake · Flappy · Space shooter · Platformer (tilemap, enemies, coins, checkpoints, boss) · Top-down adventure (dialogue, inventory) ·
-Tower defense · Match-3 · Endless runner · 2048 · Memory · Tetris-like · Idle clicker.
+Tower defense · Match-3 · Endless runner · 2048 · Memory · Tetris-like · Idle clicker · Crypt of Embers (2D light & shadow: `fx.light2d*` scripts).
 Games 3D: FPS arena · 3D platformer collectathon · Racing time-trial · Marble roll · Physics sandbox · Model viewer / showroom.
 Apps: Todo · Kanban · Markdown notes · Dashboard · Paint · Audio visualiser.
 Rust: Asteroids (macroquad) · Physics toys (rapier) · egui JSON tool.

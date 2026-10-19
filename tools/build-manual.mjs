@@ -74,7 +74,7 @@ const LIVE = [];
 const BOX_TITLES = { dummies: 'For dummy developers', tip: 'Tip', warn: 'Careful', todo: 'TODO (planned)' };
 function renderMd(md, options = {}) {
   // Tutorials embed the exact shipped files so a reader can reconstruct the project.
-  md = md.replace(/^::: example-code ((?:examples\/(?:notepaint|star-not|shader-terrain)\/|tools\/gen_star_not_audio\.mjs)[\w./-]*) ([\w-]+)\s*$/gm, (_, file, lang) => {
+  md = md.replace(/^::: example-code ((?:examples\/(?:notepaint|star-not|shader-terrain)\/|examples\/light2d\/scripts\/|library\/scripts\/light2d|tools\/gen_star_not_audio\.mjs)[\w./-]*) ([\w-]+)\s*$/gm, (_, file, lang) => {
     if (file.split('/').includes('..')) throw new Error('Unsafe tutorial source path');
     return `<pre class="code" data-lang="${esc(lang)}"><code>${esc(read(file))}</code></pre>`;
   });
