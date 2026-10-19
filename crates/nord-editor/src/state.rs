@@ -247,6 +247,7 @@ pub struct EditorState {
     pub history_ui: crate::panels::history::HistoryUi,
     pub project_ui: crate::panels::project::ProjectUi,
     pub layout_ui: crate::panels::layout::LayoutUi,
+    pub sprite: crate::panels::sprite::SpriteUi,
     /// phone/tablet preview server while it is on (dropping it stops the server)
     pub lan: Option<nord_serve::Lan>,
     pub lan_log_seen: usize,
@@ -323,6 +324,7 @@ impl EditorState {
             history_ui: Default::default(),
             project_ui: Default::default(),
             layout_ui: Default::default(),
+            sprite: Default::default(),
             lan: None,
             lan_log_seen: 0,
             lan_open: false,

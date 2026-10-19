@@ -1151,3 +1151,53 @@ fn layout_panel_layers_arrange_and_undo() {
     let xs: Vec<f64> = ids.iter().map(|id| h.state().scene.as_ref().unwrap().entities.iter().find(|e| &e.id == id).unwrap().transform.pos[0]).collect();
     assert!(xs.windows(2).all(|w| (w[0] - w[1]).abs() < 1e-9), "aligned: {xs:?}");
 }
+
+#[test]
+fn sprite_editor_paints_saves_and_stores_origin_points_and_collision() {
+    use nord_editor::panels::sprite::{Phase, Tool};
+    let d = example_copy("sprite", "event-sheets");
+    let mut st = EditorState::new();
+    st.open_project(&d).unwrap();
+    st.sprite.new_image(16, 16);
+    st.sprite.color = [255, 0, 0, 255];
+    // rectangle tool: drag from (2,2) to (9,5), filled
+    st.sprite.tool = Tool::Rect;
+    st.sprite.pointer(Phase::Down, 2, 2);
+    st.sprite.pointer(Phase::Move, 6, 4);
+    st.sprite.pointer(Phase::Move, 9, 5);
+    st.sprite.pointer(Phase::Up, 9, 5);
+    let px = |s: &nord_editor::panels::sprite::SpriteUi, x: u32, y: u32| s.img.as_ref().unwrap().get_pixel(x, y).0;
+    assert_eq!(px(&st.sprite, 5, 3), [255, 0, 0, 255]);
+    assert_eq!(px(&st.sprite, 10, 3)[3], 0, "outside the rectangle stays transparent");
+    // eraser punches a hole, undo brings it back
+    st.sprite.tool = Tool::Eraser;
+    st.sprite.pointer(Phase::Down, 5, 3);
+    st.sprite.pointer(Phase::Up, 5, 3);
+    assert_eq!(px(&st.sprite, 5, 3)[3], 0);
+    assert!(st.sprite.undo());
+    assert_eq!(px(&st.sprite, 5, 3), [255, 0, 0, 255]);
+    // metadata: origin, image point, auto-traced collision polygon
+    st.sprite.set_origin(5.5, 3.5);
+    st.sprite.set_point("muzzle", 9.0, 3.0);
+    st.sprite.auto_trace();
+    let poly = st.sprite.meta["collision"].as_array().unwrap().clone();
+    assert!(poly.len() >= 3 && poly.len() <= 8);
+    st.sprite.name = "assets/sprites/painted.png".into();
+    let mut h = Harness::builder()
+        .with_size(egui::vec2(1100.0, 800.0))
+        .build_ui_state(|ui, st: &mut EditorState| panels::sprite::ui(st, ui), st);
+    loaders(&h);
+    h.run_steps(3);
+    h.get_by_label_contains("Flip H").click();
+    h.run_steps(2);
+    assert_eq!(h.state().sprite.img.as_ref().unwrap().get_pixel(15 - 5, 3).0, [255, 0, 0, 255], "flip H mirrors the image");
+    h.get_by_label("Save").click();
+    h.run_steps(3);
+    let img = image::open(d.join("assets/sprites/painted.png")).unwrap().to_rgba8();
+    assert_eq!((img.width(), img.height()), (16, 16));
+    assert_eq!(img.get_pixel(10, 3).0, [255, 0, 0, 255]);
+    let meta: serde_json::Value = nord_core::io::load_json(&d.join("assets/sprites/painted.png.meta.json")).unwrap();
+    assert_eq!(meta["points"]["muzzle"], serde_json::json!([9.0, 3.0]));
+    assert_eq!(meta["origin"], serde_json::json!([5.5, 3.5]));
+    assert!(meta["collision"].as_array().unwrap().len() >= 3);
+}

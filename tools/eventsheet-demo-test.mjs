@@ -93,6 +93,11 @@ const { errors } = await withPage(`${ROOT}/examples/event-sheets`, async (page) 
   await ev(() => { __nord.scene.settings.layers[0].visible = false; }); await wait(200);
   assert.equal(await ev(() => __nord.scene.find('Hero').native.visible), false, 'hidden layer hides its objects');
   await page.screenshot({ path: `${out}/10-layers.png` });
+
+  // sprite-editor metadata: named image points follow the sprite (expression Hero.PointX("muzzle"))
+  const pt = await ev(() => { const m = __nord.backend.metaOf('assets/sprites/hero.png'); m.points = { muzzle: [26, 10] }; const h = __nord.scene.find('Hero'), s = __nord.scene.eventSheet; return { x: h.pos[0], y: h.pos[1], px: s.evalExpr('Hero.PointX("muzzle")'), py: s.evalExpr('Hero.PointY("muzzle")'), none: s.evalExpr('Hero.PointX("nope")') }; });
+  assert.ok(Math.abs(pt.px - (pt.x + 10)) < 1e-6 && Math.abs(pt.py - (pt.y - 6)) < 1e-6, `image point ${JSON.stringify(pt)}`);
+  assert.equal(pt.none, pt.x, 'unknown point falls back to the position');
 });
 assert.deepEqual(errors, [], errors.join('\n'));
 console.log('event-sheets demo OK');

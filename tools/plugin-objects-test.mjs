@@ -13,6 +13,7 @@ fs.rmSync(`${dir}/events`, { recursive: true, force: true });
 fs.mkdirSync(`${dir}/assets/video`, { recursive: true });
 execFileSync('ffmpeg', ['-v', 'error', '-y', '-f', 'lavfi', '-i', 'testsrc=size=160x90:rate=15', '-t', '2', '-c:v', 'libvpx', '-b:v', '200k', `${dir}/assets/video/test.webm`]);
 fs.copyFileSync(`${ROOT}/assets/sprites/tileset_platformer.png`, `${dir}/assets/sprites/tileset_platformer.png`);
+const hm = JSON.parse(fs.readFileSync(`${dir}/assets/sprites/hero.png.meta.json`, 'utf8')); hm.origin = [8, 16]; fs.writeFileSync(`${dir}/assets/sprites/hero.png.meta.json`, JSON.stringify(hm));
 const sceneFile = `${dir}/scenes/main.scene.json`;
 const scene = JSON.parse(fs.readFileSync(sceneFile, 'utf8'));
 delete scene.settings.eventSheet;
@@ -22,6 +23,7 @@ scene.entities = [
   ent('Panel', 120, 200, [{ type: 'ninePatch', texture: 'assets/sprites/items/crate.png', size: [180, 70], slice: [8, 8, 8, 8], tint: '#88c0d0' }]),
   ent('Font', 500, 200, [{ type: 'spriteFont', texture: 'assets/sprites/tileset_platformer.png', frameSize: [16, 16], chars: 'ABCDEFGH', text: 'ABBA', spacing: 2, scale: 1.5 }]),
   ent('Paint', 320, 300, [{ type: 'drawingCanvas', size: [120, 60], color: '#2e3440' }]),
+  ent('Pivot', 300, 250, [{ type: 'animatedSprite', texture: 'assets/sprites/hero.png', anim: 'idle' }]),
   ent('Movie', 560, 60, [{ type: 'video', src: 'assets/video/test.webm', size: [160, 90], loop: true, muted: true }]),
 ];
 fs.writeFileSync(sceneFile, JSON.stringify(scene));
@@ -33,6 +35,8 @@ const { errors } = await withPage(dir, async (page) => {
   const x0 = await ev(() => __nord.scene.find('Tiles').getComponent('tiledBackground').obj.tilePositionX);
   await page.waitForTimeout(600);
   assert.ok((await ev(() => __nord.scene.find('Tiles').getComponent('tiledBackground').obj.tilePositionX)) > x0 + 10, 'tiled background scrolls');
+  const og = await ev(() => { const o = __nord.scene.find('Pivot').getComponent('animatedSprite').obj; return [o.originX, o.originY]; });
+  assert.deepEqual(og, [0.25, 0.5], 'sprite origin comes from the editor metadata');
   assert.equal(await ev(() => __nord.scene.find('Font').getComponent('spriteFont').count), 4, 'sprite font lays out 4 glyphs');
   await ev(() => __nord.scene.find('Font').set('spriteFont', 'text', 'HAB'));
   assert.equal(await ev(() => __nord.scene.find('Font').getComponent('spriteFont').count), 3, 'text change relayouts');

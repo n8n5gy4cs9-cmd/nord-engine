@@ -4,6 +4,7 @@ pub mod code;
 pub mod icons;
 pub mod layout;
 pub mod panels;
+pub mod pixel;
 pub mod scene_ops;
 pub mod schema;
 pub mod state;

@@ -356,6 +356,8 @@ export class EventSheet {
     const pl = this.#pl(type);
     const f = pl?.expressions[name];
     if (f) return f(this, a);
+    const of = objectAces.expressions[name]; // object expression with arguments: Hero.PointX("muzzle")
+    if (of && !pl) { const list = this.cur.get(type) ? [this.cur.get(type)] : this.picked(type, this.solView ?? new Map()); return list[0] ? of(list[0], a, this) : 0; }
     throw new Error(`unknown expression ${type}.${name}()`);
   }
 

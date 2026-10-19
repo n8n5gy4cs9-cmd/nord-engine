@@ -233,6 +233,17 @@ registerPlugin('LocalStorage', {
 });
 
 const angle = (e) => e.rot[2] ?? 0;
+/** World position of a named image point from the sprite editor (<image>.meta.json "points"), following position, scale, flip and rotation. */
+function imagePoint(e, name) {
+  const c = e.getComponent('sprite') ?? e.getComponent('animatedSprite'), b = e.scene.game.backend;
+  const m = c && b?.metaOf?.(c.data.texture), pt = m?.points?.[name];
+  if (!pt) return null;
+  const [fw, fh] = b.frameSize(c.data.texture), o = m.origin ?? [fw / 2, fh / 2];
+  const kx = c.data.size ? c.data.size[0] / fw : 1, ky = c.data.size ? c.data.size[1] / fh : 1;
+  const lx = (pt[0] - o[0]) * kx * e.scale[0] * (c.data.flipX ? -1 : 1), ly = (pt[1] - o[1]) * ky * e.scale[1] * (c.data.flipY ? -1 : 1);
+  const a = angle(e) * rad;
+  return [e.pos[0] + lx * Math.cos(a) - ly * Math.sin(a), e.pos[1] + lx * Math.sin(a) + ly * Math.cos(a)];
+}
 registerObjectAces({
   conditions: {
     'compare-x': { params: ['comparison', 'value'], raw: ['comparison'], instance: true, test: (r, e, p) => cmp(e.pos[0], p.comparison, p.value) },
@@ -300,6 +311,7 @@ registerObjectAces({
     destroy: { instance: true, run: (r, e) => { e.destroy(); } },
   },
   expressions: {
+    PointX: (e, [n]) => imagePoint(e, n)?.[0] ?? e.pos[0], PointY: (e, [n]) => imagePoint(e, n)?.[1] ?? e.pos[1],
     X: (e) => e.pos[0], Y: (e) => e.pos[1], Angle: (e) => angle(e), Width: (e) => e.scale[0], Height: (e) => e.scale[1], UID: (e) => e.id, Name: (e) => e.name,
   },
 });

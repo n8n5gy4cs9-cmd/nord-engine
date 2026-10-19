@@ -78,7 +78,11 @@ export async function boot(project, opts = {}) {
 }
 
 class Backend {
-  constructor(game, project) { this.game = game; this.project = project; this.lightsOn = false; this.visuals = new Set(); this.maps = new Map(); this.physics = null; this.cameraComp = null; this._q = Promise.resolve(); }
+  constructor(game, project) { this.game = game; this.project = project; this.lightsOn = false; this.visuals = new Set(); this.maps = new Map(); this.physics = null; this.cameraComp = null; this._q = Promise.resolve(); this.metaCache = new Map(); }
+  /** Sidecar metadata of a loaded texture (origin, image points, animations…) or null. */
+  metaOf(path) { return this.metaCache.get(path) ?? null; }
+  /** Size of one frame (spritesheets) or of the whole image, in pixels. */
+  frameSize(path) { const m = this.metaOf(path); if (m?.frameWidth) return [m.frameWidth, m.frameHeight ?? m.frameWidth]; const s = this.scene.textures.exists(path) ? this.scene.textures.get(path).getSourceImage() : null; return s ? [s.width, s.height] : [1, 1]; }
   init() { /* hook for subclasses/tests */ }
   createEffect(target, type, params) { return createEffect(this, target, type, params); }
   texKey(path) { return path; }
@@ -94,7 +98,7 @@ class Backend {
       const ps = this.scene, L = ps.load, loader = this.game.loader;
       const need = [...new Set(tex)].filter((t) => !ps.textures.exists(t));
       const metas = {};
-      for (const t of need) metas[t] = await loader.meta(t);
+      for (const t of need) { metas[t] = await loader.meta(t); this.metaCache.set(t, metas[t]); }
       for (const t of need) {
         const m = metas[t];
         if (m?.type === 'spritesheet') L.spritesheet(t, loader.url(t), { frameWidth: m.frameWidth, frameHeight: m.frameHeight });

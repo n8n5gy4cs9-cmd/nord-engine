@@ -13,10 +13,19 @@ export function registerPhaserComponents(backend) {
   const { scene: ps } = backend; // Phaser.Scene
   const track = (comp, obj) => { (comp.visuals ??= []).push(obj); backend.visuals.add(obj); if (backend.lightsOn) obj.setLighting?.(true); return obj; };
 
+  /** Pivot: the component's own `origin` (0..1), else the sprite editor's `origin` pixel point from <image>.meta.json, else the centre. */
+  const originOf = (d) => {
+    if (d.origin) return d.origin;
+    const o = backend.metaOf(d.texture)?.origin;
+    if (!o) return [0.5, 0.5];
+    const [fw, fh] = backend.frameSize(d.texture);
+    return [o[0] / fw, o[1] / fh];
+  };
+
   registerComponent('sprite', {
     create(e, d, comp) {
       const s = ps.add.image(0, 0, backend.texKey(d.texture), d.frame ?? undefined);
-      s.setOrigin(...(d.origin ?? [0.5, 0.5])).setTint(hex(d.tint)).setFlip(!!d.flipX, !!d.flipY).setAlpha(d.alpha ?? 1);
+      s.setOrigin(...originOf(d)).setTint(hex(d.tint)).setFlip(!!d.flipX, !!d.flipY).setAlpha(d.alpha ?? 1);
       if (d.blend) s.setBlendMode(BLEND[d.blend] ?? 0);
       if (d.size) s.setDisplaySize(d.size[0], d.size[1]);
       e.native.add(s); comp.obj = track(comp, s);
@@ -36,7 +45,7 @@ export function registerPhaserComponents(backend) {
     create(e, d, comp) {
       const key = backend.texKey(d.texture);
       const s = ps.add.sprite(0, 0, key, d.frame ?? 0);
-      s.setOrigin(...(d.origin ?? [0.5, 0.5])).setTint(hex(d.tint)).setFlip(!!d.flipX, !!d.flipY).setAlpha(d.alpha ?? 1);
+      s.setOrigin(...originOf(d)).setTint(hex(d.tint)).setFlip(!!d.flipX, !!d.flipY).setAlpha(d.alpha ?? 1);
       s.anims.timeScale = d.speed ?? 1;
       e.native.add(s); comp.obj = track(comp, s);
       comp.play = (name, { restart = false } = {}) => {

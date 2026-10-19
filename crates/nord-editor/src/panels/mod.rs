@@ -15,4 +15,5 @@ pub mod palette;
 pub mod preview;
 pub mod project;
 pub mod settings;
+pub mod sprite;
 pub mod toolbar;

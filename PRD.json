@@ -1726,13 +1726,13 @@
       "id": "M10-15",
       "milestone": "M10",
       "title": "Sprite/image editor: paint tools (pencil, brush, eraser, fill, line, rect, ellipse, select, move, flip/rotate), palette, zoom/grid, import/export PNG",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M10-16",
       "milestone": "M10",
       "title": "Sprite editor: origin point, named image points, collision polygon editor with auto-trace, per-frame properties",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M10-17",
