@@ -316,6 +316,30 @@ const NS = read('docs/manual-src/_namespaces.json');
 }
 engineDocs({ root, add, renderMd, esc, slug });
 
+
+// ---- generated: event sheet + behavior reference (from the live ACE registries, so it cannot drift)
+{
+  const core = await import(path.join(root, 'runtime/core/index.js'));
+  const { plugins, objectAces } = await import(path.join(root, 'runtime/core/eventsheet/aces.js'));
+  const params = (d) => (d.params ?? []).map((p) => `<code>${esc(p)}</code>`).join(', ') || '<span class="muted">—</span>';
+  const kind = (d) => [d.trigger && 'trigger', d.loop && 'loop', d.instance && 'per instance'].filter(Boolean).join(', ') || '';
+  const table = (title, id, group) => {
+    const rows = (k) => Object.entries(group[k] ?? {}).map(([name, d]) => `<tr><td><code>${esc(name)}</code></td><td>${params(d)}</td><td>${kind(d)}</td></tr>`).join('');
+    const ex = Object.keys(group.expressions ?? {});
+    return `<h3 id="${id}">${esc(title)}</h3>` +
+      (Object.keys(group.conditions ?? {}).length ? `<h4>Conditions</h4><table><thead><tr><th>id</th><th>parameters</th><th>kind</th></tr></thead><tbody>${rows('conditions')}</tbody></table>` : '') +
+      (Object.keys(group.actions ?? {}).length ? `<h4>Actions</h4><table><thead><tr><th>id</th><th>parameters</th><th>kind</th></tr></thead><tbody>${rows('actions')}</tbody></table>` : '') +
+      (ex.length ? `<h4>Expressions</h4><p>${ex.map((x) => `<code>${esc(x)}</code>`).join(', ')}</p>` : '');
+  };
+  let h = '<p class="lead">Every condition, action and expression an event sheet can use. This page is generated from the runtime registries, so it always matches the engine. How events work: <a href="event-sheets.html">Event sheets</a> · <a href="behaviors.html">Behaviors</a>.</p><p>In a sheet each node is <code>{ "object": "Player", "id": "set-x", "params": { "x": "100" } }</code>; behavior nodes add <code>"behavior": "Platform"</code>. Parameters are expressions (text parameters need quotes) except names, comparisons and keys.</p>';
+  h += '<h2 id="plugins">System and plugins</h2>';
+  for (const [name, g] of plugins) h += table(name, `plugin-${slug(name)}`, g);
+  h += '<h2 id="object">Every object</h2><p>Object type = entity name, tag, or a family (<code>scene.settings.families</code>).</p>' + table('Object (generic)', 'object-generic', objectAces);
+  h += '<h2 id="behaviors-ref">Behaviors</h2>';
+  for (const [name, d] of core.behaviors) h += table(name, `behavior-${slug(name)}`, d) + `<p class="muted">Properties: ${Object.entries(d.Class.attributes ?? {}).map(([k, a]) => `<code>${esc(k)}</code> (${esc(String(a.default))})`).join(', ') || 'none'}</p>`;
+  add({ file: 'event-reference.html', title: 'Event sheet reference', section: 'Reference', order: 6, html: h, summary: 'All conditions, actions, expressions and behaviors available to event sheets.' });
+}
+
 // ---- generated: CLI from clap doc comments
 {
   const rs = read('crates/nord-cli/src/main.rs');
@@ -475,7 +499,7 @@ copy(path.join(root, 'assets/docs/editor-layout.svg'), 'assets/editor-layout.svg
 copy(path.join(root, 'vendor/codemirror/cm.bundle.js'), 'assets/cm.bundle.js');
 for (const [source, name] of [['inter/inter-latin-400-normal.woff2', 'inter.woff2'], ['plus-jakarta-sans/plus-jakarta-sans-latin-700-normal.woff2', 'jakarta.woff2'], ['jetbrains-mono/jetbrains-mono-latin-400-normal.woff2', 'mono.woff2']]) copy(path.join(root, 'vendor/fonts', source), `assets/${name}`);
 copyTree(path.join(root, 'vendor/engine-docs'), 'assets/engine-docs');
-for (const file of ['vallout-03-classic-explore.png', 'automies-2-drive.png', 'xkom-tactical.png', 'manual-hello-nord.png']) copy(path.join(root, 'docs/screenshots', file), `assets/screenshots/${file}`);
+for (const file of ['vallout-03-classic-explore.png', 'automies-2-drive.png', 'xkom-tactical.png', 'manual-hello-nord.png', ...fs.readdirSync(path.join(root, 'docs/screenshots')).filter((f) => /^es-.*\.png$/.test(f))]) copy(path.join(root, 'docs/screenshots', file), `assets/screenshots/${file}`);
 for (const [source, name] of [['notepaint/assets/ui/tools.png', 'notepaint-tools.png'], ['star-not/assets/sprites/space.png', 'star-not-space.png'], ['star-not/assets/ui/portraits.png', 'star-not-ui.png']]) copy(path.join(root, 'examples', source), `assets/tutorials/${name}`);
 // The vendored bundle is standalone ESM. Expose its exact exports as a classic-script global
 // so syntax highlighting also works when the user double-clicks the offline HTML file.

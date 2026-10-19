@@ -36,4 +36,4 @@ No `eval`; expressions are parsed + cached.
 `registerPlugin('Name', { conditions, actions, expressions })` and `registerObjectAces({…})` (see header of `aces.js`) — the future addon SDK (M10-27) builds on this.
 
 ## Status / gaps
-Interpreter only (no JS codegen / source maps yet → M10-03 stays open); no editor panel yet (M10-04/05); Is-overlapping uses a circle approximation; behaviors are M10-08+.
+Interpreter only (no JS codegen / source maps yet → M10-03 stays open); no editor panel yet (M10-04/05). *Is overlapping* uses the `collider` boxes (`behaviors/util.js bbox`). Behaviors: `docs/BEHAVIORS.md`. Families/containers: `scene.settings.families` / `containers`. Manual: Event sheets chapter + generated reference.

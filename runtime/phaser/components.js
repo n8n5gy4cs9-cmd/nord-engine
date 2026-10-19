@@ -48,7 +48,7 @@ export function registerPhaserComponents(backend) {
       comp.setFlip = (x, y = false) => s.setFlip(x, y);
       if (d.anim && d.autoplay !== false) comp.play(d.anim);
     },
-    set(comp, k, v) { if (k === 'anim') comp.play(v); else if (k === 'speed') comp.obj.anims.timeScale = v; else if (k === 'tint') comp.obj.setTint(hex(v)); comp.data[k] = v; },
+    set(comp, k, v) { if (k === 'anim') comp.play(v); else if (k === 'speed') comp.obj.anims.timeScale = v; else if (k === 'tint') comp.obj.setTint(hex(v)); else if (k === 'flipX') comp.obj.setFlipX(!!v); else if (k === 'alpha') comp.obj.setAlpha(v); comp.data[k] = v; },
   });
 
   registerComponent('text', {

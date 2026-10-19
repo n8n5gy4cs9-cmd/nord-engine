@@ -29,3 +29,8 @@ Nord pieces (scene JSON, nord.js, Phaser tier, animation/tilemap editors from M3
 
 Suggested order: format + compiler (02-03) → editor panel (04-06) → behaviors (08-10) → layout/sprite tools → debugger → rest.
 Non-goals: copying Construct's runtime, .c3p import (maybe later), subscriptions/cloud.
+
+## Status (updated 2026-10-19)
+Done: event-sheet runtime (M10-01/02/06/07; interpreter, no codegen yet), behaviors framework + 25 behaviors (M10-08…10), families/containers/instance vars/Persist (M10-11), demo game, manual chapters + generated reference + tutorial T24.
+Next: event-sheet editor panel (M10-04/05), layout/sprite/animation/tilemap editors, effects, debugger, project tools, addon SDK.
+Web/Linux-server editor is planned separately: `docs/WEB_EDITOR_PLAN.md` (M11).

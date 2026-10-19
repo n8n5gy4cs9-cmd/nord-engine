@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 188/226 tasks (83%)** · updated 2026-10-19
+**Overall: 190/242 tasks (79%)** · updated 2026-10-19
 
 | Milestone | Progress |
 |---|---|
@@ -17,7 +17,8 @@
 | M7 Docs | 20/20 (100%) |
 | M8 Polish & portability | 15/20 (75%) |
 | M9 Desktop apps | 16/16 (100%) |
-| M10 Construct-style editor | 6/34 (18%) |
+| M10 Construct-style editor | 8/34 (24%) |
+| M11 Web editor | 0/16 (0%) |
 
 ## Next up
 - **M3-07** SPIKE: wry child webview embedded in egui panel on macOS (resize, HiDPI, focus, IPC both ways); fallback separate window
@@ -270,8 +271,8 @@ _features cloned from Construct 3's editor (construct.net/en/make-games/games-ed
 - [x] **M10-07** Event sheet: functions (params, return value, async), includes, global/local/static vars, groups activation, sub-events
 - [x] **M10-08** Behavior framework: attach/detach in inspector, behavior schema (properties, conditions, actions, expressions) shared by editor + runtime
 - [x] **M10-09** Behaviors set A: Platform, 8-Direction, Bullet, Sine, Fade, Wrap, Scroll-To, Bound-to-Layout, Solid, Jumpthru, Persist, Destroy-outside-layout
-- [ ] **M10-10** Behaviors set B: Pin, Drag&Drop, Anchor, Car, Orbit, Rotate, Flash, Timer, Tween, Turret, Line of Sight, Pathfinding (grid A*), Physics
-- [ ] **M10-11** Families + instance variables + containers + global objects + object templates (prefab link)
+- [x] **M10-10** Behaviors set B: Pin, Drag&Drop, Anchor, Car, Orbit, Rotate, Flash, Timer, Tween, Turret, Line of Sight, Pathfinding (grid A*), Physics
+- [x] **M10-11** Families + instance variables + containers + global objects + object templates (prefab link)
 - [ ] **M10-12** Layout editor: layer panel (add/rename/reorder/lock/hide, parallax, scale rate, opacity, blend mode, transparent, background colour, force own texture)
 - [ ] **M10-13** Layout editor: rulers/guides, snapping options, alignment/distribute for multi-select, layout properties (size, unbounded scrolling, event sheet link), multiple layouts + layout switching
 - [ ] **M10-14** Layout editor: object-type panel + drag-to-place, instance property sync, layout views (zoom), minimap/overview
@@ -295,6 +296,26 @@ _features cloned from Construct 3's editor (construct.net/en/make-games/games-ed
 - [ ] **M10-32** Optional: Multiplayer (WebRTC P2P + LAN signalling) plugin and demo
 - [ ] **M10-33** Manual + tutorials for all M10 features (event sheets first-game tutorial, behaviors, layout editor, effects, debugger); rebuild docs/manual
 - [ ] **M10-34** Tests: event-sheet compiler unit tests, behaviors headless Chromium tests, egui_kittest for new panels; wire to CI
+
+## M11 — Web editor
+_the editor in a browser and on a Linux server (wasm egui + server mode); plan docs/WEB_EDITOR_PLAN.md_
+
+- [ ] **M11-01** W0 spike: build nord-editor for wasm32 (eframe web), render hub + hierarchy in headless Chromium; record wasm size, start time, WebGL2/WebGPU; feature-gate native-only deps (wry, nord-desktop native, rfd native)
+- [ ] **M11-02** Vfs trait (read/write/list/rename/delete/watch, atomic write): NativeFs; route nord-core::io, autosave, asset browser, code editor, thumbnails through it — native behaviour unchanged, tests green
+- [ ] **M11-03** Host trait (run build/export/serve/check-offline/thumbs jobs, stream log lines, cancel): LocalHost (today's std::process) + NoHost; export dialog + console use it
+- [ ] **M11-04** Dialogs/clipboard abstraction (rfd native + wasm async pickers, web clipboard) and web-safe default shortcuts (avoid Cmd/Ctrl+P/K/S clashes, rebindable)
+- [ ] **M11-05** crates/nord-editor-web: wasm entry, index.html, PWA manifest + service worker, vendored fonts/docs, no CDN; build script (wasm-bindgen/wasm-opt, brotli)
+- [ ] **M11-06** BrowserFs: OPFS projects, zip import/export, Chromium File System Access folder mode; hub works in browser
+- [ ] **M11-07** IframeViewport: game view, 2D/3D edit views, console and docs viewer via iframe overlay + postMessage IPC (reuse native wry sizing logic); service worker serves the project from the Vfs
+- [ ] **M11-08** In-browser export: nord-core/nord-export (validate, copy, zip, single-file) compiled to wasm for static-web mode
+- [ ] **M11-09** crates/nord-editor-server (axum, builds on nord-serve): serves wasm editor, /api/p/{project}/(file|tree|rename|delete), WebSocket file events + job logs, path jail, atomic writes
+- [ ] **M11-10** RemoteFs + ServerHost (client side of the project API/jobs) so the same wasm editor edits server projects; reconnect + conflict handling (single writer lock)
+- [ ] **M11-11** Server jobs: web/single-file export, offline check, thumbnails, optimise, zip download; optional container-isolated Rust-tier builds; CPU/RAM/time limits
+- [ ] **M11-12** Auth + multi-user: token (default) and users file (argon2), per-user workspaces, quotas, CSRF/session hardening, desktop bridge disabled in server mode
+- [ ] **M11-13** Packaging: Dockerfile + docker-compose, systemd unit, nginx/Caddy TLS examples, `nord-editor-server --help`, backups note
+- [ ] **M11-14** CI: build wasm editor + server, Playwright e2e (new project -> edit -> save -> reload; play; export from browser; server path-traversal tests)
+- [ ] **M11-15** Docs: manual chapter 'Run the editor in a browser / on a server' with screenshots, KNOWN_ISSUES entries (browser limits, unverified Safari/Windows), HOSTING/EXPORT docs cross-links
+- [ ] **M11-16** OWNER: verify web editor on macOS Safari/Chrome, Windows Edge, Firefox; decide auth model and Rust-tier-on-server policy (docs/WEB_EDITOR_PLAN.md §7)
 
 ## Features (PRD)
 
@@ -348,4 +369,5 @@ _features cloned from Construct 3's editor (construct.net/en/make-games/games-ed
 | FR-66 | Multiplayer plugin (peer-to-peer via WebRTC signalling; offline-first, optional LAN) + save/load slots | M10 | low | todo |
 | FR-67 | Accessibility/localisation (string tables, language switch, UI scale, colour-blind preview, touch controls overlay) | M10 | low | todo |
 | FR-68 | Version history + snapshots + project folder diff (git-friendly, restore snapshot) | M10 | low | todo |
+| FR-69 | Editor on the web: browser (static/PWA) + self-hosted Linux server, same egui editor compiled to wasm | M11 | high | todo |
 

@@ -1,6 +1,7 @@
 // Entity tree. Backends (Phaser/Babylon) attach `native` and implement components via the registry.
 import { Events } from './events.js';
 import { resolveAttributes } from './script.js';
+import { createBehavior } from './behaviors/index.js';
 
 /** type -> { create(entity, data, comp), update?(comp, dt), destroy?(comp), set?(comp, key, value) } — filled by backends. */
 export const components = new Map();
@@ -25,12 +26,15 @@ export class Entity {
     this.children = [];
     this.components = [];
     this.scripts = [];
+    this.behaviors = [];
+    this._behaviorData = data.behaviors ?? [];
     this.events = new Events();
     this.native = null;
     this.destroyed = false;
     this._scriptData = data.scripts ?? [];
     this._compData = data.components ?? [];
     this.prefab = data.prefab ?? null;
+    this.vars = structuredClone(data.vars ?? {}); // instance variables (event sheets)
   }
 
   // transform — setters notify the backend so native objects stay in sync
@@ -78,6 +82,13 @@ export class Entity {
     if (!c) return;
     if (c.impl?.set) c.impl.set(c, key, value); else c.data[key] = value;
   }
+  /** Behavior instance by type name (`e.behavior('Platform')`), or null. */
+  behavior(type) { return this.behaviors.find((b) => b.type === type) ?? null; }
+  addBehavior(type, properties = {}, enabled = true) {
+    const b = createBehavior(this, type, { ...properties, enabled }, (m) => this.scene.game.warn(m));
+    if (b) this.behaviors.push(b);
+    return b;
+  }
   getScript(Class) { return this.scripts.find((s) => s instanceof Class) ?? null; }
   addScript(Class, attrs = {}) {
     const s = new Class(this, resolveAttributes(Class, attrs));
@@ -110,6 +121,8 @@ export class Entity {
       components: this.components.map((c) => ({ type: c.type, ...structuredClone(c.data) })),
       scripts: this.scripts.map((s, i) => ({ path: this._scriptData[i]?.path, attributes: structuredClone(s.attrs) })),
       children: this.children.map((c) => c.toJSON(fresh)),
+      behaviors: this.behaviors.map((b) => ({ type: b.type, properties: structuredClone(b.props), ...(b.enabled ? {} : { enabled: false }) })),
+      vars: structuredClone(this.vars),
       prefab: this.prefab,
     };
   }

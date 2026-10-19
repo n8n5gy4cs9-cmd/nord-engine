@@ -5,6 +5,8 @@
 //     otherwise    → test(r, p, c) with c = { sol, cond, ev }; may mutate c.sol via r.pick(sol, type, list)
 //   action: { params?, raw?, instance?: true, run(r, p) | run(r, inst, p) }; may return { wait: seconds } or { until: Promise, pick: fn }
 //   expressions: { Name(r, args) }
+import { overlaps, setOpacity } from '../behaviors/util.js';
+
 const cmp = (a, op, b) => {
   switch (op) {
     case '=': case '==': return a == b; // eslint-disable-line eqeqeq
@@ -162,6 +164,7 @@ registerObjectAces({
     'compare-angle': { params: ['comparison', 'value'], raw: ['comparison'], instance: true, test: (r, e, p) => cmp(angle(e), p.comparison, p.value) },
     'compare-instance-var': { params: ['variable', 'comparison', 'value'], raw: ['variable', 'comparison'], instance: true, test: (r, e, p) => cmp(e.vars[p.variable], p.comparison, p.value) },
     'is-boolean-instance-var-set': { params: ['variable'], raw: ['variable'], instance: true, test: (r, e, p) => !!e.vars[p.variable] },
+    'is-overlapping-at-offset': { params: ['object', 'dx', 'dy'], raw: ['object'], instance: true, test: (r, e, p) => { const o = [...e.pos]; e.pos = [o[0] + p.dx, o[1] + p.dy, o[2]]; const hit = r.picked(p.object, r.solView).some((b) => b !== e && overlaps(e, b)); e.pos = o; return hit; } },
     'is-visible': { instance: true, test: (r, e) => e.enabled },
     'on-created': { trigger: true, test: (r, p, { sol, cond }) => { const e = r.firing.data.entity; if (!r.matches(e, cond.object)) return false; r.pick(sol, cond.object, [e]); return true; } },
     'on-destroyed': { trigger: true, test: (r, p, { sol, cond }) => { const e = r.firing.data.entity; if (!r.matches(e, cond.object)) return false; r.pick(sol, cond.object, [e]); return true; } },
@@ -176,10 +179,13 @@ registerObjectAces({
     },
     'is-overlapping': {
       params: ['object'], raw: ['object'],
-      test(r, p, { sol, cond }) { // circle approximation using scale as size; refine when sprite bounds are exposed
-        const near = (a, b) => Math.hypot(a.pos[0] - b.pos[0], a.pos[1] - b.pos[1]) < r.radius(a) + r.radius(b);
-        const A = r.picked(cond.object, sol).filter((a) => r.picked(p.object, sol).some((b) => b !== a && near(a, b)));
-        r.pick(sol, cond.object, A); return A.length > 0;
+      test(r, p, { sol, cond }) { // boxes from the `collider` component (see behaviors/util.js bbox)
+        const B = r.picked(p.object, sol);
+        const hits = new Set(), hitB = new Set();
+        for (const a of r.picked(cond.object, sol)) for (const b of B) if (b !== a && overlaps(a, b)) { hits.add(a); hitB.add(b); }
+        r.pick(sol, cond.object, [...hits]);
+        if (p.object !== cond.object) r.pick(sol, p.object, [...hitB]);
+        return hits.size > 0;
       },
     },
   },
@@ -198,6 +204,9 @@ registerObjectAces({
     'add-to-instance-var': { params: ['variable', 'value'], raw: ['variable'], instance: true, run: (r, e, p) => { e.vars[p.variable] = (e.vars[p.variable] ?? 0) + p.value; } },
     'subtract-from-instance-var': { params: ['variable', 'value'], raw: ['variable'], instance: true, run: (r, e, p) => { e.vars[p.variable] = (e.vars[p.variable] ?? 0) - p.value; } },
     'toggle-boolean-instance-var': { params: ['variable'], raw: ['variable'], instance: true, run: (r, e, p) => { e.vars[p.variable] = !e.vars[p.variable]; } },
+    'set-animation': { params: ['animation'], instance: true, run: (r, e, p) => { if (e.getComponent('animatedSprite') && e.getComponent('animatedSprite').data.anim !== p.animation) e.set('animatedSprite', 'anim', p.animation); } },
+    'set-mirrored': { params: ['mirrored'], instance: true, run: (r, e, p) => { e.set(e.getComponent('animatedSprite') ? 'animatedSprite' : 'sprite', 'flipX', !!p.mirrored); } },
+    'set-opacity': { params: ['opacity'], instance: true, run: (r, e, p) => { setOpacity(e, p.opacity / 100); } },
     'set-text': { params: ['text'], instance: true, run: (r, e, p) => { e.set('text', 'text', String(p.text)); } },
     destroy: { instance: true, run: (r, e) => { e.destroy(); } },
   },

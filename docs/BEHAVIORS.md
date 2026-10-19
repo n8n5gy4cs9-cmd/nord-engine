@@ -28,4 +28,25 @@ import { Behavior, registerBehavior } from 'nord';
 class Spin extends Behavior { static attributes = { speed: { type: 'number', default: 90 } }; tick(dt) { this.entity.rot[2] += this.props.speed * dt; this.entity.touch(); } }
 registerBehavior('Spin', Spin, { actions: { 'set-speed': { params: ['value'], run: (b, p) => { b.props.speed = p.value; } } }, expressions: { Speed: (b) => b.props.speed } });
 ```
-Next (M10-10/11): Pin, Drag&Drop, Anchor, Car, Orbit, Rotate, Flash, Timer, Tween, Turret, Line of Sight, Pathfinding, Physics, Scroll-To, Persist.
+
+## Set B (M10-10)
+| Behavior | Properties (defaults) | Notes |
+|---|---|---|
+| Pin | — | action *Pin to object* (`position` or `position-angle`), *Unpin* |
+| DragDrop | axes both/horizontal/vertical | mouse/touch drag over the collider; triggers On drag start / On drop |
+| Anchor | left/right/top/bottom | keeps distance to the layout/view edges |
+| Car | maxSpeed 200, acceleration 100, deceleration 50, steerSpeed 120, driftRecover 5 | top-down; stops at Solids |
+| Orbit | speed 90, acceleration, primaryRadius 100, secondaryRadius 100, offsetAngle, matchRotation | orbits the start-derived centre (or *Set center*) |
+| Rotate | speed 180, acceleration | |
+| Flash | — | action *Flash on/off/duration*; trigger On flash ended |
+| Timer | — | named timers `once`/`regular`; trigger On timer(tag); expressions `CurrentTime(tag)`, `TotalTime(tag)`, `Duration(tag)` |
+| Tween | — | tween x, y, angle, width, height, size, opacity with any `ease` name; trigger On tween finished(tag) |
+| Turret | targetType, range 300, rotateSpeed 180, rateOfFire 2, autoShoot, requireLineOfSight | triggers On shoot / On target acquired — create bullets in the sheet |
+| LineOfSight | range 300, coneOfView 360, obstacleType Solid | condition *has line of sight to* picks the visible instances |
+| Pathfinding | cellSize 32, diagonals, maxSpeed 200, obstacleType Solid | grid A*; *Find path*, triggers On path found / failed / arrived; `NodeX(i)`, `PathNodeCount` |
+| Physics | immovable, mass, friction, bounce, gravityScale | thin wrapper that adds `rigidbody`+`collider` and exposes impulses/velocity |
+| ScrollTo | lerp 1 | follows the entity with the scene camera |
+| Persist | — | entity survives `loadScene` (replaces the same-name copy in the next scene) |
+
+Also: **families** (`scene.settings.families`), **containers** (`scene.settings.containers`) and instance variables (`"vars"`), documented in the manual → Event sheets.
+Demo game using almost all of them: `examples/event-sheets` (`node tools/gen_eventsheet_demo.mjs`, test `node tools/eventsheet-demo-test.mjs`). Manual: *Behaviors*, *Event sheets*, tutorial **T24**, generated *Event sheet reference*.

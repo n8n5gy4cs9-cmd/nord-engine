@@ -72,7 +72,7 @@ registerBehavior('Platform', Platform, merge(ENABLED, {
     'set-vector-y': { params: ['value'], run: (b, p) => { b.vy = p.value; } },
     'set-double-jump': { params: ['state'], raw: ['state'], run: (b, p) => { b.props.doubleJump = p.state === 'enabled'; } },
   },
-  expressions: { Speed: (b) => b.speed, VectorX: (b) => b.vx, VectorY: (b) => b.vy, MaxSpeed: (b) => b.props.maxSpeed, JumpStrength: (b) => b.props.jumpStrength, Gravity: (b) => b.props.gravity },
+  expressions: { Facing: (b) => b.facing ?? 1, Speed: (b) => b.speed, VectorX: (b) => b.vx, VectorY: (b) => b.vy, MaxSpeed: (b) => b.props.maxSpeed, JumpStrength: (b) => b.props.jumpStrength, Gravity: (b) => b.props.gravity },
 }));
 
 // ---------- 8 Direction ----------

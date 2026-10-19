@@ -5,6 +5,7 @@ import { Save } from './save.js';
 import { Rng } from './util.js';
 import { Scene } from './scene.js';
 import { resolveAttributes } from './script.js';
+import { EventSheet } from './eventsheet/sheet.js';
 
 export class Game {
   /**
@@ -72,12 +73,20 @@ export class Game {
     return true;
   }
   async loadScene(path = this.project.startScene) {
+    const kept = (this.scene?.roots ?? []).flatMap((r) => [...r.all()]).filter((e) => e.behavior('Persist') && !e.parent).map((e) => e.toJSON());
     this.scene?.destroy();
     this.events.emit('sceneUnload', this.scene?.name);
     this._scenePath = path;
     const scene = new Scene(this, await this.loadJSON(path));
     this.scene = scene;
     await scene.build();
+    for (const d of kept) { // Persist behavior: the surviving instance replaces the layout's own copy of the same name
+      const dup = scene.roots.find((r) => r.name === d.name && r.behavior('Persist'));
+      if (dup) dup.destroy();
+      await scene.spawnData(d);
+    }
+    const sheet = scene.settings.eventSheet ?? scene.data.eventSheet;
+    if (sheet) scene.systems.push(scene.eventSheet = await EventSheet.load(scene, sheet));
     scene.start();
     this.events.emit('sceneLoad', scene.name);
     return scene;

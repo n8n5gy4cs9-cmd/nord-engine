@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Event Sheet Platformer</title>
+<style>html,body{margin:0;height:100%;background:#101418;overflow:hidden}#stage{position:relative;width:100vw;height:100vh}</style>
+<script type="importmap">{"imports":{"nord":"/runtime/core/index.js"}}</script></head>
+<body><div id="stage"></div>
+<script src="/vendor/phaser/phaser.min.js"></script>
+<script type="module">
+import { boot } from '/runtime/phaser/index.js';
+try {
+  const project = await (await fetch('nord.project.json')).json();
+  await boot(project, { container: document.getElementById('stage') });
+  window.__nord_ready = true;
+} catch (e) { console.error(e); window.__nord_error = String(e); }
+</script></body></html>

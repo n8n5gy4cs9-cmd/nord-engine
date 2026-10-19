@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Behaviors — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="welcome.html" class="active" aria-current="page">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Manual</div><a href="welcome.html">Welcome</a><a href="editor-tour.html">Editor tour</a><a href="projects-scenes.html">Projects &amp; scenes</a><a href="scripting.html">Scripting</a><a href="2d.html">2D games</a><a href="3d.html">3D games</a><a href="physics.html">Physics</a><a href="audio.html">Audio</a><a href="ui.html">UI &amp; HUD</a><a href="input.html">Input</a><a href="assets.html">Assets</a><a href="library.html">The library</a><a href="rust-wasm.html">Rust / WASM</a><a href="export.html">Export &amp; hosting</a><a href="performance.html">Performance &amp; debugging</a><a href="reference.html">Reference overview</a><a href="desktop-apps.html">Desktop apps</a><a href="event-sheets.html">Event sheets</a><a href="behaviors.html" class="cur" aria-current="page">Behaviors</a></nav><main id="content"><div class="crumb">Manual / Nord Engine</div><h1>Behaviors</h1>
+<p>A <strong>behavior</strong> is a small bundle of ready-made logic you attach to an entity, like Construct&#39;s behaviors. They work from the scene file, from JavaScript, and from event sheets.</p>
+<figure class="shot"><img src="../../assets/screenshots/es-3-ledge.png" alt="The hero jumping onto a ledge, driven by the Platform behavior" loading="lazy"><figcaption>The hero is one entity with the <b>Platform</b> behavior. Slimes patrol with <b>Sine</b>, the star spins with <b>Rotate</b> and can be moved with <b>DragDrop</b>, the corner robot is a <b>Turret</b>.</figcaption></figure><aside class="box dummies"><div class="box-title">For dummy developers</div><p>Instead of writing &quot;if the key is down, add speed; if there is a wall, stop; add gravity…&quot;, you attach <strong>Platform</strong> and set <code>maxSpeed</code> and <code>jumpStrength</code>. The behavior does the rest every frame.</p>
+</aside><h2 id="attach-one">Attach one<a class="anchor" href="#attach-one">#</a></h2>
+<p>In the scene JSON:</p>
+<pre class="code" data-lang="json"><code>{ &quot;name&quot;: &quot;Hero&quot;, &quot;components&quot;: [ { &quot;type&quot;: &quot;collider&quot;, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: [14, 28] } ],
+  &quot;behaviors&quot;: [ { &quot;type&quot;: &quot;Platform&quot;, &quot;properties&quot;: { &quot;maxSpeed&quot;: 220, &quot;doubleJump&quot;: true } } ] }</code></pre>
+<p>From JavaScript: <code>entity.addBehavior(&#39;Sine&#39;, { period: 2 })</code> and <code>entity.behavior(&#39;Platform&#39;).vx</code>.</p>
+<p>Collisions use the entity&#39;s <strong>collider</strong> box (size × scale, centred on its position). Make walls and floors with the <strong>Solid</strong> behavior, one-way platforms with <strong>Jumpthru</strong>. Y points down.</p>
+<h2 id="the-behaviors">The behaviors<a class="anchor" href="#the-behaviors">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Behaviors</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Movement</td>
+<td><strong>Platform</strong> (run, jump, double jump, one-way platforms), <strong>EightDirection</strong>, <strong>Car</strong>, <strong>Bullet</strong>, <strong>Pathfinding</strong> (A* around Solids), <strong>Orbit</strong>, <strong>Physics</strong> (wraps the arcade/matter body)</td>
+</tr>
+<tr>
+<td>Motion effects</td>
+<td><strong>Sine</strong> (horizontal, vertical, angle, size, opacity), <strong>Rotate</strong>, <strong>Tween</strong>, <strong>Fade</strong>, <strong>Flash</strong></td>
+</tr>
+<tr>
+<td>Layout</td>
+<td><strong>Wrap</strong>, <strong>BoundToLayout</strong>, <strong>DestroyOutsideLayout</strong>, <strong>Anchor</strong>, <strong>ScrollTo</strong> (camera follow), <strong>Pin</strong> (stick to another object)</td>
+</tr>
+<tr>
+<td>Interaction</td>
+<td><strong>DragDrop</strong>, <strong>Turret</strong> (aim and shoot), <strong>LineOfSight</strong> (cone, range, obstacles), <strong>Timer</strong> (named timers), <strong>Solid</strong>, <strong>Jumpthru</strong>, <strong>Persist</strong></td>
+</tr>
+</tbody></table>
+<p>Properties, conditions, actions and expressions of each are listed in the generated <strong><a href="../reference/event-reference.html#behaviors-ref">Event sheet reference</a></strong>.</p>
+<h2 id="in-an-event-sheet">In an event sheet<a class="anchor" href="#in-an-event-sheet">#</a></h2>
+<p>Behavior nodes carry <code>&quot;behavior&quot;: &quot;Platform&quot;</code>:</p>
+<pre class="code" data-lang="json"><code>{ &quot;object&quot;: &quot;Hero&quot;, &quot;behavior&quot;: &quot;Platform&quot;, &quot;id&quot;: &quot;simulate-control&quot;, &quot;params&quot;: { &quot;control&quot;: &quot;jump&quot; } }</code></pre>
+<p>Read behavior values with <code>Hero.Platform.VectorY</code>; use triggers like <code>Platform → on-jump</code>, <code>Turret → on-shoot</code>, <code>Timer → on-timer</code>, <code>Tween → on-tween-finished</code>, <code>Pathfinding → on-arrived</code>.</p>
+<p>The sample game shoots bullets from its turret with just two actions:</p>
+<pre class="code" data-lang="json"><code>{ &quot;object&quot;: &quot;System&quot;, &quot;id&quot;: &quot;create-object&quot;, &quot;params&quot;: { &quot;object&quot;: &quot;Bullet&quot;, &quot;layer&quot;: &quot;0&quot;, &quot;x&quot;: &quot;Turret.X&quot;, &quot;y&quot;: &quot;Turret.Y&quot; } },
+{ &quot;object&quot;: &quot;Bullet&quot;, &quot;behavior&quot;: &quot;Bullet&quot;, &quot;id&quot;: &quot;set-angle-of-motion&quot;, &quot;params&quot;: { &quot;angle&quot;: &quot;Turret.Angle&quot; } }</code></pre>
+<h2 id="write-your-own">Write your own<a class="anchor" href="#write-your-own">#</a></h2>
+<pre class="code" data-lang="js"><code>import { Behavior, registerBehavior } from 'nord';
+class Spin extends Behavior {
+  static attributes = { speed: { type: 'number', default: 90 } };
+  tick(dt) { this.entity.rot[2] += this.props.speed * dt; this.entity.touch(); }
+}
+registerBehavior('Spin', Spin, { actions: { 'set-speed': { params: ['value'], run: (b, p) =&gt; { b.props.speed = p.value; } } }, expressions: { Speed: (b) =&gt; b.props.speed } });</code></pre>
+<p>Registered behaviors immediately appear in event sheets with their actions and expressions.</p>
+<div class="pager"><a href="event-sheets.html"><small>← Previous</small>Event sheets</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#attach-one">Attach one </a><a href="#the-behaviors">The behaviors </a><a href="#in-an-event-sheet">In an event sheet </a><a href="#write-your-own">Write your own </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

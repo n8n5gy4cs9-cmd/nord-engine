@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Event sheets — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="welcome.html" class="active" aria-current="page">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Manual</div><a href="welcome.html">Welcome</a><a href="editor-tour.html">Editor tour</a><a href="projects-scenes.html">Projects &amp; scenes</a><a href="scripting.html">Scripting</a><a href="2d.html">2D games</a><a href="3d.html">3D games</a><a href="physics.html">Physics</a><a href="audio.html">Audio</a><a href="ui.html">UI &amp; HUD</a><a href="input.html">Input</a><a href="assets.html">Assets</a><a href="library.html">The library</a><a href="rust-wasm.html">Rust / WASM</a><a href="export.html">Export &amp; hosting</a><a href="performance.html">Performance &amp; debugging</a><a href="reference.html">Reference overview</a><a href="desktop-apps.html">Desktop apps</a><a href="event-sheets.html" class="cur" aria-current="page">Event sheets</a><a href="behaviors.html">Behaviors</a></nav><main id="content"><div class="crumb">Manual / Nord Engine</div><h1>Event sheets</h1>
+<p>An <strong>event sheet</strong> is a list of events. Each event says <em>&quot;when these conditions are true, do these actions&quot;</em>. It is the same idea as Construct 3&#39;s event sheets, and it sits <strong>beside</strong> JavaScript scripting — a scene can use scripts, an event sheet, or both.</p>
+<figure class="shot"><img src="../../assets/screenshots/es-4-turret.png" alt="A platformer: hero, slimes, coins, flag and a turret in the corner, all driven by an event sheet" loading="lazy"><figcaption>The bundled <code>event-sheets</code> example. Every rule in it — coins, hurt, turret bullets, winning — is an event. There is not one script.</figcaption></figure><aside class="box dummies"><div class="box-title">For dummy developers</div><p>Read an event like a sentence. <strong>Conditions</strong> are the <em>if</em> part (Hero is overlapping a Coin). <strong>Actions</strong> are the <em>then</em> part (add 1 to <code>coins</code>, destroy the Coin). The engine checks every event, top to bottom, many times per second.</p>
+</aside><h2 id="use-it">Use it<a class="anchor" href="#use-it">#</a></h2>
+<ol>
+<li>Write <code>events/main.events.json</code> (the editor panel for it is on the roadmap; the file is plain JSON).</li>
+<li>Point the scene at it: <code>&quot;settings&quot;: { &quot;eventSheet&quot;: &quot;events/main.events.json&quot; }</code> in the <code>.scene.json</code>.</li>
+<li>Press play. Nothing else is needed — scenes without that setting are unchanged.</li>
+</ol>
+<pre class="code" data-lang="json"><code>{ &quot;format&quot;: 1, &quot;name&quot;: &quot;main&quot;, &quot;events&quot;: [
+  { &quot;type&quot;: &quot;variable&quot;, &quot;name&quot;: &quot;coins&quot;, &quot;valueType&quot;: &quot;number&quot;, &quot;value&quot;: 0 },
+  { &quot;type&quot;: &quot;event&quot;,
+    &quot;conditions&quot;: [ { &quot;object&quot;: &quot;Hero&quot;, &quot;id&quot;: &quot;is-overlapping&quot;, &quot;params&quot;: { &quot;object&quot;: &quot;Coin&quot; } } ],
+    &quot;actions&quot;: [
+      { &quot;object&quot;: &quot;System&quot;, &quot;id&quot;: &quot;add-to-var&quot;, &quot;params&quot;: { &quot;variable&quot;: &quot;coins&quot;, &quot;value&quot;: &quot;1&quot; } },
+      { &quot;object&quot;: &quot;Coin&quot;,   &quot;id&quot;: &quot;destroy&quot; } ] }
+] }</code></pre>
+<h2 id="objects-and-picking">Objects and picking<a class="anchor" href="#objects-and-picking">#</a></h2>
+<p>An <strong>object type</strong> is an entity&#39;s <strong>name</strong> (<code>Coin</code>) or <strong>tag</strong> (<code>enemy</code>) — or a <em>family</em> listed in <code>scene.settings.families</code>. Event conditions <em>pick</em> instances:</p>
+<ul>
+<li><code>Hero is-overlapping Coin</code> keeps only the coins that touch the hero.</li>
+<li>Actions then run <strong>only on the picked instances</strong>, and so do the sub-events inside the event.</li>
+<li>Without any condition on an object, an action hits <strong>all</strong> its instances.</li>
+</ul>
+<p>This is Construct&#39;s selected-object list (SOL). Pick helpers: <code>pick-all</code>, <code>pick-nth-instance</code>, <code>pick-random-instance</code>, <code>pick-by-comparison</code>, <code>pick-by-evaluate</code>, <code>for-each</code>.</p>
+<h2 id="event-flavours">Event flavours<a class="anchor" href="#event-flavours">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>What</th>
+<th>How</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Normal event</td>
+<td>all conditions must pass</td>
+</tr>
+<tr>
+<td><strong>Or-block</strong></td>
+<td><code>&quot;block&quot;: &quot;or&quot;</code> — any condition passes</td>
+</tr>
+<tr>
+<td>Inverted condition</td>
+<td><code>&quot;inverted&quot;: true</code></td>
+</tr>
+<tr>
+<td><strong>Else</strong></td>
+<td>first condition <code>System → else</code>; runs when the previous event in the chain did not</td>
+</tr>
+<tr>
+<td>Sub-events</td>
+<td><code>&quot;children&quot;: [ … ]</code> inherit the pick</td>
+</tr>
+<tr>
+<td><strong>Group</strong></td>
+<td><code>{ &quot;type&quot;: &quot;group&quot;, &quot;title&quot;: &quot;Danger&quot;, &quot;active&quot;: true, &quot;children&quot;: [ … ] }</code>; switch with <em>Set group active</em></td>
+</tr>
+<tr>
+<td>Disabled</td>
+<td><code>&quot;disabled&quot;: true</code></td>
+</tr>
+<tr>
+<td><strong>Trigger</strong></td>
+<td>a first condition marked <em>trigger</em> only runs when it fires, not every tick</td>
+</tr>
+<tr>
+<td>Trigger once</td>
+<td><code>System → trigger-once-while-true</code> — true on the first tick only</td>
+</tr>
+</tbody></table>
+<p><strong>Triggers:</strong> On start / end of layout, On key pressed / released, On action pressed (project input actions), On click, On created, On destroyed, On collision with, plus behavior triggers such as <em>Platform → On jump</em>.</p>
+<p><strong>Timing:</strong> <code>every-x-seconds</code>, the <code>wait</code> action (pauses the <em>rest of that event</em>, keeping your picks), and <code>create-object</code> (the created instance is picked for the next actions).</p>
+<h2 id="loops">Loops<a class="anchor" href="#loops">#</a></h2>
+<p><code>for-each</code>, <code>repeat</code>, <code>for</code> (with a name, read it back with <code>loopindex(&quot;i&quot;)</code>) and <code>while</code> run the rest of the event once per iteration.</p>
+<h2 id="variables">Variables<a class="anchor" href="#variables">#</a></h2>
+<p><code>{ &quot;type&quot;: &quot;variable&quot;, … }</code> at the top = <strong>global</strong>. Inside an event&#39;s <code>children</code> = <strong>local</strong> (a fresh copy each run, or <code>isStatic</code> to keep it). <code>isConstant</code> makes it read-only. Entities have <strong>instance variables</strong>: <code>&quot;vars&quot;: { &quot;hp&quot;: 3 }</code> in the scene JSON, read as <code>Enemy.hp</code>.</p>
+<h2 id="functions-and-includes">Functions and includes<a class="anchor" href="#functions-and-includes">#</a></h2>
+<pre class="code" data-lang="json"><code>{ &quot;type&quot;: &quot;function-block&quot;, &quot;name&quot;: &quot;AddScore&quot;, &quot;params&quot;: [{ &quot;name&quot;: &quot;n&quot;, &quot;initialValue&quot;: 1 }], &quot;returnType&quot;: &quot;number&quot;,
+  &quot;actions&quot;: [ { &quot;object&quot;: &quot;Functions&quot;, &quot;id&quot;: &quot;set-return-value&quot;, &quot;params&quot;: { &quot;value&quot;: &quot;Function.Param(0) * 10&quot; } } ] }</code></pre>
+<p>Call with the <code>Functions → call</code> action or in an expression: <code>Functions.AddScore(5)</code>. <code>{ &quot;type&quot;: &quot;include&quot;, &quot;path&quot;: &quot;events/common.events.json&quot; }</code> splices another sheet in.</p>
+<h2 id="expressions">Expressions<a class="anchor" href="#expressions">#</a></h2>
+<p>Everything in a parameter is an expression: <code>+ - * / % ^</code>, <code>= != &lt; &lt;= &gt; &gt;=</code>, <code>&amp;</code> (join text), <code>&amp;&amp; || !</code>, <code>a ? b : c</code>, numbers and <code>&quot;text&quot;</code>. Read values with <code>coins</code>, <code>Hero.X</code>, <code>Enemy.Count</code>, <code>Enemy(2).Y</code>, <code>Hero.Platform.VectorY</code> and built-ins such as <code>floor</code>, <code>sqrt</code>, <code>sin</code> (degrees), <code>random(a, b)</code>, <code>choose(…)</code>, <code>distance(x1,y1,x2,y2)</code>, <code>len</code>, <code>left</code>, <code>mid</code>, <code>zeropad</code>, plus <code>dt</code>, <code>time</code>, <code>tickcount</code>, <code>loopindex</code>. There is no <code>eval</code>; expressions are parsed safely.</p>
+<h2 id="containers-families-persist">Containers, families, Persist<a class="anchor" href="#containers-families-persist">#</a></h2>
+<ul>
+<li><code>scene.settings.families: { &quot;Hostile&quot;: [&quot;Orc&quot;, &quot;Goblin&quot;] }</code> — one name matching several types.</li>
+<li><code>scene.settings.containers: [[&quot;Tank&quot;, &quot;Turret&quot;]]</code> — creating a <em>Tank</em> also creates its <em>Turret</em>, and destroying either removes both.</li>
+<li>Add the <strong>Persist</strong> behavior to an entity to keep it when the scene changes.</li>
+</ul>
+<h2 id="mix-with-scripts">Mix with scripts<a class="anchor" href="#mix-with-scripts">#</a></h2>
+<p>Scripts still work exactly as before. From a script you can fire sheet triggers or read variables: <code>this.scene.eventSheet.getVar(&#39;coins&#39;)</code>, <code>eventSheet.fire(&#39;Object.on-created&#39;, { entity })</code>.</p>
+<p>The complete list of conditions, actions and expressions is the generated <strong><a href="../reference/event-reference.html">Event sheet reference</a></strong>. Build a whole game step by step in <strong><a href="../tutorials/tut-t24-event-sheet-platformer.html">T24 A platformer from events</a></strong>.</p>
+<div class="pager"><a href="desktop-apps.html"><small>← Previous</small>Desktop apps</a><a href="behaviors.html"><small>Next →</small>Behaviors</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#use-it">Use it </a><a href="#objects-and-picking">Objects and picking </a><a href="#event-flavours">Event flavours </a><a href="#loops">Loops </a><a href="#variables">Variables </a><a href="#functions-and-includes">Functions and includes </a><a href="#expressions">Expressions </a><a href="#containers-families-persist">Containers, families, Persist </a><a href="#mix-with-scripts">Mix with scripts </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>
