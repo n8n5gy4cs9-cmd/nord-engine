@@ -1786,7 +1786,7 @@
       "id": "M10-25",
       "milestone": "M10",
       "title": "Project tools: project properties dialog (name, size, scaling mode, orientation, fullscreen, loader style, icons, version), folders in project bar, Find All References, project search/replace, safe rename",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M10-26",

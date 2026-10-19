@@ -1,5 +1,7 @@
 # Changelog
 
+- 2026-10-19 (M10-25): **Project tools** — `nord_core::refs` (find references, project-wide replace, safe asset rename, safe object rename across scenes/prefabs/event sheets, all with dry-run) and the editor's *Project* tab (properties form + references/rename/replace with preview and automatic snapshot). Tests: 3 unit + 1 kittest.
+
 - 2026-10-19 (M10-27): **Addon SDK** — `addon.json` + `register(nord)` modules for plugins, behaviors, data objects, effects, components (`runtime/core/addons.js`); `nord addon pack|install|list` (`.nordaddon` zip, `project.addons`); the event-sheet picker shows addon ACEs via *Refresh addons* (`tools/export-aces.mjs --project`); sample addon `library/addons/dice`; `docs/ADDONS.md`. Logged a pre-existing parallel-test race in the editor UI tests.
 
 - 2026-10-19 (M10-31): **Version history** — `nord_core::history` (snapshot/list/diff/line-diff/restore, auto snapshot before saves, keep 50) and the editor's *History* tab (diff view, two-click restore with safety snapshot). Tests: 3 unit + 1 kittest.

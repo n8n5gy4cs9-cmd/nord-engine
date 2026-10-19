@@ -1070,3 +1070,34 @@ fn history_panel_snapshots_diffs_and_restores() {
     assert_eq!(std::fs::read_to_string(&sheet).unwrap(), orig);
     assert_eq!(nord_core::history::list(&d).len(), 2, "restore took a safety snapshot");
 }
+
+#[test]
+fn project_tab_edits_properties_and_renames_an_object_safely() {
+    let d = example_copy("projtab", "event-sheets");
+    let mut st = EditorState::new();
+    st.open_project(&d).unwrap();
+    let mut h = Harness::builder()
+        .with_size(egui::vec2(1100.0, 900.0))
+        .build_ui_state(|ui, st: &mut EditorState| panels::project::ui(st, ui), st);
+    loaders(&h);
+    h.run_steps(2);
+    {
+        let st = h.state_mut();
+        st.project.as_mut().unwrap().display.width = 800;
+        st.project_ui.from = "Slime".into();
+        st.project_ui.to = "Goo".into();
+    }
+    h.run_steps(2);
+    h.get_by_label("Apply project properties").click();
+    h.run_steps(2);
+    let p: serde_json::Value = nord_core::io::load_json(&d.join("nord.project.json")).unwrap();
+    assert_eq!(p["display"]["width"], 800);
+    h.get_by_label("Preview object rename").click();
+    h.run_steps(3);
+    assert!(h.state().project_ui.preview.iter().any(|f| f.ends_with("main.scene.json")), "{:?}", h.state().project_ui.preview);
+    h.get_by_label_contains("Apply (take a version-history").click();
+    h.run_steps(3);
+    let scene = std::fs::read_to_string(d.join("scenes/main.scene.json")).unwrap();
+    assert!(scene.contains("\"Goo\"") && !scene.contains("\"Slime\""));
+    assert!(!nord_core::history::list(&d).is_empty(), "a snapshot was taken before the edit");
+}
