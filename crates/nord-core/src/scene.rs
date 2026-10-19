@@ -65,6 +65,9 @@ pub struct Entity {
     /// Construct-style behaviors (`{type, properties}`), edited as raw JSON for now.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub behaviors: Vec<Value>,
+    /// Visual effect stack (`{type, ...params}`), applied by the runtime (docs/EFFECTS.md)
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub effects: Vec<Value>,
     #[serde(default)]
     pub children: Vec<Entity>,
     #[serde(default)]
@@ -83,6 +86,7 @@ impl Entity {
             components: vec![],
             scripts: vec![],
             behaviors: vec![],
+            effects: vec![],
             children: vec![],
             prefab: None,
         }

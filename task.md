@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 196/243 tasks (81%)** · updated 2026-10-19
+**Overall: 197/243 tasks (81%)** · updated 2026-10-19
 
 | Milestone | Progress |
 |---|---|
@@ -17,7 +17,7 @@
 | M7 Docs | 20/20 (100%) |
 | M8 Polish & portability | 15/20 (75%) |
 | M9 Desktop apps | 16/16 (100%) |
-| M10 Construct-style editor | 14/35 (40%) |
+| M10 Construct-style editor | 15/35 (43%) |
 | M11 Web editor | 0/16 (0%) |
 
 ## Next up
@@ -280,7 +280,7 @@ _features cloned from Construct 3's editor (construct.net/en/make-games/games-ed
 - [ ] **M10-16** Sprite editor: origin point, named image points, collision polygon editor with auto-trace, per-frame properties
 - [ ] **M10-17** Animation editor v2: multiple named animations per object, frame list, duration/speed/loop/ping-pong/repeat-to, onion skin, preview play, import spritesheet/GIF, tags
 - [ ] **M10-18** Tilemap editor v2: tileset import + slicing, paint/rect/fill/random brushes, multiple layers, tile collision polygons, animated tiles, auto-tile (terrain) rules
-- [ ] **M10-19** Effects: per-object/layer/layout effect stack + parameters in inspector; built-ins (blur, glow, bloom, outline, CRT, tint, brightness/contrast, hue, pixelate, wave, distort, vignette); JS runtime pipelines
+- [x] **M10-19** Effects: per-object/layer/layout effect stack + parameters in inspector; built-ins (blur, glow, bloom, outline, CRT, tint, brightness/contrast, hue, pixelate, wave, distort, vignette); JS runtime pipelines
 - [ ] **M10-20** Particles: editor with live preview, presets (fire, smoke, snow, sparks), property curves
 - [ ] **M10-21** Timeline/keyframe editor: tracks per property, easing curve editor, events trigger, play/pause actions
 - [x] **M10-22** Debugger: pause/resume/step, inspector for live instances + vars (editable), event sheet highlighting + breakpoints, console eval

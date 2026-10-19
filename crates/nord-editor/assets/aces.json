@@ -385,6 +385,59 @@
    ]
   },
   {
+   "name": "Effects",
+   "kind": "plugin",
+   "conditions": [],
+   "actions": [
+    {
+     "id": "add-effect",
+     "params": [
+      "type"
+     ],
+     "raw": [
+      "type"
+     ]
+    },
+    {
+     "id": "set-parameter",
+     "params": [
+      "type",
+      "parameter",
+      "value"
+     ],
+     "raw": [
+      "type",
+      "parameter"
+     ]
+    },
+    {
+     "id": "set-enabled",
+     "params": [
+      "type",
+      "state"
+     ],
+     "raw": [
+      "type",
+      "state"
+     ]
+    },
+    {
+     "id": "remove-effect",
+     "params": [
+      "type"
+     ],
+     "raw": [
+      "type"
+     ]
+    },
+    {
+     "id": "clear-effects",
+     "params": []
+    }
+   ],
+   "expressions": []
+  },
+  {
    "name": "Localisation",
    "kind": "plugin",
    "conditions": [
@@ -769,6 +822,36 @@
      "id": "set-text",
      "params": [
       "text"
+     ]
+    },
+    {
+     "id": "add-effect",
+     "params": [
+      "type"
+     ],
+     "raw": [
+      "type"
+     ]
+    },
+    {
+     "id": "set-effect-parameter",
+     "params": [
+      "type",
+      "parameter",
+      "value"
+     ],
+     "raw": [
+      "type",
+      "parameter"
+     ]
+    },
+    {
+     "id": "remove-effect",
+     "params": [
+      "type"
+     ],
+     "raw": [
+      "type"
      ]
     },
     {

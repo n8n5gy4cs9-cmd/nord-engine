@@ -202,3 +202,24 @@ test('i18n: tables, fallback, interpolation, textKey components follow language 
   assert.equal(g.save.get('__language'), 'fi');
   assert.equal(colorMatrixValues('none'), null); assert.match(colorMatrixValues('protanopia'), /^0\.152286/);
 });
+
+test('effects: unknown/unsupported handled, backend effect handles set/disable/remove, entity effects serialise', async () => {
+  const { Game, MemoryStorage } = await import('./index.js');
+  const log = [];
+  const backend = { createEffect: (t, type, p) => (type === 'pixelate' ? null : { set: (k, v) => log.push(['set', type, k, v]), setEnabled: (b) => log.push(['en', type, b]), remove: () => log.push(['rm', type]) }) };
+  const files = { s: { name: 's', settings: { effects: [{ type: 'vignette', strength: 0.7 }] }, entities: [{ id: 'a', name: 'A', effects: [{ type: 'glow', outerStrength: 9 }] }] } };
+  const warns = [];
+  const g = new Game({ id: 'x', startScene: 's' }, { backend, fetchJSON: async (p) => structuredClone(files[p]), importScript: async () => ({}), storage: new MemoryStorage(), onError: (e) => { throw e; } });
+  g.warn = (m) => warns.push(m);
+  await g.loadScene('s');
+  const scene = g.effects.find('scene', 'vignette'); assert.equal(scene.params.strength, 0.7);
+  const a = [...g.scene.all()][0];
+  assert.equal(g.effects.find(a, 'glow').params.outerStrength, 9);
+  assert.equal(g.effects.add('scene', 'nope'), null); assert.equal(g.effects.add('scene', 'pixelate'), null); assert.equal(warns.length, 2);
+  scene.set('radius', 0.9); scene.setEnabled(false);
+  assert.deepEqual(log.slice(-2), [['set', 'vignette', 'radius', 0.9], ['en', 'vignette', false]]);
+  assert.equal(a.toJSON().effects[0].type, 'glow');
+  await g.loadScene('s'); // scene effects are replaced, not stacked
+  assert.equal(g.effects.of('scene').length, 1);
+  assert.ok(log.some((l) => l[0] === 'rm' && l[1] === 'vignette'));
+});

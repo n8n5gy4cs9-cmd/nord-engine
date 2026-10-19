@@ -71,6 +71,19 @@ const { errors } = await withPage(`${ROOT}/examples/event-sheets`, async (page) 
   await page.click('.nord-debug [data-tab=console]'); await page.fill('#nd-in', 'coins + lives'); await page.keyboard.press('Enter'); await wait(200);
   assert.match(await ev(() => document.querySelector('.nord-debug').textContent), /> coins \+ lives/);
   await page.screenshot({ path: `${out}/8-debug-console.png` });
+
+  // effects: Phaser WebGL FX on the camera and on an object, CSS fallback for CRT
+  await page.goto(page.url().split('?')[0]); await waitReady(page); await wait(500);
+  const fx = await ev(() => {
+    const e = __nord.effects, hero = __nord.scene.find('Hero');
+    const hs = [e.add('scene', 'vignette', { strength: 0.6, radius: 0.8 }), e.add(hero, 'glow', { color: '#ffd166', outerStrength: 6 }), e.add('scene', 'pixelate', { amount: 2 }), e.add('scene', 'crt', { intensity: 0.25 }), e.add('scene', 'saturate', { value: 1.6 })];
+    hs[0].set('strength', 0.7);
+    return hs.map((h) => !!h);
+  });
+  assert.deepEqual(fx, [true, true, true, true, true], 'effects created');
+  await wait(500);
+  await page.screenshot({ path: `${out}/9-effects.png` });
+  await ev(() => __nord.effects.clear('scene'));
 });
 assert.deepEqual(errors, [], errors.join('\n'));
 console.log('event-sheets demo OK');

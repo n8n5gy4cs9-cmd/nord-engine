@@ -2,6 +2,7 @@
 // Requires the global `Phaser` (vendor/phaser/phaser.min.js loaded before this module).
 import { createGame, errorOverlay, registerCoreComponents, registerComponent } from '../core/index.js';
 import { toWorld } from './transform.js';
+import { createEffect } from './effects.js';
 import { registerPhaserComponents } from './components.js';
 import { ArcadeAdapter, MatterAdapter } from './physics.js';
 
@@ -58,6 +59,7 @@ export async function boot(project, opts = {}) {
 
   backend.width = backend.phaser.config.width; backend.height = backend.phaser.config.height;
   const canvas = backend.phaser.canvas;
+  game.effects.attach(canvas, container);
   game._detachInput = (await import('../core/input.js')).attachDom(game.input, canvas, window, (x, y) => backend.toWorld(x, y));
   backend.init();
 
@@ -77,6 +79,7 @@ export async function boot(project, opts = {}) {
 class Backend {
   constructor(game, project) { this.game = game; this.project = project; this.lightsOn = false; this.visuals = new Set(); this.maps = new Map(); this.physics = null; this.cameraComp = null; this._q = Promise.resolve(); }
   init() { /* hook for subclasses/tests */ }
+  createEffect(target, type, params) { return createEffect(this, target, type, params); }
   texKey(path) { return path; }
   mapKey(path) { return `map:${path}`; }
 

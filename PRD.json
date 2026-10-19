@@ -1750,7 +1750,7 @@
       "id": "M10-19",
       "milestone": "M10",
       "title": "Effects: per-object/layer/layout effect stack + parameters in inspector; built-ins (blur, glow, bloom, outline, CRT, tint, brightness/contrast, hue, pixelate, wave, distort, vignette); JS runtime pipelines",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M10-20",

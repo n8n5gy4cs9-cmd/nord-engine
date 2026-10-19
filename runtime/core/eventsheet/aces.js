@@ -142,6 +142,15 @@ registerPlugin('Mouse', {
   },
   expressions: { X: (r) => r.game.input.pointer.worldX, Y: (r) => r.game.input.pointer.worldY },
 });
+registerPlugin('Effects', { // scene-wide (camera) effects; per-object ones are object ACEs
+  actions: {
+    'add-effect': { params: ['type'], raw: ['type'], run: (r, p) => { r.game.effects.add('scene', p.type); } },
+    'set-parameter': { params: ['type', 'parameter', 'value'], raw: ['type', 'parameter'], run: (r, p) => { r.game.effects.find('scene', p.type)?.set(p.parameter, p.value); } },
+    'set-enabled': { params: ['type', 'state'], raw: ['type', 'state'], run: (r, p) => { r.game.effects.find('scene', p.type)?.setEnabled(p.state === 'enabled'); } },
+    'remove-effect': { params: ['type'], raw: ['type'], run: (r, p) => { r.game.effects.find('scene', p.type)?.remove(); } },
+    'clear-effects': { run: (r) => { r.game.effects.clear('scene'); } },
+  },
+});
 registerPlugin('Localisation', {
   actions: { 'set-language': { params: ['language'], run: (r, p) => { r.game.i18n.setLanguage(p.language); } } },
   conditions: { 'language-is': { params: ['language'], test: (r, p) => r.game.i18n.language === p.language } },
@@ -239,6 +248,9 @@ registerObjectAces({
     'set-mirrored': { params: ['mirrored'], instance: true, run: (r, e, p) => { e.set(e.getComponent('animatedSprite') ? 'animatedSprite' : 'sprite', 'flipX', !!p.mirrored); } },
     'set-opacity': { params: ['opacity'], instance: true, run: (r, e, p) => { setOpacity(e, p.opacity / 100); } },
     'set-text': { params: ['text'], instance: true, run: (r, e, p) => { e.set('text', 'text', String(p.text)); } },
+    'add-effect': { params: ['type'], raw: ['type'], instance: true, run: (r, e, p) => { r.game.effects.add(e, p.type); } },
+    'set-effect-parameter': { params: ['type', 'parameter', 'value'], raw: ['type', 'parameter'], instance: true, run: (r, e, p) => { r.game.effects.find(e, p.type)?.set(p.parameter, p.value); } },
+    'remove-effect': { params: ['type'], raw: ['type'], instance: true, run: (r, e, p) => { r.game.effects.find(e, p.type)?.remove(); } },
     destroy: { instance: true, run: (r, e) => { e.destroy(); } },
   },
   expressions: {

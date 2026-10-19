@@ -8,6 +8,7 @@ import { resolveAttributes } from './script.js';
 import { EventSheet } from './eventsheet/sheet.js';
 import { I18n, Accessibility } from './i18n.js';
 import { Debugger } from './debug.js';
+import { Effects } from './effects.js';
 
 export class Game {
   /**
@@ -27,6 +28,7 @@ export class Game {
     this.time = { delta: 0, elapsed: 0 };
     this.timeScale = 1;
     this.paused = false;
+    this.effects = new Effects(this);
     this.i18n = new I18n(this); this.a11y = new Accessibility(this);
     this.audio = null; this.ui = null; this.physics = null;
     this.scene = null;
@@ -78,6 +80,7 @@ export class Game {
   async loadScene(path = this.project.startScene) {
     if (!this._i18nReady) { this._i18nReady = true; await this.i18n.init(); }
     const kept = (this.scene?.roots ?? []).flatMap((r) => [...r.all()]).filter((e) => e.behavior('Persist') && !e.parent).map((e) => e.toJSON());
+    this.effects.clear('scene'); this.effects.prune();
     this.scene?.destroy();
     this.events.emit('sceneUnload', this.scene?.name);
     this._scenePath = path;
@@ -89,6 +92,8 @@ export class Game {
       if (dup) dup.destroy();
       await scene.spawnData(d);
     }
+    this.effects.addAll('scene', scene.settings.effects);
+    for (const e of scene.all()) if (e._effectData?.length) this.effects.addAll(e, e._effectData);
     const sheet = scene.settings.eventSheet ?? scene.data.eventSheet;
     if (sheet) scene.systems.push(scene.eventSheet = await EventSheet.load(scene, sheet));
     scene.start();

@@ -1,5 +1,7 @@
 # Changelog
 
+- 2026-10-19 (M10-19): **Effects** — scene and per-object effect stacks (`settings.effects`, entity `effects`, `game.effects`, event-sheet Effects plugin + object actions): blur, glow, pixelate, vignette, barrel, colour grading, CRT; Phaser 4 filters on WebGL, CSS fallback for scene-level ones on other tiers. Rust `Entity` keeps `effects`. `docs/EFFECTS.md`. (Phaser 4.2 has no bloom/shine filters.)
+
 - 2026-10-19 (M10-22/23): **Debugger + profiler** (`runtime/core/debug.js`): `?debug` / F9 overlay with pause/step/resume, breakpoints on event-sheet events, live instance + variable editing, expression console, frame graph, slow-frame markers, draw calls/heap when available, per-event/group cost. Zero cost when off. Chapter *Debugger and profiler*; demo test drives the overlay in Chromium.
 
 - 2026-10-19 (M10-26, M10-30): **Data objects** for event sheets — Array (1–3D), Dictionary, JSON, AJAX as named, optionally global objects (`runtime/core/eventsheet/objects.js`, `registerDataType`), declared by `{type:"object"}` events or `settings.dataObjects`; plus **Touch** and **Gamepad** plugins; the editor picker/params know them (`+ Data object`). **Localisation + accessibility** (`runtime/core/i18n.js`, `docs/LOCALISATION.md`): string tables, `textKey` components, language switch action/expressions, colour-blind preview filter, UI scale. Fixed the stale themes test (10 dark + 3 light). Rendering plugin objects split into M10-35.
