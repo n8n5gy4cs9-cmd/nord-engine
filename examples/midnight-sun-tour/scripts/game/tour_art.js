@@ -6,6 +6,8 @@ module.exports = {
         if (D.drawRegion) D.drawRegion(0,0,w,h,'assets/sprites/tour_environments.png',index%2/2,Math.floor(index/2)/2,0.5,0.5,alpha == null ? 1 : alpha);
     },
     sprite: function(index,x,y,w,h) {
+        var band={8:4,9:8,10:9,11:5,12:6,13:7,24:0,25:1,26:2,27:3};
+        if(band[index]!=null){var i=band[index];if(D.drawRegion)D.drawRegion(x,y,w,h,'assets/sprites/retro_band.png',i%4/4,Math.floor(i/4)/3,0.25,1/3,1);return;}
         if (D.drawRegion) D.drawRegion(x,y,w,h,'assets/sprites/tour_cast.png',index%8/8,Math.floor(index/8)/4,1/8,1/4,1);
     },
     facility:function(index,x,y,w,h,a) {
@@ -22,10 +24,10 @@ module.exports = {
         this.panel(8,6,w-16,46); this.text(20,13,title,0.95);
         D.drawText(20,34,sub,0.75,0.73,0.85,1,0.57);
     },
-    results: function(title,lines,w,h) {
+    results: function(title,lines,w,h,prompt) {
         this.panel(w/2-205,h/2-85,410,170);
         this.text(w/2-185,h/2-67,title,1.1);
         for(var i=0;i<lines.length;i++) this.text(w/2-185,h/2-32+i*23,lines[i],0.72);
-        this.text(w/2-185,h/2+57,'ENTER · back to the tour',0.65);
+        this.text(w/2-185,h/2+57,prompt||'ENTER · continue',0.65);
     }
 };

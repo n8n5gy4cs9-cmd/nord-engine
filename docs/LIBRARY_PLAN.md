@@ -76,3 +76,8 @@ is a separate three-day manager with artist booking/recordings, staff, tickets, 
 weather/capacity, and a representative walking customer simulation. Customer purchases earn stall income;
 queues affect happiness. Live construction keeps the crowd and artist schedule running. The private console
 uses a fixed command dispatcher, no eval, with its reference in the shipped game-root `commands.txt`.
+
+M6-46 replaces all remaining legacy activity views with the native-pixel `retro.js` art contract.
+Moose/petrol use actual raster objects; the circuit rotates its vehicles; gigs animate instruments;
+space games use real sprites and the obsolete flattened 3D shim is removed. The band has title-inspired
+portraits and performance/walking poses. Exact prompts and packing contracts ship in `RETRO_ART.md`.

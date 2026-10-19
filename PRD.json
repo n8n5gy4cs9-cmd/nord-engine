@@ -1217,6 +1217,12 @@
       "status": "done"
     },
     {
+      "id": "M6-46",
+      "milestone": "M6",
+      "title": "Replace every remaining Midnight Sun Tour legacy minigame view and remake Moose Run, petrol, driving, camping and arcade games with native-pixel art",
+      "status": "done"
+    },
+    {
       "id": "M7-01",
       "milestone": "M7",
       "title": "tools/build-manual.mjs (marked + CodeMirror readonly + nord-live blocks)",

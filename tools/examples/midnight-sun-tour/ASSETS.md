@@ -74,3 +74,23 @@ Use case: illustration-story. Original Amiga 1991 pixel art illustrated event-ca
 
 ### Festival facilities
 Use case: stylized-concept. Original Amiga pixel art game sprites for a Finnish 1991 rock festival tycoon. Exactly FIVE separate isometric building sprites in ONE horizontal row, five equally spaced equal-width cells left to right, transparent background, no overlap, no text or labels. 1: small rustic grilled sausage food kiosk with copper roof, counter and tiny warm lamps. 2: block of four clearly recognizable blue portable toilet cubicles with doors and little roof vents. 3: purple-and-copper merchandise canopy tent with hanging T-shirts and records on counter. 4: outdoor concert stage with black truss roof, loudspeakers, drum kit and amber spotlights. 5: little camping plot with three olive tents, birch tree and campfire. Consistent isometric top-down three-quarter view like 1990s Theme Park / Transport Tycoon art, dark indigo outlines, muted moss green, aged wood, magenta and copper highlights. No people. Each sprite fully inside its own cell with generous transparent padding. Crisp pixel shapes and rich restrained dither detail, readable as small game icons.
+
+
+## Native-pixel activity remake (M6-46)
+
+All remaining legacy minigame views are replaced. The old pseudo-3D race/night/shooter renderer and
+its flattened primitive display are removed. Ruisrock remains the same management game, with artist
+recordings and walking customers; no rhythm game was added to it.
+
+New authoritative ImageGen sources are `assets/sprites/retro_{objects,scenes,band,props,performers}_source.png`.
+Runtime atlases omit `_source`: objects, props and band are 4×3 grids of 64×64 cells; performers are 4×2.
+`retro_scenes.png` contains four 320×180 native panels. `retro_sidebus.png` is the existing reviewed
+side bus packed at 96×48. Characters are trimmed at a binary alpha threshold before native sizing, so
+standing/walking figures have 48-pixel bodies rather than shrinking into transparent padding. Sprites
+and scenes use at most 64 palette colors per packed frame/panel and nearest-neighbor rendering.
+
+Run `python3 tools/art/midnight/retro.py` to pack these assets and override the eight legacy band files.
+The older `pack.py` invokes this pass last and excludes `retro_*` from its legacy UI placeholders.
+The title is never touched. Exact built-in ImageGen prompts are shipped in [RETRO_ART.md](RETRO_ART.md)
+and retained in `tools/art/midnight/RETRO_PROMPTS.json`. No new sounds were generated; existing music
+and SFX are reused.

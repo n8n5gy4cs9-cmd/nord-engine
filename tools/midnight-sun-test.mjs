@@ -21,9 +21,10 @@ const norm = (n) => String(n).toLowerCase();
 const noop = () => {};
 const store = new Map();
 const music = new Set(), musicEvents=[];
+const painted=new Set();
 const globals = {
   Math: Object.assign(Object.create(Math), { random: rnd }),
-  Draw2D: { fillRect: noop, drawRect: noop, drawCircle: noop, drawLine: noop, drawImage: noop, drawText: noop, drawTextAligned: noop, measureText: (t) => String(t).length * 5 },
+  Draw2D: { drawRegion: (x,y,w,h,asset) => painted.add(asset), fillRect: noop, drawRect: noop, drawCircle: noop, drawLine: noop, drawImage: noop, drawText: noop, drawTextAligned: noop, measureText: (t) => String(t).length * 5 },
   Input: { getKey: (n) => held.has(norm(n)), getKeyDown: (n) => down.has(norm(n)), getKeyUp: () => false },
   Audio: { play: noop, playMusic: (p) => {music.add(p);musicEvents.push(p);}, stopMusic: noop },
   Scene: { getSceneName: () => 'Title Screen', load: noop }, Screen: { getWidth: () => 640, getHeight: () => 360, getPlatform: () => 'web' },
@@ -88,6 +89,54 @@ const baseline=JSON.parse(JSON.stringify(game.state.game));
   r.update(1/60);r.draw(640,360);
  }
  down.clear();assert.equal(r.phase,'results');assert.equal(r.dead,false,'runner course must be completable');assert.ok(r.distance>=500);
+}
+// Each formerly legacy view must actually consume the new artwork, not just ship unused PNGs.
+for(const name of ['mg_gearpack','mg_moosedodge','mg_fuel','mg_soundcheck','mg_gig','mg_tent','mg_trail','mg_race','mg_night','mg_space','mg_starfox']){
+ const m=require(name),gs=structuredClone(baseline),city={id:'test',name:'Test',gig_fee_min:200,gig_fee_max:500};
+ if(name==='mg_gig')m.start(gs,city,1,1);else if(name==='mg_gearpack')m.start(gs,baseline.inventory);else m.start(gs,city);
+ painted.clear();m.draw(640,360);
+ assert.ok([...painted].some(p=>p.includes('retro_')),name+' uses new native-pixel artwork');
+ if(name==='mg_moosedodge')assert.ok(painted.has('assets/sprites/retro_objects.png'),'bus and wildlife art is wired into Moose Run');
+}
+// The two reported games must be playable successfully without cheats.
+{
+ const m=require('mg_moosedodge'),gs=structuredClone(baseline);m.start(gs,{});m.phase='playing';
+ for(let frame=0;frame<1500&&m.phase!=='results';frame++){
+  down.clear();held.clear();
+  const danger=m.obstacles.filter(o=>o.y>130&&o.y<315&&!o.hit);
+  if(danger.some(o=>o.lane===m.lane)){
+   const safe=[0,1,2].filter(l=>!danger.some(o=>o.lane===l)).sort((a,b)=>Math.abs(a-m.lane)-Math.abs(b-m.lane))[0];
+   const crossingBlocked=m.obstacles.some(o=>o.y>220&&o.y<315&&!o.hit&&o.lane>=Math.min(safe,m.lane)&&o.lane<=Math.max(safe,m.lane));
+   if(!crossingBlocked){if(safe<m.lane)held.add('left');if(safe>m.lane)held.add('right');}
+  }
+  m.update(1/60);
+ }
+ assert.equal(m.phase,'results');assert.equal(m.hits,0,'telegraphed hazards always leave a reachable safe lane');
+ const f=require('mg_fuel');f.start(gs);f.phase='pumping';
+ for(let frame=0;frame<6000&&f.phase!=='results';frame++){
+  down.clear();held.clear();const next=f.needle+f.direction*f.speed/60;
+  if(f.phase==='pumping'&&Math.abs(next-f.target)<0.012)down.add('space');f.update(1/60);
+ }
+ assert.equal(f.phase,'results');assert.equal(f.perfectCount,5);assert.ok(f.totalFuel>=70,'accurate pump stops earn a full-sized refill');
+ down.clear();held.clear();
+}
+// Countersteering and acceleration can beat the rival without setting progress or money.
+{
+ const m=require('mg_race');m.start(structuredClone(baseline));m.phase='playing';
+ for(let frame=0;frame<3000&&m.phase!=='results';frame++){
+  held.clear();held.add('up');if(m.offset>4)held.add('left');if(m.offset<-4)held.add('right');m.update(1/60);
+ }
+ assert.equal(m.phase,'results');assert.equal(m.playerAhead,true,'a clean driving policy can win both laps');held.clear();
+}
+// Play the complete published note chart through its real input/update path.
+{
+ const m=require('mg_gig'),gs=structuredClone(baseline);m.start(gs,{id:'test',name:'Test stage',gig_fee_min:200,gig_fee_max:500},1,1);m.phase='performance';
+ for(let frame=0;frame<1400&&m.phase!=='results';frame++){
+  down.clear();for(const p of m.prompts)if(p.result==='none'&&Math.abs(p.time-(m.timer+1/60))<1/120)down.add(p.key);
+  m.handleInput(1/60);
+ }
+ assert.equal(m.phase,'results');assert.equal(m.score,m.maxScore,'every note can be hit at its displayed crossing time');
+ const after=JSON.stringify(gs);for(let i=0;i<120;i++)m.draw(640,360);assert.equal(JSON.stringify(gs),after,'stage/results rendering never pays twice');down.clear();
 }
 // Customers follow a connected path network, buy services, queue and leave at closing.
 {

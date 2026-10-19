@@ -61,7 +61,7 @@ export function createCompat(host) {
   const tintBuf = document.createElement('canvas'), tctx = tintBuf.getContext('2d');
   const Draw2D = {
     fillRect(x, y, w, h, r, g, b, a = 1) { ctx.fillStyle = css(r, g, b, a); ctx.fillRect(x, y, w, h);
-      if(w>100&&h>25&&w<W-1&&r<0.32&&g<0.22&&b<0.42&&a>=0.85){
+      if(w>100&&h>25&&h<H-20&&w<W-1&&r<0.32&&g<0.22&&b<0.42&&a>=0.85){
         ctx.strokeStyle='#89516f';ctx.lineWidth=1;ctx.strokeRect(x+0.5,y+0.5,w-1,h-1);
         ctx.fillStyle='#cb9366';ctx.fillRect(x+2,y+2,w-4,1);
       }
@@ -78,6 +78,11 @@ export function createCompat(host) {
       const im=getImage(path); if(!im.complete||!im.naturalWidth)return;
       ctx.imageSmoothingEnabled=false;ctx.globalAlpha=a;
       ctx.drawImage(im,sx*im.naturalWidth,sy*im.naturalHeight,sw*im.naturalWidth,sh*im.naturalHeight,x,y,w,h);ctx.globalAlpha=1;
+    },
+    drawRegionRotated(x,y,w,h,path,sx,sy,sw,sh,angle) {
+      const im=getImage(path);if(!im.complete||!im.naturalWidth)return;
+      ctx.save();ctx.imageSmoothingEnabled=false;ctx.translate(x+w/2,y+h/2);ctx.rotate(angle);
+      ctx.drawImage(im,sx*im.naturalWidth,sy*im.naturalHeight,sw*im.naturalWidth,sh*im.naturalHeight,-w/2,-h/2,w,h);ctx.restore();
     },
     drawImage(x, y, w, h, path, r = 1, g = 1, b = 1, a = 1) {
       const im = getImage(path);
@@ -122,32 +127,8 @@ export function createCompat(host) {
     setClearColor(_id, r, g, b, a = 1) { clear = { r, g, b, a }; },
   };
   const Style = { addEffect: (n) => effects.add(n), configure: (o) => { fx = { ...fx, ...o }; } };
-  // Model3D/Transform: the Star Fox minigame builds its scene from engine primitives under an orthographic camera
-  // (centre x=160, y-up, 256 world units tall). They are flattened to rotated rects/ellipses and drawn by Model3D.render().
-  const ents = new Map(); let nextEnt = 1000;
-  const Model3D = {
-    createPrimitive(shape) { const id = nextEnt++; ents.set(id, { shape, c: [1, 1, 1, 1], p: [0, 0, 0], r: [0, 0, 0], s: [1, 1, 1] }); return id; },
-    setColor(id, r, g, b, a = 1) { const e = ents.get(id); if (e) e.c = [r, g, b, a]; },
-    render() {
-      const S = H / 256;
-      const list = [...ents.values()].sort((a, b) => a.p[2] - b.p[2]);
-      for (const e of list) {
-        ctx.save();
-        ctx.translate(W / 2 + (e.p[0] - 160) * S, H - e.p[1] * S);
-        ctx.rotate(-e.r[2] * Math.PI / 180);
-        ctx.fillStyle = css(e.c[0], e.c[1], e.c[2], e.c[3]);
-        const w = Math.max(0.5, e.s[0] * S), h = Math.max(0.5, e.s[1] * S);
-        if (e.shape === 'sphere') { ctx.beginPath(); ctx.ellipse(0, 0, w / 2, h / 2, 0, 0, Math.PI * 2); ctx.fill(); } else ctx.fillRect(-w / 2, -h / 2, w, h);
-        ctx.restore();
-      }
-    },
-  };
-  const Transform = {
-    setPosition(id, x, y, z) { const e = ents.get(id); if (e) e.p = [x, y, z]; },
-    setRotation(id, x, y, z) { const e = ents.get(id); if (e) e.r = [x, y, z]; },
-    setScale(id, x, y, z) { const e = ents.get(id); if (e) e.s = [x, y, z]; },
-  };
-  const GameObject = { findByTag: () => 1, destroy(id) { ents.delete(id); } };
+  // The remade games use raster sprites; no flattened 3D primitive renderer is needed.
+  const GameObject = { findByTag: () => 1, destroy() {} };
   const SaveLoad = {
     save: (k, v) => host.save?.set(k, v),
     load: (k) => host.save?.get(k, null) ?? null,
@@ -162,7 +143,7 @@ export function createCompat(host) {
   regrain();
   let frame = 0;
   return {
-    globals: { Draw2D, Input, Audio, Scene, Screen, Time, Camera, Style, GameObject, SaveLoad, Model3D, Transform },
+    globals: { Draw2D, Input, Audio, Scene, Screen, Time, Camera, Style, GameObject, SaveLoad },
     canvas, tap,
     resetInput() { held.clear(); down.clear(); up.clear(); },
     beginFrame() { ctx.setTransform(K, 0, 0, K, 0, 0); ctx.globalAlpha = 1; ctx.fillStyle = css(clear.r, clear.g, clear.b, 1); ctx.fillRect(0, 0, W, H); },

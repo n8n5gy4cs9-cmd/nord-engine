@@ -269,7 +269,7 @@ var ENCOUNTERS = [
     },
     {
         id: "football_challenge", name: "Football Challenge",
-        description: "Local youth at a rest stop are kicking a ball around. 'Hey, you lot — 4v4, winner takes the kitty!'",
+        description: "Local youth at a rest stop challenge the band. 'Five penalties each — winner takes the kitty!'",
         sprite: "assets/sprites/enc_moose_road.png",
         choices: [
             { text: "Accept the football challenge!", success: { description: "The band stretches and takes the field." }, fail_chance: 0, trigger: "kickoff" },
@@ -957,7 +957,7 @@ var CityMenu = class {
         // Refuel → triggers fuel gauge minigame
         options.push({
             id: "refuel", label: "Refuel",
-            cost: "100 FIM", enabled: gs.resources.cash >= 100 && city.services.indexOf("gas") !== -1
+            cost: "100 FIM", enabled: gs.resources.cash >= 100 && city.services.indexOf("gas") !== -1 && gs.bus.gas < gs.bus.max_gas
         });
         options.push({
             id: "food", label: "Buy Food",
@@ -976,7 +976,7 @@ var CityMenu = class {
                 enabled: true
             });
         }
-        // Arcade (Space Invaders) — only in cities with arcade service
+        // Arcade (Amp Invaders) — only in cities with arcade service
         if (city.services.indexOf("arcade") !== -1) {
             options.push({
                 id: "arcade", label: "Visit Arcade",
@@ -1104,17 +1104,17 @@ var CHEAT_MINIGAMES = [
     {label:"Harbor Rescue", scene:"jobs", starter:function(gs){Jobs.start(gs,1);}},
     { label: "Moose Dodge",      scene: "moosedodge", starter: function(gs) { MooseDodgeSystem.start(gs, { road_type: "highway", distance_km: 120, hazard_rate: 0.3 }); } },
     { label: "Kickoff (Football)", scene: "kickoff",  starter: function(gs) { KickoffSystem.start(gs); } },
-    { label: "Space Invaders",   scene: "space",      starter: function(gs) { SpaceSystem.start(gs); } },
-    { label: "Trail (Oregon)",   scene: "trail",      starter: function(gs) { TrailSystem.start(gs); } },
+    { label: "Amp Invaders",   scene: "space",      starter: function(gs) { SpaceSystem.start(gs); } },
+    { label: "Woodland Shortcut",   scene: "trail",      starter: function(gs) { TrailSystem.start(gs); } },
     { label: "Race (Bus vs Lada)", scene: "race",     starter: function(gs) { RaceSystem.start(gs); } },
-    { label: "Tent (Simon Says)", scene: "tent",      starter: function(gs) { TentSystem.start(gs); } },
-    { label: "Fuel Gauge",       scene: "fuel",       starter: function(gs) { FuelSystem.start(gs); } },
+    { label: "Four Stakes", scene: "tent",      starter: function(gs) { TentSystem.start(gs); } },
+    { label: "Petrol Stop",       scene: "fuel",       starter: function(gs) { FuelSystem.start(gs); } },
     { label: "Runner (Auto-run)", scene: "runner",    starter: function(gs) { RunnerSystem.start(gs); } },
     { label: "Night Driving",    scene: "night",      starter: function(gs) { NightSystem.start(gs); } },
     { label: "Sound Check",      scene: "soundcheck", starter: function(gs) { var city = OverworldMap.getCityById(gs.journey.current_city); SoundCheckSystem.start(gs, city); } },
     { label: "Gig",              scene: "gig",        starter: function(gs) { var city = OverworldMap.getCityById(gs.journey.current_city); GigSystem.start(gs, city, 1.0, 1.0); } },
     { label: "Gear Pack",        scene: "gearpack",   starter: function(gs) { GearPackSystem.start(gs, GEAR_DATA); } },
-    { label: "Tahtialus (Starfox)", scene: "starfox",  starter: function(gs) { StarfoxSystem.start(gs); } },
+    { label: "Tahtialus / Night Flight", scene: "starfox",  starter: function(gs) { StarfoxSystem.start(gs); } },
     { label: "Festival (Ruisrock)", scene: "festival", starter: function(gs) { gFestivalStarted = false; } }
 ];
 
@@ -1208,9 +1208,9 @@ class MidnightSunTour {
             else if(gScene==='space'){SpaceSystem.score=1000;SpaceSystem.lives=3;SpaceSystem.phase='results';}
             else if(gScene==='race'){RaceSystem.playerAhead=true;RaceSystem.phase='results';}
             else if(gScene==='tent'){TentSystem.tentProgress=1;TentSystem.phase='results';}
-            else if(gScene==='fuel'){FuelSystem.totalFuel=30;FuelSystem.phase='results';}
+            else if(gScene==='fuel'){FuelSystem.totalFuel=75;FuelSystem.perfectCount=5;FuelSystem.marks=[true,true,true,true,true];FuelSystem.phase='results';}
             else if(gScene==='soundcheck'){SoundCheckSystem.sliders=SoundCheckSystem.targets.slice();SoundCheckSystem.calculateResults();SoundCheckSystem.phase='results';}
-            else if(gScene==='starfox'){StarfoxSystem.score=1500;StarfoxSystem.shields=100;StarfoxSystem.timer=0;StarfoxSystem.phase='results';}
+            else if(gScene==='starfox'){StarfoxSystem.score=1500;StarfoxSystem.bossHP=0;StarfoxSystem.shields=100;StarfoxSystem.timer=0;StarfoxSystem.phase='results';}
             else if(gScene==='moosedodge'){MooseDodgeSystem.phase='results';}
             else if(gScene==='night'){NightSystem.survived=true;NightSystem.phase='results';}
             else if(gScene==='trail'){TrailSystem.phase='results';}
@@ -1273,7 +1273,7 @@ class MidnightSunTour {
         if(gScene!=="title"&&gScene!=="gameover"&&Input.getKeyDown("p"))this.paused=!this.paused;
         if(this.paused){
             Art.background(0,this.screenW,this.screenH,0.5);
-            Art.results('TOUR PAUSED',['P · resume the current game','Your minigame timer is stopped.'],this.screenW,this.screenH);
+            Art.results('TOUR PAUSED',['P · resume the current game','Your minigame timer is stopped.'],this.screenW,this.screenH,'P · resume');
             return;
         }
 

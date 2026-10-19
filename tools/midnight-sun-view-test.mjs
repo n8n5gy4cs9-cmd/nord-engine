@@ -19,10 +19,14 @@ const {errors,result}=await withPage((process.argv[2] ?? `${ROOT}/examples/midni
   await page.keyboard.press('Enter');await page.waitForTimeout(100);
  };
  // Launch through the same arcade directory used by players.
- for(const [index,name] of [[0,'delivery'],[1,'harbor'],[9,'runner'],[3,'shootout'],[4,'space'],[11,'mixer'],[12,'gig'],[15,'festival']]){
+ for(const [index,name] of [[0,'delivery'],[1,'harbor'],[2,'moose'],[3,'shootout'],[4,'space'],[5,'trail'],[6,'race'],[7,'tent'],[8,'fuel'],[9,'runner'],[10,'night'],[11,'mixer'],[12,'gig'],[14,'starfox'],[15,'festival']]){
   await launch(index);await shot(name+'-ready');
   await page.keyboard.press('Enter');await page.waitForTimeout(150);
-  if(name==='gig')await page.evaluate(()=>{for(let i=0;i<70;i++)window.__nord_msTour.onUpdate(0.1);});
+  const steps={moose:95,night:90,fuel:12,tent:35,starfox:100,gig:75,space:70,race:70};
+  if(name==='race')await page.keyboard.down('ArrowUp');
+  if(steps[name])await page.evaluate(n=>{for(let i=0;i<n;i++)window.__nord_msTour.onUpdate(1/30);},steps[name]);
+  if(name==='race')await page.keyboard.up('ArrowUp');
+  await page.waitForTimeout(150);
   await shot(name);
   assert.equal(await page.evaluate(()=>window.__nord_error??null),null);
  }

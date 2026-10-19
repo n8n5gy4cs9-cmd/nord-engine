@@ -1,4 +1,4 @@
-var Art = require("./tour_art.js");
+var R=require("./retro.js");
 // ============================================================================
 // MICRO-GIG SYSTEM — extracted from midnight_sun.js §11c
 // 3-phase performance: Intro -> Performance (rhythm prompts) -> Results
@@ -7,28 +7,17 @@ var Art = require("./tour_art.js");
 
 var C = require("./game_constants.js");
 var Tycoon = require("./mg_tycoon.js");
-var F = C.FONT;
 var SFX = C.SFX;
 var MUSIC = C.MUSIC;
-var SPRITES = C.SPRITES;
 
 var GIG_KEYS = ["a", "s", "d", "f"];
 var GIG_KEY_LABELS = ["A", "S", "D", "F"];
 var GIG_INTRO_TIME = 6.0;
 var GIG_PERF_DURATION = 20.0;
 var GIG_PROMPT_COUNT = 24;
-var GIG_HIT_ZONE_X = 40;
+var GIG_HIT_ZONE_X = 80;
 var GIG_HIT_WINDOW_PERFECT = 8;
 var GIG_HIT_WINDOW_GOOD = 18;
-var GIG_SCROLL_SPEED_MIN = 130;
-var GIG_SCROLL_SPEED_MAX = 260;
-
-var GIG_VENUE_NAMES = [
-    "Rusty Barrel Pub", "Town Hall Basement", "Library Community Room",
-    "Gas Station Parking Lot", "Youth Center Stage", "Market Square",
-    "Lakeside Pavilion", "Hotel Lobby Bar", "Community Sauna Yard",
-    "Old Fire Station", "Church Basement (shh)", "Ice Rink Canteen"
-];
 
 var GigSystem = {
     // State
@@ -84,10 +73,9 @@ var GigSystem = {
         var spacing = GIG_PERF_DURATION / (GIG_PROMPT_COUNT + 1);
         for (var i = 0; i < GIG_PROMPT_COUNT; i++) {
             var t = spacing * (i + 1);
-            var spd = GIG_SCROLL_SPEED_MIN + (i / Math.max(1, GIG_PROMPT_COUNT - 1)) * (GIG_SCROLL_SPEED_MAX - GIG_SCROLL_SPEED_MIN);
             this.prompts.push({
                 key: GIG_KEYS[[0, 1, 2, 1, 3, 2, 0, 3][i % 8]],
-                time: t, x: 320, hit: false, result: "none", speed: spd
+                time: t, x: 320, hit: false, result: "none"
             });
         }
         this.prompts.sort(function(a, b) { return a.time - b.time; });
@@ -251,154 +239,29 @@ var GigSystem = {
         return null;
     },
 
-    // ── DRAWING ─────────────────────────────────────────────────────
-    draw: function(screenW, screenH) {
-        Draw2D.fillRect(0, 0, screenW, screenH, 0.05, 0.04, 0.10, 1, -5);
-        Art.background(1,screenW,screenH,0.45);
-        if (this.phase === "intro") {
-            this.drawIntro(screenW, screenH);
-        } else if (this.phase === "performance") {
-            this.drawPerformance(screenW, screenH);
-        } else if (this.phase === "results") {
-            this.drawResults(screenW, screenH);
+    // The real stage sits above a compact four-lane tracker, not behind floating stick figures.
+    draw:function(w,h){
+        Draw2D.fillRect(0,0,w,h,0.04,0.025,0.09,1);R.bg(2,w,200);
+        for(var i=0;i<4;i++)if(this.gs.band[i]&&this.gs.band[i].present){
+            var bounce=this.phase==='performance'?Math.sin(this.timer*6+i)*2:0;
+            R.performer(i+(this.phase==='performance'?Math.floor(this.timer*4)%2*4:0),98+i*112,84+bounce,84,96);
         }
-    },
-
-    drawIntro: function(screenW, screenH) {
-        var venueIdx = Math.abs(this.city.id.charCodeAt(0) + this.city.id.charCodeAt(1)) % GIG_VENUE_NAMES.length;
-        var venueName = GIG_VENUE_NAMES[venueIdx];
-
-        Draw2D.drawText(screenW / 2 - 60, screenH * 0.12, "MICRO-GIG", 0.94, 0.75, 0.25, 1, F.TITLE_BIG);
-        Draw2D.drawText(screenW / 2 - 80, screenH * 0.26, venueName, 0.75, 0.75, 0.88, 1, F.LARGE);
-        Draw2D.drawText(screenW / 2 - 50, screenH * 0.36, this.city.name, 0.50, 0.50, 0.63, 1, F.UI);
-
-        // Prominent instructions box
-        var boxY = screenH * 0.46;
-        Draw2D.fillRect(15, boxY - 5, screenW - 30, 52, 0.10, 0.08, 0.20, 0.9);
-        Draw2D.drawRect(15, boxY - 5, screenW - 30, 52, 0.94, 0.75, 0.25, 0.6, 1);
-        Draw2D.drawText(20, boxY, "HOW TO PLAY:", 0.94, 0.75, 0.25, 1, F.LABEL);
-        Draw2D.drawText(20, boxY + 16, "Notes scroll RIGHT to LEFT. Press [A] [S] [D] [F]",
-            0.82, 0.82, 0.95, 1, F.BODY);
-        Draw2D.drawText(20, boxY + 30, "when they cross the yellow line! Timing is everything.",
-            0.82, 0.82, 0.95, 1, F.BODY);
-
-        var bandY = screenH * 0.69;
-        Draw2D.drawText(20, bandY, "Tonight's lineup:", 0.63, 0.63, 0.75, 1, F.BODY);
-        for (var i = 0; i < this.gs.band.length; i++) {
-            var m = this.gs.band[i];
-            if (!m.present) continue;
-            var mc = m.mood > 60 ? [0.25, 0.88, 0.25] : (m.mood > 30 ? [0.88, 0.88, 0.25] : [0.88, 0.25, 0.25]);
-            Draw2D.drawText(30, bandY + 16 + i * 14, m.name + " (" + m.role + ") mood:" + m.mood,
-                mc[0], mc[1], mc[2], 1, 0.5);
+        R.header('ROADSIDE ENCORE · '+this.city.name,'A / S / D / F · play as the note crosses the copper pickup line',w);
+        R.box(12,188,w-24,113);
+        for(var i=0;i<4;i++){
+            var y=207+i*20;Draw2D.drawLine(55,y,w-30,y,0.38,0.25,0.4,1,1);
+            R.text(26,y-7,GIG_KEY_LABELS[i],0.65);
         }
-
-        var blink = Math.sin(this.timer * 4) > 0;
-        if (blink) {
-            Draw2D.drawText(screenW / 2 - 40, screenH - 22, "GET READY...", 1, 1, 1, 1, F.UI);
+        Draw2D.fillRect(GIG_HIT_ZONE_X-2,195,4,98,0.95,0.68,0.35,1);
+        for(var i=0;i<this.prompts.length;i++){
+            var p=this.prompts[i];if(p.result!=='none'||p.x<55||p.x>w-25)continue;
+            var lane=GIG_KEYS.indexOf(p.key),y=207+lane*20;
+            Draw2D.fillRect(p.x-7,y-6,14,12,0.9,0.60-lane*0.07,0.34+lane*0.1,1);R.text(p.x-3,y-6,GIG_KEY_LABELS[lane],0.52);
         }
-    },
-
-    drawPerformance: function(screenW, screenH) {
-        Art.background(1,screenW,screenH,0.8);
-        Art.panel(4,screenH*0.37,screenW-8,screenH*0.5);
-
-        var stageY = screenH * 0.16;
-        var bandPresent = 0;
-        for (var i = 0; i < this.gs.band.length; i++) {
-            if (this.gs.band[i].present) bandPresent++;
-        }
-        var memberSpacing = screenW / (bandPresent + 1);
-        var mIdx = 0;
-        for (var i = 0; i < this.gs.band.length; i++) {
-            if (!this.gs.band[i].present) continue;
-            var mx = memberSpacing * (mIdx + 1) - 8;
-            Art.sprite([8,11,12,13][i],mx-14,stageY+8,44,68);
-            Draw2D.drawText(mx - 2, stageY + 30, this.gs.band[i].name.charAt(0),
-                0.63, 0.63, 0.75, 1, F.TINY);
-            mIdx++;
-        }
-
-        var hitX = GIG_HIT_ZONE_X;
-        var laneY = screenH * 0.40;
-        var laneH = screenH * 0.35;
-        Draw2D.drawLine(hitX, laneY, hitX, laneY + laneH, 0.94, 0.75, 0.25, 0.7, 2);
-
-        var laneSpacing = laneH / 4;
-        for (var k = 0; k < 4; k++) {
-            var ly = laneY + laneSpacing * k + laneSpacing / 2 - 5;
-            Draw2D.drawText(5, ly, GIG_KEY_LABELS[k], 0.50, 0.50, 0.63, 1, F.BODY);
-        }
-
-        for (var i = 0; i < this.prompts.length; i++) {
-            var p = this.prompts[i];
-            if (p.result !== "none" && p.result !== "perfect" && p.result !== "good") continue;
-            if (p.x < -20 || p.x > screenW + 20) continue;
-            var keyIdx = GIG_KEYS.indexOf(p.key);
-            var py = laneY + laneSpacing * keyIdx + laneSpacing / 2 - 6;
-            if (p.result === "perfect" || p.result === "good") {
-                Draw2D.fillRect(p.x - 6, py, 12, 12, 0.25, 0.88, 0.25, 0.3);
-            } else {
-                var pr = 1, pg = 0.75, pb = 0.25;
-                var dist = Math.abs(p.x - hitX);
-                if (dist < GIG_HIT_WINDOW_GOOD) { pr = 1; pg = 1; pb = 1; }
-                Draw2D.fillRect(p.x - 6, py, 12, 12, pr, pg, pb, 1);
-                Draw2D.drawText(p.x - 3, py + 1, GIG_KEY_LABELS[keyIdx], 0.05, 0.05, 0.10, 1, F.TINY);
-            }
-        }
-
-        if (this.flashTimer > 0) {
-            var alpha = Math.min(1, this.flashTimer / 0.3);
-            Draw2D.drawText(hitX + 20, laneY - 15, this.flashText,
-                this.flashColor[0], this.flashColor[1], this.flashColor[2], alpha, 0.7);
-        }
-
-        var barY = laneY + laneH + 8;
-        Draw2D.drawText(10, barY, "Score: " + this.score, 0.75, 0.75, 0.88, 1, F.BODY);
-        Draw2D.drawText(screenW / 2 - 30, barY, "Combo: " + this.combo, 0.94, 0.75, 0.25, 1, F.BODY);
-
-        var progW = screenW - 20;
-        var progFill = Math.min(1, this.timer / GIG_PERF_DURATION);
-        Draw2D.fillRect(10, barY + 16, progW, 4, 0.15, 0.15, 0.22, 1);
-        Draw2D.fillRect(10, barY + 16, progW * progFill, 4, 0.25, 0.63, 0.88, 1);
-    },
-
-    drawResults: function(screenW, screenH) {
-        var cy = screenH * 0.08;
-        Draw2D.drawText(screenW / 2 - 60, cy, "GIG RESULTS", 0.94, 0.75, 0.25, 1, F.TITLE);
-        cy += 35;
-
-        var ratio = this.maxScore > 0 ? this.score / this.maxScore : 0;
-        var grade = ratio >= 0.9 ? "S" : (ratio >= 0.7 ? "A" : (ratio >= 0.5 ? "B" : (ratio >= 0.3 ? "C" : "D")));
-        Draw2D.drawText(screenW / 2 - 15, cy, "Grade: " + grade, 1, 1, 1, 1, F.HEADING);
-        cy += 28;
-
-        Draw2D.drawText(30, cy, "Perfect: " + this.perfects, 1, 1, 0.25, 1, F.BODY);
-        Draw2D.drawText(130, cy, "Good: " + this.goods, 0.25, 1, 0.25, 1, F.BODY);
-        Draw2D.drawText(210, cy, "Miss: " + this.misses, 1, 0.3, 0.3, 1, F.BODY);
-        cy += 18;
-        Draw2D.drawText(30, cy, "Best Combo: " + this.maxCombo, 0.75, 0.75, 0.88, 1, F.BODY);
-        Draw2D.drawText(170, cy, "Score: " + this.score + "/" + this.maxScore, 0.75, 0.75, 0.88, 1, F.BODY);
-
-        cy += 20;
-        Draw2D.fillRect(20, cy, screenW - 40, 1, 0.29, 0.29, 0.42, 1);
-        cy += 10;
-        Draw2D.drawText(30, cy, "Payout: +" + this.payout + " FIM", 0.25, 0.88, 0.25, 1, F.UI);
-        if (this.tycoon && this.tycoon.revenue > 0) {
-            Draw2D.drawText(190, cy, "Merch: +" + this.tycoon.revenue + " FIM", 0.95, 0.80, 0.35, 1, F.UI);
-            Draw2D.drawText(190, cy + 12, this.tycoon.text, 0.6, 0.6, 0.72, 1, F.SMALL);
-        }
-        cy += 18;
-
-        var hypeLabel = this.hypeGain >= 0 ? "+" + this.hypeGain : "" + this.hypeGain;
-        var moraleLabel = this.moraleGain >= 0 ? "+" + this.moraleGain : "" + this.moraleGain;
-        Draw2D.drawText(30, cy, "Hype: " + hypeLabel, 0.63, 0.63, 0.50, 1, F.BODY);
-        Draw2D.drawText(130, cy, "Morale: " + moraleLabel, 0.63, 0.63, 0.50, 1, F.BODY);
-        if (this.tycoon) Draw2D.drawText(230, cy, "Fame: " + (this.tycoon.fame >= 0 ? "+" : "") + this.tycoon.fame, 0.63, 0.63, 0.50, 1, F.BODY);
-        cy += 25;
-        Draw2D.drawText(30, cy, this.crowdText, 0.75, 0.75, 0.82, 1, F.BODY);
-
-        Draw2D.drawText(20, screenH - 25, "[ENTER] Back to city", 0.38, 0.38, 0.50, 1, F.BODY);
+        R.text(105,173,this.flashTimer>0?this.flashText:'KEEP THE BAND TOGETHER',0.65);
+        R.text(360,173,'COMBO '+this.combo+' · SCORE '+this.score,0.65);
+        if(this.phase==='intro')R.result('ONE MORE SONG',['A steady four-lane pattern. Watch the pickup line.','Good playing earns cash, hype and merch sales.','ENTER · count the band in'],w,h);
+        if(this.phase==='results')R.result('THANK YOU, '+this.city.name.toUpperCase(),['Score '+this.score+'/'+this.maxScore+' · best combo '+this.maxCombo,'Gig fee '+this.payout+' FIM · hype '+this.hypeGain],w,h);
     }
 };
-
-module.exports = GigSystem;
+module.exports=GigSystem;

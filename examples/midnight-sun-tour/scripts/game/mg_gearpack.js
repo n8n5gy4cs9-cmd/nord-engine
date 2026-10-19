@@ -1,4 +1,4 @@
-var Art = require("./tour_art.js");
+var R=require("./retro.js");
 // ============================================================================
 // GEAR PACK MINIGAME — extracted from midnight_sun.js §11f
 // Tetris-style spatial packing: fit gear into the 8x5 bus cargo grid.
@@ -6,25 +6,12 @@ var Art = require("./tour_art.js");
 // ============================================================================
 
 var C = require("./game_constants.js");
-var F = C.FONT;
 var SFX = C.SFX;
 var MUSIC = C.MUSIC;
-var SPRITES = C.SPRITES;
 
 var GP_COLS = 8;
 var GP_ROWS = 5;
-var GP_CELL = 16;
 var GP_TIME_LIMIT = 90;
-
-var GP_COLORS = {
-    guitar_amp:   [0.88, 0.44, 0.13],
-    drum_kit:     [0.25, 0.63, 0.88],
-    pa_speakers:  [0.88, 0.25, 0.25],
-    merch_box:    [0.88, 0.75, 0.25],
-    spare_tire:   [0.50, 0.50, 0.50],
-    beer_crate:   [0.25, 0.88, 0.38],
-    guitar_case:  [0.75, 0.38, 0.88]
-};
 
 var GearPackSystem = {
     phase: "packing",
@@ -135,6 +122,7 @@ var GearPackSystem = {
                 this.flash(this.pieces[this.selected].name);
             }
 
+            piece=this.pieces[this.selected];
             // Cursor
             if (Input.getKeyDown("Left") || Input.getKeyDown("a")) this.cursorX = Math.max(0, this.cursorX - 1);
             if (Input.getKeyDown("Right") || Input.getKeyDown("d")) this.cursorX = Math.min(GP_COLS - 1, this.cursorX + 1);
@@ -237,163 +225,31 @@ var GearPackSystem = {
             " items, " + missingMandatory.length + " mandatory missing");
     },
 
-    // ── DRAWING ─────────────────────────────────────────────────────
-    draw: function(screenW, screenH) {
-        Draw2D.fillRect(0, 0, screenW, screenH, 0.06, 0.05, 0.12, 1, -5);
-        Art.background(2,screenW,screenH,0.45);
-        if (this.phase === "packing") {
-            this.drawPacking(screenW, screenH);
-        } else {
-            this.drawResults(screenW, screenH);
+    // Large cargo bay with actual equipment illustrations instead of colored placeholder blocks.
+    draw:function(w,h){
+        R.bg(3,w,h);R.header('LOAD THE SAUNA BUS','ARROWS · move    ENTER · place / pick up    R · rotate    TAB · next item    ESC · depart',w);
+        R.box(14,72,263,218);R.band(3,28,78,40,40);R.text(78,84,'HANNELE: MAKE IT FIT.',0.65);
+        var gx=33,gy=126,cell=28;
+        for(var y=0;y<5;y++)for(var x=0;x<8;x++){
+            Draw2D.fillRect(gx+x*cell,gy+y*cell,cell-1,cell-1,0.12,0.10,0.17,1);
+            Draw2D.drawRect(gx+x*cell,gy+y*cell,cell,cell,0.35,0.25,0.36,1,1);
         }
-    },
-
-    drawPacking: function(screenW, screenH) {
-        Draw2D.drawText(screenW / 2 - 56, 6, "PACK THE BUS", 0.94, 0.75, 0.25, 1, F.HEADING);
-
-        // Timer bar
-        var timeLeft = Math.max(0, GP_TIME_LIMIT - this.timer);
-        var timeFrac = timeLeft / GP_TIME_LIMIT;
-        Draw2D.fillRect(10, 22, screenW - 20, 4, 0.15, 0.15, 0.22, 1);
-        var tr = timeFrac > 0.3 ? 0.25 : 1;
-        var tg = timeFrac > 0.3 ? 0.63 : 0.25;
-        Draw2D.fillRect(10, 22, (screenW - 20) * timeFrac, 4, tr, tg, 0.25, 1);
-        Draw2D.drawText(screenW - 55, 12, Math.ceil(timeLeft) + "s", 0.63, 0.63, 0.75, 1, F.BODY);
-
-        // Grid
-        var gridW = GP_COLS * GP_CELL;
-        var gridH = GP_ROWS * GP_CELL;
-        var gridX = (screenW - gridW) / 2;
-        var gridY = 35;
-
-        Draw2D.fillRect(gridX - 2, gridY - 2, gridW + 4, gridH + 4, 0.12, 0.10, 0.18, 1);
-
-        for (var r = 0; r < GP_ROWS; r++) {
-            for (var c = 0; c < GP_COLS; c++) {
-                var cx = gridX + c * GP_CELL;
-                var cy = gridY + r * GP_CELL;
-                var cellId = this.grid[r][c];
-                if (cellId !== 0) {
-                    var col = GP_COLORS[cellId] || [0.5, 0.5, 0.5];
-                    Draw2D.fillRect(cx + 1, cy + 1, GP_CELL - 2, GP_CELL - 2, col[0], col[1], col[2], 0.85);
-                    Draw2D.drawRect(cx, cy, GP_CELL, GP_CELL, col[0] * 0.7, col[1] * 0.7, col[2] * 0.7, 0.5, 1);
-                } else {
-                    Draw2D.drawRect(cx, cy, GP_CELL, GP_CELL, 0.20, 0.20, 0.30, 0.4, 1);
-                }
-            }
+        var icons={guitar_amp:0,drum_kit:1,pa_speakers:2,merch_box:3,spare_tire:5,beer_crate:6,guitar_case:4};
+        for(var i=0;i<this.pieces.length;i++){
+            var p=this.pieces[i];
+            if(p.placed){Draw2D.fillRect(gx+p.gridX*cell+1,gy+p.gridY*cell+1,p.w*cell-2,p.h*cell-2,0.23,0.17,0.27,1);if(R.prop)R.prop(icons[p.id],gx+p.gridX*cell+2,gy+p.gridY*cell+2,p.w*cell-4,p.h*cell-4);}
+            var yy=78+i*28;R.box(296,yy,329,26);
+            if(i===this.selected)Draw2D.drawRect(296,yy,329,26,1,0.65,0.3,1,2);
+            if(R.prop)R.prop(icons[p.id],301,yy,26,26);
+            R.text(336,yy+6,(p.mandatory?'* ':'')+p.name+'  '+(p.placed?'PACKED':p.w+'x'+p.h),0.63);
         }
-
-        // Ghost preview
-        var piece = this.pieces[this.selected];
-        if (!piece.placed) {
-            var canFit = this.canPlace(piece, this.cursorX, this.cursorY);
-            var ghostCol = GP_COLORS[piece.id] || [0.5, 0.5, 0.5];
-            var ghostAlpha = canFit ? 0.4 : 0.15;
-            for (var pr = 0; pr < piece.h; pr++) {
-                for (var pc = 0; pc < piece.w; pc++) {
-                    var gx = this.cursorX + pc;
-                    var gy = this.cursorY + pr;
-                    if (gx < GP_COLS && gy < GP_ROWS) {
-                        var px = gridX + gx * GP_CELL;
-                        var py = gridY + gy * GP_CELL;
-                        Draw2D.fillRect(px + 1, py + 1, GP_CELL - 2, GP_CELL - 2, ghostCol[0], ghostCol[1], ghostCol[2], ghostAlpha);
-                    }
-                }
-            }
+        var p=this.pieces[this.selected];
+        if(!p.placed){var fits=this.canPlace(p,this.cursorX,this.cursorY);Draw2D.drawRect(gx+this.cursorX*cell,gy+this.cursorY*cell,Math.min(p.w,8-this.cursorX)*cell,Math.min(p.h,5-this.cursorY)*cell,fits?0.9:1,fits?0.7:0.15,0.3,1,2);}
+        R.box(12,304,w-24,40);R.text(24,315,this.flashTimer>0?this.flashText:'TIME '+Math.ceil(Math.max(0,GP_TIME_LIMIT-this.timer))+'s     * Mandatory gear · every item affects the tour',0.65);
+        if(this.phase==='results'){
+            var count=this.pieces.filter(function(p){return p.placed;}).length;
+            R.result('THE CARGO DOORS CLOSE',[count+'/'+this.pieces.length+' items loaded','ENTER · hit the road with the gear you packed'],w,h);
         }
-
-        // Cursor
-        Draw2D.drawRect(gridX + this.cursorX * GP_CELL - 1, gridY + this.cursorY * GP_CELL - 1,
-            GP_CELL + 2, GP_CELL + 2, 1, 1, 1, 0.8, 1);
-
-        // Piece list
-        var listX = gridX + gridW + 15;
-        var listY = 35;
-        Draw2D.drawText(listX, listY, "GEAR:", 0.75, 0.75, 0.88, 1, F.BODY);
-        listY += 14;
-
-        for (var i = 0; i < this.pieces.length; i++) {
-            var p = this.pieces[i];
-            var isSel = (i === this.selected);
-            var col = GP_COLORS[p.id] || [0.5, 0.5, 0.5];
-            var alpha = p.placed ? 0.35 : (isSel ? 1 : 0.65);
-            if (isSel) Draw2D.drawText(listX - 8, listY, ">", 1, 1, 1, 1, F.TINY);
-            var status = p.placed ? " [OK]" : " " + p.w + "x" + p.h;
-            var label = p.name + status;
-            if (p.mandatory) label = "*" + label;
-            Draw2D.drawText(listX, listY, label, col[0], col[1], col[2], alpha, F.TINY);
-            listY += 11;
-        }
-        listY += 6;
-        Draw2D.drawText(listX, listY, "* = mandatory", 0.50, 0.50, 0.63, 1, F.TINY);
-
-        // Flash text
-        if (this.flashTimer > 0) {
-            var fAlpha = Math.min(1, this.flashTimer * 2);
-            Draw2D.drawText(gridX + gridW / 2 - 30, gridY + gridH + 5, this.flashText, 1, 1, 0.75, fAlpha, F.BODY);
-        }
-
-        // Instructions
-        Draw2D.drawText(10, screenH - 30, "[ARROWS] Move  [ENTER] Place/Pick  [R] Rotate  [TAB] Next  [ESC] Done",
-            0.38, 0.38, 0.50, 1, F.TINY);
-
-        var placedCount = 0;
-        for (var i = 0; i < this.pieces.length; i++) {
-            if (this.pieces[i].placed) placedCount++;
-        }
-        Draw2D.drawText(10, screenH - 16, "Packed: " + placedCount + "/" + this.pieces.length, 0.63, 0.63, 0.75, 1, F.TINY);
-    },
-
-    drawResults: function(screenW, screenH) {
-        var cy = screenH * 0.08;
-        Draw2D.drawText(screenW / 2 - 70, cy, "BUS PACKED!", 0.94, 0.75, 0.25, 1, F.HEADING);
-        cy += 28;
-
-        var packedCount = 0;
-        var mandatoryMissing = 0;
-        for (var i = 0; i < this.pieces.length; i++) {
-            var p = this.pieces[i];
-            var col = GP_COLORS[p.id] || [0.5, 0.5, 0.5];
-            if (p.placed) {
-                packedCount++;
-                Draw2D.drawText(30, cy, p.name + ": PACKED", col[0], col[1], col[2], 1, F.BODY);
-            } else {
-                var statusText = p.mandatory ? "MISSING!" : "Left behind";
-                if (p.mandatory) mandatoryMissing++;
-                var r = p.mandatory ? 1 : 0.50;
-                var g = p.mandatory ? 0.25 : 0.50;
-                Draw2D.drawText(30, cy, p.name + ": " + statusText, r, g, 0.25, 1, F.BODY);
-            }
-            cy += 14;
-        }
-
-        cy += 10;
-        Draw2D.fillRect(20, cy, screenW - 40, 1, 0.29, 0.29, 0.42, 1);
-        cy += 10;
-
-        Draw2D.drawText(30, cy, "Total: " + packedCount + "/" + this.pieces.length + " packed", 0.75, 0.75, 0.88, 1, F.UI);
-        cy += 18;
-
-        if (mandatoryMissing > 0) {
-            Draw2D.drawText(30, cy, mandatoryMissing + " mandatory item(s) missing — penalties applied!",
-                1, 0.35, 0.25, 1, F.BODY);
-            cy += 16;
-        }
-        if (packedCount === this.pieces.length) {
-            Draw2D.drawText(30, cy, "Everything fits! Morale +5", 0.25, 0.88, 0.25, 1, F.BODY);
-            cy += 16;
-        }
-
-        cy += 8;
-        var flavor = "";
-        if (packedCount === this.pieces.length) flavor = "Hannele nods approvingly. \"Efficient.\"";
-        else if (mandatoryMissing === 0) flavor = "\"At least we have the essentials,\" sighs Mikko.";
-        else if (mandatoryMissing === 1) flavor = "Pekka: \"We forgot something important...\"";
-        else flavor = "Risto: \"This is going to be a very acoustic tour.\"";
-        Draw2D.drawText(30, cy, flavor, 0.63, 0.63, 0.75, 1, F.BODY);
-
-        Draw2D.drawText(20, screenH - 25, "[ENTER] Hit the road!", 0.38, 0.38, 0.50, 1, F.BODY);
     }
 };
-
-module.exports = GearPackSystem;
+module.exports=GearPackSystem;

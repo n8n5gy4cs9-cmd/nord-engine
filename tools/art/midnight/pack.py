@@ -37,7 +37,7 @@ p=ROOT/'map_finland.png';Image.open(ROOT/'tour_map_source.png').resize((640,360)
 env=Image.open(ROOT/'tour_environments.png');p=ROOT/'fuel_station_bg.png';env.crop((0,0,env.width//2,env.height//2)).resize(Image.open(p).size,Image.Resampling.NEAREST).save(p);changed.add(p.name)
 # Existing UI is code-native; replace its raster exports with the matching copper kit.
 for p in sorted(ROOT.glob('*.png')):
- if p.name in changed or p.name.startswith('tour_') or p.name=='MikkoLevon_title.png':continue
+ if p.name in changed or p.name.startswith(('tour_','retro_')) or p.name=='MikkoLevon_title.png':continue
  w,h=Image.open(p).size;im=Image.new('RGBA',(w,h),(0,0,0,0));d=ImageDraw.Draw(im)
  if 'fog' in p.stem:
   for y in range(h):d.line((0,y,w,y),fill=(15,8,37,int(100+100*y/max(1,h))))
@@ -78,3 +78,8 @@ for i in range(5):
  tile=tile.crop(tile.getbbox());tile.thumbnail((492,492),Image.Resampling.NEAREST)
  fac.alpha_composite(tile,(i*512+(512-tile.width)//2,512-tile.height))
 fac.save(ROOT/'tour_facilities.png')
+
+# Keep the later native-pixel band overrides authoritative when rebuilding the original atlas.
+if (ROOT/'retro_band_source.png').exists():
+ import runpy
+ runpy.run_path(str(Path(__file__).with_name('retro.py')))

@@ -4,7 +4,7 @@ import { NordScript, touchToStart } from 'nord';
 import { TourConsole } from './nordscrap/console.js';
 import { createCompat, loadModules } from './nordscrap/compat.js';
 
-const MODULES = ['festival_visitors', 'tour_art', 'mg_jobs', 'game_constants', 'band_mood', 'pseudo3d', 'mg_encounters', 'mg_gig', 'mg_soundcheck', 'mg_moosedodge', 'mg_gearpack', 'mg_kickoff',
+const MODULES = ['retro', 'festival_visitors', 'tour_art', 'mg_jobs', 'game_constants', 'band_mood', 'mg_encounters', 'mg_gig', 'mg_soundcheck', 'mg_moosedodge', 'mg_gearpack', 'mg_kickoff',
   'mg_space', 'mg_trail', 'mg_race', 'mg_tent', 'mg_fuel', 'mg_runner', 'mg_night', 'mg_starfox', 'mg_festival', 'mg_tycoon', 'midnight_sun'];
 
 export default class MidnightSunTourScript extends NordScript {

@@ -8,8 +8,9 @@ it contains no rhythm minigames.
 
 The owner's title art is unchanged. The rest of the art and UI use new original Amiga-inspired assets,
 including weathered band portraits, map, event cards, vehicles and stage/campsite/harbor environments.
-The activities include the rewritten Phone-booth Sprint and Roadside Shootout, regular-timing gigs,
-clearer sound checks and two new city jobs, Backstage Express and Harbor Rescue.
+Every remaining legacy activity is remade: illustrated Moose Run and Petrol Stop, cargo packing, line check,
+animated gigs, camping, woodland route choices, overhead circuit racing, night driving and two sprite-based
+space games. The newer runner, shootout and city jobs use the new retro band characters too.
 
 Start with `nord serve examples/midnight-sun-tour`, or open it in Nord Editor. Read `GUIDE.md` for
 controls and strategy; `ASSETS.md` contains asset paths, audio replacement instructions and ImageGen prompts.

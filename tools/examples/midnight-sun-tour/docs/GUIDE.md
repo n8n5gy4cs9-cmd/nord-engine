@@ -37,12 +37,27 @@ cash to make **Ruisrock** a success. Your final rating combines the journey scor
 - Buy merch before the big venues (Tampere, Jyväskylä), not after.
 - Skipping repairs is fine until the bus drops below 15% — then the runner minigame starts.
 
-## Remade activities
+## Remade activities — native-pixel edition
 
-P pauses every active scene and stops its timers. ENTER skips most instruction screens.
-Phone-booth Sprint has three chances and buffered jumps; jump just before a rock reaches Mikko.
-Roadside Shootout is five penalties: LEFT/RIGHT aims, SPACE kicks; watch the keeper and copper power zone.
-Sound check shows its targets and allows 24 seconds. Gigs use a regular 24-note A/S/D/F pattern.
+P pauses every active scene and stops its timers. ENTER skips instruction screens. All remaining
+legacy activity screens have been replaced; the original title stays unchanged. The band now uses
+coarse, nearest-neighbor pixel portraits, standing/walking frames and animated instrument-playing poses.
+
+| Activity | Controls and goal |
+|---|---|
+| Midnight Moose Run | LEFT/RIGHT or A/D changes lanes. Steer the illustrated rusty bus around visible moose and potholes for 20 seconds. Every hazard row leaves a lane open; wait for the previous row to clear before crossing two lanes. |
+| Petrol Stop | SPACE stops the large pump marker in the copper band. Five fills; good stops earn 10–15 litres, misses still earn four. Actual fuel is added once when you leave. |
+| Load the Sauna Bus | ARROWS moves the cargo cursor, TAB selects equipment, R rotates, ENTER places/picks up, ESC departs. Equipment is illustrated directly inside the cargo bay. |
+| Line Check | LEFT/RIGHT or 1–4 selects a musician; UP/DOWN moves the visible fader toward its marked target. ENTER locks the mix, or finish within 24 seconds. |
+| Roadside Encore | Play A/S/D/F as notes cross the copper pickup line; the band performs on its illustrated stage. This happens on the road, never inside the Ruisrock manager. |
+| Four Stakes | Stop four rope-tension pulls with SPACE near the copper band. A better tent improves rest. |
+| Woodland Shortcut | UP/DOWN chooses a ferry, food stop or bridge option; ENTER commits. All cash, fuel and food effects are shown first. |
+| Bus vs Lada | UP/SPACE accelerates, DOWN brakes, LEFT/RIGHT countersteers corner drift. Complete two laps; grass slows the bus. The cars rotate around the circuit. |
+| Night Watch | LEFT/RIGHT steers, SPACE flashes the high beams to reveal moose earlier. Follow the reflectors for 24 seconds. |
+| Amp Invaders | LEFT/RIGHT moves, hold SPACE to fire. Speaker stacks absorb enemy shots; clear up to three waves in 45 seconds. |
+| Tähtialus / Night Flight | WASD/ARROWS flies in both axes; hold SPACE for twin lasers, Z fires one of three smart bombs. Survive the patrol and destroy the mothership. |
+| Phone-booth Sprint | SPACE/UP jumps; reach the phone booth with three chances. |
+| Roadside Shootout | LEFT/RIGHT aims, SPACE kicks; beat the keeper over five penalties. |
 
 **Tour jobs** in city menus offers Backstage Express and Harbor Rescue. Choose with LEFT/RIGHT before
 starting, then use WASD/arrows. Delivery: fetch a case from the bus and take it to the glowing stage.

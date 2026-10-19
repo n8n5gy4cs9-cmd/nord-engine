@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 180/190 tasks (95%)** · updated 2026-10-19
+**Overall: 181/191 tasks (95%)** · updated 2026-10-19
 
 | Milestone | Progress |
 |---|---|
@@ -13,7 +13,7 @@
 | M3 Editor | 24/26 (92%) |
 | M4 Export | 8/11 (73%) |
 | M5 Rust/WASM | 9/9 (100%) |
-| M6 Library | 45/45 (100%) |
+| M6 Library | 46/46 (100%) |
 | M7 Docs | 20/20 (100%) |
 | M8 Polish & portability | 15/20 (75%) |
 | M9 Desktop apps | 16/16 (100%) |
@@ -186,6 +186,7 @@ _snippets, controllers, systems, asset packs, examples_
 - [x] **M6-43** Example game Midnight Sun Tour: NordScrap game cloned with compat layer, tycoon Tour Office, new encounters
 - [x] **M6-44** Rebuild Midnight Sun Tour art, UI and minigames; fix reward accounting and verify campaign
 - [x] **M6-45** Add private tour console and Ruisrock visitor tycoon management with booked-artist audio
+- [x] **M6-46** Replace every remaining Midnight Sun Tour legacy minigame view and remake Moose Run, petrol, driving, camping and arcade games with native-pixel art
 
 ## M7 — Docs
 _manual, guides, tutorials, in-editor docs_
