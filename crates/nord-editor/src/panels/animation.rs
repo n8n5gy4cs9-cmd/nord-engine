@@ -31,6 +31,8 @@ pub struct AnimUi {
     pub brush: i64,
     pub zoom: f32,
     pub dirty_map: bool,
+    pub onion: bool,
+    pub gif_path: String,
 }
 
 pub fn parse_frames(s: &str) -> Vec<i64> {
@@ -140,6 +142,32 @@ fn anim_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
                 }
             }
         });
+        ui.menu_button("Import GIF…", |ui| {
+            ui.label("Path of an animated GIF on disk; it becomes assets/sprites/<name>.png (+ animation).");
+            ui.add(egui::TextEdit::singleline(&mut st.anim.gif_path).hint_text("/path/to/anim.gif").desired_width(260.0));
+            if ui.button("Import").clicked() && !st.anim.gif_path.trim().is_empty() {
+                let src = std::path::PathBuf::from(st.anim.gif_path.trim());
+                let name = src.file_stem().map_or_else(|| "anim".into(), |s| s.to_string_lossy().into_owned());
+                let rel = format!("assets/sprites/{name}.png");
+                let res = std::fs::read(&src).map_err(|e| e.to_string()).and_then(|b| crate::gif_import::gif_to_sheet(&b)).and_then(|sheet| {
+                    std::fs::create_dir_all(root.join("assets/sprites")).map_err(|e| e.to_string())?;
+                    sheet.image.save(root.join(&rel)).map_err(|e| e.to_string())?;
+                    nord_core::io::save_json(&root.join(format!("{rel}.meta.json")), &sheet.meta).map_err(|e| e.to_string())?;
+                    Ok((sheet.meta, sheet.frames))
+                });
+                match res {
+                    Ok((meta, n)) => {
+                        st.refresh_assets();
+                        st.anim.sheet = Some(rel.clone());
+                        st.anim.meta = meta;
+                        st.anim.anim = Some("default".into());
+                        st.toast(format!("Imported {n} frames → {rel}"));
+                        ui.close_menu();
+                    }
+                    Err(e) => st.log(LogLevel::Error, format!("GIF import: {e}")),
+                }
+            }
+        });
         if ui.button("Save meta").clicked() {
             if let Some(s) = &st.anim.sheet {
                 st.anim.meta["type"] = json!("spritesheet");
@@ -214,9 +242,13 @@ fn anim_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
             });
             st.anim.meta["anims"][&n]["fps"] = json!(fps);
             st.anim.meta["anims"][&n]["loop"] = json!(lp);
+            advanced_props(&mut st.anim.meta["anims"][&n], ui);
             ui.label("Frames (e.g. 0-3, 5)");
             if ui.text_edit_singleline(&mut st.anim.frames_text).changed() {
                 st.anim.meta["anims"][&n]["frames"] = json!(parse_frames(&st.anim.frames_text));
+            }
+            if frame_list(&mut st.anim.meta["anims"][&n], ui) {
+                st.anim.frames_text = frames_text(st.anim.meta["anims"][&n]["frames"].as_array().map_or(&[][..], |v| &v[..]));
             }
             if ui.button("Delete animation").clicked() {
                 if let Some(o) = st.anim.meta["anims"].as_object_mut() {
@@ -232,12 +264,20 @@ fn anim_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
                     .unwrap_or_default();
                 if !frames.is_empty() {
                     st.anim.clock += ui.input(|i| i.unstable_dt) as f64;
-                    let fi = ((st.anim.clock * fps) as usize) % frames.len();
+                    let fi = frame_at(&st.anim.meta["anims"][&n], frames.len(), st.anim.clock * fps);
                     let cols_n = (size.x / fw).floor().max(1.0) as i64;
                     let f = frames[fi];
                     let uv = frame_uv(f, cols_n, fw, fh, size);
                     let (r, _) = ui.allocate_exact_size(Vec2::splat(96.0), Sense::hover());
+                    if st.anim.onion {
+                        // onion skin: the previous and next frames of the animation, faded
+                        for (off, tint) in [(frames.len() - 1, Color32::from_rgba_unmultiplied(255, 120, 120, 70)), (1, Color32::from_rgba_unmultiplied(120, 255, 120, 70))] {
+                            let g = frames[(fi + off) % frames.len()];
+                            ui.painter().image(id, r, frame_uv(g, cols_n, fw, fh, size), tint);
+                        }
+                    }
                     ui.painter().image(id, r, uv, Color32::WHITE);
+                    ui.checkbox(&mut st.anim.onion, "onion skin");
                     ui.weak(format!("frame {f}"));
                     ui.ctx().request_repaint();
                 }
@@ -297,6 +337,127 @@ fn anim_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
             }
         }
     });
+}
+
+/// Speed, ping-pong, repeat count / repeat-to frame and tags of one animation (all optional keys in the sheet meta).
+pub fn advanced_props(a: &mut Value, ui: &mut Ui) {
+    ui.horizontal_wrapped(|ui| {
+        let mut speed = a["speed"].as_f64().unwrap_or(1.0);
+        if ui.add(egui::DragValue::new(&mut speed).speed(0.05).range(0.1..=10.0).prefix("speed × ")).changed() {
+            a["speed"] = json!(speed);
+        }
+        let mut pp = a["pingPong"].as_bool().unwrap_or(false);
+        if ui.checkbox(&mut pp, "ping-pong").changed() {
+            a["pingPong"] = json!(pp);
+        }
+    });
+    ui.horizontal_wrapped(|ui| {
+        if a["loop"].as_bool().unwrap_or(true) {
+            let mut on = a["repeatTo"].is_number();
+            let mut at = a["repeatTo"].as_i64().unwrap_or(0);
+            let c = ui.checkbox(&mut on, "repeat to frame #").on_hover_text("play once, then loop from this frame of the list").changed();
+            let d = ui.add_enabled(on, egui::DragValue::new(&mut at).range(0..=999)).changed();
+            if c || d {
+                if on {
+                    a["repeatTo"] = json!(at);
+                } else if let Some(o) = a.as_object_mut() {
+                    o.remove("repeatTo");
+                }
+            }
+        } else {
+            let mut r = a["repeat"].as_i64().unwrap_or(0);
+            if ui.add(egui::DragValue::new(&mut r).range(0..=99).prefix("repeat ")).on_hover_text("extra plays after the first").changed() {
+                a["repeat"] = json!(r);
+            }
+        }
+        let mut tags = a["tags"].as_array().map(|t| t.iter().filter_map(Value::as_str).collect::<Vec<_>>().join(", ")).unwrap_or_default();
+        if ui.add(egui::TextEdit::singleline(&mut tags).hint_text("tags: attack, loop-safe").desired_width(140.0)).changed() {
+            a["tags"] = json!(tags.split(',').map(str::trim).filter(|t| !t.is_empty()).collect::<Vec<_>>());
+        }
+    });
+}
+
+/// Frame list with per-frame duration multipliers; reorder, duplicate, delete. Returns true when the frame list changed.
+pub fn frame_list(a: &mut Value, ui: &mut Ui) -> bool {
+    let frames: Vec<i64> = a["frames"].as_array().map(|f| f.iter().filter_map(Value::as_i64).collect()).unwrap_or_default();
+    let mut durs: Vec<f64> = (0..frames.len()).map(|i| a["frameDurations"][i].as_f64().unwrap_or(1.0)).collect();
+    let mut fr = frames.clone();
+    let mut changed = false;
+    let mut act: Option<(usize, &str)> = None;
+    egui::CollapsingHeader::new("Frame list (durations)").default_open(false).show(ui, |ui| {
+        for i in 0..fr.len() {
+            ui.horizontal(|ui| {
+                ui.monospace(format!("{i:>2}  frame {}", fr[i]));
+                ui.add(egui::DragValue::new(&mut durs[i]).speed(0.05).range(0.1..=20.0).prefix("× "));
+                if ui.small_button("▲").clicked() && i > 0 {
+                    act = Some((i, "up"));
+                }
+                if ui.small_button("▼").clicked() && i + 1 < fr.len() {
+                    act = Some((i, "down"));
+                }
+                if ui.small_button("⧉").clicked() {
+                    act = Some((i, "dup"));
+                }
+                if ui.small_button("✖").clicked() && fr.len() > 1 {
+                    act = Some((i, "del"));
+                }
+            });
+        }
+    });
+    if let Some((i, what)) = act {
+        match what {
+            "up" => {
+                fr.swap(i, i - 1);
+                durs.swap(i, i - 1);
+            }
+            "down" => {
+                fr.swap(i, i + 1);
+                durs.swap(i, i + 1);
+            }
+            "dup" => {
+                fr.insert(i + 1, fr[i]);
+                durs.insert(i + 1, durs[i]);
+            }
+            _ => {
+                fr.remove(i);
+                durs.remove(i);
+            }
+        }
+        changed = true;
+        a["frames"] = json!(fr);
+    }
+    let was: Vec<f64> = (0..frames.len()).map(|i| a["frameDurations"][i].as_f64().unwrap_or(1.0)).collect();
+    if changed || durs != was {
+        if durs.iter().all(|d| (*d - 1.0).abs() < 1e-9) {
+            if let Some(o) = a.as_object_mut() {
+                o.remove("frameDurations");
+            }
+        } else {
+            a["frameDurations"] = json!(durs);
+        }
+    }
+    changed
+}
+
+/// Index into the frame list after `ticks` frame-times, honouring per-frame duration multipliers (and ping-pong).
+pub fn frame_at(a: &Value, n: usize, ticks: f64) -> usize {
+    if n == 0 {
+        return 0;
+    }
+    let mult: Vec<f64> = (0..n).map(|i| a["frameDurations"][i].as_f64().unwrap_or(1.0).max(0.01)).collect();
+    let pp = a["pingPong"].as_bool().unwrap_or(false);
+    let total: f64 = mult.iter().sum();
+    let period = if pp && n > 1 { total * 2.0 - mult[0] - mult[n - 1] } else { total };
+    let mut t = ticks.rem_euclid(period.max(0.01));
+    // forward, then (ping-pong) back without repeating the end frames
+    let seq: Vec<usize> = if pp && n > 1 { (0..n).chain((1..n - 1).rev()).collect() } else { (0..n).collect() };
+    for i in seq {
+        t -= mult[i];
+        if t < 0.0 {
+            return i;
+        }
+    }
+    n - 1
 }
 
 pub fn frame_uv(f: i64, cols: i64, fw: f32, fh: f32, size: Vec2) -> Rect {
@@ -499,6 +660,14 @@ fn tile_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn frame_at_respects_durations_and_ping_pong() {
+        let a = json!({"frames":[0,1,2],"frameDurations":[1.0,3.0,1.0]});
+        assert_eq!([0.5, 1.5, 3.9, 4.5, 5.5].map(|t| frame_at(&a, 3, t)), [0, 1, 1, 2, 0]);
+        let pp = json!({"frames":[0,1,2],"pingPong":true});
+        assert_eq!([0.5, 1.5, 2.5, 3.5, 4.5].map(|t| frame_at(&pp, 3, t)), [0, 1, 2, 1, 0]);
+    }
 
     #[test]
     fn frame_lists() {

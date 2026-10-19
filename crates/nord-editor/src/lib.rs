@@ -1,6 +1,7 @@
 //! Nord Engine editor (library part so panels can be tested headlessly with egui_kittest). Credit: Crowelian 2026 + Sonnet.
 pub mod app;
 pub mod code;
+pub mod gif_import;
 pub mod icons;
 pub mod layout;
 pub mod panels;

@@ -28,7 +28,7 @@ qrcode = { version = "0.14", default-features = false }
 eframe = { version = "0.31", default-features = false, features = ["wgpu", "default_fonts", "x11", "wayland", "accesskit"] }
 egui_extras = { version = "0.31", features = ["svg", "image", "file"] }
 egui_dock = { version = "0.16", features = ["serde"] }
-image = { version = "0.25", default-features = false, features = ["png", "jpeg"] }
+image = { version = "0.25", default-features = false, features = ["png", "jpeg", "gif"] }
 rfd = "0.15"
 wry = { version = "0.50", optional = true }
 

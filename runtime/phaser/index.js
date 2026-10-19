@@ -130,11 +130,20 @@ class Backend {
     const ps = this.scene;
     const tex = ps.textures.get(path);
     if (m?.filter === 'nearest' || this.project.display?.pixelArt) tex.setFilter(globalThis.Phaser.Textures.FilterMode.NEAREST);
+    // Animations (sidecar `anims`): { frames, fps, loop, speed, pingPong, repeat, repeatTo, frameDurations, tags }.
+    // Per-frame duration multipliers come from `frameDurations[i]` or the sprite editor's `frameProps[<frame>].duration`.
     for (const [name, a] of Object.entries(m?.anims ?? {})) {
       const key = `${path}:${name}`;
       if (ps.anims.exists(key)) continue;
-      ps.anims.create({ key, frames: ps.anims.generateFrameNumbers(path, { frames: a.frames }), frameRate: a.fps ?? 10, repeat: a.loop === false ? 0 : -1 });
+      const fps = (a.fps ?? 10) * (a.speed ?? 1), base = 1000 / fps;
+      const frames = (a.frames ?? []).map((f, i) => ({ key: path, frame: f, duration: ((a.frameDurations?.[i] ?? m.frameProps?.[f]?.duration ?? 1) - 1) * base }));
+      const loops = a.loop !== false;
+      ps.anims.create({ key, frames, frameRate: fps, yoyo: !!a.pingPong, repeat: loops ? (a.repeatTo != null ? 0 : -1) : (a.repeat ?? 0) });
+      if (loops && a.repeatTo != null) { // "repeat to": play once, then loop from frame N
+        ps.anims.create({ key: `${key}:loop`, frames: frames.slice(a.repeatTo), frameRate: fps, yoyo: !!a.pingPong, repeat: -1 });
+      }
     }
+    this.metaCache.set(path, m);
   }
 
   // ---- lights ---------------------------------------------------------

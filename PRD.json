@@ -1738,7 +1738,7 @@
       "id": "M10-17",
       "milestone": "M10",
       "title": "Animation editor v2: multiple named animations per object, frame list, duration/speed/loop/ping-pong/repeat-to, onion skin, preview play, import spritesheet/GIF, tags",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M10-18",

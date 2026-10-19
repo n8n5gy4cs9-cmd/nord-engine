@@ -52,9 +52,13 @@ export function registerPhaserComponents(backend) {
         const k = `${d.texture}:${name}`;
         if (!ps.anims.exists(k)) { backend.game.warn(`[nord] animatedSprite: no animation '${name}' on ${d.texture}`); return; }
         s.anims.play({ key: k, repeat: undefined }, !restart);
+        if (ps.anims.exists(`${k}:loop`)) s.anims.chain(`${k}:loop`); // animation with "repeat to"
         comp.current = name;
       };
       comp.stop = () => s.anims.stop();
+      // per-frame events from the sprite editor (meta.frameProps[<frame>].event): entity.on('name') + the global bus
+      const fp = backend.metaOf(d.texture)?.frameProps;
+      if (fp) s.on('animationupdate', (a, fr) => { const ev = fp[fr.textureFrame]?.event; if (ev) { e.emit(ev); backend.game.events.emit(ev, e); } });
       comp.setFlip = (x, y = false) => s.setFlip(x, y);
       if (d.anim && d.autoplay !== false) comp.play(d.anim);
     },

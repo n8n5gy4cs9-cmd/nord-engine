@@ -13,7 +13,7 @@ fs.rmSync(`${dir}/events`, { recursive: true, force: true });
 fs.mkdirSync(`${dir}/assets/video`, { recursive: true });
 execFileSync('ffmpeg', ['-v', 'error', '-y', '-f', 'lavfi', '-i', 'testsrc=size=160x90:rate=15', '-t', '2', '-c:v', 'libvpx', '-b:v', '200k', `${dir}/assets/video/test.webm`]);
 fs.copyFileSync(`${ROOT}/assets/sprites/tileset_platformer.png`, `${dir}/assets/sprites/tileset_platformer.png`);
-const hm = JSON.parse(fs.readFileSync(`${dir}/assets/sprites/hero.png.meta.json`, 'utf8')); hm.origin = [8, 16]; fs.writeFileSync(`${dir}/assets/sprites/hero.png.meta.json`, JSON.stringify(hm));
+const hm = JSON.parse(fs.readFileSync(`${dir}/assets/sprites/hero.png.meta.json`, 'utf8')); hm.origin = [8, 16]; hm.anims.pp = { frames: [0, 1, 2], fps: 10, pingPong: true, frameDurations: [1, 3, 1] }; hm.anims.rt = { frames: [0, 1, 2, 3], fps: 10, repeatTo: 2 }; hm.frameProps = { 1: { event: 'stepped' } }; fs.writeFileSync(`${dir}/assets/sprites/hero.png.meta.json`, JSON.stringify(hm));
 const sceneFile = `${dir}/scenes/main.scene.json`;
 const scene = JSON.parse(fs.readFileSync(sceneFile, 'utf8'));
 delete scene.settings.eventSheet;
@@ -24,6 +24,7 @@ scene.entities = [
   ent('Font', 500, 200, [{ type: 'spriteFont', texture: 'assets/sprites/tileset_platformer.png', frameSize: [16, 16], chars: 'ABCDEFGH', text: 'ABBA', spacing: 2, scale: 1.5 }]),
   ent('Paint', 320, 300, [{ type: 'drawingCanvas', size: [120, 60], color: '#2e3440' }]),
   ent('Pivot', 300, 250, [{ type: 'animatedSprite', texture: 'assets/sprites/hero.png', anim: 'idle' }]),
+  ent('Anim', 100, 120, [{ type: 'animatedSprite', texture: 'assets/sprites/hero.png', anim: 'pp' }]),
   ent('Movie', 560, 60, [{ type: 'video', src: 'assets/video/test.webm', size: [160, 90], loop: true, muted: true }]),
 ];
 fs.writeFileSync(sceneFile, JSON.stringify(scene));
@@ -37,6 +38,10 @@ const { errors } = await withPage(dir, async (page) => {
   assert.ok((await ev(() => __nord.scene.find('Tiles').getComponent('tiledBackground').obj.tilePositionX)) > x0 + 10, 'tiled background scrolls');
   const og = await ev(() => { const o = __nord.scene.find('Pivot').getComponent('animatedSprite').obj; return [o.originX, o.originY]; });
   assert.deepEqual(og, [0.25, 0.5], 'sprite origin comes from the editor metadata');
+  const an = await ev(() => { const a = __nord.backend.scene.anims; const pp = a.get('assets/sprites/hero.png:pp'), rt = a.get('assets/sprites/hero.png:rt'); return { yoyo: pp.yoyo, durs: pp.frames.map((f) => Math.round(f.duration)), loopAnim: a.exists('assets/sprites/hero.png:rt:loop'), rtRepeat: rt.repeat, loopLen: a.get('assets/sprites/hero.png:rt:loop')?.frames.length }; });
+  assert.deepEqual(an, { yoyo: true, durs: [0, 200, 0], loopAnim: true, rtRepeat: 0, loopLen: 2 }, JSON.stringify(an));
+  const stepped = await ev(() => new Promise((res) => { __nord.events.on('stepped', () => res(true)); setTimeout(() => res(false), 1500); }));
+  assert.ok(stepped, 'per-frame event fires');
   assert.equal(await ev(() => __nord.scene.find('Font').getComponent('spriteFont').count), 4, 'sprite font lays out 4 glyphs');
   await ev(() => __nord.scene.find('Font').set('spriteFont', 'text', 'HAB'));
   assert.equal(await ev(() => __nord.scene.find('Font').getComponent('spriteFont').count), 3, 'text change relayouts');
