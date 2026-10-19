@@ -1,3 +1,4 @@
+var Art = require("./tour_art.js");
 // ============================================================================
 // TYCOON LAYER — "Tour Office": garage upgrades, merch stall, promo, ledger, fame and daily wages.
 // Usage: var Tycoon = require("./mg_tycoon.js");  State lives in gs.tycoon (created lazily, so old saves load).
@@ -249,6 +250,7 @@ var Tycoon = {
     draw: function(screenW, screenH) {
         var u = Tycoon.ui, gs = u.gs, t = ensure(gs);
         Draw2D.fillRect(0, 0, screenW, screenH, 0.06, 0.05, 0.11, 1);
+        Art.background(2,screenW,screenH,0.45);
         Draw2D.fillRect(0, 0, screenW, 26, 0.12, 0.10, 0.22, 1);
         Draw2D.drawText(12, 4, "TOUR OFFICE - " + u.city.name, 0.95, 0.80, 0.35, 1, F.HEADING);
         Draw2D.drawTextAligned(screenW - 12, 6, "CASH " + gs.resources.cash + " FIM   FAME " + Math.round(t.fame), "right", 0.9, 0.9, 0.9, 1, F.UI);

@@ -41,7 +41,7 @@ export function createCompat(host) {
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space', 'Tab', 'Backquote'].includes(e.code)) e.preventDefault();
   };
   const onKeyUp = (e) => { held.delete(e.code); up.add(e.code); };
-  const onBlur = () => held.clear();
+  const onBlur = () => { held.clear(); down.clear(); up.clear(); };
   window.addEventListener('keydown', onKeyDown); window.addEventListener('keyup', onKeyUp); window.addEventListener('blur', onBlur);
   const Input = {
     getKey: (n) => held.has(codeOf(n)),
@@ -60,7 +60,12 @@ export function createCompat(host) {
   };
   const tintBuf = document.createElement('canvas'), tctx = tintBuf.getContext('2d');
   const Draw2D = {
-    fillRect(x, y, w, h, r, g, b, a = 1) { ctx.fillStyle = css(r, g, b, a); ctx.fillRect(x, y, w, h); },
+    fillRect(x, y, w, h, r, g, b, a = 1) { ctx.fillStyle = css(r, g, b, a); ctx.fillRect(x, y, w, h);
+      if(w>100&&h>25&&w<W-1&&r<0.32&&g<0.22&&b<0.42&&a>=0.85){
+        ctx.strokeStyle='#89516f';ctx.lineWidth=1;ctx.strokeRect(x+0.5,y+0.5,w-1,h-1);
+        ctx.fillStyle='#cb9366';ctx.fillRect(x+2,y+2,w-4,1);
+      }
+    },
     drawRect(x, y, w, h, r, g, b, a = 1, lw = 1) { ctx.strokeStyle = css(r, g, b, a); ctx.lineWidth = lw; ctx.strokeRect(x + lw / 2, y + lw / 2, w - lw, h - lw); },
     // 8th/9th args are NordScrap's (segments,) lineWidth: any of them present means "outline", the last one is the width.
     drawCircle(x, y, rad, r, g, b, a = 1, p8, p9) {
@@ -69,6 +74,11 @@ export function createCompat(host) {
       if (lw != null) { ctx.strokeStyle = css(r, g, b, a); ctx.lineWidth = lw; ctx.stroke(); } else { ctx.fillStyle = css(r, g, b, a); ctx.fill(); }
     },
     drawLine(x1, y1, x2, y2, r, g, b, a = 1, lw = 1) { ctx.strokeStyle = css(r, g, b, a); ctx.lineWidth = lw; ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); },
+    drawRegion(x,y,w,h,path,sx,sy,sw,sh,a=1) {
+      const im=getImage(path); if(!im.complete||!im.naturalWidth)return;
+      ctx.imageSmoothingEnabled=false;ctx.globalAlpha=a;
+      ctx.drawImage(im,sx*im.naturalWidth,sy*im.naturalHeight,sw*im.naturalWidth,sh*im.naturalHeight,x,y,w,h);ctx.globalAlpha=1;
+    },
     drawImage(x, y, w, h, path, r = 1, g = 1, b = 1, a = 1) {
       const im = getImage(path);
       if (!im.complete || !im.naturalWidth) return;
@@ -154,6 +164,7 @@ export function createCompat(host) {
   return {
     globals: { Draw2D, Input, Audio, Scene, Screen, Time, Camera, Style, GameObject, SaveLoad, Model3D, Transform },
     canvas, tap,
+    resetInput() { held.clear(); down.clear(); up.clear(); },
     beginFrame() { ctx.setTransform(K, 0, 0, K, 0, 0); ctx.globalAlpha = 1; ctx.fillStyle = css(clear.r, clear.g, clear.b, 1); ctx.fillRect(0, 0, W, H); },
     endFrame() {
       if (effects.has('filmgrain') && fx.filmGrainAmount > 0) {

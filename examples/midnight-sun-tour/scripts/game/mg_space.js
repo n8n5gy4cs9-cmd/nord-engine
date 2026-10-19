@@ -1,6 +1,7 @@
+var Art=require("./tour_art.js");
 // ============================================================================
 // AVARUUSHYOKKAYS — Space Invaders with glow + vector/stroke graphics
-// No sprites — everything drawn with lines, rects, circles + additive glow
+// Original alien/ship sprites, elapsed-time firing and a recovery shield after damage.
 // Usage: var Space = require("./mg_space.js");
 // ============================================================================
 
@@ -31,7 +32,7 @@ var ENEMY_FIRE_CHANCE = 0.008;  // per enemy per frame
 var WAVE_SPEED_BASE = 18;
 var WAVE_SPEED_INC = 4;        // per killed enemy, speeds up
 var MAX_PLAYER_BULLETS = 3;
-var GAME_DURATION = 90;
+var GAME_DURATION = 45;
 
 var SpaceSystem = {
     phase: "ready",
@@ -56,6 +57,7 @@ var SpaceSystem = {
         this.timer = 0;
         this.score = 0;
         this.lives = 3;
+        this.invuln = 0;
         this.playerX = (FIELD_L + FIELD_R) / 2;
         this.playerBullets = [];
         this.enemyBullets = [];
@@ -91,7 +93,7 @@ var SpaceSystem = {
 
         if (this.phase === "ready") {
             this.timer += dt;
-            if (this.timer >= 6.0) {
+            if (this.timer >= 6.0 || Input.getKeyDown("Return")) {
                 this.phase = "playing";
                 this.timer = 0;
             }
@@ -101,7 +103,6 @@ var SpaceSystem = {
         if (this.phase === "results") {
             if (Input.getKeyDown("Return") || Input.getKeyDown("Space")) {
                 var cashWon = Math.floor(this.score / 5);
-                this.gs.resources.cash += cashWon;
                 return { done: true, score: this.score, cashWon: cashWon };
             }
             return null;
@@ -109,6 +110,7 @@ var SpaceSystem = {
 
         // Playing
         this.timer += dt;
+        this.invuln = Math.max(0,this.invuln-dt);
 
         // Update explosions
         for (var i = this.explosions.length - 1; i >= 0; i--) {
@@ -206,7 +208,7 @@ var SpaceSystem = {
         for (var i = 0; i < this.enemies.length; i++) {
             var en = this.enemies[i];
             if (!en.alive) continue;
-            if (Math.random() < ENEMY_FIRE_CHANCE) {
+            if (Math.random() < 1-Math.pow(1-ENEMY_FIRE_CHANCE,dt*30)) {
                 this.enemyBullets.push({ x: en.x, y: en.y + ENEMY_H / 2 });
             }
         }
@@ -221,9 +223,10 @@ var SpaceSystem = {
             // Hit test player
             var eb = this.enemyBullets[i];
             if (!eb) continue;
-            if (eb.x > this.playerX - PLAYER_W / 2 && eb.x < this.playerX + PLAYER_W / 2 &&
+            if (this.invuln<=0 && eb.x > this.playerX - PLAYER_W / 2 && eb.x < this.playerX + PLAYER_W / 2 &&
                 eb.y > FIELD_B - 18 && eb.y < FIELD_B - 10) {
                 this.lives--;
+                this.invuln=1.2;
                 this.enemyBullets.splice(i, 1);
                 this.explosions.push({ x: this.playerX, y: FIELD_B - 14, t: 0.5 });
                 Audio.play(SFX.ALIEN_BOMB, 0.5);
@@ -308,19 +311,7 @@ var SpaceSystem = {
         Draw2D.fillRect(V.x(px - PLAYER_W / 2 - 3), V.y(py - 2), V.s(PLAYER_W + 6), V.s(PLAYER_H + 4),
             0, 0.3, 0.8, 0.15 * glow);
 
-        // Ship body — vector style (rects + lines)
-        Draw2D.fillRect(V.x(px - PLAYER_W / 2), V.y(py), V.s(PLAYER_W), V.s(PLAYER_H), 0.1, 0.2, 0.4, 1);
-        Draw2D.drawRect(V.x(px - PLAYER_W / 2), V.y(py), V.s(PLAYER_W), V.s(PLAYER_H), 0.3, 0.7, 1.0, 0.9, V.s(1));
-        // Cockpit
-        Draw2D.fillRect(V.x(px - 2), V.y(py - 3), V.s(4), V.s(4), 0.3, 0.8, 1.0, 1);
-        Draw2D.drawRect(V.x(px - 2), V.y(py - 3), V.s(4), V.s(4), 0.5, 0.9, 1.0, 0.8, V.s(1));
-        // Wing tips
-        Draw2D.drawLine(V.x(px - PLAYER_W / 2), V.y(py + PLAYER_H), V.x(px - PLAYER_W / 2 - 3), V.y(py + PLAYER_H + 2),
-            0.3, 0.7, 1.0, 0.6, V.s(1));
-        Draw2D.drawLine(V.x(px + PLAYER_W / 2), V.y(py + PLAYER_H), V.x(px + PLAYER_W / 2 + 3), V.y(py + PLAYER_H + 2),
-            0.3, 0.7, 1.0, 0.6, V.s(1));
-        // Engine glow
-        Draw2D.fillRect(V.x(px - 3), V.y(py + PLAYER_H), V.s(6), V.s(2), 0.2, 0.5 + glow * 0.5, 1.0, 0.8);
+        Art.sprite(31,V.x(px-PLAYER_W/2-3),V.y(py-4),V.s(PLAYER_W+6),V.s(PLAYER_H+8));
     },
 
     drawEnemies: function(screenW, screenH) {
@@ -344,21 +335,7 @@ var SpaceSystem = {
             Draw2D.fillRect(V.x(en.x - hw - 2), V.y(en.y - hh - 2), V.s(ENEMY_W + 4), V.s(ENEMY_H + 4),
                 cr * 0.3, cg * 0.3, cb * 0.3, 0.2 * glow);
 
-            // Body (vector outline + fill)
-            Draw2D.fillRect(V.x(en.x - hw), V.y(en.y - hh), V.s(ENEMY_W), V.s(ENEMY_H), cr * 0.15, cg * 0.15, cb * 0.15, 1);
-            Draw2D.drawRect(V.x(en.x - hw), V.y(en.y - hh), V.s(ENEMY_W), V.s(ENEMY_H), cr, cg, cb, 0.8, V.s(1));
-
-            // Eyes (two small rects)
-            Draw2D.fillRect(V.x(en.x - 3), V.y(en.y - 1), V.s(2), V.s(2), cr, cg, cb, 1);
-            Draw2D.fillRect(V.x(en.x + 1), V.y(en.y - 1), V.s(2), V.s(2), cr, cg, cb, 1);
-
-            // Antennae (lines)
-            Draw2D.drawLine(V.x(en.x - 3), V.y(en.y - hh), V.x(en.x - 5), V.y(en.y - hh - 3), cr, cg, cb, 0.6, V.s(1));
-            Draw2D.drawLine(V.x(en.x + 3), V.y(en.y - hh), V.x(en.x + 5), V.y(en.y - hh - 3), cr, cg, cb, 0.6, V.s(1));
-
-            // Legs (bottom lines)
-            Draw2D.drawLine(V.x(en.x - hw), V.y(en.y + hh), V.x(en.x - hw - 2), V.y(en.y + hh + 2), cr, cg, cb, 0.5, V.s(1));
-            Draw2D.drawLine(V.x(en.x + hw), V.y(en.y + hh), V.x(en.x + hw + 2), V.y(en.y + hh + 2), cr, cg, cb, 0.5, V.s(1));
+            Art.sprite(30,V.x(en.x-hw-2),V.y(en.y-hh-2),V.s(ENEMY_W+4),V.s(ENEMY_H+4));
         }
     },
 

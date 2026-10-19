@@ -1,3 +1,4 @@
+var Art = require("./tour_art.js");
 // ============================================================================
 // SOUND CHECK MINIGAME — extracted from midnight_sun.js §11e
 // Pre-gig mixer: adjust 4 channel sliders to match hidden targets.
@@ -17,7 +18,7 @@ var SC_CHANNEL_COLORS = [
     [0.25, 0.88, 0.38],
     [0.88, 0.75, 0.25]
 ];
-var SC_DURATION = 10.0;
+var SC_DURATION = 24.0;
 var SC_TARGET_ZONE_WIDTH = 15;
 
 var SoundCheckSystem = {
@@ -125,6 +126,7 @@ var SoundCheckSystem = {
 
     draw: function(screenW, screenH) {
         Draw2D.fillRect(0, 0, screenW, screenH, 0.06, 0.05, 0.12, 1, -5);
+        Art.background(1,screenW,screenH,0.45);
         if (this.phase === "ready") {
             this.drawReady(screenW, screenH);
         } else if (this.phase === "mixing") {
@@ -199,7 +201,7 @@ var SoundCheckSystem = {
             var dist = Math.abs(this.sliders[i] - this.targets[i]);
             var hintAlpha = 0.1 + Math.max(0, 1 - dist / 30) * 0.3;
             Draw2D.fillRect(trackX - 4, targetY - SC_TARGET_ZONE_WIDTH / 2, 14, SC_TARGET_ZONE_WIDTH,
-                col[0], col[1], col[2], hintAlpha);
+                col[0], col[1], col[2], 0.85);
 
             var handleY = sliderTop + sliderH - (this.sliders[i] / 100) * sliderH;
             var handleW = isSel ? 30 : 20;

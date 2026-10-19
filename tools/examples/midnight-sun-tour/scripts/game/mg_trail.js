@@ -152,14 +152,14 @@ var TrailSystem = {
         if (result.hype) this.gs.resources.hype = Math.max(0, Math.min(100, this.gs.resources.hype + result.hype));
         if (result.bus) this.gs.bus.condition = Math.max(10, Math.min(100, this.gs.bus.condition + result.bus));
         if (result.fuel) this.gs.bus.gas = Math.max(0, Math.min(this.gs.bus.max_gas, this.gs.bus.gas + result.fuel));
-        if (result.food) this.gs.resources.food = Math.max(0, Math.min(100, (this.gs.resources.food || 50) + result.food));
+        if (result.food) this.gs.resources.food = Math.max(0, Math.min(10, (this.gs.resources.food || 0) + Math.sign(result.food)));
     },
 
     // Returns null or { done: true }
     update: function(dt) {
         if (this.phase === "ready") {
             this.timer += dt;
-            if (this.timer >= 6.0) {
+            if (this.timer >= 6.0 || Input.getKeyDown("Return")) {
                 this.phase = "traveling";
                 this.timer = 0;
                 this.dayTimer = 0;

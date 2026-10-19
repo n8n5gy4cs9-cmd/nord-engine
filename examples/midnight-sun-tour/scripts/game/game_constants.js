@@ -67,7 +67,7 @@ var SFX = {
     FUEL_STOP:      "assets/sfx/fuel_stop.mp3",
     JUMP:           "assets/sfx/jump.mp3",
     STUMBLE:        "assets/sfx/stumble.mp3",
-    HEADLIGHT_ON:   "assets/sfx/headlight_on.mp3",
+    HEADLIGHT_ON:   "assets/sfx/ui_click.mp3",
     NIGHT_CRASH:    "assets/sfx/night_crash.mp3",
     ENGINE_REV:     "assets/sfx/engine_rev.mp3",
     LADA_HORN:      "assets/sfx/lada_horn.mp3"

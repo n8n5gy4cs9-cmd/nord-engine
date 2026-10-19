@@ -1,3 +1,4 @@
+var Art = require("./tour_art.js");
 // ============================================================================
 // MICRO-GIG SYSTEM — extracted from midnight_sun.js §11c
 // 3-phase performance: Intro -> Performance (rhythm prompts) -> Results
@@ -14,8 +15,8 @@ var SPRITES = C.SPRITES;
 var GIG_KEYS = ["a", "s", "d", "f"];
 var GIG_KEY_LABELS = ["A", "S", "D", "F"];
 var GIG_INTRO_TIME = 6.0;
-var GIG_PERF_DURATION = 12.0;
-var GIG_PROMPT_COUNT = 10;
+var GIG_PERF_DURATION = 20.0;
+var GIG_PROMPT_COUNT = 24;
 var GIG_HIT_ZONE_X = 40;
 var GIG_HIT_WINDOW_PERFECT = 8;
 var GIG_HIT_WINDOW_GOOD = 18;
@@ -57,7 +58,7 @@ var GigSystem = {
     // Start a new gig
     start: function(gameState, city, soundBonus, moodBonus) {
         this.gs = gameState;
-        this.city = city || { name: "Unknown Venue" };
+        this.city = city || { id:"venue", name: "Unknown Venue", gig_fee_min:100, gig_fee_max:300 };
         this.soundBonus = soundBonus || 1.0;
         this.moodBonus = moodBonus || 1.0;
         this.phase = "intro";
@@ -82,17 +83,17 @@ var GigSystem = {
         this.prompts = [];
         var spacing = GIG_PERF_DURATION / (GIG_PROMPT_COUNT + 1);
         for (var i = 0; i < GIG_PROMPT_COUNT; i++) {
-            var t = spacing * (i + 1) + (Math.random() - 0.5) * spacing * 0.4;
+            var t = spacing * (i + 1);
             var spd = GIG_SCROLL_SPEED_MIN + (i / Math.max(1, GIG_PROMPT_COUNT - 1)) * (GIG_SCROLL_SPEED_MAX - GIG_SCROLL_SPEED_MIN);
             this.prompts.push({
-                key: GIG_KEYS[Math.floor(Math.random() * GIG_KEYS.length)],
+                key: GIG_KEYS[[0, 1, 2, 1, 3, 2, 0, 3][i % 8]],
                 time: t, x: 320, hit: false, result: "none", speed: spd
             });
         }
         this.prompts.sort(function(a, b) { return a.time - b.time; });
         this.maxScore = GIG_PROMPT_COUNT * 100;
 
-        console.log("[Gig] Started in " + city.name + " -- " + GIG_PROMPT_COUNT + " prompts");
+        console.log("[Gig] Started in " + this.city.name + " -- " + GIG_PROMPT_COUNT + " prompts");
     },
 
     showFlash: function(text, r, g, b) {
@@ -147,8 +148,7 @@ var GigSystem = {
         for (var i = 0; i < this.prompts.length; i++) {
             var p = this.prompts[i];
             if (p.result === "none") {
-                var elapsed = this.timer - p.time + (280 / p.speed);
-                p.x = 280 - elapsed * p.speed;
+                p.x = GIG_HIT_ZONE_X + (p.time - this.timer) * 130;
                 if (p.x < GIG_HIT_ZONE_X - GIG_HIT_WINDOW_GOOD - 10) {
                     p.result = "miss"; p.hit = false;
                     this.misses++; this.combo = 0;
@@ -236,7 +236,7 @@ var GigSystem = {
     handleInput: function(dt) {
         if (this.phase === "intro") {
             this.timer += dt;
-            if (this.timer >= GIG_INTRO_TIME) {
+            if (this.timer >= GIG_INTRO_TIME || Input.getKeyDown("Return")) {
                 this.phase = "performance";
                 this.timer = 0;
                 console.log("[Gig] Performance started!");
@@ -254,6 +254,7 @@ var GigSystem = {
     // ── DRAWING ─────────────────────────────────────────────────────
     draw: function(screenW, screenH) {
         Draw2D.fillRect(0, 0, screenW, screenH, 0.05, 0.04, 0.10, 1, -5);
+        Art.background(1,screenW,screenH,0.45);
         if (this.phase === "intro") {
             this.drawIntro(screenW, screenH);
         } else if (this.phase === "performance") {
@@ -298,9 +299,10 @@ var GigSystem = {
     },
 
     drawPerformance: function(screenW, screenH) {
-        Draw2D.fillRect(0, 0, screenW, screenH * 0.35, 0.08, 0.06, 0.15, 1);
+        Art.background(1,screenW,screenH,0.8);
+        Art.panel(4,screenH*0.37,screenW-8,screenH*0.5);
 
-        var stageY = screenH * 0.05;
+        var stageY = screenH * 0.16;
         var bandPresent = 0;
         for (var i = 0; i < this.gs.band.length; i++) {
             if (this.gs.band[i].present) bandPresent++;
@@ -310,7 +312,7 @@ var GigSystem = {
         for (var i = 0; i < this.gs.band.length; i++) {
             if (!this.gs.band[i].present) continue;
             var mx = memberSpacing * (mIdx + 1) - 8;
-            Draw2D.fillRect(mx, stageY, 16, 28, 0.25, 0.20, 0.38, 1);
+            Art.sprite([8,11,12,13][i],mx-14,stageY+8,44,68);
             Draw2D.drawText(mx - 2, stageY + 30, this.gs.band[i].name.charAt(0),
                 0.63, 0.63, 0.75, 1, F.TINY);
             mIdx++;

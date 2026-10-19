@@ -75,7 +75,7 @@ var MooseDodgeSystem = {
     update: function(dt) {
         if (this.phase === "ready") {
             this.timer += dt;
-            if (this.timer >= 6.0) {
+            if (this.timer >= 6.0 || Input.getKeyDown("Return")) {
                 this.phase = "playing";
                 this.timer = 0;
                 this.spawnTimer = 0;

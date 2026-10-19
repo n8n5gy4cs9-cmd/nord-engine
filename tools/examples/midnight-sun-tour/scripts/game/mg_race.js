@@ -88,7 +88,7 @@ var RaceSystem = {
     update: function(dt) {
         if (this.phase === "ready") {
             this.timer += dt;
-            if (this.timer >= 6.0) {
+            if (this.timer >= 6.0 || Input.getKeyDown("Return")) {
                 this.phase = "playing";
                 this.timer = 0;
             }
@@ -98,7 +98,6 @@ var RaceSystem = {
         if (this.phase === "results") {
             if (Input.getKeyDown("Return") || Input.getKeyDown("Space")) {
                 var cashWon = this.playerAhead ? 80 : 0;
-                if (cashWon > 0) this.gs.resources.cash += cashWon;
                 return { done: true, won: this.playerAhead, cashWon: cashWon };
             }
             return null;

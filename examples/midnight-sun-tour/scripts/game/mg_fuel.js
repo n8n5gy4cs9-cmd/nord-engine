@@ -1,3 +1,4 @@
+var Art = require("./tour_art.js");
 // ============================================================================
 // TANKKAUS — Stop-the-needle fuel gauge minigame
 // Hit SPACE when the needle passes the green zone for bonus fuel.
@@ -61,7 +62,7 @@ var FuelSystem = {
     update: function(dt) {
         if (this.phase === "ready") {
             this.timer += dt;
-            if (this.timer >= 6.0) {
+            if (this.timer >= 6.0 || Input.getKeyDown("Return")) {
                 this.phase = "pumping";
                 this.timer = 0;
             }
@@ -70,7 +71,6 @@ var FuelSystem = {
 
         if (this.phase === "results") {
             if (Input.getKeyDown("Return") || Input.getKeyDown("Space")) {
-                this.gs.bus.gas = Math.min(this.gs.bus.max_gas, this.gs.bus.gas + this.totalFuel);
                 return { done: true, totalFuel: this.totalFuel };
             }
             return null;
@@ -131,6 +131,7 @@ var FuelSystem = {
     // ── DRAWING ─────────────────────────────────────────────────────
     draw: function(screenW, screenH) {
         Draw2D.fillRect(0, 0, screenW, screenH, 0.10, 0.08, 0.06, 1, -5);
+        Art.background(0,screenW,screenH,0.45);
 
         if (this.phase === "ready") {
             this.drawPump(screenW, screenH);

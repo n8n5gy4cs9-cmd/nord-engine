@@ -1,3 +1,4 @@
+var Art=require("./tour_art.js");
 // ============================================================================
 // BAND MOOD SYSTEM — require("./band_mood.js")
 // Individual band member moods, travel events, mood warnings + departures
@@ -232,12 +233,13 @@ var BandMoodSystem = {
                 continue;
             }
 
+            Art.sprite(24+i,x,y-2,30,30);
             // Name
-            Draw2D.drawText(x, y, m.name, 0.7, 0.7, 0.8, 1, F.TINY);
+            Draw2D.drawText(x+36, y, m.name, 0.7, 0.7, 0.8, 1, F.TINY);
 
             // Bar background
-            var barX = x + 55;
-            var barW = w - 60;
+            var barX = x + 95;
+            var barW = w - 113;
             var barH = 6;
             Draw2D.fillRect(barX, y + 2, barW, barH, 0.15, 0.15, 0.25, 1);
 
@@ -257,7 +259,7 @@ var BandMoodSystem = {
             // Mood number
             Draw2D.drawText(barX + barW + 3, y, "" + m.mood, cr, cg, cb, 1, F.TINY);
 
-            y += 12;
+            y += 34;
         }
 
         return y; // return final Y for caller to continue drawing below

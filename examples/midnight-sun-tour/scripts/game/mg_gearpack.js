@@ -1,3 +1,4 @@
+var Art = require("./tour_art.js");
 // ============================================================================
 // GEAR PACK MINIGAME — extracted from midnight_sun.js §11f
 // Tetris-style spatial packing: fit gear into the 8x5 bus cargo grid.
@@ -239,6 +240,7 @@ var GearPackSystem = {
     // ── DRAWING ─────────────────────────────────────────────────────
     draw: function(screenW, screenH) {
         Draw2D.fillRect(0, 0, screenW, screenH, 0.06, 0.05, 0.12, 1, -5);
+        Art.background(2,screenW,screenH,0.45);
         if (this.phase === "packing") {
             this.drawPacking(screenW, screenH);
         } else {

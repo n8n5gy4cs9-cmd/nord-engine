@@ -107,8 +107,9 @@ Assets regressions pass for divider dragging, row alignment/wrapping at 48/84/16
 - Verification: macOS release app builds and ad-hoc signature verifies; Windows MinGW editor/CLI/player link and Windows all-target workspace Clippy pass. Workspace regressions pass with the pre-existing hub recent-project query run separately (parallel runs can find two `noom` labels); manual links/live snippets and vendor integrity pass.
 
 ## Midnight Sun Tour (2026-10-19)
-- Verified: headless fuzz (`node tools/midnight-sun-test.mjs`) and manual browser pass of title, packing, overworld, travel, encounter, city menu, Tour Office, Race, Star Fox. Not verified: audio by ear, every minigame played by a human, festival day-by-day, save/load round trip, export/desktop build.
-- Balance of per-diem, upgrade and merch prices is a first guess. Day counter barely limits the run (each leg = a quarter day).
-- No touch/gamepad controls (keyboard only). Star Fox 3D is flattened to rects/ellipses.
-- Band-music MP3s are third-party live recordings; clear rights before publishing an export.
-- Example is ~100 MB per copy (tools/examples + examples).
+- Fixed: render-time runner morale changes; duplicate fuel/arcade/race/football/tent rewards; off-scale trail food; shifted gig note timing; sound-check-to-gig jumps with no city; double festival booking charges and overbooking beyond combined funds. Regressions cover these paths.
+- Verified: seeded simulations of every activity, a complete reachable runner course, all seven real road legs (850 km) to Turku with god-mode assistance, three festival days with booking/staffing/accounting, correct booked-artist audio selection, visitor path/queue/purchase/closing behavior, live construction and command-based completion/state jumps. Chromium checks cover artwork/UI, keyboard controls, console capture/pause, checkpoint save/load, management screens, customer movement/purchases and decoding all six artist recordings. Static web export builds; external browser requests are blocked.
+- The offline scanner still flags two existing `https://phaser.io` banner strings in vendored Phaser; these are not network requests. No new runtime network dependency was added.
+- Human balance and audio by ear remain unverified. Native editor/player and touch/gamepad were not exercised (keyboard controls). The retained Star Fox primitive renderer is still a flattened compatibility view.
+- Journey checkpoint saves do not preserve an in-progress minigame/festival. Loading returns to the map and re-entering Ruisrock starts the festival again. Customer simulation displays up to 60 representative visitors rather than every ticket holder.
+- Artist recordings retain their third-party provenance (THIRD_PARTY.md). The example is approximately 122 MB per source/generated copy after new art.

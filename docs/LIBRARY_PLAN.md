@@ -67,3 +67,12 @@ Catalogue lives in `ASSETS.md`.
 ## Authoring rules
 - Original code or properly attributed ports. Commented, attribute-driven, no globals, no per-frame allocation in hot paths.
 - Each script has `/** @nord {id, title, tier, category, tags, requires} */` header → `tools/build-library-index.mjs` generates INDEX.json.
+
+
+## Midnight Sun Tour remake (M6-44/45)
+The authoritative game stays in `tools/examples/midnight-sun-tour/`. Preserve the owner title. All other
+art is documented in that game's `ASSETS.md`. Roadside activities and gigs feed the journey; Ruisrock
+is a separate three-day manager with artist booking/recordings, staff, tickets, persistent facilities,
+weather/capacity, and a representative walking customer simulation. Customer purchases earn stall income;
+queues affect happiness. Live construction keeps the crowd and artist schedule running. The private console
+uses a fixed command dispatcher, no eval, with its reference in the shipped game-root `commands.txt`.

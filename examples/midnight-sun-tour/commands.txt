@@ -1,0 +1,83 @@
+MIDNIGHT SUN TOUR — private developer reference
+Open/close: F2 or backquote. ESC closes. Up/down recalls commands.
+The game stops while the console is open. No hints or command lists appear there.
+Commands are case-insensitive. No JavaScript/eval is accepted.
+
+state                       Current scene, resources, bus, journey, cheat flags.
+clear                       Empty console output.
+new                         Fresh tour at gear packing.
+god [on|off]                Toggle invulnerable bus/crew and arcade health;
+                            refill fuel/food/morale; retain >=10000 cash/festival budget and >=7 days.
+                            Timers still run. Use win to finish a challenge.
+freeze [on|off]             Lock the remaining journey days; minigame timers run.
+refill                      Repair/refuel; feed crew; restore morale and band.
+rich                        Refill plus 1000000 FIM, 100 hype and 100 fame.
+gear                        Pack every equipment item immediately.
+set cash <0..10000000>       Set absolute cash, not an increment.
+set food <0..10>
+set morale <0..100>
+set hype <0..100>
+set gas <0..tank capacity>
+set condition <0..100>
+set days <1..365>
+set fame <0..100>
+set budget <0..10000000>     Set the active Ruisrock management budget.
+save                        Save persistent journey checkpoint (not arcade progress).
+load                        Load checkpoint on overworld; restarts festival if revisited.
+
+STATE JUMPS (goto may be replaced with minigame)
+goto title
+goto overworld              map is an alias.
+goto city <city-id>          Open that city's services without travelling.
+goto office                 Tour office in current city.
+goto gameover [bus|days]
+goto encounter <event-id>
+goto gearpack               packing is an alias.
+goto soundcheck             mixer is an alias.
+goto gig
+goto moosedodge             driving is an alias.
+goto kickoff                football / shootout are aliases.
+goto space
+goto trail
+goto race
+goto tent
+goto fuel
+goto runner
+goto night                  nightdrive is an alias.
+goto starfox
+goto delivery               Backstage Express.
+goto harbor                 Harbor Rescue.
+goto festival               Begin the Ruisrock story.
+
+City IDs: kuusamo kajaani iisalmi kuopio jyvaskyla tampere hameenlinna turku
+Event IDs: moose_road speed_camera karaoke_bar wrong_turn rainstorm hitchhiker
+roadwork local_band broken_bridge festival_rumour midsummer sauna_stop
+poster_wall football_challenge forest_shortcut reindeer_herd northern_lights
+radio_interview flea_market sponsor_offer mosquito_swarm police_stop fish_barter
+lada_challenge
+
+FESTIVAL / ENDINGS
+festival <phase> [day]       Jump to phase on day 1..3 (default 1).
+Phases: intro book grounds staff simulate report results
+Grounds: G/ESC returns to booking. Other management controls are in GUIDE.md.
+Staff/simulate/report jumps create a free Mikko-only lineup, avoiding stale bookings.
+win                         Complete current minigame successfully; close the console
+                            and press ENTER to collect its reward and continue.
+                            In packing, immediately continue with all gear.
+                            In festival, show a perfect final festival result.
+                            Elsewhere, jump to a perfect Ruisrock ending.
+
+FAST FULL TOUR
+  new
+  god on
+  gear
+  goto city kajaani
+  goto soundcheck
+  win
+  (close console, ENTER starts gig; reopen console, win; close, ENTER)
+  goto city turku
+  festival book 1
+  (play booking/staff and each festival day normally, or use win)
+
+Flags last for this running session and are not included in checkpoints.
+Turning god off stops resource refills; resources already granted are kept.

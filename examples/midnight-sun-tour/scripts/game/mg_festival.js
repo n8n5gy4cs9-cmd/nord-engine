@@ -1,3 +1,5 @@
+var Visitors=require("./festival_visitors.js");
+var Art = require("./tour_art.js");
 // ============================================================================
 // MG_FESTIVAL — Ruisrock Festival Management (3-day sim)
 // Phase 17: Mikko accidentally becomes Ruisrock manager
@@ -102,6 +104,9 @@ function createFestState(gs) {
         budget: budget,
         startBudget: budget,
         mikkoPop: bandPop,
+        facilities:{food:0,toilets:0,merch:0,stage:0,camp:0},buildCursor:0,buildMessage:'',buildCosts:0,
+        preview:Visitors.create(18,1991),
+        weather:[pickRandom(['SUN','SUN','RAIN']),pickRandom(['SUN','RAIN','WIND']),pickRandom(['SUN','SUN','WIND'])],
         // per-day data
         dayLineup: [],        // [{band, band}] selected this day
         offered: [],           // 4 offered bands for current day
@@ -182,8 +187,9 @@ function offerBands() {
             available.push(FEST_BANDS[i]);
         }
     }
-    available = shuffle(available);
-    fest.offered = available.slice(0, Math.min(4, available.length));
+    var recorded=shuffle(available.filter(function(b){return !!b.music;}));
+    var local=shuffle(available.filter(function(b){return !b.music;}));
+    fest.offered=recorded.slice(0,2).concat(local.slice(0,2));
     fest.cursor = 0;
     fest.selected = [];
     fest.confirmed = false;
@@ -214,8 +220,14 @@ function start(gs) {
 // ── UPDATE ──────────────────────────────────────────────────────────────────
 function update(dt) {
     if (!fest) return null;
+    if(fest.phase==='grounds'){
+        if(fest.groundsReturn==='simulate'){updateSimulate(dt,true);if(fest.phase!=='grounds')return null;}
+        else Visitors.update(fest.preview,dt,fest.facilities,false);
+    }
 
+    if((fest.phase==='book'||fest.phase==='staff'||fest.phase==='simulate')&&Input.getKeyDown('g')){fest.groundsReturn=fest.phase;fest.phase='grounds';return null;}
     switch (fest.phase) {
+        case "grounds":  return updateGrounds(dt);
         case "intro":    return updateIntro(dt);
         case "book":     return updateBook(dt);
         case "staff":    return updateStaff(dt);
@@ -242,6 +254,7 @@ function updateIntro(dt) {
 function drawIntro(sw, sh) {
     // Dark background
     Draw2D.fillRect(0, 0, sw, sh, 0.04, 0.02, 0.10, 1);
+    Art.background(1,sw,sh,0.28);
 
     // Ruisrock header
     Draw2D.drawText(sw / 2 - 70, sh * 0.06, "RUISROCK 1991",
@@ -295,7 +308,8 @@ function updateBook(dt) {
             } else if (fest.selected.length < maxSel) {
                 // Check budget
                 var band = fest.offered[fest.cursor];
-                if (fest.budget >= band.cost) {
+                var committed=fest.selected.reduce(function(sum,i){return sum+fest.offered[i].cost;},0);
+                if (fest.budget >= committed+band.cost) {
                     fest.selected.push(fest.cursor);
                     Audio.play(SFX.UI_CONFIRM, 0.4);
                 } else {
@@ -304,17 +318,15 @@ function updateBook(dt) {
             }
         } else {
             // Mikko's band row — auto-included, this is the CONFIRM action
-            // Allow 0 paid bands if budget can't afford any act (Mikko plays alone)
-            var canAffordAny = false;
-            for (var ca = 0; ca < fest.offered.length; ca++) {
-                if (fest.offered[ca].cost <= fest.budget) { canAffordAny = true; break; }
-            }
-            if (fest.selected.length >= 1 || !canAffordAny) {
+            // A free Mikko-only day remains possible even with an empty budget.
+            if (fest.selected.reduce(function(n,i){return n+fest.offered[i].cost;},0)<=fest.budget) {
                 // Deduct costs & lock in
                 var dayBands = [];
+                fest.prepaidActs=0;
                 for (var i = 0; i < fest.selected.length; i++) {
                     var b = fest.offered[fest.selected[i]];
                     fest.budget -= b.cost;
+                    fest.prepaidActs+=b.cost;
                     fest.usedBandIds.push(b.id);
                     dayBands.push(b);
                 }
@@ -332,6 +344,7 @@ function updateBook(dt) {
 
 function drawBook(sw, sh) {
     Draw2D.fillRect(0, 0, sw, sh, 0.05, 0.05, 0.15, 1);
+    Art.background(1,sw,sh,0.28);
 
     // Header
     Draw2D.drawText(sw / 2 - 80, 8, "DAY " + fest.day + " — BOOK ACTS",
@@ -340,9 +353,10 @@ function drawBook(sw, sh) {
         0.25, 0.88, 0.25, 1, F.BODY);
 
     // Instructions
-    Draw2D.drawText(10, 30, "Pick 2 acts. Your band plays free. Select last row to confirm.",
+    Draw2D.drawText(10, 30, "Book up to 2 acts. Mikko plays free. [G] Build grounds.",
         0.55, 0.55, 0.65, 1, F.TINY);
 
+    Draw2D.drawText(10,sh-44,'CAPACITY '+capacity()+' · FORECAST '+fest.weather[fest.day-1]+' · UPKEEP '+facilityUpkeep()+' mk/day',0.8,0.7,0.55,1,F.TINY);
     // Band list
     var startY = 48;
     var rowH = 28;
@@ -392,23 +406,56 @@ function drawBook(sw, sh) {
     Draw2D.drawText(18, mY + 2, "[*] Mikko Levon Band (YOUR BAND — FREE)",
         0.25, 0.88, 0.65, 1, F.SMALL);
 
-    // Confirm hint
-    var canAffordAny = false;
-    for (var af = 0; af < fest.offered.length; af++) {
-        if (fest.offered[af].cost <= fest.budget) { canAffordAny = true; break; }
-    }
-    var canConfirm = fest.selected.length >= 1 || !canAffordAny;
-    if (canConfirm && mCursor) {
+    // The Mikko row confirms any affordable selection, including no paid acts.
+    if (mCursor) {
         var blink = (Math.floor(Time.getTime() * 3) % 2 === 0);
         if (blink) {
             var confirmText = fest.selected.length === 0 ? "[ENTER] MIKKO ONLY — GO!" : "[ENTER] CONFIRM LINEUP";
             Draw2D.drawText(sw / 2 - 55, sh - 22, confirmText,
                 0.25, 0.88, 0.25, 1, F.SMALL);
         }
-    } else if (!canConfirm) {
-        Draw2D.drawText(sw / 2 - 65, sh - 22, "Select at least 1 act",
-            0.55, 0.40, 0.40, 1, F.TINY);
+
     }
+}
+
+// Persistent park-style facilities, paid once on construction and maintained each day.
+var FACILITIES=[
+ {id:'food',name:'Food stalls',cost:600,upkeep:80,desc:'3 mk per guest / level; happier visitors',sprite:21},
+ {id:'toilets',name:'Toilets',cost:450,upkeep:40,desc:'Serve 80 more guests / level; prevent queues',sprite:19},
+ {id:'merch',name:'Merch pavilion',cost:750,upkeep:60,desc:'4 mk per guest / level',sprite:19},
+ {id:'stage',name:'Stage roof / PA',cost:1000,upkeep:100,desc:'Weather protection; +3 happiness / level',sprite:18},
+ {id:'camp',name:'Camping field',cost:900,upkeep:70,desc:'+70 capacity / level; 2 mk per guest / level',sprite:28}
+];
+function capacity(){return 100+fest.facilities.camp*70;}
+function facilityUpkeep(){return FACILITIES.reduce(function(n,f){return n+fest.facilities[f.id]*f.upkeep;},0);}
+function updateGrounds(dt){
+ if(Input.getKeyDown('Left')||Input.getKeyDown('Up'))fest.buildCursor=(fest.buildCursor+FACILITIES.length-1)%FACILITIES.length;
+ if(Input.getKeyDown('Right')||Input.getKeyDown('Down'))fest.buildCursor=(fest.buildCursor+1)%FACILITIES.length;
+ if(Input.getKeyDown('Escape')||Input.getKeyDown('g')){fest.phase=fest.groundsReturn;return null;}
+ if(Input.getKeyDown('Return')){
+  var f=FACILITIES[fest.buildCursor],lv=fest.facilities[f.id],cost=f.cost*(lv+1);
+  if(lv>=3)fest.buildMessage='Maximum level reached.';
+  else if(fest.budget<cost)fest.buildMessage='Not enough budget.';
+  else {fest.budget-=cost;fest.totalCosts+=cost;fest.buildCosts+=cost;fest.facilities[f.id]++;if(fest.groundsReturn==='simulate')fest.dayCosts+=f.upkeep;fest.buildMessage=f.name+' upgraded. -'+cost+' mk';Audio.play(SFX.CASH_REGISTER,0.4);}
+ }
+ return null;
+}
+function drawGrounds(sw,sh){
+ Art.background(2,sw,sh);
+ Art.header('RUISROCK · FESTIVAL GROUNDS','ARROWS · select plot    ENTER · build/upgrade    G / ESC · return to planning',sw);
+ for(var i=0;i<FACILITIES.length;i++){
+  var f=FACILITIES[i],x=70+i*118,y=125+(i%2)*45,selected=i===fest.buildCursor;
+  Draw2D.drawCircle(x,y,30,selected?1:0.4,selected?0.72:0.4,0.3,0.9,1);
+  Art.facility(i,x-50,y-55,100,80,fest.facilities[f.id]>0?1:0.55);
+  Art.panel(x-47,y+30,94,35);Art.text(x-40,y+34,f.name,0.53);Art.text(x-40,y+50,'LEVEL '+fest.facilities[f.id]+'/3',0.53);
+ }
+ Visitors.draw(fest.groundsReturn==='simulate'?fest.visitors:fest.preview);
+ var f=FACILITIES[fest.buildCursor],lv=fest.facilities[f.id];
+ Art.panel(10,244,sw-20,106);
+ Art.text(22,254,f.name+' · '+(lv>=3?'MAX':f.cost*(lv+1)+' mk to upgrade'),0.85);
+ Art.text(22,277,f.desc,0.65);
+ Art.text(22,298,'BUDGET '+fest.budget+' mk   CAPACITY '+capacity()+'   UPKEEP '+facilityUpkeep()+' / day',0.65);
+ Art.text(22,322,fest.buildMessage||(fest.groundsReturn==='simulate'?'Festival open · customers and artist sets continue.':'Grounds preview · facilities stay for all three days.'),0.6);
 }
 
 // ── STAFF & PRICES ──────────────────────────────────────────────────────────
@@ -454,6 +501,7 @@ function updateStaff(dt) {
 
 function drawStaff(sw, sh) {
     Draw2D.fillRect(0, 0, sw, sh, 0.05, 0.05, 0.15, 1);
+    Art.background(1,sw,sh,0.28);
 
     Draw2D.drawText(sw / 2 - 80, 8, "DAY " + fest.day + " — SETUP",
         0.94, 0.75, 0.25, 1, F.LARGE);
@@ -502,12 +550,15 @@ function drawStaff(sw, sh) {
     var avgPop = 0;
     for (var d = 0; d < fest.dayLineup.length; d++) avgPop += fest.dayLineup[d].pop;
     avgPop = (avgPop / Math.max(1, fest.dayLineup.length) + fest.mikkoPop) / 2;
-    var estAttendees = Math.floor((avgPop + 20) * (110 - fest.ticketPrice) / 80);
+    var weatherMul=fest.weather[fest.day-1]==='SUN'?1:fest.weather[fest.day-1]==='RAIN'?0.82:0.9;
+    var estAttendees = Math.min(capacity(),Math.floor((avgPop + 20) * (110 - fest.ticketPrice) / 80*weatherMul));
     Draw2D.drawText(sw / 2 + 10, 102, "Est. attendance: ~" + estAttendees,
         0.55, 0.75, 0.55, 1, F.TINY);
-    Draw2D.drawText(sw / 2 + 10, 116, "Est. revenue: ~" + (estAttendees * fest.ticketPrice) + " mk",
+    Draw2D.drawText(sw / 2 + 10, 116, "Est. gate: ~" + (estAttendees * fest.ticketPrice) + " mk",
         0.55, 0.75, 0.55, 1, F.TINY);
 
+    Draw2D.drawText(sw/2+10,134,'Stalls: ~'+estAttendees*(fest.facilities.food*3+fest.facilities.merch*4+fest.facilities.camp*2)+' mk',0.8,0.7,0.55,1,F.TINY);
+    Draw2D.drawText(sw/2+10,152,'Grounds: '+facilityUpkeep()+' mk/day · '+fest.weather[fest.day-1],0.8,0.7,0.55,1,F.TINY);
     // Lineup reminder
     Draw2D.drawText(10, sh - 62, "Today's lineup:", 0.55, 0.55, 0.65, 1, F.TINY);
     for (var l = 0; l < fest.dayLineup.length; l++) {
@@ -518,7 +569,7 @@ function drawStaff(sw, sh) {
         0.25, 0.88, 0.65, 1, F.TINY);
 
     // Navigation hints
-    Draw2D.drawText(sw / 2 - 80, sh - 16, "[TAB] Switch panel  [ENTER] Start day",
+    Draw2D.drawText(sw / 2 - 80, sh - 16, "[TAB] Panel  [ENTER] Start day  [G] Grounds",
         0.45, 0.45, 0.55, 1, F.TINY);
 }
 
@@ -532,16 +583,22 @@ function startSimulation() {
     var actCost = 0;
     for (var a = 0; a < fest.dayLineup.length; a++) actCost += fest.dayLineup[a].cost;
 
-    fest.dayCosts = staffCost + actCost;
+    fest.dayCosts = staffCost + actCost + facilityUpkeep();
 
     // Calculate attendees
     var avgPop = 0;
     for (var p = 0; p < fest.dayLineup.length; p++) avgPop += fest.dayLineup[p].pop;
     avgPop = (avgPop / Math.max(1, fest.dayLineup.length) + fest.mikkoPop) / 2;
     var base = (avgPop + 20) * (110 - fest.ticketPrice) / 80;
-    fest.dayAttendees = Math.floor(base * (0.85 + Math.random() * 0.30));
-    fest.dayRevenue = fest.dayAttendees * fest.ticketPrice;
-    fest.dayHappiness = 70;
+    var weatherMul=fest.weather[fest.day-1]==='RAIN'?0.82:fest.weather[fest.day-1]==='WIND'?0.9:1;
+    fest.dayAttendees = Math.min(capacity(),Math.floor(base * weatherMul * (0.85 + Math.random() * 0.30)));
+    fest.gateRevenue=fest.dayAttendees*fest.ticketPrice;
+    fest.stallRevenue=0;
+    fest.visitors=Visitors.create(fest.dayAttendees,1991+fest.day*7919);
+    fest.dayRevenue = fest.gateRevenue+fest.stallRevenue;
+    var toiletShortfall=Math.max(0,fest.dayAttendees-(80+fest.facilities.toilets*80));
+    fest.dayHappiness = 70+fest.facilities.food*2+fest.facilities.stage*3-Math.min(25,Math.floor(toiletShortfall/3));
+    if(fest.weather[fest.day-1]!=='SUN'&&fest.facilities.stage===0)fest.dayHappiness-=10;
     fest.dayIncidents = [];
     fest.dayHirviEvent = null;
 
@@ -549,6 +606,9 @@ function startSimulation() {
     fest.simLog = [];
     fest.simLog.push("RUISROCK DAY " + fest.day + " — GATES OPEN!");
     fest.simLog.push(fest.dayAttendees + " festival-goers pour through the gates.");
+    fest.simLog.push('FORECAST: '+fest.weather[fest.day-1]+' · capacity '+capacity());
+    fest.simLog.push('Gate '+fest.gateRevenue+' mk · stalls '+fest.stallRevenue+' mk · grounds upkeep '+facilityUpkeep()+' mk');
+    if(toiletShortfall>0)fest.simLog.push('Toilet queues hurt happiness. Expand before tomorrow.');
 
     // Acts performing
     for (var n = 0; n < fest.dayLineup.length; n++) {
@@ -602,48 +662,47 @@ function startSimulation() {
 
     fest.simLog.push("Day " + fest.day + " winds down... the crowd drifts to the campfires.");
 
-    // Play first band with music from today's lineup
-    // If no band has custom music, pick a random band track so FESTIVAL_GOOD
-    // doesn't restart (it already played at intro). Music continues through
-    // report + booking phases until next day's simulate picks a new band.
-    var musicBand = null;
-    for (var m = 0; m < fest.dayLineup.length; m++) {
-        if (fest.dayLineup[m].music) { musicBand = fest.dayLineup[m]; break; }
-    }
-    if (musicBand) {
-        Audio.playMusic(musicBand.music, false);
-    }
-    // If no band has music, keep whatever is already playing
-
+    // Every paid act plays its own recording only during its booked set.
+    var first=fest.dayLineup[0];
+    Audio.playMusic(first&&first.music?first.music:MUSIC.GIG,true);
+    fest.simDuration=(fest.dayLineup.length+1)*90;
+    fest.lastStallRevenue=0;
     fest.simTimer = 0;
     fest.simLogTimer = 0;
     fest.simPlaying = true;
-    fest.simCurrentActIdx = -1; // track which act is playing for music rotation
+    fest.simCurrentActIdx = 0; // track which act is playing for music rotation
     fest.phase = "simulate";
 }
 
-function updateSimulate(dt) {
+function updateSimulate(dt,building) {
     fest.simTimer += dt;
     fest.simLogTimer += dt;
+    fest.visitors.closing=fest.simTimer>=fest.simDuration-20;
+    Visitors.update(fest.visitors,dt,fest.facilities,true);
+    fest.stallRevenue=Math.floor(fest.visitors.income);
+    // Event income is retained; service income is added only once per change.
+    fest.dayRevenue+=fest.stallRevenue-(fest.lastStallRevenue||0);fest.lastStallRevenue=fest.stallRevenue;
+    if(Input.getKeyDown('n'))fest.simTimer=Math.min(fest.simDuration,(Math.floor(fest.simTimer/90)+1)*90);
 
     // Rotate music when the displayed act changes
     var totalActs = fest.dayLineup.length + 1; // +1 for Mikko
     var actIdx = Math.min(Math.floor(fest.simTimer / (fest.simDuration / totalActs)), fest.dayLineup.length);
     if (actIdx !== fest.simCurrentActIdx) {
         fest.simCurrentActIdx = actIdx;
-        if (actIdx < fest.dayLineup.length && fest.dayLineup[actIdx].music) {
-            Audio.playMusic(fest.dayLineup[actIdx].music, false);
-        }
-        // Mikko's slot or band without music: keep current band music playing
+        var act=fest.dayLineup[actIdx];
+        Audio.playMusic(act&&act.music?act.music:MUSIC.GIG,true);
     }
 
-    if (fest.simTimer >= fest.simDuration || Input.getKeyDown("enter") || Input.getKeyDown("space")) {
+    if (fest.simTimer >= fest.simDuration || !building&&(Input.getKeyDown("enter") || Input.getKeyDown("space"))) {
         if (fest.simTimer < fest.simDuration && Input.getKeyDown("enter")) {
             fest.simTimer = fest.simDuration; // skip to end
             return null;
         }
+        // Closing/skip settles the day using the service visits actually completed.
+        fest.dayHappiness=clamp(fest.dayHappiness+Visitors.satisfaction(fest.visitors),0,100);
+        fest.simLog.push('Customer service: '+fest.visitors.served+' served · '+fest.visitors.lost+' abandoned queues.');
         // Transition to report
-        fest.budget += fest.dayRevenue - fest.dayCosts;
+        fest.budget += fest.dayRevenue - (fest.dayCosts-(fest.prepaidActs||0));
         fest.totalRevenue += fest.dayRevenue;
         fest.totalCosts += fest.dayCosts;
         fest.totalHappiness += fest.dayHappiness;
@@ -654,61 +713,23 @@ function updateSimulate(dt) {
     return null;
 }
 
-function drawSimulate(sw, sh) {
-    Draw2D.fillRect(0, 0, sw, sh, 0.04, 0.02, 0.08, 1);
-
-    // Stage banner
-    Draw2D.fillRect(0, 0, sw, 30, 0.12, 0.08, 0.25, 1);
-    Draw2D.drawText(sw / 2 - 65, 4, "RUISROCK DAY " + fest.day,
-        0.94, 0.75, 0.25, 1, F.LARGE);
-
-    // Now playing
-    if (fest.dayLineup.length > 0) {
-        var actIdx = Math.min(Math.floor(fest.simTimer / (fest.simDuration / (fest.dayLineup.length + 1))), fest.dayLineup.length);
-        var nowPlaying;
-        if (actIdx < fest.dayLineup.length) {
-            nowPlaying = fest.dayLineup[actIdx].name;
-        } else {
-            nowPlaying = "Mikko Levon Band";
-        }
-        Draw2D.drawText(sw / 2 - 60, 20, "NOW: " + nowPlaying,
-            0.75, 0.88, 0.94, 1, F.TINY);
-    }
-
-    // Scrolling log
-    var logStartY = 38;
-    var maxVisible = 12;
-    var lineH = 14;
-    var visibleLines = Math.floor(fest.simLogTimer / 1.0); // 1 line per second
-    visibleLines = Math.min(visibleLines, fest.simLog.length);
-    var startIdx = Math.max(0, visibleLines - maxVisible);
-    for (var i = startIdx; i < visibleLines; i++) {
-        var ly = logStartY + (i - startIdx) * lineH;
-        var line = fest.simLog[i];
-        var isEvent = line.indexOf("EVENT:") === 0 || line.indexOf("HIRVIPORUKKA:") === 0;
-        var r = isEvent ? 0.94 : 0.70;
-        var g = isEvent ? 0.45 : 0.70;
-        var b = isEvent ? 0.25 : 0.80;
-        Draw2D.drawText(8, ly, line, r, g, b, 1, F.TINY);
-    }
-
-    // Bottom stats bar
-    Draw2D.fillRect(0, sh - 36, sw, 36, 0.08, 0.06, 0.15, 1);
-    Draw2D.drawText(8, sh - 32, "Crowd: " + fest.dayAttendees,
-        0.75, 0.75, 0.85, 1, F.TINY);
-    Draw2D.drawText(100, sh - 32, "Happy: " + fest.dayHappiness + "%",
-        fest.dayHappiness > 50 ? 0.25 : 0.85, fest.dayHappiness > 50 ? 0.80 : 0.25, 0.25, 1, 0.4);
-    Draw2D.drawText(210, sh - 32, "Budget: " + fest.budget + " mk",
-        0.25, 0.75, 0.25, 1, F.TINY);
-
-    // Progress bar
-    var pct = clamp(fest.simTimer / fest.simDuration, 0, 1);
-    Draw2D.fillRect(8, sh - 14, sw - 16, 6, 0.15, 0.15, 0.25, 1);
-    Draw2D.fillRect(8, sh - 14, (sw - 16) * pct, 6, 0.25, 0.65, 0.88, 1);
-
-    // Skip hint
-    Draw2D.drawText(sw - 80, sh - 32, "[ENTER] Skip",
-        0.4, 0.4, 0.4, 1, F.MICRO);
+function drawSimulate(sw,sh){
+ Art.background(2,sw,sh);
+ var idx=Math.min(Math.floor(fest.simTimer/90),fest.dayLineup.length),act=fest.dayLineup[idx];
+ Art.header('RUISROCK · DAY '+fest.day+' · '+fest.weather[fest.day-1],'ON STAGE: '+(act?act.name:'Mikko Levon Band')+'     [G] Build   [N] Next set   [ENTER] Close day',sw);
+ for(var i=0;i<FACILITIES.length;i++){
+  var f=FACILITIES[i],x=70+i*118,y=125+(i%2)*45;
+  Art.facility(i,x-45,y-50,90,75,i===3||fest.facilities[f.id]>0?1:0.35);
+  Art.text(x-40,y+26,f.name+' '+fest.facilities[f.id],0.5);
+ }
+ Visitors.draw(fest.visitors);
+ Art.panel(8,250,sw-16,102);
+ Art.text(18,259,'GATE '+fest.dayAttendees+' / '+capacity()+'   STALLS '+fest.stallRevenue+' mk   BUDGET '+fest.budget+' mk',0.65);
+ Art.text(18,280,'SERVED '+fest.visitors.served+'   LOST QUEUES '+fest.visitors.lost+'   HAPPINESS '+clamp(fest.dayHappiness+Visitors.satisfaction(fest.visitors),0,100)+'%',0.65);
+ var visible=Math.min(fest.simLog.length,Math.floor(fest.simTimer/fest.simDuration*(fest.simLog.length-1))+1),line=fest.simLog[Math.max(0,visible-1)]||'Gates open.';
+ Draw2D.drawText(18,302,line.slice(0,100),0.8,0.75,0.85,1,0.55);
+ Draw2D.fillRect(18,332,sw-36,5,0.18,0.10,0.26,1);
+ Draw2D.fillRect(18,332,(sw-36)*clamp(fest.simTimer/fest.simDuration,0,1),5,0.9,0.55,0.35,1);
 }
 
 // ── DAILY REPORT ────────────────────────────────────────────────────────────
@@ -731,7 +752,8 @@ function updateReport(dt) {
 }
 
 function drawReport(sw, sh) {
-    Draw2D.fillRect(0, 0, sw, sh, 0.92, 0.88, 0.78, 1); // newspaper bg
+    Draw2D.fillRect(0, 0, sw, sh, 0.92, 0.88, 0.78, 1);
+    Art.background(1,sw,sh,0.28); // newspaper bg
 
     // Newspaper header
     Draw2D.fillRect(10, 8, sw - 20, 28, 0.08, 0.06, 0.04, 1);
@@ -859,6 +881,7 @@ function updateResults(dt) {
 
 function drawResults(sw, sh) {
     Draw2D.fillRect(0, 0, sw, sh, 0.04, 0.02, 0.10, 1);
+    Art.background(1,sw,sh,0.28);
 
     // Ending sprite (if exists)
     var sprite = ENDING_SPRITES[fest.endingTier];
@@ -918,6 +941,7 @@ function draw(screenW, screenH) {
     if (!fest) return;
 
     switch (fest.phase) {
+        case "grounds":  drawGrounds(screenW,screenH); break;
         case "intro":    drawIntro(screenW, screenH); break;
         case "book":     drawBook(screenW, screenH); break;
         case "staff":    drawStaff(screenW, screenH); break;
@@ -929,6 +953,21 @@ function draw(screenW, screenH) {
 
 // ── MODULE EXPORT ───────────────────────────────────────────────────────────
 module.exports = {
+    get state() { return fest; },
+    cheat: function(phase,day,perfect) {
+        fest.day=day;
+        if(phase==='book'||phase==='grounds')offerBands();
+        if(phase==='grounds')fest.groundsReturn='book';
+        if(phase==='staff'||phase==='simulate'||phase==='report'){
+            fest.dayLineup=[];fest.prepaidActs=0;
+            if(phase!=='staff'){startSimulation();if(phase==='report'){fest.simTimer=fest.simDuration;updateSimulate(0);}}
+        }
+        if(phase==='results'){
+            if(perfect){fest.totalHappiness=300;fest.totalRevenue=100000;fest.totalCosts=0;fest.totalIncidents=0;fest.budget=100000;}
+            calcFinalResults();
+        }
+        fest.phase=phase;
+    },
     start: start,
     update: update,
     draw: draw

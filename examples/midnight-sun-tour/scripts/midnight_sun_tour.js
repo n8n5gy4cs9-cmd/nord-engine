@@ -1,9 +1,10 @@
 // Midnight Sun Tour — Nord Engine host script. Boots the NordScrap-era game (scripts/game/*.js) on a 640x360 virtual canvas via
 // scripts/nordscrap/compat.js and forwards update(dt) to the game's MidnightSunTour.onUpdate.
 import { NordScript, touchToStart } from 'nord';
+import { TourConsole } from './nordscrap/console.js';
 import { createCompat, loadModules } from './nordscrap/compat.js';
 
-const MODULES = ['game_constants', 'band_mood', 'pseudo3d', 'mg_encounters', 'mg_gig', 'mg_soundcheck', 'mg_moosedodge', 'mg_gearpack', 'mg_kickoff',
+const MODULES = ['festival_visitors', 'tour_art', 'mg_jobs', 'game_constants', 'band_mood', 'pseudo3d', 'mg_encounters', 'mg_gig', 'mg_soundcheck', 'mg_moosedodge', 'mg_gearpack', 'mg_kickoff',
   'mg_space', 'mg_trail', 'mg_race', 'mg_tent', 'mg_fuel', 'mg_runner', 'mg_night', 'mg_starfox', 'mg_festival', 'mg_tycoon', 'midnight_sun'];
 
 export default class MidnightSunTourScript extends NordScript {
@@ -28,6 +29,7 @@ export default class MidnightSunTourScript extends NordScript {
       if (this.dead) return;
       this.game_ = new Game();
       this.game_.onStart();
+      this.console_ = new TourConsole(this);
       this.ready = true;
       window.__nord_msTour = this.game_;
     } catch (e) {
@@ -37,7 +39,7 @@ export default class MidnightSunTourScript extends NordScript {
   }
 
   update(dt) {
-    if (!this.ready || this.dead) return;
+    if (!this.ready || this.dead || this.console_?.open) return;
     if (this.pendingRestart) { this.pendingRestart = false; this.game_.onStart(); }
     this.compat.beginFrame();
     try { this.game_.onUpdate(Math.min(dt, 0.1)); this.failures = 0; } catch (e) {
@@ -49,5 +51,5 @@ export default class MidnightSunTourScript extends NordScript {
     this.compat.endFrame();
   }
 
-  onDestroy() { this.dead = true; this.gate?.destroy(); this.compat?.destroy(); }
+  onDestroy() { this.dead = true; this.gate?.destroy(); this.console_?.destroy(); this.compat?.destroy(); }
 }

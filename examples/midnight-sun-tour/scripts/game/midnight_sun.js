@@ -31,6 +31,8 @@ var RunnerSystem     = require("./mg_runner.js");
 var NightSystem      = require("./mg_night.js");
 var StarfoxSystem    = require("./mg_starfox.js");
 var FestivalSystem   = require("./mg_festival.js");
+var Jobs             = require("./mg_jobs.js");
+var Art              = require("./tour_art.js");
 var Tycoon           = require("./mg_tycoon.js");
 
 // Shortcuts for asset paths from shared constants
@@ -916,11 +918,13 @@ var CityMenu = class {
 
         var options = CityMenu.getOptions(city);
         var optY = panelY + 55;
-        for (var i = 0; i < options.length; i++) {
+        var firstOption=Math.max(0,Math.min(gCityMenuSelection-5,options.length-7));
+        for (var i = firstOption; i < Math.min(options.length,firstOption+7); i++) {
             var isSelected = (gCityMenuSelection === i);
             var cr = isSelected ? 1 : (options[i].enabled ? 0.75 : 0.31);
             var cg = isSelected ? 1 : (options[i].enabled ? 0.75 : 0.31);
             var cb = isSelected ? 0.25 : (options[i].enabled ? 0.82 : 0.38);
+            if(isSelected) Draw2D.fillRect(panelX+10,optY-2,panelW*0.56-12,19,0.30,0.12,0.28,1);
             var prefix = isSelected ? "> " : "  ";
             Draw2D.drawText(panelX + 16, optY, prefix + (i + 1) + ". " + options[i].label,
                 cr, cg, cb, 1, 0.6);
@@ -979,6 +983,7 @@ var CityMenu = class {
                 cost: "10 FIM", enabled: gs.resources.cash >= 10
             });
         }
+        options.push({id: "jobs", label: "Tour jobs (delivery / rescue)", cost: "Earn up to 180 FIM", enabled: true});
         options.push({
             id: "office", label: "Tour Office (garage, merch, promo)",
             cost: "Fame " + Tycoon.fame(gs), enabled: true
@@ -1052,6 +1057,10 @@ var CityMenu = class {
                 CityMenu.close();
                 return Math.random() < 0.5 ? "space" : "starfox";
 
+            case "jobs":
+                CityMenu.close();
+                return "jobs";
+
             case "office":
                 CityMenu.close();
                 return "office";
@@ -1091,6 +1100,8 @@ var gCheatMenuIdx = 0;
 var gCheatPrevScene = "";        // scene to return to when closing cheat menu
 var gCheatJustOpened = false;    // guard: skip close check on same frame as open
 var CHEAT_MINIGAMES = [
+    {label:"Backstage Express", scene:"jobs", starter:function(gs){Jobs.start(gs,0);}},
+    {label:"Harbor Rescue", scene:"jobs", starter:function(gs){Jobs.start(gs,1);}},
     { label: "Moose Dodge",      scene: "moosedodge", starter: function(gs) { MooseDodgeSystem.start(gs, { road_type: "highway", distance_km: 120, hazard_rate: 0.3 }); } },
     { label: "Kickoff (Football)", scene: "kickoff",  starter: function(gs) { KickoffSystem.start(gs); } },
     { label: "Space Invaders",   scene: "space",      starter: function(gs) { SpaceSystem.start(gs); } },
@@ -1155,9 +1166,118 @@ class MidnightSunTour {
         console.log("[GameManager] Scene: " + gScene);
     }
 
+    command(text) {
+        var parts=String(text).trim().toLowerCase().split(/\s+/),cmd=parts.shift(),arg=parts[0];
+        var self=this;
+        var number=function(v,min,max){var n=Number(v);if(!Number.isFinite(n)||n<min||n>max)throw Error('Invalid value.');return n;};
+        var toggle=function(v,old){if(v==null)return !old;if(v==='on')return true;if(v==='off')return false;throw Error('Invalid value.');};
+        var ensure=function(){if(!gGameState){gGameState=createNewGameState();resetEncounterTracking();}return gGameState;};
+        var leave=function(){if(StarfoxSystem.allEntities&&StarfoxSystem.allEntities.length)StarfoxSystem.cleanup();gBusAnimating=false;gPendingMinigameTrigger=null;gCityMenuOpen=false;self.paused=false;};
+        if(cmd==='state')return JSON.stringify({scene:gScene,city:gGameState&&gGameState.journey.current_city,god:!!this.god,freeze:!!this.freeze,resources:gGameState&&gGameState.resources,bus:gGameState&&gGameState.bus,journey:gGameState&&gGameState.journey});
+        if(cmd==='god'){this.god=toggle(arg,this.god);RunnerSystem.invuln=0;SpaceSystem.invuln=0;Jobs.flash=0;ensure();this.protect();return 'God mode '+(this.god?'on.':'off.');}
+        if(cmd==='freeze'){this.freeze=toggle(arg,this.freeze);this.fixedDays=ensure().journey.days_until_festival;return 'Clock lock '+(this.freeze?'on.':'off.');}
+        if(cmd==='refill'||cmd==='rich'){
+            var gs=ensure();gs.bus.condition=100;gs.bus.gas=gs.bus.max_gas;gs.resources.food=10;gs.resources.morale=100;
+            gs.band.forEach(function(b){b.present=true;b.mood=100;});
+            if(cmd==='rich'){gs.resources.cash=1000000;gs.resources.hype=100;Tycoon.ensure(gs).fame=100;if(gScene==='festival'&&FestivalSystem.state)FestivalSystem.state.budget=1000000;}
+            return 'Resources updated.';
+        }
+        if(cmd==='set'){
+            var gs=ensure(),key=arg,value=parts[1];
+            if(['cash','food','morale','hype'].indexOf(key)>=0)gs.resources[key]=number(value,0,key==='cash'?10000000:key==='food'?10:100);
+            else if(key==='gas')gs.bus.gas=number(value,0,gs.bus.max_gas);
+            else if(key==='condition')gs.bus.condition=number(value,0,100);
+            else if(key==='days'){gs.journey.days_until_festival=number(value,1,365);this.fixedDays=gs.journey.days_until_festival;}
+            else if(key==='fame')Tycoon.ensure(gs).fame=number(value,0,100);
+            else if(key==='budget'){if(!FestivalSystem.state)throw Error('Festival is not active.');FestivalSystem.state.budget=number(value,0,10000000);}
+            else throw Error('Invalid field.');
+            return 'Value updated.';
+        }
+        if(cmd==='gear'){ensure().inventory=JSON.parse(JSON.stringify(GEAR_DATA));return 'All gear packed.';}
+        if(cmd==='save'){ensure();SaveManager.save();return 'Journey checkpoint saved.';}
+        if(cmd==='load'){if(!SaveManager.load())throw Error('No valid checkpoint.');leave();gFestivalStarted=false;gScene='overworld';this.playOverworldMusic();return 'Journey checkpoint loaded.';}
+        if(cmd==='new'){leave();gGameState=createNewGameState();resetEncounterTracking();GearPackSystem.start(gGameState,GEAR_DATA);gScene='gearpack';return 'New tour.';}
+        if(cmd==='win'){
+            ensure();
+            if(gScene==='festival'){FestivalSystem.cheat('results',3,true);return 'Festival complete.';}
+            if(gScene==='gig'){if(GigSystem.phase!=='results'){GigSystem.score=GigSystem.maxScore;GigSystem.perfects=24;GigSystem.calculateResults();}GigSystem.phase='results';}
+            else if(gScene==='gearpack'){gGameState.inventory=JSON.parse(JSON.stringify(GEAR_DATA));leave();gScene='overworld';this.playOverworldMusic();}
+            else if(gScene==='runner'){RunnerSystem.distance=500;RunnerSystem.dead=false;RunnerSystem.phase='results';}
+            else if(gScene==='jobs'){Jobs.score=9;Jobs.phase='results';}
+            else if(gScene==='kickoff'){KickoffSystem.scoreA=5;KickoffSystem.shots=5;KickoffSystem.phase='results';}
+            else if(gScene==='space'){SpaceSystem.score=1000;SpaceSystem.lives=3;SpaceSystem.phase='results';}
+            else if(gScene==='race'){RaceSystem.playerAhead=true;RaceSystem.phase='results';}
+            else if(gScene==='tent'){TentSystem.tentProgress=1;TentSystem.phase='results';}
+            else if(gScene==='fuel'){FuelSystem.totalFuel=30;FuelSystem.phase='results';}
+            else if(gScene==='soundcheck'){SoundCheckSystem.sliders=SoundCheckSystem.targets.slice();SoundCheckSystem.calculateResults();SoundCheckSystem.phase='results';}
+            else if(gScene==='starfox'){StarfoxSystem.score=1500;StarfoxSystem.shields=100;StarfoxSystem.timer=0;StarfoxSystem.phase='results';}
+            else if(gScene==='moosedodge'){MooseDodgeSystem.phase='results';}
+            else if(gScene==='night'){NightSystem.survived=true;NightSystem.phase='results';}
+            else if(gScene==='trail'){TrailSystem.phase='results';}
+            else {leave();gGameState.journey.current_city='turku';gScene='festival';gFestivalStarted=true;FestivalSystem.start(gGameState);FestivalSystem.cheat('results',3,true);}
+            return 'Complete.';
+        }
+        if(cmd==='festival'){
+            var phase=arg||'intro',day=parts[1]==null?1:number(parts[1],1,3);
+            if(['intro','book','grounds','staff','simulate','report','results'].indexOf(phase)<0)throw Error('Invalid phase.');
+            ensure();leave();gGameState.journey.current_city='turku';gScene='festival';
+            if(!gFestivalStarted){FestivalSystem.start(gGameState);gFestivalStarted=true;}
+            FestivalSystem.cheat(phase,day,false);return 'Festival state loaded.';
+        }
+        if(cmd==='goto'||cmd==='minigame'){cmd='jump';arg=parts.shift();}
+        else if(['title','overworld','map','city','office','gameover','encounter'].indexOf(cmd)>=0){parts.unshift(arg);arg=cmd;cmd='jump';}
+        if(cmd==='jump'){
+            var aliases={packing:'gearpack',football:'kickoff',shootout:'kickoff',delivery:'jobs',harbor:'jobs',mixer:'soundcheck',driving:'moosedodge',nightdrive:'night',map:'overworld',ruisrock:'festival'};
+            var target=aliases[arg]||arg;
+            var mg=CHEAT_MINIGAMES.find(function(m){return m.scene===target;});
+            if(!mg&&['title','overworld','city','office','gameover','encounter'].indexOf(target)<0)throw Error('Invalid destination.');
+            var gs=ensure(),city=parts[0];
+            if(target==='city'&&city&&!OverworldMap.getCityById(city))throw Error('Invalid city.');
+            if(target==='encounter'&&!ENCOUNTERS.some(function(e){return e.id===city;}))throw Error('Invalid encounter.');
+            leave();
+            if(target==='title'){gScene='title';Audio.playMusic(MUSIC.TITLE,true);}
+            else if(target==='overworld'){gScene='overworld';var adj=OverworldMap.getAdjacentCities();if(adj.length)gSelectedCityIdx=OverworldMap.getCityIdxById(adj[0].cityId);this.playOverworldMusic();}
+            else if(target==='city'){
+                if(city)gs.journey.current_city=city;
+                if(gs.visited_cities.indexOf(gs.journey.current_city)<0)gs.visited_cities.push(gs.journey.current_city);
+                CityMenu.open(gs.journey.current_city);gScene='city';Audio.playMusic(MUSIC.CITY,true);
+            } else if(target==='office'){Tycoon.open(gs,OverworldMap.getCityById(gs.journey.current_city));gScene='office';}
+            else if(target==='gameover'){gGameOverReason=city==='days'?'days':'bus';gGameOverMusicPlayed=false;gScene='gameover';}
+            else if(target==='encounter'){EncounterSystem.start(ENCOUNTERS.find(function(e){return e.id===city;}),ROUTES[0],gs);gScene='encounter';}
+            else {mg.starter(gs);gScene=target;if(arg==='harbor')Jobs.start(gs,1);}
+            return 'State loaded.';
+        }
+        throw Error('Unknown command.');
+    }
+
+    protect() {
+        if(!gGameState)return;
+        if(this.freeze)gGameState.journey.days_until_festival=this.fixedDays;
+        Jobs.god=!!this.god;
+        if(!this.god)return;
+        var gs=gGameState;gs.bus.condition=100;gs.bus.gas=gs.bus.max_gas;
+        gs.resources.food=10;gs.resources.morale=100;gs.resources.cash=Math.max(gs.resources.cash,10000);
+        gs.journey.days_until_festival=Math.max(7,gs.journey.days_until_festival);
+        gs.band.forEach(function(b){b.present=true;b.mood=100;});
+        RunnerSystem.hearts=3;RunnerSystem.invuln=999;SpaceSystem.lives=3;SpaceSystem.invuln=999;
+        Jobs.lives=3;Jobs.god=true;StarfoxSystem.shields=100;
+        if(gScene==='festival'&&FestivalSystem.state)FestivalSystem.state.budget=Math.max(10000,FestivalSystem.state.budget);
+    }
+
+    get state() { return {scene:gScene, game:gGameState, paused:!!this.paused, festival:gScene==='festival'?FestivalSystem.state:null}; }
+
     onUpdate(dt) {
         this.screenW = Screen.getWidth();
         this.screenH = Screen.getHeight();
+
+        if(gScene!=="title"&&gScene!=="gameover"&&Input.getKeyDown("p"))this.paused=!this.paused;
+        if(this.paused){
+            Art.background(0,this.screenW,this.screenH,0.5);
+            Art.results('TOUR PAUSED',['P · resume the current game','Your minigame timer is stopped.'],this.screenW,this.screenH);
+            return;
+        }
+
+        this.protect();
 
         // ── GAME OVER CHECK — before any scene renders ─────────────
         if (gScene !== "title" && gScene !== "gameover" && gScene !== "gearpack") {
@@ -1190,6 +1310,7 @@ class MidnightSunTour {
             case "overworld":   this.updateOverworld(dt); break;
             case "city":        this.updateCity(dt); break;
             case "office":      this.updateOffice(dt); break;
+            case "jobs":        this.updateJobs(dt); break;
             case "encounter":   this.updateEncounter(dt); break;
             case "soundcheck":  this.updateSoundCheck(dt); break;
             case "gig":         this.updateGig(dt); break;
@@ -1417,6 +1538,8 @@ class MidnightSunTour {
                 gSCCity = OverworldMap.getCityById(gGameState.journey.current_city);
                 SoundCheckSystem.start(gGameState, gSCCity);
                 gScene = "soundcheck";
+            } else if (result === "jobs") {
+                Jobs.start(gGameState,0);gScene="jobs";
             } else if (result === "office") {
                 Tycoon.open(gGameState, OverworldMap.getCityById(gGameState.journey.current_city));
                 gScene = "office";
@@ -1438,6 +1561,19 @@ class MidnightSunTour {
     }
 
     // ── TOUR OFFICE (tycoon) ────────────────────────────────────────
+
+    updateJobs(dt) {
+        var result=Jobs.update(dt); Jobs.draw(this.screenW,this.screenH);
+        if(result && result.done) {
+            var gs=gGameState, key=gs.journey.current_city+':'+result.job;
+            gs.tourJobs=gs.tourJobs||{};
+            if(result.job != null && !gs.tourJobs[key]) {
+                gs.resources.cash+=result.cashWon; gs.tourJobs[key]=true;
+                gs.resources.morale=Math.min(100,gs.resources.morale+3);
+            }
+            this.returnToCityFromAction();
+        }
+    }
 
     updateOffice(dt) {
         Tycoon.draw(this.screenW, this.screenH);
@@ -1499,6 +1635,7 @@ class MidnightSunTour {
         if (result && result.done) {
             gSCBonus = result.bonus || 1.0;
             // Start gig after sound check
+            gSCCity=result.city||gSCCity||OverworldMap.getCityById(gGameState.journey.current_city);
             GigSystem.start(gGameState, gSCCity, gSCBonus, BandMood.getGigModifier(gGameState));
             gScene = "gig";
         }
@@ -1726,7 +1863,7 @@ class MidnightSunTour {
     updateCheatMenu(dt) {
         Draw2D.fillRect(0, 0, this.screenW, this.screenH, 0.05, 0.02, 0.10, 0.95, -5);
 
-        Draw2D.drawText(this.screenW / 2 - 50, 10, "CHEAT MENU", 0.95, 0.40, 0.95, 1, F.HEADING);
+        Draw2D.drawText(this.screenW / 2 - 50, 10, "TOUR ARCADE", 0.95, 0.40, 0.95, 1, F.HEADING);
         Draw2D.drawText(this.screenW / 2 - 80, 30, "[UP/DOWN] Select  [ENTER] Launch  [O] Close",
             0.50, 0.50, 0.60, 1, F.TINY);
 
@@ -1734,14 +1871,15 @@ class MidnightSunTour {
         var lineH = 16;
         for (var i = 0; i < CHEAT_MINIGAMES.length; i++) {
             var mg = CHEAT_MINIGAMES[i];
-            var yy = startY + i * lineH;
+            var yy = startY + (i % 9) * 27;
+            var xx = i < 9 ? 0 : this.screenW/2;
             var selected = (i === gCheatMenuIdx);
 
             if (selected) {
-                Draw2D.fillRect(10, yy - 1, this.screenW - 20, lineH, 0.30, 0.15, 0.40, 1);
-                Draw2D.drawText(15, yy + 2, "> " + mg.label, 1, 0.85, 0.30, 1, F.LABEL);
+                Draw2D.fillRect(xx+10, yy - 1, this.screenW/2 - 20, 25, 0.30, 0.15, 0.40, 1);
+                Draw2D.drawText(xx+15, yy + 2, "> " + mg.label, 1, 0.85, 0.30, 1, F.LABEL);
             } else {
-                Draw2D.drawText(25, yy + 2, mg.label, 0.70, 0.70, 0.80, 1, F.BODY);
+                Draw2D.drawText(xx+25, yy + 2, mg.label, 0.70, 0.70, 0.80, 1, F.BODY);
             }
         }
 
@@ -1758,6 +1896,7 @@ class MidnightSunTour {
         // Launch selected minigame
         if (Input.getKeyDown("Return") || Input.getKeyDown("Space")) {
             var sel = CHEAT_MINIGAMES[gCheatMenuIdx];
+            if(StarfoxSystem.allEntities&&StarfoxSystem.allEntities.length)StarfoxSystem.cleanup();
             sel.starter(gGameState);
             gScene = sel.scene;
             console.log("[Cheat] Launched: " + sel.label);

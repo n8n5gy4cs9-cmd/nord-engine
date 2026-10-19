@@ -1205,6 +1205,18 @@
       "status": "done"
     },
     {
+      "id": "M6-44",
+      "milestone": "M6",
+      "title": "Rebuild Midnight Sun Tour art, UI and minigames; fix reward accounting and verify campaign",
+      "status": "done"
+    },
+    {
+      "id": "M6-45",
+      "milestone": "M6",
+      "title": "Add private tour console and Ruisrock visitor tycoon management with booked-artist audio",
+      "status": "done"
+    },
+    {
       "id": "M7-01",
       "milestone": "M7",
       "title": "tools/build-manual.mjs (marked + CodeMirror readonly + nord-live blocks)",

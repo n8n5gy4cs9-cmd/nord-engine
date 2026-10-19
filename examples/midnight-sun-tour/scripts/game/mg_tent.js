@@ -1,3 +1,4 @@
+var Art = require("./tour_art.js");
 // ============================================================================
 // TELTANPYSTYTYS — Simon Says tent assembly minigame
 // Memorize & repeat button sequences to set up the tent. 30s time limit.
@@ -10,7 +11,7 @@ var SFX = C.SFX;
 var MUSIC = C.MUSIC;
 var SPRITES = C.SPRITES;
 
-var TENT_TIME_LIMIT = 30;
+var TENT_TIME_LIMIT = 45;
 var TENT_BUTTONS = ["Up", "Down", "Left", "Right"];
 var TENT_LABELS = ["UP", "DOWN", "LEFT", "RIGHT"];
 var TENT_COLORS = [
@@ -30,7 +31,7 @@ var TentSystem = {
     showingIdx: 0,
     showTimer: 0,
     round: 1,
-    maxRounds: 7,
+    maxRounds: 4,
     inputIdx: 0,
     flashBtn: -1,
     flashTimer: 0,
@@ -76,7 +77,7 @@ var TentSystem = {
     update: function(dt) {
         if (this.phase === "ready") {
             this.timer += dt;
-            if (this.timer >= 6.0) {
+            if (this.timer >= 6.0 || Input.getKeyDown("Return")) {
                 this.phase = "showing";
                 this.timer = 0;
                 this.showingIdx = 0;
@@ -89,7 +90,6 @@ var TentSystem = {
             if (Input.getKeyDown("Return") || Input.getKeyDown("Space")) {
                 // Rest bonus: better tent = better rest
                 var restBonus = Math.floor(this.tentProgress * 30);
-                this.gs.resources.morale = Math.min(100, this.gs.resources.morale + restBonus);
                 return { done: true, restBonus: restBonus };
             }
             return null;
@@ -211,6 +211,7 @@ var TentSystem = {
     draw: function(screenW, screenH) {
         // Night sky
         Draw2D.fillRect(0, 0, screenW, screenH, 0.04, 0.04, 0.10, 1, -5);
+        Art.background(2,screenW,screenH,0.45);
         // Stars
         for (var s = 0; s < 25; s++) {
             var sx = (s * 113 + 37) % (screenW - 10) + 5;
