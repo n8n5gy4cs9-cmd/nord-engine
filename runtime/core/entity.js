@@ -72,8 +72,13 @@ export class Entity {
   addComponent(type, data = {}) {
     const impl = components.get(type);
     const comp = { type, data: { ...data }, impl, entity: this };
+    const i18n = this.scene?.game?.i18n;
+    if (data.textKey && i18n) comp.data.text = i18n.t(data.textKey); // localised text: re-translated on language change
     this.components.push(comp);
     impl?.create?.(this, comp.data, comp);
+    if (data.textKey && i18n) {
+      const off = this.scene.game.events.on('language', () => { if (this.destroyed) off(); else this.set(type, 'text', i18n.t(data.textKey)); });
+    }
     return comp;
   }
   /** Change a component field at runtime (`e.set('sprite','tint','#f00')`); components without a `set` just store the value. */

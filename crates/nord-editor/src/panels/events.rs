@@ -95,6 +95,7 @@ pub fn search<'a>(cat: &'a [Group], cond: bool, query: &str) -> Vec<(&'a Group, 
 
 /// The JSON node for a picked ACE. Plugins (System, Keyboard…) are their own object; others get `object`.
 pub fn ace_node(g: &Group, a: &Ace, object: &str) -> Value {
+    // plugins are their own object; behaviors and data types (Array, Dictionary…) act on a named object
     let mut n = json!({ "object": if g.kind == "plugin" { g.name.as_str() } else { object }, "id": a.id });
     if g.kind == "behavior" {
         n["behavior"] = json!(g.name);
@@ -110,10 +111,14 @@ pub fn ace_node(g: &Group, a: &Ace, object: &str) -> Value {
 }
 
 /// Catalog definition of a sheet node (`{object,id,behavior?}`), looked up the way the runtime resolves it.
-pub fn find_ace<'a>(cat: &'a [Group], node: &Value, cond: bool) -> Option<&'a Ace> {
+pub fn find_ace<'a>(cat: &'a [Group], node: &Value, cond: bool, data: &[(String, String)]) -> Option<&'a Ace> {
     let id = node["id"].as_str()?;
+    let obj = node["object"].as_str();
+    let data_type = data.iter().find(|(n, _)| Some(n.as_str()) == obj).map(|(_, t)| t.as_str());
     let want = |g: &&Group| -> bool {
-        if let Some(b) = node["behavior"].as_str() {
+        if let Some(t) = data_type {
+            g.kind == "data" && g.name == t
+        } else if let Some(b) = node["behavior"].as_str() {
             g.kind == "behavior" && g.name == b
         } else if g.kind == "plugin" && Some(g.name.as_str()) == node["object"].as_str() {
             true
@@ -289,6 +294,22 @@ enum Op {
 struct Ctx {
     objects: Vec<String>,
     vars: Vec<String>,
+    /// declared data objects (name, plugin type) from the sheet and `settings.dataObjects`
+    data: Vec<(String, String)>,
+}
+
+/// `{type:"object", name, plugin}` declarations anywhere in the sheet.
+pub fn declared_objects(events: &[Value], out: &mut Vec<(String, String)>) {
+    for e in events {
+        if e["type"] == "object" {
+            if let (Some(n), Some(p)) = (e["name"].as_str(), e["plugin"].as_str()) {
+                out.push((n.into(), p.into()));
+            }
+        }
+        if let Some(c) = e["children"].as_array() {
+            declared_objects(c, out);
+        }
+    }
 }
 
 impl EventsUi {
@@ -517,6 +538,9 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         if ui.button("+ Variable").clicked() {
             ev.insert(0, json!({"type":"variable","name":"var1","valueType":"number","value":0}));
         }
+        if ui.button("+ Data object").on_hover_text("Array, Dictionary, JSON, AJAX…").clicked() {
+            ev.insert(0, json!({"type":"object","name":"Data1","plugin":"Array"}));
+        }
         if ui.button("+ Comment").clicked() {
             ev.push(json!({"type":"comment","text":"Comment"}));
         }
@@ -525,7 +549,16 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
 
     let mut vars = vec![];
     variables(&st.events.doc["events"].as_array().cloned().unwrap_or_default(), &mut vars);
-    let cx = Ctx { objects: entity_names(st), vars };
+    let mut data = vec![];
+    declared_objects(&st.events.doc["events"].as_array().cloned().unwrap_or_default(), &mut data);
+    if let Some(m) = st.scene.as_ref().and_then(|s| s.settings.extra.get("dataObjects")).and_then(Value::as_object) {
+        for (n, v) in m {
+            if let Some(t) = v.as_str().or(v["plugin"].as_str()) {
+                data.push((n.clone(), t.into()));
+            }
+        }
+    }
+    let cx = Ctx { objects: entity_names(st), vars, data };
     let mut ops: Vec<Op> = vec![];
     egui::ScrollArea::vertical().auto_shrink([false, false]).show(ui, |ui| {
         let ev = st.events.events();
@@ -547,7 +580,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
 fn picker_window(st: &mut EditorState, ctx: &egui::Context, cx: &Ctx) {
     let Some(p) = st.events.picker.as_mut() else { return };
     let mut open = true;
-    let mut chosen: Option<(usize, usize)> = None;
+    let mut chosen: Option<(usize, usize, Option<String>)> = None;
     let cat = catalog();
     let title = if p.cond { "Add condition" } else { "Add action" };
     egui::Window::new(title).open(&mut open).collapsible(false).default_width(360.0).show(ctx, |ui| {
@@ -555,20 +588,31 @@ fn picker_window(st: &mut EditorState, ctx: &egui::Context, cx: &Ctx) {
         if !r.has_focus() && p.query.is_empty() {
             r.request_focus();
         }
-        let hits = search(cat, p.cond, &p.query);
+        let mut hits: Vec<(&Group, &Ace, Option<&str>)> = search(cat, p.cond, &p.query).into_iter().filter(|(g, _)| g.kind != "data").map(|(g, a)| (g, a, None)).collect();
+        let words: Vec<String> = p.query.to_lowercase().split_whitespace().map(String::from).collect();
+        for (name, ty) in &cx.data {
+            for g in cat.iter().filter(|g| g.kind == "data" && &g.name == ty) {
+                for a in if p.cond { &g.conditions } else { &g.actions } {
+                    let hay = format!("{name} {ty} {}", a.id.replace('-', " ")).to_lowercase();
+                    if words.iter().all(|w| hay.contains(w)) {
+                        hits.push((g, a, Some(name.as_str())));
+                    }
+                }
+            }
+        }
         let enter = r.lost_focus() && ui.input(|i| i.key_pressed(egui::Key::Enter));
         egui::ScrollArea::vertical().max_height(320.0).show(ui, |ui| {
-            for (n, (g, a)) in hits.iter().enumerate().take(200) {
+            for (n, (g, a, inst)) in hits.iter().enumerate().take(200) {
                 let tag = match g.kind.as_str() {
                     "behavior" => Color32::from_rgb(200, 150, 90),
                     "plugin" => Color32::from_rgb(120, 170, 230),
                     _ => Color32::from_rgb(150, 200, 140),
                 };
-                let text = RichText::new(format!("{}  ▸  {}{}", g.name, pretty(&a.id), if a.trigger { "  (trigger)" } else { "" })).color(tag);
+                let text = RichText::new(format!("{}  ▸  {}{}", inst.unwrap_or(&g.name), pretty(&a.id), if a.trigger { "  (trigger)" } else { "" })).color(tag);
                 if ui.selectable_label(false, text).clicked() || (enter && n == 0) {
                     let gi = cat.iter().position(|x| std::ptr::eq(x, *g)).unwrap();
                     let ai = (if p.cond { &g.conditions } else { &g.actions }).iter().position(|x| std::ptr::eq(x, *a)).unwrap();
-                    chosen = Some((gi, ai));
+                    chosen = Some((gi, ai, inst.map(String::from)));
                 }
             }
             if hits.is_empty() {
@@ -576,19 +620,19 @@ fn picker_window(st: &mut EditorState, ctx: &egui::Context, cx: &Ctx) {
             }
         });
     });
-    if let Some((gi, ai)) = chosen {
+    if let Some((gi, ai, inst)) = chosen {
         let (target, cond) = (p.target.clone(), p.cond);
         let g = &cat[gi];
         let a = if cond { &g.conditions[ai] } else { &g.actions[ai] };
         let ev = st.events.events();
-        let object = node_mut(ev, &target)
+        let object = inst.or_else(|| node_mut(ev, &target)
             .and_then(|n| {
                 n["conditions"].as_array().into_iter().chain(n["actions"].as_array()).flatten().find_map(|c| {
                     let o = c["object"].as_str()?;
                     (!catalog().iter().any(|g| g.kind == "plugin" && g.name == o)).then(|| o.to_string())
                 })
             })
-            .or_else(|| cx.objects.first().cloned())
+            ).or_else(|| cx.objects.first().cloned())
             .unwrap_or_else(|| "Player".into());
         if let Some(n) = node_mut(ev, &target) {
             let key = if cond { "conditions" } else { "actions" };
@@ -621,6 +665,7 @@ fn nodes(ui: &mut Ui, list: &mut [Value], parent: &mut Path, cx: &Ctx, ops: &mut
                 });
             }
             "variable" => variable(ui, &mut list[i], &path, ops),
+            "object" => data_object(ui, &mut list[i], &path, ops),
             "include" => {
                 ui.horizontal(|ui| {
                     handle(ui, &path, ops);
@@ -728,6 +773,32 @@ fn variable(ui: &mut Ui, v: &mut Value, path: &Path, ops: &mut Vec<Op>) {
     drop_target(ui, &r, path, ops);
 }
 
+fn data_object(ui: &mut Ui, v: &mut Value, path: &Path, ops: &mut Vec<Op>) {
+    let r = ui
+        .horizontal(|ui| {
+            handle(ui, path, ops);
+            ui.label(RichText::new("object").color(Color32::from_rgb(230, 170, 110)));
+            let mut name = v["name"].as_str().unwrap_or("").to_string();
+            if ui.add(egui::TextEdit::singleline(&mut name).desired_width(110.0)).changed() {
+                v["name"] = json!(name);
+            }
+            let mut ty = v["plugin"].as_str().unwrap_or("Array").to_string();
+            egui::ComboBox::from_id_salt(("dt", path)).selected_text(ty.clone()).width(100.0).show_ui(ui, |ui| {
+                for g in catalog().iter().filter(|g| g.kind == "data") {
+                    ui.selectable_value(&mut ty, g.name.clone(), &g.name);
+                }
+            });
+            v["plugin"] = json!(ty);
+            let mut global = v["global"].as_bool().unwrap_or(false);
+            if ui.checkbox(&mut global, "global").on_hover_text("kept when changing scenes").changed() {
+                v["global"] = json!(global);
+            }
+            row_buttons(ui, path, ops, false);
+        })
+        .response;
+    drop_target(ui, &r, path, ops);
+}
+
 fn group(ui: &mut Ui, g: &mut Value, path: &Path, cx: &Ctx, ops: &mut Vec<Op>) {
     let id = ui.make_persistent_id(("ev-group", path));
     let state = egui::collapsing_header::CollapsingState::load_with_default_open(ui.ctx(), id, true);
@@ -819,7 +890,7 @@ fn ace_list(ui: &mut Ui, ev: &mut Value, key: &str, path: &Path, cx: &Ctx, ops: 
     if let Some(list) = ev.get_mut(key).and_then(Value::as_array_mut) {
         let n = list.len();
         for (i, node) in list.iter_mut().enumerate() {
-            let def = find_ace(cat, node, cond);
+            let def = find_ace(cat, node, cond, &cx.data);
             ui.horizontal_wrapped(|ui| {
                 if cond {
                     let mut inv = node["inverted"].as_bool().unwrap_or(false);
@@ -965,7 +1036,7 @@ mod tests {
         let (g, a) = search(c, false, "platform simulate").into_iter().next().or_else(|| search(c, false, "platform jump").into_iter().next()).unwrap();
         let n = ace_node(g, a, "Hero");
         assert_eq!((n["object"].as_str(), n["behavior"].as_str()), (Some("Hero"), Some("Platform")));
-        assert_eq!(find_ace(c, &n, false).map(|a| a.id.as_str()), Some(a.id.as_str()));
+        assert_eq!(find_ace(c, &n, false, &[]).map(|a| a.id.as_str()), Some(a.id.as_str()));
     }
 
     #[test]

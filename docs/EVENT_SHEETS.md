@@ -45,3 +45,16 @@ Tab **Event sheets** (View menu). Pick/create a `events/*.events.json`, edit, **
 - Parameters are expression boxes with **autocomplete** (sheet variables, scene entity names/tags/families, builtin functions, plugin expressions like `Mouse.X`, `Hero.X`); raw params (names, comparisons, keys) are plain text. The object of a non-System ACE is a button with a menu of scene objects (or type any tag/family).
 - Undo/redo: snapshots of the whole sheet (edits within 600 ms merge). Not yet shared with the scene undo stack.
 - Not done: typed pickers for layer/animation/audio params, keyboard navigation, comment colours, event-sheet-aware Cmd+Z, visual debugger.
+
+## Data objects (M10-26) — `runtime/core/eventsheet/objects.js`
+Named non-world objects, like Construct's Array / Dictionary / JSON / AJAX. Declare them as an event-list entry or in the scene settings, then use them like any object:
+```json
+{ "type": "object", "name": "Inventory", "plugin": "Array", "width": 0, "global": true }
+"settings": { "dataObjects": { "Config": "Dictionary", "Net": { "plugin": "AJAX" } } }
+```
+- **Array** (1–3D): set-size, set-at-xyz, push-back/front, pop, insert, delete, sort, reverse, shuffle, clear, load-json; `At(x,y,z)`, `Width`, `Sum`, `IndexOf(v)`, `Front`, `Back`, `AsJSON`.
+- **Dictionary**: set-key, add-to-key, delete-key, clear, load-json; `Get(k)`, `GetDefault(k,v)`, `Count`, `KeyAt(i)`, `ValueAt(i)`, `AsJSON`. Iterate with Repeat + `KeyAt(loopindex)`.
+- **JSON**: parse, set-path, `Get("a.b.0.c")`, `Count(path)`, `KeyAt(path,i)`, `AsString`, `Error`.
+- **AJAX**: request / post-data with a tag; triggers *On completed (tag)*, *On error (tag)*, *On any completed*; `LastData`, `LastError`, `StatusCode`.
+- `global: true` keeps the object when the scene changes (stored on the game). Addons add types with `registerDataType` (same ACE shape; functions get the instance first).
+- Also new plugins: **Touch** (On tap / On touch end / Is touching, `Touch.X/Y`) and **Gamepad** (`Is connected`, `Button is down`, `Gamepad.Axis(pad, axis)`). Text objects are the `text` component (`Set text`). Not done: Tiled Background, 9-Patch, Spritefont, Drawing Canvas, Video.

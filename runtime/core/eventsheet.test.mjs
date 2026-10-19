@@ -159,3 +159,50 @@ test('errors are reported once and do not stop other events', async () => {
   await g.loadScene('s'); for (let i = 0; i < 3; i++) g.tick(1 / 60);
   assert.equal(errs.length, 1); assert.equal(V(g, 'ok'), 3);
 });
+
+// ---- data objects (M10-26)
+const obj = (name, plugin, extra = {}) => ({ type: 'object', name, plugin, ...extra });
+const act = (object, id, params) => ({ object, id, params });
+test('Array object: push, set/get, sort, sum, json', async () => {
+  const g = await run([
+    obj('Inv', 'Array'), { type: 'variable', name: 'r', valueType: 'string', value: '' },
+    { type: 'variable', name: 'n', valueType: 'number', value: 0 },
+    ev([sys('on-start-of-layout')], [act('Inv', 'push-back', { value: '5' }), act('Inv', 'push-back', { value: '2' }), act('Inv', 'push-front', { value: '9' }), act('Inv', 'sort'), setv('r', 'Inv.AsJSON'), setv('n', 'Inv.Sum + Inv.At(2) * 100 + Inv.Width * 10000')]),
+  ]);
+  assert.equal(V(g, 'n'), 16 + 900 + 30000);
+  assert.equal(V(g, 'r'), '{"size":[3,1,1],"data":[2,5,9]}');
+});
+test('2D Array resize keeps values; condition compare-at-xyz', async () => {
+  const g = await run([
+    obj('Grid', 'Array', { width: 2, height: 2 }), { type: 'variable', name: 'ok', valueType: 'number', value: 0 },
+    ev([sys('on-start-of-layout')], [act('Grid', 'set-at-xyz', { x: '1', y: '1', z: '0', value: '7' }), act('Grid', 'set-size', { width: '3', height: '3', depth: '1' })]),
+    ev([C('Grid', 'compare-at-xyz', { x: '1', y: '1', z: '0', comparison: '=', value: '7' })], [setv('ok', '1')]),
+  ], [], 2);
+  assert.equal(V(g, 'ok'), 1);
+});
+test('Dictionary + JSON objects', async () => {
+  const g = await run([
+    obj('D', 'Dictionary'), obj('J', 'JSON'),
+    { type: 'variable', name: 'a', valueType: 'number', value: 0 }, { type: 'variable', name: 'b', valueType: 'string', value: '' },
+    ev([sys('on-start-of-layout')], [act('D', 'set-key', { key: '"hp"', value: '10' }), act('D', 'add-to-key', { key: '"hp"', value: '5' }),
+      act('J', 'parse', { text: '"{\\"p\\":{\\"items\\":[{\\"n\\":\\"sword\\"}]}}"' }), setv('a', 'D.Get("hp") + D.Count'), setv('b', 'J.Get("p.items.0.n")')]),
+  ]);
+  assert.equal(V(g, 'a'), 16); assert.equal(V(g, 'b'), 'sword');
+});
+test('AJAX object: request fires On completed with the tag', async () => {
+  const g = mk(); g.fetch = async () => ({ ok: true, status: 200, text: async () => 'hello' });
+  files.sheet = { format: 1, events: [obj('Net', 'AJAX'), { type: 'variable', name: 'got', valueType: 'string', value: '' },
+    ev([sys('on-start-of-layout')], [act('Net', 'request', { tag: '"t1"', url: '"/x"' })]),
+    ev([C('Net', 'on-completed', { tag: '"t1"' })], [setv('got', 'Net.LastData')])] };
+  files.s = { name: 's', settings: { eventSheet: 'sheet' }, entities: [] };
+  await g.loadScene('s'); g.tick(1 / 60);
+  await new Promise((r) => setTimeout(r, 10)); g.tick(1 / 60);
+  assert.equal(V(g, 'got'), 'hello');
+});
+test('scene.settings.dataObjects declares objects; global objects persist across scenes', async () => {
+  files.sheet = { format: 1, events: [ev([sys('on-start-of-layout')], [act('Score', 'add-to-key', { key: '"n"', value: '1' })])] };
+  files.a = { name: 'a', settings: { eventSheet: 'sheet', dataObjects: { Score: { plugin: 'Dictionary', global: true } } }, entities: [] };
+  files.b = { name: 'b', settings: { eventSheet: 'sheet', dataObjects: { Score: { plugin: 'Dictionary', global: true } } }, entities: [] };
+  const g = mk(); await g.loadScene('a'); await g.loadScene('b');
+  assert.equal(g.scene.eventSheet.evalExpr('Score.Get("n")'), 2);
+});

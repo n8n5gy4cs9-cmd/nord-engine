@@ -385,6 +385,104 @@
    ]
   },
   {
+   "name": "Localisation",
+   "kind": "plugin",
+   "conditions": [
+    {
+     "id": "language-is",
+     "params": [
+      "language"
+     ]
+    }
+   ],
+   "actions": [
+    {
+     "id": "set-language",
+     "params": [
+      "language"
+     ]
+    }
+   ],
+   "expressions": [
+    "Text",
+    "Language"
+   ]
+  },
+  {
+   "name": "Accessibility",
+   "kind": "plugin",
+   "conditions": [],
+   "actions": [
+    {
+     "id": "set-color-blind-mode",
+     "params": [
+      "mode"
+     ],
+     "raw": [
+      "mode"
+     ]
+    },
+    {
+     "id": "set-ui-scale",
+     "params": [
+      "scale"
+     ]
+    }
+   ],
+   "expressions": [
+    "UIScale"
+   ]
+  },
+  {
+   "name": "Touch",
+   "kind": "plugin",
+   "conditions": [
+    {
+     "id": "on-tap",
+     "params": [],
+     "trigger": true
+    },
+    {
+     "id": "on-touch-end",
+     "params": [],
+     "trigger": true
+    },
+    {
+     "id": "is-touching",
+     "params": []
+    }
+   ],
+   "actions": [],
+   "expressions": [
+    "X",
+    "Y"
+   ]
+  },
+  {
+   "name": "Gamepad",
+   "kind": "plugin",
+   "conditions": [
+    {
+     "id": "is-connected",
+     "params": [
+      "index"
+     ]
+    },
+    {
+     "id": "button-is-down",
+     "params": [
+      "index",
+      "button"
+     ]
+    }
+   ],
+   "actions": [],
+   "expressions": [
+    "Axis",
+    "ButtonValue"
+   ]
+  },
+  {
    "name": "Audio",
    "kind": "plugin",
    "conditions": [],
@@ -2220,6 +2318,289 @@
    "actions": [],
    "expressions": [],
    "properties": []
+  },
+  {
+   "name": "Array",
+   "kind": "data",
+   "conditions": [
+    {
+     "id": "compare-at-xyz",
+     "params": [
+      "x",
+      "y",
+      "z",
+      "comparison",
+      "value"
+     ],
+     "raw": [
+      "comparison"
+     ]
+    },
+    {
+     "id": "is-empty",
+     "params": []
+    },
+    {
+     "id": "contains-value",
+     "params": [
+      "value"
+     ]
+    }
+   ],
+   "actions": [
+    {
+     "id": "set-size",
+     "params": [
+      "width",
+      "height",
+      "depth"
+     ]
+    },
+    {
+     "id": "set-at-xyz",
+     "params": [
+      "x",
+      "y",
+      "z",
+      "value"
+     ]
+    },
+    {
+     "id": "push-back",
+     "params": [
+      "value"
+     ]
+    },
+    {
+     "id": "push-front",
+     "params": [
+      "value"
+     ]
+    },
+    {
+     "id": "pop-back",
+     "params": []
+    },
+    {
+     "id": "pop-front",
+     "params": []
+    },
+    {
+     "id": "insert",
+     "params": [
+      "value",
+      "index"
+     ]
+    },
+    {
+     "id": "delete",
+     "params": [
+      "index"
+     ]
+    },
+    {
+     "id": "clear",
+     "params": []
+    },
+    {
+     "id": "reverse",
+     "params": []
+    },
+    {
+     "id": "sort",
+     "params": []
+    },
+    {
+     "id": "shuffle",
+     "params": []
+    },
+    {
+     "id": "load-json",
+     "params": [
+      "json"
+     ]
+    }
+   ],
+   "expressions": [
+    "At",
+    "Width",
+    "Height",
+    "Depth",
+    "Front",
+    "Back",
+    "Sum",
+    "IndexOf",
+    "LastPopped",
+    "AsJSON"
+   ]
+  },
+  {
+   "name": "Dictionary",
+   "kind": "data",
+   "conditions": [
+    {
+     "id": "has-key",
+     "params": [
+      "key"
+     ]
+    },
+    {
+     "id": "compare-value",
+     "params": [
+      "key",
+      "comparison",
+      "value"
+     ],
+     "raw": [
+      "comparison"
+     ]
+    },
+    {
+     "id": "is-empty",
+     "params": []
+    }
+   ],
+   "actions": [
+    {
+     "id": "set-key",
+     "params": [
+      "key",
+      "value"
+     ]
+    },
+    {
+     "id": "add-to-key",
+     "params": [
+      "key",
+      "value"
+     ]
+    },
+    {
+     "id": "delete-key",
+     "params": [
+      "key"
+     ]
+    },
+    {
+     "id": "clear",
+     "params": []
+    },
+    {
+     "id": "load-json",
+     "params": [
+      "json"
+     ]
+    }
+   ],
+   "expressions": [
+    "Get",
+    "GetDefault",
+    "Count",
+    "KeyAt",
+    "ValueAt",
+    "AsJSON"
+   ]
+  },
+  {
+   "name": "JSON",
+   "kind": "data",
+   "conditions": [
+    {
+     "id": "has-path",
+     "params": [
+      "path"
+     ]
+    },
+    {
+     "id": "compare-value",
+     "params": [
+      "path",
+      "comparison",
+      "value"
+     ],
+     "raw": [
+      "comparison"
+     ]
+    }
+   ],
+   "actions": [
+    {
+     "id": "parse",
+     "params": [
+      "text"
+     ]
+    },
+    {
+     "id": "set-path",
+     "params": [
+      "path",
+      "value"
+     ]
+    },
+    {
+     "id": "clear",
+     "params": []
+    }
+   ],
+   "expressions": [
+    "Get",
+    "Count",
+    "KeyAt",
+    "AsString",
+    "Error"
+   ]
+  },
+  {
+   "name": "AJAX",
+   "kind": "data",
+   "conditions": [
+    {
+     "id": "on-completed",
+     "params": [
+      "tag"
+     ],
+     "trigger": true
+    },
+    {
+     "id": "on-any-completed",
+     "params": [],
+     "trigger": true
+    },
+    {
+     "id": "on-error",
+     "params": [
+      "tag"
+     ],
+     "trigger": true
+    },
+    {
+     "id": "is-loading",
+     "params": []
+    }
+   ],
+   "actions": [
+    {
+     "id": "request",
+     "params": [
+      "tag",
+      "url"
+     ]
+    },
+    {
+     "id": "post-data",
+     "params": [
+      "tag",
+      "url",
+      "data"
+     ]
+    }
+   ],
+   "expressions": [
+    "LastData",
+    "LastError",
+    "StatusCode",
+    "Busy"
+   ]
   }
  ]
 }

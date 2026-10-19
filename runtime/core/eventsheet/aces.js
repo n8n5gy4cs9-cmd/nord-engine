@@ -142,6 +142,37 @@ registerPlugin('Mouse', {
   },
   expressions: { X: (r) => r.game.input.pointer.worldX, Y: (r) => r.game.input.pointer.worldY },
 });
+registerPlugin('Localisation', {
+  actions: { 'set-language': { params: ['language'], run: (r, p) => { r.game.i18n.setLanguage(p.language); } } },
+  conditions: { 'language-is': { params: ['language'], test: (r, p) => r.game.i18n.language === p.language } },
+  expressions: { Text: (r, a) => r.game.i18n.t(a[0], Object.fromEntries((a.slice(1)).map((v, i) => [String(i), v]))), Language: (r) => r.game.i18n.language },
+});
+registerPlugin('Accessibility', {
+  actions: {
+    'set-color-blind-mode': { params: ['mode'], raw: ['mode'], run: (r, p) => { r.game.a11y.setColorBlind(p.mode); } },
+    'set-ui-scale': { params: ['scale'], run: (r, p) => { r.game.a11y.setUiScale(p.scale); } },
+  },
+  expressions: { UIScale: (r) => r.game.a11y.uiScale },
+});
+registerPlugin('Touch', { // pointer events cover touch too, so a tap is a click
+  conditions: {
+    'on-tap': { trigger: true, test: (r) => r.firing.data.down },
+    'on-touch-end': { trigger: true, test: (r) => !r.firing.data.down },
+    'is-touching': { test: (r) => r.game.input.pointer.down },
+  },
+  expressions: { X: (r) => r.game.input.pointer.worldX, Y: (r) => r.game.input.pointer.worldY },
+});
+const pad = (i = 0) => globalThis.navigator?.getGamepads?.()?.[Math.floor(i)] ?? null;
+registerPlugin('Gamepad', {
+  conditions: {
+    'is-connected': { params: ['index'], test: (r, p) => !!pad(p.index)?.connected },
+    'button-is-down': { params: ['index', 'button'], test: (r, p) => !!pad(p.index)?.buttons?.[Math.floor(p.button)]?.pressed },
+  },
+  expressions: {
+    Axis: (r, a) => pad(a[0])?.axes?.[Math.floor(a[1] ?? 0)] ?? 0,
+    ButtonValue: (r, a) => pad(a[0])?.buttons?.[Math.floor(a[1] ?? 0)]?.value ?? 0,
+  },
+});
 registerPlugin('Audio', {
   actions: {
     play: { params: ['file', 'loop'], run: (r, p) => { r.game.audio?.play(p.file, { loop: p.loop === 'looping' || p.loop === true }); } },

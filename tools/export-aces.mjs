@@ -24,12 +24,14 @@ const group = (name, kind, g, attrs) => ({
   expressions: Object.keys(g.expressions ?? {}),
   ...(attrs ? { properties: attrs } : {}),
 });
+const { dataTypes } = await import(path.join(root, 'runtime/core/eventsheet/objects.js'));
 const out = { format: 1, groups: [] };
 for (const [n, g] of plugins) out.groups.push(group(n, 'plugin', g));
 out.groups.push(group('Object', 'object', objectAces));
 for (const [n, d] of core.behaviors) {
   out.groups.push(group(n, 'behavior', d, Object.entries(d.Class.attributes ?? {}).map(([k, a]) => ({ name: k, default: a.default ?? null }))));
 }
+for (const [n, d] of dataTypes) out.groups.push(group(n, 'data', d));
 const file = path.join(root, 'crates/nord-editor/assets/aces.json');
 const text = JSON.stringify(out, null, 1) + '\n';
 if (process.argv.includes('--check')) {

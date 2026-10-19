@@ -1792,7 +1792,7 @@
       "id": "M10-26",
       "milestone": "M10",
       "title": "Plugin objects: Text, Tiled Background, 9-Patch, Spritefont, Array, Dictionary, JSON, AJAX, LocalStorage, Function, Audio, Keyboard/Mouse/Touch/Gamepad, Drawing Canvas, Video — as nord.js objects with actions/conditions/expressions",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M10-27",
@@ -1816,7 +1816,7 @@
       "id": "M10-30",
       "milestone": "M10",
       "title": "Localisation + accessibility: string tables, language switch action, UI scale, touch-controls overlay, colour-blind preview",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M10-31",
@@ -1840,6 +1840,12 @@
       "id": "M10-34",
       "milestone": "M10",
       "title": "Tests: event-sheet compiler unit tests, behaviors headless Chromium tests, egui_kittest for new panels; wire to CI",
+      "status": "todo"
+    },
+    {
+      "id": "M10-35",
+      "milestone": "M10",
+      "title": "Rendering plugin objects: Tiled Background, 9-Patch, Spritefont, Drawing Canvas, Video",
       "status": "todo"
     },
     {

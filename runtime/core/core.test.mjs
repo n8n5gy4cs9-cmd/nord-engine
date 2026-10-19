@@ -168,11 +168,11 @@ test('hotReloadScript: swaps prototype, keeps state, calls onHotReload, re-resol
 import fs from 'node:fs';
 import { THEMES, SKINS, FONTS, themeVars, fontFaceCSS, theme as themeOf } from './themes.js';
 
-test('themes: 10 dark themes, 3 skins, every font vendored, vars complete', () => {
-  assert.equal(THEMES.length, 10); assert.equal(SKINS.length, 3);
+test('themes: 10 dark + 3 light themes, 3 skins, every font vendored, vars complete', () => {
+  assert.equal(THEMES.length, 13); assert.equal(THEMES.filter((t) => t.dark).length, 10); assert.equal(SKINS.length, 3);
   const lum = (h) => { const n = parseInt(h.slice(1), 16); return (0.299 * (n >> 16) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255; };
   for (const t of THEMES) {
-    assert.ok(t.dark && lum(t.ui.bg) < 0.25, `${t.id} must be dark`);
+    if (t.dark) assert.ok(lum(t.ui.bg) < 0.25, `${t.id} must be dark`); else assert.ok(lum(t.ui.bg) > 0.6, `${t.id} must be light`);
     for (const c of [...Object.values(t.ui), ...Object.values(t.code)]) assert.match(c, /^#[0-9a-f]{6}$/i, t.id);
   }
   for (const [fam, f] of Object.entries(FONTS)) for (const w of f.weights) assert.ok(fs.existsSync(new URL(`../../vendor/fonts/${f.dir}/${f.dir}-latin-${w}-normal.woff2`, import.meta.url)), `${fam} ${w}`);
@@ -183,4 +183,22 @@ test('themes: 10 dark themes, 3 skins, every font vendored, vars complete', () =
   assert.equal(themeVars('industrial', 'nord')['--nord-code-ligatures'], 'none');
   assert.match(fontFaceCSS('/f', ['Inter']), /url\('\/f\/inter\/inter-latin-400-normal\.woff2'\)/);
   assert.equal(themeOf('nope').id, 'nord');
+});
+
+test('i18n: tables, fallback, interpolation, textKey components follow language changes; colour-blind matrices', async () => {
+  const { Game, MemoryStorage, colorMatrixValues } = await import('./index.js');
+  const files = { s: { name: 's', entities: [{ id: 'a', name: 'A', components: [{ type: 'label', textKey: 'play' }] }] } };
+  const g = new Game({ id: 'x', startScene: 's', defaultLanguage: 'en', strings: { en: { play: 'Play', hi: 'Hi {name}', only: 'EN only' }, fi: { play: 'Pelaa' } } },
+    { fetchJSON: async (p) => structuredClone(files[p]), importScript: async () => ({}), storage: new MemoryStorage(), onError: (e) => { throw e; } });
+  const { registerComponent } = await import('./index.js');
+  registerComponent('label', { create() {}, set(c, k, v) { c.data[k] = v; } });
+  await g.loadScene('s');
+  assert.equal(g.i18n.t('hi', { name: 'Ada' }), 'Hi Ada');
+  assert.equal(g.scene.all().next ? [...g.scene.all()][0].getComponent('label').data.text : 'Play', 'Play');
+  assert.equal(g.i18n.setLanguage('fi'), true);
+  assert.equal(g.i18n.t('play'), 'Pelaa'); assert.equal(g.i18n.t('only'), 'EN only'); assert.equal(g.i18n.t('nope'), 'nope');
+  assert.equal([...g.scene.all()][0].getComponent('label').data.text, 'Pelaa');
+  assert.equal(g.i18n.setLanguage('xx'), false);
+  assert.equal(g.save.get('__language'), 'fi');
+  assert.equal(colorMatrixValues('none'), null); assert.match(colorMatrixValues('protanopia'), /^0\.152286/);
 });

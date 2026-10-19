@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 192/242 tasks (79%)** · updated 2026-10-19
+**Overall: 194/243 tasks (80%)** · updated 2026-10-19
 
 | Milestone | Progress |
 |---|---|
@@ -17,7 +17,7 @@
 | M7 Docs | 20/20 (100%) |
 | M8 Polish & portability | 15/20 (75%) |
 | M9 Desktop apps | 16/16 (100%) |
-| M10 Construct-style editor | 10/34 (29%) |
+| M10 Construct-style editor | 12/35 (34%) |
 | M11 Web editor | 0/16 (0%) |
 
 ## Next up
@@ -287,15 +287,16 @@ _features cloned from Construct 3's editor (construct.net/en/make-games/games-ed
 - [ ] **M10-23** Profiler: FPS/frame-time/draw-calls/memory graphs, per-event-group cost, object count, slow-frame markers
 - [ ] **M10-24** Preview: preview layout/project buttons, LAN preview URL + QR for phone, window size/orientation presets, hot-reload with state keep
 - [ ] **M10-25** Project tools: project properties dialog (name, size, scaling mode, orientation, fullscreen, loader style, icons, version), folders in project bar, Find All References, project search/replace, safe rename
-- [ ] **M10-26** Plugin objects: Text, Tiled Background, 9-Patch, Spritefont, Array, Dictionary, JSON, AJAX, LocalStorage, Function, Audio, Keyboard/Mouse/Touch/Gamepad, Drawing Canvas, Video — as nord.js objects with actions/conditions/expressions
+- [x] **M10-26** Plugin objects: Text, Tiled Background, 9-Patch, Spritefont, Array, Dictionary, JSON, AJAX, LocalStorage, Function, Audio, Keyboard/Mouse/Touch/Gamepad, Drawing Canvas, Video — as nord.js objects with actions/conditions/expressions
 - [ ] **M10-27** Addon SDK: JS addon format (plugin/behavior/effect) + `nord addon pack/install`, editor loads metadata, docs + sample addon
 - [ ] **M10-28** Export presets: PWA (manifest + service worker offline), Web zip, itch.io, Mac/Win/Linux via existing players; export wizard with checks (size, offline scan, missing assets)
 - [ ] **M10-29** Templates + example browser: Platformer, Top-down shooter, Puzzle, Endless runner, UI/menu starters built with event sheets; open-as-project
-- [ ] **M10-30** Localisation + accessibility: string tables, language switch action, UI scale, touch-controls overlay, colour-blind preview
+- [x] **M10-30** Localisation + accessibility: string tables, language switch action, UI scale, touch-controls overlay, colour-blind preview
 - [ ] **M10-31** Version history: snapshots + restore + diff view for project JSON/event sheets
 - [ ] **M10-32** Optional: Multiplayer (WebRTC P2P + LAN signalling) plugin and demo
 - [ ] **M10-33** Manual + tutorials for all M10 features (event sheets first-game tutorial, behaviors, layout editor, effects, debugger); rebuild docs/manual
 - [ ] **M10-34** Tests: event-sheet compiler unit tests, behaviors headless Chromium tests, egui_kittest for new panels; wire to CI
+- [ ] **M10-35** Rendering plugin objects: Tiled Background, 9-Patch, Spritefont, Drawing Canvas, Video
 
 ## M11 — Web editor
 _the editor in a browser and on a Linux server (wasm egui + server mode); plan docs/WEB_EDITOR_PLAN.md_

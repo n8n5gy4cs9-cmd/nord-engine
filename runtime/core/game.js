@@ -6,6 +6,7 @@ import { Rng } from './util.js';
 import { Scene } from './scene.js';
 import { resolveAttributes } from './script.js';
 import { EventSheet } from './eventsheet/sheet.js';
+import { I18n, Accessibility } from './i18n.js';
 
 export class Game {
   /**
@@ -25,6 +26,7 @@ export class Game {
     this.time = { delta: 0, elapsed: 0 };
     this.timeScale = 1;
     this.paused = false;
+    this.i18n = new I18n(this); this.a11y = new Accessibility(this);
     this.audio = null; this.ui = null; this.physics = null;
     this.scene = null;
     this.errors = [];
@@ -73,6 +75,7 @@ export class Game {
     return true;
   }
   async loadScene(path = this.project.startScene) {
+    if (!this._i18nReady) { this._i18nReady = true; await this.i18n.init(); }
     const kept = (this.scene?.roots ?? []).flatMap((r) => [...r.all()]).filter((e) => e.behavior('Persist') && !e.parent).map((e) => e.toJSON());
     this.scene?.destroy();
     this.events.emit('sceneUnload', this.scene?.name);
