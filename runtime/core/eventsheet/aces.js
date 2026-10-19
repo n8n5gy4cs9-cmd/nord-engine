@@ -85,9 +85,15 @@ registerPlugin('System', {
     'create-object': {
       params: ['object', 'layer', 'x', 'y'], raw: ['object', 'layer'],
       run(r, p) {
-        const type = p.object;
-        const until = r.scene.spawn(r.prefabFor(type), { pos: [p.x, p.y, 0], name: type });
-        return { until, pick: (e) => [[type, [e]]] };
+        const type = p.object, peers = r.containerPeers(type), names = [type, ...peers];
+        const until = Promise.all(names.map((n) => r.scene.spawn(r.prefabFor(n), { pos: [p.x, p.y, 0], name: n })));
+        return {
+          until,
+          pick: (list) => {
+            list.forEach((e) => { e._peers = list.filter((o) => o !== e); });
+            return list.map((e, i) => [names[i], [e]]);
+          },
+        };
       },
     },
     'go-to-layout': { params: ['layout'], run: (r, p) => { const path = /\.json$/.test(p.layout) ? p.layout : `scenes/${p.layout}.scene.json`; r.game.loadScene(path); } },

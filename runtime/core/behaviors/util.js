@@ -58,3 +58,10 @@ export function moveAndCollide(e, dx, dy, solids, oneway = []) {
 }
 
 export const setOpacity = (e, v) => { e.opacity = v; if (e.getComponent('sprite')) e.set('sprite', 'alpha', v); else if (e.getComponent('animatedSprite')) e.set('animatedSprite', 'alpha', v); };
+
+/** Object type match used by event sheets and behaviors: entity name, tag, or a family listed in scene.settings.families {Family: [names/tags]}. */
+export function isType(scene, e, type) {
+  if (e.destroyed) return false;
+  if (e.name === type || e.tags.includes(type)) return true;
+  return !!scene.settings?.families?.[type]?.some((n) => e.name === n || e.tags.includes(n));
+}

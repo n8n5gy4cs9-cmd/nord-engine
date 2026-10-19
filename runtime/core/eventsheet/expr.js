@@ -147,6 +147,7 @@ function ev(n, env) {
     }
     case 'method': {
       const o = n.of;
+      if (o.k === 'member' && o.of.k === 'name') return env.bmethod(o.of.name, o.name, n.name, n.args.map((x) => ev(x, env)));
       if (o.k !== 'name') throw new Error(`cannot call '.${n.name}()'`);
       return env.method(o.name, n.name, n.args.map((x) => ev(x, env)));
     }

@@ -7,8 +7,8 @@ const mk = (display = { width: 400, height: 300 }) => new Game({ id: 'x', startS
   fetchJSON: async (p) => structuredClone(files[p]), importScript: async () => ({}), storage: new MemoryStorage(), onError: (e) => { throw e; }, seed: 1,
 });
 const E = (name, x, y, w, h, behaviors = [], extra = {}) => ({ id: name.toLowerCase(), name, transform: { pos: [x, y, 0] }, components: [{ type: 'collider', shape: 'box', size: [w, h] }], behaviors, ...extra });
-async function world(entities, sheet) {
-  files.s = { name: 's', settings: sheet ? { eventSheet: 'sh' } : {}, entities };
+async function world(entities, sheet, extraSettings = {}) {
+  files.s = { name: 's', settings: { ...(sheet ? { eventSheet: 'sh' } : {}), ...extraSettings }, entities };
   if (sheet) files.sh = { format: 1, events: sheet };
   const g = mk(); await g.loadScene('s'); return g;
 }
@@ -97,4 +97,69 @@ test('behaviors survive clone/toJSON; unknown behavior only warns', async () => 
   const j = g.scene.find('A').toJSON();
   assert.deepEqual(j.behaviors.map((b) => [b.type, b.properties.period]), [['Sine', 2]]);
   assert.equal(warns.length, 1);
+});
+
+test('set B: Pin, Orbit, Rotate, Flash, Timer, Tween, Turret, LineOfSight, Pathfinding, Persist, families/containers', async () => {
+  const g = await world([
+    E('Boss', 100, 100, 20, 20, [{ type: 'Rotate', properties: { speed: 90 } }]),
+    E('Pinned', 130, 100, 10, 10, [{ type: 'Pin' }]),
+    E('Moon', 200, 200, 10, 10, [{ type: 'Orbit', properties: { speed: 90, primaryRadius: 50, secondaryRadius: 50 } }]),
+    E('Blink', 10, 10, 10, 10, [{ type: 'Flash' }, { type: 'Timer' }, { type: 'Tween' }]),
+    E('Wall', 200, 150, 10, 100, [{ type: 'Solid' }]),
+    E('Gun', 100, 250, 10, 10, [{ type: 'Turret', properties: { targetType: 'Enemy', range: 400, rotateSpeed: 720, rateOfFire: 10 } }]),
+    E('Hidden', 300, 50, 10, 10, [], { tags: ['Enemy'] }),
+    E('Walker', 20, 20, 10, 10, [{ type: 'Pathfinding', properties: { cellSize: 20, maxSpeed: 400 } }]),
+    E('Block', 100, 20, 20, 200, [{ type: 'Solid' }]),
+  ], [
+    { type: 'variable', name: 'shots', valueType: 'number', value: 0 }, { type: 'variable', name: 'ticks', valueType: 'number', value: 0 },
+    { type: 'variable', name: 'fin', valueType: 'number', value: 0 }, { type: 'variable', name: 'arrived', valueType: 'number', value: 0 },
+    { type: 'event', conditions: [{ object: 'Gun', behavior: 'Turret', id: 'on-shoot' }], actions: [{ object: 'System', id: 'add-to-var', params: { variable: 'shots', value: '1' } }] },
+    { type: 'event', conditions: [{ object: 'Blink', behavior: 'Timer', id: 'on-timer', params: { tag: 'beat' } }], actions: [{ object: 'System', id: 'add-to-var', params: { variable: 'ticks', value: '1' } }] },
+    { type: 'event', conditions: [{ object: 'Blink', behavior: 'Tween', id: 'on-tween-finished', params: { tag: 't' } }], actions: [{ object: 'System', id: 'set-var', params: { variable: 'fin', value: 'Blink.X' } }] },
+    { type: 'event', conditions: [{ object: 'Walker', behavior: 'Pathfinding', id: 'on-arrived' }], actions: [{ object: 'System', id: 'add-to-var', params: { variable: 'arrived', value: '1' } }] },
+    { type: 'event', conditions: [{ object: 'System', id: 'on-start-of-layout' }], actions: [
+      { object: 'Pinned', behavior: 'Pin', id: 'pin-to-object', params: { object: 'Boss', mode: 'position-angle' } },
+      { object: 'Blink', behavior: 'Timer', id: 'start-timer', params: { duration: '0.1', type: 'regular', tag: 'beat' } },
+      { object: 'Blink', behavior: 'Tween', id: 'tween-property', params: { tag: 't', property: 'x', end: '90', time: '0.5', ease: 'linear' } },
+      { object: 'Walker', behavior: 'Pathfinding', id: 'find-path', params: { x: '180', y: '20' } },
+    ] },
+  ]);
+  const sh = g.scene.eventSheet;
+  run(g, 60); // 1 s
+  const pinned = g.scene.find('Pinned'); // Boss rotated 90° → Pinned (30 px right of Boss) now 30 px below
+  assert.ok(Math.abs(pinned.pos[0] - 100) < 1 && Math.abs(pinned.pos[1] - 130) < 1, pinned.pos.join());
+  assert.ok(Math.abs(g.scene.find('Moon').pos[0] - 150) < 2); // quarter orbit around (150,200)… started at angle 0 → centre (150,200)
+  assert.ok(sh.getVar('ticks') >= 9); assert.equal(Math.round(sh.getVar('fin')), 90);
+  assert.equal(sh.getVar('shots'), 0, 'Wall blocks the ray to Hidden');
+  assert.equal(sh.getVar('arrived'), 1);
+  const w = g.scene.find('Walker'); assert.ok(Math.abs(w.pos[0] - 180) < 1 && Math.abs(w.pos[1] - 20) < 1, w.pos.join());
+});
+
+test('Turret shoots visible target; LineOfSight cone; family + container + Persist', async () => {
+  files['prefabs/tank.prefab.json'] = { format: 1, root: E('Tank', 0, 0, 10, 10) };
+  files['prefabs/turret2.prefab.json'] = { format: 1, root: E('Turret2', 0, 0, 10, 10, [], { vars: { v: 0 } }) };
+  const g = await world([
+    E('Gun', 100, 100, 10, 10, [{ type: 'Turret', properties: { targetType: 'Hostile', range: 400, rotateSpeed: 720, rateOfFire: 10 } }]),
+    E('Orc', 200, 100, 10, 10), E('Eye', 50, 200, 10, 10, [{ type: 'LineOfSight', properties: { range: 300, coneOfView: 90 } }]),
+    E('Seen', 150, 200, 10, 10), E('Behind', -20, 200, 10, 10),
+  ], [
+    { type: 'variable', name: 'shots', valueType: 'number', value: 0 }, { type: 'variable', name: 'seen', valueType: 'number', value: 0 }, { type: 'variable', name: 'made', valueType: 'number', value: 0 },
+    { type: 'event', conditions: [{ object: 'Gun', behavior: 'Turret', id: 'on-shoot' }], actions: [{ object: 'System', id: 'add-to-var', params: { variable: 'shots', value: '1' } }] },
+    { type: 'event', conditions: [{ object: 'Eye', behavior: 'LineOfSight', id: 'has-line-of-sight-to', params: { object: 'Seen' } }, { object: 'Eye', behavior: 'LineOfSight', id: 'has-line-of-sight-to', params: { object: 'Behind' }, inverted: true }], actions: [{ object: 'System', id: 'set-var', params: { variable: 'seen', value: '1' } }] },
+    { type: 'event', conditions: [{ object: 'System', id: 'on-start-of-layout' }], actions: [{ object: 'System', id: 'create-object', params: { object: 'Tank', layer: '0', x: '5', y: '6' } }, { object: 'Turret2', id: 'set-instance-var', params: { variable: 'v', value: '3' } }] },
+  ], { families: { Hostile: ['Orc'] }, containers: [['Tank', 'Turret2']] });
+  run(g, 30);
+  await new Promise((r) => setTimeout(r, 10)); run(g, 2);
+  const tank = g.scene.find('Tank'), t2 = g.scene.find('Turret2');
+  assert.ok(tank && t2 && t2.vars.v === 3, 'container spawned both, picked the peer');
+  tank.destroy(); run(g, 3); assert.equal(g.scene.find('Turret2'), null);
+  assert.ok(g.scene.eventSheet.getVar('shots') >= 2); assert.equal(g.scene.eventSheet.getVar('seen'), 1);
+});
+
+test('Persist keeps an entity across loadScene', async () => {
+  files.a = { name: 'a', entities: [E('Keeper', 5, 5, 10, 10, [{ type: 'Persist' }], { vars: { n: 7 } }), E('Temp', 1, 1, 10, 10)] };
+  files.b = { name: 'b', entities: [E('Other', 0, 0, 10, 10)] };
+  const g = mk(); await g.loadScene('a'); g.scene.find('Keeper').pos = [50, 60, 0];
+  await g.loadScene('b'); g.tick(1 / 60);
+  const k = g.scene.find('Keeper'); assert.ok(k); assert.deepEqual(k.pos.slice(0, 2), [50, 60]); assert.equal(k.vars.n, 7); assert.equal(g.scene.find('Temp'), null);
 });

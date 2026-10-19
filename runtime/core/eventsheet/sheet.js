@@ -6,6 +6,7 @@
 import { compile } from './expr.js';
 import { plugins, objectAces, keyCode } from './aces.js';
 import { behaviors } from '../behaviors/index.js';
+import { isType } from '../behaviors/util.js';
 
 const exprCache = new Map();
 const compiled = (src) => { let f = exprCache.get(src); if (!f) { f = compile(src); exprCache.set(src, f); } return f; };
@@ -80,7 +81,10 @@ export class EventSheet {
     if (method === 'onCollisionEnter' || method === 'onTriggerEnter') this.fire('Object.on-collision', { a: entity, b: args[0] });
   }
   onCreated(entity) { this.fire('Object.on-created', { entity }); }
-  onDestroyed(entity) { this.fire('Object.on-destroyed', { entity }); }
+  onDestroyed(entity) {
+    this.fire('Object.on-destroyed', { entity });
+    for (const p of entity._peers ?? []) if (!p.destroyed) p.destroy();
+  }
 
   /** Run every top-level (or grouped) event whose FIRST condition is the trigger `key` ("Plugin.id"). */
   fire(key, data = {}) {
@@ -293,6 +297,7 @@ export class EventSheet {
       prop: (type, idx, name) => r.#prop(type, idx, name),
       method: (type, name, a) => r.#method(type, name, a),
       bprop: (type, idx, beh, name) => r.#bprop(type, idx, beh, name),
+      bmethod: (type, beh, name, a) => r.#bprop(type, null, beh, name, a),
     };
   }
   #prop(type, idx, name) {
@@ -308,13 +313,13 @@ export class EventSheet {
     if (name in e.vars) return e.vars[name];
     throw new Error(`'${type}' has no property '${name}'`);
   }
-  #bprop(type, idx, beh, name) {
+  #bprop(type, idx, beh, name, args = []) {
     const list = this.cur.get(type) ? [this.cur.get(type)] : this.picked(type, this.solView ?? new Map());
     const e = idx === null || idx === undefined ? list[0] : list[Math.floor(idx)];
     const f = behaviors.get(beh)?.expressions[name];
     if (!f) throw new Error(`unknown expression ${type}.${beh}.${name}`);
     const b = e?.behavior(beh);
-    return b ? f(b, [], this) : 0;
+    return b ? f(b, args, this) : 0;
   }
   #method(type, name, a) {
     if (type === 'Functions') return this.callFunction(name, a);
@@ -364,7 +369,9 @@ export class EventSheet {
   }
 
   // ---------- object instances ----------
-  matches(e, type) { return !e.destroyed && (e.name === type || e.tags.includes(type)); }
+  matches(e, type) { return isType(this.scene, e, type); }
+  /** Other object types created/destroyed together with `type` (scene.settings.containers: [["Tank","Turret"]]). */
+  containerPeers(type) { const c = this.scene.settings?.containers?.find((l) => l.includes(type)); return c ? c.filter((n) => n !== type) : []; }
   all(type) { return [...this.scene.all()].filter((e) => this.matches(e, type)); }
   picked(type, sol) { const l = sol.get(type); return l ? l.filter((e) => !e.destroyed) : this.all(type); }
   pick(sol, type, list) { sol.set(type, list); }

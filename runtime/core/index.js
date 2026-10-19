@@ -19,3 +19,4 @@ export { registerPlugin, registerObjectAces } from './eventsheet/aces.js';
 export { compile as compileExpression } from './eventsheet/expr.js';
 export { Behavior, registerBehavior, behaviors } from './behaviors/index.js';
 import './behaviors/builtin.js';
+import './behaviors/builtin2.js';
