@@ -1660,13 +1660,13 @@
       "id": "M10-04",
       "milestone": "M10",
       "title": "Event sheet editor panel (egui): add/edit/delete/reorder events, condition/action picker dialog with search, drag&drop, collapse, comments, disable, colour groups, undo/redo",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M10-05",
       "milestone": "M10",
       "title": "Event sheet: object picker + parameter widgets (expression editor w/ autocomplete, expressions, object/instance/layer/animation/audio pickers)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M10-06",

@@ -62,6 +62,9 @@ pub struct Entity {
     pub components: Vec<Component>,
     #[serde(default)]
     pub scripts: Vec<ScriptRef>,
+    /// Construct-style behaviors (`{type, properties}`), edited as raw JSON for now.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub behaviors: Vec<Value>,
     #[serde(default)]
     pub children: Vec<Entity>,
     #[serde(default)]
@@ -79,6 +82,7 @@ impl Entity {
             transform: Transform::default(),
             components: vec![],
             scripts: vec![],
+            behaviors: vec![],
             children: vec![],
             prefab: None,
         }
@@ -101,6 +105,9 @@ pub struct SceneSettings {
     pub skybox: Option<String>,
     #[serde(default)]
     pub gravity: Option<[f64; 3]>,
+    /// Everything else (`eventSheet`, `families`, `containers`, …) is kept verbatim so editing never drops runtime-only settings.
+    #[serde(flatten)]
+    pub extra: Map<String, Value>,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -175,6 +182,17 @@ mod tests {
         assert_eq!(s.entities[0].components[0].fields["frame"], 0);
         let s2: Scene = serde_json::from_str(&serde_json::to_string(&s).unwrap()).unwrap();
         assert_eq!(s, s2);
+    }
+
+    #[test]
+    fn runtime_only_fields_survive_a_roundtrip() {
+        let src = r#"{"format":1,"name":"m","settings":{"gravity":[0,1,0],"eventSheet":"events/a.events.json","families":{"Foe":["A"]}},
+          "entities":[{"id":"a","name":"A","behaviors":[{"type":"Platform","properties":{"maxSpeed":300}}]}]}"#;
+        let s: Scene = serde_json::from_str(src).unwrap();
+        let v = serde_json::to_value(&s).unwrap();
+        assert_eq!(v["settings"]["eventSheet"], "events/a.events.json");
+        assert_eq!(v["settings"]["families"]["Foe"][0], "A");
+        assert_eq!(v["entities"][0]["behaviors"][0]["properties"]["maxSpeed"], 300);
     }
 
     #[test]

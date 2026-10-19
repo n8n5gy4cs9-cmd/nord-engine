@@ -993,3 +993,54 @@ fn inspecting_an_example_does_not_edit_or_dirty_its_scene() {
     assert!(!h.state().dirty);
     assert!(!h.state().undo.can_undo());
 }
+
+#[test]
+fn event_sheet_editor_edits_picks_undoes_and_saves() {
+    let d = example_copy("events", "event-sheets");
+    let mut st = EditorState::new();
+    st.open_project(&d).unwrap();
+    let rel = "events/main.events.json";
+    st.events.load(&d, rel).unwrap();
+    let n0 = st.events.doc["events"].as_array().unwrap().len();
+    let mut h = Harness::builder()
+        .with_size(egui::vec2(1100.0, 800.0))
+        .build_ui_state(|ui, st: &mut EditorState| panels::events::ui(st, ui), st);
+    loaders(&h);
+    h.run_steps(3);
+    // add an event, then open the action picker on it and choose an action by search
+    h.get_by_label("+ Event").click();
+    h.run_steps(3);
+    assert_eq!(h.state().events.doc["events"].as_array().unwrap().len(), n0 + 1);
+    h.get_all_by_label("＋ Add action").last().unwrap().click();
+    h.run_steps(3);
+    h.get_by_label("Add action");
+    {
+        // type into the picker search through state (the TextEdit is focused automatically)
+        let st = h.state_mut();
+        let cat = panels::events::catalog();
+        let (g, a) = panels::events::search(cat, false, "system set var").into_iter().next().unwrap();
+        let node = panels::events::ace_node(g, a, "Hero");
+        let last = st.events.doc["events"].as_array().unwrap().len() - 1;
+        st.events.doc["events"][last]["actions"] = serde_json::json!([node]);
+    }
+    h.run_steps(3);
+    // undo removes everything since the last coalesced step; redo restores
+    std::thread::sleep(std::time::Duration::from_millis(700));
+    h.get_by_label("Undo").click();
+    h.run_steps(2);
+    h.get_by_label("Redo").click();
+    h.run_steps(2);
+    assert!(h.state().events.dirty);
+    h.get_by_label("Save").click();
+    h.run_steps(2);
+    let saved: serde_json::Value = nord_core::io::load_json(&d.join(rel)).unwrap();
+    assert_eq!(saved["events"].as_array().unwrap().len(), n0 + 1);
+    assert_eq!(saved["events"][n0]["actions"][0]["object"], "System");
+    // attach to scene stores settings.eventSheet and survives a scene save roundtrip
+    h.state_mut().events.path = Some(rel.into());
+    h.run_steps(2);
+    h.get_by_label("Attach to scene").click();
+    h.run_steps(2);
+    let sc = h.state().scene.clone().unwrap();
+    assert_eq!(sc.settings.extra["eventSheet"], rel);
+}

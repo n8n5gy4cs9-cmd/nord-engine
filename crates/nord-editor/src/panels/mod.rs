@@ -3,6 +3,7 @@ pub mod assets;
 pub mod console;
 pub mod desktop;
 pub mod docs;
+pub mod events;
 pub mod export;
 pub mod hierarchy;
 pub mod hub;

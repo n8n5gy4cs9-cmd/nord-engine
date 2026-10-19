@@ -19,6 +19,7 @@ pub enum Tab {
     Game,
     Code,
     Animation,
+    Events,
     Assets,
     Console,
     Library,
@@ -34,6 +35,7 @@ impl Tab {
             Tab::Game => "Game",
             Tab::Code => "Code",
             Tab::Animation => "Anim & Tiles",
+            Tab::Events => "Event sheets",
             Tab::Assets => "Assets",
             Tab::Console => "Console",
             Tab::Library => "Library",
@@ -43,7 +45,7 @@ impl Tab {
 }
 
 pub fn default_dock() -> DockState<Tab> {
-    let mut dock = DockState::new(vec![Tab::Scene, Tab::Game, Tab::Code, Tab::Animation]);
+    let mut dock = DockState::new(vec![Tab::Scene, Tab::Game, Tab::Code, Tab::Events, Tab::Animation]);
     let s = dock.main_surface_mut();
     let [center, _] = s.split_left(NodeIndex::root(), 0.18, vec![Tab::Hierarchy]);
     let [center, _] = s.split_right(center, 0.78, vec![Tab::Inspector]);
@@ -537,6 +539,7 @@ impl App {
                     Tab::Game,
                     Tab::Code,
                     Tab::Animation,
+                    Tab::Events,
                     Tab::Hierarchy,
                     Tab::Inspector,
                     Tab::Assets,
@@ -748,6 +751,7 @@ impl TabViewer for Viewer<'_> {
             Tab::Library => panels::library::ui(st, ui),
             Tab::Code => crate::code::ui(st, ui),
             Tab::Animation => panels::animation::ui(st, ui),
+            Tab::Events => panels::events::ui(st, ui),
             Tab::Docs => match panels::docs::manual_url(st) {
                 // the embedded native webview floats above every panel, so the HTML manual opens in the browser instead
                 Some(u) => {

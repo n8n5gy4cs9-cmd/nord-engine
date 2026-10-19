@@ -113,3 +113,8 @@ Assets regressions pass for divider dragging, row alignment/wrapping at 48/84/16
 - Human balance and audio by ear remain unverified. Native editor/player and touch/gamepad were not exercised (keyboard controls). All remaining legacy activity views and the flattened primitive renderer were replaced in M6-46. Arcade balance still needs human playtesting.
 - Journey checkpoint saves do not preserve an in-progress minigame/festival. Loading returns to the map and re-entering Ruisrock starts the festival again. Customer simulation displays up to 60 representative visitors rather than every ticket holder.
 - Artist recordings retain their third-party provenance (THIRD_PARTY.md). The example is approximately 122 MB per source/generated copy after new art.
+
+## Event sheet editor (M10-04/05)
+- Only exercised headlessly (egui_kittest + unit tests); no screenshot/visual review yet, and drag-and-drop between nested groups, the autocomplete popup (accepts on mouse press) and the object menu have not been tried by hand. macOS window behaviour unverified.
+- Sheet undo is separate from the scene undo stack; Cmd+Z in this tab is not wired to it (use the Undo/Redo buttons).
+- Entity `behaviors` are preserved on save but there is no inspector UI for them yet (edit the scene JSON).
