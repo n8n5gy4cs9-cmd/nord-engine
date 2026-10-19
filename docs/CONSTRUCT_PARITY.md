@@ -5,6 +5,7 @@ Tasks: `task.md` M10-01…34, features FR-50…FR-68 in `PRD.json`.
 
 **Scope note.** The feature list below is from general knowledge of Construct 3; the site was not reachable from the
 sandbox when this was written — owner/next session should verify against the page and adjust.
+**Additive only (owner rule):** nothing existing is removed or replaced — JS scripts (`NordScript`), the Phaser/Babylon/Rust tiers, prefabs, the library and all examples keep working. Event sheets, behaviors and the new editors sit beside scripting, and an entity or scene can use both at once.
 **Clean-room**: copy ideas and workflows only, never Construct's code, assets or trademarked names/UI. Reuse existing
 Nord pieces (scene JSON, nord.js, Phaser tier, animation/tilemap editors from M3-21) rather than rebuilding.
 
