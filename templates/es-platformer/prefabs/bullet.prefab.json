@@ -1,0 +1,65 @@
+{
+  "format": 1,
+  "root": {
+    "id": "bullet001",
+    "name": "Bullet",
+    "enabled": true,
+    "tags": [
+      "hazard"
+    ],
+    "layer": 0,
+    "transform": {
+      "pos": [
+        0,
+        0,
+        3
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    "components": [
+      {
+        "type": "sprite",
+        "texture": "assets/sprites/items/bullet.png",
+        "size": [
+          12,
+          12
+        ]
+      },
+      {
+        "type": "collider",
+        "shape": "box",
+        "size": [
+          8,
+          8
+        ]
+      }
+    ],
+    "scripts": [],
+    "behaviors": [
+      {
+        "type": "Bullet",
+        "properties": {
+          "speed": 200,
+          "setAngle": true
+        }
+      },
+      {
+        "type": "DestroyOutsideLayout",
+        "properties": {
+          "margin": 20
+        }
+      }
+    ],
+    "children": [],
+    "prefab": null
+  }
+}

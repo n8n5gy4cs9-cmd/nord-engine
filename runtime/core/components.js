@@ -18,6 +18,7 @@ export function registerCoreComponents(game) {
     create(e, d, comp) { comp.h = ui().button(d.text ?? 'Button', () => { e.emit('click'); e.callScripts('onClick'); if (d.event) game.events.emit(d.event, e); }, pos(d)); },
     destroy(comp) { comp.h?.remove(); },
     update(comp) { comp.h.el.hidden = !comp.entity.enabled; },
+    set(comp, k, v) { comp.data[k] = v; if (k === 'text') comp.h.set?.(v); },
   });
 
   registerComponent('audioSource', {

@@ -1,0 +1,157 @@
+{
+  "format": 1,
+  "name": "options",
+  "events": [
+    {
+      "type": "comment",
+      "text": "Options: language switch (Localisation) and music volume (Audio). Strings live in nord.project.json → strings."
+    },
+    {
+      "type": "variable",
+      "name": "volume",
+      "valueType": "number",
+      "value": 0.8
+    },
+    {
+      "type": "event",
+      "conditions": [
+        {
+          "object": "Events",
+          "id": "on-event",
+          "params": {
+            "name": "lang-en"
+          }
+        }
+      ],
+      "actions": [
+        {
+          "object": "Localisation",
+          "id": "set-language",
+          "params": {
+            "language": "\"en\""
+          }
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "conditions": [
+        {
+          "object": "Events",
+          "id": "on-event",
+          "params": {
+            "name": "lang-fi"
+          }
+        }
+      ],
+      "actions": [
+        {
+          "object": "Localisation",
+          "id": "set-language",
+          "params": {
+            "language": "\"fi\""
+          }
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "conditions": [
+        {
+          "object": "Events",
+          "id": "on-event",
+          "params": {
+            "name": "vol-up"
+          }
+        }
+      ],
+      "actions": [
+        {
+          "object": "System",
+          "id": "set-var",
+          "params": {
+            "variable": "volume",
+            "value": "min(1, volume + 0.1)"
+          }
+        },
+        {
+          "object": "Audio",
+          "id": "set-volume",
+          "params": {
+            "bus": "music",
+            "volume": "volume"
+          }
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "conditions": [
+        {
+          "object": "Events",
+          "id": "on-event",
+          "params": {
+            "name": "vol-down"
+          }
+        }
+      ],
+      "actions": [
+        {
+          "object": "System",
+          "id": "set-var",
+          "params": {
+            "variable": "volume",
+            "value": "max(0, volume - 0.1)"
+          }
+        },
+        {
+          "object": "Audio",
+          "id": "set-volume",
+          "params": {
+            "bus": "music",
+            "volume": "volume"
+          }
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "conditions": [
+        {
+          "object": "Events",
+          "id": "on-event",
+          "params": {
+            "name": "back"
+          }
+        }
+      ],
+      "actions": [
+        {
+          "object": "System",
+          "id": "go-to-layout",
+          "params": {
+            "layout": "\"menu\""
+          }
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "conditions": [
+        {
+          "object": "System",
+          "id": "every-tick"
+        }
+      ],
+      "actions": [
+        {
+          "object": "VolumeLabel",
+          "id": "set-text",
+          "params": {
+            "text": "Localisation.Text(\"volume\") & \": \" & round(volume * 100) & \"%\""
+          }
+        }
+      ]
+    }
+  ]
+}

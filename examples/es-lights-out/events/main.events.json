@@ -1,0 +1,430 @@
+{
+  "format": 1,
+  "name": "main",
+  "events": [
+    {
+      "type": "comment",
+      "text": "Lights Out — click a tile to flip it and its neighbours; turn every light off. The puzzle is shuffled by making random clicks, so it is always solvable."
+    },
+    {
+      "type": "variable",
+      "name": "cx",
+      "valueType": "number",
+      "value": 0
+    },
+    {
+      "type": "variable",
+      "name": "cy",
+      "valueType": "number",
+      "value": 0
+    },
+    {
+      "type": "variable",
+      "name": "moves",
+      "valueType": "number",
+      "value": 0
+    },
+    {
+      "type": "variable",
+      "name": "lit",
+      "valueType": "number",
+      "value": 0
+    },
+    {
+      "type": "variable",
+      "name": "won",
+      "valueType": "number",
+      "value": 0
+    },
+    {
+      "type": "group",
+      "title": "Setup",
+      "active": true,
+      "children": [
+        {
+          "type": "event",
+          "conditions": [
+            {
+              "object": "System",
+              "id": "on-start-of-layout"
+            }
+          ],
+          "actions": [
+            {
+              "object": "System",
+              "id": "set-var",
+              "params": {
+                "variable": "won",
+                "value": "0"
+              }
+            }
+          ],
+          "children": [
+            {
+              "type": "event",
+              "conditions": [
+                {
+                  "object": "System",
+                  "id": "repeat",
+                  "params": {
+                    "count": "12"
+                  }
+                },
+                {
+                  "object": "System",
+                  "id": "pick-random-instance",
+                  "params": {
+                    "object": "Tile"
+                  }
+                }
+              ],
+              "actions": [
+                {
+                  "object": "System",
+                  "id": "set-var",
+                  "params": {
+                    "variable": "cx",
+                    "value": "Tile.X"
+                  }
+                },
+                {
+                  "object": "System",
+                  "id": "set-var",
+                  "params": {
+                    "variable": "cy",
+                    "value": "Tile.Y"
+                  }
+                }
+              ],
+              "children": [
+                {
+                  "type": "event",
+                  "conditions": [
+                    {
+                      "object": "System",
+                      "id": "pick-all",
+                      "params": {
+                        "object": "Tile"
+                      }
+                    },
+                    {
+                      "object": "System",
+                      "id": "pick-by-evaluate",
+                      "params": {
+                        "object": "Tile",
+                        "expression": "abs(Tile.X - cx) + abs(Tile.Y - cy) <= 54"
+                      }
+                    }
+                  ],
+                  "actions": [
+                    {
+                      "object": "Tile",
+                      "id": "toggle-boolean-instance-var",
+                      "params": {
+                        "variable": "on"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": "Play",
+      "active": true,
+      "children": [
+        {
+          "type": "event",
+          "conditions": [
+            {
+              "object": "Mouse",
+              "id": "on-click"
+            },
+            {
+              "object": "System",
+              "id": "compare-variable",
+              "params": {
+                "variable": "won",
+                "comparison": "=",
+                "value": "0"
+              }
+            },
+            {
+              "object": "System",
+              "id": "pick-by-evaluate",
+              "params": {
+                "object": "Tile",
+                "expression": "abs(Tile.X - Mouse.X) < 26 && abs(Tile.Y - Mouse.Y) < 26"
+              }
+            }
+          ],
+          "actions": [
+            {
+              "object": "System",
+              "id": "set-var",
+              "params": {
+                "variable": "cx",
+                "value": "Tile.X"
+              }
+            },
+            {
+              "object": "System",
+              "id": "set-var",
+              "params": {
+                "variable": "cy",
+                "value": "Tile.Y"
+              }
+            },
+            {
+              "object": "System",
+              "id": "add-to-var",
+              "params": {
+                "variable": "moves",
+                "value": "1"
+              }
+            },
+            {
+              "object": "Audio",
+              "id": "play",
+              "params": {
+                "file": "\"assets/audio/sfx/click.wav\"",
+                "loop": "\"once\""
+              }
+            }
+          ],
+          "children": [
+            {
+              "type": "event",
+              "conditions": [
+                {
+                  "object": "System",
+                  "id": "pick-all",
+                  "params": {
+                    "object": "Tile"
+                  }
+                },
+                {
+                  "object": "System",
+                  "id": "pick-by-evaluate",
+                  "params": {
+                    "object": "Tile",
+                    "expression": "abs(Tile.X - cx) + abs(Tile.Y - cy) <= 54"
+                  }
+                }
+              ],
+              "actions": [
+                {
+                  "object": "Tile",
+                  "id": "toggle-boolean-instance-var",
+                  "params": {
+                    "variable": "on"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "event",
+          "conditions": [
+            {
+              "object": "Mouse",
+              "id": "on-click"
+            },
+            {
+              "object": "System",
+              "id": "compare-variable",
+              "params": {
+                "variable": "won",
+                "comparison": "=",
+                "value": "1"
+              }
+            }
+          ],
+          "actions": [
+            {
+              "object": "System",
+              "id": "restart-layout"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": "Look",
+      "active": true,
+      "children": [
+        {
+          "type": "event",
+          "conditions": [
+            {
+              "object": "Tile",
+              "id": "compare-instance-var",
+              "params": {
+                "variable": "on",
+                "comparison": "=",
+                "value": "1"
+              }
+            }
+          ],
+          "actions": [
+            {
+              "object": "Tile",
+              "id": "set-opacity",
+              "params": {
+                "opacity": "100"
+              }
+            }
+          ]
+        },
+        {
+          "type": "event",
+          "conditions": [
+            {
+              "object": "Tile",
+              "id": "compare-instance-var",
+              "params": {
+                "variable": "on",
+                "comparison": "=",
+                "value": "0"
+              }
+            }
+          ],
+          "actions": [
+            {
+              "object": "Tile",
+              "id": "set-opacity",
+              "params": {
+                "opacity": "18"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": "Win",
+      "active": true,
+      "children": [
+        {
+          "type": "event",
+          "conditions": [
+            {
+              "object": "System",
+              "id": "every-tick"
+            }
+          ],
+          "actions": [
+            {
+              "object": "System",
+              "id": "set-var",
+              "params": {
+                "variable": "lit",
+                "value": "0"
+              }
+            }
+          ],
+          "children": [
+            {
+              "type": "event",
+              "conditions": [
+                {
+                  "object": "Tile",
+                  "id": "compare-instance-var",
+                  "params": {
+                    "variable": "on",
+                    "comparison": "=",
+                    "value": "1"
+                  }
+                }
+              ],
+              "actions": [
+                {
+                  "object": "System",
+                  "id": "set-var",
+                  "params": {
+                    "variable": "lit",
+                    "value": "Tile.Count"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "event",
+          "conditions": [
+            {
+              "object": "System",
+              "id": "compare-variable",
+              "params": {
+                "variable": "lit",
+                "comparison": "=",
+                "value": "0"
+              }
+            },
+            {
+              "object": "System",
+              "id": "compare-variable",
+              "params": {
+                "variable": "moves",
+                "comparison": ">",
+                "value": "0"
+              }
+            },
+            {
+              "object": "System",
+              "id": "compare-variable",
+              "params": {
+                "variable": "won",
+                "comparison": "=",
+                "value": "0"
+              }
+            }
+          ],
+          "actions": [
+            {
+              "object": "System",
+              "id": "set-var",
+              "params": {
+                "variable": "won",
+                "value": "1"
+              }
+            },
+            {
+              "object": "Message",
+              "id": "set-text",
+              "params": {
+                "text": "\"Solved in \" & moves & \" moves!  (click to play again)\""
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "conditions": [
+        {
+          "object": "System",
+          "id": "every-tick"
+        }
+      ],
+      "actions": [
+        {
+          "object": "Hud",
+          "id": "set-text",
+          "params": {
+            "text": "\"Moves \" & moves & \"    Lights on \" & lit"
+          }
+        }
+      ]
+    }
+  ]
+}

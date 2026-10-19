@@ -13,6 +13,7 @@ export class Events {
   off(name, fn) { this.#h.get(name)?.delete(fn); }
   emit(name, data) {
     for (const fn of [...(this.#h.get(name) ?? [])]) fn(data);
+    if (name !== '*') for (const fn of [...(this.#h.get('*') ?? [])]) fn({ name, data }); // wildcard: every event (event sheets' "On game event")
   }
   clear() { this.#h.clear(); }
 }

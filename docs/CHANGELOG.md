@@ -1,5 +1,7 @@
 # Changelog
 
+- 2026-10-19 (M10-29): **Event-sheet starter templates** — es-platformer, es-topdown-shooter, es-endless-runner, es-lights-out, es-menu-starter (templates + examples, no scripts), each playtested headless (`tools/es-templates-test.mjs`). Runtime: **Events** plugin (On game event / Emit event), UI buttons/labels follow `textKey` and *Set text*, UI centre anchor.
+
 - 2026-10-19 (M10-25): **Project tools** — `nord_core::refs` (find references, project-wide replace, safe asset rename, safe object rename across scenes/prefabs/event sheets, all with dry-run) and the editor's *Project* tab (properties form + references/rename/replace with preview and automatic snapshot). Tests: 3 unit + 1 kittest.
 
 - 2026-10-19 (M10-27): **Addon SDK** — `addon.json` + `register(nord)` modules for plugins, behaviors, data objects, effects, components (`runtime/core/addons.js`); `nord addon pack|install|list` (`.nordaddon` zip, `project.addons`); the event-sheet picker shows addon ACEs via *Refresh addons* (`tools/export-aces.mjs --project`); sample addon `library/addons/dice`; `docs/ADDONS.md`. Logged a pre-existing parallel-test race in the editor UI tests.

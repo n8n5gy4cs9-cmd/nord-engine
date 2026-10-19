@@ -76,8 +76,11 @@ export class EventSheet {
   }
 
   // ---------- lifecycle (called by the scene) ----------
-  start() { this.fire('System.on-start-of-layout'); }
-  end() { this.fire('System.on-end-of-layout'); }
+  start() {
+    this._off = this.game.events.on('*', ({ name, data }) => { if (name !== 'debugBreak' && name !== 'language') this.fire('Events.on-event', { name, data }); });
+    this.fire('System.on-start-of-layout');
+  }
+  end() { this.fire('System.on-end-of-layout'); this._off?.(); }
   update(dt) {
     this.dt = dt; this.time += dt; this.tickCount++;
     this.#pollInput();

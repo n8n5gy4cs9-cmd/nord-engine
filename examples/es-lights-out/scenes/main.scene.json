@@ -1,0 +1,1179 @@
+{
+  "format": 1,
+  "name": "main",
+  "settings": {
+    "eventSheet": "events/main.events.json"
+  },
+  "entities": [
+    {
+      "id": "eeeeeee5",
+      "name": "Tile",
+      "enabled": true,
+      "tags": [
+        "tile"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          216,
+          86,
+          2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            46,
+            46
+          ],
+          "tint": "#ebcb8b",
+          "alpha": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null,
+      "vars": {
+        "on": 0
+      }
+    },
+    {
+      "id": "eeeeeee6",
+      "name": "Tile",
+      "enabled": true,
+      "tags": [
+        "tile"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          268,
+          86,
+          2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            46,
+            46
+          ],
+          "tint": "#ebcb8b",
+          "alpha": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null,
+      "vars": {
+        "on": 0
+      }
+    },
+    {
+      "id": "eeeeeee7",
+      "name": "Tile",
+      "enabled": true,
+      "tags": [
+        "tile"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          320,
+          86,
+          2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            46,
+            46
+          ],
+          "tint": "#ebcb8b",
+          "alpha": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null,
+      "vars": {
+        "on": 0
+      }
+    },
+    {
+      "id": "eeeeeee8",
+      "name": "Tile",
+      "enabled": true,
+      "tags": [
+        "tile"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          372,
+          86,
+          2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            46,
+            46
+          ],
+          "tint": "#ebcb8b",
+          "alpha": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null,
+      "vars": {
+        "on": 0
+      }
+    },
+    {
+      "id": "eeeeeee9",
+      "name": "Tile",
+      "enabled": true,
+      "tags": [
+        "tile"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          424,
+          86,
+          2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            46,
+            46
+          ],
+          "tint": "#ebcb8b",
+          "alpha": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null,
+      "vars": {
+        "on": 0
+      }
+    },
+    {
+      "id": "eeeeeeea",
+      "name": "Tile",
+      "enabled": true,
+      "tags": [
+        "tile"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          216,
+          138,
+          2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            46,
+            46
+          ],
+          "tint": "#ebcb8b",
+          "alpha": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null,
+      "vars": {
+        "on": 0
+      }
+    },
+    {
+      "id": "eeeeeeeb",
+      "name": "Tile",
+      "enabled": true,
+      "tags": [
+        "tile"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          268,
+          138,
+          2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            46,
+            46
+          ],
+          "tint": "#ebcb8b",
+          "alpha": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null,
+      "vars": {
+        "on": 0
+      }
+    },
+    {
+      "id": "eeeeeeec",
+      "name": "Tile",
+      "enabled": true,
+      "tags": [
+        "tile"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          320,
+          138,
+          2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            46,
+            46
+          ],
+          "tint": "#ebcb8b",
+          "alpha": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null,
+      "vars": {
+        "on": 0
+      }
+    },
+    {
+      "id": "eeeeeeed",
+      "name": "Tile",
+      "enabled": true,
+      "tags": [
+        "tile"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          372,
+          138,
+          2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            46,
+            46
+          ],
+          "tint": "#ebcb8b",
+          "alpha": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null,
+      "vars": {
+        "on": 0
+      }
+    },
+    {
+      "id": "eeeeeeee",
+      "name": "Tile",
+      "enabled": true,
+      "tags": [
+        "tile"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          424,
+          138,
+          2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            46,
+            46
+          ],
+          "tint": "#ebcb8b",
+          "alpha": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null,
+      "vars": {
+        "on": 0
+      }
+    },
+    {
+      "id": "eeeeeeef",
+      "name": "Tile",
+      "enabled": true,
+      "tags": [
+        "tile"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          216,
+          190,
+          2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            46,
+            46
+          ],
+          "tint": "#ebcb8b",
+          "alpha": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null,
+      "vars": {
+        "on": 0
+      }
+    },
+    {
+      "id": "eeeeeeeg",
+      "name": "Tile",
+      "enabled": true,
+      "tags": [
+        "tile"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          268,
+          190,
+          2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            46,
+            46
+          ],
+          "tint": "#ebcb8b",
+          "alpha": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null,
+      "vars": {
+        "on": 0
+      }
+    },
+    {
+      "id": "eeeeeeeh",
+      "name": "Tile",
+      "enabled": true,
+      "tags": [
+        "tile"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          320,
+          190,
+          2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            46,
+            46
+          ],
+          "tint": "#ebcb8b",
+          "alpha": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null,
+      "vars": {
+        "on": 0
+      }
+    },
+    {
+      "id": "eeeeeeei",
+      "name": "Tile",
+      "enabled": true,
+      "tags": [
+        "tile"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          372,
+          190,
+          2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            46,
+            46
+          ],
+          "tint": "#ebcb8b",
+          "alpha": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null,
+      "vars": {
+        "on": 0
+      }
+    },
+    {
+      "id": "eeeeeeej",
+      "name": "Tile",
+      "enabled": true,
+      "tags": [
+        "tile"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          424,
+          190,
+          2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            46,
+            46
+          ],
+          "tint": "#ebcb8b",
+          "alpha": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null,
+      "vars": {
+        "on": 0
+      }
+    },
+    {
+      "id": "eeeeeeek",
+      "name": "Tile",
+      "enabled": true,
+      "tags": [
+        "tile"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          216,
+          242,
+          2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            46,
+            46
+          ],
+          "tint": "#ebcb8b",
+          "alpha": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null,
+      "vars": {
+        "on": 0
+      }
+    },
+    {
+      "id": "eeeeeeel",
+      "name": "Tile",
+      "enabled": true,
+      "tags": [
+        "tile"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          268,
+          242,
+          2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            46,
+            46
+          ],
+          "tint": "#ebcb8b",
+          "alpha": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null,
+      "vars": {
+        "on": 0
+      }
+    },
+    {
+      "id": "eeeeeeem",
+      "name": "Tile",
+      "enabled": true,
+      "tags": [
+        "tile"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          320,
+          242,
+          2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            46,
+            46
+          ],
+          "tint": "#ebcb8b",
+          "alpha": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null,
+      "vars": {
+        "on": 0
+      }
+    },
+    {
+      "id": "eeeeeeen",
+      "name": "Tile",
+      "enabled": true,
+      "tags": [
+        "tile"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          372,
+          242,
+          2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            46,
+            46
+          ],
+          "tint": "#ebcb8b",
+          "alpha": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null,
+      "vars": {
+        "on": 0
+      }
+    },
+    {
+      "id": "eeeeeeeo",
+      "name": "Tile",
+      "enabled": true,
+      "tags": [
+        "tile"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          424,
+          242,
+          2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            46,
+            46
+          ],
+          "tint": "#ebcb8b",
+          "alpha": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null,
+      "vars": {
+        "on": 0
+      }
+    },
+    {
+      "id": "eeeeeeep",
+      "name": "Tile",
+      "enabled": true,
+      "tags": [
+        "tile"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          216,
+          294,
+          2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            46,
+            46
+          ],
+          "tint": "#ebcb8b",
+          "alpha": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null,
+      "vars": {
+        "on": 0
+      }
+    },
+    {
+      "id": "eeeeeeeq",
+      "name": "Tile",
+      "enabled": true,
+      "tags": [
+        "tile"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          268,
+          294,
+          2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            46,
+            46
+          ],
+          "tint": "#ebcb8b",
+          "alpha": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null,
+      "vars": {
+        "on": 0
+      }
+    },
+    {
+      "id": "eeeeeeer",
+      "name": "Tile",
+      "enabled": true,
+      "tags": [
+        "tile"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          320,
+          294,
+          2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            46,
+            46
+          ],
+          "tint": "#ebcb8b",
+          "alpha": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null,
+      "vars": {
+        "on": 0
+      }
+    },
+    {
+      "id": "eeeeeees",
+      "name": "Tile",
+      "enabled": true,
+      "tags": [
+        "tile"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          372,
+          294,
+          2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            46,
+            46
+          ],
+          "tint": "#ebcb8b",
+          "alpha": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null,
+      "vars": {
+        "on": 0
+      }
+    },
+    {
+      "id": "eeeeeeet",
+      "name": "Tile",
+      "enabled": true,
+      "tags": [
+        "tile"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          424,
+          294,
+          2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            46,
+            46
+          ],
+          "tint": "#ebcb8b",
+          "alpha": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null,
+      "vars": {
+        "on": 0
+      }
+    },
+    {
+      "id": "eeeeeeeu",
+      "name": "Hud",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          320,
+          18,
+          50
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "text",
+          "text": "",
+          "size": 16,
+          "color": "#eceff4"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeev",
+      "name": "Message",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          320,
+          345,
+          50
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "text",
+          "text": "",
+          "size": 18,
+          "color": "#ebcb8b"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    }
+  ]
+}

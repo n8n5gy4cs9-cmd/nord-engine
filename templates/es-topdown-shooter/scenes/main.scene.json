@@ -1,0 +1,213 @@
+{
+  "format": 1,
+  "name": "main",
+  "settings": {
+    "eventSheet": "events/main.events.json"
+  },
+  "entities": [
+    {
+      "id": "eeeeee1d",
+      "name": "Floor",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          320,
+          180,
+          -10
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            640,
+            360
+          ],
+          "tint": "#3b4252",
+          "alpha": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee1c",
+      "name": "Player",
+      "enabled": true,
+      "tags": [
+        "player"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          320,
+          180,
+          5
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            22,
+            14
+          ],
+          "tint": "#88c0d0",
+          "alpha": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            18,
+            18
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null,
+      "behaviors": [
+        {
+          "type": "EightDirection",
+          "properties": {
+            "maxSpeed": 190
+          }
+        },
+        {
+          "type": "BoundToLayout"
+        }
+      ]
+    },
+    {
+      "id": "eeeeee1e",
+      "name": "Hud",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          100,
+          18,
+          50
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "text",
+          "text": "",
+          "size": 14,
+          "color": "#eceff4"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee1f",
+      "name": "Message",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          320,
+          180,
+          50
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "text",
+          "text": "",
+          "size": 22,
+          "color": "#ebcb8b"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee1g",
+      "name": "Help",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          320,
+          345,
+          50
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "text",
+          "text": "WASD move   mouse aim   click shoot",
+          "size": 10,
+          "color": "#d8dee9"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    }
+  ]
+}

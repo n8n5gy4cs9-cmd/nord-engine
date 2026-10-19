@@ -1,0 +1,60 @@
+{
+  "format": 1,
+  "name": "menu",
+  "events": [
+    {
+      "type": "comment",
+      "text": "Main menu: buttons emit game events (uiButton \"event\"); the sheet reacts with Events → On game event."
+    },
+    {
+      "type": "event",
+      "conditions": [
+        {
+          "object": "Events",
+          "id": "on-event",
+          "params": {
+            "name": "play"
+          }
+        }
+      ],
+      "actions": [
+        {
+          "object": "Audio",
+          "id": "play",
+          "params": {
+            "file": "\"assets/audio/sfx/confirm.wav\"",
+            "loop": "\"once\""
+          }
+        },
+        {
+          "object": "System",
+          "id": "go-to-layout",
+          "params": {
+            "layout": "\"game\""
+          }
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "conditions": [
+        {
+          "object": "Events",
+          "id": "on-event",
+          "params": {
+            "name": "options"
+          }
+        }
+      ],
+      "actions": [
+        {
+          "object": "System",
+          "id": "go-to-layout",
+          "params": {
+            "layout": "\"options\""
+          }
+        }
+      ]
+    }
+  ]
+}

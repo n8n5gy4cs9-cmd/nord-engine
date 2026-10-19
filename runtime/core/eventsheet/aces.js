@@ -142,6 +142,10 @@ registerPlugin('Mouse', {
   },
   expressions: { X: (r) => r.game.input.pointer.worldX, Y: (r) => r.game.input.pointer.worldY },
 });
+registerPlugin('Events', { // the game's global event bus: uiButton "event", scripts' game.events.emit, your own signals
+  conditions: { 'on-event': { params: ['name'], raw: ['name'], trigger: true, test: (r, p) => r.firing.data.name === p.name } },
+  actions: { emit: { params: ['name'], raw: ['name'], run: (r, p) => { r.game.events.emit(p.name, undefined); } } },
+});
 registerPlugin('Timeline', {
   conditions: {
     'on-finished': { params: ['timeline'], raw: ['timeline'], trigger: true, test: (r, p) => r.firing.data.timeline === p.timeline },
@@ -262,7 +266,7 @@ registerObjectAces({
     'set-animation': { params: ['animation'], instance: true, run: (r, e, p) => { if (e.getComponent('animatedSprite') && e.getComponent('animatedSprite').data.anim !== p.animation) e.set('animatedSprite', 'anim', p.animation); } },
     'set-mirrored': { params: ['mirrored'], instance: true, run: (r, e, p) => { e.set(e.getComponent('animatedSprite') ? 'animatedSprite' : 'sprite', 'flipX', !!p.mirrored); } },
     'set-opacity': { params: ['opacity'], instance: true, run: (r, e, p) => { setOpacity(e, p.opacity / 100); } },
-    'set-text': { params: ['text'], instance: true, run: (r, e, p) => { e.set('text', 'text', String(p.text)); } },
+    'set-text': { params: ['text'], instance: true, run: (r, e, p) => { const t = ['text', 'uiLabel', 'uiButton'].find((c) => e.getComponent(c)); if (t) e.set(t, 'text', String(p.text)); } },
     'add-effect': { params: ['type'], raw: ['type'], instance: true, run: (r, e, p) => { r.game.effects.add(e, p.type); } },
     'set-effect-parameter': { params: ['type', 'parameter', 'value'], raw: ['type', 'parameter'], instance: true, run: (r, e, p) => { r.game.effects.find(e, p.type)?.set(p.parameter, p.value); } },
     'remove-effect': { params: ['type'], raw: ['type'], instance: true, run: (r, e, p) => { r.game.effects.find(e, p.type)?.remove(); } },

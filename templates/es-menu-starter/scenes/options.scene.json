@@ -1,0 +1,354 @@
+{
+  "format": 1,
+  "name": "options",
+  "settings": {
+    "eventSheet": "events/options.events.json"
+  },
+  "entities": [
+    {
+      "id": "eeeeeee5",
+      "name": "Background",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          320,
+          180,
+          -10
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            640,
+            360
+          ],
+          "tint": "#3b4252",
+          "alpha": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeee6",
+      "name": "Heading",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "uiLabel",
+          "text": "options",
+          "textKey": "options",
+          "x": 0,
+          "y": -130,
+          "anchor": "c",
+          "size": 32
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeee7",
+      "name": "LangLabel",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "uiLabel",
+          "text": "language",
+          "textKey": "language",
+          "x": 0,
+          "y": -70,
+          "anchor": "c",
+          "size": 20
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeee8",
+      "name": "EnButton",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "uiButton",
+          "text": "English",
+          "x": -70,
+          "y": -30,
+          "anchor": "c",
+          "w": 120,
+          "event": "lang-en"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeee9",
+      "name": "FiButton",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "uiButton",
+          "text": "Suomi",
+          "x": 70,
+          "y": -30,
+          "anchor": "c",
+          "w": 120,
+          "event": "lang-fi"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeea",
+      "name": "VolumeLabel",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "uiLabel",
+          "text": "",
+          "x": 0,
+          "y": 20,
+          "anchor": "c",
+          "size": 18
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeeb",
+      "name": "DownButton",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "uiButton",
+          "text": "vol-down",
+          "textKey": "vol-down",
+          "x": -70,
+          "y": 60,
+          "anchor": "c",
+          "w": 120,
+          "event": "vol-down"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeec",
+      "name": "UpButton",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "uiButton",
+          "text": "vol-up",
+          "textKey": "vol-up",
+          "x": 70,
+          "y": 60,
+          "anchor": "c",
+          "w": 120,
+          "event": "vol-up"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeed",
+      "name": "BackButton",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "uiButton",
+          "text": "back",
+          "textKey": "back",
+          "x": 0,
+          "y": 120,
+          "anchor": "c",
+          "w": 220,
+          "event": "back"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    }
+  ]
+}

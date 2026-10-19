@@ -58,3 +58,7 @@ Named non-world objects, like Construct's Array / Dictionary / JSON / AJAX. Decl
 - **AJAX**: request / post-data with a tag; triggers *On completed (tag)*, *On error (tag)*, *On any completed*; `LastData`, `LastError`, `StatusCode`.
 - `global: true` keeps the object when the scene changes (stored on the game). Addons add types with `registerDataType` (same ACE shape; functions get the instance first).
 - Also new plugins: **Touch** (On tap / On touch end / Is touching, `Touch.X/Y`) and **Gamepad** (`Is connected`, `Button is down`, `Gamepad.Axis(pad, axis)`). Text objects are the `text` component (`Set text`). Not done: Tiled Background, 9-Patch, Spritefont, Drawing Canvas, Video.
+
+## Starter templates (M10-29)
+Five event-sheet-only templates (`templates/es-*`, also playable under `examples/`): **es-platformer** (the T24 game), **es-topdown-shooter** (WASD + mouse aim, bullets, chasing enemies), **es-endless-runner**, **es-lights-out** (puzzle: instance variables, *Pick by evaluate*, loops) and **es-menu-starter** (menu / options / game scenes, language + volume, string tables). Sources: `tools/examples/es-*/game.mjs` (run `node tools/gen_examples.mjs es-lights-out …`; es-platformer reads `examples/event-sheets`). Headless playtests: `node tools/es-templates-test.mjs [id]` (screenshots in `target/es-templates/`).
+New runtime pieces they needed: **Events** plugin (*On game event*, *Emit event* — the global bus, `uiButton "event"`), `uiButton`/`uiLabel` follow `textKey` and *Set text*, centre anchor `"anchor": "c"` for UI widgets.

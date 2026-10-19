@@ -1,0 +1,121 @@
+{
+  "format": 1,
+  "name": "game",
+  "settings": {
+    "eventSheet": "events/game.events.json"
+  },
+  "entities": [
+    {
+      "id": "eeeeeeee",
+      "name": "Background",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          320,
+          180,
+          -10
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            640,
+            360
+          ],
+          "tint": "#434c5e",
+          "alpha": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeef",
+      "name": "Hint",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "uiLabel",
+          "text": "hint",
+          "textKey": "hint",
+          "x": 0,
+          "y": 150,
+          "anchor": "c",
+          "size": 14
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeeg",
+      "name": "Placeholder",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          320,
+          170,
+          50
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "text",
+          "text": "Your game here",
+          "size": 28,
+          "color": "#eceff4"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    }
+  ]
+}

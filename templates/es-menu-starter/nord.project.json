@@ -1,0 +1,63 @@
+{
+  "format": 1,
+  "name": "Menu Starter",
+  "id": "com.crowelian.esmenustarter",
+  "type": "2d",
+  "engineVersion": "0.1.0",
+  "startScene": "scenes/menu.scene.json",
+  "display": {
+    "width": 640,
+    "height": 360,
+    "scale": "fit",
+    "pixelArt": false,
+    "background": "#2e3440"
+  },
+  "physics": {
+    "engine": "none",
+    "gravity": [
+      0,
+      0,
+      0
+    ]
+  },
+  "input": {
+    "actions": {}
+  },
+  "plugins": [
+    "ui",
+    "audio"
+  ],
+  "ui": {
+    "skin": "cyber",
+    "theme": "nord"
+  },
+  "strings": {
+    "en": {
+      "title": "MY GAME",
+      "play": "Play",
+      "options": "Options",
+      "language": "Language",
+      "volume": "Volume",
+      "back": "Back",
+      "vol-up": "Louder",
+      "vol-down": "Quieter",
+      "hint": "Press Esc to go back to the menu",
+      "lang-en": "English",
+      "lang-fi": "Suomi"
+    },
+    "fi": {
+      "title": "PELINI",
+      "play": "Pelaa",
+      "options": "Asetukset",
+      "language": "Kieli",
+      "volume": "Äänenvoimakkuus",
+      "back": "Takaisin",
+      "vol-up": "Kovemmalle",
+      "vol-down": "Hiljemmalle",
+      "hint": "Paina Esc palataksesi valikkoon",
+      "lang-en": "English",
+      "lang-fi": "Suomi"
+    }
+  },
+  "defaultLanguage": "en"
+}

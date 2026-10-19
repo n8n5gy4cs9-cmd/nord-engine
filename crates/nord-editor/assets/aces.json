@@ -385,6 +385,34 @@
    ]
   },
   {
+   "name": "Events",
+   "kind": "plugin",
+   "conditions": [
+    {
+     "id": "on-event",
+     "params": [
+      "name"
+     ],
+     "raw": [
+      "name"
+     ],
+     "trigger": true
+    }
+   ],
+   "actions": [
+    {
+     "id": "emit",
+     "params": [
+      "name"
+     ],
+     "raw": [
+      "name"
+     ]
+    }
+   ],
+   "expressions": []
+  },
+  {
    "name": "Timeline",
    "kind": "plugin",
    "conditions": [

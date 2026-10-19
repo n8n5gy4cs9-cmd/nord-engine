@@ -142,5 +142,35 @@
     "title": "Rust Bevy game (optional)",
     "description": "Slim Bevy 0.16 app (WebGL2): spinning cube starter. Runs natively and in the browser via the wasm-app export path; own ECS, no Nord scenes.",
     "type": "wasm-app"
+  },
+  {
+    "id": "es-platformer",
+    "title": "Platformer (event sheet)",
+    "description": "Platform behavior, coins, slimes, a turret and a goal — everything is an event sheet. The tutorial T24 game.",
+    "type": "2d"
+  },
+  {
+    "id": "es-topdown-shooter",
+    "title": "Top-down shooter (event sheet)",
+    "description": "WASD + mouse aim, bullets, chasing enemies, score and lives — no scripts, all event sheet + behaviors.",
+    "type": "2d"
+  },
+  {
+    "id": "es-endless-runner",
+    "title": "Endless runner (event sheet)",
+    "description": "Auto-run, jump over obstacles, speed ramp, distance score — event sheet + Platform/Bullet behaviors only.",
+    "type": "2d"
+  },
+  {
+    "id": "es-lights-out",
+    "title": "Lights Out puzzle (event sheet)",
+    "description": "Grid puzzle with instance variables, picking by expression and a solvable shuffle — pure event sheet.",
+    "type": "2d"
+  },
+  {
+    "id": "es-menu-starter",
+    "title": "Menu starter (event sheet)",
+    "description": "Main menu, options (language + volume) and a game scene, wired with game events and string tables (English/Finnish).",
+    "type": "2d"
   }
 ]

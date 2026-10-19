@@ -1,0 +1,345 @@
+{
+  "format": 1,
+  "name": "main",
+  "events": [
+    {
+      "type": "comment",
+      "text": "Top-down shooter — events only. WASD moves, the mouse aims, click shoots. Everything below is editable in the Event sheets tab."
+    },
+    {
+      "type": "variable",
+      "name": "score",
+      "valueType": "number",
+      "value": 0
+    },
+    {
+      "type": "variable",
+      "name": "lives",
+      "valueType": "number",
+      "value": 3
+    },
+    {
+      "type": "variable",
+      "name": "over",
+      "valueType": "number",
+      "value": 0
+    },
+    {
+      "type": "group",
+      "title": "Aim and shoot",
+      "active": true,
+      "children": [
+        {
+          "type": "event",
+          "conditions": [
+            {
+              "object": "System",
+              "id": "every-tick"
+            }
+          ],
+          "actions": [
+            {
+              "object": "Player",
+              "id": "set-angle",
+              "params": {
+                "angle": "angle(Player.X, Player.Y, Mouse.X, Mouse.Y)"
+              }
+            }
+          ]
+        },
+        {
+          "type": "event",
+          "conditions": [
+            {
+              "object": "Mouse",
+              "id": "on-click"
+            },
+            {
+              "object": "System",
+              "id": "compare-variable",
+              "params": {
+                "variable": "over",
+                "comparison": "=",
+                "value": "0"
+              }
+            }
+          ],
+          "actions": [
+            {
+              "object": "System",
+              "id": "create-object",
+              "params": {
+                "object": "Bullet",
+                "layer": "0",
+                "x": "Player.X",
+                "y": "Player.Y"
+              }
+            },
+            {
+              "object": "Bullet",
+              "id": "set-angle-of-motion",
+              "params": {
+                "angle": "Player.Angle"
+              },
+              "behavior": "Bullet"
+            },
+            {
+              "object": "Bullet",
+              "id": "set-angle",
+              "params": {
+                "angle": "Player.Angle"
+              }
+            },
+            {
+              "object": "Audio",
+              "id": "play",
+              "params": {
+                "file": "\"assets/audio/sfx/shoot.wav\"",
+                "loop": "\"once\""
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": "Enemies",
+      "active": true,
+      "children": [
+        {
+          "type": "event",
+          "conditions": [
+            {
+              "object": "System",
+              "id": "every-x-seconds",
+              "params": {
+                "seconds": "0.9"
+              }
+            },
+            {
+              "object": "System",
+              "id": "compare-variable",
+              "params": {
+                "variable": "over",
+                "comparison": "=",
+                "value": "0"
+              }
+            }
+          ],
+          "actions": [
+            {
+              "object": "System",
+              "id": "create-object",
+              "params": {
+                "object": "Enemy",
+                "layer": "0",
+                "x": "choose(-10, 650)",
+                "y": "random(0, 360)"
+              }
+            }
+          ]
+        },
+        {
+          "type": "event",
+          "conditions": [
+            {
+              "object": "Enemy",
+              "id": "compare-x",
+              "params": {
+                "comparison": ">",
+                "value": "-1000"
+              }
+            }
+          ],
+          "actions": [
+            {
+              "object": "Enemy",
+              "id": "move-at-angle",
+              "params": {
+                "angle": "angle(Enemy.X, Enemy.Y, Player.X, Player.Y)",
+                "distance": "70 * dt + score * 0.05"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": "Hits",
+      "active": true,
+      "children": [
+        {
+          "type": "event",
+          "conditions": [
+            {
+              "object": "Bullet",
+              "id": "is-overlapping",
+              "params": {
+                "object": "Enemy"
+              }
+            }
+          ],
+          "actions": [
+            {
+              "object": "System",
+              "id": "add-to-var",
+              "params": {
+                "variable": "score",
+                "value": "1"
+              }
+            },
+            {
+              "object": "Enemy",
+              "id": "destroy"
+            },
+            {
+              "object": "Bullet",
+              "id": "destroy"
+            },
+            {
+              "object": "Audio",
+              "id": "play",
+              "params": {
+                "file": "\"assets/audio/sfx/explosion_small.wav\"",
+                "loop": "\"once\""
+              }
+            }
+          ]
+        },
+        {
+          "type": "event",
+          "conditions": [
+            {
+              "object": "Enemy",
+              "id": "is-overlapping",
+              "params": {
+                "object": "Player"
+              }
+            }
+          ],
+          "actions": [
+            {
+              "object": "System",
+              "id": "add-to-var",
+              "params": {
+                "variable": "lives",
+                "value": "-1"
+              }
+            },
+            {
+              "object": "Enemy",
+              "id": "destroy"
+            },
+            {
+              "object": "Audio",
+              "id": "play",
+              "params": {
+                "file": "\"assets/audio/sfx/hurt.wav\"",
+                "loop": "\"once\""
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": "Game over",
+      "active": true,
+      "children": [
+        {
+          "type": "event",
+          "conditions": [
+            {
+              "object": "System",
+              "id": "compare-variable",
+              "params": {
+                "variable": "lives",
+                "comparison": "<=",
+                "value": "0"
+              }
+            },
+            {
+              "object": "System",
+              "id": "compare-variable",
+              "params": {
+                "variable": "over",
+                "comparison": "=",
+                "value": "0"
+              }
+            }
+          ],
+          "actions": [
+            {
+              "object": "System",
+              "id": "set-var",
+              "params": {
+                "variable": "over",
+                "value": "1"
+              }
+            },
+            {
+              "object": "Message",
+              "id": "set-text",
+              "params": {
+                "text": "\"GAME OVER   Score \" & score & \"   (click to restart)\""
+              }
+            },
+            {
+              "object": "Player",
+              "id": "set-enabled",
+              "params": {
+                "state": "disabled"
+              },
+              "behavior": "EightDirection"
+            }
+          ]
+        },
+        {
+          "type": "event",
+          "conditions": [
+            {
+              "object": "Mouse",
+              "id": "on-click"
+            },
+            {
+              "object": "System",
+              "id": "compare-variable",
+              "params": {
+                "variable": "over",
+                "comparison": "=",
+                "value": "1"
+              }
+            }
+          ],
+          "actions": [
+            {
+              "object": "System",
+              "id": "restart-layout"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "conditions": [
+        {
+          "object": "System",
+          "id": "every-tick"
+        }
+      ],
+      "actions": [
+        {
+          "object": "Hud",
+          "id": "set-text",
+          "params": {
+            "text": "\"Score \" & score & \"    Lives \" & lives"
+          }
+        }
+      ]
+    }
+  ]
+}
