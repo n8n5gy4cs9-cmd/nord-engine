@@ -502,6 +502,78 @@
    ]
   },
   {
+   "name": "Multiplayer",
+   "kind": "plugin",
+   "conditions": [
+    {
+     "id": "on-connected",
+     "params": [],
+     "trigger": true
+    },
+    {
+     "id": "on-peer-joined",
+     "params": [],
+     "trigger": true
+    },
+    {
+     "id": "on-peer-left",
+     "params": [],
+     "trigger": true
+    },
+    {
+     "id": "on-message",
+     "params": [
+      "name"
+     ],
+     "raw": [
+      "name"
+     ],
+     "trigger": true
+    },
+    {
+     "id": "is-host",
+     "params": []
+    },
+    {
+     "id": "is-connected",
+     "params": []
+    }
+   ],
+   "actions": [
+    {
+     "id": "host",
+     "params": [
+      "room"
+     ]
+    },
+    {
+     "id": "join",
+     "params": [
+      "room"
+     ]
+    },
+    {
+     "id": "send",
+     "params": [
+      "name",
+      "value"
+     ]
+    },
+    {
+     "id": "leave",
+     "params": []
+    }
+   ],
+   "expressions": [
+    "Last",
+    "LastFrom",
+    "LastName",
+    "PeerCount",
+    "Id",
+    "IsHost"
+   ]
+  },
+  {
    "name": "Effects",
    "kind": "plugin",
    "conditions": [],

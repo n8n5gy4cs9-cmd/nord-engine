@@ -172,5 +172,11 @@
     "title": "Menu starter (event sheet)",
     "description": "Main menu, options (language + volume) and a game scene, wired with game events and string tables (English/Finnish).",
     "type": "2d"
+  },
+  {
+    "id": "es-multiplayer",
+    "title": "Multiplayer squares (event sheet)",
+    "description": "Two-player WebRTC demo: host/join in the same room over the local network (needs `nord serve`), positions synced with Send/On message.",
+    "type": "2d"
   }
 ]

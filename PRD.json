@@ -1828,7 +1828,7 @@
       "id": "M10-32",
       "milestone": "M10",
       "title": "Optional: Multiplayer (WebRTC P2P + LAN signalling) plugin and demo",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M10-33",

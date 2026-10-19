@@ -1,0 +1,194 @@
+{
+  "format": 1,
+  "name": "main",
+  "events": [
+    {
+      "type": "comment",
+      "text": "Two-player squares over WebRTC. One player presses Host, the other (same Wi-Fi, same `nord serve` address) presses Join. WASD moves your square; the other player's square follows."
+    },
+    {
+      "type": "variable",
+      "name": "status",
+      "valueType": "string",
+      "value": "Press Host on one device and Join on the other"
+    },
+    {
+      "type": "group",
+      "title": "Lobby",
+      "active": true,
+      "children": [
+        {
+          "type": "event",
+          "conditions": [
+            {
+              "object": "Events",
+              "id": "on-event",
+              "params": {
+                "name": "host"
+              }
+            }
+          ],
+          "actions": [
+            {
+              "object": "Multiplayer",
+              "id": "host",
+              "params": {
+                "room": "\"lobby\""
+              }
+            },
+            {
+              "object": "System",
+              "id": "set-var",
+              "params": {
+                "variable": "status",
+                "value": "\"Hosting - waiting for a player…\""
+              }
+            }
+          ]
+        },
+        {
+          "type": "event",
+          "conditions": [
+            {
+              "object": "Events",
+              "id": "on-event",
+              "params": {
+                "name": "join"
+              }
+            }
+          ],
+          "actions": [
+            {
+              "object": "System",
+              "id": "set-var",
+              "params": {
+                "variable": "status",
+                "value": "\"Joining…\""
+              }
+            },
+            {
+              "object": "Multiplayer",
+              "id": "join",
+              "params": {
+                "room": "\"lobby\""
+              }
+            }
+          ]
+        },
+        {
+          "type": "event",
+          "conditions": [
+            {
+              "object": "Multiplayer",
+              "id": "on-connected"
+            }
+          ],
+          "actions": [
+            {
+              "object": "System",
+              "id": "set-var",
+              "params": {
+                "variable": "status",
+                "value": "\"Connected!\""
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": "Sync",
+      "active": true,
+      "children": [
+        {
+          "type": "event",
+          "conditions": [
+            {
+              "object": "Multiplayer",
+              "id": "is-connected"
+            }
+          ],
+          "actions": [
+            {
+              "object": "Multiplayer",
+              "id": "send",
+              "params": {
+                "name": "\"x\"",
+                "value": "Me.X"
+              }
+            },
+            {
+              "object": "Multiplayer",
+              "id": "send",
+              "params": {
+                "name": "\"y\"",
+                "value": "Me.Y"
+              }
+            }
+          ]
+        },
+        {
+          "type": "event",
+          "conditions": [
+            {
+              "object": "Multiplayer",
+              "id": "on-message",
+              "params": {
+                "name": "x"
+              }
+            }
+          ],
+          "actions": [
+            {
+              "object": "Other",
+              "id": "set-x",
+              "params": {
+                "x": "Multiplayer.Last"
+              }
+            }
+          ]
+        },
+        {
+          "type": "event",
+          "conditions": [
+            {
+              "object": "Multiplayer",
+              "id": "on-message",
+              "params": {
+                "name": "y"
+              }
+            }
+          ],
+          "actions": [
+            {
+              "object": "Other",
+              "id": "set-y",
+              "params": {
+                "y": "Multiplayer.Last"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "conditions": [
+        {
+          "object": "System",
+          "id": "every-tick"
+        }
+      ],
+      "actions": [
+        {
+          "object": "Hud",
+          "id": "set-text",
+          "params": {
+            "text": "status & \"   (peers: \" & Multiplayer.PeerCount & \")\""
+          }
+        }
+      ]
+    }
+  ]
+}

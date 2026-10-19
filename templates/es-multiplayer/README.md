@@ -1,0 +1,2 @@
+# Multiplayer squares (event sheet)
+Run `nord serve .` (add `--lan` to play with a phone: open the printed link there). One device presses **Host**, the other **Join**; WASD moves your blue square, the yellow one is the other player. Peer-to-peer WebRTC data channels, signalling through the dev server — no external servers. For a static host (itch.io) you need your own signalling: `game.net.signalling = { send, subscribe }` (see `runtime/core/multiplayer.js`).

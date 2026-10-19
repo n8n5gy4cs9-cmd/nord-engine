@@ -54,6 +54,8 @@ struct App {
     engine: Arc<PathBuf>,
     tx: broadcast::Sender<Vec<String>>,
     hub: Arc<Hub>,
+    /// multiplayer signalling rooms (`/__signal/<room>`), see `runtime/core/multiplayer.js`
+    rooms: Arc<Mutex<HashMap<String, broadcast::Sender<String>>>>,
 }
 
 /// Find the engine root (the directory holding `vendor/VENDOR.json`): `$NORD_ROOT`, else walk up from cwd and the exe.
@@ -169,6 +171,40 @@ async fn reload(State(a): State<App>) -> Sse<impl Stream<Item = Result<Event, In
         .filter_map(|m| async move { m.ok() })
         .map(|paths| Ok(Event::default().data(serde_json::to_string(&paths).unwrap_or_default())));
     Sse::new(s).keep_alive(axum::response::sse::KeepAlive::new())
+}
+
+fn room_tx(a: &App, room: &str) -> Option<broadcast::Sender<String>> {
+    if room.is_empty() || room.len() > 64 || !room.chars().all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_') {
+        return None;
+    }
+    let mut m = a.rooms.lock().unwrap();
+    if !m.contains_key(room) && m.len() >= 64 {
+        m.retain(|_, t| t.receiver_count() > 0); // forget empty rooms before refusing a new one
+        if m.len() >= 64 {
+            return None;
+        }
+    }
+    Some(m.entry(room.to_string()).or_insert_with(|| broadcast::channel(64).0).clone())
+}
+
+/// Multiplayer signalling relay: everything POSTed to a room is delivered to every SSE subscriber of that room (peers filter by `to`).
+async fn signal_get(State(a): State<App>, UrlPath(room): UrlPath<String>) -> Response {
+    let Some(tx) = room_tx(&a, &room) else { return StatusCode::BAD_REQUEST.into_response() };
+    let s = BroadcastStream::new(tx.subscribe()).filter_map(|m| async move { m.ok() }).map(|m| Ok::<_, Infallible>(Event::default().data(m)));
+    Sse::new(s).keep_alive(axum::response::sse::KeepAlive::new()).into_response()
+}
+
+async fn signal_post(State(a): State<App>, UrlPath(room): UrlPath<String>, body: String) -> StatusCode {
+    if body.len() > 65536 {
+        return StatusCode::PAYLOAD_TOO_LARGE;
+    }
+    match room_tx(&a, &room) {
+        Some(tx) => {
+            let _ = tx.send(body);
+            StatusCode::NO_CONTENT
+        }
+        None => StatusCode::BAD_REQUEST,
+    }
 }
 
 async fn edit_events(State(a): State<App>) -> Sse<impl Stream<Item = Result<Event, Infallible>>> {
@@ -440,9 +476,11 @@ pub fn router(project: PathBuf, engine: PathBuf) -> (Router, Arc<Hub>) {
         engine: Arc::new(engine),
         tx,
         hub: hub.clone(),
+        rooms: Arc::default(),
     };
     let r = Router::new()
         .route("/__reload", get(reload))
+        .route("/__signal/:room", get(signal_get).post(signal_post))
         .route("/api/project", get(api_project))
         .route("/api/assets", get(api_assets))
         .route("/api/validate", get(api_validate))
@@ -569,9 +607,10 @@ pub fn lan_router(project: PathBuf, engine: PathBuf, token: String) -> (Router, 
     let (tx, _) = broadcast::channel(16);
     let (edit_tx, _) = broadcast::channel(4);
     let hub = Arc::new(Hub { logs: Mutex::new(vec![]), inbox: Mutex::new(vec![]), edit_tx, reload_tx: tx.clone() });
-    let app = App { desktop: Arc::default(), project: Arc::new(project), engine: Arc::new(engine), tx: tx.clone(), hub: hub.clone() };
+    let app = App { desktop: Arc::default(), project: Arc::new(project), engine: Arc::new(engine), tx: tx.clone(), hub: hub.clone(), rooms: Arc::default() };
     let r = Router::new()
         .route("/__reload", get(reload))
+        .route("/__signal/:room", get(signal_get).post(signal_post))
         .route("/api/log", post(log_post))
         .fallback(lan_static)
         .layer(axum::middleware::from_fn_with_state(Arc::new(token), lan_guard))
@@ -780,6 +819,27 @@ mod tests {
         drop(lan);
         tokio::time::sleep(Duration::from_millis(300)).await;
         assert!(c.get(format!("{base}/?k=x")).send().await.is_err(), "server stops when Lan is dropped");
+        let _ = std::fs::remove_dir_all(&d);
+    }
+
+    #[tokio::test]
+    async fn signalling_relays_room_messages_and_rejects_bad_rooms() {
+        let d = std::env::temp_dir().join(format!("nord-sig-{}", std::process::id()));
+        std::fs::create_dir_all(&d).unwrap();
+        let (r, _) = router(d.clone(), d.clone());
+        let l = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let port = l.local_addr().unwrap().port();
+        tokio::spawn(async move { axum::serve(l, r).await.unwrap() });
+        let base = format!("http://127.0.0.1:{port}");
+        let c = reqwest::Client::new();
+        let mut sub = c.get(format!("{base}/__signal/room-1")).send().await.unwrap();
+        assert_eq!(sub.status(), 200);
+        let post = c.post(format!("{base}/__signal/room-1")).body(r#"{"type":"hello","from":"a"}"#).send().await.unwrap();
+        assert_eq!(post.status(), 204);
+        let chunk = tokio::time::timeout(Duration::from_secs(3), sub.chunk()).await.unwrap().unwrap().unwrap();
+        assert!(String::from_utf8_lossy(&chunk).contains(r#""type":"hello""#));
+        assert_eq!(c.post(format!("{base}/__signal/bad%20room")).body("x").send().await.unwrap().status(), 400);
+        assert_eq!(c.post(format!("{base}/__signal/room-1")).body("x".repeat(70000)).send().await.unwrap().status(), 413);
         let _ = std::fs::remove_dir_all(&d);
     }
 }

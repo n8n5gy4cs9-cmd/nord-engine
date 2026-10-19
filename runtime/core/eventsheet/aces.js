@@ -161,6 +161,23 @@ registerPlugin('Timeline', {
   },
   expressions: { Time: (r, a) => r.scene.timelines?.time(a[0]) ?? 0, Progress: (r, a) => r.scene.timelines?.progress(a[0]) ?? 0 },
 });
+registerPlugin('Multiplayer', { // WebRTC peer-to-peer, signalling via `nord serve` (see multiplayer.js)
+  conditions: {
+    'on-connected': { trigger: true, test: () => true },
+    'on-peer-joined': { trigger: true, test: () => true },
+    'on-peer-left': { trigger: true, test: () => true },
+    'on-message': { params: ['name'], raw: ['name'], trigger: true, test: (r, p) => r.firing.data.name === p.name },
+    'is-host': { test: (r) => r.game.net.isHost },
+    'is-connected': { test: (r) => r.game.net.connected },
+  },
+  actions: {
+    host: { params: ['room'], run: (r, p) => ({ until: r.game.net.host(String(p.room)) }) },
+    join: { params: ['room'], run: (r, p) => ({ until: r.game.net.join(String(p.room)).catch((e) => r.game.reportError(e, { constructor: { name: 'Multiplayer' } }, 'join')) }) },
+    send: { params: ['name', 'value'], run: (r, p) => { r.game.net.send(String(p.name), p.value); } },
+    leave: { run: (r) => ({ until: r.game.net.leave() }) },
+  },
+  expressions: { Last: (r) => r.game.net.last.data, LastFrom: (r) => r.game.net.last.from, LastName: (r) => r.game.net.last.name, PeerCount: (r) => r.game.net.peers.length, Id: (r) => r.game.net.id, IsHost: (r) => (r.game.net.isHost ? 1 : 0) },
+});
 registerPlugin('Effects', { // scene-wide (camera) effects; per-object ones are object ACEs
   actions: {
     'add-effect': { params: ['type'], raw: ['type'], run: (r, p) => { r.game.effects.add('scene', p.type); } },

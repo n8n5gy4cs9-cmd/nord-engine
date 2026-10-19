@@ -77,7 +77,13 @@ export class EventSheet {
 
   // ---------- lifecycle (called by the scene) ----------
   /** Subscribe to the game's event bus (Events → On game event). */
-  listen() { this._off = this.game.events.on('*', ({ name, data }) => { if (name !== 'debugBreak' && name !== 'language') this.fire('Events.on-event', { name, data }); }); }
+  listen() {
+    const NET = { 'net:connected': 'on-connected', 'net:join': 'on-peer-joined', 'net:leave': 'on-peer-left', 'net:message': 'on-message' };
+    this._off = this.game.events.on('*', ({ name, data }) => {
+      if (NET[name]) this.fire(`Multiplayer.${NET[name]}`, data ?? {});
+      else if (name !== 'debugBreak' && name !== 'language') this.fire('Events.on-event', { name, data });
+    });
+  }
   start() { this.listen(); this.fire('System.on-start-of-layout'); }
   end() { this.fire('System.on-end-of-layout'); this._off?.(); }
   update(dt) {

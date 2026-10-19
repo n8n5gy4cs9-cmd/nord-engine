@@ -1,5 +1,7 @@
 # Changelog
 
+- 2026-10-19 (M10-32): **Multiplayer** (optional) — WebRTC peer-to-peer (`runtime/core/multiplayer.js`, event-sheet *Multiplayer* plugin) with a signalling relay in `nord serve` and the LAN preview server; template/example **es-multiplayer**; tests: relay (Rust) and a two-page WebRTC test in Chromium. `docs/MULTIPLAYER.md`.
+
 - 2026-10-19 (M10-35): **Rendering plugin objects** (Phaser): `tiledBackground`, `ninePatch`, `spriteFont`, `drawingCanvas`, `video` components + event-sheet object actions (canvas draw, video control); `docs/PLUGIN_OBJECTS.md`, headless WebGL test `tools/plugin-objects-test.mjs`.
 
 - 2026-10-19 (M10-24): **Preview** — phone/tablet preview on the LAN (`nord_serve::start_lan`, toolbar "Phone" with QR, `nord serve --lan`): token-protected, game files only, live reload, phone console → editor Console; event sheets hot-reload keeping variables (`Game.hotReloadSheet`); game-size presets in the Project tab. Tests: LAN guard (token, hidden paths, shutdown), QR, kittest, hot-reload. Not verified: a real phone / Safari.

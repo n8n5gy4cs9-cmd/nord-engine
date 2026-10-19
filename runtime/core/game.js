@@ -11,6 +11,7 @@ import { Debugger } from './debug.js';
 import { Effects } from './effects.js';
 import { Timelines } from './timeline.js';
 import { loadAddons } from './addons.js';
+import { Multiplayer } from './multiplayer.js';
 
 export class Game {
   /**
@@ -30,6 +31,7 @@ export class Game {
     this.time = { delta: 0, elapsed: 0 };
     this.timeScale = 1;
     this.paused = false;
+    this.net = new Multiplayer(this);
     this.effects = new Effects(this);
     this.i18n = new I18n(this); this.a11y = new Accessibility(this);
     this.audio = null; this.ui = null; this.physics = null;
