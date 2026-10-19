@@ -14,6 +14,8 @@ fs.mkdirSync(`${dir}/assets/video`, { recursive: true });
 execFileSync('ffmpeg', ['-v', 'error', '-y', '-f', 'lavfi', '-i', 'testsrc=size=160x90:rate=15', '-t', '2', '-c:v', 'libvpx', '-b:v', '200k', `${dir}/assets/video/test.webm`]);
 fs.copyFileSync(`${ROOT}/assets/sprites/tileset_platformer.png`, `${dir}/assets/sprites/tileset_platformer.png`);
 const hm = JSON.parse(fs.readFileSync(`${dir}/assets/sprites/hero.png.meta.json`, 'utf8')); hm.origin = [8, 16]; hm.anims.pp = { frames: [0, 1, 2], fps: 10, pingPong: true, frameDurations: [1, 3, 1] }; hm.anims.rt = { frames: [0, 1, 2, 3], fps: 10, repeatTo: 2 }; hm.frameProps = { 1: { event: 'stepped' } }; fs.writeFileSync(`${dir}/assets/sprites/hero.png.meta.json`, JSON.stringify(hm));
+fs.mkdirSync(`${dir}/assets/maps`, { recursive: true });
+fs.writeFileSync(`${dir}/assets/maps/t.tilemap.json`, JSON.stringify({ tileset: 'assets/sprites/tileset_platformer.png', tileWidth: 16, tileHeight: 16, layers: [{ name: 'a', data: [[1, 1, 2], [-1, 3, -1]] }, { name: 'hid', visible: false, data: [[5, 5, 5], [5, 5, 5]] }], collides: [3], animatedTiles: { 1: { frames: [1, 4, 5], fps: 10 } } }));
 const sceneFile = `${dir}/scenes/main.scene.json`;
 const scene = JSON.parse(fs.readFileSync(sceneFile, 'utf8'));
 delete scene.settings.eventSheet;
@@ -25,6 +27,7 @@ scene.entities = [
   ent('Paint', 320, 300, [{ type: 'drawingCanvas', size: [120, 60], color: '#2e3440' }]),
   ent('Pivot', 300, 250, [{ type: 'animatedSprite', texture: 'assets/sprites/hero.png', anim: 'idle' }]),
   ent('Anim', 100, 120, [{ type: 'animatedSprite', texture: 'assets/sprites/hero.png', anim: 'pp' }]),
+  ent('Map', 40, 320, [{ type: 'tilemap', map: 'assets/maps/t.tilemap.json', tileset: 'assets/sprites/tileset_platformer.png' }]),
   ent('Movie', 560, 60, [{ type: 'video', src: 'assets/video/test.webm', size: [160, 90], loop: true, muted: true }]),
 ];
 fs.writeFileSync(sceneFile, JSON.stringify(scene));
@@ -42,6 +45,10 @@ const { errors } = await withPage(dir, async (page) => {
   assert.deepEqual(an, { yoyo: true, durs: [0, 200, 0], loopAnim: true, rtRepeat: 0, loopLen: 2 }, JSON.stringify(an));
   const stepped = await ev(() => new Promise((res) => { __nord.events.on('stepped', () => res(true)); setTimeout(() => res(false), 1500); }));
   assert.ok(stepped, 'per-frame event fires');
+  const tmv = await ev(() => { const c = __nord.scene.find('Map').getComponent('tilemap'); return { hiddenLayer: c.layers[1].visible, a: c.layers[0].getTileAt(0, 0).index }; });
+  assert.equal(tmv.hiddenLayer, false, 'hidden tilemap layer is not shown');
+  const seen = await ev(async () => { const c = __nord.scene.find('Map').getComponent('tilemap'); const set = new Set(); for (let i = 0; i < 12; i++) { set.add(c.layers[0].getTileAt(0, 0).index); await new Promise((r) => setTimeout(r, 60)); } return [...set]; });
+  assert.ok(seen.length >= 2 && seen.every((i) => [1, 4, 5].includes(i)), `animated tile cycles ${seen}`);
   assert.equal(await ev(() => __nord.scene.find('Font').getComponent('spriteFont').count), 4, 'sprite font lays out 4 glyphs');
   await ev(() => __nord.scene.find('Font').set('spriteFont', 'text', 'HAB'));
   assert.equal(await ev(() => __nord.scene.find('Font').getComponent('spriteFont').count), 3, 'text change relayouts');

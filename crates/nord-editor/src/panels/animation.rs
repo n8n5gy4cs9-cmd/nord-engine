@@ -33,6 +33,17 @@ pub struct AnimUi {
     pub dirty_map: bool,
     pub onion: bool,
     pub gif_path: String,
+    pub brush_kind: Brush,
+    pub brush_set: Vec<i64>,
+    pub terrain: usize,
+    pub mask_slot: usize,
+    pub drag_start: Option<(i64, i64)>,
+    pub anim_frames: String,
+    pub anim_fps: f64,
+    pub new_tileset: String,
+    pub new_tile: u32,
+    pub new_w: usize,
+    pub new_h: usize,
 }
 
 pub fn parse_frames(s: &str) -> Vec<i64> {
@@ -468,43 +479,73 @@ pub fn frame_uv(f: i64, cols: i64, fw: f32, fh: f32, size: Vec2) -> Rect {
     )
 }
 
+#[derive(Default, PartialEq, Clone, Copy)]
+pub enum Brush {
+    #[default]
+    Single,
+    Rect,
+    Fill,
+    Random,
+    Terrain,
+    DefineTerrain,
+}
+
 fn tile_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
+    use crate::tilemap as tm;
     if st.anim.zoom == 0.0 {
         st.anim.zoom = 2.0;
     }
-    let maps: Vec<String> = st
-        .assets
-        .iter()
-        .filter(|a| a.path.ends_with(".tilemap.json") || a.path.ends_with(".tmj"))
-        .map(|a| a.path.clone())
-        .collect();
-    ui.horizontal(|ui| {
-        egui::ComboBox::from_id_salt("tmap")
-            .selected_text(
-                st.anim
-                    .map
-                    .clone()
-                    .unwrap_or_else(|| "(choose tilemap)".into()),
-            )
-            .show_ui(ui, |ui| {
-                for m in &maps {
-                    if ui
-                        .selectable_label(st.anim.map.as_deref() == Some(m), m)
-                        .clicked()
-                    {
-                        st.anim.map = Some(m.clone());
-                        st.anim.map_json =
-                            nord_core::io::load_json(&root.join(m)).unwrap_or(Value::Null);
-                        st.anim.layer = 0;
-                        st.anim.dirty_map = false;
-                    }
+    if st.anim.new_tile == 0 {
+        (st.anim.new_tile, st.anim.new_w, st.anim.new_h, st.anim.anim_fps) = (16, 40, 23, 6.0);
+    }
+    let maps: Vec<String> = st.assets.iter().filter(|a| a.path.ends_with(".tilemap.json") || a.path.ends_with(".tmj")).map(|a| a.path.clone()).collect();
+    let images: Vec<String> = st.assets.iter().filter(|a| matches!(a.kind, AssetType::Image | AssetType::Spritesheet)).map(|a| a.path.clone()).collect();
+    ui.horizontal_wrapped(|ui| {
+        egui::ComboBox::from_id_salt("tmap").selected_text(st.anim.map.clone().unwrap_or_else(|| "(choose tilemap)".into())).show_ui(ui, |ui| {
+            for m in &maps {
+                if ui.selectable_label(st.anim.map.as_deref() == Some(m), m).clicked() {
+                    st.anim.map = Some(m.clone());
+                    st.anim.map_json = nord_core::io::load_json(&root.join(m)).unwrap_or(Value::Null);
+                    st.anim.layer = 0;
+                    st.anim.dirty_map = false;
+                }
+            }
+        });
+        ui.menu_button("New tilemap…", |ui| {
+            ui.label("Tileset image");
+            egui::ComboBox::from_id_salt("nt-tileset").selected_text(st.anim.new_tileset.clone()).show_ui(ui, |ui| {
+                for i in &images {
+                    ui.selectable_value(&mut st.anim.new_tileset, i.clone(), i);
                 }
             });
+            ui.horizontal(|ui| {
+                ui.add(egui::DragValue::new(&mut st.anim.new_tile).range(4..=256).prefix("tile "));
+                ui.add(egui::DragValue::new(&mut st.anim.new_w).range(1..=500).prefix("map w "));
+                ui.add(egui::DragValue::new(&mut st.anim.new_h).range(1..=500).prefix("h "));
+            });
+            ui.add(egui::TextEdit::singleline(&mut st.anim.new_name).hint_text("name").desired_width(160.0));
+            if ui.button("Create").clicked() && !st.anim.new_name.trim().is_empty() && !st.anim.new_tileset.is_empty() {
+                let rel = format!("assets/maps/{}.tilemap.json", st.anim.new_name.trim().replace(' ', "-"));
+                let m = tm::new_map(&st.anim.new_tileset, st.anim.new_tile, st.anim.new_tile, st.anim.new_w, st.anim.new_h);
+                if let Some(p) = root.join(&rel).parent() {
+                    let _ = std::fs::create_dir_all(p);
+                }
+                match nord_core::io::save_json(&root.join(&rel), &m) {
+                    Ok(()) => {
+                        st.refresh_assets();
+                        st.anim.map = Some(rel);
+                        st.anim.map_json = m;
+                        st.anim.layer = 0;
+                        st.anim.dirty_map = false;
+                        st.anim.new_name.clear();
+                        ui.close_menu();
+                    }
+                    Err(e) => st.log(LogLevel::Error, e.to_string()),
+                }
+            }
+        });
         ui.add(egui::Slider::new(&mut st.anim.zoom, 0.5..=6.0).text("zoom"));
-        if ui
-            .add_enabled(st.anim.dirty_map, egui::Button::new("Save tilemap"))
-            .clicked()
-        {
+        if ui.add_enabled(st.anim.dirty_map, egui::Button::new("Save tilemap")).clicked() {
             if let Some(m) = &st.anim.map {
                 match nord_core::io::save_json(&root.join(m), &st.anim.map_json) {
                     Ok(()) => {
@@ -520,139 +561,255 @@ fn tile_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
         }
     });
     if st.anim.map_json.is_null() {
-        ui.weak("Pick a *.tilemap.json (Nord format)");
+        ui.weak("Pick a *.tilemap.json (Nord format) or create one from a tileset image");
         return;
     }
     let (mw, mh) = map_size(&st.anim.map_json);
-    let tw = st.anim.map_json["tileWidth"]
-        .as_f64()
-        .or(st.anim.map_json["tilewidth"].as_f64())
-        .unwrap_or(16.0) as f32;
-    let th = st.anim.map_json["tileHeight"]
-        .as_f64()
-        .or(st.anim.map_json["tileheight"].as_f64())
-        .unwrap_or(16.0) as f32;
-    let tileset = st.anim.map_json["tileset"]
-        .as_str()
-        .map(String::from)
-        .or_else(|| {
-            st.anim.map_json["tilesets"][0]["image"]
-                .as_str()
-                .map(String::from)
-        });
+    let tw = st.anim.map_json["tileWidth"].as_f64().or(st.anim.map_json["tilewidth"].as_f64()).unwrap_or(16.0) as f32;
+    let th = st.anim.map_json["tileHeight"].as_f64().or(st.anim.map_json["tileheight"].as_f64()).unwrap_or(16.0) as f32;
+    let tileset = st.anim.map_json["tileset"].as_str().map(String::from).or_else(|| st.anim.map_json["tilesets"][0]["image"].as_str().map(String::from));
     let tinfo = tileset.as_deref().and_then(|t| tex(ui, root, t));
     let nl = st.anim.map_json["layers"].as_array().map_or(0, Vec::len);
-    ui.horizontal(|ui| {
+    st.anim.layer = st.anim.layer.min(nl.saturating_sub(1));
+    // layers: select, add, rename, reorder, hide, delete
+    ui.horizontal_wrapped(|ui| {
         for i in 0..nl {
-            let name = st.anim.map_json["layers"][i]["name"]
-                .as_str()
-                .unwrap_or("layer")
-                .to_string();
-            ui.selectable_value(&mut st.anim.layer, i, name);
+            let name = st.anim.map_json["layers"][i]["name"].as_str().unwrap_or("layer").to_string();
+            let hidden = st.anim.map_json["layers"][i]["visible"].as_bool() == Some(false);
+            ui.selectable_value(&mut st.anim.layer, i, if hidden { format!("({name})") } else { name });
         }
-        ui.weak(format!(
-            "{mw}×{mh} tiles, brush {} (right-click erases)",
-            st.anim.brush
-        ));
+        let l = st.anim.layer;
+        if ui.small_button("＋").on_hover_text("Add layer").clicked() {
+            tm::add_layer(&mut st.anim.map_json, &format!("layer{}", nl + 1));
+            st.anim.layer = nl;
+            st.anim.dirty_map = true;
+        }
+        let mut name = st.anim.map_json["layers"][l]["name"].as_str().unwrap_or("").to_string();
+        if ui.add(egui::TextEdit::singleline(&mut name).desired_width(90.0)).changed() {
+            st.anim.map_json["layers"][l]["name"] = json!(name);
+            st.anim.dirty_map = true;
+        }
+        let mut vis = st.anim.map_json["layers"][l]["visible"].as_bool() != Some(false);
+        if ui.checkbox(&mut vis, "visible").changed() {
+            st.anim.map_json["layers"][l]["visible"] = json!(vis);
+            st.anim.dirty_map = true;
+        }
+        if ui.small_button("▲").clicked() {
+            if let Some(j) = tm::move_layer(&mut st.anim.map_json, l, true) {
+                st.anim.layer = j;
+                st.anim.dirty_map = true;
+            }
+        }
+        if ui.small_button("▼").clicked() {
+            if let Some(j) = tm::move_layer(&mut st.anim.map_json, l, false) {
+                st.anim.layer = j;
+                st.anim.dirty_map = true;
+            }
+        }
+        if ui.small_button("✖").on_hover_text("Delete layer").clicked() && tm::delete_layer(&mut st.anim.map_json, l) {
+            st.anim.layer = l.saturating_sub(1);
+            st.anim.dirty_map = true;
+        }
     });
-    egui::SidePanel::left("tile-palette")
-        .default_width(150.0)
-        .show_inside(ui, |ui| {
-            ui.strong("Tileset");
-            if let Some((id, size)) = tinfo {
-                egui::ScrollArea::both().show(ui, |ui| {
-                    let z = 2.0;
-                    let (r, resp) = ui.allocate_exact_size(size * z, Sense::click());
-                    ui.painter().image(
-                        id,
-                        r,
-                        Rect::from_min_max(Pos2::ZERO, Pos2::new(1.0, 1.0)),
-                        Color32::WHITE,
-                    );
-                    let cols = (size.x / tw).floor().max(1.0) as i64;
-                    if resp.clicked() {
-                        if let Some(p) = resp.interact_pointer_pos() {
-                            let (cx, cy) = (
-                                ((p.x - r.left()) / (tw * z)) as i64,
-                                ((p.y - r.top()) / (th * z)) as i64,
-                            );
-                            st.anim.brush = cy * cols + cx;
-                        }
-                    }
-                    let (bx, by) = ((st.anim.brush % cols) as f32, (st.anim.brush / cols) as f32);
-                    if st.anim.brush >= 0 {
-                        ui.painter().rect_stroke(
-                            Rect::from_min_size(
-                                r.min + Vec2::new(bx * tw * z, by * th * z),
-                                Vec2::new(tw * z, th * z),
-                            ),
-                            0.0,
-                            egui::Stroke::new(2.0_f32, Color32::YELLOW),
-                            egui::StrokeKind::Inside,
-                        );
-                    }
-                });
-            } else {
-                ui.weak("tileset image not found");
+    // brushes
+    let terr = tm::terrains(&st.anim.map_json);
+    ui.horizontal_wrapped(|ui| {
+        for (b, label, tip) in [
+            (Brush::Single, "Paint", "Click/drag; right-click erases"),
+            (Brush::Rect, "Rectangle", "Drag a box"),
+            (Brush::Fill, "Fill", "Flood fill the area"),
+            (Brush::Random, "Random", "Random tile from the ctrl-clicked tileset tiles"),
+            (Brush::Terrain, "Terrain", "Auto-tile: picks edges/corners from neighbours"),
+            (Brush::DefineTerrain, "Define terrain", "Assign tileset tiles to the 16 neighbour masks"),
+        ] {
+            ui.selectable_value(&mut st.anim.brush_kind, b, label).on_hover_text(tip);
+        }
+        ui.weak(format!("{mw}×{mh} tiles, brush {}", st.anim.brush));
+    });
+    if matches!(st.anim.brush_kind, Brush::Terrain | Brush::DefineTerrain) {
+        ui.horizontal_wrapped(|ui| {
+            egui::ComboBox::from_id_salt("terrain-pick").selected_text(terr.get(st.anim.terrain).map_or("(no terrain)".to_string(), |t| t.name.clone())).show_ui(ui, |ui| {
+                for (i, t) in terr.iter().enumerate() {
+                    ui.selectable_value(&mut st.anim.terrain, i, &t.name);
+                }
+            });
+            if ui.small_button("＋ terrain").clicked() {
+                let mut all = terr.clone();
+                all.push(tm::Terrain { name: format!("terrain{}", all.len() + 1), tiles: [-1; 16] });
+                st.anim.terrain = all.len() - 1;
+                tm::set_terrains(&mut st.anim.map_json, &all);
+                st.anim.dirty_map = true;
+            }
+            if st.anim.brush_kind == Brush::DefineTerrain {
+                ui.weak("pick a mask, then click a tileset tile:");
+                for m in 0..16usize {
+                    let t = terr.get(st.anim.terrain).map_or(-1, |t| t.tiles[m]);
+                    let label = format!("{}{}{}{}→{t}", if m & 1 != 0 { "N" } else { "" }, if m & 2 != 0 { "E" } else { "" }, if m & 4 != 0 { "S" } else { "" }, if m & 8 != 0 { "W" } else { "" });
+                    ui.selectable_value(&mut st.anim.mask_slot, m, if m == 0 { format!("alone→{t}") } else { label });
+                }
             }
         });
-    let z = st.anim.zoom;
-    egui::ScrollArea::both().show(ui, |ui| {
-        let (r, resp) = ui.allocate_exact_size(
-            Vec2::new(mw as f32 * tw * z, mh as f32 * th * z),
-            Sense::click_and_drag(),
-        );
-        ui.painter().rect_filled(r, 0.0, Color32::from_gray(30));
-        let layer = st.anim.layer.min(nl.saturating_sub(1));
-        let cols = tinfo.map_or(1, |(_, s)| (s.x / tw).floor().max(1.0) as i64);
-        for y in 0..mh {
-            for x in 0..mw {
-                let cell = Rect::from_min_size(
-                    r.min + Vec2::new(x as f32 * tw * z, y as f32 * th * z),
-                    Vec2::new(tw * z, th * z),
-                );
-                if !ui.is_rect_visible(cell) {
-                    continue;
-                }
-                let v = get_cell(&st.anim.map_json["layers"][layer], mw, x, y);
-                if v >= 0 {
-                    if let Some((id, size)) = tinfo {
-                        ui.painter().image(
-                            id,
-                            cell,
-                            frame_uv(v, cols, tw, th, size),
-                            Color32::WHITE,
-                        );
+    }
+    // properties of the brush tile: collision + animation
+    ui.horizontal_wrapped(|ui| {
+        let tile = st.anim.brush;
+        let mut col = st.anim.map_json["collides"].as_array().is_some_and(|a| a.iter().any(|v| v.as_i64() == Some(tile)));
+        if ui.checkbox(&mut col, format!("tile {tile} blocks movement")).changed() {
+            tm::toggle_collide(&mut st.anim.map_json, tile);
+            st.anim.dirty_map = true;
+        }
+        ui.label("animate frames");
+        ui.add(egui::TextEdit::singleline(&mut st.anim.anim_frames).hint_text("e.g. 5, 6, 7").desired_width(90.0));
+        ui.add(egui::DragValue::new(&mut st.anim.anim_fps).range(1.0..=30.0).prefix("fps "));
+        if ui.small_button("Apply").on_hover_text("animated tile: fewer than 2 frames removes the animation").clicked() {
+            let frames = parse_frames(&st.anim.anim_frames);
+            tm::set_animated(&mut st.anim.map_json, tile, &frames, st.anim.anim_fps.max(1.0));
+            st.anim.dirty_map = true;
+        }
+    });
+    egui::SidePanel::left("tile-palette").default_width(150.0).show_inside(ui, |ui| {
+        ui.strong("Tileset");
+        if let Some((id, size)) = tinfo {
+            egui::ScrollArea::both().show(ui, |ui| {
+                let z = 2.0;
+                let (r, resp) = ui.allocate_exact_size(size * z, Sense::click());
+                ui.painter().image(id, r, Rect::from_min_max(Pos2::ZERO, Pos2::new(1.0, 1.0)), Color32::WHITE);
+                let cols = (size.x / tw).floor().max(1.0) as i64;
+                if resp.clicked() {
+                    if let Some(p) = resp.interact_pointer_pos() {
+                        let (cx, cy) = (((p.x - r.left()) / (tw * z)) as i64, ((p.y - r.top()) / (th * z)) as i64);
+                        let t = cy * cols + cx;
+                        if st.anim.brush_kind == Brush::DefineTerrain {
+                            let mut all = terr.clone();
+                            if let Some(tr) = all.get_mut(st.anim.terrain) {
+                                tr.tiles[st.anim.mask_slot.min(15)] = t;
+                                tm::set_terrains(&mut st.anim.map_json, &all);
+                                st.anim.dirty_map = true;
+                            }
+                        } else if ui.input(|i| i.modifiers.command || i.modifiers.ctrl) {
+                            if let Some(p) = st.anim.brush_set.iter().position(|x| *x == t) {
+                                st.anim.brush_set.remove(p);
+                            } else {
+                                st.anim.brush_set.push(t);
+                            }
+                        } else {
+                            st.anim.brush = t;
+                            st.anim.brush_set = vec![t];
+                        }
                     }
                 }
-                ui.painter().rect_stroke(
-                    cell,
-                    0.0,
-                    egui::Stroke::new(0.5_f32, Color32::from_white_alpha(18)),
-                    egui::StrokeKind::Inside,
-                );
+                let mark = |t: i64, col: Color32| {
+                    let (bx, by) = ((t % cols) as f32, (t / cols) as f32);
+                    ui.painter().rect_stroke(Rect::from_min_size(r.min + Vec2::new(bx * tw * z, by * th * z), Vec2::new(tw * z, th * z)), 0.0, egui::Stroke::new(2.0_f32, col), egui::StrokeKind::Inside);
+                };
+                for t in &st.anim.brush_set {
+                    mark(*t, Color32::from_rgb(120, 200, 255));
+                }
+                if st.anim.brush >= 0 {
+                    mark(st.anim.brush, Color32::YELLOW);
+                }
+            });
+        } else {
+            ui.weak("tileset image not found");
+        }
+    });
+    let z = st.anim.zoom;
+    egui::ScrollArea::both().show(ui, |ui| {
+        let (r, resp) = ui.allocate_exact_size(Vec2::new(mw as f32 * tw * z, mh as f32 * th * z), Sense::click_and_drag());
+        ui.painter().rect_filled(r, 0.0, Color32::from_gray(30));
+        let layer = st.anim.layer;
+        let cols = tinfo.map_or(1, |(_, s)| (s.x / tw).floor().max(1.0) as i64);
+        for li in 0..nl {
+            if st.anim.map_json["layers"][li]["visible"].as_bool() == Some(false) {
+                continue;
             }
+            let faded = if li == layer { Color32::WHITE } else { Color32::from_white_alpha(130) };
+            for y in 0..mh {
+                for x in 0..mw {
+                    let cell = Rect::from_min_size(r.min + Vec2::new(x as f32 * tw * z, y as f32 * th * z), Vec2::new(tw * z, th * z));
+                    if !ui.is_rect_visible(cell) {
+                        continue;
+                    }
+                    let v = get_cell(&st.anim.map_json["layers"][li], mw, x, y);
+                    if v >= 0 {
+                        if let Some((id, size)) = tinfo {
+                            ui.painter().image(id, cell, frame_uv(v, cols, tw, th, size), faded);
+                        }
+                    }
+                }
+            }
+        }
+        for y in 0..mh {
+            for x in 0..mw {
+                let cell = Rect::from_min_size(r.min + Vec2::new(x as f32 * tw * z, y as f32 * th * z), Vec2::new(tw * z, th * z));
+                if ui.is_rect_visible(cell) {
+                    ui.painter().rect_stroke(cell, 0.0, egui::Stroke::new(0.5_f32, Color32::from_white_alpha(18)), egui::StrokeKind::Inside);
+                }
+            }
+        }
+        let cell_at = |p: Pos2| (((p.x - r.left()) / (tw * z)).floor() as i64, ((p.y - r.top()) / (th * z)).floor() as i64);
+        let kind = st.anim.brush_kind;
+        if kind == Brush::DefineTerrain {
+            return;
         }
         let paint = resp.dragged_by(egui::PointerButton::Primary) || resp.clicked();
         let erase = resp.dragged_by(egui::PointerButton::Secondary) || resp.secondary_clicked();
-        if paint || erase {
-            if let Some(p) = resp.interact_pointer_pos() {
-                let (x, y) = (
-                    ((p.x - r.left()) / (tw * z)).floor() as i64,
-                    ((p.y - r.top()) / (th * z)).floor() as i64,
-                );
-                if x >= 0 && y >= 0 && (x as usize) < mw && (y as usize) < mh {
-                    let v = if erase { -1 } else { st.anim.brush };
-                    set_cell(
-                        &mut st.anim.map_json["layers"][layer],
-                        mw,
-                        x as usize,
-                        y as usize,
-                        v,
-                    );
-                    st.anim.dirty_map = true;
-                }
+        let terrain = terr.get(st.anim.terrain).cloned();
+        if resp.drag_started_by(egui::PointerButton::Primary) {
+            st.anim.drag_start = resp.interact_pointer_pos().map(cell_at);
+        }
+        // rectangle preview while dragging
+        if kind == Brush::Rect {
+            if let (Some(s0), Some(p)) = (st.anim.drag_start, resp.interact_pointer_pos()) {
+                let e = cell_at(p);
+                let (a, b) = ((s0.0.min(e.0), s0.1.min(e.1)), (s0.0.max(e.0), s0.1.max(e.1)));
+                let pr = Rect::from_min_max(r.min + Vec2::new(a.0 as f32 * tw * z, a.1 as f32 * th * z), r.min + Vec2::new((b.0 + 1) as f32 * tw * z, (b.1 + 1) as f32 * th * z));
+                ui.painter().rect_stroke(pr, 0.0, egui::Stroke::new(2.0_f32, Color32::YELLOW), egui::StrokeKind::Outside);
             }
+        }
+        let mut changed = false;
+        if let Some(p) = resp.interact_pointer_pos() {
+            let (x, y) = cell_at(p);
+            let brush = st.anim.brush;
+            let set = if st.anim.brush_set.is_empty() { vec![brush] } else { st.anim.brush_set.clone() };
+            if erase {
+                match (&terrain, kind) {
+                    (Some(t), Brush::Terrain) => tm::erase_terrain(&mut st.anim.map_json, layer, x, y, t),
+                    _ => tm::set(&mut st.anim.map_json, layer, x, y, -1),
+                }
+                changed = true;
+            } else if kind == Brush::Rect {
+                if resp.drag_stopped() {
+                    if let Some(s0) = st.anim.drag_start.take() {
+                        tm::rect_fill(&mut st.anim.map_json, layer, s0.0, s0.1, x, y, brush);
+                        changed = true;
+                    }
+                } else if resp.clicked() {
+                    tm::set(&mut st.anim.map_json, layer, x, y, brush);
+                    changed = true;
+                }
+            } else if paint {
+                match kind {
+                    Brush::Single => tm::set(&mut st.anim.map_json, layer, x, y, brush),
+                    Brush::Fill if resp.clicked() => {
+                        tm::flood(&mut st.anim.map_json, layer, x, y, brush);
+                    }
+                    Brush::Random => tm::set(&mut st.anim.map_json, layer, x, y, tm::random_pick(&set, x, y, 7)),
+                    Brush::Terrain => {
+                        if let Some(t) = &terrain {
+                            tm::paint_terrain(&mut st.anim.map_json, layer, x, y, t);
+                        }
+                    }
+                    _ => {}
+                }
+                changed = kind != Brush::Fill || resp.clicked();
+            }
+        }
+        if resp.drag_stopped() {
+            st.anim.drag_start = None;
+        }
+        if changed {
+            st.anim.dirty_map = true;
         }
     });
 }

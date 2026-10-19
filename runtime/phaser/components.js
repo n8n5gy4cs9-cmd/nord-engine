@@ -97,6 +97,7 @@ export function registerPhaserComponents(backend) {
         // layers live in world space (not inside the entity container) so tile collision uses true coordinates; tilemaps are static
         const w = backend.world(e);
         layer.setPosition(w.x, w.y).setScale(w.sx, w.sy).setDepth(e.native.depth + i * 0.01);
+        if (l.visible === false) layer.setVisible(false); // hidden in the tilemap editor
         comp.layers.push(layer); track(comp, layer);
         const collide = d.collides ?? m.collides;
         if (collide?.length && (!d.collideLayer || d.collideLayer === (l.name ?? l))) {
@@ -106,8 +107,24 @@ export function registerPhaserComponents(backend) {
         }
       });
       comp.map = map;
+      // animated tiles (tilemap JSON `animatedTiles: { "<tile id>": { frames: [ids], fps } }`): every cell holding the tile cycles through the frames
+      if (m.animated) {
+        comp.anim = Object.entries(m.animated).map(([id, a]) => ({ id: Number(id), frames: a.frames, ms: 1000 / (a.fps ?? 4), cells: [], cur: -1 }));
+        comp.layers.forEach((layer, li) => layer.forEachTile((t) => { const a = comp.anim.find((x) => x.id === t.index); if (a) a.cells.push([li, t.x, t.y]); }));
+        comp.animT = 0;
+      }
       comp.tileAt = (wx, wy, li = 0) => comp.layers[li]?.getTileAtWorldXY(wx, wy)?.index ?? -1;
       comp.setTile = (tx, ty, idx, li = 0) => comp.layers[li]?.putTileAt(idx, tx, ty);
+    },
+    update(comp, dt) {
+      if (!comp.anim) return;
+      comp.animT += dt * 1000;
+      for (const a of comp.anim) {
+        const f = Math.floor(comp.animT / a.ms) % a.frames.length;
+        if (f === a.cur) continue;
+        a.cur = f;
+        for (const [li, x, y] of a.cells) comp.layers[li]?.putTileAt(a.frames[f], x, y);
+      }
     },
     destroy(comp) { for (const l of comp.layers ?? []) l.destroy(); comp.map?.destroy(); },
   });

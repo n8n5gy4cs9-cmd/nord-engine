@@ -110,7 +110,7 @@ class Backend {
         const j = await loader.json(m);
         mapJson[m] = j;
         if (j.tiledversion || j.type === 'map') { L.tilemapTiledJSON(this.mapKey(m), loader.url(m)); this.maps.set(m, { tiled: true, tileWidth: j.tilewidth, tileHeight: j.tileheight, collides: j.collides }); }
-        else this.maps.set(m, { tiled: false, tileWidth: j.tileWidth, tileHeight: j.tileHeight, layers: j.layers, collides: j.collides });
+        else this.maps.set(m, { tiled: false, tileWidth: j.tileWidth, tileHeight: j.tileHeight, layers: j.layers, collides: j.collides, animated: j.animatedTiles });
       }
       if (L.list.size || L.inflight?.size) {
         await new Promise((res, rej) => {

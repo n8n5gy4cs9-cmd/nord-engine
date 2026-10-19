@@ -1,5 +1,7 @@
 # Changelog
 
+- 2026-10-19 (M10-18): **Tilemap editor v2** — new tilemap from a tileset, brushes (paint, rectangle, fill, random, terrain/auto-tile with 16-mask rules), multiple layers (add/rename/reorder/hide/delete), tile collision list, animated tiles (editor + runtime), hidden layers honoured at runtime. `docs/TILEMAP_EDITOR.md`.
+
 - 2026-10-19 (M10-15/16/17): **Sprite editor** (paint tools, palette, undo, save; origin, named image points, collision polygon with auto-trace, per-frame properties → `.meta.json`; runtime: sprite origin from metadata, `Obj.PointX("name")`/`PointY`) and **animation editor v2** (speed, ping-pong, repeat, repeat-to, tags, frame list with durations, onion skin, GIF import; runtime support incl. per-frame events). Docs `SPRITE_EDITOR.md`, `ANIMATION_EDITOR.md`; tests: pixel/gif/frame_at unit tests, kittest, Chromium (`plugin-objects-test`, `eventsheet-demo-test`).
 
 - 2026-10-19 (M10-12/13, M10-14 partly): **Layout editor** — Layout tab (layers with visible/lock/opacity/parallax/blend/background and reorder, layout size + unbounded scrolling + event sheet link, guides, align/distribute, object types with *Sync instances*, overview map, layouts list); 2D viewport rulers, guides (drag out of rulers, snap), locked/hidden layers; runtime layer properties + camera bounds from layout size; undo now covers scene settings. Tests: 4 unit + 1 kittest, viewport (Chromium + real `nord serve`), layers at runtime. See `docs/LAYOUT_EDITOR.md` for what is not done (drag-to-place, per-layer scale rate).

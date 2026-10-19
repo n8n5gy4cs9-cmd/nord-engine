@@ -1201,3 +1201,34 @@ fn sprite_editor_paints_saves_and_stores_origin_points_and_collision() {
     assert_eq!(meta["origin"], serde_json::json!([5.5, 3.5]));
     assert!(meta["collision"].as_array().unwrap().len() >= 3);
 }
+
+#[test]
+fn tilemap_v2_ui_renders_every_brush_and_layer_controls() {
+    use nord_editor::panels::animation::{Brush, Mode};
+    let d = example_copy("tilev2", "conformance-2d");
+    let mut st = EditorState::new();
+    st.open_project(&d).unwrap();
+    let mut m = nord_editor::tilemap::new_map("assets/sprites/hero.png", 16, 16, 8, 6);
+    nord_editor::tilemap::add_layer(&mut m, "top");
+    nord_editor::tilemap::set_terrains(&mut m, &[nord_editor::tilemap::Terrain { name: "wall".into(), tiles: std::array::from_fn(|i| i as i64) }]);
+    st.anim.mode = Mode::Tile;
+    st.anim.map = Some("assets/maps/v2.tilemap.json".into());
+    st.anim.map_json = m;
+    let mut h = Harness::builder()
+        .with_size(egui::vec2(1200.0, 900.0))
+        .build_ui_state(|ui, st: &mut EditorState| panels::animation::ui(st, ui), st);
+    loaders(&h);
+    h.run_steps(3);
+    for b in [Brush::Single, Brush::Rect, Brush::Fill, Brush::Random, Brush::Terrain, Brush::DefineTerrain] {
+        h.state_mut().anim.brush_kind = b;
+        h.run_steps(2);
+    }
+    // layer controls
+    h.get_by_label("＋").click();
+    h.run_steps(2);
+    assert_eq!(h.state().anim.map_json["layers"].as_array().unwrap().len(), 3);
+    assert!(h.state().anim.dirty_map);
+    h.get_by_label("✖").click();
+    h.run_steps(2);
+    assert_eq!(h.state().anim.map_json["layers"].as_array().unwrap().len(), 2);
+}

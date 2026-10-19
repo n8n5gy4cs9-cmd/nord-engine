@@ -1744,7 +1744,7 @@
       "id": "M10-18",
       "milestone": "M10",
       "title": "Tilemap editor v2: tileset import + slicing, paint/rect/fill/random brushes, multiple layers, tile collision polygons, animated tiles, auto-tile (terrain) rules",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M10-19",
