@@ -1,0 +1,3 @@
+# The editor UI tests share one process-wide NORD_CONFIG_DIR (recent projects, settings), so they must not run in parallel.
+[env]
+RUST_TEST_THREADS = "1"

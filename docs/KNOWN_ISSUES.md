@@ -119,5 +119,5 @@ Assets regressions pass for divider dragging, row alignment/wrapping at 48/84/16
 - Sheet undo is separate from the scene undo stack; Cmd+Z in this tab is not wired to it (use the Undo/Redo buttons).
 - Entity `behaviors` are preserved on save but there is no inspector UI for them yet (edit the scene JSON).
 
-## Editor UI tests race (pre-existing)
-`cargo test -p nord-editor --test ui` fails `hub_search_opens_examples_and_docs_without_a_project` when the tests run in parallel (the default) but passes alone and with `RUST_TEST_THREADS=1`. It already failed at the start of M10 (commit 0bf20cd1), so it is not caused by the event-sheet/history panels; the likely cause is tests sharing the global editor config dir (recent projects/settings). CI runs `cargo test --workspace` in parallel, so this needs an isolated config dir per test (e.g. `NORD_CONFIG_DIR`).
+## Editor UI tests race (worked around)
+`tests/ui.rs` panels share one process-wide `NORD_CONFIG_DIR` (recent projects, settings), so `hub_search_opens_examples_and_docs_without_a_project` failed when tests ran in parallel (it already failed at the start of M10, commit 0bf20cd1). Workaround: `.cargo/config.toml` sets `RUST_TEST_THREADS=1`. Proper fix: an isolated config dir per test (needs a thread-local override in `nord_core::io::config_dir`).
