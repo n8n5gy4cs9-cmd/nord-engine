@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 182/192 tasks (95%)** · updated 2026-10-19
+**Overall: 182/226 tasks (81%)** · updated 2026-10-19
 
 | Milestone | Progress |
 |---|---|
@@ -17,6 +17,7 @@
 | M7 Docs | 20/20 (100%) |
 | M8 Polish & portability | 15/20 (75%) |
 | M9 Desktop apps | 16/16 (100%) |
+| M10 Construct-style editor | 0/34 (0%) |
 
 ## Next up
 - **M3-07** SPIKE: wry child webview embedded in egui panel on macOS (resize, HiDPI, focus, IPC both ways); fallback separate window
@@ -257,6 +258,44 @@ _real native desktop apps (Rust backend): files, dialogs, notifications, tray, w
 - [x] **M9-15** Templates + examples: desktop notes app (files+store+notifications), file organiser (fs+dialogs), clipboard manager (tray+global shortcut), markdown editor — JS and Rust variants; e2e where headless-possible
 - [x] **M9-16** Tests & CI: capability unit tests, fs sandbox escape tests, per-OS CI matrix (macos-14, windows, ubuntu) building/launching sample apps headless; document unverified parts honestly
 
+## M10 — Construct-style editor
+_features cloned from Construct 3's editor (construct.net/en/make-games/games-editor): event sheets, behaviors, layout/animation/tilemap tools, effects, debugger, project tools. Spec: docs/CONSTRUCT_PARITY.md_
+
+- [ ] **M10-01** Spec: docs/CONSTRUCT_PARITY.md — map each Construct 3 editor feature to Nord equivalent, scope + non-goals (no copying Construct code/assets; clean-room, original names where practical)
+- [ ] **M10-02** Event sheet format: JSON schema (events/conditions/actions/groups/functions/vars) + PROJECT_FORMAT.md section + versioning
+- [ ] **M10-03** Event sheet compiler: JSON -> nord.js module (and interpreter fallback for hot-reload), source maps for debugger
+- [ ] **M10-04** Event sheet editor panel (egui): add/edit/delete/reorder events, condition/action picker dialog with search, drag&drop, collapse, comments, disable, colour groups, undo/redo
+- [ ] **M10-05** Event sheet: object picker + parameter widgets (expression editor w/ autocomplete, expressions, object/instance/layer/animation/audio pickers)
+- [ ] **M10-06** Event sheet: system conditions/actions (every tick, on start of layout, trigger once, compare var, for-each, repeat, while, pick by comparison/evaluate/random, else, wait, go to layout, set timescale)
+- [ ] **M10-07** Event sheet: functions (params, return value, async), includes, global/local/static vars, groups activation, sub-events
+- [ ] **M10-08** Behavior framework: attach/detach in inspector, behavior schema (properties, conditions, actions, expressions) shared by editor + runtime
+- [ ] **M10-09** Behaviors set A: Platform, 8-Direction, Bullet, Sine, Fade, Wrap, Scroll-To, Bound-to-Layout, Solid, Jumpthru, Persist, Destroy-outside-layout
+- [ ] **M10-10** Behaviors set B: Pin, Drag&Drop, Anchor, Car, Orbit, Rotate, Flash, Timer, Tween, Turret, Line of Sight, Pathfinding (grid A*), Physics
+- [ ] **M10-11** Families + instance variables + containers + global objects + object templates (prefab link)
+- [ ] **M10-12** Layout editor: layer panel (add/rename/reorder/lock/hide, parallax, scale rate, opacity, blend mode, transparent, background colour, force own texture)
+- [ ] **M10-13** Layout editor: rulers/guides, snapping options, alignment/distribute for multi-select, layout properties (size, unbounded scrolling, event sheet link), multiple layouts + layout switching
+- [ ] **M10-14** Layout editor: object-type panel + drag-to-place, instance property sync, layout views (zoom), minimap/overview
+- [ ] **M10-15** Sprite/image editor: paint tools (pencil, brush, eraser, fill, line, rect, ellipse, select, move, flip/rotate), palette, zoom/grid, import/export PNG
+- [ ] **M10-16** Sprite editor: origin point, named image points, collision polygon editor with auto-trace, per-frame properties
+- [ ] **M10-17** Animation editor v2: multiple named animations per object, frame list, duration/speed/loop/ping-pong/repeat-to, onion skin, preview play, import spritesheet/GIF, tags
+- [ ] **M10-18** Tilemap editor v2: tileset import + slicing, paint/rect/fill/random brushes, multiple layers, tile collision polygons, animated tiles, auto-tile (terrain) rules
+- [ ] **M10-19** Effects: per-object/layer/layout effect stack + parameters in inspector; built-ins (blur, glow, bloom, outline, CRT, tint, brightness/contrast, hue, pixelate, wave, distort, vignette); JS runtime pipelines
+- [ ] **M10-20** Particles: editor with live preview, presets (fire, smoke, snow, sparks), property curves
+- [ ] **M10-21** Timeline/keyframe editor: tracks per property, easing curve editor, events trigger, play/pause actions
+- [ ] **M10-22** Debugger: pause/resume/step, inspector for live instances + vars (editable), event sheet highlighting + breakpoints, console eval
+- [ ] **M10-23** Profiler: FPS/frame-time/draw-calls/memory graphs, per-event-group cost, object count, slow-frame markers
+- [ ] **M10-24** Preview: preview layout/project buttons, LAN preview URL + QR for phone, window size/orientation presets, hot-reload with state keep
+- [ ] **M10-25** Project tools: project properties dialog (name, size, scaling mode, orientation, fullscreen, loader style, icons, version), folders in project bar, Find All References, project search/replace, safe rename
+- [ ] **M10-26** Plugin objects: Text, Tiled Background, 9-Patch, Spritefont, Array, Dictionary, JSON, AJAX, LocalStorage, Function, Audio, Keyboard/Mouse/Touch/Gamepad, Drawing Canvas, Video — as nord.js objects with actions/conditions/expressions
+- [ ] **M10-27** Addon SDK: JS addon format (plugin/behavior/effect) + `nord addon pack/install`, editor loads metadata, docs + sample addon
+- [ ] **M10-28** Export presets: PWA (manifest + service worker offline), Web zip, itch.io, Mac/Win/Linux via existing players; export wizard with checks (size, offline scan, missing assets)
+- [ ] **M10-29** Templates + example browser: Platformer, Top-down shooter, Puzzle, Endless runner, UI/menu starters built with event sheets; open-as-project
+- [ ] **M10-30** Localisation + accessibility: string tables, language switch action, UI scale, touch-controls overlay, colour-blind preview
+- [ ] **M10-31** Version history: snapshots + restore + diff view for project JSON/event sheets
+- [ ] **M10-32** Optional: Multiplayer (WebRTC P2P + LAN signalling) plugin and demo
+- [ ] **M10-33** Manual + tutorials for all M10 features (event sheets first-game tutorial, behaviors, layout editor, effects, debugger); rebuild docs/manual
+- [ ] **M10-34** Tests: event-sheet compiler unit tests, behaviors headless Chromium tests, egui_kittest for new panels; wire to CI
+
 ## Features (PRD)
 
 | ID | Feature | Milestone | Priority | Status |
@@ -290,4 +329,23 @@ _real native desktop apps (Rust backend): files, dialogs, notifications, tray, w
 | FR-41 | Snippet/script library (200+) | M6 | high | todo |
 | FR-42 | Examples (12+ games, 6+ apps, 3 Rust) | M6 | high | todo |
 | FR-43 | Manual + tutorials with live code | M7 | high | todo |
+| FR-50 | Event sheets (visual logic: events, conditions, actions, groups, includes, functions, local/global vars, sub-events, else/or blocks) compiled to nord.js | M10 | critical | todo |
+| FR-51 | Behaviors system (attachable reusable components: Platform, 8-Direction, Bullet, Sine, Fade, Pin, Drag&Drop, Solid, Wrap, Tween, Car, Physics, Pathfinding, Line of Sight, Scroll-To, Bound-to-Layout, Turret, Orbit, Rotate, Timer, Flash, Anchor, Destroy-outside, Persist) | M10 | critical | todo |
+| FR-52 | Layout editor (layers w/ parallax/scale/opacity/blend/force-own-texture, instances, snap, rulers, multi-select align/distribute, lock layers, layout views, multiple layouts + transitions) | M10 | high | todo |
+| FR-53 | Object types + instances (families, instance variables, effects per object, containers, global objects, templates, 9-patch, tiled background, text, sprite font) | M10 | high | todo |
+| FR-54 | Image/sprite editor (paint, layers-lite, origin + image points, collision polygon editor, tags, pixel tools, import GIF/spritesheet) | M10 | high | todo |
+| FR-55 | Animations editor upgrade (named animations, frames, per-frame duration, speed, loop/ping-pong/repeat-to, import/export, onion skin, preview) | M10 | high | todo |
+| FR-56 | Tilemap editor (Tiled-style: tile painting, brush/rect/fill/random, tile collision polygons, animated tiles, layers) in-editor | M10 | high | todo |
+| FR-57 | Effects/shaders per object/layer/layout (blur, glow, bloom, CRT, tint, color adjust, outline, distortion…) via WebGL/Phaser pipelines | M10 | medium | todo |
+| FR-58 | Debugger + profiler (pause/step, inspect live instances/vars, edit values at runtime, event sheet breakpoints, FPS/CPU/GPU/memory graphs, remote preview) | M10 | high | todo |
+| FR-59 | Project bar/tools (project properties, object/layout/event/script/audio/font/icon folders, Find All References, project-wide search/replace, rename-aware refactor, global variables, project-level undo) | M10 | medium | todo |
+| FR-60 | Addon SDK (plugins, behaviors, effects, drawing plugins in JS; editor-side metadata; package + install as .nordaddon) | M10 | medium | todo |
+| FR-61 | Plugin set: Sprite, Text, Tilemap, Particles, Audio, Keyboard, Mouse, Touch, Gamepad, Array, Dictionary, JSON, AJAX, Local Storage, Browser, Function, System, Timeline/Tween, 3D-lite shapes, Video, Spritefont, Drawing canvas | M10 | medium | todo |
+| FR-62 | Timeline editor (keyframes for properties/animations, easing curves, play from events) | M10 | medium | todo |
+| FR-63 | Multi-platform export presets (Web, Mac, Windows, Linux, PWA w/ offline manifest + service worker, mobile-web, itch.io/Newgrounds zip) w/ export wizard | M10 | medium | todo |
+| FR-64 | Preview modes (Preview layout/project, preview on LAN/QR for phone, hot-reload, preview with debugger, window-size presets/rotation) | M10 | medium | todo |
+| FR-65 | Templates + built-in example browser (Platformer, Shooter, Puzzle, UI; open example as project) and tutorials entry | M10 | low | todo |
+| FR-66 | Multiplayer plugin (peer-to-peer via WebRTC signalling; offline-first, optional LAN) + save/load slots | M10 | low | todo |
+| FR-67 | Accessibility/localisation (string tables, language switch, UI scale, colour-blind preview, touch controls overlay) | M10 | low | todo |
+| FR-68 | Version history + snapshots + project folder diff (git-friendly, restore snapshot) | M10 | low | todo |
 

@@ -79,6 +79,11 @@
       "id": "M9",
       "name": "Desktop apps",
       "goal": "real native desktop apps (Rust backend): files, dialogs, notifications, tray, windows, storage, packaging"
+    },
+    {
+      "id": "M10",
+      "name": "Construct-style editor",
+      "goal": "features cloned from Construct 3's editor (construct.net/en/make-games/games-editor): event sheets, behaviors, layout/animation/tilemap tools, effects, debugger, project tools. Spec: docs/CONSTRUCT_PARITY.md"
     }
   ],
   "features": [
@@ -313,6 +318,158 @@
       "priority": "high",
       "status": "todo",
       "spec": "docs/PRD.md"
+    },
+    {
+      "id": "FR-50",
+      "title": "Event sheets (visual logic: events, conditions, actions, groups, includes, functions, local/global vars, sub-events, else/or blocks) compiled to nord.js",
+      "milestone": "M10",
+      "priority": "critical",
+      "status": "todo",
+      "spec": "docs/CONSTRUCT_PARITY.md"
+    },
+    {
+      "id": "FR-51",
+      "title": "Behaviors system (attachable reusable components: Platform, 8-Direction, Bullet, Sine, Fade, Pin, Drag&Drop, Solid, Wrap, Tween, Car, Physics, Pathfinding, Line of Sight, Scroll-To, Bound-to-Layout, Turret, Orbit, Rotate, Timer, Flash, Anchor, Destroy-outside, Persist)",
+      "milestone": "M10",
+      "priority": "critical",
+      "status": "todo",
+      "spec": "docs/CONSTRUCT_PARITY.md"
+    },
+    {
+      "id": "FR-52",
+      "title": "Layout editor (layers w/ parallax/scale/opacity/blend/force-own-texture, instances, snap, rulers, multi-select align/distribute, lock layers, layout views, multiple layouts + transitions)",
+      "milestone": "M10",
+      "priority": "high",
+      "status": "todo",
+      "spec": "docs/CONSTRUCT_PARITY.md"
+    },
+    {
+      "id": "FR-53",
+      "title": "Object types + instances (families, instance variables, effects per object, containers, global objects, templates, 9-patch, tiled background, text, sprite font)",
+      "milestone": "M10",
+      "priority": "high",
+      "status": "todo",
+      "spec": "docs/CONSTRUCT_PARITY.md"
+    },
+    {
+      "id": "FR-54",
+      "title": "Image/sprite editor (paint, layers-lite, origin + image points, collision polygon editor, tags, pixel tools, import GIF/spritesheet)",
+      "milestone": "M10",
+      "priority": "high",
+      "status": "todo",
+      "spec": "docs/CONSTRUCT_PARITY.md"
+    },
+    {
+      "id": "FR-55",
+      "title": "Animations editor upgrade (named animations, frames, per-frame duration, speed, loop/ping-pong/repeat-to, import/export, onion skin, preview)",
+      "milestone": "M10",
+      "priority": "high",
+      "status": "todo",
+      "spec": "docs/CONSTRUCT_PARITY.md"
+    },
+    {
+      "id": "FR-56",
+      "title": "Tilemap editor (Tiled-style: tile painting, brush/rect/fill/random, tile collision polygons, animated tiles, layers) in-editor",
+      "milestone": "M10",
+      "priority": "high",
+      "status": "todo",
+      "spec": "docs/CONSTRUCT_PARITY.md"
+    },
+    {
+      "id": "FR-57",
+      "title": "Effects/shaders per object/layer/layout (blur, glow, bloom, CRT, tint, color adjust, outline, distortion…) via WebGL/Phaser pipelines",
+      "milestone": "M10",
+      "priority": "medium",
+      "status": "todo",
+      "spec": "docs/CONSTRUCT_PARITY.md"
+    },
+    {
+      "id": "FR-58",
+      "title": "Debugger + profiler (pause/step, inspect live instances/vars, edit values at runtime, event sheet breakpoints, FPS/CPU/GPU/memory graphs, remote preview)",
+      "milestone": "M10",
+      "priority": "high",
+      "status": "todo",
+      "spec": "docs/CONSTRUCT_PARITY.md"
+    },
+    {
+      "id": "FR-59",
+      "title": "Project bar/tools (project properties, object/layout/event/script/audio/font/icon folders, Find All References, project-wide search/replace, rename-aware refactor, global variables, project-level undo)",
+      "milestone": "M10",
+      "priority": "medium",
+      "status": "todo",
+      "spec": "docs/CONSTRUCT_PARITY.md"
+    },
+    {
+      "id": "FR-60",
+      "title": "Addon SDK (plugins, behaviors, effects, drawing plugins in JS; editor-side metadata; package + install as .nordaddon)",
+      "milestone": "M10",
+      "priority": "medium",
+      "status": "todo",
+      "spec": "docs/CONSTRUCT_PARITY.md"
+    },
+    {
+      "id": "FR-61",
+      "title": "Plugin set: Sprite, Text, Tilemap, Particles, Audio, Keyboard, Mouse, Touch, Gamepad, Array, Dictionary, JSON, AJAX, Local Storage, Browser, Function, System, Timeline/Tween, 3D-lite shapes, Video, Spritefont, Drawing canvas",
+      "milestone": "M10",
+      "priority": "medium",
+      "status": "todo",
+      "spec": "docs/CONSTRUCT_PARITY.md"
+    },
+    {
+      "id": "FR-62",
+      "title": "Timeline editor (keyframes for properties/animations, easing curves, play from events)",
+      "milestone": "M10",
+      "priority": "medium",
+      "status": "todo",
+      "spec": "docs/CONSTRUCT_PARITY.md"
+    },
+    {
+      "id": "FR-63",
+      "title": "Multi-platform export presets (Web, Mac, Windows, Linux, PWA w/ offline manifest + service worker, mobile-web, itch.io/Newgrounds zip) w/ export wizard",
+      "milestone": "M10",
+      "priority": "medium",
+      "status": "todo",
+      "spec": "docs/CONSTRUCT_PARITY.md"
+    },
+    {
+      "id": "FR-64",
+      "title": "Preview modes (Preview layout/project, preview on LAN/QR for phone, hot-reload, preview with debugger, window-size presets/rotation)",
+      "milestone": "M10",
+      "priority": "medium",
+      "status": "todo",
+      "spec": "docs/CONSTRUCT_PARITY.md"
+    },
+    {
+      "id": "FR-65",
+      "title": "Templates + built-in example browser (Platformer, Shooter, Puzzle, UI; open example as project) and tutorials entry",
+      "milestone": "M10",
+      "priority": "low",
+      "status": "todo",
+      "spec": "docs/CONSTRUCT_PARITY.md"
+    },
+    {
+      "id": "FR-66",
+      "title": "Multiplayer plugin (peer-to-peer via WebRTC signalling; offline-first, optional LAN) + save/load slots",
+      "milestone": "M10",
+      "priority": "low",
+      "status": "todo",
+      "spec": "docs/CONSTRUCT_PARITY.md"
+    },
+    {
+      "id": "FR-67",
+      "title": "Accessibility/localisation (string tables, language switch, UI scale, colour-blind preview, touch controls overlay)",
+      "milestone": "M10",
+      "priority": "low",
+      "status": "todo",
+      "spec": "docs/CONSTRUCT_PARITY.md"
+    },
+    {
+      "id": "FR-68",
+      "title": "Version history + snapshots + project folder diff (git-friendly, restore snapshot)",
+      "milestone": "M10",
+      "priority": "low",
+      "status": "todo",
+      "spec": "docs/CONSTRUCT_PARITY.md"
     }
   ],
   "tasks": [
@@ -1467,6 +1624,210 @@
       "milestone": "M8",
       "title": "Code editor word wrap and configurable line height/letter spacing",
       "status": "done"
+    },
+    {
+      "id": "M10-01",
+      "milestone": "M10",
+      "title": "Spec: docs/CONSTRUCT_PARITY.md — map each Construct 3 editor feature to Nord equivalent, scope + non-goals (no copying Construct code/assets; clean-room, original names where practical)",
+      "status": "todo"
+    },
+    {
+      "id": "M10-02",
+      "milestone": "M10",
+      "title": "Event sheet format: JSON schema (events/conditions/actions/groups/functions/vars) + PROJECT_FORMAT.md section + versioning",
+      "status": "todo"
+    },
+    {
+      "id": "M10-03",
+      "milestone": "M10",
+      "title": "Event sheet compiler: JSON -> nord.js module (and interpreter fallback for hot-reload), source maps for debugger",
+      "status": "todo"
+    },
+    {
+      "id": "M10-04",
+      "milestone": "M10",
+      "title": "Event sheet editor panel (egui): add/edit/delete/reorder events, condition/action picker dialog with search, drag&drop, collapse, comments, disable, colour groups, undo/redo",
+      "status": "todo"
+    },
+    {
+      "id": "M10-05",
+      "milestone": "M10",
+      "title": "Event sheet: object picker + parameter widgets (expression editor w/ autocomplete, expressions, object/instance/layer/animation/audio pickers)",
+      "status": "todo"
+    },
+    {
+      "id": "M10-06",
+      "milestone": "M10",
+      "title": "Event sheet: system conditions/actions (every tick, on start of layout, trigger once, compare var, for-each, repeat, while, pick by comparison/evaluate/random, else, wait, go to layout, set timescale)",
+      "status": "todo"
+    },
+    {
+      "id": "M10-07",
+      "milestone": "M10",
+      "title": "Event sheet: functions (params, return value, async), includes, global/local/static vars, groups activation, sub-events",
+      "status": "todo"
+    },
+    {
+      "id": "M10-08",
+      "milestone": "M10",
+      "title": "Behavior framework: attach/detach in inspector, behavior schema (properties, conditions, actions, expressions) shared by editor + runtime",
+      "status": "todo"
+    },
+    {
+      "id": "M10-09",
+      "milestone": "M10",
+      "title": "Behaviors set A: Platform, 8-Direction, Bullet, Sine, Fade, Wrap, Scroll-To, Bound-to-Layout, Solid, Jumpthru, Persist, Destroy-outside-layout",
+      "status": "todo"
+    },
+    {
+      "id": "M10-10",
+      "milestone": "M10",
+      "title": "Behaviors set B: Pin, Drag&Drop, Anchor, Car, Orbit, Rotate, Flash, Timer, Tween, Turret, Line of Sight, Pathfinding (grid A*), Physics",
+      "status": "todo"
+    },
+    {
+      "id": "M10-11",
+      "milestone": "M10",
+      "title": "Families + instance variables + containers + global objects + object templates (prefab link)",
+      "status": "todo"
+    },
+    {
+      "id": "M10-12",
+      "milestone": "M10",
+      "title": "Layout editor: layer panel (add/rename/reorder/lock/hide, parallax, scale rate, opacity, blend mode, transparent, background colour, force own texture)",
+      "status": "todo"
+    },
+    {
+      "id": "M10-13",
+      "milestone": "M10",
+      "title": "Layout editor: rulers/guides, snapping options, alignment/distribute for multi-select, layout properties (size, unbounded scrolling, event sheet link), multiple layouts + layout switching",
+      "status": "todo"
+    },
+    {
+      "id": "M10-14",
+      "milestone": "M10",
+      "title": "Layout editor: object-type panel + drag-to-place, instance property sync, layout views (zoom), minimap/overview",
+      "status": "todo"
+    },
+    {
+      "id": "M10-15",
+      "milestone": "M10",
+      "title": "Sprite/image editor: paint tools (pencil, brush, eraser, fill, line, rect, ellipse, select, move, flip/rotate), palette, zoom/grid, import/export PNG",
+      "status": "todo"
+    },
+    {
+      "id": "M10-16",
+      "milestone": "M10",
+      "title": "Sprite editor: origin point, named image points, collision polygon editor with auto-trace, per-frame properties",
+      "status": "todo"
+    },
+    {
+      "id": "M10-17",
+      "milestone": "M10",
+      "title": "Animation editor v2: multiple named animations per object, frame list, duration/speed/loop/ping-pong/repeat-to, onion skin, preview play, import spritesheet/GIF, tags",
+      "status": "todo"
+    },
+    {
+      "id": "M10-18",
+      "milestone": "M10",
+      "title": "Tilemap editor v2: tileset import + slicing, paint/rect/fill/random brushes, multiple layers, tile collision polygons, animated tiles, auto-tile (terrain) rules",
+      "status": "todo"
+    },
+    {
+      "id": "M10-19",
+      "milestone": "M10",
+      "title": "Effects: per-object/layer/layout effect stack + parameters in inspector; built-ins (blur, glow, bloom, outline, CRT, tint, brightness/contrast, hue, pixelate, wave, distort, vignette); JS runtime pipelines",
+      "status": "todo"
+    },
+    {
+      "id": "M10-20",
+      "milestone": "M10",
+      "title": "Particles: editor with live preview, presets (fire, smoke, snow, sparks), property curves",
+      "status": "todo"
+    },
+    {
+      "id": "M10-21",
+      "milestone": "M10",
+      "title": "Timeline/keyframe editor: tracks per property, easing curve editor, events trigger, play/pause actions",
+      "status": "todo"
+    },
+    {
+      "id": "M10-22",
+      "milestone": "M10",
+      "title": "Debugger: pause/resume/step, inspector for live instances + vars (editable), event sheet highlighting + breakpoints, console eval",
+      "status": "todo"
+    },
+    {
+      "id": "M10-23",
+      "milestone": "M10",
+      "title": "Profiler: FPS/frame-time/draw-calls/memory graphs, per-event-group cost, object count, slow-frame markers",
+      "status": "todo"
+    },
+    {
+      "id": "M10-24",
+      "milestone": "M10",
+      "title": "Preview: preview layout/project buttons, LAN preview URL + QR for phone, window size/orientation presets, hot-reload with state keep",
+      "status": "todo"
+    },
+    {
+      "id": "M10-25",
+      "milestone": "M10",
+      "title": "Project tools: project properties dialog (name, size, scaling mode, orientation, fullscreen, loader style, icons, version), folders in project bar, Find All References, project search/replace, safe rename",
+      "status": "todo"
+    },
+    {
+      "id": "M10-26",
+      "milestone": "M10",
+      "title": "Plugin objects: Text, Tiled Background, 9-Patch, Spritefont, Array, Dictionary, JSON, AJAX, LocalStorage, Function, Audio, Keyboard/Mouse/Touch/Gamepad, Drawing Canvas, Video — as nord.js objects with actions/conditions/expressions",
+      "status": "todo"
+    },
+    {
+      "id": "M10-27",
+      "milestone": "M10",
+      "title": "Addon SDK: JS addon format (plugin/behavior/effect) + `nord addon pack/install`, editor loads metadata, docs + sample addon",
+      "status": "todo"
+    },
+    {
+      "id": "M10-28",
+      "milestone": "M10",
+      "title": "Export presets: PWA (manifest + service worker offline), Web zip, itch.io, Mac/Win/Linux via existing players; export wizard with checks (size, offline scan, missing assets)",
+      "status": "todo"
+    },
+    {
+      "id": "M10-29",
+      "milestone": "M10",
+      "title": "Templates + example browser: Platformer, Top-down shooter, Puzzle, Endless runner, UI/menu starters built with event sheets; open-as-project",
+      "status": "todo"
+    },
+    {
+      "id": "M10-30",
+      "milestone": "M10",
+      "title": "Localisation + accessibility: string tables, language switch action, UI scale, touch-controls overlay, colour-blind preview",
+      "status": "todo"
+    },
+    {
+      "id": "M10-31",
+      "milestone": "M10",
+      "title": "Version history: snapshots + restore + diff view for project JSON/event sheets",
+      "status": "todo"
+    },
+    {
+      "id": "M10-32",
+      "milestone": "M10",
+      "title": "Optional: Multiplayer (WebRTC P2P + LAN signalling) plugin and demo",
+      "status": "todo"
+    },
+    {
+      "id": "M10-33",
+      "milestone": "M10",
+      "title": "Manual + tutorials for all M10 features (event sheets first-game tutorial, behaviors, layout editor, effects, debugger); rebuild docs/manual",
+      "status": "todo"
+    },
+    {
+      "id": "M10-34",
+      "milestone": "M10",
+      "title": "Tests: event-sheet compiler unit tests, behaviors headless Chromium tests, egui_kittest for new panels; wire to CI",
+      "status": "todo"
     }
   ]
 }
