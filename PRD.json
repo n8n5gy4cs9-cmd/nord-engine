@@ -3,7 +3,7 @@
   "tagline": "Rust-based game/app engine + editor that exports static HTML web games and a native Mac app",
   "author": "Crowelian 2026 + Sonnet",
   "version": "0.0.1",
-  "updated": "2026-10-16",
+  "updated": "2026-10-19",
   "branch": "main",
   "statusValues": [
     "todo",
@@ -1196,6 +1196,12 @@
       "id": "M6-42",
       "milestone": "M6",
       "title": "Connect Shader Terrain audio to iChannel0 and document matching collision snapshots",
+      "status": "done"
+    },
+    {
+      "id": "M6-43",
+      "milestone": "M6",
+      "title": "Example game Midnight Sun Tour: NordScrap game cloned with compat layer, tycoon Tour Office, new encounters",
       "status": "done"
     },
     {

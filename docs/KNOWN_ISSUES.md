@@ -105,3 +105,10 @@ Assets regressions pass for divider dragging, row alignment/wrapping at 48/84/16
 - Real Windows WebView2 startup, GPU rendering, audio, input, dialogs, menus, tray and standalone game launch have **not** been run here. MSVC packaging and packaged-CLI smoke are configured in Windows release CI; a local cross-build is not proof those CI checks passed.
 - Full example browser smoke could not start because Playwright is not installed in this environment. No example source/art/audio was changed; packaging verifies their resource bytes rather than claiming gameplay coverage.
 - Verification: macOS release app builds and ad-hoc signature verifies; Windows MinGW editor/CLI/player link and Windows all-target workspace Clippy pass. Workspace regressions pass with the pre-existing hub recent-project query run separately (parallel runs can find two `noom` labels); manual links/live snippets and vendor integrity pass.
+
+## Midnight Sun Tour (2026-10-19)
+- Verified: headless fuzz (`node tools/midnight-sun-test.mjs`) and manual browser pass of title, packing, overworld, travel, encounter, city menu, Tour Office, Race, Star Fox. Not verified: audio by ear, every minigame played by a human, festival day-by-day, save/load round trip, export/desktop build.
+- Balance of per-diem, upgrade and merch prices is a first guess. Day counter barely limits the run (each leg = a quarter day).
+- No touch/gamepad controls (keyboard only). Star Fox 3D is flattened to rects/ellipses.
+- Band-music MP3s are third-party live recordings; clear rights before publishing an export.
+- Example is ~100 MB per copy (tools/examples + examples).

@@ -1,5 +1,7 @@
 # Changelog
 
+- 2026-10-19 (M6): Added the **Midnight Sun Tour** example (cloned from the owner's NordScrap game, all sprites/music/SFX kept). `scripts/nordscrap/compat.js` runs the original Draw2D/Input/Audio/Scene/SaveLoad/Style/Model3D code on a canvas + Nord audio/save; new tycoon layer `mg_tycoon.js` (Tour Office: garage upgrades, merch stall with pricing, promo, ledger, fame, per-leg crew wages) hooked into travel, gigs, encounters and the Ruisrock festival; painted overworld map, wider city menu, 8 new encounters (24 total), game-over fixes, host recovers from minigame exceptions. `node tools/midnight-sun-test.mjs` = tycoon rules + headless fuzz (3 seeds x 60k frames pass). Browser-checked title, packing, overworld, travel, encounter, city menu, Tour Office, Race and Star Fox screens; audio unheard, balance untuned.
+
 - 2026-10-14 (M7-20): Organized the unchanged static HTML manual into Nord section folders and versioned Phaser/Babylon package/namespace folders, capped generated folders at 100 files, split search into stable section shards, and made generation content-incremental. Unchanged output now retains its mtime for fast FTP sync; a one-page source edit rewrites one HTML file instead of all 9,000+ pages.
 
 - 2026-10-13: Added noindex/nofollow/noarchive to every generated manual page, plus robots.txt, Apache .htaccess, static-host _headers and upload instructions. Hosting files survive manual regeneration. No tests run per owner.

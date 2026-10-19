@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 177/187 tasks (95%)** · updated 2026-10-16
+**Overall: 178/188 tasks (95%)** · updated 2026-10-19
 
 | Milestone | Progress |
 |---|---|
@@ -13,7 +13,7 @@
 | M3 Editor | 24/26 (92%) |
 | M4 Export | 8/11 (73%) |
 | M5 Rust/WASM | 9/9 (100%) |
-| M6 Library | 42/42 (100%) |
+| M6 Library | 43/43 (100%) |
 | M7 Docs | 20/20 (100%) |
 | M8 Polish & portability | 15/20 (75%) |
 | M9 Desktop apps | 16/16 (100%) |
@@ -183,6 +183,7 @@ _snippets, controllers, systems, asset packs, examples_
 - [x] **M6-40** Star-Not solar-system adventure with three races, original sprites, music and SFX
 - [x] **M6-41** Interactive pasted terrain shader example with falling cube and original audio
 - [x] **M6-42** Connect Shader Terrain audio to iChannel0 and document matching collision snapshots
+- [x] **M6-43** Example game Midnight Sun Tour: NordScrap game cloned with compat layer, tycoon Tour Office, new encounters
 
 ## M7 — Docs
 _manual, guides, tutorials, in-editor docs_

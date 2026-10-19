@@ -59,3 +59,6 @@ Notepaint reuses the engine's own `_kit.js` DOM helper and the pointer/snapshot 
 ## Windows release support files
 
 `WebView2Loader.dll` (x64) is the Microsoft WebView2 SDK loader supplied by the locked `webview2-com-sys` 0.36.0 crate. Windows MinGW editor/player imports require it beside the executable; Windows portable exports copy it alongside the player. The Rust bindings use MIT; the Microsoft SDK binary retains Microsoft's SDK redistribution terms. Source: `https://github.com/wravery/webview2-rs`; Microsoft distribution guidance: `https://learn.microsoft.com/en-us/microsoft-edge/webview2/concepts/distribution`. The separately installed Evergreen WebView2 Runtime is not bundled or downloaded by Nord.
+
+## Midnight Sun Tour example (2026-10-19)
+`examples/midnight-sun-tour` is the owner's own NordScrap game (`TEMP/midnight_sun_tour`), cloned with all of its sprites, music and SFX (see its `assets.md`). Original art/audio/code by the owner. `assets/music/band_music/*.mp3` are live recordings of third-party artists (BJM, Aldous Harding, Burial, Islaja, Karhumauri, Queen) used as in the original game: rights are not cleared here; remove or replace before public distribution. Font: VT323 (OFL-1.1, from `vendor/fonts/vt323`).
