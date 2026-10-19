@@ -11,6 +11,7 @@ pub mod scene_ops;
 pub mod schema;
 pub mod state;
 pub mod theme;
+pub mod timeline;
 pub mod tilemap;
 pub mod undo;
 pub mod viewport;

@@ -1,5 +1,7 @@
 # Changelog
 
+- 2026-10-19 (M10-21): **Timeline editor** — Timeline tab (tracks, keyframes on a strip, named/bezier easing with preview, event markers, scrub, undo) over the existing timeline runtime. Tests: 3 unit + 1 kittest.
+
 - 2026-10-19 (M10-20): **Particle editor** — Particles tab with live preview, 11 presets, property curves (scale/opacity over life), colour gradient, spin, spawn radius; runtime support for curves/gradient/spin/zone/gravityX. `docs/PARTICLES.md`.
 
 - 2026-10-19 (M10-18): **Tilemap editor v2** — new tilemap from a tileset, brushes (paint, rectangle, fill, random, terrain/auto-tile with 16-mask rules), multiple layers (add/rename/reorder/hide/delete), tile collision list, animated tiles (editor + runtime), hidden layers honoured at runtime. `docs/TILEMAP_EDITOR.md`.

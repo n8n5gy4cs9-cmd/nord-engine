@@ -1260,3 +1260,49 @@ fn particles_panel_adds_component_applies_presets_and_edits_with_undo() {
     h.run_steps(2);
     assert_eq!(comp(&h).unwrap().fields["lifespan"], 400.0, "preset change is one undo step");
 }
+
+#[test]
+fn timeline_panel_creates_timelines_tracks_markers_and_undoes() {
+    let d = example_copy("timeline", "event-sheets");
+    let mut st = EditorState::new();
+    st.open_project(&d).unwrap();
+    st.timeline_ui.new_name = "intro".into();
+    let mut h = Harness::builder()
+        .with_size(egui::vec2(1200.0, 700.0))
+        .build_ui_state(|ui, st: &mut EditorState| panels::timeline::ui(st, ui), st);
+    loaders(&h);
+    h.run_steps(2);
+    h.get_by_label("＋").click();
+    h.run_steps(3);
+    assert_eq!(nord_editor::timeline::names(h.state().scene.as_ref().unwrap()), vec!["intro".to_string()]);
+    h.state_mut().timeline_ui.new_target = "Hero".into();
+    h.run_steps(2);
+    h.get_by_label("＋ Track").click();
+    h.run_steps(3);
+    // keys added with the model (the strip click does the same through the panel), then rendered with a selected key
+    {
+        let st = h.state_mut();
+        st.edit_scene("keys", None, |s| {
+            let tr = &mut nord_editor::timeline::timeline_mut(s, "intro").unwrap()["tracks"][0];
+            nord_editor::timeline::add_key(tr, 0.0);
+            let k = nord_editor::timeline::add_key(tr, 1.5);
+            let mut keys = nord_editor::timeline::keys(tr);
+            keys[k].v = 120.0;
+            keys[k].ease = serde_json::json!("backOut");
+            nord_editor::timeline::write_keys(tr, &keys);
+        });
+        st.timeline_ui.key = Some((0, 1));
+    }
+    h.run_steps(3);
+    h.get_by_label("＋ Event marker").click();
+    h.run_steps(3);
+    let s = h.state().scene.as_ref().unwrap();
+    let t = nord_editor::timeline::get(s, "intro").unwrap();
+    assert_eq!(t["tracks"][0]["target"], "Hero");
+    assert_eq!(t["tracks"][0]["keys"][1]["ease"], "backOut");
+    assert_eq!(t["events"].as_array().unwrap().len(), 1);
+    // undo removes the marker, then the keys
+    h.state_mut().do_undo();
+    h.run_steps(2);
+    assert_eq!(nord_editor::timeline::get(h.state().scene.as_ref().unwrap(), "intro").unwrap()["events"].as_array().unwrap().len(), 0);
+}

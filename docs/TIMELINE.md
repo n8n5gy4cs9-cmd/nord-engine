@@ -1,4 +1,7 @@
 # Timelines (M10-21 runtime)
 `runtime/core/timeline.js`, tests in `eventsheet.test.mjs`. Format (scene `settings.timelines`): see the header of the file — tracks (`target` = name/tag/family, `property` = x y z angle scaleX scaleY opacity, `var:name`, `comp:type.field`), keys `{t, v, ease}` (ease = util.ease name or cubic-bezier `[x1,y1,x2,y2]`), `events: [{t, name}]`, `duration`, `loop`.
 API: `scene.timelines.play/pause/resume/stop/seek/time/progress`. Event sheet: *Timeline* plugin (Play, Pause, Resume, Stop, Set time; On finished, On event, Is playing; `Timeline.Time(name)`, `Timeline.Progress(name)`).
-Editor: see the *Timeline* tab (docs/EDITOR_UI.md) once built.
+
+## Editor — *Timeline* tab (M10-21)
+Pick/create a timeline (`scene.settings.timelines`), set **duration** and **loop**, add **tracks** (object + property), then **click a track strip to add a keyframe** (its value starts at the curve's current value), **drag** keyframes in time, **right-click** deletes. The selected keyframe has a value, a time and an **ease into it**: a named easing or a custom **cubic-bezier** (4 numbers with a curve preview). **Event markers** (＋ Event marker, drag to move, name them) fire the event-sheet trigger *Timeline → On event*. The **scrub** slider shows each track's value at that time (editor preview only — play it in the game with *Timeline → Play*). All edits undo with the scene. Code: `crates/nord-editor/src/timeline.rs` (easing/sampling identical to the runtime, tested), `panels/timeline.rs`.
+Not done: applying the scrubbed values to the objects in the viewport, multi-select/copy-paste of keys, snapping to a time grid, per-track value curves for colours (`comp:` properties can be typed by editing the JSON).

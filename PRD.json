@@ -1762,7 +1762,7 @@
       "id": "M10-21",
       "milestone": "M10",
       "title": "Timeline/keyframe editor: tracks per property, easing curve editor, events trigger, play/pause actions",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M10-22",

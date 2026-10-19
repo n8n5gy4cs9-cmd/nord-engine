@@ -17,4 +17,5 @@ pub mod preview;
 pub mod project;
 pub mod settings;
 pub mod sprite;
+pub mod timeline;
 pub mod toolbar;
