@@ -252,6 +252,7 @@ pub struct EditorState {
     pub timeline_ui: crate::panels::timeline::TimelineUi,
     /// last camera reported by the 2D viewport: [x, y, zoom]
     pub viewport_cam: Option<[f64; 3]>,
+    files_cache: Option<(Instant, Vec<String>)>,
     /// phone/tablet preview server while it is on (dropping it stops the server)
     pub lan: Option<nord_serve::Lan>,
     pub lan_log_seen: usize,
@@ -332,6 +333,7 @@ impl EditorState {
             particles_ui: Default::default(),
             timeline_ui: Default::default(),
             viewport_cam: None,
+            files_cache: None,
             lan: None,
             lan_log_seen: 0,
             lan_open: false,
@@ -652,6 +654,16 @@ impl EditorState {
         self.rev += 1;
     }
 
+    /// Project files (anywhere in the project, not only `assets/`) whose name ends with `suffix`, e.g. `.events.json`, `.scene.json`.
+    /// The folder is scanned at most every 2 seconds; `refresh_assets` forces a rescan.
+    pub fn project_files(&mut self, suffix: &str) -> Vec<String> {
+        let Some(root) = self.root.clone() else { return vec![] };
+        if self.files_cache.as_ref().is_none_or(|(t, _)| t.elapsed() > Duration::from_secs(2)) {
+            self.files_cache = Some((Instant::now(), nord_core::history::source_files(&root)));
+        }
+        self.files_cache.as_ref().map(|(_, v)| v.iter().filter(|f| f.ends_with(suffix)).cloned().collect()).unwrap_or_default()
+    }
+
     pub fn open_scene(&mut self, rel: &str) -> Result<(), String> {
         let root = self.root.clone().ok_or("no project")?;
         let path = root.join(rel);
@@ -750,6 +762,7 @@ impl EditorState {
     }
 
     pub fn refresh_assets(&mut self) {
+        self.files_cache = None;
         if let Some(r) = &self.root {
             self.assets = nord_core::assets::scan(r).unwrap_or_default();
         }

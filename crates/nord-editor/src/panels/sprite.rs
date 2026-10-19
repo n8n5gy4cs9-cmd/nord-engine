@@ -472,18 +472,18 @@ fn paint_tools(s: &mut SpriteUi, ui: &mut Ui) {
     ui.label(RichText::new("Tools").strong());
     ui.horizontal_wrapped(|ui| {
         for (t, label, tip) in [
-            (Tool::Pencil, "✏", "Pencil (1 px)"),
-            (Tool::Brush, "🖌", "Brush (size)"),
-            (Tool::Eraser, "⌫", "Eraser"),
-            (Tool::Fill, "🪣", "Flood fill"),
-            (Tool::Line, "／", "Line"),
-            (Tool::Rect, "▭", "Rectangle"),
-            (Tool::Ellipse, "◯", "Ellipse"),
-            (Tool::Eyedropper, "💧", "Pick colour"),
-            (Tool::Select, "⬚", "Select"),
-            (Tool::Move, "✥", "Move selection"),
+            (Tool::Pencil, "pencil", "Pencil (1 px)"),
+            (Tool::Brush, "brush", "Brush (size)"),
+            (Tool::Eraser, "eraser", "Eraser"),
+            (Tool::Fill, "paint-bucket", "Flood fill"),
+            (Tool::Line, "line", "Line"),
+            (Tool::Rect, "square", "Rectangle"),
+            (Tool::Ellipse, "circle", "Ellipse"),
+            (Tool::Eyedropper, "pipette", "Pick colour"),
+            (Tool::Select, "box-select", "Select"),
+            (Tool::Move, "move", "Move selection"),
         ] {
-            if ui.selectable_label(s.tool == t, label).on_hover_text(tip).clicked() {
+            if crate::icons::button(ui, label, tip, s.tool == t).clicked() {
                 s.tool = t;
             }
         }
@@ -510,14 +510,14 @@ fn paint_tools(s: &mut SpriteUi, ui: &mut Ui) {
             }
         }
     });
-    if ui.small_button("＋ Add colour to palette").clicked() && !s.palette.contains(&s.color) {
+    if ui.small_button("+ Add colour to palette").clicked() && !s.palette.contains(&s.color) {
         s.palette.push(s.color);
     }
     ui.separator();
     ui.label(RichText::new("Transform").strong());
     ui.horizontal_wrapped(|ui| {
-        for (label, op) in [("⇋ Flip H", "flip-h"), ("⇅ Flip V", "flip-v"), ("⟳ 90°", "rot-cw"), ("⟲ 90°", "rot-ccw"), ("Clear", "clear")] {
-            if ui.button(label).on_hover_text("applies to the selection (flip/clear) or the whole image").clicked() {
+        for (label, op, icon) in [("Flip H", "flip-h", "flip-horizontal"), ("Flip V", "flip-v", "flip-vertical"), ("Rotate right", "rot-cw", "rotate-cw"), ("Rotate left", "rot-ccw", "rotate-ccw"), ("Clear", "clear", "eraser")] {
+            if crate::icons::label_icon(ui, icon, label).on_hover_text("applies to the selection (flip/clear) or the whole image").clicked() {
                 s.transform(op);
             }
         }
@@ -542,7 +542,7 @@ fn points_tools(s: &mut SpriteUi, ui: &mut Ui) {
     for (k, v) in &pts {
         ui.horizontal(|ui| {
             ui.label(format!("{k}: {:.0}, {:.0}", v[0].as_f64().unwrap_or(0.0), v[1].as_f64().unwrap_or(0.0)));
-            if ui.small_button("✖").clicked() {
+            if crate::icons::mini(ui, "x", "Remove point").clicked() {
                 remove = Some(k.clone());
             }
         });

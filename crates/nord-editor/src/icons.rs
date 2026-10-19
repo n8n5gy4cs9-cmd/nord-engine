@@ -7,6 +7,12 @@ macro_rules! icons {
         fn svg(name: &str) -> Option<&'static str> {
             match name {
                 $($name => Some(include_str!(concat!("../../../assets/icons/lucide/", $name, ".svg"))),)*
+                // a few simple icons drawn for Nord (assets/icons/nord, same stroke style as Lucide)
+                "paint-bucket" => Some(include_str!("../../../assets/icons/nord/paint-bucket.svg")),
+                "flip-horizontal" => Some(include_str!("../../../assets/icons/nord/flip-horizontal.svg")),
+                "flip-vertical" => Some(include_str!("../../../assets/icons/nord/flip-vertical.svg")),
+                "line" => Some(include_str!("../../../assets/icons/nord/line.svg")),
+                "box-select" => Some(include_str!("../../../assets/icons/nord/box-select.svg")),
                 _ => None,
             }
         }
@@ -67,6 +73,17 @@ icons!(
     "pencil",
     "home",
     "external-link",
+    "arrow-up",
+    "arrow-down",
+    "lock",
+    "unlock",
+    "grip-vertical",
+    "brush",
+    "eraser",
+    "pipette",
+    "circle",
+    "rotate-ccw",
+    "minus",
 );
 
 pub fn source(name: &'static str) -> ImageSource<'static> {
@@ -112,4 +129,21 @@ pub fn button(ui: &mut Ui, name: &'static str, tip: &str, selected: bool) -> egu
 pub fn label_icon(ui: &mut Ui, name: &'static str, text: &str) -> egui::Response {
     let tint = ui.visuals().text_color();
     ui.add(egui::Button::image_and_text(icon(name, 14.0, tint), text))
+}
+
+/// Small (20 px) icon-only button for dense rows (reorder, delete, duplicate…). The tooltip is also its accessible name.
+pub fn mini(ui: &mut Ui, name: &'static str, tip: &str) -> egui::Response {
+    mini_toggle(ui, name, tip, false)
+}
+
+pub fn mini_toggle(ui: &mut Ui, name: &'static str, tip: &str, selected: bool) -> egui::Response {
+    let (rect, resp) = ui.allocate_exact_size(Vec2::splat(20.0), egui::Sense::click());
+    resp.widget_info(|| egui::WidgetInfo::selected(egui::WidgetType::Button, ui.is_enabled(), selected, tip));
+    if ui.is_rect_visible(rect) {
+        let v = ui.style().interact_selectable(&resp, selected);
+        let fill = if selected { ui.visuals().selection.bg_fill } else if resp.hovered() { v.bg_fill } else { Color32::TRANSPARENT };
+        ui.painter().rect_filled(rect, v.corner_radius, fill);
+        icon(name, 13.0, v.fg_stroke.color).paint_at(ui, egui::Rect::from_center_size(rect.center(), Vec2::splat(13.0)));
+    }
+    resp.on_hover_cursor(egui::CursorIcon::PointingHand).on_hover_text(tip)
 }

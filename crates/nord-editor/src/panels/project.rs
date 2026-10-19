@@ -2,7 +2,7 @@
 //! Logic lives in `nord_core::refs`; every rename/replace shows a dry-run list first.
 use crate::state::{EditorState, LogLevel};
 use egui::{RichText, Ui};
-use nord_core::{assets::AssetType, refs};
+use nord_core::refs;
 use serde_json::{json, Value};
 
 #[derive(Default, PartialEq, Clone, Copy)]
@@ -43,7 +43,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
 }
 
 fn properties(st: &mut EditorState, ui: &mut Ui, root: &std::path::Path) {
-    let scenes: Vec<String> = st.assets.iter().filter(|a| a.kind == AssetType::Scene).map(|a| a.path.clone()).collect();
+    let scenes: Vec<String> = st.project_files(".scene.json");
     let mut apply = false;
     egui::CollapsingHeader::new(RichText::new("Project properties").strong()).default_open(true).show(ui, |ui| {
         let Some(p) = st.project.as_mut() else { return };
@@ -63,7 +63,7 @@ fn properties(st: &mut EditorState, ui: &mut Ui, root: &std::path::Path) {
                 ui.add(egui::DragValue::new(&mut p.display.width).range(64..=8192));
                 ui.label("×");
                 ui.add(egui::DragValue::new(&mut p.display.height).range(64..=8192));
-                for (label, w, h) in [("Phone ▯", 360, 640), ("Phone ▭", 640, 360), ("Tablet", 1024, 768), ("HD", 1280, 720), ("Full HD", 1920, 1080)] {
+                for (label, w, h) in [("Phone (portrait)", 360, 640), ("Phone (landscape)", 640, 360), ("Tablet", 1024, 768), ("HD", 1280, 720), ("Full HD", 1920, 1080)] {
                     if ui.small_button(label).on_hover_text(format!("{w} × {h}")).clicked() {
                         p.display.width = w;
                         p.display.height = h;
@@ -153,7 +153,7 @@ fn refs_section(st: &mut EditorState, ui: &mut Ui, root: &std::path::Path) {
         ui.horizontal(|ui| {
             ui.label("Rename");
             ui.add(egui::TextEdit::singleline(&mut pu.from).hint_text("object name or asset path").desired_width(200.0));
-            ui.label("→");
+            ui.label("to");
             ui.add(egui::TextEdit::singleline(&mut pu.to).hint_text("new name / path").desired_width(200.0));
         });
         let mut action: Option<Pending> = None;

@@ -142,6 +142,51 @@ registerPlugin('Mouse', {
   },
   expressions: { X: (r) => r.game.input.pointer.worldX, Y: (r) => r.game.input.pointer.worldY },
 });
+registerPlugin('Events', { // the game's global event bus: uiButton "event", scripts' game.events.emit, your own signals
+  conditions: { 'on-event': { params: ['name'], raw: ['name'], trigger: true, test: (r, p) => r.firing.data.name === p.name } },
+  actions: { emit: { params: ['name'], raw: ['name'], run: (r, p) => { r.game.events.emit(p.name, undefined); } } },
+});
+registerPlugin('Timeline', {
+  conditions: {
+    'on-finished': { params: ['timeline'], raw: ['timeline'], trigger: true, test: (r, p) => r.firing.data.timeline === p.timeline },
+    'on-event': { params: ['timeline', 'name'], raw: ['timeline', 'name'], trigger: true, test: (r, p) => r.firing.data.timeline === p.timeline && r.firing.data.name === p.name },
+    'is-playing': { params: ['timeline'], raw: ['timeline'], test: (r, p) => !!r.scene.timelines?.isPlaying(p.timeline) },
+  },
+  actions: {
+    play: { params: ['timeline'], raw: ['timeline'], run: (r, p) => { r.scene.timelines?.play(p.timeline); } },
+    pause: { params: ['timeline'], raw: ['timeline'], run: (r, p) => { r.scene.timelines?.pause(p.timeline); } },
+    resume: { params: ['timeline'], raw: ['timeline'], run: (r, p) => { r.scene.timelines?.resume(p.timeline); } },
+    stop: { params: ['timeline'], raw: ['timeline'], run: (r, p) => { r.scene.timelines?.stop(p.timeline); } },
+    'set-time': { params: ['timeline', 'time'], raw: ['timeline'], run: (r, p) => { r.scene.timelines?.seek(p.timeline, p.time); } },
+  },
+  expressions: { Time: (r, a) => r.scene.timelines?.time(a[0]) ?? 0, Progress: (r, a) => r.scene.timelines?.progress(a[0]) ?? 0 },
+});
+registerPlugin('Multiplayer', { // WebRTC peer-to-peer, signalling via `nord serve` (see multiplayer.js)
+  conditions: {
+    'on-connected': { trigger: true, test: () => true },
+    'on-peer-joined': { trigger: true, test: () => true },
+    'on-peer-left': { trigger: true, test: () => true },
+    'on-message': { params: ['name'], raw: ['name'], trigger: true, test: (r, p) => r.firing.data.name === p.name },
+    'is-host': { test: (r) => r.game.net.isHost },
+    'is-connected': { test: (r) => r.game.net.connected },
+  },
+  actions: {
+    host: { params: ['room'], run: (r, p) => ({ until: r.game.net.host(String(p.room)) }) },
+    join: { params: ['room'], run: (r, p) => ({ until: r.game.net.join(String(p.room)).catch((e) => r.game.reportError(e, { constructor: { name: 'Multiplayer' } }, 'join')) }) },
+    send: { params: ['name', 'value'], run: (r, p) => { r.game.net.send(String(p.name), p.value); } },
+    leave: { run: (r) => ({ until: r.game.net.leave() }) },
+  },
+  expressions: { Last: (r) => r.game.net.last.data, LastFrom: (r) => r.game.net.last.from, LastName: (r) => r.game.net.last.name, PeerCount: (r) => r.game.net.peers.length, Id: (r) => r.game.net.id, IsHost: (r) => (r.game.net.isHost ? 1 : 0) },
+});
+registerPlugin('Effects', { // scene-wide (camera) effects; per-object ones are object ACEs
+  actions: {
+    'add-effect': { params: ['type'], raw: ['type'], run: (r, p) => { r.game.effects.add('scene', p.type); } },
+    'set-parameter': { params: ['type', 'parameter', 'value'], raw: ['type', 'parameter'], run: (r, p) => { r.game.effects.find('scene', p.type)?.set(p.parameter, p.value); } },
+    'set-enabled': { params: ['type', 'state'], raw: ['type', 'state'], run: (r, p) => { r.game.effects.find('scene', p.type)?.setEnabled(p.state === 'enabled'); } },
+    'remove-effect': { params: ['type'], raw: ['type'], run: (r, p) => { r.game.effects.find('scene', p.type)?.remove(); } },
+    'clear-effects': { run: (r) => { r.game.effects.clear('scene'); } },
+  },
+});
 registerPlugin('Localisation', {
   actions: { 'set-language': { params: ['language'], run: (r, p) => { r.game.i18n.setLanguage(p.language); } } },
   conditions: { 'language-is': { params: ['language'], test: (r, p) => r.game.i18n.language === p.language } },
@@ -188,6 +233,17 @@ registerPlugin('LocalStorage', {
 });
 
 const angle = (e) => e.rot[2] ?? 0;
+/** World position of a named image point from the sprite editor (<image>.meta.json "points"), following position, scale, flip and rotation. */
+function imagePoint(e, name) {
+  const c = e.getComponent('sprite') ?? e.getComponent('animatedSprite'), b = e.scene.game.backend;
+  const m = c && b?.metaOf?.(c.data.texture), pt = m?.points?.[name];
+  if (!pt) return null;
+  const [fw, fh] = b.frameSize(c.data.texture), o = m.origin ?? [fw / 2, fh / 2];
+  const kx = c.data.size ? c.data.size[0] / fw : 1, ky = c.data.size ? c.data.size[1] / fh : 1;
+  const lx = (pt[0] - o[0]) * kx * e.scale[0] * (c.data.flipX ? -1 : 1), ly = (pt[1] - o[1]) * ky * e.scale[1] * (c.data.flipY ? -1 : 1);
+  const a = angle(e) * rad;
+  return [e.pos[0] + lx * Math.cos(a) - ly * Math.sin(a), e.pos[1] + lx * Math.sin(a) + ly * Math.cos(a)];
+}
 registerObjectAces({
   conditions: {
     'compare-x': { params: ['comparison', 'value'], raw: ['comparison'], instance: true, test: (r, e, p) => cmp(e.pos[0], p.comparison, p.value) },
@@ -238,10 +294,24 @@ registerObjectAces({
     'set-animation': { params: ['animation'], instance: true, run: (r, e, p) => { if (e.getComponent('animatedSprite') && e.getComponent('animatedSprite').data.anim !== p.animation) e.set('animatedSprite', 'anim', p.animation); } },
     'set-mirrored': { params: ['mirrored'], instance: true, run: (r, e, p) => { e.set(e.getComponent('animatedSprite') ? 'animatedSprite' : 'sprite', 'flipX', !!p.mirrored); } },
     'set-opacity': { params: ['opacity'], instance: true, run: (r, e, p) => { setOpacity(e, p.opacity / 100); } },
-    'set-text': { params: ['text'], instance: true, run: (r, e, p) => { e.set('text', 'text', String(p.text)); } },
+    'set-text': { params: ['text'], instance: true, run: (r, e, p) => { const t = ['text', 'uiLabel', 'uiButton', 'spriteFont'].find((c) => e.getComponent(c)); if (t) e.set(t, 'text', String(p.text)); } },
+    'add-effect': { params: ['type'], raw: ['type'], instance: true, run: (r, e, p) => { r.game.effects.add(e, p.type); } },
+    'set-effect-parameter': { params: ['type', 'parameter', 'value'], raw: ['type', 'parameter'], instance: true, run: (r, e, p) => { r.game.effects.find(e, p.type)?.set(p.parameter, p.value); } },
+    'remove-effect': { params: ['type'], raw: ['type'], instance: true, run: (r, e, p) => { r.game.effects.find(e, p.type)?.remove(); } },
+    'canvas-clear': { instance: true, run: (r, e) => { e.getComponent('drawingCanvas')?.api.clear(); } },
+    'canvas-fill': { params: ['color'], instance: true, run: (r, e, p) => { e.getComponent('drawingCanvas')?.api.fill(p.color); } },
+    'canvas-draw-rect': { params: ['x', 'y', 'width', 'height', 'color'], instance: true, run: (r, e, p) => { e.getComponent('drawingCanvas')?.api.rect(p.x, p.y, p.width, p.height, p.color); } },
+    'canvas-draw-circle': { params: ['x', 'y', 'radius', 'color'], instance: true, run: (r, e, p) => { e.getComponent('drawingCanvas')?.api.circle(p.x, p.y, p.radius, p.color); } },
+    'canvas-draw-line': { params: ['x1', 'y1', 'x2', 'y2', 'color', 'width'], instance: true, run: (r, e, p) => { e.getComponent('drawingCanvas')?.api.line(p.x1, p.y1, p.x2, p.y2, p.color, p.width); } },
+    'video-play': { params: ['loop'], instance: true, run: (r, e, p) => { e.getComponent('video')?.api.play(p.loop === 'looping' || p.loop === true); } },
+    'video-pause': { instance: true, run: (r, e) => { e.getComponent('video')?.api.pause(); } },
+    'video-resume': { instance: true, run: (r, e) => { e.getComponent('video')?.api.resume(); } },
+    'video-stop': { instance: true, run: (r, e) => { e.getComponent('video')?.api.stop(); } },
+    'video-seek': { params: ['time'], instance: true, run: (r, e, p) => { e.getComponent('video')?.api.seek(p.time); } },
     destroy: { instance: true, run: (r, e) => { e.destroy(); } },
   },
   expressions: {
+    PointX: (e, [n]) => imagePoint(e, n)?.[0] ?? e.pos[0], PointY: (e, [n]) => imagePoint(e, n)?.[1] ?? e.pos[1],
     X: (e) => e.pos[0], Y: (e) => e.pos[1], Angle: (e) => angle(e), Width: (e) => e.scale[0], Height: (e) => e.scale[1], UID: (e) => e.id, Name: (e) => e.name,
   },
 });

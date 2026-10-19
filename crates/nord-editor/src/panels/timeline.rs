@@ -39,7 +39,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
             }
         }
         ui.add(egui::TextEdit::singleline(&mut st.timeline_ui.new_name).hint_text("new timeline").desired_width(110.0));
-        if ui.button("＋").clicked() && !st.timeline_ui.new_name.trim().is_empty() {
+        if crate::icons::mini(ui, "plus", "Add timeline").clicked() && !st.timeline_ui.new_name.trim().is_empty() {
             let n = st.timeline_ui.new_name.trim().to_string();
             if st.edit_scene("Add timeline", None, |s| {
                 tl::add_timeline(s, &n);
@@ -81,7 +81,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                 ui.selectable_value(&mut st.timeline_ui.new_prop, i, *p);
             }
         });
-        if ui.button("＋ Track").clicked() && !st.timeline_ui.new_target.is_empty() {
+        if ui.button("+ Track").clicked() && !st.timeline_ui.new_target.is_empty() {
             let (t, p) = (st.timeline_ui.new_target.clone(), tl::PROPERTIES[st.timeline_ui.new_prop.min(tl::PROPERTIES.len() - 1)]);
             let nm = name.clone();
             st.edit_scene("Add track", None, |s| {
@@ -90,7 +90,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                 }
             });
         }
-        if ui.button("＋ Event marker").clicked() {
+        if ui.button("+ Event marker").clicked() {
             let nm = name.clone();
             let at = st.timeline_ui.scrub;
             st.edit_scene("Add event marker", None, |s| {
@@ -220,7 +220,7 @@ fn track_row(ui: &mut Ui, st: &mut EditorState, ti: usize, track: &Value, width:
     }
     // remove-track button
     let b = Rect::from_min_size(r.left_top() + Vec2::new(LEFT - 22.0, 4.0), Vec2::splat(16.0));
-    if ui.put(b, egui::Button::new("✖").small()).on_hover_text("Delete track").clicked() {
+    if ui.put(b, |ui: &mut Ui| crate::icons::mini(ui, "x", "Delete track")).clicked() {
         ops.push(Op::RemoveTrack(ti));
     }
 }
@@ -331,7 +331,7 @@ fn selected_panel(st: &mut EditorState, ui: &mut Ui, name: &str, tlv: &Value) {
                 st.timeline_ui.event = None;
             }
         }
-        ui.weak("Fires the event sheet trigger Timeline → On event (timeline, name) and the global event \"Timeline.on-event\".");
+        ui.weak("Fires the event sheet trigger Timeline > On event (timeline, name) and the global event \"Timeline.on-event\".");
         return;
     }
     let Some((ti, ki)) = st.timeline_ui.key else {

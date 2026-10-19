@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 215/243 tasks (88%)** · updated 2026-10-19
+**Overall: 217/243 tasks (89%)** · updated 2026-10-19
 
 | Milestone | Progress |
 |---|---|
@@ -17,7 +17,7 @@
 | M7 Docs | 20/20 (100%) |
 | M8 Polish & portability | 15/20 (75%) |
 | M9 Desktop apps | 16/16 (100%) |
-| M10 Construct-style editor | 33/35 (94%) |
+| M10 Construct-style editor | 35/35 (100%) |
 | M11 Web editor | 0/16 (0%) |
 
 ## Next up
@@ -294,8 +294,8 @@ _features cloned from Construct 3's editor (construct.net/en/make-games/games-ed
 - [x] **M10-30** Localisation + accessibility: string tables, language switch action, UI scale, touch-controls overlay, colour-blind preview
 - [x] **M10-31** Version history: snapshots + restore + diff view for project JSON/event sheets
 - [x] **M10-32** Optional: Multiplayer (WebRTC P2P + LAN signalling) plugin and demo
-- [ ] **M10-33** Manual + tutorials for all M10 features (event sheets first-game tutorial, behaviors, layout editor, effects, debugger); rebuild docs/manual
-- [ ] **M10-34** Tests: event-sheet compiler unit tests, behaviors headless Chromium tests, egui_kittest for new panels; wire to CI
+- [x] **M10-33** Manual + tutorials for all M10 features (event sheets first-game tutorial, behaviors, layout editor, effects, debugger); rebuild docs/manual
+- [x] **M10-34** Tests: event-sheet compiler unit tests, behaviors headless Chromium tests, egui_kittest for new panels; wire to CI
 - [x] **M10-35** Rendering plugin objects: Tiled Background, 9-Patch, Spritefont, Drawing Canvas, Video
 
 ## M11 — Web editor

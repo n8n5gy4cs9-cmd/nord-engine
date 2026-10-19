@@ -1000,6 +1000,8 @@ fn event_sheet_editor_edits_picks_undoes_and_saves() {
     let mut st = EditorState::new();
     st.open_project(&d).unwrap();
     let rel = "events/main.events.json";
+    assert_eq!(st.project_files(".events.json"), vec![rel.to_string()], "sheets outside assets/ are listed");
+    assert!(st.project_files(".scene.json").contains(&"scenes/main.scene.json".to_string()));
     st.events.load(&d, rel).unwrap();
     let n0 = st.events.doc["events"].as_array().unwrap().len();
     let mut h = Harness::builder()
@@ -1011,7 +1013,7 @@ fn event_sheet_editor_edits_picks_undoes_and_saves() {
     h.get_by_label("+ Event").click();
     h.run_steps(3);
     assert_eq!(h.state().events.doc["events"].as_array().unwrap().len(), n0 + 1);
-    h.get_all_by_label("＋ Add action").last().unwrap().click();
+    h.get_all_by_label("+ Add action").last().unwrap().click();
     h.run_steps(3);
     h.get_by_label("Add action");
     {
@@ -1131,7 +1133,7 @@ fn layout_panel_layers_arrange_and_undo() {
     loaders(&h);
     h.run_steps(3);
     let n0 = nord_editor::layout::layers(h.state().scene.as_ref().unwrap()).len();
-    h.get_by_label("＋ Layer").click();
+    h.get_by_label("+ Layer").click();
     h.run_steps(3);
     assert_eq!(nord_editor::layout::layers(h.state().scene.as_ref().unwrap()).len(), n0 + 1);
     // undo restores the settings together with the entities
@@ -1224,11 +1226,11 @@ fn tilemap_v2_ui_renders_every_brush_and_layer_controls() {
         h.run_steps(2);
     }
     // layer controls
-    h.get_by_label("＋").click();
+    h.get_by_label("Add layer").click();
     h.run_steps(2);
     assert_eq!(h.state().anim.map_json["layers"].as_array().unwrap().len(), 3);
     assert!(h.state().anim.dirty_map);
-    h.get_by_label("✖").click();
+    h.get_by_label("Delete layer").click();
     h.run_steps(2);
     assert_eq!(h.state().anim.map_json["layers"].as_array().unwrap().len(), 2);
 }
@@ -1272,12 +1274,12 @@ fn timeline_panel_creates_timelines_tracks_markers_and_undoes() {
         .build_ui_state(|ui, st: &mut EditorState| panels::timeline::ui(st, ui), st);
     loaders(&h);
     h.run_steps(2);
-    h.get_by_label("＋").click();
+    h.get_by_label("Add timeline").click();
     h.run_steps(3);
     assert_eq!(nord_editor::timeline::names(h.state().scene.as_ref().unwrap()), vec!["intro".to_string()]);
     h.state_mut().timeline_ui.new_target = "Hero".into();
     h.run_steps(2);
-    h.get_by_label("＋ Track").click();
+    h.get_by_label("+ Track").click();
     h.run_steps(3);
     // keys added with the model (the strip click does the same through the panel), then rendered with a selected key
     {
@@ -1294,7 +1296,7 @@ fn timeline_panel_creates_timelines_tracks_markers_and_undoes() {
         st.timeline_ui.key = Some((0, 1));
     }
     h.run_steps(3);
-    h.get_by_label("＋ Event marker").click();
+    h.get_by_label("+ Event marker").click();
     h.run_steps(3);
     let s = h.state().scene.as_ref().unwrap();
     let t = nord_editor::timeline::get(s, "intro").unwrap();

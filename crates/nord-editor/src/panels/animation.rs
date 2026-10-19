@@ -172,7 +172,7 @@ fn anim_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
                         st.anim.sheet = Some(rel.clone());
                         st.anim.meta = meta;
                         st.anim.anim = Some("default".into());
-                        st.toast(format!("Imported {n} frames → {rel}"));
+                        st.toast(format!("Imported {n} frames to {rel}"));
                         ui.close_menu();
                     }
                     Err(e) => st.log(LogLevel::Error, format!("GIF import: {e}")),
@@ -400,16 +400,16 @@ pub fn frame_list(a: &mut Value, ui: &mut Ui) -> bool {
             ui.horizontal(|ui| {
                 ui.monospace(format!("{i:>2}  frame {}", fr[i]));
                 ui.add(egui::DragValue::new(&mut durs[i]).speed(0.05).range(0.1..=20.0).prefix("× "));
-                if ui.small_button("▲").clicked() && i > 0 {
+                if crate::icons::mini(ui, "arrow-up", "Move up").clicked() && i > 0 {
                     act = Some((i, "up"));
                 }
-                if ui.small_button("▼").clicked() && i + 1 < fr.len() {
+                if crate::icons::mini(ui, "arrow-down", "Move down").clicked() && i + 1 < fr.len() {
                     act = Some((i, "down"));
                 }
-                if ui.small_button("⧉").clicked() {
+                if crate::icons::mini(ui, "copy", "Duplicate frame").clicked() {
                     act = Some((i, "dup"));
                 }
-                if ui.small_button("✖").clicked() && fr.len() > 1 {
+                if crate::icons::mini(ui, "x", "Delete frame").clicked() && fr.len() > 1 {
                     act = Some((i, "del"));
                 }
             });
@@ -579,7 +579,7 @@ fn tile_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
             ui.selectable_value(&mut st.anim.layer, i, if hidden { format!("({name})") } else { name });
         }
         let l = st.anim.layer;
-        if ui.small_button("＋").on_hover_text("Add layer").clicked() {
+        if crate::icons::mini(ui, "plus", "Add layer").clicked() {
             tm::add_layer(&mut st.anim.map_json, &format!("layer{}", nl + 1));
             st.anim.layer = nl;
             st.anim.dirty_map = true;
@@ -594,19 +594,19 @@ fn tile_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
             st.anim.map_json["layers"][l]["visible"] = json!(vis);
             st.anim.dirty_map = true;
         }
-        if ui.small_button("▲").clicked() {
+        if crate::icons::mini(ui, "arrow-up", "Move layer up").clicked() {
             if let Some(j) = tm::move_layer(&mut st.anim.map_json, l, true) {
                 st.anim.layer = j;
                 st.anim.dirty_map = true;
             }
         }
-        if ui.small_button("▼").clicked() {
+        if crate::icons::mini(ui, "arrow-down", "Move layer down").clicked() {
             if let Some(j) = tm::move_layer(&mut st.anim.map_json, l, false) {
                 st.anim.layer = j;
                 st.anim.dirty_map = true;
             }
         }
-        if ui.small_button("✖").on_hover_text("Delete layer").clicked() && tm::delete_layer(&mut st.anim.map_json, l) {
+        if crate::icons::mini(ui, "x", "Delete layer").clicked() && tm::delete_layer(&mut st.anim.map_json, l) {
             st.anim.layer = l.saturating_sub(1);
             st.anim.dirty_map = true;
         }
@@ -633,7 +633,7 @@ fn tile_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
                     ui.selectable_value(&mut st.anim.terrain, i, &t.name);
                 }
             });
-            if ui.small_button("＋ terrain").clicked() {
+            if ui.small_button("+ terrain").clicked() {
                 let mut all = terr.clone();
                 all.push(tm::Terrain { name: format!("terrain{}", all.len() + 1), tiles: [-1; 16] });
                 st.anim.terrain = all.len() - 1;
@@ -644,8 +644,8 @@ fn tile_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
                 ui.weak("pick a mask, then click a tileset tile:");
                 for m in 0..16usize {
                     let t = terr.get(st.anim.terrain).map_or(-1, |t| t.tiles[m]);
-                    let label = format!("{}{}{}{}→{t}", if m & 1 != 0 { "N" } else { "" }, if m & 2 != 0 { "E" } else { "" }, if m & 4 != 0 { "S" } else { "" }, if m & 8 != 0 { "W" } else { "" });
-                    ui.selectable_value(&mut st.anim.mask_slot, m, if m == 0 { format!("alone→{t}") } else { label });
+                    let label = format!("{}{}{}{}->{t}", if m & 1 != 0 { "N" } else { "" }, if m & 2 != 0 { "E" } else { "" }, if m & 4 != 0 { "S" } else { "" }, if m & 8 != 0 { "W" } else { "" });
+                    ui.selectable_value(&mut st.anim.mask_slot, m, if m == 0 { format!("alone->{t}") } else { label });
                 }
             }
         });

@@ -57,10 +57,10 @@ impl Tab {
 }
 
 pub fn default_dock() -> DockState<Tab> {
-    let mut dock = DockState::new(vec![Tab::Scene, Tab::Game, Tab::Code, Tab::Events, Tab::Animation, Tab::Sprite, Tab::Particles, Tab::Timeline]);
+    let mut dock = DockState::new(vec![Tab::Scene, Tab::Game, Tab::Code, Tab::Events, Tab::Layout, Tab::Animation, Tab::Sprite, Tab::Particles, Tab::Timeline]);
     let s = dock.main_surface_mut();
     let [center, _] = s.split_left(NodeIndex::root(), 0.18, vec![Tab::Hierarchy]);
-    let [center, _] = s.split_right(center, 0.78, vec![Tab::Inspector, Tab::Layout]);
+    let [center, _] = s.split_right(center, 0.78, vec![Tab::Inspector]);
     let [_, _] = s.split_below(
         center,
         0.68,
@@ -265,7 +265,7 @@ impl App {
             p.running = true;
         }
         st.game_nonce += 1;
-        st.log(LogLevel::Build, "▶ Play");
+        st.log(LogLevel::Build, "Play");
         self.show_tab(Tab::Game);
     }
 
@@ -942,7 +942,7 @@ pub fn game_tab(
             ui.add_space(30.0);
             ui.vertical_centered(|ui| {
                 ui.weak(format!(
-                    "Press ▶ Play ({}) to run the game here",
+                    "Press Play ({}) to run the game here",
                     st.settings.key_label(true)
                 ));
             });

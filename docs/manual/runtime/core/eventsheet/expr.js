@@ -155,4 +155,4 @@ function ev(n, env) {
   throw new Error(`bad node ${n.k}`);
 }
 const num = (v) => (typeof v === 'number' ? v : parseFloat(v) || 0);
-export { BUILTINS, trunc2 };
+export { BUILTINS, trunc2, num };

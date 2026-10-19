@@ -4,7 +4,6 @@
 //! Undo/redo snapshots the whole sheet (sheets are small JSON), coalescing edits that follow each other within 600 ms.
 use crate::state::{EditorState, LogLevel};
 use egui::{Color32, RichText, Ui};
-use nord_core::assets::AssetType;
 use serde_json::{json, Value};
 use std::sync::RwLock;
 use std::time::{Duration, Instant};
@@ -475,12 +474,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         ui.weak("No project open");
         return;
     };
-    let sheets: Vec<String> = st
-        .assets
-        .iter()
-        .filter(|a| a.path.ends_with(".events.json") && matches!(a.kind, AssetType::Json | AssetType::Other))
-        .map(|a| a.path.clone())
-        .collect();
+    let sheets: Vec<String> = st.project_files(".events.json");
     let before = st.events.doc.clone();
     let mut load: Option<String> = None;
     let mut save = false;
@@ -668,7 +662,7 @@ fn picker_window(st: &mut EditorState, ctx: &egui::Context, cx: &Ctx) {
                     "plugin" => Color32::from_rgb(120, 170, 230),
                     _ => Color32::from_rgb(150, 200, 140),
                 };
-                let text = RichText::new(format!("{}  ▸  {}{}", inst.unwrap_or(&g.name), pretty(&a.id), if a.trigger { "  (trigger)" } else { "" })).color(tag);
+                let text = RichText::new(format!("{}  >  {}{}", inst.unwrap_or(&g.name), pretty(&a.id), if a.trigger { "  (trigger)" } else { "" })).color(tag);
                 if ui.selectable_label(false, text).clicked() || (enter && n == 0) {
                     let gi = cat.iter().position(|x| std::ptr::eq(x, *g)).unwrap();
                     let ai = (if p.cond { &g.conditions } else { &g.actions }).iter().position(|x| std::ptr::eq(x, *a)).unwrap();
@@ -746,7 +740,7 @@ fn nodes(ui: &mut Ui, list: &mut [Value], parent: &mut Path, cx: &Ctx, ops: &mut
 fn handle(ui: &mut Ui, path: &Path, ops: &mut Vec<Op>) {
     let id = egui::Id::new(("ev-drag", path));
     ui.dnd_drag_source(id, path.clone(), |ui| {
-        ui.label(RichText::new("⠿").weak());
+        ui.add(crate::icons::icon("grip-vertical", 14.0, ui.visuals().weak_text_color()));
     });
     let _ = ops;
 }
@@ -762,23 +756,23 @@ fn drop_target(ui: &Ui, resp: &egui::Response, path: &Path, ops: &mut Vec<Op>) {
 }
 
 fn row_buttons(ui: &mut Ui, path: &Path, ops: &mut Vec<Op>, event: bool) {
-    if ui.small_button("✖").on_hover_text("Delete").clicked() {
+    if crate::icons::mini(ui, "x", "Delete").clicked() {
         ops.push(Op::Delete(path.clone()));
     }
-    if ui.small_button("⧉").on_hover_text("Duplicate").clicked() {
+    if crate::icons::mini(ui, "copy", "Duplicate").clicked() {
         ops.push(Op::Duplicate(path.clone()));
     }
-    if ui.small_button("▼").on_hover_text("Move down").clicked() {
+    if crate::icons::mini(ui, "arrow-down", "Move down").clicked() {
         ops.push(Op::Move(path.clone(), 1));
     }
-    if ui.small_button("▲").on_hover_text("Move up").clicked() {
+    if crate::icons::mini(ui, "arrow-up", "Move up").clicked() {
         ops.push(Op::Move(path.clone(), -1));
     }
     if event {
-        if ui.small_button("＋ below").clicked() {
+        if ui.small_button("+ below").clicked() {
             ops.push(Op::AddBelow(path.clone()));
         }
-        if ui.small_button("＋ sub-event").clicked() {
+        if ui.small_button("+ sub-event").clicked() {
             ops.push(Op::AddSub(path.clone()));
         }
     }
@@ -876,7 +870,7 @@ fn group(ui: &mut Ui, g: &mut Value, path: &Path, cx: &Ctx, ops: &mut Vec<Op>) {
                     if ui.add(egui::TextEdit::singleline(&mut t).font(egui::TextStyle::Heading).desired_width(220.0)).changed() {
                         g["title"] = json!(t);
                     }
-                    if ui.small_button("＋ event").clicked() {
+                    if ui.small_button("+ event").clicked() {
                         ops.push(Op::AddSub(path.clone()));
                     }
                     row_buttons(ui, path, ops, false);
@@ -996,13 +990,13 @@ fn ace_list(ui: &mut Ui, ev: &mut Value, key: &str, path: &Path, cx: &Ctx, ops: 
                         node["params"][&name] = json!(new);
                     }
                 }
-                if ui.small_button("✖").on_hover_text("Remove").clicked() {
+                if crate::icons::mini(ui, "x", "Remove").clicked() {
                     remove = Some(i);
                 }
-                if i > 0 && ui.small_button("▲").clicked() {
+                if i > 0 && crate::icons::mini(ui, "arrow-up", "Move up").clicked() {
                     swap = Some((i, i - 1));
                 }
-                if i + 1 < n && ui.small_button("▼").clicked() {
+                if i + 1 < n && crate::icons::mini(ui, "arrow-down", "Move down").clicked() {
                     swap = Some((i, i + 1));
                 }
             });
@@ -1014,7 +1008,7 @@ fn ace_list(ui: &mut Ui, ev: &mut Value, key: &str, path: &Path, cx: &Ctx, ops: 
             list.swap(a, b);
         }
     }
-    if ui.small_button(if cond { "＋ Add condition" } else { "＋ Add action" }).clicked() {
+    if ui.small_button(if cond { "+ Add condition" } else { "+ Add action" }).clicked() {
         ops.push(Op::Pick { target: path.clone(), cond });
     }
 }

@@ -22,6 +22,7 @@
     return off;
   }</code></pre></details></dd><dt id="m-off"><a class="member-link" href="#m-off" aria-label="Link to off">#</a><code>off(name, fn)</code></dt><dd>Remove this callback from the named event.</dd><dt id="m-emit"><a class="member-link" href="#m-emit" aria-label="Link to emit">#</a><code>emit(name, data)</code></dt><dd><details><summary>How this method works</summary><pre class="code" data-lang="js"><code>emit(name, data) {
     for (const fn of [...(this.#h.get(name) ?? [])]) fn(data);
+    if (name !== '*') for (const fn of [...(this.#h.get('*') ?? [])]) fn({ name, data }); // wildcard: every event (event sheets' &quot;On game event&quot;)
   }</code></pre></details></dd><dt id="m-clear"><a class="member-link" href="#m-clear" aria-label="Link to clear">#</a><code>clear()</code></dt><dd>Remove every listener from this event bus.</dd></dl>
 <div class="pager"><a href="api-input.html"><small>← Previous</small>Input</a><a href="api-save.html"><small>Next →</small>Save</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#methods">Methods</a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

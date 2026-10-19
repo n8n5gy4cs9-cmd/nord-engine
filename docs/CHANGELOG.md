@@ -162,3 +162,4 @@ Newest first. One line per notable change. Credit: Crowelian 2026 + Sonnet.
 - 2026-10-13: Vallout: music/sfx/sprites are no longer generated; generator scripts removed (they were placeholders, replaced by the real art).
 
 - 2026-10-16: Windows x64 cross-build (`build-win.sh`, MinGW/MSVC), embedded editor/player shells, complete resources/examples/Rust sources and export helpers, CRC-checked release and offline manual ZIPs (Docs serves ZIP directly), resource SHA-256 verification; fix Windows player navigation/lookup, resource discovery, settings and locks. Add mandatory Windows release CI; preserve macOS build flow.
+- 2026-10-19: M10-33 manual chapters 22–26, tutorials T25/T26, real editor screenshots; editor icon/glyph fixes, project file listing, Layout tab in centre dock. M10-34 CI runs all M10 browser suites.

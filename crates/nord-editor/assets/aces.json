@@ -1113,6 +1113,8 @@
     }
    ],
    "expressions": [
+    "PointX",
+    "PointY",
     "X",
     "Y",
     "Angle",

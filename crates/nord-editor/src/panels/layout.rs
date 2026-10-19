@@ -3,7 +3,6 @@
 use crate::layout::{self, Align};
 use crate::state::EditorState;
 use egui::{Color32, Rect, RichText, Sense, Ui, Vec2};
-use nord_core::assets::AssetType;
 use serde_json::json;
 
 #[derive(Default)]
@@ -47,7 +46,8 @@ fn layers_section(st: &mut EditorState, ui: &mut Ui) {
                 if ui.checkbox(&mut vis, "").on_hover_text("Visible (also at runtime)").changed() {
                     st.edit_scene("Layer visibility", None, |s| layout::set_layer_prop(s, l.id, "visible", json!(vis)));
                 }
-                if ui.toggle_value(&mut lock, "🔒").on_hover_text("Locked: objects on it cannot be selected in the viewport").changed() {
+                if crate::icons::mini_toggle(ui, if lock { "lock" } else { "unlock" }, "Locked: objects on it cannot be selected in the viewport", lock).clicked() {
+                    lock = !lock;
                     st.edit_scene("Layer lock", None, |s| layout::set_layer_prop(s, l.id, "locked", json!(lock)));
                 }
                 let mut name = l.name.clone();
@@ -58,17 +58,17 @@ fn layers_section(st: &mut EditorState, ui: &mut Ui) {
                 if ui.selectable_label(st.layout_ui.active_layer == l.id, format!("#{}  ·  {} object(s)", l.id, l.count)).clicked() {
                     st.layout_ui.active_layer = l.id;
                 }
-                if ui.small_button("▲").on_hover_text("Move layer up (drawn later)").clicked() {
+                if crate::icons::mini(ui, "arrow-up", "Move layer up (drawn later)").clicked() {
                     st.edit_scene("Move layer up", None, |s| {
                         layout::move_layer(s, l.id, true);
                     });
                 }
-                if ui.small_button("▼").on_hover_text("Move layer down").clicked() {
+                if crate::icons::mini(ui, "arrow-down", "Move layer down").clicked() {
                     st.edit_scene("Move layer down", None, |s| {
                         layout::move_layer(s, l.id, false);
                     });
                 }
-                if ui.small_button("✖").on_hover_text("Delete layer (objects drop to the layer below)").clicked() {
+                if crate::icons::mini(ui, "x", "Delete layer (objects drop to the layer below)").clicked() {
                     st.edit_scene("Delete layer", None, |s| {
                         layout::delete_layer(s, l.id);
                     });
@@ -76,7 +76,7 @@ fn layers_section(st: &mut EditorState, ui: &mut Ui) {
             });
         }
         ui.horizontal(|ui| {
-            if ui.button("＋ Layer").clicked() {
+            if ui.button("+ Layer").clicked() {
                 st.edit_scene("Add layer", None, |s| {
                     layout::add_layer(s);
                 });
@@ -159,7 +159,7 @@ fn find_mut<'a>(list: &'a mut [nord_core::scene::Entity], id: &str) -> Option<&'
 
 fn properties_section(st: &mut EditorState, ui: &mut Ui) {
     egui::CollapsingHeader::new(RichText::new("Layout properties").strong()).default_open(false).show(ui, |ui| {
-        let sheets: Vec<String> = st.assets.iter().filter(|a| a.path.ends_with(".events.json")).map(|a| a.path.clone()).collect();
+        let sheets: Vec<String> = st.project_files(".events.json");
         let (size, sheet, unbounded, (gx, gy)) = {
             let s = st.scene.as_ref().unwrap();
             (
@@ -215,23 +215,23 @@ fn properties_section(st: &mut EditorState, ui: &mut Ui) {
         let (mut vx, mut vy) = (gx.clone(), gy.clone());
         ui.horizontal(|ui| {
             ui.add(egui::DragValue::new(&mut st.layout_ui.guide_x).prefix("x "));
-            if ui.small_button("＋ vertical").clicked() {
+            if ui.small_button("+ vertical").clicked() {
                 vx.push(st.layout_ui.guide_x);
             }
             ui.add(egui::DragValue::new(&mut st.layout_ui.guide_y).prefix("y "));
-            if ui.small_button("＋ horizontal").clicked() {
+            if ui.small_button("+ horizontal").clicked() {
                 vy.push(st.layout_ui.guide_y);
             }
         });
         let (mut rx, mut ry) = (None, None);
         ui.horizontal_wrapped(|ui| {
             for (i, g) in vx.iter().enumerate() {
-                if ui.small_button(format!("x {g} ✖")).clicked() {
+                if ui.small_button(format!("x {g} ×")).clicked() {
                     rx = Some(i);
                 }
             }
             for (i, g) in vy.iter().enumerate() {
-                if ui.small_button(format!("y {g} ✖")).clicked() {
+                if ui.small_button(format!("y {g} ×")).clicked() {
                     ry = Some(i);
                 }
             }
@@ -254,7 +254,7 @@ fn arrange_section(st: &mut EditorState, ui: &mut Ui) {
         ui.weak(format!("{} selected (select two or more in the Hierarchy)", sel.len()));
         ui.add_enabled_ui(sel.len() >= 2, |ui| {
             ui.horizontal_wrapped(|ui| {
-                for (label, mode) in [("⇤ Left", Align::Left), ("↔ Centre", Align::CenterH), ("⇥ Right", Align::Right), ("⤒ Top", Align::Top), ("↕ Middle", Align::CenterV), ("⤓ Bottom", Align::Bottom)] {
+                for (label, mode) in [("Left", Align::Left), ("Centre", Align::CenterH), ("Right", Align::Right), ("Top", Align::Top), ("Middle", Align::CenterV), ("Bottom", Align::Bottom)] {
                     if ui.button(label).clicked() {
                         st.edit("Align", None, |e| layout::align(e, &sel, mode));
                     }
@@ -281,7 +281,8 @@ fn objects_section(st: &mut EditorState, ui: &mut Ui) {
         for t in &types {
             ui.horizontal(|ui| {
                 ui.dnd_drag_source(egui::Id::new(("obj-type", &t.name)), t.name.clone(), |ui| {
-                    ui.label(RichText::new(format!("⠿ {}", t.name)).strong());
+                    ui.add(crate::icons::icon("grip-vertical", 14.0, ui.visuals().weak_text_color()));
+                    ui.label(RichText::new(&t.name).strong());
                 })
                 .response
                 .on_hover_text("Drag onto the Overview map to place a new instance");
@@ -289,7 +290,7 @@ fn objects_section(st: &mut EditorState, ui: &mut Ui) {
                 if ui.small_button("Select all").clicked() {
                     st.selection = t.ids.clone();
                 }
-                if ui.small_button("＋ Instance").on_hover_text("Duplicate the first instance 32 px to the right").clicked() {
+                if ui.small_button("+ Instance").on_hover_text("Duplicate the first instance 32 px to the right").clicked() {
                     let id = t.ids[0].clone();
                     st.edit("Add instance", None, |ents| {
                         if let Some(src) = find_mut(ents, &id).map(|e| e.clone()) {
@@ -368,7 +369,7 @@ fn views_section(st: &mut EditorState, ui: &mut Ui) {
                     go = Some(*c);
                 }
                 ui.weak(format!("{:.0}, {:.0} · {:.0}%", c[0], c[1], c[2] * 100.0));
-                if ui.small_button("✖").clicked() {
+                if crate::icons::mini(ui, "x", "Delete view").clicked() {
                     del = Some(name.clone());
                 }
             });
@@ -399,7 +400,7 @@ fn views_section(st: &mut EditorState, ui: &mut Ui) {
 
 fn layouts_section(st: &mut EditorState, ui: &mut Ui) {
     egui::CollapsingHeader::new(RichText::new("Layouts (scenes)").strong()).default_open(false).show(ui, |ui| {
-        let scenes: Vec<String> = st.assets.iter().filter(|a| a.kind == AssetType::Scene).map(|a| a.path.clone()).collect();
+        let scenes: Vec<String> = st.project_files(".scene.json");
         let cur = st.scene_file.clone();
         let start = st.project.as_ref().map(|p| p.start_scene.clone());
         let mut open: Option<String> = None;
@@ -418,7 +419,7 @@ fn layouts_section(st: &mut EditorState, ui: &mut Ui) {
         }
         ui.horizontal(|ui| {
             ui.add(egui::TextEdit::singleline(&mut st.layout_ui.new_layout).hint_text("new layout name").desired_width(140.0));
-            if ui.button("＋ New layout").clicked() && !st.layout_ui.new_layout.trim().is_empty() {
+            if ui.button("+ New layout").clicked() && !st.layout_ui.new_layout.trim().is_empty() {
                 let name = st.layout_ui.new_layout.trim().replace(' ', "-");
                 let rel = format!("scenes/{name}.scene.json");
                 if let Some(root) = st.root.clone() {

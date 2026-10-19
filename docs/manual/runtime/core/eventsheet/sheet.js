@@ -63,7 +63,11 @@ export class EventSheet {
     const flat = (list) => list.flatMap((e) => (e.type === 'include' ? flat(sheets[e.path].events ?? []) : [{ ...e, children: e.children && flat(e.children) }]));
     const data = { ...sheets[path], events: flat(sheets[path].events ?? []) };
     for (const e of data.events) if (e.children === undefined) delete e.children;
-    return new EventSheet(scene, data, sheets);
+    const sheet = new EventSheet(scene, data, sheets);
+    if (data.compiled) { // `nord build` / tools/compile-sheets.mjs add "compiled": "<path>.compiled.js"; a broken or missing module just means "interpret"
+      try { sheet.aot = (await scene.game.importScript(data.compiled)).exprs; } catch (err) { scene.game.warn(`[nord] compiled sheet ${data.compiled} not used: ${err.message}`); }
+    }
+    return sheet;
   }
 
   #index(list) {
@@ -76,8 +80,16 @@ export class EventSheet {
   }
 
   // ---------- lifecycle (called by the scene) ----------
-  start() { this.fire('System.on-start-of-layout'); }
-  end() { this.fire('System.on-end-of-layout'); }
+  /** Subscribe to the game's event bus (Events → On game event). */
+  listen() {
+    const NET = { 'net:connected': 'on-connected', 'net:join': 'on-peer-joined', 'net:leave': 'on-peer-left', 'net:message': 'on-message' };
+    this._off = this.game.events.on('*', ({ name, data }) => {
+      if (NET[name]) this.fire(`Multiplayer.${NET[name]}`, data ?? {});
+      else if (name !== 'debugBreak' && name !== 'language') this.fire('Events.on-event', { name, data });
+    });
+  }
+  start() { this.listen(); this.fire('System.on-start-of-layout'); }
+  end() { this.fire('System.on-end-of-layout'); this._off?.(); }
   update(dt) {
     this.dt = dt; this.time += dt; this.tickCount++;
     this.#pollInput();
@@ -297,7 +309,8 @@ export class EventSheet {
   evalExpr(v) {
     if (v === undefined || v === null) return 0;
     if (typeof v !== 'string') return v;
-    return compiled(v)(this.env);
+    const aot = this.aot?.[v]; // ahead-of-time compiled expression (see compile.js); the interpreter handles everything else
+    return aot ? aot(this.env) : compiled(v)(this.env);
   }
   withCur(type, inst, fn) {
     const prev = this.cur.get(type);
@@ -348,6 +361,8 @@ export class EventSheet {
     const pl = this.#pl(type);
     const f = pl?.expressions[name];
     if (f) return f(this, a);
+    const of = objectAces.expressions[name]; // object expression with arguments: Hero.PointX("muzzle")
+    if (of && !pl) { const list = this.cur.get(type) ? [this.cur.get(type)] : this.picked(type, this.solView ?? new Map()); return list[0] ? of(list[0], a, this) : 0; }
     throw new Error(`unknown expression ${type}.${name}()`);
   }
 

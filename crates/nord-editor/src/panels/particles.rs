@@ -135,7 +135,7 @@ fn controls(ui: &mut Ui, p: &mut Params, images: &[String]) {
         ui.label("Colour");
         color(ui, &mut p.tint);
         let mut grad = p.tint_end.is_some();
-        if ui.checkbox(&mut grad, "→ end colour").changed() {
+        if ui.checkbox(&mut grad, "end colour").changed() {
             p.tint_end = grad.then_some(p.tint);
         }
         if let Some(e) = &mut p.tint_end {

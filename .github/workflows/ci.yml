@@ -106,3 +106,9 @@ jobs:
       - run: npm i --no-save --no-package-lock playwright@1.56.1
       - run: npx playwright install --with-deps chromium
       - run: node tools/e2e.mjs
+      # M10 event-sheet / editor-feature suites (Chromium; the multiplayer test needs two pages)
+      - name: M10 browser suites
+        run: |
+          for t in eventsheet-demo es-templates plugin-objects pwa multiplayer viewport-layout compiled-export; do
+            node tools/$t-test.mjs
+          done

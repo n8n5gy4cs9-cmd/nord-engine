@@ -53,6 +53,11 @@ export class UI {
 
   #place(el, { x, y, anchor = 'tl', w, h, style } = {}) {
     el.classList.add('nord-el');
+    if (anchor === 'c') { // centred on the screen, x/y are offsets from the centre
+      el.style.left = `calc(50% + ${x ?? 0}px)`; el.style.top = `calc(50% + ${y ?? 0}px)`; el.style.transform = 'translate(-50%,-50%)';
+      if (w) el.style.width = `${w}px`; if (h) el.style.height = `${h}px`; if (style) Object.assign(el.style, style);
+      return;
+    }
     const [hx, vy] = POS[anchor] ?? POS.tl;
     if (x !== undefined || y !== undefined) { el.style[hx] = `${x ?? 0}px`; el.style[vy] = `${y ?? 0}px`; }
     if (w) el.style.width = `${w}px`;
@@ -77,7 +82,9 @@ export class UI {
     const el = this.doc.createElement('button'); el.className = 'nord-button'; el.textContent = text;
     el.addEventListener('click', (ev) => { this.onSound?.('click'); onClick?.(ev); });
     el.addEventListener('mouseenter', () => this.onSound?.('hover'));
-    return this.#add(o.screen, el, o);
+    const h = this.#add(o.screen, el, o);
+    h.set = (t) => { el.textContent = String(t); return h; };
+    return h;
   }
   image(src, o = {}) { const el = this.doc.createElement('img'); el.className = 'nord-image'; el.src = src; return this.#add(o.screen, el, o); }
   /** Progress bar; bar.set(0..1). */

@@ -1834,13 +1834,13 @@
       "id": "M10-33",
       "milestone": "M10",
       "title": "Manual + tutorials for all M10 features (event sheets first-game tutorial, behaviors, layout editor, effects, debugger); rebuild docs/manual",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M10-34",
       "milestone": "M10",
       "title": "Tests: event-sheet compiler unit tests, behaviors headless Chromium tests, egui_kittest for new panels; wire to CI",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M10-35",
