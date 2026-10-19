@@ -31,6 +31,7 @@ export class Entity {
     this._scriptData = data.scripts ?? [];
     this._compData = data.components ?? [];
     this.prefab = data.prefab ?? null;
+    this.vars = structuredClone(data.vars ?? {}); // instance variables (event sheets)
   }
 
   // transform — setters notify the backend so native objects stay in sync
@@ -110,6 +111,7 @@ export class Entity {
       components: this.components.map((c) => ({ type: c.type, ...structuredClone(c.data) })),
       scripts: this.scripts.map((s, i) => ({ path: this._scriptData[i]?.path, attributes: structuredClone(s.attrs) })),
       children: this.children.map((c) => c.toJSON(fresh)),
+      vars: structuredClone(this.vars),
       prefab: this.prefab,
     };
   }

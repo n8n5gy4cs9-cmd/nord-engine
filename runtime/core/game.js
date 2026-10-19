@@ -5,6 +5,7 @@ import { Save } from './save.js';
 import { Rng } from './util.js';
 import { Scene } from './scene.js';
 import { resolveAttributes } from './script.js';
+import { EventSheet } from './eventsheet/sheet.js';
 
 export class Game {
   /**
@@ -78,6 +79,8 @@ export class Game {
     const scene = new Scene(this, await this.loadJSON(path));
     this.scene = scene;
     await scene.build();
+    const sheet = scene.settings.eventSheet ?? scene.data.eventSheet;
+    if (sheet) scene.systems.push(scene.eventSheet = await EventSheet.load(scene, sheet));
     scene.start();
     this.events.emit('sceneLoad', scene.name);
     return scene;

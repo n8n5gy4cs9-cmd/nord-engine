@@ -1629,19 +1629,19 @@
       "id": "M10-01",
       "milestone": "M10",
       "title": "Spec: docs/CONSTRUCT_PARITY.md — map each Construct 3 editor feature to Nord equivalent, scope + non-goals (no copying Construct code/assets; clean-room, original names where practical)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M10-02",
       "milestone": "M10",
       "title": "Event sheet format: JSON schema (events/conditions/actions/groups/functions/vars) + PROJECT_FORMAT.md section + versioning",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M10-03",
       "milestone": "M10",
       "title": "Event sheet compiler: JSON -> nord.js module (and interpreter fallback for hot-reload), source maps for debugger",
-      "status": "todo"
+      "status": "in_progress"
     },
     {
       "id": "M10-04",
@@ -1659,13 +1659,13 @@
       "id": "M10-06",
       "milestone": "M10",
       "title": "Event sheet: system conditions/actions (every tick, on start of layout, trigger once, compare var, for-each, repeat, while, pick by comparison/evaluate/random, else, wait, go to layout, set timescale)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M10-07",
       "milestone": "M10",
       "title": "Event sheet: functions (params, return value, async), includes, global/local/static vars, groups activation, sub-events",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M10-08",

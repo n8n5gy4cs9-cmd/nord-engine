@@ -32,6 +32,7 @@ export class Scene {
     this.roots = [];
     this.scheduler = new Scheduler();
     this.running = false;
+    this.systems = []; // per-scene systems (event sheet runner): update/start/end/onDispatch/onCreated/onDestroyed
     this.#pending = [];
     this.#dead = new Set();
     this.#acc = 0;
@@ -105,6 +106,7 @@ export class Scene {
     this.running = true;
     for (const e of ents) this.#startEntity(e);
     this.#pending = [];
+    for (const s of this.systems) { try { s.start?.(); } catch (err) { this.game.reportError(err, s, 'start'); } }
   }
   #startEntity(e) {
     for (const s of e.scripts) {
@@ -129,6 +131,7 @@ export class Scene {
     }
     if (this.#acc > FIXED_DT * MAX_STEPS) this.#acc = 0;
     this.scheduler.update(dt);
+    for (const s of this.systems) { try { s.update?.(dt); } catch (err) { this.game.reportError(err, s, 'update'); } }
     this.#each('update', dt);
     for (const e of this.all()) for (const c of e.components) c.impl?.update?.(c, dt);
     this.#each('lateUpdate', dt);
@@ -139,6 +142,7 @@ export class Scene {
     const p = this.#pending; this.#pending = [];
     for (const root of p) for (const e of root.all()) { for (const s of e.scripts) { try { s.init?.(); } catch (err) { this.game.reportError(err, s, 'init'); } } }
     for (const root of p) for (const e of root.all()) this.#startEntity(e);
+    for (const root of p) for (const e of root.all()) for (const s of this.systems) s.onCreated?.(e);
   }
 
   destroyEntity(e) { if (!e.destroyed) { e.destroyed = true; this.#dead.add(e); } }
@@ -149,6 +153,7 @@ export class Scene {
         for (const s of d.scripts) { try { s.onDestroy?.(); } catch (err) { this.game.reportError(err, s, 'onDestroy'); } }
         for (const c of d.components) c.impl?.destroy?.(c);
         this.backend?.destroyNative?.(d);
+        for (const s of this.systems) s.onDestroyed?.(d);
         d.events.clear();
       }
       const list = e.parent ? e.parent.children : this.roots;
@@ -159,9 +164,13 @@ export class Scene {
   }
 
   /** Physics/backends call this: `scene.dispatch(a, 'onCollisionEnter', b, contact)`. */
-  dispatch(entity, method, ...args) { entity.callScripts(method, ...args); }
+  dispatch(entity, method, ...args) {
+    entity.callScripts(method, ...args);
+    for (const s of this.systems) s.onDispatch?.(entity, method, args);
+  }
 
   destroy() {
+    for (const s of this.systems) { try { s.end?.(); } catch (err) { this.game.reportError(err, s, 'end'); } }
     for (const r of [...this.roots]) this.destroyEntity(r);
     this.#flushDeaths();
     this.scheduler.clear();

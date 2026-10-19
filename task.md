@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 182/226 tasks (81%)** · updated 2026-10-19
+**Overall: 186/226 tasks (82%)** · updated 2026-10-19
 
 | Milestone | Progress |
 |---|---|
@@ -17,7 +17,7 @@
 | M7 Docs | 20/20 (100%) |
 | M8 Polish & portability | 15/20 (75%) |
 | M9 Desktop apps | 16/16 (100%) |
-| M10 Construct-style editor | 0/34 (0%) |
+| M10 Construct-style editor | 4/34 (12%) |
 
 ## Next up
 - **M3-07** SPIKE: wry child webview embedded in egui panel on macOS (resize, HiDPI, focus, IPC both ways); fallback separate window
@@ -261,13 +261,13 @@ _real native desktop apps (Rust backend): files, dialogs, notifications, tray, w
 ## M10 — Construct-style editor
 _features cloned from Construct 3's editor (construct.net/en/make-games/games-editor): event sheets, behaviors, layout/animation/tilemap tools, effects, debugger, project tools. Spec: docs/CONSTRUCT_PARITY.md_
 
-- [ ] **M10-01** Spec: docs/CONSTRUCT_PARITY.md — map each Construct 3 editor feature to Nord equivalent, scope + non-goals (no copying Construct code/assets; clean-room, original names where practical)
-- [ ] **M10-02** Event sheet format: JSON schema (events/conditions/actions/groups/functions/vars) + PROJECT_FORMAT.md section + versioning
-- [ ] **M10-03** Event sheet compiler: JSON -> nord.js module (and interpreter fallback for hot-reload), source maps for debugger
+- [x] **M10-01** Spec: docs/CONSTRUCT_PARITY.md — map each Construct 3 editor feature to Nord equivalent, scope + non-goals (no copying Construct code/assets; clean-room, original names where practical)
+- [x] **M10-02** Event sheet format: JSON schema (events/conditions/actions/groups/functions/vars) + PROJECT_FORMAT.md section + versioning
+- [~] **M10-03** Event sheet compiler: JSON -> nord.js module (and interpreter fallback for hot-reload), source maps for debugger
 - [ ] **M10-04** Event sheet editor panel (egui): add/edit/delete/reorder events, condition/action picker dialog with search, drag&drop, collapse, comments, disable, colour groups, undo/redo
 - [ ] **M10-05** Event sheet: object picker + parameter widgets (expression editor w/ autocomplete, expressions, object/instance/layer/animation/audio pickers)
-- [ ] **M10-06** Event sheet: system conditions/actions (every tick, on start of layout, trigger once, compare var, for-each, repeat, while, pick by comparison/evaluate/random, else, wait, go to layout, set timescale)
-- [ ] **M10-07** Event sheet: functions (params, return value, async), includes, global/local/static vars, groups activation, sub-events
+- [x] **M10-06** Event sheet: system conditions/actions (every tick, on start of layout, trigger once, compare var, for-each, repeat, while, pick by comparison/evaluate/random, else, wait, go to layout, set timescale)
+- [x] **M10-07** Event sheet: functions (params, return value, async), includes, global/local/static vars, groups activation, sub-events
 - [ ] **M10-08** Behavior framework: attach/detach in inspector, behavior schema (properties, conditions, actions, expressions) shared by editor + runtime
 - [ ] **M10-09** Behaviors set A: Platform, 8-Direction, Bullet, Sine, Fade, Wrap, Scroll-To, Bound-to-Layout, Solid, Jumpthru, Persist, Destroy-outside-layout
 - [ ] **M10-10** Behaviors set B: Pin, Drag&Drop, Anchor, Car, Orbit, Rotate, Flash, Timer, Tween, Turret, Line of Sight, Pathfinding (grid A*), Physics
