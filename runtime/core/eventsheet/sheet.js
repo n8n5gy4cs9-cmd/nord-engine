@@ -5,6 +5,7 @@
 //   • loops (for each / repeat / for / while) run the rest of the event once per iteration; local variables are scoped to their event
 import { compile } from './expr.js';
 import { plugins, objectAces, keyCode } from './aces.js';
+import { behaviors } from '../behaviors/index.js';
 
 const exprCache = new Map();
 const compiled = (src) => { let f = exprCache.get(src); if (!f) { f = compile(src); exprCache.set(src, f); } return f; };
@@ -101,7 +102,7 @@ export class EventSheet {
     }
   }
   // triggers on object types ("Player" → On collision) are registered under the generic "Object" plugin
-  #key(c) { return plugins.has(c.object) ? `${c.object}.${c.id}` : `Object.${c.id}`; }
+  #key(c) { if (c.behavior) return `Behavior.${c.behavior}.${c.id}`; return plugins.has(c.object) ? `${c.object}.${c.id}` : `Object.${c.id}`; }
   #fail(ev, err) {
     if (ev._err) return;
     ev._err = true;
@@ -279,6 +280,7 @@ export class EventSheet {
     try { return fn(); } finally { if (prev === undefined) this.cur.delete(type); else this.cur.set(type, prev); }
   }
   #def(kind, node) {
+    if (node.behavior) return behaviors.get(node.behavior)?.[kind][node.id];
     const p = plugins.get(node.object);
     return p ? p[kind][node.id] : objectAces[kind][node.id];
   }
@@ -290,6 +292,7 @@ export class EventSheet {
       call: (n, a) => { const f = plugins.get('System').expressions[n.toLowerCase()]; if (!f) throw new Error(`unknown function '${n}'`); return f(r, a); },
       prop: (type, idx, name) => r.#prop(type, idx, name),
       method: (type, name, a) => r.#method(type, name, a),
+      bprop: (type, idx, beh, name) => r.#bprop(type, idx, beh, name),
     };
   }
   #prop(type, idx, name) {
@@ -304,6 +307,14 @@ export class EventSheet {
     if (f) return f(e);
     if (name in e.vars) return e.vars[name];
     throw new Error(`'${type}' has no property '${name}'`);
+  }
+  #bprop(type, idx, beh, name) {
+    const list = this.cur.get(type) ? [this.cur.get(type)] : this.picked(type, this.solView ?? new Map());
+    const e = idx === null || idx === undefined ? list[0] : list[Math.floor(idx)];
+    const f = behaviors.get(beh)?.expressions[name];
+    if (!f) throw new Error(`unknown expression ${type}.${beh}.${name}`);
+    const b = e?.behavior(beh);
+    return b ? f(b, [], this) : 0;
   }
   #method(type, name, a) {
     if (type === 'Functions') return this.callFunction(name, a);

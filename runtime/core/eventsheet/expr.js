@@ -140,6 +140,7 @@ function ev(n, env) {
     }
     case 'member': {
       const o = n.of;
+      if (o.k === 'member' && (o.of.k === 'name' || o.of.k === 'call')) return env.bprop(o.of.name, o.of.k === 'call' && o.of.args.length ? ev(o.of.args[0], env) : null, o.name, n.name);
       if (o.k === 'name') return env.prop(o.name, null, n.name);
       if (o.k === 'call') return env.prop(o.name, o.args.length ? ev(o.args[0], env) : null, n.name);
       throw new Error(`cannot read '.${n.name}'`);

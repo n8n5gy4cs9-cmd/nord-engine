@@ -17,3 +17,5 @@ export { SKINS, THEMES, FONTS, skin, theme, fontFaceCSS, themeVars, applyTheme, 
 export { EventSheet } from './eventsheet/sheet.js';
 export { registerPlugin, registerObjectAces } from './eventsheet/aces.js';
 export { compile as compileExpression } from './eventsheet/expr.js';
+export { Behavior, registerBehavior, behaviors } from './behaviors/index.js';
+import './behaviors/builtin.js';

@@ -53,6 +53,8 @@ my-game/
       "scripts": [
         { "path": "scripts/player.js", "attributes": { "speed": 220, "jumpForce": 520 } }
       ],
+      "behaviors": [ { "type": "Platform", "properties": { "maxSpeed": 330 } } ],   // optional, see docs/BEHAVIORS.md
+      "vars": { "hp": 3 },                                                           // optional instance variables (event sheets)
       "children": [],
       "prefab": null                    // or { "path": "prefabs/x.prefab.json", "overrides": {…} }
     }

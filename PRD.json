@@ -1671,13 +1671,13 @@
       "id": "M10-08",
       "milestone": "M10",
       "title": "Behavior framework: attach/detach in inspector, behavior schema (properties, conditions, actions, expressions) shared by editor + runtime",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M10-09",
       "milestone": "M10",
       "title": "Behaviors set A: Platform, 8-Direction, Bullet, Sine, Fade, Wrap, Scroll-To, Bound-to-Layout, Solid, Jumpthru, Persist, Destroy-outside-layout",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M10-10",

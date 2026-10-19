@@ -67,6 +67,7 @@ export class Scene {
       s._path = sd.path;
       e.scripts.push(s);
     }
+    for (const bd of e._behaviorData) e.addBehavior(bd.type, bd.properties, bd.enabled);
     for (const cd of data.children ?? []) e.children.push(await this.#make(cd, e, { regenIds }));
     return e;
   }
@@ -134,6 +135,7 @@ export class Scene {
     for (const s of this.systems) { try { s.update?.(dt); } catch (err) { this.game.reportError(err, s, 'update'); } }
     this.#each('update', dt);
     for (const e of this.all()) for (const c of e.components) c.impl?.update?.(c, dt);
+    for (const e of [...this.all()]) if (e.enabled) for (const b of e.behaviors) if (b.enabled) { try { b.tick(dt); } catch (err) { this.game.reportError(err, b, 'tick'); } }
     this.#each('lateUpdate', dt);
     this.#flushDeaths();
   }
