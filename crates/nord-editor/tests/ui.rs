@@ -1306,3 +1306,26 @@ fn timeline_panel_creates_timelines_tracks_markers_and_undoes() {
     h.run_steps(2);
     assert_eq!(nord_editor::timeline::get(h.state().scene.as_ref().unwrap(), "intro").unwrap()["events"].as_array().unwrap().len(), 0);
 }
+
+#[test]
+fn layout_views_and_drag_placement_in_the_panel() {
+    let d = example_copy("layoutviews", "event-sheets");
+    let mut st = EditorState::new();
+    st.open_project(&d).unwrap();
+    st.viewport_cam = Some([320.0, 180.0, 1.5]);
+    st.layout_ui.view_name = "arena".into();
+    let mut h = Harness::builder()
+        .with_size(egui::vec2(900.0, 1200.0))
+        .build_ui_state(|ui, st: &mut EditorState| panels::layout::ui(st, ui), st);
+    loaders(&h);
+    h.run_steps(2);
+    h.get_by_label("Views").click();
+    h.run_steps(2);
+    h.get_by_label("Save current view").click();
+    h.run_steps(3);
+    assert_eq!(nord_editor::layout::views(h.state().scene.as_ref().unwrap()), vec![("arena".to_string(), [320.0, 180.0, 1.5])]);
+    // placing is covered by the model test; the section renders with objects listed
+    h.get_by_label("Object types").click();
+    h.run_steps(2);
+    h.get_by_label_contains("Hero");
+}

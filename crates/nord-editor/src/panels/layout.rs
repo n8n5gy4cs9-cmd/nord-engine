@@ -12,6 +12,7 @@ pub struct LayoutUi {
     pub new_layout: String,
     pub guide_x: f64,
     pub guide_y: f64,
+    pub view_name: String,
 }
 
 pub fn ui(st: &mut EditorState, ui: &mut Ui) {
@@ -29,6 +30,8 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         objects_section(st, ui);
         ui.add_space(6.0);
         overview_section(st, ui);
+        ui.add_space(6.0);
+        views_section(st, ui);
         ui.add_space(6.0);
         layouts_section(st, ui);
     });
@@ -277,7 +280,11 @@ fn objects_section(st: &mut EditorState, ui: &mut Ui) {
         ui.weak("An object type is every entity with the same name — what event sheets call an object.");
         for t in &types {
             ui.horizontal(|ui| {
-                ui.label(RichText::new(&t.name).strong());
+                ui.dnd_drag_source(egui::Id::new(("obj-type", &t.name)), t.name.clone(), |ui| {
+                    ui.label(RichText::new(format!("⠿ {}", t.name)).strong());
+                })
+                .response
+                .on_hover_text("Drag onto the Overview map to place a new instance");
                 ui.weak(format!("× {}", t.count));
                 if ui.small_button("Select all").clicked() {
                     st.selection = t.ids.clone();
@@ -313,8 +320,23 @@ fn overview_section(st: &mut EditorState, ui: &mut Ui) {
         let (w, h) = ((b[2] - b[0]).max(1.0), (b[3] - b[1]).max(1.0));
         let avail = ui.available_width().min(420.0);
         let scale = (avail as f64 / w).min(160.0 / h);
-        let (r, _) = ui.allocate_exact_size(Vec2::new((w * scale) as f32, (h * scale) as f32), Sense::hover());
+        let (r, resp) = ui.allocate_exact_size(Vec2::new((w * scale) as f32, (h * scale) as f32), Sense::click());
         ui.painter().rect_filled(r, 2.0, Color32::from_gray(28));
+        let world_at = |p: egui::Pos2| (b[0] + ((p.x - r.left()) as f64) / scale, b[1] + ((p.y - r.top()) as f64) / scale);
+        // drop an object type here to place a new instance; click to look at that spot in the viewport
+        let mut place: Option<(String, f64, f64)> = None;
+        if let Some(name) = resp.dnd_release_payload::<String>() {
+            if let Some(p) = ui.input(|i| i.pointer.interact_pos()) {
+                let (x, y) = world_at(p);
+                place = Some(((*name).clone(), x.round(), y.round()));
+            }
+        } else if resp.dnd_hover_payload::<String>().is_some() {
+            ui.painter().rect_stroke(r, 2.0, egui::Stroke::new(2.0_f32, Color32::from_rgb(120, 200, 255)), egui::StrokeKind::Outside);
+        }
+        let mut look: Option<(f64, f64)> = None;
+        if resp.clicked() {
+            look = resp.interact_pointer_pos().map(world_at);
+        }
         for e in &s.entities {
             let sz = layout::size_of(e);
             let (x, y) = ((e.transform.pos[0] - sz[0] / 2.0 - b[0]) * scale, (e.transform.pos[1] - sz[1] / 2.0 - b[1]) * scale);
@@ -322,7 +344,56 @@ fn overview_section(st: &mut EditorState, ui: &mut Ui) {
             let rr = Rect::from_min_size(r.min + Vec2::new(x as f32, y as f32), Vec2::new(((sz[0] * scale) as f32).max(2.0), ((sz[1] * scale) as f32).max(2.0)));
             ui.painter().rect_filled(rr, 0.0, if st.selection.contains(&e.id) { Color32::YELLOW } else { col });
         }
-        ui.weak(format!("{} object(s), {:.0} × {:.0} units", s.entities.len(), w, h));
+        ui.weak(format!("{} object(s), {:.0} × {:.0} units — click to look there, drop an object type to place it", s.entities.len(), w, h));
+        if let Some((x, y)) = look {
+            let z = st.viewport_cam.map_or(1.0, |c| c[2]);
+            st.send_viewport(json!({"t": "view", "x": x, "y": y, "zoom": z}));
+        }
+        if let Some((name, x, y)) = place {
+            st.edit_scene("Place instance", None, |s| {
+                layout::place_instance(s, &name, x, y);
+            });
+        }
+    });
+}
+
+fn views_section(st: &mut EditorState, ui: &mut Ui) {
+    egui::CollapsingHeader::new(RichText::new("Views").strong()).default_open(false).show(ui, |ui| {
+        let views = layout::views(st.scene.as_ref().unwrap());
+        let mut go: Option<[f64; 3]> = None;
+        let mut del: Option<String> = None;
+        for (name, c) in &views {
+            ui.horizontal(|ui| {
+                if ui.button(format!("Go to {name}")).clicked() {
+                    go = Some(*c);
+                }
+                ui.weak(format!("{:.0}, {:.0} · {:.0}%", c[0], c[1], c[2] * 100.0));
+                if ui.small_button("✖").clicked() {
+                    del = Some(name.clone());
+                }
+            });
+        }
+        ui.horizontal(|ui| {
+            ui.add(egui::TextEdit::singleline(&mut st.layout_ui.view_name).hint_text("view name").desired_width(120.0));
+            let cam = st.viewport_cam;
+            if ui.add_enabled(cam.is_some() && !st.layout_ui.view_name.trim().is_empty(), egui::Button::new("Save current view")).on_hover_text("remembers where the 2D viewport is looking").clicked() {
+                let n = st.layout_ui.view_name.trim().to_string();
+                st.edit_scene("Save view", None, |s| layout::save_view(s, &n, cam.unwrap()));
+                st.layout_ui.view_name.clear();
+            }
+            if cam.is_none() {
+                ui.weak("(open the Scene tab and move the view first)");
+            }
+        });
+        if let Some(c) = go {
+            st.send_viewport(json!({"t": "view", "x": c[0], "y": c[1], "zoom": c[2]}));
+        }
+        if let Some(n) = del {
+            st.edit_scene("Delete view", None, |s| {
+                let rest: Vec<_> = layout::views(s).into_iter().filter(|(x, _)| *x != n).collect();
+                layout::set_views(s, &rest);
+            });
+        }
     });
 }
 

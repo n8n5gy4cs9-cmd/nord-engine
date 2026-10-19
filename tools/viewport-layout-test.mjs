@@ -35,6 +35,14 @@ try {
   await page.waitForTimeout(400);
   const msgs = (await (await fetch(`${base}/api/ipc`)).json()).slice(before).filter((m) => m.t === 'guide');
   assert.equal(msgs.length, 1); assert.equal(msgs[0].axis, 'y'); assert.equal(typeof msgs[0].to, 'number'); assert.equal(msgs[0].from, null);
+  // views: the editor can move the camera, and the viewport reports pans back
+  await push({ t: 'view', x: 400, y: 250, zoom: 2 });
+  assert.deepEqual(await page.evaluate(() => { const c = window.__nordEdit.backend.api.cam; return [c.x, c.y, c.zoom]; }), [400, 250, 2]);
+  const n0 = (await (await fetch(`${base}/api/ipc`)).json()).length;
+  await page.mouse.move(450, 300); await page.mouse.down({ button: 'middle' }); await page.mouse.move(500, 340, { steps: 3 }); await page.mouse.up({ button: 'middle' });
+  await page.waitForTimeout(500);
+  const cams = (await (await fetch(`${base}/api/ipc`)).json()).slice(n0).filter((m) => m.t === 'cam');
+  assert.ok(cams.length >= 1 && cams.at(-1).zoom === 2, `camera reported ${JSON.stringify(cams)}`);
   assert.deepEqual(errors, []);
   console.log('viewport layout OK');
 } finally { await browser.close(); srv.kill(); }

@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 213/243 tasks (88%)** · updated 2026-10-19
+**Overall: 214/243 tasks (88%)** · updated 2026-10-19
 
 | Milestone | Progress |
 |---|---|
@@ -17,7 +17,7 @@
 | M7 Docs | 20/20 (100%) |
 | M8 Polish & portability | 15/20 (75%) |
 | M9 Desktop apps | 16/16 (100%) |
-| M10 Construct-style editor | 31/35 (89%) |
+| M10 Construct-style editor | 32/35 (91%) |
 | M11 Web editor | 0/16 (0%) |
 
 ## Next up
@@ -275,7 +275,7 @@ _features cloned from Construct 3's editor (construct.net/en/make-games/games-ed
 - [x] **M10-11** Families + instance variables + containers + global objects + object templates (prefab link)
 - [x] **M10-12** Layout editor: layer panel (add/rename/reorder/lock/hide, parallax, scale rate, opacity, blend mode, transparent, background colour, force own texture)
 - [x] **M10-13** Layout editor: rulers/guides, snapping options, alignment/distribute for multi-select, layout properties (size, unbounded scrolling, event sheet link), multiple layouts + layout switching
-- [ ] **M10-14** Layout editor: object-type panel + drag-to-place, instance property sync, layout views (zoom), minimap/overview
+- [x] **M10-14** Layout editor: object-type panel + drag-to-place, instance property sync, layout views (zoom), minimap/overview
 - [x] **M10-15** Sprite/image editor: paint tools (pencil, brush, eraser, fill, line, rect, ellipse, select, move, flip/rotate), palette, zoom/grid, import/export PNG
 - [x] **M10-16** Sprite editor: origin point, named image points, collision polygon editor with auto-trace, per-frame properties
 - [x] **M10-17** Animation editor v2: multiple named animations per object, frame list, duration/speed/loop/ping-pong/repeat-to, onion skin, preview play, import spritesheet/GIF, tags

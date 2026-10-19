@@ -13,7 +13,8 @@ Editor: the **Layout** tab (right dock, next to the Inspector) + the 2D scene vi
 
 ## Objects (M10-14)
 - **Object types** = entities with the same name (what event sheets call objects): count, *Select all*, *＋ Instance* (duplicate the first one), **Sync instances** (copy components/behaviors/effects/scripts/tags/layer from the first instance to all others, positions stay — Construct's "object type" shared properties).
-- **Overview**: small map of the layout's contents (selection in yellow).
-- Not done: drag an object type from the panel into the viewport (use *＋ Instance*, prefabs from the Library/Assets), true per-instance vs per-type property split, layout "views"/saved cameras (viewport zoom/frame exist).
+- **Overview**: small map of the layout's contents (selection in yellow). **Drag an object type (⠿) onto the map to place a new instance** there; click the map to look at that spot in the 2D viewport.
+- **Views**: *Save current view* remembers the 2D viewport's camera (it reports pans/zooms back to the editor), *Go to* moves it again (`settings.views`).
+- Not done: dropping straight into the viewport (the viewport is a separate web view; use the Overview map or *＋ Instance*), a true per-instance vs per-type property split (use *Sync instances*).
 
 Tests: `cargo test -p nord-editor` (layout unit tests, `layout_panel_layers_arrange_and_undo`), `node tools/viewport-layout-test.mjs` (real `nord serve` + Chromium: lock/hide, guide drawing, ruler drag), `node tools/eventsheet-demo-test.mjs` (layers at runtime, WebGL).

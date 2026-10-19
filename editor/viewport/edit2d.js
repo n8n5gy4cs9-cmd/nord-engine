@@ -408,7 +408,7 @@ function onMove(ev) {
   if (!drag) { draw(); return; }
   if (drag.kind === 'guide') { const [wx, wy] = toWorld(sx, sy); drag.value = Math.round(drag.axis === 'x' ? wx : wy); drag.overRuler = drag.axis === 'x' ? sx < RULER : sy < RULER; draw(); return; }
   if (drag.kind === 'pan') {
-    cam.x = drag.cx - (sx - drag.sx) / cam.zoom; cam.y = drag.cy - (sy - drag.sy) / cam.zoom; draw(); return;
+    cam.x = drag.cx - (sx - drag.sx) / cam.zoom; cam.y = drag.cy - (sy - drag.sy) / cam.zoom; draw(); reportCam(); return;
   }
   const it = items.find((i) => i.e.id === drag.id);
   if (!it) return;
@@ -464,8 +464,13 @@ function onWheel(ev) {
   const [wx, wy] = toWorld(sx, sy);
   cam.zoom = Math.min(32, Math.max(0.05, cam.zoom * Math.exp(-ev.deltaY * 0.0015)));
   cam.x = wx - (sx - W / 2) / cam.zoom; cam.y = wy - (sy - H / 2) / cam.zoom;
-  draw();
+  draw(); reportCam();
 }
+
+// camera reports (editor "Views" section) and view commands
+let camTimer = null;
+function reportCam() { clearTimeout(camTimer); camTimer = setTimeout(() => send({ t: 'cam', x: Math.round(cam.x), y: Math.round(cam.y), zoom: Math.round(cam.zoom * 1000) / 1000 }), 200); }
+export function setView(v) { cam.x = v.x ?? cam.x; cam.y = v.y ?? cam.y; cam.zoom = Math.min(32, Math.max(0.05, v.zoom ?? cam.zoom)); draw(); reportCam(); }
 
 // ---------- editor -> viewport ----------
 export function setScene() {

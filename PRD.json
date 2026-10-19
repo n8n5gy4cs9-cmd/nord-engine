@@ -1720,7 +1720,7 @@
       "id": "M10-14",
       "milestone": "M10",
       "title": "Layout editor: object-type panel + drag-to-place, instance property sync, layout views (zoom), minimap/overview",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M10-15",

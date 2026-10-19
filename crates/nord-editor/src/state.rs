@@ -250,6 +250,8 @@ pub struct EditorState {
     pub sprite: crate::panels::sprite::SpriteUi,
     pub particles_ui: crate::panels::particles::ParticlesUi,
     pub timeline_ui: crate::panels::timeline::TimelineUi,
+    /// last camera reported by the 2D viewport: [x, y, zoom]
+    pub viewport_cam: Option<[f64; 3]>,
     /// phone/tablet preview server while it is on (dropping it stops the server)
     pub lan: Option<nord_serve::Lan>,
     pub lan_log_seen: usize,
@@ -329,6 +331,7 @@ impl EditorState {
             sprite: Default::default(),
             particles_ui: Default::default(),
             timeline_ui: Default::default(),
+            viewport_cam: None,
             lan: None,
             lan_log_seen: 0,
             lan_open: false,
@@ -886,6 +889,11 @@ impl EditorState {
             Some("select") => {
                 let id = m["id"].as_str().map(String::from);
                 self.select(id);
+            }
+            Some("cam") => {
+                if let (Some(x), Some(y), Some(z)) = (m["x"].as_f64(), m["y"].as_f64(), m["zoom"].as_f64()) {
+                    self.viewport_cam = Some([x, y, z]);
+                }
             }
             Some("guide") => {
                 // dragged out of / back into a ruler: add, move (from → to) or delete (to == null) a guide line

@@ -1,5 +1,7 @@
 # Changelog
 
+- 2026-10-19 (M10-14): Layout editor finished — drag an object type onto the Overview map to place an instance, click the map to move the viewport, saved camera **Views** (the 2D viewport now reports its camera), tests (model, kittest, Chromium).
+
 - 2026-10-19 (M10-21): **Timeline editor** — Timeline tab (tracks, keyframes on a strip, named/bezier easing with preview, event markers, scrub, undo) over the existing timeline runtime. Tests: 3 unit + 1 kittest.
 
 - 2026-10-19 (M10-20): **Particle editor** — Particles tab with live preview, 11 presets, property curves (scale/opacity over life), colour gradient, spin, spawn radius; runtime support for curves/gradient/spin/zone/gravityX. `docs/PARTICLES.md`.

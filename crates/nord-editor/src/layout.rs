@@ -293,6 +293,40 @@ pub fn snap_to_guides(v: f64, guides: &[f64], radius: f64) -> f64 {
     guides.iter().copied().filter(|g| (g - v).abs() <= radius).min_by(|a, b| (a - v).abs().total_cmp(&(b - v).abs())).unwrap_or(v)
 }
 
+/// Saved camera views (`settings.views = [{name, x, y, zoom}]`).
+pub fn views(s: &Scene) -> Vec<(String, [f64; 3])> {
+    s.settings.extra.get("views").and_then(Value::as_array).map(|a| a.iter().map(|v| (v["name"].as_str().unwrap_or("view").to_string(), [v["x"].as_f64().unwrap_or(0.0), v["y"].as_f64().unwrap_or(0.0), v["zoom"].as_f64().unwrap_or(1.0)])).collect()).unwrap_or_default()
+}
+
+pub fn save_view(s: &mut Scene, name: &str, cam: [f64; 3]) {
+    let mut v = views(s);
+    v.retain(|(n, _)| n != name);
+    v.push((name.to_string(), cam));
+    set_views(s, &v);
+}
+
+pub fn set_views(s: &mut Scene, v: &[(String, [f64; 3])]) {
+    if v.is_empty() {
+        s.settings.extra.remove("views");
+    } else {
+        s.settings.extra.insert("views".into(), json!(v.iter().map(|(n, c)| json!({"name": n, "x": c[0], "y": c[1], "zoom": c[2]})).collect::<Vec<_>>()));
+    }
+}
+
+/// Place a copy of the first instance of object type `name` at world position (x, y) (top level). Returns the new id.
+pub fn place_instance(s: &mut Scene, name: &str, x: f64, y: f64) -> Option<String> {
+    let src = object_types(s).into_iter().find(|t| t.name == name)?.ids.first()?.clone();
+    fn find<'a>(list: &'a [Entity], id: &str) -> Option<&'a Entity> {
+        list.iter().find_map(|e| if e.id == id { Some(e) } else { find(&e.children, id) })
+    }
+    let mut c = crate::scene_ops::clone_fresh(find(&s.entities, &src)?);
+    c.transform.pos[0] = x;
+    c.transform.pos[1] = y;
+    let id = c.id.clone();
+    s.entities.push(c);
+    Some(id)
+}
+
 /// World-space box [x0, y0, x1, y1] containing every top-level entity (for the minimap).
 pub fn content_bounds(s: &Scene) -> Option<[f64; 4]> {
     let mut b: Option<[f64; 4]> = None;
@@ -401,6 +435,24 @@ mod tests {
         assert_eq!(s.entities[3].components[0].fields["size"], json!([40.0, 40.0]));
         assert_eq!(s.entities[3].transform.pos[0], 200.0, "position stays");
         assert_eq!(s.entities[3].layer, 1);
+    }
+
+    #[test]
+    fn views_and_drag_placement() {
+        let mut s = scene();
+        save_view(&mut s, "boss", [500.0, 200.0, 0.5]);
+        save_view(&mut s, "start", [0.0, 0.0, 1.0]);
+        save_view(&mut s, "boss", [600.0, 200.0, 0.5]);
+        assert_eq!(views(&s), vec![("start".to_string(), [0.0, 0.0, 1.0]), ("boss".to_string(), [600.0, 200.0, 0.5])]);
+        set_views(&mut s, &[]);
+        assert!(!s.settings.extra.contains_key("views"));
+        let n = s.entities.len();
+        let id = place_instance(&mut s, "B", 321.0, 123.0).unwrap();
+        assert_eq!(s.entities.len(), n + 1);
+        let e = s.entities.last().unwrap();
+        assert_eq!((e.id.clone(), e.name.as_str(), e.transform.pos[0], e.transform.pos[1]), (id, "B", 321.0, 123.0));
+        assert_eq!(e.components[0].fields["size"], json!([40.0, 40.0]), "a full copy");
+        assert!(place_instance(&mut s, "Nope", 0.0, 0.0).is_none());
     }
 
     #[test]
