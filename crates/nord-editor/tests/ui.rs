@@ -1044,3 +1044,29 @@ fn event_sheet_editor_edits_picks_undoes_and_saves() {
     let sc = h.state().scene.clone().unwrap();
     assert_eq!(sc.settings.extra["eventSheet"], rel);
 }
+
+#[test]
+fn history_panel_snapshots_diffs_and_restores() {
+    let d = example_copy("hist", "event-sheets");
+    let mut st = EditorState::new();
+    st.open_project(&d).unwrap();
+    let mut h = Harness::builder()
+        .with_size(egui::vec2(1100.0, 600.0))
+        .build_ui_state(|ui, st: &mut EditorState| panels::history::ui(st, ui), st);
+    loaders(&h);
+    h.run_steps(2);
+    h.get_by_label("Snapshot now").click();
+    h.run_steps(3);
+    assert_eq!(nord_core::history::list(&d).len(), 1);
+    let sheet = d.join("events/main.events.json");
+    let orig = std::fs::read_to_string(&sheet).unwrap();
+    std::fs::write(&sheet, orig.replace("\"coins\"", "\"coinz\"")).unwrap();
+    h.run_steps(3);
+    h.get_by_label_contains("1 changed file(s)");
+    h.get_by_label("Restore this snapshot").click();
+    h.run_steps(2);
+    h.get_by_label("Click again to restore").click();
+    h.run_steps(3);
+    assert_eq!(std::fs::read_to_string(&sheet).unwrap(), orig);
+    assert_eq!(nord_core::history::list(&d).len(), 2, "restore took a safety snapshot");
+}

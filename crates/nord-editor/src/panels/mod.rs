@@ -6,6 +6,7 @@ pub mod docs;
 pub mod events;
 pub mod export;
 pub mod hierarchy;
+pub mod history;
 pub mod hub;
 pub mod inspector;
 pub mod library;

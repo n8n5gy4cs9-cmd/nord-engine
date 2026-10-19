@@ -244,6 +244,7 @@ pub struct EditorState {
     pub palette: crate::panels::palette::PaletteUi,
     pub anim: crate::panels::animation::AnimUi,
     pub events: crate::panels::events::EventsUi,
+    pub history_ui: crate::panels::history::HistoryUi,
     pub settings_open: bool,
     pub export_ui: crate::panels::export::ExportUi,
     pub desktop_ui: crate::panels::desktop::DesktopUi,
@@ -313,6 +314,7 @@ impl EditorState {
             palette: Default::default(),
             anim: Default::default(),
             events: Default::default(),
+            history_ui: Default::default(),
             settings_open: false,
             export_ui: Default::default(),
             desktop_ui: Default::default(),
@@ -646,6 +648,29 @@ impl EditorState {
         )
     }
 
+    /// After a version-history restore: re-read everything the editor holds in memory from disk.
+    pub fn reload_after_restore(&mut self) {
+        let Some(root) = self.root.clone() else { return };
+        if let Ok(p) = nord_core::io::load_project(&root) {
+            self.project = Some(p);
+        }
+        if let Some(f) = self.scene_file.clone() {
+            match nord_core::io::load_json::<Scene>(&root.join(&f)) {
+                Ok(s) => self.scene = Some(s),
+                Err(_) => self.scene = None,
+            }
+        }
+        if let Some(p) = self.events.path.clone() {
+            let _ = self.events.load(&root, &p);
+        }
+        self.selection.clear();
+        self.undo.clear();
+        self.script_cache.clear();
+        self.dirty = false;
+        self.refresh_assets();
+        self.rev += 1;
+    }
+
     pub fn recover_autosave(&mut self) {
         if let Some(p) = self.recover.take() {
             if let Ok(s) = nord_core::io::load_json::<Scene>(Path::new(&p)) {
@@ -662,6 +687,8 @@ impl EditorState {
         let (Some(root), Some(f), Some(s)) = (&self.root, &self.scene_file, &self.scene) else {
             return;
         };
+        // version history: a snapshot of the sources before the first save in any 10 minutes
+        nord_core::history::snapshot_if_stale(root, "auto (before save)", 600);
         match nord_core::io::save_json(&root.join(f), s) {
             Ok(()) => {
                 self.dirty = false;

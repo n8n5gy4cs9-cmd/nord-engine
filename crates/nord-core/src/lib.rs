@@ -2,6 +2,7 @@
 //! See docs/PROJECT_FORMAT.md for the data model.
 
 pub mod assets;
+pub mod history;
 pub mod io;
 pub mod offline;
 pub mod project;

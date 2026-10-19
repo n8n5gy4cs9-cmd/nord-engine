@@ -1,5 +1,7 @@
 # Changelog
 
+- 2026-10-19 (M10-31): **Version history** — `nord_core::history` (snapshot/list/diff/line-diff/restore, auto snapshot before saves, keep 50) and the editor's *History* tab (diff view, two-click restore with safety snapshot). Tests: 3 unit + 1 kittest.
+
 - 2026-10-19 (M10-28, M10-21 runtime): **PWA export** (`nord build --pwa`, editor checkbox): manifest + offline service worker, size checks in the report; verified offline reload in Chromium (`tools/pwa-test.mjs`). The event-sheets example is now self-contained (its engine assets are copied in) so it exports. **Timelines** runtime (`runtime/core/timeline.js`, `docs/TIMELINE.md`): keyframe tracks with named/bezier easing, events, loop, pause/seek, event-sheet Timeline plugin — the egui timeline editor is still to do (M10-21 stays open).
 
 - 2026-10-19 (M10-19): **Effects** — scene and per-object effect stacks (`settings.effects`, entity `effects`, `game.effects`, event-sheet Effects plugin + object actions): blur, glow, pixelate, vignette, barrel, colour grading, CRT; Phaser 4 filters on WebGL, CSS fallback for scene-level ones on other tiers. Rust `Entity` keeps `effects`. `docs/EFFECTS.md`. (Phaser 4.2 has no bloom/shine filters.)

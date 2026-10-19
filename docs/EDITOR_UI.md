@@ -87,3 +87,7 @@ crates/nord-serve/      dev server + Hub (shared by `nord serve` and the editor)
 
 ## Code view wrapping and typography (2026-10-13)
 The Code toolbar has persisted **Word wrap** on/off; wrapping changes display only. Settings adds `code_word_wrap` (default false), `code_line_height` (default 1.6 × code font size, slider 1.0–2.2), and `code_letter_spacing` (default 0 points, slider 0–2). Existing settings load their defaults through serde. Highlight cache keys include font size; layout applies spacing to highlighted/plain large-file jobs. Wrapped gutters, current-line shading and error squiggles use the laid-out galley rather than logical-line × font-height guesses. No native build/tests run at owner request; native interaction/compile verification remains unperformed.
+
+## Event sheets, History (M10)
+- **Event sheets** tab: see docs/EVENT_SHEETS.md (editor panel section).
+- **History** tab (bottom dock): list of snapshots (`<project>/.nord/history/`, newest first), *Snapshot now* with an optional label, select one to see added/removed/modified files and a line diff, *Restore this snapshot* (asks twice; takes a "before restore" safety snapshot first so a restore can itself be undone; images/audio are untouched). Snapshots cover JSON, event sheets, scripts and other text files (not `vendor/`, `runtime/`, `dist/`, dot-folders); the newest 50 are kept; one is taken automatically before the first save in any 10 minutes. Code: `nord-core/src/history.rs`. Add `.nord/` to `.gitignore` if you use git.

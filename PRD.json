@@ -1822,7 +1822,7 @@
       "id": "M10-31",
       "milestone": "M10",
       "title": "Version history: snapshots + restore + diff view for project JSON/event sheets",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M10-32",
