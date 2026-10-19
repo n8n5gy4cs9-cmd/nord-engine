@@ -56,6 +56,17 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                     st.push(Action::Reload);
                 }
             });
+            if ui
+                .selectable_label(st.lan.is_some(), "Phone")
+                .on_hover_text("Preview on your phone: shows a QR code (same Wi-Fi)")
+                .clicked()
+            {
+                if st.lan.is_some() && !st.lan_open {
+                    st.lan_open = true;
+                } else {
+                    crate::panels::preview::toggle(st);
+                }
+            }
             ui.separator();
             for (t, ic, tip) in [
                 (Tool::Move, "move", "Move (W)"),

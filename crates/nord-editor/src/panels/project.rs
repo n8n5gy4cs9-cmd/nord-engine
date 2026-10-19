@@ -59,10 +59,16 @@ fn properties(st: &mut EditorState, ui: &mut Ui, root: &std::path::Path) {
             });
             ui.end_row();
             ui.label("Game size");
-            ui.horizontal(|ui| {
+            ui.horizontal_wrapped(|ui| {
                 ui.add(egui::DragValue::new(&mut p.display.width).range(64..=8192));
                 ui.label("×");
                 ui.add(egui::DragValue::new(&mut p.display.height).range(64..=8192));
+                for (label, w, h) in [("Phone ▯", 360, 640), ("Phone ▭", 640, 360), ("Tablet", 1024, 768), ("HD", 1280, 720), ("Full HD", 1920, 1080)] {
+                    if ui.small_button(label).on_hover_text(format!("{w} × {h}")).clicked() {
+                        p.display.width = w;
+                        p.display.height = h;
+                    }
+                }
             });
             ui.end_row();
             ui.label("Scaling");

@@ -75,9 +75,29 @@ export class Game {
   }
   /** Dev-server hook (see serve.rs): returns true if every changed file was a script we hot-swapped; false → caller reloads the page. */
   hotReload(paths) {
-    if (!paths?.length || !paths.every((p) => p.endsWith('.js') && this._scripts.has(p))) return false;
-    for (const p of paths) this.hotReloadScript(p);
+    const sheet = (p) => p.endsWith('.events.json') && !!this.scene?.eventSheet;
+    if (!paths?.length || !paths.every((p) => (p.endsWith('.js') && this._scripts.has(p)) || sheet(p))) return false;
+    for (const p of paths) if (!sheet(p)) this.hotReloadScript(p);
+    if (paths.some(sheet)) this.hotReloadSheet();
     return true;
+  }
+  /** Swap in the edited event sheet while the game keeps running: global variables (same name + type), group on/off and the sheet clock survive. */
+  async hotReloadSheet() {
+    const scene = this.scene, old = scene?.eventSheet;
+    if (!old) return false;
+    try {
+      for (const p of Object.keys(old.sheets)) this.loader?.forget(p);
+      const fresh = await EventSheet.load(scene, scene.settings.eventSheet ?? scene.data.eventSheet);
+      for (const [k, v] of old.globals) if (fresh.globals.has(k) && typeof fresh.globals.get(k) === typeof v && !fresh.consts.has(k)) fresh.globals.set(k, v);
+      for (const [t, g] of old.groups) if (fresh.groups.has(t)) fresh.groups.get(t).active = g.active;
+      fresh.time = old.time; fresh.tickCount = old.tickCount;
+      old._off?.(); fresh.listen();
+      const i = scene.systems.indexOf(old);
+      if (i >= 0) scene.systems[i] = fresh; else scene.systems.push(fresh);
+      scene.eventSheet = fresh;
+      this.overlay?.clear?.(); this.events.emit('hotReload', { path: 'event sheet', count: 1 });
+      return true;
+    } catch (err) { this.reportError(err, { constructor: { name: 'EventSheet' } }, 'hotReload'); return false; }
   }
   async loadScene(path = this.project.startScene) {
     if (!this._i18nReady) { this._i18nReady = true; await this.i18n.init(); await loadAddons(this); }

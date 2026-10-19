@@ -1101,3 +1101,21 @@ fn project_tab_edits_properties_and_renames_an_object_safely() {
     assert!(scene.contains("\"Goo\"") && !scene.contains("\"Slime\""));
     assert!(!nord_core::history::list(&d).is_empty(), "a snapshot was taken before the edit");
 }
+
+#[test]
+fn phone_preview_starts_shows_a_window_and_stops() {
+    let d = example_copy("lan", "event-sheets");
+    let mut st = EditorState::new();
+    st.open_project(&d).unwrap();
+    panels::preview::toggle(&mut st);
+    assert!(st.lan.is_some(), "server started");
+    let port = st.lan.as_ref().unwrap().port;
+    assert!(port > 0);
+    let mut h = Harness::builder()
+        .with_size(egui::vec2(800.0, 700.0))
+        .build_state(|ctx, st: &mut EditorState| panels::preview::window(st, ctx), st);
+    h.run_steps(3);
+    h.get_by_label("Stop phone preview").click();
+    h.run_steps(3);
+    assert!(h.state().lan.is_none());
+}

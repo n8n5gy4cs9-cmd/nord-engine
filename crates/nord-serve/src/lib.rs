@@ -492,6 +492,119 @@ pub async fn run(project: PathBuf, engine: PathBuf, port: u16) -> anyhow::Result
     Ok(())
 }
 
+// ---- LAN preview (M10-24): open the running game on a phone/tablet on the same Wi-Fi --------------------------------------------
+// A second, much smaller server: game files only (project + /runtime + /vendor), live reload and console logs. None of the editor,
+// desktop-bridge, docs or /api endpoints exist on it, dot-folders (.git, .nord history) are hidden, and every request needs the random
+// token from the QR/URL (first visit via `?k=`, then a cookie). It listens only while the returned `Lan` value is alive.
+pub struct Lan {
+    pub port: u16,
+    pub token: String,
+    /// `http://<lan ip>:<port>/?k=<token>` for each detected address
+    pub urls: Vec<String>,
+    /// the phone's console output arrives in `hub.logs`
+    pub hub: Arc<Hub>,
+    shutdown: Option<tokio::sync::oneshot::Sender<()>>,
+}
+
+impl Drop for Lan {
+    fn drop(&mut self) {
+        if let Some(t) = self.shutdown.take() {
+            let _ = t.send(());
+        }
+    }
+}
+
+/// Local IPv4 address used for outbound traffic (UDP connect sends nothing). Empty when offline.
+pub fn lan_ips() -> Vec<String> {
+    let Ok(s) = std::net::UdpSocket::bind("0.0.0.0:0") else { return vec![] };
+    if s.connect("192.0.2.1:9").is_err() {
+        return vec![];
+    }
+    match s.local_addr() {
+        Ok(a) if !a.ip().is_loopback() && !a.ip().is_unspecified() => vec![a.ip().to_string()],
+        _ => vec![],
+    }
+}
+
+fn random_token() -> String {
+    use std::hash::{BuildHasher, Hasher};
+    let mut out = String::new();
+    for _ in 0..2 {
+        let mut h = std::collections::hash_map::RandomState::new().build_hasher();
+        h.write_u128(std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map_or(0, |d| d.as_nanos()));
+        out += &format!("{:016x}", h.finish());
+    }
+    out
+}
+
+async fn lan_guard(State(tok): State<Arc<String>>, req: axum::extract::Request, next: axum::middleware::Next) -> Response {
+    let cookie_ok = req
+        .headers()
+        .get(header::COOKIE)
+        .and_then(|v| v.to_str().ok())
+        .is_some_and(|c| c.split(';').any(|p| p.trim() == format!("nordk={tok}")));
+    let query_ok = req.uri().query().is_some_and(|q| q.split('&').any(|p| p == format!("k={tok}")));
+    if !cookie_ok && !query_ok {
+        return StatusCode::FORBIDDEN.into_response();
+    }
+    let mut resp = next.run(req).await;
+    if query_ok && !cookie_ok {
+        if let Ok(v) = format!("nordk={tok}; Path=/; HttpOnly; SameSite=Strict").parse() {
+            resp.headers_mut().append(header::SET_COOKIE, v);
+        }
+    }
+    resp
+}
+
+async fn lan_static(State(a): State<App>, uri: Uri) -> Response {
+    let p = uri.path();
+    let hidden = p.split('/').any(|c| c.starts_with('.')) || ["/__docs", "/__edit", "/editor", "/api", "/__desktop"].iter().any(|x| p.starts_with(x));
+    if hidden {
+        return StatusCode::NOT_FOUND.into_response();
+    }
+    static_files(State(a), uri).await
+}
+
+pub fn lan_router(project: PathBuf, engine: PathBuf, token: String) -> (Router, Arc<Hub>, broadcast::Sender<Vec<String>>) {
+    let (tx, _) = broadcast::channel(16);
+    let (edit_tx, _) = broadcast::channel(4);
+    let hub = Arc::new(Hub { logs: Mutex::new(vec![]), inbox: Mutex::new(vec![]), edit_tx, reload_tx: tx.clone() });
+    let app = App { desktop: Arc::default(), project: Arc::new(project), engine: Arc::new(engine), tx: tx.clone(), hub: hub.clone() };
+    let r = Router::new()
+        .route("/__reload", get(reload))
+        .route("/api/log", post(log_post))
+        .fallback(lan_static)
+        .layer(axum::middleware::from_fn_with_state(Arc::new(token), lan_guard))
+        .with_state(app);
+    (r, hub, tx)
+}
+
+/// Start the LAN preview server (`port` 0 = any free port).
+pub fn start_lan(project: PathBuf, engine: PathBuf, port: u16) -> anyhow::Result<Lan> {
+    let token = random_token();
+    let (r, hub, tx) = lan_router(project.clone(), engine, token.clone());
+    let (ptx, prx) = std::sync::mpsc::channel();
+    let (stop_tx, stop_rx) = tokio::sync::oneshot::channel::<()>();
+    std::thread::spawn(move || {
+        let rt = tokio::runtime::Runtime::new().expect("tokio");
+        rt.block_on(async move {
+            let l = match tokio::net::TcpListener::bind(("0.0.0.0", port)).await {
+                Ok(l) => l,
+                Err(e) => {
+                    let _ = ptx.send(Err(e.to_string()));
+                    return;
+                }
+            };
+            let _ = ptx.send(Ok(l.local_addr().map(|a| a.port()).unwrap_or(0)));
+            watch(project, tx);
+            let _ = axum::serve(l, r).with_graceful_shutdown(async move { let _ = stop_rx.await; }).await;
+        });
+    });
+    let port = prx.recv()?.map_err(|e| anyhow::anyhow!("cannot listen: {e}"))?;
+    let urls = lan_ips().into_iter().map(|ip| format!("http://{ip}:{port}/?k={token}")).collect();
+    Ok(Lan { port, token, urls, hub, shutdown: Some(stop_tx) })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -640,5 +753,33 @@ mod tests {
             .unwrap()
             .status();
         assert_eq!(st, 404);
+    }
+
+    #[tokio::test]
+    async fn lan_preview_needs_the_token_and_hides_editor_endpoints() {
+        let d = std::env::temp_dir().join(format!("nord-lan-{}", std::process::id()));
+        std::fs::create_dir_all(d.join(".nord/history")).unwrap();
+        std::fs::write(d.join("index.html"), "<html><body>game</body></html>").unwrap();
+        std::fs::write(d.join(".nord/history/secret.json"), "secret").unwrap();
+        let lan = start_lan(d.clone(), d.clone(), 0).unwrap();
+        let base = format!("http://127.0.0.1:{}", lan.port);
+        let c = reqwest::Client::builder().build().unwrap();
+        assert_eq!(c.get(format!("{base}/")).send().await.unwrap().status(), 403, "no token");
+        let ok = c.get(format!("{base}/?k={}", lan.token)).send().await.unwrap();
+        assert_eq!(ok.status(), 200);
+        let cookie = ok.headers().get("set-cookie").unwrap().to_str().unwrap().split(';').next().unwrap().to_string();
+        assert!(ok.text().await.unwrap().contains("game"));
+        for p in ["/.nord/history/secret.json", "/__edit/cmd", "/api/project", "/__desktop/call", "/__docs/index.html"] {
+            let r = c.get(format!("{base}{p}")).header("cookie", &cookie).send().await.unwrap();
+            assert_eq!(r.status(), 404, "{p}");
+        }
+        assert_eq!(c.get(format!("{base}/")).header("cookie", "nordk=wrong").send().await.unwrap().status(), 403);
+        let r = c.post(format!("{base}/api/log")).header("cookie", &cookie).header("content-type", "application/json").body(r#"{"level":"info","text":"hi"}"#).send().await.unwrap();
+        assert_eq!(r.status(), 204);
+        assert_eq!(lan.hub.logs.lock().unwrap().len(), 1, "phone console reaches the hub");
+        drop(lan);
+        tokio::time::sleep(Duration::from_millis(300)).await;
+        assert!(c.get(format!("{base}/?k=x")).send().await.is_err(), "server stops when Lan is dropped");
+        let _ = std::fs::remove_dir_all(&d);
     }
 }

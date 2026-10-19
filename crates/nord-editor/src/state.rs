@@ -246,6 +246,10 @@ pub struct EditorState {
     pub events: crate::panels::events::EventsUi,
     pub history_ui: crate::panels::history::HistoryUi,
     pub project_ui: crate::panels::project::ProjectUi,
+    /// phone/tablet preview server while it is on (dropping it stops the server)
+    pub lan: Option<nord_serve::Lan>,
+    pub lan_log_seen: usize,
+    pub lan_open: bool,
     pub settings_open: bool,
     pub export_ui: crate::panels::export::ExportUi,
     pub desktop_ui: crate::panels::desktop::DesktopUi,
@@ -317,6 +321,9 @@ impl EditorState {
             events: Default::default(),
             history_ui: Default::default(),
             project_ui: Default::default(),
+            lan: None,
+            lan_log_seen: 0,
+            lan_open: false,
             settings_open: false,
             export_ui: Default::default(),
             desktop_ui: Default::default(),
@@ -607,6 +614,7 @@ impl EditorState {
 
     pub fn close_project(&mut self) {
         self.stop();
+        self.lan = None;
         self.root = None;
         self.project = None;
         self.scene = None;
@@ -777,6 +785,23 @@ impl EditorState {
 
     /// Pull game console lines + viewport messages from the hub.
     pub fn pump_hub(&mut self) -> Vec<Value> {
+        // console lines from a phone connected to the LAN preview
+        if let Some(l) = &self.lan {
+            let new: Vec<_> = {
+                let g = l.hub.logs.lock().unwrap();
+                let n: Vec<_> = g.iter().skip(self.lan_log_seen).cloned().collect();
+                self.lan_log_seen = g.len();
+                n
+            };
+            for e in new {
+                let level = match e.level.as_str() {
+                    "warn" => LogLevel::Warn,
+                    "error" => LogLevel::Error,
+                    _ => LogLevel::Info,
+                };
+                self.log(level, format!("[phone] {}", e.text));
+            }
+        }
         let Some(p) = self.play.as_mut() else {
             return vec![];
         };

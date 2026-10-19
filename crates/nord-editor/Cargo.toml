@@ -24,6 +24,7 @@ serde.workspace = true
 serde_json.workspace = true
 anyhow.workspace = true
 egui = "0.31"
+qrcode = { version = "0.14", default-features = false }
 eframe = { version = "0.31", default-features = false, features = ["wgpu", "default_fonts", "x11", "wayland", "accesskit"] }
 egui_extras = { version = "0.31", features = ["svg", "image", "file"] }
 egui_dock = { version = "0.16", features = ["serde"] }

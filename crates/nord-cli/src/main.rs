@@ -62,6 +62,9 @@ enum Cmd {
         project: PathBuf,
         #[arg(short, long, default_value_t = 4173)]
         port: u16,
+        /// Also serve the game (only) to phones/tablets on the local network; prints a link with a secret token
+        #[arg(long)]
+        lan: bool,
     },
     /// Build a static, offline web export (web-2d / web-3d / web-3d-pc / html / web-wasm-game / web-wasm-app) into a folder
     #[command(alias = "export")]
@@ -313,9 +316,21 @@ fn main() -> anyhow::Result<()> {
                 }
             }
         },
-        Cmd::Serve { project, port } => {
+        Cmd::Serve { project, port, lan } => {
             let engine =
                 nord_serve::engine_root().context("engine root not found (set NORD_ROOT)")?;
+            let _lan = if lan {
+                let l = nord_serve::start_lan(project.clone(), engine.clone(), 0)?;
+                if l.urls.is_empty() {
+                    println!("LAN preview on port {} (no network address found)", l.port);
+                }
+                for u in &l.urls {
+                    println!("Phone preview (same Wi-Fi): {u}");
+                }
+                Some(l)
+            } else {
+                None
+            };
             tokio::runtime::Runtime::new()?.block_on(nord_serve::run(project, engine, port))?;
         }
         Cmd::Build {

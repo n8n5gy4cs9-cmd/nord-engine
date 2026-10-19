@@ -121,3 +121,6 @@ Assets regressions pass for divider dragging, row alignment/wrapping at 48/84/16
 
 ## Editor UI tests race (worked around)
 `tests/ui.rs` panels share one process-wide `NORD_CONFIG_DIR` (recent projects, settings), so `hub_search_opens_examples_and_docs_without_a_project` failed when tests ran in parallel (it already failed at the start of M10, commit 0bf20cd1). Workaround: `.cargo/config.toml` sets `RUST_TEST_THREADS=1`. Proper fix: an isolated config dir per test (needs a thread-local override in `nord_core::io::config_dir`).
+
+## Phone preview (M10-24)
+Verified headless only (token, hidden paths, shutdown, QR matrix). Not verified on a real phone: Safari/iOS service of the EventSource reload, firewalls (macOS asks to allow incoming connections the first time), and VPN/multi-NIC machines (only the primary outbound IPv4 address is shown). The preview "window size/orientation presets" are project game-size presets, not device frames.

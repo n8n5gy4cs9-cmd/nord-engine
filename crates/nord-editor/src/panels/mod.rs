@@ -11,6 +11,7 @@ pub mod hub;
 pub mod inspector;
 pub mod library;
 pub mod palette;
+pub mod preview;
 pub mod project;
 pub mod settings;
 pub mod toolbar;

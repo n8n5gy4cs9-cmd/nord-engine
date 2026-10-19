@@ -1780,7 +1780,7 @@
       "id": "M10-24",
       "milestone": "M10",
       "title": "Preview: preview layout/project buttons, LAN preview URL + QR for phone, window size/orientation presets, hot-reload with state keep",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M10-25",

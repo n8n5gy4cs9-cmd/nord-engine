@@ -76,10 +76,9 @@ export class EventSheet {
   }
 
   // ---------- lifecycle (called by the scene) ----------
-  start() {
-    this._off = this.game.events.on('*', ({ name, data }) => { if (name !== 'debugBreak' && name !== 'language') this.fire('Events.on-event', { name, data }); });
-    this.fire('System.on-start-of-layout');
-  }
+  /** Subscribe to the game's event bus (Events → On game event). */
+  listen() { this._off = this.game.events.on('*', ({ name, data }) => { if (name !== 'debugBreak' && name !== 'language') this.fire('Events.on-event', { name, data }); }); }
+  start() { this.listen(); this.fire('System.on-start-of-layout'); }
   end() { this.fire('System.on-end-of-layout'); this._off?.(); }
   update(dt) {
     this.dt = dt; this.time += dt; this.tickCount++;

@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 202/243 tasks (83%)** · updated 2026-10-19
+**Overall: 203/243 tasks (84%)** · updated 2026-10-19
 
 | Milestone | Progress |
 |---|---|
@@ -17,7 +17,7 @@
 | M7 Docs | 20/20 (100%) |
 | M8 Polish & portability | 15/20 (75%) |
 | M9 Desktop apps | 16/16 (100%) |
-| M10 Construct-style editor | 20/35 (57%) |
+| M10 Construct-style editor | 21/35 (60%) |
 | M11 Web editor | 0/16 (0%) |
 
 ## Next up
@@ -285,7 +285,7 @@ _features cloned from Construct 3's editor (construct.net/en/make-games/games-ed
 - [ ] **M10-21** Timeline/keyframe editor: tracks per property, easing curve editor, events trigger, play/pause actions
 - [x] **M10-22** Debugger: pause/resume/step, inspector for live instances + vars (editable), event sheet highlighting + breakpoints, console eval
 - [x] **M10-23** Profiler: FPS/frame-time/draw-calls/memory graphs, per-event-group cost, object count, slow-frame markers
-- [ ] **M10-24** Preview: preview layout/project buttons, LAN preview URL + QR for phone, window size/orientation presets, hot-reload with state keep
+- [x] **M10-24** Preview: preview layout/project buttons, LAN preview URL + QR for phone, window size/orientation presets, hot-reload with state keep
 - [x] **M10-25** Project tools: project properties dialog (name, size, scaling mode, orientation, fullscreen, loader style, icons, version), folders in project bar, Find All References, project search/replace, safe rename
 - [x] **M10-26** Plugin objects: Text, Tiled Background, 9-Patch, Spritefont, Array, Dictionary, JSON, AJAX, LocalStorage, Function, Audio, Keyboard/Mouse/Touch/Gamepad, Drawing Canvas, Video — as nord.js objects with actions/conditions/expressions
 - [x] **M10-27** Addon SDK: JS addon format (plugin/behavior/effect) + `nord addon pack/install`, editor loads metadata, docs + sample addon

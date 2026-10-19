@@ -28,6 +28,8 @@ export class Loader {
     }
     return this.cache.get(key);
   }
+  /** Drop cached copies of a file (dev hot reload). */
+  forget(path) { for (const k of ['json', 'text', 'binary']) this.cache.delete(`${k}:${path}`); }
   json(path) { return this.#get(path, 'json'); }
   text(path) { return this.#get(path, 'text'); }
   binary(path) { return this.#get(path, 'binary'); }

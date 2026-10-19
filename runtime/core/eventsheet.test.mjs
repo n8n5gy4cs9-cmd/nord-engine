@@ -283,3 +283,19 @@ test('addon: plugin + behavior + effect register from project.addons; a broken a
   assert.deepEqual(errs, ['boom']); assert.deepEqual(g.addons.map((a) => a.id), ['ok']);
   const { EFFECT_TYPES } = await import('./index.js'); assert.equal(EFFECT_TYPES.warm2.value, 1);
 });
+
+test('hot reload of an edited event sheet keeps variables and group state', async () => {
+  files.sheet = { format: 1, events: [{ type: 'variable', name: 'n', valueType: 'number', value: 0 }, { type: 'group', title: 'G', active: true, children: [ev([sys('every-tick')], [{ object: 'System', id: 'add-to-var', params: { variable: 'n', value: '1' } }])] }] };
+  files.s = { name: 's', settings: { eventSheet: 'sheet' }, entities: [] };
+  const g = mk(); await g.loadScene('s'); for (let i = 0; i < 5; i++) g.tick(1 / 60);
+  assert.equal(V(g, 'n'), 5);
+  g.scene.eventSheet.groups.get('G').active = false;
+  files.sheet = { format: 1, events: [{ type: 'variable', name: 'n', valueType: 'number', value: 100 }, { type: 'variable', name: 'fresh', valueType: 'number', value: 7 }, { type: 'group', title: 'G', active: true, children: [ev([sys('every-tick')], [{ object: 'System', id: 'add-to-var', params: { variable: 'n', value: '10' } }])] }] };
+  assert.equal(g.hotReload(['sheet']), false, 'only *.events.json paths are hot-swapped');
+  files['events/x.events.json'] = files.sheet; // the path form the dev server reports
+  assert.equal(g.hotReload(['events/x.events.json']), true);
+  await new Promise((r) => setTimeout(r, 10));
+  assert.equal(V(g, 'n'), 5, 'running value kept, not reset to the new initial value'); assert.equal(V(g, 'fresh'), 7);
+  g.tick(1 / 60); assert.equal(V(g, 'n'), 5, 'group stayed disabled');
+  g.scene.eventSheet.groups.get('G').active = true; g.tick(1 / 60); assert.equal(V(g, 'n'), 15, 'new logic is live');
+});

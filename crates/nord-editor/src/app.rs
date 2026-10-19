@@ -1111,6 +1111,7 @@ impl App {
 
         panels::palette::window(&mut self.st, ctx);
         panels::settings::window(&mut self.st, ctx);
+        panels::preview::window(&mut self.st, ctx);
         panels::export::window(&mut self.st, ctx);
         panels::desktop::window(&mut self.st, ctx);
         if self.st.recover.is_some() && self.st.project.is_some() {
