@@ -53,6 +53,24 @@ const { errors } = await withPage(`${ROOT}/examples/event-sheets`, async (page) 
   await ev(() => { __nord.scene.find('Hero').pos = [550, 128, 2]; }); await wait(500);
   assert.equal(await ev(() => __nord.scene.eventSheet.getVar('won')), 1);
   await page.screenshot({ path: `${out}/5-win.png` });
+
+  // debugger + profiler overlay (?debug, F9)
+  await page.goto(page.url().split('?')[0] + '?debug'); await waitReady(page); await wait(600);
+  await page.keyboard.press('F9'); await wait(500);
+  assert.ok(await ev(() => getComputedStyle(document.querySelector('.nord-debug')).display === 'block'), 'overlay opens with F9');
+  const prof = await ev(() => document.querySelector('.nord-debug').textContent);
+  assert.match(prof, /fps/); assert.match(prof, /objects/);
+  await page.screenshot({ path: `${out}/6-profiler.png` });
+  await page.click('.nord-debug [data-tab=events]'); await wait(300);
+  await page.screenshot({ path: `${out}/7-debug-events.png` });
+  const hot = await ev(() => [...__nord.debug.ran.keys()].find((k) => !k.includes('.')) ?? [...__nord.debug.ran.keys()][0]);
+  await page.click(`.nord-debug [data-bp="${hot}"]`); // an event that runs every tick → breakpoint
+  assert.ok(await ev(() => __nord.debug.breakpoints.size === 1));
+  await wait(400);
+  assert.ok(await ev(() => __nord.debug.paused), 'breakpoint paused the running game');
+  await page.click('.nord-debug [data-tab=console]'); await page.fill('#nd-in', 'coins + lives'); await page.keyboard.press('Enter'); await wait(200);
+  assert.match(await ev(() => document.querySelector('.nord-debug').textContent), /> coins \+ lives/);
+  await page.screenshot({ path: `${out}/8-debug-console.png` });
 });
 assert.deepEqual(errors, [], errors.join('\n'));
 console.log('event-sheets demo OK');

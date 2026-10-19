@@ -32,8 +32,12 @@ export class EventSheet {
     this.env = this.#makeEnv();
     this.dataObjs = new Map(); // name -> bound plugin-shaped definition (Array, Dictionary, JSON, AJAX… see objects.js)
     this.#index(this.events);
+    this.#label(this.events, '');
     for (const [name, o] of Object.entries(scene.settings?.dataObjects ?? {})) this.#declare({ ...(typeof o === 'string' ? { plugin: o } : o), name });
   }
+
+  /** Stable path ids ("2.0.1") for the debugger/profiler. */
+  #label(list, prefix) { list.forEach((e, i) => { e._path = prefix + i; if (e.children) this.#label(e.children, `${e._path}.`); }); }
 
   #declare(e) {
     const def = dataTypes.get(e.plugin);
@@ -117,7 +121,9 @@ export class EventSheet {
       const first = ev.conditions?.[0];
       const isTrig = first && this.#def('conditions', first)?.trigger;
       if (trigger ? !(isTrig && this.#key(first) === trigger) : isTrig) continue;
+      const dbg = this.game.debug, t0 = dbg && !trigger ? performance.now() : 0;
       try { chain = this.#runEvent(ev, new Map(), chain); } catch (err) { this.#fail(ev, err); }
+      if (t0) dbg.addCost(ev._path, performance.now() - t0);
     }
   }
   // triggers on object types ("Player" → On collision) are registered under the generic "Object" plugin
@@ -138,7 +144,7 @@ export class EventSheet {
     let ran = false;
     try {
       const rest = isElse ? conds.slice(1) : conds;
-      const run = (sol) => { ran = true; this.#body(ev, sol); };
+      const run = (sol) => { ran = true; this.game.debug?.onRun(ev, this.tickCount); this.#body(ev, sol); };
       if (ev.block === 'or') this.#or(rest, parentSol, run, ev);
       else this.#and(rest, 0, parentSol, ev, run);
     } finally { if (hasLocals) this.scopes.pop(); }

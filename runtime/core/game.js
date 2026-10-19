@@ -7,6 +7,7 @@ import { Scene } from './scene.js';
 import { resolveAttributes } from './script.js';
 import { EventSheet } from './eventsheet/sheet.js';
 import { I18n, Accessibility } from './i18n.js';
+import { Debugger } from './debug.js';
 
 export class Game {
   /**
@@ -98,5 +99,12 @@ export class Game {
   pause() { this.paused = true; this.events.emit('pause'); }
   resume() { this.paused = false; this.events.emit('resume'); }
   /** Backends call this from their render loop with real delta seconds. */
-  tick(dt) { if (!this.paused) this.scene?.tick(dt); }
+  tick(dt) {
+    const d = this.debug;
+    if (d) { dt = d.begin(dt); if (dt === null) return; }
+    if (!this.paused) this.scene?.tick(dt);
+    d?.end();
+  }
+  /** Debugger + profiler (see debug.js). Returns the Debugger. */
+  enableDebug() { return this.debug ??= new Debugger(this); }
 }

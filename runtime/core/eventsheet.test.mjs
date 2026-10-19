@@ -206,3 +206,36 @@ test('scene.settings.dataObjects declares objects; global objects persist across
   const g = mk(); await g.loadScene('a'); await g.loadScene('b');
   assert.equal(g.scene.eventSheet.evalExpr('Score.Get("n")'), 2);
 });
+
+// ---- debugger / profiler (M10-22/23)
+test('debugger: breakpoint pauses when the event runs, step advances one frame, edit vars, console eval, profiler costs', async () => {
+  files.sheet = { format: 1, events: [
+    { type: 'variable', name: 'n', valueType: 'number', value: 0 },
+    ev([sys('every-tick')], [{ object: 'System', id: 'add-to-var', params: { variable: 'n', value: '1' } }]),
+    ev([C('Hero', 'compare-x', { comparison: '>', value: '5' })], [setv('n', 'n + 100')]),
+  ] };
+  files.s = { name: 's', settings: { eventSheet: 'sheet' }, entities: [E('Hero', 0, 0, { vars: { hp: 3 } })] };
+  const g = mk(); const d = g.enableDebug(); await g.loadScene('s');
+  assert.equal(d.describe('2'), 'Hero.compare-x → set-var');
+  d.toggleBreakpoint('1');
+  g.tick(1 / 60);
+  assert.equal(d.paused, true, 'breakpoint on event 1 paused the game after its frame');
+  assert.equal(V(g, 'n'), 1);
+  g.tick(1 / 60); g.tick(1 / 60);
+  assert.equal(V(g, 'n'), 1, 'paused: nothing runs');
+  d.toggleBreakpoint('1'); d.step();
+  g.tick(1 / 60);
+  assert.equal(V(g, 'n'), 2); assert.equal(d.paused, true);
+  g.tick(1 / 60); assert.equal(V(g, 'n'), 2);
+  const hero = d.instances().find((i) => i.name === 'Hero');
+  assert.deepEqual(hero.vars, { hp: 3 });
+  d.setValue(hero.id, 'hp', '9'); d.setValue(hero.id, 'x', '10');
+  assert.equal(d.find(hero.id).vars.hp, 9);
+  d.resume(); g.tick(1 / 60);
+  assert.equal(V(g, 'n'), 103, 'x=10 now passes the Hero condition');
+  assert.deepEqual(d.evaluate('n + Hero.hp'), { ok: true, value: 112 });
+  assert.equal(d.evaluate('nope +').ok, false);
+  const s = d.stats();
+  assert.ok(s.objects === 1 && s.costs.length >= 2 && s.frameMs >= 0);
+  assert.ok(d.ran.has('1'));
+});

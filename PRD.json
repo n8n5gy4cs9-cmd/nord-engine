@@ -1768,13 +1768,13 @@
       "id": "M10-22",
       "milestone": "M10",
       "title": "Debugger: pause/resume/step, inspector for live instances + vars (editable), event sheet highlighting + breakpoints, console eval",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M10-23",
       "milestone": "M10",
       "title": "Profiler: FPS/frame-time/draw-calls/memory graphs, per-event-group cost, object count, slow-frame markers",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M10-24",

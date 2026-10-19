@@ -7,6 +7,7 @@ import { compile } from './expr.js';
 import { plugins, objectAces, keyCode } from './aces.js';
 import { behaviors } from '../behaviors/index.js';
 import { isType } from '../behaviors/util.js';
+import { dataTypes, bindDataType } from './objects.js';
 
 const exprCache = new Map();
 const compiled = (src) => { let f = exprCache.get(src); if (!f) { f = compile(src); exprCache.set(src, f); } return f; };
@@ -29,8 +30,25 @@ export class EventSheet {
     this.sheets = sheets;   // includes: path -> parsed sheet (preloaded by EventSheet.load)
     this.heldPrev = new Set(); this.actionsPrev = new Set(); this.pointerPrev = false;
     this.env = this.#makeEnv();
+    this.dataObjs = new Map(); // name -> bound plugin-shaped definition (Array, Dictionary, JSON, AJAX… see objects.js)
     this.#index(this.events);
+    this.#label(this.events, '');
+    for (const [name, o] of Object.entries(scene.settings?.dataObjects ?? {})) this.#declare({ ...(typeof o === 'string' ? { plugin: o } : o), name });
   }
+
+  /** Stable path ids ("2.0.1") for the debugger/profiler. */
+  #label(list, prefix) { list.forEach((e, i) => { e._path = prefix + i; if (e.children) this.#label(e.children, `${e._path}.`); }); }
+
+  #declare(e) {
+    const def = dataTypes.get(e.plugin);
+    if (!def) throw new Error(`unknown object plugin '${e.plugin}' for '${e.name}'`);
+    const store = e.global ? (this.game.dataObjects ??= new Map()) : null;
+    let inst = store?.get(e.name);
+    if (!inst) { inst = def.create(e, this.game); inst.name = e.name; store?.set(e.name, inst); }
+    this.dataObjs.set(e.name, bindDataType(this, e.name, e.plugin, inst));
+  }
+  /** plugin definition by name: built-in plugins first, then declared data objects */
+  #pl(name) { return plugins.get(name) ?? this.dataObjs.get(name); }
 
   /** Load a sheet (and everything it includes) via game.loadJSON. */
   static async load(scene, path) {
@@ -51,6 +69,7 @@ export class EventSheet {
   #index(list) {
     for (const e of list) {
       if (e.type === 'variable') { this.globals.set(e.name, structuredClone(e.value ?? (e.valueType === 'string' ? '' : e.valueType === 'boolean' ? false : 0))); if (e.isConstant) this.consts.add(e.name); }
+      else if (e.type === 'object') this.#declare(e);
       else if (e.type === 'function-block') this.functions.set(e.name.toLowerCase(), e);
       else if (e.type === 'group') { this.groups.set(e.title, e); e.active ??= true; this.#index(e.children ?? []); }
     }
@@ -73,7 +92,7 @@ export class EventSheet {
     for (const a of cur) if (!this.actionsPrev.has(a)) this.fire('Input.on-action-pressed', { action: a });
     this.actionsPrev = new Set(cur);
     const d = inp.pointer.down;
-    if (d !== this.pointerPrev) this.fire(d ? 'Mouse.on-click' : 'Mouse.on-release', { down: d });
+    if (d !== this.pointerPrev) { this.fire(d ? 'Mouse.on-click' : 'Mouse.on-release', { down: d }); this.fire(d ? 'Touch.on-tap' : 'Touch.on-touch-end', { down: d }); }
     this.pointerPrev = d;
   }
   /** Scene hook: collisions / triggers from the backend. */
@@ -102,11 +121,13 @@ export class EventSheet {
       const first = ev.conditions?.[0];
       const isTrig = first && this.#def('conditions', first)?.trigger;
       if (trigger ? !(isTrig && this.#key(first) === trigger) : isTrig) continue;
+      const dbg = this.game.debug, t0 = dbg && !trigger ? performance.now() : 0;
       try { chain = this.#runEvent(ev, new Map(), chain); } catch (err) { this.#fail(ev, err); }
+      if (t0) dbg.addCost(ev._path, performance.now() - t0);
     }
   }
   // triggers on object types ("Player" → On collision) are registered under the generic "Object" plugin
-  #key(c) { if (c.behavior) return `Behavior.${c.behavior}.${c.id}`; return plugins.has(c.object) ? `${c.object}.${c.id}` : `Object.${c.id}`; }
+  #key(c) { if (c.behavior) return `Behavior.${c.behavior}.${c.id}`; return this.#pl(c.object) ? `${c.object}.${c.id}` : `Object.${c.id}`; }
   #fail(ev, err) {
     if (ev._err) return;
     ev._err = true;
@@ -123,7 +144,7 @@ export class EventSheet {
     let ran = false;
     try {
       const rest = isElse ? conds.slice(1) : conds;
-      const run = (sol) => { ran = true; this.#body(ev, sol); };
+      const run = (sol) => { ran = true; this.game.debug?.onRun(ev, this.tickCount); this.#body(ev, sol); };
       if (ev.block === 'or') this.#or(rest, parentSol, run, ev);
       else this.#and(rest, 0, parentSol, ev, run);
     } finally { if (hasLocals) this.scopes.pop(); }
@@ -285,7 +306,7 @@ export class EventSheet {
   }
   #def(kind, node) {
     if (node.behavior) return behaviors.get(node.behavior)?.[kind][node.id];
-    const p = plugins.get(node.object);
+    const p = this.#pl(node.object);
     return p ? p[kind][node.id] : objectAces[kind][node.id];
   }
   #makeEnv() {
@@ -301,7 +322,7 @@ export class EventSheet {
     };
   }
   #prop(type, idx, name) {
-    const pl = plugins.get(type);
+    const pl = this.#pl(type);
     if (pl) { const f = pl.expressions[name]; if (!f) throw new Error(`unknown expression ${type}.${name}`); return f(this, []); }
     if (type === 'Function' && name === 'ReturnValue') return this.frames.at(-1)?.ret ?? 0;
     const list = this.cur.get(type) ? [this.cur.get(type)] : this.picked(type, this.solView ?? new Map());
@@ -324,7 +345,7 @@ export class EventSheet {
   #method(type, name, a) {
     if (type === 'Functions') return this.callFunction(name, a);
     if (type === 'Function' && name === 'Param') { const f = this.frames.at(-1); const v = typeof a[0] === 'number' ? f?.params[a[0]] : f?.named[a[0]]; return v ?? 0; }
-    const pl = plugins.get(type);
+    const pl = this.#pl(type);
     const f = pl?.expressions[name];
     if (f) return f(this, a);
     throw new Error(`unknown expression ${type}.${name}()`);

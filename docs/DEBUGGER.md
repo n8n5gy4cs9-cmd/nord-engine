@@ -1,0 +1,3 @@
+# Debugger and profiler (M10-22/23)
+Runtime: `runtime/core/debug.js`; hooks in `Game.tick`, `eventsheet/sheet.js` (`_path`, `onRun`, `addCost`). Manual chapter: *Debugger and profiler*. Tests: `eventsheet.test.mjs` (logic) and `tools/eventsheet-demo-test.mjs` (overlay in Chromium, screenshots `docs/screenshots/es-6/7`).
+Gaps: the editor's own egui panel is not connected to it yet (the overlay is in the game page, so it also works in the embedded preview and in a browser); no per-action stepping inside one event; JS-script (non event-sheet) code is only counted in total frame time; heap numbers are Chrome-only.

@@ -6,6 +6,8 @@ import { Rng } from './util.js';
 import { Scene } from './scene.js';
 import { resolveAttributes } from './script.js';
 import { EventSheet } from './eventsheet/sheet.js';
+import { I18n, Accessibility } from './i18n.js';
+import { Debugger } from './debug.js';
 
 export class Game {
   /**
@@ -25,6 +27,7 @@ export class Game {
     this.time = { delta: 0, elapsed: 0 };
     this.timeScale = 1;
     this.paused = false;
+    this.i18n = new I18n(this); this.a11y = new Accessibility(this);
     this.audio = null; this.ui = null; this.physics = null;
     this.scene = null;
     this.errors = [];
@@ -73,6 +76,7 @@ export class Game {
     return true;
   }
   async loadScene(path = this.project.startScene) {
+    if (!this._i18nReady) { this._i18nReady = true; await this.i18n.init(); }
     const kept = (this.scene?.roots ?? []).flatMap((r) => [...r.all()]).filter((e) => e.behavior('Persist') && !e.parent).map((e) => e.toJSON());
     this.scene?.destroy();
     this.events.emit('sceneUnload', this.scene?.name);
@@ -95,5 +99,12 @@ export class Game {
   pause() { this.paused = true; this.events.emit('pause'); }
   resume() { this.paused = false; this.events.emit('resume'); }
   /** Backends call this from their render loop with real delta seconds. */
-  tick(dt) { if (!this.paused) this.scene?.tick(dt); }
+  tick(dt) {
+    const d = this.debug;
+    if (d) { dt = d.begin(dt); if (dt === null) return; }
+    if (!this.paused) this.scene?.tick(dt);
+    d?.end();
+  }
+  /** Debugger + profiler (see debug.js). Returns the Debugger. */
+  enableDebug() { return this.debug ??= new Debugger(this); }
 }

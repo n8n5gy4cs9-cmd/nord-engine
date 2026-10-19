@@ -4,6 +4,7 @@ import { Loader } from './loader.js';
 import { Audio } from './audio.js';
 import { UI } from './ui.js';
 import { attachDom } from './input.js';
+import { attachDebugOverlay } from './debug.js';
 
 /**
  * @param project parsed nord.project.json
@@ -22,6 +23,7 @@ export function createGame(project, opts = {}) {
     game.audio.attach(globalThis.window);
   }
   if (opts.canvas) game._detachInput = attachDom(game.input, opts.canvas, globalThis.window, (x, y) => game.backend?.toWorld?.(x, y) ?? [x, y]);
+  if (opts.container && (project.debug || /[?&]debug\b/.test(globalThis.location?.search ?? ''))) { game.enableDebug(); game._debugOverlay = attachDebugOverlay(game, opts.container); } // F9
   game.preload = (paths) => game.backend?.preload?.(paths) ?? Promise.resolve();
   return game;
 }
