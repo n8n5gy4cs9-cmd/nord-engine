@@ -1,5 +1,6 @@
 //! Asset browser: folder tree + thumbnail grid (lazy, worker-thread thumbnails via nord-core), search/filter,
 //! import (dialog or OS drag&drop), rename/move/delete, drag out as `AssetDrag`.
+use web_time::Instant;
 use crate::{
     icons,
     panels::inspector::AssetDrag,
@@ -11,7 +12,7 @@ use std::{
     collections::{HashMap, HashSet},
     path::{Path, PathBuf},
     sync::mpsc::{channel, Receiver, Sender},
-    time::{Duration, Instant},
+    time::Duration,
 };
 
 pub struct AssetsUi {
@@ -48,7 +49,7 @@ impl Default for AssetsUi {
     fn default() -> Self {
         let (tx, jobs) = channel::<ThumbJob>();
         let (done_tx, rx) = channel();
-        std::thread::spawn(move || {
+        crate::platform::spawn(move || {
             while let Ok((root, a)) = jobs.recv() {
                 let r = nord_core::thumbs::thumb_for(&root, &a).ok().flatten();
                 let _ = done_tx.send((a.path.clone(), r));
@@ -238,7 +239,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
 
     ui.horizontal_wrapped(|ui| {
         if icons::button(ui, "upload", "Import files…", false).clicked() {
-            if let Some(files) = rfd::FileDialog::new().pick_files() {
+            if let Some(files) = crate::platform::pick_files() {
                 import_files(st, &files);
             }
         }

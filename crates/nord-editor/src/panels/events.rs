@@ -6,7 +6,8 @@ use crate::state::{EditorState, LogLevel};
 use egui::{Color32, RichText, Ui};
 use serde_json::{json, Value};
 use std::sync::RwLock;
-use std::time::{Duration, Instant};
+use std::time::Duration;
+use web_time::Instant;
 
 pub type Path = Vec<usize>;
 
@@ -614,7 +615,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
 
 /// Run `node tools/export-aces.mjs --project <root>` and load the result into the catalog.
 fn refresh_addon_aces(root: &std::path::Path) -> Result<String, String> {
-    let engine = nord_serve::engine_root().ok_or("engine folder not found (set NORD_ROOT)")?;
+    let engine = crate::platform::engine_root().ok_or("engine folder not found (set NORD_ROOT)")?;
     let out = std::process::Command::new("node")
         .arg(engine.join("tools/export-aces.mjs"))
         .arg("--project")

@@ -1,6 +1,10 @@
 //! Nord Engine editor. Credit: Crowelian 2026 + Sonnet.
 use nord_editor::app;
 
+#[cfg(target_arch = "wasm32")]
+fn main() {} // the web entry point is crates/nord-editor-web
+
+#[cfg(not(target_arch = "wasm32"))]
 fn main() -> eframe::Result {
     // Start as the borderless splash window; `App::splash` turns it into the main window after >= 2 s.
     let opts = eframe::NativeOptions {
@@ -27,6 +31,7 @@ fn main() -> eframe::Result {
     )
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 fn load_icon() -> egui::IconData {
     let img = image::load_from_memory(include_bytes!("../../../assets/brand/logo-256.png"))
         .map(|i| i.to_rgba8());

@@ -10,11 +10,11 @@ pub fn toggle(st: &mut EditorState) {
         st.toast("Phone preview stopped");
         return;
     }
-    let (Some(root), Some(engine)) = (st.root.clone(), nord_serve::engine_root()) else {
+    let (Some(root), Some(engine)) = (st.root.clone(), crate::platform::engine_root()) else {
         st.toast("Open a project first");
         return;
     };
-    match nord_serve::start_lan(root, engine, 0) {
+    match crate::platform::start_lan(root, engine, 0) {
         Ok(l) => {
             st.lan_log_seen = 0;
             st.log(LogLevel::Info, format!("Phone preview on port {} (needs the same Wi-Fi)", l.port));

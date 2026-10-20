@@ -237,7 +237,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                                         .on_hover_text("Choose project folder")
                                         .clicked()
                                     {
-                                        if let Some(p) = rfd::FileDialog::new().pick_folder() {
+                                        if let Some(p) = crate::platform::pick_folder("Choose project folder") {
                                             st.hub.parent = p;
                                         }
                                     }

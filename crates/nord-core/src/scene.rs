@@ -144,7 +144,7 @@ pub struct Prefab {
 /// Unique 8-char base36 id (time + counter hashed; no rand dependency needed).
 pub fn new_id() -> String {
     use std::sync::atomic::{AtomicU64, Ordering};
-    use std::time::{SystemTime, UNIX_EPOCH};
+    use web_time::{SystemTime, UNIX_EPOCH};
     static N: AtomicU64 = AtomicU64::new(0);
     let t = SystemTime::now()
         .duration_since(UNIX_EPOCH)

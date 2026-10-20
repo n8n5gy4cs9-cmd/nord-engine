@@ -3,7 +3,8 @@
 //! inverse ops). Consecutive edits with the same `key` within `COALESCE` merge into one step (dragging a slider = one undo).
 use nord_core::scene::{Entity, SceneSettings};
 use nord_core::Scene;
-use std::time::{Duration, Instant};
+use std::time::Duration;
+use web_time::Instant;
 
 const COALESCE: Duration = Duration::from_millis(800);
 const MAX: usize = 200;

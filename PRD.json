@@ -3,7 +3,7 @@
   "tagline": "Rust-based game/app engine + editor that exports static HTML web games and a native Mac app",
   "author": "Crowelian 2026 + Sonnet",
   "version": "0.0.1",
-  "updated": "2026-10-19",
+  "updated": "2026-10-20",
   "branch": "main",
   "statusValues": [
     "todo",
@@ -1852,7 +1852,7 @@
       "id": "M11-01",
       "milestone": "M11",
       "title": "W0 spike: build nord-editor for wasm32 (eframe web), render hub + hierarchy in headless Chromium; record wasm size, start time, WebGL2/WebGPU; feature-gate native-only deps (wry, nord-desktop native, rfd native)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M11-02",
@@ -1876,7 +1876,7 @@
       "id": "M11-05",
       "milestone": "M11",
       "title": "crates/nord-editor-web: wasm entry, index.html, PWA manifest + service worker, vendored fonts/docs, no CDN; build script (wasm-bindgen/wasm-opt, brotli)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M11-06",

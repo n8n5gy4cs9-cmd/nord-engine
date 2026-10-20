@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nord Engine</title>
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1b1d23">
+<style>html,body{margin:0;height:100%;background:#1b1d23;overflow:hidden}#nord{display:block;width:100vw;height:100vh}
+#msg{position:fixed;inset:0;display:grid;place-items:center;color:#9aa;font:14px system-ui}</style></head>
+<body><canvas id="nord"></canvas><div id="msg">Loading Nord Engine…</div>
+<script type="module">
+import init, { start } from './pkg/nord_editor_web.js';
+const msg = document.getElementById('msg');
+try {
+  await init();
+  await start('nord');
+  msg.remove();
+} catch (e) {
+  msg.textContent = 'Nord Engine could not start: ' + e + (navigator.gpu || document.createElement('canvas').getContext('webgl2') ? '' : ' (this browser has no WebGL2/WebGPU)');
+}
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+</script></body></html>

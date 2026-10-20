@@ -979,6 +979,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "console_error_panic_hook"
+version = "0.1.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a06aeb73f470f66dcdbf7223caeebb85984942f22f1adb2a088cf9668146bbbc"
+dependencies = [
+ "cfg-if",
+ "wasm-bindgen",
+]
+
+[[package]]
 name = "convert_case"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3325,6 +3335,7 @@ dependencies = [
  "serde_json",
  "sha2",
  "thiserror 2.0.21",
+ "web-time",
 ]
 
 [[package]]
@@ -3366,7 +3377,22 @@ dependencies = [
  "rfd",
  "serde",
  "serde_json",
+ "wasm-bindgen-futures",
+ "web-sys",
+ "web-time",
  "wry",
+]
+
+[[package]]
+name = "nord-editor-web"
+version = "0.0.1"
+dependencies = [
+ "console_error_panic_hook",
+ "eframe",
+ "nord-editor",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
+ "web-sys",
 ]
 
 [[package]]

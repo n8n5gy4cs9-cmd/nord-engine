@@ -4,6 +4,7 @@ pub mod edit;
 pub mod highlight;
 pub mod multi;
 
+use web_time::Instant;
 use crate::{
     icons,
     state::{Action, EditorState, LogLevel},
@@ -20,7 +21,7 @@ use std::{
     hash::{Hash, Hasher},
     path::{Path, PathBuf},
     sync::mpsc::{channel, Receiver, Sender},
-    time::{Duration, Instant},
+    time::Duration,
 };
 
 const MAX_HIGHLIGHT: usize = 400_000;
@@ -198,7 +199,7 @@ fn spawn_check(path: PathBuf, lang: Lang, text: String, tx: Sender<(PathBuf, Vec
             let _ = tx.send((path, p));
         }
         Lang::Js => {
-            std::thread::spawn(move || {
+            crate::platform::spawn(move || {
                 let tmp =
                     std::env::temp_dir().join(format!("nord-check-{}.mjs", std::process::id()));
                 let _ = std::fs::write(&tmp, &text);

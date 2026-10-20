@@ -1,4 +1,5 @@
 //! Single editor state. Panels are `fn ui(&mut EditorState, &mut Ui)`; every scene mutation goes through `edit`.
+use web_time::Instant;
 use crate::{scene_ops, undo::UndoStack};
 use nord_core::{assets::Asset, scene::Entity, Project, Scene};
 use nord_serve::Hub;
@@ -8,7 +9,7 @@ use std::{
     collections::HashMap,
     path::{Path, PathBuf},
     sync::Arc,
-    time::{Duration, Instant},
+    time::Duration,
 };
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -254,7 +255,7 @@ pub struct EditorState {
     pub viewport_cam: Option<[f64; 3]>,
     files_cache: Option<(Instant, Vec<String>)>,
     /// phone/tablet preview server while it is on (dropping it stops the server)
-    pub lan: Option<nord_serve::Lan>,
+    pub lan: Option<crate::platform::Lan>,
     pub lan_log_seen: usize,
     pub lan_open: bool,
     pub settings_open: bool,
@@ -315,7 +316,7 @@ impl EditorState {
             skip_viewport_sync: false,
             hierarchy_filter: String::new(),
             collapsed: Default::default(),
-            engine_root: nord_serve::engine_root(),
+            engine_root: crate::platform::engine_root(),
             themes: Arc::new(crate::theme::Themes::load()),
             code: Default::default(),
             assets_ui: Default::default(),
@@ -782,7 +783,7 @@ impl EditorState {
                 );
                 return None;
             };
-            match nord_serve::start_background(root, engine) {
+            match crate::platform::start_background(root, engine) {
                 Ok((port, hub)) => {
                     self.play = Some(Play {
                         port,

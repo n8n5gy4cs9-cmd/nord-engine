@@ -17,20 +17,31 @@ webview = ["dep:wry"]
 [dependencies]
 nord-core = { path = "../nord-core" }
 nord-desktop = { path = "../nord-desktop" }
-nord-serve = { path = "../nord-serve", features = ["native"] }
 nord-export = { path = "../nord-export" }
 regex = "1"
+web-time = "1"
 serde.workspace = true
 serde_json.workspace = true
 anyhow.workspace = true
 egui = "0.31"
 qrcode = { version = "0.14", default-features = false }
-eframe = { version = "0.31", default-features = false, features = ["wgpu", "default_fonts", "x11", "wayland", "accesskit"] }
 egui_extras = { version = "0.31", features = ["svg", "image", "file"] }
 egui_dock = { version = "0.16", features = ["serde"] }
 image = { version = "0.25", default-features = false, features = ["png", "jpeg", "gif"] }
+
+nord-serve = { path = "../nord-serve" }
+
+# native shell (desktop). The web build (wasm32) uses eframe's web backend instead; see docs/WEB_EDITOR_PLAN.md
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+nord-serve = { path = "../nord-serve", features = ["native"] }
+eframe = { version = "0.31", default-features = false, features = ["wgpu", "default_fonts", "x11", "wayland", "accesskit"] }
 rfd = "0.15"
 wry = { version = "0.50", optional = true }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+eframe = { version = "0.31", default-features = false, features = ["wgpu", "default_fonts"] }
+wasm-bindgen-futures = "0.4"
+web-sys = { version = "0.3", features = ["Window", "Document"] }
 
 [dev-dependencies]
 egui_kittest = { version = "0.31", default-features = false }

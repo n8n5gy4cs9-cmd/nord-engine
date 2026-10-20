@@ -1,5 +1,7 @@
 # Changelog
 
+- 2026-10-20 (M11-01, M11-05): **Editor builds for the browser** — `nord-editor` compiles to wasm32 (native-only deps `nord-serve`'s server, `rfd`, `wry`, `eframe` native features are target-gated in Cargo.toml; `nord-serve` keeps `Hub`/`LogEntry` portable in `hub.rs`; new `nord-editor/src/platform.rs` seam for dialogs/dev server/threads; `web-time` replaces `Instant`/`SystemTime`). New crate `nord-editor-web` (wasm entry, `www/` index + PWA manifest + service worker) and `tools/build-web-editor.sh` → `dist/web-editor` (9.2 MB wasm, 2.6 MB brotli). Hub renders in Chromium. Native behaviour unchanged (workspace tests green).
+
 - 2026-10-19 (M10-03): **Event sheet compiler** — expressions compile ahead of time to JavaScript (`compile.js`, `tools/compile-sheets.mjs`) with a source map; `nord build` does it by default (`--no-compile-events`), the runner uses the table and keeps the interpreter as the fallback (also for hot reload). Equivalence tests (23 expressions, `Object.is`) + a Chromium test of a compiled export (`tools/compiled-export-test.mjs`).
 
 - 2026-10-19 (M10-14): Layout editor finished — drag an object type onto the Overview map to place an instance, click the map to move the viewport, saved camera **Views** (the 2D viewport now reports its camera), tests (model, kittest, Chromium).

@@ -7,7 +7,8 @@ use crate::{
 use egui::{Context, Key, Modifiers};
 use egui_dock::{DockArea, DockState, NodeIndex, Style, TabViewer};
 use std::sync::Arc;
-use std::time::{Duration, Instant};
+use std::time::Duration;
+use web_time::Instant;
 
 const SPLASH_MIN: Duration = Duration::from_millis(2000);
 
@@ -358,10 +359,7 @@ impl App {
                 self.web = WebPanes::default();
             }
             Action::OpenProject => {
-                if let Some(d) = rfd::FileDialog::new()
-                    .set_title("Open Nord project folder")
-                    .pick_folder()
-                {
+                if let Some(d) = crate::platform::pick_folder("Open Nord project folder") {
                     st.push(Action::OpenPath(d));
                 }
             }
@@ -641,7 +639,7 @@ fn start_rust_build(st: &mut EditorState, play_after: bool) {
     st.status_msg = None;
     st.rust_job = Some(job.clone());
     let job_cb = job.clone();
-    std::thread::spawn(move || {
+    crate::platform::spawn(move || {
         let push = |level: &str, text: String| {
             hub.logs.lock().unwrap().push(nord_serve::LogEntry {
                 level: level.into(),
@@ -707,7 +705,7 @@ fn run_build(st: &mut EditorState, what: &str) {
             let hub = st
                 .ensure_server()
                 .and_then(|_| st.play.as_ref().map(|p| p.hub.clone()));
-            std::thread::spawn(move || {
+            crate::platform::spawn(move || {
                 let out = std::process::Command::new(prog)
                     .args(args)
                     .current_dir(root)

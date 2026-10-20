@@ -50,7 +50,7 @@ fn open_folder(p: &std::path::Path) {
 
 /// Start a build with the dialog's options (also used by tests).
 pub fn start(st: &mut EditorState) {
-    let (Some(root), Some(engine)) = (st.root.clone(), nord_serve::engine_root()) else {
+    let (Some(root), Some(engine)) = (st.root.clone(), crate::platform::engine_root()) else {
         st.export_ui.status = "No project open or engine folder not found (set NORD_ROOT)".into();
         return;
     };
@@ -66,7 +66,7 @@ pub fn start(st: &mut EditorState) {
         compile_events: e.compile_events,
     };
     let (tx, rx) = channel();
-    std::thread::spawn(move || {
+    crate::platform::spawn(move || {
         let r = nord_export::build(&root, &engine, &opts)
             .map(|r| (r.summary(), r.out))
             .map_err(|e| format!("{e:#}"));
