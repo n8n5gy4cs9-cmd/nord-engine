@@ -99,7 +99,7 @@ pub struct NativeFs;
 
 #[cfg(not(target_arch = "wasm32"))]
 fn meta_of(m: &std::fs::Metadata) -> Meta {
-    Meta::new(m.len(), m.is_dir(), m.modified().ok().map(SystemTime::from))
+    Meta::new(m.len(), m.is_dir(), m.modified().ok())
 }
 
 #[cfg(not(target_arch = "wasm32"))]
