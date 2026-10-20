@@ -3368,6 +3368,7 @@ dependencies = [
  "egui_extras",
  "egui_kittest",
  "image",
+ "js-sys",
  "nord-core",
  "nord-desktop",
  "nord-export",
@@ -3377,10 +3378,11 @@ dependencies = [
  "rfd",
  "serde",
  "serde_json",
+ "wasm-bindgen",
  "wasm-bindgen-futures",
- "web-sys",
  "web-time",
  "wry",
+ "zip",
 ]
 
 [[package]]

@@ -115,6 +115,20 @@ pub struct App {
 }
 
 impl App {
+    /// Browser only: apply finished file pickers, persist the project tree (no-op on desktop).
+    fn web_events(&mut self, ctx: &Context) {
+        if cfg!(target_arch = "wasm32") {
+            ctx.request_repaint_after(Duration::from_millis(500));
+        }
+        for e in crate::platform::poll_events() {
+            match e {
+                crate::platform::WebEvent::OpenProject(p) => self.st.push(Action::OpenPath(p)),
+                crate::platform::WebEvent::ImportFiles(f) => crate::panels::assets::import_files(&mut self.st, &f),
+                crate::platform::WebEvent::Error(m) => self.st.toast(m),
+            }
+        }
+    }
+
     pub fn new(splash: bool) -> Self {
         Self {
             st: EditorState::new(),
@@ -372,6 +386,17 @@ impl App {
     pub fn run(&mut self, a: Action, ctx: &Context) {
         let st = &mut self.st;
         match a {
+            Action::DownloadZip => {
+                #[cfg(target_arch = "wasm32")]
+                if let Some(root) = st.root.clone() {
+                    if st.dirty {
+                        st.save();
+                    }
+                    if let Err(e) = crate::web::download_project(&root) {
+                        st.toast(format!("Download failed: {e}"));
+                    }
+                }
+            }
             Action::NewProject | Action::CloseProject => {
                 st.close_project();
                 st.hub.show_docs = false;
@@ -545,6 +570,9 @@ impl App {
                 });
                 ui.separator();
                 act(ui, "Save all  (Cmd+S)", Action::SaveAll, st);
+                if cfg!(target_arch = "wasm32") {
+                    act(ui, "Download project (.zip)", Action::DownloadZip, st);
+                }
                 act(ui, "Close project", Action::CloseProject, st);
             });
             ui.menu_button("Edit", |ui| {
@@ -1015,6 +1043,7 @@ impl App {
     /// One UI frame. `frame` is `None` in headless tests (no native window => no embedded webview).
     pub fn frame_ui(&mut self, ctx: &Context, frame: Option<&eframe::Frame>) {
         egui_extras::install_image_loaders(ctx);
+        self.web_events(ctx);
         if self.splash(ctx) {
             return;
         }

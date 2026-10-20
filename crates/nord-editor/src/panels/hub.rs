@@ -26,7 +26,9 @@ impl Default for HubUi {
             name: "My Game".into(),
             kind: ProjectType::TwoD,
             starter: None,
-            parent: if docs.v_exists() {
+            parent: if let Some(d) = crate::platform::default_projects_dir() {
+                d
+            } else if docs.v_exists() {
                 docs.join("Nord Projects")
             } else {
                 home.join("NordProjects")

@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 221/243 tasks (91%)** · updated 2026-10-20
+**Overall: 223/243 tasks (92%)** · updated 2026-10-20
 
 | Milestone | Progress |
 |---|---|
@@ -18,7 +18,7 @@
 | M8 Polish & portability | 15/20 (75%) |
 | M9 Desktop apps | 16/16 (100%) |
 | M10 Construct-style editor | 35/35 (100%) |
-| M11 Web editor | 4/16 (25%) |
+| M11 Web editor | 6/16 (38%) |
 
 ## Next up
 - **M3-07** SPIKE: wry child webview embedded in egui panel on macOS (resize, HiDPI, focus, IPC both ways); fallback separate window
@@ -304,9 +304,9 @@ _the editor in a browser and on a Linux server (wasm egui + server mode); plan d
 - [x] **M11-01** W0 spike: build nord-editor for wasm32 (eframe web), render hub + hierarchy in headless Chromium; record wasm size, start time, WebGL2/WebGPU; feature-gate native-only deps (wry, nord-desktop native, rfd native)
 - [x] **M11-02** Vfs trait (read/write/list/rename/delete/watch, atomic write): NativeFs; route nord-core::io, autosave, asset browser, code editor, thumbnails through it — native behaviour unchanged, tests green
 - [x] **M11-03** Host trait (run build/export/serve/check-offline/thumbs jobs, stream log lines, cancel): LocalHost (today's std::process) + NoHost; export dialog + console use it
-- [~] **M11-04** Dialogs/clipboard abstraction (rfd native + wasm async pickers, web clipboard) and web-safe default shortcuts (avoid Cmd/Ctrl+P/K/S clashes, rebindable)
+- [x] **M11-04** Dialogs/clipboard abstraction (rfd native + wasm async pickers, web clipboard) and web-safe default shortcuts (avoid Cmd/Ctrl+P/K/S clashes, rebindable)
 - [x] **M11-05** crates/nord-editor-web: wasm entry, index.html, PWA manifest + service worker, vendored fonts/docs, no CDN; build script (wasm-bindgen/wasm-opt, brotli)
-- [ ] **M11-06** BrowserFs: OPFS projects, zip import/export, Chromium File System Access folder mode; hub works in browser
+- [x] **M11-06** BrowserFs: OPFS projects, zip import/export, Chromium File System Access folder mode; hub works in browser
 - [ ] **M11-07** IframeViewport: game view, 2D/3D edit views, console and docs viewer via iframe overlay + postMessage IPC (reuse native wry sizing logic); service worker serves the project from the Vfs
 - [ ] **M11-08** In-browser export: nord-core/nord-export (validate, copy, zip, single-file) compiled to wasm for static-web mode
 - [ ] **M11-09** crates/nord-editor-server (axum, builds on nord-serve): serves wasm editor, /api/p/{project}/(file|tree|rename|delete), WebSocket file events + job logs, path jail, atomic writes

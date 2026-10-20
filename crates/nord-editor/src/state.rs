@@ -147,6 +147,8 @@ pub enum Action {
     CloseProject,
     Save,
     SaveAll,
+    /// browser build: download the open project as a .zip
+    DownloadZip,
     Undo,
     Redo,
     Copy,

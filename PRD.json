@@ -1870,7 +1870,7 @@
       "id": "M11-04",
       "milestone": "M11",
       "title": "Dialogs/clipboard abstraction (rfd native + wasm async pickers, web clipboard) and web-safe default shortcuts (avoid Cmd/Ctrl+P/K/S clashes, rebindable)",
-      "status": "in_progress"
+      "status": "done"
     },
     {
       "id": "M11-05",
@@ -1882,7 +1882,7 @@
       "id": "M11-06",
       "milestone": "M11",
       "title": "BrowserFs: OPFS projects, zip import/export, Chromium File System Access folder mode; hub works in browser",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M11-07",

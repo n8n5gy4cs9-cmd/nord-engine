@@ -159,7 +159,7 @@ impl Vfs for NativeFs {
 }
 
 enum Node {
-    File(Vec<u8>, SystemTime),
+    File(Vec<u8>, SystemTime, u64),
     Dir,
 }
 
@@ -196,16 +196,37 @@ impl MemFs {
     pub fn revision(&self) -> u64 {
         self.dirty.load(std::sync::atomic::Ordering::Relaxed)
     }
-    fn touch(&self) {
+    fn touch(&self) -> u64 {
         self.dirty
-            .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+            .fetch_add(1, std::sync::atomic::Ordering::Relaxed)
+            + 1
+    }
+    /// Every file as (path, revision of its last write) — lets a persistence layer save only what changed.
+    pub fn stamps(&self) -> Vec<(String, u64)> {
+        let n = self.nodes.lock().unwrap_or_else(|e| e.into_inner());
+        n.iter()
+            .filter_map(|(k, v)| match v {
+                Node::File(_, _, r) => Some((k.clone(), *r)),
+                Node::Dir => None,
+            })
+            .collect()
+    }
+    /// Put a file (and its parent folders) in place, e.g. when restoring from browser storage or unzipping.
+    pub fn import(&self, path: &str, data: Vec<u8>) {
+        let k = key(Path::new(path));
+        let rev = self.touch();
+        let mut n = self.nodes.lock().unwrap_or_else(|e| e.into_inner());
+        if let Some(parent) = k.rsplit_once('/').map(|x| x.0) {
+            let _ = Self::mkdirs(&mut n, parent);
+        }
+        n.insert(k, Node::File(data, SystemTime::now(), rev));
     }
     /// Every file as (path, bytes) — for zip export / persistence.
     pub fn files(&self) -> Vec<(String, Vec<u8>)> {
         let n = self.nodes.lock().unwrap_or_else(|e| e.into_inner());
         n.iter()
             .filter_map(|(k, v)| match v {
-                Node::File(d, _) => Some((k.clone(), d.clone())),
+                Node::File(d, ..) => Some((k.clone(), d.clone())),
                 Node::Dir => None,
             })
             .collect()
@@ -240,7 +261,7 @@ impl Vfs for MemFs {
             .unwrap_or_else(|e| e.into_inner())
             .get(&key(p))
         {
-            Some(Node::File(d, _)) => Ok(d.clone()),
+            Some(Node::File(d, ..)) => Ok(d.clone()),
             Some(Node::Dir) => Err(io::Error::other("is a directory")),
             None => Err(not_found()),
         }
@@ -257,9 +278,9 @@ impl Vfs for MemFs {
         if matches!(n.get(&k), Some(Node::Dir)) {
             return Err(io::Error::other("is a directory"));
         }
-        n.insert(k, Node::File(data.to_vec(), SystemTime::now()));
+        let rev = self.touch();
+        n.insert(k, Node::File(data.to_vec(), SystemTime::now(), rev));
         drop(n);
-        self.touch();
         Ok(())
     }
     fn create_dir_all(&self, p: &Path) -> io::Result<()> {
@@ -326,7 +347,7 @@ impl Vfs for MemFs {
             return Ok(Meta::new(0, true, None));
         }
         match self.nodes.lock().unwrap_or_else(|e| e.into_inner()).get(&k) {
-            Some(Node::File(d, t)) => Ok(Meta::new(d.len() as u64, false, Some(*t))),
+            Some(Node::File(d, t, _)) => Ok(Meta::new(d.len() as u64, false, Some(*t))),
             Some(Node::Dir) => Ok(Meta::new(0, true, None)),
             None => Err(not_found()),
         }
@@ -347,7 +368,7 @@ impl Vfs for MemFs {
             .filter(|(x, _)| !x[pre.len()..].contains('/'))
             .map(|(x, v)| {
                 let m = match v {
-                    Node::File(d, t) => Meta::new(d.len() as u64, false, Some(*t)),
+                    Node::File(d, t, _) => Meta::new(d.len() as u64, false, Some(*t)),
                     Node::Dir => Meta::new(0, true, None),
                 };
                 DirEntry::new(PathBuf::from(x), m)

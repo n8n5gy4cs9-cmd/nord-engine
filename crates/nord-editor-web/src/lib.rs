@@ -7,6 +7,7 @@ use web_sys::HtmlCanvasElement;
 #[wasm_bindgen]
 pub async fn start(canvas_id: String) -> Result<(), JsValue> {
     console_error_panic_hook::set_once();
+    nord_editor::web::init().await; // restore the project tree from IndexedDB
     let canvas = web_sys::window()
         .and_then(|w| w.document())
         .and_then(|d| d.get_element_by_id(&canvas_id))

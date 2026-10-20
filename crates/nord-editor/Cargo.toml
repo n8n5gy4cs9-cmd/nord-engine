@@ -40,8 +40,10 @@ wry = { version = "0.50", optional = true }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 eframe = { version = "0.31", default-features = false, features = ["wgpu", "default_fonts"] }
+wasm-bindgen = "0.2"
 wasm-bindgen-futures = "0.4"
-web-sys = { version = "0.3", features = ["Window", "Document"] }
+js-sys = "0.3"
+zip = { version = "2", default-features = false, features = ["deflate"] }
 
 [dev-dependencies]
 egui_kittest = { version = "0.31", default-features = false }

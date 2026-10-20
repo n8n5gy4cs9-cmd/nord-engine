@@ -21,7 +21,43 @@ pub fn engine_root() -> Option<PathBuf> {
     }
 }
 
-/// Native folder picker.
+/// Something that finished in the background in the browser (file pickers are async there). The app drains these every frame.
+#[derive(Debug)]
+pub enum WebEvent {
+    /// a project was unpacked (or created) at this path — open it
+    OpenProject(PathBuf),
+    /// asset files were staged at these paths — import them into the open project
+    ImportFiles(Vec<PathBuf>),
+    Error(String),
+}
+
+/// Finished browser jobs (always empty on desktop).
+pub fn poll_events() -> Vec<WebEvent> {
+    #[cfg(target_arch = "wasm32")]
+    {
+        crate::web::flush();
+        crate::web::poll_events()
+    }
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        Vec::new()
+    }
+}
+
+/// Where new projects go by default.
+pub fn default_projects_dir() -> Option<PathBuf> {
+    #[cfg(target_arch = "wasm32")]
+    {
+        Some(PathBuf::from(crate::web::PROJECTS_DIR))
+    }
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        None
+    }
+}
+
+/// Folder picker. Desktop: native dialog. Browser: there are no folders to pick, so "open" means "import a .zip"
+/// (the result arrives later as [`WebEvent::OpenProject`]) and this returns `None`.
 pub fn pick_folder(title: &str) -> Option<PathBuf> {
     #[cfg(not(target_arch = "wasm32"))]
     {
@@ -30,11 +66,12 @@ pub fn pick_folder(title: &str) -> Option<PathBuf> {
     #[cfg(target_arch = "wasm32")]
     {
         let _ = title;
+        crate::web::import_zip();
         None
     }
 }
 
-/// Native multi-file picker.
+/// Multi-file picker (browser: async, see [`WebEvent::ImportFiles`]).
 pub fn pick_files() -> Option<Vec<PathBuf>> {
     #[cfg(not(target_arch = "wasm32"))]
     {
@@ -42,6 +79,7 @@ pub fn pick_files() -> Option<Vec<PathBuf>> {
     }
     #[cfg(target_arch = "wasm32")]
     {
+        crate::web::import_files();
         None
     }
 }

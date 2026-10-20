@@ -16,3 +16,5 @@ pub mod tilemap;
 pub mod timeline;
 pub mod undo;
 pub mod viewport;
+#[cfg(target_arch = "wasm32")]
+pub mod web;
