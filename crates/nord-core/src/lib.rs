@@ -2,6 +2,8 @@
 //! See docs/PROJECT_FORMAT.md for the data model.
 
 pub mod assets;
+#[cfg(not(target_arch = "wasm32"))]
+pub mod fpsc;
 pub mod history;
 pub mod io;
 pub mod offline;

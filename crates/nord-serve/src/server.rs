@@ -1,7 +1,8 @@
 //! `nord serve` (also embedded in the editor): dev server. Mounts project at `/`, `/vendor/*` and `/runtime/*` from the engine root,
 //! SSE live reload at `/__reload`, editor backend at `/api/*`.
 use axum::{
-    extract::{Path as UrlPath, Query, State},
+    body::Bytes,
+    extract::{DefaultBodyLimit, Path as UrlPath, Query, State},
     http::{header, StatusCode, Uri},
     response::{
         sse::{Event, Sse},
@@ -293,6 +294,50 @@ async fn desktop_events(State(a): State<App>) -> Json<Vec<serde_json::Value>> {
     )
 }
 
+// ---- FPS Creator level editor backend (docs/FPS_CREATOR.md): a jailed file API for `levels/` and `fpsc/` only -----------------------
+
+/// Writes need `x-nord-fpsc: 1`: a custom header forces a CORS preflight, so other web pages cannot POST here.
+fn fpsc_write_allowed(headers: &axum::http::HeaderMap) -> bool {
+    headers.get("x-nord-fpsc").is_some_and(|v| v == "1")
+}
+
+#[derive(serde::Deserialize)]
+struct FpscQuery {
+    #[serde(default)]
+    dir: String,
+    #[serde(default)]
+    path: String,
+    #[serde(default)]
+    start: bool,
+}
+
+async fn fpsc_ls(State(a): State<App>, Query(q): Query<FpscQuery>) -> Response {
+    match nord_core::fpsc::ls(&a.project, &q.dir) {
+        Ok(v) => Json(v).into_response(),
+        Err(e) => (StatusCode::BAD_REQUEST, e.to_string()).into_response(),
+    }
+}
+
+async fn fpsc_save(State(a): State<App>, headers: axum::http::HeaderMap, Query(q): Query<FpscQuery>, body: Bytes) -> Response {
+    if !fpsc_write_allowed(&headers) {
+        return StatusCode::FORBIDDEN.into_response();
+    }
+    match nord_core::fpsc::save(&a.project, &q.path, &body) {
+        Ok(()) => StatusCode::NO_CONTENT.into_response(),
+        Err(e) => (StatusCode::BAD_REQUEST, e.to_string()).into_response(),
+    }
+}
+
+async fn fpsc_install(State(a): State<App>, headers: axum::http::HeaderMap, Query(q): Query<FpscQuery>) -> Response {
+    if !fpsc_write_allowed(&headers) {
+        return StatusCode::FORBIDDEN.into_response();
+    }
+    match nord_core::fpsc::install(&a.engine, &a.project, q.start) {
+        Ok(v) => Json(v).into_response(),
+        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response(),
+    }
+}
+
 /// Model thumbnails rendered by the 3D edit viewport arrive as a PNG data URL; stored where nord-core caches thumbs.
 async fn thumb_upload(
     State(a): State<App>,
@@ -472,6 +517,9 @@ pub fn router(project: PathBuf, engine: PathBuf) -> (Router, Arc<Hub>) {
         .route("/api/validate", get(api_validate))
         .route("/api/thumb/*path", get(api_thumb))
         .route("/api/thumb-upload/:sha", post(thumb_upload))
+        .route("/api/fpsc/ls", get(fpsc_ls))
+        .route("/api/fpsc/save", post(fpsc_save).layer(DefaultBodyLimit::max(nord_core::fpsc::MAX_BYTES)))
+        .route("/api/fpsc/install", post(fpsc_install))
         .route("/api/log", get(log_get).post(log_post))
         .route("/api/ipc", get(ipc_get).post(ipc_post))
         .route("/__edit/events", get(edit_events))

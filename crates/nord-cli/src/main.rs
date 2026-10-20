@@ -12,6 +12,18 @@ struct Cli {
 }
 
 #[derive(Subcommand)]
+enum FpscCmd {
+    /// Install or upgrade the FPS Creator runtime in a project (creates scripts/fpsc, fpsc/bank.json, levels/level1.fpsl.json, scenes/fps.scene.json)
+    Init {
+        #[arg(default_value = ".")]
+        project: PathBuf,
+        /// Also make scenes/fps.scene.json the project's start scene
+        #[arg(long)]
+        start: bool,
+    },
+}
+
+#[derive(Subcommand)]
 enum AddonCmd {
     /// Zip an addon folder (needs addon.json) into <id>-<version>.nordaddon
     Pack {
@@ -100,6 +112,11 @@ enum Cmd {
     Addon {
         #[command(subcommand)]
         cmd: AddonCmd,
+    },
+    /// FPS Creator level editor addon: `nord fpsc init` installs the runtime + a starter level into a project
+    Fpsc {
+        #[command(subcommand)]
+        cmd: FpscCmd,
     },
     /// Build a Rust (wasm-game / wasm-app) project for `nord serve`: cargo build → target/web/
     BuildRust {
@@ -297,6 +314,21 @@ fn main() -> anyhow::Result<()> {
             }
             println!("OK");
         }
+        Cmd::Fpsc { cmd } => match cmd {
+            FpscCmd::Init { project, start } => {
+                let engine = nord_serve::engine_root().context("engine root not found (set NORD_ROOT)")?;
+                let r = nord_core::fpsc::install(&engine, &project, start)?;
+                let list = |k: &str| r[k].as_array().cloned().unwrap_or_default();
+                println!("FPS Creator runtime: {} file(s) updated in scripts/fpsc", list("updated").len());
+                for c in list("created") {
+                    println!("created {}", c.as_str().unwrap_or(""));
+                }
+                for w in list("warnings") {
+                    eprintln!("warning: {}", w.as_str().unwrap_or(""));
+                }
+                println!("Open the level editor from the editor's FPS Level tab, or with `nord serve` → /editor/fpsc/index.html");
+            }
+        },
         Cmd::Addon { cmd } => match cmd {
             AddonCmd::Pack { dir, out } => {
                 let f = nord_export::addon::pack(&dir, out.as_deref())?;

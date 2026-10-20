@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nord FPS Level Editor</title>
+<link rel="stylesheet" href="/editor/fpsc/style.css">
+<script>window.__nord = { hotReload: () => true }; // never auto-reload while editing</script>
+</head>
+<body>
+<header id="top">
+  <div class="brand"><b>FPS</b> Level Editor</div>
+  <div class="grp" id="menu-file">
+    <button data-act="new" title="New level (Ctrl+N)">New</button>
+    <button data-act="open" title="Open level (Ctrl+O)">Open…</button>
+    <button data-act="save" title="Save (Ctrl+S)" class="primary">Save</button>
+    <button data-act="saveas" title="Save as…">Save as…</button>
+    <button data-act="download" title="Download the .fpsl.json file">⭳</button>
+    <button data-act="import" title="Import a level file">⭱</button>
+  </div>
+  <div class="grp"><button data-act="undo" title="Undo (Ctrl+Z)">↶</button><button data-act="redo" title="Redo (Ctrl+Shift+Z)">↷</button></div>
+  <div class="grp tools" id="tools"></div>
+  <div class="grp"><span class="lbl">Layer</span><button data-act="layer-down" title="Layer down (PgDn)">▼</button><select id="layer-sel" title="Active layer (storey)"></select><button data-act="layer-up" title="Layer up (PgUp)">▲</button><button data-act="layer-add" title="Add a storey">+</button></div>
+  <div class="grp"><label class="chk" title="Show other layers faded"><input type="checkbox" id="ghost" checked>ghost</label><label class="chk" title="Show light radius"><input type="checkbox" id="showlights">lights</label><label class="chk" title="Snap entities to half-metre grid"><input type="checkbox" id="snap" checked>snap</label></div>
+  <div class="grp"><button data-act="view" id="view-btn" title="Cycle 2D / split / 3D (Tab)">2D | 3D</button></div>
+  <div class="grp"><button data-act="play" class="play" title="Play-test from the player start (F5)">▶ Test</button><button data-act="playhere" class="play" title="Play-test from the cursor / selected thing (Shift+F5)">▶ From here</button></div>
+  <div class="grp right"><button data-act="validate" id="val-btn" title="Check the level for problems">✓ <span id="val-n">0</span></button><button data-act="help" title="Help & rules (F1)">?</button><span id="file-name" class="muted"></span></div>
+</header>
+<main>
+  <aside id="left">
+    <nav class="tabs" id="left-tabs"><button data-tab="build" class="on">Build</button><button data-tab="items">Items</button><button data-tab="scripts">Scripts</button><button data-tab="level">Level</button><button data-tab="assets">Assets</button></nav>
+    <div id="left-body"></div>
+  </aside>
+  <section id="center">
+    <div id="views"><div id="v2d"><canvas id="c2d" tabindex="0"></canvas><div id="tool-hint"></div></div><div id="v3d"><canvas id="c3d" tabindex="0"></canvas><div id="v3d-msg"></div></div></div>
+    <div id="status"><span id="st-cursor">—</span><span id="st-tool"></span><span id="st-sel" class="muted"></span><span class="grow"></span><span id="st-msg" class="muted"></span></div>
+  </section>
+  <aside id="right"><div id="inspector"></div></aside>
+</main>
+<div id="console" class="hidden"><div class="con-head"><b>Problems & play-test log</b><button data-act="console-clear">clear</button><button data-act="console-close">×</button></div><div id="con-body"></div></div>
+<div id="modal" class="hidden"><div id="modal-box"></div></div>
+<div id="play" class="hidden"><iframe id="play-frame" allow="autoplay; fullscreen"></iframe><button id="play-close">✕ Close test (Esc)</button></div>
+<input type="file" id="file-in" class="hidden">
+<script src="/vendor/babylonjs/babylon.js"></script>
+<script type="module" src="/editor/fpsc/editor.js"></script>
+</body></html>

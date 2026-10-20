@@ -77,10 +77,12 @@ try { await mount(document.getElementById('app')${bootJs ?? ''}); window.__nord_
 
 const wj = (f, o) => { fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, JSON.stringify(o, null, 2) + '\n'); };
 const copy = (from, to) => { fs.mkdirSync(path.dirname(to), { recursive: true }); fs.copyFileSync(from, to); };
+/** copyDir with a `skip(name)` filter (spec.trees: whole engine folders such as runtime/fpsc copied into the project). */
+const copyDirFilter = (from, to, skip) => { for (const f of fs.readdirSync(from, { withFileTypes: true })) { if (skip(f.name)) continue; (f.isDirectory() ? copyDirFilter : copy)(path.join(from, f.name), path.join(to, f.name), skip); } };
 const copyDir = (from, to) => { for (const f of fs.readdirSync(from, { withFileTypes: true })) (f.isDirectory() ? copyDir : copy)(path.join(from, f.name), path.join(to, f.name)); };
 
 /**
- * spec: { id, name, type, project:{…}, scenes:{ main: {settings, entities}, … }, prefabs:{ 'prefabs/x.prefab.json': entity }, scripts:{ 'a.js': 'own' } (files from tools/examples/<id>/scripts),
+ * spec: { id, name, type, project:{…}, trees:[{from,to,skip?}] (copy engine folders), scenes:{ main: {settings, entities}, … }, prefabs:{ 'prefabs/x.prefab.json': entity }, scripts:{ 'a.js': 'own' } (files from tools/examples/<id>/scripts),
  *   lib:[names of library/scripts to copy under scripts/], assets:[repo-relative asset paths or {from,to}], readme, html?:{module,bootJs} }
  */
 export function writeProject(spec, outDir, srcDir) {
@@ -101,6 +103,7 @@ export function writeProject(spec, outDir, srcDir) {
     fs.mkdirSync(path.join(outDir, 'scripts'), { recursive: true });
     fs.writeFileSync(path.join(outDir, 'scripts/mk.js'), MK_JS);
     for (const n of spec.lib ?? []) copy(path.join(ROOT, 'library/scripts', `${n}.js`), path.join(outDir, 'scripts', `${n}.js`));
+    for (const t of spec.trees ?? []) copyDirFilter(path.join(ROOT, t.from), path.join(outDir, t.to), t.skip ?? (() => false));
     for (const [to, content] of Object.entries(spec.files ?? {})) { fs.mkdirSync(path.dirname(path.join(outDir, to)), { recursive: true }); fs.writeFileSync(path.join(outDir, to), typeof content === 'string' ? content : JSON.stringify(content, null, 2) + '\n'); }
     for (const a of spec.assets ?? []) { const [from, to] = typeof a === 'string' ? [a, a] : [a.from, a.to]; const src = path.join(ROOT, from); if (!fs.existsSync(src)) throw new Error(`${spec.id}: missing asset ${from}`); copy(src, path.join(outDir, to)); if (fs.existsSync(src + '.meta.json')) copy(src + '.meta.json', path.join(outDir, to + '.meta.json')); }
   }
