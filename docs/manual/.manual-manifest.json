@@ -9248,9 +9248,12 @@
   "nord/tutorials/tut-t21-project-design.html",
   "nord/tutorials/tut-t22-shader-terrain.html",
   "nord/tutorials/tut-t23-light-shadows.html",
+<<<<<<< Updated upstream
   "nord/tutorials/tut-t24-event-sheet-platformer.html",
   "nord/tutorials/tut-t25-topdown-shooter.html",
   "nord/tutorials/tut-t26-menus-languages.html",
+=======
+>>>>>>> Stashed changes
   "nord/tutorials/tutorials.html",
   "robots.txt",
   "runtime/core/addons.js",
