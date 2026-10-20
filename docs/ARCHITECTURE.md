@@ -108,3 +108,6 @@ hot-swap: `NordRuntime.hotReloadScript(path)` keeps scene state).
 - JS: ES modules, no transpile, JSDoc types, 2-space indent, no frameworks.
 - File names kebab-case; entity ids = 8-char base36; JSON stable key order (serde `preserve_order`).
 - One responsibility per file; < 500 lines preferred.
+
+## Web editor (M11)
+`nord_core::vfs` (Vfs: NativeFs / MemFs) and `nord-editor::platform` (dialogs, Host, dev server) separate the editor from the OS so the same egui code also builds for wasm32; `nord-editor-web` is the browser entry, `nord-editor-server` the self-hosted server. Desktop code paths are unchanged. See `WEB_EDITOR.md`, ADR-021.

@@ -112,3 +112,26 @@ jobs:
           for t in eventsheet-demo es-templates plugin-objects pwa multiplayer viewport-layout compiled-export; do
             node tools/$t-test.mjs
           done
+  # M11: the editor in the browser (wasm) and on a server. Desktop jobs above are unaffected by it.
+  web-editor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - uses: dtolnay/rust-toolchain@stable
+        with: { targets: wasm32-unknown-unknown }
+      - uses: Swatinem/rust-cache@v2
+      - name: wasm-bindgen CLI (version from Cargo.lock)
+        run: |
+          V=$(grep -A1 'name = "wasm-bindgen"$' Cargo.lock | sed -n 's/version = "\(.*\)"/\1/p')
+          cargo install wasm-bindgen-cli --version "$V" --locked
+      - run: cargo test -p nord-editor-server        # path-jail / auth / CSRF / lock / quota / jobs (real server over HTTP)
+      - run: tools/build-web-editor.sh
+      - run: cargo build -p nord-editor-server -p nord-cli
+      - run: npm i --no-save --no-package-lock playwright@1.56.1
+      - run: npx playwright install --with-deps chromium
+      - name: Web editor in Chromium (create → reload → play → export)
+        run: node tools/web-editor-test.mjs
+      - name: Server mode (login → sync → reopen → play → server export)
+        run: node tools/web-server-test.mjs

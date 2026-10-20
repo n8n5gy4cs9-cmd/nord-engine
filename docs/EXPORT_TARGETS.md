@@ -54,3 +54,6 @@ Verified headless: `node tools/pwa-test.mjs` builds the event-sheets example, re
 **Export checks** (shown in the report/dialog): build over 100 MB, any non-engine file over 8 MB, external-host references (existing offline scan), missing assets (existing validation). itch.io / Mac / Win / Linux presets use the existing `--zip`, `bundle-mac` and `bundle-portable`.
 
 `nord build` also compiles event sheets to JavaScript when Node is available (see docs/EVENT_SHEETS.md → Compiler); `--no-compile-events` keeps them as JSON.
+
+## Exporting from the web editor
+The browser editor exports the web targets as a zip in the page (no minify / single-file / optimise / event-sheet compile); the server editor runs the full `nord build` as a job. Rust/WASM and app-bundle targets stay desktop-only. See `WEB_EDITOR.md`.

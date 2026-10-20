@@ -124,3 +124,14 @@ Assets regressions pass for divider dragging, row alignment/wrapping at 48/84/16
 
 ## Phone preview (M10-24)
 Verified headless only (token, hidden paths, shutdown, QR matrix). Not verified on a real phone: Safari/iOS service of the EventSource reload, firewalls (macOS asks to allow incoming connections the first time), and VPN/multi-NIC machines (only the primary outbound IPv4 address is shown). The preview "window size/orientation presets" are project game-size presets, not device frames.
+
+## Web editor (M11)
+- **Verified only in Chromium** (headless via Playwright, plus the Claude desktop in-app browser for the first spike). **Not verified:** Safari, Firefox, Windows Edge, mobile browsers (M11-16, owner). Service workers need https or `http://localhost`.
+- **Docker image / compose / systemd unit / nginx / Caddy files are written but not run** (no Docker daemon in the development environment). CI job `web-editor` is written but has not run on GitHub yet.
+- Browser export has no minify / single-file / optimise / event-sheet compile (need Node/ffmpeg) and no Rust/WASM or app-bundle targets; it runs on the page thread, so the page is busy for a few seconds. Thumbnails, phone preview, the `node --check` JS lint and Rust builds are desktop-only (they need threads/processes).
+- Browser storage is per-origin and can be cleared by the browser: download a zip for a safe copy. Large projects live in memory (the project tree is held in the wasm heap).
+- Server mode: single writer per project (45 s lock, refreshed every 15 s); a second session is read-only. No real-time co-editing; remote changes by other sessions are not pushed into an open editor (SSE exists, the client does not consume it yet). A failed upload is retried every 1.5 s while the server is unreachable. Deleting/renaming while the server is down is not replayed — reload to resync.
+- Server jobs run the `nord` CLI as the server's own user with a time limit only; CPU/RAM limits come from the container/systemd unit, not from the server process. `--allow-rust-jobs` executes project build scripts: container only.
+- The web editor cannot open a folder from disk (browsers have no folder path): use zip import. The File System Access API folder mode from the plan is not implemented.
+- Pre-existing, not from M11: `cargo clippy --workspace --all-targets -- -D warnings` reports 5 lints in `nord-editor` and 1 in a `nord-export` test; `cargo fmt --check` differs in several files.
+

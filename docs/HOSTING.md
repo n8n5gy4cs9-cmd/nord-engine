@@ -25,3 +25,6 @@ nord build my-game --single-file         # one index.html (+ vendor/fonts) that 
 - `nord.json` lists every file with size + sha256 (cache busting / integrity checks).
 - `--single-file` inlines scripts, scenes and assets as `data:` URIs: great for small games, big for large asset sets. UI fonts stay as separate files in `vendor/fonts/`.
 - macOS app: `nord bundle-mac my-game` wraps the build with the prebuilt `nord-player` (see EXPORT_TARGETS.md).
+
+## Hosting the editor itself
+The editor can also run in a browser or on a server (`nord-editor-server`): see `WEB_EDITOR.md` and manual chapter 27; `deploy/web-editor/` has Docker, systemd, nginx and Caddy files.

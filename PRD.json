@@ -1924,19 +1924,19 @@
       "id": "M11-13",
       "milestone": "M11",
       "title": "Packaging: Dockerfile + docker-compose, systemd unit, nginx/Caddy TLS examples, `nord-editor-server --help`, backups note",
-      "status": "todo"
+      "status": "in_progress"
     },
     {
       "id": "M11-14",
       "milestone": "M11",
       "title": "CI: build wasm editor + server, Playwright e2e (new project -> edit -> save -> reload; play; export from browser; server path-traversal tests)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M11-15",
       "milestone": "M11",
       "title": "Docs: manual chapter 'Run the editor in a browser / on a server' with screenshots, KNOWN_ISSUES entries (browser limits, unverified Safari/Windows), HOSTING/EXPORT docs cross-links",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M11-16",

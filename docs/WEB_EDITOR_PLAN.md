@@ -2,7 +2,7 @@
 
 **Goal:** one editor, four ways to run it — **macOS, Windows, Linux** (native, today) **and the web**: a browser tab on any OS, and a **self-hosted server** on Linux (a VPS, a home server, a Docker container) that several browsers can reach. Same UI, same project format, same exports.
 
-Status: **plan only** (milestone M11, tasks `M11-01…`). Nothing here is built yet. Native editor stays the primary target; the web build is additive (owner rule: nothing existing is removed).
+Status: **implemented** (milestone M11; how it works: `WEB_EDITOR.md`, user guide: manual chapter 27). Differences from this plan: the project API pushes events over **SSE** instead of WebSocket; `RemoteFs` is a sync layer over an in-memory tree rather than a sync `Vfs` over HTTP; the browser build renders with eframe's **glow/WebGL2** backend. Native editor stays the primary target; the web build is additive (owner rule: nothing existing is removed).
 
 ## 1. Why this is feasible
 The editor is egui (`crates/nord-editor`, eframe) — egui runs in the browser as WebAssembly (eframe's web backend, WebGL2 now / WebGPU where available). Three things stop a plain recompile today; each has a known answer:

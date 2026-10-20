@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 229/243 tasks (94%)** · updated 2026-10-20
+**Overall: 231/243 tasks (95%)** · updated 2026-10-20
 
 | Milestone | Progress |
 |---|---|
@@ -18,7 +18,7 @@
 | M8 Polish & portability | 15/20 (75%) |
 | M9 Desktop apps | 16/16 (100%) |
 | M10 Construct-style editor | 35/35 (100%) |
-| M11 Web editor | 12/16 (75%) |
+| M11 Web editor | 14/16 (88%) |
 
 ## Next up
 - **M3-07** SPIKE: wry child webview embedded in egui panel on macOS (resize, HiDPI, focus, IPC both ways); fallback separate window
@@ -313,9 +313,9 @@ _the editor in a browser and on a Linux server (wasm egui + server mode); plan d
 - [x] **M11-10** RemoteFs + ServerHost (client side of the project API/jobs) so the same wasm editor edits server projects; reconnect + conflict handling (single writer lock)
 - [x] **M11-11** Server jobs: web/single-file export, offline check, thumbnails, optimise, zip download; optional container-isolated Rust-tier builds; CPU/RAM/time limits
 - [x] **M11-12** Auth + multi-user: token (default) and users file (argon2), per-user workspaces, quotas, CSRF/session hardening, desktop bridge disabled in server mode
-- [ ] **M11-13** Packaging: Dockerfile + docker-compose, systemd unit, nginx/Caddy TLS examples, `nord-editor-server --help`, backups note
-- [ ] **M11-14** CI: build wasm editor + server, Playwright e2e (new project -> edit -> save -> reload; play; export from browser; server path-traversal tests)
-- [ ] **M11-15** Docs: manual chapter 'Run the editor in a browser / on a server' with screenshots, KNOWN_ISSUES entries (browser limits, unverified Safari/Windows), HOSTING/EXPORT docs cross-links
+- [~] **M11-13** Packaging: Dockerfile + docker-compose, systemd unit, nginx/Caddy TLS examples, `nord-editor-server --help`, backups note
+- [x] **M11-14** CI: build wasm editor + server, Playwright e2e (new project -> edit -> save -> reload; play; export from browser; server path-traversal tests)
+- [x] **M11-15** Docs: manual chapter 'Run the editor in a browser / on a server' with screenshots, KNOWN_ISSUES entries (browser limits, unverified Safari/Windows), HOSTING/EXPORT docs cross-links
 - [ ] **M11-16** OWNER: verify web editor on macOS Safari/Chrome, Windows Edge, Firefox; decide auth model and Rust-tier-on-server policy (docs/WEB_EDITOR_PLAN.md §7)
 
 ## Features (PRD)

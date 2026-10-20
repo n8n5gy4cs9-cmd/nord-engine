@@ -141,3 +141,7 @@ Decision: keep a single editor codebase (`nord-editor`, egui) and compile it to 
 
 ## ADR-025 Construct-style features are additive (M10, 2026-10-19)
 Event sheets, behaviors and the new editors are added **beside** JS scripting and the existing tiers; nothing is removed or replaced. Clean-room: ideas and workflows only, no Construct code or assets. See `docs/CONSTRUCT_PARITY.md`.
+
+## ADR-021 — Editor in the browser and on a server, additive and gated (M11)
+**Decision:** the same egui editor compiles to wasm32 and is served as a static site (browser-only mode) or by `nord-editor-server` (shared projects). Desktop is untouched: web-only code lives behind `cfg(target_arch = "wasm32")` / target-specific dependencies; file access goes through `nord_core::vfs` whose desktop backend is plain `std::fs`; OS things (dialogs, threads, dev server, processes) go through `nord-editor::platform`. **Why:** one editor to maintain, no duplicate UI, no regression risk for the native app (all native tests and edit-viewport e2e suites stayed green at every step). **Consequences:** the web renderer is glow/WebGL2 (works in headless CI and Safari), the game/edit view are iframes served by a service worker (needs https or localhost), the server keeps projects as plain folders and syncs per file with a single-writer lock (no real-time co-editing), Rust/WASM and native-app targets stay desktop-only unless the server opts in (`--allow-rust-jobs`).
+

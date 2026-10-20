@@ -1,0 +1,32 @@
+# /etc/systemd/system/nord-editor.service  —  sudo systemctl enable --now nord-editor
+# Create the user and folders first:
+#   sudo useradd --system --home /var/lib/nord --shell /usr/sbin/nologin nord
+#   sudo install -d -o nord -g nord /var/lib/nord /etc/nord
+#   echo "NORD_TOKEN=$(openssl rand -hex 16)" | sudo tee /etc/nord/env && sudo chmod 600 /etc/nord/env
+[Unit]
+Description=Nord Engine editor server
+After=network.target
+
+[Service]
+User=nord
+Group=nord
+EnvironmentFile=/etc/nord/env
+Environment=NORD_ROOT=/opt/nord/engine
+ExecStart=/usr/local/bin/nord-editor-server --listen 127.0.0.1:8787 --workspace /var/lib/nord/workspace --web /opt/nord/web --engine /opt/nord/engine --secure-cookies
+Restart=on-failure
+# the server runs export jobs as child processes: give them (and everything else) hard limits
+MemoryMax=2G
+CPUQuota=200%
+TasksMax=512
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/nord
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+LockPersonality=true
+
+[Install]
+WantedBy=multi-user.target

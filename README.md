@@ -21,3 +21,6 @@ Verification notes for the embedded webview: `docs/KNOWN_ISSUES.md` (RISK-001a).
 Status: **M0–M2 done, M3 (editor) implemented** — see task.md. Next: M4 export.
 
 Windows portable release: run `./build-win.sh` (cross-build from Mac/Linux or native MSVC on Windows). Includes examples and the offline guide as a ZIP. See [Windows build guide](docs/BUILD_WINDOWS.md).
+
+## Web editor
+The editor also runs in a browser (`tools/build-web-editor.sh`) and on a Linux server (`nord-editor-server`); see `docs/WEB_EDITOR.md` and manual chapter 27. The desktop app is unchanged.

@@ -1,0 +1,9 @@
+# Caddy: automatic HTTPS. Replace the host name.
+nord.example.com {
+	request_body {
+		max_size 300MB
+	}
+	reverse_proxy 127.0.0.1:8787 {
+		flush_interval -1    # server-sent events
+	}
+}

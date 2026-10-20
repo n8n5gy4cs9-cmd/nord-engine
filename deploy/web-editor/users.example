@@ -1,0 +1,3 @@
+# nord-editor-server --users /path/to/users   (one `name:argon2-hash` per line; names: letters, digits, space . _ -)
+# make a hash:   printf '%s' 'the password' | nord-editor-server hash-password
+# ann:$argon2id$v=19$m=19456,t=2,p=1$...

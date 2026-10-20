@@ -1,0 +1,26 @@
+# docker compose -f deploy/web-editor/docker-compose.yml up -d --build   (run from the repository root)
+# Login token: set NORD_TOKEN in the environment or a .env file (at least 12 characters), e.g.  NORD_TOKEN=$(openssl rand -hex 16)
+# For several users mount a users file instead (see docs/WEB_EDITOR.md) and add:  command: ["--users", "/run/nord/users"]
+services:
+  nord-editor:
+    build:
+      context: ../..
+      dockerfile: deploy/web-editor/Dockerfile
+    restart: unless-stopped
+    environment:
+      NORD_TOKEN: ${NORD_TOKEN:?set NORD_TOKEN (>= 12 characters)}
+    ports:
+      - "127.0.0.1:8787:8787"     # loopback only: reach it through the reverse proxy (nginx/Caddy) with TLS
+    volumes:
+      - nord-data:/data           # per-user workspaces = plain project folders; back this volume up
+    # container limits apply to export jobs too (they run inside this container)
+    mem_limit: 2g
+    cpus: 2
+    pids_limit: 512
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+volumes:
+  nord-data:

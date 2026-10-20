@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Run the editor in a browser or on a server — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="welcome.html" class="active" aria-current="page">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Manual</div><a href="welcome.html">Welcome</a><a href="editor-tour.html">Editor tour</a><a href="projects-scenes.html">Projects &amp; scenes</a><a href="scripting.html">Scripting</a><a href="2d.html">2D games</a><a href="3d.html">3D games</a><a href="physics.html">Physics</a><a href="audio.html">Audio</a><a href="ui.html">UI &amp; HUD</a><a href="input.html">Input</a><a href="assets.html">Assets</a><a href="library.html">The library</a><a href="rust-wasm.html">Rust / WASM</a><a href="export.html">Export &amp; hosting</a><a href="performance.html">Performance &amp; debugging</a><a href="reference.html">Reference overview</a><a href="desktop-apps.html">Desktop apps</a><a href="event-sheets.html">Event sheets</a><a href="behaviors.html">Behaviors</a><a href="debugger.html">Debugger and profiler</a><a href="layout-editor.html">Layout, layers and objects</a><a href="sprites-animation-tilemaps.html">Sprites, animation and tilemaps</a><a href="effects-particles-timelines.html">Effects, particles and timelines</a><a href="addons-data-localisation.html">Addons, data objects and languages</a><a href="preview-history-tools.html">Preview, history and project tools</a><a href="web-editor.html" class="cur" aria-current="page">Run the editor in a browser or on a server</a></nav><main id="content"><div class="crumb">Manual / Nord Engine</div><h1>Run the editor in a browser or on a server</h1>
+<p>The Nord editor you know from the desktop also runs as a web page. Nothing in the desktop app changes: the web editor is an additional way to run the same editor, with the same project format, the same panels and the same exports.</p>
+<h2 id="two-ways-to-use-it">Two ways to use it<a class="anchor" href="#two-ways-to-use-it">#</a></h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><strong>Browser only</strong></th>
+<th><strong>Your own server</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>What you need</td>
+<td>any static web host (or <code>python3 -m http.server</code>)</td>
+<td>one machine that runs <code>nord-editor-server</code></td>
+</tr>
+<tr>
+<td>Where projects live</td>
+<td>in your browser (IndexedDB), plus zip import / download</td>
+<td>on the server, one folder per user</td>
+</tr>
+<tr>
+<td>Export</td>
+<td>in the browser: web zip</td>
+<td>on the server: full pipeline (minify, single file, optimise, event-sheet compile)</td>
+</tr>
+<tr>
+<td>Several people</td>
+<td>no (one browser)</td>
+<td>yes, each with their own workspace</td>
+</tr>
+<tr>
+<td>Works offline</td>
+<td>yes, after the first load</td>
+<td>needs the server</td>
+</tr>
+</tbody></table>
+<h2 id="browser-only">Browser only<a class="anchor" href="#browser-only">#</a></h2>
+<ol>
+<li>Build it once: <code>tools/build-web-editor.sh</code> (needs <code>rustup target add wasm32-unknown-unknown</code> and <code>cargo install wasm-bindgen-cli</code>, the version printed by the script&#39;s error if they differ). The result is the folder <code>dist/web-editor</code> — a normal static site (about 10 MB of wasm, 2.7 MB brotli-compressed, plus the engine runtime).</li>
+<li>Serve that folder over <code>http://localhost</code> or <code>https://</code> (service workers and the wasm file need a server; <code>file://</code> does not work), for example <code>python3 -m http.server -d dist/web-editor 8090</code>.</li>
+<li>Open it. You get the project hub: <strong>Create project</strong> makes a project in your browser (folder <code>/projects</code>). It is saved automatically, so reloading the page keeps it.</li>
+</ol>
+<p><strong>Open project…</strong> imports a <code>.zip</code> of a project; <strong>File ▸ Download project (.zip)</strong> gives you a project back. Use these to move projects between the web and the desktop editor. Browser storage can be cleared by the browser — download a zip to keep a safe copy.</p>
+<p><strong>Play</strong> and the 2D / 3D scene view run inside the page. <strong>Export…</strong> builds a zip of your game in the browser. Differences from the desktop: no minify, single-file, asset optimising or event-sheet compile (these need Node or ffmpeg — use the server mode or the desktop app), no Rust/WASM projects, no macOS/Windows app bundles, no phone preview.</p>
+<h3 id="shortcuts-in-the-browser">Shortcuts in the browser<a class="anchor" href="#shortcuts-in-the-browser">#</a></h3>
+<p>Browsers keep some shortcuts (<code>Cmd/Ctrl+P</code> print, <code>+K</code> search, <code>+1…4</code> tabs, <code>+R</code> reload). In the web editor quick open, the command palette, tab switching and play use <strong>Alt</strong> instead: <code>Alt+P</code>, <code>Alt+K</code>, <code>Alt+1…4</code>, <code>Alt+R</code>. The Settings window lists the current keys.</p>
+<h2 id="on-your-own-server">On your own server<a class="anchor" href="#on-your-own-server">#</a></h2>
+<p><code>nord-editor-server</code> serves the web editor and keeps projects in plain folders: <code>&lt;workspace&gt;/&lt;user&gt;/&lt;project&gt;</code>.</p>
+<pre class="code" data-lang="bash"><code>cargo build --release -p nord-editor-server -p nord-cli
+tools/build-web-editor.sh
+./target/release/nord-editor-server --workspace ./nord-workspace --web dist/web-editor --engine .</code></pre>
+<p>It listens on <code>127.0.0.1:8787</code> and prints a random <strong>login token</strong>. Open the address, enter the token when asked, and the hub lists the projects on the server. Opening one downloads its files into the page; every save sends only the changed files back. <strong>Export…</strong> runs on the server and the zip downloads when it is done; the log lines appear in the Console.</p>
+<h3 id="several-people-and-passwords">Several people and passwords<a class="anchor" href="#several-people-and-passwords">#</a></h3>
+<p>Use a users file instead of the token: one line per person, <code>name:hash</code>.</p>
+<pre class="code" data-lang="bash"><code>printf '%s' 'a long password' | nord-editor-server hash-password      # prints the hash
+nord-editor-server --users ./users ...</code></pre>
+<p>Each user gets their own workspace and a size limit (<code>--quota-mb</code>). Only one session at a time may change a project (the first one to open it); others get a notice and see it read-only, and the lock frees itself a minute after the page is closed. Real-time co-editing is not part of this version.</p>
+<h3 id="put-it-on-the-internet-safely">Put it on the internet safely<a class="anchor" href="#put-it-on-the-internet-safely">#</a></h3>
+<p>The server binds to loopback by default. For remote use run it behind <strong>nginx or Caddy with HTTPS</strong> (ready-made <code>deploy/web-editor/nginx.conf</code> and <code>Caddyfile</code>), start it with <code>--secure-cookies</code>, and never use <code>--no-auth</code> (the server refuses it on non-loopback addresses anyway). What the server does to protect you: every path is checked against the user&#39;s workspace (no <code>..</code>, no absolute paths, symlinks are not followed), writes are atomic, state-changing requests need a custom header on top of SameSite=Strict cookies, failed logins are throttled, export jobs run as the server&#39;s own unprivileged user with a time limit (<code>--job-timeout</code>) and a per-user parallel limit, and the desktop-app bridge does not exist on the server. <strong>Rust/WASM projects are not built on the server</strong> unless you start it with <code>--allow-rust-jobs</code>; that runs the project&#39;s own build scripts, so only do it inside a container.</p>
+<p>Packaging: <code>deploy/web-editor/Dockerfile</code> + <code>docker-compose.yml</code> (container limits, read-only root) and a hardened <code>nord-editor.service</code> for systemd. Back up the workspace folder (it is plain files — rsync, restic or snapshots).</p>
+<h2 id="when-something-does-not-work">When something does not work<a class="anchor" href="#when-something-does-not-work">#</a></h2>
+<ul>
+<li><em>Blank page / &quot;could not start&quot;:</em> the browser needs WebGL2 (every current browser has it).</li>
+<li><em>Play stays empty:</em> the service worker could not register. It needs <code>https://</code> or <code>http://localhost</code>; private windows of some browsers block it.</li>
+<li><em>&quot;Engine files are not available&quot;:</em> the page was served without <code>engine/</code> (rebuild with <code>tools/build-web-editor.sh</code>).</li>
+<li><em>&quot;Another session is editing this project&quot;:</em> close the other tab, wait a minute, reopen.</li>
+</ul>
+<div class="pager"><a href="preview-history-tools.html"><small>← Previous</small>Preview, history and project tools</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#two-ways-to-use-it">Two ways to use it </a><a href="#browser-only">Browser only </a><a href="#on-your-own-server">On your own server </a><a href="#when-something-does-not-work">When something does not work </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>
