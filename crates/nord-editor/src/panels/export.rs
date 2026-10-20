@@ -50,6 +50,10 @@ fn open_folder(p: &std::path::Path) {
 
 /// Start a build with the dialog's options (also used by tests).
 pub fn start(st: &mut EditorState) {
+    if !crate::platform::can(crate::platform::JobKind::Export) {
+        st.toast("Export is not available in the browser editor yet");
+        return;
+    }
     let (Some(root), Some(engine)) = (st.root.clone(), crate::platform::engine_root()) else {
         st.export_ui.status = "No project open or engine folder not found (set NORD_ROOT)".into();
         return;

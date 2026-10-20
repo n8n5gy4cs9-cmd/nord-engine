@@ -1,10 +1,10 @@
 //! Native code editor on `egui::TextEdit` + our tokenizer highlighter. See docs/EDITOR_UI.md.
+use nord_core::vfs::PathExt;
 pub mod api;
 pub mod edit;
 pub mod highlight;
 pub mod multi;
 
-use web_time::Instant;
 use crate::{
     icons,
     state::{Action, EditorState, LogLevel},
@@ -23,6 +23,7 @@ use std::{
     sync::mpsc::{channel, Receiver, Sender},
     time::Duration,
 };
+use web_time::Instant;
 
 const MAX_HIGHLIGHT: usize = 400_000;
 
@@ -39,7 +40,7 @@ pub struct Doc {
     pub saved: String,
     pub lang: Lang,
     pub problems: Vec<Problem>,
-    mtime: Option<std::time::SystemTime>,
+    mtime: Option<web_time::SystemTime>,
     hl: Option<(u64, std::sync::Arc<egui::text::LayoutJob>)>,
     pub scroll_y: f32,
     goto: Option<usize>,
@@ -124,14 +125,15 @@ impl CodeState {
             self.docs[i].goto = line;
             return Ok(());
         }
-        let meta = std::fs::metadata(path).map_err(|e| format!("{}: {e}", path.display()))?;
+        let meta =
+            nord_core::vfs::metadata(path).map_err(|e| format!("{}: {e}", path.display()))?;
         if meta.len() > 8_000_000 {
             return Err(format!(
                 "{}: file too large for the editor (>8 MB)",
                 path.display()
             ));
         }
-        let bytes = std::fs::read(path).map_err(|e| format!("{}: {e}", path.display()))?;
+        let bytes = nord_core::vfs::read(path).map_err(|e| format!("{}: {e}", path.display()))?;
         let text = String::from_utf8(bytes)
             .map_err(|_| format!("{}: not a UTF-8 text file", path.display()))?;
         let rel = root.and_then(|r| path.strip_prefix(r).ok()).map_or_else(
@@ -165,7 +167,9 @@ impl CodeState {
         };
         nord_core::io::write_atomic(&d.path, d.text.as_bytes()).map_err(|e| e.to_string())?;
         d.saved = d.text.clone();
-        d.mtime = std::fs::metadata(&d.path).and_then(|m| m.modified()).ok();
+        d.mtime = nord_core::vfs::metadata(&d.path)
+            .and_then(|m| m.modified())
+            .ok();
         spawn_check(d.path.clone(), d.lang, d.text.clone(), self.tx.clone());
         Ok(())
     }
@@ -202,12 +206,12 @@ fn spawn_check(path: PathBuf, lang: Lang, text: String, tx: Sender<(PathBuf, Vec
             crate::platform::spawn(move || {
                 let tmp =
                     std::env::temp_dir().join(format!("nord-check-{}.mjs", std::process::id()));
-                let _ = std::fs::write(&tmp, &text);
+                let _ = nord_core::vfs::write(&tmp, &text);
                 let out = std::process::Command::new("node")
                     .arg("--check")
                     .arg(&tmp)
                     .output();
-                let _ = std::fs::remove_file(&tmp);
+                let _ = nord_core::vfs::remove_file(&tmp);
                 let mut probs = vec![];
                 if let Ok(o) = out {
                     if !o.status.success() {
@@ -307,9 +311,11 @@ fn body(st: &mut EditorState, cs: &mut CodeState, ui: &mut Ui) {
     if cs.last_disk_check.elapsed() > Duration::from_secs(1) {
         cs.last_disk_check = Instant::now();
         for d in &mut cs.docs {
-            let m = std::fs::metadata(&d.path).and_then(|m| m.modified()).ok();
+            let m = nord_core::vfs::metadata(&d.path)
+                .and_then(|m| m.modified())
+                .ok();
             if m != d.mtime && !d.dirty() {
-                if let Ok(t) = std::fs::read_to_string(&d.path) {
+                if let Ok(t) = nord_core::vfs::read_to_string(&d.path) {
                     d.text = t.clone();
                     d.saved = t;
                 }
@@ -734,13 +740,13 @@ fn goto_window(cs: &mut CodeState, ui: &mut Ui) {
 }
 
 fn walk_text_files(dir: &Path, out: &mut Vec<PathBuf>) {
-    let Ok(rd) = std::fs::read_dir(dir) else {
+    let Ok(rd) = nord_core::vfs::read_dir(dir) else {
         return;
     };
     for e in rd.flatten() {
         let p = e.path();
         let n = e.file_name().to_string_lossy().into_owned();
-        if p.is_dir() {
+        if p.v_is_dir() {
             if !matches!(
                 n.as_str(),
                 ".nord-cache" | "dist" | ".git" | "node_modules" | "target" | "vendor"
@@ -759,10 +765,10 @@ pub fn project_search(root: &Path, q: &str, case: bool) -> Vec<(String, usize, S
     let ql = q.to_lowercase();
     let mut out = vec![];
     for f in files {
-        if std::fs::metadata(&f).map_or(true, |m| m.len() > 2_000_000) {
+        if nord_core::vfs::metadata(&f).map_or(true, |m| m.len() > 2_000_000) {
             continue;
         }
-        let Ok(t) = std::fs::read_to_string(&f) else {
+        let Ok(t) = nord_core::vfs::read_to_string(&f) else {
             continue;
         };
         let rel = f
@@ -1653,8 +1659,8 @@ mod tests {
     #[test]
     fn project_search_finds_lines() {
         let d = std::env::temp_dir().join(format!("nord-search-{}", std::process::id()));
-        std::fs::create_dir_all(d.join("scripts")).unwrap();
-        std::fs::write(d.join("scripts/a.js"), "let x = 1;\nlet Needle = 2;\n").unwrap();
+        nord_core::vfs::create_dir_all(d.join("scripts")).unwrap();
+        nord_core::vfs::write(d.join("scripts/a.js"), "let x = 1;\nlet Needle = 2;\n").unwrap();
         let r = project_search(&d, "needle", false);
         assert_eq!(
             r,

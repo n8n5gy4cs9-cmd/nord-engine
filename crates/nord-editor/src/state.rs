@@ -1,5 +1,4 @@
 //! Single editor state. Panels are `fn ui(&mut EditorState, &mut Ui)`; every scene mutation goes through `edit`.
-use web_time::Instant;
 use crate::{scene_ops, undo::UndoStack};
 use nord_core::{assets::Asset, scene::Entity, Project, Scene};
 use nord_serve::Hub;
@@ -11,6 +10,7 @@ use std::{
     sync::Arc,
     time::Duration,
 };
+use web_time::Instant;
 
 #[derive(Serialize, Deserialize, Clone)]
 #[serde(default)]
@@ -229,7 +229,7 @@ pub struct EditorState {
     pub lock: Option<nord_core::io::ProjectLock>,
     pub last_autosave: Instant,
     pub recover: Option<String>,
-    pub script_cache: HashMap<String, (std::time::SystemTime, Vec<crate::schema::Field>)>,
+    pub script_cache: HashMap<String, (web_time::SystemTime, Vec<crate::schema::Field>)>,
     /// viewport asked us not to echo the scene back after its own edit
     pub skip_viewport_sync: bool,
     pub hierarchy_filter: String,
@@ -463,7 +463,12 @@ impl EditorState {
     }
 
     /// Like `edit`, but the closure sees the whole scene (settings such as layers are undone together with the entities).
-    pub fn edit_scene(&mut self, label: &str, key: Option<&str>, f: impl FnOnce(&mut Scene)) -> bool {
+    pub fn edit_scene(
+        &mut self,
+        label: &str,
+        key: Option<&str>,
+        f: impl FnOnce(&mut Scene),
+    ) -> bool {
         let Some(s) = self.scene.as_mut() else {
             return false;
         };
@@ -658,11 +663,20 @@ impl EditorState {
     /// Project files (anywhere in the project, not only `assets/`) whose name ends with `suffix`, e.g. `.events.json`, `.scene.json`.
     /// The folder is scanned at most every 2 seconds; `refresh_assets` forces a rescan.
     pub fn project_files(&mut self, suffix: &str) -> Vec<String> {
-        let Some(root) = self.root.clone() else { return vec![] };
-        if self.files_cache.as_ref().is_none_or(|(t, _)| t.elapsed() > Duration::from_secs(2)) {
+        let Some(root) = self.root.clone() else {
+            return vec![];
+        };
+        if self
+            .files_cache
+            .as_ref()
+            .is_none_or(|(t, _)| t.elapsed() > Duration::from_secs(2))
+        {
             self.files_cache = Some((Instant::now(), nord_core::history::source_files(&root)));
         }
-        self.files_cache.as_ref().map(|(_, v)| v.iter().filter(|f| f.ends_with(suffix)).cloned().collect()).unwrap_or_default()
+        self.files_cache
+            .as_ref()
+            .map(|(_, v)| v.iter().filter(|f| f.ends_with(suffix)).cloned().collect())
+            .unwrap_or_default()
     }
 
     pub fn open_scene(&mut self, rel: &str) -> Result<(), String> {
@@ -678,7 +692,7 @@ impl EditorState {
         self.recover = self
             .autosave_path()
             .filter(|a| {
-                let m = |p: &Path| std::fs::metadata(p).and_then(|m| m.modified()).ok();
+                let m = |p: &Path| nord_core::vfs::metadata(p).and_then(|m| m.modified()).ok();
                 matches!((m(a), m(&path)), (Some(x), Some(y)) if x > y)
             })
             .map(|a| a.to_string_lossy().into_owned());
@@ -697,7 +711,9 @@ impl EditorState {
 
     /// After a version-history restore: re-read everything the editor holds in memory from disk.
     pub fn reload_after_restore(&mut self) {
-        let Some(root) = self.root.clone() else { return };
+        let Some(root) = self.root.clone() else {
+            return;
+        };
         if let Ok(p) = nord_core::io::load_project(&root) {
             self.project = Some(p);
         }
@@ -740,7 +756,7 @@ impl EditorState {
             Ok(()) => {
                 self.dirty = false;
                 if let Some(a) = self.autosave_path() {
-                    let _ = std::fs::remove_file(a);
+                    let _ = nord_core::vfs::remove_file(a);
                 }
                 self.toast(format!("Saved {f}"));
             }
@@ -905,7 +921,9 @@ impl EditorState {
                 self.select(id);
             }
             Some("cam") => {
-                if let (Some(x), Some(y), Some(z)) = (m["x"].as_f64(), m["y"].as_f64(), m["zoom"].as_f64()) {
+                if let (Some(x), Some(y), Some(z)) =
+                    (m["x"].as_f64(), m["y"].as_f64(), m["zoom"].as_f64())
+                {
                     self.viewport_cam = Some([x, y, z]);
                 }
             }
@@ -997,7 +1015,7 @@ impl EditorState {
             return vec![];
         };
         let p = root.join(rel);
-        let Ok(mt) = std::fs::metadata(&p).and_then(|m| m.modified()) else {
+        let Ok(mt) = nord_core::vfs::metadata(&p).and_then(|m| m.modified()) else {
             return vec![];
         };
         if let Some((t, f)) = self
@@ -1009,7 +1027,7 @@ impl EditorState {
                 return f.clone();
             }
         }
-        let f = std::fs::read_to_string(&p)
+        let f = nord_core::vfs::read_to_string(&p)
             .map(|s| crate::schema::script_attributes(&s))
             .unwrap_or_default();
         if self.settings.use_cached_content {

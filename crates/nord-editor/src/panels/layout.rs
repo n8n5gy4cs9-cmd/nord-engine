@@ -1,5 +1,6 @@
 //! Layout tab (M10-12/13/14): layers, layout properties (size, scrolling, event sheet, guides), arrange selection, object types,
 //! overview map and the list of layouts (scenes). All edits go through `EditorState::edit_scene`, so they undo together with the objects.
+use nord_core::vfs::PathExt;
 use crate::layout::{self, Align};
 use crate::state::EditorState;
 use egui::{Color32, Rect, RichText, Sense, Ui, Vec2};
@@ -423,7 +424,7 @@ fn layouts_section(st: &mut EditorState, ui: &mut Ui) {
                 let name = st.layout_ui.new_layout.trim().replace(' ', "-");
                 let rel = format!("scenes/{name}.scene.json");
                 if let Some(root) = st.root.clone() {
-                    if root.join(&rel).exists() {
+                    if root.join(&rel).v_exists() {
                         st.toast("A layout with that name exists");
                     } else if nord_core::io::save_json(&root.join(&rel), &nord_core::Scene::new(&name)).is_ok() {
                         st.layout_ui.new_layout.clear();

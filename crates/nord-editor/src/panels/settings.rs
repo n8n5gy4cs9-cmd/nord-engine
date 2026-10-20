@@ -115,7 +115,7 @@ pub fn window(st: &mut EditorState, ctx: &Context) {
             ui.strong("Shortcuts");
             egui::Grid::new("shortcuts").num_columns(2).show(ui, |ui| {
                 for (k, d) in SHORTCUTS {
-                    ui.monospace(*k);
+                    ui.monospace(crate::platform::shortcut_label(k));
                     ui.label(*d);
                     ui.end_row();
                 }

@@ -80,15 +80,101 @@ pub fn start_lan(root: PathBuf, engine: PathBuf, port: u16) -> anyhow::Result<La
     }
 }
 
-/// Run `f` on a worker thread. The web build has no threads yet, so the job is dropped (its channel closes and the UI
-/// treats it as "not available"); real browser jobs arrive with the `Host` trait (M11-03).
-pub fn spawn<F: FnOnce() + Send + 'static>(f: F) {
+/// What kind of work a job does (decides whether this host can run it).
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum JobKind {
+    /// pure in-process work (thumbnails, validation)
+    Compute,
+    /// `nord build` / export
+    Export,
+    /// external tools: cargo, node, ffmpeg, the dev server
+    Process,
+}
+
+/// Where long-running work runs: [`LocalHost`] (threads + processes, desktop), [`NoHost`] (browser, no threads yet);
+/// the server build adds a remote host that runs jobs over HTTP (M11-10).
+pub trait Host: Send + Sync {
+    fn name(&self) -> &'static str;
+    fn can(&self, kind: JobKind) -> bool;
+    /// Run `job` in the background. Returns false when it cannot run here (the job is dropped, its channel closes).
+    fn spawn(&self, job: Box<dyn FnOnce() + Send>) -> bool;
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+pub struct LocalHost;
+
+#[cfg(not(target_arch = "wasm32"))]
+impl Host for LocalHost {
+    fn name(&self) -> &'static str {
+        "local"
+    }
+    fn can(&self, _: JobKind) -> bool {
+        true
+    }
+    fn spawn(&self, job: Box<dyn FnOnce() + Send>) -> bool {
+        std::thread::spawn(job);
+        true
+    }
+}
+
+/// Static web build: nothing runs in the background and no processes exist.
+pub struct NoHost;
+
+impl Host for NoHost {
+    fn name(&self) -> &'static str {
+        "browser"
+    }
+    fn can(&self, _: JobKind) -> bool {
+        false
+    }
+    fn spawn(&self, job: Box<dyn FnOnce() + Send>) -> bool {
+        drop(job);
+        false
+    }
+}
+
+/// The host of this build.
+pub fn host() -> &'static dyn Host {
     #[cfg(not(target_arch = "wasm32"))]
     {
-        std::thread::spawn(f);
+        &LocalHost
     }
     #[cfg(target_arch = "wasm32")]
     {
-        drop(f);
+        &NoHost
     }
+}
+
+/// Can this build run `kind` jobs? Panels use it to disable buttons with an explanation.
+pub fn can(kind: JobKind) -> bool {
+    host().can(kind)
+}
+
+/// Run `f` on the host. See [`Host::spawn`].
+pub fn spawn<F: FnOnce() + Send + 'static>(f: F) -> bool {
+    host().spawn(Box::new(f))
+}
+
+/// Modifier for quick open / palette / tab switching: Cmd/Ctrl on desktop, Alt in the browser (which owns Cmd/Ctrl+P/K/1-4).
+pub fn nav_modifiers() -> egui::Modifiers {
+    if cfg!(target_arch = "wasm32") {
+        egui::Modifiers::ALT
+    } else {
+        egui::Modifiers::COMMAND
+    }
+}
+
+/// Shortcut text for Settings: the keys that use [`nav_modifiers`] read `Alt+` in the browser.
+pub fn shortcut_label(k: &str) -> String {
+    let nav = ["Cmd+P", "Cmd+K", "Cmd+1/2/3/4", "Cmd+R / Cmd+."];
+    if cfg!(target_arch = "wasm32") && nav.contains(&k) {
+        k.replace("Cmd+", "Alt+")
+    } else {
+        k.to_string()
+    }
+}
+
+/// Copy text to the system clipboard (egui handles the browser clipboard on the web).
+pub fn copy_text(ctx: &egui::Context, text: String) {
+    ctx.copy_text(text);
 }

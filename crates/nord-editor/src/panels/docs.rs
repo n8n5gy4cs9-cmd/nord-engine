@@ -2,6 +2,7 @@
 //! Markdown viewer over docs/*.md.
 use crate::state::EditorState;
 use egui::{RichText, Ui};
+use nord_core::vfs::PathExt;
 
 #[derive(Default)]
 pub struct DocsUi {
@@ -10,7 +11,7 @@ pub struct DocsUi {
 }
 
 fn md_files(root: &std::path::Path) -> Vec<String> {
-    let mut v: Vec<String> = std::fs::read_dir(root.join("docs"))
+    let mut v: Vec<String> = nord_core::vfs::read_dir(root.join("docs"))
         .into_iter()
         .flatten()
         .flatten()
@@ -58,7 +59,8 @@ pub fn render_md(ui: &mut Ui, text: &str) {
 /// Returns the manual URL if the HTML manual exists (caller embeds it).
 pub fn manual_url(st: &mut EditorState) -> Option<String> {
     let engine = st.engine_root.clone()?;
-    if !engine.join("docs/manual/index.html").exists() && !engine.join("docs/manual.zip").is_file()
+    if !engine.join("docs/manual/index.html").v_exists()
+        && !engine.join("docs/manual.zip").v_is_file()
     {
         return None;
     }
@@ -80,8 +82,9 @@ pub fn markdown_ui(st: &mut EditorState, ui: &mut Ui) {
                         .selectable_label(st.docs_ui.file.as_deref() == Some(f), f)
                         .clicked()
                     {
-                        st.docs_ui.text = std::fs::read_to_string(engine.join("docs").join(f))
-                            .unwrap_or_default();
+                        st.docs_ui.text =
+                            nord_core::vfs::read_to_string(engine.join("docs").join(f))
+                                .unwrap_or_default();
                         st.docs_ui.file = Some(f.clone());
                     }
                 }

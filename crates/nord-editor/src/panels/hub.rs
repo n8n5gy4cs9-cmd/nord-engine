@@ -1,6 +1,7 @@
 //! Project hub shown when no project is open: New (template picker), Open, Recent, Examples, Tutorials.
 use crate::state::{Action, EditorState, LogLevel};
 use egui::{RichText, Ui};
+use nord_core::vfs::PathExt;
 use nord_core::ProjectType;
 use std::path::{Path, PathBuf};
 
@@ -25,7 +26,7 @@ impl Default for HubUi {
             name: "My Game".into(),
             kind: ProjectType::TwoD,
             starter: None,
-            parent: if docs.exists() {
+            parent: if docs.v_exists() {
                 docs.join("Nord Projects")
             } else {
                 home.join("NordProjects")
@@ -71,7 +72,7 @@ pub fn create_project(parent: &Path, name: &str, kind: ProjectType) -> Result<Pa
         return Err("Enter a project name (no slashes)".into());
     }
     let dir = parent.join(name);
-    std::fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
+    nord_core::vfs::create_dir_all(&dir).map_err(|e| e.to_string())?;
     nord_core::project::create(&dir, kind).map_err(|e| e.to_string())?;
     Ok(dir)
 }
@@ -89,7 +90,7 @@ pub fn create_starter(parent: &Path, name: &str, src: &Path) -> Result<PathBuf, 
 
 /// `(id, title, description, type)` rows of `templates/templates.json` (empty when the engine ships none).
 pub fn starters(root: &Path) -> Vec<(String, String, String, String)> {
-    let Ok(txt) = std::fs::read_to_string(root.join("templates/templates.json")) else {
+    let Ok(txt) = nord_core::vfs::read_to_string(root.join("templates/templates.json")) else {
         return vec![];
     };
     let Ok(v) = serde_json::from_str::<Vec<serde_json::Value>>(&txt) else {
@@ -102,8 +103,8 @@ pub fn starters(root: &Path) -> Vec<(String, String, String, String)> {
 }
 
 fn copy_dir(from: &Path, to: &Path) -> std::io::Result<()> {
-    std::fs::create_dir_all(to)?;
-    for e in std::fs::read_dir(from)? {
+    nord_core::vfs::create_dir_all(to)?;
+    for e in nord_core::vfs::read_dir(from)? {
         let e = e?;
         let n = e.file_name();
         if matches!(
@@ -113,10 +114,10 @@ fn copy_dir(from: &Path, to: &Path) -> std::io::Result<()> {
             continue;
         }
         let (a, b) = (e.path(), to.join(&n));
-        if a.is_dir() {
+        if a.v_is_dir() {
             copy_dir(&a, &b)?;
         } else {
-            std::fs::copy(&a, &b)?;
+            nord_core::vfs::copy(&a, &b)?;
         }
     }
     Ok(())
@@ -124,7 +125,7 @@ fn copy_dir(from: &Path, to: &Path) -> std::io::Result<()> {
 
 /// Open the current source; saved private copies are an explicit testing option.
 pub fn open_example(src: &Path, use_cached_content: bool) -> Result<PathBuf, String> {
-    if !src.join(nord_core::io::PROJECT_FILE).is_file() {
+    if !src.join(nord_core::io::PROJECT_FILE).v_is_file() {
         return Err(format!("Example project not found: {}", src.display()));
     }
     if !use_cached_content {
@@ -132,7 +133,7 @@ pub fn open_example(src: &Path, use_cached_content: bool) -> Result<PathBuf, Str
     }
     let name = src.file_name().ok_or("bad example")?;
     let dst = nord_core::io::config_dir().join("examples").join(name);
-    if !dst.exists() {
+    if !dst.v_exists() {
         copy_dir(src, &dst).map_err(|e| e.to_string())?;
         // Rust examples depend on the engine crates by relative path: point the private copy at the real checkout
         if let Some(root) = src.parent().and_then(Path::parent) {
@@ -155,7 +156,7 @@ pub fn current_example_path(
         ) {
             for base in [engine.join("examples"), engine.join("examples/tutorials")] {
                 let current = base.join(relative);
-                if current.join(nord_core::io::PROJECT_FILE).is_file() {
+                if current.join(nord_core::io::PROJECT_FILE).v_is_file() {
                     return current;
                 }
             }
@@ -165,12 +166,12 @@ pub fn current_example_path(
 }
 
 fn list_projects(dir: &Path) -> Vec<PathBuf> {
-    let mut v: Vec<PathBuf> = std::fs::read_dir(dir)
+    let mut v: Vec<PathBuf> = nord_core::vfs::read_dir(dir)
         .into_iter()
         .flatten()
         .flatten()
         .map(|e| e.path())
-        .filter(|p| p.join(nord_core::io::PROJECT_FILE).exists())
+        .filter(|p| p.join(nord_core::io::PROJECT_FILE).v_exists())
         .collect();
     v.sort();
     v
@@ -237,7 +238,9 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                                         .on_hover_text("Choose project folder")
                                         .clicked()
                                     {
-                                        if let Some(p) = crate::platform::pick_folder("Choose project folder") {
+                                        if let Some(p) =
+                                            crate::platform::pick_folder("Choose project folder")
+                                        {
                                             st.hub.parent = p;
                                         }
                                     }
@@ -318,7 +321,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                                         });
                                     let res = match (&starter, &st.engine_root) {
                                         (Some(id), Some(root))
-                                            if root.join("templates").join(id).exists() =>
+                                            if root.join("templates").join(id).v_exists() =>
                                         {
                                             create_starter(
                                                 &parent,
@@ -351,7 +354,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                                 ui.heading("Recent projects");
                                 let recent: Vec<_> = nord_core::io::recent_projects()
                                     .into_iter()
-                                    .filter(|p| p.join(nord_core::io::PROJECT_FILE).exists())
+                                    .filter(|p| p.join(nord_core::io::PROJECT_FILE).v_exists())
                                     .take(8)
                                     .collect();
                                 if recent.is_empty() {
@@ -507,19 +510,19 @@ mod tests {
         let src = std::env::temp_dir()
             .join(format!("nord-example-current-{}", std::process::id()))
             .join("example");
-        std::fs::create_dir_all(src.join("assets")).unwrap();
-        std::fs::write(src.join("nord.project.json"), "{}").unwrap();
+        nord_core::vfs::create_dir_all(src.join("assets")).unwrap();
+        nord_core::vfs::write(src.join("nord.project.json"), "{}").unwrap();
         let asset = src.join("assets/hero.png");
-        std::fs::write(&asset, b"old art").unwrap();
+        nord_core::vfs::write(&asset, b"old art").unwrap();
         let first = open_example(&src, false).unwrap();
         assert_eq!(
-            std::fs::read(first.join("assets/hero.png")).unwrap(),
+            nord_core::vfs::read(first.join("assets/hero.png")).unwrap(),
             b"old art"
         );
-        std::fs::write(&asset, b"new art").unwrap();
+        nord_core::vfs::write(&asset, b"new art").unwrap();
         let reopened = open_example(&src, false).unwrap();
         assert_eq!(
-            std::fs::read(reopened.join("assets/hero.png")).unwrap(),
+            nord_core::vfs::read(reopened.join("assets/hero.png")).unwrap(),
             b"new art"
         );
         assert_eq!(reopened, src);
@@ -530,22 +533,25 @@ mod tests {
         let src = std::env::temp_dir()
             .join(format!("nord-example-opt-in-{}", std::process::id()))
             .join(format!("cached-example-{}", std::process::id()));
-        std::fs::create_dir_all(&src).unwrap();
-        std::fs::write(src.join("nord.project.json"), "{}").unwrap();
-        std::fs::write(src.join("hero.png"), b"old art").unwrap();
+        nord_core::vfs::create_dir_all(&src).unwrap();
+        nord_core::vfs::write(src.join("nord.project.json"), "{}").unwrap();
+        nord_core::vfs::write(src.join("hero.png"), b"old art").unwrap();
         let previous = nord_core::io::config_dir()
             .join("examples")
             .join(src.file_name().unwrap());
-        if previous.exists() {
-            std::fs::remove_dir_all(&previous).unwrap();
+        if previous.v_exists() {
+            nord_core::vfs::remove_dir_all(&previous).unwrap();
         }
         let copy = open_example(&src, true).unwrap();
         assert_ne!(copy, src);
-        std::fs::write(src.join("hero.png"), b"new art").unwrap();
+        nord_core::vfs::write(src.join("hero.png"), b"new art").unwrap();
         assert_eq!(open_example(&src, true).unwrap(), copy);
-        assert_eq!(std::fs::read(copy.join("hero.png")).unwrap(), b"old art");
+        assert_eq!(
+            nord_core::vfs::read(copy.join("hero.png")).unwrap(),
+            b"old art"
+        );
         assert_eq!(open_example(&src, false).unwrap(), src);
-        std::fs::remove_dir_all(copy).unwrap();
+        nord_core::vfs::remove_dir_all(copy).unwrap();
     }
 
     #[test]
@@ -567,8 +573,8 @@ mod tests {
         let engine =
             std::env::temp_dir().join(format!("nord-example-bundle-{}", std::process::id()));
         let current = engine.join("examples/noom");
-        std::fs::create_dir_all(&current).unwrap();
-        std::fs::write(current.join("nord.project.json"), "{}").unwrap();
+        nord_core::vfs::create_dir_all(&current).unwrap();
+        nord_core::vfs::write(current.join("nord.project.json"), "{}").unwrap();
         let old = nord_core::io::config_dir().join("examples/noom");
         assert_eq!(current_example_path(&old, Some(&engine), false), current);
         assert_eq!(current_example_path(&old, Some(&engine), true), old);
@@ -581,7 +587,7 @@ mod tests {
         let base = std::env::temp_dir().join(format!("nord-hub-{}", std::process::id()));
         for (k, t, _) in TEMPLATES {
             let d = create_project(&base, t, k).unwrap();
-            assert!(d.join("nord.project.json").exists(), "{t}");
+            assert!(d.join("nord.project.json").v_exists(), "{t}");
         }
         assert!(create_project(&base, "bad/name", ProjectType::TwoD).is_err());
         assert!(

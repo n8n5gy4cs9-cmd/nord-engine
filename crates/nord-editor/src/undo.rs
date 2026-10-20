@@ -17,7 +17,10 @@ struct Snap {
 
 impl Snap {
     fn of(s: &Scene) -> Self {
-        Self { entities: s.entities.clone(), settings: s.settings.clone() }
+        Self {
+            entities: s.entities.clone(),
+            settings: s.settings.clone(),
+        }
     }
     fn restore(&self, s: &mut Scene) {
         s.entities = self.entities.clone();
@@ -41,7 +44,13 @@ pub struct UndoStack {
 
 impl UndoStack {
     /// Run `f` on the scene; if it changed anything, record a command. Returns whether the scene changed.
-    pub fn apply(&mut self, scene: &mut Scene, label: &str, key: Option<&str>, f: impl FnOnce(&mut Scene)) -> bool {
+    pub fn apply(
+        &mut self,
+        scene: &mut Scene,
+        label: &str,
+        key: Option<&str>,
+        f: impl FnOnce(&mut Scene),
+    ) -> bool {
         let before = Snap::of(scene);
         f(scene);
         let after = Snap::of(scene);
@@ -57,7 +66,13 @@ impl UndoStack {
                 return true;
             }
         }
-        self.undo.push(Command { label: label.into(), key: key.map(Into::into), at: now, before, after });
+        self.undo.push(Command {
+            label: label.into(),
+            key: key.map(Into::into),
+            at: now,
+            before,
+            after,
+        });
         if self.undo.len() > MAX {
             self.undo.remove(0);
         }
@@ -105,8 +120,12 @@ mod tests {
         let mut sc = Scene::new("t");
         sc.entities = vec![Entity::new("a")];
         assert!(!s.apply(&mut sc, "noop", None, |_| {}));
-        s.apply(&mut sc, "move", Some("x"), |s| s.entities[0].transform.pos[0] = 1.0);
-        s.apply(&mut sc, "move", Some("x"), |s| s.entities[0].transform.pos[0] = 2.0);
+        s.apply(&mut sc, "move", Some("x"), |s| {
+            s.entities[0].transform.pos[0] = 1.0
+        });
+        s.apply(&mut sc, "move", Some("x"), |s| {
+            s.entities[0].transform.pos[0] = 2.0
+        });
         assert_eq!(s.undo.len(), 1, "coalesced");
         s.apply(&mut sc, "rename", None, |s| s.entities[0].name = "b".into());
         assert_eq!(s.undo(&mut sc).as_deref(), Some("rename"));
@@ -124,7 +143,10 @@ mod tests {
         let mut s = UndoStack::default();
         let mut sc = Scene::new("t");
         s.apply(&mut sc, "layer", None, |s| {
-            s.settings.extra.insert("layers".into(), serde_json::json!({"0": {"name": "Ground"}}));
+            s.settings.extra.insert(
+                "layers".into(),
+                serde_json::json!({"0": {"name": "Ground"}}),
+            );
         });
         assert!(sc.settings.extra.contains_key("layers"));
         s.undo(&mut sc);

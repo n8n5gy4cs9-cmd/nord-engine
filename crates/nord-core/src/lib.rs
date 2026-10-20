@@ -10,6 +10,7 @@ pub mod refs;
 pub mod scene;
 pub mod thumbs;
 pub mod validate;
+pub mod vfs;
 
 pub use project::{Project, ProjectType};
 pub use scene::{Entity, Prefab, Scene};

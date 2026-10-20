@@ -2,6 +2,7 @@
 use crate::state::{Action, EditorState, LogLevel};
 use egui::Ui;
 use nord_core::scene::{Entity, PrefabRef, ScriptRef};
+use nord_core::vfs::PathExt;
 use serde::Deserialize;
 use serde_json::Map;
 
@@ -57,9 +58,9 @@ pub fn insert(st: &mut EditorState, it: &Item) -> Result<String, String> {
     match it.kind.as_str() {
         "script" => {
             let rel = format!("scripts/{name}");
-            std::fs::create_dir_all(root.join("scripts")).map_err(|e| e.to_string())?;
-            if !root.join(&rel).exists() {
-                std::fs::copy(&src, root.join(&rel)).map_err(|e| e.to_string())?;
+            nord_core::vfs::create_dir_all(root.join("scripts")).map_err(|e| e.to_string())?;
+            if !root.join(&rel).v_exists() {
+                nord_core::vfs::copy(&src, root.join(&rel)).map_err(|e| e.to_string())?;
             }
             st.script_cache.remove(&rel);
             if let Some(id) = st.selection.first().cloned() {
@@ -78,9 +79,9 @@ pub fn insert(st: &mut EditorState, it: &Item) -> Result<String, String> {
         }
         "prefab" => {
             let rel = format!("prefabs/{name}");
-            std::fs::create_dir_all(root.join("prefabs")).map_err(|e| e.to_string())?;
-            if !root.join(&rel).exists() {
-                std::fs::copy(&src, root.join(&rel)).map_err(|e| e.to_string())?;
+            nord_core::vfs::create_dir_all(root.join("prefabs")).map_err(|e| e.to_string())?;
+            if !root.join(&rel).v_exists() {
+                nord_core::vfs::copy(&src, root.join(&rel)).map_err(|e| e.to_string())?;
             }
             let mut e = Entity::new(&it.title);
             e.prefab = Some(PrefabRef {
@@ -97,7 +98,7 @@ pub fn insert(st: &mut EditorState, it: &Item) -> Result<String, String> {
             Ok(format!("Instantiated {rel}"))
         }
         _ => {
-            let text = std::fs::read_to_string(&src).map_err(|e| e.to_string())?;
+            let text = nord_core::vfs::read_to_string(&src).map_err(|e| e.to_string())?;
             Ok(format!("__clip__{text}"))
         }
     }
@@ -201,14 +202,14 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         st.library.preview = st
             .engine_root
             .as_ref()
-            .and_then(|r| std::fs::read_to_string(r.join(&it.file)).ok())
+            .and_then(|r| nord_core::vfs::read_to_string(r.join(&it.file)).ok())
             .unwrap_or_default();
         st.library.sel = Some(it.id);
     }
     if let Some(it) = insert_it {
         match insert(st, &it) {
             Ok(m) if m.starts_with("__clip__") => {
-                ui.ctx().copy_text(m[8..].to_string());
+                crate::platform::copy_text(ui.ctx(), m[8..].to_string());
                 st.toast("Snippet copied to clipboard");
             }
             Ok(m) => {

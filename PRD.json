@@ -1858,19 +1858,19 @@
       "id": "M11-02",
       "milestone": "M11",
       "title": "Vfs trait (read/write/list/rename/delete/watch, atomic write): NativeFs; route nord-core::io, autosave, asset browser, code editor, thumbnails through it — native behaviour unchanged, tests green",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M11-03",
       "milestone": "M11",
       "title": "Host trait (run build/export/serve/check-offline/thumbs jobs, stream log lines, cancel): LocalHost (today's std::process) + NoHost; export dialog + console use it",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M11-04",
       "milestone": "M11",
       "title": "Dialogs/clipboard abstraction (rfd native + wasm async pickers, web clipboard) and web-safe default shortcuts (avoid Cmd/Ctrl+P/K/S clashes, rebindable)",
-      "status": "todo"
+      "status": "in_progress"
     },
     {
       "id": "M11-05",

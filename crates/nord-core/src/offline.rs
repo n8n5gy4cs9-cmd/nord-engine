@@ -1,4 +1,5 @@
 //! Offline guarantee scanner: finds references to external http(s) hosts in text files of a build/project.
+use crate::vfs::PathExt;
 use std::path::Path;
 
 /// Hosts that are fine (local dev, XML/SVG namespace URIs that are identifiers, not fetches).
@@ -72,7 +73,7 @@ pub fn scan_text(file: &str, text: &str, extra_allow: &[String]) -> Vec<Finding>
 /// Recursively scan a directory. Allowlist file (`.offline-allow`, one host per line) at `dir` root is honoured.
 pub fn scan_dir(dir: &Path, extra_allow: &[String]) -> Vec<Finding> {
     let mut allow = extra_allow.to_vec();
-    if let Ok(s) = std::fs::read_to_string(dir.join(".offline-allow")) {
+    if let Ok(s) = crate::vfs::read_to_string(dir.join(".offline-allow")) {
         allow.extend(
             s.lines()
                 .map(str::trim)
@@ -82,12 +83,14 @@ pub fn scan_dir(dir: &Path, extra_allow: &[String]) -> Vec<Finding> {
     }
     let mut out = vec![];
     fn go(base: &Path, d: &Path, allow: &[String], out: &mut Vec<Finding>) {
-        let Ok(rd) = std::fs::read_dir(d) else { return };
+        let Ok(rd) = crate::vfs::read_dir(d) else {
+            return;
+        };
         let mut es: Vec<_> = rd.flatten().map(|e| e.path()).collect();
         es.sort();
         for p in es {
             let name = p.file_name().unwrap().to_string_lossy().into_owned();
-            if p.is_dir() {
+            if p.v_is_dir() {
                 if !matches!(
                     name.as_str(),
                     ".git" | "node_modules" | ".nord-cache" | "target"
@@ -99,7 +102,7 @@ pub fn scan_dir(dir: &Path, extra_allow: &[String]) -> Vec<Finding> {
                 .and_then(|e| e.to_str())
                 .is_some_and(|e| TEXT_EXT.contains(&e.to_ascii_lowercase().as_str()))
             {
-                if let Ok(t) = std::fs::read_to_string(&p) {
+                if let Ok(t) = crate::vfs::read_to_string(&p) {
                     let rel = p
                         .strip_prefix(base)
                         .unwrap()

@@ -58,14 +58,31 @@ impl Tab {
 }
 
 pub fn default_dock() -> DockState<Tab> {
-    let mut dock = DockState::new(vec![Tab::Scene, Tab::Game, Tab::Code, Tab::Events, Tab::Layout, Tab::Animation, Tab::Sprite, Tab::Particles, Tab::Timeline]);
+    let mut dock = DockState::new(vec![
+        Tab::Scene,
+        Tab::Game,
+        Tab::Code,
+        Tab::Events,
+        Tab::Layout,
+        Tab::Animation,
+        Tab::Sprite,
+        Tab::Particles,
+        Tab::Timeline,
+    ]);
     let s = dock.main_surface_mut();
     let [center, _] = s.split_left(NodeIndex::root(), 0.18, vec![Tab::Hierarchy]);
     let [center, _] = s.split_right(center, 0.78, vec![Tab::Inspector]);
     let [_, _] = s.split_below(
         center,
         0.68,
-        vec![Tab::Assets, Tab::Console, Tab::Library, Tab::History, Tab::Project, Tab::Docs],
+        vec![
+            Tab::Assets,
+            Tab::Console,
+            Tab::Library,
+            Tab::History,
+            Tab::Project,
+            Tab::Docs,
+        ],
     );
     dock
 }
@@ -187,20 +204,22 @@ impl App {
             if i.consume_key(cmd, Key::S) {
                 st.push(Action::SaveAll);
             }
-            if i.consume_key(cmd, Key::P) {
+            // browsers keep Cmd/Ctrl+P (print), +K (search) and +1..4 (tabs): the web build uses Alt for those (M11-04)
+            let nav = crate::platform::nav_modifiers();
+            if i.consume_key(nav, Key::P) {
                 st.push(Action::QuickOpen);
             }
-            if i.consume_key(cmd, Key::K) {
+            if i.consume_key(nav, Key::K) {
                 st.push(Action::Palette);
             }
             let (run, stop) = (st.settings.key(true), st.settings.key(false));
-            if i.consume_key(cmd, run) {
+            if i.consume_key(nav, run) {
                 st.push(if st.is_playing() {
                     Action::Stop
                 } else {
                     Action::Play
                 });
-            } else if i.consume_key(cmd, stop) {
+            } else if i.consume_key(nav, stop) {
                 st.push(Action::Stop);
             }
             if i.consume_key(cmd, Key::Comma) {
@@ -212,7 +231,7 @@ impl App {
                 (Key::Num3, Tab::Code),
                 (Key::Num4, Tab::Assets),
             ] {
-                if i.consume_key(cmd, k) {
+                if i.consume_key(nav, k) {
                     st.push(Action::ShowTab(t));
                 }
             }

@@ -1,5 +1,6 @@
 //! Inspector generated from `schema.rs` (component tables + script `static attributes`). Edits a clone of the selected
 //! entity and commits one coalesced undo step when anything changed.
+use nord_core::vfs::PathExt;
 use crate::{
     icons, scene_ops,
     schema::{self, Field, FieldType},
@@ -486,7 +487,7 @@ fn collect_scripts(root: &std::path::Path, dir: &std::path::Path, out: &mut Vec<
     for e in rd.flatten() {
         let p = e.path();
         let n = e.file_name().to_string_lossy().into_owned();
-        if p.is_dir() {
+        if p.v_is_dir() {
             if !matches!(
                 n.as_str(),
                 ".nord-cache" | "dist" | ".git" | "node_modules" | "target" | "assets"

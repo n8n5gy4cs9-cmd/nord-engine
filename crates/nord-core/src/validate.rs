@@ -1,4 +1,5 @@
 //! Project/scene validation: structure, unique ids, referenced files exist.
+use crate::vfs::PathExt;
 use crate::{io, Entity, Project, Scene};
 use serde_json::Value;
 use std::collections::HashSet;
@@ -66,7 +67,7 @@ pub fn validate_scene(root: &Path, file: &str, s: &Scene) -> Vec<Issue> {
             r.push(p.path.clone());
         }
         for path in r {
-            if !root.join(&path).exists() {
+            if !root.join(&path).v_exists() {
                 push(
                     &mut v,
                     file,
@@ -186,14 +187,14 @@ pub fn validate_project(root: &Path) -> Vec<Issue> {
         );
     }
     validate_desktop(&p.desktop, &mut v);
-    if p.kind != crate::ProjectType::Html && !root.join(&p.start_scene).exists() {
+    if p.kind != crate::ProjectType::Html && !root.join(&p.start_scene).v_exists() {
         push(
             &mut v,
             io::PROJECT_FILE,
             format!("startScene '{}' does not exist", p.start_scene),
         );
     }
-    if let Ok(rd) = std::fs::read_dir(root.join("scenes")) {
+    if let Ok(rd) = crate::vfs::read_dir(root.join("scenes")) {
         let mut files: Vec<_> = rd
             .flatten()
             .map(|e| e.path())
@@ -219,7 +220,7 @@ mod tests {
     #[test]
     fn detects_missing_refs_and_dup_ids() {
         let d = std::env::temp_dir().join(format!("nord-val-{}", std::process::id()));
-        let _ = std::fs::remove_dir_all(&d);
+        let _ = crate::vfs::remove_dir_all(&d);
         io::save_project(&d, &Project::new("T", "com.x.t", ProjectType::TwoD)).unwrap();
         let mut s = Scene::new("main");
         let mut a = Entity::new("A");

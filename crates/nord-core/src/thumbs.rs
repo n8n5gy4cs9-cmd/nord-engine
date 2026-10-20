@@ -1,6 +1,7 @@
 //! Thumbnail generator with sha256-keyed cache in `.nord-cache/thumbs/`.
 //! Images/spritesheets: downscaled PNG. Audio: waveform PNG (WAV natively; other formats via optional ffmpeg).
 use crate::assets::{Asset, AssetType};
+use crate::vfs::PathExt;
 use crate::{io, Error, Result};
 use image::{Rgba, RgbaImage};
 use std::path::{Path, PathBuf};
@@ -70,7 +71,7 @@ pub fn thumb_for(root: &Path, a: &Asset) -> Result<Option<PathBuf>> {
     let out = root
         .join(".nord-cache/thumbs")
         .join(format!("{}.png", a.sha256));
-    if out.exists() {
+    if out.v_exists() {
         return Ok(Some(out));
     }
     let src = root.join(&a.path);
@@ -83,7 +84,7 @@ pub fn thumb_for(root: &Path, a: &Asset) -> Result<Option<PathBuf>> {
             im.thumbnail(SIZE, SIZE).to_rgba8()
         }
         AssetType::Audio => {
-            let bytes = std::fs::read(&src).map_err(|e| io::io_err(&src, e))?;
+            let bytes = crate::vfs::read(&src).map_err(|e| io::io_err(&src, e))?;
             match wav_samples(&bytes).or_else(|| ffmpeg_samples(&src)) {
                 Some(s) if !s.is_empty() => waveform(&s),
                 _ => return Ok(None),
@@ -91,7 +92,7 @@ pub fn thumb_for(root: &Path, a: &Asset) -> Result<Option<PathBuf>> {
         }
         _ => return Ok(None),
     };
-    std::fs::create_dir_all(out.parent().unwrap()).map_err(|e| io::io_err(&out, e))?;
+    crate::vfs::create_dir_all(out.parent().unwrap()).map_err(|e| io::io_err(&out, e))?;
     img.save(&out)
         .map_err(|e| Error::Msg(format!("{}: {e}", out.display())))?;
     Ok(Some(out))
@@ -117,8 +118,8 @@ mod tests {
     #[test]
     fn image_and_wav_thumbs() {
         let d = std::env::temp_dir().join(format!("nord-thumb-{}", std::process::id()));
-        let _ = std::fs::remove_dir_all(&d);
-        std::fs::create_dir_all(d.join("assets")).unwrap();
+        let _ = crate::vfs::remove_dir_all(&d);
+        crate::vfs::create_dir_all(d.join("assets")).unwrap();
         RgbaImage::from_pixel(400, 200, Rgba([255, 0, 0, 255]))
             .save(d.join("assets/a.png"))
             .unwrap();
@@ -141,7 +142,7 @@ mod tests {
         w.extend(b"data");
         w.extend((pcm.len() as u32).to_le_bytes());
         w.extend(pcm);
-        std::fs::write(d.join("assets/s.wav"), w).unwrap();
+        crate::vfs::write(d.join("assets/s.wav"), w).unwrap();
         let assets = crate::assets::scan(&d).unwrap();
         let (ok, skip, bad) = generate_all(&d, &assets);
         assert_eq!((ok, skip, bad.len()), (2, 0, 0), "{bad:?}");

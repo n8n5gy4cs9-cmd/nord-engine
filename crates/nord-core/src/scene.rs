@@ -196,7 +196,10 @@ mod tests {
         let v = serde_json::to_value(&s).unwrap();
         assert_eq!(v["settings"]["eventSheet"], "events/a.events.json");
         assert_eq!(v["settings"]["families"]["Foe"][0], "A");
-        assert_eq!(v["entities"][0]["behaviors"][0]["properties"]["maxSpeed"], 300);
+        assert_eq!(
+            v["entities"][0]["behaviors"][0]["properties"]["maxSpeed"],
+            300
+        );
     }
 
     #[test]

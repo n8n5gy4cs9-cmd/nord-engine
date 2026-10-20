@@ -1,8 +1,7 @@
 //! Load/save with crash-safe writes, project lock, recent-projects store.
+use crate::vfs as fs;
 use crate::{Error, Project, Result};
 use serde::{de::DeserializeOwned, Serialize};
-use std::fs;
-use std::io::Write;
 use std::path::{Path, PathBuf};
 
 pub const PROJECT_FILE: &str = "nord.project.json";
@@ -14,24 +13,14 @@ pub fn io_err(path: &Path, source: std::io::Error) -> Error {
     }
 }
 
-/// Write via tmp file + fsync + rename so a crash never leaves a half-written file.
+/// Crash-safe write (tmp file + fsync + rename on disk; whatever the backend offers elsewhere).
 pub fn write_atomic(path: &Path, data: &[u8]) -> Result<()> {
     if let Some(dir) = path.parent() {
         fs::create_dir_all(dir).map_err(|e| io_err(dir, e))?;
     }
-    let mut tmp = path.as_os_str().to_owned();
-    tmp.push(".nordtmp");
-    let tmp = PathBuf::from(tmp);
-    let res = (|| {
-        let mut f = fs::File::create(&tmp)?;
-        f.write_all(data)?;
-        f.sync_all()?;
-        fs::rename(&tmp, path)
-    })();
-    if res.is_err() {
-        let _ = fs::remove_file(&tmp);
-    }
-    res.map_err(|e| io_err(path, e))
+    crate::vfs::backend()
+        .write_atomic(path, data)
+        .map_err(|e| io_err(path, e))
 }
 
 /// Pretty JSON (2 spaces) + trailing newline, per PROJECT_FORMAT.md.
@@ -78,10 +67,25 @@ pub struct ProjectLock {
 
 impl ProjectLock {
     pub fn acquire(root: &Path) -> Result<Self> {
+        // the browser has one tab per project workspace and no process ids: no lock
+        #[cfg(target_arch = "wasm32")]
+        {
+            let _ = root;
+            Ok(Self {
+                path: PathBuf::new(),
+            })
+        }
+        #[cfg(not(target_arch = "wasm32"))]
+        Self::acquire_native(root)
+    }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    fn acquire_native(root: &Path) -> Result<Self> {
+        use std::io::Write;
         let path = root.join(".nord-cache").join("lock");
-        fs::create_dir_all(path.parent().unwrap()).map_err(|e| io_err(&path, e))?;
+        std::fs::create_dir_all(path.parent().unwrap()).map_err(|e| io_err(&path, e))?;
         for _ in 0..2 {
-            match fs::OpenOptions::new()
+            match std::fs::OpenOptions::new()
                 .write(true)
                 .create_new(true)
                 .open(&path)
@@ -91,7 +95,7 @@ impl ProjectLock {
                     return Ok(Self { path });
                 }
                 Err(e) if e.kind() == std::io::ErrorKind::AlreadyExists => {
-                    let pid: Option<u32> = fs::read_to_string(&path)
+                    let pid: Option<u32> = std::fs::read_to_string(&path)
                         .ok()
                         .and_then(|s| s.trim().parse().ok());
                     match pid {
@@ -101,7 +105,7 @@ impl ProjectLock {
                             )))
                         }
                         _ => {
-                            let _ = fs::remove_file(&path);
+                            let _ = std::fs::remove_file(&path);
                         }
                     }
                 }
@@ -112,6 +116,7 @@ impl ProjectLock {
     }
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 fn pid_alive(pid: u32) -> bool {
     if cfg!(target_os = "linux") {
         Path::new(&format!("/proc/{pid}")).exists()

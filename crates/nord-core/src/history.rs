@@ -1,19 +1,22 @@
 //! Version history (M10-31): cheap local snapshots of a project's *source* files (JSON data, event sheets, scripts, shaders, text)
 //! under `<project>/.nord/history/<id>/`, with list / diff / restore. Binary assets (images, audio, models) are not copied: they are
 //! large and the editor never rewrites them in place. Not a replacement for git — a safety net you do not have to think about.
-use web_time::{SystemTime, UNIX_EPOCH};
+use crate::vfs as fs;
+use crate::vfs::PathExt;
 use crate::{io, Error, Result};
 use std::{
     collections::BTreeMap,
-    fs,
     path::{Path, PathBuf},
-    
 };
+use web_time::{SystemTime, UNIX_EPOCH};
 
 pub const DIR: &str = ".nord/history";
 const KEEP: usize = 50;
 const MAX_FILE: u64 = 4 << 20;
-const TEXT_EXT: &[&str] = &["json", "js", "mjs", "ts", "css", "html", "md", "txt", "glsl", "wgsl", "toml", "rs", "svg", "csv", "frag", "vert"];
+const TEXT_EXT: &[&str] = &[
+    "json", "js", "mjs", "ts", "css", "html", "md", "txt", "glsl", "wgsl", "toml", "rs", "svg",
+    "csv", "frag", "vert",
+];
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Snapshot {
@@ -41,9 +44,13 @@ pub fn source_files(root: &Path) -> Vec<String> {
         let Ok(rd) = fs::read_dir(dir) else { return };
         for e in rd.flatten() {
             let name = e.file_name().to_string_lossy().into_owned();
-            let r = if rel.is_empty() { name.clone() } else { format!("{rel}/{name}") };
+            let r = if rel.is_empty() {
+                name.clone()
+            } else {
+                format!("{rel}/{name}")
+            };
             let p = e.path();
-            if p.is_dir() {
+            if p.v_is_dir() {
                 if !skip_dir(&name) {
                     go(&p, &r, out);
                 }
@@ -65,7 +72,9 @@ pub fn source_files(root: &Path) -> Vec<String> {
 }
 
 fn now() -> u64 {
-    SystemTime::now().duration_since(UNIX_EPOCH).map_or(0, |d| d.as_secs())
+    SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map_or(0, |d| d.as_secs())
 }
 
 /// Take a snapshot. Returns its id (sortable by time).
@@ -73,7 +82,10 @@ pub fn snapshot(root: &Path, label: &str) -> Result<String> {
     let hist = root.join(DIR);
     // ids are strictly increasing even within one second (and after pruning): continue after the newest existing id
     let (mut t, mut n) = (now(), 0u32);
-    if let Some(last) = list(root).last().and_then(|l| l.id.split_once('-').map(|(a, b)| (a.parse::<u64>().unwrap_or(0), b.parse::<u32>().unwrap_or(0)))) {
+    if let Some(last) = list(root).last().and_then(|l| {
+        l.id.split_once('-')
+            .map(|(a, b)| (a.parse::<u64>().unwrap_or(0), b.parse::<u32>().unwrap_or(0)))
+    }) {
         if last.0 >= t {
             t = last.0;
             n = last.1 + 1;
@@ -95,7 +107,9 @@ pub fn snapshot(root: &Path, label: &str) -> Result<String> {
 
 /// Snapshot unless the newest one is younger than `max_age_secs` (used by autosave-style hooks).
 pub fn snapshot_if_stale(root: &Path, label: &str, max_age_secs: u64) -> Option<String> {
-    let fresh = list(root).last().is_some_and(|l| now().saturating_sub(l.time) < max_age_secs);
+    let fresh = list(root)
+        .last()
+        .is_some_and(|l| now().saturating_sub(l.time) < max_age_secs);
     if fresh {
         return None;
     }
@@ -122,13 +136,21 @@ fn prune(root: &Path) {
 
 /// Snapshots, oldest first.
 pub fn list(root: &Path) -> Vec<Snapshot> {
-    let Ok(rd) = fs::read_dir(root.join(DIR)) else { return vec![] };
+    let Ok(rd) = fs::read_dir(root.join(DIR)) else {
+        return vec![];
+    };
     let mut v: Vec<Snapshot> = rd
         .flatten()
         .filter_map(|e| {
             let id = e.file_name().to_string_lossy().into_owned();
-            let m: serde_json::Value = serde_json::from_slice(&fs::read(e.path().join("meta.json")).ok()?).ok()?;
-            Some(Snapshot { id, label: m["label"].as_str().unwrap_or("").into(), time: m["time"].as_u64().unwrap_or(0), files: m["files"].as_u64().unwrap_or(0) as usize })
+            let m: serde_json::Value =
+                serde_json::from_slice(&fs::read(e.path().join("meta.json")).ok()?).ok()?;
+            Some(Snapshot {
+                id,
+                label: m["label"].as_str().unwrap_or("").into(),
+                time: m["time"].as_u64().unwrap_or(0),
+                files: m["files"].as_u64().unwrap_or(0) as usize,
+            })
         })
         .collect();
     v.sort_by(|a, b| a.id.cmp(&b.id));
@@ -137,7 +159,7 @@ pub fn list(root: &Path) -> Vec<Snapshot> {
 
 fn snap_files(root: &Path, id: &str) -> Result<BTreeMap<String, PathBuf>> {
     let base = root.join(DIR).join(id).join("files");
-    if !base.is_dir() {
+    if !base.v_is_dir() {
         return Err(Error::Msg(format!("no snapshot '{id}'")));
     }
     let mut m = BTreeMap::new();
@@ -145,8 +167,12 @@ fn snap_files(root: &Path, id: &str) -> Result<BTreeMap<String, PathBuf>> {
         let Ok(rd) = fs::read_dir(dir) else { return };
         for e in rd.flatten() {
             let name = e.file_name().to_string_lossy().into_owned();
-            let r = if rel.is_empty() { name } else { format!("{rel}/{name}") };
-            if e.path().is_dir() {
+            let r = if rel.is_empty() {
+                name
+            } else {
+                format!("{rel}/{name}")
+            };
+            if e.path().v_is_dir() {
                 go(&e.path(), &r, m);
             } else {
                 m.insert(r, e.path());
@@ -165,7 +191,9 @@ pub fn diff(root: &Path, id: &str) -> Result<Vec<(String, Change)>> {
     for f in &now {
         match snap.get(f) {
             None => out.push((f.clone(), Change::Added)),
-            Some(p) if fs::read(p).ok() != fs::read(root.join(f)).ok() => out.push((f.clone(), Change::Modified)),
+            Some(p) if fs::read(p).ok() != fs::read(root.join(f)).ok() => {
+                out.push((f.clone(), Change::Modified))
+            }
             _ => {}
         }
     }
@@ -181,7 +209,10 @@ pub fn diff(root: &Path, id: &str) -> Result<Vec<(String, Change)>> {
 /// Line diff of one file between snapshot and now: `(tag, line)` with tag ' ' same, '-' only in the snapshot, '+' only now.
 pub fn file_diff(root: &Path, id: &str, rel: &str) -> Result<Vec<(char, String)>> {
     let snap = snap_files(root, id)?;
-    let old = snap.get(rel).and_then(|p| fs::read_to_string(p).ok()).unwrap_or_default();
+    let old = snap
+        .get(rel)
+        .and_then(|p| fs::read_to_string(p).ok())
+        .unwrap_or_default();
     let new = fs::read_to_string(root.join(rel)).unwrap_or_default();
     Ok(line_diff(&old, &new))
 }
@@ -192,7 +223,12 @@ pub fn line_diff(old: &str, new: &str) -> Vec<(char, String)> {
     let b: Vec<&str> = new.lines().collect();
     // trim common prefix/suffix first: the table only covers the changed middle
     let pre = a.iter().zip(&b).take_while(|(x, y)| x == y).count();
-    let suf = a[pre..].iter().rev().zip(b[pre..].iter().rev()).take_while(|(x, y)| x == y).count();
+    let suf = a[pre..]
+        .iter()
+        .rev()
+        .zip(b[pre..].iter().rev())
+        .take_while(|(x, y)| x == y)
+        .count();
     let (ma, mb) = (&a[pre..a.len() - suf], &b[pre..b.len() - suf]);
     let mut out: Vec<(char, String)> = a[..pre].iter().map(|l| (' ', (*l).into())).collect();
     if ma.len() > 4000 || mb.len() > 4000 {
@@ -203,7 +239,11 @@ pub fn line_diff(old: &str, new: &str) -> Vec<(char, String)> {
         let mut t = vec![vec![0u32; m + 1]; n + 1];
         for i in (0..n).rev() {
             for j in (0..m).rev() {
-                t[i][j] = if ma[i] == mb[j] { t[i + 1][j + 1] + 1 } else { t[i + 1][j].max(t[i][j + 1]) };
+                t[i][j] = if ma[i] == mb[j] {
+                    t[i + 1][j + 1] + 1
+                } else {
+                    t[i + 1][j].max(t[i][j + 1])
+                };
             }
         }
         let (mut i, mut j) = (0, 0);
@@ -281,16 +321,26 @@ mod tests {
         );
         let ld = file_diff(&d, &a, "scenes/main.scene.json").unwrap();
         assert_eq!(
-            ld.iter().filter(|(t, _)| *t != ' ').cloned().collect::<Vec<_>>(),
-            vec![('-', "two".to_string()), ('+', "2".to_string()), ('+', "four".to_string())]
+            ld.iter()
+                .filter(|(t, _)| *t != ' ')
+                .cloned()
+                .collect::<Vec<_>>(),
+            vec![
+                ('-', "two".to_string()),
+                ('+', "2".to_string()),
+                ('+', "four".to_string())
+            ]
         );
         let safety = restore(&d, &a).unwrap();
-        assert_eq!(fs::read_to_string(d.join("scenes/main.scene.json")).unwrap(), "one\ntwo\nthree\n");
-        assert!(d.join("nord.project.json").exists() && !d.join("new.js").exists());
-        assert!(d.join("assets/pic.png").exists());
+        assert_eq!(
+            fs::read_to_string(d.join("scenes/main.scene.json")).unwrap(),
+            "one\ntwo\nthree\n"
+        );
+        assert!(d.join("nord.project.json").v_exists() && !d.join("new.js").v_exists());
+        assert!(d.join("assets/pic.png").v_exists());
         // the restore itself can be undone
         restore(&d, &safety).unwrap();
-        assert!(d.join("new.js").exists());
+        assert!(d.join("new.js").v_exists());
         let _ = fs::remove_dir_all(&d);
     }
 

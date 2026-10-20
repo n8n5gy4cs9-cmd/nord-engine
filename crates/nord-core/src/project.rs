@@ -1,4 +1,5 @@
 //! `nord.project.json` model. See docs/PROJECT_FORMAT.md.
+use crate::vfs::PathExt;
 use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
 use std::collections::BTreeMap;
@@ -141,7 +142,7 @@ fn slug(name: &str) -> String {
 /// Create a new project skeleton in `dir` (used by `nord new` and the editor's project hub).
 pub fn create(dir: &Path, kind: ProjectType) -> crate::Result<()> {
     use crate::io;
-    if dir.join(io::PROJECT_FILE).exists() {
+    if dir.join(io::PROJECT_FILE).v_exists() {
         return Err(crate::Error::Msg(format!(
             "{} already contains a Nord project",
             dir.display()
@@ -153,7 +154,7 @@ pub fn create(dir: &Path, kind: ProjectType) -> crate::Result<()> {
         .unwrap_or_else(|| "My Game".into());
     let mut p = Project::new(&name, &format!("com.crowelian.{}", slug(&name)), kind);
     for d in ["scenes", "scripts", "assets"] {
-        std::fs::create_dir_all(dir.join(d)).map_err(|e| io::io_err(dir, e))?;
+        crate::vfs::create_dir_all(dir.join(d)).map_err(|e| io::io_err(dir, e))?;
     }
     if kind == ProjectType::Html {
         p.start_scene = String::new();
@@ -188,11 +189,11 @@ pub fn create(dir: &Path, kind: ProjectType) -> crate::Result<()> {
 /// point those paths at the real engine checkout (absolute, forward slashes so TOML needs no escaping).
 pub fn retarget_engine_paths(dir: &Path, engine: &Path) {
     let f = dir.join("Cargo.toml");
-    if let Ok(t) = std::fs::read_to_string(&f) {
+    if let Ok(t) = crate::vfs::read_to_string(&f) {
         let abs = engine.to_string_lossy().replace('\\', "/");
         let n = t.replace("\"../../crates/", &format!("\"{abs}/crates/"));
         if n != t {
-            let _ = std::fs::write(&f, n);
+            let _ = crate::vfs::write(&f, n);
         }
     }
 }
@@ -201,19 +202,19 @@ pub fn retarget_engine_paths(dir: &Path, engine: &Path) {
 pub fn create_from_template(src: &Path, dst: &Path) -> crate::Result<()> {
     use crate::io;
     fn copy(from: &Path, to: &Path) -> crate::Result<()> {
-        std::fs::create_dir_all(to).map_err(|e| io::io_err(to, e))?;
-        for e in std::fs::read_dir(from).map_err(|e| io::io_err(from, e))? {
+        crate::vfs::create_dir_all(to).map_err(|e| io::io_err(to, e))?;
+        for e in crate::vfs::read_dir(from).map_err(|e| io::io_err(from, e))? {
             let e = e.map_err(|e| io::io_err(from, e))?;
             let (a, b) = (e.path(), to.join(e.file_name()));
-            if a.is_dir() {
+            if a.v_is_dir() {
                 copy(&a, &b)?;
             } else {
-                std::fs::copy(&a, &b).map_err(|e| io::io_err(&b, e))?;
+                crate::vfs::copy(&a, &b).map_err(|e| io::io_err(&b, e))?;
             }
         }
         Ok(())
     }
-    if dst.join(io::PROJECT_FILE).exists() {
+    if dst.join(io::PROJECT_FILE).v_exists() {
         return Err(crate::Error::Msg(format!(
             "{} already contains a Nord project",
             dst.display()
@@ -241,10 +242,10 @@ mod tests {
     #[test]
     fn creates_from_template_folder() {
         let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../templates");
-        let Some(src) = std::fs::read_dir(&root).ok().and_then(|d| {
+        let Some(src) = crate::vfs::read_dir(&root).ok().and_then(|d| {
             d.flatten()
                 .map(|e| e.path())
-                .find(|p| p.join("nord.project.json").exists())
+                .find(|p| p.join("nord.project.json").v_exists())
         }) else {
             return; // engine ships no starter templates (yet)
         };

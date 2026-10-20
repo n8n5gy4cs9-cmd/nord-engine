@@ -1,4 +1,5 @@
 //! Asset index: scan `assets/`, classify by extension, read `.meta.json` sidecars, sha256 hashes.
+use crate::vfs::PathExt;
 use crate::{io, Result};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
@@ -53,11 +54,14 @@ pub struct Asset {
 }
 
 pub fn sha256_bytes(b: &[u8]) -> String {
-    Sha256::digest(b).iter().map(|x| format!("{x:02x}")).collect()
+    Sha256::digest(b)
+        .iter()
+        .map(|x| format!("{x:02x}"))
+        .collect()
 }
 
 pub fn sha256_file(p: &Path) -> Result<String> {
-    let bytes = std::fs::read(p).map_err(|e| io::io_err(p, e))?;
+    let bytes = crate::vfs::read(p).map_err(|e| io::io_err(p, e))?;
     Ok(Sha256::digest(&bytes)
         .iter()
         .map(|b| format!("{b:02x}"))
@@ -65,12 +69,12 @@ pub fn sha256_file(p: &Path) -> Result<String> {
 }
 
 fn walk(dir: &Path, out: &mut Vec<PathBuf>) {
-    let Ok(rd) = std::fs::read_dir(dir) else {
+    let Ok(rd) = crate::vfs::read_dir(dir) else {
         return;
     };
     for e in rd.flatten() {
         let p = e.path();
-        if p.is_dir() {
+        if p.v_is_dir() {
             walk(&p, out);
         } else {
             out.push(p);
@@ -103,7 +107,9 @@ pub fn scan(root: &Path) -> Result<Vec<Asset>> {
         {
             kind = AssetType::Spritesheet;
         }
-        let size = std::fs::metadata(&f).map_err(|e| io::io_err(&f, e))?.len();
+        let size = crate::vfs::metadata(&f)
+            .map_err(|e| io::io_err(&f, e))?
+            .len();
         out.push(Asset {
             sha256: sha256_file(&f)?,
             path: rel,
@@ -124,15 +130,15 @@ mod tests {
         assert_eq!(classify("a/b.PNG"), AssetType::Image);
         assert_eq!(classify("x.prefab.json"), AssetType::Prefab);
         let d = std::env::temp_dir().join(format!("nord-assets-{}", std::process::id()));
-        let _ = std::fs::remove_dir_all(&d);
-        std::fs::create_dir_all(d.join("assets/s")).unwrap();
-        std::fs::write(d.join("assets/s/p.png"), b"x").unwrap();
-        std::fs::write(
+        let _ = crate::vfs::remove_dir_all(&d);
+        crate::vfs::create_dir_all(d.join("assets/s")).unwrap();
+        crate::vfs::write(d.join("assets/s/p.png"), b"x").unwrap();
+        crate::vfs::write(
             d.join("assets/s/p.png.meta.json"),
             r#"{"type":"spritesheet","frameWidth":8}"#,
         )
         .unwrap();
-        std::fs::write(d.join("assets/hit.ogg"), b"y").unwrap();
+        crate::vfs::write(d.join("assets/hit.ogg"), b"y").unwrap();
         let a = scan(&d).unwrap();
         assert_eq!(a.len(), 2);
         assert_eq!(a[0].path, "assets/hit.ogg");

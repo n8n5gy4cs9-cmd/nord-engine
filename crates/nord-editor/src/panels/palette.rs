@@ -1,4 +1,5 @@
 //! Command palette (Cmd+K) and quick open (Cmd+P) with subsequence fuzzy matching.
+use nord_core::vfs::PathExt;
 use crate::state::{Action, EditorState, Tool};
 use egui::{Context, Key};
 use std::path::Path;
@@ -51,7 +52,7 @@ fn collect_files(root: &Path, dir: &Path, out: &mut Vec<String>) {
     for e in rd.flatten() {
         let p = e.path();
         let n = e.file_name().to_string_lossy().into_owned();
-        if p.is_dir() {
+        if p.v_is_dir() {
             if !matches!(
                 n.as_str(),
                 ".nord-cache" | "dist" | ".git" | "node_modules" | "target"

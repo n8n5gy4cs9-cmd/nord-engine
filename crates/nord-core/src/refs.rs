@@ -1,9 +1,11 @@
 //! Project tools (M10-25): find all references, project-wide replace, safe rename of assets and objects.
 //! Works on the same text sources as version history (`history::source_files`). Every mutating function has a `dry_run` mode that only
 //! reports what it would change.
+use crate::vfs::PathExt;
 use crate::{history, io, Error, Result};
 use serde_json::Value;
-use std::{fs, path::Path};
+use crate::vfs as fs;
+use std::path::Path;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Hit {
@@ -85,10 +87,10 @@ pub fn rename_asset(root: &Path, from: &str, to: &str, dry_run: bool) -> Result<
     if !safe_rel(from) || !safe_rel(to) {
         return Err(Error::Msg("paths must be relative and stay inside the project".into()));
     }
-    if !root.join(from).is_file() {
+    if !root.join(from).v_is_file() {
         return Err(Error::Msg(format!("{from} does not exist")));
     }
-    if root.join(to).exists() {
+    if root.join(to).v_exists() {
         return Err(Error::Msg(format!("{to} already exists")));
     }
     let mut changed = vec![];
@@ -107,7 +109,7 @@ pub fn rename_asset(root: &Path, from: &str, to: &str, dry_run: bool) -> Result<
     }
     if !dry_run {
         for (a, b) in [(from.to_string(), to.to_string()), (format!("{from}.meta.json"), format!("{to}.meta.json"))] {
-            if root.join(&a).is_file() {
+            if root.join(&a).v_is_file() {
                 if let Some(p) = root.join(&b).parent() {
                     fs::create_dir_all(p).map_err(|e| io::io_err(p, e))?;
                 }
@@ -259,9 +261,9 @@ mod tests {
         fs::write(d.join("scenes/m.scene.json"), r#"{"t":"assets/hero.png","u":"assets/hero.png.bak"}"#).unwrap();
         fs::write(d.join("s.js"), "load('assets/hero.png')").unwrap();
         assert_eq!(rename_asset(&d, "assets/hero.png", "assets/knight.png", true).unwrap().len(), 2);
-        assert!(d.join("assets/hero.png").exists(), "dry run moves nothing");
+        assert!(d.join("assets/hero.png").v_exists(), "dry run moves nothing");
         rename_asset(&d, "assets/hero.png", "assets/knight.png", false).unwrap();
-        assert!(d.join("assets/knight.png").exists() && d.join("assets/knight.png.meta.json").exists() && !d.join("assets/hero.png").exists());
+        assert!(d.join("assets/knight.png").v_exists() && d.join("assets/knight.png.meta.json").v_exists() && !d.join("assets/hero.png").v_exists());
         assert_eq!(fs::read_to_string(d.join("scenes/m.scene.json")).unwrap(), r#"{"t":"assets/knight.png","u":"assets/hero.png.bak"}"#);
         assert!(rename_asset(&d, "assets/knight.png", "../x.png", false).is_err());
         assert!(rename_asset(&d, "assets/nope.png", "assets/y.png", false).is_err());

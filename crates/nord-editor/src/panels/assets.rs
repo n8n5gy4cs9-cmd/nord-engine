@@ -1,6 +1,5 @@
 //! Asset browser: folder tree + thumbnail grid (lazy, worker-thread thumbnails via nord-core), search/filter,
 //! import (dialog or OS drag&drop), rename/move/delete, drag out as `AssetDrag`.
-use web_time::Instant;
 use crate::{
     icons,
     panels::inspector::AssetDrag,
@@ -8,12 +7,14 @@ use crate::{
 };
 use egui::{Sense, Ui, Vec2};
 use nord_core::assets::{classify, Asset, AssetType};
+use nord_core::vfs::PathExt;
 use std::{
     collections::{HashMap, HashSet},
     path::{Path, PathBuf},
     sync::mpsc::{channel, Receiver, Sender},
     time::Duration,
 };
+use web_time::Instant;
 
 pub struct AssetsUi {
     pub dir: String, // project-relative folder ("" = project root)
@@ -85,7 +86,7 @@ const SKIP: [&str; 6] = [
 ];
 
 fn list_dir(root: &Path, rel: &str) -> Vec<Entry> {
-    let Ok(rd) = std::fs::read_dir(root.join(rel)) else {
+    let Ok(rd) = nord_core::vfs::read_dir(root.join(rel)) else {
         return vec![];
     };
     let mut v: Vec<Entry> = rd
@@ -95,7 +96,7 @@ fn list_dir(root: &Path, rel: &str) -> Vec<Entry> {
             if SKIP.contains(&name.as_str()) || name.ends_with(".meta.json") {
                 return None;
             }
-            let is_dir = e.path().is_dir();
+            let is_dir = e.path().v_is_dir();
             let rel = if rel.is_empty() {
                 name.clone()
             } else {
@@ -133,11 +134,11 @@ impl AssetsUi {
 pub fn import_files(st: &mut EditorState, files: &[PathBuf]) {
     let Some(root) = st.root.clone() else { return };
     let dest = root.join(&st.assets_ui.dir);
-    let _ = std::fs::create_dir_all(&dest);
+    let _ = nord_core::vfs::create_dir_all(&dest);
     let mut n = 0;
     for f in files {
         if let Some(name) = f.file_name() {
-            if std::fs::copy(f, dest.join(name)).is_ok() {
+            if nord_core::vfs::copy(f, dest.join(name)).is_ok() {
                 n += 1;
             }
         }
@@ -191,11 +192,11 @@ fn move_asset(st: &mut EditorState, from: &str, to_dir: &str) {
     } else {
         format!("{to_dir}/{name}")
     };
-    if dest == from || root.join(&dest).exists() {
+    if dest == from || root.join(&dest).v_exists() {
         return;
     }
-    if std::fs::rename(root.join(from), root.join(&dest)).is_ok() {
-        let _ = std::fs::rename(
+    if nord_core::vfs::rename(root.join(from), root.join(&dest)).is_ok() {
+        let _ = nord_core::vfs::rename(
             root.join(format!("{from}.meta.json")),
             root.join(format!("{dest}.meta.json")),
         );
@@ -252,8 +253,8 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
             let mut n = 1;
             loop {
                 let p = root.join(&st.assets_ui.dir).join(format!("folder{n}"));
-                if !p.exists() {
-                    let _ = std::fs::create_dir_all(p);
+                if !p.v_exists() {
+                    let _ = nord_core::vfs::create_dir_all(p);
                     break;
                 }
                 n += 1;
@@ -374,10 +375,10 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                             } else {
                                 format!("{dir}/{new}")
                             };
-                            if !root.join(&to).exists()
-                                && std::fs::rename(root.join(&from), root.join(&to)).is_ok()
+                            if !root.join(&to).v_exists()
+                                && nord_core::vfs::rename(root.join(&from), root.join(&to)).is_ok()
                             {
-                                let _ = std::fs::rename(
+                                let _ = nord_core::vfs::rename(
                                     root.join(format!("{from}.meta.json")),
                                     root.join(format!("{to}.meta.json")),
                                 );
@@ -417,7 +418,8 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                         let info = if e.is_dir {
                             "folder".to_string()
                         } else {
-                            let sz = std::fs::metadata(root.join(&e.rel)).map_or(0, |m| m.len());
+                            let sz =
+                                nord_core::vfs::metadata(root.join(&e.rel)).map_or(0, |m| m.len());
                             format!("{:?} · {:.1} KB", e.kind, sz as f64 / 1024.0)
                         };
                         p.text(
@@ -486,12 +488,12 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                 ui.horizontal(|ui| {
                     if ui.button("Delete").clicked() {
                         let f = root.join(&p);
-                        let _ = if f.is_dir() {
-                            std::fs::remove_dir_all(&f)
+                        let _ = if f.v_is_dir() {
+                            nord_core::vfs::remove_dir_all(&f)
                         } else {
-                            std::fs::remove_file(&f)
+                            nord_core::vfs::remove_file(&f)
                         };
-                        let _ = std::fs::remove_file(root.join(format!("{p}.meta.json")));
+                        let _ = nord_core::vfs::remove_file(root.join(format!("{p}.meta.json")));
                         st.refresh_assets();
                         st.assets_ui.listed_at = None;
                         st.assets_ui.confirm_delete = None;
@@ -596,7 +598,7 @@ fn draw_thumb(st: &mut EditorState, ui: &mut Ui, root: &Path, e: &Entry, rect: e
                         let cached = root
                             .join(".nord-cache/thumbs")
                             .join(format!("{}.png", a.sha256));
-                        if cached.exists() {
+                        if cached.v_exists() {
                             st.assets_ui.thumbs.insert(e.rel.clone(), Some(cached));
                         } else if !st.assets_ui.pending.contains(&e.rel) {
                             st.assets_ui.pending.insert(e.rel.clone());

@@ -17,7 +17,10 @@ pub fn toggle(st: &mut EditorState) {
     match crate::platform::start_lan(root, engine, 0) {
         Ok(l) => {
             st.lan_log_seen = 0;
-            st.log(LogLevel::Info, format!("Phone preview on port {} (needs the same Wi-Fi)", l.port));
+            st.log(
+                LogLevel::Info,
+                format!("Phone preview on port {} (needs the same Wi-Fi)", l.port),
+            );
             st.lan = Some(l);
             st.lan_open = true;
         }
@@ -29,7 +32,11 @@ pub fn toggle(st: &mut EditorState) {
 pub fn qr_modules(text: &str) -> Option<(usize, Vec<bool>)> {
     let code = qrcode::QrCode::new(text.as_bytes()).ok()?;
     let w = code.width();
-    let dark = code.to_colors().into_iter().map(|c| c == qrcode::Color::Dark).collect();
+    let dark = code
+        .to_colors()
+        .into_iter()
+        .map(|c| c == qrcode::Color::Dark)
+        .collect();
     Some((w, dark))
 }
 
@@ -66,7 +73,7 @@ pub fn window(st: &mut EditorState, ctx: &Context) {
                 let mut shown = url.clone();
                 ui.add(egui::TextEdit::singleline(&mut shown).desired_width(f32::INFINITY));
                 if ui.button("Copy link").clicked() {
-                    ui.ctx().copy_text(url.clone());
+                    crate::platform::copy_text(ui.ctx(), url.clone());
                 }
             }
             None => {
@@ -91,7 +98,8 @@ mod tests {
 
     #[test]
     fn qr_for_a_lan_url_is_a_square_grid() {
-        let (w, d) = qr_modules("http://192.168.1.20:4173/?k=0123456789abcdef0123456789abcdef").unwrap();
+        let (w, d) =
+            qr_modules("http://192.168.1.20:4173/?k=0123456789abcdef0123456789abcdef").unwrap();
         assert!(w >= 29 && d.len() == w * w);
         assert!(d.iter().filter(|x| **x).count() > w, "has dark modules");
     }
