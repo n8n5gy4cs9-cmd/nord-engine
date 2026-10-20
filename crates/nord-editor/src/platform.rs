@@ -29,6 +29,7 @@ pub enum WebEvent {
     /// asset files were staged at these paths — import them into the open project
     ImportFiles(Vec<PathBuf>),
     Error(String),
+    Info(String),
 }
 
 /// Finished browser jobs (always empty on desktop).
@@ -160,15 +161,15 @@ impl Host for LocalHost {
     }
 }
 
-/// Static web build: nothing runs in the background and no processes exist.
+/// Static web build: nothing runs in the background and no processes exist. Only the in-process export runs (inline).
 pub struct NoHost;
 
 impl Host for NoHost {
     fn name(&self) -> &'static str {
         "browser"
     }
-    fn can(&self, _: JobKind) -> bool {
-        false
+    fn can(&self, kind: JobKind) -> bool {
+        kind == JobKind::Export
     }
     fn spawn(&self, job: Box<dyn FnOnce() + Send>) -> bool {
         drop(job);
@@ -191,6 +192,18 @@ pub fn host() -> &'static dyn Host {
 /// Can this build run `kind` jobs? Panels use it to disable buttons with an explanation.
 pub fn can(kind: JobKind) -> bool {
     host().can(kind)
+}
+
+/// Run an export job. Desktop: a worker thread. Browser: inline (there are no threads; the page is busy until it ends).
+pub fn run_export<F: FnOnce() + Send + 'static>(f: F) {
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        std::thread::spawn(f);
+    }
+    #[cfg(target_arch = "wasm32")]
+    {
+        f();
+    }
 }
 
 /// Run `f` on the host. See [`Host::spawn`].

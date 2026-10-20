@@ -1894,7 +1894,7 @@
       "id": "M11-08",
       "milestone": "M11",
       "title": "In-browser export: nord-core/nord-export (validate, copy, zip, single-file) compiled to wasm for static-web mode",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M11-09",

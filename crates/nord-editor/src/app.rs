@@ -124,7 +124,7 @@ impl App {
             match e {
                 crate::platform::WebEvent::OpenProject(p) => self.st.push(Action::OpenPath(p)),
                 crate::platform::WebEvent::ImportFiles(f) => crate::panels::assets::import_files(&mut self.st, &f),
-                crate::platform::WebEvent::Error(m) => self.st.toast(m),
+                crate::platform::WebEvent::Error(m) | crate::platform::WebEvent::Info(m) => self.st.toast(m),
             }
         }
     }

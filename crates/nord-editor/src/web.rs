@@ -21,6 +21,7 @@ extern "C" {
     #[wasm_bindgen(catch)]
     async fn pick_files(accept: &str, multiple: bool) -> Result<JsValue, JsValue>;
     fn download(name: &str, bytes: &[u8]);
+    async fn fetch_bytes(url: &str) -> JsValue;
 }
 
 /// Where new and imported projects live in the browser tree.
@@ -78,6 +79,10 @@ pub fn flush() {
     let mut seen = std::collections::HashSet::new();
     for (p, r) in current {
         seen.insert(p.clone());
+        // the engine copy, scratch and build output are derived data: never persisted
+        if volatile(&p) {
+            continue;
+        }
         if saved.get(&p) != Some(&r) {
             if let Ok(d) = vfs::read(&p) {
                 put(&p, &d);
@@ -312,4 +317,67 @@ pub fn reload_iframe(key: &str) {
             f.set_src(&u);
         }
     }
+}
+
+fn volatile(p: &str) -> bool {
+    p.starts_with("/engine/") || p.starts_with("/tmp/") || p.contains("/dist/") || p.ends_with("/dist.zip")
+}
+
+static ENGINE: std::sync::atomic::AtomicU8 = std::sync::atomic::AtomicU8::new(0); // 0 idle, 1 loading, 2 ready
+
+pub fn engine_ready() -> bool {
+    ENGINE.load(std::sync::atomic::Ordering::Relaxed) == 2
+}
+
+/// Download the engine's runtime + vendored libs (listed in `engine/manifest.json`) into `/engine` of the virtual FS so
+/// `nord_export` can stage them like it does from a checkout. Idempotent; takes a few seconds the first time.
+pub fn load_engine() {
+    use std::sync::atomic::Ordering::Relaxed;
+    if ENGINE.compare_exchange(0, 1, Relaxed, Relaxed).is_err() {
+        return;
+    }
+    wasm_bindgen_futures::spawn_local(async {
+        let list: Vec<String> = match fetch_bytes("engine/manifest.json").await.dyn_into::<Uint8Array>() {
+            Ok(b) => serde_json::from_slice(&b.to_vec()).unwrap_or_default(),
+            Err(_) => vec![],
+        };
+        if list.is_empty() {
+            emit(WebEvent::Error("engine files are not available (engine/manifest.json missing)".into()));
+            ENGINE.store(0, Relaxed);
+            return;
+        }
+        let Some(mem) = MEM.get() else { return };
+        for chunk in list.chunks(8) {
+            let got = futures_join(chunk).await;
+            for (rel, data) in got {
+                if let Some(d) = data {
+                    mem.import(&format!("/engine/{rel}"), d);
+                }
+            }
+        }
+        ENGINE.store(2, Relaxed);
+        emit(WebEvent::Info("Engine files ready — press Export again".into()));
+    });
+}
+
+async fn futures_join(chunk: &[String]) -> Vec<(String, Option<Vec<u8>>)> {
+    // wasm is single-threaded: start every fetch, then await them in order (they run concurrently in the browser)
+    let pending: Vec<_> = chunk.iter().map(|rel| (rel.clone(), fetch_bytes_owned(format!("engine/{rel}")))).collect();
+    let mut out = vec![];
+    for (rel, fut) in pending {
+        out.push((rel, fut.await));
+    }
+    out
+}
+
+async fn fetch_bytes_owned(url: String) -> Option<Vec<u8>> {
+    fetch_bytes(&url).await.dyn_into::<Uint8Array>().ok().map(|b| b.to_vec())
+}
+
+/// Hand a file of the virtual FS to the browser as a download.
+pub fn download_file(path: &Path) -> Result<(), String> {
+    let data = vfs::read(path).map_err(|e| e.to_string())?;
+    let name = path.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_else(|| "export.zip".into());
+    download(&name, &data);
+    Ok(())
 }

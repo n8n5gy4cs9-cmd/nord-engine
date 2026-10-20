@@ -10,8 +10,8 @@ pub mod rust;
 use anyhow::{bail, Context, Result};
 use base64::Engine as _;
 use nord_core::{assets, io, offline, validate, ProjectType};
+use nord_core::vfs::{self as fs, PathExt};
 use std::{
-    fs,
     path::{Path, PathBuf},
     process::Command,
 };
@@ -178,7 +178,7 @@ fn walk(dir: &Path, rel: &str, out: &mut Vec<(PathBuf, String)>, skip: &dyn Fn(&
             continue;
         }
         let p = e.path();
-        if p.is_dir() {
+        if p.v_is_dir() {
             walk(&p, &r, out, skip);
         } else {
             out.push((p, r));
@@ -206,14 +206,14 @@ fn copy_tree(src: &Path, dst: &Path, skip: &dyn Fn(&str) -> bool) -> Result<()> 
 /// Files of a vendored lib to ship: the named ones plus any licence file in the same folder.
 fn copy_lib(engine: &Path, out: &Path, lib: &str, files: &[&str]) -> Result<()> {
     let src = engine.join("vendor").join(lib);
-    if !src.is_dir() {
+    if !src.v_is_dir() {
         bail!(
             "vendor/{lib} missing in {} (run `node tools/vendor.mjs`)",
             engine.display()
         );
     }
     for f in files {
-        if !src.join(f).exists() {
+        if !src.join(f).v_exists() {
             bail!("vendor/{lib}/{f} missing (run `node tools/vendor.mjs`)");
         }
         copy_to(&src.join(f), &out.join("vendor").join(lib).join(f))?;
@@ -264,7 +264,7 @@ fn plan(target: Target, p: &nord_core::Project) -> Plan {
 
 fn run_node(engine: &Path, spec: &serde_json::Value, tmp: &Path) -> Result<()> {
     let script = engine.join("tools/export-bundle.mjs");
-    if !script.exists() || !engine.join("vendor/esbuild-wasm/browser.js").exists() {
+    if !script.v_exists() || !engine.join("vendor/esbuild-wasm/browser.js").v_exists() {
         bail!("minify/single-file need tools/export-bundle.mjs + vendor/esbuild-wasm (run `node tools/vendor.mjs`)");
     }
     let sp = tmp.join("spec.json");
@@ -291,7 +291,7 @@ fn compile_event_sheets(engine: &Path, out: &Path) -> Result<Option<String>> {
         return Ok(None);
     }
     let script = engine.join("tools/compile-sheets.mjs");
-    if !script.exists() {
+    if !script.v_exists() {
         bail!("tools/compile-sheets.mjs not found");
     }
     let o = Command::new("node").arg(&script).arg(out).arg("--annotate").output().context("Node.js not found")?;
@@ -422,7 +422,7 @@ fn optimize(out: &Path) -> Result<Vec<String>> {
             {
                 fs::remove_file(p)?;
                 let sidecar = PathBuf::from(format!("{}.meta.json", p.display()));
-                if sidecar.exists() {
+                if sidecar.v_exists() {
                     fs::rename(&sidecar, format!("{}.meta.json", mp3.display()))?;
                 }
                 renames.push((
@@ -468,8 +468,7 @@ fn optimize(out: &Path) -> Result<Vec<String>> {
 // ---- main entry --------------------------------------------------------------------------------------------------
 
 pub fn build(project: &Path, engine: &Path, o: &Opts) -> Result<Report> {
-    let project = project
-        .canonicalize()
+    let project = fs::canonicalize(project)
         .with_context(|| format!("project {}", project.display()))?;
     let issues = validate::validate_project(&project);
     if !issues.is_empty() {
@@ -529,12 +528,12 @@ pub fn build(project: &Path, engine: &Path, o: &Opts) -> Result<Report> {
     // output dir: refuse to wipe anything that is not an earlier build
     let out = o.out.clone().unwrap_or_else(|| project.join("dist"));
     fs::create_dir_all(&out)?;
-    let out = out.canonicalize()?;
+    let out = fs::canonicalize(&out)?;
     if out == project || project.starts_with(&out) {
         bail!("output folder {} would contain the project", out.display());
     }
     if fs::read_dir(&out)?.next().is_some() {
-        if !out.join("nord.json").exists() && !out.join("index.html").exists() {
+        if !out.join("nord.json").v_exists() && !out.join("index.html").v_exists() {
             bail!(
                 "{} is not empty and does not look like a Nord build; pick another --out",
                 out.display()
@@ -546,7 +545,7 @@ pub fn build(project: &Path, engine: &Path, o: &Opts) -> Result<Report> {
     if matches!(target, Target::WasmGame | Target::WasmApp) {
         return build_rust(&project, engine, &out, &proj, target, o);
     }
-    let tmp = std::env::temp_dir().join(format!("nord-build-{}", std::process::id()));
+    let tmp = fs::temp_dir().join(format!("nord-build-{}", fs::unique_tag()));
     fs::create_dir_all(&tmp)?;
     let mut notes = vec![];
 
@@ -680,7 +679,7 @@ pub fn build(project: &Path, engine: &Path, o: &Opts) -> Result<Report> {
     }
 
     // 5a. event sheets → JavaScript (ahead of time); the runtime falls back to interpreting when a module is missing
-    if o.compile_events && !o.single_file && out.join("runtime/core/eventsheet/expr.js").exists() {
+    if o.compile_events && !o.single_file && out.join("runtime/core/eventsheet/expr.js").v_exists() {
         match compile_event_sheets(engine, &out) {
             Ok(Some(msg)) => notes.push(msg),
             Ok(None) => {}
@@ -746,7 +745,7 @@ fn build_rust(
     match target {
         Target::WasmGame => {
             let bundle = engine.join("vendor/macroquad/mq_js_bundle.js");
-            if !bundle.exists() {
+            if !bundle.v_exists() {
                 bail!("vendor/macroquad/mq_js_bundle.js missing (run `node tools/vendor.mjs --crates`)");
             }
             copy_to(&bundle, &out.join("mq_js_bundle.js"))?;
@@ -840,7 +839,7 @@ fn pwa_icon(project: &Path, engine: &Path, proj: &nord_core::Project) -> Option<
     [configured, Some(project.join("icon.png")), Some(engine.join("assets/brand/logo-512.png"))]
         .into_iter()
         .flatten()
-        .find(|p| p.is_file())
+        .find(|p| p.v_is_file())
 }
 
 /// `manifest.webmanifest`, `sw.js` and the tags in index.html that make the build installable and playable offline.
@@ -931,14 +930,14 @@ fn write_manifest(out: &Path, p: &nord_core::Project, target: Target, pl: &Plan)
 fn write_zip(out: &Path, files: &[(PathBuf, String)]) -> Result<PathBuf> {
     use std::io::Write;
     let zp = out.with_extension("zip");
-    let mut z = zip::ZipWriter::new(fs::File::create(&zp)?);
+    let mut z = zip::ZipWriter::new(std::io::Cursor::new(Vec::new()));
     let opt = zip::write::SimpleFileOptions::default()
         .compression_method(zip::CompressionMethod::Deflated);
     for (p, r) in files {
         z.start_file(r.as_str(), opt)?;
         z.write_all(&fs::read(p)?)?;
     }
-    z.finish()?;
+    fs::write(&zp, z.finish()?.into_inner())?;
     Ok(zp)
 }
 
@@ -1033,7 +1032,7 @@ fn single_file(
     copy_tree(&out.join("vendor/fonts"), &fonts, &|_| false)?;
     for e in fs::read_dir(out)?.flatten() {
         let p = e.path();
-        if p.is_dir() {
+        if p.v_is_dir() {
             fs::remove_dir_all(p)?;
         } else {
             fs::remove_file(p)?;
@@ -1083,9 +1082,9 @@ mod tests {
             "runtime/phaser/index.js",
             "vendor/phaser/phaser-arcade-physics.min.js",
         ] {
-            assert!(out.join(f).exists(), "{f}");
+            assert!(out.join(f).v_exists(), "{f}");
         }
-        assert!(r.zip.as_ref().unwrap().exists());
+        assert!(r.zip.as_ref().unwrap().v_exists());
         // rebuild over an earlier build is fine; over a foreign folder it is not
         build(
             &proj,
@@ -1109,7 +1108,7 @@ mod tests {
         )
         .unwrap_err();
         assert!(e.to_string().contains("not empty"), "{e}");
-        assert!(foreign.join("keep.txt").exists());
+        assert!(foreign.join("keep.txt").v_exists());
         // the project itself is never a valid output
         assert!(build(
             &proj,
@@ -1138,7 +1137,7 @@ mod tests {
         )
         .unwrap();
         assert_eq!(r.target, Target::Html);
-        assert!(out.join("index.html").exists() && !out.join("runtime").exists());
+        assert!(out.join("index.html").v_exists() && !out.join("runtime").v_exists());
         let w = d.join("w");
         nord_core::project::create(&w, ProjectType::WasmGame).unwrap();
         let e = build(
@@ -1164,7 +1163,7 @@ mod tests {
         let m: serde_json::Value = serde_json::from_slice(&fs::read(out.join("manifest.webmanifest")).unwrap()).unwrap();
         assert_eq!(m["display"], "fullscreen");
         assert_eq!(m["start_url"], "./");
-        assert!(out.join(m["icons"][0]["src"].as_str().unwrap()).is_file());
+        assert!(out.join(m["icons"][0]["src"].as_str().unwrap()).v_is_file());
         let sw = fs::read_to_string(out.join("sw.js")).unwrap();
         assert!(sw.contains("\"runtime/phaser/index.js\"") && sw.contains("manifest.webmanifest") && !sw.contains("\"sw.js\""));
         let html = fs::read_to_string(out.join("index.html")).unwrap();

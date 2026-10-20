@@ -70,6 +70,26 @@ try {
     check('game canvas exists', !!px && px[0] > 0, JSON.stringify(px));
   }
   await page.screenshot({ path: path.join(ROOT, 'dist/web-editor-play.png') });
+  // Stop, then export from the browser: Export… (toolbar) -> Export button; the first press loads the engine files
+  await page.mouse.move(231, 52); await page.waitForTimeout(200); await page.mouse.click(231, 52); // Stop
+  await page.waitForTimeout(800);
+  await page.mouse.move(48, 88); await page.waitForTimeout(200); await page.mouse.click(48, 88); // Export…
+  await page.waitForTimeout(1000);
+  const press = async () => { await page.mouse.move(63, 496); await page.waitForTimeout(200); await page.mouse.click(63, 496); };
+  await press(); // loads the engine files
+  await page.waitForTimeout(8000);
+  const dl = page.waitForEvent('download', { timeout: 40000 }).catch(() => null);
+  await press(); // exports (inline) and downloads the zip
+  const d = await dl;
+  check('export downloads a zip', !!d, d?.suggestedFilename());
+  if (d) {
+    const f = path.join(ROOT, 'dist/web-editor-export.zip');
+    await d.saveAs(f);
+    const size = fs.statSync(f).size;
+    check('exported zip is not empty', size > 1000, `${size} bytes`);
+  }
+  await page.screenshot({ path: path.join(ROOT, 'dist/web-editor-export.png') });
+
 } catch (e) { console.log('FAIL  exception', e.message); ok = false; }
 if (errors.length) console.log('console errors:\n  ' + [...new Set(errors)].slice(0, 10).join('\n  '));
 await browser.close(); srv.close();

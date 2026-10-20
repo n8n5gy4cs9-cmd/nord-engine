@@ -54,23 +54,31 @@ pub fn start(st: &mut EditorState) {
         st.toast("Export is not available in the browser editor yet");
         return;
     }
-    let (Some(root), Some(engine)) = (st.root.clone(), crate::platform::engine_root()) else {
+    #[cfg(target_arch = "wasm32")]
+    if !crate::web::engine_ready() {
+        crate::web::load_engine();
+        st.export_ui.status = "Loading engine files… press Export again in a moment".into();
+        return;
+    }
+    let (Some(root), Some(engine)) = (st.root.clone(), crate::platform::engine_root().or_else(crate::platform::web_engine_root)) else {
         st.export_ui.status = "No project open or engine folder not found (set NORD_ROOT)".into();
         return;
     };
     let e = &st.export_ui;
+    // browser: no node/ffmpeg, so no minify / single-file / event-sheet compile / optimise; the result is always a zip
+    let web = cfg!(target_arch = "wasm32");
     let opts = Opts {
         target: e.target,
         out: (!e.out.trim().is_empty()).then(|| PathBuf::from(e.out.trim())),
-        minify: e.minify,
-        single_file: e.single_file,
-        optimize: e.optimize,
-        zip: e.zip,
+        minify: e.minify && !web,
+        single_file: e.single_file && !web,
+        optimize: e.optimize && !web,
+        zip: e.zip || web,
         pwa: e.pwa,
-        compile_events: e.compile_events,
+        compile_events: e.compile_events && !web,
     };
     let (tx, rx) = channel();
-    crate::platform::spawn(move || {
+    crate::platform::run_export(move || {
         let r = nord_export::build(&root, &engine, &opts)
             .map(|r| (r.summary(), r.out))
             .map_err(|e| format!("{e:#}"));
@@ -96,6 +104,10 @@ pub fn window(st: &mut EditorState, ctx: &egui::Context) {
                         st.log(LogLevel::Build, l.to_string());
                     }
                     st.export_ui.status = format!("Done → {}", out.display());
+                    #[cfg(target_arch = "wasm32")]
+                    if let Err(e) = crate::web::download_file(&out.with_extension("zip")) {
+                        st.log(LogLevel::Error, format!("Download failed: {e}"));
+                    }
                     st.export_ui.last_out = Some(out);
                 }
                 Err(e) => {

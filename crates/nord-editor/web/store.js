@@ -54,3 +54,13 @@ export function download(name, bytes) {
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 10000);
 }
+
+/** GET a same-origin file; Uint8Array or null. */
+export async function fetch_bytes(url) {
+  try {
+    const r = await fetch(url);
+    return r.ok ? new Uint8Array(await r.arrayBuffer()) : null;
+  } catch {
+    return null;
+  }
+}

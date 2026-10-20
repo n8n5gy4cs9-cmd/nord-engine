@@ -446,6 +446,33 @@ pub fn is_file(p: impl AsRef<Path>) -> bool {
     backend().stat(p.as_ref()).is_ok_and(|m| m.is_file())
 }
 
+/// Scratch folder root (`/tmp` of the virtual FS in the browser, where `std::env::temp_dir` panics).
+pub fn temp_dir() -> PathBuf {
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        std::env::temp_dir()
+    }
+    #[cfg(target_arch = "wasm32")]
+    {
+        PathBuf::from("/tmp")
+    }
+}
+
+/// Short id for scratch folder names (process id on desktop; the browser has no processes, so a clock reading).
+pub fn unique_tag() -> String {
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        std::process::id().to_string()
+    }
+    #[cfg(target_arch = "wasm32")]
+    {
+        web_time::SystemTime::now()
+            .duration_since(web_time::UNIX_EPOCH)
+            .map_or(0, |d| d.as_millis())
+            .to_string()
+    }
+}
+
 /// `Path::exists/is_dir/is_file` through the active backend (the std ones always hit the real disk).
 pub trait PathExt {
     fn v_exists(&self) -> bool;
