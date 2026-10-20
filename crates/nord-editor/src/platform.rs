@@ -30,6 +30,8 @@ pub enum WebEvent {
     ImportFiles(Vec<PathBuf>),
     Error(String),
     Info(String),
+    /// a line for the Console panel (server job output)
+    Log(String),
 }
 
 /// Finished browser jobs (always empty on desktop).

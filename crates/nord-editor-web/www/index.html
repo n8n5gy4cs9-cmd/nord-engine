@@ -19,6 +19,22 @@ if ('serviceWorker' in navigator) {
     if (!navigator.serviceWorker.controller) await Promise.race([new Promise((r) => navigator.serviceWorker.addEventListener('controllerchange', r, { once: true })), new Promise((r) => setTimeout(r, 3000))]);
   } catch { /* no service worker (private mode, http): the editor still works, Play does not */ }
 }
+// server mode (nord-editor-server): log in before the editor starts
+try {
+  const ping = await fetch('api/ping').then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  if (ping && ping.server && !ping.authed) {
+    for (let tries = 0; tries < 5; tries++) {
+      const body = ping.auth === 'users'
+        ? { user: prompt('Nord editor — user name'), password: prompt('Password') }
+        : { token: prompt('Nord editor — login token (printed when the server started)') };
+      if (!body.token && !body.user) throw new Error('login cancelled');
+      const r = await fetch('api/login', { method: 'POST', headers: { 'x-nord': '1', 'content-type': 'application/json' }, body: JSON.stringify(body) });
+      if (r.ok) break;
+      if (tries === 4) throw new Error('login failed');
+      alert('Wrong credentials, try again.');
+    }
+  }
+} catch (e) { msg.textContent = 'Nord Engine could not start: ' + e; throw e; }
 try {
   await init();
   await start('nord');

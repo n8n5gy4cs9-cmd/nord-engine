@@ -1906,7 +1906,7 @@
       "id": "M11-10",
       "milestone": "M11",
       "title": "RemoteFs + ServerHost (client side of the project API/jobs) so the same wasm editor edits server projects; reconnect + conflict handling (single writer lock)",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M11-11",

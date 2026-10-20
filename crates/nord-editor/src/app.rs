@@ -125,6 +125,7 @@ impl App {
                 crate::platform::WebEvent::OpenProject(p) => self.st.push(Action::OpenPath(p)),
                 crate::platform::WebEvent::ImportFiles(f) => crate::panels::assets::import_files(&mut self.st, &f),
                 crate::platform::WebEvent::Error(m) | crate::platform::WebEvent::Info(m) => self.st.toast(m),
+                crate::platform::WebEvent::Log(m) => self.st.log(LogLevel::Build, m),
             }
         }
     }
@@ -408,6 +409,13 @@ impl App {
                 }
             }
             Action::OpenPath(d) => {
+                // server mode: the project's files must be downloaded first (async); it re-enters here when they are in place
+                #[cfg(target_arch = "wasm32")]
+                if crate::web::server_mode() && !crate::web::is_pulled(&d) && d.starts_with(crate::web::PROJECTS_DIR) {
+                    crate::web::pull_project(&d);
+                    st.toast("Opening from the server…");
+                    return;
+                }
                 self.web = WebPanes::default();
                 st.play = None;
                 match st.open_project(&d) {

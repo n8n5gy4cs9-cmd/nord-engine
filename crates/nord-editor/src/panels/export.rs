@@ -54,6 +54,20 @@ pub fn start(st: &mut EditorState) {
         st.toast("Export is not available in the browser editor yet");
         return;
     }
+    // server mode: the server runs the full pipeline (minify, single file, optimise, event-sheet compile), then we download the zip
+    #[cfg(target_arch = "wasm32")]
+    if crate::web::server_mode() {
+        if let Some(root) = st.root.clone() {
+            let e = &st.export_ui;
+            let opts = serde_json::json!({
+                "target": (e.target != Target::Auto).then(|| e.target.as_str()),
+                "minify": e.minify, "single_file": e.single_file, "optimize": e.optimize, "pwa": e.pwa, "no_compile_events": !e.compile_events,
+            });
+            crate::web::server_export(&root, opts.to_string());
+            st.export_ui.status = "Exporting on the server… (progress in the Console)".into();
+        }
+        return;
+    }
     #[cfg(target_arch = "wasm32")]
     if !crate::web::engine_ready() {
         crate::web::load_engine();

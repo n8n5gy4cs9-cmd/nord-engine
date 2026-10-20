@@ -64,3 +64,45 @@ export async function fetch_bytes(url) {
     return null;
   }
 }
+
+// ---- server mode (M11-10): same origin as `nord-editor-server`; cookie session, x-nord header on every call ----
+
+/** `{server, auth, authed, user}` from the server, or null when this page is not served by nord-editor-server. */
+export async function server_ping() {
+  try {
+    const r = await fetch('api/ping');
+    if (!r.ok) return null;
+    const j = await r.json();
+    return j && j.server ? JSON.stringify(j) : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Resolves to the HTTP status; body (Uint8Array or string) is optional. */
+export async function srv_send(method, path, body) {
+  try {
+    const r = await fetch(path, { method, headers: { 'x-nord': '1', 'content-type': 'application/octet-stream' }, body: body ?? undefined, credentials: 'same-origin' });
+    return r.status;
+  } catch {
+    return 0;
+  }
+}
+
+/** Like srv_send but returns [status, Uint8Array]. */
+export async function srv_get(path, method = 'GET', body) {
+  try {
+    const r = await fetch(path, { method, headers: { 'x-nord': '1', 'content-type': 'application/json' }, body: body ?? undefined, credentials: 'same-origin' });
+    return [r.status, new Uint8Array(await r.arrayBuffer())];
+  } catch {
+    return [0, new Uint8Array()];
+  }
+}
+
+/** Offer a same-origin URL to the browser as a download (the session cookie authorises it). */
+export function download_url(url) {
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = '';
+  a.click();
+}
