@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 231/243 tasks (95%)** · updated 2026-10-20
+**Overall: 243/256 tasks (95%)** · updated 2026-10-20
 
 | Milestone | Progress |
 |---|---|
@@ -19,13 +19,14 @@
 | M9 Desktop apps | 16/16 (100%) |
 | M10 Construct-style editor | 35/35 (100%) |
 | M11 Web editor | 14/16 (88%) |
+| M12 FPS Creator addon | 12/13 (92%) |
 
 ## Next up
+- **M12-13** OWNER: verify the FPS Level tab + play-test on macOS/Windows with a real GPU (pointer lock in the embedded webview, performance, feel of movement/combat); decide on gamepad/touch controls and shadowed dynamic lights
 - **M3-07** SPIKE: wry child webview embedded in egui panel on macOS (resize, HiDPI, focus, IPC both ways); fallback separate window
 - **M3-25** OWNER: verify webview embedding on macOS (checklist in docs/KNOWN_ISSUES.md RISK-001a), then tick M3-07
 - **M4-08** nord-player crate (Tauri shell) + `bundle-mac` command (resource swap, Info.plist, icns, ad-hoc codesign)
 - **M4-09** CI builds NordPlayer.app + NordEditor.app on macos-14, uploads artifacts
-- **M4-11** Texture atlas packing + lossy PNG quantise in nord build --optimize
 
 ## M0 — Planning, identity, assets, vendoring
 _Plans, brand, placeholder assets, vendored libs, workspace skeleton_
@@ -317,6 +318,23 @@ _the editor in a browser and on a Linux server (wasm egui + server mode); plan d
 - [x] **M11-14** CI: build wasm editor + server, Playwright e2e (new project -> edit -> save -> reload; play; export from browser; server path-traversal tests)
 - [x] **M11-15** Docs: manual chapter 'Run the editor in a browser / on a server' with screenshots, KNOWN_ISSUES entries (browser limits, unverified Safari/Windows), HOSTING/EXPORT docs cross-links
 - [ ] **M11-16** OWNER: verify web editor on macOS Safari/Chrome, Windows Edge, Firefox; decide auth model and Rust-tier-on-server policy (docs/WEB_EDITOR_PLAN.md §7)
+
+## M12 — FPS Creator addon
+_a full first-person level editor + runtime modelled on the classic FPS Creator workflow (grid walls/doors/windows, ready-made enemies/lights/pickups, attachable scripts, no-code rules, assets rules); additive, spec docs/FPS_CREATOR.md_
+
+- [x] **M12-01** Level model + bank (35 procedural textures, 25 wall pieces, stairs/ramps/pillars) + collision, rays and A* world (node-tested)
+- [x] **M12-02** Renderer: geometry batching, baked vertex lighting with ray occlusion, dynamic lights, sky/fog/ground, animated doors
+- [x] **M12-03** Player controller, 6 weapons, view models, HUD + minimap, WebAudio synth sounds, particles/decals
+- [x] **M12-04** Entity system + AI: 11 enemies (shooter/melee/turret/sniper/drone/mech/boss), pickups, keys, doors, switches, triggers, lights, props
+- [x] **M12-05** Scripts: contract + 27 built-in scripts + no-code rules (when/do/target) + custom scripts via bank.json
+- [x] **M12-06** Level editor page: 2D map, 11 tools, Build/Items/Scripts/Level palettes, inspector, undo/redo, copy/paste, layers, files
+- [x] **M12-07** Live 3D preview, F5 play-test of unsaved level, problems checker, in-editor help
+- [x] **M12-08** Assets tab + bank.json rules: textures, sprite and glb entities, sounds, scripts, extends
+- [x] **M12-09** Rust glue: nord-core::fpsc (install + jail), /api/fpsc/*, nord fpsc init, egui FPS Level tab + menu/palette entries
+- [x] **M12-10** Template + example FPS Creator with the demo level Outpost Zero (generator tools/gen_fpsc_level.mjs)
+- [x] **M12-11** Tests: runtime/fpsc/fpsc.test.mjs + tools/fpsc-test.mjs (api/nord/game/editor) + Rust tests + CI step
+- [x] **M12-12** Docs: FPS_CREATOR.md, manual chapter 28 + tutorial T27, ADR-026, changelog, known issues, third-party/licence note, editor tour
+- [ ] **M12-13** OWNER: verify the FPS Level tab + play-test on macOS/Windows with a real GPU (pointer lock in the embedded webview, performance, feel of movement/combat); decide on gamepad/touch controls and shadowed dynamic lights
 
 ## Features (PRD)
 

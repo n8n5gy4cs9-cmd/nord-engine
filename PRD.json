@@ -89,6 +89,11 @@
       "id": "M11",
       "name": "Web editor",
       "goal": "the editor in a browser and on a Linux server (wasm egui + server mode); plan docs/WEB_EDITOR_PLAN.md"
+    },
+    {
+      "id": "M12",
+      "name": "FPS Creator addon",
+      "goal": "a full first-person level editor + runtime modelled on the classic FPS Creator workflow (grid walls/doors/windows, ready-made enemies/lights/pickups, attachable scripts, no-code rules, assets rules); additive, spec docs/FPS_CREATOR.md"
     }
   ],
   "features": [
@@ -486,6 +491,84 @@
     }
   ],
   "tasks": [
+    {
+      "id": "M12-01",
+      "milestone": "M12",
+      "title": "Level model + bank (35 procedural textures, 25 wall pieces, stairs/ramps/pillars) + collision, rays and A* world (node-tested)",
+      "status": "done"
+    },
+    {
+      "id": "M12-02",
+      "milestone": "M12",
+      "title": "Renderer: geometry batching, baked vertex lighting with ray occlusion, dynamic lights, sky/fog/ground, animated doors",
+      "status": "done"
+    },
+    {
+      "id": "M12-03",
+      "milestone": "M12",
+      "title": "Player controller, 6 weapons, view models, HUD + minimap, WebAudio synth sounds, particles/decals",
+      "status": "done"
+    },
+    {
+      "id": "M12-04",
+      "milestone": "M12",
+      "title": "Entity system + AI: 11 enemies (shooter/melee/turret/sniper/drone/mech/boss), pickups, keys, doors, switches, triggers, lights, props",
+      "status": "done"
+    },
+    {
+      "id": "M12-05",
+      "milestone": "M12",
+      "title": "Scripts: contract + 27 built-in scripts + no-code rules (when/do/target) + custom scripts via bank.json",
+      "status": "done"
+    },
+    {
+      "id": "M12-06",
+      "milestone": "M12",
+      "title": "Level editor page: 2D map, 11 tools, Build/Items/Scripts/Level palettes, inspector, undo/redo, copy/paste, layers, files",
+      "status": "done"
+    },
+    {
+      "id": "M12-07",
+      "milestone": "M12",
+      "title": "Live 3D preview, F5 play-test of unsaved level, problems checker, in-editor help",
+      "status": "done"
+    },
+    {
+      "id": "M12-08",
+      "milestone": "M12",
+      "title": "Assets tab + bank.json rules: textures, sprite and glb entities, sounds, scripts, extends",
+      "status": "done"
+    },
+    {
+      "id": "M12-09",
+      "milestone": "M12",
+      "title": "Rust glue: nord-core::fpsc (install + jail), /api/fpsc/*, nord fpsc init, egui FPS Level tab + menu/palette entries",
+      "status": "done"
+    },
+    {
+      "id": "M12-10",
+      "milestone": "M12",
+      "title": "Template + example FPS Creator with the demo level Outpost Zero (generator tools/gen_fpsc_level.mjs)",
+      "status": "done"
+    },
+    {
+      "id": "M12-11",
+      "milestone": "M12",
+      "title": "Tests: runtime/fpsc/fpsc.test.mjs + tools/fpsc-test.mjs (api/nord/game/editor) + Rust tests + CI step",
+      "status": "done"
+    },
+    {
+      "id": "M12-12",
+      "milestone": "M12",
+      "title": "Docs: FPS_CREATOR.md, manual chapter 28 + tutorial T27, ADR-026, changelog, known issues, third-party/licence note, editor tour",
+      "status": "done"
+    },
+    {
+      "id": "M12-13",
+      "milestone": "M12",
+      "title": "OWNER: verify the FPS Level tab + play-test on macOS/Windows with a real GPU (pointer lock in the embedded webview, performance, feel of movement/combat); decide on gamepad/touch controls and shadowed dynamic lights",
+      "status": "todo"
+    },
     {
       "id": "M9-01",
       "milestone": "M9",

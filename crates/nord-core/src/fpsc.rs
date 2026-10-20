@@ -10,7 +10,8 @@ use std::path::{Component, Path, PathBuf};
 pub const ALLOWED_DIRS: [&str; 2] = ["levels", "fpsc"];
 /// File extensions the editor may write.
 const ALLOWED_EXT: [&str; 17] = [
-    "json", "js", "md", "txt", "png", "jpg", "jpeg", "webp", "gif", "glb", "gltf", "bin", "wav", "ogg", "mp3", "m4a", "flac",
+    "json", "js", "md", "txt", "png", "jpg", "jpeg", "webp", "gif", "glb", "gltf", "bin", "wav",
+    "ogg", "mp3", "m4a", "flac",
 ];
 /// Largest single upload.
 pub const MAX_BYTES: usize = 64 << 20;
@@ -22,7 +23,12 @@ fn err(msg: impl Into<String>) -> Error {
 /// Validate a project-relative path from the editor: inside `levels/` or `fpsc/`, no `..`, no hidden parts, known extension.
 pub fn safe_path(project: &Path, rel: &str) -> Result<PathBuf> {
     let p = Path::new(rel);
-    if rel.is_empty() || rel.len() > 200 || rel.contains('\\') || rel.contains('\0') || p.is_absolute() {
+    if rel.is_empty()
+        || rel.len() > 200
+        || rel.contains('\\')
+        || rel.contains('\0')
+        || p.is_absolute()
+    {
         return Err(err(format!("bad path: {rel}")));
     }
     let mut parts = vec![];
@@ -39,9 +45,16 @@ pub fn safe_path(project: &Path, rel: &str) -> Result<PathBuf> {
         }
     }
     if parts.len() < 2 || !ALLOWED_DIRS.contains(&parts[0].as_str()) {
-        return Err(err(format!("only {} may be written", ALLOWED_DIRS.join(" and "))));
+        return Err(err(format!(
+            "only {} may be written",
+            ALLOWED_DIRS.join(" and ")
+        )));
     }
-    let ext = p.extension().and_then(|e| e.to_str()).unwrap_or("").to_ascii_lowercase();
+    let ext = p
+        .extension()
+        .and_then(|e| e.to_str())
+        .unwrap_or("")
+        .to_ascii_lowercase();
     if !ALLOWED_EXT.contains(&ext.as_str()) {
         return Err(err(format!("file type .{ext} is not allowed")));
     }
@@ -65,7 +78,11 @@ pub fn ls(project: &Path, dir: &str) -> Result<Vec<Value>> {
             continue;
         }
         let Ok(md) = e.metadata() else { continue };
-        let mtime = md.modified().ok().and_then(|t| t.duration_since(std::time::UNIX_EPOCH).ok()).map_or(0, |d| d.as_secs());
+        let mtime = md
+            .modified()
+            .ok()
+            .and_then(|t| t.duration_since(std::time::UNIX_EPOCH).ok())
+            .map_or(0, |d| d.as_secs());
         out.push(json!({ "name": name, "size": md.len(), "mtime": mtime, "dir": md.is_dir() }));
     }
     out.sort_by(|a, b| a["name"].as_str().cmp(&b["name"].as_str()));
@@ -83,7 +100,10 @@ pub fn save(project: &Path, rel: &str, bytes: &[u8]) -> Result<()> {
 
 fn copy_tree(from: &Path, to: &Path, files: &mut Vec<String>, root: &Path) -> Result<()> {
     std::fs::create_dir_all(to).map_err(|e| err(format!("{}: {e}", to.display())))?;
-    let mut ents: Vec<_> = std::fs::read_dir(from).map_err(|e| err(format!("{}: {e}", from.display())))?.flatten().collect();
+    let mut ents: Vec<_> = std::fs::read_dir(from)
+        .map_err(|e| err(format!("{}: {e}", from.display())))?
+        .flatten()
+        .collect();
     ents.sort_by_key(|e| e.file_name());
     for e in ents {
         let name = e.file_name().to_string_lossy().into_owned();
@@ -97,7 +117,12 @@ fn copy_tree(from: &Path, to: &Path, files: &mut Vec<String>, root: &Path) -> Re
             let bytes = std::fs::read(&src).map_err(|e| err(format!("{}: {e}", src.display())))?;
             if std::fs::read(&dst).ok().as_deref() != Some(&bytes) {
                 io::write_atomic(&dst, &bytes)?;
-                files.push(dst.strip_prefix(root).unwrap_or(&dst).to_string_lossy().replace('\\', "/"));
+                files.push(
+                    dst.strip_prefix(root)
+                        .unwrap_or(&dst)
+                        .to_string_lossy()
+                        .replace('\\', "/"),
+                );
             }
         }
     }
@@ -109,7 +134,10 @@ fn copy_tree(from: &Path, to: &Path, files: &mut Vec<String>, root: &Path) -> Re
 pub fn install(engine: &Path, project: &Path, set_start: bool) -> Result<Value> {
     let src = engine.join("runtime/fpsc");
     if !src.join("index.js").exists() {
-        return Err(err(format!("engine runtime/fpsc not found under {}", engine.display())));
+        return Err(err(format!(
+            "engine runtime/fpsc not found under {}",
+            engine.display()
+        )));
     }
     let mut updated = vec![];
     copy_tree(&src, &project.join("scripts/fpsc"), &mut updated, project)?;
@@ -122,7 +150,10 @@ pub fn install(engine: &Path, project: &Path, set_start: bool) -> Result<Value> 
         }
         Ok(())
     };
-    make("fpsc/bank.json", "{\n  \"textures\": [],\n  \"entities\": [],\n  \"sounds\": {},\n  \"scripts\": []\n}\n")?;
+    make(
+        "fpsc/bank.json",
+        "{\n  \"textures\": [],\n  \"entities\": [],\n  \"sounds\": {},\n  \"scripts\": []\n}\n",
+    )?;
     make("fpsc/README.md", README)?;
     let tpl = engine.join("templates/fps-creator/levels/level1.fpsl.json");
     let level_text = std::fs::read_to_string(&tpl).unwrap_or_else(|_| STARTER_LEVEL.to_string());
@@ -137,14 +168,19 @@ pub fn install(engine: &Path, project: &Path, set_start: bool) -> Result<Value> 
             }
             if set_start && v["startScene"] != scene {
                 v["startScene"] = json!(scene);
-                io::write_atomic(&project.join("nord.project.json"), io::to_json(&v).as_bytes())?;
+                io::write_atomic(
+                    &project.join("nord.project.json"),
+                    io::to_json(&v).as_bytes(),
+                )?;
                 created.push("nord.project.json (startScene → scenes/fps.scene.json)".to_string());
             }
         }
     } else {
         warnings.push("nord.project.json not found — run this inside a Nord project".to_string());
     }
-    Ok(json!({ "updated": updated, "created": created, "level": "levels/level1.fpsl.json", "scene": scene, "warnings": warnings }))
+    Ok(
+        json!({ "updated": updated, "created": created, "level": "levels/level1.fpsl.json", "scene": scene, "warnings": warnings }),
+    )
 }
 
 /// A scene holding one entity that runs the level script.
@@ -175,7 +211,19 @@ mod tests {
         let p = Path::new("/proj");
         assert!(safe_path(p, "levels/a.fpsl.json").is_ok());
         assert!(safe_path(p, "fpsc/textures/x.png").is_ok());
-        for bad in ["", "../x.json", "levels/../../x.json", "/etc/passwd", "levels", "scripts/a.js", "nord.project.json", "levels/.hidden.json", "levels/a.exe", "levels\\a.json", "fpsc/a.sh"] {
+        for bad in [
+            "",
+            "../x.json",
+            "levels/../../x.json",
+            "/etc/passwd",
+            "levels",
+            "scripts/a.js",
+            "nord.project.json",
+            "levels/.hidden.json",
+            "levels/a.exe",
+            "levels\\a.json",
+            "fpsc/a.sh",
+        ] {
             assert!(safe_path(p, bad).is_err(), "{bad}");
         }
     }

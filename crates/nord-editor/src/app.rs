@@ -31,6 +31,7 @@ pub enum Tab {
     Console,
     Library,
     Docs,
+    Fps,
 }
 
 impl Tab {
@@ -53,6 +54,7 @@ impl Tab {
             Tab::Console => "Console",
             Tab::Library => "Library",
             Tab::Docs => "Docs",
+            Tab::Fps => "FPS Level",
         }
     }
 }
@@ -64,6 +66,7 @@ pub fn default_dock() -> DockState<Tab> {
         Tab::Code,
         Tab::Events,
         Tab::Layout,
+        Tab::Fps,
         Tab::Animation,
         Tab::Sprite,
         Tab::Particles,
@@ -425,6 +428,8 @@ impl App {
                         st.viewport_ready = false;
                         if st.recover.is_some() {
                             st.toast("Unsaved autosave found — see Edit ▸ Recover autosave");
+                        } else if panels::fps::installed(&d) {
+                            self.show_tab(Tab::Fps); // FPS Creator projects open on the level editor
                         }
                     }
                     Err(e) => {
@@ -500,6 +505,33 @@ impl App {
             }
             Action::Export => st.export_ui.open = true,
             Action::DesktopSettings => st.desktop_ui.open = true,
+            Action::FpsInstall => {
+                #[cfg(not(target_arch = "wasm32"))]
+                {
+                    let (Some(root), Some(engine)) = (st.root.clone(), st.engine_root.clone()) else {
+                        st.toast("Open a project first");
+                        return;
+                    };
+                    match nord_core::fpsc::install(&engine, &root, false) {
+                        Ok(r) => {
+                            let n = r["updated"].as_array().map_or(0, Vec::len);
+                            for w in r["warnings"].as_array().into_iter().flatten() {
+                                st.log(LogLevel::Warn, w.as_str().unwrap_or_default().to_string());
+                            }
+                            st.log(LogLevel::Build, format!("FPS Creator: {n} runtime file(s) updated in scripts/fpsc"));
+                            st.toast("FPS Creator installed — use the FPS Level tab");
+                            self.web = WebPanes::default();
+                            self.show_tab(Tab::Fps);
+                        }
+                        Err(e) => {
+                            st.log(LogLevel::Error, format!("FPS Creator install failed: {e}"));
+                            st.toast(format!("FPS Creator install failed: {e}"));
+                        }
+                    }
+                }
+                #[cfg(target_arch = "wasm32")]
+                st.toast("Run `nord fpsc init` in the project on the server");
+            }
             Action::About => st.about_open = true,
             Action::OpenFile(p, line) => {
                 let root = st.root.clone();
@@ -609,6 +641,7 @@ impl App {
                     Tab::Timeline,
                     Tab::Events,
                     Tab::Layout,
+                    Tab::Fps,
                     Tab::History,
                     Tab::Project,
                     Tab::Hierarchy,
@@ -639,6 +672,7 @@ impl App {
                 }
                 act(ui, "Export…", Action::Export, st);
                 act(ui, "Desktop app permissions…", Action::DesktopSettings, st);
+                act(ui, "Add / upgrade FPS Creator…", Action::FpsInstall, st);
             });
             ui.menu_button("Help", |ui| {
                 act(ui, "Documentation", Action::ShowTab(Tab::Docs), st);
@@ -827,6 +861,7 @@ impl TabViewer for Viewer<'_> {
             Tab::Timeline => panels::timeline::ui(st, ui),
             Tab::Events => panels::events::ui(st, ui),
             Tab::Layout => panels::layout::ui(st, ui),
+            Tab::Fps => panels::fps::ui(st, ui, self.web, self.frame, self.overlay),
             Tab::History => panels::history::ui(st, ui),
             Tab::Project => panels::project::ui(st, ui),
             Tab::Docs => match panels::docs::manual_url(st) {

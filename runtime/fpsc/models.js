@@ -114,6 +114,7 @@ export class Model {
     const sc = (spec.scale ?? 1) * (opts.scale ?? 1);
     this.inner = new B.TransformNode('inner', scene); this.inner.parent = this.root; this.inner.scaling.setAll(sc);
     if (spec.kind === 'billboard') this.#billboard(spec);
+    else if (spec.kind === 'glb') this.#glb(spec);
     else this.#parts(spec.parts ?? []);
   }
   #mat(color, glow, alpha = 1) {
@@ -142,6 +143,21 @@ export class Model {
       mesh.isPickable = false; this.meshes.push(mesh);
     }
   }
+  /** .glb/.gltf from the project: loaded once per url, instantiated per entity; lit by one flat hemispheric light (our baked light does not reach glTF materials). */
+  #glb(spec) {
+    const B = this.B, scene = this.scene;
+    if (!B.LoadAssetContainerAsync) { console.warn('[fpsc] glTF loader not loaded (babylonjs.loaders.min.js) — showing a crate instead of', spec.url); this.#parts(MODELS.crate.parts); return; }
+    if (!scene.__fpscGlbLight) { const l = new B.HemisphericLight('fpsc-glb-light', new B.Vector3(0.2, 1, 0.1), scene); l.intensity = 1.05; l.groundColor = new B.Color3(0.5, 0.5, 0.55); scene.__fpscGlbLight = l; }
+    const cache = (scene.__fpscGlb ??= new Map());
+    if (!cache.has(spec.url)) cache.set(spec.url, B.LoadAssetContainerAsync(spec.url, scene, { pluginExtension: spec.url.slice(spec.url.lastIndexOf('.')).split('?')[0] }));
+    this.inner.scaling.setAll((spec.scale ?? 1) * (this.inner.scaling.x || 1));
+    cache.get(spec.url).then((c) => {
+      if (this.disposed) return;
+      const inst = c.instantiateModelsToScene((n) => n, false); this.glbNodes = inst.rootNodes;
+      for (const r of inst.rootNodes) { r.parent = this.inner; for (const m of r.getChildMeshes?.() ?? []) { m.isPickable = false; this.meshes.push(m); } }
+      this.inner.rotation.y = (spec.rotY ?? 0) * D2R;
+    }).catch((e) => console.warn(`[fpsc] could not load model ${spec.url}: ${e?.message ?? e}`));
+  }
   #billboard(spec) {
     const B = this.B, w = spec.w ?? 1, h = spec.h ?? 1.8;
     const mesh = B.MeshBuilder.CreatePlane('bb', { width: w, height: h }, this.scene);
@@ -162,7 +178,7 @@ export class Model {
     if (this.bb) this.bb.mat.emissiveColor.set(Math.min(1, r), Math.min(1, g), Math.min(1, b));
   }
   flash(sec = 0.12) { this.flashT = sec; }
-  dispose() { for (const m of this.meshes) m.dispose(); for (const m of this.mats) m.mat.dispose(); this.root.dispose(false, true); }
+  dispose() { this.disposed = true; for (const n of this.glbNodes ?? []) n.dispose(false, true); for (const m of this.meshes) m.dispose(); for (const m of this.mats) m.mat.dispose(); this.root.dispose(false, true); }
 }
 
 /** Resolve a model name or inline spec; project-defined models (bank.json "models") come through `bank.model(id)`. */

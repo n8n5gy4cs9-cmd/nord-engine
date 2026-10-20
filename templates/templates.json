@@ -54,6 +54,12 @@
     "type": "3d"
   },
   {
+    "id": "fps-creator",
+    "title": "FPS Creator (level editor)",
+    "description": "Build first-person shooter levels like FPS Creator: grid editor with walls, doors, windows, stairs, lights, ready-made enemies, pickups and scripts — plus a playable demo level.",
+    "type": "3d"
+  },
+  {
     "id": "idle-clicker",
     "title": "Idle / clicker",
     "description": "Currency, upgrades with cost scaling, per-second income, offline progress, autosave.",

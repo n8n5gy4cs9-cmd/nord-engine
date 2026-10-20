@@ -60,7 +60,7 @@ details.sec{border-top:1px solid var(--line);padding:6px 10px}details.sec>summar
 .script{background:#1c1c1c;border:1px solid var(--line);border-radius:6px;margin:6px 0}.script>header{display:flex;align-items:center;gap:6px;padding:5px 7px}.script>header b{flex:1}
 .script .body{padding:2px 8px 8px;border-top:1px solid var(--line)}.script.off{opacity:.55}
 .rule{background:#1c1c1c;border:1px solid var(--line);border-radius:6px;padding:6px;margin:6px 0}.rule .r1{display:flex;gap:4px;align-items:center;flex-wrap:wrap}.rule .r1>span{color:var(--mut)}
-.rule select,.rule input[type=text]{flex:1;min-width:70px}
+.rule select,.rule input[type=text]{flex:1 1 120px;min-width:90px}
 .badge{display:inline-block;padding:0 6px;border-radius:9px;background:#333;color:var(--mut);font-size:10.5px}
 .tip{background:#1d2a44;border:1px solid #2c4170;border-radius:6px;padding:7px;margin:6px 0;color:#bcd0f5}
 #console{position:absolute;left:300px;right:340px;bottom:24px;height:180px;background:#161616ee;border:1px solid var(--line);border-radius:6px 6px 0 0;display:flex;flex-direction:column;z-index:20}

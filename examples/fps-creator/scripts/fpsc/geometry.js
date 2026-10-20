@@ -189,7 +189,7 @@ export function lightAtPoint(world, lights, ambient, p, n = null, occlude = true
     const dx = l.x - p[0], dy = l.y - p[1], dz = l.z - p[2];
     const d2 = dx * dx + dy * dy + dz * dz; if (d2 >= l.range * l.range) continue;
     const d = Math.sqrt(d2) || 1e-4;
-    let k = 1 - d / l.range; k *= k * l.intensity;
+    let k = Math.pow(1 - d / l.range, 1.5) * l.intensity * 1.3;
     if (n) { const nd = (dx * n[0] + dy * n[1] + dz * n[2]) / d; k *= Math.max(0, nd) * 0.8 + 0.2 * (nd > -0.2 ? 1 : 0); if (k <= 0.002) continue; }
     if (occlude && world) {
       const o = n ? [p[0] + n[0] * 0.06, p[1] + n[1] * 0.06, p[2] + n[2] * 0.06] : p;

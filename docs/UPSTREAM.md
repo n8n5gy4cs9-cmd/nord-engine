@@ -46,3 +46,6 @@ M6-36: `tools/fetch-upstreams.sh openxcom` now fetches the documented sparse sou
 M7-14: official documentation is imported through `node tools/vendor.mjs --docs`. Phaser 4.2.1 / Babylon 9.30.0 declarations come from exact npm packages; BabylonJS/Documentation prose is pinned to `0222ae2cf8d566cc939d70d8fa12aa8d30174a50`. Source gzips/licences, version metadata and hashes are committed in `vendor/engine-docs/`. The older owner Phaser snapshot remains an explicitly labelled archive. See THIRD_PARTY.md and MANUAL_PLAN.md.
 
 Star-Not: `tools/fetch-upstreams.sh sc2-uqm` clones **uqm-ee** for the owner-requested upstream. Pinned source SHA/licence in UPSTREAM.lock.json and THIRD_PARTY.md; small normal-thrust adaptation only, no upstream content.
+
+## FPS-Creator-Classic (reference only, not cloned)
+`Dark-Basic-Software-Limited/FPS-Creator-Classic` — **no open-source licence** (personal compile/run only). Used only as a workflow reference for the M12 FPS Creator addon (grid segments, entity bank, script attachment); never cloned into `third_party/`, nothing taken. See `docs/FPS_CREATOR.md` and ADR-026.

@@ -168,6 +168,8 @@ pub enum Action {
     ResetSettings,
     Export,
     DesktopSettings,
+    /// install / upgrade the FPS Creator runtime in the open project
+    FpsInstall,
     About,
     OpenFile(PathBuf, Option<usize>),
     ToggleSnap,

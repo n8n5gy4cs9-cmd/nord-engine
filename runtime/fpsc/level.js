@@ -28,7 +28,7 @@ export function newLevel({ name = 'New level', w = 40, d = 40 } = {}) {
     format: FORMAT, name, author: '', w, d, cell: CELL, story: STORY,
     settings: {
       sky: 'day', skyColor: '#8fb8e8', ground: 'grass', fog: false, fogColor: '#9bb0c8', fogDensity: 0.012,
-      ambient: 0.35, ambientColor: '#9aa8c0', music: '', intro: '', objective: '', timeLimit: 0,
+      ambient: 0.42, ambientColor: '#a6b2c8', music: '', intro: '', objective: '', timeLimit: 0,
     },
     layers: [newLayer('Ground')],
     entities: [],

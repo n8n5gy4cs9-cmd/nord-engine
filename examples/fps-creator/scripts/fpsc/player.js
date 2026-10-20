@@ -149,7 +149,9 @@ export class ViewModel {
     const w = weaponDef(id, this.game.bank); if (!w) { this.cur = null; return; }
     let m = this.models.get(id);
     if (!m) {
-      const g = this.game, B = g.B, spec = { kind: 'parts', parts: [...w.view.parts, { shape: 'box', s: [0.1, 0.1, 0.05], p: [0, 0.01, (w.view.muzzle ?? 0.85)], c: '#fff2a0', e: true, a: 0.9 }] };
+      const g = this.game, B = g.B, h = w.view.hand ?? (w.type === 'melee' ? [0, -0.02, -0.02] : [0, -0.1, 0.03]);
+      const hands = w.view.hands === false ? [] : [{ shape: 'box', s: [0.075, 0.09, 0.11], p: h, c: '#d6a77f' }, { shape: 'box', s: [0.1, 0.1, 0.5], p: [h[0] + 0.02, h[1] - 0.07, h[2] - 0.3], r: [0.3, 0, 0], c: '#4a5a3c' }];
+      const spec = { kind: 'parts', parts: [...w.view.parts, ...hands, { shape: 'box', s: [0.1, 0.1, 0.05], p: [0, 0.01, (w.view.muzzle ?? 0.85)], c: '#fff2a0', e: true, a: 0.9 }] };
       m = new Model(B, g.scene, spec, { name: `vm-${id}` }); m.root.parent = g.camera; m.root.position.set(...w.view.pos);
       for (const me of m.meshes) { me.renderingGroupId = 1; me.isPickable = false; }
       m.muzzle = m.meshes[m.meshes.length - 1]; m.muzzle.setEnabled(false);

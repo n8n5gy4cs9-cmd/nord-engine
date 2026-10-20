@@ -135,3 +135,14 @@ Verified headless only (token, hidden paths, shutdown, QR matrix). Not verified 
 - The web editor cannot open a folder from disk (browsers have no folder path): use zip import. The File System Access API folder mode from the plan is not implemented.
 - Pre-existing, not from M11: `cargo clippy --workspace --all-targets -- -D warnings` reports 5 lints in `nord-editor` and 1 in a `nord-export` test; `cargo fmt --check` differs in several files.
 
+
+## FPS Creator addon (M12, 2026-10-20)
+Verified: node unit tests, the file API/CLI, Nord boot of the template, 18 gameplay scenarios and 17 editor scenarios in headless Chromium (software GL), Rust `cargo test -p nord-core fpsc` and a kittest for the tab. **Not verified / limits:**
+- No real GPU, macOS WKWebView or Windows WebView2 run of the editor tab (the page is plain WebGL2 + DOM; pointer lock inside the embedded webview is untested — the play-test also works in the browser via *Open in browser*).
+- Lighting: static lights are baked (a change re-bakes the whole level, ~0.2–1 s hitch); named/targeted/scripted lights are *dynamic* (nearest 8 only, no occlusion, no shadows). Light does not pass walls but leaks through glass and between storeys approximately. Sprites/`.glb` models are flat-lit.
+- Characters are blocky procedural models (walk/aim/death animation only); no skinned glTF animation. Weapons are procedural view models without reload art beyond a dip.
+- Physics is custom: circle-vs-AABB collision, step-up 0.46 m, no pushable props, no moving platforms/lifts, doors do not crush. Stairs need the cell above their top to have no floor on the upper layer.
+- AI: grid A* (cells), enemies cannot open locked doors, no cover system, no friendly fire between enemies. Allies are talk-only.
+- Input: keyboard + mouse only (no gamepad/touch). The bundled single-file export cannot import custom scripts dynamically (use the normal web export).
+- The web editor (wasm) shows the tab but cannot run `install`; use `nord fpsc init` on the server. Browser-only mode has no file API (Save downloads the JSON).
+- Level size ≤ 256×256 cells; baking cost grows with vertices × lights in range (the demo level, 12k tris/21 lights, bakes in ~0.2 s; very large levels may take seconds).

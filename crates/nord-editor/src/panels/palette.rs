@@ -100,6 +100,8 @@ pub const COMMANDS: &[(&str, CmdFn)] = &[
         Action::ShowTab(crate::app::Tab::Library)
     }),
     ("View: Docs tab", || Action::ShowTab(crate::app::Tab::Docs)),
+    ("View: FPS Level editor", || Action::ShowTab(crate::app::Tab::Fps)),
+    ("Project: Add / upgrade FPS Creator", || Action::FpsInstall),
     ("View: Animation & tilemap tab", || {
         Action::ShowTab(crate::app::Tab::Animation)
     }),

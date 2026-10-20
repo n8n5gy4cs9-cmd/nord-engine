@@ -94,3 +94,6 @@ With **USE CACHED CONTENT OFF**, existing saved example copies are bypassed; you
 The Code toolbar has a **Word wrap** toggle. It wraps the view without inserting newlines into your file. **Settings** exposes code font size, word wrap, **line height** (default **1.6 × font size**), **letter spacing** (default 0 points), and tab width. These preferences are saved with the editor settings. Wrapped lines keep their original line number; the gutter and error markers follow their displayed positions.
 
 Manual code previews have their own **Wrap: on/off** button and 1.6 line height. That preference belongs to this browser/manual, separately from the native editor settings.
+
+## FPS Level tab (FPS Creator addon)
+Projects that use the FPS Creator addon get an extra **FPS Level** tab: a grid level editor with a live 3D preview and one-click play-test. See [FPS Creator](fps-creator.html).

@@ -5,6 +5,7 @@ pub mod desktop;
 pub mod docs;
 pub mod events;
 pub mod export;
+pub mod fps;
 pub mod hierarchy;
 pub mod history;
 pub mod hub;

@@ -1331,3 +1331,26 @@ fn layout_views_and_drag_placement_in_the_panel() {
     h.run_steps(2);
     h.get_by_label_contains("Hero");
 }
+
+#[test]
+fn fps_tab_offers_install_and_detects_the_runtime() {
+    use nord_editor::{state::Action, viewport::webview::WebPanes};
+    let st = state_with_scene("fps-tab");
+    let root = st.root.clone().unwrap();
+    assert!(!panels::fps::installed(&root));
+    let mut h = Harness::builder().with_size(egui::vec2(900.0, 500.0)).build_ui_state(
+        |ui, s: &mut (EditorState, WebPanes)| panels::fps::ui(&mut s.0, ui, &mut s.1, None, false),
+        (st, WebPanes::default()),
+    );
+    loaders(&h);
+    h.run();
+    h.get_by_label("Add FPS Creator to this project").click();
+    h.run_steps(2);
+    assert!(h.state().0.actions.iter().any(|a| matches!(a, Action::FpsInstall)), "button dispatches the install action");
+    // the action itself calls nord_core::fpsc::install against the engine checkout
+    let engine = nord_editor::platform::engine_root().expect("engine root (vendor/VENDOR.json)");
+    let r = nord_core::fpsc::install(&engine, &root, false).unwrap();
+    assert!(r["updated"].as_array().unwrap().len() > 10, "{r}");
+    assert!(panels::fps::installed(&root));
+    assert!(root.join("levels/level1.fpsl.json").exists() && root.join("fpsc/bank.json").exists() && root.join("scenes/fps.scene.json").exists());
+}

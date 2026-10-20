@@ -98,7 +98,7 @@ if (run('nord') || run('game') || run('editor')) {
     const step = (n) => G(`(g, n) => { for (let i = 0; i < n; i++) { g.update(1 / 30); g.ctl.endFrame(); } }`, n);
     const tp = (x, z, yawDeg = 0, layer = 0) => G(`(g, a) => { g.player.teleport(a[0], a[1], a[3]); g.player.yaw = a[2] * Math.PI / 180; g.player.pitch = 0; }`, [x, z, yawDeg, layer]);
     const C = 4;
-    await test('level loads: 96 entities, baked lights, no bank warnings', async () => { assert.equal(await G('(g) => g.state'), 'play'); const s = await G('(g) => ({ n: g.ents.length, lights: g.renderer.stats.lights, bake: g.renderer.stats.bakeMs, warn: g.bank.warns.length })'); assert.ok(s.n >= 90 && s.lights >= 18 && s.warn === 0, JSON.stringify(s)); assert.ok(s.bake < 6000, `bake took ${s.bake} ms`); });
+    await test('level loads: ~100 entities, baked lights, no bank warnings', async () => { assert.equal(await G('(g) => g.state'), 'play'); const s = await G('(g) => ({ n: g.ents.length, lights: g.renderer.stats.lights, bake: g.renderer.stats.bakeMs, warn: g.bank.warns.length })'); assert.ok(s.n >= 90 && s.lights >= 18 && s.warn === 0, JSON.stringify(s)); assert.ok(s.bake < 6000, `bake took ${s.bake} ms`); });
     await test('walking forward moves the player and walls stop it', async () => {
       await tp(5 * C, 19.5 * C, 270); await G(`(g) => g.ctl.keys.add('KeyW')`); await step(90); await G(`(g) => g.ctl.keys.delete('KeyW')`);
       const p = await G('(g) => [g.player.x, g.player.z]'); assert.ok(p[0] < 5 * C && p[0] > 2 * C + 0.4, `stopped by the west wall at x=${p[0]}`);
@@ -164,6 +164,22 @@ if (run('nord') || run('game') || run('editor')) {
     await test('no console errors while playing', () => noErrors(page));
     await page.close();
 
+    console.log('custom assets in the game');
+    await test('custom bank: .glb model + billboard sprite + extended entity + custom script + sound override all load', async () => {
+      const glb = (() => { const j = JSON.stringify({ asset: { version: '2.0' }, scene: 0, scenes: [{ nodes: [0] }], nodes: [{ mesh: 0 }], meshes: [{ primitives: [{ attributes: { POSITION: 0 }, indices: 1 }] }], buffers: [{ byteLength: 44 }], bufferViews: [{ buffer: 0, byteOffset: 0, byteLength: 36, target: 34962 }, { buffer: 0, byteOffset: 36, byteLength: 6, target: 34963 }], accessors: [{ bufferView: 0, componentType: 5126, count: 3, type: 'VEC3', min: [0, 0, 0], max: [1, 1, 0] }, { bufferView: 1, componentType: 5123, count: 3, type: 'SCALAR' }] }); const jb = Buffer.from(j + ' '.repeat((4 - (j.length % 4)) % 4)); const bin = Buffer.alloc(44); [0, 0, 0, 1, 0, 0, 0, 1, 0].forEach((v, i) => bin.writeFloatLE(v, i * 4)); [0, 1, 2].forEach((v, i) => bin.writeUInt16LE(v, 36 + i * 2)); const h = Buffer.alloc(12); h.write('glTF'); h.writeUInt32LE(2, 4); h.writeUInt32LE(12 + 8 + jb.length + 8 + bin.length, 8); const c1 = Buffer.alloc(8); c1.writeUInt32LE(jb.length); c1.write('JSON', 4); const c2 = Buffer.alloc(8); c2.writeUInt32LE(bin.length); c2.write('BIN\0', 4); return Buffer.concat([h, c1, jb, c2, bin]); })();
+      const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/q842iQAAAABJRU5ErkJggg==', 'base64');
+      for (const d of ['models', 'art', 'scripts', 'sounds']) fs.mkdirSync(path.join(proj, 'fpsc', d), { recursive: true });
+      fs.writeFileSync(path.join(proj, 'fpsc/models/tri.glb'), glb); fs.writeFileSync(path.join(proj, 'fpsc/art/ghost.png'), png);
+      fs.writeFileSync(path.join(proj, 'fpsc/scripts/bob.js'), "export default { id: 'bob', title: 'Bob', cat: 'Custom', desc: 'x', params: { amp: { type: 'number', default: 0.5 } }, start(c) { c.self.state.bobStarted = c.p.amp; }, update(c, dt) { c.s.n = (c.s.n ?? 0) + 1; } };\n");
+      fs.writeFileSync(path.join(proj, 'fpsc/bank.json'), JSON.stringify({ entities: [{ id: 'my_tri', label: 'Tri', cat: 'Props', extends: 'crate', model: { kind: 'glb', url: 'fpsc/models/tri.glb', scale: 2 } }, { id: 'ghost', label: 'Ghost', extends: 'enemy_zombie', model: { kind: 'billboard', url: 'fpsc/art/ghost.png', w: 1, h: 1.8 }, scripts: [{ id: 'ai-melee', params: { speed: 4 } }, { id: 'bob', params: { amp: 2 } }] }], sounds: { pistol: 'fpsc/sounds/none.wav' }, scripts: ['fpsc/scripts/bob.js'] }));
+      const lv = JSON.parse(fs.readFileSync(path.join(ROOT, 'target/fpsc/test.fpsl.json'), 'utf8')); lv.entities.push({ id: 'g1', type: 'my_tri', x: 14, z: 18, layer: 0, rot: 0, props: {} }, { id: 'g2', type: 'ghost', x: 20, z: 18, layer: 0, rot: 0, props: {} }); fs.writeFileSync(path.join(proj, 'levels/custom.fpsl.json'), JSON.stringify(lv));
+      const pg = await newPage(); await pg.goto(`${base}/editor/fpsc/play.html?level=levels/custom.fpsl.json&autostart&nolock`); await pg.waitForFunction(() => window.__fpsc_ready || window.__fpsc_error, null, { timeout: 30000 }); assert.equal(await pg.evaluate(() => window.__fpsc_error), undefined);
+      await pg.waitForTimeout(800);
+      const r = await pg.evaluate(() => { const g = window.__fpsc.game, a = g.ents.find((e) => e.type === 'my_tri'), b = g.ents.find((e) => e.type === 'ghost'); for (let i = 0; i < 5; i++) g.update(1 / 30); return { glb: !!a.model.glbNodes?.length, bb: !!b.model.bb, scripts: b.scripts.map((s) => s.id + ':' + JSON.stringify(s.p.speed ?? s.p.amp)), bob: b.state.bobStarted, warns: g.bank.warns.length, crate: a.props.health, hp: b.hp, solid: a.def.solid }; });
+      assert.deepEqual(r, { glb: true, bb: true, scripts: ['ai-melee:4', 'bob:2'], bob: 2, warns: 0, crate: 30, hp: 70, solid: true }, JSON.stringify(r)); noErrors(pg); await pg.close();
+      fs.writeFileSync(path.join(proj, 'fpsc/bank.json'), JSON.stringify({ textures: [], entities: [], sounds: {}, scripts: [] })); // restore for the editor tests
+    });
+
     console.log('game visuals');
     const vp = await newPage(1280, 720); await vp.goto(`${base}/editor/fpsc/play.html?level=levels/level1.fpsl.json&autostart&nolock&shot`); await vp.waitForFunction(() => window.__fpsc_ready, null, { timeout: 30000 });
     const shots = [['start', 4.5, 19.5, 90], ['hall', 15.5, 17, 20], ['yard', 24.5, 19.5, 80], ['arena', 29.5, 28.4, 0], ['armory', 17.5, 14.4, 180]];
@@ -180,7 +196,7 @@ if (run('nord') || run('game') || run('editor')) {
     // screen position of a world point on the 2D map
     const scr = async (wx, wz) => { const r = await ED(`(ed, a) => { const rc = ed.map.cv.getBoundingClientRect(), s = ed.map.toScreen(a[0], a[1]); return [rc.left + s[0], rc.top + s[1]]; }`, [wx, wz]); return r; };
     const C = 4;
-    await test('opens the demo level without problems and renders 2D + 3D', async () => { const s = await ED(`(ed) => ({ n: ed.level.entities.length, problems: ed.problems.length, tris: ed.v3.rend?.stats.tris, name: ed.level.name, pieces: ed.bank.pieces.length })`); assert.equal(s.n, 96); assert.equal(s.problems, 0); assert.ok(s.tris > 5000); assert.equal(s.name, 'Outpost Zero'); await shot('open'); });
+    await test('opens the demo level without problems and renders 2D + 3D', async () => { const s = await ED(`(ed) => ({ n: ed.level.entities.length, problems: ed.problems.length, tris: ed.v3.rend?.stats.tris, name: ed.level.name, pieces: ed.bank.pieces.length })`); assert.equal(s.n, JSON.parse(fs.readFileSync(path.join(proj, 'levels/level1.fpsl.json'), 'utf8')).entities.length); assert.equal(s.problems, 0); assert.ok(s.tris > 5000); assert.equal(s.name, 'Outpost Zero'); await shot('open'); });
     await test('New → empty level; Room tool drag builds floor, ceiling and wall ring', async () => {
       await ED(`(ed) => { ed.dirty = false; ed.setLevel(JSON.parse(JSON.stringify(ed.level)), ''); }`); await ED(`(ed) => { const lv = ed.level; lv.entities = []; for (const l of lv.layers) { l.cells = {}; l.edges = {}; } lv.layers.length = 1; ed.hist = []; ed.hi = -1; ed.commit('clear', { force: true }); ed.map.cx = 40; ed.map.cz = 40; ed.map.zoom = 10; ed.map.draw(); }`);
       await page.keyboard.press('KeyR'); const a = await scr(4 * C + 2, 4 * C + 2), b = await scr(8 * C + 2, 6 * C + 2);

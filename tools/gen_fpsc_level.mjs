@@ -14,7 +14,7 @@ export function outpostZero() {
   lv.author = 'Crowelian 2026 + Sonnet';
   lv.layers.push(newLayer('Tower roof'));
   Object.assign(lv.settings, {
-    sky: 'day', ground: 'grass', ambient: 0.3,
+    sky: 'day', ground: 'grass', ambient: 0.5,
     intro: 'The outpost went dark three hours ago.\nFind the red key, get to the lab terminal, open the boss gate — and get out alive.\n\nWASD move · mouse look · E use · F flashlight · 1-6 weapons',
     objective: 'Find the exit. Hint: a red key opens the armory.',
   });
@@ -51,7 +51,7 @@ export function outpostZero() {
   edge(0, 22, 19, 'V', { k: 'doorway', t: 'plaster' }); edge(0, 22, 18, 'V', { k: 'wall', t: 'plaster' }); edge(0, 22, 20, 'V', { k: 'wall', t: 'plaster' });
   edge(0, 17, 14, 'H', { k: 'door', t: 'metal_panel', td: 'door_red', name: 'armory', lock: 'red' });
   edge(0, 17, 25, 'H', { k: 'door', t: 'metal_panel', td: 'door_scifi' });
-  ent('light_ceiling', 16, 16); ent('light_ceiling', 19, 16); ent('light_ceiling', 17.5, 22); ent('light_warm', 15, 23, { props: { range: 7 } });
+  ent('light_ceiling', 16, 16); ent('light_ceiling', 19, 16); ent('light_ceiling', 17.5, 22); ent('light_ceiling', 15.5, 19.5); ent('light_ceiling', 20, 21); ent('light_warm', 15, 23, { props: { range: 7 } });
   ent('light_alarm', 17.5, 19.5, { name: 'alarm1', props: { on: false } });
   ent('enemy_soldier', 19, 21, { rot: 180, path: [[19, 21], [19, 16], [15.5, 16], [15.5, 21]], props: { drop: 'ammo_bullets' } });
   ent('enemy_soldier', 16, 15.5, { rot: 90, props: {} }); ent('barrel_explosive', 20.4, 15.4); ent('barrel_explosive', 20.4, 15.9);
@@ -62,7 +62,7 @@ export function outpostZero() {
   // 4. armory (red key) -------------------------------------------------------------------------------------------------------------
   room(0, 14, 8, 21, 13, { floor: 'floor_concrete', tex: 'metal_plate' });
   edge(0, 17, 14, 'H', { k: 'door', t: 'metal_panel', td: 'door_red', name: 'armory', lock: 'red' });
-  ent('light_ceiling', 16, 10.5); ent('light_ceiling', 19.5, 10.5);
+  ent('light_ceiling', 16, 10.5); ent('light_ceiling', 19.5, 10.5); ent('fx_sparks', 14.6, 8.6);
   ent('weapon_shotgun', 15.5, 12); ent('ammo_shells', 16.5, 12.2); ent('ammo_shells', 17.2, 12.2); ent('weapon_rifle', 20, 12); ent('ammo_bullets', 19.2, 12.2); ent('armor', 18, 9.5); ent('health_large', 15.5, 9.2); ent('weapon_rocket', 20.2, 9.2); ent('ammo_rockets', 19.4, 9.2);
   ent('locker', 14.6, 11, { rot: 90 }); ent('locker', 14.6, 10, { rot: 90 }); ent('crate_big', 20.2, 11);
 
@@ -73,7 +73,7 @@ export function outpostZero() {
   ent('npc_scientist', 15, 28.7, { rot: 90, name: 'dr', props: { lines: 'You made it! The terminal on the north wall opens the boss gate.\nBut it will trip the alarm… be ready.\nThe red key? Up the tower in the courtyard.' } });
   ent('terminal', 19.4, 29.4, { rot: 180, name: 'labterm', props: { text: 'ALARM TRIPPED — BOSS GATE UNLOCKED', seconds: 4, prompt: 'Hack the terminal' },
     rules: [{ when: 'used', do: 'open', target: 'bossgate', once: true }, { when: 'used', do: 'emit', text: 'alarm', once: true }, { when: 'used', do: 'objective', text: 'Reach the boss arena north of the courtyard and escape.', once: true }, { when: 'used', do: 'spawn', text: 'enemy_drone', value: 2, target: 'sp_hall', once: true, delay: 2 }] });
-  ent('table', 15.4, 26.2); ent('plant', 21, 25.8); ent('plant', 14.7, 25.7); ent('health_small', 20.6, 26);
+  ent('fx_steam', 20.6, 25.9); ent('table', 15.4, 26.2); ent('plant', 21, 25.8); ent('plant', 14.7, 25.7); ent('health_small', 20.6, 26);
 
   // 6. courtyard (outdoors) + fence --------------------------------------------------------------------------------------------------
   for (let x = 22; x <= 35; x++) edge(0, x, 11, 'H', { k: 'fence', t: 'concrete' });
@@ -85,7 +85,7 @@ export function outpostZero() {
   for (let z = 20; z <= 25; z++) if (![21, 22, 23].includes(z)) edge(0, 22, z, 'V', { k: 'fence', t: 'concrete' });
   ent('checkpoint', 24, 19.5);
   ent('tree', 25, 13.5); ent('tree', 28, 22.5); ent('tree', 34.5, 20.5); ent('tree', 24.2, 24.2); ent('rock', 27, 14.5); ent('rock', 30.5, 23.5, { rot: 40 });
-  ent('sandbags', 27, 18.5, { rot: 90 }); ent('sandbags', 29.5, 20.5); ent('barrel_explosive', 28.6, 19.8); ent('barrel', 25.5, 17.3);
+  ent('fx_smoke', 30.5, 23.6); ent('fx_fire', 28.6, 19.3, { props: { range: 6 } }); ent('sandbags', 27, 18.5, { rot: 90 }); ent('sandbags', 29.5, 20.5); ent('barrel_explosive', 28.6, 19.8); ent('barrel', 25.5, 17.3);
   ent('enemy_soldier', 29.5, 21.5, { rot: 180 }); ent('enemy_soldier', 27, 16.5, { rot: 90, path: [[27, 16.5], [27, 22], [31, 22], [31, 16.5]] });
   ent('enemy_heavy', 33.5, 20, { rot: 180, props: { drop: 'health_large' } });
   ent('health_small', 25, 21); ent('ammo_bullets', 26, 12.2); ent('coin', 30, 12.6); ent('coin', 30.6, 12.6); ent('gem', 34.7, 24.2);
@@ -108,7 +108,7 @@ export function outpostZero() {
   ent('health_small', 33.5, 14.7);
 
   // 8. boss arena ---------------------------------------------------------------------------------------------------------------------
-  room(0, 24, 27, 34, 37, { floor: 'grate', tex: 'scifi', ceil: 'ceiling_tiles' });
+  room(0, 24, 27, 34, 37, { floor: 'floor_concrete', tex: 'scifi', ceil: 'ceiling_tiles' });
   edge(0, 29, 26, 'H', { k: 'door_wide', t: 'scifi', td: 'door_scifi', name: 'bossgate', lock: 'yellow', auto: false });
   for (const x of [26, 32]) for (const z of [29, 34]) setCell(lv, 0, x, z, { p: 'pillar_big', pt: 'concrete_dark' });
   ent('light_red', 26, 29.5, { props: { range: 12 } }); ent('light_red', 32.5, 29.5, { props: { range: 12 } }); ent('light_red', 26, 35); ent('light_red', 32.5, 35); ent('light_cold', 29.5, 32, { props: { range: 14, intensity: 0.8 } });

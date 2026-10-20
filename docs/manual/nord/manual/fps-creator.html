@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>FPS Creator — build first-person levels — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="welcome.html" class="active" aria-current="page">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Manual</div><a href="welcome.html">Welcome</a><a href="editor-tour.html">Editor tour</a><a href="projects-scenes.html">Projects &amp; scenes</a><a href="scripting.html">Scripting</a><a href="2d.html">2D games</a><a href="3d.html">3D games</a><a href="physics.html">Physics</a><a href="audio.html">Audio</a><a href="ui.html">UI &amp; HUD</a><a href="input.html">Input</a><a href="assets.html">Assets</a><a href="library.html">The library</a><a href="rust-wasm.html">Rust / WASM</a><a href="export.html">Export &amp; hosting</a><a href="performance.html">Performance &amp; debugging</a><a href="reference.html">Reference overview</a><a href="desktop-apps.html">Desktop apps</a><a href="event-sheets.html">Event sheets</a><a href="behaviors.html">Behaviors</a><a href="debugger.html">Debugger and profiler</a><a href="layout-editor.html">Layout, layers and objects</a><a href="sprites-animation-tilemaps.html">Sprites, animation and tilemaps</a><a href="effects-particles-timelines.html">Effects, particles and timelines</a><a href="addons-data-localisation.html">Addons, data objects and languages</a><a href="preview-history-tools.html">Preview, history and project tools</a><a href="web-editor.html">Run the editor in a browser or on a server</a><a href="fps-creator.html" class="cur" aria-current="page">FPS Creator — build first-person levels</a></nav><main id="content"><div class="crumb">Manual / Nord Engine</div><h1>FPS Creator — build first-person levels</h1>
+<p><strong>FPS Creator</strong> is an addon for Nord that turns the editor into a <em>level editor on steroids</em> for first-person shooters (and adventures): you draw rooms on a grid, drop in doors, windows, lights, enemies and pickups, attach scripts, press <strong>F5</strong> and play. It is inspired by the classic FPS Creator workflow, but everything is original and works offline. Nothing in the normal editor changes — you opt in per project.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>Think of it as a toy box. The <strong>map</strong> (left) is a top-down plan, the <strong>3D view</strong> (right) shows what you built, and the <strong>Items</strong> tab holds ready-made guards, zombies, health packs and lamps. Click an item, click the map: done. Press <strong>F5</strong> to walk around in your level.</p>
+</aside><figure class="shot"><img src="../../assets/screenshots/ed-fpsc-editor.png" alt="The FPS level editor with the 2D map on the left, the live 3D preview in the middle and the inspector with scripts and rules on the right" loading="lazy"><figcaption>The FPS Level tab: item palette (left), map and live 3D preview (centre), inspector with scripts and no-code rules (right). The selected lab terminal opens the boss gate with its rules.</figcaption></figure><h2 id="start-in-one-minute">Start in one minute<a class="anchor" href="#start-in-one-minute">#</a></h2>
+<ol>
+<li>On the project hub choose <strong>New project ▸ FPS Creator (level editor)</strong> — or open any 3D project and click <strong>Project ▸ Add / upgrade FPS Creator…</strong> (or the button in the <strong>FPS Level</strong> tab).</li>
+<li>Open the <strong>FPS Level</strong> tab. The demo level <em>Outpost Zero</em> is loaded: a bunker, hall, armory behind a red-key door, a lab terminal, a courtyard, a tower with stairs and a boss arena.</li>
+<li>Press <strong>F5</strong>. Click the game to capture the mouse. WASD, mouse, <strong>E</strong> to use things, <strong>F</strong> flashlight, <strong>1–6</strong> weapons.</li>
+<li>Press <strong>Run</strong> in the normal editor to play the same level as your finished game.</li>
+</ol>
+<figure class="shot"><img src="../../assets/screenshots/ed-fpsc-yard.png" alt="First-person view of the courtyard in the demo level: trees, sandbags, soldiers and a stone tower" loading="lazy"><figcaption>Press F5 and you are standing in your level. The demo level "Outpost Zero" is the template's starting point.</figcaption></figure><h2 id="the-editor-window">The editor window<a class="anchor" href="#the-editor-window">#</a></h2>
+<ul>
+<li><strong>Top bar</strong>: file (New / Open / Save / Save as / download / import), undo/redo, <strong>tools</strong>, the active <strong>layer</strong> (storey), 2D · split · 3D view, <strong>▶ Test</strong> and <strong>▶ From here</strong>, the <strong>✓</strong> problems checker and <strong>?</strong> help.</li>
+<li><strong>Left</strong>: <strong>Build</strong> (materials and wall pieces), <strong>Items</strong> (entities), <strong>Scripts</strong>, <strong>Level</strong> (sky, fog, ambient, intro, layers) and <strong>Assets</strong> (add your own).</li>
+<li><strong>Centre</strong>: the 2D map and the live 3D preview. Wheel = zoom, middle/right-drag = pan, <code>Tab</code> = cycle views. In 3D: right-drag to look, <strong>WASD/QE</strong> to fly, <strong>F</strong> to focus the selection, click to select.</li>
+<li><strong>Right</strong>: the <strong>Inspector</strong> for whatever is selected.</li>
+</ul>
+<h3 id="drawing">Drawing<a class="anchor" href="#drawing">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Tool</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>R</code></td>
+<td><strong>Room</strong></td>
+<td>Drag a rectangle: floor, ceiling and a wall ring</td>
+</tr>
+<tr>
+<td><code>W</code></td>
+<td><strong>Wall</strong></td>
+<td>Click an <em>edge</em> between two cells, or drag between grid points. Choose <strong>Door</strong>, <strong>Window</strong>, <strong>Arch</strong>, <strong>Fence</strong>… in <em>Build</em></td>
+</tr>
+<tr>
+<td><code>F</code> <code>C</code></td>
+<td>Floor / Ceiling</td>
+<td>Paint cells (Ctrl = rectangle, Shift = erase)</td>
+</tr>
+<tr>
+<td><code>G</code></td>
+<td>Fill</td>
+<td>Fill a closed region with the floor texture</td>
+</tr>
+<tr>
+<td><code>S</code></td>
+<td>Stairs · height · pillars</td>
+<td>Click a cell; drag to aim the stairs</td>
+</tr>
+<tr>
+<td><code>A</code></td>
+<td>Add item</td>
+<td>Click the map with the chosen item, or drag a card from <em>Items</em></td>
+</tr>
+<tr>
+<td><code>P</code></td>
+<td>Path</td>
+<td>Patrol route of the selected enemy</td>
+</tr>
+<tr>
+<td><code>V</code></td>
+<td>Select</td>
+<td>Click, box-select, move, rotate (<code>Q</code>/<code>E</code>), copy/paste (<code>Ctrl+C/V/D</code>)</td>
+</tr>
+<tr>
+<td><code>X</code> <code>I</code></td>
+<td>Erase · eyedropper</td>
+<td>Alt+click copies a texture or item</td>
+</tr>
+</tbody></table>
+<p>Walls live <strong>on edges</strong>, so a door in a wall is one click. A piece (shape) and a texture are separate choices: any piece with any texture, and you can give the back side its own texture. <strong>Storeys</strong>: add a layer, build the upper room, put <strong>stairs</strong> on the lower layer and leave the cell above the stairs&#39; top without a floor.</p>
+<figure class="shot"><img src="../../assets/screenshots/ed-fpsc-build.png" alt="Build palette with materials, textures and wall pieces such as walls, windows and doors" loading="lazy"><figcaption>Build tab: pick a material slot, a texture and a wall piece — every piece works with every texture.</figcaption></figure><h2 id="ready-made-things">Ready-made things<a class="anchor" href="#ready-made-things">#</a></h2>
+<ul>
+<li><strong>Enemies</strong>: Soldier, Guard, Heavy gunner, Sniper (laser warning), Zombie, Runner, Robot trooper, flying Drone, Auto turret, Mech (rockets), <strong>Boss</strong> (3 phases, summons minions, health bar). They see, hear gunshots, open doors, find paths around walls and patrol routes you draw.</li>
+<li><strong>Pickups</strong>: medkits, armor, four ammo types, five weapons, four key colours, coins and gems.</li>
+<li><strong>Lights</strong>: lamps, neon, torches, fire barrels, a broken flickering light, an alarm light. Lights are <em>baked</em> — walls block them, so rooms really are dark next door.</li>
+<li><strong>Props</strong>: barrels (some explode), breakable crates, tables, plants, trees, sandbags, a <strong>terminal</strong>, a <strong>wall switch</strong> and <strong>fire / smoke / steam / spark emitters</strong>.</li>
+<li><strong>Markers &amp; triggers</strong>: player start, checkpoint, level exit, teleporter, message zone, ambush trigger, hazard zone, sound emitter.</li>
+</ul>
+<h2 id="doors-keys-and-switches">Doors, keys and switches<a class="anchor" href="#doors-keys-and-switches">#</a></h2>
+<p>Select a door piece. Give it a <strong>name</strong> (<code>vault</code>), tick a <strong>key colour</strong> to lock it, and untick <em>Opens by itself</em> if a switch should control it. Then:</p>
+<ul>
+<li>put the matching <strong>key</strong> pickup somewhere, <strong>or</strong></li>
+<li>place a <strong>Wall switch</strong>, set its <strong>Target</strong> to <code>vault</code>, <strong>or</strong></li>
+<li>give any entity a <strong>rule</strong>: <em>When used → Open → vault</em>.</li>
+</ul>
+<h2 id="scripts-attach-behaviour">Scripts: attach behaviour<a class="anchor" href="#scripts-attach-behaviour">#</a></h2>
+<p>Every entity already has the right scripts (an enemy has a brain, a pickup gives something). In the <strong>Inspector ▸ Scripts</strong>:</p>
+<ul>
+<li>tune the parameters (damage, accuracy, speed, sight…), switch a script off or remove it;</li>
+<li><strong>attach</strong> another one with <em>+ Attach script…</em>, or drag a card from the <strong>Scripts</strong> tab onto an entity;</li>
+<li>write your own: <strong>Assets ▸ New script</strong>, or open a built-in script in the Scripts tab and <strong>Make an editable copy</strong>.</li>
+</ul>
+<p>A script is a small JavaScript file:</p>
+<pre class="code" data-lang="js"><code>export default {
+  id: 'hello', title: 'Hello', cat: 'Custom', desc: 'Says hello when used.',
+  params: { text: { type: 'string', label: 'Text', default: 'Hello!' } },   // becomes a form in the Inspector
+  use(c, by) { c.say(c.p.text, 2); c.emit('used'); },                        // E pressed on it
+  update(c, dt) { /* every frame */ },
+};</code></pre>
+<p>Hooks: <code>start update use hurt die event heard idle</code>. <code>c.self</code> is the entity, <code>c.p</code> your parameters, <code>c.player</code>, <code>c.game</code>, plus <code>c.say</code>, <code>c.sound</code>, <code>c.emit</code>, <code>c.on</code>, <code>c.after</code>, <code>c.find</code>.</p>
+<h2 id="rules-logic-without-code">Rules: logic without code<a class="anchor" href="#rules-logic-without-code">#</a></h2>
+<p>A rule reads <em>when → do → target</em>. Examples:</p>
+<ul>
+<li><em>Terminal</em> — <strong>When used → Open → bossgate</strong>, <strong>When used → Emit → alarm</strong>, <strong>When used → Spawn → enemy_drone ×2</strong>.</li>
+<li><em>Trigger zone</em> — <strong>When enters → Message → &quot;They are coming!&quot;</strong>.</li>
+<li><em>Boss</em> — <strong>When dies → Open → exit</strong>. The <strong>Level exit</strong> has a <em>Needs event</em> property (<code>warden.died</code>) so it stays shut until then.
+Targets are entity names, <code>#tags</code> (groups) or door names. The ✓ checker warns about targets that do not exist.</li>
+</ul>
+<figure class="shot"><img src="../../assets/screenshots/ed-fpsc-hall.png" alt="A dim wooden hall with windows, crates, a soldier and a checkpoint flag" loading="lazy"><figcaption>Baked lighting: walls block light, so lamps matter. The hall of the demo level.</figcaption></figure><h2 id="add-your-own-assets">Add your own assets<a class="anchor" href="#add-your-own-assets">#</a></h2>
+<p>Everything you add lives in your project&#39;s <code>fpsc/</code> folder and works offline and in exports. Use the <strong>Assets</strong> tab:</p>
+<ul>
+<li><strong>Texture</strong> — a seamless PNG/JPG; say how many metres one repeat covers. Every wall piece can use it.</li>
+<li><strong>Sprite enemy/prop</strong> — a PNG with transparency (classic billboard look) that <em>behaves like</em> a built-in entity.</li>
+<li><strong>3D model</strong> — a <code>.glb</code> (1 unit = 1 m, feet at the origin).</li>
+<li><strong>Sound</strong> — WAV/OGG/MP3; if the name matches a built-in (<code>pistol</code>, <code>door</code>, <code>pickup</code>…) yours replaces it.</li>
+<li><strong>Script</strong> — from a template.</li>
+</ul>
+<figure class="shot"><img src="../../assets/screenshots/ed-fpsc-assets.png" alt="Assets tab with forms to add textures, sprites, 3D models, sounds and scripts" loading="lazy"><figcaption>The Assets tab copies your files into <code>fpsc/</code> and registers them in <code>bank.json</code>.</figcaption></figure><p>Power users edit <code>fpsc/bank.json</code> directly (new wall pieces, entities that <em>extend</em> built-ins, weapons). The full rules table is in <strong>Help (F1)</strong> and in <code>docs/FPS_CREATOR.md</code>.</p>
+<h2 id="playing-exporting-upgrading">Playing, exporting, upgrading<a class="anchor" href="#playing-exporting-upgrading">#</a></h2>
+<ul>
+<li><strong>Run</strong> the project: the <em>FPS Level</em> entity loads the level named in <code>levels/</code>. Change <strong>Level file</strong> in its Inspector or set the <em>Next level</em> field to chain levels.</li>
+<li><strong>Export</strong> as usual — <code>scripts/</code>, <code>levels/</code> and <code>fpsc/</code> are part of the project, so they ship automatically.</li>
+<li><strong>Upgrade</strong> after updating Nord: <em>FPS Level ▸ Upgrade runtime</em> (or <code>nord fpsc init</code>). Your levels and <code>fpsc/</code> content are never overwritten.</li>
+</ul>
+<h2 id="troubleshooting">Troubleshooting<a class="anchor" href="#troubleshooting">#</a></h2>
+<ul>
+<li><em>Rooms are very dark</em> → add lights, raise <strong>Level ▸ Ambient light</strong>, or choose a lighter floor texture.</li>
+<li><em>Enemy stands still</em> → give it a path (<code>P</code>) or check that its <strong>sight range</strong> reaches the player and that a wall is not in the way.</li>
+<li><em>Door will not open</em> → is it <strong>locked</strong>? Does the key exist? With <em>Opens by itself</em> off you need a switch, rule or <code>E</code>.</li>
+<li><em>&quot;Unknown entity type&quot;</em> → a custom entity was removed from <code>fpsc/bank.json</code>.</li>
+<li>Console messages from play-testing appear in the editor&#39;s console (bottom of the map); errors name the script and hook.</li>
+</ul>
+<div class="pager"><a href="web-editor.html"><small>← Previous</small>Run the editor in a browser or on a server</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#start-in-one-minute">Start in one minute </a><a href="#the-editor-window">The editor window </a><a href="#ready-made-things">Ready-made things </a><a href="#doors-keys-and-switches">Doors, keys and switches </a><a href="#scripts-attach-behaviour">Scripts: attach behaviour </a><a href="#rules-logic-without-code">Rules: logic without code </a><a href="#add-your-own-assets">Add your own assets </a><a href="#playing-exporting-upgrading">Playing, exporting, upgrading </a><a href="#troubleshooting">Troubleshooting </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

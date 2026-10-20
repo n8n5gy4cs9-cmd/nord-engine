@@ -10,6 +10,7 @@ import sAiSniper from './ai-sniper.js';
 import sAiTurret from './ai-turret.js';
 import sAmbientSound from './ambient-sound.js';
 import sBreakable from './breakable.js';
+import sEmitter from './emitter.js';
 import sExplosive from './explosive.js';
 import sHazard from './hazard.js';
 import sLightFlicker from './light-flicker.js';
@@ -30,5 +31,5 @@ import sTriggerZone from './trigger-zone.js';
 import sUsableMessage from './usable-message.js';
 
 export const BUILTIN_SCRIPTS = [
-  sAiBoss, sAiFlyer, sAiMelee, sAiPatrol, sAiShooter, sAiSniper, sAiTurret, sAmbientSound, sBreakable, sExplosive, sHazard, sLightFlicker, sLightPulse, sNpcTalk, sObjectiveKillAll, sPickup, sSpawner, sSpin, sSwitch, sTimer, sTriggerCheckpoint, sTriggerMessage, sTriggerSpawn, sTriggerTeleport, sTriggerWin, sTriggerZone, sUsableMessage,
+  sAiBoss, sAiFlyer, sAiMelee, sAiPatrol, sAiShooter, sAiSniper, sAiTurret, sAmbientSound, sBreakable, sEmitter, sExplosive, sHazard, sLightFlicker, sLightPulse, sNpcTalk, sObjectiveKillAll, sPickup, sSpawner, sSpin, sSwitch, sTimer, sTriggerCheckpoint, sTriggerMessage, sTriggerSpawn, sTriggerTeleport, sTriggerWin, sTriggerZone, sUsableMessage,
 ];

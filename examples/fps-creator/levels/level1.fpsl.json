@@ -13,8 +13,8 @@
     "fog": false,
     "fogColor": "#9bb0c8",
     "fogDensity": 0.012,
-    "ambient": 0.3,
-    "ambientColor": "#9aa8c0",
+    "ambient": 0.5,
+    "ambientColor": "#a6b2c8",
     "music": "",
     "intro": "The outpost went dark three hours ago.\nFind the red key, get to the lab terminal, open the boss gate — and get out alive.\n\nWASD move · mouse look · E use · F flashlight · 1-6 weapons",
     "objective": "Find the exit. Hint: a red key opens the armory.",
@@ -1524,495 +1524,495 @@
           "f": "floor_concrete"
         },
         "24,27": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "24,28": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "24,29": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "24,30": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "24,31": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "24,32": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "24,33": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "24,34": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "24,35": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "24,36": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "24,37": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "25,27": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "25,28": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "25,29": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "25,30": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "25,31": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "25,32": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "25,33": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "25,34": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "25,35": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "25,36": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "25,37": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "26,27": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "26,28": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "26,29": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles",
           "p": "pillar_big",
           "pt": "concrete_dark"
         },
         "26,30": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "26,31": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "26,32": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "26,33": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "26,34": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles",
           "p": "pillar_big",
           "pt": "concrete_dark"
         },
         "26,35": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "26,36": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "26,37": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "27,27": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "27,28": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "27,29": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "27,30": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "27,31": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "27,32": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "27,33": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "27,34": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "27,35": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "27,36": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "27,37": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "28,27": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "28,28": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "28,29": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "28,30": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "28,31": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "28,32": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "28,33": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "28,34": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "28,35": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "28,36": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "28,37": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "29,27": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "29,28": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "29,29": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "29,30": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "29,31": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "29,32": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "29,33": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "29,34": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "29,35": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "29,36": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "29,37": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "30,27": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "30,28": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "30,29": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "30,30": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "30,31": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "30,32": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "30,33": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "30,34": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "30,35": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "30,36": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "30,37": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "31,27": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "31,28": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "31,29": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "31,30": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "31,31": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "31,32": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "31,33": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "31,34": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "31,35": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "31,36": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "31,37": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "32,27": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "32,28": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "32,29": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles",
           "p": "pillar_big",
           "pt": "concrete_dark"
         },
         "32,30": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "32,31": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "32,32": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "32,33": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "32,34": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles",
           "p": "pillar_big",
           "pt": "concrete_dark"
         },
         "32,35": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "32,36": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "32,37": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "33,27": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "33,28": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "33,29": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "33,30": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "33,31": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "33,32": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "33,33": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "33,34": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "33,35": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "33,36": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "33,37": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "34,27": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "34,28": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "34,29": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "34,30": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "34,31": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "34,32": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "34,33": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "34,34": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "34,35": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "34,36": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         },
         "34,37": {
-          "f": "grate",
+          "f": "floor_concrete",
           "c": "ceiling_tiles"
         }
       },
@@ -3245,6 +3245,34 @@
     },
     {
       "id": "e020",
+      "type": "light_ceiling",
+      "x": 62,
+      "z": 78,
+      "layer": 0,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "e021",
+      "type": "light_ceiling",
+      "x": 80,
+      "z": 84,
+      "layer": 0,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "e022",
       "type": "light_warm",
       "x": 60,
       "z": 92,
@@ -3260,7 +3288,7 @@
       "rules": []
     },
     {
-      "id": "e021",
+      "id": "e023",
       "type": "light_alarm",
       "x": 70,
       "z": 78,
@@ -3276,7 +3304,7 @@
       "rules": []
     },
     {
-      "id": "e022",
+      "id": "e024",
       "type": "enemy_soldier",
       "x": 76,
       "z": 84,
@@ -3310,7 +3338,7 @@
       ]
     },
     {
-      "id": "e023",
+      "id": "e025",
       "type": "enemy_soldier",
       "x": 64,
       "z": 62,
@@ -3324,7 +3352,7 @@
       "rules": []
     },
     {
-      "id": "e024",
+      "id": "e026",
       "type": "barrel_explosive",
       "x": 81.6,
       "z": 61.6,
@@ -3338,7 +3366,7 @@
       "rules": []
     },
     {
-      "id": "e025",
+      "id": "e027",
       "type": "barrel_explosive",
       "x": 81.6,
       "z": 63.6,
@@ -3352,7 +3380,7 @@
       "rules": []
     },
     {
-      "id": "e026",
+      "id": "e028",
       "type": "crate",
       "x": 61.6,
       "z": 93.6,
@@ -3366,7 +3394,7 @@
       "rules": []
     },
     {
-      "id": "e027",
+      "id": "e029",
       "type": "crate_metal",
       "x": 80.8,
       "z": 92.8,
@@ -3380,7 +3408,7 @@
       "rules": []
     },
     {
-      "id": "e028",
+      "id": "e030",
       "type": "table",
       "x": 70,
       "z": 69.6,
@@ -3394,7 +3422,7 @@
       "rules": []
     },
     {
-      "id": "e029",
+      "id": "e031",
       "type": "chair",
       "x": 74,
       "z": 70,
@@ -3408,7 +3436,7 @@
       "rules": []
     },
     {
-      "id": "e030",
+      "id": "e032",
       "type": "sandbags",
       "x": 78,
       "z": 76.8,
@@ -3422,7 +3450,7 @@
       "rules": []
     },
     {
-      "id": "e031",
+      "id": "e033",
       "type": "checkpoint",
       "x": 60,
       "z": 78,
@@ -3436,7 +3464,7 @@
       "rules": []
     },
     {
-      "id": "e032",
+      "id": "e034",
       "type": "spawn_point",
       "x": 64,
       "z": 84,
@@ -3450,7 +3478,7 @@
       "rules": []
     },
     {
-      "id": "e033",
+      "id": "e035",
       "type": "light_ceiling",
       "x": 64,
       "z": 42,
@@ -3464,7 +3492,7 @@
       "rules": []
     },
     {
-      "id": "e034",
+      "id": "e036",
       "type": "light_ceiling",
       "x": 78,
       "z": 42,
@@ -3478,7 +3506,21 @@
       "rules": []
     },
     {
-      "id": "e035",
+      "id": "e037",
+      "type": "fx_sparks",
+      "x": 58.4,
+      "z": 34.4,
+      "layer": 0,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "e038",
       "type": "weapon_shotgun",
       "x": 62,
       "z": 48,
@@ -3492,7 +3534,7 @@
       "rules": []
     },
     {
-      "id": "e036",
+      "id": "e039",
       "type": "ammo_shells",
       "x": 66,
       "z": 48.8,
@@ -3506,7 +3548,7 @@
       "rules": []
     },
     {
-      "id": "e037",
+      "id": "e040",
       "type": "ammo_shells",
       "x": 68.8,
       "z": 48.8,
@@ -3520,7 +3562,7 @@
       "rules": []
     },
     {
-      "id": "e038",
+      "id": "e041",
       "type": "weapon_rifle",
       "x": 80,
       "z": 48,
@@ -3534,7 +3576,7 @@
       "rules": []
     },
     {
-      "id": "e039",
+      "id": "e042",
       "type": "ammo_bullets",
       "x": 76.8,
       "z": 48.8,
@@ -3548,7 +3590,7 @@
       "rules": []
     },
     {
-      "id": "e040",
+      "id": "e043",
       "type": "armor",
       "x": 72,
       "z": 38,
@@ -3562,7 +3604,7 @@
       "rules": []
     },
     {
-      "id": "e041",
+      "id": "e044",
       "type": "health_large",
       "x": 62,
       "z": 36.8,
@@ -3576,7 +3618,7 @@
       "rules": []
     },
     {
-      "id": "e042",
+      "id": "e045",
       "type": "weapon_rocket",
       "x": 80.8,
       "z": 36.8,
@@ -3590,7 +3632,7 @@
       "rules": []
     },
     {
-      "id": "e043",
+      "id": "e046",
       "type": "ammo_rockets",
       "x": 77.6,
       "z": 36.8,
@@ -3604,7 +3646,7 @@
       "rules": []
     },
     {
-      "id": "e044",
+      "id": "e047",
       "type": "locker",
       "x": 58.4,
       "z": 44,
@@ -3618,7 +3660,7 @@
       "rules": []
     },
     {
-      "id": "e045",
+      "id": "e048",
       "type": "locker",
       "x": 58.4,
       "z": 40,
@@ -3632,7 +3674,7 @@
       "rules": []
     },
     {
-      "id": "e046",
+      "id": "e049",
       "type": "crate_big",
       "x": 80.8,
       "z": 44,
@@ -3646,7 +3688,7 @@
       "rules": []
     },
     {
-      "id": "e047",
+      "id": "e050",
       "type": "light_neon",
       "x": 64,
       "z": 108,
@@ -3660,7 +3702,7 @@
       "rules": []
     },
     {
-      "id": "e048",
+      "id": "e051",
       "type": "light_neon",
       "x": 78,
       "z": 108,
@@ -3674,7 +3716,7 @@
       "rules": []
     },
     {
-      "id": "e049",
+      "id": "e052",
       "type": "light_neon",
       "x": 70,
       "z": 116.8,
@@ -3688,7 +3730,7 @@
       "rules": []
     },
     {
-      "id": "e050",
+      "id": "e053",
       "type": "npc_scientist",
       "x": 60,
       "z": 114.8,
@@ -3704,7 +3746,7 @@
       "rules": []
     },
     {
-      "id": "e051",
+      "id": "e054",
       "type": "terminal",
       "x": 77.6,
       "z": 117.6,
@@ -3750,7 +3792,21 @@
       ]
     },
     {
-      "id": "e052",
+      "id": "e055",
+      "type": "fx_steam",
+      "x": 82.4,
+      "z": 103.6,
+      "layer": 0,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "e056",
       "type": "table",
       "x": 61.6,
       "z": 104.8,
@@ -3764,7 +3820,7 @@
       "rules": []
     },
     {
-      "id": "e053",
+      "id": "e057",
       "type": "plant",
       "x": 84,
       "z": 103.2,
@@ -3778,7 +3834,7 @@
       "rules": []
     },
     {
-      "id": "e054",
+      "id": "e058",
       "type": "plant",
       "x": 58.8,
       "z": 102.8,
@@ -3792,7 +3848,7 @@
       "rules": []
     },
     {
-      "id": "e055",
+      "id": "e059",
       "type": "health_small",
       "x": 82.4,
       "z": 104,
@@ -3806,7 +3862,7 @@
       "rules": []
     },
     {
-      "id": "e056",
+      "id": "e060",
       "type": "checkpoint",
       "x": 96,
       "z": 78,
@@ -3820,7 +3876,7 @@
       "rules": []
     },
     {
-      "id": "e057",
+      "id": "e061",
       "type": "tree",
       "x": 100,
       "z": 54,
@@ -3834,7 +3890,7 @@
       "rules": []
     },
     {
-      "id": "e058",
+      "id": "e062",
       "type": "tree",
       "x": 112,
       "z": 90,
@@ -3848,7 +3904,7 @@
       "rules": []
     },
     {
-      "id": "e059",
+      "id": "e063",
       "type": "tree",
       "x": 138,
       "z": 82,
@@ -3862,7 +3918,7 @@
       "rules": []
     },
     {
-      "id": "e060",
+      "id": "e064",
       "type": "tree",
       "x": 96.8,
       "z": 96.8,
@@ -3876,7 +3932,7 @@
       "rules": []
     },
     {
-      "id": "e061",
+      "id": "e065",
       "type": "rock",
       "x": 108,
       "z": 58,
@@ -3890,7 +3946,7 @@
       "rules": []
     },
     {
-      "id": "e062",
+      "id": "e066",
       "type": "rock",
       "x": 122,
       "z": 94,
@@ -3904,7 +3960,37 @@
       "rules": []
     },
     {
-      "id": "e063",
+      "id": "e067",
+      "type": "fx_smoke",
+      "x": 122,
+      "z": 94.4,
+      "layer": 0,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "e068",
+      "type": "fx_fire",
+      "x": 114.4,
+      "z": 77.2,
+      "layer": 0,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {
+        "range": 6
+      },
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "e069",
       "type": "sandbags",
       "x": 108,
       "z": 74,
@@ -3918,7 +4004,7 @@
       "rules": []
     },
     {
-      "id": "e064",
+      "id": "e070",
       "type": "sandbags",
       "x": 118,
       "z": 82,
@@ -3932,7 +4018,7 @@
       "rules": []
     },
     {
-      "id": "e065",
+      "id": "e071",
       "type": "barrel_explosive",
       "x": 114.4,
       "z": 79.2,
@@ -3946,7 +4032,7 @@
       "rules": []
     },
     {
-      "id": "e066",
+      "id": "e072",
       "type": "barrel",
       "x": 102,
       "z": 69.2,
@@ -3960,7 +4046,7 @@
       "rules": []
     },
     {
-      "id": "e067",
+      "id": "e073",
       "type": "enemy_soldier",
       "x": 118,
       "z": 86,
@@ -3974,7 +4060,7 @@
       "rules": []
     },
     {
-      "id": "e068",
+      "id": "e074",
       "type": "enemy_soldier",
       "x": 108,
       "z": 66,
@@ -4006,7 +4092,7 @@
       ]
     },
     {
-      "id": "e069",
+      "id": "e075",
       "type": "enemy_heavy",
       "x": 134,
       "z": 80,
@@ -4022,7 +4108,7 @@
       "rules": []
     },
     {
-      "id": "e070",
+      "id": "e076",
       "type": "health_small",
       "x": 100,
       "z": 84,
@@ -4036,7 +4122,7 @@
       "rules": []
     },
     {
-      "id": "e071",
+      "id": "e077",
       "type": "ammo_bullets",
       "x": 104,
       "z": 48.8,
@@ -4050,7 +4136,7 @@
       "rules": []
     },
     {
-      "id": "e072",
+      "id": "e078",
       "type": "coin",
       "x": 120,
       "z": 50.4,
@@ -4064,7 +4150,7 @@
       "rules": []
     },
     {
-      "id": "e073",
+      "id": "e079",
       "type": "coin",
       "x": 122.4,
       "z": 50.4,
@@ -4078,7 +4164,7 @@
       "rules": []
     },
     {
-      "id": "e074",
+      "id": "e080",
       "type": "gem",
       "x": 138.8,
       "z": 96.8,
@@ -4092,7 +4178,7 @@
       "rules": []
     },
     {
-      "id": "e075",
+      "id": "e081",
       "type": "spawn_zone",
       "x": 112,
       "z": 70,
@@ -4113,7 +4199,7 @@
       "rules": []
     },
     {
-      "id": "e076",
+      "id": "e082",
       "type": "hazard_zone",
       "x": 106,
       "z": 96,
@@ -4132,7 +4218,7 @@
       "rules": []
     },
     {
-      "id": "e077",
+      "id": "e083",
       "type": "light_green",
       "x": 106,
       "z": 96,
@@ -4149,7 +4235,7 @@
       "y": -0.3
     },
     {
-      "id": "e078",
+      "id": "e084",
       "type": "message_zone",
       "x": 106,
       "z": 88,
@@ -4168,7 +4254,7 @@
       "rules": []
     },
     {
-      "id": "e079",
+      "id": "e085",
       "type": "light_torch",
       "x": 132,
       "z": 56.4,
@@ -4182,7 +4268,7 @@
       "rules": []
     },
     {
-      "id": "e080",
+      "id": "e086",
       "type": "light_torch",
       "x": 140,
       "z": 63.6,
@@ -4196,7 +4282,7 @@
       "rules": []
     },
     {
-      "id": "e081",
+      "id": "e087",
       "type": "key_red",
       "x": 132.8,
       "z": 65.2,
@@ -4210,7 +4296,7 @@
       "rules": []
     },
     {
-      "id": "e082",
+      "id": "e088",
       "type": "enemy_turret",
       "x": 140.8,
       "z": 54.8,
@@ -4226,7 +4312,7 @@
       "rules": []
     },
     {
-      "id": "e083",
+      "id": "e089",
       "type": "enemy_sniper",
       "x": 131.2,
       "z": 54.8,
@@ -4240,7 +4326,7 @@
       "rules": []
     },
     {
-      "id": "e084",
+      "id": "e090",
       "type": "health_small",
       "x": 134,
       "z": 58.8,
@@ -4254,7 +4340,7 @@
       "rules": []
     },
     {
-      "id": "e085",
+      "id": "e091",
       "type": "light_red",
       "x": 104,
       "z": 118,
@@ -4270,7 +4356,7 @@
       "rules": []
     },
     {
-      "id": "e086",
+      "id": "e092",
       "type": "light_red",
       "x": 130,
       "z": 118,
@@ -4286,7 +4372,7 @@
       "rules": []
     },
     {
-      "id": "e087",
+      "id": "e093",
       "type": "light_red",
       "x": 104,
       "z": 140,
@@ -4300,7 +4386,7 @@
       "rules": []
     },
     {
-      "id": "e088",
+      "id": "e094",
       "type": "light_red",
       "x": 130,
       "z": 140,
@@ -4314,7 +4400,7 @@
       "rules": []
     },
     {
-      "id": "e089",
+      "id": "e095",
       "type": "light_cold",
       "x": 118,
       "z": 128,
@@ -4331,7 +4417,7 @@
       "rules": []
     },
     {
-      "id": "e090",
+      "id": "e096",
       "type": "checkpoint",
       "x": 118,
       "z": 112,
@@ -4345,7 +4431,7 @@
       "rules": []
     },
     {
-      "id": "e091",
+      "id": "e097",
       "type": "health_large",
       "x": 100.8,
       "z": 111.2,
@@ -4359,7 +4445,7 @@
       "rules": []
     },
     {
-      "id": "e092",
+      "id": "e098",
       "type": "ammo_shells",
       "x": 134,
       "z": 111.2,
@@ -4373,7 +4459,7 @@
       "rules": []
     },
     {
-      "id": "e093",
+      "id": "e099",
       "type": "ammo_rockets",
       "x": 134,
       "z": 114,
@@ -4387,7 +4473,7 @@
       "rules": []
     },
     {
-      "id": "e094",
+      "id": "e100",
       "type": "armor",
       "x": 100.8,
       "z": 114.4,
@@ -4401,7 +4487,7 @@
       "rules": []
     },
     {
-      "id": "e095",
+      "id": "e101",
       "type": "enemy_boss",
       "x": 118,
       "z": 138,
@@ -4418,7 +4504,7 @@
       "rules": []
     },
     {
-      "id": "e096",
+      "id": "e102",
       "type": "level_exit",
       "x": 118,
       "z": 146.4,

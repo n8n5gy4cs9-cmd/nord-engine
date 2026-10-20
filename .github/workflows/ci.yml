@@ -112,6 +112,9 @@ jobs:
           for t in eventsheet-demo es-templates plugin-objects pwa multiplayer viewport-layout compiled-export; do
             node tools/$t-test.mjs
           done
+      # M12 FPS Creator addon: node unit tests, file API/CLI, Nord boot, gameplay + editor scenarios (real `nord serve`)
+      - name: FPS Creator suites
+        run: node tools/fpsc-test.mjs
   # M11: the editor in the browser (wasm) and on a server. Desktop jobs above are unaffected by it.
   web-editor:
     runs-on: ubuntu-latest
