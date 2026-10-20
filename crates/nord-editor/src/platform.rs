@@ -84,6 +84,11 @@ pub fn pick_files() -> Option<Vec<PathBuf>> {
     }
 }
 
+/// Stand-in engine folder for the browser (the runtime is served by the service worker, nothing is read from it).
+pub fn web_engine_root() -> Option<PathBuf> {
+    cfg!(target_arch = "wasm32").then(|| PathBuf::from("/engine"))
+}
+
 /// Start the local dev server for the game/edit viewport.
 pub fn start_background(root: PathBuf, engine: PathBuf) -> anyhow::Result<(u16, Arc<Hub>)> {
     #[cfg(not(target_arch = "wasm32"))]
@@ -92,8 +97,8 @@ pub fn start_background(root: PathBuf, engine: PathBuf) -> anyhow::Result<(u16, 
     }
     #[cfg(target_arch = "wasm32")]
     {
-        let _ = (root, engine);
-        anyhow::bail!("no local dev server in the web editor yet (M11-07)")
+        let _ = engine;
+        Ok((0, crate::web::start_hub(root)))
     }
 }
 

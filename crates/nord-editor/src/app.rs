@@ -1019,7 +1019,15 @@ impl eframe::App for App {
         self.frame_ui(ctx, Some(frame));
     }
 
+    // the web build uses eframe's glow backend (WebGL2 works everywhere; WebGPU does not yet), which adds a parameter
+    #[cfg(not(target_arch = "wasm32"))]
     fn on_exit(&mut self) {
+        self.st.settings.save();
+        self.save_layout();
+    }
+
+    #[cfg(target_arch = "wasm32")]
+    fn on_exit(&mut self, _gl: Option<&eframe::glow::Context>) {
         self.st.settings.save();
         self.save_layout();
     }

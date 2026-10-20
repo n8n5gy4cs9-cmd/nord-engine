@@ -1888,7 +1888,7 @@
       "id": "M11-07",
       "milestone": "M11",
       "title": "IframeViewport: game view, 2D/3D edit views, console and docs viewer via iframe overlay + postMessage IPC (reuse native wry sizing logic); service worker serves the project from the Vfs",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M11-08",

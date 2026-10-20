@@ -793,7 +793,7 @@ impl EditorState {
     pub fn ensure_server(&mut self) -> Option<String> {
         if self.play.is_none() {
             let root = self.root.clone()?;
-            let engine = self.engine_root.clone();
+            let engine = self.engine_root.clone().or_else(crate::platform::web_engine_root);
             let Some(engine) = engine else {
                 self.log(
                     LogLevel::Error,

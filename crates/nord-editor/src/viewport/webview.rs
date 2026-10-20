@@ -68,10 +68,16 @@ impl WebPanes {
         for (k, wv) in &self.panes {
             let _ = wv.set_visible(self.shown.contains(k));
         }
+        #[cfg(target_arch = "wasm32")]
+        for k in self.panes.keys() {
+            crate::web::set_iframe_visible(k, self.shown.contains(k));
+        }
     }
 
     /// Destroy a pane (stops whatever page it was running, e.g. on Stop).
     pub fn drop_pane(&mut self, key: &str) {
+        #[cfg(target_arch = "wasm32")]
+        crate::web::remove_iframe(key);
         self.panes.remove(key);
         self.urls.remove(key);
     }
@@ -92,6 +98,8 @@ impl WebPanes {
     /// Reload the pane's URL (used by Play/Reload).
     #[allow(unused_variables)]
     pub fn reload(&mut self, key: &str) {
+        #[cfg(target_arch = "wasm32")]
+        crate::web::reload_iframe(key);
         #[cfg(feature = "webview")]
         if let (Some(wv), Some(u)) = (self.panes.get(key), self.urls.get(key)) {
             let _ = wv.load_url(u);
@@ -221,7 +229,32 @@ impl WebPanes {
                 return true;
             }
         }
+        // browser: an <iframe> over the reserved rect (the page is served by the service worker, see crates/nord-editor-web/www/sw.js)
+        #[cfg(target_arch = "wasm32")]
+        {
+            let z = ui.ctx().zoom_factor();
+            // `…:0` is the web hub's stand-in for the dev server port; the page lives under `play/` next to the editor
+            let page = url
+                .strip_prefix("http://127.0.0.1:0/")
+                .map(|r| format!("play/{r}"))
+                .unwrap_or_else(|| url.to_string());
+            let page = if page.contains("__edit") { format!("{page}&web=1") } else { page };
+            crate::web::place_iframe(key, &page, rect.min.x * z, rect.min.y * z, rect.width() * z, rect.height() * z, !overlay);
+            self.panes.insert(key.to_string(), ());
+            if overlay {
+                ui.painter().rect_filled(rect, 0.0, ui.visuals().extreme_bg_color);
+                ui.painter().text(
+                    rect.center(),
+                    egui::Align2::CENTER_CENTER,
+                    "(paused while a menu is open)",
+                    egui::FontId::proportional(13.0),
+                    ui.visuals().weak_text_color(),
+                );
+            }
+            return true;
+        }
         // fallback card
+        #[allow(unreachable_code)]
         let mut child = ui.new_child(egui::UiBuilder::new().max_rect(rect));
         child.vertical_centered(|ui| {
             ui.add_space(rect.height() * 0.3);

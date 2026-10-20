@@ -9,6 +9,7 @@ use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex, OnceLock};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
+
 use web_time::Instant;
 
 #[wasm_bindgen(module = "/web/store.js")]
@@ -191,4 +192,124 @@ pub fn download_project(root: &Path) -> Result<(), String> {
     let bytes = w.finish().map_err(|e| e.to_string())?.into_inner();
     download(&format!("{name}.zip"), &bytes);
     Ok(())
+}
+
+static ROOT: Mutex<Option<PathBuf>> = Mutex::new(None);
+
+/// A file of the open project, for the service worker (`play/…` requests). `None` = not found.
+pub fn read_project_file(rel: &str) -> Option<Vec<u8>> {
+    let root = ROOT.lock().unwrap_or_else(|e| e.into_inner()).clone()?;
+    if rel.split('/').any(|c| c == "..") {
+        return None;
+    }
+    vfs::read(root.join(rel)).ok()
+}
+
+/// The browser's stand-in for the dev server: a `Hub` fed by `postMessage` from the iframes (`ipc` from the edit viewport, `log`
+/// from the game) and drained to the scene iframe (`edit_tx`). The service worker serves the pages themselves.
+pub fn start_hub(root: PathBuf) -> Arc<nord_serve::Hub> {
+    *ROOT.lock().unwrap_or_else(|e| e.into_inner()) = Some(root);
+    let (edit_tx, _) = tokio::sync::broadcast::channel(256);
+    let (reload_tx, _) = tokio::sync::broadcast::channel(16);
+    let hub = Arc::new(nord_serve::Hub {
+        logs: Mutex::new(vec![]),
+        inbox: Mutex::new(vec![]),
+        edit_tx,
+        reload_tx,
+    });
+    // iframe -> editor
+    let h = hub.clone();
+    let on_msg = Closure::<dyn FnMut(web_sys::MessageEvent)>::new(move |ev: web_sys::MessageEvent| {
+        let d = ev.data();
+        let kind = js_sys::Reflect::get(&d, &"nord".into()).ok().and_then(|v| v.as_string());
+        match kind.as_deref() {
+            Some("ipc") => {
+                let msg = js_sys::Reflect::get(&d, &"msg".into()).unwrap_or(JsValue::NULL);
+                if let Some(v) = js_sys::JSON::stringify(&msg).ok().and_then(|s| s.as_string()).and_then(|s| serde_json::from_str(&s).ok()) {
+                    h.inbox.lock().unwrap_or_else(|e| e.into_inner()).push(v);
+                }
+            }
+            Some("log") => {
+                let get = |k: &str| js_sys::Reflect::get(&d, &k.into()).ok().and_then(|v| v.as_string()).unwrap_or_default();
+                let mut l = h.logs.lock().unwrap_or_else(|e| e.into_inner());
+                if l.len() > 5000 {
+                    l.drain(..1000);
+                }
+                l.push(nord_serve::LogEntry { level: get("level"), text: get("text") });
+            }
+            _ => {}
+        }
+    });
+    if let Some(w) = web_sys::window() {
+        let _ = w.add_event_listener_with_callback("message", on_msg.as_ref().unchecked_ref());
+    }
+    on_msg.forget();
+    // editor -> scene iframe
+    let mut rx = hub.edit_tx.subscribe();
+    wasm_bindgen_futures::spawn_local(async move {
+        while let Ok(text) = rx.recv().await {
+            let msg = js_sys::Object::new();
+            let _ = js_sys::Reflect::set(&msg, &"nord".into(), &"edit".into());
+            let _ = js_sys::Reflect::set(&msg, &"data".into(), &text.into());
+            if let Some(win) = pane("scene").and_then(|f| f.content_window()) {
+                let _ = win.post_message(&msg, "*");
+            }
+        }
+    });
+    hub
+}
+
+fn pane(key: &str) -> Option<web_sys::HtmlIFrameElement> {
+    web_sys::window()?.document()?.get_element_by_id(&format!("nord-pane-{key}"))?.dyn_into().ok()
+}
+
+/// Create or move the `<iframe>` for pane `key` (CSS pixels, relative to the page) and load `url` when it changed.
+pub fn place_iframe(key: &str, url: &str, x: f32, y: f32, w: f32, h: f32, visible: bool) {
+    let Some(doc) = web_sys::window().and_then(|w| w.document()) else { return };
+    let f = match pane(key) {
+        Some(f) => f,
+        None => {
+            let Some(f) = doc.create_element("iframe").ok().and_then(|e| e.dyn_into::<web_sys::HtmlIFrameElement>().ok()) else { return };
+            f.set_id(&format!("nord-pane-{key}"));
+            let _ = f.set_attribute("allow", "autoplay; fullscreen; gamepad; clipboard-read; clipboard-write");
+            let st = f.style();
+            let _ = st.set_property("position", "fixed");
+            let _ = st.set_property("border", "0");
+            let _ = st.set_property("background", "#101418");
+            if let Some(b) = doc.body() {
+                let _ = b.append_child(&f);
+            }
+            f
+        }
+    };
+    if f.get_attribute("data-url").as_deref() != Some(url) {
+        let _ = f.set_attribute("data-url", url);
+        f.set_src(url);
+    }
+    let st = f.style();
+    let _ = st.set_property("left", &format!("{x}px"));
+    let _ = st.set_property("top", &format!("{y}px"));
+    let _ = st.set_property("width", &format!("{w}px"));
+    let _ = st.set_property("height", &format!("{h}px"));
+    let _ = st.set_property("display", if visible { "block" } else { "none" });
+}
+
+pub fn set_iframe_visible(key: &str, visible: bool) {
+    if let Some(f) = pane(key) {
+        let _ = f.style().set_property("display", if visible { "block" } else { "none" });
+    }
+}
+
+pub fn remove_iframe(key: &str) {
+    if let Some(f) = pane(key) {
+        f.remove();
+    }
+}
+
+pub fn reload_iframe(key: &str) {
+    if let Some(f) = pane(key) {
+        if let Some(u) = f.get_attribute("data-url") {
+            f.set_src(&u);
+        }
+    }
 }

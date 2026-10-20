@@ -17,7 +17,11 @@ export const state = {
   rev: -1,
 };
 
+// Web editor (M11-07): the viewport runs in an <iframe> of the editor page (`?web=1`) and talks over postMessage instead of HTTP/SSE.
+const embedded = params.has('web') && window.parent !== window;
+
 export function send(m) {
+  if (embedded) { window.parent.postMessage({ nord: 'ipc', msg: m }, '*'); return; }
   try { fetch('/api/ipc', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(m), keepalive: true }); } catch { /* editor gone */ }
 }
 
@@ -48,6 +52,15 @@ export function onMessage(m) {
 }
 
 function connect() {
+  if (embedded) {
+    addEventListener('message', (ev) => {
+      if (ev.source !== window.parent || ev.data?.nord !== 'edit') return;
+      let m; try { m = JSON.parse(ev.data.data); } catch { return; }
+      if (backend) onMessage(m); else queue.push(m);
+    });
+    send({ t: 'ready', mode });
+    return;
+  }
   const es = new EventSource('/__edit/events');
   es.onmessage = (ev) => { let m; try { m = JSON.parse(ev.data); } catch { return; } if (backend) onMessage(m); else queue.push(m); };
   es.onopen = () => send({ t: 'ready', mode });

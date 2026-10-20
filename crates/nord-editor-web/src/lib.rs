@@ -21,3 +21,9 @@ pub async fn start(canvas_id: String) -> Result<(), JsValue> {
         )
         .await
 }
+
+/// A file of the open project, for the service worker that serves the Play / edit iframes. `undefined` = not found.
+#[wasm_bindgen]
+pub fn read_project_file(path: &str) -> Option<Vec<u8>> {
+    nord_editor::web::read_project_file(path)
+}

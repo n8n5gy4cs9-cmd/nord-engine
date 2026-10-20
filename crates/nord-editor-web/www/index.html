@@ -6,8 +6,19 @@
 #msg{position:fixed;inset:0;display:grid;place-items:center;color:#9aa;font:14px system-ui}</style></head>
 <body><canvas id="nord"></canvas><div id="msg">Loading Nord Engine…</div>
 <script type="module">
-import init, { start } from './pkg/nord_editor_web.js';
+import init, { start, read_project_file } from './pkg/nord_editor_web.js';
 const msg = document.getElementById('msg');
+// the service worker serves the play iframes; the project's files live in the wasm editor, which answers its requests
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.addEventListener('message', (ev) => {
+    if (ev.data?.t === 'read' && ev.ports[0]) ev.ports[0].postMessage(read_project_file(ev.data.path) ?? null);
+  });
+  try {
+    await navigator.serviceWorker.register('sw.js');
+    await navigator.serviceWorker.ready;
+    if (!navigator.serviceWorker.controller) await Promise.race([new Promise((r) => navigator.serviceWorker.addEventListener('controllerchange', r, { once: true })), new Promise((r) => setTimeout(r, 3000))]);
+  } catch { /* no service worker (private mode, http): the editor still works, Play does not */ }
+}
 try {
   await init();
   await start('nord');
@@ -15,5 +26,4 @@ try {
 } catch (e) {
   msg.textContent = 'Nord Engine could not start: ' + e + (navigator.gpu || document.createElement('canvas').getContext('webgl2') ? '' : ' (this browser has no WebGL2/WebGPU)');
 }
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 </script></body></html>
