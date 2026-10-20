@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/nord-core", "crates/nord-cli", "crates/nord-serve", "crates/nord-editor", "crates/nord-export", "crates/nord-player", "crates/nord-desktop", "crates/nord-editor-web"]
+members = ["crates/nord-core", "crates/nord-cli", "crates/nord-serve", "crates/nord-editor", "crates/nord-export", "crates/nord-player", "crates/nord-desktop", "crates/nord-editor-web", "crates/nord-editor-server"]
 # Added in later milestones: nord-editor (M3), nord-player (M4), nord-runtime-wasm + nord-app-wasm (M5; wasm32 only).
 
 [workspace.package]

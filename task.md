@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 225/243 tasks (93%)** · updated 2026-10-20
+**Overall: 228/243 tasks (94%)** · updated 2026-10-20
 
 | Milestone | Progress |
 |---|---|
@@ -18,7 +18,7 @@
 | M8 Polish & portability | 15/20 (75%) |
 | M9 Desktop apps | 16/16 (100%) |
 | M10 Construct-style editor | 35/35 (100%) |
-| M11 Web editor | 8/16 (50%) |
+| M11 Web editor | 11/16 (69%) |
 
 ## Next up
 - **M3-07** SPIKE: wry child webview embedded in egui panel on macOS (resize, HiDPI, focus, IPC both ways); fallback separate window
@@ -309,10 +309,10 @@ _the editor in a browser and on a Linux server (wasm egui + server mode); plan d
 - [x] **M11-06** BrowserFs: OPFS projects, zip import/export, Chromium File System Access folder mode; hub works in browser
 - [x] **M11-07** IframeViewport: game view, 2D/3D edit views, console and docs viewer via iframe overlay + postMessage IPC (reuse native wry sizing logic); service worker serves the project from the Vfs
 - [x] **M11-08** In-browser export: nord-core/nord-export (validate, copy, zip, single-file) compiled to wasm for static-web mode
-- [ ] **M11-09** crates/nord-editor-server (axum, builds on nord-serve): serves wasm editor, /api/p/{project}/(file|tree|rename|delete), WebSocket file events + job logs, path jail, atomic writes
+- [x] **M11-09** crates/nord-editor-server (axum, builds on nord-serve): serves wasm editor, /api/p/{project}/(file|tree|rename|delete), WebSocket file events + job logs, path jail, atomic writes
 - [ ] **M11-10** RemoteFs + ServerHost (client side of the project API/jobs) so the same wasm editor edits server projects; reconnect + conflict handling (single writer lock)
-- [ ] **M11-11** Server jobs: web/single-file export, offline check, thumbnails, optimise, zip download; optional container-isolated Rust-tier builds; CPU/RAM/time limits
-- [ ] **M11-12** Auth + multi-user: token (default) and users file (argon2), per-user workspaces, quotas, CSRF/session hardening, desktop bridge disabled in server mode
+- [x] **M11-11** Server jobs: web/single-file export, offline check, thumbnails, optimise, zip download; optional container-isolated Rust-tier builds; CPU/RAM/time limits
+- [x] **M11-12** Auth + multi-user: token (default) and users file (argon2), per-user workspaces, quotas, CSRF/session hardening, desktop bridge disabled in server mode
 - [ ] **M11-13** Packaging: Dockerfile + docker-compose, systemd unit, nginx/Caddy TLS examples, `nord-editor-server --help`, backups note
 - [ ] **M11-14** CI: build wasm editor + server, Playwright e2e (new project -> edit -> save -> reload; play; export from browser; server path-traversal tests)
 - [ ] **M11-15** Docs: manual chapter 'Run the editor in a browser / on a server' with screenshots, KNOWN_ISSUES entries (browser limits, unverified Safari/Windows), HOSTING/EXPORT docs cross-links
