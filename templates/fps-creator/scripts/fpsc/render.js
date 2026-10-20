@@ -130,7 +130,10 @@ export class LevelRenderer {
       if (world.ray(q[0], q[1], q[2], sun.dir[0], sun.dir[1], sun.dir[2], 30, 'sight')) return null;
       return [sun.color[0] * ndl, sun.color[1] * ndl, sun.color[2] * ndl];
     } : null;
-    bakeBatches(world, batches, lights, amb, { occlude: this.opts.occlude !== false, extra });
+    const verts = batches.reduce((a, b) => a + b.verts, 0);
+    let occlude = this.opts.occlude !== false && this.level.settings.bake !== 'fast';
+    if (occlude && verts * lights.length > 12e6) { occlude = false; this.stats.note = `light occlusion skipped (${verts} vertices × ${lights.length} lights is too much); set fewer lights or smaller areas`; console.warn(`[fpsc] ${this.stats.note}`); }
+    bakeBatches(world, batches, lights, amb, { occlude, extra });
   }
 
   /** Light colour at a world point (for models/pickups). Cached on a 1 m grid. */

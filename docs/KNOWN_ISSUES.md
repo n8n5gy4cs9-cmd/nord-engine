@@ -138,6 +138,7 @@ Verified headless only (token, hidden paths, shutdown, QR matrix). Not verified 
 
 ## FPS Creator addon (M12, 2026-10-20)
 Verified: node unit tests, the file API/CLI, Nord boot of the template, 18 gameplay scenarios and 17 editor scenarios in headless Chromium (software GL), Rust `cargo test -p nord-core fpsc` and a kittest for the tab. **Not verified / limits:**
+- Mouse capture uses the Pointer Lock API; where a webview does not provide it the game says so and falls back to "hold the RIGHT mouse button to look" (works, but unverified in WKWebView/WebView2).
 - No real GPU, macOS WKWebView or Windows WebView2 run of the editor tab (the page is plain WebGL2 + DOM; pointer lock inside the embedded webview is untested — the play-test also works in the browser via *Open in browser*).
 - Lighting: static lights are baked (a change re-bakes the whole level, ~0.2–1 s hitch); named/targeted/scripted lights are *dynamic* (nearest 8 only, no occlusion, no shadows). Light does not pass walls but leaks through glass and between storeys approximately. Sprites/`.glb` models are flat-lit.
 - Characters are blocky procedural models (walk/aim/death animation only); no skinned glTF animation. Weapons are procedural view models without reload art beyond a dip.
@@ -145,4 +146,5 @@ Verified: node unit tests, the file API/CLI, Nord boot of the template, 18 gamep
 - AI: grid A* (cells), enemies cannot open locked doors, no cover system, no friendly fire between enemies. Allies are talk-only.
 - Input: keyboard + mouse only (no gamepad/touch). The bundled single-file export cannot import custom scripts dynamically (use the normal web export).
 - The web editor (wasm) shows the tab but cannot run `install`; use `nord fpsc init` on the server. Browser-only mode has no file API (Save downloads the JSON).
+- No mid-level quick-save: checkpoints (a checkpoint pad) restore health/ammo/keys/position after dying, nothing else (enemies respawn).
 - Level size ≤ 256×256 cells; baking cost grows with vertices × lights in range (the demo level, 12k tris/21 lights, bakes in ~0.2 s; very large levels may take seconds).

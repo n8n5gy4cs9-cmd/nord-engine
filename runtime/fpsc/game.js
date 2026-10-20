@@ -48,7 +48,7 @@ export class FpsGame {
     this.camera = new B.UniversalCamera('fpsc-cam', new B.Vector3(0, 2, 0), scene);
     this.camera.inputs.clear(); this.camera.minZ = 0.04; this.camera.maxZ = 600; this.camera.fov = 1.25; this.camera.rotationQuaternion = null; scene.activeCamera = this.camera;
     scene.setRenderingAutoClearDepthStencil(1, true, true, false);
-    this.ctl = new Controls(this.canvas); this.ctl.noLock = !!o.noLock;
+    this.ctl = new Controls(this.canvas); this.ctl.noLock = !!o.noLock; this.ctl.onFallback = () => this.say('Mouse capture unavailable here — hold the RIGHT mouse button to look around.', 5);
     this.ctl.onLockChange = (l) => { if (!l && this.state === 'play') this.pause(true); };
     this.player = new Player(this); this.viewmodel = new ViewModel(this);
     this.sfx.setCustomSources(this.bank.sounds);

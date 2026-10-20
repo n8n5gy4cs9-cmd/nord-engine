@@ -39,7 +39,7 @@ export class View3D {
     if (pick?.hit) this.ed.selectEntity(pick.pickedMesh.metadata.entId, e.shiftKey);
   }
   setVisible(v) { this.visible = v; if (v) { this.engine.resize(); this.#hud(); if (this.dirty) this.rebuild(); } }
-  invalidate() { this.dirty = true; if (!this.visible) return; clearTimeout(this.t); this.msg.textContent = 'rebuilding…'; this.t = setTimeout(() => this.rebuild(), 280); }
+  invalidate() { this.dirty = true; if (!this.visible) return; clearTimeout(this.t); this.msg.textContent = 'rebuilding…'; this.t = setTimeout(() => this.rebuild(), this.slow ? 2500 : 280); }
   focus(x, z, layer = 0, dist = 10) { const p = this.cam.position; p.set(x - Math.sin(this.yaw) * dist, layer * STORY + dist * 0.8, z - Math.cos(this.yaw) * dist); this.pitch = 0.62; }
   centerOn(x, z) { const b = this.ed.contentBounds(); const size = b ? Math.max(b[2] - b[0] + 1, b[3] - b[1] + 1) * CELL : 24; this.focus(x, z, this.ed.layer, Math.max(14, size * 0.85)); }
 
@@ -61,6 +61,7 @@ export class View3D {
       for (const [e, def, fy] of spawn) this.#entity(e, def, fy);
       this.#hud(); this.msg.textContent += `  · ${this.rend.stats.tris | 0} tris, ${lights.length} lights, ${(performance.now() - t0) | 0} ms`;
     } catch (err) { console.error(err); this.msg.textContent = `3D preview error: ${err.message}`; }
+    this.slow = performance.now() - t0 > 1500; // big level: rebuild less eagerly after edits
     this.#highlight();
   }
   #clear() { for (const m of this.ents) m.dispose?.(); this.ents = []; this.rend?.dispose(); this.hl?.dispose(); this.hl = null; for (const m of this.scene.meshes.slice()) if (m !== this.hl) m.dispose(); }

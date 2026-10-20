@@ -13,7 +13,7 @@ export class Controls {
     this.onLockChange = null; this.dragLook = false;
     const kd = (e) => { if (!this.enabled) return; if (!e.repeat) this.pressedQ.add(e.code); this.keys.add(e.code); if (['Space', 'ArrowUp', 'ArrowDown', 'Tab'].includes(e.code)) e.preventDefault(); };
     const ku = (e) => { this.keys.delete(e.code); };
-    const mm = (e) => { if (this.locked || (this.dragLook && this.buttons)) { this.mx += e.movementX || 0; this.my += e.movementY || 0; } };
+    const mm = (e) => { if (this.locked || (this.dragLook && (this.buttons & 6))) { this.mx += e.movementX || 0; this.my += e.movementY || 0; } };
     const md = (e) => { this.buttons |= 1 << e.button; if (!this.locked && this.enabled && !this.noLock) this.lock(); };
     const mu = (e) => { this.buttons &= ~(1 << e.button); };
     const wh = (e) => { if (this.enabled) this.wheel += Math.sign(e.deltaY); };
@@ -24,7 +24,12 @@ export class Controls {
     canvas.addEventListener('wheel', wh, { passive: true }); document.addEventListener('pointerlockchange', pl); canvas.addEventListener('contextmenu', cm); window.addEventListener('blur', blur);
     this.off = () => { window.removeEventListener('keydown', kd); window.removeEventListener('keyup', ku); window.removeEventListener('mousemove', mm); canvas.removeEventListener('mousedown', md); window.removeEventListener('mouseup', mu); canvas.removeEventListener('wheel', wh); document.removeEventListener('pointerlockchange', pl); canvas.removeEventListener('contextmenu', cm); window.removeEventListener('blur', blur); };
   }
-  lock() { try { const p = this.canvas.requestPointerLock?.(); p?.catch?.(() => { this.dragLook = true; }); } catch { this.dragLook = true; } }
+  /** Capture the mouse. Where pointer lock does not exist or is refused (some embedded webviews) fall back to "hold the RIGHT mouse button to look". */
+  lock() {
+    if (this.locked) return;
+    const fallback = () => { if (!this.locked && !this.dragLook) { this.dragLook = true; this.onFallback?.(); } };
+    try { if (!this.canvas.requestPointerLock) return fallback(); const p = this.canvas.requestPointerLock(); p?.catch?.(fallback); setTimeout(() => { if (!this.locked && this.enabled) fallback(); }, 600); } catch { fallback(); }
+  }
   unlock() { try { document.exitPointerLock?.(); } catch { /* ignore */ } }
   down(...codes) { return codes.some((c) => this.keys.has(c)); }
   pressed(...codes) { return codes.some((c) => this.pressedQ.has(c)); }

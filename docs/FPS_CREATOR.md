@@ -121,7 +121,7 @@ Rules of thumb: ids are lowercase `a-z 0-9 _`; never edit `scripts/fpsc/` (re-in
 {
   "format": "fpsc-level/1", "name": "Outpost Zero", "author": "…", "w": 44, "d": 42,
   "settings": { "sky": "day", "skyColor": "#8fb8e8", "ground": "grass", "fog": false, "fogColor": "#9bb0c8", "fogDensity": 0.012,
-                "ambient": 0.4, "ambientColor": "#a6b2c8", "music": "", "intro": "", "objective": "", "timeLimit": 0, "next": "" },
+                "ambient": 0.4, "ambientColor": "#a6b2c8", "music": "", "intro": "", "objective": "", "timeLimit": 0, "next": "", "bake": "full" },
   "layers": [ { "name": "Ground",
       "cells": { "4,4": { "f": "floor_concrete", "c": "ceiling_tiles", "h": 0.4, "s": { "id": "stairs", "d": "N" }, "p": "pillar", "pt": "concrete" } },
       "edges": { "4,4,H": { "k": "door", "t": "bunker", "tb": "brick", "tt": "metal_panel", "td": "door_metal", "name": "door1", "lock": "red", "auto": false, "close": 4, "flip": false } } } ],
@@ -130,7 +130,7 @@ Rules of thumb: ids are lowercase `a-z 0-9 _`; never edit `scripts/fpsc/` (re-in
                   "rules": [ { "when": "died", "do": "open", "target": "door1" } ], "path": [[72,80],[72,100]] } ]
 }
 ```
-`x,z` are metres (cell = 4 m). Edge keys `"x,z,H|V"`: `H` = east–west edge at `z·4`, `V` = north–south edge at `x·4`; the "front" is +z / +x. Cell keys `"x,z"`. Layer *i* sits at `y = i·3.2`. `normalize()` repairs hand-written files.
+`x,z` are metres (cell = 4 m). Edge keys `"x,z,H|V"`: `H` = east–west edge at `z·4`, `V` = north–south edge at `x·4`; the "front" is +z / +x. Cell keys `"x,z"`. Layer *i* sits at `y = i·3.2`. `normalize()` repairs hand-written files. `settings.bake`: `"fast"` skips light occlusion (instant start for huge levels; walls then no longer block light); the runtime also does this automatically when vertices × lights would exceed ~12 million.
 
 ## Running a level
 * **In Nord**: a 3D project with an entity running `scripts/fpsc/level-script.js` (attributes `level`, `autostart`). The runtime creates its own camera, HUD, input and audio on Nord's Babylon scene; physics can be `none`. Exports include `scripts/`, `levels/` and `fpsc/` automatically. (Custom scripts in `fpsc/scripts/` are imported dynamically — use the default folder export, not the bundled single-file export.)

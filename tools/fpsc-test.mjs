@@ -272,7 +272,7 @@ if (run('nord') || run('game') || run('editor')) {
       assert.equal(await fr.evaluate(() => window.__fpsc_error), undefined); assert.equal(await fr.evaluate(() => window.__fpsc.game.level.name), await ED(`(ed) => ed.level.name`)); assert.ok(await fr.evaluate(() => window.__fpsc.game.ents.some((e) => e.type === 'crate')));
       await shot('playtest'); await page.click('#play-close'); assert.ok(await page.evaluate(() => document.getElementById('play').classList.contains('hidden')));
     });
-    await test('3D preview and help dialog work', async () => { await ED(`(ed) => ed.setView('3d')`); await page.waitForTimeout(700); assert.ok(await ED(`(ed) => ed.v3.rend.stats.tris > 100`)); await shot('3d'); await ED(`(ed) => ed.setView('split')`); await page.keyboard.press('F1'); assert.match(await page.textContent('#modal-box'), /Adding assets/); await page.keyboard.press('Escape'); });
+    await test('3D preview and help dialog work', async () => { await ED(`(ed) => ed.setView('3d')`); await page.waitForTimeout(700); assert.ok(await ED(`(ed) => ed.v3.rend.stats.tris > 100`)); await shot('3d'); await ED(`(ed) => { ed.setTool('select'); }`); await page.focus('#c3d'); await page.keyboard.press('KeyW'); await page.keyboard.press('KeyF'); assert.equal(await ED(`(ed) => ed.tool`), 'select', 'WASD/F in the 3D view must not switch tools'); await ED(`(ed) => ed.setView('split')`); await page.keyboard.press('F1'); assert.match(await page.textContent('#modal-box'), /Adding assets/); await page.keyboard.press('Escape'); });
     await test('no console errors in the editor', () => { noErrors(page); });
     await page.close();
   }

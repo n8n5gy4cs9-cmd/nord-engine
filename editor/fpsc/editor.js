@@ -9,6 +9,8 @@ import { buildPanel, itemsPanel, scriptsPanel, levelPanel, assetsPanel, inspecto
 import { HELP } from './help.js';
 
 const $ = (id) => document.getElementById(id);
+/** localStorage can throw (blocked / private mode / embedded webviews): never let that break the editor. */
+const LS = { get: (k) => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch { /* ignore */ } }, del: (k) => { try { localStorage.removeItem(k); } catch { /* ignore */ } } };
 const TOOLS = [
   ['select', 'V', '⬚', 'Select / move / box-select'], ['wall', 'W', '▬', 'Wall pieces: click an edge or drag a line (Shift = erase)'], ['room', 'R', '▭', 'Room: drag a rectangle → floor, ceiling and walls'],
   ['floor', 'F', '▦', 'Paint floors (drag; Ctrl = rectangle; Shift = erase)'], ['ceiling', 'C', '▔', 'Paint ceilings (Shift = open sky)'], ['fill', 'G', '◩', 'Fill a region with the floor texture'],
@@ -90,7 +92,7 @@ ed.commit = (label, o = {}) => {
   ed.dirty = true; stashRecovery(); ed.renderTop(); ed.map.draw(); if (o.rebuild3d !== false) ed.v3.invalidate(); validateSoon(); $('st-msg').textContent = label ?? '';
   ed.renderSel(); if (!o.keepInspector) ed.refreshInspector();
 };
-const stashRecovery = debounce(() => { try { localStorage.setItem('fpsc.recovery', JSON.stringify({ path: ed.path, level: ed.level, t: Date.now() })); } catch { /* quota */ } }, 1200);
+const stashRecovery = debounce(() => { LS.set('fpsc.recovery', JSON.stringify({ path: ed.path, level: ed.level, t: Date.now() })); }, 1200);
 ed.undo = () => { if (ed.hi <= 0) return toast('Nothing to undo'); ed.hi--; restore(ed.hist[ed.hi]); toast('Undo'); };
 ed.redo = () => { if (ed.hi >= ed.hist.length - 1) return toast('Nothing to redo'); ed.hi++; restore(ed.hist[ed.hi]); toast('Redo'); };
 function restore(s) { ed.level = JSON.parse(s); ed.layer = clamp(ed.layer, 0, ed.level.layers.length - 1); for (const id of [...ed.sel.ents]) if (!entById(id)) ed.sel.ents.delete(id); ed.sel.edges.clear(); ed.sel.cells.clear(); ed.dirty = true; afterLevelChange(); }
@@ -196,7 +198,7 @@ ed.saveLevel = async (as = false) => {
   let path = ed.path;
   if (as || !path) { const inp = el('input', { type: 'text', value: path || `levels/${(ed.level.name || 'level').toLowerCase().replace(/[^a-z0-9]+/g, '_')}.fpsl.json`, style: { width: '100%' } }); const r = await modal('Save level as', [el('div', { class: 'muted' }, 'Path inside your project (levels/ folder recommended).'), inp], [{ label: 'Cancel' }, { label: 'Save', primary: true }]); if (r !== 'Save') return; path = inp.value.trim(); if (!/\.fpsl\.json$/.test(path)) path += path.endsWith('.json') ? '' : '.fpsl.json'; if (!/^[\w./-]+$/.test(path) || path.includes('..')) return toast('Invalid path'); }
   ed.level.format = FORMAT; const text = JSON.stringify(ed.level);
-  try { const ok = await ed.api.save(path, text); ed.path = path; ed.dirty = false; ed.renderTop(); localStorage.removeItem('fpsc.recovery'); localStorage.setItem('fpsc.last', path); toast(ok ? `Saved ${path}` : `Downloaded ${path.split('/').pop()}`); } catch (e) { log('error', String(e.message ?? e)); }
+  try { const ok = await ed.api.save(path, text); ed.path = path; ed.dirty = false; ed.renderTop(); LS.del('fpsc.recovery'); LS.set('fpsc.last', path); toast(ok ? `Saved ${path}` : `Downloaded ${path.split('/').pop()}`); } catch (e) { log('error', String(e.message ?? e)); }
 };
 ed.openLevel = async () => {
   const files = await ed.api.ls('levels'), box = el('div');
@@ -206,7 +208,7 @@ ed.openLevel = async () => {
 };
 ed.loadPath = async (path) => {
   if (ed.dirty && (await modal('Discard changes?', [el('div', {}, 'You have unsaved changes in this level.')], [{ label: 'Cancel' }, { label: 'Discard', danger: true }])) !== 'Discard') return;
-  try { const r = await fetch(`/${path}`, { cache: 'no-store' }); if (!r.ok) throw new Error(`HTTP ${r.status}`); ed.setLevel(await r.json(), path); localStorage.setItem('fpsc.last', path); toast(`Opened ${path}`); } catch (e) { log('error', `Could not open ${path}: ${e.message}`); }
+  try { const r = await fetch(`/${path}`, { cache: 'no-store' }); if (!r.ok) throw new Error(`HTTP ${r.status}`); ed.setLevel(await r.json(), path); LS.set('fpsc.last', path); toast(`Opened ${path}`); } catch (e) { log('error', `Could not open ${path}: ${e.message}`); }
 };
 
 // ================================================================================================================================ play-test
@@ -228,7 +230,7 @@ ed.setTab = (t, focus) => { ed.tab = t; ed.assetFocus = focus; for (const b of $
 ed.renderTop = () => { const sel = $('layer-sel'); sel.innerHTML = ''; ed.level.layers.forEach((l, i) => sel.append(el('option', { value: i, selected: i === ed.layer }, `${i}: ${l.name}`))); $('file-name').textContent = `${ed.path || 'unsaved'}${ed.dirty ? ' ●' : ''}  ·  ${ed.level.name}`; document.title = `${ed.dirty ? '● ' : ''}${ed.level.name} — Nord FPS Level Editor`; };
 ed.renderLeft = () => { const b = $('left-body'), top = b.scrollTop; b.innerHTML = ''; b.append({ build: buildPanel, items: itemsPanel, scripts: scriptsPanel, level: levelPanel, assets: assetsPanel }[ed.tab](ed)); b.scrollTop = top; };
 ed.refreshInspector = () => { const i = $('inspector'); i.innerHTML = ''; try { i.append(inspector(ed)); } catch (e) { console.error(e); i.append(el('div', { class: 'insp-pad' }, `Inspector error: ${e.message}`)); } };
-ed.setView = (v) => { ed.view = v; const vs = $('views'); vs.className = v === '2d' ? 'only2d' : v === '3d' ? 'only3d' : ''; $('view-btn').textContent = v === '2d' ? '2D' : v === '3d' ? '3D' : '2D | 3D'; ed.map.resize(); ed.v3.setVisible(v !== '2d'); if (v !== '3d') ed.map.draw(); try { localStorage.setItem('fpsc.view', v); } catch { /* ignore */ } };
+ed.setView = (v) => { ed.view = v; const vs = $('views'); vs.className = v === '2d' ? 'only2d' : v === '3d' ? 'only3d' : ''; $('view-btn').textContent = v === '2d' ? '2D' : v === '3d' ? '3D' : '2D | 3D'; ed.map.resize(); ed.v3.setVisible(v !== '2d'); if (v !== '3d') ed.map.draw(); LS.set('fpsc.view', v); };
 
 // ================================================================================================================================ tools (mouse)
 let drag = null, spaceDown = false;
@@ -375,12 +377,12 @@ async function init() {
   ed.map = new Map2D($('c2d'), ed); ed.v3 = new View3D($('c3d'), ed);
   const tb = $('tools'); for (const [id, k, g, tip] of TOOLS) tb.append(el('button', { 'data-tool': id, title: `${tip} (${k})`, onclick: () => ed.setTool(id) }, g));
   await ed.reloadBank();
-  const q = new URLSearchParams(location.search); const last = q.get('level') || (() => { try { return localStorage.getItem('fpsc.last'); } catch { return null; } })();
+  const q = new URLSearchParams(location.search); const last = q.get('level') || LS.get('fpsc.last');
   let loaded = false;
   if (last && ed.api.available) { try { const r = await fetch(`/${last}`, { cache: 'no-store' }); if (r.ok) { ed.setLevel(await r.json(), last); loaded = true; } } catch { /* ignore */ } }
   if (!loaded) ed.setLevel(starterLevel(), '');
-  try { const rec = JSON.parse(localStorage.getItem('fpsc.recovery') || 'null'); if (rec && rec.level && rec.path === ed.path && JSON.stringify(rec.level) !== snapshot() && Date.now() - rec.t < 7 * 864e5) { const r = await modal('Restore unsaved work?', [el('div', {}, `An unsaved copy of "${rec.level.name}" from ${new Date(rec.t).toLocaleString()} was found (browser backup).`)], [{ label: 'Ignore' }, { label: 'Restore', primary: true }]); if (r === 'Restore') { ed.setLevel(rec.level, rec.path, false); ed.dirty = true; ed.renderTop(); } } } catch { /* ignore */ }
-  ed.setTool('select'); ed.setTab('build'); ed.setView(localStorage.getItem('fpsc.view') || 'split'); ed.renderTop(); ed.refreshInspector();
+  try { const rec = JSON.parse(LS.get('fpsc.recovery') || 'null'); if (rec && rec.level && rec.path === ed.path && JSON.stringify(rec.level) !== snapshot() && Date.now() - rec.t < 7 * 864e5) { const r = await modal('Restore unsaved work?', [el('div', {}, `An unsaved copy of "${rec.level.name}" from ${new Date(rec.t).toLocaleString()} was found (browser backup).`)], [{ label: 'Ignore' }, { label: 'Restore', primary: true }]); if (r === 'Restore') { ed.setLevel(rec.level, rec.path, false); ed.dirty = true; ed.renderTop(); } } } catch { /* ignore */ }
+  ed.setTool('select'); ed.setTab('build'); ed.setView(LS.get('fpsc.view') || 'split'); ed.renderTop(); ed.refreshInspector();
   ed.map.fit(ed.level); ed.map.draw(); ed.v3.centerOn(ed.map.cx, ed.map.cz); wire(); validateNow();
   window.__fpsc_editor_ready = true;
 }
@@ -413,6 +415,7 @@ function keydown(e, acts) {
   const t = e.target, typing = t.matches?.('input,textarea,select') && !(t.type === 'checkbox'); const ctrl = e.ctrlKey || e.metaKey;
   if (e.code === 'Escape') { if (ed.playing) return ed.stopPlay(); if (!$('modal').classList.contains('hidden')) return $('modal').classList.add('hidden'); if (ed.tool === 'path') return ed.setTool('select'); if (drag) { drag = null; ed.preview = null; ed.map.draw(); return; } ed.clearSel(); return; }
   if (ed.playing || !$('modal').classList.contains('hidden')) return;
+  if (t.id === 'c3d' && !ctrl && !['F5', 'F1', 'Tab'].includes(e.code)) return; // WASD/QE/F fly the 3D camera — they must not switch tools
   if (ctrl) { const k = e.key.toLowerCase(); if (k === 's') { e.preventDefault(); return ed.saveLevel(e.shiftKey); } if (typing) return; if (k === 'z') { e.preventDefault(); return e.shiftKey ? ed.redo() : ed.undo(); } if (k === 'y') { e.preventDefault(); return ed.redo(); } if (k === 'c') { e.preventDefault(); return ed.copySel(); } if (k === 'x') { e.preventDefault(); ed.copySel(); return ed.deleteSelection(); } if (k === 'v') { e.preventDefault(); return ed.paste(); } if (k === 'd') { e.preventDefault(); return ed.duplicateSel(); } if (k === 'a') { e.preventDefault(); const ly = layerData(); ed.clearSelRaw(); for (const en of ed.level.entities) if (en.layer === ed.layer) ed.sel.ents.add(en.id); for (const kk of Object.keys(ly.edges)) ed.sel.edges.add(kk); for (const kk of Object.keys(ly.cells)) ed.sel.cells.add(kk); ed.renderSel(); ed.refreshInspector(); ed.map.draw(); return; } if (k === 'n') { e.preventDefault(); return ed.newLevel(); } if (k === 'o') { e.preventDefault(); return ed.openLevel(); } return; }
   if (e.code === 'F5') { e.preventDefault(); return ed.play(e.shiftKey); } if (e.code === 'F1') { e.preventDefault(); return showHelp(); }
   if (typing) return;
