@@ -400,29 +400,41 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                                                 });
                                                 continue;
                                             }
-                                            ui.horizontal(|ui| {
-                                                let w = (ui.available_width() - 34.0).max(40.0);
-                                                if ui
-                                                    .scope(|ui| {
-                                                        ui.set_width(w);
-                                                        project_row(ui, &name, &p.display().to_string())
-                                                    })
-                                                    .inner
-                                                    .clicked()
-                                                {
-                                                    st.push(Action::OpenPath(p.clone()));
-                                                }
-                                                if ui
-                                                    .add(egui::Button::new(
-                                                        RichText::new("🗑").color(egui::Color32::WHITE),
-                                                    )
-                                                    .fill(egui::Color32::from_rgb(190, 40, 40)))
-                                                    .on_hover_text("Delete this project…")
-                                                    .clicked()
-                                                {
-                                                    st.hub.confirm_delete = Some(p.clone());
-                                                }
-                                            });
+                                            // engine checkout (examples/templates) and saved example copies are never deletable
+                                            let protected = st
+                                                .engine_root
+                                                .as_ref()
+                                                .is_some_and(|e| p.starts_with(e))
+                                                || p.starts_with(nord_core::io::config_dir());
+                                            ui.with_layout(
+                                                egui::Layout::right_to_left(egui::Align::Center),
+                                                |ui| {
+                                                    // button first = fixed right-hand column, same x on every row
+                                                    let del = ui
+                                                        .add_enabled(
+                                                            !protected,
+                                                            egui::Button::new(
+                                                                RichText::new("🗑")
+                                                                    .color(egui::Color32::WHITE),
+                                                            )
+                                                            .fill(egui::Color32::from_rgb(190, 40, 40))
+                                                            .min_size(egui::vec2(30.0, 28.0)),
+                                                        )
+                                                        .on_hover_text(if protected {
+                                                            "Example / engine project: protected, cannot be deleted here"
+                                                        } else {
+                                                            "Delete this project…"
+                                                        });
+                                                    if del.clicked() {
+                                                        st.hub.confirm_delete = Some(p.clone());
+                                                    }
+                                                    if project_row(ui, &name, &p.display().to_string())
+                                                        .clicked()
+                                                    {
+                                                        st.push(Action::OpenPath(p.clone()));
+                                                    }
+                                                },
+                                            );
                                         }
                                     });
                             });
