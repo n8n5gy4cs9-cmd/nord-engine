@@ -229,46 +229,248 @@ Every JavaScript file, generated HTML, project metadata and sprite metadata is l
 ### app.js
 
 ```js
-import {COURSE,driver,traffic,updateDriver,padInput} from './track.js';
-import {drawView} from './render.js';
-import {RetroAudio} from './audio.js';
-import {AUDIO} from './audio-config.js';
-export async function mount(root){
- root.innerHTML=`<style>body{margin:0;background:#101b2b;color:#e3edf0;font:15px monospace}#shell{position:relative;max-width:1100px;margin:auto}canvas{display:block;width:100%;image-rendering:pixelated}#bar{padding:10px;display:flex;gap:8px;flex-wrap:wrap}button,select{font:inherit;padding:8px;background:#304a61;color:white;border:1px solid #7a9caa;border-radius:5px}#notice{padding:8px;min-height:18px}#overlay{position:absolute;top:35%;left:15%;width:70%;padding:18px;box-sizing:border-box;background:#0d172ae8;text-align:center}h1{color:#f7d89b;font-size:26px}</style>
- <div id="shell"><div id="bar"><button id="one">1 player</button><button id="two">2 player split</button><button id="pause">Pause / Resume</button><button id="restart">Restart</button><button id="mute">Mute</button><select id="track"><option>Coast Drive</option><option>Coast Night</option></select></div><canvas width="960" height="540" tabindex="0"></canvas><div id="notice"></div><div id="overlay"><h1>COASTLINE SPRINT</h1><p>One coast. Two checkpoints. Beat the clock!</p><p>P1: WASD/arrows · Shift nitro<br>P2: gamepad left stick · RT/A throttle · LT/B brake · X nitro</p><p>Choose 1 player or connect a gamepad and choose 2 player split.</p></div></div>`;
- const $=s=>root.querySelector(s),canvas=$('canvas'),g=canvas.getContext('2d'),sound=new RetroAudio(AUDIO),keys=new Set();
- const load=src=>new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=()=>reject(Error('Missing '+src));image.src=src;});
- const images={cars:await load('assets/sprites/racing-cars.png'),roadside:await load('assets/sprites/roadside.png')};
- let players=[driver()],cars=traffic(),mode=1,state='menu',paused=false,last=performance.now(),engine=null,starting=false;
- const pad=()=>Array.from(navigator.getGamepads?.()??[]).find(p=>p?.connected);
- const keyboard=()=>({steer:(keys.has('KeyD')||keys.has('ArrowRight')?1:0)-(keys.has('KeyA')||keys.has('ArrowLeft')?1:0),accel:keys.has('KeyW')||keys.has('ArrowUp')?1:0,brake:keys.has('KeyS')||keys.has('ArrowDown')?1:0,boost:keys.has('ShiftLeft')||keys.has('ShiftRight')});
- async function start(count){
-  if(starting)return;if(count===2&&!pad()){$('#notice').textContent='Connect a gamepad and press one of its buttons, then choose 2 player split.';return;}
-  starting=true;mode=count;players=Array.from({length:mode},(_,i)=>driver(i));cars=traffic();paused=false;state='playing';keys.clear();$('#overlay').hidden=true;canvas.focus();
-  try{await sound.unlock();await sound.music($('#track').selectedIndex);if(engine)engine.source.stop();engine=await sound.play('engine',{loop:true,volume:.07});}catch(error){sound.problem=error.message;}finally{starting=false;}
- }
- function togglePause(){if(state!=='playing')return;if(paused&&mode===2&&!pad())return;paused=!paused;$('#overlay').hidden=!paused;$('#overlay').innerHTML='<h1>PAUSED</h1><p>Pause / Resume continues. Connect P2 gamepad if disconnected.</p>';paused?sound.suspend():sound.resume();keys.clear();}
- $('#one').onclick=()=>start(1);$('#two').onclick=()=>start(2);$('#restart').onclick=()=>start(mode);$('#pause').onclick=togglePause;
- $('#mute').onclick=()=>{$('#mute').textContent=sound.mute()?'Unmute':'Mute';};$('#track').onchange=()=>{if(sound.ctx)sound.music($('#track').selectedIndex);};
- window.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Space'].includes(e.code)&&state==='playing')e.preventDefault();if(e.code==='KeyP'&&!e.repeat)togglePause();keys.add(e.code);});
- window.addEventListener('keyup',e=>keys.delete(e.code));window.addEventListener('blur',()=>{keys.clear();if(state==='playing'&&!paused)togglePause();});
- function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;
-  if(mode===2&&state==='playing'&&!paused&&!pad())togglePause();
-  if(state==='playing'&&!paused){
-   for(const car of cars)car.z+=car.speed*dt;
-   for(const p of players)for(const event of updateDriver(p,p.index?padInput(pad()):keyboard(),dt,cars))sound.play(event,{volume:event==='crash'?.65:.5});
-   if(players.every(p=>p.finished||p.lost)){state='result';if(engine){engine.source.stop();engine=null;}}
+import { COURSE, driver, traffic, updateDriver, padInput } from './track.js';
+import { drawView } from './render.js';
+import { RetroAudio } from './audio.js';
+import { AUDIO } from './audio-config.js';
+export async function mount(root) {
+  root.innerHTML = /* HTML */ `
+    <style>
+      body {
+        margin: 0;
+        background: #101b2b;
+        color: #e3edf0;
+        font: 15px monospace;
+      }
+      #shell {
+        position: relative;
+        max-width: 1100px;
+        margin: auto;
+      }
+      canvas {
+        display: block;
+        width: 100%;
+        image-rendering: pixelated;
+      }
+      #bar {
+        padding: 10px;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      button,
+      select {
+        font: inherit;
+        padding: 8px;
+        background: #304a61;
+        color: white;
+        border: 1px solid #7a9caa;
+        border-radius: 5px;
+      }
+      #notice {
+        padding: 8px;
+        min-height: 18px;
+      }
+      #overlay {
+        position: absolute;
+        top: 35%;
+        left: 15%;
+        width: 70%;
+        padding: 18px;
+        box-sizing: border-box;
+        background: #0d172ae8;
+        text-align: center;
+      }
+      h1 {
+        color: #f7d89b;
+        font-size: 26px;
+      }
+    </style>
+    <div id="shell">
+      <div id="bar">
+        <button id="one">1 player</button>
+        <button id="two">2 player split</button>
+        <button id="pause">Pause / Resume</button>
+        <button id="restart">Restart</button>
+        <button id="mute">Mute</button>
+        <select id="track">
+          <option>Coast Drive</option>
+          <option>Coast Night</option>
+        </select>
+      </div>
+      <canvas width="960" height="540" tabindex="0"></canvas>
+      <div id="notice"></div>
+      <div id="overlay">
+        <h1>COASTLINE SPRINT</h1>
+        <p>One coast. Two checkpoints. Beat the clock!</p>
+        <p>
+          P1: WASD/arrows · Shift nitro
+          <br />
+          P2: gamepad left stick · RT/A throttle · LT/B brake · X nitro
+        </p>
+        <p>Choose 1 player or connect a gamepad and choose 2 player split.</p>
+      </div>
+    </div>
+  `;
+  const $ = (s) => root.querySelector(s),
+    canvas = $('canvas'),
+    g = canvas.getContext('2d'),
+    sound = new RetroAudio(AUDIO),
+    keys = new Set();
+  const load = (src) =>
+    new Promise((resolve, reject) => {
+      const image = new Image();
+      image.onload = () => resolve(image);
+      image.onerror = () => reject(Error('Missing ' + src));
+      image.src = src;
+    });
+  const images = {
+    cars: await load('assets/sprites/racing-cars.png'),
+    roadside: await load('assets/sprites/roadside.png'),
+  };
+  let players = [driver()],
+    cars = traffic(),
+    mode = 1,
+    state = 'menu',
+    paused = false,
+    last = performance.now(),
+    engine = null,
+    starting = false;
+  const pad = () => Array.from(navigator.getGamepads?.() ?? []).find((p) => p?.connected);
+  const keyboard = () => ({
+    steer:
+      (keys.has('KeyD') || keys.has('ArrowRight') ? 1 : 0) -
+      (keys.has('KeyA') || keys.has('ArrowLeft') ? 1 : 0),
+    accel: keys.has('KeyW') || keys.has('ArrowUp') ? 1 : 0,
+    brake: keys.has('KeyS') || keys.has('ArrowDown') ? 1 : 0,
+    boost: keys.has('ShiftLeft') || keys.has('ShiftRight'),
+  });
+  async function start(count) {
+    if (starting) return;
+    if (count === 2 && !pad()) {
+      $('#notice').textContent =
+        'Connect a gamepad and press one of its buttons, then choose 2 player split.';
+      return;
+    }
+    starting = true;
+    mode = count;
+    players = Array.from({ length: mode }, (_, i) => driver(i));
+    cars = traffic();
+    paused = false;
+    state = 'playing';
+    keys.clear();
+    $('#overlay').hidden = true;
+    canvas.focus();
+    try {
+      await sound.unlock();
+      await sound.music($('#track').selectedIndex);
+      if (engine) engine.source.stop();
+      engine = await sound.play('engine', { loop: true, volume: 0.07 });
+    } catch (error) {
+      sound.problem = error.message;
+    } finally {
+      starting = false;
+    }
   }
-  if(engine){engine.source.playbackRate.value=.7+(players[0].speed/COURSE.maxSpeed)*1.4;engine.gain.gain.value=paused?0:.035+players[0].speed/COURSE.maxSpeed*.075;}
-  const h=canvas.height/mode;
-  players.forEach((p,i)=>{g.save();g.beginPath();g.rect(0,i*h,canvas.width,h);g.clip();g.translate(0,i*h);drawView(g,p,cars,players,images,canvas.width,h);g.restore();});
-  if(mode===2){g.fillStyle='#0b1424';g.fillRect(0,h-2,canvas.width,4);}
-  $('#notice').textContent=sound.problem?`Audio: ${sound.problem}`:mode===2?`P2 ${pad()?.id??'GAMEPAD DISCONNECTED'} · ${state==='result'?'Restart for a new race.':'P pauses both views.'}`:'W/Up accelerates · S/Down brakes · A/D steer · Shift nitro · P pause';
+  function togglePause() {
+    if (state !== 'playing') return;
+    if (paused && mode === 2 && !pad()) return;
+    paused = !paused;
+    $('#overlay').hidden = !paused;
+    $('#overlay').innerHTML =
+      '<h1>PAUSED</h1><p>Pause / Resume continues. Connect P2 gamepad if disconnected.</p>';
+    paused ? sound.suspend() : sound.resume();
+    keys.clear();
+  }
+  $('#one').onclick = () => start(1);
+  $('#two').onclick = () => start(2);
+  $('#restart').onclick = () => start(mode);
+  $('#pause').onclick = togglePause;
+  $('#mute').onclick = () => {
+    $('#mute').textContent = sound.mute() ? 'Unmute' : 'Mute';
+  };
+  $('#track').onchange = () => {
+    if (sound.ctx) sound.music($('#track').selectedIndex);
+  };
+  window.addEventListener('keydown', (e) => {
+    if (
+      ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Space'].includes(e.code) &&
+      state === 'playing'
+    )
+      e.preventDefault();
+    if (e.code === 'KeyP' && !e.repeat) togglePause();
+    keys.add(e.code);
+  });
+  window.addEventListener('keyup', (e) => keys.delete(e.code));
+  window.addEventListener('blur', () => {
+    keys.clear();
+    if (state === 'playing' && !paused) togglePause();
+  });
+  function frame(now) {
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    if (mode === 2 && state === 'playing' && !paused && !pad()) togglePause();
+    if (state === 'playing' && !paused) {
+      for (const car of cars) car.z += car.speed * dt;
+      for (const p of players)
+        for (const event of updateDriver(
+          p,
+          p.index ? padInput(pad()) : keyboard(),
+          dt,
+          cars,
+        ))
+          sound.play(event, { volume: event === 'crash' ? 0.65 : 0.5 });
+      if (players.every((p) => p.finished || p.lost)) {
+        state = 'result';
+        if (engine) {
+          engine.source.stop();
+          engine = null;
+        }
+      }
+    }
+    if (engine) {
+      engine.source.playbackRate.value = 0.7 + (players[0].speed / COURSE.maxSpeed) * 1.4;
+      engine.gain.gain.value = paused
+        ? 0
+        : 0.035 + (players[0].speed / COURSE.maxSpeed) * 0.075;
+    }
+    const h = canvas.height / mode;
+    players.forEach((p, i) => {
+      g.save();
+      g.beginPath();
+      g.rect(0, i * h, canvas.width, h);
+      g.clip();
+      g.translate(0, i * h);
+      drawView(g, p, cars, players, images, canvas.width, h);
+      g.restore();
+    });
+    if (mode === 2) {
+      g.fillStyle = '#0b1424';
+      g.fillRect(0, h - 2, canvas.width, 4);
+    }
+    $('#notice').textContent = sound.problem
+      ? `Audio: ${sound.problem}`
+      : mode === 2
+        ? `P2 ${pad()?.id ?? 'GAMEPAD DISCONNECTED'} · ${state === 'result' ? 'Restart for a new race.' : 'P pauses both views.'}`
+        : 'W/Up accelerates · S/Down brakes · A/D steer · Shift nitro · P pause';
+    requestAnimationFrame(frame);
+  }
   requestAnimationFrame(frame);
- }
- requestAnimationFrame(frame);
- // Read-only inspection seam used by browser checks; gameplay still runs through real inputs.
- window.__coast={get players(){return players;},get paused(){return paused;},get state(){return state;},get sound(){return sound;}};
+  // Read-only inspection seam used by browser checks; gameplay still runs through real inputs.
+  window.__coast = {
+    get players() {
+      return players;
+    },
+    get paused() {
+      return paused;
+    },
+    get state() {
+      return state;
+    },
+    get sound() {
+      return sound;
+    },
+  };
 }
 ```
 
@@ -317,7 +519,16 @@ export async function mount(root){
 
 ```js
 // Put your replacement MP3/WAV/OGG files in assets/audio and change these paths.
-export const AUDIO={music:['assets/audio/coast-drive.mp3','assets/audio/coast-night.mp3'],sfx:{engine:'assets/audio/engine.mp3',crash:'assets/audio/crash.mp3',skid:'assets/audio/skid.mp3',checkpoint:'assets/audio/checkpoint.mp3',win:'assets/audio/win.mp3'}};
+export const AUDIO = {
+  music: ['assets/audio/coast-drive.mp3', 'assets/audio/coast-night.mp3'],
+  sfx: {
+    engine: 'assets/audio/engine.mp3',
+    crash: 'assets/audio/crash.mp3',
+    skid: 'assets/audio/skid.mp3',
+    checkpoint: 'assets/audio/checkpoint.mp3',
+    win: 'assets/audio/win.mp3',
+  },
+};
 ```
 
 </details>
@@ -328,34 +539,95 @@ export const AUDIO={music:['assets/audio/coast-drive.mp3','assets/audio/coast-ni
 ```js
 // Local MP3/WAV/OGG files, decoded on first user activation. No external service.
 export class RetroAudio {
-  constructor(config) { this.config=config;this.cache=new Map();this.voices=new Set();this.problem='';this.muted=false; }
+  constructor(config) {
+    this.config = config;
+    this.cache = new Map();
+    this.voices = new Set();
+    this.problem = '';
+    this.muted = false;
+  }
   async unlock() {
-    this.ctx??=new AudioContext();
-    if(!this.master){this.master=this.ctx.createGain();this.master.gain.value=.55;this.master.connect(this.ctx.destination);}
+    this.ctx ??= new AudioContext();
+    if (!this.master) {
+      this.master = this.ctx.createGain();
+      this.master.gain.value = 0.55;
+      this.master.connect(this.ctx.destination);
+    }
     await this.ctx.resume();
   }
   async load(path) {
-    if(!this.cache.has(path))this.cache.set(path,(async()=>{const response=await fetch(path);if(!response.ok)throw Error(`${path}: HTTP ${response.status}`);return this.ctx.decodeAudioData(await response.arrayBuffer());})());
+    if (!this.cache.has(path))
+      this.cache.set(
+        path,
+        (async () => {
+          const response = await fetch(path);
+          if (!response.ok) throw Error(`${path}: HTTP ${response.status}`);
+          return this.ctx.decodeAudioData(await response.arrayBuffer());
+        })(),
+      );
     return this.cache.get(path);
   }
-  async voice(path,{volume=.5,loop=false,rate=1}={}) {
-    if(!this.ctx)return null;
+  async voice(path, { volume = 0.5, loop = false, rate = 1 } = {}) {
+    if (!this.ctx) return null;
     try {
-      const buffer=await this.load(path);if(this.voices.size>24&&!loop)return null;
-      const source=this.ctx.createBufferSource(),gain=this.ctx.createGain();source.buffer=buffer;source.loop=loop;source.playbackRate.value=rate;gain.gain.value=volume;source.connect(gain);gain.connect(this.master);
-      const voice={source,gain};this.voices.add(voice);source.onended=()=>{this.voices.delete(voice);source.disconnect();gain.disconnect();};source.start();return voice;
-    }catch(error){this.problem=error.message;console.warn('[retro audio]',error);return null;}
+      const buffer = await this.load(path);
+      if (this.voices.size > 24 && !loop) return null;
+      const source = this.ctx.createBufferSource(),
+        gain = this.ctx.createGain();
+      source.buffer = buffer;
+      source.loop = loop;
+      source.playbackRate.value = rate;
+      gain.gain.value = volume;
+      source.connect(gain);
+      gain.connect(this.master);
+      const voice = { source, gain };
+      this.voices.add(voice);
+      source.onended = () => {
+        this.voices.delete(voice);
+        source.disconnect();
+        gain.disconnect();
+      };
+      source.start();
+      return voice;
+    } catch (error) {
+      this.problem = error.message;
+      console.warn('[retro audio]', error);
+      return null;
+    }
   }
-  play(name,options={}) {const path=this.config.sfx[name];return path?this.voice(path,options):Promise.resolve(null);}
-  async music(index=0) {
-    const old=this.song,next=await this.voice(this.config.music[index%this.config.music.length],{loop:true,volume:0});
-    if(!next)return;this.song=next;next.gain.gain.linearRampToValueAtTime(.4,this.ctx.currentTime+.4);
-    if(old){old.gain.gain.linearRampToValueAtTime(0,this.ctx.currentTime+.4);old.source.stop(this.ctx.currentTime+.45);}
+  play(name, options = {}) {
+    const path = this.config.sfx[name];
+    return path ? this.voice(path, options) : Promise.resolve(null);
   }
-  mute() {this.muted=!this.muted;if(this.master)this.master.gain.gain.value=this.muted?0:.55;return this.muted;}
-  suspend() {if(this.ctx?.state==='running')return this.ctx.suspend();}
-  resume() {if(this.ctx?.state==='suspended')return this.ctx.resume();}
-  async dispose() {if(this.ctx)await this.ctx.close();this.voices.clear();}
+  async music(index = 0) {
+    const old = this.song,
+      next = await this.voice(this.config.music[index % this.config.music.length], {
+        loop: true,
+        volume: 0,
+      });
+    if (!next) return;
+    this.song = next;
+    next.gain.gain.linearRampToValueAtTime(0.4, this.ctx.currentTime + 0.4);
+    if (old) {
+      old.gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 0.4);
+      old.source.stop(this.ctx.currentTime + 0.45);
+    }
+  }
+  mute() {
+    this.muted = !this.muted;
+    if (this.master) this.master.gain.gain.value = this.muted ? 0 : 0.55;
+    return this.muted;
+  }
+  suspend() {
+    if (this.ctx?.state === 'running') return this.ctx.suspend();
+  }
+  resume() {
+    if (this.ctx?.state === 'suspended') return this.ctx.resume();
+  }
+  async dispose() {
+    if (this.ctx) await this.ctx.close();
+    this.voices.clear();
+  }
 }
 ```
 
@@ -454,29 +726,129 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 
 ```js
 // Extended from Nord's own Amiga Showcase road/sprite presentation.
-import {curve,hill,COURSE} from './track.js';
-export function drawView(g,p,cars,others,images,w,h){
- const horizon=h*.36;g.fillStyle='#82bbce';g.fillRect(0,0,w,h);g.fillStyle='#eac48d';g.fillRect(0,horizon*.65,w,h*.2);
- g.fillStyle='#657e86';g.beginPath();g.moveTo(0,horizon);for(let x=0;x<=w;x+=20)g.lineTo(x,horizon-18-Math.sin(x*.02+p.z*.00005)*12);g.lineTo(w,horizon+30);g.lineTo(0,horizon+30);g.fill();
- g.fillStyle='#487650';g.fillRect(0,horizon,w,h-horizon);
- const SEG=200,road=2000,points=[];let x=0,dx=0;
- for(let i=1;i<=180;i++){const z=p.z+i*SEG;dx+=curve(z);x+=dx;const scale=.85/(i*SEG);points.push({z,scale,x:w/2+(x-p.x*road)*scale*w/2,y:horizon+(hill(p.z)+950-hill(z))*scale*h/2,half:road*scale*w/2});}
- const quad=(a,b,ratio,color)=>{g.fillStyle=color;g.beginPath();g.moveTo(a.x-a.half*ratio,a.y);g.lineTo(a.x+a.half*ratio,a.y);g.lineTo(b.x+b.half*ratio,b.y);g.lineTo(b.x-b.half*ratio,b.y);g.closePath();g.fill();};
- for(let i=points.length-2;i>=0;i--){const a=points[i],b=points[i+1];if(b.y>=a.y||b.y>h)continue;const stripe=Math.floor(a.z/1200)%2;quad(a,b,1.08,stripe?'#eee0c4':'#9a4e45');quad(a,b,1,stripe?'#444750':'#4c4e56');if(stripe){for(const lane of [-.33,.33]){const aa={...a,x:a.x+a.half*lane,half:a.half*.014},bb={...b,x:b.x+b.half*lane,half:b.half*.014};quad(aa,bb,1,'#d7d5bb');}}
- }
- const sprite=(image,frame,fw,fh,cols,cx,cy,sw,sh)=>{g.imageSmoothingEnabled=false;g.drawImage(image,(frame%cols)*fw,Math.floor(frame/cols)*fh,fw,fh,Math.round(cx-sw/2),Math.round(cy-sh),Math.round(sw),Math.round(sh));};
- const objects=[];
- for(let i=0;i<32;i++){const z=Math.floor(p.z/1900)*1900+i*1900;objects.push({z,x:i%2?-1.45:1.45,scenery:true,id:i});}
- for(const car of [...cars,...others.filter(o=>o!==p)])if(car.z>p.z+250&&car.z<p.z+35000)objects.push(car);
- objects.sort((a,b)=>b.z-a.z);
- for(const o of objects){const depth=o.z-p.z,index=Math.round(depth/SEG)-1,point=points[index];if(!point||depth<250)continue;const xx=point.x+o.x*point.half,yy=point.y,size=Math.min(w*.4,point.scale*w*260);
-  if(o.scenery)sprite(images.roadside,o.id%8,64,96,8,xx,yy,size*1.2,size*1.8);
-  else sprite(images.cars,o.index===0?1:5,64,40,4,xx,yy,size,size*.625);
- }
- const carW=Math.min(w*.25,h*.6),frame=(p.index?4:0)+(p.steer<-.15?0:p.steer>.15?2:1);
- sprite(images.cars,frame,64,40,4,w/2,h*.91,carW,carW*.625);
- g.fillStyle='#101a2bdf';g.fillRect(0,0,w,37);g.fillStyle=p.index?'#f4eee2':'#ffae9b';g.font=`bold ${h<250?11:14}px monospace`;g.fillText(`P${p.index+1}  ${Math.round(p.speed/20)} KM/H  TIME ${Math.ceil(p.time)}  ${Math.round(p.z/COURSE.length*100)}%`,8,16);g.fillText(`NITRO ${Math.round(p.nitro*100)}%  CP ${p.checkpoint}/2  HITS ${p.hits}`,8,31);
- if(p.finished||p.lost){g.fillStyle='#081326dd';g.fillRect(w*.12,h*.4,w*.76,60);g.fillStyle='#ffe4a1';g.font='bold 18px monospace';g.fillText(p.finished?`FINISH ${p.elapsed.toFixed(1)}s`:'TIME UP',w*.2,h*.54);}
+import { curve, hill, COURSE } from './track.js';
+export function drawView(g, p, cars, others, images, w, h) {
+  const horizon = h * 0.36;
+  g.fillStyle = '#82bbce';
+  g.fillRect(0, 0, w, h);
+  g.fillStyle = '#eac48d';
+  g.fillRect(0, horizon * 0.65, w, h * 0.2);
+  g.fillStyle = '#657e86';
+  g.beginPath();
+  g.moveTo(0, horizon);
+  for (let x = 0; x <= w; x += 20)
+    g.lineTo(x, horizon - 18 - Math.sin(x * 0.02 + p.z * 0.00005) * 12);
+  g.lineTo(w, horizon + 30);
+  g.lineTo(0, horizon + 30);
+  g.fill();
+  g.fillStyle = '#487650';
+  g.fillRect(0, horizon, w, h - horizon);
+  const SEG = 200,
+    road = 2000,
+    points = [];
+  let x = 0,
+    dx = 0;
+  for (let i = 1; i <= 180; i++) {
+    const z = p.z + i * SEG;
+    dx += curve(z);
+    x += dx;
+    const scale = 0.85 / (i * SEG);
+    points.push({
+      z,
+      scale,
+      x: w / 2 + ((x - p.x * road) * scale * w) / 2,
+      y: horizon + ((hill(p.z) + 950 - hill(z)) * scale * h) / 2,
+      half: (road * scale * w) / 2,
+    });
+  }
+  const quad = (a, b, ratio, color) => {
+    g.fillStyle = color;
+    g.beginPath();
+    g.moveTo(a.x - a.half * ratio, a.y);
+    g.lineTo(a.x + a.half * ratio, a.y);
+    g.lineTo(b.x + b.half * ratio, b.y);
+    g.lineTo(b.x - b.half * ratio, b.y);
+    g.closePath();
+    g.fill();
+  };
+  for (let i = points.length - 2; i >= 0; i--) {
+    const a = points[i],
+      b = points[i + 1];
+    if (b.y >= a.y || b.y > h) continue;
+    const stripe = Math.floor(a.z / 1200) % 2;
+    quad(a, b, 1.08, stripe ? '#eee0c4' : '#9a4e45');
+    quad(a, b, 1, stripe ? '#444750' : '#4c4e56');
+    if (stripe) {
+      for (const lane of [-0.33, 0.33]) {
+        const aa = { ...a, x: a.x + a.half * lane, half: a.half * 0.014 },
+          bb = { ...b, x: b.x + b.half * lane, half: b.half * 0.014 };
+        quad(aa, bb, 1, '#d7d5bb');
+      }
+    }
+  }
+  const sprite = (image, frame, fw, fh, cols, cx, cy, sw, sh) => {
+    g.imageSmoothingEnabled = false;
+    g.drawImage(
+      image,
+      (frame % cols) * fw,
+      Math.floor(frame / cols) * fh,
+      fw,
+      fh,
+      Math.round(cx - sw / 2),
+      Math.round(cy - sh),
+      Math.round(sw),
+      Math.round(sh),
+    );
+  };
+  const objects = [];
+  for (let i = 0; i < 32; i++) {
+    const z = Math.floor(p.z / 1900) * 1900 + i * 1900;
+    objects.push({ z, x: i % 2 ? -1.45 : 1.45, scenery: true, id: i });
+  }
+  for (const car of [...cars, ...others.filter((o) => o !== p)])
+    if (car.z > p.z + 250 && car.z < p.z + 35000) objects.push(car);
+  objects.sort((a, b) => b.z - a.z);
+  for (const o of objects) {
+    const depth = o.z - p.z,
+      index = Math.round(depth / SEG) - 1,
+      point = points[index];
+    if (!point || depth < 250) continue;
+    const xx = point.x + o.x * point.half,
+      yy = point.y,
+      size = Math.min(w * 0.4, point.scale * w * 260);
+    if (o.scenery)
+      sprite(images.roadside, o.id % 8, 64, 96, 8, xx, yy, size * 1.2, size * 1.8);
+    else
+      sprite(images.cars, o.index === 0 ? 1 : 5, 64, 40, 4, xx, yy, size, size * 0.625);
+  }
+  const carW = Math.min(w * 0.25, h * 0.6),
+    frame = (p.index ? 4 : 0) + (p.steer < -0.15 ? 0 : p.steer > 0.15 ? 2 : 1);
+  sprite(images.cars, frame, 64, 40, 4, w / 2, h * 0.91, carW, carW * 0.625);
+  g.fillStyle = '#101a2bdf';
+  g.fillRect(0, 0, w, 37);
+  g.fillStyle = p.index ? '#f4eee2' : '#ffae9b';
+  g.font = `bold ${h < 250 ? 11 : 14}px monospace`;
+  g.fillText(
+    `P${p.index + 1}  ${Math.round(p.speed / 20)} KM/H  TIME ${Math.ceil(p.time)}  ${Math.round((p.z / COURSE.length) * 100)}%`,
+    8,
+    16,
+  );
+  g.fillText(
+    `NITRO ${Math.round(p.nitro * 100)}%  CP ${p.checkpoint}/2  HITS ${p.hits}`,
+    8,
+    31,
+  );
+  if (p.finished || p.lost) {
+    g.fillStyle = '#081326dd';
+    g.fillRect(w * 0.12, h * 0.4, w * 0.76, 60);
+    g.fillStyle = '#ffe4a1';
+    g.font = 'bold 18px monospace';
+    g.fillText(
+      p.finished ? `FINISH ${p.elapsed.toFixed(1)}s` : 'TIME UP',
+      w * 0.2,
+      h * 0.54,
+    );
+  }
 }
 ```
 
@@ -486,29 +858,110 @@ export function drawView(g,p,cars,others,images,w,h){
 <summary>Complete track.js</summary>
 
 ```js
-export const COURSE={length:180000,limit:65,checkpoints:[60000,120000],bonus:18,maxSpeed:4800};
-export const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-export function curve(z){const t=z/COURSE.length;return t<.12?0:Math.sin(z/8500)*.65*(t>.9?.3:1);}
-export const hill=z=>Math.sin(z/12000)*450+Math.sin(z/4700)*90;
-export function driver(index=0){return {index,x:index?.3:-.3,z:0,speed:0,time:COURSE.limit,elapsed:0,nitro:1,checkpoint:0,hits:0,cooldown:0,finished:false,lost:false,steer:0};}
-export const traffic=()=>Array.from({length:24},(_,i)=>({id:i,z:7000+i*6900,x:[-.64,0,.64][i%3],speed:1350+(i%4)*210}));
-export function updateDriver(p,input,dt,cars){
- if(p.finished||p.lost)return [];
- dt=Math.min(dt,.05);const events=[];p.elapsed+=dt;p.time=Math.max(0,p.time-dt);p.cooldown=Math.max(0,p.cooldown-dt);p.skid=Math.max(0,(p.skid??0)-dt);
- const boost=input.boost&&p.nitro>0&&input.accel>0;
- p.nitro=clamp(p.nitro+(boost?-.4:.14)*dt,0,1);
- p.speed=clamp(p.speed+(input.accel*2400-input.brake*4200-500)*dt,0,COURSE.maxSpeed*(boost?1.3:1));
- p.steer=input.steer;p.x+=input.steer*dt*(.5+p.speed/COURSE.maxSpeed)*1.25-curve(p.z)*p.speed/COURSE.maxSpeed*dt*.7;
- p.x=clamp(p.x,-1.8,1.8);if(Math.abs(p.x)>1.05)p.speed=Math.max(800,p.speed-3200*dt);
- if(p.skid===0&&p.speed>1800&&((input.brake>.2&&Math.abs(input.steer)>.4)||Math.abs(p.x)>1.15)){p.skid=.8;events.push('skid');}
- p.z+=p.speed*dt;
- if(p.cooldown===0)for(const car of cars)if(Math.abs(car.z-p.z)<500&&Math.abs(car.x-p.x)<.23){p.speed*=.3;p.cooldown=1.4;p.hits++;events.push('crash');break;}
- if(p.checkpoint<COURSE.checkpoints.length&&p.z>=COURSE.checkpoints[p.checkpoint]){p.checkpoint++;p.time+=COURSE.bonus;events.push('checkpoint');}
- if(p.z>=COURSE.length){p.z=COURSE.length;p.finished=true;events.push('win');}
- else if(p.time===0){p.lost=true;events.push('crash');}
- return events;
+export const COURSE = {
+  length: 180000,
+  limit: 65,
+  checkpoints: [60000, 120000],
+  bonus: 18,
+  maxSpeed: 4800,
+};
+export const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+export function curve(z) {
+  const t = z / COURSE.length;
+  return t < 0.12 ? 0 : Math.sin(z / 8500) * 0.65 * (t > 0.9 ? 0.3 : 1);
 }
-export function padInput(pad){const button=i=>pad?.buttons?.[i]?.value??0;const axis=pad?.axes?.[0]??0;return {steer:Math.abs(axis)>.14?axis:0,accel:Math.max(button(7),button(0)),brake:Math.max(button(6),button(1)),boost:button(2)>.5};}
+export const hill = (z) => Math.sin(z / 12000) * 450 + Math.sin(z / 4700) * 90;
+export function driver(index = 0) {
+  return {
+    index,
+    x: index ? 0.3 : -0.3,
+    z: 0,
+    speed: 0,
+    time: COURSE.limit,
+    elapsed: 0,
+    nitro: 1,
+    checkpoint: 0,
+    hits: 0,
+    cooldown: 0,
+    finished: false,
+    lost: false,
+    steer: 0,
+  };
+}
+export const traffic = () =>
+  Array.from({ length: 24 }, (_, i) => ({
+    id: i,
+    z: 7000 + i * 6900,
+    x: [-0.64, 0, 0.64][i % 3],
+    speed: 1350 + (i % 4) * 210,
+  }));
+export function updateDriver(p, input, dt, cars) {
+  if (p.finished || p.lost) return [];
+  dt = Math.min(dt, 0.05);
+  const events = [];
+  p.elapsed += dt;
+  p.time = Math.max(0, p.time - dt);
+  p.cooldown = Math.max(0, p.cooldown - dt);
+  p.skid = Math.max(0, (p.skid ?? 0) - dt);
+  const boost = input.boost && p.nitro > 0 && input.accel > 0;
+  p.nitro = clamp(p.nitro + (boost ? -0.4 : 0.14) * dt, 0, 1);
+  p.speed = clamp(
+    p.speed + (input.accel * 2400 - input.brake * 4200 - 500) * dt,
+    0,
+    COURSE.maxSpeed * (boost ? 1.3 : 1),
+  );
+  p.steer = input.steer;
+  p.x +=
+    input.steer * dt * (0.5 + p.speed / COURSE.maxSpeed) * 1.25 -
+    ((curve(p.z) * p.speed) / COURSE.maxSpeed) * dt * 0.7;
+  p.x = clamp(p.x, -1.8, 1.8);
+  if (Math.abs(p.x) > 1.05) p.speed = Math.max(0, p.speed - 3200 * dt);
+  if (
+    p.skid === 0 &&
+    p.speed > 1800 &&
+    ((input.brake > 0.2 && Math.abs(input.steer) > 0.4) || Math.abs(p.x) > 1.15)
+  ) {
+    p.skid = 0.8;
+    events.push('skid');
+  }
+  p.z += p.speed * dt;
+  if (p.cooldown === 0)
+    for (const car of cars)
+      if (Math.abs(car.z - p.z) < 500 && Math.abs(car.x - p.x) < 0.23) {
+        p.speed *= 0.3;
+        p.cooldown = 1.4;
+        p.hits++;
+        events.push('crash');
+        break;
+      }
+  if (
+    p.checkpoint < COURSE.checkpoints.length &&
+    p.z >= COURSE.checkpoints[p.checkpoint]
+  ) {
+    p.checkpoint++;
+    p.time += COURSE.bonus;
+    events.push('checkpoint');
+  }
+  if (p.z >= COURSE.length) {
+    p.z = COURSE.length;
+    p.finished = true;
+    events.push('win');
+  } else if (p.time === 0) {
+    p.lost = true;
+    events.push('crash');
+  }
+  return events;
+}
+export function padInput(pad) {
+  const button = (i) => pad?.buttons?.[i]?.value ?? 0;
+  const axis = pad?.axes?.[0] ?? 0;
+  return {
+    steer: Math.abs(axis) > 0.14 ? axis : 0,
+    accel: Math.max(button(7), button(0)),
+    brake: Math.max(button(6), button(1)),
+    boost: button(2) > 0.5,
+  };
+}
 ```
 
 </details>

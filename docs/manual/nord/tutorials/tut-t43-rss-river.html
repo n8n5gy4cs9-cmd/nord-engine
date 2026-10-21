@@ -150,40 +150,370 @@ map.set(article.id, { ...article,
 <h2 id="complete-project-source">Complete project source<a class="anchor" href="#complete-project-source">#</a></h2>
 <p>All authored text files follow in offline CodeMirror viewers. The archive includes the original sprite sheet and all pinned binary/vendor dependencies and licences. It contains no scraped article collection: <code>demo.xml</code> is original, explicitly fictional tutorial material, and real news comes from the subscriptions you choose to refresh.</p>
 <!-- GENERATED GAME SOURCE: regenerate with node tools/build-code-workshops.mjs --><h3 id="app-js">app.js<a class="anchor" href="#app-js">#</a></h3>
-<pre class="code" data-lang="js"><code>import {Save} from './save.js';
-import {DEFAULT_FEEDS,parseFeed,mergeArticles,safeLink} from './feeds.js';
-import {createRiver} from './river.js';
-import {download} from './desk.js';
-export async function mount(root){root.innerHTML=`&lt;link rel=&quot;stylesheet&quot; href=&quot;style.css&quot;&gt;&lt;main&gt;&lt;header&gt;&lt;div class=&quot;brand&quot;&gt;&lt;span class=&quot;boat&quot;&gt;&lt;/span&gt;&lt;div&gt;&lt;h1&gt;RSS River&lt;/h1&gt;&lt;p&gt;A quieter current for curious developers.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;nav&gt;&lt;button id=&quot;refresh&quot;&gt;Refresh feeds&lt;/button&gt;&lt;button id=&quot;native&quot;&gt;Fetch with Nord host&lt;/button&gt;&lt;button id=&quot;mode&quot;&gt;3D paper river&lt;/button&gt;&lt;button id=&quot;backup&quot;&gt;Backup library&lt;/button&gt;&lt;/nav&gt;&lt;/header&gt;&lt;section class=&quot;layout&quot;&gt;&lt;aside&gt;&lt;h3&gt;SOURCES&lt;/h3&gt;&lt;select id=&quot;feed&quot;&gt;&lt;option value=&quot;all&quot;&gt;All sources&lt;/option&gt;&lt;/select&gt;&lt;input id=&quot;search&quot; placeholder=&quot;Search titles &amp; summaries&quot;&gt;&lt;label&gt;&lt;input id=&quot;unread&quot; type=&quot;checkbox&quot;&gt; Unread only&lt;/label&gt;&lt;label&gt;&lt;input id=&quot;stars&quot; type=&quot;checkbox&quot;&gt; Starred only&lt;/label&gt;&lt;button id=&quot;readall&quot;&gt;Mark visible read&lt;/button&gt;&lt;hr&gt;&lt;h3&gt;IMPORT A FEED&lt;/h3&gt;&lt;label&gt;RSS / Atom XML&lt;input id=&quot;import&quot; type=&quot;file&quot; accept=&quot;.xml,.rss,.atom,.json&quot;&gt;&lt;/label&gt;&lt;input id=&quot;custom&quot; placeholder=&quot;https://example.org/feed.xml&quot;&gt;&lt;button id=&quot;add&quot;&gt;Add feed URL&lt;/button&gt;&lt;button id=&quot;demo&quot;&gt;Load local demo&lt;/button&gt;&lt;p&gt;Feeds refresh only when asked. Read cached news offline. If a site blocks browser CORS, import its XML or use Nord host fetch.&lt;/p&gt;&lt;div id=&quot;counts&quot;&gt;&lt;/div&gt;&lt;/aside&gt;&lt;div class=&quot;content&quot;&gt;&lt;div class=&quot;viewbar&quot;&gt;&lt;b id=&quot;heading&quot;&gt;Your reading room&lt;/b&gt;&lt;span id=&quot;status&quot;&gt;Local cache ready&lt;/span&gt;&lt;/div&gt;&lt;div id=&quot;list&quot;&gt;&lt;/div&gt;&lt;canvas id=&quot;river&quot; hidden&gt;&lt;/canvas&gt;&lt;/div&gt;&lt;article id=&quot;reader&quot;&gt;&lt;p class=&quot;eyebrow&quot;&gt;SELECT A PAPER&lt;/p&gt;&lt;h2&gt;Welcome to the river.&lt;/h2&gt;&lt;p&gt;Your saved articles stay on this device. The initial demo is original tutorial content, clearly marked as local demo.&lt;/p&gt;&lt;/article&gt;&lt;/section&gt;&lt;footer&gt;Local-first RSS + Atom · no account · Crowelian 2026 + Sonnet&lt;/footer&gt;&lt;/main&gt;`;
- const $=id=&gt;root.querySelector('#'+id),save=new Save('rss-river');let feeds=save.get('feeds',DEFAULT_FEEDS),articles=save.get('articles',[]),selected=null,river=null,in3d=false,alive=true;
- if(!Array.isArray(feeds)||!feeds.length)feeds=[...DEFAULT_FEEDS];if(!Array.isArray(articles))articles=[];
- const say=t=&gt;$('status').textContent=t;
- const persist=()=&gt;{try{save.set('feeds',feeds);save.set('articles',articles);}catch{say('Storage is full; use Backup library.');}};
- function feedOptions(){const select=$('feed'),value=select.value;select.replaceChildren();for(const f of[{id:'all',name:'All sources'},...feeds]){const o=document.createElement('option');o.value=f.id;o.textContent=f.name;select.append(o);}select.value=[...select.options].some(o=&gt;o.value===value)?value:'all';}feedOptions();
- const visible=()=&gt;articles.filter(a=&gt;($('feed').value==='all'||a.feed===$('feed').value)&amp;&amp;(!$('unread').checked||!a.read)&amp;&amp;(!$('stars').checked||a.star)&amp;&amp;(a.title+' '+a.summary).toLowerCase().includes($('search').value.toLowerCase())).slice().reverse();
- function read(id){selected=id;const a=articles.find(a=&gt;a.id===id);if(!a)return;a.read=true;persist();const reader=$('reader');reader.replaceChildren();const source=document.createElement('p');source.className='eyebrow';source.textContent=a.source;const h=document.createElement('h2');h.textContent=a.title;const date=document.createElement('p');date.className='date';date.textContent=a.date?new Date(a.date).toLocaleString():'';const text=document.createElement('p');text.textContent=a.summary;
-  const star=document.createElement('button');star.textContent=a.star?'★ Starred':'☆ Star';star.onclick=()=&gt;{a.star=!a.star;persist();read(id);if(in3d)showRiver();};const flick=document.createElement('button');flick.textContent='Flick this paper';flick.onclick=()=&gt;river?.flick(id);reader.append(source,h,date,text,star,flick);
-  const link=safeLink(a.link);if(link){const aTag=document.createElement('a');aTag.textContent='Read original ↗';aTag.href=link;aTag.target='_blank';aTag.rel='noopener noreferrer';reader.append(aTag);}renderList();
- }
- function renderList(){const list=$('list');list.replaceChildren();const items=visible();for(const a of items){const b=document.createElement('button');b.className='news '+(a.read?'read ':'')+(a.id===selected?'selected':'');const tag=document.createElement('span');tag.textContent=(a.star?'★ ':'')+a.source;const title=document.createElement('strong');title.textContent=a.title;const summary=document.createElement('p');summary.textContent=a.summary.slice(0,150);b.append(tag,title,summary);b.onclick=()=&gt;read(a.id);list.append(b);}if(!items.length)list.textContent='No articles match. Refresh, import a feed, or load the local demo.';$('counts').textContent=`${articles.length} cached · ${articles.filter(a=&gt;!a.read).length} unread · ${articles.filter(a=&gt;a.star).length} starred`;$('heading').textContent=`${items.length} papers in your current`;}
- async function showRiver(){try{say('Preparing Babylon + Havok…');river?.dispose();river=await createRiver($('river'),visible(),read);in3d=true;$('list').hidden=true;$('river').hidden=false;$('mode').textContent='2D reading list';river.resize();say('Orbit slowly · click a paper to read · Flick drops it with Havok');}catch(e){say(e.message);}}
- $('mode').onclick=()=&gt;{if(in3d){in3d=false;$('list').hidden=false;$('river').hidden=true;$('mode').textContent='3D paper river';river?.dispose();river=null;}else showRiver();};
- for(const id of['feed','search','unread','stars'])$(id).addEventListener('input',()=&gt;{renderList();if(in3d)showRiver();});
- async function refresh(native=false){$('refresh').disabled=true;let count=0;const errors=[];let desktop;
-  if(native){try{desktop=(await import('./nord-desktop.js')).default;}catch(e){errors.push(e.message);}}
-  for(const feed of feeds.filter(f=&gt;!f.demo)){try{let xml;if(native){if(!desktop)throw Error('Nord desktop bridge unavailable');const r=await desktop.http.fetch(feed.url);if(r.status&gt;=400)throw Error('HTTP '+r.status);xml=r.body;}else{const r=await fetch(feed.url,{signal:AbortSignal.timeout(12000)});if(!r.ok)throw Error('HTTP '+r.status);xml=await r.text();}const items=parseFeed(xml,feed);articles=mergeArticles(articles,items);count+=items.length;}catch(e){errors.push(feed.name+': '+e.message);}}
-  persist();renderList();if(in3d)await showRiver();say(`Updated ${count} entries${errors.length?' · Some feeds blocked/offline; XML import or Nord host fetch works. '+errors.join(' | '):''}`);$('refresh').disabled=false;
- }
- $('refresh').onclick=()=&gt;refresh();$('native').onclick=()=&gt;refresh(true);
- $('readall').onclick=()=&gt;{visible().forEach(a=&gt;a.read=true);persist();renderList();};
- $('add').onclick=()=&gt;{const url=safeLink($('custom').value);if(!url){say('Enter an HTTP or HTTPS feed URL.');return;}if(feeds.some(f=&gt;f.url===url)){say('Already subscribed.');return;}feeds.push({id:'custom-'+Date.now(),name:new URL(url).hostname,url});feedOptions();persist();say('Feed added; click Refresh. Native fetch needs that host in project permissions.');};
- async function demo(){const r=await fetch('demo.xml');const f={id:'demo',name:'Local demo — tutorial stories',url:'https://example.org/',demo:true};if(!feeds.some(v=&gt;v.id==='demo'))feeds.push(f);articles=mergeArticles(articles,parseFeed(await r.text(),f));feedOptions();persist();renderList();say('Original local demo loaded — not live news.');}
- $('demo').onclick=demo;
- $('import').onchange=async()=&gt;{const file=$('import').files[0];if(!file)return;try{if(file.size&gt;2000000)throw Error('Choose a file below 2 MB');const text=await file.text();if(file.name.endsWith('.json')){const data=JSON.parse(text);if(!Array.isArray(data.feeds)||!Array.isArray(data.articles))throw Error('Expected RSS River backup');feeds=data.feeds.slice(0,30).filter(f=&gt;typeof f.name==='string'&amp;&amp;safeLink(f.url));articles=data.articles.slice(-240).filter(a=&gt;typeof a.id==='string'&amp;&amp;typeof a.title==='string'&amp;&amp;typeof a.summary==='string');}else{const f={id:'import-'+Date.now(),name:file.name,url:'https://example.org/',demo:true};articles=mergeArticles(articles,parseFeed(text,f));feeds.push(f);}feedOptions();persist();renderList();say('Imported '+file.name);}catch(e){say(e.message);}};
- $('backup').onclick=()=&gt;download('rss-river-library.json',JSON.stringify({feeds,articles},null,2));
- renderList();if(!articles.length)await demo();
- window.__rss={get articles(){return articles;},get feeds(){return feeds;},get river(){return river;},read};
- return()=&gt;{alive=false;river?.dispose();root.replaceChildren();};
+<pre class="code" data-lang="js"><code>import { Save } from './save.js';
+import { DEFAULT_FEEDS, parseFeed, mergeArticles, safeLink } from './feeds.js';
+import { createRiver } from './river.js';
+import { download } from './desk.js';
+export async function mount(root) {
+  root.innerHTML = /* HTML */ `
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;style.css&quot; /&gt;
+    &lt;main&gt;
+      &lt;header&gt;
+        &lt;div class=&quot;brand&quot;&gt;
+          &lt;span class=&quot;boat&quot;&gt;&lt;/span&gt;
+          &lt;div&gt;
+            &lt;h1&gt;RSS River&lt;/h1&gt;
+            &lt;p&gt;A quieter current for curious developers.&lt;/p&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;nav&gt;
+          &lt;button id=&quot;refresh&quot;&gt;Refresh feeds&lt;/button&gt;
+          &lt;button id=&quot;native&quot;&gt;Fetch with Nord host&lt;/button&gt;
+          &lt;button id=&quot;mode&quot;&gt;3D paper river&lt;/button&gt;
+          &lt;button id=&quot;backup&quot;&gt;Backup library&lt;/button&gt;
+        &lt;/nav&gt;
+      &lt;/header&gt;
+      &lt;section class=&quot;layout&quot;&gt;
+        &lt;aside&gt;
+          &lt;h3&gt;SOURCES&lt;/h3&gt;
+          &lt;select id=&quot;feed&quot;&gt;
+            &lt;option value=&quot;all&quot;&gt;All sources&lt;/option&gt;
+          &lt;/select&gt;
+          &lt;input id=&quot;search&quot; placeholder=&quot;Search titles &amp; summaries&quot; /&gt;
+          &lt;label&gt;
+            &lt;input id=&quot;unread&quot; type=&quot;checkbox&quot; /&gt;
+            Unread only
+          &lt;/label&gt;
+          &lt;label&gt;
+            &lt;input id=&quot;stars&quot; type=&quot;checkbox&quot; /&gt;
+            Starred only
+          &lt;/label&gt;
+          &lt;button id=&quot;readall&quot;&gt;Mark visible read&lt;/button&gt;
+          &lt;hr /&gt;
+          &lt;h3&gt;IMPORT A FEED&lt;/h3&gt;
+          &lt;label&gt;
+            RSS / Atom XML
+            &lt;input id=&quot;import&quot; type=&quot;file&quot; accept=&quot;.xml,.rss,.atom,.json&quot; /&gt;
+          &lt;/label&gt;
+          &lt;input id=&quot;custom&quot; placeholder=&quot;https://example.org/feed.xml&quot; /&gt;
+          &lt;button id=&quot;add&quot;&gt;Add feed URL&lt;/button&gt;
+          &lt;button id=&quot;demo&quot;&gt;Load local demo&lt;/button&gt;
+          &lt;p&gt;
+            Feeds refresh only when asked. Read cached news offline. If a site blocks
+            browser CORS, import its XML or use Nord host fetch.
+          &lt;/p&gt;
+          &lt;div id=&quot;counts&quot;&gt;&lt;/div&gt;
+        &lt;/aside&gt;
+        &lt;div class=&quot;content&quot;&gt;
+          &lt;div class=&quot;viewbar&quot;&gt;
+            &lt;b id=&quot;heading&quot;&gt;Your reading room&lt;/b&gt;
+            &lt;span id=&quot;status&quot;&gt;Local cache ready&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div id=&quot;list&quot;&gt;&lt;/div&gt;
+          &lt;canvas id=&quot;river&quot; hidden&gt;&lt;/canvas&gt;
+        &lt;/div&gt;
+        &lt;article id=&quot;reader&quot;&gt;
+          &lt;p class=&quot;eyebrow&quot;&gt;SELECT A PAPER&lt;/p&gt;
+          &lt;h2&gt;Welcome to the river.&lt;/h2&gt;
+          &lt;p&gt;
+            Your saved articles stay on this device. The initial demo is original tutorial
+            content, clearly marked as local demo.
+          &lt;/p&gt;
+        &lt;/article&gt;
+      &lt;/section&gt;
+      &lt;footer&gt;Local-first RSS + Atom · no account · Crowelian 2026 + Sonnet&lt;/footer&gt;
+    &lt;/main&gt;
+  `;
+  const $ = (id) =&gt; root.querySelector('#' + id),
+    save = new Save('rss-river');
+  let feeds = save.get('feeds', DEFAULT_FEEDS),
+    articles = save.get('articles', []),
+    selected = null,
+    river = null,
+    in3d = false,
+    alive = true;
+  if (!Array.isArray(feeds) || !feeds.length) feeds = [...DEFAULT_FEEDS];
+  if (!Array.isArray(articles)) articles = [];
+  const say = (t) =&gt; ($('status').textContent = t);
+  const persist = () =&gt; {
+    try {
+      save.set('feeds', feeds);
+      save.set('articles', articles);
+    } catch {
+      say('Storage is full; use Backup library.');
+    }
+  };
+  function feedOptions() {
+    const select = $('feed'),
+      value = select.value;
+    select.replaceChildren();
+    for (const f of [{ id: 'all', name: 'All sources' }, ...feeds]) {
+      const o = document.createElement('option');
+      o.value = f.id;
+      o.textContent = f.name;
+      select.append(o);
+    }
+    select.value = [...select.options].some((o) =&gt; o.value === value) ? value : 'all';
+  }
+  feedOptions();
+  const visible = () =&gt;
+    articles
+      .filter(
+        (a) =&gt;
+          ($('feed').value === 'all' || a.feed === $('feed').value) &amp;&amp;
+          (!$('unread').checked || !a.read) &amp;&amp;
+          (!$('stars').checked || a.star) &amp;&amp;
+          (a.title + ' ' + a.summary)
+            .toLowerCase()
+            .includes($('search').value.toLowerCase()),
+      )
+      .slice()
+      .reverse();
+  function read(id) {
+    selected = id;
+    const a = articles.find((a) =&gt; a.id === id);
+    if (!a) return;
+    a.read = true;
+    persist();
+    const reader = $('reader');
+    reader.replaceChildren();
+    const source = document.createElement('p');
+    source.className = 'eyebrow';
+    source.textContent = a.source;
+    const h = document.createElement('h2');
+    h.textContent = a.title;
+    const date = document.createElement('p');
+    date.className = 'date';
+    date.textContent = a.date ? new Date(a.date).toLocaleString() : '';
+    const text = document.createElement('p');
+    text.textContent = a.summary;
+    const star = document.createElement('button');
+    star.textContent = a.star ? '★ Starred' : '☆ Star';
+    star.onclick = () =&gt; {
+      a.star = !a.star;
+      persist();
+      read(id);
+      if (in3d) showRiver();
+    };
+    const flick = document.createElement('button');
+    flick.textContent = 'Flick this paper';
+    flick.onclick = () =&gt; river?.flick(id);
+    reader.append(source, h, date, text, star, flick);
+    const link = safeLink(a.link);
+    if (link) {
+      const aTag = document.createElement('a');
+      aTag.textContent = 'Read original ↗';
+      aTag.href = link;
+      aTag.target = '_blank';
+      aTag.rel = 'noopener noreferrer';
+      reader.append(aTag);
+    }
+    renderList();
+  }
+  function renderList() {
+    const list = $('list');
+    list.replaceChildren();
+    const items = visible();
+    for (const a of items) {
+      const b = document.createElement('button');
+      b.className =
+        'news ' + (a.read ? 'read ' : '') + (a.id === selected ? 'selected' : '');
+      const tag = document.createElement('span');
+      tag.textContent = (a.star ? '★ ' : '') + a.source;
+      const title = document.createElement('strong');
+      title.textContent = a.title;
+      const summary = document.createElement('p');
+      summary.textContent = a.summary.slice(0, 150);
+      b.append(tag, title, summary);
+      b.onclick = () =&gt; read(a.id);
+      list.append(b);
+    }
+    if (!items.length)
+      list.textContent =
+        'No articles match. Refresh, import a feed, or load the local demo.';
+    $('counts').textContent =
+      `${articles.length} cached · ${articles.filter((a) =&gt; !a.read).length} unread · ${articles.filter((a) =&gt; a.star).length} starred`;
+    $('heading').textContent = `${items.length} papers in your current`;
+  }
+  let riverVersion = 0;
+  async function showRiver() {
+    const version = ++riverVersion;
+    try {
+      say('Preparing Babylon + Havok…');
+      const next = await createRiver($('river'), visible(), read);
+      // A newer filter/view request owns the UI; release this stale scene.
+      if (version !== riverVersion || !alive) {
+        next.dispose();
+        return;
+      }
+      river?.dispose();
+      river = next;
+      in3d = true;
+      $('list').hidden = true;
+      $('river').hidden = false;
+      $('mode').textContent = '2D reading list';
+      river.resize();
+      say('Orbit slowly · click a paper to read · Flick drops it with Havok');
+    } catch (e) {
+      say(e.message);
+    }
+  }
+  $('mode').onclick = () =&gt; {
+    if (in3d) {
+      riverVersion++;
+      in3d = false;
+      $('list').hidden = false;
+      $('river').hidden = true;
+      $('mode').textContent = '3D paper river';
+      river?.dispose();
+      river = null;
+    } else showRiver();
+  };
+  for (const id of ['feed', 'search', 'unread', 'stars'])
+    $(id).addEventListener('input', () =&gt; {
+      renderList();
+      if (in3d) showRiver();
+    });
+  async function refresh(native = false) {
+    $('refresh').disabled = true;
+    let count = 0;
+    const errors = [];
+    let desktop;
+    if (native) {
+      try {
+        desktop = (await import('./nord-desktop.js')).default;
+      } catch (e) {
+        errors.push(e.message);
+      }
+    }
+    for (const feed of feeds.filter((f) =&gt; !f.demo)) {
+      try {
+        let xml;
+        if (native) {
+          if (!desktop) throw Error('Nord desktop bridge unavailable');
+          const r = await desktop.http.fetch(feed.url);
+          if (r.status &gt;= 400) throw Error('HTTP ' + r.status);
+          xml = r.body;
+        } else {
+          const r = await fetch(feed.url, { signal: AbortSignal.timeout(12000) });
+          if (!r.ok) throw Error('HTTP ' + r.status);
+          xml = await r.text();
+        }
+        const items = parseFeed(xml, feed);
+        articles = mergeArticles(articles, items);
+        count += items.length;
+      } catch (e) {
+        errors.push(feed.name + ': ' + e.message);
+      }
+    }
+    persist();
+    renderList();
+    if (in3d) await showRiver();
+    say(
+      `Updated ${count} entries${errors.length ? ' · Some feeds blocked/offline; XML import or Nord host fetch works. ' + errors.join(' | ') : ''}`,
+    );
+    $('refresh').disabled = false;
+  }
+  $('refresh').onclick = () =&gt; refresh();
+  $('native').onclick = () =&gt; refresh(true);
+  $('readall').onclick = () =&gt; {
+    visible().forEach((a) =&gt; (a.read = true));
+    persist();
+    renderList();
+  };
+  $('add').onclick = () =&gt; {
+    const url = safeLink($('custom').value);
+    if (!url) {
+      say('Enter an HTTP or HTTPS feed URL.');
+      return;
+    }
+    if (feeds.some((f) =&gt; f.url === url)) {
+      say('Already subscribed.');
+      return;
+    }
+    feeds.push({ id: 'custom-' + Date.now(), name: new URL(url).hostname, url });
+    feedOptions();
+    persist();
+    say(
+      'Feed added; click Refresh. Native fetch needs that host in project permissions.',
+    );
+  };
+  async function demo() {
+    const r = await fetch('demo.xml');
+    const f = {
+      id: 'demo',
+      name: 'Local demo — tutorial stories',
+      url: 'https://example.org/',
+      demo: true,
+    };
+    if (!feeds.some((v) =&gt; v.id === 'demo')) feeds.push(f);
+    articles = mergeArticles(articles, parseFeed(await r.text(), f));
+    feedOptions();
+    persist();
+    renderList();
+    say('Original local demo loaded — not live news.');
+  }
+  $('demo').onclick = demo;
+  $('import').onchange = async () =&gt; {
+    const file = $('import').files[0];
+    if (!file) return;
+    try {
+      if (file.size &gt; 2000000) throw Error('Choose a file below 2 MB');
+      const text = await file.text();
+      if (file.name.endsWith('.json')) {
+        const data = JSON.parse(text);
+        if (!Array.isArray(data.feeds) || !Array.isArray(data.articles))
+          throw Error('Expected RSS River backup');
+        feeds = data.feeds
+          .slice(0, 30)
+          .filter((f) =&gt; typeof f.name === 'string' &amp;&amp; safeLink(f.url));
+        articles = data.articles
+          .slice(-240)
+          .filter(
+            (a) =&gt;
+              typeof a.id === 'string' &amp;&amp;
+              typeof a.title === 'string' &amp;&amp;
+              typeof a.summary === 'string',
+          );
+      } else {
+        const f = {
+          id: 'import-' + Date.now(),
+          name: file.name,
+          url: 'https://example.org/',
+          demo: true,
+        };
+        articles = mergeArticles(articles, parseFeed(text, f));
+        feeds.push(f);
+      }
+      feedOptions();
+      persist();
+      renderList();
+      say('Imported ' + file.name);
+    } catch (e) {
+      say(e.message);
+    }
+  };
+  $('backup').onclick = () =&gt;
+    download('rss-river-library.json', JSON.stringify({ feeds, articles }, null, 2));
+  renderList();
+  if (!articles.length) await demo();
+  window.__rss = {
+    get articles() {
+      return articles;
+    },
+    get feeds() {
+      return feeds;
+    },
+    get river() {
+      return river;
+    },
+    read,
+  };
+  return () =&gt; {
+    alive = false;
+    river?.dispose();
+    root.replaceChildren();
+  };
 }</code></pre>
 <details>
 <summary>Complete .offline-allow</summary><pre class="code" data-lang="text"><code>hnrss.org
@@ -201,37 +531,247 @@ github.blog</code></pre>
 &lt;item&gt;&lt;guid&gt;demo-8&lt;/guid&gt;&lt;title&gt;Ship the smallest complete version&lt;/title&gt;&lt;link&gt;https://example.org/demo/8&lt;/link&gt;&lt;description&gt;Demo: include import, backup, empty states and connection errors before adding an account system. A complete local app is already useful.&lt;/description&gt;&lt;/item&gt;
 &lt;/channel&gt;&lt;/rss&gt;</code></pre>
 </details><details>
-<summary>Complete desk.js</summary><pre class="code" data-lang="js"><code>export async function loadScript(src){if(document.querySelector(`script[data-local=&quot;${src}&quot;]`))return;await new Promise((ok,no)=&gt;{const el=document.createElement('script');el.src=src;el.dataset.local=src;el.onload=ok;el.onerror=()=&gt;no(Error('Cannot load '+src));document.head.append(el);});}
-export async function createDesk(canvas,{physics=true}={}){
- await loadScript('vendor/babylonjs/babylon.js');const B=window.BABYLON;
- const engine=new B.Engine(canvas,true,{preserveDrawingBuffer:true,stencil:true}),scene=new B.Scene(engine);scene.clearColor=B.Color4.FromHexString('#101b2bff');
- const camera=new B.ArcRotateCamera('Orbit',-Math.PI/2,.67,28,new B.Vector3(0,0,0),scene);camera.attachControl(canvas,true);camera.lowerRadiusLimit=4;camera.upperRadiusLimit=70;camera.wheelPrecision=25;camera.minZ=.1;
- const fill=new B.HemisphericLight('Sky',new B.Vector3(0,1,0),scene);fill.intensity=.65;
- const light=new B.DirectionalLight('Sun',new B.Vector3(-.4,-1,.5),scene);light.position.set(8,18,-8);light.intensity=1.2;
- const shadows=new B.ShadowGenerator(1024,light);shadows.useBlurExponentialShadowMap=true;shadows.blurKernel=16;
- const mat=new B.StandardMaterial('Desk surface',scene);mat.diffuseColor=B.Color3.FromHexString('#253a46');mat.specularColor=new B.Color3(.1,.1,.1);
- const desk=B.MeshBuilder.CreateBox('Desk',{width:45,depth:35,height:.6},scene);desk.position.y=-.45;desk.material=mat;desk.receiveShadows=true;
- const aggregates=[];
- if(physics){await loadScript('vendor/havok/HavokPhysics_umd.js');const havok=await window.HavokPhysics({locateFile:name=&gt;'vendor/havok/'+name});scene.enablePhysics(new B.Vector3(0,-9.81,0),new B.HavokPlugin(true,havok));aggregates.push(new B.PhysicsAggregate(desk,B.PhysicsShapeType.BOX,{mass:0,restitution:.2},scene));}
- const paper=(name,width,height,paint)=&gt;{const mesh=B.MeshBuilder.CreatePlane(name,{width,height,sideOrientation:B.Mesh.DOUBLESIDE},scene);mesh.rotation.x=Math.PI/2;
-  const texture=new B.DynamicTexture(name+' texture',{width:1024,height:768},scene,false);const material=new B.StandardMaterial(name+' material',scene);material.emissiveTexture=texture;material.emissiveColor=B.Color3.White();material.disableLighting=true;material.diffuseColor=B.Color3.Black();material.specularColor=B.Color3.Black();material.backFaceCulling=false;mesh.material=material;shadows.addShadowCaster(mesh);mesh.receiveShadows=true;paint?.(texture.getContext());texture.update();return {mesh,texture,material};};
- const box=(name,pos,color='#f6d675',mass=.2)=&gt;{const mesh=B.MeshBuilder.CreateBox(name,{width:1.1,height:.13,depth:.9},scene);mesh.position.copyFromFloats(...pos);const material=new B.StandardMaterial(name+' paint',scene);material.diffuseColor=B.Color3.FromHexString(color);mesh.material=material;shadows.addShadowCaster(mesh);
-  const aggregate=physics?new B.PhysicsAggregate(mesh,B.PhysicsShapeType.BOX,{mass,restitution:.55,friction:.45},scene):null;if(aggregate)aggregates.push(aggregate);return {mesh,aggregate};};
- const update=new Set(),render=()=&gt;{for(const fn of update)fn(Math.min(.05,engine.getDeltaTime()/1000));scene.render();};engine.runRenderLoop(render);const resize=()=&gt;engine.resize();window.addEventListener('resize',resize);
- return {B,engine,scene,camera,shadows,paper,box,update,resize,setActive(on){engine.stopRenderLoop(render);if(on)engine.runRenderLoop(render);},dispose(){window.removeEventListener('resize',resize);for(const a of aggregates)a.dispose();scene.dispose();engine.dispose();}};
+<summary>Complete desk.js</summary><pre class="code" data-lang="js"><code>// Cache the pending promise too: rapid view changes must wait for the same script.
+const scriptLoads = new Map();
+export function loadScript(src) {
+  if (!scriptLoads.has(src)) {
+    const pending = new Promise((resolve, reject) =&gt; {
+      const script = document.createElement('script');
+      script.src = src;
+      script.dataset.local = src;
+      script.onload = resolve;
+      script.onerror = () =&gt; {
+        script.remove();
+        scriptLoads.delete(src);
+        reject(Error('Cannot load ' + src));
+      };
+      document.head.append(script);
+    });
+    scriptLoads.set(src, pending);
+  }
+  return scriptLoads.get(src);
 }
-export function download(name,content,type='application/json'){const blob=content instanceof Blob?content:new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=&gt;URL.revokeObjectURL(url),1000);}</code></pre>
+export async function createDesk(canvas, { physics = true } = {}) {
+  await loadScript('vendor/babylonjs/babylon.js');
+  const B = window.BABYLON;
+  const engine = new B.Engine(canvas, true, {
+      preserveDrawingBuffer: true,
+      stencil: true,
+    }),
+    scene = new B.Scene(engine);
+  scene.clearColor = B.Color4.FromHexString('#101b2bff');
+  const camera = new B.ArcRotateCamera(
+    'Orbit',
+    -Math.PI / 2,
+    0.67,
+    28,
+    new B.Vector3(0, 0, 0),
+    scene,
+  );
+  camera.attachControl(canvas, true);
+  camera.lowerRadiusLimit = 4;
+  camera.upperRadiusLimit = 70;
+  camera.wheelPrecision = 25;
+  camera.minZ = 0.1;
+  const fill = new B.HemisphericLight('Sky', new B.Vector3(0, 1, 0), scene);
+  fill.intensity = 0.65;
+  const light = new B.DirectionalLight('Sun', new B.Vector3(-0.4, -1, 0.5), scene);
+  light.position.set(8, 18, -8);
+  light.intensity = 1.2;
+  const shadows = new B.ShadowGenerator(1024, light);
+  shadows.useBlurExponentialShadowMap = true;
+  shadows.blurKernel = 16;
+  const mat = new B.StandardMaterial('Desk surface', scene);
+  mat.diffuseColor = B.Color3.FromHexString('#253a46');
+  mat.specularColor = new B.Color3(0.1, 0.1, 0.1);
+  const desk = B.MeshBuilder.CreateBox(
+    'Desk',
+    { width: 45, depth: 35, height: 0.6 },
+    scene,
+  );
+  desk.position.y = -0.45;
+  desk.material = mat;
+  desk.receiveShadows = true;
+  const aggregates = [];
+  if (physics) {
+    await loadScript('vendor/havok/HavokPhysics_umd.js');
+    const havok = await window.HavokPhysics({
+      locateFile: (name) =&gt; 'vendor/havok/' + name,
+    });
+    scene.enablePhysics(new B.Vector3(0, -9.81, 0), new B.HavokPlugin(true, havok));
+    aggregates.push(
+      new B.PhysicsAggregate(
+        desk,
+        B.PhysicsShapeType.BOX,
+        { mass: 0, restitution: 0.2 },
+        scene,
+      ),
+    );
+  }
+  const paper = (name, width, height, paint) =&gt; {
+    const mesh = B.MeshBuilder.CreatePlane(
+      name,
+      { width, height, sideOrientation: B.Mesh.DOUBLESIDE },
+      scene,
+    );
+    mesh.rotation.x = Math.PI / 2;
+    const texture = new B.DynamicTexture(
+      name + ' texture',
+      { width: 1024, height: 768 },
+      scene,
+      false,
+    );
+    const material = new B.StandardMaterial(name + ' material', scene);
+    material.emissiveTexture = texture;
+    material.emissiveColor = B.Color3.White();
+    material.disableLighting = true;
+    material.diffuseColor = B.Color3.Black();
+    material.specularColor = B.Color3.Black();
+    material.backFaceCulling = false;
+    mesh.material = material;
+    shadows.addShadowCaster(mesh);
+    mesh.receiveShadows = true;
+    paint?.(texture.getContext());
+    texture.update();
+    return { mesh, texture, material };
+  };
+  const box = (name, pos, color = '#f6d675', mass = 0.2) =&gt; {
+    const mesh = B.MeshBuilder.CreateBox(
+      name,
+      { width: 1.1, height: 0.13, depth: 0.9 },
+      scene,
+    );
+    mesh.position.copyFromFloats(...pos);
+    const material = new B.StandardMaterial(name + ' paint', scene);
+    material.diffuseColor = B.Color3.FromHexString(color);
+    mesh.material = material;
+    shadows.addShadowCaster(mesh);
+    const aggregate = physics
+      ? new B.PhysicsAggregate(
+          mesh,
+          B.PhysicsShapeType.BOX,
+          { mass, restitution: 0.55, friction: 0.45 },
+          scene,
+        )
+      : null;
+    if (aggregate) aggregates.push(aggregate);
+    return { mesh, aggregate };
+  };
+  const update = new Set(),
+    render = () =&gt; {
+      for (const fn of update) fn(Math.min(0.05, engine.getDeltaTime() / 1000));
+      scene.render();
+    };
+  engine.runRenderLoop(render);
+  const resize = () =&gt; engine.resize();
+  window.addEventListener('resize', resize);
+  return {
+    B,
+    engine,
+    scene,
+    camera,
+    shadows,
+    paper,
+    box,
+    update,
+    resize,
+    setActive(on) {
+      engine.stopRenderLoop(render);
+      if (on) engine.runRenderLoop(render);
+    },
+    dispose() {
+      window.removeEventListener('resize', resize);
+      for (const a of aggregates) a.dispose();
+      scene.dispose();
+      engine.dispose();
+    },
+  };
+}
+export function download(name, content, type = 'application/json') {
+  const blob = content instanceof Blob ? content : new Blob([content], { type }),
+    url = URL.createObjectURL(blob),
+    a = document.createElement('a');
+  a.href = url;
+  a.download = name;
+  a.click();
+  setTimeout(() =&gt; URL.revokeObjectURL(url), 1000);
+}</code></pre>
 </details><details>
 <summary>Complete feeds.js</summary><pre class="code" data-lang="js"><code>// Feed URLs are user data, not CDN dependencies. Nothing is requested until Refresh.
-export const DEFAULT_FEEDS=[{id:'hn',name:'Hacker News',url:'https://hnrss.org/frontpage',topic:'Community'},{id:'ai',name:'Simon Willison — AI &amp; LLMs',url:'https://simonwillison.net/atom/everything/',topic:'AI'},{id:'code',name:'GitHub Engineering',url:'https://github.blog/engineering/feed/',topic:'Coding'}];
-export function safeLink(value,base='https://example.org/'){try{const u=new URL(value,base);return ['https:','http:'].includes(u.protocol)?u.href:'';}catch{return '';}}
-export function parseFeed(xml,feed){if(xml.length&gt;2000000)throw Error('Feed is larger than 2 MB');const doc=new DOMParser().parseFromString(xml,'application/xml');if(doc.querySelector('parsererror'))throw Error('Invalid RSS/Atom XML');
- const entries=[...doc.querySelectorAll('item, entry')];if(!entries.length)throw Error('No RSS items or Atom entries found');
- const plain=html=&gt;{const d=new DOMParser().parseFromString(html,'text/html');d.querySelectorAll('script,style,iframe,object').forEach(e=&gt;e.remove());return (d.body.textContent||'').replace(/\s+/g,' ').trim();};
- return entries.slice(0,80).map((node,index)=&gt;{const title=plain(node.querySelector('title')?.textContent||'Untitled').slice(0,180),linkNode=[...node.querySelectorAll('link')].find(n=&gt;!n.getAttribute('rel')||n.getAttribute('rel')==='alternate');const raw=linkNode?.getAttribute('href')||linkNode?.textContent||'',link=safeLink(raw,feed.url),guid=node.querySelector('guid, id')?.textContent||link||title+index;
-  return {id:feed.id+':'+guid,feed:feed.id,source:feed.name,title,link,summary:plain(node.querySelector('description, summary, content')?.textContent||'Open the original to read the full article.').slice(0,1200),date:node.querySelector('pubDate, published, updated')?.textContent||'',read:false,star:false};});
+export const DEFAULT_FEEDS = [
+  {
+    id: 'hn',
+    name: 'Hacker News',
+    url: 'https://hnrss.org/frontpage',
+    topic: 'Community',
+  },
+  {
+    id: 'ai',
+    name: 'Simon Willison — AI &amp; LLMs',
+    url: 'https://simonwillison.net/atom/everything/',
+    topic: 'AI',
+  },
+  {
+    id: 'code',
+    name: 'GitHub Engineering',
+    url: 'https://github.blog/engineering/feed/',
+    topic: 'Coding',
+  },
+];
+export function safeLink(value, base = 'https://example.org/') {
+  try {
+    const u = new URL(value, base);
+    return ['https:', 'http:'].includes(u.protocol) ? u.href : '';
+  } catch {
+    return '';
+  }
 }
-export function mergeArticles(old,items){const map=new Map(old.map(a=&gt;[a.id,a]));for(const a of items){const prev=map.get(a.id);map.set(a.id,{...a,read:prev?.read||false,star:prev?.star||false});}return [...map.values()].slice(-240);}</code></pre>
+export function parseFeed(xml, feed) {
+  if (xml.length &gt; 2000000) throw Error('Feed is larger than 2 MB');
+  const doc = new DOMParser().parseFromString(xml, 'application/xml');
+  if (doc.querySelector('parsererror')) throw Error('Invalid RSS/Atom XML');
+  const entries = [...doc.querySelectorAll('item, entry')];
+  if (!entries.length) throw Error('No RSS items or Atom entries found');
+  const plain = (html) =&gt; {
+    const d = new DOMParser().parseFromString(html, 'text/html');
+    d.querySelectorAll('script,style,iframe,object').forEach((e) =&gt; e.remove());
+    return (d.body.textContent || '').replace(/\s+/g, ' ').trim();
+  };
+  return entries.slice(0, 80).map((node, index) =&gt; {
+    const title = plain(node.querySelector('title')?.textContent || 'Untitled').slice(
+        0,
+        180,
+      ),
+      linkNode = [...node.querySelectorAll('link')].find(
+        (n) =&gt; !n.getAttribute('rel') || n.getAttribute('rel') === 'alternate',
+      );
+    const raw = linkNode?.getAttribute('href') || linkNode?.textContent || '',
+      link = safeLink(raw, feed.url),
+      guid = node.querySelector('guid, id')?.textContent || link || title + index;
+    return {
+      id: feed.id + ':' + guid,
+      feed: feed.id,
+      source: feed.name,
+      title,
+      link,
+      summary: plain(
+        node.querySelector('description, summary, content')?.textContent ||
+          'Open the original to read the full article.',
+      ).slice(0, 1200),
+      date: node.querySelector('pubDate, published, updated')?.textContent || '',
+      read: false,
+      star: false,
+    };
+  });
+}
+export function mergeArticles(old, items) {
+  const map = new Map(old.map((a) =&gt; [a.id, a]));
+  for (const a of items) {
+    const prev = map.get(a.id);
+    map.set(a.id, { ...a, read: prev?.read || false, star: prev?.star || false });
+  }
+  return [...map.values()].slice(-240);
+}</code></pre>
 </details><details>
 <summary>Complete index.html</summary><pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
 &lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;nord-app-id&quot; content=&quot;com.crowelian.rssriver&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;&lt;title&gt;RSS River — a calm reading desk&lt;/title&gt;
@@ -476,15 +1016,101 @@ export default desktop;</code></pre>
   }
 }</code></pre>
 </details><details>
-<summary>Complete river.js</summary><pre class="code" data-lang="js"><code>import {createDesk} from './desk.js';
-export async function createRiver(canvas,articles,open){const d=await createDesk(canvas),{B,scene}=d;const papers=[],bodies=[];let time=0;
- const wrapText=(ctx,text,x,y,width,lineHeight,max=4)=&gt;{let line='',n=0;for(const word of text.split(/\s+/)){if(ctx.measureText(line+word).width&gt;width&amp;&amp;line){ctx.fillText(line,x,y+n*lineHeight);if(++n&gt;=max)return;line='';}line+=word+' ';}if(n&lt;max)ctx.fillText(line,x,y+n*lineHeight);};
- articles.slice(0,18).forEach((a,i)=&gt;{const width=a.star?4.5:3.6,height=a.star?3.2:2.5,p=d.paper('Article '+i,width,height,ctx=&gt;{ctx.fillStyle=a.star?'#fff2c9':'#f7f4e9';ctx.fillRect(0,0,1024,768);ctx.fillStyle='#298a86';ctx.fillRect(58,60,72,8);ctx.font='22px system-ui';ctx.fillText(a.source.toUpperCase().slice(0,45),58,112);ctx.fillStyle='#1e3548';ctx.font='bold 48px system-ui';wrapText(ctx,a.title,58,205,900,60,4);ctx.fillStyle='#5f737b';ctx.font='27px system-ui';wrapText(ctx,a.summary,58,500,890,36,5);ctx.font='22px system-ui';ctx.fillText(a.star?'STARRED · FLOATING HIGHER':a.read?'READ':'UNREAD',58,728);});
-  p.mesh.position.set((i%3-1)*5,a.star?2:1,Math.floor(i/3)*4.6-12);p.mesh.rotation.z=(i%2?.035:-.035);p.mesh.metadata={article:a.id};papers.push({...p,article:a,width,height,phase:i,dropped:false});
- });
- scene.onPointerObservable.add(info=&gt;{if(info.type===B.PointerEventTypes.POINTERPICK){const id=info.pickInfo?.pickedMesh?.metadata?.article;if(id)open(id);}});
- d.update.add(dt=&gt;{time+=dt;for(const p of papers)if(!p.dropped){p.mesh.position.z+=dt*.65;if(p.mesh.position.z&gt;15)p.mesh.position.z=-14;p.mesh.position.y=(p.article.star?2:1)+Math.sin(time*.7+p.phase)*.15;p.mesh.rotation.z=Math.sin(time*.35+p.phase)*.035;}});
- return {...d,papers,flick(id){const p=papers.find(p=&gt;p.article.id===id);if(!p||p.dropped)return;p.dropped=true;const body=B.MeshBuilder.CreateBox('Paper collider',{width:p.width,height:.05,depth:p.height},scene);body.position.copyFrom(p.mesh.position);body.visibility=0;p.mesh.parent=body;p.mesh.position.set(0,0,0);const aggregate=new B.PhysicsAggregate(body,B.PhysicsShapeType.BOX,{mass:.2,restitution:.5,friction:.5},scene);aggregate.body.applyImpulse(new B.Vector3(1.6,2.8,-1.2),body.position);bodies.push(aggregate);},dispose(){bodies.forEach(v=&gt;v.dispose());d.dispose();}};
+<summary>Complete river.js</summary><pre class="code" data-lang="js"><code>import { createDesk } from './desk.js';
+export async function createRiver(canvas, articles, open) {
+  const d = await createDesk(canvas),
+    { B, scene } = d;
+  const papers = [],
+    bodies = [];
+  let time = 0;
+  const wrapText = (ctx, text, x, y, width, lineHeight, max = 4) =&gt; {
+    let line = '',
+      n = 0;
+    for (const word of text.split(/\s+/)) {
+      if (ctx.measureText(line + word).width &gt; width &amp;&amp; line) {
+        ctx.fillText(line, x, y + n * lineHeight);
+        if (++n &gt;= max) return;
+        line = '';
+      }
+      line += word + ' ';
+    }
+    if (n &lt; max) ctx.fillText(line, x, y + n * lineHeight);
+  };
+  articles.slice(0, 18).forEach((a, i) =&gt; {
+    const width = a.star ? 4.5 : 3.6,
+      height = a.star ? 3.2 : 2.5,
+      p = d.paper('Article ' + i, width, height, (ctx) =&gt; {
+        ctx.fillStyle = a.star ? '#fff2c9' : '#f7f4e9';
+        ctx.fillRect(0, 0, 1024, 768);
+        ctx.fillStyle = '#298a86';
+        ctx.fillRect(58, 60, 72, 8);
+        ctx.font = '22px system-ui';
+        ctx.fillText(a.source.toUpperCase().slice(0, 45), 58, 112);
+        ctx.fillStyle = '#1e3548';
+        ctx.font = 'bold 48px system-ui';
+        wrapText(ctx, a.title, 58, 205, 900, 60, 4);
+        ctx.fillStyle = '#5f737b';
+        ctx.font = '27px system-ui';
+        wrapText(ctx, a.summary, 58, 500, 890, 36, 5);
+        ctx.font = '22px system-ui';
+        ctx.fillText(
+          a.star ? 'STARRED · FLOATING HIGHER' : a.read ? 'READ' : 'UNREAD',
+          58,
+          728,
+        );
+      });
+    p.mesh.position.set(((i % 3) - 1) * 5, a.star ? 2 : 1, Math.floor(i / 3) * 4.6 - 12);
+    p.mesh.rotation.z = i % 2 ? 0.035 : -0.035;
+    p.mesh.metadata = { article: a.id };
+    papers.push({ ...p, article: a, width, height, phase: i, dropped: false });
+  });
+  scene.onPointerObservable.add((info) =&gt; {
+    if (info.type === B.PointerEventTypes.POINTERPICK) {
+      const id = info.pickInfo?.pickedMesh?.metadata?.article;
+      if (id) open(id);
+    }
+  });
+  d.update.add((dt) =&gt; {
+    time += dt;
+    for (const p of papers)
+      if (!p.dropped) {
+        p.mesh.position.z += dt * 0.65;
+        if (p.mesh.position.z &gt; 15) p.mesh.position.z = -14;
+        p.mesh.position.y =
+          (p.article.star ? 2 : 1) + Math.sin(time * 0.7 + p.phase) * 0.15;
+        p.mesh.rotation.z = Math.sin(time * 0.35 + p.phase) * 0.035;
+      }
+  });
+  return {
+    ...d,
+    papers,
+    flick(id) {
+      const p = papers.find((p) =&gt; p.article.id === id);
+      if (!p || p.dropped) return;
+      p.dropped = true;
+      const body = B.MeshBuilder.CreateBox(
+        'Paper collider',
+        { width: p.width, height: 0.05, depth: p.height },
+        scene,
+      );
+      body.position.copyFrom(p.mesh.position);
+      body.visibility = 0;
+      p.mesh.parent = body;
+      p.mesh.position.set(0, 0, 0);
+      const aggregate = new B.PhysicsAggregate(
+        body,
+        B.PhysicsShapeType.BOX,
+        { mass: 0.2, restitution: 0.5, friction: 0.5 },
+        scene,
+      );
+      aggregate.body.applyImpulse(new B.Vector3(1.6, 2.8, -1.2), body.position);
+      bodies.push(aggregate);
+    },
+    dispose() {
+      bodies.forEach((v) =&gt; v.dispose());
+      d.dispose();
+    },
+  };
 }</code></pre>
 </details><details>
 <summary>Complete save.js</summary><pre class="code" data-lang="js"><code>// Versioned save slots on top of localStorage (or any Storage-like object).
@@ -520,7 +1146,242 @@ export class MemoryStorage {
   removeItem(k) { this.#m.delete(k); }
 }</code></pre>
 </details><details>
-<summary>Complete style.css</summary><pre class="code" data-lang="css"><code>html,body{height:auto;min-height:100%;background:#101b2b}*{box-sizing:border-box}body{margin:0;color:#dce9ee;font:14px system-ui}main{max-width:1500px;padding:22px;margin:auto}header{display:flex;align-items:center;justify-content:space-between;gap:15px;padding-bottom:24px}.brand{display:flex;gap:12px;align-items:center}.boat{display:block;width:66px;height:66px;background:url(assets/dev-desk-sprites.png) 100% 100%/400% 200%}h1{font-size:30px;margin:0;letter-spacing:-1px}header p{color:#8fa9b7;margin:5px 0}button,input,select{font:inherit;background:#20364b;color:#e7f3f6;border:1px solid #3c5b71;border-radius:7px;padding:9px}button{cursor:pointer}button:hover{background:#33546c}nav button{margin:3px}#mode{background:#297f7b}.layout{display:grid;grid-template-columns:205px minmax(350px,1fr) 330px;gap:18px;align-items:start}aside{background:#14283a;border-radius:12px;padding:15px}h3,.eyebrow{font-size:11px;letter-spacing:1.5px;color:#83cfc3}aside select,aside&gt;input,aside button{width:100%;margin:6px 0}label{display:block;margin:12px 0;font-size:12px}input[type=file]{max-width:175px;font-size:11px}aside p,#counts{font-size:12px;color:#94aebc;line-height:1.6}hr{border:0;border-top:1px solid #34495d;margin:22px 0}.viewbar{display:flex;flex-direction:column;gap:6px;padding:15px;background:#203448;border-radius:10px 10px 0 0}#status{font-size:11px;color:#8dc6c5;max-height:65px;overflow:auto}#list{height:680px;overflow:auto;background:#142536;padding:12px;border-radius:0 0 10px 10px}.news{display:block;width:100%;text-align:left;background:#20374b;border:1px solid #35556a;padding:17px;margin-bottom:10px}.news span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#8bcfc4}.news strong{display:block;font-size:17px;line-height:1.4;margin:8px 0}.news p{font-size:12px;line-height:1.5;color:#a0b8c5;margin-bottom:0}.news.read{opacity:.65}.news.selected{border-color:#66cbbd;opacity:1}#reader{background:#f7f4e9;color:#253a4c;border-radius:10px;padding:24px;min-height:400px;line-height:1.8;box-shadow:0 8px 30px #0003}#reader .eyebrow{color:#277e7a}#reader h2{font:600 25px/1.35 Georgia,serif}#reader .date{font-size:11px;color:#71818a}#reader a{display:block;color:#267b78;margin-top:18px}#reader button{margin:4px}#river{height:680px;width:100%;display:block;touch-action:none;border-radius:0 0 10px 10px}footer{font-size:12px;color:#7895a6;padding-top:22px}[hidden]{display:none!important}@media(max-width:1050px){.layout{grid-template-columns:180px minmax(300px,1fr)}#reader{grid-column:2}header{flex-wrap:wrap}}@media(max-width:650px){main{padding:8px}.layout{display:block}aside{margin-bottom:12px}#reader{margin-top:12px}}</code></pre>
+<summary>Complete style.css</summary><pre class="code" data-lang="css"><code>html,
+body {
+  height: auto;
+  min-height: 100%;
+  background: #101b2b;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  color: #dce9ee;
+  font: 14px system-ui;
+}
+main {
+  max-width: 1500px;
+  padding: 22px;
+  margin: auto;
+}
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding-bottom: 24px;
+}
+.brand {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.boat {
+  display: block;
+  width: 66px;
+  height: 66px;
+  background: url(assets/dev-desk-sprites.png) 100% 100%/400% 200%;
+}
+h1 {
+  font-size: 30px;
+  margin: 0;
+  letter-spacing: -1px;
+}
+header p {
+  color: #8fa9b7;
+  margin: 5px 0;
+}
+button,
+input,
+select {
+  font: inherit;
+  background: #20364b;
+  color: #e7f3f6;
+  border: 1px solid #3c5b71;
+  border-radius: 7px;
+  padding: 9px;
+}
+button {
+  cursor: pointer;
+}
+button:hover {
+  background: #33546c;
+}
+nav button {
+  margin: 3px;
+}
+#mode {
+  background: #297f7b;
+}
+.layout {
+  display: grid;
+  grid-template-columns: 205px minmax(350px, 1fr) 330px;
+  gap: 18px;
+  align-items: start;
+}
+aside {
+  background: #14283a;
+  border-radius: 12px;
+  padding: 15px;
+}
+h3,
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: #83cfc3;
+}
+aside select,
+aside &gt; input,
+aside button {
+  width: 100%;
+  margin: 6px 0;
+}
+label {
+  display: block;
+  margin: 12px 0;
+  font-size: 12px;
+}
+input[type='file'] {
+  max-width: 175px;
+  font-size: 11px;
+}
+aside p,
+#counts {
+  font-size: 12px;
+  color: #94aebc;
+  line-height: 1.6;
+}
+hr {
+  border: 0;
+  border-top: 1px solid #34495d;
+  margin: 22px 0;
+}
+.viewbar {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 15px;
+  background: #203448;
+  border-radius: 10px 10px 0 0;
+}
+#status {
+  font-size: 11px;
+  color: #8dc6c5;
+  max-height: 65px;
+  overflow: auto;
+}
+#list {
+  height: 680px;
+  overflow: auto;
+  background: #142536;
+  padding: 12px;
+  border-radius: 0 0 10px 10px;
+}
+.news {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: #20374b;
+  border: 1px solid #35556a;
+  padding: 17px;
+  margin-bottom: 10px;
+}
+.news span {
+  display: block;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #8bcfc4;
+}
+.news strong {
+  display: block;
+  font-size: 17px;
+  line-height: 1.4;
+  margin: 8px 0;
+}
+.news p {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #a0b8c5;
+  margin-bottom: 0;
+}
+.news.read {
+  opacity: 0.65;
+}
+.news.selected {
+  border-color: #66cbbd;
+  opacity: 1;
+}
+#reader {
+  background: #f7f4e9;
+  color: #253a4c;
+  border-radius: 10px;
+  padding: 24px;
+  min-height: 400px;
+  line-height: 1.8;
+  box-shadow: 0 8px 30px #0003;
+}
+#reader .eyebrow {
+  color: #277e7a;
+}
+#reader h2 {
+  font:
+    600 25px/1.35 Georgia,
+    serif;
+}
+#reader .date {
+  font-size: 11px;
+  color: #71818a;
+}
+#reader a {
+  display: block;
+  color: #267b78;
+  margin-top: 18px;
+}
+#reader button {
+  margin: 4px;
+}
+#river {
+  height: 680px;
+  width: 100%;
+  display: block;
+  touch-action: none;
+  border-radius: 0 0 10px 10px;
+}
+footer {
+  font-size: 12px;
+  color: #7895a6;
+  padding-top: 22px;
+}
+[hidden] {
+  display: none !important;
+}
+@media (max-width: 1050px) {
+  .layout {
+    grid-template-columns: 180px minmax(300px, 1fr);
+  }
+  #reader {
+    grid-column: 2;
+  }
+  header {
+    flex-wrap: wrap;
+  }
+}
+@media (max-width: 650px) {
+  main {
+    padding: 8px;
+  }
+  .layout {
+    display: block;
+  }
+  aside {
+    margin-bottom: 12px;
+  }
+  #reader {
+    margin-top: 12px;
+  }
+}</code></pre>
 </details>
 <div class="pager"><a href="tut-t42-paper-worlds.html"><small>← Previous</small>T42 Paper Worlds — draw in 2D, explore your ideas in 3D</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-learn-the-finished-reader">1. Learn the finished reader </a><a href="#2-open-and-edit-the-real-project">2. Open and edit the real project </a><a href="#3-parse-rss-and-atom-into-one-article-model">3. Parse RSS and Atom into one article model </a><a href="#4-merge-updates-without-losing-reading-state">4. Merge updates without losing reading state </a><a href="#5-handle-browser-cors-honestly">5. Handle browser CORS honestly </a><a href="#6-build-a-readable-html-list-first">6. Build a readable HTML list first </a><a href="#7-paint-articles-onto-babylon-papers">7. Paint articles onto Babylon papers </a><a href="#8-flick-a-floating-paper-into-real-physics">8. Flick a floating paper into real physics </a><a href="#9-save-and-back-up-the-useful-parts">9. Save and back up the useful parts </a><a href="#10-export-and-understand-the-boundaries">10. Export and understand the boundaries </a><a href="#11-finish-with-a-short-useful-check">11. Finish with a short useful check </a><a href="#complete-project-source">Complete project source </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

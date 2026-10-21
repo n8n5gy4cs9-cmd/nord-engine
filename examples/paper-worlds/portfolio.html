@@ -1,5 +1,55 @@
-<!doctype html><html lang="en"><meta charset="utf-8"><title>My Paper Worlds desk</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;background:#101b2b;color:#eaf2ef;font:16px system-ui}header{position:absolute;z-index:2;padding:16px}canvas{width:100vw;height:100vh;display:block;touch-action:none}button{padding:10px;margin:8px}</style><header><b>My Paper Worlds desk</b><p id="hint">Orbit, click papers to focus; click glowing doors to travel.</p><button id="all">View all boards</button></header><canvas id="desk"></canvas><script id="desk-data" type="application/json">/*BOARD_DATA*/</script><script type="module">
-import {createWorld} from './world.js';
-const boards=JSON.parse(document.querySelector('#desk-data').textContent);
-try{const world=await createWorld(document.querySelector('canvas'),boards,id=>{world.focus(id);document.querySelector('#hint').textContent=boards[id].title;});document.querySelector('#all').onclick=()=>{world.camera.setTarget(world.B.Vector3.Zero());world.camera.radius=28;};}catch(e){document.querySelector('#hint').textContent=e.message+' — serve beside the exported project files.';}
-</script></html>
+<!doctype html>
+<html lang="en">
+  <meta charset="utf-8" />
+  <title>My Paper Worlds desk</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    body {
+      margin: 0;
+      background: #101b2b;
+      color: #eaf2ef;
+      font: 16px system-ui;
+    }
+    header {
+      position: absolute;
+      z-index: 2;
+      padding: 16px;
+    }
+    canvas {
+      width: 100vw;
+      height: 100vh;
+      display: block;
+      touch-action: none;
+    }
+    button {
+      padding: 10px;
+      margin: 8px;
+    }
+  </style>
+  <header>
+    <b>My Paper Worlds desk</b>
+    <p id="hint">Orbit, click papers to focus; click glowing doors to travel.</p>
+    <button id="all">View all boards</button>
+  </header>
+  <canvas id="desk"></canvas>
+  <script id="desk-data" type="application/json">
+    /*BOARD_DATA*/
+  </script>
+  <script type="module">
+    import { createWorld } from './world.js';
+    const boards = JSON.parse(document.querySelector('#desk-data').textContent);
+    try {
+      const world = await createWorld(document.querySelector('canvas'), boards, (id) => {
+        world.focus(id);
+        document.querySelector('#hint').textContent = boards[id].title;
+      });
+      document.querySelector('#all').onclick = () => {
+        world.camera.setTarget(world.B.Vector3.Zero());
+        world.camera.radius = 28;
+      };
+    } catch (e) {
+      document.querySelector('#hint').textContent =
+        e.message + ' — serve beside the exported project files.';
+    }
+  </script>
+</html>

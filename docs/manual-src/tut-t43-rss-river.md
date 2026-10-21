@@ -161,40 +161,370 @@ All authored text files follow in offline CodeMirror viewers. The archive includ
 ### app.js
 
 ```js
-import {Save} from './save.js';
-import {DEFAULT_FEEDS,parseFeed,mergeArticles,safeLink} from './feeds.js';
-import {createRiver} from './river.js';
-import {download} from './desk.js';
-export async function mount(root){root.innerHTML=`<link rel="stylesheet" href="style.css"><main><header><div class="brand"><span class="boat"></span><div><h1>RSS River</h1><p>A quieter current for curious developers.</p></div></div><nav><button id="refresh">Refresh feeds</button><button id="native">Fetch with Nord host</button><button id="mode">3D paper river</button><button id="backup">Backup library</button></nav></header><section class="layout"><aside><h3>SOURCES</h3><select id="feed"><option value="all">All sources</option></select><input id="search" placeholder="Search titles & summaries"><label><input id="unread" type="checkbox"> Unread only</label><label><input id="stars" type="checkbox"> Starred only</label><button id="readall">Mark visible read</button><hr><h3>IMPORT A FEED</h3><label>RSS / Atom XML<input id="import" type="file" accept=".xml,.rss,.atom,.json"></label><input id="custom" placeholder="https://example.org/feed.xml"><button id="add">Add feed URL</button><button id="demo">Load local demo</button><p>Feeds refresh only when asked. Read cached news offline. If a site blocks browser CORS, import its XML or use Nord host fetch.</p><div id="counts"></div></aside><div class="content"><div class="viewbar"><b id="heading">Your reading room</b><span id="status">Local cache ready</span></div><div id="list"></div><canvas id="river" hidden></canvas></div><article id="reader"><p class="eyebrow">SELECT A PAPER</p><h2>Welcome to the river.</h2><p>Your saved articles stay on this device. The initial demo is original tutorial content, clearly marked as local demo.</p></article></section><footer>Local-first RSS + Atom · no account · Crowelian 2026 + Sonnet</footer></main>`;
- const $=id=>root.querySelector('#'+id),save=new Save('rss-river');let feeds=save.get('feeds',DEFAULT_FEEDS),articles=save.get('articles',[]),selected=null,river=null,in3d=false,alive=true;
- if(!Array.isArray(feeds)||!feeds.length)feeds=[...DEFAULT_FEEDS];if(!Array.isArray(articles))articles=[];
- const say=t=>$('status').textContent=t;
- const persist=()=>{try{save.set('feeds',feeds);save.set('articles',articles);}catch{say('Storage is full; use Backup library.');}};
- function feedOptions(){const select=$('feed'),value=select.value;select.replaceChildren();for(const f of[{id:'all',name:'All sources'},...feeds]){const o=document.createElement('option');o.value=f.id;o.textContent=f.name;select.append(o);}select.value=[...select.options].some(o=>o.value===value)?value:'all';}feedOptions();
- const visible=()=>articles.filter(a=>($('feed').value==='all'||a.feed===$('feed').value)&&(!$('unread').checked||!a.read)&&(!$('stars').checked||a.star)&&(a.title+' '+a.summary).toLowerCase().includes($('search').value.toLowerCase())).slice().reverse();
- function read(id){selected=id;const a=articles.find(a=>a.id===id);if(!a)return;a.read=true;persist();const reader=$('reader');reader.replaceChildren();const source=document.createElement('p');source.className='eyebrow';source.textContent=a.source;const h=document.createElement('h2');h.textContent=a.title;const date=document.createElement('p');date.className='date';date.textContent=a.date?new Date(a.date).toLocaleString():'';const text=document.createElement('p');text.textContent=a.summary;
-  const star=document.createElement('button');star.textContent=a.star?'★ Starred':'☆ Star';star.onclick=()=>{a.star=!a.star;persist();read(id);if(in3d)showRiver();};const flick=document.createElement('button');flick.textContent='Flick this paper';flick.onclick=()=>river?.flick(id);reader.append(source,h,date,text,star,flick);
-  const link=safeLink(a.link);if(link){const aTag=document.createElement('a');aTag.textContent='Read original ↗';aTag.href=link;aTag.target='_blank';aTag.rel='noopener noreferrer';reader.append(aTag);}renderList();
- }
- function renderList(){const list=$('list');list.replaceChildren();const items=visible();for(const a of items){const b=document.createElement('button');b.className='news '+(a.read?'read ':'')+(a.id===selected?'selected':'');const tag=document.createElement('span');tag.textContent=(a.star?'★ ':'')+a.source;const title=document.createElement('strong');title.textContent=a.title;const summary=document.createElement('p');summary.textContent=a.summary.slice(0,150);b.append(tag,title,summary);b.onclick=()=>read(a.id);list.append(b);}if(!items.length)list.textContent='No articles match. Refresh, import a feed, or load the local demo.';$('counts').textContent=`${articles.length} cached · ${articles.filter(a=>!a.read).length} unread · ${articles.filter(a=>a.star).length} starred`;$('heading').textContent=`${items.length} papers in your current`;}
- async function showRiver(){try{say('Preparing Babylon + Havok…');river?.dispose();river=await createRiver($('river'),visible(),read);in3d=true;$('list').hidden=true;$('river').hidden=false;$('mode').textContent='2D reading list';river.resize();say('Orbit slowly · click a paper to read · Flick drops it with Havok');}catch(e){say(e.message);}}
- $('mode').onclick=()=>{if(in3d){in3d=false;$('list').hidden=false;$('river').hidden=true;$('mode').textContent='3D paper river';river?.dispose();river=null;}else showRiver();};
- for(const id of['feed','search','unread','stars'])$(id).addEventListener('input',()=>{renderList();if(in3d)showRiver();});
- async function refresh(native=false){$('refresh').disabled=true;let count=0;const errors=[];let desktop;
-  if(native){try{desktop=(await import('./nord-desktop.js')).default;}catch(e){errors.push(e.message);}}
-  for(const feed of feeds.filter(f=>!f.demo)){try{let xml;if(native){if(!desktop)throw Error('Nord desktop bridge unavailable');const r=await desktop.http.fetch(feed.url);if(r.status>=400)throw Error('HTTP '+r.status);xml=r.body;}else{const r=await fetch(feed.url,{signal:AbortSignal.timeout(12000)});if(!r.ok)throw Error('HTTP '+r.status);xml=await r.text();}const items=parseFeed(xml,feed);articles=mergeArticles(articles,items);count+=items.length;}catch(e){errors.push(feed.name+': '+e.message);}}
-  persist();renderList();if(in3d)await showRiver();say(`Updated ${count} entries${errors.length?' · Some feeds blocked/offline; XML import or Nord host fetch works. '+errors.join(' | '):''}`);$('refresh').disabled=false;
- }
- $('refresh').onclick=()=>refresh();$('native').onclick=()=>refresh(true);
- $('readall').onclick=()=>{visible().forEach(a=>a.read=true);persist();renderList();};
- $('add').onclick=()=>{const url=safeLink($('custom').value);if(!url){say('Enter an HTTP or HTTPS feed URL.');return;}if(feeds.some(f=>f.url===url)){say('Already subscribed.');return;}feeds.push({id:'custom-'+Date.now(),name:new URL(url).hostname,url});feedOptions();persist();say('Feed added; click Refresh. Native fetch needs that host in project permissions.');};
- async function demo(){const r=await fetch('demo.xml');const f={id:'demo',name:'Local demo — tutorial stories',url:'https://example.org/',demo:true};if(!feeds.some(v=>v.id==='demo'))feeds.push(f);articles=mergeArticles(articles,parseFeed(await r.text(),f));feedOptions();persist();renderList();say('Original local demo loaded — not live news.');}
- $('demo').onclick=demo;
- $('import').onchange=async()=>{const file=$('import').files[0];if(!file)return;try{if(file.size>2000000)throw Error('Choose a file below 2 MB');const text=await file.text();if(file.name.endsWith('.json')){const data=JSON.parse(text);if(!Array.isArray(data.feeds)||!Array.isArray(data.articles))throw Error('Expected RSS River backup');feeds=data.feeds.slice(0,30).filter(f=>typeof f.name==='string'&&safeLink(f.url));articles=data.articles.slice(-240).filter(a=>typeof a.id==='string'&&typeof a.title==='string'&&typeof a.summary==='string');}else{const f={id:'import-'+Date.now(),name:file.name,url:'https://example.org/',demo:true};articles=mergeArticles(articles,parseFeed(text,f));feeds.push(f);}feedOptions();persist();renderList();say('Imported '+file.name);}catch(e){say(e.message);}};
- $('backup').onclick=()=>download('rss-river-library.json',JSON.stringify({feeds,articles},null,2));
- renderList();if(!articles.length)await demo();
- window.__rss={get articles(){return articles;},get feeds(){return feeds;},get river(){return river;},read};
- return()=>{alive=false;river?.dispose();root.replaceChildren();};
+import { Save } from './save.js';
+import { DEFAULT_FEEDS, parseFeed, mergeArticles, safeLink } from './feeds.js';
+import { createRiver } from './river.js';
+import { download } from './desk.js';
+export async function mount(root) {
+  root.innerHTML = /* HTML */ `
+    <link rel="stylesheet" href="style.css" />
+    <main>
+      <header>
+        <div class="brand">
+          <span class="boat"></span>
+          <div>
+            <h1>RSS River</h1>
+            <p>A quieter current for curious developers.</p>
+          </div>
+        </div>
+        <nav>
+          <button id="refresh">Refresh feeds</button>
+          <button id="native">Fetch with Nord host</button>
+          <button id="mode">3D paper river</button>
+          <button id="backup">Backup library</button>
+        </nav>
+      </header>
+      <section class="layout">
+        <aside>
+          <h3>SOURCES</h3>
+          <select id="feed">
+            <option value="all">All sources</option>
+          </select>
+          <input id="search" placeholder="Search titles & summaries" />
+          <label>
+            <input id="unread" type="checkbox" />
+            Unread only
+          </label>
+          <label>
+            <input id="stars" type="checkbox" />
+            Starred only
+          </label>
+          <button id="readall">Mark visible read</button>
+          <hr />
+          <h3>IMPORT A FEED</h3>
+          <label>
+            RSS / Atom XML
+            <input id="import" type="file" accept=".xml,.rss,.atom,.json" />
+          </label>
+          <input id="custom" placeholder="https://example.org/feed.xml" />
+          <button id="add">Add feed URL</button>
+          <button id="demo">Load local demo</button>
+          <p>
+            Feeds refresh only when asked. Read cached news offline. If a site blocks
+            browser CORS, import its XML or use Nord host fetch.
+          </p>
+          <div id="counts"></div>
+        </aside>
+        <div class="content">
+          <div class="viewbar">
+            <b id="heading">Your reading room</b>
+            <span id="status">Local cache ready</span>
+          </div>
+          <div id="list"></div>
+          <canvas id="river" hidden></canvas>
+        </div>
+        <article id="reader">
+          <p class="eyebrow">SELECT A PAPER</p>
+          <h2>Welcome to the river.</h2>
+          <p>
+            Your saved articles stay on this device. The initial demo is original tutorial
+            content, clearly marked as local demo.
+          </p>
+        </article>
+      </section>
+      <footer>Local-first RSS + Atom · no account · Crowelian 2026 + Sonnet</footer>
+    </main>
+  `;
+  const $ = (id) => root.querySelector('#' + id),
+    save = new Save('rss-river');
+  let feeds = save.get('feeds', DEFAULT_FEEDS),
+    articles = save.get('articles', []),
+    selected = null,
+    river = null,
+    in3d = false,
+    alive = true;
+  if (!Array.isArray(feeds) || !feeds.length) feeds = [...DEFAULT_FEEDS];
+  if (!Array.isArray(articles)) articles = [];
+  const say = (t) => ($('status').textContent = t);
+  const persist = () => {
+    try {
+      save.set('feeds', feeds);
+      save.set('articles', articles);
+    } catch {
+      say('Storage is full; use Backup library.');
+    }
+  };
+  function feedOptions() {
+    const select = $('feed'),
+      value = select.value;
+    select.replaceChildren();
+    for (const f of [{ id: 'all', name: 'All sources' }, ...feeds]) {
+      const o = document.createElement('option');
+      o.value = f.id;
+      o.textContent = f.name;
+      select.append(o);
+    }
+    select.value = [...select.options].some((o) => o.value === value) ? value : 'all';
+  }
+  feedOptions();
+  const visible = () =>
+    articles
+      .filter(
+        (a) =>
+          ($('feed').value === 'all' || a.feed === $('feed').value) &&
+          (!$('unread').checked || !a.read) &&
+          (!$('stars').checked || a.star) &&
+          (a.title + ' ' + a.summary)
+            .toLowerCase()
+            .includes($('search').value.toLowerCase()),
+      )
+      .slice()
+      .reverse();
+  function read(id) {
+    selected = id;
+    const a = articles.find((a) => a.id === id);
+    if (!a) return;
+    a.read = true;
+    persist();
+    const reader = $('reader');
+    reader.replaceChildren();
+    const source = document.createElement('p');
+    source.className = 'eyebrow';
+    source.textContent = a.source;
+    const h = document.createElement('h2');
+    h.textContent = a.title;
+    const date = document.createElement('p');
+    date.className = 'date';
+    date.textContent = a.date ? new Date(a.date).toLocaleString() : '';
+    const text = document.createElement('p');
+    text.textContent = a.summary;
+    const star = document.createElement('button');
+    star.textContent = a.star ? '★ Starred' : '☆ Star';
+    star.onclick = () => {
+      a.star = !a.star;
+      persist();
+      read(id);
+      if (in3d) showRiver();
+    };
+    const flick = document.createElement('button');
+    flick.textContent = 'Flick this paper';
+    flick.onclick = () => river?.flick(id);
+    reader.append(source, h, date, text, star, flick);
+    const link = safeLink(a.link);
+    if (link) {
+      const aTag = document.createElement('a');
+      aTag.textContent = 'Read original ↗';
+      aTag.href = link;
+      aTag.target = '_blank';
+      aTag.rel = 'noopener noreferrer';
+      reader.append(aTag);
+    }
+    renderList();
+  }
+  function renderList() {
+    const list = $('list');
+    list.replaceChildren();
+    const items = visible();
+    for (const a of items) {
+      const b = document.createElement('button');
+      b.className =
+        'news ' + (a.read ? 'read ' : '') + (a.id === selected ? 'selected' : '');
+      const tag = document.createElement('span');
+      tag.textContent = (a.star ? '★ ' : '') + a.source;
+      const title = document.createElement('strong');
+      title.textContent = a.title;
+      const summary = document.createElement('p');
+      summary.textContent = a.summary.slice(0, 150);
+      b.append(tag, title, summary);
+      b.onclick = () => read(a.id);
+      list.append(b);
+    }
+    if (!items.length)
+      list.textContent =
+        'No articles match. Refresh, import a feed, or load the local demo.';
+    $('counts').textContent =
+      `${articles.length} cached · ${articles.filter((a) => !a.read).length} unread · ${articles.filter((a) => a.star).length} starred`;
+    $('heading').textContent = `${items.length} papers in your current`;
+  }
+  let riverVersion = 0;
+  async function showRiver() {
+    const version = ++riverVersion;
+    try {
+      say('Preparing Babylon + Havok…');
+      const next = await createRiver($('river'), visible(), read);
+      // A newer filter/view request owns the UI; release this stale scene.
+      if (version !== riverVersion || !alive) {
+        next.dispose();
+        return;
+      }
+      river?.dispose();
+      river = next;
+      in3d = true;
+      $('list').hidden = true;
+      $('river').hidden = false;
+      $('mode').textContent = '2D reading list';
+      river.resize();
+      say('Orbit slowly · click a paper to read · Flick drops it with Havok');
+    } catch (e) {
+      say(e.message);
+    }
+  }
+  $('mode').onclick = () => {
+    if (in3d) {
+      riverVersion++;
+      in3d = false;
+      $('list').hidden = false;
+      $('river').hidden = true;
+      $('mode').textContent = '3D paper river';
+      river?.dispose();
+      river = null;
+    } else showRiver();
+  };
+  for (const id of ['feed', 'search', 'unread', 'stars'])
+    $(id).addEventListener('input', () => {
+      renderList();
+      if (in3d) showRiver();
+    });
+  async function refresh(native = false) {
+    $('refresh').disabled = true;
+    let count = 0;
+    const errors = [];
+    let desktop;
+    if (native) {
+      try {
+        desktop = (await import('./nord-desktop.js')).default;
+      } catch (e) {
+        errors.push(e.message);
+      }
+    }
+    for (const feed of feeds.filter((f) => !f.demo)) {
+      try {
+        let xml;
+        if (native) {
+          if (!desktop) throw Error('Nord desktop bridge unavailable');
+          const r = await desktop.http.fetch(feed.url);
+          if (r.status >= 400) throw Error('HTTP ' + r.status);
+          xml = r.body;
+        } else {
+          const r = await fetch(feed.url, { signal: AbortSignal.timeout(12000) });
+          if (!r.ok) throw Error('HTTP ' + r.status);
+          xml = await r.text();
+        }
+        const items = parseFeed(xml, feed);
+        articles = mergeArticles(articles, items);
+        count += items.length;
+      } catch (e) {
+        errors.push(feed.name + ': ' + e.message);
+      }
+    }
+    persist();
+    renderList();
+    if (in3d) await showRiver();
+    say(
+      `Updated ${count} entries${errors.length ? ' · Some feeds blocked/offline; XML import or Nord host fetch works. ' + errors.join(' | ') : ''}`,
+    );
+    $('refresh').disabled = false;
+  }
+  $('refresh').onclick = () => refresh();
+  $('native').onclick = () => refresh(true);
+  $('readall').onclick = () => {
+    visible().forEach((a) => (a.read = true));
+    persist();
+    renderList();
+  };
+  $('add').onclick = () => {
+    const url = safeLink($('custom').value);
+    if (!url) {
+      say('Enter an HTTP or HTTPS feed URL.');
+      return;
+    }
+    if (feeds.some((f) => f.url === url)) {
+      say('Already subscribed.');
+      return;
+    }
+    feeds.push({ id: 'custom-' + Date.now(), name: new URL(url).hostname, url });
+    feedOptions();
+    persist();
+    say(
+      'Feed added; click Refresh. Native fetch needs that host in project permissions.',
+    );
+  };
+  async function demo() {
+    const r = await fetch('demo.xml');
+    const f = {
+      id: 'demo',
+      name: 'Local demo — tutorial stories',
+      url: 'https://example.org/',
+      demo: true,
+    };
+    if (!feeds.some((v) => v.id === 'demo')) feeds.push(f);
+    articles = mergeArticles(articles, parseFeed(await r.text(), f));
+    feedOptions();
+    persist();
+    renderList();
+    say('Original local demo loaded — not live news.');
+  }
+  $('demo').onclick = demo;
+  $('import').onchange = async () => {
+    const file = $('import').files[0];
+    if (!file) return;
+    try {
+      if (file.size > 2000000) throw Error('Choose a file below 2 MB');
+      const text = await file.text();
+      if (file.name.endsWith('.json')) {
+        const data = JSON.parse(text);
+        if (!Array.isArray(data.feeds) || !Array.isArray(data.articles))
+          throw Error('Expected RSS River backup');
+        feeds = data.feeds
+          .slice(0, 30)
+          .filter((f) => typeof f.name === 'string' && safeLink(f.url));
+        articles = data.articles
+          .slice(-240)
+          .filter(
+            (a) =>
+              typeof a.id === 'string' &&
+              typeof a.title === 'string' &&
+              typeof a.summary === 'string',
+          );
+      } else {
+        const f = {
+          id: 'import-' + Date.now(),
+          name: file.name,
+          url: 'https://example.org/',
+          demo: true,
+        };
+        articles = mergeArticles(articles, parseFeed(text, f));
+        feeds.push(f);
+      }
+      feedOptions();
+      persist();
+      renderList();
+      say('Imported ' + file.name);
+    } catch (e) {
+      say(e.message);
+    }
+  };
+  $('backup').onclick = () =>
+    download('rss-river-library.json', JSON.stringify({ feeds, articles }, null, 2));
+  renderList();
+  if (!articles.length) await demo();
+  window.__rss = {
+    get articles() {
+      return articles;
+    },
+    get feeds() {
+      return feeds;
+    },
+    get river() {
+      return river;
+    },
+    read,
+  };
+  return () => {
+    alive = false;
+    river?.dispose();
+    root.replaceChildren();
+  };
 }
 ```
 
@@ -231,26 +561,171 @@ github.blog
 <summary>Complete desk.js</summary>
 
 ```js
-export async function loadScript(src){if(document.querySelector(`script[data-local="${src}"]`))return;await new Promise((ok,no)=>{const el=document.createElement('script');el.src=src;el.dataset.local=src;el.onload=ok;el.onerror=()=>no(Error('Cannot load '+src));document.head.append(el);});}
-export async function createDesk(canvas,{physics=true}={}){
- await loadScript('vendor/babylonjs/babylon.js');const B=window.BABYLON;
- const engine=new B.Engine(canvas,true,{preserveDrawingBuffer:true,stencil:true}),scene=new B.Scene(engine);scene.clearColor=B.Color4.FromHexString('#101b2bff');
- const camera=new B.ArcRotateCamera('Orbit',-Math.PI/2,.67,28,new B.Vector3(0,0,0),scene);camera.attachControl(canvas,true);camera.lowerRadiusLimit=4;camera.upperRadiusLimit=70;camera.wheelPrecision=25;camera.minZ=.1;
- const fill=new B.HemisphericLight('Sky',new B.Vector3(0,1,0),scene);fill.intensity=.65;
- const light=new B.DirectionalLight('Sun',new B.Vector3(-.4,-1,.5),scene);light.position.set(8,18,-8);light.intensity=1.2;
- const shadows=new B.ShadowGenerator(1024,light);shadows.useBlurExponentialShadowMap=true;shadows.blurKernel=16;
- const mat=new B.StandardMaterial('Desk surface',scene);mat.diffuseColor=B.Color3.FromHexString('#253a46');mat.specularColor=new B.Color3(.1,.1,.1);
- const desk=B.MeshBuilder.CreateBox('Desk',{width:45,depth:35,height:.6},scene);desk.position.y=-.45;desk.material=mat;desk.receiveShadows=true;
- const aggregates=[];
- if(physics){await loadScript('vendor/havok/HavokPhysics_umd.js');const havok=await window.HavokPhysics({locateFile:name=>'vendor/havok/'+name});scene.enablePhysics(new B.Vector3(0,-9.81,0),new B.HavokPlugin(true,havok));aggregates.push(new B.PhysicsAggregate(desk,B.PhysicsShapeType.BOX,{mass:0,restitution:.2},scene));}
- const paper=(name,width,height,paint)=>{const mesh=B.MeshBuilder.CreatePlane(name,{width,height,sideOrientation:B.Mesh.DOUBLESIDE},scene);mesh.rotation.x=Math.PI/2;
-  const texture=new B.DynamicTexture(name+' texture',{width:1024,height:768},scene,false);const material=new B.StandardMaterial(name+' material',scene);material.emissiveTexture=texture;material.emissiveColor=B.Color3.White();material.disableLighting=true;material.diffuseColor=B.Color3.Black();material.specularColor=B.Color3.Black();material.backFaceCulling=false;mesh.material=material;shadows.addShadowCaster(mesh);mesh.receiveShadows=true;paint?.(texture.getContext());texture.update();return {mesh,texture,material};};
- const box=(name,pos,color='#f6d675',mass=.2)=>{const mesh=B.MeshBuilder.CreateBox(name,{width:1.1,height:.13,depth:.9},scene);mesh.position.copyFromFloats(...pos);const material=new B.StandardMaterial(name+' paint',scene);material.diffuseColor=B.Color3.FromHexString(color);mesh.material=material;shadows.addShadowCaster(mesh);
-  const aggregate=physics?new B.PhysicsAggregate(mesh,B.PhysicsShapeType.BOX,{mass,restitution:.55,friction:.45},scene):null;if(aggregate)aggregates.push(aggregate);return {mesh,aggregate};};
- const update=new Set(),render=()=>{for(const fn of update)fn(Math.min(.05,engine.getDeltaTime()/1000));scene.render();};engine.runRenderLoop(render);const resize=()=>engine.resize();window.addEventListener('resize',resize);
- return {B,engine,scene,camera,shadows,paper,box,update,resize,setActive(on){engine.stopRenderLoop(render);if(on)engine.runRenderLoop(render);},dispose(){window.removeEventListener('resize',resize);for(const a of aggregates)a.dispose();scene.dispose();engine.dispose();}};
+// Cache the pending promise too: rapid view changes must wait for the same script.
+const scriptLoads = new Map();
+export function loadScript(src) {
+  if (!scriptLoads.has(src)) {
+    const pending = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = src;
+      script.dataset.local = src;
+      script.onload = resolve;
+      script.onerror = () => {
+        script.remove();
+        scriptLoads.delete(src);
+        reject(Error('Cannot load ' + src));
+      };
+      document.head.append(script);
+    });
+    scriptLoads.set(src, pending);
+  }
+  return scriptLoads.get(src);
 }
-export function download(name,content,type='application/json'){const blob=content instanceof Blob?content:new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+export async function createDesk(canvas, { physics = true } = {}) {
+  await loadScript('vendor/babylonjs/babylon.js');
+  const B = window.BABYLON;
+  const engine = new B.Engine(canvas, true, {
+      preserveDrawingBuffer: true,
+      stencil: true,
+    }),
+    scene = new B.Scene(engine);
+  scene.clearColor = B.Color4.FromHexString('#101b2bff');
+  const camera = new B.ArcRotateCamera(
+    'Orbit',
+    -Math.PI / 2,
+    0.67,
+    28,
+    new B.Vector3(0, 0, 0),
+    scene,
+  );
+  camera.attachControl(canvas, true);
+  camera.lowerRadiusLimit = 4;
+  camera.upperRadiusLimit = 70;
+  camera.wheelPrecision = 25;
+  camera.minZ = 0.1;
+  const fill = new B.HemisphericLight('Sky', new B.Vector3(0, 1, 0), scene);
+  fill.intensity = 0.65;
+  const light = new B.DirectionalLight('Sun', new B.Vector3(-0.4, -1, 0.5), scene);
+  light.position.set(8, 18, -8);
+  light.intensity = 1.2;
+  const shadows = new B.ShadowGenerator(1024, light);
+  shadows.useBlurExponentialShadowMap = true;
+  shadows.blurKernel = 16;
+  const mat = new B.StandardMaterial('Desk surface', scene);
+  mat.diffuseColor = B.Color3.FromHexString('#253a46');
+  mat.specularColor = new B.Color3(0.1, 0.1, 0.1);
+  const desk = B.MeshBuilder.CreateBox(
+    'Desk',
+    { width: 45, depth: 35, height: 0.6 },
+    scene,
+  );
+  desk.position.y = -0.45;
+  desk.material = mat;
+  desk.receiveShadows = true;
+  const aggregates = [];
+  if (physics) {
+    await loadScript('vendor/havok/HavokPhysics_umd.js');
+    const havok = await window.HavokPhysics({
+      locateFile: (name) => 'vendor/havok/' + name,
+    });
+    scene.enablePhysics(new B.Vector3(0, -9.81, 0), new B.HavokPlugin(true, havok));
+    aggregates.push(
+      new B.PhysicsAggregate(
+        desk,
+        B.PhysicsShapeType.BOX,
+        { mass: 0, restitution: 0.2 },
+        scene,
+      ),
+    );
+  }
+  const paper = (name, width, height, paint) => {
+    const mesh = B.MeshBuilder.CreatePlane(
+      name,
+      { width, height, sideOrientation: B.Mesh.DOUBLESIDE },
+      scene,
+    );
+    mesh.rotation.x = Math.PI / 2;
+    const texture = new B.DynamicTexture(
+      name + ' texture',
+      { width: 1024, height: 768 },
+      scene,
+      false,
+    );
+    const material = new B.StandardMaterial(name + ' material', scene);
+    material.emissiveTexture = texture;
+    material.emissiveColor = B.Color3.White();
+    material.disableLighting = true;
+    material.diffuseColor = B.Color3.Black();
+    material.specularColor = B.Color3.Black();
+    material.backFaceCulling = false;
+    mesh.material = material;
+    shadows.addShadowCaster(mesh);
+    mesh.receiveShadows = true;
+    paint?.(texture.getContext());
+    texture.update();
+    return { mesh, texture, material };
+  };
+  const box = (name, pos, color = '#f6d675', mass = 0.2) => {
+    const mesh = B.MeshBuilder.CreateBox(
+      name,
+      { width: 1.1, height: 0.13, depth: 0.9 },
+      scene,
+    );
+    mesh.position.copyFromFloats(...pos);
+    const material = new B.StandardMaterial(name + ' paint', scene);
+    material.diffuseColor = B.Color3.FromHexString(color);
+    mesh.material = material;
+    shadows.addShadowCaster(mesh);
+    const aggregate = physics
+      ? new B.PhysicsAggregate(
+          mesh,
+          B.PhysicsShapeType.BOX,
+          { mass, restitution: 0.55, friction: 0.45 },
+          scene,
+        )
+      : null;
+    if (aggregate) aggregates.push(aggregate);
+    return { mesh, aggregate };
+  };
+  const update = new Set(),
+    render = () => {
+      for (const fn of update) fn(Math.min(0.05, engine.getDeltaTime() / 1000));
+      scene.render();
+    };
+  engine.runRenderLoop(render);
+  const resize = () => engine.resize();
+  window.addEventListener('resize', resize);
+  return {
+    B,
+    engine,
+    scene,
+    camera,
+    shadows,
+    paper,
+    box,
+    update,
+    resize,
+    setActive(on) {
+      engine.stopRenderLoop(render);
+      if (on) engine.runRenderLoop(render);
+    },
+    dispose() {
+      window.removeEventListener('resize', resize);
+      for (const a of aggregates) a.dispose();
+      scene.dispose();
+      engine.dispose();
+    },
+  };
+}
+export function download(name, content, type = 'application/json') {
+  const blob = content instanceof Blob ? content : new Blob([content], { type }),
+    url = URL.createObjectURL(blob),
+    a = document.createElement('a');
+  a.href = url;
+  a.download = name;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
 ```
 
 </details>
@@ -260,15 +735,80 @@ export function download(name,content,type='application/json'){const blob=conten
 
 ```js
 // Feed URLs are user data, not CDN dependencies. Nothing is requested until Refresh.
-export const DEFAULT_FEEDS=[{id:'hn',name:'Hacker News',url:'https://hnrss.org/frontpage',topic:'Community'},{id:'ai',name:'Simon Willison — AI & LLMs',url:'https://simonwillison.net/atom/everything/',topic:'AI'},{id:'code',name:'GitHub Engineering',url:'https://github.blog/engineering/feed/',topic:'Coding'}];
-export function safeLink(value,base='https://example.org/'){try{const u=new URL(value,base);return ['https:','http:'].includes(u.protocol)?u.href:'';}catch{return '';}}
-export function parseFeed(xml,feed){if(xml.length>2000000)throw Error('Feed is larger than 2 MB');const doc=new DOMParser().parseFromString(xml,'application/xml');if(doc.querySelector('parsererror'))throw Error('Invalid RSS/Atom XML');
- const entries=[...doc.querySelectorAll('item, entry')];if(!entries.length)throw Error('No RSS items or Atom entries found');
- const plain=html=>{const d=new DOMParser().parseFromString(html,'text/html');d.querySelectorAll('script,style,iframe,object').forEach(e=>e.remove());return (d.body.textContent||'').replace(/\s+/g,' ').trim();};
- return entries.slice(0,80).map((node,index)=>{const title=plain(node.querySelector('title')?.textContent||'Untitled').slice(0,180),linkNode=[...node.querySelectorAll('link')].find(n=>!n.getAttribute('rel')||n.getAttribute('rel')==='alternate');const raw=linkNode?.getAttribute('href')||linkNode?.textContent||'',link=safeLink(raw,feed.url),guid=node.querySelector('guid, id')?.textContent||link||title+index;
-  return {id:feed.id+':'+guid,feed:feed.id,source:feed.name,title,link,summary:plain(node.querySelector('description, summary, content')?.textContent||'Open the original to read the full article.').slice(0,1200),date:node.querySelector('pubDate, published, updated')?.textContent||'',read:false,star:false};});
+export const DEFAULT_FEEDS = [
+  {
+    id: 'hn',
+    name: 'Hacker News',
+    url: 'https://hnrss.org/frontpage',
+    topic: 'Community',
+  },
+  {
+    id: 'ai',
+    name: 'Simon Willison — AI & LLMs',
+    url: 'https://simonwillison.net/atom/everything/',
+    topic: 'AI',
+  },
+  {
+    id: 'code',
+    name: 'GitHub Engineering',
+    url: 'https://github.blog/engineering/feed/',
+    topic: 'Coding',
+  },
+];
+export function safeLink(value, base = 'https://example.org/') {
+  try {
+    const u = new URL(value, base);
+    return ['https:', 'http:'].includes(u.protocol) ? u.href : '';
+  } catch {
+    return '';
+  }
 }
-export function mergeArticles(old,items){const map=new Map(old.map(a=>[a.id,a]));for(const a of items){const prev=map.get(a.id);map.set(a.id,{...a,read:prev?.read||false,star:prev?.star||false});}return [...map.values()].slice(-240);}
+export function parseFeed(xml, feed) {
+  if (xml.length > 2000000) throw Error('Feed is larger than 2 MB');
+  const doc = new DOMParser().parseFromString(xml, 'application/xml');
+  if (doc.querySelector('parsererror')) throw Error('Invalid RSS/Atom XML');
+  const entries = [...doc.querySelectorAll('item, entry')];
+  if (!entries.length) throw Error('No RSS items or Atom entries found');
+  const plain = (html) => {
+    const d = new DOMParser().parseFromString(html, 'text/html');
+    d.querySelectorAll('script,style,iframe,object').forEach((e) => e.remove());
+    return (d.body.textContent || '').replace(/\s+/g, ' ').trim();
+  };
+  return entries.slice(0, 80).map((node, index) => {
+    const title = plain(node.querySelector('title')?.textContent || 'Untitled').slice(
+        0,
+        180,
+      ),
+      linkNode = [...node.querySelectorAll('link')].find(
+        (n) => !n.getAttribute('rel') || n.getAttribute('rel') === 'alternate',
+      );
+    const raw = linkNode?.getAttribute('href') || linkNode?.textContent || '',
+      link = safeLink(raw, feed.url),
+      guid = node.querySelector('guid, id')?.textContent || link || title + index;
+    return {
+      id: feed.id + ':' + guid,
+      feed: feed.id,
+      source: feed.name,
+      title,
+      link,
+      summary: plain(
+        node.querySelector('description, summary, content')?.textContent ||
+          'Open the original to read the full article.',
+      ).slice(0, 1200),
+      date: node.querySelector('pubDate, published, updated')?.textContent || '',
+      read: false,
+      star: false,
+    };
+  });
+}
+export function mergeArticles(old, items) {
+  const map = new Map(old.map((a) => [a.id, a]));
+  for (const a of items) {
+    const prev = map.get(a.id);
+    map.set(a.id, { ...a, read: prev?.read || false, star: prev?.star || false });
+  }
+  return [...map.values()].slice(-240);
+}
 ```
 
 </details>
@@ -541,15 +1081,101 @@ export default desktop;
 <summary>Complete river.js</summary>
 
 ```js
-import {createDesk} from './desk.js';
-export async function createRiver(canvas,articles,open){const d=await createDesk(canvas),{B,scene}=d;const papers=[],bodies=[];let time=0;
- const wrapText=(ctx,text,x,y,width,lineHeight,max=4)=>{let line='',n=0;for(const word of text.split(/\s+/)){if(ctx.measureText(line+word).width>width&&line){ctx.fillText(line,x,y+n*lineHeight);if(++n>=max)return;line='';}line+=word+' ';}if(n<max)ctx.fillText(line,x,y+n*lineHeight);};
- articles.slice(0,18).forEach((a,i)=>{const width=a.star?4.5:3.6,height=a.star?3.2:2.5,p=d.paper('Article '+i,width,height,ctx=>{ctx.fillStyle=a.star?'#fff2c9':'#f7f4e9';ctx.fillRect(0,0,1024,768);ctx.fillStyle='#298a86';ctx.fillRect(58,60,72,8);ctx.font='22px system-ui';ctx.fillText(a.source.toUpperCase().slice(0,45),58,112);ctx.fillStyle='#1e3548';ctx.font='bold 48px system-ui';wrapText(ctx,a.title,58,205,900,60,4);ctx.fillStyle='#5f737b';ctx.font='27px system-ui';wrapText(ctx,a.summary,58,500,890,36,5);ctx.font='22px system-ui';ctx.fillText(a.star?'STARRED · FLOATING HIGHER':a.read?'READ':'UNREAD',58,728);});
-  p.mesh.position.set((i%3-1)*5,a.star?2:1,Math.floor(i/3)*4.6-12);p.mesh.rotation.z=(i%2?.035:-.035);p.mesh.metadata={article:a.id};papers.push({...p,article:a,width,height,phase:i,dropped:false});
- });
- scene.onPointerObservable.add(info=>{if(info.type===B.PointerEventTypes.POINTERPICK){const id=info.pickInfo?.pickedMesh?.metadata?.article;if(id)open(id);}});
- d.update.add(dt=>{time+=dt;for(const p of papers)if(!p.dropped){p.mesh.position.z+=dt*.65;if(p.mesh.position.z>15)p.mesh.position.z=-14;p.mesh.position.y=(p.article.star?2:1)+Math.sin(time*.7+p.phase)*.15;p.mesh.rotation.z=Math.sin(time*.35+p.phase)*.035;}});
- return {...d,papers,flick(id){const p=papers.find(p=>p.article.id===id);if(!p||p.dropped)return;p.dropped=true;const body=B.MeshBuilder.CreateBox('Paper collider',{width:p.width,height:.05,depth:p.height},scene);body.position.copyFrom(p.mesh.position);body.visibility=0;p.mesh.parent=body;p.mesh.position.set(0,0,0);const aggregate=new B.PhysicsAggregate(body,B.PhysicsShapeType.BOX,{mass:.2,restitution:.5,friction:.5},scene);aggregate.body.applyImpulse(new B.Vector3(1.6,2.8,-1.2),body.position);bodies.push(aggregate);},dispose(){bodies.forEach(v=>v.dispose());d.dispose();}};
+import { createDesk } from './desk.js';
+export async function createRiver(canvas, articles, open) {
+  const d = await createDesk(canvas),
+    { B, scene } = d;
+  const papers = [],
+    bodies = [];
+  let time = 0;
+  const wrapText = (ctx, text, x, y, width, lineHeight, max = 4) => {
+    let line = '',
+      n = 0;
+    for (const word of text.split(/\s+/)) {
+      if (ctx.measureText(line + word).width > width && line) {
+        ctx.fillText(line, x, y + n * lineHeight);
+        if (++n >= max) return;
+        line = '';
+      }
+      line += word + ' ';
+    }
+    if (n < max) ctx.fillText(line, x, y + n * lineHeight);
+  };
+  articles.slice(0, 18).forEach((a, i) => {
+    const width = a.star ? 4.5 : 3.6,
+      height = a.star ? 3.2 : 2.5,
+      p = d.paper('Article ' + i, width, height, (ctx) => {
+        ctx.fillStyle = a.star ? '#fff2c9' : '#f7f4e9';
+        ctx.fillRect(0, 0, 1024, 768);
+        ctx.fillStyle = '#298a86';
+        ctx.fillRect(58, 60, 72, 8);
+        ctx.font = '22px system-ui';
+        ctx.fillText(a.source.toUpperCase().slice(0, 45), 58, 112);
+        ctx.fillStyle = '#1e3548';
+        ctx.font = 'bold 48px system-ui';
+        wrapText(ctx, a.title, 58, 205, 900, 60, 4);
+        ctx.fillStyle = '#5f737b';
+        ctx.font = '27px system-ui';
+        wrapText(ctx, a.summary, 58, 500, 890, 36, 5);
+        ctx.font = '22px system-ui';
+        ctx.fillText(
+          a.star ? 'STARRED · FLOATING HIGHER' : a.read ? 'READ' : 'UNREAD',
+          58,
+          728,
+        );
+      });
+    p.mesh.position.set(((i % 3) - 1) * 5, a.star ? 2 : 1, Math.floor(i / 3) * 4.6 - 12);
+    p.mesh.rotation.z = i % 2 ? 0.035 : -0.035;
+    p.mesh.metadata = { article: a.id };
+    papers.push({ ...p, article: a, width, height, phase: i, dropped: false });
+  });
+  scene.onPointerObservable.add((info) => {
+    if (info.type === B.PointerEventTypes.POINTERPICK) {
+      const id = info.pickInfo?.pickedMesh?.metadata?.article;
+      if (id) open(id);
+    }
+  });
+  d.update.add((dt) => {
+    time += dt;
+    for (const p of papers)
+      if (!p.dropped) {
+        p.mesh.position.z += dt * 0.65;
+        if (p.mesh.position.z > 15) p.mesh.position.z = -14;
+        p.mesh.position.y =
+          (p.article.star ? 2 : 1) + Math.sin(time * 0.7 + p.phase) * 0.15;
+        p.mesh.rotation.z = Math.sin(time * 0.35 + p.phase) * 0.035;
+      }
+  });
+  return {
+    ...d,
+    papers,
+    flick(id) {
+      const p = papers.find((p) => p.article.id === id);
+      if (!p || p.dropped) return;
+      p.dropped = true;
+      const body = B.MeshBuilder.CreateBox(
+        'Paper collider',
+        { width: p.width, height: 0.05, depth: p.height },
+        scene,
+      );
+      body.position.copyFrom(p.mesh.position);
+      body.visibility = 0;
+      p.mesh.parent = body;
+      p.mesh.position.set(0, 0, 0);
+      const aggregate = new B.PhysicsAggregate(
+        body,
+        B.PhysicsShapeType.BOX,
+        { mass: 0.2, restitution: 0.5, friction: 0.5 },
+        scene,
+      );
+      aggregate.body.applyImpulse(new B.Vector3(1.6, 2.8, -1.2), body.position);
+      bodies.push(aggregate);
+    },
+    dispose() {
+      bodies.forEach((v) => v.dispose());
+      d.dispose();
+    },
+  };
 }
 ```
 
@@ -599,7 +1225,242 @@ export class MemoryStorage {
 <summary>Complete style.css</summary>
 
 ```css
-html,body{height:auto;min-height:100%;background:#101b2b}*{box-sizing:border-box}body{margin:0;color:#dce9ee;font:14px system-ui}main{max-width:1500px;padding:22px;margin:auto}header{display:flex;align-items:center;justify-content:space-between;gap:15px;padding-bottom:24px}.brand{display:flex;gap:12px;align-items:center}.boat{display:block;width:66px;height:66px;background:url(assets/dev-desk-sprites.png) 100% 100%/400% 200%}h1{font-size:30px;margin:0;letter-spacing:-1px}header p{color:#8fa9b7;margin:5px 0}button,input,select{font:inherit;background:#20364b;color:#e7f3f6;border:1px solid #3c5b71;border-radius:7px;padding:9px}button{cursor:pointer}button:hover{background:#33546c}nav button{margin:3px}#mode{background:#297f7b}.layout{display:grid;grid-template-columns:205px minmax(350px,1fr) 330px;gap:18px;align-items:start}aside{background:#14283a;border-radius:12px;padding:15px}h3,.eyebrow{font-size:11px;letter-spacing:1.5px;color:#83cfc3}aside select,aside>input,aside button{width:100%;margin:6px 0}label{display:block;margin:12px 0;font-size:12px}input[type=file]{max-width:175px;font-size:11px}aside p,#counts{font-size:12px;color:#94aebc;line-height:1.6}hr{border:0;border-top:1px solid #34495d;margin:22px 0}.viewbar{display:flex;flex-direction:column;gap:6px;padding:15px;background:#203448;border-radius:10px 10px 0 0}#status{font-size:11px;color:#8dc6c5;max-height:65px;overflow:auto}#list{height:680px;overflow:auto;background:#142536;padding:12px;border-radius:0 0 10px 10px}.news{display:block;width:100%;text-align:left;background:#20374b;border:1px solid #35556a;padding:17px;margin-bottom:10px}.news span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#8bcfc4}.news strong{display:block;font-size:17px;line-height:1.4;margin:8px 0}.news p{font-size:12px;line-height:1.5;color:#a0b8c5;margin-bottom:0}.news.read{opacity:.65}.news.selected{border-color:#66cbbd;opacity:1}#reader{background:#f7f4e9;color:#253a4c;border-radius:10px;padding:24px;min-height:400px;line-height:1.8;box-shadow:0 8px 30px #0003}#reader .eyebrow{color:#277e7a}#reader h2{font:600 25px/1.35 Georgia,serif}#reader .date{font-size:11px;color:#71818a}#reader a{display:block;color:#267b78;margin-top:18px}#reader button{margin:4px}#river{height:680px;width:100%;display:block;touch-action:none;border-radius:0 0 10px 10px}footer{font-size:12px;color:#7895a6;padding-top:22px}[hidden]{display:none!important}@media(max-width:1050px){.layout{grid-template-columns:180px minmax(300px,1fr)}#reader{grid-column:2}header{flex-wrap:wrap}}@media(max-width:650px){main{padding:8px}.layout{display:block}aside{margin-bottom:12px}#reader{margin-top:12px}}
+html,
+body {
+  height: auto;
+  min-height: 100%;
+  background: #101b2b;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  color: #dce9ee;
+  font: 14px system-ui;
+}
+main {
+  max-width: 1500px;
+  padding: 22px;
+  margin: auto;
+}
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding-bottom: 24px;
+}
+.brand {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.boat {
+  display: block;
+  width: 66px;
+  height: 66px;
+  background: url(assets/dev-desk-sprites.png) 100% 100%/400% 200%;
+}
+h1 {
+  font-size: 30px;
+  margin: 0;
+  letter-spacing: -1px;
+}
+header p {
+  color: #8fa9b7;
+  margin: 5px 0;
+}
+button,
+input,
+select {
+  font: inherit;
+  background: #20364b;
+  color: #e7f3f6;
+  border: 1px solid #3c5b71;
+  border-radius: 7px;
+  padding: 9px;
+}
+button {
+  cursor: pointer;
+}
+button:hover {
+  background: #33546c;
+}
+nav button {
+  margin: 3px;
+}
+#mode {
+  background: #297f7b;
+}
+.layout {
+  display: grid;
+  grid-template-columns: 205px minmax(350px, 1fr) 330px;
+  gap: 18px;
+  align-items: start;
+}
+aside {
+  background: #14283a;
+  border-radius: 12px;
+  padding: 15px;
+}
+h3,
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: #83cfc3;
+}
+aside select,
+aside > input,
+aside button {
+  width: 100%;
+  margin: 6px 0;
+}
+label {
+  display: block;
+  margin: 12px 0;
+  font-size: 12px;
+}
+input[type='file'] {
+  max-width: 175px;
+  font-size: 11px;
+}
+aside p,
+#counts {
+  font-size: 12px;
+  color: #94aebc;
+  line-height: 1.6;
+}
+hr {
+  border: 0;
+  border-top: 1px solid #34495d;
+  margin: 22px 0;
+}
+.viewbar {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 15px;
+  background: #203448;
+  border-radius: 10px 10px 0 0;
+}
+#status {
+  font-size: 11px;
+  color: #8dc6c5;
+  max-height: 65px;
+  overflow: auto;
+}
+#list {
+  height: 680px;
+  overflow: auto;
+  background: #142536;
+  padding: 12px;
+  border-radius: 0 0 10px 10px;
+}
+.news {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: #20374b;
+  border: 1px solid #35556a;
+  padding: 17px;
+  margin-bottom: 10px;
+}
+.news span {
+  display: block;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #8bcfc4;
+}
+.news strong {
+  display: block;
+  font-size: 17px;
+  line-height: 1.4;
+  margin: 8px 0;
+}
+.news p {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #a0b8c5;
+  margin-bottom: 0;
+}
+.news.read {
+  opacity: 0.65;
+}
+.news.selected {
+  border-color: #66cbbd;
+  opacity: 1;
+}
+#reader {
+  background: #f7f4e9;
+  color: #253a4c;
+  border-radius: 10px;
+  padding: 24px;
+  min-height: 400px;
+  line-height: 1.8;
+  box-shadow: 0 8px 30px #0003;
+}
+#reader .eyebrow {
+  color: #277e7a;
+}
+#reader h2 {
+  font:
+    600 25px/1.35 Georgia,
+    serif;
+}
+#reader .date {
+  font-size: 11px;
+  color: #71818a;
+}
+#reader a {
+  display: block;
+  color: #267b78;
+  margin-top: 18px;
+}
+#reader button {
+  margin: 4px;
+}
+#river {
+  height: 680px;
+  width: 100%;
+  display: block;
+  touch-action: none;
+  border-radius: 0 0 10px 10px;
+}
+footer {
+  font-size: 12px;
+  color: #7895a6;
+  padding-top: 22px;
+}
+[hidden] {
+  display: none !important;
+}
+@media (max-width: 1050px) {
+  .layout {
+    grid-template-columns: 180px minmax(300px, 1fr);
+  }
+  #reader {
+    grid-column: 2;
+  }
+  header {
+    flex-wrap: wrap;
+  }
+}
+@media (max-width: 650px) {
+  main {
+    padding: 8px;
+  }
+  .layout {
+    display: block;
+  }
+  aside {
+    margin-bottom: 12px;
+  }
+  #reader {
+    margin-top: 12px;
+  }
+}
 ```
 
 </details>

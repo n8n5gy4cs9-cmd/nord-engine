@@ -1788,6 +1788,12 @@
       "status": "done"
     },
     {
+      "id": "M7-30",
+      "milestone": "M7",
+      "title": "Audit and format full coding tutorials, synchronize readable source downloads and repair portfolio data embedding",
+      "status": "done"
+    },
+    {
       "id": "M8-01",
       "milestone": "M8",
       "title": ".dmg packaging + notarisation notes",

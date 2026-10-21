@@ -63,3 +63,6 @@ M12-31 / BUG-010: `node --test editor/level2d/items.test.mjs` verifies preset pe
 
 
 For T42/T43 run `node tools/desk-apps-test.mjs`: a focused smoke of drawing, Save/reload, Arcade minigames, Babylon paper textures, real Havok sticky/reader flick, graph camera ride, desk download, RSS parser error and cache/star retention. It does not fetch live news. `tools/retro-social-manual-test.mjs` also checks their CodeMirror/full source, screenshot decoding and archive equality. User requested reduced testing/building for these apps; no additional full workspace rebuild was performed after their addition.
+
+
+`node --test tools/tutorial-quality.test.mjs` checks lossless/inert portfolio JSON embedding, concurrent local script readiness/retry and readable line lengths in authored T38–T43 source. The browser app smoke also checks rapid view switching leaves one Babylon engine and that the downloaded portfolio contains exactly the current boards. The tutorial manual test verifies each complete text listing against the runnable file, not just archive availability, and toggles Wrap/checks Copy.

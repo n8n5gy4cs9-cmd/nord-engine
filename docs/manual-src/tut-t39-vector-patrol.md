@@ -5,7 +5,6 @@ order: 39
 summary: Original Blocksmith ships, combat, boss, vertex snapping, palette dithering, ground dots and local MP3 audio; full code and assets.
 ---
 
-# T39 — Vector Patrol: build a complete retro 3D rail shooter
 
 Build an original one-level rail shooter with low-poly ships, moving ground dots, enemy waves, lasers, gates, health pickups, a roll shield, a carrier boss, two music tracks and saved scores. Then switch between a clean renderer and a 320-pixel retro shader. This is a playable Nord project with complete JavaScript, models, sound and music, not a cartridge emulator.
 
@@ -169,31 +168,148 @@ The download contains all binary assets and licences as well as the following co
 ### scripts/flight.js
 
 ```js
-import {NordScript} from 'nord';
-import {newFlight,tick} from './sim.js';
-import {FlightView} from './view.js';
-import {RetroAudio} from './retro-audio.js';
-import {AUDIO} from './audio-config.js';
-export default class Flight extends NordScript{
- start(){this.state=newFlight();this.started=false;this.paused=false;this.bossMusic=false;this.sound=new RetroAudio(AUDIO);this.view=new FlightView(this);this.best=this.save.get('vector-patrol.best',0);
-  this.hud=this.ui.label('',{screen:'flight',x:12,y:8,size:18,style:{whiteSpace:'pre-wrap',maxWidth:'95%'}});this.ui.show('flight');
-  this.ui.menu('flight-menu',[{text:'Launch patrol',onClick:()=>this.launch()},{text:'Mute / Unmute',onClick:()=>this.sound.mute()}],{x:24,y:170});
-  this.ui.label('VECTOR PATROL\nOne canyon. Enemy waves. A carrier at 65 seconds.\nWASD/arrows steer · Space/J fire · Shift roll shield\nC retro/clean · P pause · clear the carrier before 110s',{screen:'flight-menu',x:24,y:52,size:19});this.ui.show('flight-menu');
-  this.pauseButton=this.ui.button('Pause / Resume',()=>this.togglePause(),{screen:'flight',x:12,y:65});this.ui.button('Restart',()=>{this.game.restart();},{screen:'flight',x:180,y:65});
-  this.key=e=>{if(e.code==='KeyP'&&!e.repeat)this.togglePause();};window.addEventListener('keydown',this.key);
-  this.blur=()=>{if(this.started&&!this.paused&&!this.state.won&&!this.state.lost)this.togglePause();};window.addEventListener('blur',this.blur);
-  this.draw();
- }
- async launch(){if(this.started)return;this.started=true;this.ui.clear('flight-menu');try{await this.sound.unlock();await this.sound.music(0);}catch(e){this.sound.problem=e.message;}}
- togglePause(){if(!this.started||this.state.won||this.state.lost)return;this.paused=!this.paused;if(this.paused){this.game.pause();this.sound.suspend();this.ui.label('PAUSED — P or Pause / Resume continues',{screen:'flight-menu',x:24,y:170,size:24});this.ui.show('flight-menu');}else{this.ui.clear('flight-menu');this.game.resume();this.sound.resume();}}
- update(dt){if(this.input.pressed('retro'))this.view.setRetro(!this.view.retro);
-  if(this.started){const[x,y]=this.input.vec('left','right','down','up');const events=tick(this.state,{x,y,fire:this.input.down('fire'),roll:this.input.pressed('roll')},dt);for(const name of events)this.sound.play(name,{volume:name==='laser'?.16:.5});
-   if(this.state.boss&&!this.bossMusic){this.bossMusic=true;this.sound.music(1);}
-   if((this.state.won||this.state.lost)&&!this.finished){this.finished=true;if(this.state.won){this.best=Math.max(this.best,this.state.score);this.save.set('vector-patrol.best',this.best);}this.ui.label(this.state.won?'SECTOR CLEAR!':'PATROL LOST — Restart to retry',{screen:'flight-menu',x:24,y:160,size:32});this.ui.show('flight-menu');}
-  }this.view.draw(this.state);this.draw();
- }
- draw(){const s=this.state;this.hud.set(`HULL ${s.hp}  SCORE ${s.score}  TIME ${s.time.toFixed(1)}  ROLL ${s.roll.toFixed(1)}  BEST ${this.best}\n${s.boss?'CARRIER '+s.bossHP+'/48':'Reach carrier at 65s'} · ${this.view.retro?'RETRO 320px + vertex snap':'CLEAN'}${this.sound.problem?' · Audio: '+this.sound.problem:''}`);}
- onDestroy(){window.removeEventListener('keydown',this.key);window.removeEventListener('blur',this.blur);this.view?.dispose();this.sound?.dispose();this.ui.clear('flight');this.ui.clear('flight-menu');this.game.resume();}
+import { NordScript } from 'nord';
+import { newFlight, tick } from './sim.js';
+import { FlightView } from './view.js';
+import { RetroAudio } from './retro-audio.js';
+import { AUDIO } from './audio-config.js';
+export default class Flight extends NordScript {
+  start() {
+    this.state = newFlight();
+    this.started = false;
+    this.paused = false;
+    this.bossMusic = false;
+    this.sound = new RetroAudio(AUDIO);
+    this.view = new FlightView(this);
+    this.best = this.save.get('vector-patrol.best', 0);
+    this.hud = this.ui.label('', {
+      screen: 'flight',
+      x: 12,
+      y: 8,
+      size: 18,
+      style: { whiteSpace: 'pre-wrap', maxWidth: '95%' },
+    });
+    this.ui.show('flight');
+    this.ui.menu(
+      'flight-menu',
+      [
+        { text: 'Launch patrol', onClick: () => this.launch() },
+        { text: 'Mute / Unmute', onClick: () => this.sound.mute() },
+      ],
+      { x: 24, y: 170 },
+    );
+    this.ui.label(
+      [
+        'VECTOR PATROL',
+        'One canyon. Enemy waves. A carrier at 65 seconds.',
+        'WASD/arrows steer · Space/J fire · Shift roll shield',
+        'C retro/clean · P pause · clear the carrier before 110s',
+      ].join('\n'),
+      { screen: 'flight-menu', x: 24, y: 52, size: 19 },
+    );
+    this.ui.show('flight-menu');
+    this.pauseButton = this.ui.button('Pause / Resume', () => this.togglePause(), {
+      screen: 'flight',
+      x: 12,
+      y: 65,
+    });
+    this.ui.button(
+      'Restart',
+      () => {
+        this.game.restart();
+      },
+      { screen: 'flight', x: 180, y: 65 },
+    );
+    this.key = (e) => {
+      if (e.code === 'KeyP' && !e.repeat) this.togglePause();
+    };
+    window.addEventListener('keydown', this.key);
+    this.blur = () => {
+      if (this.started && !this.paused && !this.state.won && !this.state.lost)
+        this.togglePause();
+    };
+    window.addEventListener('blur', this.blur);
+    this.draw();
+  }
+  async launch() {
+    if (this.started) return;
+    this.started = true;
+    this.ui.clear('flight-menu');
+    try {
+      await this.sound.unlock();
+      await this.sound.music(0);
+    } catch (e) {
+      this.sound.problem = e.message;
+    }
+  }
+  togglePause() {
+    if (!this.started || this.state.won || this.state.lost) return;
+    this.paused = !this.paused;
+    if (this.paused) {
+      this.game.pause();
+      this.sound.suspend();
+      this.ui.label('PAUSED — P or Pause / Resume continues', {
+        screen: 'flight-menu',
+        x: 24,
+        y: 170,
+        size: 24,
+      });
+      this.ui.show('flight-menu');
+    } else {
+      this.ui.clear('flight-menu');
+      this.game.resume();
+      this.sound.resume();
+    }
+  }
+  update(dt) {
+    if (this.input.pressed('retro')) this.view.setRetro(!this.view.retro);
+    if (this.started) {
+      const [x, y] = this.input.vec('left', 'right', 'down', 'up');
+      const events = tick(
+        this.state,
+        { x, y, fire: this.input.down('fire'), roll: this.input.pressed('roll') },
+        dt,
+      );
+      for (const name of events)
+        this.sound.play(name, { volume: name === 'laser' ? 0.16 : 0.5 });
+      if (this.state.boss && !this.bossMusic) {
+        this.bossMusic = true;
+        this.sound.music(1);
+      }
+      if ((this.state.won || this.state.lost) && !this.finished) {
+        this.finished = true;
+        if (this.state.won) {
+          this.best = Math.max(this.best, this.state.score);
+          this.save.set('vector-patrol.best', this.best);
+        }
+        this.ui.label(
+          this.state.won ? 'SECTOR CLEAR!' : 'PATROL LOST — Restart to retry',
+          { screen: 'flight-menu', x: 24, y: 160, size: 32 },
+        );
+        this.ui.show('flight-menu');
+      }
+    }
+    this.view.draw(this.state);
+    this.draw();
+  }
+  draw() {
+    const s = this.state;
+    const hull = `HULL ${s.hp}  SCORE ${s.score}  TIME ${s.time.toFixed(1)}`;
+    const roll = `ROLL ${s.roll.toFixed(1)}  BEST ${this.best}`;
+    const target = s.boss ? 'CARRIER ' + s.bossHP + '/48' : 'Reach carrier at 65s';
+    const mode = this.view.retro ? 'RETRO 320px + vertex snap' : 'CLEAN';
+    const audio = this.sound.problem ? ' · Audio: ' + this.sound.problem : '';
+    this.hud.set(`${hull}  ${roll}\n${target} · ${mode}${audio}`);
+  }
+  onDestroy() {
+    window.removeEventListener('keydown', this.key);
+    window.removeEventListener('blur', this.blur);
+    this.view?.dispose();
+    this.sound?.dispose();
+    this.ui.clear('flight');
+    this.ui.clear('flight-menu');
+    this.game.resume();
+  }
 }
 ```
 
@@ -1764,7 +1880,17 @@ try {
 <summary>Complete scripts/audio-config.js</summary>
 
 ```js
-export const AUDIO={music:['assets/audio/vector-flight.mp3','assets/audio/vector-boss.mp3'],sfx:{laser:'assets/audio/laser.mp3',explosion:'assets/audio/explosion.mp3',crash:'assets/audio/crash.mp3',shield:'assets/audio/shield.mp3',checkpoint:'assets/audio/checkpoint.mp3',win:'assets/audio/win.mp3'}};
+export const AUDIO = {
+  music: ['assets/audio/vector-flight.mp3', 'assets/audio/vector-boss.mp3'],
+  sfx: {
+    laser: 'assets/audio/laser.mp3',
+    explosion: 'assets/audio/explosion.mp3',
+    crash: 'assets/audio/crash.mp3',
+    shield: 'assets/audio/shield.mp3',
+    checkpoint: 'assets/audio/checkpoint.mp3',
+    win: 'assets/audio/win.mp3',
+  },
+};
 ```
 
 </details>
@@ -1792,34 +1918,95 @@ export const aabb = (a, b) => Math.abs(a.pos[0] - b.pos[0]) * 2 < a.w + b.w && M
 ```js
 // Local MP3/WAV/OGG files, decoded on first user activation. No external service.
 export class RetroAudio {
-  constructor(config) { this.config=config;this.cache=new Map();this.voices=new Set();this.problem='';this.muted=false; }
+  constructor(config) {
+    this.config = config;
+    this.cache = new Map();
+    this.voices = new Set();
+    this.problem = '';
+    this.muted = false;
+  }
   async unlock() {
-    this.ctx??=new AudioContext();
-    if(!this.master){this.master=this.ctx.createGain();this.master.gain.value=.55;this.master.connect(this.ctx.destination);}
+    this.ctx ??= new AudioContext();
+    if (!this.master) {
+      this.master = this.ctx.createGain();
+      this.master.gain.value = 0.55;
+      this.master.connect(this.ctx.destination);
+    }
     await this.ctx.resume();
   }
   async load(path) {
-    if(!this.cache.has(path))this.cache.set(path,(async()=>{const response=await fetch(path);if(!response.ok)throw Error(`${path}: HTTP ${response.status}`);return this.ctx.decodeAudioData(await response.arrayBuffer());})());
+    if (!this.cache.has(path))
+      this.cache.set(
+        path,
+        (async () => {
+          const response = await fetch(path);
+          if (!response.ok) throw Error(`${path}: HTTP ${response.status}`);
+          return this.ctx.decodeAudioData(await response.arrayBuffer());
+        })(),
+      );
     return this.cache.get(path);
   }
-  async voice(path,{volume=.5,loop=false,rate=1}={}) {
-    if(!this.ctx)return null;
+  async voice(path, { volume = 0.5, loop = false, rate = 1 } = {}) {
+    if (!this.ctx) return null;
     try {
-      const buffer=await this.load(path);if(this.voices.size>24&&!loop)return null;
-      const source=this.ctx.createBufferSource(),gain=this.ctx.createGain();source.buffer=buffer;source.loop=loop;source.playbackRate.value=rate;gain.gain.value=volume;source.connect(gain);gain.connect(this.master);
-      const voice={source,gain};this.voices.add(voice);source.onended=()=>{this.voices.delete(voice);source.disconnect();gain.disconnect();};source.start();return voice;
-    }catch(error){this.problem=error.message;console.warn('[retro audio]',error);return null;}
+      const buffer = await this.load(path);
+      if (this.voices.size > 24 && !loop) return null;
+      const source = this.ctx.createBufferSource(),
+        gain = this.ctx.createGain();
+      source.buffer = buffer;
+      source.loop = loop;
+      source.playbackRate.value = rate;
+      gain.gain.value = volume;
+      source.connect(gain);
+      gain.connect(this.master);
+      const voice = { source, gain };
+      this.voices.add(voice);
+      source.onended = () => {
+        this.voices.delete(voice);
+        source.disconnect();
+        gain.disconnect();
+      };
+      source.start();
+      return voice;
+    } catch (error) {
+      this.problem = error.message;
+      console.warn('[retro audio]', error);
+      return null;
+    }
   }
-  play(name,options={}) {const path=this.config.sfx[name];return path?this.voice(path,options):Promise.resolve(null);}
-  async music(index=0) {
-    const old=this.song,next=await this.voice(this.config.music[index%this.config.music.length],{loop:true,volume:0});
-    if(!next)return;this.song=next;next.gain.gain.linearRampToValueAtTime(.4,this.ctx.currentTime+.4);
-    if(old){old.gain.gain.linearRampToValueAtTime(0,this.ctx.currentTime+.4);old.source.stop(this.ctx.currentTime+.45);}
+  play(name, options = {}) {
+    const path = this.config.sfx[name];
+    return path ? this.voice(path, options) : Promise.resolve(null);
   }
-  mute() {this.muted=!this.muted;if(this.master)this.master.gain.gain.value=this.muted?0:.55;return this.muted;}
-  suspend() {if(this.ctx?.state==='running')return this.ctx.suspend();}
-  resume() {if(this.ctx?.state==='suspended')return this.ctx.resume();}
-  async dispose() {if(this.ctx)await this.ctx.close();this.voices.clear();}
+  async music(index = 0) {
+    const old = this.song,
+      next = await this.voice(this.config.music[index % this.config.music.length], {
+        loop: true,
+        volume: 0,
+      });
+    if (!next) return;
+    this.song = next;
+    next.gain.gain.linearRampToValueAtTime(0.4, this.ctx.currentTime + 0.4);
+    if (old) {
+      old.gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 0.4);
+      old.source.stop(this.ctx.currentTime + 0.45);
+    }
+  }
+  mute() {
+    this.muted = !this.muted;
+    if (this.master) this.master.gain.gain.value = this.muted ? 0 : 0.55;
+    return this.muted;
+  }
+  suspend() {
+    if (this.ctx?.state === 'running') return this.ctx.suspend();
+  }
+  resume() {
+    if (this.ctx?.state === 'suspended') return this.ctx.resume();
+  }
+  async dispose() {
+    if (this.ctx) await this.ctx.close();
+    this.voices.clear();
+  }
 }
 ```
 
@@ -1829,7 +2016,8 @@ export class RetroAudio {
 <summary>Complete scripts/retro-shader.js</summary>
 
 ```js
-export const vertexSource=`
+// Snap in projected space so the grid follows the screen, rather than world units.
+export const vertexSource = `
 precision highp float;
 attribute vec3 position;
 attribute vec3 normal;
@@ -1838,26 +2026,36 @@ uniform mat4 world;
 uniform float uRetro;
 uniform vec2 uGrid;
 varying vec3 vNormal;
-void main(){
- vec4 clip=worldViewProjection*vec4(position,1.0);
- vec2 snapped=floor(clip.xy/clip.w*uGrid+0.5)/uGrid*clip.w;
- clip.xy=mix(clip.xy,snapped,uRetro);
- gl_Position=clip;
- vNormal=normalize(mat3(world)*normal);
-}`;
-export const fragmentSource=`
+
+void main() {
+  vec4 clip = worldViewProjection * vec4(position, 1.0);
+  vec2 projected = clip.xy / clip.w;
+  vec2 snapped = floor(projected * uGrid + 0.5) / uGrid;
+  clip.xy = mix(clip.xy, snapped * clip.w, uRetro);
+  gl_Position = clip;
+  vNormal = normalize(mat3(world) * normal);
+}
+`;
+
+// A 2×2 ordered dither offsets the sixteen-level colour quantization.
+export const fragmentSource = `
 precision highp float;
 uniform vec3 uColor;
 uniform float uRetro;
 varying vec3 vNormal;
-void main(){
- float light=0.45+0.55*max(dot(normalize(vNormal),normalize(vec3(-0.4,0.8,-0.5))),0.0);
- vec3 color=uColor*light;
- vec2 pixel=mod(floor(gl_FragCoord.xy),2.0);
- float dither=(pixel.x+pixel.y*2.0)/4.0-0.375;
- vec3 quantized=floor(clamp(color+dither/15.0,0.0,1.0)*15.0+0.5)/15.0;
- gl_FragColor=vec4(mix(color,quantized,uRetro),1.0);
-}`;
+
+void main() {
+  vec3 lightDirection = normalize(vec3(-0.4, 0.8, -0.5));
+  float light = 0.45 + 0.55 * max(dot(normalize(vNormal), lightDirection), 0.0);
+  vec3 color = uColor * light;
+  vec2 pixel = mod(floor(gl_FragCoord.xy), 2.0);
+  float dither = (pixel.x + pixel.y * 2.0) / 4.0 - 0.375;
+  vec3 quantized = floor(
+    clamp(color + dither / 15.0, 0.0, 1.0) * 15.0 + 0.5
+  ) / 15.0;
+  gl_FragColor = vec4(mix(color, quantized, uRetro), 1.0);
+}
+`;
 ```
 
 </details>
@@ -1866,28 +2064,190 @@ void main(){
 <summary>Complete scripts/sim.js</summary>
 
 ```js
-export const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-export function newFlight(){return {time:0,distance:0,x:0,y:0,hp:100,score:0,roll:0,shield:0,fire:0,spawn:0,gate:18,cell:8,bossHP:48,bossZ:130,bossFire:1,boss:false,won:false,lost:false,enemies:[],shots:[],hostile:[],gates:[],cells:[],serial:0};}
-export function tick(s,input,dt){
- if(s.won||s.lost)return [];dt=Math.min(.05,dt);const events=[];s.time+=dt;s.distance+=22*dt;
- s.x=clamp(s.x+input.x*12*dt,-9,9);s.y=clamp(s.y+input.y*9*dt,-4.4,5.2);
- s.roll=Math.max(0,s.roll-dt);s.shield=Math.max(0,s.shield-dt);s.fire-=dt;s.spawn-=dt;s.gate-=dt;s.cell-=dt;
- if(input.roll&&s.roll===0){s.roll=3;s.shield=.75;events.push('shield');}
- if(input.fire&&s.fire<=0){s.fire=.16;s.shots.push({x:s.x,y:s.y,z:3});events.push('laser');}
- if(s.time<63&&s.spawn<=0){s.spawn=Math.max(.7,2-s.time/70);const id=s.serial++;s.enemies.push({id,x:Math.sin(id*2.3)*7,y:Math.cos(id*1.7)*3,z:130,hp:2,fire:1.5+(id%3)*.3});}
- if(s.gate<=0&&s.time<65){s.gate=12;s.gates.push({x:Math.sin(s.serial)*3,y:0,z:150});}
- if(s.cell<=0&&s.time<65){s.cell=11;s.cells.push({x:Math.sin(s.time)*5,y:Math.cos(s.time)*2,z:110});}
- const damage=n=>{if(s.shield>0)return;s.hp=Math.max(0,s.hp-n);s.shield=1.2;events.push('crash');if(s.hp===0)s.lost=true;};
- for(const e of s.enemies){e.z-=24*dt;e.fire-=dt;if(e.fire<=0&&e.z>10){e.fire=2.8;s.hostile.push({x:e.x,y:e.y,z:e.z,vx:(s.x-e.x)*.3,vy:(s.y-e.y)*.3});}if(Math.abs(e.z)<2&&Math.hypot(e.x-s.x,e.y-s.y)<2){damage(18);e.hp=0;}}
- if(s.time>=65){s.boss=true;s.bossZ=Math.max(48,s.bossZ-14*dt);s.bossFire-=dt;if(s.bossFire<=0){s.bossFire=1;for(let i=-2;i<=2;i++)s.hostile.push({x:i*2,y:Math.sin(s.time)*2,z:s.bossZ,vx:i*.8,vy:0});}}
- for(const shot of s.shots){shot.z+=110*dt;for(const e of s.enemies)if(e.hp>0&&Math.abs(shot.z-e.z)<4&&Math.hypot(shot.x-e.x,shot.y-e.y)<1.7){e.hp--;shot.z=999;if(e.hp===0){s.score+=100;events.push('explosion');}break;}
-  if(!s.won&&s.boss&&Math.abs(shot.z-s.bossZ)<5&&Math.abs(shot.x)<5&&Math.abs(shot.y)<2.6){s.bossHP--;shot.z=999;events.push('checkpoint');if(s.bossHP<=0){s.won=true;s.score+=2500;events.push('win');}}
- }
- for(const bullet of s.hostile){bullet.z-=46*dt;bullet.x+=bullet.vx*dt;bullet.y+=bullet.vy*dt;if(Math.abs(bullet.z)<2&&Math.hypot(bullet.x-s.x,bullet.y-s.y)<1){damage(12);bullet.z=-20;}}
- for(const gate of s.gates){gate.z-=22*dt;if(Math.abs(gate.z)<1&&(!gate.passed)){gate.passed=true;if(Math.abs(s.x-gate.x)>3||Math.abs(s.y)>2.8)damage(24);else{s.score+=150;events.push('checkpoint');}}}
- for(const cell of s.cells){cell.z-=22*dt;if(Math.abs(cell.z)<2&&Math.hypot(cell.x-s.x,cell.y-s.y)<1.7){cell.z=-20;s.hp=Math.min(100,s.hp+20);s.score+=50;events.push('shield');}}
- s.enemies=s.enemies.filter(e=>e.hp>0&&e.z>-8);s.shots=s.shots.filter(b=>b.z<180);s.hostile=s.hostile.filter(b=>b.z>-10);s.gates=s.gates.filter(g=>g.z>-10);s.cells=s.cells.filter(c=>c.z>-10);
- if(s.time>=110&&!s.won)s.lost=true;return events;
+export const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+export function newFlight() {
+  return {
+    time: 0,
+    distance: 0,
+    x: 0,
+    y: 0,
+    hp: 100,
+    score: 0,
+    roll: 0,
+    shield: 0,
+    fire: 0,
+    spawn: 0,
+    gate: 18,
+    cell: 8,
+    bossHP: 48,
+    bossZ: 130,
+    bossFire: 1,
+    boss: false,
+    won: false,
+    lost: false,
+    enemies: [],
+    shots: [],
+    hostile: [],
+    gates: [],
+    cells: [],
+    serial: 0,
+  };
+}
+export function tick(s, input, dt) {
+  if (s.won || s.lost) return [];
+  dt = Math.min(0.05, dt);
+  const events = [];
+  s.time += dt;
+  s.distance += 22 * dt;
+  s.x = clamp(s.x + input.x * 12 * dt, -9, 9);
+  s.y = clamp(s.y + input.y * 9 * dt, -4.4, 5.2);
+  s.roll = Math.max(0, s.roll - dt);
+  s.shield = Math.max(0, s.shield - dt);
+  s.fire -= dt;
+  s.spawn -= dt;
+  s.gate -= dt;
+  s.cell -= dt;
+  if (input.roll && s.roll === 0) {
+    s.roll = 3;
+    s.shield = 0.75;
+    events.push('shield');
+  }
+  if (input.fire && s.fire <= 0) {
+    s.fire = 0.16;
+    s.shots.push({ x: s.x, y: s.y, z: 3 });
+    events.push('laser');
+  }
+  if (s.time < 63 && s.spawn <= 0) {
+    s.spawn = Math.max(0.7, 2 - s.time / 70);
+    const id = s.serial++;
+    s.enemies.push({
+      id,
+      x: Math.sin(id * 2.3) * 7,
+      y: Math.cos(id * 1.7) * 3,
+      z: 130,
+      hp: 2,
+      fire: 1.5 + (id % 3) * 0.3,
+    });
+  }
+  if (s.gate <= 0 && s.time < 65) {
+    s.gate = 12;
+    s.gates.push({ x: Math.sin(s.serial) * 3, y: 0, z: 150 });
+  }
+  if (s.cell <= 0 && s.time < 65) {
+    s.cell = 11;
+    s.cells.push({ x: Math.sin(s.time) * 5, y: Math.cos(s.time) * 2, z: 110 });
+  }
+  const damage = (n) => {
+    if (s.shield > 0 || s.won || s.lost) return;
+    s.hp = Math.max(0, s.hp - n);
+    s.shield = 1.2;
+    events.push('crash');
+    if (s.hp === 0) s.lost = true;
+  };
+  for (const e of s.enemies) {
+    e.z -= 24 * dt;
+    e.fire -= dt;
+    if (e.fire <= 0 && e.z > 10) {
+      e.fire = 2.8;
+      s.hostile.push({
+        x: e.x,
+        y: e.y,
+        z: e.z,
+        vx: (s.x - e.x) * 0.3,
+        vy: (s.y - e.y) * 0.3,
+      });
+    }
+    if (Math.abs(e.z) < 2 && Math.hypot(e.x - s.x, e.y - s.y) < 2) {
+      damage(18);
+      e.hp = 0;
+    }
+  }
+  if (s.time >= 65) {
+    s.boss = true;
+    s.bossZ = Math.max(48, s.bossZ - 14 * dt);
+    s.bossFire -= dt;
+    if (s.bossFire <= 0) {
+      s.bossFire = 1;
+      for (let i = -2; i <= 2; i++)
+        s.hostile.push({
+          x: i * 2,
+          y: Math.sin(s.time) * 2,
+          z: s.bossZ,
+          vx: i * 0.8,
+          vy: 0,
+        });
+    }
+  }
+  for (const shot of s.shots) {
+    shot.z += 110 * dt;
+    for (const e of s.enemies)
+      if (
+        e.hp > 0 &&
+        Math.abs(shot.z - e.z) < 4 &&
+        Math.hypot(shot.x - e.x, shot.y - e.y) < 1.7
+      ) {
+        e.hp--;
+        shot.z = 999;
+        if (e.hp === 0) {
+          s.score += 100;
+          events.push('explosion');
+        }
+        break;
+      }
+    if (
+      !s.won &&
+      !s.lost &&
+      s.boss &&
+      Math.abs(shot.z - s.bossZ) < 5 &&
+      Math.abs(shot.x) < 5 &&
+      Math.abs(shot.y) < 2.6
+    ) {
+      s.bossHP--;
+      shot.z = 999;
+      events.push('checkpoint');
+      if (s.bossHP <= 0) {
+        s.won = true;
+        s.score += 2500;
+        events.push('win');
+      }
+    }
+  }
+  for (const bullet of s.hostile) {
+    bullet.z -= 46 * dt;
+    bullet.x += bullet.vx * dt;
+    bullet.y += bullet.vy * dt;
+    if (Math.abs(bullet.z) < 2 && Math.hypot(bullet.x - s.x, bullet.y - s.y) < 1) {
+      damage(12);
+      bullet.z = -20;
+    }
+  }
+  for (const gate of s.gates) {
+    gate.z -= 22 * dt;
+    if (Math.abs(gate.z) < 1 && !gate.passed) {
+      gate.passed = true;
+      if (Math.abs(s.x - gate.x) > 3 || Math.abs(s.y) > 2.8) damage(24);
+      else {
+        s.score += 150;
+        events.push('checkpoint');
+      }
+    }
+  }
+  for (const cell of s.cells) {
+    cell.z -= 22 * dt;
+    if (Math.abs(cell.z) < 2 && Math.hypot(cell.x - s.x, cell.y - s.y) < 1.7) {
+      cell.z = -20;
+      s.hp = Math.min(100, s.hp + 20);
+      s.score += 50;
+      events.push('shield');
+    }
+  }
+  s.enemies = s.enemies.filter((e) => e.hp > 0 && e.z > -8);
+  s.shots = s.shots.filter((b) => b.z < 180);
+  s.hostile = s.hostile.filter((b) => b.z > -10);
+  s.gates = s.gates.filter((g) => g.z > -10);
+  s.cells = s.cells.filter((c) => c.z > -10);
+  if (s.time >= 110 && !s.won) s.lost = true;
+  return events;
 }
 ```
 
@@ -1897,33 +2257,177 @@ export function tick(s,input,dt){
 <summary>Complete scripts/view.js</summary>
 
 ```js
-import {vertexSource,fragmentSource} from './retro-shader.js';
-export class FlightView{
- constructor(script){this.script=script;this.game=script.game;const b=this.game.backend;this.B=b.B;this.scene=b.scene;this.engine=b.engine;this.canvas=b.canvas;this.materials=new Map();this.originals=[];this.retro=true;this.visuals=[];
-  for(const entity of script.scene.all())for(const mesh of entity.__meshes??[]){if(!mesh.getTotalVertices?.())continue;const old=mesh.material,color=old?.albedoColor??old?.diffuseColor??this.B.Color3.White(),key=color.toHexString();let mat=this.materials.get(key);if(!mat){mat=new this.B.ShaderMaterial('retro-'+key,this.scene,{vertexSource,fragmentSource},{attributes:['position','normal'],uniforms:['worldViewProjection','world','uColor','uRetro','uGrid']});mat.setColor3('uColor',color);this.materials.set(key,mat);}this.originals.push([mesh,old]);mesh.material=mat;}
-  this.player=script.scene.find('Fighter');this.carrier=script.scene.find('Carrier');this.drones=Array.from({length:14},(_,i)=>script.scene.find('Drone'+i));this.gates=Array.from({length:3},(_,i)=>script.scene.find('Gate'+i));
-  const material=(name,color)=>{const m=new this.B.StandardMaterial(name,this.scene);m.disableLighting=true;m.emissiveColor=this.B.Color3.FromHexString(color);return m;};
-  this.green=material('player laser','#6affbc');this.red=material('hostile laser','#ff765a');this.dot=material('ground dot','#4b9995');this.gold=material('energy cell','#f8df75');
-  const pool=(count,kind,mat,size)=>Array.from({length:count},(_,i)=>{const mesh=this.B.MeshBuilder.CreateBox(kind+i,{width:size,height:size,depth:kind==='shot'?1.6:size},this.scene);mesh.material=mat;this.visuals.push(mesh);return mesh;});
-  this.shots=pool(40,'shot',this.green,.12);this.hostile=pool(60,'hostile',this.red,.28);this.cells=pool(6,'cell',this.gold,.7);this.dots=pool(200,'dot',this.dot,.14);
-  this.terrain=new this.B.StandardMaterial('canyon',this.scene);this.terrain.diffuseColor=this.B.Color3.FromHexString('#28625d');this.terrain.specularColor=this.B.Color3.Black();
-  this.ground=this.B.MeshBuilder.CreateGround('canyon floor',{width:300,height:500},this.scene);this.ground.position.set(0,-5.7,190);this.ground.material=this.terrain;this.visuals.push(this.ground);
-  this.mountains=Array.from({length:18},(_,i)=>{const m=this.B.MeshBuilder.CreateCylinder('canyon ridge'+i,{diameterTop:0,diameterBottom:18+(i%3)*7,height:12+(i%4)*4,tessellation:4},this.scene);m.material=this.terrain;this.visuals.push(m);return m;});
-  this.light=new this.B.HemisphericLight('canyon light',new this.B.Vector3(-.6,1,-.4),this.scene);this.light.intensity=.95;
-  this.scene.activeCamera.setTarget(new this.B.Vector3(0,0,40));this.setRetro(true);
- }
- setRetro(on){this.retro=on;this.engine.setHardwareScalingLevel(on?Math.max(1,this.canvas.clientWidth/320):1);this.canvas.style.imageRendering=on?'pixelated':'auto';for(const m of this.materials.values()){m.setFloat('uRetro',on?1:0);m.setVector2('uGrid',new this.B.Vector2(this.engine.getRenderWidth()/2,this.engine.getRenderHeight()/2));}}
- draw(s){
-  this.player.pos=[s.x,s.y,0];this.player.rot=[0,0,s.roll>2.25?(3-s.roll)/.75*360:-s.x*3];this.player.scale=s.shield>0?[1.25,1.25,1.25]:[1.2,1.2,1.2];
-  const entities=(pool,items,fn)=>pool.forEach((e,i)=>{e.enabled=i<items.length;if(e.enabled){e.pos=[items[i].x??0,items[i].y??0,items[i].z];fn?.(e,items[i]);}});
-  entities(this.drones,s.enemies.slice(0,14),(e,v)=>e.rot=[0,0,Math.sin(s.time+v.id)*12]);entities(this.gates,s.gates);
-  this.carrier.enabled=s.boss&&!s.won;this.carrier.pos=[0,0,s.bossZ];this.carrier.rot=[0,0,0];
-  const native=(pool,items)=>pool.forEach((m,i)=>{m.setEnabled(i<items.length);if(i<items.length)m.position.set(items[i].x,items[i].y,items[i].z);});
-  native(this.shots,s.shots);native(this.hostile,s.hostile);native(this.cells,s.cells);
-  this.dots.forEach((m,i)=>m.position.set((i%10-4.5)*8,-5.5,12+Math.floor(i/10)*10-s.distance%10));
-  this.mountains.forEach((m,i)=>m.position.set((i%2?-1:1)*(25+i%3*5),0,20+Math.floor(i/2)*28-s.distance%28));
- }
- dispose(){for(const[mesh,mat]of this.originals)if(!mesh.isDisposed())mesh.material=mat;for(const m of this.materials.values())m.dispose();for(const m of this.visuals)m.dispose();for(const m of [this.green,this.red,this.dot,this.gold])m.dispose();this.terrain.dispose();this.light.dispose();this.engine.setHardwareScalingLevel(1);}
+import { vertexSource, fragmentSource } from './retro-shader.js';
+export class FlightView {
+  constructor(script) {
+    this.script = script;
+    this.game = script.game;
+    const b = this.game.backend;
+    this.B = b.B;
+    this.scene = b.scene;
+    this.engine = b.engine;
+    this.canvas = b.canvas;
+    this.materials = new Map();
+    this.originals = [];
+    this.retro = true;
+    this.visuals = [];
+    for (const entity of script.scene.all())
+      for (const mesh of entity.__meshes ?? []) {
+        if (!mesh.getTotalVertices?.()) continue;
+        const old = mesh.material,
+          color = old?.albedoColor ?? old?.diffuseColor ?? this.B.Color3.White(),
+          key = color.toHexString();
+        let mat = this.materials.get(key);
+        if (!mat) {
+          mat = new this.B.ShaderMaterial(
+            'retro-' + key,
+            this.scene,
+            { vertexSource, fragmentSource },
+            {
+              attributes: ['position', 'normal'],
+              uniforms: ['worldViewProjection', 'world', 'uColor', 'uRetro', 'uGrid'],
+            },
+          );
+          mat.setColor3('uColor', color);
+          this.materials.set(key, mat);
+        }
+        this.originals.push([mesh, old]);
+        mesh.material = mat;
+      }
+    this.player = script.scene.find('Fighter');
+    this.carrier = script.scene.find('Carrier');
+    this.drones = Array.from({ length: 14 }, (_, i) => script.scene.find('Drone' + i));
+    this.gates = Array.from({ length: 3 }, (_, i) => script.scene.find('Gate' + i));
+    const material = (name, color) => {
+      const m = new this.B.StandardMaterial(name, this.scene);
+      m.disableLighting = true;
+      m.emissiveColor = this.B.Color3.FromHexString(color);
+      return m;
+    };
+    this.green = material('player laser', '#6affbc');
+    this.red = material('hostile laser', '#ff765a');
+    this.dot = material('ground dot', '#4b9995');
+    this.gold = material('energy cell', '#f8df75');
+    const pool = (count, kind, mat, size) =>
+      Array.from({ length: count }, (_, i) => {
+        const mesh = this.B.MeshBuilder.CreateBox(
+          kind + i,
+          { width: size, height: size, depth: kind === 'shot' ? 1.6 : size },
+          this.scene,
+        );
+        mesh.material = mat;
+        this.visuals.push(mesh);
+        return mesh;
+      });
+    this.shots = pool(40, 'shot', this.green, 0.12);
+    this.hostile = pool(60, 'hostile', this.red, 0.28);
+    this.cells = pool(6, 'cell', this.gold, 0.7);
+    this.dots = pool(200, 'dot', this.dot, 0.14);
+    this.terrain = new this.B.StandardMaterial('canyon', this.scene);
+    this.terrain.diffuseColor = this.B.Color3.FromHexString('#28625d');
+    this.terrain.specularColor = this.B.Color3.Black();
+    this.ground = this.B.MeshBuilder.CreateGround(
+      'canyon floor',
+      { width: 300, height: 500 },
+      this.scene,
+    );
+    this.ground.position.set(0, -5.7, 190);
+    this.ground.material = this.terrain;
+    this.visuals.push(this.ground);
+    this.mountains = Array.from({ length: 18 }, (_, i) => {
+      const m = this.B.MeshBuilder.CreateCylinder(
+        'canyon ridge' + i,
+        {
+          diameterTop: 0,
+          diameterBottom: 18 + (i % 3) * 7,
+          height: 12 + (i % 4) * 4,
+          tessellation: 4,
+        },
+        this.scene,
+      );
+      m.material = this.terrain;
+      this.visuals.push(m);
+      return m;
+    });
+    this.light = new this.B.HemisphericLight(
+      'canyon light',
+      new this.B.Vector3(-0.6, 1, -0.4),
+      this.scene,
+    );
+    this.light.intensity = 0.95;
+    this.scene.activeCamera.setTarget(new this.B.Vector3(0, 0, 40));
+    this.setRetro(true);
+  }
+  setRetro(on) {
+    this.retro = on;
+    this.engine.setHardwareScalingLevel(
+      on ? Math.max(1, this.canvas.clientWidth / 320) : 1,
+    );
+    this.canvas.style.imageRendering = on ? 'pixelated' : 'auto';
+    for (const m of this.materials.values()) {
+      m.setFloat('uRetro', on ? 1 : 0);
+      m.setVector2(
+        'uGrid',
+        new this.B.Vector2(
+          this.engine.getRenderWidth() / 2,
+          this.engine.getRenderHeight() / 2,
+        ),
+      );
+    }
+  }
+  draw(s) {
+    this.player.pos = [s.x, s.y, 0];
+    this.player.rot = [0, 0, s.roll > 2.25 ? ((3 - s.roll) / 0.75) * 360 : -s.x * 3];
+    this.player.scale = s.shield > 0 ? [1.25, 1.25, 1.25] : [1.2, 1.2, 1.2];
+    const entities = (pool, items, fn) =>
+      pool.forEach((e, i) => {
+        e.enabled = i < items.length;
+        if (e.enabled) {
+          e.pos = [items[i].x ?? 0, items[i].y ?? 0, items[i].z];
+          fn?.(e, items[i]);
+        }
+      });
+    entities(
+      this.drones,
+      s.enemies.slice(0, 14),
+      (e, v) => (e.rot = [0, 0, Math.sin(s.time + v.id) * 12]),
+    );
+    entities(this.gates, s.gates);
+    this.carrier.enabled = s.boss && !s.won;
+    this.carrier.pos = [0, 0, s.bossZ];
+    this.carrier.rot = [0, 0, 0];
+    const native = (pool, items) =>
+      pool.forEach((m, i) => {
+        m.setEnabled(i < items.length);
+        if (i < items.length) m.position.set(items[i].x, items[i].y, items[i].z);
+      });
+    native(this.shots, s.shots);
+    native(this.hostile, s.hostile);
+    native(this.cells, s.cells);
+    this.dots.forEach((m, i) =>
+      m.position.set(
+        ((i % 10) - 4.5) * 8,
+        -5.5,
+        12 + Math.floor(i / 10) * 10 - (s.distance % 10),
+      ),
+    );
+    this.mountains.forEach((m, i) =>
+      m.position.set(
+        (i % 2 ? -1 : 1) * (25 + (i % 3) * 5),
+        0,
+        20 + Math.floor(i / 2) * 28 - (s.distance % 28),
+      ),
+    );
+  }
+  dispose() {
+    for (const [mesh, mat] of this.originals) if (!mesh.isDisposed()) mesh.material = mat;
+    for (const m of this.materials.values()) m.dispose();
+    for (const m of this.visuals) m.dispose();
+    for (const m of [this.green, this.red, this.dot, this.gold]) m.dispose();
+    this.terrain.dispose();
+    this.light.dispose();
+    this.engine.setHardwareScalingLevel(1);
+  }
 }
 ```
 

@@ -1,11 +1,76 @@
 import fs from 'node:fs';
-import {E,project} from '../lib.mjs';
-const model=(name,file,pos=[0,0,0],scale=[1,1,1])=>E(name,{pos,scale,c:[{type:'model',path:'assets/models/'+file+'.glb',unique:true}]});
-export default()=>({
- name:'Vector Patrol — retro rail shooter',
- project:project('vector-patrol','Vector Patrol','3d',{w:960,h:540,pixelArt:true,bg:'#163d57',physics:{engine:'none',gravity:[0,0,0]},input:{left:['KeyA','ArrowLeft'],right:['KeyD','ArrowRight'],up:['KeyW','ArrowUp'],down:['KeyS','ArrowDown'],fire:['Space','KeyJ'],roll:['ShiftLeft','ShiftRight'],retro:['KeyC']}}),
- scenes:{main:{entities:[E('Camera',{pos:[0,2,-18],c:[{type:'camera',fov:65,near:.1,far:450}]}),model('Fighter','fighter',[0,0,0],[.75,.75,.75]),...Array.from({length:14},(_,i)=>model('Drone'+i,'drone',[0,0,140])),model('Carrier','carrier',[0,0,130],[3.5,3.5,3.5]),...Array.from({length:3},(_,i)=>model('Gate'+i,'gate',[0,0,150])),E('FlightGame',{s:['scripts/flight.js']})]}},
- files:{'scripts/retro-audio.js':fs.readFileSync(new URL('../retro-common/audio.js',import.meta.url),'utf8'),LICENSE:fs.readFileSync(new URL('../../../LICENSE',import.meta.url),'utf8')},
- assets:[...['fighter','drone','carrier','gate'].flatMap(name=>[{from:'tools/art/vector-patrol/'+name+'.blocksmith.json',to:'assets/models/'+name+'.blocksmith.json'},... [0,90,180,45].map(direction=>({from:'tools/art/vector-patrol/'+name+'-'+direction+'.png',to:'assets/models/previews/'+name+'-'+direction+'.png'}))]),...['vector-flight','vector-boss','laser','explosion','crash','shield','checkpoint','win'].map(n=>({from:'assets/audio/retro-tutorials/'+n+'.mp3',to:'assets/audio/'+n+'.mp3'}))],
- readme:'# Vector Patrol\nT39 full coding workshop: original one-level rail shooter with Blocksmith-exported GLB fighter/drone/carrier/gate models. Steer WASD/arrows, hold Space/J fire, Shift barrel-roll shield, C retro/clean, P pause. Enemy waves, laser combat, shield/health pickups, gates, boss at 65 seconds, victory/death/restart and saved score. Original MP3 flight/boss music and SFX; replace paths in scripts/audio-config.js. Retro mode: low resolution, vertex snapping, palette dithering and scrolling ground dots. No ROM or commercial-game assets required.\n',
+import { E, project } from '../lib.mjs';
+const model = (name, file, pos = [0, 0, 0], scale = [1, 1, 1]) =>
+  E(name, {
+    pos,
+    scale,
+    c: [{ type: 'model', path: 'assets/models/' + file + '.glb', unique: true }],
+  });
+export default () => ({
+  name: 'Vector Patrol — retro rail shooter',
+  project: project('vector-patrol', 'Vector Patrol', '3d', {
+    w: 960,
+    h: 540,
+    pixelArt: true,
+    bg: '#163d57',
+    physics: { engine: 'none', gravity: [0, 0, 0] },
+    input: {
+      left: ['KeyA', 'ArrowLeft'],
+      right: ['KeyD', 'ArrowRight'],
+      up: ['KeyW', 'ArrowUp'],
+      down: ['KeyS', 'ArrowDown'],
+      fire: ['Space', 'KeyJ'],
+      roll: ['ShiftLeft', 'ShiftRight'],
+      retro: ['KeyC'],
+    },
+  }),
+  scenes: {
+    main: {
+      entities: [
+        E('Camera', {
+          pos: [0, 2, -18],
+          c: [{ type: 'camera', fov: 65, near: 0.1, far: 450 }],
+        }),
+        model('Fighter', 'fighter', [0, 0, 0], [0.75, 0.75, 0.75]),
+        ...Array.from({ length: 14 }, (_, i) => model('Drone' + i, 'drone', [0, 0, 140])),
+        model('Carrier', 'carrier', [0, 0, 130], [3.5, 3.5, 3.5]),
+        ...Array.from({ length: 3 }, (_, i) => model('Gate' + i, 'gate', [0, 0, 150])),
+        E('FlightGame', { s: ['scripts/flight.js'] }),
+      ],
+    },
+  },
+  files: {
+    'scripts/retro-audio.js': fs.readFileSync(
+      new URL('../retro-common/audio.js', import.meta.url),
+      'utf8',
+    ),
+    LICENSE: fs.readFileSync(new URL('../../../LICENSE', import.meta.url), 'utf8'),
+  },
+  assets: [
+    ...['fighter', 'drone', 'carrier', 'gate'].flatMap((name) => [
+      {
+        from: 'tools/art/vector-patrol/' + name + '.blocksmith.json',
+        to: 'assets/models/' + name + '.blocksmith.json',
+      },
+      ...[0, 90, 180, 45].map((direction) => ({
+        from: 'tools/art/vector-patrol/' + name + '-' + direction + '.png',
+        to: 'assets/models/previews/' + name + '-' + direction + '.png',
+      })),
+    ]),
+    ...[
+      'vector-flight',
+      'vector-boss',
+      'laser',
+      'explosion',
+      'crash',
+      'shield',
+      'checkpoint',
+      'win',
+    ].map((n) => ({
+      from: 'assets/audio/retro-tutorials/' + n + '.mp3',
+      to: 'assets/audio/' + n + '.mp3',
+    })),
+  ],
+  readme:
+    '# Vector Patrol\nT39 full coding workshop: original one-level rail shooter with Blocksmith-exported GLB fighter/drone/carrier/gate models. Steer WASD/arrows, hold Space/J fire, Shift barrel-roll shield, C retro/clean, P pause. Enemy waves, laser combat, shield/health pickups, gates, boss at 65 seconds, victory/death/restart and saved score. Original MP3 flight/boss music and SFX; replace paths in scripts/audio-config.js. Retro mode: low resolution, vertex snapping, palette dithering and scrolling ground dots. No ROM or commercial-game assets required.\n',
 });

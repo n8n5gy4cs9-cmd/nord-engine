@@ -5,7 +5,6 @@ order: 40
 summary: Complete array-based grid game, real Matter compound tower and authoritative two-browser battle, with every source file.
 ---
 
-# T40 — JengaTedris: code a grid game, a physics tower and a Node battle
 
 Make a complete original falling-block game in three modes: a crisp grid challenge, a chaotic rigid-body tower, and a real two-browser battle. You will learn arrays, candidate movement, rotation, row compaction, seeded randomness, Matter compounds and server-owned game state. The project is called **JengaTedris**; it uses original code and canvas graphics, with no cartridge, ROM or commercial-game assets.
 
@@ -150,7 +149,7 @@ await fetch(server + '/api/action', {
 
 `lastClear` records the result of one rule step. Two or more clears add garbage to the opponent; garbage shifts rows upward and adds a row with one hole. If occupied cells are pushed out at the top, that player loses. The round result is computed on the server. The client cannot win merely by changing a DOM score.
 
-Rooms hold two players. A session inactive for 30 seconds expires; its seat becomes available and the remaining room returns to waiting. Ready after a finished round resets both grids with a fresh shared seed. Live battles do not support unilateral pause. Leave returns your page to local mode; its server seat expires shortly afterward.
+Rooms hold two players. A session inactive for 30 seconds expires; its seat becomes available and the remaining room returns to waiting. Ready after a finished round resets both grids with a fresh shared seed. Ready requests during a live battle are rejected, so they cannot reset the opponent's progress. Live battles do not support unilateral pause. Leave returns your page to local mode; its server seat expires shortly afterward.
 
 **Learning check:** stop the server while the battle page is open. The network area should report a connection error. Restart Node and join again: memory-only rooms do not survive a server restart. A static HTML export contains client files, but it cannot execute Node; host `server.mjs` separately for online play.
 
@@ -175,48 +174,332 @@ The archive contains every file needed for the complete local game and Node batt
 ### app.js
 
 ```js
-import {newGrid,cells,ghost,COLORS,action,tickGrid,SHAPES} from './rules.js';
-import {createChaos} from './chaos.js';
-export function mount(root){
- root.innerHTML=`<link rel="stylesheet" href="style.css"><main><h1>JengaTedris <small>GRID / TOPPLE / BATTLE</small></h1><nav><button id="grid">Grid run</button><button id="chaos">Physics tower</button><button id="pause">Pause / Resume</button><button id="restart">Restart</button></nav><section class="layout"><canvas width="300" height="600" aria-label="Game board"></canvas><aside><h2 id="status"></h2><p id="stats"></p><canvas id="next" width="200" height="160"></canvas><p>Grid: arrows move/down, ↑ rotate, Space drop, C hold. Clear 20 rows!</p><p>Physics: ← → push, Q / E rotate, ↓ slam. Survive 18 rigid pieces; no row clears.</p><h2>Battle a friend</h2><label>Name <input id="name" value="Builder" maxlength="20"></label><label>Room <input id="room" value="NORD" maxlength="8"></label><label>Server <input id="server"></label><button id="join">Join battle</button><button id="ready">Ready / Rematch</button><button id="leave">Leave battle</button><p id="network">Start node server.mjs for multiplayer. Same room, two browsers, both Ready.</p><canvas id="rival" width="150" height="300"></canvas><p>Two or more cleared rows send garbage to your rival. The server owns both boards.</p></aside></section><footer>Original game · Crowelian 2026 + Sonnet · Best grid score: <b id="best"></b></footer></main>`;
- const $=id=>root.querySelector('#'+id),canvas=root.querySelector('canvas'),ctx=canvas.getContext('2d'),keys=new Set();
- $('server').value=location.port==='4382'?location.origin:'http://127.0.0.1:4382';
- let mode='grid',grid=newGrid(Date.now()>>>0),chaos=null,paused=false,last=performance.now(),alive=true,battle=null,queue=Promise.resolve(),busy=false,poll=0;
- let best=0;try{best=Number(localStorage.getItem('jengatedris.best')||0);}catch{}$('best').textContent=best;
- function reset(){if(mode==='battle'){message('Use Ready / Rematch after the battle ends.');return;}chaos?.dispose();chaos=null;grid=newGrid(Date.now()>>>0);paused=false;keys.clear();if(mode==='chaos')startChaos();}
- async function startChaos(){try{chaos=await createChaos();}catch(e){message(e.message);mode='grid';}}
- const message=t=>$('network').textContent=t;
- const base=()=>$('server').value.replace(/\/$/,'');
- async function request(route,body){const r=await fetch(base()+'/api/'+route,{method:body?'POST':'GET',headers:body?{'content-type':'application/json'}:{},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(4000)});const data=await r.json();if(!r.ok)throw Error(data.error||r.status);return data;}
- function accept(data){battle=data;const own=data.players.find(p=>p.id===data.id);if(own)grid=own.grid;message(`${data.room} · ${data.players.map(p=>p.name+(p.ready?' ✓':'')).join(' vs ')} · ${data.phase}${data.winner?' · Winner: '+data.winner:''}`);}
- function send(name){queue=queue.then(async()=>{if(!battle)return;accept(await request('action',{id:battle.id,action:name}));}).catch(e=>message(e.message+' — join again if expired'));}
- $('grid').onclick=()=>{battle=null;mode='grid';reset();};$('chaos').onclick=()=>{battle=null;mode='chaos';reset();};
- $('restart').onclick=reset;$('pause').onclick=()=>{if(mode==='battle'){message('Live battles cannot pause one player.');return;}paused=!paused;keys.clear();};
- $('join').onclick=async()=>{try{const data=await request('join',{room:$('room').value,name:$('name').value});chaos?.dispose();chaos=null;mode='battle';paused=false;accept(data);}catch(e){message(e.message);}};
- $('ready').onclick=async()=>{if(!battle)return;try{accept(await request('ready',{id:battle.id}));}catch(e){message(e.message);}};
- $('leave').onclick=()=>{battle=null;mode='grid';reset();message('Left locally; the server releases the seat after 30 seconds.');};
- const map={ArrowLeft:'left',KeyA:'left',ArrowRight:'right',KeyD:'right',ArrowDown:'down',KeyS:'down',ArrowUp:'rotate',KeyW:'rotate',Space:'drop',KeyC:'hold'};
- const down=e=>{if(/INPUT|TEXTAREA/.test(document.activeElement?.tagName))return;if(map[e.code]||e.code==='KeyQ'||e.code==='KeyE')e.preventDefault();keys.add(e.code);if(paused||mode==='chaos')return;const name=map[e.code];if(name&&(!e.repeat||['left','right','down'].includes(name))){if(mode==='battle')send(name);else action(grid,name);}};
- const up=e=>keys.delete(e.code),blur=()=>{keys.clear();if(mode!=='battle')paused=true;};window.addEventListener('keydown',down);window.addEventListener('keyup',up);window.addEventListener('blur',blur);
- function board(context,s,scale=30){context.fillStyle=COLORS[0];context.fillRect(0,0,scale*10,scale*20);
-  const block=(x,y,color,alpha=1)=>{if(y<0)return;context.globalAlpha=alpha;context.fillStyle=color;context.fillRect(x*scale+1,y*scale+1,scale-2,scale-2);context.fillStyle='#ffffff22';context.fillRect(x*scale+2,y*scale+2,scale-4,3);context.globalAlpha=1;};
-  s.board.forEach((row,y)=>row.forEach((v,x)=>{if(v)block(x,y,COLORS[v]);}));
-  if(!s.over)for(const[x,y]of cells(ghost(s)))block(x,y,COLORS[s.active.type+1],.22);
-  for(const[x,y]of cells(s.active))block(x,y,COLORS[s.active.type+1]);
- }
- function draw(){ctx.fillStyle='#122130';ctx.fillRect(0,0,300,600);if(mode==='chaos'&&chaos)chaos.draw(ctx);else board(ctx,grid);
-  $('status').textContent=paused?'PAUSED':mode==='chaos'?(chaos?.over?(chaos.won?'TOWER SURVIVED!':'TOWER OVERFLOW!'):'PHYSICS TOWER'):grid.over?(grid.won?'20 ROWS CLEAR!':'STACK OVERFLOW'):mode==='battle'?'LIVE BATTLE':'GRID RUN';
-  $('stats').textContent=mode==='chaos'?`Piece ${chaos?.count||0}/18 · settle each rigid tetromino`:`Score ${grid.score} · Rows ${grid.lines}/20 · Level ${grid.level}`;
-  const n=$('next').getContext('2d');n.clearRect(0,0,200,160);n.fillStyle='#d8e8ef';n.font='14px monospace';n.fillText('NEXT',4,16);n.fillText('HOLD',4,90);
-  for(const[type,oy]of[[grid.next,22],[grid.hold,96]])if(type!==null)for(const[x,y]of SHAPES[type]){n.fillStyle=COLORS[type+1];n.fillRect(x*22+24,y*22+oy,20,20);}
-  const opponent=battle?.players.find(p=>p.id!==battle.id);const rc=$('rival').getContext('2d');rc.clearRect(0,0,150,300);if(opponent)board(rc,opponent.grid,15);
- }
- function frame(now){if(!alive)return;const dt=Math.min(.05,(now-last)/1000);last=now;if(!paused){if(mode==='grid')tickGrid(grid,dt);if(mode==='chaos')chaos?.tick(dt,keys);}
-  if(mode==='grid'&&grid.score>best){best=grid.score;$('best').textContent=best;try{localStorage.setItem('jengatedris.best',best);}catch{}}
-  poll+=dt;if(mode==='battle'&&battle&&poll>.2&&!busy){poll=0;busy=true;request('state?id='+encodeURIComponent(battle.id)).then(accept).catch(e=>message(e.message)).finally(()=>busy=false);}draw();requestAnimationFrame(frame);
- }requestAnimationFrame(frame);
- window.__tedris={get grid(){return grid;},get chaos(){return chaos;},get mode(){return mode;},get battle(){return battle;},get paused(){return paused;}};
- return()=>{alive=false;chaos?.dispose();window.removeEventListener('keydown',down);window.removeEventListener('keyup',up);window.removeEventListener('blur',blur);root.replaceChildren();};
+import { newGrid, cells, ghost, COLORS, action, tickGrid, SHAPES } from './rules.js';
+import { createChaos } from './chaos.js';
+export function mount(root) {
+  root.innerHTML = /* HTML */ `
+    <link rel="stylesheet" href="style.css" />
+    <main>
+      <h1>
+        JengaTedris
+        <small>GRID / TOPPLE / BATTLE</small>
+      </h1>
+      <nav>
+        <button id="grid">Grid run</button>
+        <button id="chaos">Physics tower</button>
+        <button id="pause">Pause / Resume</button>
+        <button id="restart">Restart</button>
+      </nav>
+      <section class="layout">
+        <canvas width="300" height="600" aria-label="Game board"></canvas>
+        <aside>
+          <h2 id="status"></h2>
+          <p id="stats"></p>
+          <canvas id="next" width="200" height="160"></canvas>
+          <p>Grid: arrows move/down, ↑ rotate, Space drop, C hold. Clear 20 rows!</p>
+          <p>
+            Physics: ← → push, Q / E rotate, ↓ slam. Survive 18 rigid pieces; no row
+            clears.
+          </p>
+          <h2>Battle a friend</h2>
+          <label>
+            Name
+            <input id="name" value="Builder" maxlength="20" />
+          </label>
+          <label>
+            Room
+            <input id="room" value="NORD" maxlength="8" />
+          </label>
+          <label>
+            Server
+            <input id="server" />
+          </label>
+          <button id="join">Join battle</button>
+          <button id="ready">Ready / Rematch</button>
+          <button id="leave">Leave battle</button>
+          <p id="network">
+            Start node server.mjs for multiplayer. Same room, two browsers, both Ready.
+          </p>
+          <canvas id="rival" width="150" height="300"></canvas>
+          <p>
+            Two or more cleared rows send garbage to your rival. The server owns both
+            boards.
+          </p>
+        </aside>
+      </section>
+      <footer>
+        Original game · Crowelian 2026 + Sonnet · Best grid score:
+        <b id="best"></b>
+      </footer>
+    </main>
+  `;
+  const $ = (id) => root.querySelector('#' + id),
+    canvas = root.querySelector('canvas'),
+    ctx = canvas.getContext('2d'),
+    keys = new Set();
+  $('server').value =
+    location.port === '4382' ? location.origin : 'http://127.0.0.1:4382';
+  let mode = 'grid',
+    grid = newGrid(Date.now() >>> 0),
+    chaos = null,
+    paused = false,
+    last = performance.now(),
+    alive = true,
+    battle = null,
+    queue = Promise.resolve(),
+    busy = false,
+    poll = 0;
+  let best = 0;
+  try {
+    best = Number(localStorage.getItem('jengatedris.best') || 0);
+  } catch {}
+  $('best').textContent = best;
+  function reset() {
+    if (mode === 'battle') {
+      message('Use Ready / Rematch after the battle ends.');
+      return;
+    }
+    chaos?.dispose();
+    chaos = null;
+    grid = newGrid(Date.now() >>> 0);
+    paused = false;
+    keys.clear();
+    if (mode === 'chaos') startChaos();
+  }
+  async function startChaos() {
+    try {
+      chaos = await createChaos();
+    } catch (e) {
+      message(e.message);
+      mode = 'grid';
+    }
+  }
+  const message = (t) => ($('network').textContent = t);
+  const base = () => $('server').value.replace(/\/$/, '');
+  async function request(route, body) {
+    const r = await fetch(base() + '/api/' + route, {
+      method: body ? 'POST' : 'GET',
+      headers: body ? { 'content-type': 'application/json' } : {},
+      body: body ? JSON.stringify(body) : undefined,
+      signal: AbortSignal.timeout(4000),
+    });
+    const data = await r.json();
+    if (!r.ok) throw Error(data.error || r.status);
+    return data;
+  }
+  function accept(data) {
+    battle = data;
+    const own = data.players.find((p) => p.id === data.id);
+    if (own) grid = own.grid;
+    message(
+      `${data.room} · ${data.players.map((p) => p.name + (p.ready ? ' ✓' : '')).join(' vs ')} · ${data.phase}${data.winner ? ' · Winner: ' + data.winner : ''}`,
+    );
+  }
+  function send(name) {
+    queue = queue
+      .then(async () => {
+        if (!battle) return;
+        accept(await request('action', { id: battle.id, action: name }));
+      })
+      .catch((e) => message(e.message + ' — join again if expired'));
+  }
+  $('grid').onclick = () => {
+    battle = null;
+    mode = 'grid';
+    reset();
+  };
+  $('chaos').onclick = () => {
+    battle = null;
+    mode = 'chaos';
+    reset();
+  };
+  $('restart').onclick = reset;
+  $('pause').onclick = () => {
+    if (mode === 'battle') {
+      message('Live battles cannot pause one player.');
+      return;
+    }
+    paused = !paused;
+    keys.clear();
+  };
+  $('join').onclick = async () => {
+    try {
+      const data = await request('join', {
+        room: $('room').value,
+        name: $('name').value,
+      });
+      chaos?.dispose();
+      chaos = null;
+      mode = 'battle';
+      paused = false;
+      accept(data);
+    } catch (e) {
+      message(e.message);
+    }
+  };
+  $('ready').onclick = async () => {
+    if (!battle) return;
+    try {
+      accept(await request('ready', { id: battle.id }));
+    } catch (e) {
+      message(e.message);
+    }
+  };
+  $('leave').onclick = () => {
+    battle = null;
+    mode = 'grid';
+    reset();
+    message('Left locally; the server releases the seat after 30 seconds.');
+  };
+  const map = {
+    ArrowLeft: 'left',
+    KeyA: 'left',
+    ArrowRight: 'right',
+    KeyD: 'right',
+    ArrowDown: 'down',
+    KeyS: 'down',
+    ArrowUp: 'rotate',
+    KeyW: 'rotate',
+    Space: 'drop',
+    KeyC: 'hold',
+  };
+  const down = (e) => {
+    if (/INPUT|TEXTAREA/.test(document.activeElement?.tagName)) return;
+    if (map[e.code] || e.code === 'KeyQ' || e.code === 'KeyE') e.preventDefault();
+    keys.add(e.code);
+    if (paused || mode === 'chaos') return;
+    const name = map[e.code];
+    if (name && (!e.repeat || ['left', 'right', 'down'].includes(name))) {
+      if (mode === 'battle') send(name);
+      else action(grid, name);
+    }
+  };
+  const up = (e) => keys.delete(e.code),
+    blur = () => {
+      keys.clear();
+      if (mode !== 'battle') paused = true;
+    };
+  window.addEventListener('keydown', down);
+  window.addEventListener('keyup', up);
+  window.addEventListener('blur', blur);
+  function board(context, s, scale = 30) {
+    context.fillStyle = COLORS[0];
+    context.fillRect(0, 0, scale * 10, scale * 20);
+    const block = (x, y, color, alpha = 1) => {
+      if (y < 0) return;
+      context.globalAlpha = alpha;
+      context.fillStyle = color;
+      context.fillRect(x * scale + 1, y * scale + 1, scale - 2, scale - 2);
+      context.fillStyle = '#ffffff22';
+      context.fillRect(x * scale + 2, y * scale + 2, scale - 4, 3);
+      context.globalAlpha = 1;
+    };
+    s.board.forEach((row, y) =>
+      row.forEach((v, x) => {
+        if (v) block(x, y, COLORS[v]);
+      }),
+    );
+    if (!s.over)
+      for (const [x, y] of cells(ghost(s))) block(x, y, COLORS[s.active.type + 1], 0.22);
+    for (const [x, y] of cells(s.active)) block(x, y, COLORS[s.active.type + 1]);
+  }
+  function draw() {
+    ctx.fillStyle = '#122130';
+    ctx.fillRect(0, 0, 300, 600);
+    if (mode === 'chaos' && chaos) chaos.draw(ctx);
+    else board(ctx, grid);
+    $('status').textContent = paused
+      ? 'PAUSED'
+      : mode === 'chaos'
+        ? chaos?.over
+          ? chaos.won
+            ? 'TOWER SURVIVED!'
+            : 'TOWER OVERFLOW!'
+          : 'PHYSICS TOWER'
+        : grid.over
+          ? grid.won
+            ? '20 ROWS CLEAR!'
+            : 'STACK OVERFLOW'
+          : mode === 'battle'
+            ? 'LIVE BATTLE'
+            : 'GRID RUN';
+    $('stats').textContent =
+      mode === 'chaos'
+        ? `Piece ${chaos?.count || 0}/18 · settle each rigid tetromino`
+        : `Score ${grid.score} · Rows ${grid.lines}/20 · Level ${grid.level}`;
+    const n = $('next').getContext('2d');
+    n.clearRect(0, 0, 200, 160);
+    n.fillStyle = '#d8e8ef';
+    n.font = '14px monospace';
+    n.fillText('NEXT', 4, 16);
+    n.fillText('HOLD', 4, 90);
+    for (const [type, oy] of [
+      [grid.next, 22],
+      [grid.hold, 96],
+    ])
+      if (type !== null)
+        for (const [x, y] of SHAPES[type]) {
+          n.fillStyle = COLORS[type + 1];
+          n.fillRect(x * 22 + 24, y * 22 + oy, 20, 20);
+        }
+    const opponent = battle?.players.find((p) => p.id !== battle.id);
+    const rc = $('rival').getContext('2d');
+    rc.clearRect(0, 0, 150, 300);
+    if (opponent) board(rc, opponent.grid, 15);
+  }
+  function frame(now) {
+    if (!alive) return;
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    if (!paused) {
+      if (mode === 'grid') tickGrid(grid, dt);
+      if (mode === 'chaos') chaos?.tick(dt, keys);
+    }
+    if (mode === 'grid' && grid.score > best) {
+      best = grid.score;
+      $('best').textContent = best;
+      try {
+        localStorage.setItem('jengatedris.best', best);
+      } catch {}
+    }
+    poll += dt;
+    if (mode === 'battle' && battle && poll > 0.2 && !busy) {
+      poll = 0;
+      busy = true;
+      request('state?id=' + encodeURIComponent(battle.id))
+        .then(accept)
+        .catch((e) => message(e.message))
+        .finally(() => (busy = false));
+    }
+    draw();
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  window.__tedris = {
+    get grid() {
+      return grid;
+    },
+    get chaos() {
+      return chaos;
+    },
+    get mode() {
+      return mode;
+    },
+    get battle() {
+      return battle;
+    },
+    get paused() {
+      return paused;
+    },
+  };
+  return () => {
+    alive = false;
+    chaos?.dispose();
+    window.removeEventListener('keydown', down);
+    window.removeEventListener('keyup', up);
+    window.removeEventListener('blur', blur);
+    root.replaceChildren();
+  };
 }
 ```
 
@@ -225,24 +508,101 @@ export function mount(root){
 
 ```js
 // Matter is already bundled with Nord's pinned Phaser. No CDN and no extra npm install.
-import {SHAPES,COLORS} from './rules.js';
-export async function createChaos(){
- if(!window.Phaser)await new Promise((resolve,reject)=>{const tag=document.createElement('script');tag.src='vendor/phaser/phaser.min.js';tag.onload=resolve;tag.onerror=()=>reject(Error('Missing local vendor/phaser/phaser.min.js'));document.head.append(tag);});
- const M=window.Phaser.Physics.Matter.Matter;
- const engine=M.Engine.create();engine.gravity.y=.8;
- const walls=[M.Bodies.rectangle(150,590,320,24,{isStatic:true}),M.Bodies.rectangle(-12,300,24,600,{isStatic:true}),M.Bodies.rectangle(312,300,24,600,{isStatic:true})];M.Composite.add(engine.world,walls);
- const s={engine,M,blocks:[],active:null,count:0,over:false,won:false,time:0,settle:0};
- s.spawn=()=>{const type=s.count%7;const parts=SHAPES[type].map(([x,y])=>M.Bodies.rectangle(110+x*24,45+y*24,23,23));
-  const body=M.Body.create({parts,friction:.7,restitution:.04,density:.004});body.color=COLORS[type+1];M.Composite.add(engine.world,body);s.blocks.push(body);s.active=body;s.count++;s.time=0;s.settle=0;};s.spawn();
- s.tick=(dt,keys)=>{if(s.over)return;dt=Math.min(dt,.033);s.time+=dt;const b=s.active;
-  M.Body.applyForce(b,b.position,{x:((keys.has('ArrowRight')||keys.has('KeyD'))-(keys.has('ArrowLeft')||keys.has('KeyA')))*.0015,y:keys.has('ArrowDown')?.009:0});
-  if(keys.has('KeyQ'))M.Body.setAngularVelocity(b,-.035);if(keys.has('KeyE'))M.Body.setAngularVelocity(b,.035);
-  M.Engine.update(engine,dt*1000);
-  if(s.time>1&&b.speed<.3)s.settle+=dt;else s.settle=0;
-  if(s.settle>.65||s.time>7){if(s.blocks.some(v=>v.position.y<90&&v!==b)){s.over=true;return;}if(s.count>=18){s.over=true;s.won=true;}else s.spawn();}
- };
- s.draw=ctx=>{for(const b of [...walls,...s.blocks])for(const p of b.parts.length>1?b.parts.slice(1):[b]){ctx.fillStyle=b.color||'#69818b';ctx.beginPath();p.vertices.forEach((v,i)=>i?ctx.lineTo(v.x,v.y):ctx.moveTo(v.x,v.y));ctx.closePath();ctx.fill();ctx.strokeStyle='#172432';ctx.stroke();}};
- s.dispose=()=>{M.Composite.clear(engine.world,false);M.Engine.clear(engine);};return s;
+import { SHAPES, COLORS } from './rules.js';
+export async function createChaos() {
+  if (!window.Phaser)
+    await new Promise((resolve, reject) => {
+      const tag = document.createElement('script');
+      tag.src = 'vendor/phaser/phaser.min.js';
+      tag.onload = resolve;
+      tag.onerror = () => reject(Error('Missing local vendor/phaser/phaser.min.js'));
+      document.head.append(tag);
+    });
+  const M = window.Phaser.Physics.Matter.Matter;
+  const engine = M.Engine.create();
+  engine.gravity.y = 0.8;
+  const walls = [
+    M.Bodies.rectangle(150, 590, 320, 24, { isStatic: true }),
+    M.Bodies.rectangle(-12, 300, 24, 600, { isStatic: true }),
+    M.Bodies.rectangle(312, 300, 24, 600, { isStatic: true }),
+  ];
+  M.Composite.add(engine.world, walls);
+  const s = {
+    engine,
+    M,
+    blocks: [],
+    active: null,
+    count: 0,
+    over: false,
+    won: false,
+    time: 0,
+    settle: 0,
+  };
+  s.spawn = () => {
+    const type = s.count % 7;
+    const parts = SHAPES[type].map(([x, y]) =>
+      M.Bodies.rectangle(110 + x * 24, 45 + y * 24, 23, 23),
+    );
+    const body = M.Body.create({
+      parts,
+      friction: 0.7,
+      restitution: 0.04,
+      density: 0.004,
+    });
+    body.color = COLORS[type + 1];
+    M.Composite.add(engine.world, body);
+    s.blocks.push(body);
+    s.active = body;
+    s.count++;
+    s.time = 0;
+    s.settle = 0;
+  };
+  s.spawn();
+  s.tick = (dt, keys) => {
+    if (s.over) return;
+    dt = Math.min(dt, 0.033);
+    s.time += dt;
+    const b = s.active;
+    M.Body.applyForce(b, b.position, {
+      x:
+        ((keys.has('ArrowRight') || keys.has('KeyD')) -
+          (keys.has('ArrowLeft') || keys.has('KeyA'))) *
+        0.0015,
+      y: keys.has('ArrowDown') ? 0.009 : 0,
+    });
+    if (keys.has('KeyQ')) M.Body.setAngularVelocity(b, -0.035);
+    if (keys.has('KeyE')) M.Body.setAngularVelocity(b, 0.035);
+    M.Engine.update(engine, dt * 1000);
+    if (s.time > 1 && b.speed < 0.3) s.settle += dt;
+    else s.settle = 0;
+    if (s.settle > 0.65 || s.time > 7) {
+      if (s.blocks.some((v) => v.position.y < 90 && v !== b)) {
+        s.over = true;
+        return;
+      }
+      if (s.count >= 18) {
+        s.over = true;
+        s.won = true;
+      } else s.spawn();
+    }
+  };
+  s.draw = (ctx) => {
+    for (const b of [...walls, ...s.blocks])
+      for (const p of b.parts.length > 1 ? b.parts.slice(1) : [b]) {
+        ctx.fillStyle = b.color || '#69818b';
+        ctx.beginPath();
+        p.vertices.forEach((v, i) => (i ? ctx.lineTo(v.x, v.y) : ctx.moveTo(v.x, v.y)));
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = '#172432';
+        ctx.stroke();
+      }
+  };
+  s.dispose = () => {
+    M.Composite.clear(engine.world, false);
+    M.Engine.clear(engine);
+  };
+  return s;
 }
 ```
 
@@ -341,33 +701,208 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 
 ```js
 // Grid mode has no physics bodies. Board values are colour indices, zero means empty.
-export const W=10,H=20;
-export const SHAPES=[[[0,1],[1,1],[2,1],[3,1]],[[1,0],[2,0],[1,1],[2,1]],[[1,0],[0,1],[1,1],[2,1]],[[1,0],[2,0],[0,1],[1,1]],[[0,0],[1,0],[1,1],[2,1]],[[0,0],[0,1],[1,1],[2,1]],[[2,0],[0,1],[1,1],[2,1]]];
-export const COLORS=['#122130','#55dcf4','#f7d774','#c18aff','#72dda2','#fa7894','#789ef5','#f6aa66','#637485'];
-export function random(s){s.seed=(Math.imul(1664525,s.seed)+1013904223)>>>0;return s.seed/4294967296;}
-function next(s){if(!s.bag.length){s.bag=[0,1,2,3,4,5,6];for(let i=6;i>0;i--){const j=Math.floor(random(s)*(i+1));[s.bag[i],s.bag[j]]=[s.bag[j],s.bag[i]];}}return s.bag.pop();}
-export function cells(p){let pts=SHAPES[p.type].map(v=>[...v]);for(let r=0;r<p.r;r++)pts=pts.map(([x,y])=>[3-y,x]);return pts.map(([x,y])=>[p.x+x,p.y+y]);}
-export function fits(s,p){return cells(p).every(([x,y])=>x>=0&&x<W&&y<H&&(y<0||!s.board[y][x]));}
-function spawn(s,type=s.next,advance=true){s.active={type,x:3,y:-1,r:0};if(advance)s.next=next(s);s.fall=0;if(!fits(s,s.active))s.over=true;}
-export function newGrid(seed=12345){const s={seed,board:Array.from({length:H},()=>Array(W).fill(0)),bag:[],next:0,active:null,hold:null,held:false,score:0,lines:0,level:1,fall:0,over:false,won:false,lastClear:0};s.next=next(s);spawn(s);return s;}
-export function move(s,dx,dy){const p={...s.active,x:s.active.x+dx,y:s.active.y+dy};if(!fits(s,p))return false;s.active=p;return true;}
-export function rotate(s){if(s.active.type===1)return;for(const dx of[0,-1,1,-2,2]){const p={...s.active,x:s.active.x+dx,r:(s.active.r+1)%4};if(fits(s,p)){s.active=p;return;}}}
-function lock(s){const pts=cells(s.active);if(pts.some(([,y])=>y<0)){s.over=true;return;}
- for(const[x,y]of pts)s.board[y][x]=s.active.type+1;
- const kept=s.board.filter(row=>row.some(v=>!v)),cleared=H-kept.length;
- s.lastClear=cleared;s.lines+=cleared;s.score+=[0,100,300,500,800][cleared]*s.level;s.level=1+Math.floor(s.lines/5);
- s.board=[...Array.from({length:cleared},()=>Array(W).fill(0)),...kept];s.held=false;spawn(s);
- if(s.lines>=20){s.won=true;s.over=true;}
+export const W = 10,
+  H = 20;
+export const SHAPES = [
+  [
+    [0, 1],
+    [1, 1],
+    [2, 1],
+    [3, 1],
+  ],
+  [
+    [1, 0],
+    [2, 0],
+    [1, 1],
+    [2, 1],
+  ],
+  [
+    [1, 0],
+    [0, 1],
+    [1, 1],
+    [2, 1],
+  ],
+  [
+    [1, 0],
+    [2, 0],
+    [0, 1],
+    [1, 1],
+  ],
+  [
+    [0, 0],
+    [1, 0],
+    [1, 1],
+    [2, 1],
+  ],
+  [
+    [0, 0],
+    [0, 1],
+    [1, 1],
+    [2, 1],
+  ],
+  [
+    [2, 0],
+    [0, 1],
+    [1, 1],
+    [2, 1],
+  ],
+];
+export const COLORS = [
+  '#122130',
+  '#55dcf4',
+  '#f7d774',
+  '#c18aff',
+  '#72dda2',
+  '#fa7894',
+  '#789ef5',
+  '#f6aa66',
+  '#637485',
+];
+export function random(s) {
+  s.seed = (Math.imul(1664525, s.seed) + 1013904223) >>> 0;
+  return s.seed / 4294967296;
 }
-export function action(s,name){if(s.over)return;s.lastClear=0;
- if(name==='left')move(s,-1,0);if(name==='right')move(s,1,0);if(name==='rotate')rotate(s);
- if(name==='down'){if(move(s,0,1))s.score++;else lock(s);}
- if(name==='drop'){let n=0;while(move(s,0,1))n++;s.score+=n*2;lock(s);}
- if(name==='hold'&&!s.held){const t=s.active.type;if(s.hold===null){s.hold=t;spawn(s);}else{const h=s.hold;s.hold=t;spawn(s,h,false);}s.held=true;}
+function next(s) {
+  if (!s.bag.length) {
+    s.bag = [0, 1, 2, 3, 4, 5, 6];
+    for (let i = 6; i > 0; i--) {
+      const j = Math.floor(random(s) * (i + 1));
+      [s.bag[i], s.bag[j]] = [s.bag[j], s.bag[i]];
+    }
+  }
+  return s.bag.pop();
 }
-export function tickGrid(s,dt){s.lastClear=0;if(s.over)return;s.fall+=Math.min(.1,dt);const delay=Math.max(.09,.72-(s.level-1)*.08);if(s.fall>=delay){s.fall=0;if(!move(s,0,1))lock(s);}}
-export function garbage(s,count=1){if(s.over)return;for(let n=0;n<count;n++){if(s.board[0].some(Boolean)){s.over=true;return;}s.board.shift();const hole=Math.floor(random(s)*W);s.board.push(Array.from({length:W},(_,x)=>x===hole?0:8));}if(!fits(s,s.active))s.over=true;}
-export function ghost(s){const p={...s.active};while(fits(s,{...p,y:p.y+1}))p.y++;return p;}
+export function cells(p) {
+  let pts = SHAPES[p.type].map((v) => [...v]);
+  for (let r = 0; r < p.r; r++) pts = pts.map(([x, y]) => [3 - y, x]);
+  return pts.map(([x, y]) => [p.x + x, p.y + y]);
+}
+export function fits(s, p) {
+  return cells(p).every(
+    ([x, y]) => x >= 0 && x < W && y < H && (y < 0 || !s.board[y][x]),
+  );
+}
+function spawn(s, type = s.next, advance = true) {
+  s.active = { type, x: 3, y: -1, r: 0 };
+  if (advance) s.next = next(s);
+  s.fall = 0;
+  if (!fits(s, s.active)) s.over = true;
+}
+export function newGrid(seed = 12345) {
+  const s = {
+    seed,
+    board: Array.from({ length: H }, () => Array(W).fill(0)),
+    bag: [],
+    next: 0,
+    active: null,
+    hold: null,
+    held: false,
+    score: 0,
+    lines: 0,
+    level: 1,
+    fall: 0,
+    over: false,
+    won: false,
+    lastClear: 0,
+  };
+  s.next = next(s);
+  spawn(s);
+  return s;
+}
+export function move(s, dx, dy) {
+  const p = { ...s.active, x: s.active.x + dx, y: s.active.y + dy };
+  if (!fits(s, p)) return false;
+  s.active = p;
+  return true;
+}
+export function rotate(s) {
+  if (s.active.type === 1) return;
+  for (const dx of [0, -1, 1, -2, 2]) {
+    const p = { ...s.active, x: s.active.x + dx, r: (s.active.r + 1) % 4 };
+    if (fits(s, p)) {
+      s.active = p;
+      return;
+    }
+  }
+}
+function lock(s) {
+  const pts = cells(s.active);
+  if (pts.some(([, y]) => y < 0)) {
+    s.over = true;
+    return;
+  }
+  for (const [x, y] of pts) s.board[y][x] = s.active.type + 1;
+  const kept = s.board.filter((row) => row.some((v) => !v)),
+    cleared = H - kept.length;
+  s.lastClear = cleared;
+  s.lines += cleared;
+  s.score += [0, 100, 300, 500, 800][cleared] * s.level;
+  s.level = 1 + Math.floor(s.lines / 5);
+  s.board = [...Array.from({ length: cleared }, () => Array(W).fill(0)), ...kept];
+  s.held = false;
+  spawn(s);
+  if (s.lines >= 20) {
+    s.won = true;
+    s.over = true;
+  }
+}
+export function action(s, name) {
+  if (s.over) return;
+  s.lastClear = 0;
+  if (name === 'left') move(s, -1, 0);
+  if (name === 'right') move(s, 1, 0);
+  if (name === 'rotate') rotate(s);
+  if (name === 'down') {
+    if (move(s, 0, 1)) s.score++;
+    else lock(s);
+  }
+  if (name === 'drop') {
+    let n = 0;
+    while (move(s, 0, 1)) n++;
+    s.score += n * 2;
+    lock(s);
+  }
+  if (name === 'hold' && !s.held) {
+    const t = s.active.type;
+    if (s.hold === null) {
+      s.hold = t;
+      spawn(s);
+    } else {
+      const h = s.hold;
+      s.hold = t;
+      spawn(s, h, false);
+    }
+    s.held = true;
+  }
+}
+export function tickGrid(s, dt) {
+  s.lastClear = 0;
+  if (s.over) return;
+  s.fall += Math.min(0.1, dt);
+  const delay = Math.max(0.09, 0.72 - (s.level - 1) * 0.08);
+  if (s.fall >= delay) {
+    s.fall = 0;
+    if (!move(s, 0, 1)) lock(s);
+  }
+}
+export function garbage(s, count = 1) {
+  if (s.over) return;
+  for (let n = 0; n < count; n++) {
+    if (s.board[0].some(Boolean)) {
+      s.over = true;
+      return;
+    }
+    s.board.shift();
+    const hole = Math.floor(random(s) * W);
+    s.board.push(Array.from({ length: W }, (_, x) => (x === hole ? 0 : 8)));
+  }
+  if (!fits(s, s.active)) s.over = true;
+}
+export function ghost(s) {
+  const p = { ...s.active };
+  while (fits(s, { ...p, y: p.y + 1 })) p.y++;
+  return p;
+}
 ```
 
 </details>
@@ -380,35 +915,105 @@ export function ghost(s){const p={...s.active};while(fits(s,{...p,y:p.y+1}))p.y+
 import http from 'node:http';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-export function serve({root,files,api,tick,port=4382,host=process.env.HOST||'127.0.0.1'}){
- const server=http.createServer(async(req,res)=>{
-  const json=(status,data)=>{res.writeHead(status,{'content-type':'application/json','cache-control':'no-store'});res.end(JSON.stringify(data));};
-  const origin=req.headers.origin;
-  if(origin){try{const u=new URL(origin);if(u.protocol!=='http:'&&u.protocol!=='https:')return json(403,{error:'HTTP origin required'});
-   if(u.host!==req.headers.host&&!['localhost','127.0.0.1'].includes(u.hostname))return json(403,{error:'Open the game from this server'});
-   res.setHeader('access-control-allow-origin',origin);res.setHeader('vary','Origin');res.setHeader('access-control-allow-headers','content-type');res.setHeader('access-control-allow-methods','GET, POST, OPTIONS');
-  }catch{return json(403,{error:'Invalid origin'});}}
-  if(req.method==='OPTIONS'){res.writeHead(204);res.end();return;}
-  try{
-   const url=new URL(req.url,'http://localhost');
-   if(url.pathname.startsWith('/api/')){
-    let body={};if(req.method==='POST'){if(!req.headers['content-type']?.startsWith('application/json'))return json(415,{error:'Send JSON'});
-     let raw='';for await(const chunk of req){raw+=chunk;if(Buffer.byteLength(raw)>2048)return json(413,{error:'Too large'});}try{body=JSON.parse(raw);}catch{return json(400,{error:'Invalid JSON'});}
-     if(!body||typeof body!=='object'||Array.isArray(body))return json(400,{error:'Send an object'});
-    }else if(req.method!=='GET')return json(405,{error:'GET or POST required'});
-    const result=api(req.method,url,body);return json(result.status??200,result.data??result);
-   }
-   const name=files[url.pathname];if(req.method!=='GET'||!name)return json(404,{error:'Not found'});
-   const mime={'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript','.css':'text/css','.md':'text/plain'}[path.extname(name)]||'application/octet-stream';
-   const bytes=await fs.readFile(path.join(root,name));res.writeHead(200,{'content-type':mime,'cache-control':'no-store'});res.end(bytes);
-  }catch(e){console.error(e);if(!res.headersSent)json(500,{error:'Server error'});else res.end();}
- });
- const interval=setInterval(()=>tick(.05),50);server.on('close',()=>clearInterval(interval));
- if(port!==null)server.listen(port,host,()=>console.log(`Open http://${host==='0.0.0.0'?'localhost':host}:${server.address().port} (HOST=${host})`));
- return server;
+export function serve({
+  root,
+  files,
+  api,
+  tick,
+  port = 4382,
+  host = process.env.HOST || '127.0.0.1',
+}) {
+  const server = http.createServer(async (req, res) => {
+    const json = (status, data) => {
+      res.writeHead(status, {
+        'content-type': 'application/json',
+        'cache-control': 'no-store',
+      });
+      res.end(JSON.stringify(data));
+    };
+    const origin = req.headers.origin;
+    if (origin) {
+      try {
+        const u = new URL(origin);
+        if (u.protocol !== 'http:' && u.protocol !== 'https:')
+          return json(403, { error: 'HTTP origin required' });
+        if (
+          u.host !== req.headers.host &&
+          !['localhost', '127.0.0.1'].includes(u.hostname)
+        )
+          return json(403, { error: 'Open the game from this server' });
+        res.setHeader('access-control-allow-origin', origin);
+        res.setHeader('vary', 'Origin');
+        res.setHeader('access-control-allow-headers', 'content-type');
+        res.setHeader('access-control-allow-methods', 'GET, POST, OPTIONS');
+      } catch {
+        return json(403, { error: 'Invalid origin' });
+      }
+    }
+    if (req.method === 'OPTIONS') {
+      res.writeHead(204);
+      res.end();
+      return;
+    }
+    try {
+      const url = new URL(req.url, 'http://localhost');
+      if (url.pathname.startsWith('/api/')) {
+        let body = {};
+        if (req.method === 'POST') {
+          if (!req.headers['content-type']?.startsWith('application/json'))
+            return json(415, { error: 'Send JSON' });
+          let raw = '';
+          for await (const chunk of req) {
+            raw += chunk;
+            if (Buffer.byteLength(raw) > 2048) return json(413, { error: 'Too large' });
+          }
+          try {
+            body = JSON.parse(raw);
+          } catch {
+            return json(400, { error: 'Invalid JSON' });
+          }
+          if (!body || typeof body !== 'object' || Array.isArray(body))
+            return json(400, { error: 'Send an object' });
+        } else if (req.method !== 'GET')
+          return json(405, { error: 'GET or POST required' });
+        const result = api(req.method, url, body);
+        return json(result.status ?? 200, result.data ?? result);
+      }
+      const name = files[url.pathname];
+      if (req.method !== 'GET' || !name) return json(404, { error: 'Not found' });
+      const mime =
+        {
+          '.html': 'text/html',
+          '.js': 'text/javascript',
+          '.mjs': 'text/javascript',
+          '.css': 'text/css',
+          '.md': 'text/plain',
+        }[path.extname(name)] || 'application/octet-stream';
+      const bytes = await fs.readFile(path.join(root, name));
+      res.writeHead(200, { 'content-type': mime, 'cache-control': 'no-store' });
+      res.end(bytes);
+    } catch (e) {
+      console.error(e);
+      if (!res.headersSent) json(500, { error: 'Server error' });
+      else res.end();
+    }
+  });
+  const interval = setInterval(() => tick(0.05), 50);
+  server.on('close', () => clearInterval(interval));
+  if (port !== null)
+    server.listen(port, host, () =>
+      console.log(
+        `Open http://${host === '0.0.0.0' ? 'localhost' : host}:${server.address().port} (HOST=${host})`,
+      ),
+    );
+  return server;
 }
-export const failure=(status,error)=>({status,data:{error}});
-export const roomCode=value=>String(value??'NORD').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,8)||'NORD';
+export const failure = (status, error) => ({ status, data: { error } });
+export const roomCode = (value) =>
+  String(value ?? 'NORD')
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, '')
+    .slice(0, 8) || 'NORD';
 ```
 
 </details>
@@ -417,34 +1022,148 @@ export const roomCode=value=>String(value??'NORD').toUpperCase().replace(/[^A-Z0
 <summary>Complete server.mjs</summary>
 
 ```js
-import {randomUUID} from 'node:crypto';
+import { randomUUID } from 'node:crypto';
 import path from 'node:path';
-import {fileURLToPath} from 'node:url';
-import {serve,failure,roomCode} from './server-kit.mjs';
-import {newGrid,action,tickGrid,garbage} from './rules.js';
-export function createBattleServer({port=null,host,root=path.dirname(fileURLToPath(import.meta.url)),clock=Date.now}={}){
- const rooms=new Map(),sessions=new Map();let now=clock();
- const snapshot=p=>{const r=rooms.get(p.room);return {id:p.id,room:p.room,phase:r.phase,winner:r.winner,players:r.players.map(v=>({id:v.id,name:v.name,ready:v.ready,grid:v.grid}))};};
- function attack(r,p){const n=p.grid.lastClear;if(n>=2)for(const q of r.players)if(q!==p)garbage(q.grid,n-1);}
- function finish(r){if(r.phase!=='playing')return;const losers=r.players.filter(p=>p.grid.over&&!p.grid.won),winner=r.players.find(p=>p.grid.won);if(losers.length||winner){r.phase='finished';r.winner=winner?.name||(losers.length===2?'Draw':r.players.find(p=>!p.grid.over)?.name)||'Draw';for(const p of r.players)p.ready=false;}}
- const api=(method,url,b)=>{
-  if(method==='POST'&&url.pathname==='/api/join'){
-   if(sessions.size>=64)return failure(429,'Server full');const code=roomCode(b.room);let r=rooms.get(code);if(!r){r={players:[],phase:'waiting',winner:null};rooms.set(code,r);}if(r.players.length>=2)return failure(409,'Room has two players; choose another code');
-   const p={id:randomUUID(),room:code,name:String(b.name||'Builder').slice(0,20),grid:newGrid(),seen:now,ready:false,lastAction:0};r.players.push(p);sessions.set(p.id,p);return snapshot(p);
+import { fileURLToPath } from 'node:url';
+import { serve, failure, roomCode } from './server-kit.mjs';
+import { newGrid, action, tickGrid, garbage } from './rules.js';
+export function createBattleServer({
+  port = null,
+  host,
+  root = path.dirname(fileURLToPath(import.meta.url)),
+  clock = Date.now,
+} = {}) {
+  const rooms = new Map(),
+    sessions = new Map();
+  let now = clock();
+  const snapshot = (p) => {
+    const r = rooms.get(p.room);
+    return {
+      id: p.id,
+      room: p.room,
+      phase: r.phase,
+      winner: r.winner,
+      players: r.players.map((v) => ({
+        id: v.id,
+        name: v.name,
+        ready: v.ready,
+        grid: v.grid,
+      })),
+    };
+  };
+  function attack(r, p) {
+    const n = p.grid.lastClear;
+    if (n >= 2) for (const q of r.players) if (q !== p) garbage(q.grid, n - 1);
   }
-  const p=sessions.get(method==='GET'?url.searchParams.get('id'):b.id);if(!p)return failure(404,'Session expired; join again');p.seen=now;const r=rooms.get(p.room);
-  if(method==='GET'&&url.pathname==='/api/state')return snapshot(p);
-  if(method==='POST'&&url.pathname==='/api/ready'){p.ready=true;if(r.players.length===2&&r.players.every(v=>v.ready)){const seed=now>>>0;for(const v of r.players)v.grid=newGrid(seed);r.phase='playing';r.winner=null;}return snapshot(p);}
-  if(method==='POST'&&url.pathname==='/api/action'){
-   if(!['left','right','rotate','down','drop','hold'].includes(b.action))return failure(400,'Unknown action');
-   if(r.phase==='playing'&&clock()-p.lastAction>=24){p.lastAction=clock();action(p.grid,b.action);attack(r,p);finish(r);}return snapshot(p);
-  }return failure(404,'Unknown endpoint');
- };
- const tick=dt=>{now=clock();for(const[code,r]of rooms){for(const p of [...r.players])if(now-p.seen>30000){sessions.delete(p.id);r.players.splice(r.players.indexOf(p),1);r.phase='waiting';r.players.forEach(v=>v.ready=false);}
-  if(!r.players.length){rooms.delete(code);continue;}if(r.phase==='playing'){for(const p of r.players){tickGrid(p.grid,dt);attack(r,p);}finish(r);}}};
- return serve({root,port,host,api,tick,files:{'/':'index.html','/index.html':'index.html','/app.js':'app.js','/rules.js':'rules.js','/chaos.js':'chaos.js','/style.css':'style.css','/vendor/phaser/phaser.min.js':'vendor/phaser/phaser.min.js'}});
+  function finish(r) {
+    if (r.phase !== 'playing') return;
+    const losers = r.players.filter((p) => p.grid.over && !p.grid.won),
+      winner = r.players.find((p) => p.grid.won);
+    if (losers.length || winner) {
+      r.phase = 'finished';
+      r.winner =
+        winner?.name ||
+        (losers.length === 2 ? 'Draw' : r.players.find((p) => !p.grid.over)?.name) ||
+        'Draw';
+      for (const p of r.players) p.ready = false;
+    }
+  }
+  const api = (method, url, b) => {
+    if (method === 'POST' && url.pathname === '/api/join') {
+      if (sessions.size >= 64) return failure(429, 'Server full');
+      const code = roomCode(b.room);
+      let r = rooms.get(code);
+      if (!r) {
+        r = { players: [], phase: 'waiting', winner: null };
+        rooms.set(code, r);
+      }
+      if (r.players.length >= 2)
+        return failure(409, 'Room has two players; choose another code');
+      const p = {
+        id: randomUUID(),
+        room: code,
+        name: String(b.name || 'Builder').slice(0, 20),
+        grid: newGrid(),
+        seen: now,
+        ready: false,
+        lastAction: 0,
+      };
+      r.players.push(p);
+      sessions.set(p.id, p);
+      return snapshot(p);
+    }
+    const p = sessions.get(method === 'GET' ? url.searchParams.get('id') : b.id);
+    if (!p) return failure(404, 'Session expired; join again');
+    p.seen = now;
+    const r = rooms.get(p.room);
+    if (method === 'GET' && url.pathname === '/api/state') return snapshot(p);
+    if (method === 'POST' && url.pathname === '/api/ready') {
+      if (r.phase === 'playing')
+        return failure(409, 'Finish this battle before rematching');
+      p.ready = true;
+      if (r.players.length === 2 && r.players.every((v) => v.ready)) {
+        const seed = now >>> 0;
+        for (const v of r.players) v.grid = newGrid(seed);
+        r.phase = 'playing';
+        r.winner = null;
+      }
+      return snapshot(p);
+    }
+    if (method === 'POST' && url.pathname === '/api/action') {
+      if (!['left', 'right', 'rotate', 'down', 'drop', 'hold'].includes(b.action))
+        return failure(400, 'Unknown action');
+      if (r.phase === 'playing' && clock() - p.lastAction >= 24) {
+        p.lastAction = clock();
+        action(p.grid, b.action);
+        attack(r, p);
+        finish(r);
+      }
+      return snapshot(p);
+    }
+    return failure(404, 'Unknown endpoint');
+  };
+  const tick = (dt) => {
+    now = clock();
+    for (const [code, r] of rooms) {
+      for (const p of [...r.players])
+        if (now - p.seen > 30000) {
+          sessions.delete(p.id);
+          r.players.splice(r.players.indexOf(p), 1);
+          r.phase = 'waiting';
+          r.players.forEach((v) => (v.ready = false));
+        }
+      if (!r.players.length) {
+        rooms.delete(code);
+        continue;
+      }
+      if (r.phase === 'playing') {
+        for (const p of r.players) {
+          tickGrid(p.grid, dt);
+          attack(r, p);
+        }
+        finish(r);
+      }
+    }
+  };
+  return serve({
+    root,
+    port,
+    host,
+    api,
+    tick,
+    files: {
+      '/': 'index.html',
+      '/index.html': 'index.html',
+      '/app.js': 'app.js',
+      '/rules.js': 'rules.js',
+      '/chaos.js': 'chaos.js',
+      '/style.css': 'style.css',
+      '/vendor/phaser/phaser.min.js': 'vendor/phaser/phaser.min.js',
+    },
+  });
 }
-if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url))createBattleServer({port:Number(process.env.PORT||4382)});
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url))
+  createBattleServer({ port: Number(process.env.PORT || 4382) });
 ```
 
 </details>
@@ -453,7 +1172,107 @@ if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.ur
 <summary>Complete style.css</summary>
 
 ```css
-html{background:#0a1522}html,body{height:auto;min-height:100%}*{box-sizing:border-box}body{background:#0a1522;color:#d8e8ef;font:16px system-ui;margin:0}main{max-width:850px;margin:auto;padding:18px}h1{color:#6de1ef;margin:4px 0 12px}small{font-size:12px;color:#eec677}nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}button,input{font:inherit;padding:8px;border:1px solid #3e6070;border-radius:6px;background:#20364a;color:#f4f8ff}button{cursor:pointer}button:hover{background:#35536b}.layout{display:flex;gap:22px;align-items:flex-start}canvas{border:1px solid #35536b;max-width:100%;image-rendering:pixelated}aside{max-width:350px}aside h2{font-size:18px;color:#eec677}label{display:block;font-size:13px;margin:8px 0}input{width:100%;font-size:14px}p{line-height:1.45;font-size:14px}#next{border:0}#rival{float:right}footer{clear:both;padding:12px;color:#8faab8;font-size:12px}@media(max-width:620px){.layout{flex-direction:column}main{padding:8px}}
+html {
+  background: #0a1522;
+}
+html,
+body {
+  height: auto;
+  min-height: 100%;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  background: #0a1522;
+  color: #d8e8ef;
+  font: 16px system-ui;
+  margin: 0;
+}
+main {
+  max-width: 850px;
+  margin: auto;
+  padding: 18px;
+}
+h1 {
+  color: #6de1ef;
+  margin: 4px 0 12px;
+}
+small {
+  font-size: 12px;
+  color: #eec677;
+}
+nav {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+button,
+input {
+  font: inherit;
+  padding: 8px;
+  border: 1px solid #3e6070;
+  border-radius: 6px;
+  background: #20364a;
+  color: #f4f8ff;
+}
+button {
+  cursor: pointer;
+}
+button:hover {
+  background: #35536b;
+}
+.layout {
+  display: flex;
+  gap: 22px;
+  align-items: flex-start;
+}
+canvas {
+  border: 1px solid #35536b;
+  max-width: 100%;
+  image-rendering: pixelated;
+}
+aside {
+  max-width: 350px;
+}
+aside h2 {
+  font-size: 18px;
+  color: #eec677;
+}
+label {
+  display: block;
+  font-size: 13px;
+  margin: 8px 0;
+}
+input {
+  width: 100%;
+  font-size: 14px;
+}
+p {
+  line-height: 1.45;
+  font-size: 14px;
+}
+#next {
+  border: 0;
+}
+#rival {
+  float: right;
+}
+footer {
+  clear: both;
+  padding: 12px;
+  color: #8faab8;
+  font-size: 12px;
+}
+@media (max-width: 620px) {
+  .layout {
+    flex-direction: column;
+  }
+  main {
+    padding: 8px;
+  }
+}
 ```
 
 </details>

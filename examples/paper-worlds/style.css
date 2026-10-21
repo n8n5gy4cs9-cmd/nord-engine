@@ -1,1 +1,162 @@
-html,body{height:auto;min-height:100%;background:#101b2b}*{box-sizing:border-box}body{margin:0;color:#dbe9ee;font:14px system-ui}main{max-width:1400px;margin:auto;padding:22px}header{display:flex;justify-content:space-between;align-items:center;gap:20px;padding-bottom:20px}.brand{display:flex;gap:14px;align-items:center}h1{margin:0;font-size:30px;letter-spacing:-1px}header p{margin:5px 0;color:#8ba3af}.mascot{width:62px;height:62px;display:inline-block;background:url(assets/dev-desk-sprites.png) 0 100%/400% 200%}button,input,select,textarea{font:inherit;color:#e7f2f5;background:#21374a;border:1px solid #3e596e;border-radius:7px;padding:9px}button{cursor:pointer;margin:4px 0}button:hover{background:#335269}header button:first-child{background:#287e7a}label{display:block;margin:12px 0;font-size:12px;color:#9bb4c1}select,textarea{display:block;width:100%;margin-top:6px}textarea{height:76px;resize:vertical}aside button{width:100%;text-align:left}.workbench{display:grid;grid-template-columns:210px minmax(0,1fr);gap:20px}aside{padding:8px 16px;background:#15283a;border-radius:12px}aside p{font-size:12px;line-height:1.6;color:#9bb4c1}.rule{height:1px;background:#34495b;margin:15px 0}h3{font-size:12px;color:#88d4c8;text-transform:uppercase;letter-spacing:1px}.titlebar{display:flex;justify-content:space-between;background:#203447;padding:14px;border-radius:10px 10px 0 0}#badge{font-size:11px;color:#88d4c8}#flat,#world{width:100%;height:640px;background:#dce5e6;overflow:hidden;border-radius:0 0 10px 10px}#flat canvas{max-width:100%;display:block}#world{touch-action:none}#status{color:#a8c4cd;line-height:1.6}footer{padding-top:20px;color:#718e9e;font-size:12px}[hidden]{display:none!important}@media(max-width:850px){.workbench{grid-template-columns:160px minmax(0,1fr)}main{padding:8px}header{flex-wrap:wrap}}
+html,
+body {
+  height: auto;
+  min-height: 100%;
+  background: #101b2b;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  color: #dbe9ee;
+  font: 14px system-ui;
+}
+main {
+  max-width: 1400px;
+  margin: auto;
+  padding: 22px;
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding-bottom: 20px;
+}
+.brand {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+h1 {
+  margin: 0;
+  font-size: 30px;
+  letter-spacing: -1px;
+}
+header p {
+  margin: 5px 0;
+  color: #8ba3af;
+}
+.mascot {
+  width: 62px;
+  height: 62px;
+  display: inline-block;
+  background: url(assets/dev-desk-sprites.png) 0 100%/400% 200%;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: #e7f2f5;
+  background: #21374a;
+  border: 1px solid #3e596e;
+  border-radius: 7px;
+  padding: 9px;
+}
+button {
+  cursor: pointer;
+  margin: 4px 0;
+}
+button:hover {
+  background: #335269;
+}
+header button:first-child {
+  background: #287e7a;
+}
+label {
+  display: block;
+  margin: 12px 0;
+  font-size: 12px;
+  color: #9bb4c1;
+}
+select,
+textarea {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+}
+textarea {
+  height: 76px;
+  resize: vertical;
+}
+aside button {
+  width: 100%;
+  text-align: left;
+}
+.workbench {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  gap: 20px;
+}
+aside {
+  padding: 8px 16px;
+  background: #15283a;
+  border-radius: 12px;
+}
+aside p {
+  font-size: 12px;
+  line-height: 1.6;
+  color: #9bb4c1;
+}
+.rule {
+  height: 1px;
+  background: #34495b;
+  margin: 15px 0;
+}
+h3 {
+  font-size: 12px;
+  color: #88d4c8;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.titlebar {
+  display: flex;
+  justify-content: space-between;
+  background: #203447;
+  padding: 14px;
+  border-radius: 10px 10px 0 0;
+}
+#badge {
+  font-size: 11px;
+  color: #88d4c8;
+}
+#flat,
+#world {
+  width: 100%;
+  height: 640px;
+  background: #dce5e6;
+  overflow: hidden;
+  border-radius: 0 0 10px 10px;
+}
+#flat canvas {
+  max-width: 100%;
+  display: block;
+}
+#world {
+  touch-action: none;
+}
+#status {
+  color: #a8c4cd;
+  line-height: 1.6;
+}
+footer {
+  padding-top: 20px;
+  color: #718e9e;
+  font-size: 12px;
+}
+[hidden] {
+  display: none !important;
+}
+@media (max-width: 850px) {
+  .workbench {
+    grid-template-columns: 160px minmax(0, 1fr);
+  }
+  main {
+    padding: 8px;
+  }
+  header {
+    flex-wrap: wrap;
+  }
+}

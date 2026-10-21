@@ -1,41 +1,366 @@
-import {MAP,JOBS,PUZZLES,newOffice,addPlayer,startShift,tickOffice,beginJob,jobStep,prank,cancelJob,nearby} from './rules.js';
-export function mount(root){
- root.innerHTML=`<link rel="stylesheet" href="style.css"><main><header><h1>NORD ENGINE OFFICE</h1><p>Ship the engine. Fix the coffee. Survive your interns.</p></header><nav><button id="solo">Solo + AI practice</button><button id="start">Start / Restart shift</button><button id="bot">Toggle AI coworker</button><button id="pause">Pause solo</button></nav><section class="layout"><div><canvas width="768" height="512" aria-label="Office game map"></canvas><h2 id="hud"></h2><p>WASD / arrows: walk · E: work nearby · X: introduce a bug · Esc: cancel task</p><div id="task"></div><p id="result"></p></div><aside><h2>Invite interns</h2><label>Name<input id="name" value="Intern" maxlength="20"></label><label>Room<input id="room" value="NORD" maxlength="8"></label><label>Server<input id="server"></label><button id="join">Join online office</button><p id="network">Run node server.mjs to host friends. Solo works without a server.</p><h2>Tickets</h2><div id="tickets"></div><h2>Office log</h2><div id="log"></div><p>Host starts the shift. Finish 12 tasks in 150 seconds. Too many open bugs drain morale. X pranks a fixed nearby station, with a 15-second cooldown.</p><p>Ada is a local pathfinding AI coworker, no account or API key needed.</p></aside></section><footer>Crowelian 2026 + Sonnet · Original code and canvas graphics</footer></main>`;
- const $=id=>root.querySelector('#'+id),ctx=root.querySelector('canvas').getContext('2d'),keys=new Set();let s=newOffice(),you='solo',online=false,paused=false,alive=true,last=performance.now(),poll=0,busy=false,taskKey='',status='';addPlayer(s,you,'You');addPlayer(s,'ai','Ada (AI)',true);
- $('server').value=location.port==='4383'?location.origin:'http://127.0.0.1:4383';
- const player=()=>s.players.find(p=>p.id===you);
- const say=t=>{$('network').textContent=t;};
- async function request(route,body){const res=await fetch($('server').value.replace(/\/$/,'')+'/api/'+route,{method:body?'POST':'GET',headers:body?{'content-type':'application/json'}:{},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(4000)});const data=await res.json();if(!res.ok)throw Error(data.error||res.status);return data;}
- async function command(route,body={}){if(online){try{s=await request(route,{id:you,...body});}catch(e){say(e.message);}return;}
-  const p=player();if(route==='start')startShift(s);if(route==='work')beginJob(s,p,body.job);if(route==='step')jobStep(s,p,body.value);if(route==='cancel')cancelJob(s,p);if(route==='prank')prank(s,p);
-  if(route==='bot'){const ai=s.players.find(p=>p.bot);if(ai){cancelJob(s,ai);s.players=s.players.filter(p=>!p.bot);}else addPlayer(s,'ai','Ada (AI)',true);}taskKey='';
- }
- $('solo').onclick=()=>{online=false;s=newOffice();you='solo';addPlayer(s,you,$('name').value);addPlayer(s,'ai','Ada (AI)',true);paused=false;taskKey='';say('Solo practice. Start a shift when ready.');};
- $('join').onclick=async()=>{try{s=await request('join',{name:$('name').value,room:$('room').value});you=s.you;online=true;paused=false;keys.clear();taskKey='';say(`Room ${s.code} · ${s.host===you?'You are host':'Host starts the shift'} · share this server address and room`);}catch(e){say(e.message);}};
- $('start').onclick=()=>{paused=false;command('start');};$('bot').onclick=()=>command('bot');$('pause').onclick=()=>{if(online)say('Online shifts keep running for everyone.');else{paused=!paused;keys.clear();}};
- function work(){const p=player();if(!p||paused)return;const j=s.jobs.find(j=>j.broken&&!j.owner&&nearby(p,j));if(j)command('work',{job:j.id});else say('Walk closer to a red station with an unclaimed ticket.');}
- const down=e=>{if(/INPUT|TEXTAREA/.test(document.activeElement?.tagName))return;if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space'].includes(e.code))e.preventDefault();keys.add(e.code);if(!e.repeat){if(e.code==='KeyE')work();if(e.code==='KeyX')command('prank');if(e.code==='Escape')command('cancel');}};
- const up=e=>keys.delete(e.code),blur=()=>{keys.clear();if(!online)paused=true;};window.addEventListener('keydown',down);window.addEventListener('keyup',up);window.addEventListener('blur',blur);
- function drawTask(){const p=player(),job=p?.job,key=job?`${job.id}:${job.step}:${job.puzzle}:${job.began}`:'';if(key===taskKey)return;taskKey=key;const box=$('task');box.replaceChildren();if(!job)return;const j=s.jobs[job.id],title=document.createElement('h3');title.textContent=j.name;box.append(title);
-  const label=document.createElement('p');box.append(label);
-  const button=(text,value)=>{const b=document.createElement('button');b.textContent=text;b.onclick=()=>command('step',{value});box.append(b);};
-  if(j.kind==='wire'){label.textContent=`Reconnect in order: ${job.sequence.map(v=>['RED','BLUE','GREEN','GOLD'][v]).join(' → ')}. Step ${job.step+1}/3`;['RED','BLUE','GREEN','GOLD'].forEach((v,i)=>button(v,i));}
-  if(j.kind==='bug'){label.textContent=PUZZLES[job.puzzle].log;PUZZLES[job.puzzle].choices.forEach((v,i)=>button(v,i));}
-  if(j.kind==='coffee'){label.textContent='Stop the fill between 55% and 85% (green). The server measures elapsed time.';const meter=document.createElement('div');meter.id='coffee';box.append(meter);button('Pour coffee',0);}
-  button('Cancel',-1);box.lastChild.onclick=()=>command('cancel');
- }
- function draw(){ctx.fillStyle='#152238';ctx.fillRect(0,0,768,512);
-  MAP.forEach((row,y)=>[...row].forEach((tile,x)=>{ctx.fillStyle=tile==='#'?'#2d4660':(x+y)%2?'#1e3448':'#22394d';ctx.fillRect(x*32,y*32,32,32);if(tile==='D'){ctx.fillStyle='#895d55';ctx.fillRect(x*32+2,y*32+2,28,28);ctx.fillStyle='#6be4df';ctx.fillRect(x*32+6,y*32+5,18,10);}}));
-  for(const j of s.jobs){ctx.fillStyle=j.broken?'#ed6c83':'#69d9a0';ctx.fillRect(j.x*32+2,j.y*32+2,28,28);ctx.fillStyle='#0f1e2d';ctx.font='bold 18px monospace';ctx.fillText(['W','B','C','T','E'][j.id],j.x*32+10,j.y*32+23);if(j.broken){ctx.strokeStyle='#ed6c83';ctx.beginPath();ctx.arc(j.x*32+16,j.y*32+16,25+Math.sin(s.time*4)*3,0,Math.PI*2);ctx.stroke();}}
-  for(const p of s.players){const x=p.x*32,y=p.y*32;ctx.fillStyle='#0005';ctx.beginPath();ctx.ellipse(x,y+10,12,5,0,0,7);ctx.fill();ctx.fillStyle=p.bot?'#b7a0ff':p.id===you?'#6ee6ee':'#ffc86e';ctx.fillRect(x-9,y-8,18,18);ctx.fillStyle='#f5ccaf';ctx.fillRect(x-7,y-16,14,10);ctx.fillStyle='#fff';ctx.font='12px monospace';ctx.textAlign='center';ctx.fillText(p.name,x,y-22);if(p.job)ctx.fillText('⚙',x,y-38);ctx.textAlign='left';}
-  $('hud').textContent=`${paused?'PAUSED · ':''}${s.phase.toUpperCase()} · ${s.score}/${s.goal} fixes · Morale ${Math.ceil(s.morale)} · ${Math.max(0,Math.ceil(s.duration-s.time))}s`;
-  $('result').textContent=s.phase==='won'?'BUILD SHIPPED! Great shift. Start another to replay.':s.phase==='lost'?'SHIFT FAILED. Try with Ada, share tasks, and keep morale up.':'';
-  const nextStatus=s.jobs.map(j=>`${j.name}: ${j.broken?(j.owner?'IN PROGRESS':'BROKEN'):'OK'}`).join('\n')+'\n'+s.log.join('\n');if(nextStatus!==status){status=nextStatus;$('tickets').textContent=nextStatus.split('\n').slice(0,5).join('\n');$('log').textContent=s.log.join('\n');}
-  drawTask();const coffee=$('coffee');if(coffee&&player()?.job){const fill=(s.time-player().job.began)%2.4/2.4;coffee.style.background=`linear-gradient(to right,#eec76a ${fill*100}%,transparent 0),linear-gradient(to right,#27394b 55%,#36694d 55%,#36694d 85%,#27394b 85%)`;coffee.textContent=Math.round(fill*100)+'%';}
- }
- function frame(now){if(!alive)return;const dt=Math.min(.05,(now-last)/1000);last=now;const p=player(),dx=Number(keys.has('KeyD')||keys.has('ArrowRight'))-Number(keys.has('KeyA')||keys.has('ArrowLeft')),dy=Number(keys.has('KeyS')||keys.has('ArrowDown'))-Number(keys.has('KeyW')||keys.has('ArrowUp'));
-  if(!online){if(p){p.dx=paused?0:dx;p.dy=paused?0:dy;}if(!paused)tickOffice(s,dt);}else{poll+=dt;if(poll>.1&&!busy){poll=0;busy=true;request('input',{id:you,dx,dy}).then(()=>request('state?id='+encodeURIComponent(you))).then(data=>{s=data;}).catch(e=>say(e.message+' — check server / rejoin')).finally(()=>busy=false);}}
-  draw();requestAnimationFrame(frame);
- }requestAnimationFrame(frame);window.__office={get state(){return s;},get you(){return you;},get online(){return online;}};
- return()=>{alive=false;window.removeEventListener('keydown',down);window.removeEventListener('keyup',up);window.removeEventListener('blur',blur);root.replaceChildren();};
+import {
+  MAP,
+  JOBS,
+  PUZZLES,
+  newOffice,
+  addPlayer,
+  startShift,
+  tickOffice,
+  beginJob,
+  jobStep,
+  prank,
+  cancelJob,
+  nearby,
+} from './rules.js';
+export function mount(root) {
+  root.innerHTML = /* HTML */ `
+    <link rel="stylesheet" href="style.css" />
+    <main>
+      <header>
+        <h1>NORD ENGINE OFFICE</h1>
+        <p>Ship the engine. Fix the coffee. Survive your interns.</p>
+      </header>
+      <nav>
+        <button id="solo">Solo + AI practice</button>
+        <button id="start">Start / Restart shift</button>
+        <button id="bot">Toggle AI coworker</button>
+        <button id="pause">Pause solo</button>
+      </nav>
+      <section class="layout">
+        <div>
+          <canvas width="768" height="512" aria-label="Office game map"></canvas>
+          <h2 id="hud"></h2>
+          <p>
+            WASD / arrows: walk · E: work nearby · X: introduce a bug · Esc: cancel task
+          </p>
+          <div id="task"></div>
+          <p id="result"></p>
+        </div>
+        <aside>
+          <h2>Invite interns</h2>
+          <label>
+            Name
+            <input id="name" value="Intern" maxlength="20" />
+          </label>
+          <label>
+            Room
+            <input id="room" value="NORD" maxlength="8" />
+          </label>
+          <label>
+            Server
+            <input id="server" />
+          </label>
+          <button id="join">Join online office</button>
+          <p id="network">
+            Run node server.mjs to host friends. Solo works without a server.
+          </p>
+          <h2>Tickets</h2>
+          <div id="tickets"></div>
+          <h2>Office log</h2>
+          <div id="log"></div>
+          <p>
+            Host starts the shift. Finish 12 tasks in 150 seconds. Too many open bugs
+            drain morale. X pranks a fixed nearby station, with a 15-second cooldown.
+          </p>
+          <p>Ada is a local pathfinding AI coworker, no account or API key needed.</p>
+        </aside>
+      </section>
+      <footer>Crowelian 2026 + Sonnet · Original code and canvas graphics</footer>
+    </main>
+  `;
+  const $ = (id) => root.querySelector('#' + id),
+    ctx = root.querySelector('canvas').getContext('2d'),
+    keys = new Set();
+  let s = newOffice(),
+    you = 'solo',
+    online = false,
+    paused = false,
+    alive = true,
+    last = performance.now(),
+    poll = 0,
+    busy = false,
+    taskKey = '',
+    status = '';
+  addPlayer(s, you, 'You');
+  addPlayer(s, 'ai', 'Ada (AI)', true);
+  $('server').value =
+    location.port === '4383' ? location.origin : 'http://127.0.0.1:4383';
+  const player = () => s.players.find((p) => p.id === you);
+  const say = (t) => {
+    $('network').textContent = t;
+  };
+  async function request(route, body) {
+    const res = await fetch($('server').value.replace(/\/$/, '') + '/api/' + route, {
+      method: body ? 'POST' : 'GET',
+      headers: body ? { 'content-type': 'application/json' } : {},
+      body: body ? JSON.stringify(body) : undefined,
+      signal: AbortSignal.timeout(4000),
+    });
+    const data = await res.json();
+    if (!res.ok) throw Error(data.error || res.status);
+    return data;
+  }
+  async function command(route, body = {}) {
+    if (online) {
+      try {
+        s = await request(route, { id: you, ...body });
+      } catch (e) {
+        say(e.message);
+      }
+      return;
+    }
+    const p = player();
+    if (route === 'start') startShift(s);
+    if (route === 'work') beginJob(s, p, body.job);
+    if (route === 'step') jobStep(s, p, body.value);
+    if (route === 'cancel') cancelJob(s, p);
+    if (route === 'prank') prank(s, p);
+    if (route === 'bot') {
+      const ai = s.players.find((p) => p.bot);
+      if (ai) {
+        cancelJob(s, ai);
+        s.players = s.players.filter((p) => !p.bot);
+      } else addPlayer(s, 'ai', 'Ada (AI)', true);
+    }
+    taskKey = '';
+  }
+  $('solo').onclick = () => {
+    online = false;
+    s = newOffice();
+    you = 'solo';
+    addPlayer(s, you, $('name').value);
+    addPlayer(s, 'ai', 'Ada (AI)', true);
+    paused = false;
+    taskKey = '';
+    say('Solo practice. Start a shift when ready.');
+  };
+  $('join').onclick = async () => {
+    try {
+      s = await request('join', { name: $('name').value, room: $('room').value });
+      you = s.you;
+      online = true;
+      paused = false;
+      keys.clear();
+      taskKey = '';
+      say(
+        `Room ${s.code} · ${s.host === you ? 'You are host' : 'Host starts the shift'} · share this server address and room`,
+      );
+    } catch (e) {
+      say(e.message);
+    }
+  };
+  $('start').onclick = () => {
+    paused = false;
+    command('start');
+  };
+  $('bot').onclick = () => command('bot');
+  $('pause').onclick = () => {
+    if (online) say('Online shifts keep running for everyone.');
+    else {
+      paused = !paused;
+      keys.clear();
+    }
+  };
+  function work() {
+    const p = player();
+    if (!p || paused) return;
+    const j = s.jobs.find((j) => j.broken && !j.owner && nearby(p, j));
+    if (j) command('work', { job: j.id });
+    else say('Walk closer to a red station with an unclaimed ticket.');
+  }
+  const down = (e) => {
+    if (/INPUT|TEXTAREA/.test(document.activeElement?.tagName)) return;
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code))
+      e.preventDefault();
+    keys.add(e.code);
+    if (!e.repeat) {
+      if (e.code === 'KeyE') work();
+      if (e.code === 'KeyX') command('prank');
+      if (e.code === 'Escape') command('cancel');
+    }
+  };
+  const up = (e) => keys.delete(e.code),
+    blur = () => {
+      keys.clear();
+      if (!online) paused = true;
+    };
+  window.addEventListener('keydown', down);
+  window.addEventListener('keyup', up);
+  window.addEventListener('blur', blur);
+  function drawTask() {
+    const p = player(),
+      job = p?.job,
+      key = job ? `${job.id}:${job.step}:${job.puzzle}:${job.began}` : '';
+    if (key === taskKey) return;
+    taskKey = key;
+    const box = $('task');
+    box.replaceChildren();
+    if (!job) return;
+    const j = s.jobs[job.id],
+      title = document.createElement('h3');
+    title.textContent = j.name;
+    box.append(title);
+    const label = document.createElement('p');
+    box.append(label);
+    const button = (text, value) => {
+      const b = document.createElement('button');
+      b.textContent = text;
+      b.onclick = () => command('step', { value });
+      box.append(b);
+    };
+    if (j.kind === 'wire') {
+      label.textContent = `Reconnect in order: ${job.sequence.map((v) => ['RED', 'BLUE', 'GREEN', 'GOLD'][v]).join(' → ')}. Step ${job.step + 1}/3`;
+      ['RED', 'BLUE', 'GREEN', 'GOLD'].forEach((v, i) => button(v, i));
+    }
+    if (j.kind === 'bug') {
+      label.textContent = PUZZLES[job.puzzle].log;
+      PUZZLES[job.puzzle].choices.forEach((v, i) => button(v, i));
+    }
+    if (j.kind === 'coffee') {
+      label.textContent =
+        'Stop the fill between 55% and 85% (green). The server measures elapsed time.';
+      const meter = document.createElement('div');
+      meter.id = 'coffee';
+      box.append(meter);
+      button('Pour coffee', 0);
+    }
+    button('Cancel', -1);
+    box.lastChild.onclick = () => command('cancel');
+  }
+  function draw() {
+    ctx.fillStyle = '#152238';
+    ctx.fillRect(0, 0, 768, 512);
+    MAP.forEach((row, y) =>
+      [...row].forEach((tile, x) => {
+        ctx.fillStyle = tile === '#' ? '#2d4660' : (x + y) % 2 ? '#1e3448' : '#22394d';
+        ctx.fillRect(x * 32, y * 32, 32, 32);
+        if (tile === 'D') {
+          ctx.fillStyle = '#895d55';
+          ctx.fillRect(x * 32 + 2, y * 32 + 2, 28, 28);
+          ctx.fillStyle = '#6be4df';
+          ctx.fillRect(x * 32 + 6, y * 32 + 5, 18, 10);
+        }
+      }),
+    );
+    for (const j of s.jobs) {
+      ctx.fillStyle = j.broken ? '#ed6c83' : '#69d9a0';
+      ctx.fillRect(j.x * 32 + 2, j.y * 32 + 2, 28, 28);
+      ctx.fillStyle = '#0f1e2d';
+      ctx.font = 'bold 18px monospace';
+      ctx.fillText(['W', 'B', 'C', 'T', 'E'][j.id], j.x * 32 + 10, j.y * 32 + 23);
+      if (j.broken) {
+        ctx.strokeStyle = '#ed6c83';
+        ctx.beginPath();
+        ctx.arc(
+          j.x * 32 + 16,
+          j.y * 32 + 16,
+          25 + Math.sin(s.time * 4) * 3,
+          0,
+          Math.PI * 2,
+        );
+        ctx.stroke();
+      }
+    }
+    for (const p of s.players) {
+      const x = p.x * 32,
+        y = p.y * 32;
+      ctx.fillStyle = '#0005';
+      ctx.beginPath();
+      ctx.ellipse(x, y + 10, 12, 5, 0, 0, 7);
+      ctx.fill();
+      ctx.fillStyle = p.bot ? '#b7a0ff' : p.id === you ? '#6ee6ee' : '#ffc86e';
+      ctx.fillRect(x - 9, y - 8, 18, 18);
+      ctx.fillStyle = '#f5ccaf';
+      ctx.fillRect(x - 7, y - 16, 14, 10);
+      ctx.fillStyle = '#fff';
+      ctx.font = '12px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(p.name, x, y - 22);
+      if (p.job) ctx.fillText('⚙', x, y - 38);
+      ctx.textAlign = 'left';
+    }
+    $('hud').textContent =
+      `${paused ? 'PAUSED · ' : ''}${s.phase.toUpperCase()} · ` +
+      `${s.score}/${s.goal} fixes · Morale ${Math.ceil(s.morale)} · ` +
+      `${Math.max(0, Math.ceil(s.duration - s.time))}s`;
+    $('result').textContent =
+      s.phase === 'won'
+        ? 'BUILD SHIPPED! Great shift. Start another to replay.'
+        : s.phase === 'lost'
+          ? 'SHIFT FAILED. Try with Ada, share tasks, and keep morale up.'
+          : '';
+    const nextStatus =
+      s.jobs
+        .map(
+          (j) => `${j.name}: ${j.broken ? (j.owner ? 'IN PROGRESS' : 'BROKEN') : 'OK'}`,
+        )
+        .join('\n') +
+      '\n' +
+      s.log.join('\n');
+    if (nextStatus !== status) {
+      status = nextStatus;
+      $('tickets').textContent = nextStatus.split('\n').slice(0, 5).join('\n');
+      $('log').textContent = s.log.join('\n');
+    }
+    drawTask();
+    const coffee = $('coffee');
+    if (coffee && player()?.job) {
+      const fill = ((s.time - player().job.began) % 2.4) / 2.4;
+      coffee.style.background = `linear-gradient(to right,#eec76a ${fill * 100}%,transparent 0),linear-gradient(to right,#27394b 55%,#36694d 55%,#36694d 85%,#27394b 85%)`;
+      coffee.textContent = Math.round(fill * 100) + '%';
+    }
+  }
+  function frame(now) {
+    if (!alive) return;
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    const p = player(),
+      dx =
+        Number(keys.has('KeyD') || keys.has('ArrowRight')) -
+        Number(keys.has('KeyA') || keys.has('ArrowLeft')),
+      dy =
+        Number(keys.has('KeyS') || keys.has('ArrowDown')) -
+        Number(keys.has('KeyW') || keys.has('ArrowUp'));
+    if (!online) {
+      if (p) {
+        p.dx = paused ? 0 : dx;
+        p.dy = paused ? 0 : dy;
+      }
+      if (!paused) tickOffice(s, dt);
+    } else {
+      poll += dt;
+      if (poll > 0.1 && !busy) {
+        poll = 0;
+        busy = true;
+        request('input', { id: you, dx, dy })
+          .then(() => request('state?id=' + encodeURIComponent(you)))
+          .then((data) => {
+            s = data;
+          })
+          .catch((e) => say(e.message + ' — check server / rejoin'))
+          .finally(() => (busy = false));
+      }
+    }
+    draw();
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  window.__office = {
+    get state() {
+      return s;
+    },
+    get you() {
+      return you;
+    },
+    get online() {
+      return online;
+    },
+  };
+  return () => {
+    alive = false;
+    window.removeEventListener('keydown', down);
+    window.removeEventListener('keyup', up);
+    window.removeEventListener('blur', blur);
+    root.replaceChildren();
+  };
 }
