@@ -414,6 +414,9 @@ export class FpsGame {
     const bob = p.onGround ? Math.sin(p.bobT) * 0.035 * Math.min(1, (p.speed ?? 0) / 4) : 0;
     cam.position.set(p.x + (Math.random() - 0.5) * sh * 0.05, p.y + p.eye + bob + (Math.random() - 0.5) * sh * 0.05, p.z);
     cam.rotation.set(p.pitch + (Math.random() - 0.5) * sh * 0.02, p.yaw, (Math.random() - 0.5) * sh * 0.01);
+    // Babylon otherwise retains the last rolled up vector after damage shake ends,
+    // tilting the horizon as mouse look changes yaw/pitch on subsequent frames.
+    cam.updateUpVectorFromRotation = true;
     this.sfx.listener = { x: p.x, y: p.y, z: p.z, yaw: p.yaw };
     const zoom = p.ads > 0 && p.weapon ? aimOf(p.weapon).zoom : 1; cam.fov = 1.25 * (1 + (zoom - 1) * p.ads);
     this.hud.cross.style.opacity = String(0.9 * (1 - p.ads * 0.85));

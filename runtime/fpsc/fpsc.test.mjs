@@ -2,6 +2,7 @@
 // Run: node --test runtime/fpsc/fpsc.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { createRequire } from 'node:module';
 import { newLevel, newLayer, paintRoom, setEdge, setCell, getCell, validate, normalize, CELL, STORY, sideEdge, bounds } from './level.js';
 import { World } from './world.js';
 import { buildGeometry, bakeBatches, lightAtPoint } from './geometry.js';
@@ -9,7 +10,9 @@ import { createBank, resolveScripts, entityVariant } from './bank.js';
 import { TEXTURES } from './bank/textures.js';
 import { PIECES } from './bank/segments.js';
 import { ACTIONS, RUN, WHENS } from './actions.js';
-import { rayCylinder } from './game.js';
+import { FpsGame, rayCylinder } from './game.js';
+import { Player } from './player.js';
+import { Fx } from './fx.js';
 
 const bank = await createBank({});
 const mk = () => {
@@ -19,6 +22,37 @@ const mk = () => {
   return lv;
 };
 const world = (lv) => new World(lv, { piece: bank.piece, cellPiece: bank.cellPiece, stair: bank.stair });
+
+test('camera: mouse look keeps a level horizon after damage shake ends', () => {
+  const B = createRequire(import.meta.url)('../../vendor/babylonjs/babylon.js');
+  const engine = new B.NullEngine(), scene = new B.Scene(engine);
+  try {
+    const g = new FpsGame({ B, scene, level: mk(), bank, container: {}, sfx: { play() {} } });
+    g.world = { doors: new Map() };
+    g.player = new Player(g);
+    g.camera = new B.UniversalCamera('regression-camera', B.Vector3.Zero(), scene);
+    g.camera.inputs.clear();
+    g.fx = new Fx(B, scene);
+    g.renderer = { setDynamicLights() {} }; g.dynLights = [];
+    g.viewmodel = { update() {} };
+    g.hud = { tick() {}, update() {}, cross: { style: {} }, hurt() {} };
+    g.ctl = { endFrame() {} }; g.lightT = Infinity;
+    // Run the real sync path while paused to isolate camera orientation from movement/AI.
+    const frame = () => { g.update(1 / 60); g.camera.getViewMatrix(true); };
+    g.player.pitch = 0.6; g.player.yaw = 1;
+    g.player.hurt(30); // normal damage shake, not an artificial camera roll
+    for (let i = 0; i < 20; i++) frame();
+    assert.equal(g.fx.shake, 0);
+    for (const yaw of [2, 3, 4, -2]) for (const pitch of [0.6, 0, -0.6]) {
+      g.player.look({ take: () => [yaw - g.player.yaw, pitch - g.player.pitch], sens: 1 });
+      frame();
+      const right = g.camera.getDirection(B.Axis.X);
+      assert.ok(Math.abs(right.y) < 1e-6, `horizon tilted after shake: right.y=${right.y}`);
+      const dir = g.camera.getForwardRay().direction;
+      assert.ok(B.Vector3.Distance(dir, new B.Vector3(...g.player.dir)) < 1e-6, 'view follows mouse look');
+    }
+  } finally { engine.dispose(); }
+});
 
 test('level: room paints floors, ceilings and a wall ring', () => {
   const lv = newLevel({ w: 10, d: 10 }); const n = paintRoom(lv, 0, 2, 2, 4, 4, {});

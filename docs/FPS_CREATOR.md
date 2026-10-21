@@ -185,6 +185,8 @@ The Inspector lists only the parameters a script actually uses (e.g. no sounds f
 ## Controls in the game
 WASD move · mouse look · Shift sprint · Space jump · C crouch · **E** use / open doors · LMB fire · **RMB (hold) aim down sights** · R reload · 1-6 / wheel / Q weapons · **F** flashlight · M minimap · Esc pause.
 
+Mouse look keeps a level horizon once temporary damage/explosion shake ends, including when turning or looking up/down. Existing projects made before this fix need **Upgrade runtime** for main Play/export.
+
 **Aiming (right mouse button).** Hold RMB to raise any gun to the sights: the weapon slides to the screen centre, the view zooms in a little, bullet spread and mouse sensitivity drop and the crosshair fades. It is off while reloading/swapping, for melee weapons, and in the "hold RMB to look" fallback (no pointer lock). The pose of each weapon is editable with `view.aim` in `fpsc/bank.json` — every field is optional:
 
 ```json
