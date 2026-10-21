@@ -102,6 +102,31 @@ export function itemsPanel(ed) {
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------------
+// Placed objects, separate from the bank of objects available to place.
+export function objectsPanel(ed) {
+  const root = el('div'), st = ed.objectsUi ??= { q: '', layer: 'all' };
+  root.append(el('input', { type: 'search', placeholder: 'Find placed objects…', value: st.q, style: { width: '100%' }, oninput: (ev) => { st.q = ev.target.value; list(); } }));
+  root.append(el('div', { class: 'row' }, el('label', {}, 'Storey'), el('select', { 'aria-label': 'Object storey', onchange: (ev) => { st.layer = ev.target.value; list(); } },
+    el('option', { value: 'all', selected: st.layer === 'all' }, 'All storeys'), el('option', { value: 'current', selected: st.layer === 'current' }, 'Current storey'))));
+  root.append(el('div', { class: 'muted' }, 'Click to select and centre the map. Shift-click toggles selection; double-click focuses the 3D view. Search names, tags, types or scripts.'));
+  const holder = el('div'); root.append(holder);
+  function list() {
+    holder.replaceChildren();
+    const q = st.q.trim().toLowerCase();
+    const items = ed.level.entities.filter((e) => (st.layer === 'all' || e.layer === ed.layer) &&
+      (!q || [e.name, e.tag, e.type, e.id, ed.bank.entity(e.type)?.label, ...resolveScripts(ed.bank.entity(e.type), e).map((s) => s.id)].join(' ').toLowerCase().includes(q)));
+    holder.append(el('h4', {}, `${items.length} / ${ed.level.entities.length} objects`));
+    for (const e of items) {
+      const def = ed.bank.entity(e.type);
+      holder.append(el('button', { class: `object-row${ed.sel.ents.has(e.id) ? ' on' : ''}`, 'data-object': e.id,
+        onclick: (ev) => ed.selectEntity(e.id, ev.shiftKey, true), ondblclick: () => { ed.selectEntity(e.id, false, true); ed.focus3d(); } },
+        el('b', {}, e.name || def?.label || e.type), el('small', {}, `${def?.label || e.type} · ${ed.level.layers[e.layer]?.name ?? e.layer}${e.tag ? ` · #${e.tag}` : ''}`)));
+    }
+    if (!items.length) holder.append(el('div', { class: 'muted' }, 'No matching objects.'));
+  }
+  list(); return root;
+}
+
 export function scriptsPanel(ed) {
   const root = el('div'), st = ed.scriptUi ??= { cat: 'All', q: '', open: null };
   root.append(el('div', { class: 'tip' }, 'Scripts give entities behaviour. ', el('b', {}, 'Drag a script onto an entity on the map'), ' (or select the entity and press Attach). Edit its parameters in the Inspector.'));
@@ -220,6 +245,21 @@ function entityInspector(ed, e) {
     const p = el('details', { class: 'sec' , open: !!e.path?.length }, el('summary', {}, `Patrol path (${e.path?.length ?? 0})`));
     p.append(el('div', { class: 'row' }, el('button', { class: ed.tool === 'path' ? 'on' : '', onclick: () => ed.setTool(ed.tool === 'path' ? 'select' : 'path') }, ed.tool === 'path' ? 'Done drawing' : 'Draw path (P)'), el('button', { onclick: () => { e.path = []; ed.commit('clear path'); } }, 'Clear')));
     p.append(el('div', { class: 'muted' }, 'Click the map to add waypoints; Shift-click one to remove. The entity walks them in order and loops.'));
+    for (const [i, pt] of (e.path ?? []).entries()) {
+      const row = el('div', { class: 'waypoint-row', 'data-waypoint': i });
+      row.append(el('b', {}, String(i + 1)));
+      for (const [j, label] of [[0, 'X'], [1, 'Z'], [2, 'Wait (s)']]) row.append(el('label', {}, label, el('input', {
+        type: 'number', 'aria-label': `Waypoint ${i + 1} ${label}`, value: pt[j] ?? 0.8, step: j === 2 ? 0.1 : 0.25, min: j === 2 ? 0 : undefined,
+        onchange: (ev) => { const v = Number(ev.target.value); if (!Number.isFinite(v) || ev.target.value === '') { ev.target.value = pt[j] ?? 0.8; return; } pt[j] = j === 2 ? Math.max(0, v) : v; ed.commit('edit waypoint'); },
+      })));
+      const move = (d) => { const path = e.path; [path[i], path[i + d]] = [path[i + d], path[i]]; ed.commit('reorder waypoint'); };
+      row.append(el('button', { title: 'Move waypoint earlier', disabled: i === 0, onclick: () => move(-1) }, '↑'),
+        el('button', { title: 'Move waypoint later', disabled: i === e.path.length - 1, onclick: () => move(1) }, '↓'),
+        el('button', { title: 'Insert waypoint after', onclick: () => { const next = e.path[(i + 1) % e.path.length]; e.path.splice(i + 1, 0, [(pt[0] + next[0]) / 2, (pt[1] + next[1]) / 2, pt[2] ?? 0.8]); ed.commit('insert waypoint'); } }, '+'),
+        el('button', { title: 'Remove waypoint', onclick: () => { e.path.splice(i, 1); ed.commit('remove waypoint'); } }, '×'));
+      p.append(row);
+    }
+    if (e.path?.length > 1) p.append(el('button', { onclick: () => { e.path.reverse(); ed.commit('reverse patrol'); } }, 'Reverse route'));
     root.append(p);
   }
   root.append(scriptsSection(ed, e, def));

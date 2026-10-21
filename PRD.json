@@ -3,7 +3,7 @@
   "tagline": "Rust-based game/app engine + editor that exports static HTML web games and a native Mac app",
   "author": "Crowelian 2026 + Sonnet",
   "version": "0.0.1",
-  "updated": "2026-10-20",
+  "updated": "2026-10-21",
   "branch": "main",
   "statusValues": [
     "todo",
@@ -568,6 +568,12 @@
       "milestone": "M12",
       "title": "OWNER: verify the FPS Level tab + play-test on macOS/Windows with a real GPU (pointer lock in the embedded webview, performance, feel of movement/combat); decide on gamepad/touch controls and shadowed dynamic lights",
       "status": "todo"
+    },
+    {
+      "id": "M12-14",
+      "milestone": "M12",
+      "title": "Improve FPS editor object navigation, placement grid and patrol editing after Modern comparison",
+      "status": "done"
     },
     {
       "id": "M9-01",

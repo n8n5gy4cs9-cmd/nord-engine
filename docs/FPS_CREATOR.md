@@ -46,10 +46,15 @@ Other: wheel zoom, middle/right-drag or Space-drag pans, `Home` fits, `PageUp/Do
 * **Items** — categories **Markers, Triggers, Enemies, Allies, Pickups, Lights, Props** (≈ 75 ready-made entities; see below).
 * **Scripts** — the script library with descriptions and parameters; drag a script card onto an entity to attach it.
 * **Level** — name, size, sky (day/dusk/night/overcast/void/custom), ground, fog, ambient light, intro text, objective, time limit, music, next level, layer manager, 3D preview options.
+* **Objects** — searchable list of placed entities across all storeys or the current storey. Search by name, tag, type, id or attached script; click to select and centre the map, Shift-click to toggle selection, double-click to focus the 3D preview.
 * **Assets** — add textures, sprite/3D-model entities, sounds and scripts (rules below).
+
+Placement grid: choose **0.25, 0.5 (default), 1, 2 or 4 m** beside Snap. It applies to entities, drag movement and drawn waypoints. Snap off permits free placement; Ctrl retains the existing cell-centre placement shortcut. Build cells and wall edges retain their 4 m grid.
 
 ### Inspector
 *General* (name, tag, target, rotation, height, position, layer) · *Properties* (from the entity's schema) · *Patrol path* · **Scripts** (default scripts with editable parameters, enable/disable, remove, attach more) · **Rules** (no-code logic). Wall pieces: type, front/back/trim/door textures, flip; doors: **name**, **key lock** (red/blue/yellow/green), auto-open, stay-open time. Cells: floor/ceiling/height/stairs/pillar. Multiple selection: copy, duplicate, delete, rotate.
+
+The **Patrol path** inspector exposes each waypoint’s X/Z coordinates and wait in seconds (default 0.8). Move points earlier/later, insert a midpoint after a point, remove points or reverse the route. Changes use normal undo/redo and save in the existing `[x,z,wait]` format. Drawing and Shift-click removal remain available.
 
 ### Play-test
 `F5` runs the **unsaved** level in an overlay (iframe of `play.html`; the editor posts the level over `postMessage`). `Shift+F5` starts at the cursor or selected item. Script errors and warnings appear in the editor's console. `Esc` leaves pointer-lock → pause menu → Quit.
@@ -149,3 +154,8 @@ WASD move · mouse look · Shift sprint · Space jump · C crouch · **E** use /
 
 ## Known limits
 See `docs/KNOWN_ISSUES.md` (FPS Creator section): software-GL only verified headlessly; no shadows from dynamic lights; static light changes at runtime re-bake (short hitch); multi-storey light bleeding through floors is approximate; sprites/glb are flat-lit; touch controls/gamepad not implemented; bundled single-file export cannot import custom scripts dynamically; web-editor (wasm) shows the tab but cannot install the runtime (use the CLI on the server).
+
+## FPS Creator Modern comparison (2026-10-21, M12-14)
+Inspected the owner-provided `TEMP/FPS-Creator-Modern`: `README.md`, MapEditor `FPSC-MapEditor.dba` (grid-lock modes), `FPSC-Interface.dba` (entity properties), and Waypoints `FPSC-Waypoints.dba` (move/delete/insert nodes). Nord already provides grid segments, storeys, entity/script banks, properties, lighting, weapons, AI, testing and export. The useful additions in this pass are adjustable placement spacing, detailed patrol editing, and placed-object navigation (a Nord usability addition).
+
+The Modern README explicitly states that its source is MIT and describes Black Ice features including improved lighting, AI and dual wielding. This differs from the earlier Classic reference above; it does not establish redistribution rights for every bundled binary/media file. No Modern code or assets were copied. Nord’s Babylon renderer and JS runtime make the Dark Basic/DirectX implementation unsuitable for a direct drop-in. Dual wielding, cover AI, dynamic shadows, moving platforms and skinned characters remain future work, not implemented claims.

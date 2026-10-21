@@ -7,10 +7,10 @@ button:hover{background:var(--ctl2)}button.on,button.primary{background:var(--ac
 button.play{background:#1f6b3e;border-color:#2ea866}button.play:hover{background:#2ea866}
 button.danger{background:#5a2323;border-color:#8a3a3a}button.danger:hover{background:#7a2e2e}
 button:disabled{opacity:.4;cursor:default}
-select,input[type=text],input[type=number],textarea{background:#1c1c1c;border:1px solid var(--line);border-radius:4px;padding:3px 5px;min-width:0}
+select,input[type=text],input[type=search],input[type=number],textarea{background:#1c1c1c;border:1px solid var(--line);border-radius:4px;padding:3px 5px;min-width:0}
 input[type=number]{width:72px}input[type=color]{width:34px;height:24px;padding:0;border:1px solid var(--line);background:none}
 textarea{width:100%;resize:vertical;min-height:54px;user-select:text}
-input[type=text]{user-select:text}
+input[type=text],input[type=search]{user-select:text}
 .hidden{display:none!important}.muted{color:var(--mut)}.grow{flex:1}.right{margin-left:auto}
 #top{display:flex;align-items:center;gap:10px;padding:5px 8px;background:var(--panel);border-bottom:1px solid var(--line);flex-wrap:wrap}
 .brand{font-size:13px;margin-right:4px}.brand b{color:var(--acc);letter-spacing:.06em}
@@ -74,3 +74,12 @@ details.sec{border-top:1px solid var(--line);padding:6px 10px}details.sec>summar
 #play{position:fixed;inset:0;z-index:100;background:#000}#play iframe{width:100%;height:100%;border:0}#play-close{position:absolute;right:10px;top:10px;z-index:101}
 .lv-item{display:flex;align-items:center;gap:8px;padding:5px 8px;border:1px solid var(--line);border-radius:5px;margin:4px 0;cursor:pointer;background:#1c1c1c}.lv-item:hover{border-color:var(--acc)}
 .dropping{outline:2px dashed var(--acc);outline-offset:-4px}
+
+/* Placed object navigation and precise patrol editing. */
+#left-tabs { flex-wrap: wrap; }
+.object-row { display: flex; flex-direction: column; width: 100%; text-align: left; margin: 3px 0; white-space: normal; overflow-wrap: anywhere; }
+.object-row small { color: var(--mut); }
+.waypoint-row { display: flex; flex-wrap: wrap; gap: 4px; align-items: end; margin: 8px 0; }
+.waypoint-row label { flex: 1; min-width: 55px; font-size: 11px; }
+.waypoint-row input { width: 100%; min-width: 0; box-sizing: border-box; }
+.waypoint-row button { padding: 3px 6px; }

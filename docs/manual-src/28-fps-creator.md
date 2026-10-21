@@ -105,3 +105,10 @@ Power users edit `fpsc/bank.json` directly (new wall pieces, entities that *exte
 * *Door will not open* → is it **locked**? Does the key exist? With *Opens by itself* off you need a switch, rule or `E`.
 * *"Unknown entity type"* → a custom entity was removed from `fpsc/bank.json`.
 * Console messages from play-testing appear in the editor's console (bottom of the map); errors name the script and hook.
+
+## Find objects and refine patrols
+Use the **Objects** tab to search placed entities by name, tag, type or script across every storey. Click a result to select it and centre the map; Shift-click toggles selection; double-click focuses the 3D preview. Choose **Current storey** to narrow the list.
+
+The toolbar’s placement grid offers **0.25, 0.5, 1, 2 and 4 metres**; the default stays 0.5 m. It applies to entity placement, dragging and drawn waypoints. Turn Snap off for free placement. Room cells and wall edges still use the 4 m building grid.
+
+Select an enemy and expand **Patrol path** to edit each point’s X/Z and wait in seconds (default 0.8). The arrow buttons reorder points; **+** inserts a midpoint after one; **×** removes it; **Reverse route** reverses the order. Drawing with P and Shift-click removal still work. Every route edit supports undo/redo and saves with your level.

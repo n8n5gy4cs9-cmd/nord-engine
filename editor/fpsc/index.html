@@ -18,14 +18,14 @@
   <div class="grp"><button data-act="undo" title="Undo (Ctrl+Z)">↶</button><button data-act="redo" title="Redo (Ctrl+Shift+Z)">↷</button></div>
   <div class="grp tools" id="tools"></div>
   <div class="grp"><span class="lbl">Layer</span><button data-act="layer-down" title="Layer down (PgDn)">▼</button><select id="layer-sel" title="Active layer (storey)"></select><button data-act="layer-up" title="Layer up (PgUp)">▲</button><button data-act="layer-add" title="Add a storey">+</button></div>
-  <div class="grp"><label class="chk" title="Show other layers faded"><input type="checkbox" id="ghost" checked>ghost</label><label class="chk" title="Show light radius"><input type="checkbox" id="showlights">lights</label><label class="chk" title="Snap entities to half-metre grid"><input type="checkbox" id="snap" checked>snap</label></div>
+  <div class="grp"><label class="chk" title="Show other layers faded"><input type="checkbox" id="ghost" checked>ghost</label><label class="chk" title="Show light radius"><input type="checkbox" id="showlights">lights</label><label class="chk" title="Snap entities and waypoints to the selected grid"><input type="checkbox" id="snap" checked>snap</label><select id="snap-step" aria-label="Placement grid" title="Entity and waypoint grid spacing"><option value="0.25">0.25 m</option><option value="0.5" selected>0.5 m</option><option value="1">1 m</option><option value="2">2 m</option><option value="4">4 m</option></select></div>
   <div class="grp"><button data-act="view" id="view-btn" title="Cycle 2D / split / 3D (Tab)">2D | 3D</button></div>
   <div class="grp"><button data-act="play" class="play" title="Play-test from the player start (F5)">▶ Test</button><button data-act="playhere" class="play" title="Play-test from the cursor / selected thing (Shift+F5)">▶ From here</button></div>
   <div class="grp right"><button data-act="validate" id="val-btn" title="Check the level for problems">✓ <span id="val-n">0</span></button><button data-act="help" title="Help & rules (F1)">?</button><span id="file-name" class="muted"></span></div>
 </header>
 <main>
   <aside id="left">
-    <nav class="tabs" id="left-tabs"><button data-tab="build" class="on">Build</button><button data-tab="items">Items</button><button data-tab="scripts">Scripts</button><button data-tab="level">Level</button><button data-tab="assets">Assets</button></nav>
+    <nav class="tabs" id="left-tabs"><button data-tab="build" class="on">Build</button><button data-tab="items">Items</button><button data-tab="scripts">Scripts</button><button data-tab="level">Level</button><button data-tab="assets">Assets</button><button data-tab="objects">Objects</button></nav>
     <div id="left-body"></div>
   </aside>
   <section id="center">

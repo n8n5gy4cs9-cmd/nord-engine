@@ -4,6 +4,8 @@ export const HELP = `
 <ol>
 <li><b>Room tool (R)</b> — drag a rectangle on the map: floor, ceiling and a wall ring appear. Pick textures in <i>Build</i>.</li>
 <li><b>Wall tool (W)</b> — choose a piece (Door, Window, Arch, Fence…) in <i>Build</i>, then click an edge between two cells, or drag a line between grid points.</li>
+<li><b>Objects tab</b> — find placed entities by name, tag, type or script across storeys. Click to centre/select, Shift-click to toggle, double-click to focus 3D.</li>
+<li><b>Placement grid</b> — choose 0.25–4 m beside Snap; default remains 0.5 m. Patrol inspector supports coordinates, waits, insertion, reordering and reversing, with undo.</li>
 <li><b>Items tab</b> — click an enemy, pickup or light, then click the map (or drag the card onto the map). Always add a <i>Player start</i> and a <i>Level exit</i>.</li>
 <li><b>Inspector</b> (right) — name things, attach <i>Scripts</i> and add <i>Rules</i> (no-code logic).</li>
 <li><b>F5</b> plays the level right here; <b>Ctrl+S</b> saves to <code>levels/</code>. The 3D view on the right updates as you build.</li>

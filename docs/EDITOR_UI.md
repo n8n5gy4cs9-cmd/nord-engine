@@ -97,3 +97,5 @@ The Code toolbar has persisted **Word wrap** on/off; wrapping changes display on
 
 ## FPS Level tab (M12)
 `Tab::Fps` (`panels/fps.rs`) embeds the FPS Creator level editor (`editor/fpsc/index.html`, served by the project's dev server) like the Scene tab embeds the edit viewport. Projects without the runtime see a call-to-action (*Add FPS Creator to this project* → `Action::FpsInstall` → `nord_core::fpsc::install`); projects with `scripts/fpsc/level-script.js` open on this tab. Toolbar: *Open in browser*, *Upgrade runtime*. Menu: View ▸ FPS Level, Project ▸ Add / upgrade FPS Creator…, palette entries. Spec: `docs/FPS_CREATOR.md`.
+
+FPS Level addon: Objects tab searches placed entities across storeys and focuses selection; placement grid offers 0.25–4 m spacing (default 0.5 m); patrol inspector edits coordinates/waits and inserts, removes, reorders or reverses waypoints. Existing tools remain available. See `FPS_CREATOR.md`.

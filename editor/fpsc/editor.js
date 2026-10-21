@@ -5,7 +5,7 @@ import { SOUND_NAMES } from '/runtime/fpsc/audio.js';
 import { el, modal, toast, debounce } from './forms.js';
 import { Map2D, classify } from './map2d.js';
 import { View3D } from './view3d.js';
-import { buildPanel, itemsPanel, scriptsPanel, levelPanel, assetsPanel, inspector } from './panels.js';
+import { buildPanel, itemsPanel, scriptsPanel, levelPanel, assetsPanel, objectsPanel, inspector } from './panels.js';
 import { HELP } from './help.js';
 
 const $ = (id) => document.getElementById(id);
@@ -70,7 +70,7 @@ ed.soundNames = () => [...SOUND_NAMES, ...Object.keys(ed.bankJson.sounds ?? {})]
 // ================================================================================================================================ helpers
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const cellOf = (wx, wz) => [clamp(Math.floor(wx / CELL), 0, ed.level.w - 1), clamp(Math.floor(wz / CELL), 0, ed.level.d - 1)];
-const snap = (v, step = 0.5) => Math.round(v / step) * step;
+const snap = (v, step = ed.snapStep ?? 0.5) => Math.round(v / step) * step;
 const layerData = () => ed.level.layers[ed.layer];
 const entById = (id) => ed.level.entities.find((e) => e.id === id);
 ed.isSelEnt = (id) => ed.sel.ents.has(id);
@@ -90,7 +90,7 @@ function pushHistory() { const s = snapshot(); if (ed.hist[ed.hi] === s) return 
 ed.commit = (label, o = {}) => {
   const changed = pushHistory(); if (!changed && !o.force) return;
   ed.dirty = true; stashRecovery(); ed.renderTop(); ed.map.draw(); if (o.rebuild3d !== false) ed.v3.invalidate(); validateSoon(); $('st-msg').textContent = label ?? '';
-  ed.renderSel(); if (!o.keepInspector) ed.refreshInspector();
+  ed.renderSel(); if (ed.tab === 'objects') ed.renderLeft(); if (!o.keepInspector) ed.refreshInspector();
 };
 const stashRecovery = debounce(() => { LS.set('fpsc.recovery', JSON.stringify({ path: ed.path, level: ed.level, t: Date.now() })); }, 1200);
 ed.undo = () => { if (ed.hi <= 0) return toast('Nothing to undo'); ed.hi--; restore(ed.hist[ed.hi]); toast('Undo'); };
@@ -112,7 +112,7 @@ ed.selectEntity = (id, additive = false, center = false) => {
   ed.refreshInspector(); ed.renderSel(); ed.map.draw(); ed.v3.selectionChanged();
 };
 ed.clearSel = () => { ed.sel.ents.clear(); ed.sel.edges.clear(); ed.sel.cells.clear(); ed.refreshInspector(); ed.renderSel(); ed.map.draw(); ed.v3.selectionChanged(); };
-ed.renderSel = () => { const n = ed.sel.ents.size + ed.sel.edges.size + ed.sel.cells.size; $('st-sel').textContent = n ? `${n} selected` : ''; };
+ed.renderSel = () => { const n = ed.sel.ents.size + ed.sel.edges.size + ed.sel.cells.size; $('st-sel').textContent = n ? `${n} selected` : ''; if (ed.tab === 'objects') for (const row of document.querySelectorAll('[data-object]')) row.classList.toggle('on', ed.sel.ents.has(row.dataset.object)); };
 ed.focus3d = () => { const p = ed.selectedPos(); if (p) { ed.v3.focus(p[0], p[1], p[2]); if (ed.view === '2d') ed.setView('split'); } };
 ed.applyToSelectedEdges = (fn) => { const ly = layerData(); for (const k of ed.sel.edges) if (ly.edges[k]) fn(ly.edges[k]); ed.commit('edit pieces'); };
 ed.applyToSelectedCells = (fn) => { const ly = layerData(); for (const k of ed.sel.cells) if (ly.cells[k]) fn(ly.cells[k]); ed.commit('edit cells'); };
@@ -174,7 +174,7 @@ ed.forkScript = async (s, src) => {
 };
 
 // ================================================================================================================================ layers / level
-ed.setLayer = (i, silent = false) => { ed.layer = clamp(i, 0, ed.level.layers.length - 1); if (!silent) { ed.sel.edges.clear(); ed.sel.cells.clear(); } ed.renderTop(); ed.map.draw(); ed.v3.invalidate(); ed.refreshInspector(); if (ed.tab === 'level') ed.renderLeft(); };
+ed.setLayer = (i, silent = false) => { ed.layer = clamp(i, 0, ed.level.layers.length - 1); if (!silent) { ed.sel.edges.clear(); ed.sel.cells.clear(); } ed.renderTop(); ed.map.draw(); ed.v3.invalidate(); ed.refreshInspector(); if (ed.tab === 'level' || ed.tab === 'objects' && ed.objectsUi?.layer === 'current') ed.renderLeft(); };
 ed.addLayer = () => { ed.level.layers.push(newLayer(`Floor ${ed.level.layers.length}`)); ed.commit('layer added'); ed.setLayer(ed.level.layers.length - 1); };
 ed.deleteLayer = (i) => { if (ed.level.layers.length < 2) return; ed.level.layers.splice(i, 1); ed.level.entities = ed.level.entities.filter((e) => e.layer !== i); for (const e of ed.level.entities) if (e.layer > i) e.layer--; ed.layer = clamp(ed.layer, 0, ed.level.layers.length - 1); ed.clearSelRaw(); ed.commit('layer deleted'); afterLevelChange(); };
 ed.duplicateLayer = (i) => { const l = structuredClone(ed.level.layers[i]); l.name += ' copy'; ed.level.layers.splice(i + 1, 0, l); for (const e of ed.level.entities) if (e.layer > i) e.layer++; for (const e of ed.level.entities.filter((x) => x.layer === i).map((x) => structuredClone(x))) { e.id = uid(); e.layer = i + 1; if (e.name) e.name = ed.uniqueName(e.type); ed.level.entities.push(e); } ed.commit('layer duplicated'); ed.setLayer(i + 1); };
@@ -221,14 +221,14 @@ ed.play = (here = false) => {
   ed.onReady = send; frame.src = `/editor/fpsc/play.html?base=/&t=${Date.now()}`;
   log('info', `Play-test started${start ? ' at cursor' : ''}.`);
 };
-ed.stopPlay = () => { $('play').classList.add('hidden'); $('play-frame').src = 'about:blank'; ed.playing = false; ed.map.cv.focus(); };
+ed.stopPlay = () => { $('play').classList.add('hidden'); $('play-frame').src = 'about:blank'; ed.playing = false; ed.map.cv.focus({ preventScroll: true }); };
 window.addEventListener('message', (e) => { const m = e.data; if (!m || typeof m !== 'object') return; if (m.type === 'fpsc-ready') ed.onReady?.(); else if (m.type === 'fpsc-quit') ed.stopPlay(); else if (m.type === 'fpsc-log') log(m.level === 'error' ? 'error' : m.level === 'warn' ? 'warn' : 'info', `[play] ${m.msg}`); });
 
 // ================================================================================================================================ UI render
 ed.setTool = (id) => { ed.tool = id; ed.preview = null; for (const b of $('tools').children) b.classList.toggle('on', b.dataset.tool === id); $('tool-hint').textContent = HINTS[id] ?? ''; $('st-tool').textContent = TOOLS.find((t) => t[0] === id)?.[3] ?? ''; ed.map?.draw(); if (ed.tab === 'items' || ed.tab === 'build') ed.renderLeft(); ed.refreshInspector(); };
 ed.setTab = (t, focus) => { ed.tab = t; ed.assetFocus = focus; for (const b of $('left-tabs').children) b.classList.toggle('on', b.dataset.tab === t); ed.renderLeft(); };
 ed.renderTop = () => { const sel = $('layer-sel'); sel.innerHTML = ''; ed.level.layers.forEach((l, i) => sel.append(el('option', { value: i, selected: i === ed.layer }, `${i}: ${l.name}`))); $('file-name').textContent = `${ed.path || 'unsaved'}${ed.dirty ? ' ●' : ''}  ·  ${ed.level.name}`; document.title = `${ed.dirty ? '● ' : ''}${ed.level.name} — Nord FPS Level Editor`; };
-ed.renderLeft = () => { const b = $('left-body'), top = b.scrollTop; b.innerHTML = ''; b.append({ build: buildPanel, items: itemsPanel, scripts: scriptsPanel, level: levelPanel, assets: assetsPanel }[ed.tab](ed)); b.scrollTop = top; };
+ed.renderLeft = () => { const b = $('left-body'), top = b.scrollTop; b.innerHTML = ''; b.append({ build: buildPanel, items: itemsPanel, scripts: scriptsPanel, level: levelPanel, assets: assetsPanel, objects: objectsPanel }[ed.tab](ed)); b.scrollTop = top; };
 ed.refreshInspector = () => { const i = $('inspector'); i.innerHTML = ''; try { i.append(inspector(ed)); } catch (e) { console.error(e); i.append(el('div', { class: 'insp-pad' }, `Inspector error: ${e.message}`)); } };
 ed.setView = (v) => { ed.view = v; const vs = $('views'); vs.className = v === '2d' ? 'only2d' : v === '3d' ? 'only3d' : ''; $('view-btn').textContent = v === '2d' ? '2D' : v === '3d' ? '3D' : '2D | 3D'; ed.map.resize(); ed.v3.setVisible(v !== '2d'); if (v !== '3d') ed.map.draw(); LS.set('fpsc.view', v); };
 
@@ -255,7 +255,7 @@ function floodFill(cx, cz, tex) {
 }
 
 function onDown(e) {
-  ed.map.cv.focus();
+  ed.map.cv.focus({ preventScroll: true });
   const [wx, wz] = worldFromEvent(e), m = ed.map;
   if (e.button === 1 || e.button === 2 || spaceDown) { drag = { type: 'pan', x: e.clientX, y: e.clientY }; m.cv.style.cursor = 'grabbing'; e.preventDefault(); return; }
   if (e.button !== 0) return;
@@ -398,7 +398,7 @@ function wire() {
   c.addEventListener('drop', (e) => { e.preventDefault(); c.parentElement.classList.remove('dropping'); const [wx, wz] = worldFromEvent(e); const type = e.dataTransfer.getData('text/fpsc-entity'), script = e.dataTransfer.getData('text/fpsc-script');
     if (type) { const [x, z] = entSnap(wx, wz, e); ed.brush.entity = type; ed.addEntity(type, x, z); } else if (script) { const en = ed.map.pickEntity(wx, wz, ed.layer) ?? ed.selectedEntity(); if (!en) return toast('Drop the script onto an entity'); ed.selectEntity(en.id); ed.attachScript(script, en); } });
   $('layer-sel').addEventListener('change', (e) => ed.setLayer(+e.target.value));
-  $('ghost').addEventListener('change', (e) => { ed.ghost = e.target.checked; ed.map.draw(); }); $('showlights').addEventListener('change', (e) => { ed.showLights = e.target.checked; ed.map.draw(); }); $('snap').addEventListener('change', (e) => { ed.snap = e.target.checked; });
+  $('ghost').addEventListener('change', (e) => { ed.ghost = e.target.checked; ed.map.draw(); }); $('showlights').addEventListener('change', (e) => { ed.showLights = e.target.checked; ed.map.draw(); }); $('snap').addEventListener('change', (e) => { ed.snap = e.target.checked; }); $('snap-step').addEventListener('change', (e) => { ed.snapStep = +e.target.value; });
   $('left-tabs').addEventListener('click', (e) => { const t = e.target.dataset?.tab; if (t) ed.setTab(t); });
   $('play-close').addEventListener('click', () => ed.stopPlay());
   $('file-in').addEventListener('change', async (e) => { const f = e.target.files[0]; e.target.value = ''; if (!f) return; try { const lv = JSON.parse(await f.text()); ed.setLevel(lv, ''); ed.dirty = true; ed.renderTop(); toast(`Imported ${f.name}`); } catch (err) { log('error', `Import failed: ${err.message}`); } });

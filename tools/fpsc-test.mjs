@@ -12,7 +12,7 @@ import { loadPlaywright, ROOT } from './e2e-lib.mjs';
 const want = process.argv.slice(2), run = (k) => !want.length || want.includes(k);
 const OUT = path.join(ROOT, 'target/fpsc'); fs.mkdirSync(OUT, { recursive: true });
 let pass = 0; const fail = [];
-const test = async (name, fn) => { try { await fn(); pass++; console.log(`  ok  ${name}`); } catch (e) { fail.push(name); console.log(`  FAIL ${name}\n       ${String(e?.stack ?? e).split('\n').slice(0, 4).join('\n       ')}`); } };
+const test = async (name, fn) => { try { await fn(); pass++; console.log(`  ok  ${name}`); } catch (e) { fail.push(name); console.log(`  FAIL ${name}\n       ${String(e?.stack ?? e).split('\n').slice(0, 12).join('\n       ')}`); } };
 
 if (run('unit')) {
   console.log('unit');
@@ -197,6 +197,57 @@ if (run('nord') || run('game') || run('editor')) {
     const scr = async (wx, wz) => { const r = await ED(`(ed, a) => { const rc = ed.map.cv.getBoundingClientRect(), s = ed.map.toScreen(a[0], a[1]); return [rc.left + s[0], rc.top + s[1]]; }`, [wx, wz]); return r; };
     const C = 4;
     await test('opens the demo level without problems and renders 2D + 3D', async () => { const s = await ED(`(ed) => ({ n: ed.level.entities.length, problems: ed.problems.length, tris: ed.v3.rend?.stats.tris, name: ed.level.name, pieces: ed.bank.pieces.length })`); assert.equal(s.n, JSON.parse(fs.readFileSync(path.join(proj, 'levels/level1.fpsl.json'), 'utf8')).entities.length); assert.equal(s.problems, 0); assert.ok(s.tris > 5000); assert.equal(s.name, 'Outpost Zero'); await shot('open'); });
+    await test('Objects: search across storeys, select, focus and toggle selection', async () => {
+      await ED(`async (ed) => { const { newLevel } = await import('/runtime/fpsc/level.js'); ed.setLevel(newLevel({ w: 16, d: 16 }), ''); ed.addLayer(); const e = ed.addEntity('enemy_zombie', 22, 26); e.name = 'upper_patrol'; e.tag = 'watch'; ed.commit('name patrol'); ed.setLayer(0); ed.setTab('objects'); }`);
+      await page.fill('input[placeholder="Find placed objects…"]', 'upper_patrol');
+      assert.equal(await page.locator('[data-object]').count(), 1);
+      await page.locator('[data-object]').click();
+      assert.deepEqual(await ED(`(ed) => [ed.layer, ed.selectedEntity().name, ed.map.cx, ed.map.cz]`), [1, 'upper_patrol', 22, 26]);
+      await page.locator('[data-object]').click({ modifiers: ['Shift'] });
+      assert.equal(await ED(`(ed) => ed.sel.ents.size`), 0);
+      await page.fill('input[placeholder="Find placed objects…"]', 'watch');
+      await page.locator('[data-object]').dblclick();
+      assert.equal(await ED(`(ed) => ed.selectedEntity().name`), 'upper_patrol');
+      await page.selectOption('[aria-label="Object storey"]', 'current');
+      await ED(`(ed) => ed.setLayer(0)`);
+      assert.equal(await page.locator('[data-object]').count(), 0);
+      await page.selectOption('[aria-label="Object storey"]', 'all');
+      await page.fill('input[placeholder="Find placed objects…"]', 'ai-melee');
+      assert.ok(await page.locator('[data-object]').count() > 0);
+      await ED(`(ed) => { ed.setLayer(1); ed.setTab('build'); }`);
+    });
+    await test('Patrol inspector: coordinates, waits, insert/reorder/reverse/remove and undo', async () => {
+      await ED(`(ed) => { const e = ed.level.entities.find((e) => e.name === 'upper_patrol'); ed.selectEntity(e.id); e.path = [[20,24],[28,32,2]]; ed.commit('patrol'); }`);
+      await page.fill('[aria-label="Waypoint 1 X"]', '21.25'); await page.keyboard.press('Tab');
+      await page.fill('[aria-label="Waypoint 1 Wait (s)"]', '3.5'); await page.keyboard.press('Tab');
+      assert.deepEqual(await ED(`(ed) => ed.selectedEntity().path[0]`), [21.25,24,3.5]);
+      await page.locator('[data-waypoint="0"] button[title="Insert waypoint after"]').click();
+      assert.deepEqual(await ED(`(ed) => ed.selectedEntity().path[1]`), [24.625,28,3.5]);
+      await page.locator('[data-waypoint="0"] button[title="Move waypoint later"]').click();
+      assert.equal(await ED(`(ed) => ed.selectedEntity().path[1][0]`), 21.25);
+      await page.getByRole('button', { name: 'Reverse route', exact: true }).click();
+      assert.equal(await ED(`(ed) => ed.selectedEntity().path[0][0]`), 28);
+      await page.locator('[data-waypoint="0"] button[title="Remove waypoint"]').click();
+      assert.equal(await ED(`(ed) => ed.selectedEntity().path.length`), 2);
+      await ED(`(ed) => ed.undo()`); assert.equal(await ED(`(ed) => ed.selectedEntity().path.length`), 3);
+      await ED(`(ed) => ed.redo()`); assert.equal(await ED(`(ed) => ed.selectedEntity().path.length`), 2);
+      await shot('patrol-edit');
+    });
+    await test('Placement grid changes entity and waypoint snapping; snap-off retains free placement', async () => {
+      await ED(`(ed) => { ed.setLayer(0); ed.map.fit(ed.level); ed.setTool('entity'); ed.brush.entity = 'crate'; }`);
+      await page.selectOption('#snap-step', '2'); await page.waitForTimeout(150);
+      let p = await scr(23.2, 25.2); await page.mouse.click(...p);
+      assert.deepEqual(await ED(`(ed) => [ed.selectedEntity().x, ed.selectedEntity().z]`), [24,26]);
+      await ED(`(ed) => { const e = ed.level.entities.find((e) => e.name === 'upper_patrol'); ed.selectEntity(e.id); ed.setTool('path'); }`);
+      p = await scr(23.2, 25.2); await page.mouse.click(...p);
+      assert.deepEqual(await ED(`(ed) => ed.selectedEntity().path.at(-1)`), [24,26]);
+      await page.uncheck('#snap');
+      await ED(`(ed) => { ed.setTool('entity'); ed.brush.entity = 'crate'; ed.map.cx = 24; ed.map.cz = 24; ed.map.zoom = 10; ed.map.draw(); }`);
+      p = await scr(18.2, 20.2); await page.mouse.click(...p);
+      const xy = await ED(`(ed) => [ed.selectedEntity().x, ed.selectedEntity().z]`);
+      assert.ok(Math.abs(xy[0] - 18.2) < 0.15 && Math.abs(xy[1] - 20.2) < 0.15, JSON.stringify(xy));
+      await page.check('#snap'); await page.selectOption('#snap-step', '0.5'); await page.focus('#c2d');
+    });
     await test('New → empty level; Room tool drag builds floor, ceiling and wall ring', async () => {
       await ED(`(ed) => { ed.dirty = false; ed.setLevel(JSON.parse(JSON.stringify(ed.level)), ''); }`); await ED(`(ed) => { const lv = ed.level; lv.entities = []; for (const l of lv.layers) { l.cells = {}; l.edges = {}; } lv.layers.length = 1; ed.hist = []; ed.hi = -1; ed.commit('clear', { force: true }); ed.map.cx = 40; ed.map.cz = 40; ed.map.zoom = 10; ed.map.draw(); }`);
       await page.keyboard.press('KeyR'); const a = await scr(4 * C + 2, 4 * C + 2), b = await scr(8 * C + 2, 6 * C + 2);
