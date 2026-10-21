@@ -1746,6 +1746,12 @@
       "status": "done"
     },
     {
+      "id": "M7-23",
+      "milestone": "M7",
+      "title": "Three advanced full coding workshops: reactive GLSL game, Node-backed web game and Rust/WASM arcade export",
+      "status": "done"
+    },
+    {
       "id": "M8-01",
       "milestone": "M8",
       "title": ".dmg packaging + notarisation notes",

@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 269/282 tasks (95%)** · updated 2026-10-21
+**Overall: 270/283 tasks (95%)** · updated 2026-10-21
 
 | Milestone | Progress |
 |---|---|
@@ -14,7 +14,7 @@
 | M4 Export | 8/11 (73%) |
 | M5 Rust/WASM | 9/9 (100%) |
 | M6 Library | 51/51 (100%) |
-| M7 Docs | 22/22 (100%) |
+| M7 Docs | 23/23 (100%) |
 | M8 Polish & portability | 17/22 (77%) |
 | M9 Desktop apps | 16/16 (100%) |
 | M10 Construct-style editor | 35/35 (100%) |
@@ -221,6 +221,7 @@ _manual, guides, tutorials, in-editor docs_
 - [x] **M7-20** Organize manual output into folders and rebuild only changed files
 - [x] **M7-21** Full playable 2D Platformer and 3D Platformer tutorials
 - [x] **M7-22** Two code-first full game tutorials with CodeMirror explanations, complete JavaScript and downloadable working project sources
+- [x] **M7-23** Three advanced full coding workshops: reactive GLSL game, Node-backed web game and Rust/WASM arcade export
 
 ## M8 — Polish & portability
 _dmg, CI, Windows, Linux, perf_

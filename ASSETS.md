@@ -163,3 +163,7 @@ M6-51: Night Watch investigator/officer walk frames now register the head to one
 `tools/examples/dungeon-two-floors/game.mjs` reuses Nord's own original RetroPaxDungeons tile/hero/rat/gnoll/item PNG sheets unchanged as project custom sprites. It copies no Shattered Pixel Dungeon art. GPL rules/source attribution is contained in the example's LICENSE.md / SOURCE.md; original art remains Crowelian 2026 + Sonnet.
 
 `tools/examples/tank-patrol/assets/` contains eight unchanged native PNGs manually copied from `TEMP/ART/kenney_top-down-tanks-remastered/PNG/Default size/`: blue/red/green tank, grass, sand, wooden crate, metal barricade and bullet. `assets/KENNEY-LICENSE.md` preserves the full CC0 notice verbatim. No Nintendo/Battle City content. These custom sprites are available through Project pack entries in the 2D editor; no raster art was generated or altered.
+
+## Advanced coding tutorials (T35–T37)
+
+Prism Relay reuses Crystal Relay/platformer3d art/audio and adds original procedural GLSL colour patterns; no new external artwork. Circuit Vault draws its original interface with HTML/CSS only. Orbital Salvage draws original geometric stars/ship/rocks/cargo through macroquad and uses its bundled default font, with no imported art/audio. `docs/screenshots/ed-advanced-*.png` are captures from the real browser samples/export, not generated concept art.

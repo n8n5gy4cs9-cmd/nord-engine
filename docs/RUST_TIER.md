@@ -51,3 +51,7 @@ Units: pixels, y down, degrees; physics runs in metres at 32 px/m. Collider offs
 
 ## Bevy template (optional, M8-06)
 `rust-bevy-game` (hub / `nord new -t rust-bevy-game`) is a `wasm-app` project whose `src/main.rs` is a slim Bevy app (WebGL2, canvas `#the_canvas_id`). It uses the same `nord build-rust` / `nord export --target web-wasm-app` path as the egui template. Bevy has its own ECS and does not read Nord scenes; prefer `rust-2d-game` for small games.
+
+## Full direct-macroquad coding workshop
+
+T37 Orbital Salvage (`examples/rust-salvage`) demonstrates a complete direct macroquad game with a separate, renderer-free `sim.rs`, deterministic rule tests, aspect-preserving viewport, dash/shield, collision grace, timed cargo, pause/retry and normal web-wasm-game export. Full source and setup/path instructions are in the manual; a source zip is published with it. It does not consume a Nord scene JSON: use the normal Registry/Script path above when scene-authored entities are desired.

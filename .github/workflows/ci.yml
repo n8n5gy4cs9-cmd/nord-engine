@@ -123,6 +123,14 @@ jobs:
           node tools/creator-games-test.mjs
       - name: Full coding workshop games
         run: node tools/code-workshops-test.mjs --manual
+      - name: Advanced shader, Node and WASM workshops
+        run: |
+          node --test tools/advanced-workshops.test.mjs
+          rustc --test examples/rust-salvage/src/sim.rs -o /tmp/salvage-tests
+          /tmp/salvage-tests
+          rustup target add wasm32-unknown-unknown
+          target/debug/nord build examples/rust-salvage --target web-wasm-game --out target/e2e/advanced-salvage
+          NORD_SALVAGE_EXPORT="$PWD/target/e2e/advanced-salvage" node tools/advanced-workshops-test.mjs --manual
   # M11: the editor in the browser (wasm) and on a server. Desktop jobs above are unaffected by it.
   web-editor:
     runs-on: ubuntu-latest

@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>T36 Circuit Vault — a web game with a real Node server — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="tutorials.html" class="active" aria-current="page">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Tutorials</div><a href="tutorials.html">Learn by building</a><a href="tut-t01-hello-nord.html">T01 Hello Nord</a><a href="tut-t02-sprite-movement.html">T02 Sprite &amp; movement</a><a href="tut-t03-first-script.html">T03 Your first script</a><a href="tut-t04-platformer.html">T04 Platformer from template</a><a href="tut-t05-physics.html">T05 Physics &amp; collisions</a><a href="tut-t06-tilemaps.html">T06 Tilemaps</a><a href="tut-t07-animation-juice.html">T07 Animation &amp; juice</a><a href="tut-t08-ui-hud.html">T08 UI &amp; HUD</a><a href="tut-t09-audio.html">T09 Audio</a><a href="tut-t10-3d-scene.html">T10 3D scene &amp; camera</a><a href="tut-t11-3d-physics.html">T11 3D physics (FPS)</a><a href="tut-t12-enemy-ai.html">T12 Enemy AI</a><a href="tut-t13-save-load.html">T13 Save &amp; load</a><a href="tut-t14-export-host.html">T14 Export to web &amp; host it</a><a href="tut-t15-mac-app.html">T15 Mac app</a><a href="tut-t16-rust-game.html">T16 Rust/WASM game</a><a href="tut-t17-rust-egui-app.html">T17 Rust egui app</a><a href="tut-t18-library-snippets.html">T18 Writing library snippets</a><a href="tut-t19-notepaint.html">T19 Build notepaint, from a blank folder</a><a href="tut-t20-star-not.html">T20 Build Star-Not, a complete small space adventure</a><a href="tut-t21-project-design.html">T21 Plan a bigger Nord project</a><a href="tut-t22-shader-terrain.html">T22 Put a terrain shader in a Nord app</a><a href="tut-t23-light-shadows.html">T23 2D lights and real shadows</a><a href="tut-t24-event-sheet-platformer.html">T24 A platformer from events</a><a href="tut-t25-topdown-shooter.html">T25 A top-down shooter from events</a><a href="tut-t26-menus-languages.html">T26 Menus and two languages</a><a href="tut-t27-fps-level.html">T27 Build your first FPS level</a><a href="tut-t28-machine-workshop.html">T28 Machine Workshop — build a gravity puzzle in 2D Level</a><a href="tut-t29-dungeon-two-floors.html">T29 Two Floors — edit a Shattered Pixel Dungeon adaptation</a><a href="tut-t30-tank-patrol.html">T30 Tiny Tank Patrol — build a top-down tank arena</a><a href="tut-t31-full-2d-platformer.html">T31 Full game workshop — Coin Canyon (2D)</a><a href="tut-t32-full-3d-platformer.html">T32 Full game workshop — Sunset Gems (3D)</a><a href="tut-t33-code-coin-rush.html">T33 Code a full 2D game — Coin Rush</a><a href="tut-t34-code-crystal-relay.html">T34 Code a full 3D game — Crystal Relay</a><a href="tut-t35-advanced-prism-shaders.html">T35 Prism Relay — code reactive GLSL game materials</a><a href="tut-t36-advanced-node-vault.html" class="cur" aria-current="page">T36 Circuit Vault — a web game with a real Node server</a><a href="tut-t37-advanced-rust-wasm.html">T37 Orbital Salvage — code Rust gameplay and export real WASM</a></nav><main id="content"><div class="crumb">Tutorials / Nord Engine</div><h1>T36 Circuit Vault — a web game with a real Node server</h1>
+<p>Build <strong>Circuit Vault</strong>, a neon memory-heist game. Watch a circuit light up, repeat its numbered pads and unlock six stages. A mistake or late input spends one of three lives. Completing stages earns a speed-sensitive score and opening the vault puts your pilot on a local top-ten leaderboard.</p>
+<p>The browser <strong>really calls a Node server</strong>. The server stores each run, checks inputs, advances stages and calculates scores. This is not a simulated fetch returning a hard-coded response. There are no npm packages: Node&#39;s built-in HTTP, crypto, file and path modules are enough.</p>
+<p>Allow two hours. You need Node 22 or later and Nord. <a href="../../assets/downloads/circuit-vault-source.zip">Download the full source project</a>, extract it, and open nord.project.json in Nord. The HTML tier has no scene hierarchy to assemble; the files are the app. You will edit app.js, rules.mjs, server.mjs and style.css in Nord&#39;s code editor.</p>
+<figure class="shot"><img src="../../assets/screenshots/ed-advanced-circuit-vault.png" alt="Circuit Vault completed through real API calls, with the local leaderboard" loading="lazy"><figcaption>Six stages, lives, scores and leaderboard entries come from the Node process. The browser owns the pad animation and interaction state.</figcaption></figure><h2 id="1-run-both-halves-and-understand-their-jobs">1. Run both halves and understand their jobs<a class="anchor" href="#1-run-both-halves-and-understand-their-jobs">#</a></h2>
+<p>From the extracted project folder:</p>
+<pre class="code" data-lang="sh"><code>node --version
+node server.mjs</code></pre>
+<p>Leave that terminal running. Open <code>http://127.0.0.1:4381</code> in a browser. Enter a pilot name and choose <strong>New heist</strong>. Watch the first pad flash, then press that numbered pad. The sequence grows by one pad each stage. Replay sequence shows it again; its animation does not stop the server&#39;s deadline.</p>
+<p>You can also press Play in Nord while Node stays running. Nord serves the client on its own local origin, and the API field points at <code>http://127.0.0.1:4381</code>. This intentionally uses two local servers: Nord previews your files, while Node runs your backend. The browser enforces CORS between those origins; step 7 explains the permission.</p>
+<p>If you change PORT when starting Node, change the API field too:</p>
+<pre class="code" data-lang="sh"><code>PORT=4382 node server.mjs</code></pre>
+<p>Stop Node with Ctrl+C. A static host cannot execute server.mjs. The game needs the Node process to start or submit a run; exported frontend files alone are not an offline substitute for its API.</p>
+<p><strong>Checkpoint:</strong> a real request to <code>/api/start</code> appears in the browser Network panel when you start a heist. Stop Node and try again: the app should show a connection error rather than pretend to start.</p>
+<h2 id="2-define-a-small-http-contract">2. Define a small HTTP contract<a class="anchor" href="#2-define-a-small-http-contract">#</a></h2>
+<p>Use these routes:</p>
+<table>
+<thead>
+<tr>
+<th>Method/path</th>
+<th>Request</th>
+<th>Response</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>POST <code>/api/start</code></td>
+<td><code>{ &quot;name&quot;: &quot;Pilot&quot; }</code></td>
+<td>Run id and initial public state</td>
+</tr>
+<tr>
+<td>POST <code>/api/step</code></td>
+<td><code>{ &quot;id&quot;: &quot;…&quot;, &quot;tile&quot;: 0 }</code></td>
+<td>Updated public state</td>
+</tr>
+<tr>
+<td>GET <code>/api/board</code></td>
+<td>No body</td>
+<td>Sorted top-ten entries</td>
+</tr>
+</tbody></table>
+<p>Tile indices are zero through three even though the visible labels are one through four. This is a common boundary worth writing down: the button&#39;s data-tile holds the index; its text gives the player-friendly number.</p>
+<p>The client sends an input, <strong>not a claimed score</strong>. The server looks up the run and calculates the result. A request such as <code>{score:999999}</code> has no scoring meaning. However, this remains a local teaching game: the displayed sequence is necessarily available to the client, so an automated client can play perfectly. Server-owned rules are useful, but they do not make this demonstration cheat-proof or a production multiplayer service.</p>
+<p><strong>Exercise:</strong> before coding, predict which side should own the flashing animation, random sequence, input cursor, life counter and error message. The first and last belong to the browser; the run rules belong to Node.</p>
+<h2 id="3-write-rules-without-http-or-dom">3. Write rules without HTTP or DOM<a class="anchor" href="#3-write-rules-without-http-or-dom">#</a></h2>
+<p>Open rules.mjs. Start with the run factory:</p>
+<pre class="code" data-lang="js"><code>export function newRun(random = Math.random, now = Date.now()) {
+  return {
+    sequence: Array.from({ length: 6 }, () =&gt; Math.floor(random() * 4)),
+    round: 1, cursor: 0, lives: 3, score: 0,
+    done: false, won: false, deadline: now + 15000,
+  };
+}</code></pre>
+<p>A factory returns fresh state rather than sharing a global run between players. <code>Array.from</code> builds six indices. <code>Math.floor(random()*4)</code> yields 0, 1, 2 or 3. The optional random/now parameters are <strong>test seams</strong>: tests can supply deterministic values instead of waiting or relying on luck.</p>
+<p>The <code>step</code> function takes a run and one input. It returns immediately for a finished run. A wrong or expired input spends a life, resets the cursor and gives another fifteen-second input deadline. Three mistakes finish a loss. Correct input advances cursor; finishing a stage awards points and grows the stage, or wins after stage six.</p>
+<pre class="code" data-lang="js"><code>if (run.done) return publicRun(run);
+if (now &gt; run.deadline || tile !== run.sequence[run.cursor]) {
+  run.lives--;
+  run.cursor = 0;
+  run.deadline = now + 15000;
+  if (run.lives === 0) run.done = true;
+  return publicRun(run);
+}</code></pre>
+<p>The deadline is checked <strong>when an input arrives</strong>. This server does not run a background timer that changes lives while nobody is clicking. At exactly the deadline the input is still allowed; after it, the next input consumes a life. A correct input refreshes the allowance for the next one.</p>
+<p><code>publicRun</code> returns a copy with only the current stage&#39;s sequence prefix. The full six-item plan stays on the server until its later stages. A repeated request after victory cannot award the win twice because done is checked first.</p>
+<p><strong>Checkpoint:</strong> read the pure tests in the engine&#39;s tools/advanced-workshops.test.mjs if working from a checkout. They finish all stages with a fixed random source and verify wrong/expired input, lives and repeated finish. The project archive contains the complete playable rules; no test-only shortcut is needed in the game.</p>
+<h2 id="4-make-a-real-server-and-store-sessions">4. Make a real server and store sessions<a class="anchor" href="#4-make-a-real-server-and-store-sessions">#</a></h2>
+<p>Open server.mjs. The server factory owns two collections:</p>
+<pre class="code" data-lang="js"><code>const runs = new Map(), board = [];</code></pre>
+<p>A Map associates an opaque run id with its state. <code>randomUUID()</code> makes the id; the client keeps it and sends it with later inputs. The board stores only finished names/scores and is sorted descending, then capped at ten.</p>
+<p>Node&#39;s request is a readable stream. The server reads it with <code>for await</code>, limits it to 2 KB and parses JSON inside a try/catch. It rejects invalid JSON, non-object bodies, missing runs and out-of-range tile indices. These checks happen before calling the game rules.</p>
+<pre class="code" data-lang="js"><code>if (!Number.isInteger(body.tile) || body.tile &lt; 0 || body.tile &gt; 3) {
+  return reply(400, { error: 'Tile must be 0–3' });
+}</code></pre>
+<p><code>reply</code> sets a JSON content type and no-store before ending the response. Every branch returns after replying, so the request is not accidentally answered twice. A finish transition checks wasDone before inserting a leaderboard row, preserving one entry even if the browser retries an already-finished input.</p>
+<p>The server limits active runs to 500 and removes abandoned runs older than thirty minutes when starting another run. This bounds the teaching process&#39;s memory. It is not durable storage: stopping Node forgets runs and the board. Do not promise users that their records survive a process restart.</p>
+<p><strong>Checkpoint:</strong> open <code>/api/board</code> directly; it returns JSON. Request <code>/server.mjs</code>; it returns 404, because the small static-file allowlist exposes only index.html, app.js and style.css.</p>
+<h2 id="5-call-the-api-from-the-browser">5. Call the API from the browser<a class="anchor" href="#5-call-the-api-from-the-browser">#</a></h2>
+<p>The HTML-tier entry point exports <code>mount(root)</code>. Nord&#39;s generated index.html imports and calls it. This is different from NordScript: there is no entity attachment. mount builds the DOM once and wires handlers.</p>
+<p>The API helper uses fetch:</p>
+<pre class="code" data-lang="js"><code>const response = await fetch(new URL(route, base), {
+  method: body ? 'POST' : 'GET',
+  headers: body ? { 'content-type': 'application/json' } : {},
+  ...(body ? { body: JSON.stringify(body) } : {}),
+  signal: AbortSignal.timeout(5000),
+});
+const data = await response.json();
+if (!response.ok) throw Error(data.error || `HTTP ${response.status}`);</code></pre>
+<p><code>async</code> makes a function return a Promise; <code>await</code> suspends that function while the browser handles other work. It does not freeze rendering. JSON.stringify turns an object into the request text; response.json parses the reply. A 400/404 reply does not automatically reject fetch, so checking response.ok is essential.</p>
+<p>The timeout prevents a dead server from leaving buttons disabled forever. Errors become a visible status message. They are not converted into fake wins or local scores.</p>
+<p><strong>Checkpoint:</strong> edit the API field to an unused local port and start a heist. You should get the connection message, then be able to correct the address and try again. For intentional connection-failure tests a browser Network error is expected.</p>
+<h2 id="6-prevent-racing-clicks-and-explain-animation">6. Prevent racing clicks and explain animation<a class="anchor" href="#6-prevent-racing-clicks-and-explain-animation">#</a></h2>
+<p>The client keeps busy and replaying flags. controls disables input while a request or sequence animation is in progress. Each handler also checks those flags, so rapidly clicking cannot enqueue multiple inputs before the previous response is applied.</p>
+<pre class="code" data-lang="js"><code>if (busy || replaying || !run || run.done) return;
+busy = true;
+controls();</code></pre>
+<p>After a request the client replaces its displayed run with the server response. It does not increment the score optimistically. The finally block clears busy even after an error, which is why retry remains possible.</p>
+<p>Replay loops through the current sequence, adds the lit CSS class, waits 350 ms, removes it, then waits another 150 ms. The helper delay returns a Promise wrapping setTimeout. The generation token marks an animation&#39;s run, and starting a new heist increments it. The current buttons also prevent new heists while replay is running.</p>
+<p>The leaderboard uses created li elements and <strong>textContent</strong>, not innerHTML, for pilot names. A pilot called <code>&lt;b&gt;Pilot&lt;/b&gt;</code> appears literally rather than becoming markup. innerHTML is used only for the fixed, developer-authored interface template.</p>
+<p><strong>Checkpoint:</strong> double-click a pad and compare the cursor with the intended single input. Then win a run under a name containing angle brackets; inspect the displayed text. It should not create HTML elements.</p>
+<h2 id="7-understand-local-cors-and-hosting-boundaries">7. Understand local CORS and hosting boundaries<a class="anchor" href="#7-understand-local-cors-and-hosting-boundaries">#</a></h2>
+<p>When Nord serves the frontend and Node serves the API, their ports differ. Browsers treat that as different origins. The JSON POST triggers a preflight OPTIONS request. The server accepts HTTP origins on localhost/127.0.0.1, reflects the accepted origin, and allows the JSON content header and required methods.</p>
+<p>It listens on <strong>127.0.0.1</strong>, so it is a local development service. It rejects arbitrary web origins; it does not use a wildcard CORS policy. This is enough for your local Nord/browser workflow, not a substitute for authentication, TLS, persistence, request throttling or deployment design.</p>
+<p>For public hosting, configure one real HTTPS origin, deploy the backend, and change the frontend endpoint. An HTTPS page cannot generally call this HTTP loopback service because of browser policies. Do not upload server.mjs to static hosting and expect it to execute.</p>
+<p><strong>Checkpoint:</strong> Nord Play can make a real call while Node runs. The same game served directly by Node also works. Opening index.html with file:// is not the supported workflow: run one of the HTTP servers.</p>
+<h2 id="8-export-and-test-the-actual-frontend-backend-pair">8. Export and test the actual frontend/backend pair<a class="anchor" href="#8-export-and-test-the-actual-frontend-backend-pair">#</a></h2>
+<p>From the project parent folder:</p>
+<pre class="code" data-lang="sh"><code>nord check circuit-vault
+nord build circuit-vault --target html --out vault-web --zip
+node circuit-vault/server.mjs --root vault-web</code></pre>
+<p>The --root option makes the original Node process serve the exported frontend files while using its own rules module. Open <code>http://127.0.0.1:4381</code>, start a new heist and complete all six stages. The HTML export also copies the project source files, but static hosting still cannot run their server entry point; the command above is the explicit backend step.</p>
+<p>Test these cases: a wrong first pad, an input after fifteen seconds, replay mid-stage, full victory, repeated input after victory, refresh/new run and a stopped/restarted server. A new server loses old run ids; the frontend should instruct you to start again.</p>
+<p><strong>Advanced extensions:</strong> persist the board to a crash-safe JSON file; add a daily seed; add client keyboard bindings; turn deadline checks into server-pushed events. Introduce each feature with an explicit API contract. If adding retry-on-network-error, also add an input sequence number/idempotency rule so an uncertain repeated request cannot count twice.</p>
+<h2 id="complete-source">Complete source<a class="anchor" href="#complete-source">#</a></h2>
+<p>All browser, stylesheet, Node and rule-module source is included below. The <a href="../../assets/downloads/circuit-vault-source.zip">complete project zip</a> includes these files, Nord metadata, generated HTML and licence. Start the source with Node as described above; use Nord&#39;s HTML-tier Play/code editor to learn the frontend workflow.</p>
+<!-- GENERATED GAME SOURCE: regenerate with node tools/build-code-workshops.mjs --><h3 id="app-js">app.js<a class="anchor" href="#app-js">#</a></h3>
+<pre class="code" data-lang="js"><code>export function mount(root) {
+root.innerHTML = `&lt;link rel=&quot;stylesheet&quot; href=&quot;style.css&quot;&gt;&lt;main&gt;&lt;h1&gt;CIRCUIT VAULT&lt;/h1&gt;
+&lt;p&gt;Memorise the numbered circuit. Repeat it to unlock six vault stages.&lt;/p&gt;
+&lt;label&gt;Pilot &lt;input id=&quot;pilot&quot; maxlength=&quot;20&quot; value=&quot;Pilot&quot;&gt;&lt;/label&gt;
+&lt;label&gt;API &lt;input id=&quot;api&quot; value=&quot;http://127.0.0.1:4381&quot;&gt;&lt;/label&gt;
+&lt;button id=&quot;start&quot;&gt;New heist&lt;/button&gt;&lt;button id=&quot;replay&quot; disabled&gt;Replay sequence&lt;/button&gt;
+&lt;p id=&quot;status&quot; role=&quot;status&quot;&gt;Start the local Node server, then choose New heist.&lt;/p&gt;
+&lt;div id=&quot;tiles&quot;&gt;${['CYAN','PINK','GOLD','GREEN'].map((c,i)=&gt;`&lt;button data-tile=&quot;${i}&quot;&gt;${i+1}&lt;small&gt;${c}&lt;/small&gt;&lt;/button&gt;`).join('')}&lt;/div&gt;
+&lt;h2&gt;Local leaderboard&lt;/h2&gt;&lt;ol id=&quot;board&quot;&gt;&lt;/ol&gt;&lt;p&gt;Node remembers the top ten until you stop the process.&lt;/p&gt;&lt;/main&gt;`;
+const $ = s =&gt; root.querySelector(s);
+let id, run, busy = false, generation = 0, replaying = false;
+const status = text =&gt; { $('#status').textContent = text; };
+const delay = ms =&gt; new Promise(resolve =&gt; setTimeout(resolve, ms));
+function controls() {
+  $('#start').disabled = busy || replaying;
+  $('#replay').disabled = busy || replaying || !run || run.done;
+  root.querySelectorAll('[data-tile]').forEach(b =&gt; b.disabled = busy || replaying || !run || run.done);
+}
+async function api(route, body) {
+  const base = new URL($('#api').value);
+  const response = await fetch(new URL(route, base), {
+    method: body ? 'POST' : 'GET', headers: body ? { 'content-type': 'application/json' } : {},
+    ...(body ? { body: JSON.stringify(body) } : {}), signal: AbortSignal.timeout(5000),
+  });
+  const data = await response.json();
+  if (!response.ok) throw Error(data.error || `HTTP ${response.status}`);
+  return data;
+}
+async function leaderboard() {
+  const { board } = await api('/api/board');$('#board').replaceChildren();
+  for (const row of board) { const li = document.createElement('li');li.textContent = `${row.name} — ${row.score}`;$('#board').append(li); }
+}
+function draw() {
+  status(run.done ? (run.won ? `VAULT OPEN! Score ${run.score}` : 'Alarm! No lives left. Start a new heist.')
+    : `Stage ${run.round}/6 | Input ${run.cursor}/${run.round} | Lives ${run.lives} | Score ${run.score}`);
+  controls();
+}
+async function replay() {
+  if (!run || run.done || replaying) return;
+  replaying = true;controls();const token = generation;
+  status('Watch the circuit…');
+  for (const tile of run.sequence) {
+    if (token !== generation) break;
+    const button = $(`[data-tile=&quot;${tile}&quot;]`);button.classList.add('lit');await delay(350);button.classList.remove('lit');await delay(150);
+  }
+  replaying = false;draw();
+}
+$('#replay').onclick = () =&gt; replay();
+$('#start').onclick = async () =&gt; {
+  if (busy || replaying) return;busy = true;controls();generation++;
+  try { const data = await api('/api/start', { name: $('#pilot').value });id = data.id;run = data.run;await leaderboard();busy = false;await replay(); }
+  catch (e) { status(`Connection failed: ${e.message}. Run node server.mjs and check the API field.`); }
+  finally { busy = false;controls(); }
+};
+for (const button of root.querySelectorAll('[data-tile]')) button.onclick = async () =&gt; {
+  if (busy || replaying || !run || run.done) return;busy = true;controls();const round = run.round;
+  try { ({ run } = await api('/api/step', { id, tile: Number(button.dataset.tile) }));draw();
+    if (run.done) await leaderboard();else if (run.round !== round) { busy = false;await replay(); }
+  } catch (e) { status(`Request failed: ${e.message}. Start a new heist if the server restarted.`); }
+  finally { busy = false;controls(); }
+};
+controls();
+
+}</code></pre>
+<details>
+<summary>Complete index.html</summary><pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;nord-app-id&quot; content=&quot;com.crowelian.circuitvault&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;&lt;title&gt;Circuit Vault — Node game workshop&lt;/title&gt;
+&lt;style&gt;html,body{margin:0;height:100%;background:#2e3440}#app{height:100vh}&lt;/style&gt;&lt;/head&gt;
+&lt;body&gt;&lt;div id=&quot;app&quot;&gt;&lt;/div&gt;
+&lt;script type=&quot;module&quot;&gt;
+import { mount } from './app.js';
+try { await mount(document.getElementById('app')); window.__nord_ready = true; } catch (e) { console.error(e); window.__nord_error = String(e); }
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</code></pre>
+</details><details>
+<summary>Complete nord.project.json</summary><pre class="code" data-lang="json"><code>{
+  &quot;format&quot;: 1,
+  &quot;name&quot;: &quot;Circuit Vault&quot;,
+  &quot;id&quot;: &quot;com.crowelian.circuitvault&quot;,
+  &quot;type&quot;: &quot;html&quot;,
+  &quot;engineVersion&quot;: &quot;0.1.0&quot;,
+  &quot;startScene&quot;: &quot;&quot;,
+  &quot;display&quot;: {
+    &quot;width&quot;: 640,
+    &quot;height&quot;: 360,
+    &quot;scale&quot;: &quot;fit&quot;,
+    &quot;pixelArt&quot;: false,
+    &quot;background&quot;: &quot;#2e3440&quot;
+  },
+  &quot;physics&quot;: {
+    &quot;engine&quot;: &quot;none&quot;,
+    &quot;gravity&quot;: [
+      0,
+      0,
+      0
+    ]
+  },
+  &quot;input&quot;: {
+    &quot;actions&quot;: {
+      &quot;left&quot;: [
+        &quot;KeyA&quot;,
+        &quot;ArrowLeft&quot;
+      ],
+      &quot;right&quot;: [
+        &quot;KeyD&quot;,
+        &quot;ArrowRight&quot;
+      ],
+      &quot;up&quot;: [
+        &quot;KeyW&quot;,
+        &quot;ArrowUp&quot;
+      ],
+      &quot;down&quot;: [
+        &quot;KeyS&quot;,
+        &quot;ArrowDown&quot;
+      ],
+      &quot;jump&quot;: [
+        &quot;Space&quot;,
+        &quot;KeyW&quot;,
+        &quot;ArrowUp&quot;
+      ],
+      &quot;fire&quot;: [
+        &quot;Space&quot;,
+        &quot;Mouse0&quot;
+      ],
+      &quot;interact&quot;: [
+        &quot;KeyE&quot;,
+        &quot;Enter&quot;
+      ]
+    }
+  },
+  &quot;plugins&quot;: [
+    &quot;ui&quot;,
+    &quot;audio&quot;
+  ],
+  &quot;ui&quot;: {
+    &quot;skin&quot;: &quot;cyber&quot;,
+    &quot;theme&quot;: &quot;nord&quot;
+  }
+}</code></pre>
+</details><details>
+<summary>Complete rules.mjs</summary><pre class="code" data-lang="js"><code>// Pure server rules. The browser never submits an arbitrary score.
+export function newRun(random = Math.random, now = Date.now()) {
+  return { sequence: Array.from({ length: 6 }, () =&gt; Math.floor(random() * 4)),
+    round: 1, cursor: 0, lives: 3, score: 0, done: false, won: false, deadline: now + 15000 };
+}
+export function publicRun(run) { return { ...run, sequence: run.sequence.slice(0, run.round) }; }
+export function step(run, tile, now = Date.now()) {
+  if (run.done) return publicRun(run);
+  if (now &gt; run.deadline || tile !== run.sequence[run.cursor]) {
+    run.lives--; run.cursor = 0; run.deadline = now + 15000;
+    if (run.lives === 0) run.done = true;
+    return publicRun(run);
+  }
+  run.cursor++;
+  if (run.cursor === run.round) {
+    run.score += run.round * 100 + Math.max(0, Math.floor((run.deadline - now) / 100));
+    run.cursor = 0;
+    if (run.round === 6) { run.done = true; run.won = true; }
+    else run.round++;
+  }
+  run.deadline = now + 15000;
+  return publicRun(run);
+}</code></pre>
+</details><details>
+<summary>Complete server.mjs</summary><pre class="code" data-lang="js"><code>import http from 'node:http';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { randomUUID } from 'node:crypto';
+import { fileURLToPath } from 'node:url';
+import { newRun, publicRun, step } from './rules.mjs';
+export function createVaultServer({ root = path.dirname(fileURLToPath(import.meta.url)), random = Math.random, clock = Date.now } = {}) {
+  const runs = new Map(), board = [];
+  return http.createServer(async (req, res) =&gt; {
+    const reply = (status, value) =&gt; { res.writeHead(status, { 'content-type': 'application/json', 'cache-control': 'no-store' });res.end(JSON.stringify(value)); };
+    // Allow Nord's loopback preview to call this local teaching server.
+    const origin = req.headers.origin;
+    if (origin) {
+      try { const u = new URL(origin); if (u.protocol !== 'http:' || !['127.0.0.1', 'localhost'].includes(u.hostname)) return reply(403, { error: 'Use a local HTTP preview' }); }
+      catch { return reply(403, { error: 'Invalid origin' }); }
+      res.setHeader('access-control-allow-origin', origin);res.setHeader('vary', 'Origin');
+      res.setHeader('access-control-allow-headers', 'content-type');res.setHeader('access-control-allow-methods', 'GET, POST, OPTIONS');
+    }
+    if (req.method === 'OPTIONS') { res.writeHead(204);res.end();return; }
+    try {
+      const url = new URL(req.url, 'http://127.0.0.1');
+      if (req.method === 'GET' &amp;&amp; url.pathname === '/api/board') return reply(200, { board });
+      if (req.method === 'POST') {
+        if (!req.headers['content-type']?.startsWith('application/json')) return reply(415, { error: 'Send JSON' });
+        let text = '';
+        for await (const chunk of req) { text += chunk; if (Buffer.byteLength(text) &gt; 2048) return reply(413, { error: 'Body too large' }); }
+        let body; try { body = JSON.parse(text); } catch { return reply(400, { error: 'Invalid JSON' }); }
+        if (!body || typeof body !== 'object' || Array.isArray(body)) return reply(400, { error: 'Send an object' });
+        if (url.pathname === '/api/start') {
+          for (const [id, r] of runs) if (clock() - r.created &gt; 30 * 60 * 1000) runs.delete(id);
+          if (runs.size &gt;= 500) return reply(429, { error: 'Server is full; try later' });
+          const id = randomUUID(), run = newRun(random, clock());
+          run.created = clock(); run.name = String(body.name ?? 'Pilot').trim().slice(0, 20) || 'Pilot';
+          runs.set(id, run); return reply(200, { id, run: publicRun(run) });
+        }
+        if (url.pathname === '/api/step') {
+          const run = runs.get(body.id);
+          if (!run) return reply(404, { error: 'Run expired; start again' });
+          if (!Number.isInteger(body.tile) || body.tile &lt; 0 || body.tile &gt; 3) return reply(400, { error: 'Tile must be 0–3' });
+          const wasDone = run.done, result = step(run, body.tile, clock());
+          if (!wasDone &amp;&amp; run.won) { board.push({ name: run.name, score: run.score });board.sort((a,b) =&gt; b.score-a.score);board.length = Math.min(10, board.length); }
+          return reply(200, { run: result });
+        }
+      }
+      // Only client files are public; server source and arbitrary paths are not served.
+      const files = { '/': ['index.html', 'text/html'], '/index.html': ['index.html', 'text/html'], '/app.js': ['app.js', 'text/javascript'], '/style.css': ['style.css', 'text/css'] };
+      const file = files[url.pathname];
+      if (req.method !== 'GET' || !file) return reply(404, { error: 'Not found' });
+      const bytes = await fs.readFile(path.join(root, file[0]));
+      res.writeHead(200, { 'content-type': file[1], 'cache-control': 'no-store' });res.end(bytes);
+    } catch { if (!res.headersSent) reply(500, { error: 'Server could not handle the request' });else res.end(); }
+  });
+}
+if (process.argv[1] &amp;&amp; path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  const rootIndex = process.argv.indexOf('--root');
+  const root = rootIndex &gt;= 0 ? path.resolve(process.argv[rootIndex + 1]) : undefined;
+  const port = Number(process.env.PORT || 4381);
+  createVaultServer({ root }).listen(port, '127.0.0.1', () =&gt; console.log(`Circuit Vault: http://127.0.0.1:${port}`));
+}</code></pre>
+</details><details>
+<summary>Complete style.css</summary><pre class="code" data-lang="css"><code>body{margin:0;background:#090e20;color:#dce8ff;font:17px system-ui}main{max-width:820px;margin:3vh auto;padding:24px;background:#111b34;border:1px solid #365078;border-radius:20px}h1{letter-spacing:.15em;color:#7df4ff}button,input{font:inherit;padding:10px;border-radius:8px;border:1px solid #677eaa;margin:6px}button{cursor:pointer;background:#263c65;color:white}button:disabled{opacity:.45;cursor:default}label{display:inline-block}#api{width:230px}#tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px}#tiles button{height:110px;font-size:36px;background:#135363}#tiles button:nth-child(2){background:#7d2e66}#tiles button:nth-child(3){background:#81641a}#tiles button:nth-child(4){background:#286042}small{display:block;font-size:13px}#tiles button.lit{opacity:1;filter:brightness(2);box-shadow:0 0 22px #acf}#status{min-height:48px;white-space:pre-wrap}ol{min-height:24px}</code></pre>
+</details><div class="pager"><a href="tut-t35-advanced-prism-shaders.html"><small>← Previous</small>T35 Prism Relay — code reactive GLSL game materials</a><a href="tut-t37-advanced-rust-wasm.html"><small>Next →</small>T37 Orbital Salvage — code Rust gameplay and export real WASM</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-run-both-halves-and-understand-their-jobs">1. Run both halves and understand their jobs </a><a href="#2-define-a-small-http-contract">2. Define a small HTTP contract </a><a href="#3-write-rules-without-http-or-dom">3. Write rules without HTTP or DOM </a><a href="#4-make-a-real-server-and-store-sessions">4. Make a real server and store sessions </a><a href="#5-call-the-api-from-the-browser">5. Call the API from the browser </a><a href="#6-prevent-racing-clicks-and-explain-animation">6. Prevent racing clicks and explain animation </a><a href="#7-understand-local-cors-and-hosting-boundaries">7. Understand local CORS and hosting boundaries </a><a href="#8-export-and-test-the-actual-frontend-backend-pair">8. Export and test the actual frontend/backend pair </a><a href="#complete-source">Complete source </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

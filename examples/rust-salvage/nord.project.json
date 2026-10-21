@@ -1,0 +1,27 @@
+{
+  "format": 1,
+  "name": "Orbital Salvage \u2014 Rust/WASM workshop",
+  "id": "com.crowelian.rustsalvage",
+  "type": "wasm-game",
+  "engineVersion": "0.1.0",
+  "startScene": "",
+  "display": {
+    "width": 800,
+    "height": 600,
+    "scale": "fit",
+    "pixelArt": false,
+    "background": "#000000"
+  },
+  "physics": {
+    "engine": "none",
+    "gravity": [
+      0,
+      0,
+      0
+    ]
+  },
+  "input": {
+    "actions": {}
+  },
+  "plugins": []
+}

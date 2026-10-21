@@ -1,0 +1,2721 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>T37 Orbital Salvage — code Rust gameplay and export real WASM — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="tutorials.html" class="active" aria-current="page">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Tutorials</div><a href="tutorials.html">Learn by building</a><a href="tut-t01-hello-nord.html">T01 Hello Nord</a><a href="tut-t02-sprite-movement.html">T02 Sprite &amp; movement</a><a href="tut-t03-first-script.html">T03 Your first script</a><a href="tut-t04-platformer.html">T04 Platformer from template</a><a href="tut-t05-physics.html">T05 Physics &amp; collisions</a><a href="tut-t06-tilemaps.html">T06 Tilemaps</a><a href="tut-t07-animation-juice.html">T07 Animation &amp; juice</a><a href="tut-t08-ui-hud.html">T08 UI &amp; HUD</a><a href="tut-t09-audio.html">T09 Audio</a><a href="tut-t10-3d-scene.html">T10 3D scene &amp; camera</a><a href="tut-t11-3d-physics.html">T11 3D physics (FPS)</a><a href="tut-t12-enemy-ai.html">T12 Enemy AI</a><a href="tut-t13-save-load.html">T13 Save &amp; load</a><a href="tut-t14-export-host.html">T14 Export to web &amp; host it</a><a href="tut-t15-mac-app.html">T15 Mac app</a><a href="tut-t16-rust-game.html">T16 Rust/WASM game</a><a href="tut-t17-rust-egui-app.html">T17 Rust egui app</a><a href="tut-t18-library-snippets.html">T18 Writing library snippets</a><a href="tut-t19-notepaint.html">T19 Build notepaint, from a blank folder</a><a href="tut-t20-star-not.html">T20 Build Star-Not, a complete small space adventure</a><a href="tut-t21-project-design.html">T21 Plan a bigger Nord project</a><a href="tut-t22-shader-terrain.html">T22 Put a terrain shader in a Nord app</a><a href="tut-t23-light-shadows.html">T23 2D lights and real shadows</a><a href="tut-t24-event-sheet-platformer.html">T24 A platformer from events</a><a href="tut-t25-topdown-shooter.html">T25 A top-down shooter from events</a><a href="tut-t26-menus-languages.html">T26 Menus and two languages</a><a href="tut-t27-fps-level.html">T27 Build your first FPS level</a><a href="tut-t28-machine-workshop.html">T28 Machine Workshop — build a gravity puzzle in 2D Level</a><a href="tut-t29-dungeon-two-floors.html">T29 Two Floors — edit a Shattered Pixel Dungeon adaptation</a><a href="tut-t30-tank-patrol.html">T30 Tiny Tank Patrol — build a top-down tank arena</a><a href="tut-t31-full-2d-platformer.html">T31 Full game workshop — Coin Canyon (2D)</a><a href="tut-t32-full-3d-platformer.html">T32 Full game workshop — Sunset Gems (3D)</a><a href="tut-t33-code-coin-rush.html">T33 Code a full 2D game — Coin Rush</a><a href="tut-t34-code-crystal-relay.html">T34 Code a full 3D game — Crystal Relay</a><a href="tut-t35-advanced-prism-shaders.html">T35 Prism Relay — code reactive GLSL game materials</a><a href="tut-t36-advanced-node-vault.html">T36 Circuit Vault — a web game with a real Node server</a><a href="tut-t37-advanced-rust-wasm.html" class="cur" aria-current="page">T37 Orbital Salvage — code Rust gameplay and export real WASM</a></nav><main id="content"><div class="crumb">Tutorials / Nord Engine</div><h1>T37 Orbital Salvage — code Rust gameplay and export real WASM</h1>
+<p>Build <strong>Orbital Salvage</strong>, a Rust arcade game that runs in a browser through WebAssembly. Fly through bouncing asteroids, collect ten gold cargo cores and preserve three hull points before sixty seconds expires. Space performs a short dash with a brief shield and a two-second cooldown. Cores add two seconds; P pauses; R restarts.</p>
+<p>You will separate the game rules from rendering, write deterministic tests, use macroquad through Nord&#39;s Rust runtime dependency, then build an actual .wasm web game. This is compiled Rust, not JavaScript with a WASM-labelled button.</p>
+<p>Allow two hours plus first-build time. You need Rust/Cargo and the wasm32 target. No npm packages or wasm-bindgen CLI are needed for this macroquad game. <a href="../../assets/downloads/rust-salvage-source.zip">Download the complete Rust source project</a>. No external art/audio files are needed: the renderer draws original geometric shapes.</p>
+<figure class="shot"><img src="../../assets/screenshots/ed-advanced-rust-salvage.png" alt="Orbital Salvage running as a real WASM export with ship, bouncing rocks, cargo and hull timer HUD" loading="lazy"><figcaption>The same pure rules drive the native build and the browser WASM game. Macroquad handles the window, drawing and keyboard input.</figcaption></figure><h2 id="1-set-up-a-rust-project-nord-can-build">1. Set up a Rust project Nord can build<a class="anchor" href="#1-set-up-a-rust-project-nord-can-build">#</a></h2>
+<p>Extract the project to a writable folder, then open nord.project.json in Nord. Its type is wasm-game. Unlike a JS scene game, this sample uses a direct macroquad loop; the scene hierarchy does not author its procedural arena. Nord provides the project, code editor, build, Console and export workflow.</p>
+<p>The project contains Cargo.toml, Cargo.lock, src/main.rs, src/sim.rs and a dev index.html. Inspect the dependency:</p>
+<pre class="code" data-lang="toml"><code>[dependencies]
+nord-runtime-wasm = { path = &quot;../../crates/nord-runtime-wasm&quot; }
+
+[workspace]</code></pre>
+<p>That relative path is correct inside the engine&#39;s examples/rust-salvage folder. If you extract elsewhere, change it to your engine checkout&#39;s <strong>absolute</strong> crates/nord-runtime-wasm directory. Nord-created Rust project copies normally rewrite this path; a manually extracted zip cannot infer your engine&#39;s location. Keep the empty workspace section so the project is its own Cargo workspace.</p>
+<p>Install the target if it is absent:</p>
+<pre class="code" data-lang="sh"><code>rustup target add wasm32-unknown-unknown</code></pre>
+<p>The first Cargo build may fetch pinned crates. Later builds can use the local cache. Offline operation of the exported game does not mean Cargo can compile an uncached dependency without first obtaining it. The supplied Cargo.lock pins the resolved versions used for this sample.</p>
+<p><strong>Checkpoint:</strong> Cargo.toml points at an existing engine crate directory and Rust reports wasm32-unknown-unknown as installed. Do this before debugging gameplay code.</p>
+<h2 id="2-split-rules-from-the-window">2. Split rules from the window<a class="anchor" href="#2-split-rules-from-the-window">#</a></h2>
+<p>src/sim.rs defines Body and Run. It imports no graphics, browser or file APIs. Body contains position and velocity; Run contains ship, rocks, core position, score, lives, clocks and state flags.</p>
+<pre class="code" data-lang="rust"><code>#[derive(Clone, Copy, Debug)]
+pub struct Body {
+    pub x: f32,
+    pub y: f32,
+    pub vx: f32,
+    pub vy: f32,
+}</code></pre>
+<p>A struct groups named fields. pub makes them accessible to the sibling renderer module. f32 is a 32-bit floating-point number. Deriving Copy lets a small Body value be duplicated by value; the Vec of rocks instead belongs to Run and owns its allocated storage.</p>
+<p>Run::new constructs a fresh starting game. It creates six rocks with deterministic positions/velocities, puts the ship in the centre, and sets ten cargo as the goal. The core path after each pickup is also deterministic. You can reproduce a run while learning instead of chasing random behavior.</p>
+<p><strong>Why separate files?</strong> A test can create a Run, feed inputs/time into tick and inspect results without opening a window or compiling the browser. That feedback is faster and sharper than judging a screenshot alone.</p>
+<h2 id="3-borrow-state-and-advance-time">3. Borrow state and advance time<a class="anchor" href="#3-borrow-state-and-advance-time">#</a></h2>
+<p>The central method takes mutable access to one run:</p>
+<pre class="code" data-lang="rust"><code>pub fn tick(&amp;mut self, dt: f32, direction: (f32, f32), dash: bool)</code></pre>
+<p><code>&amp;mut self</code> means the method may change this existing Run. direction is a tuple containing horizontal/vertical intent; dash is a boolean request for this tick. The function returns early when paused or over, preserving frozen rules.</p>
+<p>It clamps dt to at most 0.05 seconds. This prevents a long background-tab delay causing a huge movement jump, at the cost of letting game time advance more slowly during severe stalls. This is a simple arcade policy, not a fixed-step or wall-clock-accurate simulation. A future competitive timer should use a deliberate real-time policy.</p>
+<p>Countdown, dash cooldown and shield time all subtract dt and clamp at zero. Use seconds consistently. Confusing milliseconds with seconds would make a two-second cooldown either effectively instant or painfully long.</p>
+<p><strong>Checkpoint:</strong> read the pause test in sim.rs: calling tick while paused leaves the countdown unchanged. The production function, not a duplicate test implementation, is what the test calls.</p>
+<h2 id="4-normalize-motion-and-implement-a-dash">4. Normalize motion and implement a dash<a class="anchor" href="#4-normalize-motion-and-implement-a-dash">#</a></h2>
+<p>Direction is normalized before speed is applied:</p>
+<pre class="code" data-lang="rust"><code>let length = direction.0.hypot(direction.1).max(1.);
+self.ship.x += direction.0 / length * speed * dt;
+self.ship.y += direction.1 / length * speed * dt;</code></pre>
+<p>Without normalization, holding two directions gives a vector longer than holding one, so diagonals move faster. max(1) avoids division by zero and preserves inputs smaller than one. The complete source also clamps the resulting ship centre inside arena bounds.</p>
+<p>Normal speed is 190 units/second. A ready dash sets cooldown to two seconds and shield to a quarter second. While cooldown is above 1.75, movement speed becomes 540. That uses one countdown to represent a short active burst followed by recovery. Holding Space does not repeatedly trigger it: main.rs sends is_key_pressed, an edge event.</p>
+<p><strong>Try:</strong> move right, then diagonally; total travel speed should match. Dash across an empty stretch and watch DASH decrease. Press Space during cooldown; it should not restart the burst.</p>
+<h2 id="5-move-hazards-resolve-damage-and-collect-cargo">5. Move hazards, resolve damage and collect cargo<a class="anchor" href="#5-move-hazards-resolve-damage-and-collect-cargo">#</a></h2>
+<p>Every rock advances by velocity times dt. Crossing an arena edge reverses the relevant velocity component and clamps the rock inside the boundary. This is intentionally simple bouncing-circle gameplay, not a rigidbody engine exercise.</p>
+<p>Distance checks compare the ship centre with rock/core centres. A rock hit spends one life, returns the ship to centre and grants 1.5 seconds of protection. The early return after the last life prevents unsigned lives from being decremented below zero. The shield also makes short dash-through maneuvers possible.</p>
+<p>A core pickup advances score, adds two seconds and chooses the next deterministic position. Ten cores set won and over. Zero remaining time sets over without won. The renderer reads these flags; it does not recalculate win conditions independently.</p>
+<p><strong>Checkpoint:</strong> test a protected overlap, then an unprotected overlap. One collision should cost one hull point and provide recovery time rather than consuming all lives in adjacent frames.</p>
+<h2 id="6-test-without-a-browser">6. Test without a browser<a class="anchor" href="#6-test-without-a-browser">#</a></h2>
+<p>From your project folder:</p>
+<pre class="code" data-lang="sh"><code>rustc --test src/sim.rs -o /tmp/salvage-tests
+/tmp/salvage-tests</code></pre>
+<p>The Windows equivalent uses a local output path such as salvage-tests.exe. This invocation uses only Rust&#39;s standard test support; it does not need the graphics dependency or the wasm target.</p>
+<p>The included tests check normalized diagonal movement, pause/timeout, ten-core victory, dash activation, damage grace and life exhaustion. A test can clear the rock vector or put the ship on a core to target one branch. These are controlled scenarios, not secret cheats in the player build.</p>
+<p>When a test fails, inspect the assertion&#39;s expected behavior before changing constants. For example, if pause consumes time, the bug is the early-return policy, not the HUD&#39;s rounding.</p>
+<p><strong>Exercise:</strong> write a test that starts with one life and zero shield, overlaps a rock, and verifies over=true with lives=0. That pattern is already represented in the full source; reproduce it yourself before comparing.</p>
+<h2 id="7-connect-macroquad-drawing-and-keyboard-input">7. Connect macroquad drawing and keyboard input<a class="anchor" href="#7-connect-macroquad-drawing-and-keyboard-input">#</a></h2>
+<p>main.rs imports macroquad through the engine dependency and declares mod sim. The async game loop creates a Run, reads keys, calls tick, draws the current state, then yields with next_frame().await.</p>
+<pre class="code" data-lang="rust"><code>if is_key_pressed(KeyCode::R) {
+    run = Run::new();
+}
+if is_key_pressed(KeyCode::P) &amp;&amp; !run.over {
+    run.paused = !run.paused;
+}</code></pre>
+<p>Rust assignment replaces the whole run on restart. <code>!</code> negates a boolean. Pause input lives outside tick, so it can still unpause while tick returns early. This solves the same paused-update trap discussed in the JS tutorials.</p>
+<p>A camera maps an 800×600 logical arena into a centred viewport, maintaining its aspect ratio when the browser size changes. Drawing uses the same units as simulation. The ship is a triangle, rocks are polygons, cargo is a pulsing circle and the HUD uses text. The cargo&#39;s cosmetic pulse uses wall time even while rules are paused; only the run state freezes.</p>
+<p>The overlay reads paused/over/won to choose its message. There is no second copy of the rules hidden in draw code. The native entry point calls macroquad::Window::from_config rather than using the macro attribute, matching Nord&#39;s existing direct-macroquad examples.</p>
+<h2 id="8-build-and-play-in-nord">8. Build and Play in Nord<a class="anchor" href="#8-build-and-play-in-nord">#</a></h2>
+<p>Save both Rust files. Use <strong>Build Rust</strong> and inspect compiler output in Console; Play builds the Rust project before running its dev page. From an engine checkout, the explicit commands are:</p>
+<pre class="code" data-lang="sh"><code>nord build-rust examples/rust-salvage
+nord serve examples/rust-salvage</code></pre>
+<p>For an extracted project use its own directory path instead. Open the printed URL, click the canvas to focus, then try WASD, Space, P and R. Editing Rust requires recompilation; JS hot reload does not patch compiled WASM instructions.</p>
+<p>If the page cannot find target/web/game.wasm, run Build Rust first. If Cargo cannot find nord-runtime-wasm, fix the dependency path. If it needs the registry while offline, ensure the locked crates are cached. The existing macroquad bundle may report the repository&#39;s documented harmless register_plugin error from unused quad_net code; unrelated errors are not covered by that exception.</p>
+<h2 id="9-export-an-actual-standalone-wasm-game">9. Export an actual standalone WASM game<a class="anchor" href="#9-export-an-actual-standalone-wasm-game">#</a></h2>
+<p>From the project parent directory:</p>
+<pre class="code" data-lang="sh"><code>nord build rust-salvage --target web-wasm-game --out salvage-web --zip
+python3 -m http.server 8003 --directory salvage-web</code></pre>
+<p>The exporter compiles a release game.wasm, copies the vendored macroquad JS loader and writes an index.html with relative paths. It supplies the required wasm linker setting through Nord&#39;s Rust pipeline. A plain manual cargo command is not a replacement for all exporter setup.</p>
+<p>Open <code>http://localhost:8003</code>. In Network, verify a .wasm file is fetched. Test a normal move, dash, pause/resume, loss, ten-core win and restart in this exported copy. Upload the whole folder or zip. wasm-bindgen is needed for some other Rust app targets, but not this macroquad game.</p>
+<p>This sample&#39;s generated source has no external art or sound and no API server. Its web export can run without the local Rust toolchain. Circuit Vault&#39;s separate Node backend is a different deployment requirement, not a requirement of WASM games in general.</p>
+<p><strong>Advanced extensions:</strong> use a fixed-step accumulator; add deterministic seeds; serialize a replay as input/time records; add controller support; replace the circle-distance rules with Nord&#39;s scene/Script/rapier tier if your design needs scene-authored physics. Introduce one change with a test rather than mixing rendering, network and collision changes at once.</p>
+<h2 id="complete-source">Complete source<a class="anchor" href="#complete-source">#</a></h2>
+<p>The complete Rust renderer and simulation follow, including the production rule tests. Cargo configuration, lockfile, project metadata and dev HTML are also included; the <a href="../../assets/downloads/rust-salvage-source.zip">source archive</a> excludes compiled target files and includes the licence. Update its engine path when extracting outside the repository, then use Nord&#39;s build/export workflow above.</p>
+<!-- GENERATED GAME SOURCE: regenerate with node tools/build-code-workshops.mjs --><h3 id="src-main-rs">src/main.rs<a class="anchor" href="#src-main-rs">#</a></h3>
+<pre class="code" data-lang="rust"><code>use nord_runtime_wasm::macroquad::{self, prelude::*};
+mod sim;
+use sim::Run;
+
+async fn game() {
+    let mut run = Run::new();
+    loop {
+        if is_key_pressed(KeyCode::R) {
+            run = Run::new();
+        }
+        if is_key_pressed(KeyCode::P) &amp;&amp; !run.over {
+            run.paused = !run.paused;
+        }
+        let axis = |positive, negative| {
+            (if is_key_down(positive) { 1. } else { 0. })
+                - (if is_key_down(negative) { 1. } else { 0. })
+        };
+        run.tick(
+            get_frame_time(),
+            (axis(KeyCode::D, KeyCode::A), axis(KeyCode::S, KeyCode::W)),
+            is_key_pressed(KeyCode::Space),
+        );
+        // Fit a fixed logical arena into the window; resizing does not change the rules.
+        let scale = (screen_width() / 800.).min(screen_height() / 600.);
+        let (w, h) = ((800. * scale) as i32, (600. * scale) as i32);
+        let camera = Camera2D {
+            viewport: Some((
+                ((screen_width() as i32 - w) / 2),
+                ((screen_height() as i32 - h) / 2),
+                w,
+                h,
+            )),
+            target: vec2(400., 300.),
+            zoom: vec2(2. / 800., 2. / 600.),
+            ..Default::default()
+        };
+        set_camera(&amp;camera);
+        clear_background(Color::from_rgba(8, 13, 30, 255));
+        for i in 0..70 {
+            let x = (i * 137 % 800) as f32;
+            let y = (i * 97 % 600) as f32;
+            draw_circle(x, y, 1., DARKGRAY);
+        }
+        draw_rectangle_lines(15., 55., 770., 530., 2., DARKBLUE);
+        let pulse = 1. + (get_time() as f32 * 5.).sin() * 0.15;
+        draw_circle(run.core.0, run.core.1, 12. * pulse, GOLD);
+        for r in &amp;run.rocks {
+            draw_poly(r.x, r.y, 6, 18., r.x, Color::from_rgba(160, 70, 130, 255));
+        }
+        let color = if run.shield &gt; 0. { SKYBLUE } else { WHITE };
+        draw_triangle(
+            vec2(run.ship.x, run.ship.y - 15.),
+            vec2(run.ship.x - 12., run.ship.y + 12.),
+            vec2(run.ship.x + 12., run.ship.y + 12.),
+            color,
+        );
+        draw_text(
+            format!(
+                &quot;SALVAGE {}/10  HULL {}  TIME {:.0}  DASH {:.1}&quot;,
+                run.score,
+                run.lives,
+                run.remaining.ceil(),
+                run.dash
+            ),
+            20.,
+            30.,
+            25.,
+            SKYBLUE,
+        );
+        draw_text(
+            &quot;WASD fly | Space dash | P pause | R restart&quot;,
+            20.,
+            595.,
+            19.,
+            GRAY,
+        );
+        if run.paused || run.over {
+            draw_rectangle(100., 220., 600., 130., Color::from_rgba(10, 20, 40, 240));
+            let title = if run.paused {
+                &quot;PAUSED - P resumes&quot;
+            } else if run.won {
+                &quot;CARGO SECURED! R plays again&quot;
+            } else {
+                &quot;SHIP LOST - R retries&quot;
+            };
+            draw_text(title, 120., 285., 30., GOLD);
+        }
+        next_frame().await;
+    }
+}
+fn main() {
+    macroquad::Window::from_config(
+        Conf {
+            window_title: &quot;Orbital Salvage&quot;.into(),
+            window_width: 800,
+            window_height: 600,
+            ..Default::default()
+        },
+        game(),
+    );
+}</code></pre>
+<details>
+<summary>Complete Cargo.lock</summary><pre class="code" data-lang="toml"><code># This file is automatically @generated by Cargo.
+# It is not intended for manual editing.
+version = 4
+
+[[package]]
+name = &quot;ab_glyph&quot;
+version = &quot;0.2.32&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;01c0457472c38ea5bd1c3b5ada5e368271cb550be7a4ca4a0b4634e9913f6cc2&quot;
+dependencies = [
+ &quot;ab_glyph_rasterizer&quot;,
+ &quot;owned_ttf_parser&quot;,
+]
+
+[[package]]
+name = &quot;ab_glyph_rasterizer&quot;
+version = &quot;0.1.10&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;366ffbaa4442f4684d91e2cd7c5ea7c4ed8add41959a31447066e279e432b618&quot;
+
+[[package]]
+name = &quot;adler2&quot;
+version = &quot;2.0.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;320119579fcad9c21884f5c4861d16174d0e06250625266f50fe6898340abefa&quot;
+
+[[package]]
+name = &quot;ahash&quot;
+version = &quot;0.8.12&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;5a15f179cd60c4584b8a8c596927aadc462e27f2ca70c04e0071964a73ba7a75&quot;
+dependencies = [
+ &quot;cfg-if&quot;,
+ &quot;once_cell&quot;,
+ &quot;version_check&quot;,
+ &quot;zerocopy&quot;,
+]
+
+[[package]]
+name = &quot;allocator-api2&quot;
+version = &quot;0.2.21&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;683d7910e743518b0e34f1186f92494becacb047c7b6bf616c96772180fef923&quot;
+
+[[package]]
+name = &quot;approx&quot;
+version = &quot;0.5.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;cab112f0a86d568ea0e627cc1d6be74a1e9cd55214684db5561995f6dad897c6&quot;
+dependencies = [
+ &quot;num-traits&quot;,
+]
+
+[[package]]
+name = &quot;arrayvec&quot;
+version = &quot;0.7.8&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;d3fb67a6e08acf24fdeccbac2cb6ac4305825bd1f117462e0e6f2f193345ad56&quot;
+
+[[package]]
+name = &quot;audir-sles&quot;
+version = &quot;0.1.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;ea47348666a8edb7ad80cbee3940eb2bccf70df0e6ce09009abe1a836cb779f5&quot;
+
+[[package]]
+name = &quot;audrey&quot;
+version = &quot;0.3.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;58b92a84e89497e3cd25d3672cd5d1c288abaac02c18ff21283f17d118b889b8&quot;
+dependencies = [
+ &quot;dasp_frame&quot;,
+ &quot;dasp_sample&quot;,
+ &quot;hound&quot;,
+ &quot;lewton&quot;,
+]
+
+[[package]]
+name = &quot;autocfg&quot;
+version = &quot;1.5.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;f2032f911046de80f0a198e0901378627c33f59ea0ac00e363d481118bd70a53&quot;
+
+[[package]]
+name = &quot;bit-vec&quot;
+version = &quot;0.7.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;d2c54ff287cfc0a34f38a6b832ea1bd8e448a330b3e40a50859e6488bee07f22&quot;
+
+[[package]]
+name = &quot;bitflags&quot;
+version = &quot;1.3.2&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;bef38d45163c2f1dde094a7dfd33ccf595c92905c8f8f4fdc18d06fb1037718a&quot;
+
+[[package]]
+name = &quot;bitflags&quot;
+version = &quot;2.13.2&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;3ded4057c258ba199e2d26386d3af3780957ecaee6c4ef4041c6b4b8b97c0b06&quot;
+
+[[package]]
+name = &quot;block2&quot;
+version = &quot;0.5.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;2c132eebf10f5cad5289222520a4a058514204aed6d791f1cf4fe8088b82d15f&quot;
+dependencies = [
+ &quot;objc2 0.5.3&quot;,
+]
+
+[[package]]
+name = &quot;bumpalo&quot;
+version = &quot;3.20.3&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;72f5acc6cb2ba439de613abc23857ec3d78374d8ed5ac84e9d11336e87da8649&quot;
+
+[[package]]
+name = &quot;bytemuck&quot;
+version = &quot;1.25.2&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;95832e849adfb21180ccb6826a99da14e5d266ae5c2e668e1602cf234f153797&quot;
+dependencies = [
+ &quot;bytemuck_derive&quot;,
+]
+
+[[package]]
+name = &quot;bytemuck_derive&quot;
+version = &quot;1.12.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;6a1f896587b6f2c069c73d2f0913e2d590c3990285cd2f0b6aa02b786b4c679c&quot;
+dependencies = [
+ &quot;proc-macro2&quot;,
+ &quot;quote&quot;,
+ &quot;syn 3.0.8&quot;,
+]
+
+[[package]]
+name = &quot;byteorder&quot;
+version = &quot;1.5.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;1fd0f2584146f6f2ef48085050886acf353beff7305ebd1ae69500e27c67f64b&quot;
+
+[[package]]
+name = &quot;bytes&quot;
+version = &quot;1.12.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;fc652a48c352aef3ea3aed32080501cf3ef6ed5da78602a020c991775b0aff04&quot;
+
+[[package]]
+name = &quot;calloop&quot;
+version = &quot;0.14.5&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;43b32313e937c8721c9d17ee9bf60699a6402b4b7c2cb6ac1bee0ffcaa4b4e5e&quot;
+dependencies = [
+ &quot;bitflags 2.13.2&quot;,
+ &quot;polling&quot;,
+ &quot;rustix&quot;,
+ &quot;tracing&quot;,
+]
+
+[[package]]
+name = &quot;calloop-wayland-source&quot;
+version = &quot;0.4.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;138efcf0940a02ebf0cc8d1eff41a1682a46b431630f4c52450d6265876021fa&quot;
+dependencies = [
+ &quot;calloop&quot;,
+ &quot;rustix&quot;,
+ &quot;wayland-backend&quot;,
+ &quot;wayland-client&quot;,
+]
+
+[[package]]
+name = &quot;cc&quot;
+version = &quot;1.8.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;6651c9ed80effdc7db0ff72512157f901af5e3549e341e24b1dd4887d836d838&quot;
+dependencies = [
+ &quot;find-msvc-tools&quot;,
+ &quot;shlex&quot;,
+]
+
+[[package]]
+name = &quot;cfg-if&quot;
+version = &quot;1.0.5&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;4e7648175b45a9a48536d676f68d918270699102aa8dab5496df06904c914600&quot;
+
+[[package]]
+name = &quot;clipboard-win&quot;
+version = &quot;5.4.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;bde03770d3df201d4fb868f2c9c59e66a3e4e2bd06692a0fe701e7103c7e84d4&quot;
+dependencies = [
+ &quot;error-code&quot;,
+]
+
+[[package]]
+name = &quot;color_quant&quot;
+version = &quot;1.1.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;3d7b894f5411737b7867f4827955924d7c254fc9f4d91a6aad6b097804b1018b&quot;
+
+[[package]]
+name = &quot;combine&quot;
+version = &quot;4.6.8&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;cfc320937d09e6de266b31b9afb480f197d7a861be86be7cb2ea7e5d1bfffc5e&quot;
+dependencies = [
+ &quot;bytes&quot;,
+ &quot;memchr&quot;,
+]
+
+[[package]]
+name = &quot;concurrent-queue&quot;
+version = &quot;2.5.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;4ca0197aee26d1ae37445ee532fefce43251d24cc7c166799f4d46817f1d3973&quot;
+dependencies = [
+ &quot;crossbeam-utils&quot;,
+]
+
+[[package]]
+name = &quot;copypasta&quot;
+version = &quot;0.10.2&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;3e6811e17f81fe246ef2bc553f76b6ee6ab41a694845df1d37e52a92b7bbd38a&quot;
+dependencies = [
+ &quot;clipboard-win&quot;,
+ &quot;objc2 0.5.3&quot;,
+ &quot;objc2-app-kit 0.2.2&quot;,
+ &quot;objc2-foundation 0.2.2&quot;,
+ &quot;smithay-clipboard&quot;,
+ &quot;x11-clipboard&quot;,
+]
+
+[[package]]
+name = &quot;core_maths&quot;
+version = &quot;0.1.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;77745e017f5edba1a9c1d854f6f3a52dac8a12dd5af5d2f54aecf61e43d80d30&quot;
+dependencies = [
+ &quot;libm&quot;,
+]
+
+[[package]]
+name = &quot;crc32fast&quot;
+version = &quot;1.5.2&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;01a7799fd6b852db0e61728dde9a204c423b44d689dbd432522543614b490e78&quot;
+dependencies = [
+ &quot;cfg-if&quot;,
+]
+
+[[package]]
+name = &quot;crossbeam&quot;
+version = &quot;0.8.5&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;e71406cd8807725f7ac2f999a4cdd32e98f829fdf65f528343cebf945e41df1e&quot;
+dependencies = [
+ &quot;crossbeam-channel&quot;,
+ &quot;crossbeam-deque&quot;,
+ &quot;crossbeam-epoch&quot;,
+ &quot;crossbeam-queue&quot;,
+ &quot;crossbeam-utils&quot;,
+]
+
+[[package]]
+name = &quot;crossbeam-channel&quot;
+version = &quot;0.5.17&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;98b0cc327b5bc766e7fda9c9260cc0fa81b43a8e240440422dff70788e3f9ef1&quot;
+dependencies = [
+ &quot;crossbeam-utils&quot;,
+]
+
+[[package]]
+name = &quot;crossbeam-deque&quot;
+version = &quot;0.8.8&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;622f3fc73690be383c7214310406f28a90e6edeadc3cea882f9d71e495b9711a&quot;
+dependencies = [
+ &quot;crossbeam-epoch&quot;,
+ &quot;crossbeam-utils&quot;,
+]
+
+[[package]]
+name = &quot;crossbeam-epoch&quot;
+version = &quot;0.9.21&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;dc74980687109a3b14c72fd458107bf0baa1da1a1a805e178d15501ba9b86d9d&quot;
+dependencies = [
+ &quot;crossbeam-utils&quot;,
+]
+
+[[package]]
+name = &quot;crossbeam-queue&quot;
+version = &quot;0.3.14&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;03e8bd762f7479489c70ed6c768ddca99d7296857de437a68dcb2a94365b3fae&quot;
+dependencies = [
+ &quot;crossbeam-utils&quot;,
+]
+
+[[package]]
+name = &quot;crossbeam-utils&quot;
+version = &quot;0.8.23&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;a31eee39dddec8330830986fcd7625edb5a24ec90ea038215273bbc3adb08ac6&quot;
+
+[[package]]
+name = &quot;cursor-icon&quot;
+version = &quot;1.2.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;f27ae1dd37df86211c42e150270f82743308803d90a6f6e6651cd730d5e1732f&quot;
+
+[[package]]
+name = &quot;dasp_frame&quot;
+version = &quot;0.11.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;b2a3937f5fe2135702897535c8d4a5553f8b116f76c1529088797f2eee7c5cd6&quot;
+dependencies = [
+ &quot;dasp_sample&quot;,
+]
+
+[[package]]
+name = &quot;dasp_sample&quot;
+version = &quot;0.11.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;0c87e182de0887fd5361989c677c4e8f5000cd9491d6d563161a8f3a5519fc7f&quot;
+
+[[package]]
+name = &quot;dispatch2&quot;
+version = &quot;0.3.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;1e0e367e4e7da84520dedcac1901e4da967309406d1e51017ae1abfb97adbd38&quot;
+dependencies = [
+ &quot;bitflags 2.13.2&quot;,
+ &quot;objc2 0.6.5&quot;,
+]
+
+[[package]]
+name = &quot;displaydoc&quot;
+version = &quot;0.2.7&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;c6232dd377dcc64799954cbd3a9bb882e9cdc1308ccd87b1c098f1fb2eaf82a8&quot;
+dependencies = [
+ &quot;proc-macro2&quot;,
+ &quot;quote&quot;,
+ &quot;syn 3.0.8&quot;,
+]
+
+[[package]]
+name = &quot;dlib&quot;
+version = &quot;0.5.3&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;ab8ecd87370524b461f8557c119c405552c396ed91fc0a8eec68679eab26f94a&quot;
+dependencies = [
+ &quot;libloading&quot;,
+]
+
+[[package]]
+name = &quot;downcast-rs&quot;
+version = &quot;1.2.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;75b325c5dbd37f80359721ad39aca5a29fb04c89279657cffdda8736d0c0b9d2&quot;
+
+[[package]]
+name = &quot;ecolor&quot;
+version = &quot;0.31.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;bc4feb366740ded31a004a0e4452fbf84e80ef432ecf8314c485210229672fd1&quot;
+dependencies = [
+ &quot;bytemuck&quot;,
+ &quot;emath&quot;,
+]
+
+[[package]]
+name = &quot;egui&quot;
+version = &quot;0.31.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;25dd34cec49ab55d85ebf70139cb1ccd29c977ef6b6ba4fe85489d6877ee9ef3&quot;
+dependencies = [
+ &quot;ahash&quot;,
+ &quot;bitflags 2.13.2&quot;,
+ &quot;emath&quot;,
+ &quot;epaint&quot;,
+ &quot;nohash-hasher&quot;,
+ &quot;profiling&quot;,
+]
+
+[[package]]
+name = &quot;egui-macroquad&quot;
+version = &quot;0.17.3&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;243771baa600997c1c4eaeaf6641dacfc88948b67be57af7ab974bea4b2bd6b1&quot;
+dependencies = [
+ &quot;egui&quot;,
+ &quot;egui-miniquad&quot;,
+ &quot;macroquad&quot;,
+]
+
+[[package]]
+name = &quot;egui-miniquad&quot;
+version = &quot;0.16.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;b96b90650f8c5324bfaa9f54d75dae25428f2e0b380f89f3a09601da4e57bc3f&quot;
+dependencies = [
+ &quot;bytemuck&quot;,
+ &quot;copypasta&quot;,
+ &quot;egui&quot;,
+ &quot;getrandom&quot;,
+ &quot;miniquad&quot;,
+ &quot;quad-rand&quot;,
+ &quot;quad-url&quot;,
+]
+
+[[package]]
+name = &quot;either&quot;
+version = &quot;1.19.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;0e9c71c2167ca323c882b99918929403426e2373ea17242ff5653e0d5e1058be&quot;
+
+[[package]]
+name = &quot;emath&quot;
+version = &quot;0.31.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;9e4cadcff7a5353ba72b7fea76bf2122b5ebdbc68e8155aa56dfdea90083fe1b&quot;
+dependencies = [
+ &quot;bytemuck&quot;,
+]
+
+[[package]]
+name = &quot;ena&quot;
+version = &quot;0.14.4&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;eabffdaee24bd1bf95c5ef7cec31260444317e72ea56c4c91750e8b7ee58d5f1&quot;
+dependencies = [
+ &quot;log&quot;,
+]
+
+[[package]]
+name = &quot;epaint&quot;
+version = &quot;0.31.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;41fcc0f5a7c613afd2dee5e4b30c3e6acafb8ad6f0edb06068811f708a67c562&quot;
+dependencies = [
+ &quot;ab_glyph&quot;,
+ &quot;ahash&quot;,
+ &quot;bytemuck&quot;,
+ &quot;ecolor&quot;,
+ &quot;emath&quot;,
+ &quot;epaint_default_fonts&quot;,
+ &quot;nohash-hasher&quot;,
+ &quot;parking_lot&quot;,
+ &quot;profiling&quot;,
+]
+
+[[package]]
+name = &quot;epaint_default_fonts&quot;
+version = &quot;0.31.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;fc7e7a64c02cf7a5b51e745a9e45f60660a286f151c238b9d397b3e923f5082f&quot;
+
+[[package]]
+name = &quot;equivalent&quot;
+version = &quot;1.0.2&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;877a4ace8713b0bcf2a4e7eec82529c029f1d0619886d18145fea96c3ffe5c0f&quot;
+
+[[package]]
+name = &quot;errno&quot;
+version = &quot;0.3.14&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;39cab71617ae0d63f51a36d69f866391735b51691dbda63cf6f96d042b63efeb&quot;
+dependencies = [
+ &quot;libc&quot;,
+ &quot;windows-sys&quot;,
+]
+
+[[package]]
+name = &quot;error-code&quot;
+version = &quot;3.4.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;0b5343afd4a8365a643ac588dab4cf234a190c7f6c88c9f6dd6ffe00837661b7&quot;
+
+[[package]]
+name = &quot;fdeflate&quot;
+version = &quot;0.3.7&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;1e6853b52649d4ac5c0bd02320cddc5ba956bdb407c4b75a2c6b75bf51500f8c&quot;
+dependencies = [
+ &quot;simd-adler32&quot;,
+]
+
+[[package]]
+name = &quot;find-msvc-tools&quot;
+version = &quot;0.1.14&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;aedcfb3409746eddb02b9e19ebda1c3394f759a152e48ee875a0844d1b955484&quot;
+
+[[package]]
+name = &quot;flate2&quot;
+version = &quot;1.1.10&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;6e634e2e0ebac1ee034020da1ca582e17ffe4e0f5e985823721e168928136dcb&quot;
+dependencies = [
+ &quot;crc32fast&quot;,
+ &quot;miniz_oxide 0.9.1&quot;,
+ &quot;zlib-rs&quot;,
+]
+
+[[package]]
+name = &quot;foldhash&quot;
+version = &quot;0.1.5&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;d9c4f5dac5e15c24eb999c26181a6ca40b39fe946cbe4c263c7209467bc83af2&quot;
+
+[[package]]
+name = &quot;foldhash&quot;
+version = &quot;0.2.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;77ce24cb58228fbb8aa041425bb1050850ac19177686ea6e0f41a70416f56fdb&quot;
+
+[[package]]
+name = &quot;fontdue&quot;
+version = &quot;0.9.4&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;7894823fa221401399e2598f8b63f81ac77ff5c63248b7656779bff1632d7d3d&quot;
+dependencies = [
+ &quot;hashbrown 0.15.5&quot;,
+ &quot;ttf-parser&quot;,
+]
+
+[[package]]
+name = &quot;form_urlencoded&quot;
+version = &quot;1.2.2&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;cb4cb245038516f5f85277875cdaa4f7d2c9a0fa0468de06ed190163b1581fcf&quot;
+dependencies = [
+ &quot;percent-encoding&quot;,
+]
+
+[[package]]
+name = &quot;futures-core&quot;
+version = &quot;0.3.34&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;92d699e522242e69e3003b94ecc1f960f3a5e015aa7c5d7486e65ad01dd94f5e&quot;
+
+[[package]]
+name = &quot;futures-task&quot;
+version = &quot;0.3.34&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;cd417de3d1d015fc3bfd2b1ea46dfc7bab72ef86f1cc7cc9c78e728b34a6d1fd&quot;
+
+[[package]]
+name = &quot;futures-util&quot;
+version = &quot;0.3.34&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;0d50a92467f8ba5dd6e3ee5d4bd04d73ab2e4e1c44474a0674821dfce14b79bc&quot;
+dependencies = [
+ &quot;futures-core&quot;,
+ &quot;futures-task&quot;,
+ &quot;pin-project-lite&quot;,
+ &quot;slab&quot;,
+]
+
+[[package]]
+name = &quot;gethostname&quot;
+version = &quot;1.1.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;1bd49230192a3797a9a4d6abe9b3eed6f7fa4c8a8a4947977c6f80025f92cbd8&quot;
+dependencies = [
+ &quot;rustix&quot;,
+ &quot;windows-link&quot;,
+]
+
+[[package]]
+name = &quot;getrandom&quot;
+version = &quot;0.2.17&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;ff2abc00be7fca6ebc474524697ae276ad847ad0a6b3faa4bcb027e9a4614ad0&quot;
+dependencies = [
+ &quot;cfg-if&quot;,
+ &quot;libc&quot;,
+ &quot;wasi&quot;,
+]
+
+[[package]]
+name = &quot;glam&quot;
+version = &quot;0.27.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;9e05e7e6723e3455f4818c7b26e855439f7546cf617ef669d1adedb8669e5cb9&quot;
+
+[[package]]
+name = &quot;hashbrown&quot;
+version = &quot;0.15.5&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;9229cfe53dfd69f0609a49f65461bd93001ea1ef889cd5529dd176593f5338a1&quot;
+dependencies = [
+ &quot;allocator-api2&quot;,
+ &quot;equivalent&quot;,
+ &quot;foldhash 0.1.5&quot;,
+]
+
+[[package]]
+name = &quot;hashbrown&quot;
+version = &quot;0.16.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;841d1cc9bed7f9236f321df977030373f4a4163ae1a7dbfe1a51a2c1a51d9100&quot;
+dependencies = [
+ &quot;allocator-api2&quot;,
+ &quot;equivalent&quot;,
+ &quot;foldhash 0.2.0&quot;,
+]
+
+[[package]]
+name = &quot;hermit-abi&quot;
+version = &quot;0.5.3&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;e17592d60ebacc7d5e169f4663c5f84f9161cc90328abcfe8456f41e4dfcb284&quot;
+
+[[package]]
+name = &quot;hound&quot;
+version = &quot;3.5.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;62adaabb884c94955b19907d60019f4e145d091c75345379e70d1ee696f7854f&quot;
+
+[[package]]
+name = &quot;icu_collections&quot;
+version = &quot;2.3.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;fa68d21081c4a05d5a901a1c62add574c77048b6a1c67be3b50ce0b60d4ca513&quot;
+dependencies = [
+ &quot;displaydoc&quot;,
+ &quot;potential_utf&quot;,
+ &quot;utf8_iter&quot;,
+ &quot;yoke&quot;,
+ &quot;zerofrom&quot;,
+ &quot;zerovec&quot;,
+]
+
+[[package]]
+name = &quot;icu_locale_core&quot;
+version = &quot;2.3.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;d56e28588da92eee5c3201a6eff33fabdd49b62269c8938d4ff050ce4d900deb&quot;
+dependencies = [
+ &quot;displaydoc&quot;,
+ &quot;litemap&quot;,
+ &quot;tinystr&quot;,
+ &quot;writeable&quot;,
+ &quot;zerovec&quot;,
+]
+
+[[package]]
+name = &quot;icu_normalizer&quot;
+version = &quot;2.3.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;12f9cf5f235641ed274641dd81c3f28d870e276763d0797aeeab72317b1c646f&quot;
+dependencies = [
+ &quot;icu_collections&quot;,
+ &quot;icu_normalizer_data&quot;,
+ &quot;icu_properties&quot;,
+ &quot;icu_provider&quot;,
+ &quot;smallvec 1.16.3&quot;,
+ &quot;zerovec&quot;,
+]
+
+[[package]]
+name = &quot;icu_normalizer_data&quot;
+version = &quot;2.3.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;1563da1ed3e0b3bf3d74c9b85917ac9c56464d2f57242270c09c9e752f8021a0&quot;
+
+[[package]]
+name = &quot;icu_properties&quot;
+version = &quot;2.3.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;7e7ca276ad3145661a65914e6daf131ca5120cd3dcee8f8f3214b8875184a148&quot;
+dependencies = [
+ &quot;displaydoc&quot;,
+ &quot;icu_collections&quot;,
+ &quot;icu_locale_core&quot;,
+ &quot;icu_properties_data&quot;,
+ &quot;icu_provider&quot;,
+ &quot;zerotrie&quot;,
+ &quot;zerovec&quot;,
+]
+
+[[package]]
+name = &quot;icu_properties_data&quot;
+version = &quot;2.3.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;e590f038c1464a96894fd6d10127e90a8be4509f56ff7ecef851b15cee0b7caa&quot;
+
+[[package]]
+name = &quot;icu_provider&quot;
+version = &quot;2.3.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;d27bbb9d3abbefac45d55f647c9de1d44aafcd1186eb91879afef17c396c3e73&quot;
+dependencies = [
+ &quot;displaydoc&quot;,
+ &quot;icu_locale_core&quot;,
+ &quot;writeable&quot;,
+ &quot;yoke&quot;,
+ &quot;zerofrom&quot;,
+ &quot;zerotrie&quot;,
+ &quot;zerovec&quot;,
+]
+
+[[package]]
+name = &quot;idna&quot;
+version = &quot;1.1.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;3b0875f23caa03898994f6ddc501886a45c7d3d62d04d2d90788d47be1b1e4de&quot;
+dependencies = [
+ &quot;idna_adapter&quot;,
+ &quot;smallvec 1.16.3&quot;,
+ &quot;utf8_iter&quot;,
+]
+
+[[package]]
+name = &quot;idna_adapter&quot;
+version = &quot;1.2.2&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;cb68373c0d6620ef8105e855e7745e18b0d00d3bdb07fb532e434244cdb9a714&quot;
+dependencies = [
+ &quot;icu_normalizer&quot;,
+ &quot;icu_properties&quot;,
+]
+
+[[package]]
+name = &quot;image&quot;
+version = &quot;0.24.9&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;5690139d2f55868e080017335e4b94cb7414274c74f1669c84fb5feba2c9f69d&quot;
+dependencies = [
+ &quot;bytemuck&quot;,
+ &quot;byteorder&quot;,
+ &quot;color_quant&quot;,
+ &quot;num-traits&quot;,
+ &quot;png&quot;,
+]
+
+[[package]]
+name = &quot;itoa&quot;
+version = &quot;1.0.18&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;8f42a60cbdf9a97f5d2305f08a87dc4e09308d1276d28c869c684d7777685682&quot;
+
+[[package]]
+name = &quot;jni&quot;
+version = &quot;0.22.4&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;5efd9a482cf3a427f00d6b35f14332adc7902ce91efb778580e180ff90fa3498&quot;
+dependencies = [
+ &quot;cfg-if&quot;,
+ &quot;combine&quot;,
+ &quot;jni-macros&quot;,
+ &quot;jni-sys&quot;,
+ &quot;log&quot;,
+ &quot;simd_cesu8&quot;,
+ &quot;thiserror 2.0.21&quot;,
+ &quot;walkdir&quot;,
+ &quot;windows-link&quot;,
+]
+
+[[package]]
+name = &quot;jni-macros&quot;
+version = &quot;0.22.4&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;a00109accc170f0bdb141fed3e393c565b6f5e072365c3bd58f5b062591560a3&quot;
+dependencies = [
+ &quot;proc-macro2&quot;,
+ &quot;quote&quot;,
+ &quot;rustc_version&quot;,
+ &quot;simd_cesu8&quot;,
+ &quot;syn 2.0.119&quot;,
+]
+
+[[package]]
+name = &quot;jni-sys&quot;
+version = &quot;0.4.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;c6377a88cb3910bee9b0fa88d4f42e1d2da8e79915598f65fb0c7ee14c878af2&quot;
+dependencies = [
+ &quot;jni-sys-macros&quot;,
+]
+
+[[package]]
+name = &quot;jni-sys-macros&quot;
+version = &quot;0.4.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;38c0b942f458fe50cdac086d2f946512305e5631e720728f2a61aabcd47a6264&quot;
+dependencies = [
+ &quot;quote&quot;,
+ &quot;syn 2.0.119&quot;,
+]
+
+[[package]]
+name = &quot;js-sys&quot;
+version = &quot;0.3.106&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;7883d941dae510fb2d978fc3fe018c71c9e2892fd38854de3e8b92c2e5ad9cc5&quot;
+dependencies = [
+ &quot;cfg-if&quot;,
+ &quot;futures-util&quot;,
+ &quot;wasm-bindgen&quot;,
+]
+
+[[package]]
+name = &quot;lewton&quot;
+version = &quot;0.9.4&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;8d542c1a317036c45c2aa1cf10cc9d403ca91eb2d333ef1a4917e5cb10628bd0&quot;
+dependencies = [
+ &quot;byteorder&quot;,
+ &quot;ogg&quot;,
+ &quot;smallvec 0.6.14&quot;,
+]
+
+[[package]]
+name = &quot;libc&quot;
+version = &quot;0.2.190&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;ce5d3ddc6d3fa000eb1536d85e147bfe31aacaba692ed6a876f95cb7c855be78&quot;
+
+[[package]]
+name = &quot;libloading&quot;
+version = &quot;0.8.9&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;d7c4b02199fee7c5d21a5ae7d8cfa79a6ef5bb2fc834d6e9058e89c825efdc55&quot;
+dependencies = [
+ &quot;cfg-if&quot;,
+ &quot;windows-link&quot;,
+]
+
+[[package]]
+name = &quot;libm&quot;
+version = &quot;0.2.16&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;b6d2cec3eae94f9f509c767b45932f1ada8350c4bdb85af2fcab4a3c14807981&quot;
+
+[[package]]
+name = &quot;linux-raw-sys&quot;
+version = &quot;0.12.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;32a66949e030da00e8c7d4434b251670a91556f4144941d37452769c25d58a53&quot;
+
+[[package]]
+name = &quot;litemap&quot;
+version = &quot;0.8.3&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;47d9d19d1d6efa0109d2f65ff4c85cddd50bd572e5a00127ab10987290bcefae&quot;
+
+[[package]]
+name = &quot;lock_api&quot;
+version = &quot;0.4.14&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;224399e74b87b5f3557511d98dff8b14089b3dadafcab6bb93eab67d3aace965&quot;
+dependencies = [
+ &quot;scopeguard&quot;,
+]
+
+[[package]]
+name = &quot;log&quot;
+version = &quot;0.4.34&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;f9f8bd3e56ce4dfc153cf470fffbfa98c7620958b312ca5c3a4b8d5181fd13c6&quot;
+
+[[package]]
+name = &quot;macroquad&quot;
+version = &quot;0.4.16&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;1cbd54d99d4d3ac59deed7ee4927bbbf4eb33a55635530af3be9395a55746090&quot;
+dependencies = [
+ &quot;fontdue&quot;,
+ &quot;glam&quot;,
+ &quot;image&quot;,
+ &quot;macroquad_macro&quot;,
+ &quot;miniquad&quot;,
+ &quot;quad-rand&quot;,
+ &quot;quad-snd&quot;,
+]
+
+[[package]]
+name = &quot;macroquad_macro&quot;
+version = &quot;0.1.8&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;64b1d96218903768c1ce078b657c0d5965465c95a60d2682fd97443c9d2483dd&quot;
+
+[[package]]
+name = &quot;malloc_buf&quot;
+version = &quot;0.0.6&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;62bb907fe88d54d8d9ce32a3cceab4218ed2f6b7d35617cafe9adf84e43919cb&quot;
+dependencies = [
+ &quot;libc&quot;,
+]
+
+[[package]]
+name = &quot;matrixmultiply&quot;
+version = &quot;0.3.11&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;3f607c237553f086e7043417a51df26b2eb899d3caff94e6a67592ff992fedc7&quot;
+dependencies = [
+ &quot;autocfg&quot;,
+ &quot;rawpointer&quot;,
+]
+
+[[package]]
+name = &quot;maybe-uninit&quot;
+version = &quot;2.0.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;60302e4db3a61da70c0cb7991976248362f30319e88850c487b9b95bbf059e00&quot;
+
+[[package]]
+name = &quot;memchr&quot;
+version = &quot;2.8.3&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;cf8baf1c55e62ffcace7a9f06f4bd9cd3f0c4beb022d3b367256b91b87513d98&quot;
+
+[[package]]
+name = &quot;memmap2&quot;
+version = &quot;0.9.11&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;d1219ed1b7f229ee7104d281dd01d6802fe28bb6e95d292942c4daacdeb798c0&quot;
+dependencies = [
+ &quot;libc&quot;,
+]
+
+[[package]]
+name = &quot;miniquad&quot;
+version = &quot;0.4.11&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;dcbaea978d741f3b60ced666b06a2a1e4a2bc81cb8b9dd29f4a40965e1f59e65&quot;
+dependencies = [
+ &quot;libc&quot;,
+ &quot;ndk-sys&quot;,
+ &quot;objc-rs&quot;,
+ &quot;winapi&quot;,
+]
+
+[[package]]
+name = &quot;miniz_oxide&quot;
+version = &quot;0.8.9&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;1fa76a2c86f704bdb222d66965fb3d63269ce38518b83cb0575fca855ebb6316&quot;
+dependencies = [
+ &quot;adler2&quot;,
+ &quot;simd-adler32&quot;,
+]
+
+[[package]]
+name = &quot;miniz_oxide&quot;
+version = &quot;0.9.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;b63fbc4a50860e98e7b2aa7804ded1db5cbc3aff9193adaff57a6931bf7c4b4c&quot;
+dependencies = [
+ &quot;adler2&quot;,
+ &quot;simd-adler32&quot;,
+]
+
+[[package]]
+name = &quot;nalgebra&quot;
+version = &quot;0.33.3&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;9d43ddcacf343185dfd6de2ee786d9e8b1c2301622afab66b6c73baf9882abfd&quot;
+dependencies = [
+ &quot;approx&quot;,
+ &quot;matrixmultiply&quot;,
+ &quot;nalgebra-macros&quot;,
+ &quot;num-complex&quot;,
+ &quot;num-rational&quot;,
+ &quot;num-traits&quot;,
+ &quot;simba&quot;,
+ &quot;typenum&quot;,
+]
+
+[[package]]
+name = &quot;nalgebra-macros&quot;
+version = &quot;0.2.2&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;254a5372af8fc138e36684761d3c0cdb758a4410e938babcff1c860ce14ddbfc&quot;
+dependencies = [
+ &quot;proc-macro2&quot;,
+ &quot;quote&quot;,
+ &quot;syn 2.0.119&quot;,
+]
+
+[[package]]
+name = &quot;ndk-context&quot;
+version = &quot;0.1.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;27b02d87554356db9e9a873add8782d4ea6e3e58ea071a9adb9a2e8ddb884a8b&quot;
+
+[[package]]
+name = &quot;ndk-sys&quot;
+version = &quot;0.2.2&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;e1bcdd74c20ad5d95aacd60ef9ba40fdf77f767051040541df557b7a9b2a2121&quot;
+
+[[package]]
+name = &quot;nohash-hasher&quot;
+version = &quot;0.2.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;2bf50223579dc7cdcfb3bfcacf7069ff68243f8c363f62ffa99cf000a6b9c451&quot;
+
+[[package]]
+name = &quot;nord-runtime-wasm&quot;
+version = &quot;0.0.1&quot;
+dependencies = [
+ &quot;egui-macroquad&quot;,
+ &quot;macroquad&quot;,
+ &quot;rapier2d&quot;,
+ &quot;serde&quot;,
+ &quot;serde_json&quot;,
+]
+
+[[package]]
+name = &quot;num-bigint&quot;
+version = &quot;0.4.8&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;c89e69e7e0f03bea5ef08013795c25018e101932225a656383bd384495ecc367&quot;
+dependencies = [
+ &quot;num-integer&quot;,
+ &quot;num-traits&quot;,
+]
+
+[[package]]
+name = &quot;num-complex&quot;
+version = &quot;0.4.6&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;73f88a1307638156682bada9d7604135552957b7818057dcef22705b4d509495&quot;
+dependencies = [
+ &quot;num-traits&quot;,
+]
+
+[[package]]
+name = &quot;num-derive&quot;
+version = &quot;0.4.2&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;ed3955f1a9c7c0c15e092f9c887db08b1fc683305fdf6eb6684f22555355e202&quot;
+dependencies = [
+ &quot;proc-macro2&quot;,
+ &quot;quote&quot;,
+ &quot;syn 2.0.119&quot;,
+]
+
+[[package]]
+name = &quot;num-integer&quot;
+version = &quot;0.1.47&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;7ce2d95d4b3734dc35aa2f45e1aa22cd416814592a4f9d9205e11affd5b8e10b&quot;
+dependencies = [
+ &quot;num-traits&quot;,
+]
+
+[[package]]
+name = &quot;num-rational&quot;
+version = &quot;0.4.2&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;f83d14da390562dca69fc84082e73e548e1ad308d24accdedd2720017cb37824&quot;
+dependencies = [
+ &quot;num-bigint&quot;,
+ &quot;num-integer&quot;,
+ &quot;num-traits&quot;,
+]
+
+[[package]]
+name = &quot;num-traits&quot;
+version = &quot;0.2.19&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;071dfc062690e90b734c0b2273ce72ad0ffa95f0c74596bc250dcfd960262841&quot;
+dependencies = [
+ &quot;autocfg&quot;,
+ &quot;libm&quot;,
+]
+
+[[package]]
+name = &quot;objc-rs&quot;
+version = &quot;0.2.8&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;64a1e7069a2525126bf12a9f1f7916835fafade384fb27cabf698e745e2a1eb8&quot;
+dependencies = [
+ &quot;malloc_buf&quot;,
+]
+
+[[package]]
+name = &quot;objc-sys&quot;
+version = &quot;0.3.5&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;cdb91bdd390c7ce1a8607f35f3ca7151b65afc0ff5ff3b34fa350f7d7c7e4310&quot;
+
+[[package]]
+name = &quot;objc2&quot;
+version = &quot;0.5.3&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;19d5490aaf8f1d7cf7688dfa9b0ce07900e168852c45cd2c03f534dfd27cfd0b&quot;
+dependencies = [
+ &quot;objc-sys&quot;,
+ &quot;objc2-encode&quot;,
+]
+
+[[package]]
+name = &quot;objc2&quot;
+version = &quot;0.6.5&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;08849bbd4767dfae9457696856ae1c84fe4e0281bbe4a7abff2d0e06fb7981f8&quot;
+dependencies = [
+ &quot;objc2-encode&quot;,
+]
+
+[[package]]
+name = &quot;objc2-app-kit&quot;
+version = &quot;0.2.2&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;e4e89ad9e3d7d297152b17d39ed92cd50ca8063a89a9fa569046d41568891eff&quot;
+dependencies = [
+ &quot;bitflags 2.13.2&quot;,
+ &quot;block2&quot;,
+ &quot;libc&quot;,
+ &quot;objc2 0.5.3&quot;,
+ &quot;objc2-core-data&quot;,
+ &quot;objc2-core-image&quot;,
+ &quot;objc2-foundation 0.2.2&quot;,
+ &quot;objc2-quartz-core&quot;,
+]
+
+[[package]]
+name = &quot;objc2-app-kit&quot;
+version = &quot;0.3.2&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;d49e936b501e5c5bf01fda3a9452ff86dc3ea98ad5f283e1455153142d97518c&quot;
+dependencies = [
+ &quot;bitflags 2.13.2&quot;,
+ &quot;objc2 0.6.5&quot;,
+ &quot;objc2-foundation 0.3.2&quot;,
+]
+
+[[package]]
+name = &quot;objc2-core-data&quot;
+version = &quot;0.2.2&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;617fbf49e071c178c0b24c080767db52958f716d9eabdf0890523aeae54773ef&quot;
+dependencies = [
+ &quot;bitflags 2.13.2&quot;,
+ &quot;block2&quot;,
+ &quot;objc2 0.5.3&quot;,
+ &quot;objc2-foundation 0.2.2&quot;,
+]
+
+[[package]]
+name = &quot;objc2-core-foundation&quot;
+version = &quot;0.3.2&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;2a180dd8642fa45cdb7dd721cd4c11b1cadd4929ce112ebd8b9f5803cc79d536&quot;
+dependencies = [
+ &quot;bitflags 2.13.2&quot;,
+ &quot;dispatch2&quot;,
+ &quot;objc2 0.6.5&quot;,
+]
+
+[[package]]
+name = &quot;objc2-core-image&quot;
+version = &quot;0.2.2&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;55260963a527c99f1819c4f8e3b47fe04f9650694ef348ffd2227e8196d34c80&quot;
+dependencies = [
+ &quot;block2&quot;,
+ &quot;objc2 0.5.3&quot;,
+ &quot;objc2-foundation 0.2.2&quot;,
+ &quot;objc2-metal&quot;,
+]
+
+[[package]]
+name = &quot;objc2-encode&quot;
+version = &quot;4.1.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;ef25abbcd74fb2609453eb695bd2f860d389e457f67dc17cafc8b8cbc89d0c33&quot;
+
+[[package]]
+name = &quot;objc2-foundation&quot;
+version = &quot;0.2.2&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;0ee638a5da3799329310ad4cfa62fbf045d5f56e3ef5ba4149e7452dcf89d5a8&quot;
+dependencies = [
+ &quot;bitflags 2.13.2&quot;,
+ &quot;block2&quot;,
+ &quot;libc&quot;,
+ &quot;objc2 0.5.3&quot;,
+]
+
+[[package]]
+name = &quot;objc2-foundation&quot;
+version = &quot;0.3.2&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;e3e0adef53c21f888deb4fa59fc59f7eb17404926ee8a6f59f5df0fd7f9f3272&quot;
+dependencies = [
+ &quot;bitflags 2.13.2&quot;,
+ &quot;objc2 0.6.5&quot;,
+ &quot;objc2-core-foundation&quot;,
+]
+
+[[package]]
+name = &quot;objc2-metal&quot;
+version = &quot;0.2.2&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;dd0cba1276f6023976a406a14ffa85e1fdd19df6b0f737b063b95f6c8c7aadd6&quot;
+dependencies = [
+ &quot;bitflags 2.13.2&quot;,
+ &quot;block2&quot;,
+ &quot;objc2 0.5.3&quot;,
+ &quot;objc2-foundation 0.2.2&quot;,
+]
+
+[[package]]
+name = &quot;objc2-quartz-core&quot;
+version = &quot;0.2.2&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;e42bee7bff906b14b167da2bac5efe6b6a07e6f7c0a21a7308d40c960242dc7a&quot;
+dependencies = [
+ &quot;bitflags 2.13.2&quot;,
+ &quot;block2&quot;,
+ &quot;objc2 0.5.3&quot;,
+ &quot;objc2-foundation 0.2.2&quot;,
+ &quot;objc2-metal&quot;,
+]
+
+[[package]]
+name = &quot;ogg&quot;
+version = &quot;0.7.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;13e571c3517af9e1729d4c63571a27edd660ade0667973bfc74a67c660c2b651&quot;
+dependencies = [
+ &quot;byteorder&quot;,
+]
+
+[[package]]
+name = &quot;once_cell&quot;
+version = &quot;1.21.4&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;9f7c3e4beb33f85d45ae3e3a1792185706c8e16d043238c593331cc7cd313b50&quot;
+
+[[package]]
+name = &quot;ordered-float&quot;
+version = &quot;4.6.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;7bb71e1b3fa6ca1c61f383464aaf2bb0e2f8e772a1f01d486832464de363b951&quot;
+dependencies = [
+ &quot;num-traits&quot;,
+]
+
+[[package]]
+name = &quot;owned_ttf_parser&quot;
+version = &quot;0.25.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;36820e9051aca1014ddc75770aab4d68bc1e9e632f0f5627c4086bc216fb583b&quot;
+dependencies = [
+ &quot;ttf-parser&quot;,
+]
+
+[[package]]
+name = &quot;parking_lot&quot;
+version = &quot;0.12.5&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;93857453250e3077bd71ff98b6a65ea6621a19bb0f559a85248955ac12c45a1a&quot;
+dependencies = [
+ &quot;lock_api&quot;,
+ &quot;parking_lot_core&quot;,
+]
+
+[[package]]
+name = &quot;parking_lot_core&quot;
+version = &quot;0.9.12&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;2621685985a2ebf1c516881c026032ac7deafcda1a2c9b7850dc81e3dfcb64c1&quot;
+dependencies = [
+ &quot;cfg-if&quot;,
+ &quot;libc&quot;,
+ &quot;redox_syscall&quot;,
+ &quot;smallvec 1.16.3&quot;,
+ &quot;windows-link&quot;,
+]
+
+[[package]]
+name = &quot;parry2d&quot;
+version = &quot;0.17.6&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;87edd53b1639e011e4765eecfceb0fa2c486da696dcdcfbc9a38bfc3574fb7e0&quot;
+dependencies = [
+ &quot;approx&quot;,
+ &quot;arrayvec&quot;,
+ &quot;bitflags 2.13.2&quot;,
+ &quot;downcast-rs&quot;,
+ &quot;either&quot;,
+ &quot;ena&quot;,
+ &quot;log&quot;,
+ &quot;nalgebra&quot;,
+ &quot;num-derive&quot;,
+ &quot;num-traits&quot;,
+ &quot;ordered-float&quot;,
+ &quot;rustc-hash&quot;,
+ &quot;simba&quot;,
+ &quot;slab&quot;,
+ &quot;smallvec 1.16.3&quot;,
+ &quot;spade&quot;,
+ &quot;thiserror 1.0.69&quot;,
+]
+
+[[package]]
+name = &quot;paste&quot;
+version = &quot;1.0.15&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;57c0d7b74b563b49d38dae00a0c37d4d6de9b432382b2892f0574ddcae73fd0a&quot;
+
+[[package]]
+name = &quot;percent-encoding&quot;
+version = &quot;2.3.2&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;9b4f627cb1b25917193a259e49bdad08f671f8d9708acfd5fe0a8c1455d87220&quot;
+
+[[package]]
+name = &quot;pin-project-lite&quot;
+version = &quot;0.2.17&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;a89322df9ebe1c1578d689c92318e070967d1042b512afbe49518723f4e6d5cd&quot;
+
+[[package]]
+name = &quot;pkg-config&quot;
+version = &quot;0.3.34&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;f6b464fbc74e149a392436b17d523f769e057cb6877f6a5c4618bc6f11800548&quot;
+
+[[package]]
+name = &quot;png&quot;
+version = &quot;0.17.16&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;82151a2fc869e011c153adc57cf2789ccb8d9906ce52c0b39a6b5697749d7526&quot;
+dependencies = [
+ &quot;bitflags 1.3.2&quot;,
+ &quot;crc32fast&quot;,
+ &quot;fdeflate&quot;,
+ &quot;flate2&quot;,
+ &quot;miniz_oxide 0.8.9&quot;,
+]
+
+[[package]]
+name = &quot;polling&quot;
+version = &quot;3.11.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;5d0e4f59085d47d8241c88ead0f274e8a0cb551f3625263c05eb8dd897c34218&quot;
+dependencies = [
+ &quot;cfg-if&quot;,
+ &quot;concurrent-queue&quot;,
+ &quot;hermit-abi&quot;,
+ &quot;pin-project-lite&quot;,
+ &quot;rustix&quot;,
+ &quot;windows-sys&quot;,
+]
+
+[[package]]
+name = &quot;potential_utf&quot;
+version = &quot;0.1.6&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;d83eb9bc6d8e5cf568e7a1101d60ee05e81ed50ea106026f3d18deeb046d7661&quot;
+dependencies = [
+ &quot;zerovec&quot;,
+]
+
+[[package]]
+name = &quot;proc-macro2&quot;
+version = &quot;1.0.107&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;985e7ec9bb745e6ce6535b544d84d6cd6f7ad8bd711c398938ae983b91a766d9&quot;
+dependencies = [
+ &quot;unicode-ident&quot;,
+]
+
+[[package]]
+name = &quot;profiling&quot;
+version = &quot;1.0.18&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;3d595e54a326bc53c1c197b32d295e14b169e3cfeaa8dc82b529f947fba6bcf5&quot;
+
+[[package]]
+name = &quot;quad-alsa-sys&quot;
+version = &quot;0.3.2&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;c66c2f04a6946293477973d85adc251d502da51c57b08cd9c997f0cfd8dcd4b5&quot;
+dependencies = [
+ &quot;libc&quot;,
+]
+
+[[package]]
+name = &quot;quad-rand&quot;
+version = &quot;0.2.3&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;5a651516ddc9168ebd67b24afd085a718be02f8858fe406591b013d101ce2f40&quot;
+
+[[package]]
+name = &quot;quad-snd&quot;
+version = &quot;0.2.8&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;cba0c4943fc67147fbe9d1eb731fb9e678bfc9d926507eebbbfe0103e154e5b0&quot;
+dependencies = [
+ &quot;audir-sles&quot;,
+ &quot;audrey&quot;,
+ &quot;libc&quot;,
+ &quot;quad-alsa-sys&quot;,
+ &quot;winapi&quot;,
+]
+
+[[package]]
+name = &quot;quad-url&quot;
+version = &quot;0.1.3&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;3f91138ae63eeef72fb5c6788400b6ded431f6d4253a273dfef77802a584fa54&quot;
+dependencies = [
+ &quot;sapp-jsutils&quot;,
+ &quot;webbrowser&quot;,
+]
+
+[[package]]
+name = &quot;quick-xml&quot;
+version = &quot;0.41.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;e660451e55124f798a69a5af3f49ccfbefbd41910eefd25caf2393e1f3473ec1&quot;
+dependencies = [
+ &quot;memchr&quot;,
+]
+
+[[package]]
+name = &quot;quote&quot;
+version = &quot;1.0.47&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;1fbf4db142a473a8d80c26bbf18454ed458bf8d26c8219c331daecfdbd079001&quot;
+dependencies = [
+ &quot;proc-macro2&quot;,
+]
+
+[[package]]
+name = &quot;rapier2d&quot;
+version = &quot;0.22.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;643116992c25c96a07e1aae7d59fba207f01979dc9a107c42bcd4c4b83ef78b2&quot;
+dependencies = [
+ &quot;approx&quot;,
+ &quot;arrayvec&quot;,
+ &quot;bit-vec&quot;,
+ &quot;bitflags 2.13.2&quot;,
+ &quot;crossbeam&quot;,
+ &quot;downcast-rs&quot;,
+ &quot;log&quot;,
+ &quot;nalgebra&quot;,
+ &quot;num-derive&quot;,
+ &quot;num-traits&quot;,
+ &quot;ordered-float&quot;,
+ &quot;parry2d&quot;,
+ &quot;rustc-hash&quot;,
+ &quot;simba&quot;,
+ &quot;thiserror 1.0.69&quot;,
+]
+
+[[package]]
+name = &quot;rawpointer&quot;
+version = &quot;0.2.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;60a357793950651c4ed0f3f52338f53b2f809f32d83a07f72909fa13e4c6c1e3&quot;
+
+[[package]]
+name = &quot;redox_syscall&quot;
+version = &quot;0.5.18&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;ed2bf2547551a7053d6fdfafda3f938979645c44812fbfcda098faae3f1a362d&quot;
+dependencies = [
+ &quot;bitflags 2.13.2&quot;,
+]
+
+[[package]]
+name = &quot;robust&quot;
+version = &quot;1.2.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;4e27ee8bb91ca0adcf0ecb116293afa12d393f9c2b9b9cd54d33e8078fe19839&quot;
+
+[[package]]
+name = &quot;rust-salvage&quot;
+version = &quot;0.1.0&quot;
+dependencies = [
+ &quot;nord-runtime-wasm&quot;,
+]
+
+[[package]]
+name = &quot;rustc-hash&quot;
+version = &quot;2.1.3&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;6b1e7f9a428571be2dc5bc0505c13fb6bf936822b894ec87abf8a08a4e51742d&quot;
+
+[[package]]
+name = &quot;rustc_version&quot;
+version = &quot;0.4.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;cfcb3a22ef46e85b45de6ee7e79d063319ebb6594faafcf1c225ea92ab6e9b92&quot;
+dependencies = [
+ &quot;semver&quot;,
+]
+
+[[package]]
+name = &quot;rustix&quot;
+version = &quot;1.1.5&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;891efababe418670775f199f0d233d84843c227a0949a883ce15b37c78d6629d&quot;
+dependencies = [
+ &quot;bitflags 2.13.2&quot;,
+ &quot;errno&quot;,
+ &quot;libc&quot;,
+ &quot;linux-raw-sys&quot;,
+ &quot;windows-sys&quot;,
+]
+
+[[package]]
+name = &quot;rustversion&quot;
+version = &quot;1.0.23&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;cf54715a573b99ac80df0bc206da022bcd442c974952c7b9720069370852e21f&quot;
+
+[[package]]
+name = &quot;safe_arch&quot;
+version = &quot;0.7.4&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;96b02de82ddbe1b636e6170c21be622223aea188ef2e139be0a5b219ec215323&quot;
+dependencies = [
+ &quot;bytemuck&quot;,
+]
+
+[[package]]
+name = &quot;same-file&quot;
+version = &quot;1.0.6&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;93fc1dc3aaa9bfed95e02e6eadabb4baf7e3078b0bd1b4d7b6b0b68378900502&quot;
+dependencies = [
+ &quot;winapi-util&quot;,
+]
+
+[[package]]
+name = &quot;sapp-jsutils&quot;
+version = &quot;0.1.7&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;c6673c9c245fda02a1e826e199133d1c3d1b8e4a392c9dfe55e4f90a2489b149&quot;
+
+[[package]]
+name = &quot;scoped-tls&quot;
+version = &quot;1.0.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;e1cf6437eb19a8f4a6cc0f7dca544973b0b78843adbfeb3683d1a94a0024a294&quot;
+
+[[package]]
+name = &quot;scopeguard&quot;
+version = &quot;1.2.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49&quot;
+
+[[package]]
+name = &quot;semver&quot;
+version = &quot;1.0.28&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;8a7852d02fc848982e0c167ef163aaff9cd91dc640ba85e263cb1ce46fae51cd&quot;
+
+[[package]]
+name = &quot;serde&quot;
+version = &quot;1.0.229&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;4148590afebada386688f18773da617792bf2ef03ffc1e4cbd2b1d45b023e0ba&quot;
+dependencies = [
+ &quot;serde_core&quot;,
+ &quot;serde_derive&quot;,
+]
+
+[[package]]
+name = &quot;serde_core&quot;
+version = &quot;1.0.229&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;67dca2c9c51e58a4791a4b1ed58308b39c64224d349a935ab5039aa360942a48&quot;
+dependencies = [
+ &quot;serde_derive&quot;,
+]
+
+[[package]]
+name = &quot;serde_derive&quot;
+version = &quot;1.0.229&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;e7a5d71263a5a7d47b41f6b3f06ba276f10cc18b0931f1799f710578e2309348&quot;
+dependencies = [
+ &quot;proc-macro2&quot;,
+ &quot;quote&quot;,
+ &quot;syn 3.0.8&quot;,
+]
+
+[[package]]
+name = &quot;serde_json&quot;
+version = &quot;1.0.154&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;e7e9cc8b1b85264074fbcc02a88680c4096b1e47df8f739dceb03bf482f04bd6&quot;
+dependencies = [
+ &quot;itoa&quot;,
+ &quot;memchr&quot;,
+ &quot;serde&quot;,
+ &quot;serde_core&quot;,
+ &quot;zmij&quot;,
+]
+
+[[package]]
+name = &quot;shlex&quot;
+version = &quot;2.0.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;f8fadd59c855ef2080decdef8ff161eb6661b86933c9d82e5ba29dc602a55aba&quot;
+
+[[package]]
+name = &quot;simba&quot;
+version = &quot;0.9.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;c99284beb21666094ba2b75bbceda012e610f5479dfcc2d6e2426f53197ffd95&quot;
+dependencies = [
+ &quot;approx&quot;,
+ &quot;num-complex&quot;,
+ &quot;num-traits&quot;,
+ &quot;paste&quot;,
+ &quot;wide&quot;,
+]
+
+[[package]]
+name = &quot;simd-adler32&quot;
+version = &quot;0.3.10&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;3a219298ac11a56ea9a6d2120044824d6f01aeb034955e7af7bc16858527deea&quot;
+
+[[package]]
+name = &quot;simd_cesu8&quot;
+version = &quot;1.2.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;11031e251abf8611c80f460e19dbdeb54a66db918e49c65a7065b46ac7aec520&quot;
+dependencies = [
+ &quot;rustc_version&quot;,
+ &quot;simdutf8&quot;,
+]
+
+[[package]]
+name = &quot;simdutf8&quot;
+version = &quot;0.1.5&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;e3a9fe34e3e7a50316060351f37187a3f546bce95496156754b601a5fa71b76e&quot;
+
+[[package]]
+name = &quot;slab&quot;
+version = &quot;0.4.12&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;0c790de23124f9ab44544d7ac05d60440adc586479ce501c1d6d7da3cd8c9cf5&quot;
+
+[[package]]
+name = &quot;smallvec&quot;
+version = &quot;0.6.14&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;b97fcaeba89edba30f044a10c6a3cc39df9c3f17d7cd829dd1446cab35f890e0&quot;
+dependencies = [
+ &quot;maybe-uninit&quot;,
+]
+
+[[package]]
+name = &quot;smallvec&quot;
+version = &quot;1.16.3&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;5b3dc8af474f516a851ff4bd12db780f948b9250ad37211e4eec0bccea54e01b&quot;
+
+[[package]]
+name = &quot;smithay-client-toolkit&quot;
+version = &quot;0.20.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;0512da38f5e2b31201a93524adb8d3136276fa4fe4aafab4e1f727a82b534cc0&quot;
+dependencies = [
+ &quot;bitflags 2.13.2&quot;,
+ &quot;calloop&quot;,
+ &quot;calloop-wayland-source&quot;,
+ &quot;cursor-icon&quot;,
+ &quot;libc&quot;,
+ &quot;log&quot;,
+ &quot;memmap2&quot;,
+ &quot;rustix&quot;,
+ &quot;thiserror 2.0.21&quot;,
+ &quot;wayland-backend&quot;,
+ &quot;wayland-client&quot;,
+ &quot;wayland-csd-frame&quot;,
+ &quot;wayland-cursor&quot;,
+ &quot;wayland-protocols&quot;,
+ &quot;wayland-protocols-experimental&quot;,
+ &quot;wayland-protocols-misc&quot;,
+ &quot;wayland-protocols-wlr&quot;,
+ &quot;wayland-scanner&quot;,
+ &quot;xkeysym&quot;,
+]
+
+[[package]]
+name = &quot;smithay-clipboard&quot;
+version = &quot;0.7.3&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;71704c03f739f7745053bde45fa203a46c58d25bc5c4efba1d9a60e9dba81226&quot;
+dependencies = [
+ &quot;libc&quot;,
+ &quot;smithay-client-toolkit&quot;,
+ &quot;wayland-backend&quot;,
+]
+
+[[package]]
+name = &quot;spade&quot;
+version = &quot;2.15.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;9699399fd9349b00b184f5635b074f9ec93afffef30c853f8c875b32c0f8c7fa&quot;
+dependencies = [
+ &quot;hashbrown 0.16.1&quot;,
+ &quot;num-traits&quot;,
+ &quot;robust&quot;,
+ &quot;smallvec 1.16.3&quot;,
+]
+
+[[package]]
+name = &quot;stable_deref_trait&quot;
+version = &quot;1.2.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;6ce2be8dc25455e1f91df71bfa12ad37d7af1092ae736f3a6cd0e37bc7810596&quot;
+
+[[package]]
+name = &quot;syn&quot;
+version = &quot;2.0.119&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;872831b642d1a07999a962a351ed35b955ea2cfc8f3862091e2a240a84f17297&quot;
+dependencies = [
+ &quot;proc-macro2&quot;,
+ &quot;quote&quot;,
+ &quot;unicode-ident&quot;,
+]
+
+[[package]]
+name = &quot;syn&quot;
+version = &quot;3.0.8&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;01016da373cd8f7ef12624f796309f5c31ba8d646dd08856c02cd741d823c622&quot;
+dependencies = [
+ &quot;proc-macro2&quot;,
+ &quot;quote&quot;,
+ &quot;unicode-ident&quot;,
+]
+
+[[package]]
+name = &quot;synstructure&quot;
+version = &quot;0.14.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;901704edd0dfe137f1987838ee4f259e4e063c31371bdb423f7ae38ec6f77f02&quot;
+dependencies = [
+ &quot;proc-macro2&quot;,
+ &quot;quote&quot;,
+ &quot;syn 3.0.8&quot;,
+]
+
+[[package]]
+name = &quot;thiserror&quot;
+version = &quot;1.0.69&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;b6aaf5339b578ea85b50e080feb250a3e8ae8cfcdff9a461c9ec2904bc923f52&quot;
+dependencies = [
+ &quot;thiserror-impl 1.0.69&quot;,
+]
+
+[[package]]
+name = &quot;thiserror&quot;
+version = &quot;2.0.21&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;09e52cb86a36cede5cb101bf8908837b3e4c6e5e59fe7fd85c23fb56200d189e&quot;
+dependencies = [
+ &quot;thiserror-impl 2.0.21&quot;,
+]
+
+[[package]]
+name = &quot;thiserror-impl&quot;
+version = &quot;1.0.69&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;4fee6c4efc90059e10f81e6d42c60a18f76588c3d74cb83a0b242a2b6c7504c1&quot;
+dependencies = [
+ &quot;proc-macro2&quot;,
+ &quot;quote&quot;,
+ &quot;syn 2.0.119&quot;,
+]
+
+[[package]]
+name = &quot;thiserror-impl&quot;
+version = &quot;2.0.21&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;fe5197923287db20a58125f0bc85c062f7f2c892de97b18c356f9efb14b28524&quot;
+dependencies = [
+ &quot;proc-macro2&quot;,
+ &quot;quote&quot;,
+ &quot;syn 3.0.8&quot;,
+]
+
+[[package]]
+name = &quot;tinystr&quot;
+version = &quot;0.8.4&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;b1e27c91459209c2986af3dcf603a5a74a4368754ce37414f59acc971167f643&quot;
+dependencies = [
+ &quot;displaydoc&quot;,
+ &quot;zerovec&quot;,
+]
+
+[[package]]
+name = &quot;tracing&quot;
+version = &quot;0.1.44&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;63e71662fa4b2a2c3a26f570f037eb95bb1f85397f3cd8076caed2f026a6d100&quot;
+dependencies = [
+ &quot;log&quot;,
+ &quot;pin-project-lite&quot;,
+ &quot;tracing-core&quot;,
+]
+
+[[package]]
+name = &quot;tracing-core&quot;
+version = &quot;0.1.36&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;db97caf9d906fbde555dd62fa95ddba9eecfd14cb388e4f491a66d74cd5fb79a&quot;
+
+[[package]]
+name = &quot;ttf-parser&quot;
+version = &quot;0.25.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;d2df906b07856748fa3f6e0ad0cbaa047052d4a7dd609e231c4f72cee8c36f31&quot;
+dependencies = [
+ &quot;core_maths&quot;,
+]
+
+[[package]]
+name = &quot;typenum&quot;
+version = &quot;1.20.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;b6f5e870be6c3b371b77fe0ee0bafb859fa4964b4404c27de1d380043c4dda20&quot;
+
+[[package]]
+name = &quot;unicode-ident&quot;
+version = &quot;1.0.27&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;a2c754d6c33795a1c324727428e5a7dedb5b06195f9890bdbcba760d3e246563&quot;
+
+[[package]]
+name = &quot;url&quot;
+version = &quot;2.5.8&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;ff67a8a4397373c3ef660812acab3268222035010ab8680ec4215f38ba3d0eed&quot;
+dependencies = [
+ &quot;form_urlencoded&quot;,
+ &quot;idna&quot;,
+ &quot;percent-encoding&quot;,
+ &quot;serde&quot;,
+]
+
+[[package]]
+name = &quot;utf8_iter&quot;
+version = &quot;1.0.4&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;b6c140620e7ffbb22c2dee59cafe6084a59b5ffc27a8859a5f0d494b5d52b6be&quot;
+
+[[package]]
+name = &quot;version_check&quot;
+version = &quot;0.9.5&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a&quot;
+
+[[package]]
+name = &quot;walkdir&quot;
+version = &quot;2.5.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;29790946404f91d9c5d06f9874efddea1dc06c5efe94541a7d6863108e3a5e4b&quot;
+dependencies = [
+ &quot;same-file&quot;,
+ &quot;winapi-util&quot;,
+]
+
+[[package]]
+name = &quot;wasi&quot;
+version = &quot;0.11.1+wasi-snapshot-preview1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;ccf3ec651a847eb01de73ccad15eb7d99f80485de043efb2f370cd654f4ea44b&quot;
+
+[[package]]
+name = &quot;wasm-bindgen&quot;
+version = &quot;0.2.129&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;9bb54f33acc68fd454578d9820b0bde1a1a3d17aa17bb7b6595806d02886d409&quot;
+dependencies = [
+ &quot;cfg-if&quot;,
+ &quot;once_cell&quot;,
+ &quot;rustversion&quot;,
+ &quot;wasm-bindgen-macro&quot;,
+ &quot;wasm-bindgen-shared&quot;,
+]
+
+[[package]]
+name = &quot;wasm-bindgen-macro&quot;
+version = &quot;0.2.129&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;2e29d0c35b16e224a7eeb5cd2d25e3e1968fbd65604117b44d3b789d00ee8535&quot;
+dependencies = [
+ &quot;quote&quot;,
+ &quot;wasm-bindgen-macro-support&quot;,
+]
+
+[[package]]
+name = &quot;wasm-bindgen-macro-support&quot;
+version = &quot;0.2.129&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;6f501a8bc3719dba86ef8ae4728879c08001bea749eb1333ac5b91e040e2a6b7&quot;
+dependencies = [
+ &quot;bumpalo&quot;,
+ &quot;proc-macro2&quot;,
+ &quot;quote&quot;,
+ &quot;syn 3.0.8&quot;,
+ &quot;wasm-bindgen-shared&quot;,
+]
+
+[[package]]
+name = &quot;wasm-bindgen-shared&quot;
+version = &quot;0.2.129&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;23f0c9c52aa7cd7d77769a4cfe2a9adb1b331f489a41d912ce14513d5ab995c6&quot;
+dependencies = [
+ &quot;unicode-ident&quot;,
+]
+
+[[package]]
+name = &quot;wayland-backend&quot;
+version = &quot;0.3.17&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;38a91b4eaddff87b1cd1074985e3713da4af2c49742d1b356b2c01670a67a078&quot;
+dependencies = [
+ &quot;cc&quot;,
+ &quot;downcast-rs&quot;,
+ &quot;rustix&quot;,
+ &quot;scoped-tls&quot;,
+ &quot;smallvec 1.16.3&quot;,
+ &quot;wayland-sys&quot;,
+]
+
+[[package]]
+name = &quot;wayland-client&quot;
+version = &quot;0.31.15&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;e3c36a0f861ad76d0901f2800b46321410d9f73f2ea88aac0650d86c32688073&quot;
+dependencies = [
+ &quot;bitflags 2.13.2&quot;,
+ &quot;rustix&quot;,
+ &quot;wayland-backend&quot;,
+ &quot;wayland-scanner&quot;,
+]
+
+[[package]]
+name = &quot;wayland-csd-frame&quot;
+version = &quot;0.3.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;625c5029dbd43d25e6aa9615e88b829a5cad13b2819c4ae129fdbb7c31ab4c7e&quot;
+dependencies = [
+ &quot;bitflags 2.13.2&quot;,
+ &quot;cursor-icon&quot;,
+ &quot;wayland-backend&quot;,
+]
+
+[[package]]
+name = &quot;wayland-cursor&quot;
+version = &quot;0.31.14&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;4a52d18780be9b1314328a3de5f930b73d2200112e3849ca6cb11822793fb34d&quot;
+dependencies = [
+ &quot;rustix&quot;,
+ &quot;wayland-client&quot;,
+ &quot;xcursor&quot;,
+]
+
+[[package]]
+name = &quot;wayland-protocols&quot;
+version = &quot;0.32.13&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;23d0c813de3daa2ed6520af85a3bd49b0e722a3078506899aa9686fea58dc4b6&quot;
+dependencies = [
+ &quot;bitflags 2.13.2&quot;,
+ &quot;wayland-backend&quot;,
+ &quot;wayland-client&quot;,
+ &quot;wayland-scanner&quot;,
+]
+
+[[package]]
+name = &quot;wayland-protocols-experimental&quot;
+version = &quot;20250721.0.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;40a1f863128dcaaec790d7b4b396cc9b9a7a079e878e18c47e6c2d2c5a8dcbb1&quot;
+dependencies = [
+ &quot;bitflags 2.13.2&quot;,
+ &quot;wayland-backend&quot;,
+ &quot;wayland-client&quot;,
+ &quot;wayland-protocols&quot;,
+ &quot;wayland-scanner&quot;,
+]
+
+[[package]]
+name = &quot;wayland-protocols-misc&quot;
+version = &quot;0.3.12&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;6e9567599ef23e09b8dad6e429e5738d4509dfc46b3b21f32841a304d16b29c8&quot;
+dependencies = [
+ &quot;bitflags 2.13.2&quot;,
+ &quot;wayland-backend&quot;,
+ &quot;wayland-client&quot;,
+ &quot;wayland-protocols&quot;,
+ &quot;wayland-scanner&quot;,
+]
+
+[[package]]
+name = &quot;wayland-protocols-wlr&quot;
+version = &quot;0.3.12&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;eb04e52f7836d7c7976c78ca0250d61e33873c34156a2a1fc9474828ec268234&quot;
+dependencies = [
+ &quot;bitflags 2.13.2&quot;,
+ &quot;wayland-backend&quot;,
+ &quot;wayland-client&quot;,
+ &quot;wayland-protocols&quot;,
+ &quot;wayland-scanner&quot;,
+]
+
+[[package]]
+name = &quot;wayland-scanner&quot;
+version = &quot;0.31.11&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;338e30461b3a2b67d70eb30a6d89f8e0c93a833e07d2ae89085cd070c4a00ac0&quot;
+dependencies = [
+ &quot;proc-macro2&quot;,
+ &quot;quick-xml&quot;,
+ &quot;quote&quot;,
+]
+
+[[package]]
+name = &quot;wayland-sys&quot;
+version = &quot;0.31.11&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;d8eab23fefc9e41f8e841df4a9c707e8a8c4ed26e944ef69297184de2785e3be&quot;
+dependencies = [
+ &quot;dlib&quot;,
+ &quot;log&quot;,
+ &quot;once_cell&quot;,
+ &quot;pkg-config&quot;,
+]
+
+[[package]]
+name = &quot;web-sys&quot;
+version = &quot;0.3.106&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;88261b9deccee56594c11a3460c462c41f58d148598fe70ad77070126a68aba4&quot;
+dependencies = [
+ &quot;js-sys&quot;,
+ &quot;wasm-bindgen&quot;,
+]
+
+[[package]]
+name = &quot;webbrowser&quot;
+version = &quot;1.2.4&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;62c35be770821a214dbc362fc26908c853e776c0004294d0b10b8a6bad582f94&quot;
+dependencies = [
+ &quot;jni&quot;,
+ &quot;log&quot;,
+ &quot;ndk-context&quot;,
+ &quot;objc2 0.6.5&quot;,
+ &quot;objc2-app-kit 0.3.2&quot;,
+ &quot;objc2-foundation 0.3.2&quot;,
+ &quot;url&quot;,
+ &quot;web-sys&quot;,
+]
+
+[[package]]
+name = &quot;wide&quot;
+version = &quot;0.7.33&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;0ce5da8ecb62bcd8ec8b7ea19f69a51275e91299be594ea5cc6ef7819e16cd03&quot;
+dependencies = [
+ &quot;bytemuck&quot;,
+ &quot;safe_arch&quot;,
+]
+
+[[package]]
+name = &quot;winapi&quot;
+version = &quot;0.3.9&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;5c839a674fcd7a98952e593242ea400abe93992746761e38641405d28b00f419&quot;
+dependencies = [
+ &quot;winapi-i686-pc-windows-gnu&quot;,
+ &quot;winapi-x86_64-pc-windows-gnu&quot;,
+]
+
+[[package]]
+name = &quot;winapi-i686-pc-windows-gnu&quot;
+version = &quot;0.4.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;ac3b87c63620426dd9b991e5ce0329eff545bccbbb34f3be09ff6fb6ab51b7b6&quot;
+
+[[package]]
+name = &quot;winapi-util&quot;
+version = &quot;0.1.11&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;c2a7b1c03c876122aa43f3020e6c3c3ee5c05081c9a00739faf7503aeba10d22&quot;
+dependencies = [
+ &quot;windows-sys&quot;,
+]
+
+[[package]]
+name = &quot;winapi-x86_64-pc-windows-gnu&quot;
+version = &quot;0.4.0&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;712e227841d057c1ee1cd2fb22fa7e5a5461ae8e48fa2ca79ec42cfc1931183f&quot;
+
+[[package]]
+name = &quot;windows-link&quot;
+version = &quot;0.2.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;f0805222e57f7521d6a62e36fa9163bc891acd422f971defe97d64e70d0a4fe5&quot;
+
+[[package]]
+name = &quot;windows-sys&quot;
+version = &quot;0.61.2&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;ae137229bcbd6cdf0f7b80a31df61766145077ddf49416a728b02cb3921ff3fc&quot;
+dependencies = [
+ &quot;windows-link&quot;,
+]
+
+[[package]]
+name = &quot;writeable&quot;
+version = &quot;0.6.4&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;3ad82d2a33cdc9674dc7465672f271e096168fcdbe0f799d9e6db8c5892679dc&quot;
+
+[[package]]
+name = &quot;x11-clipboard&quot;
+version = &quot;0.9.3&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;662d74b3d77e396b8e5beb00b9cad6a9eccf40b2ef68cc858784b14c41d535a3&quot;
+dependencies = [
+ &quot;libc&quot;,
+ &quot;x11rb&quot;,
+]
+
+[[package]]
+name = &quot;x11rb&quot;
+version = &quot;0.13.2&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;9993aa5be5a26815fe2c3eacfc1fde061fc1a1f094bf1ad2a18bf9c495dd7414&quot;
+dependencies = [
+ &quot;gethostname&quot;,
+ &quot;rustix&quot;,
+ &quot;x11rb-protocol&quot;,
+]
+
+[[package]]
+name = &quot;x11rb-protocol&quot;
+version = &quot;0.13.2&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;ea6fc2961e4ef194dcbfe56bb845534d0dc8098940c7e5c012a258bfec6701bd&quot;
+
+[[package]]
+name = &quot;xcursor&quot;
+version = &quot;0.3.11&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;163b33ed8786455e2fa5d72f554057ce3f3182425434f756cd39c99839d88e23&quot;
+
+[[package]]
+name = &quot;xkeysym&quot;
+version = &quot;0.2.1&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;b9cc00251562a284751c9973bace760d86c0276c471b4be569fe6b068ee97a56&quot;
+
+[[package]]
+name = &quot;yoke&quot;
+version = &quot;0.8.3&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;709fe23a0424b6a435d82152b1bd3fdfb0833487d5fa90d05d42762a9891fef5&quot;
+dependencies = [
+ &quot;stable_deref_trait&quot;,
+ &quot;yoke-derive&quot;,
+ &quot;zerofrom&quot;,
+]
+
+[[package]]
+name = &quot;yoke-derive&quot;
+version = &quot;0.8.4&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;ec8ebde2db3681e8c9980cc27822030e68752690ddfa9473e739aeb4dbde6d71&quot;
+dependencies = [
+ &quot;proc-macro2&quot;,
+ &quot;quote&quot;,
+ &quot;syn 3.0.8&quot;,
+ &quot;synstructure&quot;,
+]
+
+[[package]]
+name = &quot;zerocopy&quot;
+version = &quot;0.8.62&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;86502bf56ac7c77571a32e2647bb2a15894565e981fb2a48d7bde2d91c965a9d&quot;
+dependencies = [
+ &quot;zerocopy-derive&quot;,
+]
+
+[[package]]
+name = &quot;zerocopy-derive&quot;
+version = &quot;0.8.62&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;5457206954b06561e2608c7e19cf58b1926586d999c246eebe4502f7e2039d1a&quot;
+dependencies = [
+ &quot;proc-macro2&quot;,
+ &quot;quote&quot;,
+ &quot;syn 2.0.119&quot;,
+]
+
+[[package]]
+name = &quot;zerofrom&quot;
+version = &quot;0.1.8&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;0ec05a11813ea801ff6d75110ad09cd0824ddba17dfe17128ea0d5f68e6c5272&quot;
+dependencies = [
+ &quot;zerofrom-derive&quot;,
+]
+
+[[package]]
+name = &quot;zerofrom-derive&quot;
+version = &quot;0.1.8&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;f75b4683f6c7f45248d4d64056a24298c6281e0993356d7d1b4a1a962ef10d4a&quot;
+dependencies = [
+ &quot;proc-macro2&quot;,
+ &quot;quote&quot;,
+ &quot;syn 3.0.8&quot;,
+ &quot;synstructure&quot;,
+]
+
+[[package]]
+name = &quot;zerotrie&quot;
+version = &quot;0.2.5&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;4ea269c3bd32f0a32c321907a2ae912ba6f4649bb0fc764a15627e99a7095a3f&quot;
+dependencies = [
+ &quot;displaydoc&quot;,
+ &quot;yoke&quot;,
+ &quot;zerofrom&quot;,
+]
+
+[[package]]
+name = &quot;zerovec&quot;
+version = &quot;0.11.8&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;bb0464e17806c1d976d5cba29399c7f08e516e279e2ba493f63123b5fca67dd8&quot;
+dependencies = [
+ &quot;yoke&quot;,
+ &quot;zerofrom&quot;,
+ &quot;zerovec-derive&quot;,
+]
+
+[[package]]
+name = &quot;zerovec-derive&quot;
+version = &quot;0.11.6&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;34df6fc39dbd26ddc9c10e6a2984476e13acce22e64e4487636ef494369225da&quot;
+dependencies = [
+ &quot;proc-macro2&quot;,
+ &quot;quote&quot;,
+ &quot;syn 3.0.8&quot;,
+]
+
+[[package]]
+name = &quot;zlib-rs&quot;
+version = &quot;0.6.8&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;b268e58e7c693d7c271f93ffc4ba3b380412554231c85bf61ca7af91042a4112&quot;
+
+[[package]]
+name = &quot;zmij&quot;
+version = &quot;1.0.23&quot;
+source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
+checksum = &quot;29666d0abbfad1e3dc4dcf6144730dd3a3ab225bbbdac83319345b1b44ccfc1b&quot;</code></pre>
+</details><details>
+<summary>Complete Cargo.toml</summary><pre class="code" data-lang="toml"><code>[package]
+name = &quot;rust-salvage&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2021&quot;
+
+[[bin]]
+name = &quot;game&quot;
+path = &quot;src/main.rs&quot;
+
+[dependencies]
+# resolved against the engine checkout; copies of this project outside the repo get this path rewritten (see docs/RUST_TIER.md)
+nord-runtime-wasm = { path = &quot;../../crates/nord-runtime-wasm&quot; }
+
+[workspace]
+
+[profile.release]
+opt-level = &quot;s&quot;
+lto = true
+panic = &quot;abort&quot;</code></pre>
+</details><details>
+<summary>Complete index.html</summary><pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;&lt;title&gt;Orbital Salvage&lt;/title&gt;
+&lt;style&gt;html,body{margin:0;height:100%;background:#101418;overflow:hidden}canvas{width:100vw;height:100vh;display:block}&lt;/style&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;canvas id=&quot;glcanvas&quot; tabindex=&quot;1&quot;&gt;&lt;/canvas&gt;
+&lt;!-- dev page: served by `nord serve`; `nord export --target web-wasm-game` writes its own relative index.html --&gt;
+&lt;script src=&quot;/vendor/macroquad/mq_js_bundle.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;load(&quot;target/web/game.wasm&quot;);&lt;/script&gt;
+&lt;/body&gt;&lt;/html&gt;</code></pre>
+</details><details>
+<summary>Complete nord.project.json</summary><pre class="code" data-lang="json"><code>{
+  &quot;format&quot;: 1,
+  &quot;name&quot;: &quot;Orbital Salvage \u2014 Rust/WASM workshop&quot;,
+  &quot;id&quot;: &quot;com.crowelian.rustsalvage&quot;,
+  &quot;type&quot;: &quot;wasm-game&quot;,
+  &quot;engineVersion&quot;: &quot;0.1.0&quot;,
+  &quot;startScene&quot;: &quot;&quot;,
+  &quot;display&quot;: {
+    &quot;width&quot;: 800,
+    &quot;height&quot;: 600,
+    &quot;scale&quot;: &quot;fit&quot;,
+    &quot;pixelArt&quot;: false,
+    &quot;background&quot;: &quot;#000000&quot;
+  },
+  &quot;physics&quot;: {
+    &quot;engine&quot;: &quot;none&quot;,
+    &quot;gravity&quot;: [
+      0,
+      0,
+      0
+    ]
+  },
+  &quot;input&quot;: {
+    &quot;actions&quot;: {}
+  },
+  &quot;plugins&quot;: []
+}</code></pre>
+</details><details>
+<summary>Complete src/sim.rs</summary><pre class="code" data-lang="rust"><code>// Pure rules: no renderer, browser, file system or frame clock required.
+#[derive(Clone, Copy, Debug)]
+pub struct Body {
+    pub x: f32,
+    pub y: f32,
+    pub vx: f32,
+    pub vy: f32,
+}
+#[derive(Debug)]
+pub struct Run {
+    pub ship: Body,
+    pub rocks: Vec&lt;Body&gt;,
+    pub core: (f32, f32),
+    pub score: u32,
+    pub lives: u32,
+    pub remaining: f32,
+    pub dash: f32,
+    pub shield: f32,
+    pub won: bool,
+    pub over: bool,
+    pub paused: bool,
+}
+impl Run {
+    pub fn new() -&gt; Self {
+        Self {
+            ship: Body {
+                x: 400.,
+                y: 300.,
+                vx: 0.,
+                vy: 0.,
+            },
+            rocks: (0..6)
+                .map(|i| Body {
+                    x: 80. + i as f32 * 110.,
+                    y: 80.,
+                    vx: 35. + i as f32 * 8.,
+                    vy: 45.,
+                })
+                .collect(),
+            core: (520., 300.),
+            score: 0,
+            lives: 3,
+            remaining: 60.,
+            dash: 0.,
+            shield: 1.,
+            won: false,
+            over: false,
+            paused: false,
+        }
+    }
+    pub fn tick(&amp;mut self, dt: f32, direction: (f32, f32), dash: bool) {
+        if self.over || self.paused {
+            return;
+        }
+        let dt = dt.clamp(0., 0.05);
+        self.remaining = (self.remaining - dt).max(0.);
+        self.dash = (self.dash - dt).max(0.);
+        self.shield = (self.shield - dt).max(0.);
+        let mut speed = 190.;
+        if dash &amp;&amp; self.dash == 0. {
+            self.dash = 2.;
+            self.shield = 0.25;
+        }
+        if self.dash &gt; 1.75 {
+            speed = 540.;
+        }
+        let length = direction.0.hypot(direction.1).max(1.);
+        self.ship.x = (self.ship.x + direction.0 / length * speed * dt).clamp(18., 782.);
+        self.ship.y = (self.ship.y + direction.1 / length * speed * dt).clamp(55., 582.);
+        for rock in &amp;mut self.rocks {
+            rock.x += rock.vx * dt;
+            rock.y += rock.vy * dt;
+            if rock.x &lt; 15. || rock.x &gt; 785. {
+                rock.vx = -rock.vx;
+                rock.x = rock.x.clamp(15., 785.);
+            }
+            if rock.y &lt; 55. || rock.y &gt; 585. {
+                rock.vy = -rock.vy;
+                rock.y = rock.y.clamp(55., 585.);
+            }
+        }
+        if self.shield == 0.
+            &amp;&amp; self
+                .rocks
+                .iter()
+                .any(|r| (r.x - self.ship.x).hypot(r.y - self.ship.y) &lt; 29.)
+        {
+            self.lives -= 1;
+            self.shield = 1.5;
+            self.ship.x = 400.;
+            self.ship.y = 300.;
+            if self.lives == 0 {
+                self.over = true;
+                return;
+            }
+        }
+        if (self.core.0 - self.ship.x).hypot(self.core.1 - self.ship.y) &lt; 26. {
+            self.score += 1;
+            self.remaining += 2.;
+            self.core = (
+                80. + (self.score * 137 % 640) as f32,
+                90. + (self.score * 91 % 450) as f32,
+            );
+            if self.score == 10 {
+                self.won = true;
+                self.over = true;
+            }
+        }
+        if self.remaining == 0. {
+            self.over = true;
+        }
+    }
+}
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn diagonal_speed_is_normalized() {
+        let mut a = Run::new();
+        let mut b = Run::new();
+        a.tick(0.01, (1., 0.), false);
+        b.tick(0.01, (1., 1.), false);
+        assert!(
+            ((a.ship.x - 400.).hypot(a.ship.y - 300.) - (b.ship.x - 400.).hypot(b.ship.y - 300.))
+                .abs()
+                &lt; 0.001
+        );
+    }
+    #[test]
+    fn pause_and_loss_freeze_rules() {
+        let mut g = Run::new();
+        g.paused = true;
+        g.tick(0.05, (1., 0.), true);
+        assert_eq!(g.remaining, 60.);
+        g.paused = false;
+        g.remaining = 0.001;
+        g.tick(0.01, (0., 0.), false);
+        assert!(g.over &amp;&amp; !g.won);
+    }
+    #[test]
+    fn ten_cores_win_and_dash_recharges() {
+        let mut g = Run::new();
+        g.rocks.clear();
+        g.tick(0.01, (1., 0.), true);
+        assert!(g.dash &gt; 1.9);
+        for _ in 0..10 {
+            g.ship.x = g.core.0;
+            g.ship.y = g.core.1;
+            g.tick(0.01, (0., 0.), false);
+        }
+        assert_eq!(g.score, 10);
+        assert!(g.over &amp;&amp; g.won);
+    }
+    #[test]
+    fn damage_has_grace_and_no_underflow() {
+        let mut g = Run::new();
+        g.shield = 0.;
+        g.rocks = vec![g.ship];
+        g.tick(0.01, (0., 0.), false);
+        assert_eq!(g.lives, 2);
+        g.tick(0.01, (0., 0.), false);
+        assert_eq!(g.lives, 2);
+        g.lives = 1;
+        g.shield = 0.;
+        g.rocks = vec![g.ship];
+        g.tick(0.01, (0., 0.), false);
+        g.tick(0.01, (0., 0.), false);
+        assert_eq!(g.lives, 0);
+        assert!(g.over);
+    }
+}</code></pre>
+</details><div class="pager"><a href="tut-t36-advanced-node-vault.html"><small>← Previous</small>T36 Circuit Vault — a web game with a real Node server</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-set-up-a-rust-project-nord-can-build">1. Set up a Rust project Nord can build </a><a href="#2-split-rules-from-the-window">2. Split rules from the window </a><a href="#3-borrow-state-and-advance-time">3. Borrow state and advance time </a><a href="#4-normalize-motion-and-implement-a-dash">4. Normalize motion and implement a dash </a><a href="#5-move-hazards-resolve-damage-and-collect-cargo">5. Move hazards, resolve damage and collect cargo </a><a href="#6-test-without-a-browser">6. Test without a browser </a><a href="#7-connect-macroquad-drawing-and-keyboard-input">7. Connect macroquad drawing and keyboard input </a><a href="#8-build-and-play-in-nord">8. Build and Play in Nord </a><a href="#9-export-an-actual-standalone-wasm-game">9. Export an actual standalone WASM game </a><a href="#complete-source">Complete source </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

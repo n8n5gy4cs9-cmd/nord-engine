@@ -1,0 +1,19 @@
+[package]
+name = "rust-salvage"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "game"
+path = "src/main.rs"
+
+[dependencies]
+# resolved against the engine checkout; copies of this project outside the repo get this path rewritten (see docs/RUST_TIER.md)
+nord-runtime-wasm = { path = "../../crates/nord-runtime-wasm" }
+
+[workspace]
+
+[profile.release]
+opt-level = "s"
+lto = true
+panic = "abort"

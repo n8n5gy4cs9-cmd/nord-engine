@@ -1,0 +1,1928 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>T35 Prism Relay — code reactive GLSL game materials — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="tutorials.html" class="active" aria-current="page">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Tutorials</div><a href="tutorials.html">Learn by building</a><a href="tut-t01-hello-nord.html">T01 Hello Nord</a><a href="tut-t02-sprite-movement.html">T02 Sprite &amp; movement</a><a href="tut-t03-first-script.html">T03 Your first script</a><a href="tut-t04-platformer.html">T04 Platformer from template</a><a href="tut-t05-physics.html">T05 Physics &amp; collisions</a><a href="tut-t06-tilemaps.html">T06 Tilemaps</a><a href="tut-t07-animation-juice.html">T07 Animation &amp; juice</a><a href="tut-t08-ui-hud.html">T08 UI &amp; HUD</a><a href="tut-t09-audio.html">T09 Audio</a><a href="tut-t10-3d-scene.html">T10 3D scene &amp; camera</a><a href="tut-t11-3d-physics.html">T11 3D physics (FPS)</a><a href="tut-t12-enemy-ai.html">T12 Enemy AI</a><a href="tut-t13-save-load.html">T13 Save &amp; load</a><a href="tut-t14-export-host.html">T14 Export to web &amp; host it</a><a href="tut-t15-mac-app.html">T15 Mac app</a><a href="tut-t16-rust-game.html">T16 Rust/WASM game</a><a href="tut-t17-rust-egui-app.html">T17 Rust egui app</a><a href="tut-t18-library-snippets.html">T18 Writing library snippets</a><a href="tut-t19-notepaint.html">T19 Build notepaint, from a blank folder</a><a href="tut-t20-star-not.html">T20 Build Star-Not, a complete small space adventure</a><a href="tut-t21-project-design.html">T21 Plan a bigger Nord project</a><a href="tut-t22-shader-terrain.html">T22 Put a terrain shader in a Nord app</a><a href="tut-t23-light-shadows.html">T23 2D lights and real shadows</a><a href="tut-t24-event-sheet-platformer.html">T24 A platformer from events</a><a href="tut-t25-topdown-shooter.html">T25 A top-down shooter from events</a><a href="tut-t26-menus-languages.html">T26 Menus and two languages</a><a href="tut-t27-fps-level.html">T27 Build your first FPS level</a><a href="tut-t28-machine-workshop.html">T28 Machine Workshop — build a gravity puzzle in 2D Level</a><a href="tut-t29-dungeon-two-floors.html">T29 Two Floors — edit a Shattered Pixel Dungeon adaptation</a><a href="tut-t30-tank-patrol.html">T30 Tiny Tank Patrol — build a top-down tank arena</a><a href="tut-t31-full-2d-platformer.html">T31 Full game workshop — Coin Canyon (2D)</a><a href="tut-t32-full-3d-platformer.html">T32 Full game workshop — Sunset Gems (3D)</a><a href="tut-t33-code-coin-rush.html">T33 Code a full 2D game — Coin Rush</a><a href="tut-t34-code-crystal-relay.html">T34 Code a full 3D game — Crystal Relay</a><a href="tut-t35-advanced-prism-shaders.html" class="cur" aria-current="page">T35 Prism Relay — code reactive GLSL game materials</a><a href="tut-t36-advanced-node-vault.html">T36 Circuit Vault — a web game with a real Node server</a><a href="tut-t37-advanced-rust-wasm.html">T37 Orbital Salvage — code Rust gameplay and export real WASM</a></nav><main id="content"><div class="crumb">Tutorials / Nord Engine</div><h1>T35 Prism Relay — code reactive GLSL game materials</h1>
+<p>Turn the Crystal Relay time trial into <strong>Prism Relay</strong>, a playable shader workshop. Platforms glow cyan when sprint energy is full, darken as it drains and turn red near the moving hazard. A grid and scanning wave animate across their surfaces. F changes grid density; G changes glow. The underlying game still has ordered gems, checkpoint lives, sprint energy, a timer, medals and saved best times.</p>
+<p>This is real <strong>GLSL running on the GPU</strong>, connected to JavaScript gameplay state. You will reuse Nord&#39;s Babylon renderer instead of writing a WebGL renderer. Allow 90 minutes after T34. You need a WebGL-capable browser and the engine&#39;s bundled libraries. No downloaded textures, shader services or npm packages are used.</p>
+<p><a href="../../assets/downloads/prism-relay-source.zip">Download the complete Prism Relay source project</a>. Extract it to a writable folder and open its <code>nord.project.json</code> in Nord. For your own version copy your working T34 project and rename its project name/id. Keeping a separate copy protects the tested original.</p>
+<figure class="shot"><img src="../../assets/screenshots/ed-advanced-prism-relay.png" alt="Prism Relay with procedural cyan grid platforms and shader controls" loading="lazy"><figcaption>These platform surfaces come from GLSL arithmetic, not image textures. Gameplay sends energy and hazard proximity to the shader every update.</figcaption></figure><h2 id="1-separate-the-two-programs-you-are-writing">1. Separate the two programs you are writing<a class="anchor" href="#1-separate-the-two-programs-you-are-writing">#</a></h2>
+<p>Your <strong>JavaScript</strong> runs game logic once per update: read sprint energy, measure hazard distance and send a few numbers. The <strong>vertex shader</strong> transforms each vertex; the <strong>fragment shader</strong> calculates the colour of visible surface samples. The GPU executes the shader many times in parallel, so GLSL has no access to your JavaScript objects, scene search, UI or save slot.</p>
+<p>The bridge is a <strong>uniform</strong>, a value JavaScript supplies to the material. A <strong>varying</strong> carries interpolated values from vertices to fragments. Here UV coordinates travel through a varying, while time, energy, danger, intensity and grid frequency are uniforms.</p>
+<p>Create <code>scripts/prism-shaders.js</code> in your project folder, then open it in Nord&#39;s code editor. Export the vertex shader string:</p>
+<pre class="code" data-lang="js"><code>export const vertexSource = `
+precision highp float;
+attribute vec3 position;
+attribute vec2 uv;
+uniform mat4 worldViewProjection;
+varying vec2 vUV;
+void main() {
+  vUV = uv;
+  gl_Position = worldViewProjection * vec4(position, 1.0);
+}`;</code></pre>
+<p>JavaScript backticks hold the GLSL source. <code>attribute</code> is geometry supplied by the engine. <code>worldViewProjection</code> combines object placement, camera view and perspective. Multiplying the local position by it produces the clip-space position the GPU expects.</p>
+<p><strong>Important design choice:</strong> this shader leaves vertex positions unchanged. The visible platform still matches its physics collider. Moving vertices for waves would require a deliberate collision policy; a beautiful surface that lies about landings makes a bad platform game.</p>
+<h2 id="2-use-uvs-to-repeat-a-procedural-pattern">2. Use UVs to repeat a procedural pattern<a class="anchor" href="#2-use-uvs-to-repeat-a-procedural-pattern">#</a></h2>
+<p>Add the fragmentSource export shown in the complete source. Its key grid calculation is:</p>
+<pre class="code" data-lang="glsl"><code>vec2 p = vUV * uFrequency;
+vec2 cell = abs(fract(p) - 0.5);
+float line = smoothstep(0.43, 0.49, max(cell.x, cell.y));</code></pre>
+<p>UVs normally range from zero to one across a mesh face. Multiplying by frequency creates repeated cells. <code>fract</code> keeps only the fractional part, resetting each cell to the same zero-to-one range. Subtracting 0.5 centres it; <code>abs</code> measures distance from that centre.</p>
+<p><code>max(cell.x, cell.y)</code> becomes large near either edge. <code>smoothstep</code> turns that distance into a soft grid line rather than an abrupt on/off threshold. Frequency controls cell count; it does not change platform size. Different box faces have their own UV islands, so seams are expected.</p>
+<p><strong>Exercise:</strong> predict what frequency 4, 8 and 16 will look like. Do not change every number at once. At high densities thin grid lines can shimmer at a distance; lower the frequency before blaming physics or camera motion.</p>
+<h2 id="3-animate-a-wave-without-moving-geometry">3. Animate a wave without moving geometry<a class="anchor" href="#3-animate-a-wave-without-moving-geometry">#</a></h2>
+<p>The shader adds a scanning brightness wave:</p>
+<pre class="code" data-lang="glsl"><code>float wave = 0.5 + 0.5 * sin((vUV.x + vUV.y) * 18.0 - uTime * 3.0);</code></pre>
+<p>Sine ranges from minus one to one. Multiplying and offsetting by 0.5 remaps it to zero through one. Adding UV components makes diagonal bands. The time term shifts those bands each frame. The spatial multiplier controls band density; the time multiplier controls speed.</p>
+<p>Use the relay&#39;s elapsed gameplay clock for uTime. It stops during pause, so the effect freezes with the game. A wall-clock timestamp would keep the surfaces animating while the player is paused. Neither is universally wrong, but the chosen clock should match the intended behavior.</p>
+<p><strong>Checkpoint:</strong> after the material is attached, pause the game. Both the countdown and scanning wave should stop, then resume together.</p>
+<h2 id="4-translate-gameplay-into-colour">4. Translate gameplay into colour<a class="anchor" href="#4-translate-gameplay-into-colour">#</a></h2>
+<p>The complete fragment shader builds a cool colour from sprint energy and blends toward red as danger rises:</p>
+<pre class="code" data-lang="glsl"><code>vec3 cool = mix(vec3(0.04, 0.12, 0.22), vec3(0.1, 0.9, 1.0), uEnergy);
+vec3 color = mix(cool, vec3(1.0, 0.12, 0.05), uDanger);
+color *= 0.25 + line * uIntensity + wave * 0.25;
+gl_FragColor = vec4(color, 1.0);</code></pre>
+<p><code>vec3</code> holds red, green and blue. <code>mix(a,b,t)</code> interpolates: t=0 chooses a, t=1 chooses b. Keeping energy/danger in zero-to-one bounds makes the control predictable. Alpha 1 makes the surface opaque.</p>
+<p>The whole course shares one material. That means <strong>all platforms</strong> react to the player&#39;s current danger level. This is an intentional global warning, not a per-platform distance field. For individual warnings you would need one material/uniform set per region or an instance-data approach.</p>
+<p>This material is unlit: its brightness is calculated by this shader rather than Nord&#39;s normal PBR lighting. It does not acquire physical lighting simply because it is on a 3D object. Bloom may make bright areas glow, but it does not replace the shader calculation.</p>
+<h2 id="5-create-and-attach-the-gpu-material-from-nord">5. Create and attach the GPU material from Nord<a class="anchor" href="#5-create-and-attach-the-gpu-material-from-nord">#</a></h2>
+<p>Create <code>scripts/prism.js</code> and attach it to a new empty entity named <strong>PrismFX</strong>. Keep the relay controller on Player. The complete Prism script creates the material through the existing backend:</p>
+<pre class="code" data-lang="js"><code>const backend = this.game.backend;
+this.material = new backend.B.ShaderMaterial('prism-relay', backend.scene,
+  { vertexSource, fragmentSource }, {
+    attributes: ['position', 'uv'],
+    uniforms: ['worldViewProjection', 'uTime', 'uEnergy', 'uDanger',
+      'uIntensity', 'uFrequency'],
+  });</code></pre>
+<p>This is an explicit <strong>Babylon escape hatch</strong>. Nord has no general custom-GLSL material component, so we use its already-created Babylon scene and bundled Babylon API. This script belongs to the Babylon tier; do not attach it to a Phaser project.</p>
+<p>Uniform names must match the shader exactly, including case. The shader strings are imported from your other project file. The script applies one shared material to Start and the entities named Plat0 through Plat6, preserving each mesh&#39;s original material for cleanup.</p>
+<p><strong>Checkpoint:</strong> save both files and the scene, Stop and Play. The landings show a grid. Console should contain no shader compilation error. If a platform is black or missing, inspect the first compiler error; a missing semicolon often causes many later messages.</p>
+<h2 id="6-send-live-state-and-bind-controls">6. Send live state and bind controls<a class="anchor" href="#6-send-live-state-and-bind-controls">#</a></h2>
+<p>Add actions to the existing <code>input.actions</code> object in nord.project.json:</p>
+<pre class="code" data-lang="json"><code>&quot;grid&quot;: [&quot;KeyF&quot;],
+&quot;glow&quot;: [&quot;KeyG&quot;]</code></pre>
+<p>Keep the other actions and valid commas. The full controller measures hazard proximity:</p>
+<pre class="code" data-lang="js"><code>const distance = Math.hypot(...p.map((v, i) =&gt; v - h[i]));
+const danger = Math.max(0, 1 - distance / 6);
+this.material.setFloat('uDanger', danger);</code></pre>
+<p>At six units or farther the value is zero; at the hazard&#39;s centre it approaches one. JavaScript supplies one scalar, not a copy of the whole game object. <code>setFloat</code> updates a named uniform for future draws.</p>
+<p>The final update sends all uniforms through Object.entries. This loops over name/value pairs, keeping the bridge easy to inspect. Pressed checks toggle F/G once per press; a down check would toggle repeatedly every frame while held.</p>
+<p>Select PrismFX in Inspector to tune intensity and frequency. Stop/Play initializes attributes cleanly. Changing shader module strings while running may require Stop/Play because their imported module is a separate dependency; do not assume editing prism-shaders.js reruns the material constructor.</p>
+<p><strong>Checkpoint:</strong> F doubles grid density, G changes glow, Shift drains energy and visibly darkens the course, and approaching the hazard moves its colour toward red. None of these changes landing collision.</p>
+<h2 id="7-dispose-resources-and-preserve-the-gameplay-loop">7. Dispose resources and preserve the gameplay loop<a class="anchor" href="#7-dispose-resources-and-preserve-the-gameplay-loop">#</a></h2>
+<p>A shader material allocates GPU resources. On scene destruction, restore the original materials on meshes that still exist, dispose the custom material, and clear the custom help screen. The complete onDestroy does these jobs even if some start work was incomplete.</p>
+<p>Do not dispose the original materials just because you temporarily replaced them: the normal component lifecycle owns them. Do not keep a new ShaderMaterial per frame either; construct once and update uniforms thereafter.</p>
+<p>Play a full relay: ordered crystals, a checkpoint fall, sprint recharge, hazard damage, pause, win and retry. Test retry several times while watching Console. The visual layer must not create a second relay controller or interfere with its records.</p>
+<h2 id="8-export-inspect-and-extend">8. Export, inspect and extend<a class="anchor" href="#8-export-inspect-and-extend">#</a></h2>
+<p>From your project&#39;s parent folder:</p>
+<pre class="code" data-lang="sh"><code>nord check my-prism-relay
+nord build my-prism-relay --out prism-web --zip
+python3 -m http.server 8002 --directory prism-web</code></pre>
+<p>Open the exported copy, confirm the shader compiles there, then test F/G and sprint. The two imported shader strings are ordinary project JavaScript, so the folder export includes them with the rest of the script graph. There are no external texture requests.</p>
+<p>If the export is black, compare Console messages with the editor run and verify you copied both modules. If glow is too strong, lower intensity before changing your entire post-process chain. If a new platform keeps its original material, give it the expected PlatN name or update the material-selection rule.</p>
+<p><strong>Advanced challenges:</strong> make a safe-area colour that depends on the next crystal; add an Inspector colour parameter using setVector3; replace the diagonal wave with radial rings using distance from UV centre. Keep the no-displacement contract until you explicitly implement matching collision.</p>
+<h2 id="complete-source">Complete source<a class="anchor" href="#complete-source">#</a></h2>
+<p>Every custom JavaScript/GLSL line follows, along with the inherited relay game, helpers, full scene/project data and HTML. The <a href="../../assets/downloads/prism-relay-source.zip">source archive</a> also contains binaries and licence. Start with T34 if the gameplay controller is unfamiliar; this tutorial adds a focused GPU layer to that complete game.</p>
+<!-- GENERATED GAME SOURCE: regenerate with node tools/build-code-workshops.mjs --><h3 id="scripts-prism-js">scripts/prism.js<a class="anchor" href="#scripts-prism-js">#</a></h3>
+<pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
+import { vertexSource, fragmentSource } from './prism-shaders.js';
+export default class Prism extends NordScript {
+  static attributes = {
+    intensity: { type: 'number', default: 1.6, min: 0, max: 4 },
+    frequency: { type: 'number', default: 8, min: 1, max: 32 },
+  };
+  start() {
+    // Intentional Babylon escape hatch: Nord has no custom GLSL-material component.
+    const backend = this.game.backend;
+    this.material = new backend.B.ShaderMaterial('prism-relay', backend.scene,
+      { vertexSource, fragmentSource }, {
+        attributes: ['position', 'uv'],
+        uniforms: ['worldViewProjection', 'uTime', 'uEnergy', 'uDanger', 'uIntensity', 'uFrequency'],
+      });
+    this.originals = [];
+    for (const entity of this.scene.all()) {
+      if (!/^Plat\d+$/.test(entity.name) &amp;&amp; entity.name !== 'Start') continue;
+      const mesh = entity.getComponent('mesh').mesh;
+      this.originals.push([mesh, mesh.material]);
+      mesh.material = this.material;
+    }
+    this.relay = this.scene.find('Player').scripts.find(s =&gt; 'energy' in s);
+    this.ui.label('PRISM LAB: F = grid density | G = glow | Shift = sprint', {
+      screen: 'prism', x: 12, y: 130, size: 16,
+    });
+    this.ui.show('prism');
+  }
+  update() {
+    const r = this.relay, p = r.player.pos, h = r.hazard.pos;
+    const distance = Math.hypot(...p.map((v, i) =&gt; v - h[i]));
+    if (this.input.pressed('grid')) this.attrs.frequency = this.attrs.frequency === 8 ? 16 : 8;
+    if (this.input.pressed('glow')) this.attrs.intensity = this.attrs.intensity === 1.6 ? 0.5 : 1.6;
+    for (const [name, value] of Object.entries({
+      uTime: r.elapsed, uEnergy: r.energy, uDanger: Math.max(0, 1 - distance / 6),
+      uIntensity: this.attrs.intensity, uFrequency: this.attrs.frequency,
+    })) this.material.setFloat(name, value);
+  }
+  onDestroy() {
+    for (const [mesh, material] of this.originals ?? []) if (!mesh.isDisposed()) mesh.material = material;
+    this.material?.dispose();
+    this.ui.clear('prism');
+  }
+}</code></pre>
+<details>
+<summary>Complete index.html</summary><pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;&lt;title&gt;Prism Relay — GLSL workshop&lt;/title&gt;
+&lt;style&gt;html,body{margin:0;height:100%;background:#101418;overflow:hidden}#stage{position:relative;width:100vw;height:100vh}&lt;/style&gt;
+&lt;script type=&quot;importmap&quot;&gt;{&quot;imports&quot;:{&quot;nord&quot;:&quot;/runtime/core/index.js&quot;}}&lt;/script&gt;&lt;/head&gt;
+&lt;body&gt;&lt;div id=&quot;stage&quot;&gt;&lt;/div&gt;
+&lt;script src=&quot;/vendor/babylonjs/babylon.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;/vendor/babylonjs-loaders/babylonjs.loaders.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;/vendor/babylonjs-gui/babylon.gui.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;/vendor/havok/HavokPhysics_umd.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;module&quot;&gt;
+import { boot } from '/runtime/babylon/index.js';
+try {
+  const project = await (await fetch('nord.project.json')).json();
+  await boot(project, { container: document.getElementById('stage'), preserveDrawingBuffer: true });
+  window.__nord_ready = true;
+} catch (e) { console.error(e); window.__nord_error = String(e); }
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</code></pre>
+</details><details>
+<summary>Complete nord.project.json</summary><pre class="code" data-lang="json"><code>{
+  &quot;format&quot;: 1,
+  &quot;name&quot;: &quot;Prism Relay — GLSL workshop&quot;,
+  &quot;id&quot;: &quot;com.crowelian.prismrelay&quot;,
+  &quot;type&quot;: &quot;3d&quot;,
+  &quot;engineVersion&quot;: &quot;0.1.0&quot;,
+  &quot;startScene&quot;: &quot;scenes/main.scene.json&quot;,
+  &quot;display&quot;: {
+    &quot;width&quot;: 1280,
+    &quot;height&quot;: 720,
+    &quot;scale&quot;: &quot;fit&quot;,
+    &quot;pixelArt&quot;: false,
+    &quot;background&quot;: &quot;#2e3440&quot;
+  },
+  &quot;physics&quot;: {
+    &quot;engine&quot;: &quot;havok&quot;,
+    &quot;gravity&quot;: [
+      0,
+      -9.81,
+      0
+    ]
+  },
+  &quot;input&quot;: {
+    &quot;actions&quot;: {
+      &quot;left&quot;: [
+        &quot;KeyA&quot;,
+        &quot;ArrowLeft&quot;
+      ],
+      &quot;right&quot;: [
+        &quot;KeyD&quot;,
+        &quot;ArrowRight&quot;
+      ],
+      &quot;up&quot;: [
+        &quot;KeyW&quot;,
+        &quot;ArrowUp&quot;
+      ],
+      &quot;down&quot;: [
+        &quot;KeyS&quot;,
+        &quot;ArrowDown&quot;
+      ],
+      &quot;jump&quot;: [
+        &quot;Space&quot;
+      ],
+      &quot;fire&quot;: [
+        &quot;Space&quot;,
+        &quot;Mouse0&quot;
+      ],
+      &quot;interact&quot;: [
+        &quot;KeyE&quot;,
+        &quot;Enter&quot;
+      ],
+      &quot;camLeft&quot;: [
+        &quot;KeyQ&quot;
+      ],
+      &quot;camRight&quot;: [
+        &quot;KeyE&quot;
+      ],
+      &quot;sprint&quot;: [
+        &quot;ShiftLeft&quot;,
+        &quot;ShiftRight&quot;
+      ],
+      &quot;grid&quot;: [
+        &quot;KeyF&quot;
+      ],
+      &quot;glow&quot;: [
+        &quot;KeyG&quot;
+      ]
+    }
+  },
+  &quot;plugins&quot;: [
+    &quot;ui&quot;,
+    &quot;audio&quot;
+  ],
+  &quot;ui&quot;: {
+    &quot;skin&quot;: &quot;cyber&quot;,
+    &quot;theme&quot;: &quot;nord&quot;
+  }
+}</code></pre>
+</details><details>
+<summary>Complete scenes/main.scene.json</summary><pre class="code" data-lang="json"><code>{
+  &quot;format&quot;: 1,
+  &quot;name&quot;: &quot;main&quot;,
+  &quot;settings&quot;: {},
+  &quot;entities&quot;: [
+    {
+      &quot;id&quot;: &quot;eeeeee1h&quot;,
+      &quot;name&quot;: &quot;Sun&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          10,
+          0
+        ],
+        &quot;rot&quot;: [
+          50,
+          -30,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;light&quot;,
+          &quot;kind&quot;: &quot;directional&quot;,
+          &quot;intensity&quot;: 1.4,
+          &quot;castShadows&quot;: true,
+          &quot;color&quot;: &quot;#fff4e0&quot;
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee1i&quot;,
+      &quot;name&quot;: &quot;Ambient&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;light&quot;,
+          &quot;kind&quot;: &quot;hemispheric&quot;,
+          &quot;intensity&quot;: 0.55,
+          &quot;color&quot;: &quot;#b0c0ff&quot;
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee1j&quot;,
+      &quot;name&quot;: &quot;Sky&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;skybox&quot;,
+          &quot;path&quot;: &quot;assets/skybox/sunset&quot;
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee1k&quot;,
+      &quot;name&quot;: &quot;Ground&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;ground&quot;,
+          &quot;size&quot;: [
+            120,
+            0.2,
+            120
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;texture&quot;: &quot;assets/textures/sand.png&quot;,
+          &quot;uvScale&quot;: [
+            30,
+            30
+          ],
+          &quot;roughness&quot;: 1
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee1l&quot;,
+      &quot;name&quot;: &quot;Start&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0.25,
+          0
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            6,
+            0.5,
+            6
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;texture&quot;: &quot;assets/textures/stone.png&quot;,
+          &quot;uvScale&quot;: [
+            3,
+            3
+          ],
+          &quot;roughness&quot;: 0.8,
+          &quot;metallic&quot;: 0
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;,
+          &quot;mass&quot;: 1,
+          &quot;bounce&quot;: 0,
+          &quot;fixedRotation&quot;: false
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            6,
+            0.5,
+            6
+          ],
+          &quot;trigger&quot;: false
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee1m&quot;,
+      &quot;name&quot;: &quot;Plat0&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0.25,
+          6
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            3,
+            0.5,
+            3
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;texture&quot;: &quot;assets/textures/checker.png&quot;,
+          &quot;uvScale&quot;: [
+            1.5,
+            1.5
+          ],
+          &quot;roughness&quot;: 0.8,
+          &quot;metallic&quot;: 0
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;,
+          &quot;mass&quot;: 1,
+          &quot;bounce&quot;: 0,
+          &quot;fixedRotation&quot;: false
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            3,
+            0.5,
+            3
+          ],
+          &quot;trigger&quot;: false
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee1n&quot;,
+      &quot;name&quot;: &quot;Plat1&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          4,
+          0.9,
+          10
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            3,
+            0.5,
+            3
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;texture&quot;: &quot;assets/textures/checker.png&quot;,
+          &quot;uvScale&quot;: [
+            1.5,
+            1.5
+          ],
+          &quot;roughness&quot;: 0.8,
+          &quot;metallic&quot;: 0
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;,
+          &quot;mass&quot;: 1,
+          &quot;bounce&quot;: 0,
+          &quot;fixedRotation&quot;: false
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            3,
+            0.5,
+            3
+          ],
+          &quot;trigger&quot;: false
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee1o&quot;,
+      &quot;name&quot;: &quot;Plat2&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          8,
+          1.6,
+          14
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            3,
+            0.5,
+            3
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;texture&quot;: &quot;assets/textures/checker.png&quot;,
+          &quot;uvScale&quot;: [
+            1.5,
+            1.5
+          ],
+          &quot;roughness&quot;: 0.8,
+          &quot;metallic&quot;: 0
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;,
+          &quot;mass&quot;: 1,
+          &quot;bounce&quot;: 0,
+          &quot;fixedRotation&quot;: false
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            3,
+            0.5,
+            3
+          ],
+          &quot;trigger&quot;: false
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee1p&quot;,
+      &quot;name&quot;: &quot;Plat3&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          3,
+          2.4,
+          18
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            3,
+            0.5,
+            3
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;texture&quot;: &quot;assets/textures/checker.png&quot;,
+          &quot;uvScale&quot;: [
+            1.5,
+            1.5
+          ],
+          &quot;roughness&quot;: 0.8,
+          &quot;metallic&quot;: 0
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;,
+          &quot;mass&quot;: 1,
+          &quot;bounce&quot;: 0,
+          &quot;fixedRotation&quot;: false
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            3,
+            0.5,
+            3
+          ],
+          &quot;trigger&quot;: false
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee1q&quot;,
+      &quot;name&quot;: &quot;Plat4&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          -2,
+          3.2,
+          22
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            3,
+            0.5,
+            3
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;texture&quot;: &quot;assets/textures/checker.png&quot;,
+          &quot;uvScale&quot;: [
+            1.5,
+            1.5
+          ],
+          &quot;roughness&quot;: 0.8,
+          &quot;metallic&quot;: 0
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;,
+          &quot;mass&quot;: 1,
+          &quot;bounce&quot;: 0,
+          &quot;fixedRotation&quot;: false
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            3,
+            0.5,
+            3
+          ],
+          &quot;trigger&quot;: false
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee1r&quot;,
+      &quot;name&quot;: &quot;Plat5&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          -7,
+          3.9,
+          25
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            3,
+            0.5,
+            3
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;texture&quot;: &quot;assets/textures/checker.png&quot;,
+          &quot;uvScale&quot;: [
+            1.5,
+            1.5
+          ],
+          &quot;roughness&quot;: 0.8,
+          &quot;metallic&quot;: 0
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;,
+          &quot;mass&quot;: 1,
+          &quot;bounce&quot;: 0,
+          &quot;fixedRotation&quot;: false
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            3,
+            0.5,
+            3
+          ],
+          &quot;trigger&quot;: false
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee1s&quot;,
+      &quot;name&quot;: &quot;Plat6&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          -12,
+          4.6,
+          29
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            4,
+            0.5,
+            4
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;texture&quot;: &quot;assets/textures/checker.png&quot;,
+          &quot;uvScale&quot;: [
+            2,
+            2
+          ],
+          &quot;roughness&quot;: 0.8,
+          &quot;metallic&quot;: 0
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;,
+          &quot;mass&quot;: 1,
+          &quot;bounce&quot;: 0,
+          &quot;fixedRotation&quot;: false
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            4,
+            0.5,
+            4
+          ],
+          &quot;trigger&quot;: false
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee1t&quot;,
+      &quot;name&quot;: &quot;Mover&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          14,
+          2.4,
+          22
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            3,
+            0.5,
+            3
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;color&quot;: &quot;#88c0d0&quot;,
+          &quot;roughness&quot;: 0.8,
+          &quot;metallic&quot;: 0
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;kinematic&quot;,
+          &quot;mass&quot;: 1,
+          &quot;bounce&quot;: 0,
+          &quot;fixedRotation&quot;: false
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            3,
+            0.5,
+            3
+          ],
+          &quot;trigger&quot;: false
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/physics-moving-platform.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;offset&quot;: [
+              0,
+              0,
+              8
+            ],
+            &quot;period&quot;: 5,
+            &quot;carryTag&quot;: &quot;player&quot;
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee1u&quot;,
+      &quot;name&quot;: &quot;Gem0&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;gem&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          1.45,
+          6
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;sphere&quot;,
+          &quot;size&quot;: [
+            0.5,
+            0.5,
+            0.5
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;color&quot;: &quot;#ebcb8b&quot;,
+          &quot;metallic&quot;: 0.6,
+          &quot;roughness&quot;: 0.3,
+          &quot;emissive&quot;: &quot;#6b5a20&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;sphere&quot;,
+          &quot;radius&quot;: 0.5,
+          &quot;trigger&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/spin.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;speed&quot;: 120,
+            &quot;axis&quot;: &quot;y&quot;
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee1v&quot;,
+      &quot;name&quot;: &quot;Gem1&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;gem&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          4,
+          2.1,
+          10
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;sphere&quot;,
+          &quot;size&quot;: [
+            0.5,
+            0.5,
+            0.5
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;color&quot;: &quot;#ebcb8b&quot;,
+          &quot;metallic&quot;: 0.6,
+          &quot;roughness&quot;: 0.3,
+          &quot;emissive&quot;: &quot;#6b5a20&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;sphere&quot;,
+          &quot;radius&quot;: 0.5,
+          &quot;trigger&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/spin.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;speed&quot;: 120,
+            &quot;axis&quot;: &quot;y&quot;
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee1w&quot;,
+      &quot;name&quot;: &quot;Gem2&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;gem&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          8,
+          2.8,
+          14
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;sphere&quot;,
+          &quot;size&quot;: [
+            0.5,
+            0.5,
+            0.5
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;color&quot;: &quot;#ebcb8b&quot;,
+          &quot;metallic&quot;: 0.6,
+          &quot;roughness&quot;: 0.3,
+          &quot;emissive&quot;: &quot;#6b5a20&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;sphere&quot;,
+          &quot;radius&quot;: 0.5,
+          &quot;trigger&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/spin.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;speed&quot;: 120,
+            &quot;axis&quot;: &quot;y&quot;
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee1x&quot;,
+      &quot;name&quot;: &quot;Gem3&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;gem&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          3,
+          3.5999999999999996,
+          18
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;sphere&quot;,
+          &quot;size&quot;: [
+            0.5,
+            0.5,
+            0.5
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;color&quot;: &quot;#ebcb8b&quot;,
+          &quot;metallic&quot;: 0.6,
+          &quot;roughness&quot;: 0.3,
+          &quot;emissive&quot;: &quot;#6b5a20&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;sphere&quot;,
+          &quot;radius&quot;: 0.5,
+          &quot;trigger&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/spin.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;speed&quot;: 120,
+            &quot;axis&quot;: &quot;y&quot;
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee1y&quot;,
+      &quot;name&quot;: &quot;Gem4&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;gem&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          -2,
+          4.4,
+          22
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;sphere&quot;,
+          &quot;size&quot;: [
+            0.5,
+            0.5,
+            0.5
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;color&quot;: &quot;#ebcb8b&quot;,
+          &quot;metallic&quot;: 0.6,
+          &quot;roughness&quot;: 0.3,
+          &quot;emissive&quot;: &quot;#6b5a20&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;sphere&quot;,
+          &quot;radius&quot;: 0.5,
+          &quot;trigger&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/spin.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;speed&quot;: 120,
+            &quot;axis&quot;: &quot;y&quot;
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee1z&quot;,
+      &quot;name&quot;: &quot;Gem5&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;gem&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          -7,
+          5.1,
+          25
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;sphere&quot;,
+          &quot;size&quot;: [
+            0.5,
+            0.5,
+            0.5
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;color&quot;: &quot;#ebcb8b&quot;,
+          &quot;metallic&quot;: 0.6,
+          &quot;roughness&quot;: 0.3,
+          &quot;emissive&quot;: &quot;#6b5a20&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;sphere&quot;,
+          &quot;radius&quot;: 0.5,
+          &quot;trigger&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/spin.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;speed&quot;: 120,
+            &quot;axis&quot;: &quot;y&quot;
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee20&quot;,
+      &quot;name&quot;: &quot;Gem6&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;gem&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          -12,
+          5.8,
+          29
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;sphere&quot;,
+          &quot;size&quot;: [
+            0.5,
+            0.5,
+            0.5
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;color&quot;: &quot;#ebcb8b&quot;,
+          &quot;metallic&quot;: 0.6,
+          &quot;roughness&quot;: 0.3,
+          &quot;emissive&quot;: &quot;#6b5a20&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;sphere&quot;,
+          &quot;radius&quot;: 0.5,
+          &quot;trigger&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/spin.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;speed&quot;: 120,
+            &quot;axis&quot;: &quot;y&quot;
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee21&quot;,
+      &quot;name&quot;: &quot;Player&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;player&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          1.5,
+          0
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;capsule&quot;,
+          &quot;size&quot;: [
+            0.8,
+            1.6,
+            0.8
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;color&quot;: &quot;#a3be8c&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;dynamic&quot;,
+          &quot;mass&quot;: 1,
+          &quot;fixedRotation&quot;: true,
+          &quot;drag&quot;: 0
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;capsule&quot;,
+          &quot;size&quot;: [
+            0.8,
+            1.6,
+            0.8
+          ]
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/platformer3d.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;speed&quot;: 6,
+            &quot;jumpSpeed&quot;: 8.5
+          }
+        },
+        {
+          &quot;path&quot;: &quot;scripts/util-sfx.js&quot;,
+          &quot;attributes&quot;: {}
+        },
+        {
+          &quot;path&quot;: &quot;scripts/relay.js&quot;,
+          &quot;attributes&quot;: {}
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee22&quot;,
+      &quot;name&quot;: &quot;Camera&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          5,
+          -8
+        ],
+        &quot;rot&quot;: [
+          20,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;camera&quot;,
+          &quot;fov&quot;: 60
+        },
+        {
+          &quot;type&quot;: &quot;postProcess&quot;,
+          &quot;fxaa&quot;: true,
+          &quot;bloom&quot;: true,
+          &quot;vignette&quot;: 0.3,
+          &quot;tonemap&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/camera-follow3d.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;target&quot;: &quot;Player&quot;,
+            &quot;offset&quot;: [
+              0,
+              5,
+              -8
+            ],
+            &quot;smoothing&quot;: 4
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee23&quot;,
+      &quot;name&quot;: &quot;Hazard&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          3,
+          3.3,
+          18
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;sphere&quot;,
+          &quot;size&quot;: [
+            0.8,
+            0.8,
+            0.8
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;color&quot;: &quot;#ff4433&quot;,
+          &quot;emissive&quot;: &quot;#aa1100&quot;
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee24&quot;,
+      &quot;name&quot;: &quot;PrismFX&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/prism.js&quot;,
+          &quot;attributes&quot;: {}
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    }
+  ]
+}</code></pre>
+</details><details>
+<summary>Complete scripts/camera-follow3d.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;camera.follow3d&quot;,&quot;title&quot;:&quot;Camera follow (3D rig)&quot;,&quot;category&quot;:&quot;camera&quot;,&quot;tier&quot;:[&quot;3d&quot;],&quot;tags&quot;:[&quot;camera&quot;,&quot;follow&quot;,&quot;chase&quot;],&quot;description&quot;:&quot;Chase camera for 3D: keeps an offset from a target entity (by name), smoothing position. Put on a camera entity (non-orbit) — it looks at the target.&quot;}
+import { NordScript } from 'nord';
+
+export default class CameraFollow3D extends NordScript {
+  static attributes = { target: { type: 'string', default: 'Player' }, offset: { type: 'vec3', default: [0, 4, -8] }, smoothing: { type: 'number', default: 5, min: 0 } };
+  start() { this.t = this.scene.find(this.attrs.target); }
+  lateUpdate(dt) {
+    if (!this.t || this.t.destroyed) return;
+    const a = this.attrs, tp = this.t.worldPos, p = this.entity.pos, k = Math.min(1, a.smoothing * dt || 1);
+    const want = [tp[0] + a.offset[0], tp[1] + a.offset[1], tp[2] + a.offset[2]];
+    const np = p.map((v, i) =&gt; v + (want[i] - v) * k);
+    this.entity.pos = np;
+    const d = [tp[0] - np[0], tp[1] - np[1], tp[2] - np[2]];
+    this.entity.rot = [(-Math.atan2(d[1], Math.hypot(d[0], d[2])) * 180) / Math.PI, (Math.atan2(d[0], d[2]) * 180) / Math.PI, 0];
+  }
+}</code></pre>
+</details><details>
+<summary>Complete scripts/mk.js</summary><pre class="code" data-lang="js"><code>// Tiny helpers to spawn coloured rectangles / circles / text at runtime (placeholder art). Generated by tools/gen_examples.mjs.
+const base = (name, x, y, z, tags, comps) =&gt; ({ name, tags: tags ?? [], transform: { pos: [x, y, z ?? 0], rot: [0, 0, 0], scale: [1, 1, 1] }, components: comps, scripts: [], children: [] });
+export const rectData = (name, x, y, w, h, color, o = {}) =&gt; base(name, x, y, o.z, o.tags, [{ type: 'sprite', texture: 'assets/sprites/square.png', size: [w, h], tint: color, alpha: o.alpha ?? 1 }]);
+export const circleData = (name, x, y, d, color, o = {}) =&gt; base(name, x, y, o.z, o.tags, [{ type: 'sprite', texture: 'assets/sprites/circle.png', size: [d, d], tint: color, alpha: o.alpha ?? 1 }]);
+export const textData = (name, x, y, t, o = {}) =&gt; base(name, x, y, o.z ?? 50, o.tags, [{ type: 'text', text: t, size: o.size ?? 20, color: o.color ?? '#eceff4' }]);
+export const rect = (scene, ...a) =&gt; scene.spawnData(rectData(...a));
+export const circle = (scene, ...a) =&gt; scene.spawnData(circleData(...a));
+export const label = (scene, ...a) =&gt; scene.spawnData(textData(...a));
+export const aabb = (a, b) =&gt; Math.abs(a.pos[0] - b.pos[0]) * 2 &lt; a.w + b.w &amp;&amp; Math.abs(a.pos[1] - b.pos[1]) * 2 &lt; a.h + b.h;</code></pre>
+</details><details>
+<summary>Complete scripts/physics-moving-platform.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;physics.moving-platform&quot;,&quot;title&quot;:&quot;Moving platform&quot;,&quot;category&quot;:&quot;physics&quot;,&quot;tier&quot;:[&quot;2d&quot;,&quot;3d&quot;],&quot;tags&quot;:[&quot;platform&quot;,&quot;path&quot;,&quot;carry&quot;],&quot;description&quot;:&quot;Moves back and forth between its start and start+offset (sine or linear). Riders (anything standing on it with a rigidbody) are carried by applying the platform's delta.&quot;}
+import { NordScript } from 'nord';
+
+export default class MovingPlatform extends NordScript {
+  static attributes = { offset: { type: 'vec3', default: [120, 0, 0] }, period: { type: 'number', default: 4, min: 0.1 }, mode: { type: 'enum', options: ['sine', 'pingpong'], default: 'sine' }, carryTag: { type: 'string', default: 'player' } };
+  start() { this.o = [...this.entity.pos]; this.t = 0; this.prev = [...this.o]; }
+  fixedUpdate(dt) {
+    const a = this.attrs; this.t += dt / a.period;
+    const f = a.mode === 'sine' ? (1 - Math.cos(this.t * Math.PI * 2)) / 2 : 1 - Math.abs(((this.t * 2) % 2) - 1);
+    const np = this.o.map((v, i) =&gt; v + a.offset[i] * f), d = np.map((v, i) =&gt; v - this.prev[i]);
+    this.entity.pos = np; this.prev = np;
+    for (const r of this.scene.findByTag(a.carryTag)) {
+      const dx = r.pos[0] - np[0], top = this.entity.getComponent('collider')?.data.size ?? [64, 16];
+      if (Math.abs(dx) &lt; top[0] / 2 &amp;&amp; this.physics.isGrounded(r)) r.pos = r.pos.map((v, i) =&gt; v + d[i]);
+    }
+  }
+}</code></pre>
+</details><details>
+<summary>Complete scripts/pickup.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;gameplay.pickup&quot;,&quot;title&quot;:&quot;Pickups &amp; power-ups&quot;,&quot;category&quot;:&quot;gameplay&quot;,&quot;tier&quot;:[&quot;2d&quot;,&quot;3d&quot;],&quot;tags&quot;:[&quot;coin&quot;,&quot;pickup&quot;,&quot;powerup&quot;,&quot;game-ready&quot;],&quot;requires&quot;:[&quot;trigger&quot;],&quot;description&quot;:&quot;Put on collectible entities: when the player touches it, emits a global event (default 'score' + value), or applies a power-up (heal / speed / shield via entity events), plays a sound and disappears with a pop tween. Magnetises toward the player when close.&quot;}
+import { NordScript } from 'nord';
+
+export default class Pickup extends NordScript {
+  static attributes = { kind: { type: 'enum', options: ['score', 'heal', 'speed', 'shield', 'xp', 'custom'], default: 'score' }, value: { type: 'number', default: 10 }, duration: { type: 'number', default: 5 }, event: { type: 'string', default: '', label: 'Custom global event' }, sfx: { type: 'asset', assetType: 'audio', default: '' }, tag: { type: 'string', default: 'player' }, magnet: { type: 'number', default: 0, label: 'Magnet radius' }, bob: { type: 'number', default: 3 } };
+  start() { this.y0 = this.entity.pos[1]; this.t = this.rng.range(0, 6); this.taken = false; }
+  update(dt) {
+    const a = this.attrs, e = this.entity; this.t += dt;
+    const p = a.magnet &amp;&amp; this.scene.findByTag(a.tag)[0];
+    if (p &amp;&amp; Math.hypot(p.pos[0] - e.pos[0], p.pos[1] - e.pos[1]) &lt; a.magnet) { const dx = p.pos[0] - e.pos[0], dy = p.pos[1] - e.pos[1], d = Math.hypot(dx, dy) || 1; e.pos = [e.pos[0] + (dx / d) * 220 * dt, e.pos[1] + (dy / d) * 220 * dt, e.pos[2]]; this.y0 = e.pos[1]; }
+    else if (a.bob) e.pos = [e.pos[0], this.y0 + Math.sin(this.t * 4) * a.bob, e.pos[2]];
+  }
+  onTriggerEnter(o) {
+    if (this.taken || !o.hasTag(this.attrs.tag)) return; this.taken = true; const a = this.attrs;
+    if (a.kind === 'score') this.events.emit('score', a.value); else if (a.kind === 'xp') this.events.emit('xp', a.value); else if (a.kind === 'heal') o.emit('heal', { amount: a.value });
+    else if (a.kind === 'speed') o.emit('apply', { type: 'haste', duration: a.duration, power: 1 }); else if (a.kind === 'shield') o.emit('shield', a.duration);
+    else if (a.event) this.events.emit(a.event, o);
+    if (a.sfx) this.audio.play(a.sfx); this.events.emit('pickup', { kind: a.kind, value: a.value });
+    const s = { k: 1 }; this.tween(s, { k: 1.6 }, { duration: 0.12, onUpdate: () =&gt; { this.entity.scale = [s.k, s.k, s.k]; }, onComplete: () =&gt; this.entity.destroy() });
+  }
+}</code></pre>
+</details><details>
+<summary>Complete scripts/platformer3d.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;controller3d.platformer&quot;,&quot;title&quot;:&quot;3D platformer&quot;,&quot;category&quot;:&quot;controllers&quot;,&quot;tier&quot;:[&quot;3d&quot;],&quot;tags&quot;:[&quot;platformer&quot;,&quot;jump&quot;,&quot;coyote&quot;],&quot;requires&quot;:[&quot;rigidbody&quot;,&quot;collider&quot;],&quot;description&quot;:&quot;World-axis movement (works with a fixed or follow camera looking down +z): coyote time, jump buffer, variable jump height, double jump.&quot;}
+import { NordScript } from 'nord';
+
+export default class Platformer3D extends NordScript {
+  static attributes = {
+    speed: { type: 'number', default: 5, min: 0 }, jumpSpeed: { type: 'number', default: 8, min: 0 },
+    coyote: { type: 'number', default: 0.1, min: 0 }, buffer: { type: 'number', default: 0.12, min: 0 },
+    doubleJump: { type: 'bool', default: true }, cut: { type: 'number', default: 0.5, min: 0, max: 1 },
+  };
+  start() { this.ct = 0; this.bt = 0; this.air = 0; }
+  fixedUpdate(dt) {
+    const a = this.attrs, e = this.entity, g = this.physics.isGrounded(e);
+    const [mx, mz] = this.input.vec('left', 'right', 'down', 'up');
+    this.physics.setVelocity(e, mx * a.speed, null, mz * a.speed);
+    if (mx || mz) e.rot = [0, (Math.atan2(mx, mz) * 180) / Math.PI, 0];
+    this.ct = g ? a.coyote : this.ct - dt; if (g) this.air = 0;
+    this.bt = this.input.pressed('jump') ? a.buffer : this.bt - dt;
+    const vy = this.physics.velocity(e)[1];
+    if (this.bt &gt; 0 &amp;&amp; (this.ct &gt; 0 || (a.doubleJump &amp;&amp; this.air === 1))) {
+      if (this.ct &lt;= 0) this.air = 2; else this.air = 1;
+      this.physics.setVelocity(e, null, a.jumpSpeed, null); this.bt = 0; this.ct = 0;
+    } else if (!g &amp;&amp; vy &gt; 0 &amp;&amp; this.input.released('jump')) this.physics.setVelocity(e, null, vy * a.cut, null);
+  }
+}</code></pre>
+</details><details>
+<summary>Complete scripts/prism-shaders.js</summary><pre class="code" data-lang="js"><code>// Original GLSL. Position stays unchanged so rendered landings match colliders.
+export const vertexSource = `
+precision highp float;
+attribute vec3 position;
+attribute vec2 uv;
+uniform mat4 worldViewProjection;
+varying vec2 vUV;
+void main() {
+  vUV = uv;
+  gl_Position = worldViewProjection * vec4(position, 1.0);
+}`;
+export const fragmentSource = `
+precision highp float;
+varying vec2 vUV;
+uniform float uTime;
+uniform float uEnergy;
+uniform float uDanger;
+uniform float uIntensity;
+uniform float uFrequency;
+void main() {
+  vec2 p = vUV * uFrequency;
+  vec2 cell = abs(fract(p) - 0.5);
+  float line = smoothstep(0.43, 0.49, max(cell.x, cell.y));
+  float wave = 0.5 + 0.5 * sin((vUV.x + vUV.y) * 18.0 - uTime * 3.0);
+  vec3 cool = mix(vec3(0.04, 0.12, 0.22), vec3(0.1, 0.9, 1.0), uEnergy);
+  vec3 color = mix(cool, vec3(1.0, 0.12, 0.05), uDanger);
+  color *= 0.25 + line * uIntensity + wave * 0.25;
+  gl_FragColor = vec4(color, 1.0);
+}`;</code></pre>
+</details><details>
+<summary>Complete scripts/relay.js</summary><pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
+
+export default class CrystalRelay extends NordScript {
+  static attributes = {
+    seconds: { type: 'number', default: 100, min: 10 },
+    lives: { type: 'int', default: 3, min: 1 },
+    speed: { type: 'number', default: 6, min: 1 },
+    sprintSpeed: { type: 'number', default: 10, min: 1 },
+  };
+
+  start() {
+    this.player = this.entity;
+    this.controller = this.player.scripts.find(s =&gt; 'jumpSpeed' in s.attrs);
+    this.gems = this.scene.findByTag('gem').sort((a, b) =&gt; a.name.localeCompare(b.name));
+    this.hazard = this.scene.find('Hazard');
+    this.spawn = [...this.player.pos];
+    this.next = 0;
+    this.elapsed = 0;
+    this.remaining = this.attrs.seconds;
+    this.lives = this.attrs.lives;
+    this.energy = 1;
+    this.safeTime = 0;
+    this.ended = false;
+    this.best = this.save.get('crystal-relay.best', null);
+    this.notice = 'Follow the large crystal. Hold Shift to sprint.';
+    this.hud = this.ui.label('', { screen: 'relay', x: 12, y: 8, size: 16, style: { whiteSpace: 'pre-wrap', maxWidth: '95%' } });
+    this.ui.button('Pause', () =&gt; this.pause(), { screen: 'relay', x: 12, y: 85 });
+    this.ui.show('relay');
+    this.draw();
+  }
+
+  update(dt) {
+    if (this.ended) return;
+    this.elapsed += dt;
+    this.remaining = Math.max(0, this.remaining - dt);
+    this.safeTime = Math.max(0, this.safeTime - dt);
+    const sprint = this.input.down('sprint') &amp;&amp; this.energy &gt; 0;
+    this.controller.attrs.speed = sprint ? this.attrs.sprintSpeed : this.attrs.speed;
+    this.energy = Math.max(0, Math.min(1, this.energy + (sprint ? -0.45 : 0.25) * dt));
+    // Move a red hazard across the middle landing in world units.
+    this.hazard.pos = [3 + Math.sin(this.elapsed * 1.5) * 2, 3.3, 18];
+    const p = this.player.pos;
+    const distance = (a, b) =&gt; Math.hypot(...a.map((v, i) =&gt; v - b[i]));
+    if (p[1] &lt; -5 || (this.safeTime === 0 &amp;&amp; distance(p, this.hazard.pos) &lt; 0.9)) {
+      this.respawn();
+      if (this.ended) return;
+    }
+    // Only the next crystal can be collected; later crystals remain in the scene.
+    const gem = this.gems[this.next];
+    if (gem) {
+      gem.scale = [1.4, 1.4, 1.4];
+      if (distance(this.player.pos, gem.pos) &lt; 1.25) this.collect(gem);
+    }
+    if (!this.ended &amp;&amp; this.remaining === 0) this.finish(false, 'Time ran out');
+    this.draw();
+  }
+
+  collect(gem) {
+    gem.destroy();
+    const platform = this.scene.find('Plat' + this.next);
+    this.spawn = [platform.pos[0], platform.pos[1] + 1.5, platform.pos[2]];
+    this.next++;
+    this.remaining += 6;
+    this.energy = 1;
+    this.notice = 'Checkpoint saved. +6 seconds and full sprint energy!';
+    this.audio.play('assets/audio/sfx/coin.wav');
+    if (this.next === this.gems.length) this.finish(true, 'Relay complete');
+  }
+
+  respawn() {
+    this.lives--;
+    if (this.lives &lt;= 0) { this.finish(false, 'No lives left'); return; }
+    this.physics.teleport(this.player, ...this.spawn);
+    this.physics.setVelocity(this.player, 0, 0, 0);
+    this.safeTime = 2;
+    this.energy = 1;
+    this.notice = 'Back at your last crystal. Two seconds of hazard protection.';
+  }
+
+  draw() {
+    this.hud.set(`Crystal ${this.next}/${this.gems.length} | Time ${Math.ceil(this.remaining)} | ` +
+      `Lives ${this.lives} | Sprint ${Math.round(this.energy * 100)}%\n` +
+      `Best ${this.best === null ? '—' : this.best.toFixed(1) + 's'} | ${this.notice}`);
+  }
+
+  pause() {
+    if (this.ended || this.game.paused) return;
+    this.ui.show('relay-menu');
+    this.game.pause();
+    this.ui.menu('relay-menu', [
+      { text: 'Resume relay', onClick: () =&gt; { this.ui.clear('relay-menu'); this.game.resume(); } },
+      { text: 'Restart', onClick: () =&gt; this.restart() },
+    ], { x: 20, y: 150 });
+  }
+
+  finish(won, title) {
+    if (this.ended) return;
+    this.ended = true;
+    if (won) {
+      this.best = this.best === null ? this.elapsed : Math.min(this.best, this.elapsed);
+      this.save.set('crystal-relay.best', this.best);
+      const medal = this.elapsed &lt; 45 ? 'Gold' : this.elapsed &lt; 70 ? 'Silver' : 'Bronze';
+      title += ` — ${medal}, ${this.elapsed.toFixed(1)}s`;
+    }
+    this.draw();
+    this.ui.clear('relay-menu');
+    this.ui.label(title, { screen: 'relay-menu', x: 20, y: 130, size: 30 });
+    this.ui.menu('relay-menu', [{ text: 'Try again', onClick: () =&gt; this.restart() }], { x: 20, y: 180 });
+    this.ui.show('relay-menu');
+    this.game.pause();
+  }
+
+  restart() { this.game.resume(); this.game.restart(); }
+
+  onDestroy() {
+    this.controller.attrs.speed = this.attrs.speed;
+    this.ui.clear('relay');
+    this.ui.clear('relay-menu');
+    this.game.resume();
+  }
+}</code></pre>
+</details><details>
+<summary>Complete scripts/spin.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;: &quot;util.spin&quot;, &quot;title&quot;: &quot;Spin&quot;, &quot;category&quot;: &quot;utilities&quot;, &quot;tier&quot;: [&quot;2d&quot;, &quot;3d&quot;], &quot;tags&quot;: [&quot;rotate&quot;, &quot;simple&quot;], &quot;description&quot;: &quot;Rotates the entity continuously around one axis.&quot;, &quot;requires&quot;: []}
+// Spin — rotates the entity continuously. Works in 2D (z axis) and 3D (y axis).
+import { NordScript } from 'nord';
+
+export default class Spin extends NordScript {
+  static attributes = {
+    speed: { type: 'number', default: 90, label: 'Degrees / second' },
+    axis: { type: 'enum', options: ['x', 'y', 'z'], default: 'z' },
+  };
+
+  update(dt) {
+    const r = [...this.entity.rot];
+    r[{ x: 0, y: 1, z: 2 }[this.attrs.axis]] += this.attrs.speed * dt;
+    this.entity.rot = r;
+  }
+}</code></pre>
+</details><details>
+<summary>Complete scripts/util-sfx.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;util.sfx-synth&quot;,&quot;title&quot;:&quot;Procedural sfx (jsfxr-style)&quot;,&quot;category&quot;:&quot;utilities&quot;,&quot;tier&quot;:[&quot;any&quot;],&quot;tags&quot;:[&quot;audio&quot;,&quot;sfx&quot;,&quot;synth&quot;,&quot;retro&quot;],&quot;description&quot;:&quot;Generates retro sound effects with WebAudio, no files needed: sfx(game,'coin'|'jump'|'hit'|'laser'|'explosion'|'powerup'). Listens to global events 'sfx' (name). import { sfx } from './util-sfx.js' for direct use.&quot;}
+import { NordScript } from 'nord';
+
+const P = { coin: { w: 'square', f: [880, 1760], d: 0.18, v: 0.25 }, jump: { w: 'square', f: [260, 620], d: 0.2, v: 0.25 }, hit: { w: 'sawtooth', f: [220, 60], d: 0.18, v: 0.3 }, laser: { w: 'sawtooth', f: [1400, 200], d: 0.25, v: 0.2 }, powerup: { w: 'triangle', f: [300, 1200], d: 0.4, v: 0.3 }, explosion: { w: 'noise', f: [800, 40], d: 0.6, v: 0.4 } };
+let ctx;
+export function sfx(name, vol = 1) {
+  const p = P[name]; if (!p) return; ctx ??= new (window.AudioContext || window.webkitAudioContext)(); const t = ctx.currentTime, g = ctx.createGain(); g.gain.setValueAtTime(p.v * vol, t); g.gain.exponentialRampToValueAtTime(0.001, t + p.d); g.connect(ctx.destination);
+  let src;
+  if (p.w === 'noise') { const b = ctx.createBuffer(1, ctx.sampleRate * p.d, ctx.sampleRate), d = b.getChannelData(0); for (let i = 0; i &lt; d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length); src = ctx.createBufferSource(); src.buffer = b; const f = ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.setValueAtTime(p.f[0], t); f.frequency.exponentialRampToValueAtTime(p.f[1], t + p.d); src.connect(f); f.connect(g); }
+  else { src = ctx.createOscillator(); src.type = p.w; src.frequency.setValueAtTime(p.f[0], t); src.frequency.exponentialRampToValueAtTime(p.f[1], t + p.d); src.connect(g); }
+  src.start(t); src.stop(t + p.d);
+}
+
+export default class SfxSynth extends NordScript {
+  static attributes = { volume: { type: 'number', default: 1, min: 0, max: 1 }, map: { type: 'string', default: '{&quot;pickup&quot;:&quot;coin&quot;,&quot;jump&quot;:&quot;jump&quot;,&quot;hit&quot;:&quot;hit&quot;,&quot;explosion&quot;:&quot;explosion&quot;,&quot;enemy:shoot&quot;:&quot;laser&quot;}', label: 'JSON global-event → sfx name' } };
+  start() { this.offs = [this.events.on('sfx', (n) =&gt; sfx(n, this.attrs.volume)), ...Object.entries(JSON.parse(this.attrs.map)).map(([ev, n]) =&gt; this.events.on(ev, () =&gt; sfx(n, this.attrs.volume)))]; }
+  onDestroy() { this.offs.forEach((o) =&gt; o()); }
+}</code></pre>
+</details><div class="pager"><a href="tut-t34-code-crystal-relay.html"><small>← Previous</small>T34 Code a full 3D game — Crystal Relay</a><a href="tut-t36-advanced-node-vault.html"><small>Next →</small>T36 Circuit Vault — a web game with a real Node server</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-separate-the-two-programs-you-are-writing">1. Separate the two programs you are writing </a><a href="#2-use-uvs-to-repeat-a-procedural-pattern">2. Use UVs to repeat a procedural pattern </a><a href="#3-animate-a-wave-without-moving-geometry">3. Animate a wave without moving geometry </a><a href="#4-translate-gameplay-into-colour">4. Translate gameplay into colour </a><a href="#5-create-and-attach-the-gpu-material-from-nord">5. Create and attach the GPU material from Nord </a><a href="#6-send-live-state-and-bind-controls">6. Send live state and bind controls </a><a href="#7-dispose-resources-and-preserve-the-gameplay-loop">7. Dispose resources and preserve the gameplay loop </a><a href="#8-export-inspect-and-extend">8. Export, inspect and extend </a><a href="#complete-source">Complete source </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>
