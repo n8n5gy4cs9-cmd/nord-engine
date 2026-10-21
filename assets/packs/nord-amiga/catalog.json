@@ -7,8 +7,8 @@
       "file": "adventurer-run.png",
       "frameWidth": 48,
       "frameHeight": 64,
-      "columns": 8,
-      "frames": 8,
+      "columns": 4,
+      "frames": 4,
       "names": [],
       "anims": {
         "run": {
@@ -16,13 +16,9 @@
             0,
             1,
             2,
-            3,
-            4,
-            5,
-            6,
-            7
+            3
           ],
-          "fps": 10,
+          "fps": 7,
           "loop": true
         }
       }
@@ -32,8 +28,8 @@
       "file": "adventurer-run-128x256.png",
       "frameWidth": 128,
       "frameHeight": 256,
-      "columns": 8,
-      "frames": 8,
+      "columns": 4,
+      "frames": 4,
       "names": [],
       "anims": {
         "run": {
@@ -41,13 +37,9 @@
             0,
             1,
             2,
-            3,
-            4,
-            5,
-            6,
-            7
+            3
           ],
-          "fps": 10,
+          "fps": 7,
           "loop": true
         }
       }
@@ -57,8 +49,8 @@
       "file": "guard-run.png",
       "frameWidth": 48,
       "frameHeight": 64,
-      "columns": 8,
-      "frames": 8,
+      "columns": 4,
+      "frames": 4,
       "names": [],
       "anims": {
         "run": {
@@ -66,13 +58,9 @@
             0,
             1,
             2,
-            3,
-            4,
-            5,
-            6,
-            7
+            3
           ],
-          "fps": 10,
+          "fps": 7,
           "loop": true
         }
       }
@@ -82,8 +70,8 @@
       "file": "guard-run-128x256.png",
       "frameWidth": 128,
       "frameHeight": 256,
-      "columns": 8,
-      "frames": 8,
+      "columns": 4,
+      "frames": 4,
       "names": [],
       "anims": {
         "run": {
@@ -91,13 +79,9 @@
             0,
             1,
             2,
-            3,
-            4,
-            5,
-            6,
-            7
+            3
           ],
-          "fps": 10,
+          "fps": 7,
           "loop": true
         }
       }
@@ -107,8 +91,8 @@
       "file": "woman-run.png",
       "frameWidth": 48,
       "frameHeight": 64,
-      "columns": 8,
-      "frames": 8,
+      "columns": 4,
+      "frames": 4,
       "names": [],
       "anims": {
         "run": {
@@ -116,13 +100,9 @@
             0,
             1,
             2,
-            3,
-            4,
-            5,
-            6,
-            7
+            3
           ],
-          "fps": 10,
+          "fps": 7,
           "loop": true
         }
       }
@@ -132,8 +112,8 @@
       "file": "woman-run-128x256.png",
       "frameWidth": 128,
       "frameHeight": 256,
-      "columns": 8,
-      "frames": 8,
+      "columns": 4,
+      "frames": 4,
       "names": [],
       "anims": {
         "run": {
@@ -141,13 +121,9 @@
             0,
             1,
             2,
-            3,
-            4,
-            5,
-            6,
-            7
+            3
           ],
-          "fps": 10,
+          "fps": 7,
           "loop": true
         }
       }
@@ -157,17 +133,13 @@
       "file": "adventurer-actions.png",
       "frameWidth": 64,
       "frameHeight": 64,
-      "columns": 8,
-      "frames": 8,
+      "columns": 4,
+      "frames": 4,
       "names": [
         "idle",
         "crouch",
-        "jump-up",
-        "jump-down",
-        "punch",
-        "shoot",
-        "hurt",
-        "defeated"
+        "jump",
+        "punch"
       ],
       "anims": {}
     },
@@ -176,8 +148,8 @@
       "file": "investigator.png",
       "frameWidth": 32,
       "frameHeight": 48,
-      "columns": 8,
-      "frames": 24,
+      "columns": 4,
+      "frames": 16,
       "names": [],
       "anims": {
         "walk-south": {
@@ -185,41 +157,39 @@
             0,
             1,
             2,
-            3,
+            3
+          ],
+          "fps": 7,
+          "loop": true
+        },
+        "walk-east": {
+          "frames": [
             4,
             5,
             6,
             7
           ],
-          "fps": 10,
+          "fps": 7,
           "loop": true
         },
-        "walk-east": {
+        "walk-north": {
           "frames": [
             8,
             9,
             10,
-            11,
+            11
+          ],
+          "fps": 7,
+          "loop": true
+        },
+        "walk-west": {
+          "frames": [
             12,
             13,
             14,
             15
           ],
-          "fps": 10,
-          "loop": true
-        },
-        "walk-north": {
-          "frames": [
-            16,
-            17,
-            18,
-            19,
-            20,
-            21,
-            22,
-            23
-          ],
-          "fps": 10,
+          "fps": 7,
           "loop": true
         }
       }
@@ -229,8 +199,8 @@
       "file": "officer-walk-west.png",
       "frameWidth": 32,
       "frameHeight": 48,
-      "columns": 8,
-      "frames": 8,
+      "columns": 4,
+      "frames": 4,
       "names": [],
       "anims": {
         "walk-west": {
@@ -238,13 +208,9 @@
             0,
             1,
             2,
-            3,
-            4,
-            5,
-            6,
-            7
+            3
           ],
-          "fps": 10,
+          "fps": 7,
           "loop": true
         }
       }
@@ -437,36 +403,28 @@
       "file": "sports-side-actions.png",
       "frameWidth": 32,
       "frameHeight": 48,
-      "columns": 8,
-      "frames": 16,
+      "columns": 4,
+      "frames": 8,
       "names": [],
       "anims": {
-        "red-run": {
+        "guard-run": {
           "frames": [
             0,
             1,
             2,
-            3,
+            3
+          ],
+          "fps": 7,
+          "loop": true
+        },
+        "woman-run": {
+          "frames": [
             4,
             5,
             6,
             7
           ],
-          "fps": 10,
-          "loop": true
-        },
-        "blue-run": {
-          "frames": [
-            8,
-            9,
-            10,
-            11,
-            12,
-            13,
-            14,
-            15
-          ],
-          "fps": 10,
+          "fps": 7,
           "loop": true
         }
       }
@@ -495,8 +453,8 @@
       "file": "soccer-overhead.png",
       "frameWidth": 21,
       "frameHeight": 31,
-      "columns": 8,
-      "frames": 32,
+      "columns": 4,
+      "frames": 16,
       "names": [],
       "anims": {
         "run-south": {
@@ -504,55 +462,39 @@
             0,
             1,
             2,
-            3,
+            3
+          ],
+          "fps": 7,
+          "loop": true
+        },
+        "run-east": {
+          "frames": [
             4,
             5,
             6,
             7
           ],
-          "fps": 10,
+          "fps": 7,
           "loop": true
         },
-        "run-east": {
+        "run-north": {
           "frames": [
             8,
             9,
             10,
-            11,
+            11
+          ],
+          "fps": 7,
+          "loop": true
+        },
+        "run-west": {
+          "frames": [
             12,
             13,
             14,
             15
           ],
-          "fps": 10,
-          "loop": true
-        },
-        "run-north": {
-          "frames": [
-            16,
-            17,
-            18,
-            19,
-            20,
-            21,
-            22,
-            23
-          ],
-          "fps": 10,
-          "loop": true
-        },
-        "run-west": {
-          "frames": [
-            24,
-            25,
-            26,
-            27,
-            28,
-            29,
-            30,
-            31
-          ],
-          "fps": 10,
+          "fps": 7,
           "loop": true
         }
       }
@@ -615,39 +557,19 @@
       "file": "racing-cars.png",
       "frameWidth": 64,
       "frameHeight": 40,
-      "columns": 8,
-      "frames": 16,
-      "names": [],
-      "anims": {
-        "red-steer": {
-          "frames": [
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7
-          ],
-          "fps": 6,
-          "loop": true
-        },
-        "blue-steer": {
-          "frames": [
-            8,
-            9,
-            10,
-            11,
-            12,
-            13,
-            14,
-            15
-          ],
-          "fps": 6,
-          "loop": true
-        }
-      }
+      "columns": 4,
+      "frames": 8,
+      "names": [
+        "red-left",
+        "red-back",
+        "red-right",
+        "red-front",
+        "white-left",
+        "white-back",
+        "white-right",
+        "white-front"
+      ],
+      "anims": {}
     },
     {
       "id": "roadside",

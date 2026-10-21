@@ -155,3 +155,6 @@ Verified: node unit tests, the file API/CLI, Nord boot of the template, 18 gamep
 
 ## Amiga collection / attract demo (2026-10-21)
 Owner requested no tests: `examples/amiga-showcase` has not been run in browser/native editor/export. Generated PNGs and source code only. Art is a curated pool, not a complete drop-in redraw of every TEMP/ART file. Generated tile seams, nine-slice insets, animation foot stability and timing still need human polish. Gallery includes alternate-size versions. Soccer now uses dedicated overhead 21×31 four-direction runs; the separate side-view sports sheet is excluded from football gameplay. The demo is scripted attract mode, not playable full games. 2D editor integration is future M12-21/22 work.
+
+### M6-50 reference-art revision
+Current human/car sheets replace the first detailed set. Four-step human loops, tiny soccer players and discrete rear-left/back/right/front cars are packed and wired into the example; no runtime validation, tests, engine/manual builds performed per owner. Old detailed masters remain source history, not active character/car exports. Animation timing and source pose consistency remain unverified by gameplay.

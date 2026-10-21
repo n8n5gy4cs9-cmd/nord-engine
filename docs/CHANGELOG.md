@@ -193,3 +193,5 @@ Newest first. One line per notable change. Credit: Crowelian 2026 + Sonnet.
 - 2026-10-19: M10-33 manual chapters 22–26, tutorials T25/T26, real editor screenshots; editor icon/glyph fixes, project file listing, Layout tab in centre dock. M10-34 CI runs all M10 browser suites.
 
 - 2026-10-21 — M6-48/49: original Amiga-inspired collection (23 sheets / 356 cells with native/compatible size variants, animation metadata and catalogue); single offline Amiga Arcade attract-mode example with platformer, patrol, true-overhead football, racing and full asset gallery. Replaced side-on football interpretation with dedicated overhead four-direction cycles. Added future 2D Level Creator + bundled sprite bank tasks M12-21/22. No tests or runtime/browser runs per owner.
+
+- 2026-10-21 — M6-50: replaced over-detailed humans/soccer/cars with flat reference-guided Amiga sprites, four-step character cycles, tiny 8×12 football figures in compatible canvases, and exactly three rear car poses plus front. Updated demo frame/direction mappings and jump pose. 23 sheets / 284 cells. No tests or builds per owner.

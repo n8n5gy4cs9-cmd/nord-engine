@@ -4,6 +4,8 @@ One automatic offline demo: side-scroller chase, top-down patrol, overhead footb
 
 Run `nord serve examples/amiga-showcase` or open this example from the editor. Authoritative code: tools/examples/amiga-showcase/. Artwork: assets/packs/nord-amiga/. Regenerate with `python3 tools/art/amiga/pack.py` then `node tools/gen_examples.mjs amiga-showcase`.
 
-This is an attract-mode art demonstration, not four complete playable games. Soccer uses true overhead players with four directional running cycles; blue-team colours are tinted at draw time. All sheets appear in the gallery.
+This is an attract-mode art demonstration, not four complete playable games. Soccer uses true overhead players with four directional four-frame running cycles; blue-team colours are tinted at draw time. All sheets appear in the gallery.
 
 Crowelian 2026 + Sonnet. Original art/code MIT.
+
+M6-50: tiny reference-scale soccer, flat human sprites, four-step loops and only three rear car poses plus front. No tests or builds performed.

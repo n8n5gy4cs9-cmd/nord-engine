@@ -1548,6 +1548,12 @@
       "status": "done"
     },
     {
+      "id": "M6-50",
+      "milestone": "M6",
+      "title": "Simplify Amiga art to reference-scale flat sprites, four-step human/soccer cycles and three discrete rear car poses; update showcase (no tests/builds)",
+      "status": "done"
+    },
+    {
       "id": "M7-01",
       "milestone": "M7",
       "title": "tools/build-manual.mjs (marked + CodeMirror readonly + nord-live blocks)",
