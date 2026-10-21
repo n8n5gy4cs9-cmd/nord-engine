@@ -157,7 +157,7 @@ export class World {
 
   // ---- rays -------------------------------------------------------------------------------------------------------------------
   /** Cast a ray. mask: 'sight' (opaque), 'bullet' (shot-blocking) or 'move' (solid). Returns { t, x, y, z, nx, nz, c } for the nearest hit or null. */
-  ray(ox, oy, oz, dx, dy, dz, maxD, mask = 'bullet') {
+  ray(ox, oy, oz, dx, dy, dz, maxD, mask = 'bullet', slabs = mask === 'bullet') {
     const len = Math.hypot(dx, dy, dz); if (len < EPS) return null;
     dx /= len; dy /= len; dz /= len;
     const ex = ox + dx * maxD, ez = oz + dz * maxD;
@@ -197,6 +197,21 @@ export class World {
       if ((cx === ecx && cz === ecz) || Math.min(tmx, tmz) > maxD) break;
       if (tmx < tmz) { cx += sx; tmx += tdx; } else { cz += sz; tmz += tdz; }
     }
+    if (slabs) { const h = this.#slabHit(ox, oy, oz, dx, dy, dz, maxD); if (h && (!best || h.t < best.t)) best = h; }
+    return best;
+  }
+
+  /** Floors and ceilings stop shots and sight: first flat floor/ceiling slab crossed by the ray (stairs and raised cells are skipped). */
+  #slabHit(ox, oy, oz, dx, dy, dz, maxD) {
+    if (Math.abs(dy) < EPS) return null;
+    let best = null;
+    for (let L = 0; L < this.level.layers.length; L++) for (const ceil of [false, true]) {
+      const y = this.base(L) + (ceil ? STORY : 0); if (!ceil && L === 0) continue;
+      const t = (y - oy) / dy; if (t <= EPS || t > maxD || (best && t >= best.t)) continue;
+      const x = ox + dx * t, z = oz + dz * t, cx = Math.floor(x / CELL), cz = Math.floor(z / CELL), cell = this.cellAt(L, cx, cz);
+      if (!cell || cell.s || (cell.h && !ceil) || !(ceil ? cell.c : cell.f) || !cellContains(cell, x, z, cx, cz)) continue;
+      best = { t, x, y, z, nx: 0, nz: 0, ny: dy > 0 ? -1 : 1, c: { slab: true } };
+    }
     return best;
   }
 
@@ -204,7 +219,7 @@ export class World {
   los(a, b) {
     const dx = b[0] - a[0], dy = b[1] - a[1], dz = b[2] - a[2], d = Math.hypot(dx, dy, dz);
     if (d < EPS) return true;
-    const h = this.ray(a[0], a[1], a[2], dx, dy, dz, d - 0.05, 'sight');
+    const h = this.ray(a[0], a[1], a[2], dx, dy, dz, d - 0.05, 'sight', true);
     return !h;
   }
 

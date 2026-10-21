@@ -287,3 +287,16 @@ test('Hotel Meridian: three storeys, black-framed glass door, every stair walkab
   probe('basement stair top from below', 12.5, 13.5, 0, 0, 12.5, 12, -0.01);
   probe('empty cell above the stair top (west)', 6.5, 13.5, 3.2, 1, 7.5, 13.5, 3); probe('empty cell above the stair top (east)', 8.5, 13.5, 3.2, 1, 7.5, 13.5, 3);
 });
+
+test('floors and ceilings stop bullets and line of sight (no shooting through storeys), holes stay open', () => {
+  const lv = newLevel({ w: 6, d: 6 }); lv.layers.push(newLayer('Upper'));
+  for (const L of [0, 1]) for (let x = 1; x <= 3; x++) for (let z = 1; z <= 3; z++) setCell(lv, L, x, z, { f: 'floor_concrete', c: 'ceiling_tiles' });
+  setCell(lv, 1, 2, 2, { f: null, c: 'ceiling_tiles' }); setCell(lv, 0, 2, 2, { c: null }); // stairwell-style hole (no ceiling below it)
+  const w = world(lv), up = 3.2 + 1.5, low = 1.5;
+  assert.equal(w.los([6, up, 5], [6, low, 5]), false);                      // floor between
+  assert.ok(w.ray(6, up, 5, 0, -1, 0, 10, 'bullet'));
+  assert.equal(w.ray(6, up, 5, 0, -1, 0, 1.0, 'bullet'), null);             // short ray stops before the floor
+  assert.equal(w.los([10, up, 10], [10, low, 10]), true);                    // hole in the upper floor: lower storey visible
+  assert.equal(w.los([6, low, 5], [6, low, 6]), true);                       // same storey unaffected
+  assert.equal(w.los([6, 1.5, 5], [6, 5.0, 5]), false);                      // from below, too
+});
