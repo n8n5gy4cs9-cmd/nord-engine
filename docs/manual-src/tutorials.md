@@ -38,3 +38,11 @@ These guides include the shipped source files, explain each construction step, a
 [Shader Terrain Lab: render a shader, add audio and drop a cube](tut-t22-shader-terrain.html) · [Mobile/touch joystick and buttons](mobile-controls.html)
 
 [T23 Dark scenes with 2D lights and real shadows: Crypt of Embers, plus a copy-paste lighting kit](tut-t23-light-shadows.html)
+
+## Learn the 2D Level Creator through complete games
+
+| Tutorial | Editor practice | Game mechanics |
+|---|---|---|
+| [T28 Machine Workshop](tut-t28-machine-workshop.html) | Select/move objects, body Inspector, reusable ramp variants, layers, test/save/export. | Gravity, static/dynamic bodies, circles, friction, bounce and win triggers. |
+| [T29 Two Floors](tut-t29-dungeon-two-floors.html) | Paint collision, configure actors in Inspector, edit controller attributes, connect saved floors. | Turns, bump combat, line of sight, supplies, keys, doors and relic victory. |
+| [T30 Tiny Tank Patrol](tut-t30-tank-patrol.html) | Author an arena, distinguish solid tiles from scripted cover, tune enemies/base and save variants. | Four-direction driving, shells, destructible cover, steel, AI and base defense. |

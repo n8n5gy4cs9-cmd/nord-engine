@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>T29 Two Floors — edit a Shattered Pixel Dungeon adaptation — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="tutorials.html" class="active" aria-current="page">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Tutorials</div><a href="tutorials.html">Learn by building</a><a href="tut-t01-hello-nord.html">T01 Hello Nord</a><a href="tut-t02-sprite-movement.html">T02 Sprite &amp; movement</a><a href="tut-t03-first-script.html">T03 Your first script</a><a href="tut-t04-platformer.html">T04 Platformer from template</a><a href="tut-t05-physics.html">T05 Physics &amp; collisions</a><a href="tut-t06-tilemaps.html">T06 Tilemaps</a><a href="tut-t07-animation-juice.html">T07 Animation &amp; juice</a><a href="tut-t08-ui-hud.html">T08 UI &amp; HUD</a><a href="tut-t09-audio.html">T09 Audio</a><a href="tut-t10-3d-scene.html">T10 3D scene &amp; camera</a><a href="tut-t11-3d-physics.html">T11 3D physics (FPS)</a><a href="tut-t12-enemy-ai.html">T12 Enemy AI</a><a href="tut-t13-save-load.html">T13 Save &amp; load</a><a href="tut-t14-export-host.html">T14 Export to web &amp; host it</a><a href="tut-t15-mac-app.html">T15 Mac app</a><a href="tut-t16-rust-game.html">T16 Rust/WASM game</a><a href="tut-t17-rust-egui-app.html">T17 Rust egui app</a><a href="tut-t18-library-snippets.html">T18 Writing library snippets</a><a href="tut-t19-notepaint.html">T19 Build notepaint, from a blank folder</a><a href="tut-t20-star-not.html">T20 Build Star-Not, a complete small space adventure</a><a href="tut-t21-project-design.html">T21 Plan a bigger Nord project</a><a href="tut-t22-shader-terrain.html">T22 Put a terrain shader in a Nord app</a><a href="tut-t23-light-shadows.html">T23 2D lights and real shadows</a><a href="tut-t24-event-sheet-platformer.html">T24 A platformer from events</a><a href="tut-t25-topdown-shooter.html">T25 A top-down shooter from events</a><a href="tut-t26-menus-languages.html">T26 Menus and two languages</a><a href="tut-t27-fps-level.html">T27 Build your first FPS level</a><a href="tut-t28-machine-workshop.html">T28 Machine Workshop — build a gravity puzzle in 2D Level</a><a href="tut-t29-dungeon-two-floors.html" class="cur" aria-current="page">T29 Two Floors — edit a Shattered Pixel Dungeon adaptation</a><a href="tut-t30-tank-patrol.html">T30 Tiny Tank Patrol — build a top-down tank arena</a></nav><main id="content"><div class="crumb">Tutorials / Nord Engine</div><h1>T29 Two Floors — edit a Shattered Pixel Dungeon adaptation</h1>
+<p><strong>Project:</strong> welcome → <strong>2D</strong> → <strong>Two Floors — Dungeon Creator</strong>. Create a project from the template. <strong>Result:</strong> enter a sewer, find a key, unlock a door, descend to a second floor and recover its relic.</p>
+<p>This small adaptation uses Shattered Pixel Dungeon&#39;s accuracy/evasion comparison and rat statistics. It is <strong>GPL-3.0-or-later</strong>; the project includes <code>LICENSE.md</code> and <code>SOURCE.md</code> with the pinned upstream source. Art comes from Nord&#39;s original RetroPaxDungeons collection. It does not bundle Shattered Pixel Dungeon art or its full mobile game.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>The world advances when you act. A move or attack gives nearby monsters a turn. You can stop and think without losing time. The tile map supplies the walls; the object scripts supply the monsters, items and stairs.</p>
+</aside><h2 id="1-learn-the-mechanics-in-the-finished-example">1. Learn the mechanics in the finished example<a class="anchor" href="#1-learn-the-mechanics-in-the-finished-example">#</a></h2>
+<p>Use main Play. Arrows/WASD step one cell. Moving into a monster <strong>bump-attacks</strong> instead of walking through it. <strong>Space</strong> waits a turn. <strong>H</strong> drinks a potion. Collect the key and walk into the central door to unlock it. Stand on or next to the stairs and press <strong>E</strong>. Floor two carries your HP, potions, gold, keys and turn count. Find its key and reach the relic. <strong>R</strong> restarts both floors.</p>
+<figure class="shot"><img src="../../assets/screenshots/ed-creator-dungeon-floor1.png" alt="Two Floors dungeon with the hero, fog and status panel" loading="lazy"><figcaption>Turns, supplies and position matter. Exploring reveals the dungeon.</figcaption></figure><table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Does the world advance?</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Successful step</td>
+<td>Yes: visible monsters move or attack.</td>
+</tr>
+<tr>
+<td>Bump-attack</td>
+<td>Yes, including a miss.</td>
+</tr>
+<tr>
+<td>Wait / drink a potion</td>
+<td>Yes.</td>
+</tr>
+<tr>
+<td>Bump a wall or a locked door without a key</td>
+<td>No.</td>
+</tr>
+<tr>
+<td>Think without pressing a key</td>
+<td>No.</td>
+</tr>
+</tbody></table>
+<p>Damage first compares a random accuracy roll with a random defense roll. A hit rolls damage and subtracts armor; a miss deals zero. This example omits the full game&#39;s classes, buffs, hunger, randomized identification and procedural dungeon generator.</p>
+<h2 id="2-open-the-first-floor-in-the-new-editor">2. Open the first floor in the new editor<a class="anchor" href="#2-open-the-first-floor-in-the-new-editor">#</a></h2>
+<p>Stop Play. Open <strong>2D Level → Open → floor1.level2d.json</strong>. Home fits the map; wheel zooms; right/middle drag pans. The editor shows all objects even where the running game hides them with fog.</p>
+<figure class="shot"><img src="../../assets/screenshots/ed-creator-dungeon-editor.png" alt="Dungeon floor in the 2D editor with level controller settings" loading="lazy"><figcaption>The authored map is ordinary tiles and scripted objects. The Level controller runs the turn rules.</figcaption></figure><p>Keep <strong>Tile size 32</strong> for this tutorial. The controller converts object pixel positions to cells using the same size. Put objects at cell centres: 3,8 is X=112, Y=272 because <code>(cell + 0.5) × 32</code> gives the centre.</p>
+<h2 id="3-change-a-route-with-tile-tools">3. Change a route with tile tools<a class="anchor" href="#3-change-a-route-with-tile-tools">#</a></h2>
+<ol>
+<li>In <strong>Level</strong>, select the World layer.</li>
+<li>In Build, filter <strong>Pack → Project</strong> and find <strong>Dungeon masonry</strong>. Turn <strong>Solid tiles</strong> on and use B to add a short wall.</li>
+<li>Choose <strong>Dungeon floor</strong>, turn Solid tiles off, and paint a doorway through that wall.</li>
+<li>Use F5 to test the new route. Shift+Esc stops. Undo with Ctrl/Cmd+Z if you sealed the only passage.</li>
+<li>Use R to draw a rectangular area; F fills a connected region. X erases a tile entirely. For dungeon walkability, paint a non-solid floor over a wall when making a passage.</li>
+</ol>
+<p>The sample&#39;s controller reads the compiled solid-tile colliders. Adding a wall therefore changes movement, pursuit and line of sight together. A floor picture with Solid tiles on is still a wall to the game.</p>
+<p><strong>Checkpoint:</strong> the hero cannot step through your new wall and can step through the opening you painted.</p>
+<h2 id="4-inspect-a-monster-rather-than-editing-game-code">4. Inspect a monster rather than editing game code<a class="anchor" href="#4-inspect-a-monster-rather-than-editing-game-code">#</a></h2>
+<p>Choose <strong>Objects</strong>, search <code>rat</code>, then select one. Its Inspector has <code>scripts/dungeon-object.js</code> with fields such as:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Rat default / purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>kind</td>
+<td><code>rat</code> selects monster behavior.</td>
+</tr>
+<tr>
+<td>hp</td>
+<td>8 hit points.</td>
+</tr>
+<tr>
+<td>accuracy</td>
+<td>8: attack-roll range.</td>
+</tr>
+<tr>
+<td>defense</td>
+<td>2: evasion-roll range.</td>
+</tr>
+<tr>
+<td>damageMin / damageMax</td>
+<td>1–4 before armor.</td>
+</tr>
+<tr>
+<td>armor</td>
+<td>1: possible damage absorption.</td>
+</tr>
+</tbody></table>
+<p>Change hp to 4, test a fight, then undo. Increase defense to see more missed attacks. These are saved instance attributes; you are editing this rat, not every rat globally.</p>
+<p>Visible monsters pursue with a simple four-neighbor path search. Adjacent monsters attack. Hidden monsters wait until the hero comes into view. Fog uses a small line-of-sight model, rather than importing the full upstream visibility system.</p>
+<h2 id="5-add-your-own-enemy-preset">5. Add your own enemy preset<a class="anchor" href="#5-add-your-own-enemy-preset">#</a></h2>
+<p>Select an existing rat → <strong>Save as variant → Small sewer rat</strong>. Open Assets, choose that reusable item, and place it with E on a clear floor cell. V selects it. Rename it and adjust hp/damage in Inspector.</p>
+<p>Alternatively, Ctrl/Cmd+D duplicates a selected rat. Place the duplicate at a cell centre with Snap enabled. Reuse an existing scripted enemy so the <code>dungeon-object.js</code> attachment and attributes travel with it.</p>
+<p>Save a second variant with kind <code>guard</code>, hp 18, accuracy 10 and defense 4. That produces a tougher guard using the same mechanics. To change artwork, choose a bank sprite, select the object again, then use its <strong>Use bank sprite</strong> Inspector button.</p>
+<h2 id="6-build-a-key-and-door-puzzle">6. Build a key-and-door puzzle<a class="anchor" href="#6-build-a-key-and-door-puzzle">#</a></h2>
+<p>Select the existing key. Its script kind is <code>key</code>, value 1. Duplicate it and place the copy in a side room. Select the central door: kind is <code>door</code>. Walking into that door spends one key and opens the cell.</p>
+<p>A door belongs on a gap in the solid wall. If you paint a solid tile under it, removing the door object still leaves the wall blocking the passage. Paint non-solid floor at the door cell.</p>
+<p>The key/door relationship is a simple inventory count, not a named color-matching system. Gold uses kind <code>gold</code>; value controls the amount collected. A potion object adds to the potion count; H spends one to restore up to 12 HP.</p>
+<h2 id="7-place-a-trap-and-tune-survival">7. Place a trap and tune survival<a class="anchor" href="#7-place-a-trap-and-tune-survival">#</a></h2>
+<p>Duplicate the existing trap. Its kind is <code>trap</code>; value is the HP lost when stepped on. Give it value 2 and place it beside a tempting gold pile. Testing consumes the trap once. Put a potion before a difficult fight to let players recover.</p>
+<p>Select <strong>Player</strong> to change starting hp, accuracy, defense, damage and armor. Changes to the first-floor hero define a fresh run. Floor two carries the run&#39;s current supplies; pressing R begins from the first floor again.</p>
+<h2 id="8-understand-the-floor-controller">8. Understand the floor controller<a class="anchor" href="#8-understand-the-floor-controller">#</a></h2>
+<p>In Level, the controller is <code>scripts/dungeon-game.js</code>. The <strong>Level controller attributes JSON</strong> contains:</p>
+<pre class="code" data-lang="json"><code>{&quot;floor&quot;:1,&quot;tileSize&quot;:32,&quot;viewRadius&quot;:8,&quot;firstScene&quot;:&quot;scenes/floor1.scene.json&quot;}</code></pre>
+<p>Change viewRadius to 5, click <strong>Apply controller attributes</strong>, then F5. The visible area becomes smaller. Restore 8. If you deliberately change the map tile size later, change the controller&#39;s tileSize to match it.</p>
+<p>These controller values configure the game as a whole. Individual actor/item values live on the objects in Inspector.</p>
+<h2 id="9-connect-and-edit-the-second-floor">9. Connect and edit the second floor<a class="anchor" href="#9-connect-and-edit-the-second-floor">#</a></h2>
+<p>Select the stairs object on floor one. Its kind is <code>stairs</code> and next is <code>scenes/floor2.scene.json</code>. That is the <strong>compiled scene path</strong>, not the authoring JSON path.</p>
+<p>Save floor one with the basename <strong>floor1</strong>. Open <strong>floor2.level2d.json</strong>, rearrange a room, then Save with basename <strong>floor2</strong>. Its controller attributes use floor 2. The final relic is an object with kind <code>relic</code>; touching it wins.</p>
+<p>F5 previews the currently open floor. To test the whole two-floor journey, save both maps, choose Use as game start on floor1, then main Play. Scene transitions load the saved second floor from the project.</p>
+<p><strong>Checkpoint:</strong> HP/supplies carry through the stairs and the second-floor relic produces victory.</p>
+<h2 id="10-export-licence-and-troubleshooting">10. Export, licence and troubleshooting<a class="anchor" href="#10-export-licence-and-troubleshooting">#</a></h2>
+<p>Use the normal Nord Export command. Saved scenes, custom scripts, original art and licence documents go with the project. Keep <code>LICENSE.md</code> and <code>SOURCE.md</code> when sharing this GPL example and provide its corresponding source under those terms. The general Nord editor keeps its existing licence.</p>
+<table>
+<thead>
+<tr>
+<th>Problem</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Rat does nothing</td>
+<td>It needs kind <code>rat</code> or <code>guard</code>; place it within visible/reachable floor.</td>
+</tr>
+<tr>
+<td>Key appears but cannot be collected</td>
+<td>Keep it at a cell centre, on non-solid floor, with the dungeon-object script attached.</td>
+</tr>
+<tr>
+<td>Door still blocks after unlocking</td>
+<td>Remove the solid tile underneath the door.</td>
+</tr>
+<tr>
+<td>E cannot descend</td>
+<td>Stand within one cell; check the stairs <code>next</code> scene path and save floor2.</td>
+</tr>
+<tr>
+<td>Changes disappear on the next play</td>
+<td>Save the authoring file with the matching floor basename.</td>
+</tr>
+<tr>
+<td>Main Play starts on the wrong floor</td>
+<td>Use as game start on floor1.</td>
+</tr>
+</tbody></table>
+<p>Try a hidden potion room, a guard protecting the only key, or a narrow corridor where monsters must approach one at a time. Next: use the same editor for <a href="tut-t30-tank-patrol.html">NES-style tank action</a>.</p>
+<div class="pager"><a href="tut-t28-machine-workshop.html"><small>← Previous</small>T28 Machine Workshop — build a gravity puzzle in 2D Level</a><a href="tut-t30-tank-patrol.html"><small>Next →</small>T30 Tiny Tank Patrol — build a top-down tank arena</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-learn-the-mechanics-in-the-finished-example">1. Learn the mechanics in the finished example </a><a href="#2-open-the-first-floor-in-the-new-editor">2. Open the first floor in the new editor </a><a href="#3-change-a-route-with-tile-tools">3. Change a route with tile tools </a><a href="#4-inspect-a-monster-rather-than-editing-game-code">4. Inspect a monster rather than editing game code </a><a href="#5-add-your-own-enemy-preset">5. Add your own enemy preset </a><a href="#6-build-a-key-and-door-puzzle">6. Build a key-and-door puzzle </a><a href="#7-place-a-trap-and-tune-survival">7. Place a trap and tune survival </a><a href="#8-understand-the-floor-controller">8. Understand the floor controller </a><a href="#9-connect-and-edit-the-second-floor">9. Connect and edit the second floor </a><a href="#10-export-licence-and-troubleshooting">10. Export, licence and troubleshooting </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

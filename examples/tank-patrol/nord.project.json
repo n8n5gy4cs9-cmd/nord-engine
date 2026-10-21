@@ -1,0 +1,61 @@
+{
+  "format": 1,
+  "name": "Tiny Tank Patrol — NES-style Arena",
+  "id": "com.crowelian.tankpatrol",
+  "type": "2d",
+  "engineVersion": "0.1.0",
+  "startScene": "scenes/arena.scene.json",
+  "display": {
+    "width": 960,
+    "height": 540,
+    "scale": "fit",
+    "pixelArt": true,
+    "background": "#243b36"
+  },
+  "physics": {
+    "engine": "arcade",
+    "gravity": [
+      0,
+      0,
+      0
+    ]
+  },
+  "input": {
+    "actions": {
+      "left": [
+        "KeyA",
+        "ArrowLeft"
+      ],
+      "right": [
+        "KeyD",
+        "ArrowRight"
+      ],
+      "up": [
+        "KeyW",
+        "ArrowUp"
+      ],
+      "down": [
+        "KeyS",
+        "ArrowDown"
+      ],
+      "jump": [
+        "Space"
+      ],
+      "dash": [
+        "ShiftLeft"
+      ],
+      "interact": [
+        "KeyE",
+        "Enter"
+      ]
+    }
+  },
+  "plugins": [
+    "ui",
+    "audio"
+  ],
+  "ui": {
+    "skin": "cyber",
+    "theme": "nord"
+  }
+}

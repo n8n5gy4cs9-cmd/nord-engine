@@ -439,7 +439,7 @@ impl App {
                         st.viewport_ready = false;
                         if st.recover.is_some() {
                             st.toast("Unsaved autosave found — see Edit ▸ Recover autosave");
-                        } else if d.join("levels/workshop.level2d.json").exists() {
+                        } else if panels::level2d::installed(&d) {
                             self.show_tab(Tab::Level2d);
                         } else if panels::fps::installed(&d) {
                             self.show_tab(Tab::Fps); // FPS Creator projects open on the level editor

@@ -1,0 +1,2819 @@
+{
+  "format": "nord-level2d/1",
+  "name": "Two Floors — The sewer gate",
+  "mode": "topdown",
+  "physics": "arcade",
+  "width": 26,
+  "height": 17,
+  "tileSize": 32,
+  "background": "#18212b",
+  "gravity": 0,
+  "layers": [
+    {
+      "id": "dyz9a2tg",
+      "name": "Background",
+      "visible": true,
+      "locked": false,
+      "parallax": 0.5,
+      "opacity": 1,
+      "tiles": {}
+    },
+    {
+      "id": "d75imi0p",
+      "name": "World",
+      "visible": true,
+      "locked": false,
+      "parallax": 1,
+      "opacity": 1,
+      "tiles": {
+        "0,0": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "1,0": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "2,0": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "3,0": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "4,0": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "5,0": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "6,0": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "7,0": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "8,0": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "9,0": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "10,0": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "11,0": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "12,0": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "13,0": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "14,0": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "15,0": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "16,0": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "17,0": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "18,0": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "19,0": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "20,0": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "21,0": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "22,0": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "23,0": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "24,0": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "25,0": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "0,1": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "1,1": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "2,1": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "3,1": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "4,1": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "5,1": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "6,1": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "7,1": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "8,1": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "9,1": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "10,1": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "11,1": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "12,1": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "13,1": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "14,1": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "15,1": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "16,1": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "17,1": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "18,1": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "19,1": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "20,1": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "21,1": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "22,1": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "23,1": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "24,1": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "25,1": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "0,2": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "1,2": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "2,2": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "3,2": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "4,2": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "5,2": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "6,2": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "7,2": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "8,2": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "9,2": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "10,2": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "11,2": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "12,2": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "13,2": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "14,2": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "15,2": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "16,2": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "17,2": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "18,2": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "19,2": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "20,2": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "21,2": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "22,2": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "23,2": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "24,2": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "25,2": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "0,3": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "1,3": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "2,3": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "3,3": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "4,3": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "5,3": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "6,3": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "7,3": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "8,3": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "9,3": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "10,3": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "11,3": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "12,3": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "13,3": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "14,3": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "15,3": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "16,3": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "17,3": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "18,3": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "19,3": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "20,3": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "21,3": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "22,3": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "23,3": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "24,3": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "25,3": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "0,4": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "1,4": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "2,4": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "3,4": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "4,4": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "5,4": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "6,4": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "7,4": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "8,4": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "9,4": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "10,4": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "11,4": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "12,4": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "13,4": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "14,4": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "15,4": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "16,4": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "17,4": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "18,4": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "19,4": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "20,4": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "21,4": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "22,4": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "23,4": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "24,4": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "25,4": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "0,5": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "1,5": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "2,5": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "3,5": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "4,5": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "5,5": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "6,5": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "7,5": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "8,5": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "9,5": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "10,5": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "11,5": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "12,5": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "13,5": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "14,5": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "15,5": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "16,5": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "17,5": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "18,5": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "19,5": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "20,5": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "21,5": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "22,5": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "23,5": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "24,5": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "25,5": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "0,6": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "1,6": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "2,6": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "3,6": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "4,6": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "5,6": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "6,6": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "7,6": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "8,6": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "9,6": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "10,6": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "11,6": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "12,6": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "13,6": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "14,6": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "15,6": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "16,6": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "17,6": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "18,6": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "19,6": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "20,6": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "21,6": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "22,6": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "23,6": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "24,6": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "25,6": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "0,7": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "1,7": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "2,7": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "3,7": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "4,7": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "5,7": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "6,7": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "7,7": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "8,7": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "9,7": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "10,7": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "11,7": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "12,7": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "13,7": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "14,7": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "15,7": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "16,7": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "17,7": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "18,7": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "19,7": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "20,7": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "21,7": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "22,7": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "23,7": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "24,7": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "25,7": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "0,8": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "1,8": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "2,8": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "3,8": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "4,8": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "5,8": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "6,8": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "7,8": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "8,8": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "9,8": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "10,8": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "11,8": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "12,8": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "13,8": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "14,8": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "15,8": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "16,8": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "17,8": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "18,8": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "19,8": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "20,8": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "21,8": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "22,8": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "23,8": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "24,8": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "25,8": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "0,9": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "1,9": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "2,9": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "3,9": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "4,9": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "5,9": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "6,9": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "7,9": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "8,9": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "9,9": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "10,9": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "11,9": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "12,9": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "13,9": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "14,9": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "15,9": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "16,9": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "17,9": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "18,9": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "19,9": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "20,9": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "21,9": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "22,9": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "23,9": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "24,9": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "25,9": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "0,10": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "1,10": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "2,10": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "3,10": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "4,10": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "5,10": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "6,10": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "7,10": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "8,10": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "9,10": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "10,10": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "11,10": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "12,10": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "13,10": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "14,10": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "15,10": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "16,10": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "17,10": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "18,10": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "19,10": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "20,10": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "21,10": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "22,10": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "23,10": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "24,10": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "25,10": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "0,11": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "1,11": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "2,11": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "3,11": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "4,11": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "5,11": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "6,11": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "7,11": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "8,11": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "9,11": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "10,11": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "11,11": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "12,11": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "13,11": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "14,11": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "15,11": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "16,11": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "17,11": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "18,11": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "19,11": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "20,11": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "21,11": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "22,11": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "23,11": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "24,11": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "25,11": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "0,12": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "1,12": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "2,12": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "3,12": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "4,12": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "5,12": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "6,12": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "7,12": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "8,12": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "9,12": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "10,12": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "11,12": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "12,12": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "13,12": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "14,12": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "15,12": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "16,12": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "17,12": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "18,12": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "19,12": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "20,12": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "21,12": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "22,12": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "23,12": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "24,12": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "25,12": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "0,13": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "1,13": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "2,13": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "3,13": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "4,13": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "5,13": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "6,13": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "7,13": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "8,13": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "9,13": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "10,13": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "11,13": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "12,13": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "13,13": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "14,13": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "15,13": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "16,13": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "17,13": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "18,13": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "19,13": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "20,13": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "21,13": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "22,13": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "23,13": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "24,13": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "25,13": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "0,14": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "1,14": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "2,14": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "3,14": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "4,14": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "5,14": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "6,14": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "7,14": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "8,14": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "9,14": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "10,14": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "11,14": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "12,14": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "13,14": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "14,14": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "15,14": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "16,14": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "17,14": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "18,14": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "19,14": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "20,14": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "21,14": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "22,14": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "23,14": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "24,14": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "25,14": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "0,15": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "1,15": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "2,15": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "3,15": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "4,15": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "5,15": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "6,15": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "7,15": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "8,15": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "9,15": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "10,15": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "11,15": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "12,15": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "13,15": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "14,15": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "15,15": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "16,15": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "17,15": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "18,15": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "19,15": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "20,15": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "21,15": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "22,15": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "23,15": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "24,15": {
+          "asset": "dungeon-floor",
+          "frame": 1,
+          "solid": false
+        },
+        "25,15": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "0,16": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "1,16": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "2,16": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "3,16": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "4,16": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "5,16": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "6,16": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "7,16": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "8,16": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "9,16": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "10,16": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "11,16": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "12,16": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "13,16": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "14,16": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "15,16": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "16,16": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "17,16": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "18,16": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "19,16": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "20,16": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "21,16": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "22,16": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "23,16": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "24,16": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        },
+        "25,16": {
+          "asset": "dungeon-wall",
+          "frame": 4,
+          "solid": true
+        }
+      }
+    }
+  ],
+  "entities": [
+    {
+      "id": "djfnntkh",
+      "name": "Player",
+      "asset": "dungeon-hero",
+      "x": 112,
+      "y": 272,
+      "w": 32,
+      "h": 32,
+      "rot": 0,
+      "flipX": false,
+      "frame": 0,
+      "anim": "idle",
+      "layer": "d75imi0p",
+      "tags": [
+        "player"
+      ],
+      "body": "none",
+      "trigger": false,
+      "scripts": [
+        {
+          "path": "scripts/dungeon-object.js",
+          "attributes": {
+            "kind": "hero",
+            "hp": 32,
+            "accuracy": 16,
+            "defense": 8,
+            "damageMin": 5,
+            "damageMax": 8,
+            "armor": 2,
+            "value": 1,
+            "next": "scenes/floor2.scene.json"
+          }
+        }
+      ]
+    },
+    {
+      "id": "d25f3wrp",
+      "name": "key 5,5",
+      "asset": "dungeon-key",
+      "x": 176,
+      "y": 176,
+      "w": 32,
+      "h": 32,
+      "rot": 0,
+      "flipX": false,
+      "frame": 14,
+      "anim": "",
+      "layer": "d75imi0p",
+      "tags": [],
+      "body": "none",
+      "trigger": false,
+      "scripts": [
+        {
+          "path": "scripts/dungeon-object.js",
+          "attributes": {
+            "kind": "key",
+            "hp": 8,
+            "accuracy": 8,
+            "defense": 2,
+            "damageMin": 1,
+            "damageMax": 4,
+            "armor": 1,
+            "value": 1,
+            "next": "scenes/floor2.scene.json"
+          }
+        }
+      ]
+    },
+    {
+      "id": "dykefnuw",
+      "name": "door 13,8",
+      "asset": "dungeon-door",
+      "x": 432,
+      "y": 272,
+      "w": 32,
+      "h": 32,
+      "rot": 0,
+      "flipX": false,
+      "frame": 8,
+      "anim": "",
+      "layer": "d75imi0p",
+      "tags": [],
+      "body": "none",
+      "trigger": false,
+      "scripts": [
+        {
+          "path": "scripts/dungeon-object.js",
+          "attributes": {
+            "kind": "door",
+            "hp": 8,
+            "accuracy": 8,
+            "defense": 2,
+            "damageMin": 1,
+            "damageMax": 4,
+            "armor": 1,
+            "value": 1,
+            "next": "scenes/floor2.scene.json"
+          }
+        }
+      ]
+    },
+    {
+      "id": "dsz85w92",
+      "name": "potion 8,5",
+      "asset": "dungeon-potion",
+      "x": 272,
+      "y": 176,
+      "w": 32,
+      "h": 32,
+      "rot": 0,
+      "flipX": false,
+      "frame": 5,
+      "anim": "",
+      "layer": "d75imi0p",
+      "tags": [],
+      "body": "none",
+      "trigger": false,
+      "scripts": [
+        {
+          "path": "scripts/dungeon-object.js",
+          "attributes": {
+            "kind": "potion",
+            "hp": 8,
+            "accuracy": 8,
+            "defense": 2,
+            "damageMin": 1,
+            "damageMax": 4,
+            "armor": 1,
+            "value": 1,
+            "next": "scenes/floor2.scene.json"
+          }
+        }
+      ]
+    },
+    {
+      "id": "dln4bt34",
+      "name": "gold 10,10",
+      "asset": "dungeon-gold",
+      "x": 336,
+      "y": 336,
+      "w": 32,
+      "h": 32,
+      "rot": 0,
+      "flipX": false,
+      "frame": 13,
+      "anim": "",
+      "layer": "d75imi0p",
+      "tags": [],
+      "body": "none",
+      "trigger": false,
+      "scripts": [
+        {
+          "path": "scripts/dungeon-object.js",
+          "attributes": {
+            "kind": "gold",
+            "hp": 8,
+            "accuracy": 8,
+            "defense": 2,
+            "damageMin": 1,
+            "damageMax": 4,
+            "armor": 1,
+            "value": 12,
+            "next": "scenes/floor2.scene.json"
+          }
+        }
+      ]
+    },
+    {
+      "id": "d68gnofw",
+      "name": "trap 17,8",
+      "asset": "dungeon-trap",
+      "x": 560,
+      "y": 272,
+      "w": 32,
+      "h": 32,
+      "rot": 0,
+      "flipX": false,
+      "frame": 15,
+      "anim": "",
+      "layer": "d75imi0p",
+      "tags": [],
+      "body": "none",
+      "trigger": false,
+      "scripts": [
+        {
+          "path": "scripts/dungeon-object.js",
+          "attributes": {
+            "kind": "trap",
+            "hp": 8,
+            "accuracy": 8,
+            "defense": 2,
+            "damageMin": 1,
+            "damageMax": 4,
+            "armor": 1,
+            "value": 3,
+            "next": "scenes/floor2.scene.json"
+          }
+        }
+      ]
+    },
+    {
+      "id": "dhi5mi44",
+      "name": "rat 8,8",
+      "asset": "dungeon-rat",
+      "x": 272,
+      "y": 272,
+      "w": 32,
+      "h": 32,
+      "rot": 0,
+      "flipX": false,
+      "frame": 0,
+      "anim": "idle",
+      "layer": "d75imi0p",
+      "tags": [],
+      "body": "none",
+      "trigger": false,
+      "scripts": [
+        {
+          "path": "scripts/dungeon-object.js",
+          "attributes": {
+            "kind": "rat",
+            "hp": 8,
+            "accuracy": 8,
+            "defense": 2,
+            "damageMin": 1,
+            "damageMax": 4,
+            "armor": 1,
+            "value": 1,
+            "next": "scenes/floor2.scene.json"
+          }
+        }
+      ]
+    },
+    {
+      "id": "dj3a5d24",
+      "name": "rat 19,10",
+      "asset": "dungeon-rat",
+      "x": 624,
+      "y": 336,
+      "w": 32,
+      "h": 32,
+      "rot": 0,
+      "flipX": false,
+      "frame": 0,
+      "anim": "idle",
+      "layer": "d75imi0p",
+      "tags": [],
+      "body": "none",
+      "trigger": false,
+      "scripts": [
+        {
+          "path": "scripts/dungeon-object.js",
+          "attributes": {
+            "kind": "rat",
+            "hp": 8,
+            "accuracy": 8,
+            "defense": 2,
+            "damageMin": 1,
+            "damageMax": 4,
+            "armor": 1,
+            "value": 1,
+            "next": "scenes/floor2.scene.json"
+          }
+        }
+      ]
+    },
+    {
+      "id": "do6z5nm3",
+      "name": "guard 20,6",
+      "asset": "dungeon-guard",
+      "x": 656,
+      "y": 208,
+      "w": 32,
+      "h": 32,
+      "rot": 0,
+      "flipX": false,
+      "frame": 0,
+      "anim": "idle",
+      "layer": "d75imi0p",
+      "tags": [],
+      "body": "none",
+      "trigger": false,
+      "scripts": [
+        {
+          "path": "scripts/dungeon-object.js",
+          "attributes": {
+            "kind": "guard",
+            "hp": 12,
+            "accuracy": 10,
+            "defense": 4,
+            "damageMin": 1,
+            "damageMax": 6,
+            "armor": 2,
+            "value": 1,
+            "next": "scenes/floor2.scene.json"
+          }
+        }
+      ]
+    },
+    {
+      "id": "dx40cevy",
+      "name": "stairs 23,8",
+      "asset": "dungeon-stairs",
+      "x": 752,
+      "y": 272,
+      "w": 32,
+      "h": 32,
+      "rot": 0,
+      "flipX": false,
+      "frame": 10,
+      "anim": "",
+      "layer": "d75imi0p",
+      "tags": [],
+      "body": "none",
+      "trigger": false,
+      "scripts": [
+        {
+          "path": "scripts/dungeon-object.js",
+          "attributes": {
+            "kind": "stairs",
+            "hp": 8,
+            "accuracy": 8,
+            "defense": 2,
+            "damageMin": 1,
+            "damageMax": 4,
+            "armor": 1,
+            "value": 1,
+            "next": "scenes/floor2.scene.json"
+          }
+        }
+      ]
+    }
+  ],
+  "variants": [],
+  "custom": [
+    {
+      "id": "dungeon-floor",
+      "title": "Dungeon floor",
+      "source": "assets/dungeon/tiles/dungeon.png",
+      "width": 16,
+      "height": 16,
+      "columns": 16,
+      "frame": 1,
+      "anims": {},
+      "custom": true,
+      "pack": "Project",
+      "category": "Game pieces"
+    },
+    {
+      "id": "dungeon-wall",
+      "title": "Dungeon masonry",
+      "source": "assets/dungeon/tiles/dungeon.png",
+      "width": 16,
+      "height": 16,
+      "columns": 16,
+      "frame": 4,
+      "anims": {},
+      "custom": true,
+      "pack": "Project",
+      "category": "Game pieces"
+    },
+    {
+      "id": "dungeon-hero",
+      "title": "Dungeon adventurer",
+      "source": "assets/dungeon/sprites/hero.png",
+      "width": 16,
+      "height": 16,
+      "columns": 6,
+      "frame": 0,
+      "anims": {
+        "idle": {
+          "frames": [
+            0,
+            1
+          ],
+          "fps": 2,
+          "loop": true
+        },
+        "walk": {
+          "frames": [
+            2,
+            3
+          ],
+          "fps": 8,
+          "loop": true
+        },
+        "attack": {
+          "frames": [
+            4
+          ],
+          "fps": 1,
+          "loop": false
+        },
+        "dead": {
+          "frames": [
+            5
+          ],
+          "fps": 1,
+          "loop": false
+        }
+      },
+      "custom": true,
+      "pack": "Project",
+      "category": "Game pieces"
+    },
+    {
+      "id": "dungeon-rat",
+      "title": "Rat",
+      "source": "assets/dungeon/sprites/rat.png",
+      "width": 16,
+      "height": 16,
+      "columns": 4,
+      "frame": 0,
+      "anims": {
+        "idle": {
+          "frames": [
+            0,
+            1
+          ],
+          "fps": 2,
+          "loop": true
+        },
+        "attack": {
+          "frames": [
+            2
+          ],
+          "fps": 1,
+          "loop": false
+        },
+        "dead": {
+          "frames": [
+            3
+          ],
+          "fps": 1,
+          "loop": false
+        }
+      },
+      "custom": true,
+      "pack": "Project",
+      "category": "Game pieces"
+    },
+    {
+      "id": "dungeon-guard",
+      "title": "Gnoll guard",
+      "source": "assets/dungeon/sprites/gnoll.png",
+      "width": 16,
+      "height": 16,
+      "columns": 4,
+      "frame": 0,
+      "anims": {
+        "idle": {
+          "frames": [
+            0,
+            1
+          ],
+          "fps": 2,
+          "loop": true
+        },
+        "attack": {
+          "frames": [
+            2
+          ],
+          "fps": 1,
+          "loop": false
+        },
+        "dead": {
+          "frames": [
+            3
+          ],
+          "fps": 1,
+          "loop": false
+        }
+      },
+      "custom": true,
+      "pack": "Project",
+      "category": "Game pieces"
+    },
+    {
+      "id": "dungeon-potion",
+      "title": "Healing potion",
+      "source": "assets/dungeon/sprites/items.png",
+      "width": 16,
+      "height": 16,
+      "columns": 8,
+      "frame": 5,
+      "anims": {},
+      "custom": true,
+      "pack": "Project",
+      "category": "Game pieces"
+    },
+    {
+      "id": "dungeon-key",
+      "title": "Door key",
+      "source": "assets/dungeon/sprites/items.png",
+      "width": 16,
+      "height": 16,
+      "columns": 8,
+      "frame": 14,
+      "anims": {},
+      "custom": true,
+      "pack": "Project",
+      "category": "Game pieces"
+    },
+    {
+      "id": "dungeon-gold",
+      "title": "Gold / relic",
+      "source": "assets/dungeon/sprites/items.png",
+      "width": 16,
+      "height": 16,
+      "columns": 8,
+      "frame": 13,
+      "anims": {},
+      "custom": true,
+      "pack": "Project",
+      "category": "Game pieces"
+    },
+    {
+      "id": "dungeon-relic",
+      "title": "Ancient relic",
+      "source": "assets/dungeon/sprites/items.png",
+      "width": 16,
+      "height": 16,
+      "columns": 8,
+      "frame": 1,
+      "anims": {},
+      "custom": true,
+      "pack": "Project",
+      "category": "Game pieces"
+    },
+    {
+      "id": "dungeon-door",
+      "title": "Locked door",
+      "source": "assets/dungeon/tiles/dungeon.png",
+      "width": 16,
+      "height": 16,
+      "columns": 16,
+      "frame": 8,
+      "anims": {},
+      "custom": true,
+      "pack": "Project",
+      "category": "Game pieces"
+    },
+    {
+      "id": "dungeon-stairs",
+      "title": "Stairs down",
+      "source": "assets/dungeon/tiles/dungeon.png",
+      "width": 16,
+      "height": 16,
+      "columns": 16,
+      "frame": 10,
+      "anims": {},
+      "custom": true,
+      "pack": "Project",
+      "category": "Game pieces"
+    },
+    {
+      "id": "dungeon-trap",
+      "title": "Floor trap",
+      "source": "assets/dungeon/tiles/dungeon.png",
+      "width": 16,
+      "height": 16,
+      "columns": 16,
+      "frame": 15,
+      "anims": {},
+      "custom": true,
+      "pack": "Project",
+      "category": "Game pieces"
+    }
+  ],
+  "hudScript": "scripts/dungeon-game.js",
+  "hudAttributes": {
+    "floor": 1,
+    "tileSize": 32,
+    "viewRadius": 8,
+    "firstScene": "scenes/floor1.scene.json"
+  }
+}

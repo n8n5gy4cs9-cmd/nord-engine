@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>T28 Machine Workshop — build a gravity puzzle in 2D Level — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="tutorials.html" class="active" aria-current="page">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Tutorials</div><a href="tutorials.html">Learn by building</a><a href="tut-t01-hello-nord.html">T01 Hello Nord</a><a href="tut-t02-sprite-movement.html">T02 Sprite &amp; movement</a><a href="tut-t03-first-script.html">T03 Your first script</a><a href="tut-t04-platformer.html">T04 Platformer from template</a><a href="tut-t05-physics.html">T05 Physics &amp; collisions</a><a href="tut-t06-tilemaps.html">T06 Tilemaps</a><a href="tut-t07-animation-juice.html">T07 Animation &amp; juice</a><a href="tut-t08-ui-hud.html">T08 UI &amp; HUD</a><a href="tut-t09-audio.html">T09 Audio</a><a href="tut-t10-3d-scene.html">T10 3D scene &amp; camera</a><a href="tut-t11-3d-physics.html">T11 3D physics (FPS)</a><a href="tut-t12-enemy-ai.html">T12 Enemy AI</a><a href="tut-t13-save-load.html">T13 Save &amp; load</a><a href="tut-t14-export-host.html">T14 Export to web &amp; host it</a><a href="tut-t15-mac-app.html">T15 Mac app</a><a href="tut-t16-rust-game.html">T16 Rust/WASM game</a><a href="tut-t17-rust-egui-app.html">T17 Rust egui app</a><a href="tut-t18-library-snippets.html">T18 Writing library snippets</a><a href="tut-t19-notepaint.html">T19 Build notepaint, from a blank folder</a><a href="tut-t20-star-not.html">T20 Build Star-Not, a complete small space adventure</a><a href="tut-t21-project-design.html">T21 Plan a bigger Nord project</a><a href="tut-t22-shader-terrain.html">T22 Put a terrain shader in a Nord app</a><a href="tut-t23-light-shadows.html">T23 2D lights and real shadows</a><a href="tut-t24-event-sheet-platformer.html">T24 A platformer from events</a><a href="tut-t25-topdown-shooter.html">T25 A top-down shooter from events</a><a href="tut-t26-menus-languages.html">T26 Menus and two languages</a><a href="tut-t27-fps-level.html">T27 Build your first FPS level</a><a href="tut-t28-machine-workshop.html" class="cur" aria-current="page">T28 Machine Workshop — build a gravity puzzle in 2D Level</a><a href="tut-t29-dungeon-two-floors.html">T29 Two Floors — edit a Shattered Pixel Dungeon adaptation</a><a href="tut-t30-tank-patrol.html">T30 Tiny Tank Patrol — build a top-down tank arena</a></nav><main id="content"><div class="crumb">Tutorials / Nord Engine</div><h1>T28 Machine Workshop — build a gravity puzzle in 2D Level</h1>
+<p><strong>Project:</strong> welcome screen → <strong>Physics</strong> → <strong>Machine Workshop</strong>. Create your own project from the template. <strong>Result:</strong> a side-view machine in which a ball rolls down two ramps into a basket. The game is original; it uses the general idea of <em>The Incredible Machine</em>, with no original TIM code or media.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>Gravity pulls the ball down. A ramp changes downward movement into sideways movement. The physics engine handles that contact. Your job as a designer is to place the parts, choose which parts can move, and decide what counts as success.</p>
+</aside><h2 id="1-play-the-working-machine-first">1. Play the working machine first<a class="anchor" href="#1-play-the-working-machine-first">#</a></h2>
+<p>Use the main <strong>Play</strong> button. The apparatus starts paused in setup mode. Move the two <strong>Ramp angle</strong> sliders, then click <strong>Release</strong>. The default 15° ramps lead the ball into the basket. <strong>Reset</strong> restores the setup. Try making the second ramp slope upwards: the same parts now produce a different path.</p>
+<figure class="shot"><img src="../../assets/screenshots/ed-level2d-machine.png" alt="Solved Machine Workshop with two ramps and a basket" loading="lazy"><figcaption>The starting apparatus has a working solution. Keep one solved copy while you experiment.</figcaption></figure><p><strong>Checkpoint:</strong> you can release, watch, reset and change an angle. The ball is simulated; it is not following a scripted path.</p>
+<h2 id="2-open-the-authoring-map">2. Open the authoring map<a class="anchor" href="#2-open-the-authoring-map">#</a></h2>
+<p>Stop main Play. Open <strong>2D Level</strong>; the workshop authoring file opens automatically. You can also choose <strong>Open → workshop.level2d.json</strong>. Wheel zooms; middle/right drag pans; <strong>Home</strong> fits the map.</p>
+<p>There are two kinds of content: <strong>tiles</strong>, painted on the grid, and <strong>objects</strong>, which can be selected independently. This machine uses objects for its ball, ramps and basket. Press <strong>V</strong>, click a ramp, and read its Inspector. Use <strong>Objects</strong> if selecting a thin ramp is difficult; clicking its name centres the map.</p>
+<h2 id="3-understand-the-level-settings">3. Understand the level settings<a class="anchor" href="#3-understand-the-level-settings">#</a></h2>
+<p>Open <strong>Level</strong>. The mode is <strong>Side-scroller</strong>, Physics is <strong>Matter</strong>, and gravity is <strong>900 pixels/s²</strong>. Matter handles the rotating/rolling contacts needed here. Leave the tile size at 32 while learning.</p>
+<p>The <strong>Level controller</strong> is <code>scripts/machine.js</code>. That is the small ready-made script that creates the Release/Reset controls. Its path stays in the authoring file when you Save. F5 therefore tests the machine with its setup controls as well.</p>
+<p>The controller attributes box is JSON. This sample needs no custom attributes; <code>{}</code> is correct. Later tutorials use this box to configure game-wide rules.</p>
+<h2 id="4-inspect-a-fixed-ramp">4. Inspect a fixed ramp<a class="anchor" href="#4-inspect-a-fixed-ramp">#</a></h2>
+<p>Select <strong>Ramp A</strong> in Objects. The important settings are:</p>
+<table>
+<thead>
+<tr>
+<th>Inspector setting</th>
+<th>Starting idea</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Body</td>
+<td><code>static</code>: the ramp does not fall.</td>
+</tr>
+<tr>
+<td>Shape</td>
+<td><code>box</code>: the thin rectangular contact surface.</td>
+</tr>
+<tr>
+<td>Width / Height</td>
+<td>Its displayed size and collision footprint.</td>
+</tr>
+<tr>
+<td>Rotation</td>
+<td>15° slopes down to the right.</td>
+</tr>
+<tr>
+<td>Friction</td>
+<td>A small value allows the ball to roll.</td>
+</tr>
+<tr>
+<td>Bounce</td>
+<td>A small value absorbs most impact.</td>
+</tr>
+</tbody></table>
+<p>Change Rotation to 10. Press <strong>F5</strong>, then Release. Stop the test with <strong>Shift+Esc</strong>. Use <strong>Ctrl/Cmd+Z</strong> to undo the angle change. The same undo history covers placement, dragging and Inspector edits.</p>
+<p><strong>Checkpoint:</strong> the ball&#39;s path changes when you change a ramp value; undo restores the apparatus.</p>
+<h2 id="5-inspect-the-ball">5. Inspect the ball<a class="anchor" href="#5-inspect-the-ball">#</a></h2>
+<p>Select <strong>Player</strong>. Here the name is used for the generated camera convention; the object is a ball, not a walking character. Its <code>player</code> tag lets the goal detect it.</p>
+<p>The ball&#39;s Body is <strong>dynamic</strong>, Shape is <strong>circle</strong>, Fixed rotation is off, Mass is 1, and Bounce is low. Try Bounce 0.7 and test again. Then restore it. A round picture alone does not make a round body: the <strong>Shape</strong> field is what selects circle contact.</p>
+<p>Keep Width and Height equal for a circular ball. Increasing mass changes collision/impulse response; it does not make gravity accelerate the ball faster. Gravity scale 0 makes it weightless; restore 1 to let it fall.</p>
+<h2 id="6-add-a-third-ramp-with-a-reusable-item">6. Add a third ramp with a reusable item<a class="anchor" href="#6-add-a-third-ramp-with-a-reusable-item">#</a></h2>
+<ol>
+<li>Select Ramp A, then <strong>Save as variant</strong>. Name it <strong>Short wooden ramp</strong>.</li>
+<li>Open <strong>Assets</strong> and click that variant. Place it with <strong>E Object</strong> in a clear area below the first ramp.</li>
+<li>Press V and select the new ramp. Set Width to 160, Height to 18 and Rotation to -10.</li>
+<li>Move it into the falling ball&#39;s route. Toggle <strong>Snap</strong> off for fine placement; turn it back on when done.</li>
+<li>F5 → Release. Watch the new contact, stop, and adjust.</li>
+</ol>
+<p>Variants capture appearance, body and attached scripts. The new ramp has an independent position and ID. The variant is saved inside this level file; remember to Save the map.</p>
+<h2 id="7-make-a-tumbler">7. Make a tumbler<a class="anchor" href="#7-make-a-tumbler">#</a></h2>
+<p>Duplicate a ramp or crate with <strong>Ctrl/Cmd+D</strong>. Set Body to <strong>dynamic</strong>, Fixed rotation off and Mass to 2. Raise it above another ramp. Test to see it fall and rotate. Restore Body to static if it is meant to be part of the fixed apparatus.</p>
+<p><strong>Kinematic</strong> is for a body moved by a script. This tutorial does not add motors, ropes or joints; the editor currently authors free bodies and static/script-driven obstacles.</p>
+<h2 id="8-move-the-goal-and-understand-winning">8. Move the goal and understand winning<a class="anchor" href="#8-move-the-goal-and-understand-winning">#</a></h2>
+<p>Select <strong>Goal basket</strong>. It is a static <strong>trigger</strong>: the ball can overlap it. Its attached <code>level-actions.js</code> script uses:</p>
+<pre class="code" data-lang="json"><code>{&quot;action&quot;:&quot;win&quot;,&quot;message&quot;:&quot;Machine solved! The ball reached the basket.&quot;,&quot;requireScore&quot;:0}</code></pre>
+<p>The Inspector exposes those fields. Change the message to your own text, move the goal above the basket base, and test. Keep its trigger inside the basket; placing it above the ramp would award victory before the intended catch.</p>
+<p>The tall basket wall is a separate solid object. It catches the fast-moving ball; the goal trigger reports success. Moving the wall and moving the trigger change different parts of the game.</p>
+<h2 id="9-add-scenery-on-a-separate-layer">9. Add scenery on a separate layer<a class="anchor" href="#9-add-scenery-on-a-separate-layer">#</a></h2>
+<p>In Level, add a layer and name it <strong>Scenery</strong>. Pick a background/prop from Build and paint with <strong>Solid tiles</strong> off. Set the layer&#39;s parallax to 0.5 if you want it to scroll more slowly. Keep the collision apparatus on a layer with parallax 1. Lock the scenery layer when finished to avoid selecting it accidentally.</p>
+<p>Use <strong>B</strong> to brush, <strong>R</strong> for a rectangle, <strong>F</strong> to fill, <strong>X</strong> to erase and <strong>I</strong> to pick a sprite from the map. Object deletion uses V selection and Delete.</p>
+<h2 id="10-save-the-right-files-and-export">10. Save the right files and export<a class="anchor" href="#10-save-the-right-files-and-export">#</a></h2>
+<p>Use <strong>Save as → machine-my-version</strong>. This writes <code>levels/machine-my-version.level2d.json</code> and <code>scenes/machine-my-version.scene.json</code>. Referenced bundled art and its licences are copied into the project. Your custom <code>scripts/machine.js</code> stays in the project.</p>
+<p>Choose <strong>Use as game start</strong> so the main Play button and export use this scene and its Matter settings. Then use Nord&#39;s ordinary Export command. F5 tests unsaved data; main Play/export use saved files. Keep the authoring JSON: changing the compiled scene directly is not round-tripped into 2D Level.</p>
+<h2 id="troubleshooting-and-next-challenges">Troubleshooting and next challenges<a class="anchor" href="#troubleshooting-and-next-challenges">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Check</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Ball hangs in the air</td>
+<td>Click Release; Body dynamic; gravity scale 1; Side-scroller mode.</td>
+</tr>
+<tr>
+<td>Ramp falls</td>
+<td>Set its body to static.</td>
+</tr>
+<tr>
+<td>Ball rolls through a picture</td>
+<td>Give the picture a body; disable Trigger for a blocking surface.</td>
+</tr>
+<tr>
+<td>Goal never fires</td>
+<td>Ball has <code>player</code> tag; goal is a trigger with action <code>win</code>; overlap their bodies.</td>
+</tr>
+<tr>
+<td>Old game runs from main Play</td>
+<td>Save and choose Use as game start.</td>
+</tr>
+<tr>
+<td>Rotation has axis-aligned contact</td>
+<td>Choose Matter for rotated-ramp puzzles.</td>
+</tr>
+</tbody></table>
+<p>Try a high-bounce pinball route, a falling-crate chain, or a second basket that requires moving the catch wall. Keep one solved map as a baseline. The next tutorial uses the same editor for <a href="tut-t29-dungeon-two-floors.html">a two-floor dungeon</a>.</p>
+<div class="pager"><a href="tut-t27-fps-level.html"><small>← Previous</small>T27 Build your first FPS level</a><a href="tut-t29-dungeon-two-floors.html"><small>Next →</small>T29 Two Floors — edit a Shattered Pixel Dungeon adaptation</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-play-the-working-machine-first">1. Play the working machine first </a><a href="#2-open-the-authoring-map">2. Open the authoring map </a><a href="#3-understand-the-level-settings">3. Understand the level settings </a><a href="#4-inspect-a-fixed-ramp">4. Inspect a fixed ramp </a><a href="#5-inspect-the-ball">5. Inspect the ball </a><a href="#6-add-a-third-ramp-with-a-reusable-item">6. Add a third ramp with a reusable item </a><a href="#7-make-a-tumbler">7. Make a tumbler </a><a href="#8-move-the-goal-and-understand-winning">8. Move the goal and understand winning </a><a href="#9-add-scenery-on-a-separate-layer">9. Add scenery on a separate layer </a><a href="#10-save-the-right-files-and-export">10. Save the right files and export </a><a href="#troubleshooting-and-next-challenges">Troubleshooting and next challenges </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

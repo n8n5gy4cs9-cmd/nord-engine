@@ -1,5 +1,17 @@
 [
   {
+    "id": "dungeon-two-floors",
+    "title": "Two Floors \u2014 Dungeon Creator",
+    "description": "Editable two-floor Shattered Pixel Dungeon adaptation: turns, bump combat, fog, keys, doors and relic. GPL-3.0-or-later.",
+    "type": "2d"
+  },
+  {
+    "id": "tank-patrol",
+    "title": "Tiny Tank Patrol \u2014 NES-style Arena",
+    "description": "Editable top-down tank action: destructible cover, shells, enemies and base defense.",
+    "type": "2d"
+  },
+  {
     "id": "level2d-platform",
     "title": "2D Platform Workshop",
     "description": "2D Level Creator side-scroller with Amiga sprite bank and Arcade physics.",

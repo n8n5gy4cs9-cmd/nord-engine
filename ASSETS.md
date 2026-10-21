@@ -157,3 +157,9 @@ M6-51: Night Watch investigator/officer walk frames now register the head to one
 ## 2D Level Creator sprite bank (M12-22)
 
 `editor/level2d/bank.json` indexes 1,514 sprite/frame entries from 1,311 PNG sources. The 23 original MIT Amiga sheets remain in `assets/packs/nord-amiga/`; unchanged CC0 Kenney PNGs from the owner's `TEMP/ART` are bundled in `assets/packs/level2d-kenney/` (Platformer Remastered, Industrial, Tiny Dungeon, Top-down Shooter, Sports). Each pack's original licence text is retained verbatim as `LICENSE.md` so documentation URLs are not mistaken for runtime loads by the offline scanner. These are manually supplied assets, not generated placeholder artwork. No raster image is generated or altered by `tools/build-sprite-bank.py`; it copies selected source PNGs, writes Nord sidecars and deterministic catalogue metadata with SHA-256 hashes. Rebuilding needs TEMP/ART; using the bank does not. Save copies only referenced sheets/sidecars/licences to projects. Machine Workshop reuses these assets; no TIM graphics are used.
+
+## 2D Creator dungeon and tank examples (M12-28/29)
+
+`tools/examples/dungeon-two-floors/game.mjs` reuses Nord's own original RetroPaxDungeons tile/hero/rat/gnoll/item PNG sheets unchanged as project custom sprites. It copies no Shattered Pixel Dungeon art. GPL rules/source attribution is contained in the example's LICENSE.md / SOURCE.md; original art remains Crowelian 2026 + Sonnet.
+
+`tools/examples/tank-patrol/assets/` contains eight unchanged native PNGs manually copied from `TEMP/ART/kenney_top-down-tanks-remastered/PNG/Default size/`: blue/red/green tank, grass, sand, wooden crate, metal barricade and bullet. `assets/KENNEY-LICENSE.md` preserves the full CC0 notice verbatim. No Nintendo/Battle City content. These custom sprites are available through Project pack entries in the 2D editor; no raster art was generated or altered.

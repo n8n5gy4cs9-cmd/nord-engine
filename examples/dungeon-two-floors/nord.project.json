@@ -1,0 +1,61 @@
+{
+  "format": 1,
+  "name": "Two Floors — Dungeon Creator",
+  "id": "com.crowelian.dungeontwofloors",
+  "type": "2d",
+  "engineVersion": "0.1.0",
+  "startScene": "scenes/floor1.scene.json",
+  "display": {
+    "width": 960,
+    "height": 540,
+    "scale": "fit",
+    "pixelArt": true,
+    "background": "#18212b"
+  },
+  "physics": {
+    "engine": "arcade",
+    "gravity": [
+      0,
+      0,
+      0
+    ]
+  },
+  "input": {
+    "actions": {
+      "left": [
+        "KeyA",
+        "ArrowLeft"
+      ],
+      "right": [
+        "KeyD",
+        "ArrowRight"
+      ],
+      "up": [
+        "KeyW",
+        "ArrowUp"
+      ],
+      "down": [
+        "KeyS",
+        "ArrowDown"
+      ],
+      "jump": [
+        "Space"
+      ],
+      "dash": [
+        "ShiftLeft"
+      ],
+      "interact": [
+        "KeyE",
+        "Enter"
+      ]
+    }
+  },
+  "plugins": [
+    "ui",
+    "audio"
+  ],
+  "ui": {
+    "skin": "cyber",
+    "theme": "nord"
+  }
+}

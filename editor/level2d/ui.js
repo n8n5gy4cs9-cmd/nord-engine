@@ -31,6 +31,7 @@ export class Panels {
     field(p,'Name',l.name,v=>set('name',v));field(p,'Mode',l.mode,v=>set('mode',v),[['platform','Side-scroller'],['topdown','Top-down']]);field(p,'Physics',l.physics??'arcade',v=>set('physics',v),[['arcade','Arcade (platform/action)'],['matter','Matter (machine/puzzle)']]);
     for(const[k,title]of [['width','Width (cells)'],['height','Height (cells)'],['tileSize','Tile size (px)'],['gravity','Gravity (px/s²)']])field(p,title,l[k],v=>{if(!Number.isFinite(v)||v<0)return;set(k,Math.min(k==='gravity'?5000:256,Math.max(k==='tileSize'?8:1,Math.round(v))));});
     field(p,'Level controller',l.hudScript||'scripts/level2d/level-hud.js',v=>set('hudScript',v));
+    const controller=node('textarea','',p);controller.setAttribute('aria-label','Level controller attributes JSON');controller.value=JSON.stringify(l.hudAttributes??{},null,2);button(p,'Apply controller attributes',()=>{try{const v=JSON.parse(controller.value);if(!v||Array.isArray(v)||typeof v!=='object')throw Error('Expected an object');set('hudAttributes',v);}catch(err){a.status(err.message);}});
     field(p,'Background',l.background,v=>{if(/^#[0-9a-f]{6}$/i.test(v))set('background',v);});
     field(p,'Show collision',a.showCollision,v=>{a.showCollision=v;});
     node('h3','Layers (back → front)',p);for(const layer of l.layers){const row=node('div','',p,'layer');button(row,layer.name,()=>{a.activeLayer=layer.id;this.left();},a.activeLayer===layer.id?'on':'');field(row,'',layer.visible,v=>a.mutate(()=>layer.visible=v));}
@@ -46,6 +47,7 @@ export class Panels {
     const b=e?a.byId.get(e.asset):a.asset;if(b){const canvas=node('canvas','',p,'preview');canvas.width=240;canvas.height=130;this.previews=this.previews.filter(([c])=>c.isConnected);this.previews.push([canvas,{...b,frame:e?.frame??a.frame},e?.anim??a.anim]);node('p',b.title+' · '+b.pack,p);}
     if(!e){if(b){field(p,'Frame',a.frame,v=>{a.frame=Math.max(0,Math.floor(v));});field(p,'Animation',a.anim,v=>{a.anim=v;this.inspector();},[['','Still frame'],...Object.keys(b.anims??{})]);}node('p','Choose a sprite to paint tiles or place objects. V selects objects; drag to move. Inspector values and scripts apply to the first selected object.',p);return;}
     const edit=(k,v)=>{if(a.level.layers.find(l=>l.id===e.layer)?.locked){a.status('Layer locked');return;}a.mutate(()=>e[k]=v);};
+    if(a.asset&&a.asset.id!==e.asset)button(p,'Use bank sprite: '+a.asset.title,()=>{a.mutate(()=>{e.asset=a.asset.id;e.frame=a.asset.frame??0;e.anim=Object.keys(a.asset.anims??{})[0]??'';});this.inspector();},'full');
     field(p,'Name',e.name,v=>edit('name',v));field(p,'Layer',e.layer,v=>edit('layer',v),a.level.layers.map(l=>[l.id,l.name]));
     for(const[k,title]of [['x','X (px)'],['y','Y (px)'],['w','Width'],['h','Height'],['rot','Rotation °'],['animSpeed','Animation speed ×'],['frame','Still frame']])field(p,title,e[k]??(k==='animSpeed'?1:0),v=>{if(Number.isFinite(v)&&(!['w','h'].includes(k)||v>0))edit(k,v);});
     field(p,'Flip X',e.flipX,v=>edit('flipX',v));field(p,'Animation',e.anim,v=>{edit('anim',v);this.inspector();},[['','Still frame'],...Object.keys(b?.anims??{})]);

@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>T30 Tiny Tank Patrol — build a top-down tank arena — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="tutorials.html" class="active" aria-current="page">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Tutorials</div><a href="tutorials.html">Learn by building</a><a href="tut-t01-hello-nord.html">T01 Hello Nord</a><a href="tut-t02-sprite-movement.html">T02 Sprite &amp; movement</a><a href="tut-t03-first-script.html">T03 Your first script</a><a href="tut-t04-platformer.html">T04 Platformer from template</a><a href="tut-t05-physics.html">T05 Physics &amp; collisions</a><a href="tut-t06-tilemaps.html">T06 Tilemaps</a><a href="tut-t07-animation-juice.html">T07 Animation &amp; juice</a><a href="tut-t08-ui-hud.html">T08 UI &amp; HUD</a><a href="tut-t09-audio.html">T09 Audio</a><a href="tut-t10-3d-scene.html">T10 3D scene &amp; camera</a><a href="tut-t11-3d-physics.html">T11 3D physics (FPS)</a><a href="tut-t12-enemy-ai.html">T12 Enemy AI</a><a href="tut-t13-save-load.html">T13 Save &amp; load</a><a href="tut-t14-export-host.html">T14 Export to web &amp; host it</a><a href="tut-t15-mac-app.html">T15 Mac app</a><a href="tut-t16-rust-game.html">T16 Rust/WASM game</a><a href="tut-t17-rust-egui-app.html">T17 Rust egui app</a><a href="tut-t18-library-snippets.html">T18 Writing library snippets</a><a href="tut-t19-notepaint.html">T19 Build notepaint, from a blank folder</a><a href="tut-t20-star-not.html">T20 Build Star-Not, a complete small space adventure</a><a href="tut-t21-project-design.html">T21 Plan a bigger Nord project</a><a href="tut-t22-shader-terrain.html">T22 Put a terrain shader in a Nord app</a><a href="tut-t23-light-shadows.html">T23 2D lights and real shadows</a><a href="tut-t24-event-sheet-platformer.html">T24 A platformer from events</a><a href="tut-t25-topdown-shooter.html">T25 A top-down shooter from events</a><a href="tut-t26-menus-languages.html">T26 Menus and two languages</a><a href="tut-t27-fps-level.html">T27 Build your first FPS level</a><a href="tut-t28-machine-workshop.html">T28 Machine Workshop — build a gravity puzzle in 2D Level</a><a href="tut-t29-dungeon-two-floors.html">T29 Two Floors — edit a Shattered Pixel Dungeon adaptation</a><a href="tut-t30-tank-patrol.html" class="cur" aria-current="page">T30 Tiny Tank Patrol — build a top-down tank arena</a></nav><main id="content"><div class="crumb">Tutorials / Nord Engine</div><h1>T30 Tiny Tank Patrol — build a top-down tank arena</h1>
+<p><strong>Project:</strong> welcome → <strong>2D</strong> → <strong>Tiny Tank Patrol — NES-style Arena</strong>. <strong>Result:</strong> drive a blue tank, break wooden cover, destroy three red enemies and protect the green headquarters.</p>
+<p>The game is an original small arena inspired by NES-era tank games. It does not copy Nintendo/Battle City code, maps, graphics or audio. Vehicles and props come from the owner&#39;s CC0 Kenney Top-down Tanks Remastered pack; the complete notice is included in the project.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>This game uses continuous movement and moving shells, unlike the dungeon&#39;s turns. The editor is the same: tiles make the arena and objects carry scripts. The custom controller decides what happens when a shell hits wood, steel, a tank or HQ.</p>
+</aside><h2 id="1-play-then-identify-the-parts">1. Play, then identify the parts<a class="anchor" href="#1-play-then-identify-the-parts">#</a></h2>
+<p>In main Play, use WASD/arrows to drive in four directions. The tank faces the direction of travel. Hold Space to fire. Destroy all red tanks before the time limit. If the blue tank or green HQ loses all its HP, the run ends. R resets the arena.</p>
+<p>Wooden crates are destructible cover. Steel obstacles and solid tiles block movement and shots. Shells from your tank can damage HQ too: avoid shooting straight through it. Enemy tanks choose directions and occasionally favor moving toward HQ, so protecting only your own tank is not enough.</p>
+<figure class="shot"><img src="../../assets/screenshots/ed-creator-tank-arena.png" alt="Tiny Tank Patrol with blue and red tanks, wooden cover, steel obstacles and a green HQ" loading="lazy"><figcaption>An editable top-down arena with destructible cover and a base to defend.</figcaption></figure><h2 id="2-open-and-navigate-the-arena">2. Open and navigate the arena<a class="anchor" href="#2-open-and-navigate-the-arena">#</a></h2>
+<p>Stop Play, then choose <strong>2D Level → Open → arena.level2d.json</strong>. Home fits the map. Wheel zooms and middle/right drag pans. Objects is the quickest way to find <strong>Player</strong>, <strong>base</strong>, <strong>enemy</strong>, <strong>brick</strong> or <strong>steel</strong>.</p>
+<p>The map is 30×17 cells at 32 pixels per cell. The player/enemy tanks are slightly smaller than a cell so they fit through single-cell passages. Keep clear routes wide enough for the whole tank, not just its centre.</p>
+<p>Use V to select/move; Shift-click selects several; Ctrl/Cmd+D duplicates; Delete removes objects. Inspector edits apply to the first selected object.</p>
+<h2 id="3-paint-a-steel-boundary-and-a-clear-lane">3. Paint a steel boundary and a clear lane<a class="anchor" href="#3-paint-a-steel-boundary-and-a-clear-lane">#</a></h2>
+<ol>
+<li>Select World in Level.</li>
+<li>Build → pick a terrain sprite. With <strong>Solid tiles</strong> on, paint a short boundary using B or R.</li>
+<li>Turn Solid tiles off and paint a clear path around it.</li>
+<li>F5 tests the unsaved arena. Move into the boundary and fire at it: the controller reads solid tile colliders as steel.</li>
+<li>Shift+Esc returns to editing. Undo the experiment or keep a route through the boundary.</li>
+</ol>
+<p>A solid tile is indestructible in this game. Use a scripted <strong>brick object</strong> for cover that shells can break. A non-solid decoration can still look substantial, so test collision after changing artwork.</p>
+<p><strong>Checkpoint:</strong> tanks cannot drive through the new solid tiles, and shells disappear against them.</p>
+<h2 id="4-tune-the-player-39-s-tank-in-inspector">4. Tune the player&#39;s tank in Inspector<a class="anchor" href="#4-tune-the-player-39-s-tank-in-inspector">#</a></h2>
+<p>Select Player. Its <code>scripts/tank-object.js</code> attributes are:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Default idea</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>kind</td>
+<td><code>player</code>.</td>
+</tr>
+<tr>
+<td>hp</td>
+<td>3 hits before destruction.</td>
+</tr>
+<tr>
+<td>speed</td>
+<td>120 pixels per second.</td>
+</tr>
+<tr>
+<td>fireDelay</td>
+<td>Used by enemy objects; the player&#39;s cooldown is in the Level controller.</td>
+</tr>
+<tr>
+<td>score</td>
+<td>Awarded for defeated enemies, not the player.</td>
+</tr>
+</tbody></table>
+<p>Change speed to 90, test, then try 150. The smaller value gives more time to line up a shot. Keep kind as <code>player</code>; the controller needs one player object. Its name <strong>Player</strong> also supports the generated camera.</p>
+<p>The sample uses a custom arena controller for collision and shells; its tank objects do not need dynamic physics bodies. Arcade/Matter remain available for other 2D projects.</p>
+<h2 id="5-add-and-balance-an-enemy">5. Add and balance an enemy<a class="anchor" href="#5-add-and-balance-an-enemy">#</a></h2>
+<p>Choose an existing red enemy through Objects. Duplicate it, place the copy on clear ground and rename it. Or Save as variant, give the reusable item a name, and place that preset from Assets.</p>
+<p>Set its kind to <code>enemy</code>. Try hp 1, speed 45 and fireDelay 2.5. That enemy is easier than the default. A lower fireDelay fires more often; it is measured in seconds. Set score to 250 to make it worth more points.</p>
+<p>Enemy tanks turn when blocked and choose a direction periodically. They do not have a full path planner. Arrange corridors so an enemy can turn and approach the base; do not seal its spawn behind permanent steel unless that is your intended scenario.</p>
+<p><strong>Checkpoint:</strong> adding an enemy increases the HUD count, and defeating it adds your chosen score.</p>
+<h2 id="6-create-destructible-cover">6. Create destructible cover<a class="anchor" href="#6-create-destructible-cover">#</a></h2>
+<p>Select a wooden crate with kind <code>brick</code>. Duplicate it with Ctrl/Cmd+D and move the new crate into a firing lane. Keep Body as none: the custom controller uses this object&#39;s visible size and script kind for collision.</p>
+<p>Set hp to 2. Now the first shell damages it and the second destroys it. Use a line of crates to make a temporary shield around HQ, with a gap for the player to leave.</p>
+<p>To create permanent cover, duplicate an existing steel object or set a cover object&#39;s kind to <code>steel</code>. Steel is never damaged by shells. The <code>hp</code> field is ignored for that kind.</p>
+<h2 id="7-replace-a-picture-while-retaining-mechanics">7. Replace a picture while retaining mechanics<a class="anchor" href="#7-replace-a-picture-while-retaining-mechanics">#</a></h2>
+<p>Choose another picture in the bank, then V-select the cover object again. In Inspector, click <strong>Use bank sprite: …</strong>. Its script and body settings stay attached; the new picture changes its appearance. Width/height stay under your control.</p>
+<p>A useful exercise is to use a stone picture for steel and a wooden picture for brick, so players can predict which surfaces will break. Keep colliders and visible sizes consistent. The game measures cover bounds from the picture&#39;s dimensions and entity scale.</p>
+<h2 id="8-protect-and-move-hq">8. Protect and move HQ<a class="anchor" href="#8-protect-and-move-hq">#</a></h2>
+<p>Select the green base. Its kind is <code>base</code>, hp is 3 and speed is 0. Put it inside a small enclosure made from destructible cover. Ensure the blue tank has a way out and that at least one route lets enemies threaten HQ.</p>
+<p>HP 1 makes a tense scenario; HP 5 makes an easier lesson. Duplicating the base creates another target, but the AI favors the first surviving base it finds. Start with one HQ while learning the rules.</p>
+<p>Test three outcomes: the player is destroyed, HQ is destroyed, and all enemies are destroyed while HQ survives. R should restart each outcome.</p>
+<h2 id="9-change-game-wide-values-in-level">9. Change game-wide values in Level<a class="anchor" href="#9-change-game-wide-values-in-level">#</a></h2>
+<p>The Level controller is <code>scripts/tank-game.js</code>. Its <strong>Level controller attributes JSON</strong> is:</p>
+<pre class="code" data-lang="json"><code>{&quot;spriteOffset&quot;:180,&quot;bulletSpeed&quot;:300,&quot;playerFireDelay&quot;:0.3,&quot;timeLimit&quot;:120,&quot;enemyAggression&quot;:0.65}</code></pre>
+<p>The spriteOffset compensates for the supplied tank art facing down at zero rotation. Keep 180 for these sprites. Change timeLimit to 180 and playerFireDelay to 0.5, then click <strong>Apply controller attributes</strong>. F5 now gives more time but slower firing. Bullet speed is in pixels per second. Enemy aggression is between 0 and 1: larger values more often choose a direction toward HQ.</p>
+<p>Object values tune one actor. Controller values tune the match. For custom mechanics, edit <code>scripts/tank-game.js</code> through Nord&#39;s Code tab; <code>tank-rules.js</code> holds the small collision helpers and <code>tank-object.js</code> declares Inspector attributes.</p>
+<h2 id="10-organize-the-map-with-layers">10. Organize the map with layers<a class="anchor" href="#10-organize-the-map-with-layers">#</a></h2>
+<p>Add a <strong>Scenery</strong> layer and paint non-solid grass details there. Lock it while moving tanks. Keep gameplay obstacles on a layer with parallax 1. A hidden layer is excluded from compilation, so hiding a layer that contains all enemies can immediately satisfy the victory condition.</p>
+<p>Use Objects to audit how many players, enemies and bases remain after editing. Use a reusable enemy variant to make consistent patrols without repeatedly entering the same values.</p>
+<h2 id="11-save-test-and-export-your-arena">11. Save, test and export your arena<a class="anchor" href="#11-save-test-and-export-your-arena">#</a></h2>
+<p>Save with basename <strong>arena</strong> to regenerate the existing <code>scenes/arena.scene.json</code>. Save as another name to keep a second version, then choose <strong>Use as game start</strong> when you want main Play/export to use it. The controller and actor scripts are project-owned and preserved by later saves.</p>
+<p>The game&#39;s custom PNGs and their CC0 notice are already in the project. Built-in art you add is copied during Save. Export with Nord&#39;s normal Export command; no CDN or external game service is needed.</p>
+<figure class="shot"><img src="../../assets/screenshots/ed-creator-tank-win.png" alt="Tank arena after all red enemies are defeated" loading="lazy"><figcaption>Winning requires all enemies to be defeated while the player and HQ survive.</figcaption></figure><h2 id="troubleshooting-and-design-challenges">Troubleshooting and design challenges<a class="anchor" href="#troubleshooting-and-design-challenges">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Check</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>New tank is only a picture</td>
+<td>Attach <code>scripts/tank-object.js</code> and give it kind <code>enemy</code>; duplicating a working enemy is easiest.</td>
+</tr>
+<tr>
+<td>Wooden wall cannot be destroyed</td>
+<td>A solid tile underneath it is steel. Paint a non-solid floor under the brick object.</td>
+</tr>
+<tr>
+<td>Player cannot fit through a gap</td>
+<td>Check width/height and leave clearance around every obstacle.</td>
+</tr>
+<tr>
+<td>Shots damage HQ</td>
+<td>That is part of the rules; move the firing lane or improve cover.</td>
+</tr>
+<tr>
+<td>Empty arena wins immediately</td>
+<td>At least one visible-layer enemy must have kind <code>enemy</code>.</td>
+</tr>
+<tr>
+<td>Main Play ignores the edited arena</td>
+<td>Save and choose Use as game start.</td>
+</tr>
+</tbody></table>
+<p>Build a narrow defensive maze, a wide arena with fragile cover, and a low-ammunition-style challenge by increasing playerFireDelay. Keep each variation as a separate authoring file. You now know the same editor workflows used by <a href="tut-t28-machine-workshop.html">the machine puzzle</a> and <a href="tut-t29-dungeon-two-floors.html">the two-floor dungeon</a>.</p>
+<div class="pager"><a href="tut-t29-dungeon-two-floors.html"><small>← Previous</small>T29 Two Floors — edit a Shattered Pixel Dungeon adaptation</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-play-then-identify-the-parts">1. Play, then identify the parts </a><a href="#2-open-and-navigate-the-arena">2. Open and navigate the arena </a><a href="#3-paint-a-steel-boundary-and-a-clear-lane">3. Paint a steel boundary and a clear lane </a><a href="#4-tune-the-player-39-s-tank-in-inspector">4. Tune the player&amp;#39;s tank in Inspector </a><a href="#5-add-and-balance-an-enemy">5. Add and balance an enemy </a><a href="#6-create-destructible-cover">6. Create destructible cover </a><a href="#7-replace-a-picture-while-retaining-mechanics">7. Replace a picture while retaining mechanics </a><a href="#8-protect-and-move-hq">8. Protect and move HQ </a><a href="#9-change-game-wide-values-in-level">9. Change game-wide values in Level </a><a href="#10-organize-the-map-with-layers">10. Organize the map with layers </a><a href="#11-save-test-and-export-your-arena">11. Save, test and export your arena </a><a href="#troubleshooting-and-design-challenges">Troubleshooting and design challenges </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

@@ -107,5 +107,11 @@
     "sha": "2b7b5512f2f88fa281cb6492debbb26ead7838d4",
     "licenceFile": "LICENSE",
     "licenceHead": "MIT License. Copyright (c) 2020, Sébastien Benard - Deepnight Games"
+  },
+  "shattered-pixel-dungeon": {
+    "repo": "00-Evan/shattered-pixel-dungeon",
+    "sha": "57a4e06a4caf162446d1c28caa7983f0493fecf0",
+    "licenceFile": "LICENSE.txt",
+    "licenceHead": "GNU General Public License v3; Copyright Oleg Dolya and Evan Debenham"
   }
 }

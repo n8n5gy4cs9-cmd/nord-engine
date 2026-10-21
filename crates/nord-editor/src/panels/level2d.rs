@@ -24,3 +24,10 @@ pub fn ui(
     ui.ctx()
         .request_repaint_after(std::time::Duration::from_millis(250));
 }
+
+/// Projects carrying authored 2D maps open directly in this tab.
+pub fn installed(root: &std::path::Path) -> bool {
+    nord_core::vfs::read_dir(root.join("levels")).is_ok_and(|mut entries| {
+        entries.any(|e| e.is_ok_and(|e| e.file_name().to_string_lossy().ends_with(".level2d.json")))
+    })
+}

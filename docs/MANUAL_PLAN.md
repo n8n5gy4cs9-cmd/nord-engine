@@ -62,3 +62,5 @@ A prominent **Mobile and on-screen touch controls** guide documents the existing
 
 ## Upload without search indexing
 All generated pages include `noindex, nofollow, noarchive`. The builder copies `tools/manual/hosting/{robots.txt,_headers,.htaccess,HOSTING.txt}` into the output: Apache/static-host header rules cover upstream pages/assets too. `robots.txt` permits fetching so crawlers can read noindex; do not block the manual in a parent robots file. Put robots.txt at the domain root only; scope the static-host `/*` header rule if deploying alongside another site. HOSTING.txt explains Nginx, existing Google results and private access. See [Google’s noindex documentation](https://developers.google.com/search/docs/crawling-indexing/block-indexing).
+
+M12-30: full illustrated editor-focused T28 Machine Workshop, T29 Two Floors (GPL SPD adaptation) and T30 Tiny Tank Patrol. Each teaches the game mechanics through concrete 2D Level Creator editing exercises, Inspector/controller values, variants, validation checkpoints and save/Play/export distinctions. Real game/editor screenshots are committed; Markdown sources generate offline HTML with normal manual tooling.

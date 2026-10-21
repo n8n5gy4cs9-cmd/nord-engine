@@ -170,3 +170,7 @@ M6-51: Night Watch root-drift correction is asset registration, not a direction/
 - Imported PNG files are project-owned; removing an item or undoing registration does not delete its image file. Save preserves existing project-owned helper scripts, so existing projects keep their edited versions.
 - Level → Level controller overrides the normal HUD with a project script. Machine Workshop uses `scripts/machine.js`, retained through authoring Save/Test. That custom script must exist in the project.
 - Strict workspace Clippy still reports the five pre-existing editor lints (font/tokenizer branches and pixel draw argument counts); this change does not claim those are fixed.
+
+### Creator game samples and tutorials
+
+Two Floors is a deliberately small, two-floor GPL-3.0-or-later SPD rules adaptation: handcrafted maps, simplified line of sight and pursuit, no full inventory identification/classes/hunger/procedural generator, no between-session campaign save or return upstairs. HP/supplies persist during the saved-scene transition to floor two. Its art is original Nord artwork. Tiny Tank Patrol is original MIT arena code with CC0 Kenney art: one shell type, simple steering AI, no full commercial-game feature parity. Both expose their specific object scripts and Level controller JSON in the 2D editor. The PNGs and source/asset licences ship in the project. Native input feel remains an owner check. Tutorial game/editor images are browser captures, not native-host verification.

@@ -538,6 +538,8 @@ pub fn category_matches(filter: &str, id: &str, kind: &str, description: &str) -
             "level2d-platform",
             "level2d-topdown",
             "machine-workshop",
+            "dungeon-two-floors",
+            "tank-patrol",
             "fps-creator",
             "xkom",
             "vallout",

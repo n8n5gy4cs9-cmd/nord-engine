@@ -657,19 +657,19 @@
       "id": "M12-28",
       "milestone": "M12",
       "title": "Add editable two-floor Shattered Pixel Dungeon adaptation to 2D Level Creator",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M12-29",
       "milestone": "M12",
       "title": "Add editable NES-style top-down tank game and starter",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M12-30",
       "milestone": "M12",
       "title": "Add full illustrated HTML tutorials for Machine Workshop, dungeon and tank games",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M9-01",
