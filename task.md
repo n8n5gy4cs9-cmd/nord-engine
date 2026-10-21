@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 253/268 tasks (94%)** · updated 2026-10-21
+**Overall: 254/269 tasks (94%)** · updated 2026-10-21
 
 | Milestone | Progress |
 |---|---|
@@ -13,7 +13,7 @@
 | M3 Editor | 24/26 (92%) |
 | M4 Export | 8/11 (73%) |
 | M5 Rust/WASM | 9/9 (100%) |
-| M6 Library | 50/50 (100%) |
+| M6 Library | 51/51 (100%) |
 | M7 Docs | 20/20 (100%) |
 | M8 Polish & portability | 15/20 (75%) |
 | M9 Desktop apps | 16/16 (100%) |
@@ -194,6 +194,7 @@ _snippets, controllers, systems, asset packs, examples_
 - [x] **M6-48** Amiga-inspired original 2D art collection: animated humans, environments, sports, vehicles and UI with frame metadata
 - [x] **M6-49** Single Amiga Arcade attract-mode example: animated platformer, top-down patrol, overhead soccer, racing and full asset gallery (owner: no tests)
 - [x] **M6-50** Simplify Amiga art to reference-scale flat sprites, four-step human/soccer cycles and three discrete rear car poses; update showcase (no tests/builds)
+- [x] **M6-51** Night Watch: register walk frames to a fixed head anchor to remove baked-in sprite drift; movement code unchanged (no tests/builds)
 
 ## M7 — Docs
 _manual, guides, tutorials, in-editor docs_

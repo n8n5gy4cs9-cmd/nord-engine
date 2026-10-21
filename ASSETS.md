@@ -149,3 +149,5 @@ Original built-in ImageGen masters in `tools/art/amiga/sources/`, exact prompts 
 
 ### M6-50 — simpler reference-scale characters and cars
 Current pack: 23 sheets / 284 cells. Built-in ImageGen reference redraws: `sources/{soccer,cars,humans,top}-simple.png`; exact `revision-prompts.json`. Flat 6–8-colour humans, four-step 7 fps cycles; soccer is an 8×12 figure within the preserved 21×31 canvas. Cars use only rear left/back/right and front, red/white variants; no steering animation metadata. Shared crop/scale reduces frame drift. Remaining sheets packed at 16 colours. Demo uses new mappings and jump pose. Owner: no tests/builds; only art packing and example file copying.
+
+M6-51: Night Watch investigator/officer walk frames now register the head to one shared anchor before scaling/packing. Generated source cells had different internal offsets, causing visible root drift independent of game position. Direction/movement/demo code unchanged. Repack uses `register_head=True` for these sheets; source masters preserved. No tests/builds run.

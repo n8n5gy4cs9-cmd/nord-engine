@@ -22,8 +22,25 @@ def grid(name, cols=8, rows=4, ys=None):
                     round((c+1)*im.width/cols)-2, ys[r+1]-2))
             for r in range(rows) for c in range(cols)]
 
-def save(name, cells, size, cols=8, anims=None, opaque=False, names=None, uniform=False, native=None, colors=16, locked=False):
+def save(name, cells, size, cols=8, anims=None, opaque=False, names=None, uniform=False, native=None, colors=16, locked=False, register_head=False):
     w,h = native or size
+    if register_head:
+        # Generated cells put the same head at different coordinates. Register
+        # the head, not the whole silhouette (swinging arms/legs change its bbox).
+        registered=[]
+        for tile in cells:
+            tile=tile.copy()
+            tile.putalpha(tile.getchannel('A').point(lambda a:255 if a>=128 else 0))
+            box=tile.getbbox()
+            if not box:
+                registered.append(tile);continue
+            band_height=max(1,round((box[3]-box[1])*.18))
+            head=tile.getchannel('A').crop((0,box[1],tile.width,box[1]+band_height)).getbbox()
+            anchor_x=(head[0]+head[2])//2
+            canvas=Image.new('RGBA',(tile.width*2,tile.height*2))
+            canvas.alpha_composite(tile,(tile.width-anchor_x,tile.height//2-box[1]))
+            registered.append(canvas)
+        cells=registered
     clean = []
     boxes=[]
     if locked:
@@ -68,8 +85,8 @@ for name,row in [('adventurer-run',0),('guard-run',1),('woman-run',2)]:
     save(name+'-128x256',cells,(128,256),cols=4,anims={'run':anim(0)},uniform=True,native=(16,32),colors=8,locked=True)
 save('adventurer-actions',side[12:16],(64,64),cols=4,names=['idle','crouch','jump','punch'],uniform=True,native=(32,32),colors=8,locked=True)
 top=grid('top-simple',4,4)
-save('investigator',top,(32,48),cols=4,anims={d:anim(i*4) for i,d in enumerate(['walk-south','walk-east','walk-north','walk-west'])},uniform=True,native=(16,24),colors=8,locked=True)
-save('officer-walk-west',top[12:],(32,48),cols=4,anims={'walk-west':anim(0)},uniform=True,native=(16,24),colors=8,locked=True)
+save('investigator',top,(32,48),cols=4,anims={d:anim(i*4) for i,d in enumerate(['walk-south','walk-east','walk-north','walk-west'])},uniform=True,native=(16,24),colors=8,locked=True,register_head=True)
+save('officer-walk-west',top[12:],(32,48),cols=4,anims={'walk-west':anim(0)},uniform=True,native=(16,24),colors=8,locked=True,register_head=True)
 platform_names='grass-left grass-center grass-right dirt rock moss-stone cracked-stone gravel steel-left steel-center steel-right steel-wall grate vent pipes hazard sandstone-left sandstone-center sandstone-right brick masonry timber slate cobble water water-surface lava lava-crust ice snow ladder chain'.split()
 tiles=grid('platform-tiles')
 for size in [16,70,128]:

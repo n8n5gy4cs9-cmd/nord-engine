@@ -158,3 +158,5 @@ Owner requested no tests: `examples/amiga-showcase` has not been run in browser/
 
 ### M6-50 reference-art revision
 Current human/car sheets replace the first detailed set. Four-step human loops, tiny soccer players and discrete rear-left/back/right/front cars are packed and wired into the example; no runtime validation, tests, engine/manual builds performed per owner. Old detailed masters remain source history, not active character/car exports. Animation timing and source pose consistency remain unverified by gameplay.
+
+M6-51: Night Watch root-drift correction is asset registration, not a direction/movement change. Head anchors aligned before downsampling for investigator/officer strips. No runtime validation or tests/builds per owner.
