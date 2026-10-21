@@ -1,0 +1,560 @@
+{
+  "fighter": [
+    {
+      "assetId": "primitive:cube",
+      "name": "Hull",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1.1,
+        0.55,
+        3.4
+      ],
+      "color": "#c9d9df",
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "roughness": 1,
+      "metalness": 0
+    },
+    {
+      "assetId": "primitive:cone",
+      "name": "Nose",
+      "position": [
+        0,
+        0,
+        2
+      ],
+      "scale": [
+        0.65,
+        1.6,
+        0.65
+      ],
+      "color": "#e3eaf0",
+      "rotation": [
+        90,
+        0,
+        0
+      ],
+      "roughness": 1,
+      "metalness": 0
+    },
+    {
+      "assetId": "primitive:cube",
+      "name": "Canopy",
+      "position": [
+        0,
+        0.45,
+        0.5
+      ],
+      "scale": [
+        0.7,
+        0.45,
+        1.3
+      ],
+      "color": "#168fba",
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "roughness": 1,
+      "metalness": 0
+    },
+    {
+      "assetId": "primitive:cube",
+      "name": "Left wing",
+      "position": [
+        -1.7,
+        -0.05,
+        -0.3
+      ],
+      "scale": [
+        2.6,
+        0.14,
+        1.3
+      ],
+      "color": "#dce6df",
+      "rotation": [
+        0,
+        22,
+        0
+      ],
+      "roughness": 1,
+      "metalness": 0
+    },
+    {
+      "assetId": "primitive:cube",
+      "name": "Right wing",
+      "position": [
+        1.7,
+        -0.05,
+        -0.3
+      ],
+      "scale": [
+        2.6,
+        0.14,
+        1.3
+      ],
+      "color": "#dce6df",
+      "rotation": [
+        0,
+        -22,
+        0
+      ],
+      "roughness": 1,
+      "metalness": 0
+    },
+    {
+      "assetId": "primitive:cube",
+      "name": "Fin",
+      "position": [
+        0,
+        0.65,
+        -1.1
+      ],
+      "scale": [
+        0.16,
+        0.9,
+        0.9
+      ],
+      "color": "#29bca3",
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "roughness": 1,
+      "metalness": 0
+    },
+    {
+      "assetId": "primitive:cylinder",
+      "name": "Engine",
+      "position": [
+        -0.65,
+        0,
+        -1.8
+      ],
+      "scale": [
+        0.45,
+        0.7,
+        0.45
+      ],
+      "color": "#ff9b42",
+      "rotation": [
+        90,
+        0,
+        0
+      ],
+      "roughness": 1,
+      "metalness": 0
+    },
+    {
+      "assetId": "primitive:cylinder",
+      "name": "Engine",
+      "position": [
+        0.65,
+        0,
+        -1.8
+      ],
+      "scale": [
+        0.45,
+        0.7,
+        0.45
+      ],
+      "color": "#ff9b42",
+      "rotation": [
+        90,
+        0,
+        0
+      ],
+      "roughness": 1,
+      "metalness": 0
+    }
+  ],
+  "drone": [
+    {
+      "assetId": "primitive:cube",
+      "name": "Core",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1.3,
+        0.7,
+        1.2
+      ],
+      "color": "#bf525b",
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "roughness": 1,
+      "metalness": 0
+    },
+    {
+      "assetId": "primitive:cube",
+      "name": "Eye",
+      "position": [
+        0,
+        0.1,
+        -0.7
+      ],
+      "scale": [
+        0.6,
+        0.25,
+        0.15
+      ],
+      "color": "#ffca51",
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "roughness": 1,
+      "metalness": 0
+    },
+    {
+      "assetId": "primitive:cube",
+      "name": "Blade",
+      "position": [
+        -1,
+        0,
+        0.15
+      ],
+      "scale": [
+        1.4,
+        0.16,
+        1.7
+      ],
+      "color": "#644b7b",
+      "rotation": [
+        0,
+        -25,
+        0
+      ],
+      "roughness": 1,
+      "metalness": 0
+    },
+    {
+      "assetId": "primitive:cube",
+      "name": "Blade",
+      "position": [
+        1,
+        0,
+        0.15
+      ],
+      "scale": [
+        1.4,
+        0.16,
+        1.7
+      ],
+      "color": "#644b7b",
+      "rotation": [
+        0,
+        25,
+        0
+      ],
+      "roughness": 1,
+      "metalness": 0
+    }
+  ],
+  "carrier": [
+    {
+      "assetId": "primitive:cube",
+      "name": "Armoured spine",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        2,
+        1,
+        6
+      ],
+      "color": "#626785",
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "roughness": 1,
+      "metalness": 0
+    },
+    {
+      "assetId": "primitive:cube",
+      "name": "Bridge",
+      "position": [
+        0,
+        0.85,
+        1
+      ],
+      "scale": [
+        1.2,
+        0.7,
+        2
+      ],
+      "color": "#e0bd6b",
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "roughness": 1,
+      "metalness": 0
+    },
+    {
+      "assetId": "primitive:cube",
+      "name": "Armour pod",
+      "position": [
+        -2.3,
+        0,
+        0
+      ],
+      "scale": [
+        2,
+        1.5,
+        4
+      ],
+      "color": "#45556d",
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "roughness": 1,
+      "metalness": 0
+    },
+    {
+      "assetId": "primitive:cube",
+      "name": "Reactor",
+      "position": [
+        -2.3,
+        0.1,
+        -2.1
+      ],
+      "scale": [
+        1.2,
+        0.7,
+        0.2
+      ],
+      "color": "#ed5f4e",
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "roughness": 1,
+      "metalness": 0
+    },
+    {
+      "assetId": "primitive:cube",
+      "name": "Armour pod",
+      "position": [
+        2.3,
+        0,
+        0
+      ],
+      "scale": [
+        2,
+        1.5,
+        4
+      ],
+      "color": "#45556d",
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "roughness": 1,
+      "metalness": 0
+    },
+    {
+      "assetId": "primitive:cube",
+      "name": "Reactor",
+      "position": [
+        2.3,
+        0.1,
+        -2.1
+      ],
+      "scale": [
+        1.2,
+        0.7,
+        0.2
+      ],
+      "color": "#ed5f4e",
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "roughness": 1,
+      "metalness": 0
+    },
+    {
+      "assetId": "primitive:cube",
+      "name": "Front shield",
+      "position": [
+        0,
+        0,
+        -3.1
+      ],
+      "scale": [
+        2,
+        0.65,
+        0.2
+      ],
+      "color": "#b94975",
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "roughness": 1,
+      "metalness": 0
+    }
+  ],
+  "gate": [
+    {
+      "assetId": "primitive:cube",
+      "name": "Pylon",
+      "position": [
+        -4,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        8,
+        1.5
+      ],
+      "color": "#69768a",
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "roughness": 1,
+      "metalness": 0
+    },
+    {
+      "assetId": "primitive:cube",
+      "name": "Pylon",
+      "position": [
+        4,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        8,
+        1.5
+      ],
+      "color": "#69768a",
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "roughness": 1,
+      "metalness": 0
+    },
+    {
+      "assetId": "primitive:cube",
+      "name": "Crossbar",
+      "position": [
+        0,
+        4,
+        0
+      ],
+      "scale": [
+        9,
+        1,
+        1.5
+      ],
+      "color": "#a9b4c3",
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "roughness": 1,
+      "metalness": 0
+    },
+    {
+      "assetId": "primitive:cube",
+      "name": "Lamp",
+      "position": [
+        -2,
+        3.6,
+        -0.8
+      ],
+      "scale": [
+        0.6,
+        0.2,
+        0.15
+      ],
+      "color": "#34e6b4",
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "roughness": 1,
+      "metalness": 0
+    },
+    {
+      "assetId": "primitive:cube",
+      "name": "Lamp",
+      "position": [
+        0,
+        3.6,
+        -0.8
+      ],
+      "scale": [
+        0.6,
+        0.2,
+        0.15
+      ],
+      "color": "#34e6b4",
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "roughness": 1,
+      "metalness": 0
+    },
+    {
+      "assetId": "primitive:cube",
+      "name": "Lamp",
+      "position": [
+        2,
+        3.6,
+        -0.8
+      ],
+      "scale": [
+        0.6,
+        0.2,
+        0.15
+      ],
+      "color": "#34e6b4",
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "roughness": 1,
+      "metalness": 0
+    }
+  ]
+}

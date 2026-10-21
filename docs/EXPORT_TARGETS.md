@@ -57,3 +57,8 @@ Verified headless: `node tools/pwa-test.mjs` builds the event-sheets example, re
 
 ## Exporting from the web editor
 The browser editor exports the web targets as a zip in the page (no minify / single-file / optimise / event-sheet compile); the server editor runs the full `nord build` as a job. Rust/WASM and app-bundle targets stay desktop-only. See `WEB_EDITOR.md`.
+
+
+### Full-source HTML app tutorials
+
+Paper Worlds and RSS River demonstrate local Phaser/Babylon modules inside a normal HTML-tier project. Their downloaded source archives include their pinned vendor files. Paper Worlds exports an additional `my-paper-desk.html` with embedded board data; place it beside the project's exported modules/vendor folders and serve/share the whole folder. PNG/JSON are normal browser downloads, not silent writes into dist. RSS River's static export keeps cached/imported news and its original demo; live feed refresh needs source CORS or a Nord host with declared net permissions. These JavaScript apps already load Havok WASM for physics; they are not Rust/WASM target projects. Optional Node hosting is described only, with no server implementation for these two apps.

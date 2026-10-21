@@ -55,3 +55,11 @@ M12-31 / BUG-010: `node --test editor/level2d/items.test.mjs` verifies preset pe
 ### Advanced coding workshops T35–T37
 
 `node --test tools/advanced-workshops.test.mjs` checks pure Node game rules. `rustc --test examples/rust-salvage/src/sim.rs -o /tmp/salvage-tests && /tmp/salvage-tests` checks the production Rust simulation without a window. `nord build examples/rust-salvage --target web-wasm-game --out target/e2e/advanced-salvage` builds the actual WASM export. Then `NORD_SALVAGE_EXPORT="$PWD/target/e2e/advanced-salvage" node tools/advanced-workshops-test.mjs --manual` checks shader compilation/controls/restart, real Node HTTP validation and cross-origin browser completion/leaderboard, the WASM render/input/pause HUD, and CodeMirror/source/image/download behavior for all three guides. PW_CHROMIUM is supported for installed-browser overrides. Full human balance/native-host walkthroughs remain separate. These checks are in js-e2e CI.
+
+
+### Retro and multiplayer full tutorials
+
+`node --test tools/retro-games.test.mjs tools/office-tedris.test.mjs` checks grid/flight/racing rules and real Node authority/host/input expiry. `node tools/retro-games-test.mjs` checks keyboard, independent synthetic standard gamepad, disconnect/reconnect, split-screen, decoded local audio, imported model palette, combat, boss, shader and restart. `node tools/office-tedris-test.mjs` checks actual Matter angular motion/settling, office interactions/AI and two real browser clients for each Node game. Set PW_CHROMIUM and NODE_PATH when using a locally installed Playwright runtime. Source/archive/manual checks are in tools/retro-social-manual-test.mjs. Tests use local HTTP listeners. Hardware gamepad and multi-machine LAN feel remain unverified.
+
+
+For T42/T43 run `node tools/desk-apps-test.mjs`: a focused smoke of drawing, Save/reload, Arcade minigames, Babylon paper textures, real Havok sticky/reader flick, graph camera ride, desk download, RSS parser error and cache/star retention. It does not fetch live news. `tools/retro-social-manual-test.mjs` also checks their CodeMirror/full source, screenshot decoding and archive equality. User requested reduced testing/building for these apps; no additional full workspace rebuild was performed after their addition.

@@ -1,0 +1,170 @@
+{
+  "version": 2,
+  "projectId": "b4db28ad-c210-4dc2-8aa9-59b25e00ff92",
+  "name": "Untitled project",
+  "blocks": [
+    {
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "id": "nord-gate-0",
+      "assetId": "primitive:cube",
+      "name": "Pylon",
+      "position": [
+        -4,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        8,
+        1.5
+      ],
+      "color": "#69768a",
+      "metalness": 0,
+      "roughness": 1,
+      "texture": null
+    },
+    {
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "id": "nord-gate-1",
+      "assetId": "primitive:cube",
+      "name": "Pylon",
+      "position": [
+        4,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        8,
+        1.5
+      ],
+      "color": "#69768a",
+      "metalness": 0,
+      "roughness": 1,
+      "texture": null
+    },
+    {
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "id": "nord-gate-2",
+      "assetId": "primitive:cube",
+      "name": "Crossbar",
+      "position": [
+        0,
+        4,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        9,
+        1,
+        1.5
+      ],
+      "color": "#a9b4c3",
+      "metalness": 0,
+      "roughness": 1,
+      "texture": null
+    },
+    {
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "id": "nord-gate-3",
+      "assetId": "primitive:cube",
+      "name": "Lamp",
+      "position": [
+        -2,
+        3.6,
+        -0.8
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        0.6,
+        0.2,
+        0.15
+      ],
+      "color": "#34e6b4",
+      "metalness": 0,
+      "roughness": 1,
+      "texture": null
+    },
+    {
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "id": "nord-gate-4",
+      "assetId": "primitive:cube",
+      "name": "Lamp",
+      "position": [
+        0,
+        3.6,
+        -0.8
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        0.6,
+        0.2,
+        0.15
+      ],
+      "color": "#34e6b4",
+      "metalness": 0,
+      "roughness": 1,
+      "texture": null
+    },
+    {
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "id": "nord-gate-5",
+      "assetId": "primitive:cube",
+      "name": "Lamp",
+      "position": [
+        2,
+        3.6,
+        -0.8
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        0.6,
+        0.2,
+        0.15
+      ],
+      "color": "#34e6b4",
+      "metalness": 0,
+      "roughness": 1,
+      "texture": null
+    }
+  ],
+  "assets": []
+}

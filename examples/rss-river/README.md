@@ -1,0 +1,2 @@
+# RSS River
+T43 full source reader workshop. Default subscriptions: Hacker News, Simon Willison AI/LLMs, GitHub Engineering. Explicit refresh, RSS/Atom/XML import, cached offline reading, search/unread/stars, JSON backup and original local demo. 3D flowing papers: starred stories float larger/higher; click to read, flick with real Havok. Browser feeds need CORS; Nord host fetch uses declared HTTP permissions. No public proxy or Node server. Local libraries and original sprite sheet included. Crowelian 2026 + Sonnet.

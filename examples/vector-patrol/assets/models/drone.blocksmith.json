@@ -1,0 +1,116 @@
+{
+  "version": 2,
+  "projectId": "b4db28ad-c210-4dc2-8aa9-59b25e00ff92",
+  "name": "Untitled project",
+  "blocks": [
+    {
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "id": "nord-drone-0",
+      "assetId": "primitive:cube",
+      "name": "Core",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1.3,
+        0.7,
+        1.2
+      ],
+      "color": "#bf525b",
+      "metalness": 0,
+      "roughness": 1,
+      "texture": null
+    },
+    {
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "id": "nord-drone-1",
+      "assetId": "primitive:cube",
+      "name": "Eye",
+      "position": [
+        0,
+        0.1,
+        -0.7
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        0.6,
+        0.25,
+        0.15
+      ],
+      "color": "#ffca51",
+      "metalness": 0,
+      "roughness": 1,
+      "texture": null
+    },
+    {
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "id": "nord-drone-2",
+      "assetId": "primitive:cube",
+      "name": "Blade",
+      "position": [
+        -1,
+        0,
+        0.15
+      ],
+      "rotation": [
+        0,
+        -25,
+        0
+      ],
+      "scale": [
+        1.4,
+        0.16,
+        1.7
+      ],
+      "color": "#644b7b",
+      "metalness": 0,
+      "roughness": 1,
+      "texture": null
+    },
+    {
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "id": "nord-drone-3",
+      "assetId": "primitive:cube",
+      "name": "Blade",
+      "position": [
+        1,
+        0,
+        0.15
+      ],
+      "rotation": [
+        0,
+        25,
+        0
+      ],
+      "scale": [
+        1.4,
+        0.16,
+        1.7
+      ],
+      "color": "#644b7b",
+      "metalness": 0,
+      "roughness": 1,
+      "texture": null
+    }
+  ],
+  "assets": []
+}

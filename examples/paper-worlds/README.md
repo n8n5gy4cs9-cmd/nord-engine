@@ -1,0 +1,2 @@
+# Paper Worlds
+T42 full source workshop. Ten editable boards: Phaser pen, rectangles, circles, text/stickies, workspace pan/zoom, local Nord Save, PNG/JSON backups and a downloadable 3D desk page. Babylon live paper textures, Havok sticky flick/shake, drawn doors, Arcade bouncing circles, drawn-rectangle maze and graph camera ride. All libraries and original generated sprites included offline. Nord HTML tier hosts both adapters explicitly; there is no imaginary hybrid setting. No Node server. Crowelian 2026 + Sonnet.

@@ -1,0 +1,224 @@
+{
+  "version": 2,
+  "projectId": "b4db28ad-c210-4dc2-8aa9-59b25e00ff92",
+  "name": "Untitled project",
+  "blocks": [
+    {
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "id": "nord-fighter-0",
+      "assetId": "primitive:cube",
+      "name": "Hull",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1.1,
+        0.55,
+        3.4
+      ],
+      "color": "#c9d9df",
+      "metalness": 0,
+      "roughness": 1,
+      "texture": null
+    },
+    {
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "id": "nord-fighter-1",
+      "assetId": "primitive:cone",
+      "name": "Nose",
+      "position": [
+        0,
+        0,
+        2
+      ],
+      "rotation": [
+        90,
+        0,
+        0
+      ],
+      "scale": [
+        0.65,
+        1.6,
+        0.65
+      ],
+      "color": "#e3eaf0",
+      "metalness": 0,
+      "roughness": 1,
+      "texture": null
+    },
+    {
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "id": "nord-fighter-2",
+      "assetId": "primitive:cube",
+      "name": "Canopy",
+      "position": [
+        0,
+        0.45,
+        0.5
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        0.7,
+        0.45,
+        1.3
+      ],
+      "color": "#168fba",
+      "metalness": 0,
+      "roughness": 1,
+      "texture": null
+    },
+    {
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "id": "nord-fighter-3",
+      "assetId": "primitive:cube",
+      "name": "Left wing",
+      "position": [
+        -1.7,
+        -0.05,
+        -0.3
+      ],
+      "rotation": [
+        0,
+        22,
+        0
+      ],
+      "scale": [
+        2.6,
+        0.14,
+        1.3
+      ],
+      "color": "#dce6df",
+      "metalness": 0,
+      "roughness": 1,
+      "texture": null
+    },
+    {
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "id": "nord-fighter-4",
+      "assetId": "primitive:cube",
+      "name": "Right wing",
+      "position": [
+        1.7,
+        -0.05,
+        -0.3
+      ],
+      "rotation": [
+        0,
+        -22,
+        0
+      ],
+      "scale": [
+        2.6,
+        0.14,
+        1.3
+      ],
+      "color": "#dce6df",
+      "metalness": 0,
+      "roughness": 1,
+      "texture": null
+    },
+    {
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "id": "nord-fighter-5",
+      "assetId": "primitive:cube",
+      "name": "Fin",
+      "position": [
+        0,
+        0.65,
+        -1.1
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        0.16,
+        0.9,
+        0.9
+      ],
+      "color": "#29bca3",
+      "metalness": 0,
+      "roughness": 1,
+      "texture": null
+    },
+    {
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "id": "nord-fighter-6",
+      "assetId": "primitive:cylinder",
+      "name": "Engine",
+      "position": [
+        -0.65,
+        0,
+        -1.8
+      ],
+      "rotation": [
+        90,
+        0,
+        0
+      ],
+      "scale": [
+        0.45,
+        0.7,
+        0.45
+      ],
+      "color": "#ff9b42",
+      "metalness": 0,
+      "roughness": 1,
+      "texture": null
+    },
+    {
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "id": "nord-fighter-7",
+      "assetId": "primitive:cylinder",
+      "name": "Engine",
+      "position": [
+        0.65,
+        0,
+        -1.8
+      ],
+      "rotation": [
+        90,
+        0,
+        0
+      ],
+      "scale": [
+        0.45,
+        0.7,
+        0.45
+      ],
+      "color": "#ff9b42",
+      "metalness": 0,
+      "roughness": 1,
+      "texture": null
+    }
+  ],
+  "assets": []
+}

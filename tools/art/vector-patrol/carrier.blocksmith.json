@@ -1,0 +1,197 @@
+{
+  "version": 2,
+  "projectId": "b4db28ad-c210-4dc2-8aa9-59b25e00ff92",
+  "name": "Untitled project",
+  "blocks": [
+    {
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "id": "nord-carrier-0",
+      "assetId": "primitive:cube",
+      "name": "Armoured spine",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        2,
+        1,
+        6
+      ],
+      "color": "#626785",
+      "metalness": 0,
+      "roughness": 1,
+      "texture": null
+    },
+    {
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "id": "nord-carrier-1",
+      "assetId": "primitive:cube",
+      "name": "Bridge",
+      "position": [
+        0,
+        0.85,
+        1
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1.2,
+        0.7,
+        2
+      ],
+      "color": "#e0bd6b",
+      "metalness": 0,
+      "roughness": 1,
+      "texture": null
+    },
+    {
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "id": "nord-carrier-2",
+      "assetId": "primitive:cube",
+      "name": "Armour pod",
+      "position": [
+        -2.3,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        2,
+        1.5,
+        4
+      ],
+      "color": "#45556d",
+      "metalness": 0,
+      "roughness": 1,
+      "texture": null
+    },
+    {
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "id": "nord-carrier-3",
+      "assetId": "primitive:cube",
+      "name": "Reactor",
+      "position": [
+        -2.3,
+        0.1,
+        -2.1
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1.2,
+        0.7,
+        0.2
+      ],
+      "color": "#ed5f4e",
+      "metalness": 0,
+      "roughness": 1,
+      "texture": null
+    },
+    {
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "id": "nord-carrier-4",
+      "assetId": "primitive:cube",
+      "name": "Armour pod",
+      "position": [
+        2.3,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        2,
+        1.5,
+        4
+      ],
+      "color": "#45556d",
+      "metalness": 0,
+      "roughness": 1,
+      "texture": null
+    },
+    {
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "id": "nord-carrier-5",
+      "assetId": "primitive:cube",
+      "name": "Reactor",
+      "position": [
+        2.3,
+        0.1,
+        -2.1
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1.2,
+        0.7,
+        0.2
+      ],
+      "color": "#ed5f4e",
+      "metalness": 0,
+      "roughness": 1,
+      "texture": null
+    },
+    {
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "id": "nord-carrier-6",
+      "assetId": "primitive:cube",
+      "name": "Front shield",
+      "position": [
+        0,
+        0,
+        -3.1
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        2,
+        0.65,
+        0.2
+      ],
+      "color": "#b94975",
+      "metalness": 0,
+      "roughness": 1,
+      "texture": null
+    }
+  ],
+  "assets": []
+}

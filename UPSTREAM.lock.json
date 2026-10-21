@@ -106,12 +106,40 @@
     "repo": "deepnight/ldtk",
     "sha": "2b7b5512f2f88fa281cb6492debbb26ead7838d4",
     "licenceFile": "LICENSE",
-    "licenceHead": "MIT License. Copyright (c) 2020, Sébastien Benard - Deepnight Games"
+    "licenceHead": "MIT License. Copyright (c) 2020, S\u00e9bastien Benard - Deepnight Games"
   },
   "shattered-pixel-dungeon": {
     "repo": "00-Evan/shattered-pixel-dungeon",
     "sha": "57a4e06a4caf162446d1c28caa7983f0493fecf0",
     "licenceFile": "LICENSE.txt",
     "licenceHead": "GNU General Public License v3; Copyright Oleg Dolya and Evan Debenham"
+  },
+  "outrun-reference": {
+    "repo": "ZgzInfinity/OutRun",
+    "sha": "6882721c99bc79365f815f68d389bf5078129e68",
+    "licenceFile": "LICENSE",
+    "licenceHead": "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 Copyright (C) 2007 Free Softw",
+    "usage": "reference only; no source or assets copied"
+  },
+  "starfox-reference": {
+    "repo": "mstan/StarFoxSNESRecomp",
+    "sha": "1b6b0598ef8d93030a723eaa595d8a478a658ed3",
+    "licenceFile": "LICENSE",
+    "licenceHead": "PolyForm Noncommercial License 1.0.0 <https://polyformproject.org/licenses/nonco",
+    "usage": "reference only; no source or assets copied"
+  },
+  "kirpich-reference": {
+    "repo": "etroimcasso/Kirpich",
+    "sha": "a6e2df3b8c75a8dbd1c4ae0c82ea481dd51ec2b0",
+    "licenceFile": "LICENSE",
+    "licenceHead": "GNU AFFERO GENERAL PUBLIC LICENSE Version 3, 19 November 2007 Copyright (C) 2007",
+    "usage": "reference only; no source or assets copied"
+  },
+  "tengen-reference": {
+    "repo": "zohassadar/TengenTetrisDisasm",
+    "sha": "df38b4ff812bc57c1fa356665aa3b1439620b337",
+    "licenceFile": "LICENSE",
+    "licenceHead": "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI",
+    "usage": "reference only; no source or assets copied"
   }
 }

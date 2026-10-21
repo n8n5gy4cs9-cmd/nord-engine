@@ -1,0 +1,2 @@
+# Coastline Sprint
+T38 full coding workshop. One playable curved/hilly coast course, traffic, off-road slowdown, collisions, nitro and two time checkpoints. Solo keyboard or top/bottom split: P1 keyboard, P2 standard gamepad. WASD/arrows drive, Shift nitro, P pauses. Gamepad left stick, RT/A throttle, LT/B brake, X nitro. Original Nord Amiga red/white car art; two original MP3 music tracks and local SFX, configurable in audio-config.js. Full source/assets/audio ship with the tutorial.

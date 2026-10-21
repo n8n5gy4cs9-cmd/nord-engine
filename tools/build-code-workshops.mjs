@@ -11,6 +11,12 @@ const workshops = [
   ['prism-relay', 'tut-t35-advanced-prism-shaders.md', 'scripts/prism.js'],
   ['circuit-vault', 'tut-t36-advanced-node-vault.md', 'app.js'],
   ['rust-salvage', 'tut-t37-advanced-rust-wasm.md', 'src/main.rs'],
+  ['coastline-sprint', 'tut-t38-coastline-sprint.md', 'app.js'],
+  ['vector-patrol', 'tut-t39-vector-patrol.md', 'scripts/flight.js'],
+  ['jengatedris', 'tut-t40-jengatedris.md', 'app.js'],
+  ['nord-office', 'tut-t41-nord-office.md', 'app.js'],
+  ['paper-worlds', 'tut-t42-paper-worlds.md', 'app.js'],
+  ['rss-river', 'tut-t43-rss-river.md', 'app.js'],
 ];
 execFileSync(process.execPath, ['tools/gen_examples.mjs', ...workshops.filter(w => fs.existsSync(path.join(ROOT, 'tools/examples', w[0], 'game.mjs'))).map(w => w[0])], { cwd: ROOT, stdio: 'inherit' });
 const downloads = path.join(ROOT, 'docs/tutorial-downloads');
@@ -20,12 +26,12 @@ for (const [id, guide, main] of workshops) {
   const walk = dir => fs.readdirSync(path.join(project, dir), { withFileTypes: true })
     .filter(e => !['dist', 'target', '.nord-cache', '.nord-lock', '.DS_Store'].includes(e.name))
     .flatMap(e => e.isDirectory() ? walk(path.join(dir, e.name)) : [path.join(dir, e.name)]);
-  const files = walk('').filter(f => /\.(js|mjs|json|html|css|rs|toml)$/.test(f) || path.basename(f) === 'Cargo.lock').sort();
+  const files = walk('').filter(f => !f.startsWith('lib/') && !f.startsWith('vendor/') && (/\.(js|mjs|json|html|css|rs|toml|xml)$/.test(f) || ['Cargo.lock', '.offline-allow'].includes(path.basename(f)))).sort();
   const ordered = [main, ...files.filter(f => f !== main)];
   let appendix = '\n\n';
   for (const [index, file] of ordered.entries()) {
     const ext = path.extname(file).slice(1);
-    const lang = ({ rs: 'rust', mjs: 'js', lock: 'toml' })[ext] ?? ext;
+    const lang = file === '.offline-allow' ? 'text' : ({ rs: 'rust', mjs: 'js', lock: 'toml' })[ext] ?? ext;
     const body = fs.readFileSync(path.join(project, file), 'utf8').trimEnd();
     appendix += index === 0 ? `### ${file}\n\n` : `<details>\n<summary>Complete ${file}</summary>\n\n`;
     appendix += '```' + lang + '\n' + body + '\n```\n\n';
@@ -33,7 +39,7 @@ for (const [id, guide, main] of workshops) {
   }
   const source = path.join(ROOT, 'docs/manual-src', guide);
   const prose = fs.readFileSync(source, 'utf8').split(marker)[0];
-  fs.writeFileSync(source, prose + marker + appendix);
+  fs.writeFileSync(source, (prose + marker + appendix).trimEnd() + '\n');
   // Fixed timestamps/order make repeated source packaging byte-for-byte reproducible.
   execFileSync('python3', ['-c', `
 import pathlib, sys, zipfile

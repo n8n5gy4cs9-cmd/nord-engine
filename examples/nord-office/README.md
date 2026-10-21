@@ -1,0 +1,2 @@
+# Nord Engine Office
+T41 complete code workshop. Original top-down office game with collisions, wiring sequences, JavaScript bug puzzles, timed coffee, deadlines, morale, pranks and a pathfinding AI coworker. Solo practice runs entirely in-browser. For 2–6 friends run `node server.mjs`, open the printed local URL and join the same room; host starts. Node owns movement, jobs, time and score. HOST=0.0.0.0 enables trusted LAN play using the host LAN address. No npm, API keys or external assets. WASD/arrows walk, E work, X prank, Esc cancel. Crowelian 2026 + Sonnet.

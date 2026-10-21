@@ -1,0 +1,2 @@
+# Vector Patrol
+T39 full coding workshop: original one-level rail shooter with Blocksmith-exported GLB fighter/drone/carrier/gate models. Steer WASD/arrows, hold Space/J fire, Shift barrel-roll shield, C retro/clean, P pause. Enemy waves, laser combat, shield/health pickups, gates, boss at 65 seconds, victory/death/restart and saved score. Original MP3 flight/boss music and SFX; replace paths in scripts/audio-config.js. Retro mode: low resolution, vertex snapping, palette dithering and scrolling ground dots. No ROM or commercial-game assets required.

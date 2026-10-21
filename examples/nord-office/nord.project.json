@@ -1,0 +1,64 @@
+{
+  "format": 1,
+  "name": "Nord Engine Office",
+  "id": "com.crowelian.nordoffice",
+  "type": "html",
+  "engineVersion": "0.1.0",
+  "startScene": "",
+  "display": {
+    "width": 640,
+    "height": 360,
+    "scale": "fit",
+    "pixelArt": false,
+    "background": "#2e3440"
+  },
+  "physics": {
+    "engine": "none",
+    "gravity": [
+      0,
+      0,
+      0
+    ]
+  },
+  "input": {
+    "actions": {
+      "left": [
+        "KeyA",
+        "ArrowLeft"
+      ],
+      "right": [
+        "KeyD",
+        "ArrowRight"
+      ],
+      "up": [
+        "KeyW",
+        "ArrowUp"
+      ],
+      "down": [
+        "KeyS",
+        "ArrowDown"
+      ],
+      "jump": [
+        "Space",
+        "KeyW",
+        "ArrowUp"
+      ],
+      "fire": [
+        "Space",
+        "Mouse0"
+      ],
+      "interact": [
+        "KeyE",
+        "Enter"
+      ]
+    }
+  },
+  "plugins": [
+    "ui",
+    "audio"
+  ],
+  "ui": {
+    "skin": "cyber",
+    "theme": "nord"
+  }
+}

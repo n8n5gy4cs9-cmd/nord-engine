@@ -1,0 +1,2 @@
+# JengaTedris
+T40 complete coding workshop. Grid: seven-bag, ghost, hold, horizontal wall kicks, scoring, speed levels and 20-row goal. Physics tower: real Matter compound tetrominoes, friction, torque and 18-piece survival. Battle: real Node server owns grids, drops, garbage and results. Run `node server.mjs`, open the printed local URL in two browsers, same room, both Ready. For LAN friends set HOST=0.0.0.0 and open the host LAN address. No npm or external assets. All code, Phaser/Matter bundle and licences included. Crowelian 2026 + Sonnet.

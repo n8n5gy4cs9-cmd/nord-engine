@@ -77,3 +77,13 @@ Notepaint reuses the engine's own `_kit.js` DOM helper and the pointer/snapshot 
 **Shattered Pixel Dungeon** (`00-Evan/shattered-pixel-dungeon`, cloned at `57a4e06a4caf162446d1c28caa7983f0493fecf0`, GPL-3.0-or-later): `actors/Char.java::hit` independent accuracy/evasion comparison and `actors/mobs/Rat.java` HP/defense/accuracy/damage/armor defaults adapted into `tools/examples/dungeon-two-floors/scripts/dungeon-rules.js` and its editable objects. Copyright Oleg Dolya 2012–2015 and Evan Debenham 2014–2026. Buffs and full-game systems omitted. Complete upstream licence and source/pin explanation are included in generated example/template as LICENSE.md and SOURCE.md. The entire dungeon example's code is GPL-3.0-or-later; no upstream art/audio/maps/dialogue used. Original Nord RetroPaxDungeons art reused unchanged.
 
 **Kenney Top-down Tanks Remastered**, CC0, owner-supplied `TEMP/ART`: eight original PNGs copied unchanged into `tools/examples/tank-patrol/assets/`; full licence in assets/KENNEY-LICENSE.md and generated example/template. Tiny Tank Patrol code/maps are original MIT; no Nintendo/Battle City media or code. The game is a four-direction tank/base-defense exercise, not a replica of a commercial game's levels.
+
+
+### Retro tutorial research (reference only)
+
+The source study in `docs/RESEARCH_GAME_TUTORIALS.md` pins and cites ZgzInfinity/OutRun (GPL-3.0), mstan/StarFoxSNESRecomp (PolyForm Noncommercial 1.0.0), etroimcasso/Kirpich (AGPL-3.0) and zohassadar/TengenTetrisDisasm (disclaimer-only LICENSE; no redistribution permission assumed). No source, ROM data, art, audio or generated cartridge content from these repositories is copied into Nord or the tutorial downloads. The new games are original implementations. JengaTedris redistributes Nord's already pinned Phaser build (MIT), including its bundled Matter physics, with Phaser's licence in lib/. Vector Patrol's four original primitive assemblies were exported using Blocksmith; the Blocksmith application itself is not redistributed.
+
+
+### Modern app tutorials
+
+Paper Worlds and RSS River are original implementations. Excalidraw (MIT), FreshRSS (AGPL-3.0, per current upstream LICENSE), and NetNewsWire (MIT) are product inspiration/reference only; none of their code or graphics is redistributed. RSS subscriptions point to hnrss.org, Simon Willison and GitHub Engineering, fetched only on user request or imported XML; the source archive ships original fictional demo entries, not publisher articles. Both apps redistribute existing pinned Babylon/Havok (and Paper Worlds Phaser) with local licence files. Original ImageGen stationery sheet is documented in ASSETS.md.

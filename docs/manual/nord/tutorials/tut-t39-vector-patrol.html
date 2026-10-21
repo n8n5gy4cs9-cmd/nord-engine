@@ -1,0 +1,1801 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>T39 Vector Patrol — code a retro 3D rail shooter — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="tutorials.html" class="active" aria-current="page">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Tutorials</div><a href="tutorials.html">Learn by building</a><a href="tut-t01-hello-nord.html">T01 Hello Nord</a><a href="tut-t02-sprite-movement.html">T02 Sprite &amp; movement</a><a href="tut-t03-first-script.html">T03 Your first script</a><a href="tut-t04-platformer.html">T04 Platformer from template</a><a href="tut-t05-physics.html">T05 Physics &amp; collisions</a><a href="tut-t06-tilemaps.html">T06 Tilemaps</a><a href="tut-t07-animation-juice.html">T07 Animation &amp; juice</a><a href="tut-t08-ui-hud.html">T08 UI &amp; HUD</a><a href="tut-t09-audio.html">T09 Audio</a><a href="tut-t10-3d-scene.html">T10 3D scene &amp; camera</a><a href="tut-t11-3d-physics.html">T11 3D physics (FPS)</a><a href="tut-t12-enemy-ai.html">T12 Enemy AI</a><a href="tut-t13-save-load.html">T13 Save &amp; load</a><a href="tut-t14-export-host.html">T14 Export to web &amp; host it</a><a href="tut-t15-mac-app.html">T15 Mac app</a><a href="tut-t16-rust-game.html">T16 Rust/WASM game</a><a href="tut-t17-rust-egui-app.html">T17 Rust egui app</a><a href="tut-t18-library-snippets.html">T18 Writing library snippets</a><a href="tut-t19-notepaint.html">T19 Build notepaint, from a blank folder</a><a href="tut-t20-star-not.html">T20 Build Star-Not, a complete small space adventure</a><a href="tut-t21-project-design.html">T21 Plan a bigger Nord project</a><a href="tut-t22-shader-terrain.html">T22 Put a terrain shader in a Nord app</a><a href="tut-t23-light-shadows.html">T23 2D lights and real shadows</a><a href="tut-t24-event-sheet-platformer.html">T24 A platformer from events</a><a href="tut-t25-topdown-shooter.html">T25 A top-down shooter from events</a><a href="tut-t26-menus-languages.html">T26 Menus and two languages</a><a href="tut-t27-fps-level.html">T27 Build your first FPS level</a><a href="tut-t28-machine-workshop.html">T28 Machine Workshop — build a gravity puzzle in 2D Level</a><a href="tut-t29-dungeon-two-floors.html">T29 Two Floors — edit a Shattered Pixel Dungeon adaptation</a><a href="tut-t30-tank-patrol.html">T30 Tiny Tank Patrol — build a top-down tank arena</a><a href="tut-t31-full-2d-platformer.html">T31 Full game workshop — Coin Canyon (2D)</a><a href="tut-t32-full-3d-platformer.html">T32 Full game workshop — Sunset Gems (3D)</a><a href="tut-t33-code-coin-rush.html">T33 Code a full 2D game — Coin Rush</a><a href="tut-t34-code-crystal-relay.html">T34 Code a full 3D game — Crystal Relay</a><a href="tut-t35-advanced-prism-shaders.html">T35 Prism Relay — code reactive GLSL game materials</a><a href="tut-t36-advanced-node-vault.html">T36 Circuit Vault — a web game with a real Node server</a><a href="tut-t37-advanced-rust-wasm.html">T37 Orbital Salvage — code Rust gameplay and export real WASM</a><a href="tut-t38-coastline-sprint.html">T38 Coastline Sprint — code an Amiga racer with two-player split-screen</a><a href="tut-t39-vector-patrol.html" class="cur" aria-current="page">T39 Vector Patrol — code a retro 3D rail shooter</a><a href="tut-t40-jengatedris.html">T40 JengaTedris — grid, physics and Node battle</a><a href="tut-t41-nord-office.html">T41 Nord Engine Office — interns, bugs and AI</a><a href="tut-t42-paper-worlds.html">T42 Paper Worlds — draw in 2D, explore your ideas in 3D</a><a href="tut-t43-rss-river.html">T43 RSS River — build a calm reader with a physical paper view</a></nav><main id="content"><div class="crumb">Tutorials / Nord Engine</div><h1>T39 Vector Patrol — code a retro 3D rail shooter</h1>
+<h1 id="t39-vector-patrol-build-a-complete-retro-3d-rail-shooter">T39 — Vector Patrol: build a complete retro 3D rail shooter</h1>
+<p>Build an original one-level rail shooter with low-poly ships, moving ground dots, enemy waves, lasers, gates, health pickups, a roll shield, a carrier boss, two music tracks and saved scores. Then switch between a clean renderer and a 320-pixel retro shader. This is a playable Nord project with complete JavaScript, models, sound and music, not a cartridge emulator.</p>
+<p><strong>Download:</strong> <a href="../../assets/downloads/vector-patrol-source.zip">Complete Vector Patrol project and source</a>. Unzip it into a writable folder. In Nord choose <strong>Open Project</strong>, select its <code>nord.project.json</code>, and press <strong>Play</strong>. Work on a copy so you can compare your edits with the supplied solution. The project uses Nord&#39;s <strong>3D</strong> tier. All four GLBs and their editable Blocksmith source projects are included; creating models is optional.</p>
+<p><img src="../../assets/screenshots/ed-retro-vector-flight.png" alt="Vector Patrol in flight"></p>
+<h2 id="1-play-the-finished-level-and-find-its-code">1. Play the finished level and find its code<a class="anchor" href="#1-play-the-finished-level-and-find-its-code">#</a></h2>
+<p>Click <strong>Launch patrol</strong> to unlock browser audio. WASD or arrows steer; Space/J fires; Shift activates a short roll shield with a three-second cooldown. C switches retro/clean rendering. P or <strong>Pause / Resume</strong> pauses; the Restart button reloads the scene. Reach the carrier at 65 seconds and destroy it before 110 seconds. A collision costs hull, green pickups restore hull, and passing a gate rewards accurate flying. A successful run saves the best score in browser storage.</p>
+<p>In Hierarchy select <strong>FlightGame</strong>. Its Script component attaches <code>scripts/flight.js</code>. Open that file in Nord&#39;s code editor; use the Console to investigate script errors. The Camera looks along positive Z. Fighter, Drone0…Drone13, Carrier and Gate0…Gate2 are ordinary model entities. Select one to inspect its GLB path, transform and imported colours. The gameplay controller moves these reusable entities rather than loading a new model per shot.</p>
+<p>The main files divide concrete responsibilities:</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>What you learn</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>scripts/sim.js</code></td>
+<td>Plain JavaScript state, movement, collision, cooldowns and the boss</td>
+</tr>
+<tr>
+<td><code>scripts/flight.js</code></td>
+<td>NordScript lifecycle, actions, UI, save data, pause and restart</td>
+</tr>
+<tr>
+<td><code>scripts/view.js</code></td>
+<td>Reusable model and primitive pools, materials and cleanup</td>
+</tr>
+<tr>
+<td><code>scripts/retro-shader.js</code></td>
+<td>Vertex snapping, palette quantization and ordered dithering</td>
+</tr>
+<tr>
+<td><code>scripts/retro-audio.js</code></td>
+<td>Local file decoding, voices, music crossfades and disposal</td>
+</tr>
+<tr>
+<td><code>scripts/audio-config.js</code></td>
+<td>Music and SFX file paths</td>
+</tr>
+<tr>
+<td><code>scenes/main.scene.json</code></td>
+<td>Camera, four kinds of model and controller attachment</td>
+</tr>
+</tbody></table>
+<p><strong>Learning check:</strong> change the title label in <code>flight.js</code>, stop Play and start again. If the old text remains, verify you edited the opened project&#39;s file. Reopening Play loads a new script module; the in-game Restart recreates script instances but intentionally keeps imported modules cached.</p>
+<h2 id="2-start-with-a-simulation-you-can-reason-about">2. Start with a simulation you can reason about<a class="anchor" href="#2-start-with-a-simulation-you-can-reason-about">#</a></h2>
+<p><code>newFlight()</code> returns a fresh state object. It owns hull, score, elapsed time, ship coordinates, cooldowns, bullets, enemies, pickups and boss state. <code>tick(state, input, dt)</code> advances that object and returns named sound events. It does not know about Babylon, DOM labels or audio buffers.</p>
+<pre class="code" data-lang="js"><code>const state = newFlight();
+const events = tick(state, { x: 1, y: 0, fire: true, roll: false }, 1 / 60);</code></pre>
+<p>Open <code>sim.js</code> alongside this guide. Follow the player clamp first: the fighter moves inside a bounded rectangle, while the world travels toward it on Z. Movement uses seconds, not frames. Hold fire to emit shots at the configured interval; every bullet has its own Z coordinate and lifetime. Pooling belongs to the view, while damage belongs to the simulation.</p>
+<p>Find the roll cooldown and shield duration. They are different timers: you cannot chain invulnerability continuously. Change the duration modestly, replay, then restore it. Notice that collisions test coordinates and radii; this rail shooter uses no physics engine. A fast arcade game does not need Havok merely because it is rendered in 3D.</p>
+<h2 id="3-build-enemy-waves-gates-and-the-carrier">3. Build enemy waves, gates and the carrier<a class="anchor" href="#3-build-enemy-waves-gates-and-the-carrier">#</a></h2>
+<p>Enemies spawn ahead of the player and move toward the camera. Their fire timer emits hostile shots. A hit removes hull unless the shield is active; a player bullet consumes an enemy hit point and awards score when the enemy dies. Discard expired bullets and objects behind the player so arrays remain bounded.</p>
+<p>At 65 seconds the simulation enables a carrier with 48 hit points. It approaches the combat zone, moves across the flight corridor and fires a spread. Its defeat awards the victory bonus exactly once. The 110-second deadline prevents an endless stalled fight. On loss or victory, movement and scoring stop; the HUD remains visible for the result.</p>
+<p><strong>Learning check:</strong> temporarily lower the carrier&#39;s starting hit points to test victory, then restore 48. Temporarily set hull low to test failure. Exercise both results before judging the game finished. Do not submit scores from a rendered label: the simulation owns them.</p>
+<p><img src="../../assets/screenshots/ed-retro-vector-boss.png" alt="Carrier encounter and retro ground dots"></p>
+<h2 id="4-connect-the-simulation-to-nord">4. Connect the simulation to Nord<a class="anchor" href="#4-connect-the-simulation-to-nord">#</a></h2>
+<p>The controller extends <code>NordScript</code> and creates its state and view in <code>start()</code>:</p>
+<pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
+import { newFlight, tick } from './sim.js';
+
+// Inside your controller:
+start() {
+  this.state = newFlight();
+}
+update(dt) {
+  const [x, y] = this.input.vec('left', 'right', 'down', 'up');
+  tick(this.state, { x, y, fire: this.input.down('fire'),
+    roll: this.input.pressed('roll') }, dt);
+}</code></pre>
+<p>This excerpt shows the connection; keep the complete supplied controller for UI, audio, rendering and saving. Project action bindings live in <code>nord.project.json</code>, so you can add another key without changing combat code. <code>pressed()</code> means one transition; <code>down()</code> means every held frame.</p>
+<p>The view receives state and updates native model transforms. It reuses model entities and small bullet/health meshes. Ground dots form a wrapping pool along the flight corridor; their motion communicates speed even over a plain floor. Canyon cones supply landmarks and make the narrow flight rectangle readable.</p>
+<p>Nord destroys scene entities and invokes <code>onDestroy()</code> on restart. The controller disposes its custom materials, meshes, audio and window listeners, and clears its UI screens. This matters: custom native objects and event listeners are resources you created, so your script must release them.</p>
+<h2 id="5-use-the-supplied-blocksmith-models-or-edit-your-own">5. Use the supplied Blocksmith models, or edit your own<a class="anchor" href="#5-use-the-supplied-blocksmith-models-or-edit-your-own">#</a></h2>
+<p><code>assets/models/</code> contains fighter, drone, carrier and gate GLBs. The matching <code>.blocksmith.json</code> files contain editable Blocksmith scenes. <code>assets/models/previews/</code> contains front, side, rear and angled renders so you can compare orientation before replacing a mesh.</p>
+<p>These are original models assembled from cube, cone and cylinder primitives through Blocksmith&#39;s actual MCP server. The installed server was tested with the requested Blocksmith executable, server script and runtime file; it exported the four GLBs and rendered four views of each. No MCP repair was required. The original games&#39; models or ROM data are not part of this project.</p>
+<p>To replace a ship: open its supplied Blocksmith JSON, edit the blocks, export GLB, and save it at the same <code>assets/models/fighter.glb</code> path. Keep the model centred and check its forward direction. Stop and restart Play to reload the asset. If you change units, adjust the model&#39;s scene scale and the corresponding scale in <code>view.js</code>; collision sizes remain explicit simulation values, not automatic mesh bounds.</p>
+<p>For maintainers inside the Nord repository, <code>node tools/build-retro-models.mjs</code> rebuilds the four originals using the installed Blocksmith stdio MCP. It refuses to use a nonempty active scene. It adds its own temporary blocks, exports, then removes those blocks. Tutorial readers do not need this tool or Blocksmith installed to play the supplied project.</p>
+<h2 id="6-understand-the-retro-shader">6. Understand the retro shader<a class="anchor" href="#6-understand-the-retro-shader">#</a></h2>
+<p>Open <code>retro-shader.js</code>. The vertex shader first transforms a position into clip space. In retro mode it divides XY by W, quantizes to a grid, and multiplies by W again before assigning the final clip position. Quantization produces the small position jumps associated with low-resolution vertex precision.</p>
+<pre class="code" data-lang="glsl"><code>vec2 ndc = clip.xy / clip.w;
+ndc = floor(ndc * snapGrid + 0.5) / snapGrid;
+clip.xy = ndc * clip.w;</code></pre>
+<p>This is the principle; read the complete file below for the actual uniforms and implementation. Avoid quantizing world positions: doing so changes apparent object geometry as well as projected precision. Keep the W division to work in projected screen coordinates.</p>
+<p>The fragment shader uses simple normal lighting, a small colour palette and a 2×2 ordered dither. <code>view.js</code> also reduces render resolution to about 320 pixels across and uses nearest-neighbour presentation. C toggles these effects together for a direct comparison. Ground dots are geometry, not noise sampled from a texture.</p>
+<p>This combines a low-poly rail-shooter look with optional PS1-inspired vertex jitter. It is not an emulation of either console. It does not claim affine texture mapping: the supplied models use flat colours. A textured extension would need a deliberate texture-coordinate interpolation strategy, its own shader changes and new visual tests.</p>
+<p><strong>Learning check:</strong> change the palette quantization strength, then compare clean/retro mode while a drone crosses the screen. Stronger quantization should affect colour bands; changing the snap grid should affect vertex motion. Test them separately so you can see which parameter causes each effect.</p>
+<h2 id="7-add-your-own-mp3-music-and-sound-effects">7. Add your own MP3 music and sound effects<a class="anchor" href="#7-add-your-own-mp3-music-and-sound-effects">#</a></h2>
+<p>The project already ships original music (<code>vector-flight.mp3</code>, <code>vector-boss.mp3</code>) and local laser, explosion, crash, shield, checkpoint and victory sounds. Click Launch before expecting audio: browsers require a user gesture to unlock playback.</p>
+<p>To use your own files, create <code>assets/audio/</code> inside this project if necessary, then copy in your MP3s. For example:</p>
+<pre class="code" data-lang="text"><code>vector-patrol/
+  assets/audio/my-flight.mp3
+  assets/audio/my-boss.mp3
+  assets/audio/my-laser.mp3
+  scripts/audio-config.js</code></pre>
+<p>Open <code>scripts/audio-config.js</code>. Keep the complete SFX key list and replace the desired paths:</p>
+<pre class="code" data-lang="js"><code>export const AUDIO = {
+  music: ['assets/audio/my-flight.mp3', 'assets/audio/my-boss.mp3'],
+  sfx: {
+    laser: 'assets/audio/my-laser.mp3',
+    explosion: 'assets/audio/explosion.mp3',
+    crash: 'assets/audio/crash.mp3',
+    shield: 'assets/audio/shield.mp3',
+    checkpoint: 'assets/audio/checkpoint.mp3',
+    win: 'assets/audio/win.mp3'
+  }
+};</code></pre>
+<p>Use exact case and project-relative paths, not absolute disk paths. Stop Play and start it again after replacing audio, because decoded buffers are cached during a run. Use the Console and HUD audio error text to diagnose missing files. A useful first test is to replace only the laser, launch and fire once, then change the music.</p>
+<p>The helper decodes each path once, creates bounded sound voices, loops music and crossfades when the carrier arrives. Pause suspends the audio context; Resume resumes it. Restart disposes the old helper. MP3 encoder padding can produce a small loop seam; use a carefully trimmed WAV or OGG and change the extension in the config when seamless loops matter. Use recordings you own or have permission to distribute.</p>
+<h2 id="8-make-restart-a-real-scene-reset">8. Make Restart a real scene reset<a class="anchor" href="#8-make-restart-a-real-scene-reset">#</a></h2>
+<p>The button calls <code>this.game.restart()</code>. Nord reloads the current saved scene, constructs fresh entities and script instances, cancels the old scene&#39;s scheduled work, clears held/virtual input, resets the game clock and time scale, and resumes even if you were paused. The promise resolves after the new scene starts.</p>
+<pre class="code" data-lang="js"><code>await this.game.restart();
+// This old controller has been destroyed. Do not continue changing its state here.</code></pre>
+<p>Use the promise from a persistent app controller when you need the returned fresh scene. A scene script can simply call it and return. Saved best scores survive because restart does not erase Save storage. By default even Persist entities reset; opt in with <code>restart({ preservePersistent: true })</code> when that is your intended rule. Module-level variables and outside servers are not scene state: keep run state in your script or <code>newFlight()</code>.</p>
+<h2 id="9-export-and-verify-the-whole-game">9. Export and verify the whole game<a class="anchor" href="#9-export-and-verify-the-whole-game">#</a></h2>
+<p>Use Nord&#39;s HTML export and serve the output over HTTP. The exporter includes the local models, MP3s and runtime. Test launch, firing, damage, rolling, pickups, pause, both shader modes, boss victory, loss and restart from a paused run. Restart twice to detect duplicated sounds, labels or listeners. Verify best score survives a page reload.</p>
+<p>The original source study is recorded in the repository&#39;s <code>docs/RESEARCH_GAME_TUTORIALS.md</code>, including pinned OutRun and StarFoxSNESRecomp source paths. This project contains original code and original Nord/Blocksmith assets, with no ROM requirement.</p>
+<h2 id="complete-project-source">Complete project source<a class="anchor" href="#complete-project-source">#</a></h2>
+<p>The download contains all binary assets and licences as well as the following complete text files. The guide&#39;s code blocks use the manual&#39;s local CodeMirror viewer with Copy and Wrap controls. Read a section, edit its matching project file, then compare against this complete implementation.</p>
+<!-- GENERATED GAME SOURCE: regenerate with node tools/build-code-workshops.mjs --><h3 id="scripts-flight-js">scripts/flight.js<a class="anchor" href="#scripts-flight-js">#</a></h3>
+<pre class="code" data-lang="js"><code>import {NordScript} from 'nord';
+import {newFlight,tick} from './sim.js';
+import {FlightView} from './view.js';
+import {RetroAudio} from './retro-audio.js';
+import {AUDIO} from './audio-config.js';
+export default class Flight extends NordScript{
+ start(){this.state=newFlight();this.started=false;this.paused=false;this.bossMusic=false;this.sound=new RetroAudio(AUDIO);this.view=new FlightView(this);this.best=this.save.get('vector-patrol.best',0);
+  this.hud=this.ui.label('',{screen:'flight',x:12,y:8,size:18,style:{whiteSpace:'pre-wrap',maxWidth:'95%'}});this.ui.show('flight');
+  this.ui.menu('flight-menu',[{text:'Launch patrol',onClick:()=&gt;this.launch()},{text:'Mute / Unmute',onClick:()=&gt;this.sound.mute()}],{x:24,y:170});
+  this.ui.label('VECTOR PATROL\nOne canyon. Enemy waves. A carrier at 65 seconds.\nWASD/arrows steer · Space/J fire · Shift roll shield\nC retro/clean · P pause · clear the carrier before 110s',{screen:'flight-menu',x:24,y:52,size:19});this.ui.show('flight-menu');
+  this.pauseButton=this.ui.button('Pause / Resume',()=&gt;this.togglePause(),{screen:'flight',x:12,y:65});this.ui.button('Restart',()=&gt;{this.game.restart();},{screen:'flight',x:180,y:65});
+  this.key=e=&gt;{if(e.code==='KeyP'&amp;&amp;!e.repeat)this.togglePause();};window.addEventListener('keydown',this.key);
+  this.blur=()=&gt;{if(this.started&amp;&amp;!this.paused&amp;&amp;!this.state.won&amp;&amp;!this.state.lost)this.togglePause();};window.addEventListener('blur',this.blur);
+  this.draw();
+ }
+ async launch(){if(this.started)return;this.started=true;this.ui.clear('flight-menu');try{await this.sound.unlock();await this.sound.music(0);}catch(e){this.sound.problem=e.message;}}
+ togglePause(){if(!this.started||this.state.won||this.state.lost)return;this.paused=!this.paused;if(this.paused){this.game.pause();this.sound.suspend();this.ui.label('PAUSED — P or Pause / Resume continues',{screen:'flight-menu',x:24,y:170,size:24});this.ui.show('flight-menu');}else{this.ui.clear('flight-menu');this.game.resume();this.sound.resume();}}
+ update(dt){if(this.input.pressed('retro'))this.view.setRetro(!this.view.retro);
+  if(this.started){const[x,y]=this.input.vec('left','right','down','up');const events=tick(this.state,{x,y,fire:this.input.down('fire'),roll:this.input.pressed('roll')},dt);for(const name of events)this.sound.play(name,{volume:name==='laser'?.16:.5});
+   if(this.state.boss&amp;&amp;!this.bossMusic){this.bossMusic=true;this.sound.music(1);}
+   if((this.state.won||this.state.lost)&amp;&amp;!this.finished){this.finished=true;if(this.state.won){this.best=Math.max(this.best,this.state.score);this.save.set('vector-patrol.best',this.best);}this.ui.label(this.state.won?'SECTOR CLEAR!':'PATROL LOST — Restart to retry',{screen:'flight-menu',x:24,y:160,size:32});this.ui.show('flight-menu');}
+  }this.view.draw(this.state);this.draw();
+ }
+ draw(){const s=this.state;this.hud.set(`HULL ${s.hp}  SCORE ${s.score}  TIME ${s.time.toFixed(1)}  ROLL ${s.roll.toFixed(1)}  BEST ${this.best}\n${s.boss?'CARRIER '+s.bossHP+'/48':'Reach carrier at 65s'} · ${this.view.retro?'RETRO 320px + vertex snap':'CLEAN'}${this.sound.problem?' · Audio: '+this.sound.problem:''}`);}
+ onDestroy(){window.removeEventListener('keydown',this.key);window.removeEventListener('blur',this.blur);this.view?.dispose();this.sound?.dispose();this.ui.clear('flight');this.ui.clear('flight-menu');this.game.resume();}
+}</code></pre>
+<details>
+<summary>Complete assets/models/carrier.blocksmith.json</summary><pre class="code" data-lang="json"><code>{
+  &quot;version&quot;: 2,
+  &quot;projectId&quot;: &quot;b4db28ad-c210-4dc2-8aa9-59b25e00ff92&quot;,
+  &quot;name&quot;: &quot;Untitled project&quot;,
+  &quot;blocks&quot;: [
+    {
+      &quot;visible&quot;: true,
+      &quot;locked&quot;: false,
+      &quot;group&quot;: null,
+      &quot;id&quot;: &quot;nord-carrier-0&quot;,
+      &quot;assetId&quot;: &quot;primitive:cube&quot;,
+      &quot;name&quot;: &quot;Armoured spine&quot;,
+      &quot;position&quot;: [
+        0,
+        0,
+        0
+      ],
+      &quot;rotation&quot;: [
+        0,
+        0,
+        0
+      ],
+      &quot;scale&quot;: [
+        2,
+        1,
+        6
+      ],
+      &quot;color&quot;: &quot;#626785&quot;,
+      &quot;metalness&quot;: 0,
+      &quot;roughness&quot;: 1,
+      &quot;texture&quot;: null
+    },
+    {
+      &quot;visible&quot;: true,
+      &quot;locked&quot;: false,
+      &quot;group&quot;: null,
+      &quot;id&quot;: &quot;nord-carrier-1&quot;,
+      &quot;assetId&quot;: &quot;primitive:cube&quot;,
+      &quot;name&quot;: &quot;Bridge&quot;,
+      &quot;position&quot;: [
+        0,
+        0.85,
+        1
+      ],
+      &quot;rotation&quot;: [
+        0,
+        0,
+        0
+      ],
+      &quot;scale&quot;: [
+        1.2,
+        0.7,
+        2
+      ],
+      &quot;color&quot;: &quot;#e0bd6b&quot;,
+      &quot;metalness&quot;: 0,
+      &quot;roughness&quot;: 1,
+      &quot;texture&quot;: null
+    },
+    {
+      &quot;visible&quot;: true,
+      &quot;locked&quot;: false,
+      &quot;group&quot;: null,
+      &quot;id&quot;: &quot;nord-carrier-2&quot;,
+      &quot;assetId&quot;: &quot;primitive:cube&quot;,
+      &quot;name&quot;: &quot;Armour pod&quot;,
+      &quot;position&quot;: [
+        -2.3,
+        0,
+        0
+      ],
+      &quot;rotation&quot;: [
+        0,
+        0,
+        0
+      ],
+      &quot;scale&quot;: [
+        2,
+        1.5,
+        4
+      ],
+      &quot;color&quot;: &quot;#45556d&quot;,
+      &quot;metalness&quot;: 0,
+      &quot;roughness&quot;: 1,
+      &quot;texture&quot;: null
+    },
+    {
+      &quot;visible&quot;: true,
+      &quot;locked&quot;: false,
+      &quot;group&quot;: null,
+      &quot;id&quot;: &quot;nord-carrier-3&quot;,
+      &quot;assetId&quot;: &quot;primitive:cube&quot;,
+      &quot;name&quot;: &quot;Reactor&quot;,
+      &quot;position&quot;: [
+        -2.3,
+        0.1,
+        -2.1
+      ],
+      &quot;rotation&quot;: [
+        0,
+        0,
+        0
+      ],
+      &quot;scale&quot;: [
+        1.2,
+        0.7,
+        0.2
+      ],
+      &quot;color&quot;: &quot;#ed5f4e&quot;,
+      &quot;metalness&quot;: 0,
+      &quot;roughness&quot;: 1,
+      &quot;texture&quot;: null
+    },
+    {
+      &quot;visible&quot;: true,
+      &quot;locked&quot;: false,
+      &quot;group&quot;: null,
+      &quot;id&quot;: &quot;nord-carrier-4&quot;,
+      &quot;assetId&quot;: &quot;primitive:cube&quot;,
+      &quot;name&quot;: &quot;Armour pod&quot;,
+      &quot;position&quot;: [
+        2.3,
+        0,
+        0
+      ],
+      &quot;rotation&quot;: [
+        0,
+        0,
+        0
+      ],
+      &quot;scale&quot;: [
+        2,
+        1.5,
+        4
+      ],
+      &quot;color&quot;: &quot;#45556d&quot;,
+      &quot;metalness&quot;: 0,
+      &quot;roughness&quot;: 1,
+      &quot;texture&quot;: null
+    },
+    {
+      &quot;visible&quot;: true,
+      &quot;locked&quot;: false,
+      &quot;group&quot;: null,
+      &quot;id&quot;: &quot;nord-carrier-5&quot;,
+      &quot;assetId&quot;: &quot;primitive:cube&quot;,
+      &quot;name&quot;: &quot;Reactor&quot;,
+      &quot;position&quot;: [
+        2.3,
+        0.1,
+        -2.1
+      ],
+      &quot;rotation&quot;: [
+        0,
+        0,
+        0
+      ],
+      &quot;scale&quot;: [
+        1.2,
+        0.7,
+        0.2
+      ],
+      &quot;color&quot;: &quot;#ed5f4e&quot;,
+      &quot;metalness&quot;: 0,
+      &quot;roughness&quot;: 1,
+      &quot;texture&quot;: null
+    },
+    {
+      &quot;visible&quot;: true,
+      &quot;locked&quot;: false,
+      &quot;group&quot;: null,
+      &quot;id&quot;: &quot;nord-carrier-6&quot;,
+      &quot;assetId&quot;: &quot;primitive:cube&quot;,
+      &quot;name&quot;: &quot;Front shield&quot;,
+      &quot;position&quot;: [
+        0,
+        0,
+        -3.1
+      ],
+      &quot;rotation&quot;: [
+        0,
+        0,
+        0
+      ],
+      &quot;scale&quot;: [
+        2,
+        0.65,
+        0.2
+      ],
+      &quot;color&quot;: &quot;#b94975&quot;,
+      &quot;metalness&quot;: 0,
+      &quot;roughness&quot;: 1,
+      &quot;texture&quot;: null
+    }
+  ],
+  &quot;assets&quot;: []
+}</code></pre>
+</details><details>
+<summary>Complete assets/models/drone.blocksmith.json</summary><pre class="code" data-lang="json"><code>{
+  &quot;version&quot;: 2,
+  &quot;projectId&quot;: &quot;b4db28ad-c210-4dc2-8aa9-59b25e00ff92&quot;,
+  &quot;name&quot;: &quot;Untitled project&quot;,
+  &quot;blocks&quot;: [
+    {
+      &quot;visible&quot;: true,
+      &quot;locked&quot;: false,
+      &quot;group&quot;: null,
+      &quot;id&quot;: &quot;nord-drone-0&quot;,
+      &quot;assetId&quot;: &quot;primitive:cube&quot;,
+      &quot;name&quot;: &quot;Core&quot;,
+      &quot;position&quot;: [
+        0,
+        0,
+        0
+      ],
+      &quot;rotation&quot;: [
+        0,
+        0,
+        0
+      ],
+      &quot;scale&quot;: [
+        1.3,
+        0.7,
+        1.2
+      ],
+      &quot;color&quot;: &quot;#bf525b&quot;,
+      &quot;metalness&quot;: 0,
+      &quot;roughness&quot;: 1,
+      &quot;texture&quot;: null
+    },
+    {
+      &quot;visible&quot;: true,
+      &quot;locked&quot;: false,
+      &quot;group&quot;: null,
+      &quot;id&quot;: &quot;nord-drone-1&quot;,
+      &quot;assetId&quot;: &quot;primitive:cube&quot;,
+      &quot;name&quot;: &quot;Eye&quot;,
+      &quot;position&quot;: [
+        0,
+        0.1,
+        -0.7
+      ],
+      &quot;rotation&quot;: [
+        0,
+        0,
+        0
+      ],
+      &quot;scale&quot;: [
+        0.6,
+        0.25,
+        0.15
+      ],
+      &quot;color&quot;: &quot;#ffca51&quot;,
+      &quot;metalness&quot;: 0,
+      &quot;roughness&quot;: 1,
+      &quot;texture&quot;: null
+    },
+    {
+      &quot;visible&quot;: true,
+      &quot;locked&quot;: false,
+      &quot;group&quot;: null,
+      &quot;id&quot;: &quot;nord-drone-2&quot;,
+      &quot;assetId&quot;: &quot;primitive:cube&quot;,
+      &quot;name&quot;: &quot;Blade&quot;,
+      &quot;position&quot;: [
+        -1,
+        0,
+        0.15
+      ],
+      &quot;rotation&quot;: [
+        0,
+        -25,
+        0
+      ],
+      &quot;scale&quot;: [
+        1.4,
+        0.16,
+        1.7
+      ],
+      &quot;color&quot;: &quot;#644b7b&quot;,
+      &quot;metalness&quot;: 0,
+      &quot;roughness&quot;: 1,
+      &quot;texture&quot;: null
+    },
+    {
+      &quot;visible&quot;: true,
+      &quot;locked&quot;: false,
+      &quot;group&quot;: null,
+      &quot;id&quot;: &quot;nord-drone-3&quot;,
+      &quot;assetId&quot;: &quot;primitive:cube&quot;,
+      &quot;name&quot;: &quot;Blade&quot;,
+      &quot;position&quot;: [
+        1,
+        0,
+        0.15
+      ],
+      &quot;rotation&quot;: [
+        0,
+        25,
+        0
+      ],
+      &quot;scale&quot;: [
+        1.4,
+        0.16,
+        1.7
+      ],
+      &quot;color&quot;: &quot;#644b7b&quot;,
+      &quot;metalness&quot;: 0,
+      &quot;roughness&quot;: 1,
+      &quot;texture&quot;: null
+    }
+  ],
+  &quot;assets&quot;: []
+}</code></pre>
+</details><details>
+<summary>Complete assets/models/fighter.blocksmith.json</summary><pre class="code" data-lang="json"><code>{
+  &quot;version&quot;: 2,
+  &quot;projectId&quot;: &quot;b4db28ad-c210-4dc2-8aa9-59b25e00ff92&quot;,
+  &quot;name&quot;: &quot;Untitled project&quot;,
+  &quot;blocks&quot;: [
+    {
+      &quot;visible&quot;: true,
+      &quot;locked&quot;: false,
+      &quot;group&quot;: null,
+      &quot;id&quot;: &quot;nord-fighter-0&quot;,
+      &quot;assetId&quot;: &quot;primitive:cube&quot;,
+      &quot;name&quot;: &quot;Hull&quot;,
+      &quot;position&quot;: [
+        0,
+        0,
+        0
+      ],
+      &quot;rotation&quot;: [
+        0,
+        0,
+        0
+      ],
+      &quot;scale&quot;: [
+        1.1,
+        0.55,
+        3.4
+      ],
+      &quot;color&quot;: &quot;#c9d9df&quot;,
+      &quot;metalness&quot;: 0,
+      &quot;roughness&quot;: 1,
+      &quot;texture&quot;: null
+    },
+    {
+      &quot;visible&quot;: true,
+      &quot;locked&quot;: false,
+      &quot;group&quot;: null,
+      &quot;id&quot;: &quot;nord-fighter-1&quot;,
+      &quot;assetId&quot;: &quot;primitive:cone&quot;,
+      &quot;name&quot;: &quot;Nose&quot;,
+      &quot;position&quot;: [
+        0,
+        0,
+        2
+      ],
+      &quot;rotation&quot;: [
+        90,
+        0,
+        0
+      ],
+      &quot;scale&quot;: [
+        0.65,
+        1.6,
+        0.65
+      ],
+      &quot;color&quot;: &quot;#e3eaf0&quot;,
+      &quot;metalness&quot;: 0,
+      &quot;roughness&quot;: 1,
+      &quot;texture&quot;: null
+    },
+    {
+      &quot;visible&quot;: true,
+      &quot;locked&quot;: false,
+      &quot;group&quot;: null,
+      &quot;id&quot;: &quot;nord-fighter-2&quot;,
+      &quot;assetId&quot;: &quot;primitive:cube&quot;,
+      &quot;name&quot;: &quot;Canopy&quot;,
+      &quot;position&quot;: [
+        0,
+        0.45,
+        0.5
+      ],
+      &quot;rotation&quot;: [
+        0,
+        0,
+        0
+      ],
+      &quot;scale&quot;: [
+        0.7,
+        0.45,
+        1.3
+      ],
+      &quot;color&quot;: &quot;#168fba&quot;,
+      &quot;metalness&quot;: 0,
+      &quot;roughness&quot;: 1,
+      &quot;texture&quot;: null
+    },
+    {
+      &quot;visible&quot;: true,
+      &quot;locked&quot;: false,
+      &quot;group&quot;: null,
+      &quot;id&quot;: &quot;nord-fighter-3&quot;,
+      &quot;assetId&quot;: &quot;primitive:cube&quot;,
+      &quot;name&quot;: &quot;Left wing&quot;,
+      &quot;position&quot;: [
+        -1.7,
+        -0.05,
+        -0.3
+      ],
+      &quot;rotation&quot;: [
+        0,
+        22,
+        0
+      ],
+      &quot;scale&quot;: [
+        2.6,
+        0.14,
+        1.3
+      ],
+      &quot;color&quot;: &quot;#dce6df&quot;,
+      &quot;metalness&quot;: 0,
+      &quot;roughness&quot;: 1,
+      &quot;texture&quot;: null
+    },
+    {
+      &quot;visible&quot;: true,
+      &quot;locked&quot;: false,
+      &quot;group&quot;: null,
+      &quot;id&quot;: &quot;nord-fighter-4&quot;,
+      &quot;assetId&quot;: &quot;primitive:cube&quot;,
+      &quot;name&quot;: &quot;Right wing&quot;,
+      &quot;position&quot;: [
+        1.7,
+        -0.05,
+        -0.3
+      ],
+      &quot;rotation&quot;: [
+        0,
+        -22,
+        0
+      ],
+      &quot;scale&quot;: [
+        2.6,
+        0.14,
+        1.3
+      ],
+      &quot;color&quot;: &quot;#dce6df&quot;,
+      &quot;metalness&quot;: 0,
+      &quot;roughness&quot;: 1,
+      &quot;texture&quot;: null
+    },
+    {
+      &quot;visible&quot;: true,
+      &quot;locked&quot;: false,
+      &quot;group&quot;: null,
+      &quot;id&quot;: &quot;nord-fighter-5&quot;,
+      &quot;assetId&quot;: &quot;primitive:cube&quot;,
+      &quot;name&quot;: &quot;Fin&quot;,
+      &quot;position&quot;: [
+        0,
+        0.65,
+        -1.1
+      ],
+      &quot;rotation&quot;: [
+        0,
+        0,
+        0
+      ],
+      &quot;scale&quot;: [
+        0.16,
+        0.9,
+        0.9
+      ],
+      &quot;color&quot;: &quot;#29bca3&quot;,
+      &quot;metalness&quot;: 0,
+      &quot;roughness&quot;: 1,
+      &quot;texture&quot;: null
+    },
+    {
+      &quot;visible&quot;: true,
+      &quot;locked&quot;: false,
+      &quot;group&quot;: null,
+      &quot;id&quot;: &quot;nord-fighter-6&quot;,
+      &quot;assetId&quot;: &quot;primitive:cylinder&quot;,
+      &quot;name&quot;: &quot;Engine&quot;,
+      &quot;position&quot;: [
+        -0.65,
+        0,
+        -1.8
+      ],
+      &quot;rotation&quot;: [
+        90,
+        0,
+        0
+      ],
+      &quot;scale&quot;: [
+        0.45,
+        0.7,
+        0.45
+      ],
+      &quot;color&quot;: &quot;#ff9b42&quot;,
+      &quot;metalness&quot;: 0,
+      &quot;roughness&quot;: 1,
+      &quot;texture&quot;: null
+    },
+    {
+      &quot;visible&quot;: true,
+      &quot;locked&quot;: false,
+      &quot;group&quot;: null,
+      &quot;id&quot;: &quot;nord-fighter-7&quot;,
+      &quot;assetId&quot;: &quot;primitive:cylinder&quot;,
+      &quot;name&quot;: &quot;Engine&quot;,
+      &quot;position&quot;: [
+        0.65,
+        0,
+        -1.8
+      ],
+      &quot;rotation&quot;: [
+        90,
+        0,
+        0
+      ],
+      &quot;scale&quot;: [
+        0.45,
+        0.7,
+        0.45
+      ],
+      &quot;color&quot;: &quot;#ff9b42&quot;,
+      &quot;metalness&quot;: 0,
+      &quot;roughness&quot;: 1,
+      &quot;texture&quot;: null
+    }
+  ],
+  &quot;assets&quot;: []
+}</code></pre>
+</details><details>
+<summary>Complete assets/models/gate.blocksmith.json</summary><pre class="code" data-lang="json"><code>{
+  &quot;version&quot;: 2,
+  &quot;projectId&quot;: &quot;b4db28ad-c210-4dc2-8aa9-59b25e00ff92&quot;,
+  &quot;name&quot;: &quot;Untitled project&quot;,
+  &quot;blocks&quot;: [
+    {
+      &quot;visible&quot;: true,
+      &quot;locked&quot;: false,
+      &quot;group&quot;: null,
+      &quot;id&quot;: &quot;nord-gate-0&quot;,
+      &quot;assetId&quot;: &quot;primitive:cube&quot;,
+      &quot;name&quot;: &quot;Pylon&quot;,
+      &quot;position&quot;: [
+        -4,
+        0,
+        0
+      ],
+      &quot;rotation&quot;: [
+        0,
+        0,
+        0
+      ],
+      &quot;scale&quot;: [
+        1,
+        8,
+        1.5
+      ],
+      &quot;color&quot;: &quot;#69768a&quot;,
+      &quot;metalness&quot;: 0,
+      &quot;roughness&quot;: 1,
+      &quot;texture&quot;: null
+    },
+    {
+      &quot;visible&quot;: true,
+      &quot;locked&quot;: false,
+      &quot;group&quot;: null,
+      &quot;id&quot;: &quot;nord-gate-1&quot;,
+      &quot;assetId&quot;: &quot;primitive:cube&quot;,
+      &quot;name&quot;: &quot;Pylon&quot;,
+      &quot;position&quot;: [
+        4,
+        0,
+        0
+      ],
+      &quot;rotation&quot;: [
+        0,
+        0,
+        0
+      ],
+      &quot;scale&quot;: [
+        1,
+        8,
+        1.5
+      ],
+      &quot;color&quot;: &quot;#69768a&quot;,
+      &quot;metalness&quot;: 0,
+      &quot;roughness&quot;: 1,
+      &quot;texture&quot;: null
+    },
+    {
+      &quot;visible&quot;: true,
+      &quot;locked&quot;: false,
+      &quot;group&quot;: null,
+      &quot;id&quot;: &quot;nord-gate-2&quot;,
+      &quot;assetId&quot;: &quot;primitive:cube&quot;,
+      &quot;name&quot;: &quot;Crossbar&quot;,
+      &quot;position&quot;: [
+        0,
+        4,
+        0
+      ],
+      &quot;rotation&quot;: [
+        0,
+        0,
+        0
+      ],
+      &quot;scale&quot;: [
+        9,
+        1,
+        1.5
+      ],
+      &quot;color&quot;: &quot;#a9b4c3&quot;,
+      &quot;metalness&quot;: 0,
+      &quot;roughness&quot;: 1,
+      &quot;texture&quot;: null
+    },
+    {
+      &quot;visible&quot;: true,
+      &quot;locked&quot;: false,
+      &quot;group&quot;: null,
+      &quot;id&quot;: &quot;nord-gate-3&quot;,
+      &quot;assetId&quot;: &quot;primitive:cube&quot;,
+      &quot;name&quot;: &quot;Lamp&quot;,
+      &quot;position&quot;: [
+        -2,
+        3.6,
+        -0.8
+      ],
+      &quot;rotation&quot;: [
+        0,
+        0,
+        0
+      ],
+      &quot;scale&quot;: [
+        0.6,
+        0.2,
+        0.15
+      ],
+      &quot;color&quot;: &quot;#34e6b4&quot;,
+      &quot;metalness&quot;: 0,
+      &quot;roughness&quot;: 1,
+      &quot;texture&quot;: null
+    },
+    {
+      &quot;visible&quot;: true,
+      &quot;locked&quot;: false,
+      &quot;group&quot;: null,
+      &quot;id&quot;: &quot;nord-gate-4&quot;,
+      &quot;assetId&quot;: &quot;primitive:cube&quot;,
+      &quot;name&quot;: &quot;Lamp&quot;,
+      &quot;position&quot;: [
+        0,
+        3.6,
+        -0.8
+      ],
+      &quot;rotation&quot;: [
+        0,
+        0,
+        0
+      ],
+      &quot;scale&quot;: [
+        0.6,
+        0.2,
+        0.15
+      ],
+      &quot;color&quot;: &quot;#34e6b4&quot;,
+      &quot;metalness&quot;: 0,
+      &quot;roughness&quot;: 1,
+      &quot;texture&quot;: null
+    },
+    {
+      &quot;visible&quot;: true,
+      &quot;locked&quot;: false,
+      &quot;group&quot;: null,
+      &quot;id&quot;: &quot;nord-gate-5&quot;,
+      &quot;assetId&quot;: &quot;primitive:cube&quot;,
+      &quot;name&quot;: &quot;Lamp&quot;,
+      &quot;position&quot;: [
+        2,
+        3.6,
+        -0.8
+      ],
+      &quot;rotation&quot;: [
+        0,
+        0,
+        0
+      ],
+      &quot;scale&quot;: [
+        0.6,
+        0.2,
+        0.15
+      ],
+      &quot;color&quot;: &quot;#34e6b4&quot;,
+      &quot;metalness&quot;: 0,
+      &quot;roughness&quot;: 1,
+      &quot;texture&quot;: null
+    }
+  ],
+  &quot;assets&quot;: []
+}</code></pre>
+</details><details>
+<summary>Complete index.html</summary><pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;&lt;title&gt;Vector Patrol — retro rail shooter&lt;/title&gt;
+&lt;style&gt;html,body{margin:0;height:100%;background:#101418;overflow:hidden}#stage{position:relative;width:100vw;height:100vh}&lt;/style&gt;
+&lt;script type=&quot;importmap&quot;&gt;{&quot;imports&quot;:{&quot;nord&quot;:&quot;/runtime/core/index.js&quot;}}&lt;/script&gt;&lt;/head&gt;
+&lt;body&gt;&lt;div id=&quot;stage&quot;&gt;&lt;/div&gt;
+&lt;script src=&quot;/vendor/babylonjs/babylon.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;/vendor/babylonjs-loaders/babylonjs.loaders.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;/vendor/babylonjs-gui/babylon.gui.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;/vendor/havok/HavokPhysics_umd.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;module&quot;&gt;
+import { boot } from '/runtime/babylon/index.js';
+try {
+  const project = await (await fetch('nord.project.json')).json();
+  await boot(project, { container: document.getElementById('stage'), preserveDrawingBuffer: true });
+  window.__nord_ready = true;
+} catch (e) { console.error(e); window.__nord_error = String(e); }
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</code></pre>
+</details><details>
+<summary>Complete nord.project.json</summary><pre class="code" data-lang="json"><code>{
+  &quot;format&quot;: 1,
+  &quot;name&quot;: &quot;Vector Patrol&quot;,
+  &quot;id&quot;: &quot;com.crowelian.vectorpatrol&quot;,
+  &quot;type&quot;: &quot;3d&quot;,
+  &quot;engineVersion&quot;: &quot;0.1.0&quot;,
+  &quot;startScene&quot;: &quot;scenes/main.scene.json&quot;,
+  &quot;display&quot;: {
+    &quot;width&quot;: 960,
+    &quot;height&quot;: 540,
+    &quot;scale&quot;: &quot;fit&quot;,
+    &quot;pixelArt&quot;: true,
+    &quot;background&quot;: &quot;#163d57&quot;
+  },
+  &quot;physics&quot;: {
+    &quot;engine&quot;: &quot;none&quot;,
+    &quot;gravity&quot;: [
+      0,
+      0,
+      0
+    ]
+  },
+  &quot;input&quot;: {
+    &quot;actions&quot;: {
+      &quot;left&quot;: [
+        &quot;KeyA&quot;,
+        &quot;ArrowLeft&quot;
+      ],
+      &quot;right&quot;: [
+        &quot;KeyD&quot;,
+        &quot;ArrowRight&quot;
+      ],
+      &quot;up&quot;: [
+        &quot;KeyW&quot;,
+        &quot;ArrowUp&quot;
+      ],
+      &quot;down&quot;: [
+        &quot;KeyS&quot;,
+        &quot;ArrowDown&quot;
+      ],
+      &quot;fire&quot;: [
+        &quot;Space&quot;,
+        &quot;KeyJ&quot;
+      ],
+      &quot;roll&quot;: [
+        &quot;ShiftLeft&quot;,
+        &quot;ShiftRight&quot;
+      ],
+      &quot;retro&quot;: [
+        &quot;KeyC&quot;
+      ]
+    }
+  },
+  &quot;plugins&quot;: [
+    &quot;ui&quot;,
+    &quot;audio&quot;
+  ],
+  &quot;ui&quot;: {
+    &quot;skin&quot;: &quot;cyber&quot;,
+    &quot;theme&quot;: &quot;nord&quot;
+  }
+}</code></pre>
+</details><details>
+<summary>Complete scenes/main.scene.json</summary><pre class="code" data-lang="json"><code>{
+  &quot;format&quot;: 1,
+  &quot;name&quot;: &quot;main&quot;,
+  &quot;settings&quot;: {},
+  &quot;entities&quot;: [
+    {
+      &quot;id&quot;: &quot;eeeeee25&quot;,
+      &quot;name&quot;: &quot;Camera&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          2,
+          -18
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;camera&quot;,
+          &quot;fov&quot;: 65,
+          &quot;near&quot;: 0.1,
+          &quot;far&quot;: 450
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee26&quot;,
+      &quot;name&quot;: &quot;Fighter&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          0.75,
+          0.75,
+          0.75
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;model&quot;,
+          &quot;path&quot;: &quot;assets/models/fighter.glb&quot;,
+          &quot;unique&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee27&quot;,
+      &quot;name&quot;: &quot;Drone0&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0,
+          140
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;model&quot;,
+          &quot;path&quot;: &quot;assets/models/drone.glb&quot;,
+          &quot;unique&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee28&quot;,
+      &quot;name&quot;: &quot;Drone1&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0,
+          140
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;model&quot;,
+          &quot;path&quot;: &quot;assets/models/drone.glb&quot;,
+          &quot;unique&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee29&quot;,
+      &quot;name&quot;: &quot;Drone2&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0,
+          140
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;model&quot;,
+          &quot;path&quot;: &quot;assets/models/drone.glb&quot;,
+          &quot;unique&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee2a&quot;,
+      &quot;name&quot;: &quot;Drone3&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0,
+          140
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;model&quot;,
+          &quot;path&quot;: &quot;assets/models/drone.glb&quot;,
+          &quot;unique&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee2b&quot;,
+      &quot;name&quot;: &quot;Drone4&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0,
+          140
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;model&quot;,
+          &quot;path&quot;: &quot;assets/models/drone.glb&quot;,
+          &quot;unique&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee2c&quot;,
+      &quot;name&quot;: &quot;Drone5&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0,
+          140
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;model&quot;,
+          &quot;path&quot;: &quot;assets/models/drone.glb&quot;,
+          &quot;unique&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee2d&quot;,
+      &quot;name&quot;: &quot;Drone6&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0,
+          140
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;model&quot;,
+          &quot;path&quot;: &quot;assets/models/drone.glb&quot;,
+          &quot;unique&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee2e&quot;,
+      &quot;name&quot;: &quot;Drone7&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0,
+          140
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;model&quot;,
+          &quot;path&quot;: &quot;assets/models/drone.glb&quot;,
+          &quot;unique&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee2f&quot;,
+      &quot;name&quot;: &quot;Drone8&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0,
+          140
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;model&quot;,
+          &quot;path&quot;: &quot;assets/models/drone.glb&quot;,
+          &quot;unique&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee2g&quot;,
+      &quot;name&quot;: &quot;Drone9&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0,
+          140
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;model&quot;,
+          &quot;path&quot;: &quot;assets/models/drone.glb&quot;,
+          &quot;unique&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee2h&quot;,
+      &quot;name&quot;: &quot;Drone10&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0,
+          140
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;model&quot;,
+          &quot;path&quot;: &quot;assets/models/drone.glb&quot;,
+          &quot;unique&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee2i&quot;,
+      &quot;name&quot;: &quot;Drone11&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0,
+          140
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;model&quot;,
+          &quot;path&quot;: &quot;assets/models/drone.glb&quot;,
+          &quot;unique&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee2j&quot;,
+      &quot;name&quot;: &quot;Drone12&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0,
+          140
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;model&quot;,
+          &quot;path&quot;: &quot;assets/models/drone.glb&quot;,
+          &quot;unique&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee2k&quot;,
+      &quot;name&quot;: &quot;Drone13&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0,
+          140
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;model&quot;,
+          &quot;path&quot;: &quot;assets/models/drone.glb&quot;,
+          &quot;unique&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee2l&quot;,
+      &quot;name&quot;: &quot;Carrier&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0,
+          130
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          3.5,
+          3.5,
+          3.5
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;model&quot;,
+          &quot;path&quot;: &quot;assets/models/carrier.glb&quot;,
+          &quot;unique&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee2m&quot;,
+      &quot;name&quot;: &quot;Gate0&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0,
+          150
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;model&quot;,
+          &quot;path&quot;: &quot;assets/models/gate.glb&quot;,
+          &quot;unique&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee2n&quot;,
+      &quot;name&quot;: &quot;Gate1&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0,
+          150
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;model&quot;,
+          &quot;path&quot;: &quot;assets/models/gate.glb&quot;,
+          &quot;unique&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee2o&quot;,
+      &quot;name&quot;: &quot;Gate2&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0,
+          150
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;model&quot;,
+          &quot;path&quot;: &quot;assets/models/gate.glb&quot;,
+          &quot;unique&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee2p&quot;,
+      &quot;name&quot;: &quot;FlightGame&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/flight.js&quot;,
+          &quot;attributes&quot;: {}
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    }
+  ]
+}</code></pre>
+</details><details>
+<summary>Complete scripts/audio-config.js</summary><pre class="code" data-lang="js"><code>export const AUDIO={music:['assets/audio/vector-flight.mp3','assets/audio/vector-boss.mp3'],sfx:{laser:'assets/audio/laser.mp3',explosion:'assets/audio/explosion.mp3',crash:'assets/audio/crash.mp3',shield:'assets/audio/shield.mp3',checkpoint:'assets/audio/checkpoint.mp3',win:'assets/audio/win.mp3'}};</code></pre>
+</details><details>
+<summary>Complete scripts/mk.js</summary><pre class="code" data-lang="js"><code>// Tiny helpers to spawn coloured rectangles / circles / text at runtime (placeholder art). Generated by tools/gen_examples.mjs.
+const base = (name, x, y, z, tags, comps) =&gt; ({ name, tags: tags ?? [], transform: { pos: [x, y, z ?? 0], rot: [0, 0, 0], scale: [1, 1, 1] }, components: comps, scripts: [], children: [] });
+export const rectData = (name, x, y, w, h, color, o = {}) =&gt; base(name, x, y, o.z, o.tags, [{ type: 'sprite', texture: 'assets/sprites/square.png', size: [w, h], tint: color, alpha: o.alpha ?? 1 }]);
+export const circleData = (name, x, y, d, color, o = {}) =&gt; base(name, x, y, o.z, o.tags, [{ type: 'sprite', texture: 'assets/sprites/circle.png', size: [d, d], tint: color, alpha: o.alpha ?? 1 }]);
+export const textData = (name, x, y, t, o = {}) =&gt; base(name, x, y, o.z ?? 50, o.tags, [{ type: 'text', text: t, size: o.size ?? 20, color: o.color ?? '#eceff4' }]);
+export const rect = (scene, ...a) =&gt; scene.spawnData(rectData(...a));
+export const circle = (scene, ...a) =&gt; scene.spawnData(circleData(...a));
+export const label = (scene, ...a) =&gt; scene.spawnData(textData(...a));
+export const aabb = (a, b) =&gt; Math.abs(a.pos[0] - b.pos[0]) * 2 &lt; a.w + b.w &amp;&amp; Math.abs(a.pos[1] - b.pos[1]) * 2 &lt; a.h + b.h;</code></pre>
+</details><details>
+<summary>Complete scripts/retro-audio.js</summary><pre class="code" data-lang="js"><code>// Local MP3/WAV/OGG files, decoded on first user activation. No external service.
+export class RetroAudio {
+  constructor(config) { this.config=config;this.cache=new Map();this.voices=new Set();this.problem='';this.muted=false; }
+  async unlock() {
+    this.ctx??=new AudioContext();
+    if(!this.master){this.master=this.ctx.createGain();this.master.gain.value=.55;this.master.connect(this.ctx.destination);}
+    await this.ctx.resume();
+  }
+  async load(path) {
+    if(!this.cache.has(path))this.cache.set(path,(async()=&gt;{const response=await fetch(path);if(!response.ok)throw Error(`${path}: HTTP ${response.status}`);return this.ctx.decodeAudioData(await response.arrayBuffer());})());
+    return this.cache.get(path);
+  }
+  async voice(path,{volume=.5,loop=false,rate=1}={}) {
+    if(!this.ctx)return null;
+    try {
+      const buffer=await this.load(path);if(this.voices.size&gt;24&amp;&amp;!loop)return null;
+      const source=this.ctx.createBufferSource(),gain=this.ctx.createGain();source.buffer=buffer;source.loop=loop;source.playbackRate.value=rate;gain.gain.value=volume;source.connect(gain);gain.connect(this.master);
+      const voice={source,gain};this.voices.add(voice);source.onended=()=&gt;{this.voices.delete(voice);source.disconnect();gain.disconnect();};source.start();return voice;
+    }catch(error){this.problem=error.message;console.warn('[retro audio]',error);return null;}
+  }
+  play(name,options={}) {const path=this.config.sfx[name];return path?this.voice(path,options):Promise.resolve(null);}
+  async music(index=0) {
+    const old=this.song,next=await this.voice(this.config.music[index%this.config.music.length],{loop:true,volume:0});
+    if(!next)return;this.song=next;next.gain.gain.linearRampToValueAtTime(.4,this.ctx.currentTime+.4);
+    if(old){old.gain.gain.linearRampToValueAtTime(0,this.ctx.currentTime+.4);old.source.stop(this.ctx.currentTime+.45);}
+  }
+  mute() {this.muted=!this.muted;if(this.master)this.master.gain.gain.value=this.muted?0:.55;return this.muted;}
+  suspend() {if(this.ctx?.state==='running')return this.ctx.suspend();}
+  resume() {if(this.ctx?.state==='suspended')return this.ctx.resume();}
+  async dispose() {if(this.ctx)await this.ctx.close();this.voices.clear();}
+}</code></pre>
+</details><details>
+<summary>Complete scripts/retro-shader.js</summary><pre class="code" data-lang="js"><code>export const vertexSource=`
+precision highp float;
+attribute vec3 position;
+attribute vec3 normal;
+uniform mat4 worldViewProjection;
+uniform mat4 world;
+uniform float uRetro;
+uniform vec2 uGrid;
+varying vec3 vNormal;
+void main(){
+ vec4 clip=worldViewProjection*vec4(position,1.0);
+ vec2 snapped=floor(clip.xy/clip.w*uGrid+0.5)/uGrid*clip.w;
+ clip.xy=mix(clip.xy,snapped,uRetro);
+ gl_Position=clip;
+ vNormal=normalize(mat3(world)*normal);
+}`;
+export const fragmentSource=`
+precision highp float;
+uniform vec3 uColor;
+uniform float uRetro;
+varying vec3 vNormal;
+void main(){
+ float light=0.45+0.55*max(dot(normalize(vNormal),normalize(vec3(-0.4,0.8,-0.5))),0.0);
+ vec3 color=uColor*light;
+ vec2 pixel=mod(floor(gl_FragCoord.xy),2.0);
+ float dither=(pixel.x+pixel.y*2.0)/4.0-0.375;
+ vec3 quantized=floor(clamp(color+dither/15.0,0.0,1.0)*15.0+0.5)/15.0;
+ gl_FragColor=vec4(mix(color,quantized,uRetro),1.0);
+}`;</code></pre>
+</details><details>
+<summary>Complete scripts/sim.js</summary><pre class="code" data-lang="js"><code>export const clamp=(v,a,b)=&gt;Math.max(a,Math.min(b,v));
+export function newFlight(){return {time:0,distance:0,x:0,y:0,hp:100,score:0,roll:0,shield:0,fire:0,spawn:0,gate:18,cell:8,bossHP:48,bossZ:130,bossFire:1,boss:false,won:false,lost:false,enemies:[],shots:[],hostile:[],gates:[],cells:[],serial:0};}
+export function tick(s,input,dt){
+ if(s.won||s.lost)return [];dt=Math.min(.05,dt);const events=[];s.time+=dt;s.distance+=22*dt;
+ s.x=clamp(s.x+input.x*12*dt,-9,9);s.y=clamp(s.y+input.y*9*dt,-4.4,5.2);
+ s.roll=Math.max(0,s.roll-dt);s.shield=Math.max(0,s.shield-dt);s.fire-=dt;s.spawn-=dt;s.gate-=dt;s.cell-=dt;
+ if(input.roll&amp;&amp;s.roll===0){s.roll=3;s.shield=.75;events.push('shield');}
+ if(input.fire&amp;&amp;s.fire&lt;=0){s.fire=.16;s.shots.push({x:s.x,y:s.y,z:3});events.push('laser');}
+ if(s.time&lt;63&amp;&amp;s.spawn&lt;=0){s.spawn=Math.max(.7,2-s.time/70);const id=s.serial++;s.enemies.push({id,x:Math.sin(id*2.3)*7,y:Math.cos(id*1.7)*3,z:130,hp:2,fire:1.5+(id%3)*.3});}
+ if(s.gate&lt;=0&amp;&amp;s.time&lt;65){s.gate=12;s.gates.push({x:Math.sin(s.serial)*3,y:0,z:150});}
+ if(s.cell&lt;=0&amp;&amp;s.time&lt;65){s.cell=11;s.cells.push({x:Math.sin(s.time)*5,y:Math.cos(s.time)*2,z:110});}
+ const damage=n=&gt;{if(s.shield&gt;0)return;s.hp=Math.max(0,s.hp-n);s.shield=1.2;events.push('crash');if(s.hp===0)s.lost=true;};
+ for(const e of s.enemies){e.z-=24*dt;e.fire-=dt;if(e.fire&lt;=0&amp;&amp;e.z&gt;10){e.fire=2.8;s.hostile.push({x:e.x,y:e.y,z:e.z,vx:(s.x-e.x)*.3,vy:(s.y-e.y)*.3});}if(Math.abs(e.z)&lt;2&amp;&amp;Math.hypot(e.x-s.x,e.y-s.y)&lt;2){damage(18);e.hp=0;}}
+ if(s.time&gt;=65){s.boss=true;s.bossZ=Math.max(48,s.bossZ-14*dt);s.bossFire-=dt;if(s.bossFire&lt;=0){s.bossFire=1;for(let i=-2;i&lt;=2;i++)s.hostile.push({x:i*2,y:Math.sin(s.time)*2,z:s.bossZ,vx:i*.8,vy:0});}}
+ for(const shot of s.shots){shot.z+=110*dt;for(const e of s.enemies)if(e.hp&gt;0&amp;&amp;Math.abs(shot.z-e.z)&lt;4&amp;&amp;Math.hypot(shot.x-e.x,shot.y-e.y)&lt;1.7){e.hp--;shot.z=999;if(e.hp===0){s.score+=100;events.push('explosion');}break;}
+  if(!s.won&amp;&amp;s.boss&amp;&amp;Math.abs(shot.z-s.bossZ)&lt;5&amp;&amp;Math.abs(shot.x)&lt;5&amp;&amp;Math.abs(shot.y)&lt;2.6){s.bossHP--;shot.z=999;events.push('checkpoint');if(s.bossHP&lt;=0){s.won=true;s.score+=2500;events.push('win');}}
+ }
+ for(const bullet of s.hostile){bullet.z-=46*dt;bullet.x+=bullet.vx*dt;bullet.y+=bullet.vy*dt;if(Math.abs(bullet.z)&lt;2&amp;&amp;Math.hypot(bullet.x-s.x,bullet.y-s.y)&lt;1){damage(12);bullet.z=-20;}}
+ for(const gate of s.gates){gate.z-=22*dt;if(Math.abs(gate.z)&lt;1&amp;&amp;(!gate.passed)){gate.passed=true;if(Math.abs(s.x-gate.x)&gt;3||Math.abs(s.y)&gt;2.8)damage(24);else{s.score+=150;events.push('checkpoint');}}}
+ for(const cell of s.cells){cell.z-=22*dt;if(Math.abs(cell.z)&lt;2&amp;&amp;Math.hypot(cell.x-s.x,cell.y-s.y)&lt;1.7){cell.z=-20;s.hp=Math.min(100,s.hp+20);s.score+=50;events.push('shield');}}
+ s.enemies=s.enemies.filter(e=&gt;e.hp&gt;0&amp;&amp;e.z&gt;-8);s.shots=s.shots.filter(b=&gt;b.z&lt;180);s.hostile=s.hostile.filter(b=&gt;b.z&gt;-10);s.gates=s.gates.filter(g=&gt;g.z&gt;-10);s.cells=s.cells.filter(c=&gt;c.z&gt;-10);
+ if(s.time&gt;=110&amp;&amp;!s.won)s.lost=true;return events;
+}</code></pre>
+</details><details>
+<summary>Complete scripts/view.js</summary><pre class="code" data-lang="js"><code>import {vertexSource,fragmentSource} from './retro-shader.js';
+export class FlightView{
+ constructor(script){this.script=script;this.game=script.game;const b=this.game.backend;this.B=b.B;this.scene=b.scene;this.engine=b.engine;this.canvas=b.canvas;this.materials=new Map();this.originals=[];this.retro=true;this.visuals=[];
+  for(const entity of script.scene.all())for(const mesh of entity.__meshes??[]){if(!mesh.getTotalVertices?.())continue;const old=mesh.material,color=old?.albedoColor??old?.diffuseColor??this.B.Color3.White(),key=color.toHexString();let mat=this.materials.get(key);if(!mat){mat=new this.B.ShaderMaterial('retro-'+key,this.scene,{vertexSource,fragmentSource},{attributes:['position','normal'],uniforms:['worldViewProjection','world','uColor','uRetro','uGrid']});mat.setColor3('uColor',color);this.materials.set(key,mat);}this.originals.push([mesh,old]);mesh.material=mat;}
+  this.player=script.scene.find('Fighter');this.carrier=script.scene.find('Carrier');this.drones=Array.from({length:14},(_,i)=&gt;script.scene.find('Drone'+i));this.gates=Array.from({length:3},(_,i)=&gt;script.scene.find('Gate'+i));
+  const material=(name,color)=&gt;{const m=new this.B.StandardMaterial(name,this.scene);m.disableLighting=true;m.emissiveColor=this.B.Color3.FromHexString(color);return m;};
+  this.green=material('player laser','#6affbc');this.red=material('hostile laser','#ff765a');this.dot=material('ground dot','#4b9995');this.gold=material('energy cell','#f8df75');
+  const pool=(count,kind,mat,size)=&gt;Array.from({length:count},(_,i)=&gt;{const mesh=this.B.MeshBuilder.CreateBox(kind+i,{width:size,height:size,depth:kind==='shot'?1.6:size},this.scene);mesh.material=mat;this.visuals.push(mesh);return mesh;});
+  this.shots=pool(40,'shot',this.green,.12);this.hostile=pool(60,'hostile',this.red,.28);this.cells=pool(6,'cell',this.gold,.7);this.dots=pool(200,'dot',this.dot,.14);
+  this.terrain=new this.B.StandardMaterial('canyon',this.scene);this.terrain.diffuseColor=this.B.Color3.FromHexString('#28625d');this.terrain.specularColor=this.B.Color3.Black();
+  this.ground=this.B.MeshBuilder.CreateGround('canyon floor',{width:300,height:500},this.scene);this.ground.position.set(0,-5.7,190);this.ground.material=this.terrain;this.visuals.push(this.ground);
+  this.mountains=Array.from({length:18},(_,i)=&gt;{const m=this.B.MeshBuilder.CreateCylinder('canyon ridge'+i,{diameterTop:0,diameterBottom:18+(i%3)*7,height:12+(i%4)*4,tessellation:4},this.scene);m.material=this.terrain;this.visuals.push(m);return m;});
+  this.light=new this.B.HemisphericLight('canyon light',new this.B.Vector3(-.6,1,-.4),this.scene);this.light.intensity=.95;
+  this.scene.activeCamera.setTarget(new this.B.Vector3(0,0,40));this.setRetro(true);
+ }
+ setRetro(on){this.retro=on;this.engine.setHardwareScalingLevel(on?Math.max(1,this.canvas.clientWidth/320):1);this.canvas.style.imageRendering=on?'pixelated':'auto';for(const m of this.materials.values()){m.setFloat('uRetro',on?1:0);m.setVector2('uGrid',new this.B.Vector2(this.engine.getRenderWidth()/2,this.engine.getRenderHeight()/2));}}
+ draw(s){
+  this.player.pos=[s.x,s.y,0];this.player.rot=[0,0,s.roll&gt;2.25?(3-s.roll)/.75*360:-s.x*3];this.player.scale=s.shield&gt;0?[1.25,1.25,1.25]:[1.2,1.2,1.2];
+  const entities=(pool,items,fn)=&gt;pool.forEach((e,i)=&gt;{e.enabled=i&lt;items.length;if(e.enabled){e.pos=[items[i].x??0,items[i].y??0,items[i].z];fn?.(e,items[i]);}});
+  entities(this.drones,s.enemies.slice(0,14),(e,v)=&gt;e.rot=[0,0,Math.sin(s.time+v.id)*12]);entities(this.gates,s.gates);
+  this.carrier.enabled=s.boss&amp;&amp;!s.won;this.carrier.pos=[0,0,s.bossZ];this.carrier.rot=[0,0,0];
+  const native=(pool,items)=&gt;pool.forEach((m,i)=&gt;{m.setEnabled(i&lt;items.length);if(i&lt;items.length)m.position.set(items[i].x,items[i].y,items[i].z);});
+  native(this.shots,s.shots);native(this.hostile,s.hostile);native(this.cells,s.cells);
+  this.dots.forEach((m,i)=&gt;m.position.set((i%10-4.5)*8,-5.5,12+Math.floor(i/10)*10-s.distance%10));
+  this.mountains.forEach((m,i)=&gt;m.position.set((i%2?-1:1)*(25+i%3*5),0,20+Math.floor(i/2)*28-s.distance%28));
+ }
+ dispose(){for(const[mesh,mat]of this.originals)if(!mesh.isDisposed())mesh.material=mat;for(const m of this.materials.values())m.dispose();for(const m of this.visuals)m.dispose();for(const m of [this.green,this.red,this.dot,this.gold])m.dispose();this.terrain.dispose();this.light.dispose();this.engine.setHardwareScalingLevel(1);}
+}</code></pre>
+</details>
+<div class="pager"><a href="tut-t38-coastline-sprint.html"><small>← Previous</small>T38 Coastline Sprint — code an Amiga racer with two-player split-screen</a><a href="tut-t40-jengatedris.html"><small>Next →</small>T40 JengaTedris — grid, physics and Node battle</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-play-the-finished-level-and-find-its-code">1. Play the finished level and find its code </a><a href="#2-start-with-a-simulation-you-can-reason-about">2. Start with a simulation you can reason about </a><a href="#3-build-enemy-waves-gates-and-the-carrier">3. Build enemy waves, gates and the carrier </a><a href="#4-connect-the-simulation-to-nord">4. Connect the simulation to Nord </a><a href="#5-use-the-supplied-blocksmith-models-or-edit-your-own">5. Use the supplied Blocksmith models, or edit your own </a><a href="#6-understand-the-retro-shader">6. Understand the retro shader </a><a href="#7-add-your-own-mp3-music-and-sound-effects">7. Add your own MP3 music and sound effects </a><a href="#8-make-restart-a-real-scene-reset">8. Make Restart a real scene reset </a><a href="#9-export-and-verify-the-whole-game">9. Export and verify the whole game </a><a href="#complete-project-source">Complete project source </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

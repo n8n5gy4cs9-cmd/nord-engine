@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>T40 JengaTedris — grid, physics and Node battle — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="tutorials.html" class="active" aria-current="page">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Tutorials</div><a href="tutorials.html">Learn by building</a><a href="tut-t01-hello-nord.html">T01 Hello Nord</a><a href="tut-t02-sprite-movement.html">T02 Sprite &amp; movement</a><a href="tut-t03-first-script.html">T03 Your first script</a><a href="tut-t04-platformer.html">T04 Platformer from template</a><a href="tut-t05-physics.html">T05 Physics &amp; collisions</a><a href="tut-t06-tilemaps.html">T06 Tilemaps</a><a href="tut-t07-animation-juice.html">T07 Animation &amp; juice</a><a href="tut-t08-ui-hud.html">T08 UI &amp; HUD</a><a href="tut-t09-audio.html">T09 Audio</a><a href="tut-t10-3d-scene.html">T10 3D scene &amp; camera</a><a href="tut-t11-3d-physics.html">T11 3D physics (FPS)</a><a href="tut-t12-enemy-ai.html">T12 Enemy AI</a><a href="tut-t13-save-load.html">T13 Save &amp; load</a><a href="tut-t14-export-host.html">T14 Export to web &amp; host it</a><a href="tut-t15-mac-app.html">T15 Mac app</a><a href="tut-t16-rust-game.html">T16 Rust/WASM game</a><a href="tut-t17-rust-egui-app.html">T17 Rust egui app</a><a href="tut-t18-library-snippets.html">T18 Writing library snippets</a><a href="tut-t19-notepaint.html">T19 Build notepaint, from a blank folder</a><a href="tut-t20-star-not.html">T20 Build Star-Not, a complete small space adventure</a><a href="tut-t21-project-design.html">T21 Plan a bigger Nord project</a><a href="tut-t22-shader-terrain.html">T22 Put a terrain shader in a Nord app</a><a href="tut-t23-light-shadows.html">T23 2D lights and real shadows</a><a href="tut-t24-event-sheet-platformer.html">T24 A platformer from events</a><a href="tut-t25-topdown-shooter.html">T25 A top-down shooter from events</a><a href="tut-t26-menus-languages.html">T26 Menus and two languages</a><a href="tut-t27-fps-level.html">T27 Build your first FPS level</a><a href="tut-t28-machine-workshop.html">T28 Machine Workshop — build a gravity puzzle in 2D Level</a><a href="tut-t29-dungeon-two-floors.html">T29 Two Floors — edit a Shattered Pixel Dungeon adaptation</a><a href="tut-t30-tank-patrol.html">T30 Tiny Tank Patrol — build a top-down tank arena</a><a href="tut-t31-full-2d-platformer.html">T31 Full game workshop — Coin Canyon (2D)</a><a href="tut-t32-full-3d-platformer.html">T32 Full game workshop — Sunset Gems (3D)</a><a href="tut-t33-code-coin-rush.html">T33 Code a full 2D game — Coin Rush</a><a href="tut-t34-code-crystal-relay.html">T34 Code a full 3D game — Crystal Relay</a><a href="tut-t35-advanced-prism-shaders.html">T35 Prism Relay — code reactive GLSL game materials</a><a href="tut-t36-advanced-node-vault.html">T36 Circuit Vault — a web game with a real Node server</a><a href="tut-t37-advanced-rust-wasm.html">T37 Orbital Salvage — code Rust gameplay and export real WASM</a><a href="tut-t38-coastline-sprint.html">T38 Coastline Sprint — code an Amiga racer with two-player split-screen</a><a href="tut-t39-vector-patrol.html">T39 Vector Patrol — code a retro 3D rail shooter</a><a href="tut-t40-jengatedris.html" class="cur" aria-current="page">T40 JengaTedris — grid, physics and Node battle</a><a href="tut-t41-nord-office.html">T41 Nord Engine Office — interns, bugs and AI</a><a href="tut-t42-paper-worlds.html">T42 Paper Worlds — draw in 2D, explore your ideas in 3D</a><a href="tut-t43-rss-river.html">T43 RSS River — build a calm reader with a physical paper view</a></nav><main id="content"><div class="crumb">Tutorials / Nord Engine</div><h1>T40 JengaTedris — grid, physics and Node battle</h1>
+<h1 id="t40-jengatedris-code-a-grid-game-a-physics-tower-and-a-node-battle">T40 — JengaTedris: code a grid game, a physics tower and a Node battle</h1>
+<p>Make a complete original falling-block game in three modes: a crisp grid challenge, a chaotic rigid-body tower, and a real two-browser battle. You will learn arrays, candidate movement, rotation, row compaction, seeded randomness, Matter compounds and server-owned game state. The project is called <strong>JengaTedris</strong>; it uses original code and canvas graphics, with no cartridge, ROM or commercial-game assets.</p>
+<p><strong>Download:</strong> <a href="../../assets/downloads/jengatedris-source.zip">Complete JengaTedris project and source</a>. Unzip, open <code>nord.project.json</code> in Nord, and press <strong>Play</strong>. This example uses Nord&#39;s <strong>HTML tier</strong>: one page and JavaScript modules, with a canvas as its view. You edit ordinary project files in Nord&#39;s code editor and export through the same HTML workflow as other Nord apps. A tilemap or four sprite entities could replace the canvas view without changing the grid rules.</p>
+<p><img src="../../assets/screenshots/ed-tedris-grid.png" alt="Playable grid game with next and hold previews"></p>
+<h2 id="1-learn-the-finished-game-39-s-controls">1. Learn the finished game&#39;s controls<a class="anchor" href="#1-learn-the-finished-game-39-s-controls">#</a></h2>
+<p><strong>Grid run:</strong> arrows or A/D/S move and soft-drop, Up/W rotates, Space hard-drops, and C holds a piece once per lock. A translucent ghost shows the landing position. Clear 20 rows to win. Score increases for dropping and row clears; every five cleared rows increases gravity. The best solo score survives page reloads. Pause and Restart work during a run and after a loss.</p>
+<p><strong>Physics tower:</strong> left/right or A/D push the active rigid piece, Q/E rotate it, and Down slams it. Survive 18 pieces. Pieces keep their angles and can lean, slide and topple; this mode has no row clearing. A piece settles when slow for a short interval, or the seven-second control window ends, then the next one spawns. A high stack at the next spawn ends the run.</p>
+<p><strong>Battle:</strong> run the included Node server, join the same room in two browsers, and both click Ready. Each player has a separate grid. Clearing two or more rows sends <code>cleared - 1</code> garbage rows to the rival. The server owns falling, moves, row clears, attacks and the result. A top-out ends the round; after a result, both can Ready again for a fresh match. Online battles keep running when a tab loses focus; local modes pause on blur.</p>
+<h2 id="2-open-the-project-and-follow-its-files">2. Open the project and follow its files<a class="anchor" href="#2-open-the-project-and-follow-its-files">#</a></h2>
+<p>Select the project files in Nord&#39;s Assets panel and open them in the editor. Keep the Console visible while changing code. Stop and start Play after edits so modules reload.</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Responsibility</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>rules.js</code></td>
+<td>Pure grid rules shared by browser and Node</td>
+</tr>
+<tr>
+<td><code>app.js</code></td>
+<td>Input, canvas drawing, menus, best score and battle requests</td>
+</tr>
+<tr>
+<td><code>chaos.js</code></td>
+<td>Actual Matter world, compound pieces, forces and drawing</td>
+</tr>
+<tr>
+<td><code>server.mjs</code></td>
+<td>Two-player rooms, authoritative battle updates and garbage</td>
+</tr>
+<tr>
+<td><code>server-kit.mjs</code></td>
+<td>Small Node HTTP/JSON transport and static file allowlist</td>
+</tr>
+<tr>
+<td><code>style.css</code></td>
+<td>Responsive page, inputs and canvases</td>
+</tr>
+<tr>
+<td><code>vendor/phaser/phaser.min.js</code></td>
+<td>Nord&#39;s pinned offline Phaser build, which includes Matter</td>
+</tr>
+</tbody></table>
+<p>Start by changing <code>JengaTedris</code> in <code>app.js</code> and the highlight colour in <code>style.css</code>, then run your copy. No bundler or npm install is needed. The download includes the physics bundle and its licence. Its minified library code is packaged rather than expanded in this guide; all game and server source is listed at the end.</p>
+<h2 id="3-represent-the-board-as-data-not-falling-pixels">3. Represent the board as data, not falling pixels<a class="anchor" href="#3-represent-the-board-as-data-not-falling-pixels">#</a></h2>
+<p>The board is a 20-row array; each row contains ten colour indices. Zero means empty. Seven shapes each contain four integer offsets. The active piece stores type, grid X/Y and rotation. Its four occupied cells are derived by <code>cells(piece)</code>.</p>
+<pre class="code" data-lang="js"><code>const board = Array.from({ length: 20 }, () =&gt; Array(10).fill(0));</code></pre>
+<p>Use <code>Array.from</code> to make independent rows. <code>Array(20).fill(Array(10).fill(0))</code> would reuse the same row object twenty times: changing one cell would change every row.</p>
+<p>Open <code>fits()</code> in <code>rules.js</code>. It checks all four cells against horizontal walls, the bottom, and occupied board cells. Cells above the board are allowed while a piece enters. A candidate is tested before becoming current state:</p>
+<pre class="code" data-lang="js"><code>const candidate = { ...state.active, x: state.active.x + 1 };
+if (fits(state, candidate)) state.active = candidate;</code></pre>
+<p>The view reads the board and draws rectangles. It never decides whether a move is legal. This is why moving an entity down with <code>pos.y += dropSpeed</code> alone is insufficient: a grid game still needs discrete cell collision, locking, line clearing and top-out rules.</p>
+<p><strong>Learning check:</strong> move against the left wall, rotate there and verify no occupied cell leaves the board. Change the board width only after finding every use of <code>W</code>; the supplied page and battle views deliberately use ten columns.</p>
+<h2 id="4-rotate-candidates-and-give-the-player-useful-feedback">4. Rotate candidates and give the player useful feedback<a class="anchor" href="#4-rotate-candidates-and-give-the-player-useful-feedback">#</a></h2>
+<p><code>cells()</code> rotates offsets through a 4×4 local grid using <code>[x, y] → [3-y, x]</code>. The square is unchanged. <code>rotate()</code> tries the new orientation at offsets <code>0, -1, 1, -2, 2</code> and accepts the first legal candidate. These are simple horizontal wall kicks, not an implementation of a commercial rotation standard.</p>
+<p>The ghost copies the active piece and moves the copy down until the next step fails. Drawing that copy at low opacity tells the player where Space will place it. The real piece is unaffected.</p>
+<p>Hold stores the current type and spawns either the preview or the held type. The <code>held</code> flag prevents cycling repeatedly before locking a piece. When swapping with an occupied hold slot, keep the next queue intact; don&#39;t silently consume an extra bag entry.</p>
+<p>The seven-bag shuffles one of every shape with the state-owned random generator. Both battle players begin with the same seed and therefore the same initial piece order. This makes tests reproducible and openings fair; garbage holes also consume that player&#39;s generator, so later order can diverge after different battle events. Do not describe it as a cryptographically secret or competitive anti-cheat random system.</p>
+<h2 id="5-lock-clear-compact-and-score">5. Lock, clear, compact and score<a class="anchor" href="#5-lock-clear-compact-and-score">#</a></h2>
+<p>Gravity accumulates elapsed seconds. When the delay passes, try one downward cell. If that fails, lock the four cells. A piece that locks above the visible board loses immediately. The supplied game has immediate locking; adding a lock delay is an extension, not a hidden feature.</p>
+<p>After writing the four cells, keep only rows that still contain an empty cell. The number removed is the clear count. Prepend that many <strong>new</strong> empty rows to restore the height:</p>
+<pre class="code" data-lang="js"><code>const kept = state.board.filter(row =&gt; row.some(value =&gt; !value));
+const cleared = H - kept.length;
+state.board = [
+  ...Array.from({ length: cleared }, () =&gt; Array(W).fill(0)),
+  ...kept
+];</code></pre>
+<p>Scores for one through four lines are 100, 300, 500 and 800, multiplied by the level. Soft-drop adds one per moved cell; hard-drop adds two. Reset the hold gate, spawn the preview, and check the 20-row goal.</p>
+<p><strong>Learning check:</strong> create a nearly filled bottom row in <code>newGrid()</code> on a temporary copy and clear it with the missing shape. Confirm the rows above move down, the top is empty, the score changes once, and a new active piece appears. Restore the normal initializer afterward. A screenshot of a falling piece alone does not verify compaction.</p>
+<h2 id="6-make-physics-mode-actually-topple">6. Make physics mode actually topple<a class="anchor" href="#6-make-physics-mode-actually-topple">#</a></h2>
+<p><img src="../../assets/screenshots/ed-tedris-physics.png" alt="Matter compound pieces settle at real angles"></p>
+<p>Arcade AABB physics does not provide the angular rigid-body contacts needed here. The supplied 2D mode uses <strong>Matter</strong>, already bundled in Nord&#39;s local Phaser build. Havok would suit a separate 3D tower, but is not required for this 2D implementation.</p>
+<p><code>createChaos()</code> loads <code>vendor/phaser/phaser.min.js</code> locally, retrieves <code>Phaser.Physics.Matter.Matter</code>, creates an Engine, and adds a static floor and two walls. Each shape becomes four rectangle parts in one compound body:</p>
+<pre class="code" data-lang="js"><code>const parts = SHAPES[type].map(([x, y]) =&gt;
+  M.Bodies.rectangle(110 + x * 24, 45 + y * 24, 23, 23));
+const body = M.Body.create({ parts, friction: .7, restitution: .04 });
+M.Composite.add(engine.world, body);</code></pre>
+<p>Read the complete <code>chaos.js</code> for density, input and lifetime details. A compound keeps the four blocks together as one rigid object. Four independent bodies would scatter instead of behaving as a tetromino.</p>
+<p>Input applies force to the active body, and Q/E changes angular velocity. <code>Engine.update()</code> advances the world using milliseconds, so the controller converts seconds with <code>dt * 1000</code>. Render the body&#39;s actual polygon vertices; do not draw an unrotated grid shape at its centre.</p>
+<p>The survival rules inspect stack height and active speed, not array rows. Friction and restitution change the feel dramatically. Try friction <code>.2</code> versus <code>.7</code>; record which makes the stack slide more. Physics mode is local-only, so two browsers are not expected to reproduce the same tower exactly.</p>
+<h2 id="7-run-a-real-battle-server">7. Run a real battle server<a class="anchor" href="#7-run-a-real-battle-server">#</a></h2>
+<p>Open a terminal in the extracted project folder:</p>
+<pre class="code" data-lang="sh"><code>node server.mjs</code></pre>
+<p>Node 22 or newer is recommended. Open the printed address in two browser tabs. Enter different names, use room <code>NORD</code>, click Join in each and then Ready in each. Put the tabs side by side. Drop a piece in one and watch that player&#39;s miniature board update in the other.</p>
+<p>The default port is 4382. If busy:</p>
+<pre class="code" data-lang="sh"><code>PORT=4482 node server.mjs</code></pre>
+<p>Set the page&#39;s Server field to that server address. In Nord Play, the game page and Node API use different local ports; the helper permits local HTTP preview origins. Opening the Node-served page puts client and API on the same origin and is the easiest setup.</p>
+<p>For friends on your trusted local network:</p>
+<pre class="code" data-lang="sh"><code>HOST=0.0.0.0 node server.mjs</code></pre>
+<p>Find the host computer&#39;s LAN address and have friends open that address with port 4382; put the same address in Server and choose the same room. <code>localhost</code> on a friend&#39;s computer points to their computer, not yours. Permit the chosen port in the host firewall if needed. The server has no account system or durable database; it is a small trusted-room teaching implementation. Internet deployment needs HTTPS, authentication and a deployment-specific origin policy, not a public port forward of this development server.</p>
+<h2 id="8-follow-a-move-from-browser-to-authoritative-server">8. Follow a move from browser to authoritative server<a class="anchor" href="#8-follow-a-move-from-browser-to-authoritative-server">#</a></h2>
+<p>The browser sends an action name rather than a score or new board:</p>
+<pre class="code" data-lang="js"><code>await fetch(server + '/api/action', {
+  method: 'POST',
+  headers: { 'content-type': 'application/json' },
+  body: JSON.stringify({ id: session.id, action: 'left' })
+});</code></pre>
+<p><code>server.mjs</code> resolves the session and room, validates the action, applies a small rate limit, and calls the same <code>action()</code> used in solo mode. A 50ms server tick advances gravity. The client polls snapshots about five times per second; the supplied battle deliberately favours understandable authoritative code over prediction and rollback.</p>
+<p><code>lastClear</code> records the result of one rule step. Two or more clears add garbage to the opponent; garbage shifts rows upward and adds a row with one hole. If occupied cells are pushed out at the top, that player loses. The round result is computed on the server. The client cannot win merely by changing a DOM score.</p>
+<p>Rooms hold two players. A session inactive for 30 seconds expires; its seat becomes available and the remaining room returns to waiting. Ready after a finished round resets both grids with a fresh shared seed. Live battles do not support unilateral pause. Leave returns your page to local mode; its server seat expires shortly afterward.</p>
+<p><strong>Learning check:</strong> stop the server while the battle page is open. The network area should report a connection error. Restart Node and join again: memory-only rooms do not survive a server restart. A static HTML export contains client files, but it cannot execute Node; host <code>server.mjs</code> separately for online play.</p>
+<h2 id="9-source-research-and-deliberate-choices">9. Source research and deliberate choices<a class="anchor" href="#9-source-research-and-deliberate-choices">#</a></h2>
+<p>The requested Kirpich and TengenTetrisDisasm sources were inspected at pinned revisions, including collision, rotation, lock/clear sequencing, input repeat and multiplayer-related code. The detailed findings and citations are in the engine repository&#39;s <code>docs/RESEARCH_GAME_TUTORIALS.md</code>. Kirpich&#39;s serial multiplayer wiring is explicitly unfinished, so it was not reused as a working network layer. Tengen&#39;s disassembly and cartridge content remain reference-only. No source or assets from either project are copied into this game.</p>
+<p>The implementation here uses clear candidate checks, fresh-row compaction and a seven-bag rather than reproducing cartridge quirks. Physics mode is a separate ruleset because arbitrary angles and perfect grid compaction are incompatible assumptions. These choices keep each mode teachable and testable.</p>
+<h2 id="10-verify-export-and-extend">10. Verify, export and extend<a class="anchor" href="#10-verify-export-and-extend">#</a></h2>
+<p>Before exporting, check wall collision, blocked rotation, soft/hard drop, ghost, once-per-piece hold, one- and multi-row clears, overflow, pause, restart and best-score persistence. In physics mode verify actual angular motion and a new piece after settling. In battle verify two names, both Ready, shared state, garbage, result and rematch. The repository tests cover grid rules, real HTTP authority, actual Matter rotation/settling and two browser clients.</p>
+<p>Use Nord&#39;s HTML export for a static client. All physics code is local; there are no CDN calls. Keep <code>server.mjs</code>, <code>server-kit.mjs</code> and <code>rules.js</code> together when hosting the Node game. The source download already includes them. A good extension is a lock-delay timer or a three-piece preview. Add one rule and a focused test before adding more presentation.</p>
+<h2 id="complete-project-source">Complete project source<a class="anchor" href="#complete-project-source">#</a></h2>
+<p>The archive contains every file needed for the complete local game and Node battle, including the pinned physics bundle and licences. Below are all authored game, server, page, configuration and style files in the manual&#39;s local CodeMirror viewer. Copy the complete files when following from an empty project; the smaller excerpts above explain the decisions.</p>
+<!-- GENERATED GAME SOURCE: regenerate with node tools/build-code-workshops.mjs --><h3 id="app-js">app.js<a class="anchor" href="#app-js">#</a></h3>
+<pre class="code" data-lang="js"><code>import {newGrid,cells,ghost,COLORS,action,tickGrid,SHAPES} from './rules.js';
+import {createChaos} from './chaos.js';
+export function mount(root){
+ root.innerHTML=`&lt;link rel=&quot;stylesheet&quot; href=&quot;style.css&quot;&gt;&lt;main&gt;&lt;h1&gt;JengaTedris &lt;small&gt;GRID / TOPPLE / BATTLE&lt;/small&gt;&lt;/h1&gt;&lt;nav&gt;&lt;button id=&quot;grid&quot;&gt;Grid run&lt;/button&gt;&lt;button id=&quot;chaos&quot;&gt;Physics tower&lt;/button&gt;&lt;button id=&quot;pause&quot;&gt;Pause / Resume&lt;/button&gt;&lt;button id=&quot;restart&quot;&gt;Restart&lt;/button&gt;&lt;/nav&gt;&lt;section class=&quot;layout&quot;&gt;&lt;canvas width=&quot;300&quot; height=&quot;600&quot; aria-label=&quot;Game board&quot;&gt;&lt;/canvas&gt;&lt;aside&gt;&lt;h2 id=&quot;status&quot;&gt;&lt;/h2&gt;&lt;p id=&quot;stats&quot;&gt;&lt;/p&gt;&lt;canvas id=&quot;next&quot; width=&quot;200&quot; height=&quot;160&quot;&gt;&lt;/canvas&gt;&lt;p&gt;Grid: arrows move/down, ↑ rotate, Space drop, C hold. Clear 20 rows!&lt;/p&gt;&lt;p&gt;Physics: ← → push, Q / E rotate, ↓ slam. Survive 18 rigid pieces; no row clears.&lt;/p&gt;&lt;h2&gt;Battle a friend&lt;/h2&gt;&lt;label&gt;Name &lt;input id=&quot;name&quot; value=&quot;Builder&quot; maxlength=&quot;20&quot;&gt;&lt;/label&gt;&lt;label&gt;Room &lt;input id=&quot;room&quot; value=&quot;NORD&quot; maxlength=&quot;8&quot;&gt;&lt;/label&gt;&lt;label&gt;Server &lt;input id=&quot;server&quot;&gt;&lt;/label&gt;&lt;button id=&quot;join&quot;&gt;Join battle&lt;/button&gt;&lt;button id=&quot;ready&quot;&gt;Ready / Rematch&lt;/button&gt;&lt;button id=&quot;leave&quot;&gt;Leave battle&lt;/button&gt;&lt;p id=&quot;network&quot;&gt;Start node server.mjs for multiplayer. Same room, two browsers, both Ready.&lt;/p&gt;&lt;canvas id=&quot;rival&quot; width=&quot;150&quot; height=&quot;300&quot;&gt;&lt;/canvas&gt;&lt;p&gt;Two or more cleared rows send garbage to your rival. The server owns both boards.&lt;/p&gt;&lt;/aside&gt;&lt;/section&gt;&lt;footer&gt;Original game · Crowelian 2026 + Sonnet · Best grid score: &lt;b id=&quot;best&quot;&gt;&lt;/b&gt;&lt;/footer&gt;&lt;/main&gt;`;
+ const $=id=&gt;root.querySelector('#'+id),canvas=root.querySelector('canvas'),ctx=canvas.getContext('2d'),keys=new Set();
+ $('server').value=location.port==='4382'?location.origin:'http://127.0.0.1:4382';
+ let mode='grid',grid=newGrid(Date.now()&gt;&gt;&gt;0),chaos=null,paused=false,last=performance.now(),alive=true,battle=null,queue=Promise.resolve(),busy=false,poll=0;
+ let best=0;try{best=Number(localStorage.getItem('jengatedris.best')||0);}catch{}$('best').textContent=best;
+ function reset(){if(mode==='battle'){message('Use Ready / Rematch after the battle ends.');return;}chaos?.dispose();chaos=null;grid=newGrid(Date.now()&gt;&gt;&gt;0);paused=false;keys.clear();if(mode==='chaos')startChaos();}
+ async function startChaos(){try{chaos=await createChaos();}catch(e){message(e.message);mode='grid';}}
+ const message=t=&gt;$('network').textContent=t;
+ const base=()=&gt;$('server').value.replace(/\/$/,'');
+ async function request(route,body){const r=await fetch(base()+'/api/'+route,{method:body?'POST':'GET',headers:body?{'content-type':'application/json'}:{},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(4000)});const data=await r.json();if(!r.ok)throw Error(data.error||r.status);return data;}
+ function accept(data){battle=data;const own=data.players.find(p=&gt;p.id===data.id);if(own)grid=own.grid;message(`${data.room} · ${data.players.map(p=&gt;p.name+(p.ready?' ✓':'')).join(' vs ')} · ${data.phase}${data.winner?' · Winner: '+data.winner:''}`);}
+ function send(name){queue=queue.then(async()=&gt;{if(!battle)return;accept(await request('action',{id:battle.id,action:name}));}).catch(e=&gt;message(e.message+' — join again if expired'));}
+ $('grid').onclick=()=&gt;{battle=null;mode='grid';reset();};$('chaos').onclick=()=&gt;{battle=null;mode='chaos';reset();};
+ $('restart').onclick=reset;$('pause').onclick=()=&gt;{if(mode==='battle'){message('Live battles cannot pause one player.');return;}paused=!paused;keys.clear();};
+ $('join').onclick=async()=&gt;{try{const data=await request('join',{room:$('room').value,name:$('name').value});chaos?.dispose();chaos=null;mode='battle';paused=false;accept(data);}catch(e){message(e.message);}};
+ $('ready').onclick=async()=&gt;{if(!battle)return;try{accept(await request('ready',{id:battle.id}));}catch(e){message(e.message);}};
+ $('leave').onclick=()=&gt;{battle=null;mode='grid';reset();message('Left locally; the server releases the seat after 30 seconds.');};
+ const map={ArrowLeft:'left',KeyA:'left',ArrowRight:'right',KeyD:'right',ArrowDown:'down',KeyS:'down',ArrowUp:'rotate',KeyW:'rotate',Space:'drop',KeyC:'hold'};
+ const down=e=&gt;{if(/INPUT|TEXTAREA/.test(document.activeElement?.tagName))return;if(map[e.code]||e.code==='KeyQ'||e.code==='KeyE')e.preventDefault();keys.add(e.code);if(paused||mode==='chaos')return;const name=map[e.code];if(name&amp;&amp;(!e.repeat||['left','right','down'].includes(name))){if(mode==='battle')send(name);else action(grid,name);}};
+ const up=e=&gt;keys.delete(e.code),blur=()=&gt;{keys.clear();if(mode!=='battle')paused=true;};window.addEventListener('keydown',down);window.addEventListener('keyup',up);window.addEventListener('blur',blur);
+ function board(context,s,scale=30){context.fillStyle=COLORS[0];context.fillRect(0,0,scale*10,scale*20);
+  const block=(x,y,color,alpha=1)=&gt;{if(y&lt;0)return;context.globalAlpha=alpha;context.fillStyle=color;context.fillRect(x*scale+1,y*scale+1,scale-2,scale-2);context.fillStyle='#ffffff22';context.fillRect(x*scale+2,y*scale+2,scale-4,3);context.globalAlpha=1;};
+  s.board.forEach((row,y)=&gt;row.forEach((v,x)=&gt;{if(v)block(x,y,COLORS[v]);}));
+  if(!s.over)for(const[x,y]of cells(ghost(s)))block(x,y,COLORS[s.active.type+1],.22);
+  for(const[x,y]of cells(s.active))block(x,y,COLORS[s.active.type+1]);
+ }
+ function draw(){ctx.fillStyle='#122130';ctx.fillRect(0,0,300,600);if(mode==='chaos'&amp;&amp;chaos)chaos.draw(ctx);else board(ctx,grid);
+  $('status').textContent=paused?'PAUSED':mode==='chaos'?(chaos?.over?(chaos.won?'TOWER SURVIVED!':'TOWER OVERFLOW!'):'PHYSICS TOWER'):grid.over?(grid.won?'20 ROWS CLEAR!':'STACK OVERFLOW'):mode==='battle'?'LIVE BATTLE':'GRID RUN';
+  $('stats').textContent=mode==='chaos'?`Piece ${chaos?.count||0}/18 · settle each rigid tetromino`:`Score ${grid.score} · Rows ${grid.lines}/20 · Level ${grid.level}`;
+  const n=$('next').getContext('2d');n.clearRect(0,0,200,160);n.fillStyle='#d8e8ef';n.font='14px monospace';n.fillText('NEXT',4,16);n.fillText('HOLD',4,90);
+  for(const[type,oy]of[[grid.next,22],[grid.hold,96]])if(type!==null)for(const[x,y]of SHAPES[type]){n.fillStyle=COLORS[type+1];n.fillRect(x*22+24,y*22+oy,20,20);}
+  const opponent=battle?.players.find(p=&gt;p.id!==battle.id);const rc=$('rival').getContext('2d');rc.clearRect(0,0,150,300);if(opponent)board(rc,opponent.grid,15);
+ }
+ function frame(now){if(!alive)return;const dt=Math.min(.05,(now-last)/1000);last=now;if(!paused){if(mode==='grid')tickGrid(grid,dt);if(mode==='chaos')chaos?.tick(dt,keys);}
+  if(mode==='grid'&amp;&amp;grid.score&gt;best){best=grid.score;$('best').textContent=best;try{localStorage.setItem('jengatedris.best',best);}catch{}}
+  poll+=dt;if(mode==='battle'&amp;&amp;battle&amp;&amp;poll&gt;.2&amp;&amp;!busy){poll=0;busy=true;request('state?id='+encodeURIComponent(battle.id)).then(accept).catch(e=&gt;message(e.message)).finally(()=&gt;busy=false);}draw();requestAnimationFrame(frame);
+ }requestAnimationFrame(frame);
+ window.__tedris={get grid(){return grid;},get chaos(){return chaos;},get mode(){return mode;},get battle(){return battle;},get paused(){return paused;}};
+ return()=&gt;{alive=false;chaos?.dispose();window.removeEventListener('keydown',down);window.removeEventListener('keyup',up);window.removeEventListener('blur',blur);root.replaceChildren();};
+}</code></pre>
+<details>
+<summary>Complete chaos.js</summary><pre class="code" data-lang="js"><code>// Matter is already bundled with Nord's pinned Phaser. No CDN and no extra npm install.
+import {SHAPES,COLORS} from './rules.js';
+export async function createChaos(){
+ if(!window.Phaser)await new Promise((resolve,reject)=&gt;{const tag=document.createElement('script');tag.src='vendor/phaser/phaser.min.js';tag.onload=resolve;tag.onerror=()=&gt;reject(Error('Missing local vendor/phaser/phaser.min.js'));document.head.append(tag);});
+ const M=window.Phaser.Physics.Matter.Matter;
+ const engine=M.Engine.create();engine.gravity.y=.8;
+ const walls=[M.Bodies.rectangle(150,590,320,24,{isStatic:true}),M.Bodies.rectangle(-12,300,24,600,{isStatic:true}),M.Bodies.rectangle(312,300,24,600,{isStatic:true})];M.Composite.add(engine.world,walls);
+ const s={engine,M,blocks:[],active:null,count:0,over:false,won:false,time:0,settle:0};
+ s.spawn=()=&gt;{const type=s.count%7;const parts=SHAPES[type].map(([x,y])=&gt;M.Bodies.rectangle(110+x*24,45+y*24,23,23));
+  const body=M.Body.create({parts,friction:.7,restitution:.04,density:.004});body.color=COLORS[type+1];M.Composite.add(engine.world,body);s.blocks.push(body);s.active=body;s.count++;s.time=0;s.settle=0;};s.spawn();
+ s.tick=(dt,keys)=&gt;{if(s.over)return;dt=Math.min(dt,.033);s.time+=dt;const b=s.active;
+  M.Body.applyForce(b,b.position,{x:((keys.has('ArrowRight')||keys.has('KeyD'))-(keys.has('ArrowLeft')||keys.has('KeyA')))*.0015,y:keys.has('ArrowDown')?.009:0});
+  if(keys.has('KeyQ'))M.Body.setAngularVelocity(b,-.035);if(keys.has('KeyE'))M.Body.setAngularVelocity(b,.035);
+  M.Engine.update(engine,dt*1000);
+  if(s.time&gt;1&amp;&amp;b.speed&lt;.3)s.settle+=dt;else s.settle=0;
+  if(s.settle&gt;.65||s.time&gt;7){if(s.blocks.some(v=&gt;v.position.y&lt;90&amp;&amp;v!==b)){s.over=true;return;}if(s.count&gt;=18){s.over=true;s.won=true;}else s.spawn();}
+ };
+ s.draw=ctx=&gt;{for(const b of [...walls,...s.blocks])for(const p of b.parts.length&gt;1?b.parts.slice(1):[b]){ctx.fillStyle=b.color||'#69818b';ctx.beginPath();p.vertices.forEach((v,i)=&gt;i?ctx.lineTo(v.x,v.y):ctx.moveTo(v.x,v.y));ctx.closePath();ctx.fill();ctx.strokeStyle='#172432';ctx.stroke();}};
+ s.dispose=()=&gt;{M.Composite.clear(engine.world,false);M.Engine.clear(engine);};return s;
+}</code></pre>
+</details><details>
+<summary>Complete index.html</summary><pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;nord-app-id&quot; content=&quot;com.crowelian.jengatedris&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;&lt;title&gt;JengaTedris — grid, topple and battle&lt;/title&gt;
+&lt;style&gt;html,body{margin:0;height:100%;background:#2e3440}#app{height:100vh}&lt;/style&gt;&lt;/head&gt;
+&lt;body&gt;&lt;div id=&quot;app&quot;&gt;&lt;/div&gt;
+&lt;script type=&quot;module&quot;&gt;
+import { mount } from './app.js';
+try { await mount(document.getElementById('app')); window.__nord_ready = true; } catch (e) { console.error(e); window.__nord_error = String(e); }
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</code></pre>
+</details><details>
+<summary>Complete nord.project.json</summary><pre class="code" data-lang="json"><code>{
+  &quot;format&quot;: 1,
+  &quot;name&quot;: &quot;JengaTedris&quot;,
+  &quot;id&quot;: &quot;com.crowelian.jengatedris&quot;,
+  &quot;type&quot;: &quot;html&quot;,
+  &quot;engineVersion&quot;: &quot;0.1.0&quot;,
+  &quot;startScene&quot;: &quot;&quot;,
+  &quot;display&quot;: {
+    &quot;width&quot;: 640,
+    &quot;height&quot;: 360,
+    &quot;scale&quot;: &quot;fit&quot;,
+    &quot;pixelArt&quot;: false,
+    &quot;background&quot;: &quot;#2e3440&quot;
+  },
+  &quot;physics&quot;: {
+    &quot;engine&quot;: &quot;none&quot;,
+    &quot;gravity&quot;: [
+      0,
+      0,
+      0
+    ]
+  },
+  &quot;input&quot;: {
+    &quot;actions&quot;: {
+      &quot;left&quot;: [
+        &quot;KeyA&quot;,
+        &quot;ArrowLeft&quot;
+      ],
+      &quot;right&quot;: [
+        &quot;KeyD&quot;,
+        &quot;ArrowRight&quot;
+      ],
+      &quot;up&quot;: [
+        &quot;KeyW&quot;,
+        &quot;ArrowUp&quot;
+      ],
+      &quot;down&quot;: [
+        &quot;KeyS&quot;,
+        &quot;ArrowDown&quot;
+      ],
+      &quot;jump&quot;: [
+        &quot;Space&quot;,
+        &quot;KeyW&quot;,
+        &quot;ArrowUp&quot;
+      ],
+      &quot;fire&quot;: [
+        &quot;Space&quot;,
+        &quot;Mouse0&quot;
+      ],
+      &quot;interact&quot;: [
+        &quot;KeyE&quot;,
+        &quot;Enter&quot;
+      ]
+    }
+  },
+  &quot;plugins&quot;: [
+    &quot;ui&quot;,
+    &quot;audio&quot;
+  ],
+  &quot;ui&quot;: {
+    &quot;skin&quot;: &quot;cyber&quot;,
+    &quot;theme&quot;: &quot;nord&quot;
+  }
+}</code></pre>
+</details><details>
+<summary>Complete rules.js</summary><pre class="code" data-lang="js"><code>// Grid mode has no physics bodies. Board values are colour indices, zero means empty.
+export const W=10,H=20;
+export const SHAPES=[[[0,1],[1,1],[2,1],[3,1]],[[1,0],[2,0],[1,1],[2,1]],[[1,0],[0,1],[1,1],[2,1]],[[1,0],[2,0],[0,1],[1,1]],[[0,0],[1,0],[1,1],[2,1]],[[0,0],[0,1],[1,1],[2,1]],[[2,0],[0,1],[1,1],[2,1]]];
+export const COLORS=['#122130','#55dcf4','#f7d774','#c18aff','#72dda2','#fa7894','#789ef5','#f6aa66','#637485'];
+export function random(s){s.seed=(Math.imul(1664525,s.seed)+1013904223)&gt;&gt;&gt;0;return s.seed/4294967296;}
+function next(s){if(!s.bag.length){s.bag=[0,1,2,3,4,5,6];for(let i=6;i&gt;0;i--){const j=Math.floor(random(s)*(i+1));[s.bag[i],s.bag[j]]=[s.bag[j],s.bag[i]];}}return s.bag.pop();}
+export function cells(p){let pts=SHAPES[p.type].map(v=&gt;[...v]);for(let r=0;r&lt;p.r;r++)pts=pts.map(([x,y])=&gt;[3-y,x]);return pts.map(([x,y])=&gt;[p.x+x,p.y+y]);}
+export function fits(s,p){return cells(p).every(([x,y])=&gt;x&gt;=0&amp;&amp;x&lt;W&amp;&amp;y&lt;H&amp;&amp;(y&lt;0||!s.board[y][x]));}
+function spawn(s,type=s.next,advance=true){s.active={type,x:3,y:-1,r:0};if(advance)s.next=next(s);s.fall=0;if(!fits(s,s.active))s.over=true;}
+export function newGrid(seed=12345){const s={seed,board:Array.from({length:H},()=&gt;Array(W).fill(0)),bag:[],next:0,active:null,hold:null,held:false,score:0,lines:0,level:1,fall:0,over:false,won:false,lastClear:0};s.next=next(s);spawn(s);return s;}
+export function move(s,dx,dy){const p={...s.active,x:s.active.x+dx,y:s.active.y+dy};if(!fits(s,p))return false;s.active=p;return true;}
+export function rotate(s){if(s.active.type===1)return;for(const dx of[0,-1,1,-2,2]){const p={...s.active,x:s.active.x+dx,r:(s.active.r+1)%4};if(fits(s,p)){s.active=p;return;}}}
+function lock(s){const pts=cells(s.active);if(pts.some(([,y])=&gt;y&lt;0)){s.over=true;return;}
+ for(const[x,y]of pts)s.board[y][x]=s.active.type+1;
+ const kept=s.board.filter(row=&gt;row.some(v=&gt;!v)),cleared=H-kept.length;
+ s.lastClear=cleared;s.lines+=cleared;s.score+=[0,100,300,500,800][cleared]*s.level;s.level=1+Math.floor(s.lines/5);
+ s.board=[...Array.from({length:cleared},()=&gt;Array(W).fill(0)),...kept];s.held=false;spawn(s);
+ if(s.lines&gt;=20){s.won=true;s.over=true;}
+}
+export function action(s,name){if(s.over)return;s.lastClear=0;
+ if(name==='left')move(s,-1,0);if(name==='right')move(s,1,0);if(name==='rotate')rotate(s);
+ if(name==='down'){if(move(s,0,1))s.score++;else lock(s);}
+ if(name==='drop'){let n=0;while(move(s,0,1))n++;s.score+=n*2;lock(s);}
+ if(name==='hold'&amp;&amp;!s.held){const t=s.active.type;if(s.hold===null){s.hold=t;spawn(s);}else{const h=s.hold;s.hold=t;spawn(s,h,false);}s.held=true;}
+}
+export function tickGrid(s,dt){s.lastClear=0;if(s.over)return;s.fall+=Math.min(.1,dt);const delay=Math.max(.09,.72-(s.level-1)*.08);if(s.fall&gt;=delay){s.fall=0;if(!move(s,0,1))lock(s);}}
+export function garbage(s,count=1){if(s.over)return;for(let n=0;n&lt;count;n++){if(s.board[0].some(Boolean)){s.over=true;return;}s.board.shift();const hole=Math.floor(random(s)*W);s.board.push(Array.from({length:W},(_,x)=&gt;x===hole?0:8));}if(!fits(s,s.active))s.over=true;}
+export function ghost(s){const p={...s.active};while(fits(s,{...p,y:p.y+1}))p.y++;return p;}</code></pre>
+</details><details>
+<summary>Complete server-kit.mjs</summary><pre class="code" data-lang="js"><code>// Small HTTP transport shared by the teaching servers. No npm packages.
+import http from 'node:http';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+export function serve({root,files,api,tick,port=4382,host=process.env.HOST||'127.0.0.1'}){
+ const server=http.createServer(async(req,res)=&gt;{
+  const json=(status,data)=&gt;{res.writeHead(status,{'content-type':'application/json','cache-control':'no-store'});res.end(JSON.stringify(data));};
+  const origin=req.headers.origin;
+  if(origin){try{const u=new URL(origin);if(u.protocol!=='http:'&amp;&amp;u.protocol!=='https:')return json(403,{error:'HTTP origin required'});
+   if(u.host!==req.headers.host&amp;&amp;!['localhost','127.0.0.1'].includes(u.hostname))return json(403,{error:'Open the game from this server'});
+   res.setHeader('access-control-allow-origin',origin);res.setHeader('vary','Origin');res.setHeader('access-control-allow-headers','content-type');res.setHeader('access-control-allow-methods','GET, POST, OPTIONS');
+  }catch{return json(403,{error:'Invalid origin'});}}
+  if(req.method==='OPTIONS'){res.writeHead(204);res.end();return;}
+  try{
+   const url=new URL(req.url,'http://localhost');
+   if(url.pathname.startsWith('/api/')){
+    let body={};if(req.method==='POST'){if(!req.headers['content-type']?.startsWith('application/json'))return json(415,{error:'Send JSON'});
+     let raw='';for await(const chunk of req){raw+=chunk;if(Buffer.byteLength(raw)&gt;2048)return json(413,{error:'Too large'});}try{body=JSON.parse(raw);}catch{return json(400,{error:'Invalid JSON'});}
+     if(!body||typeof body!=='object'||Array.isArray(body))return json(400,{error:'Send an object'});
+    }else if(req.method!=='GET')return json(405,{error:'GET or POST required'});
+    const result=api(req.method,url,body);return json(result.status??200,result.data??result);
+   }
+   const name=files[url.pathname];if(req.method!=='GET'||!name)return json(404,{error:'Not found'});
+   const mime={'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript','.css':'text/css','.md':'text/plain'}[path.extname(name)]||'application/octet-stream';
+   const bytes=await fs.readFile(path.join(root,name));res.writeHead(200,{'content-type':mime,'cache-control':'no-store'});res.end(bytes);
+  }catch(e){console.error(e);if(!res.headersSent)json(500,{error:'Server error'});else res.end();}
+ });
+ const interval=setInterval(()=&gt;tick(.05),50);server.on('close',()=&gt;clearInterval(interval));
+ if(port!==null)server.listen(port,host,()=&gt;console.log(`Open http://${host==='0.0.0.0'?'localhost':host}:${server.address().port} (HOST=${host})`));
+ return server;
+}
+export const failure=(status,error)=&gt;({status,data:{error}});
+export const roomCode=value=&gt;String(value??'NORD').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,8)||'NORD';</code></pre>
+</details><details>
+<summary>Complete server.mjs</summary><pre class="code" data-lang="js"><code>import {randomUUID} from 'node:crypto';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {serve,failure,roomCode} from './server-kit.mjs';
+import {newGrid,action,tickGrid,garbage} from './rules.js';
+export function createBattleServer({port=null,host,root=path.dirname(fileURLToPath(import.meta.url)),clock=Date.now}={}){
+ const rooms=new Map(),sessions=new Map();let now=clock();
+ const snapshot=p=&gt;{const r=rooms.get(p.room);return {id:p.id,room:p.room,phase:r.phase,winner:r.winner,players:r.players.map(v=&gt;({id:v.id,name:v.name,ready:v.ready,grid:v.grid}))};};
+ function attack(r,p){const n=p.grid.lastClear;if(n&gt;=2)for(const q of r.players)if(q!==p)garbage(q.grid,n-1);}
+ function finish(r){if(r.phase!=='playing')return;const losers=r.players.filter(p=&gt;p.grid.over&amp;&amp;!p.grid.won),winner=r.players.find(p=&gt;p.grid.won);if(losers.length||winner){r.phase='finished';r.winner=winner?.name||(losers.length===2?'Draw':r.players.find(p=&gt;!p.grid.over)?.name)||'Draw';for(const p of r.players)p.ready=false;}}
+ const api=(method,url,b)=&gt;{
+  if(method==='POST'&amp;&amp;url.pathname==='/api/join'){
+   if(sessions.size&gt;=64)return failure(429,'Server full');const code=roomCode(b.room);let r=rooms.get(code);if(!r){r={players:[],phase:'waiting',winner:null};rooms.set(code,r);}if(r.players.length&gt;=2)return failure(409,'Room has two players; choose another code');
+   const p={id:randomUUID(),room:code,name:String(b.name||'Builder').slice(0,20),grid:newGrid(),seen:now,ready:false,lastAction:0};r.players.push(p);sessions.set(p.id,p);return snapshot(p);
+  }
+  const p=sessions.get(method==='GET'?url.searchParams.get('id'):b.id);if(!p)return failure(404,'Session expired; join again');p.seen=now;const r=rooms.get(p.room);
+  if(method==='GET'&amp;&amp;url.pathname==='/api/state')return snapshot(p);
+  if(method==='POST'&amp;&amp;url.pathname==='/api/ready'){p.ready=true;if(r.players.length===2&amp;&amp;r.players.every(v=&gt;v.ready)){const seed=now&gt;&gt;&gt;0;for(const v of r.players)v.grid=newGrid(seed);r.phase='playing';r.winner=null;}return snapshot(p);}
+  if(method==='POST'&amp;&amp;url.pathname==='/api/action'){
+   if(!['left','right','rotate','down','drop','hold'].includes(b.action))return failure(400,'Unknown action');
+   if(r.phase==='playing'&amp;&amp;clock()-p.lastAction&gt;=24){p.lastAction=clock();action(p.grid,b.action);attack(r,p);finish(r);}return snapshot(p);
+  }return failure(404,'Unknown endpoint');
+ };
+ const tick=dt=&gt;{now=clock();for(const[code,r]of rooms){for(const p of [...r.players])if(now-p.seen&gt;30000){sessions.delete(p.id);r.players.splice(r.players.indexOf(p),1);r.phase='waiting';r.players.forEach(v=&gt;v.ready=false);}
+  if(!r.players.length){rooms.delete(code);continue;}if(r.phase==='playing'){for(const p of r.players){tickGrid(p.grid,dt);attack(r,p);}finish(r);}}};
+ return serve({root,port,host,api,tick,files:{'/':'index.html','/index.html':'index.html','/app.js':'app.js','/rules.js':'rules.js','/chaos.js':'chaos.js','/style.css':'style.css','/vendor/phaser/phaser.min.js':'vendor/phaser/phaser.min.js'}});
+}
+if(process.argv[1]&amp;&amp;path.resolve(process.argv[1])===fileURLToPath(import.meta.url))createBattleServer({port:Number(process.env.PORT||4382)});</code></pre>
+</details><details>
+<summary>Complete style.css</summary><pre class="code" data-lang="css"><code>html{background:#0a1522}html,body{height:auto;min-height:100%}*{box-sizing:border-box}body{background:#0a1522;color:#d8e8ef;font:16px system-ui;margin:0}main{max-width:850px;margin:auto;padding:18px}h1{color:#6de1ef;margin:4px 0 12px}small{font-size:12px;color:#eec677}nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}button,input{font:inherit;padding:8px;border:1px solid #3e6070;border-radius:6px;background:#20364a;color:#f4f8ff}button{cursor:pointer}button:hover{background:#35536b}.layout{display:flex;gap:22px;align-items:flex-start}canvas{border:1px solid #35536b;max-width:100%;image-rendering:pixelated}aside{max-width:350px}aside h2{font-size:18px;color:#eec677}label{display:block;font-size:13px;margin:8px 0}input{width:100%;font-size:14px}p{line-height:1.45;font-size:14px}#next{border:0}#rival{float:right}footer{clear:both;padding:12px;color:#8faab8;font-size:12px}@media(max-width:620px){.layout{flex-direction:column}main{padding:8px}}</code></pre>
+</details>
+<div class="pager"><a href="tut-t39-vector-patrol.html"><small>← Previous</small>T39 Vector Patrol — code a retro 3D rail shooter</a><a href="tut-t41-nord-office.html"><small>Next →</small>T41 Nord Engine Office — interns, bugs and AI</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-learn-the-finished-game-39-s-controls">1. Learn the finished game&amp;#39;s controls </a><a href="#2-open-the-project-and-follow-its-files">2. Open the project and follow its files </a><a href="#3-represent-the-board-as-data-not-falling-pixels">3. Represent the board as data, not falling pixels </a><a href="#4-rotate-candidates-and-give-the-player-useful-feedback">4. Rotate candidates and give the player useful feedback </a><a href="#5-lock-clear-compact-and-score">5. Lock, clear, compact and score </a><a href="#6-make-physics-mode-actually-topple">6. Make physics mode actually topple </a><a href="#7-run-a-real-battle-server">7. Run a real battle server </a><a href="#8-follow-a-move-from-browser-to-authoritative-server">8. Follow a move from browser to authoritative server </a><a href="#9-source-research-and-deliberate-choices">9. Source research and deliberate choices </a><a href="#10-verify-export-and-extend">10. Verify, export and extend </a><a href="#complete-project-source">Complete project source </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

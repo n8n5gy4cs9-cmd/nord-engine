@@ -7,6 +7,10 @@ TP="$ROOT/third_party"; mkdir -p "$TP"
 
 # name|repo|sparse paths (space separated, empty = full shallow)
 REPOS=(
+"outrun-reference|ZgzInfinity/OutRun|"
+"starfox-reference|mstan/StarFoxSNESRecomp|"
+"kirpich-reference|etroimcasso/Kirpich|"
+"tengen-reference|zohassadar/TengenTetrisDisasm|"
 "godot|godotengine/godot|doc/classes editor/icons platform/web LICENSE.txt COPYRIGHT.txt"
 "godot-demo|godotengine/godot-demo-projects|2d 3d gui audio LICENSE.txt"
 "playcanvas-engine|playcanvas/engine|build examples/src src/scene src/framework/components LICENSE"

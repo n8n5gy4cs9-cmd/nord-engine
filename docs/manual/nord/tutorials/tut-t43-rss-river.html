@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>T43 RSS River — build a calm reader with a physical paper view — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="tutorials.html" class="active" aria-current="page">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Tutorials</div><a href="tutorials.html">Learn by building</a><a href="tut-t01-hello-nord.html">T01 Hello Nord</a><a href="tut-t02-sprite-movement.html">T02 Sprite &amp; movement</a><a href="tut-t03-first-script.html">T03 Your first script</a><a href="tut-t04-platformer.html">T04 Platformer from template</a><a href="tut-t05-physics.html">T05 Physics &amp; collisions</a><a href="tut-t06-tilemaps.html">T06 Tilemaps</a><a href="tut-t07-animation-juice.html">T07 Animation &amp; juice</a><a href="tut-t08-ui-hud.html">T08 UI &amp; HUD</a><a href="tut-t09-audio.html">T09 Audio</a><a href="tut-t10-3d-scene.html">T10 3D scene &amp; camera</a><a href="tut-t11-3d-physics.html">T11 3D physics (FPS)</a><a href="tut-t12-enemy-ai.html">T12 Enemy AI</a><a href="tut-t13-save-load.html">T13 Save &amp; load</a><a href="tut-t14-export-host.html">T14 Export to web &amp; host it</a><a href="tut-t15-mac-app.html">T15 Mac app</a><a href="tut-t16-rust-game.html">T16 Rust/WASM game</a><a href="tut-t17-rust-egui-app.html">T17 Rust egui app</a><a href="tut-t18-library-snippets.html">T18 Writing library snippets</a><a href="tut-t19-notepaint.html">T19 Build notepaint, from a blank folder</a><a href="tut-t20-star-not.html">T20 Build Star-Not, a complete small space adventure</a><a href="tut-t21-project-design.html">T21 Plan a bigger Nord project</a><a href="tut-t22-shader-terrain.html">T22 Put a terrain shader in a Nord app</a><a href="tut-t23-light-shadows.html">T23 2D lights and real shadows</a><a href="tut-t24-event-sheet-platformer.html">T24 A platformer from events</a><a href="tut-t25-topdown-shooter.html">T25 A top-down shooter from events</a><a href="tut-t26-menus-languages.html">T26 Menus and two languages</a><a href="tut-t27-fps-level.html">T27 Build your first FPS level</a><a href="tut-t28-machine-workshop.html">T28 Machine Workshop — build a gravity puzzle in 2D Level</a><a href="tut-t29-dungeon-two-floors.html">T29 Two Floors — edit a Shattered Pixel Dungeon adaptation</a><a href="tut-t30-tank-patrol.html">T30 Tiny Tank Patrol — build a top-down tank arena</a><a href="tut-t31-full-2d-platformer.html">T31 Full game workshop — Coin Canyon (2D)</a><a href="tut-t32-full-3d-platformer.html">T32 Full game workshop — Sunset Gems (3D)</a><a href="tut-t33-code-coin-rush.html">T33 Code a full 2D game — Coin Rush</a><a href="tut-t34-code-crystal-relay.html">T34 Code a full 3D game — Crystal Relay</a><a href="tut-t35-advanced-prism-shaders.html">T35 Prism Relay — code reactive GLSL game materials</a><a href="tut-t36-advanced-node-vault.html">T36 Circuit Vault — a web game with a real Node server</a><a href="tut-t37-advanced-rust-wasm.html">T37 Orbital Salvage — code Rust gameplay and export real WASM</a><a href="tut-t38-coastline-sprint.html">T38 Coastline Sprint — code an Amiga racer with two-player split-screen</a><a href="tut-t39-vector-patrol.html">T39 Vector Patrol — code a retro 3D rail shooter</a><a href="tut-t40-jengatedris.html">T40 JengaTedris — grid, physics and Node battle</a><a href="tut-t41-nord-office.html">T41 Nord Engine Office — interns, bugs and AI</a><a href="tut-t42-paper-worlds.html">T42 Paper Worlds — draw in 2D, explore your ideas in 3D</a><a href="tut-t43-rss-river.html" class="cur" aria-current="page">T43 RSS River — build a calm reader with a physical paper view</a></nav><main id="content"><div class="crumb">Tutorials / Nord Engine</div><h1>T43 RSS River — build a calm reader with a physical paper view</h1>
+<p>Build <strong>RSS River</strong>, an original local-first news reader for developers. Its ordinary reading view gives you a source list, search, unread/star filters and readable article summaries. Its optional 3D view turns those stories into slowly flowing papers over a desk. Starred stories become larger and float higher. Click a paper to read it, then flick it onto the desk with real Havok physics.</p>
+<p><strong>Download:</strong> <a href="../../assets/downloads/rss-river-source.zip">Complete RSS River app, source and sprites</a>. Extract, open <code>nord.project.json</code> in Nord and press <strong>Play</strong>. This is a complete <strong>HTML-tier</strong> project with local Babylon/Havok files and no npm step. An original local demo makes every feature usable before you fetch external news. Demo stories are explicitly labelled and are not presented as current reporting.</p>
+<p><img src="../../assets/screenshots/ed-rss-list.png" alt="RSS River list, filters and reading pane"></p>
+<h2 id="1-learn-the-finished-reader">1. Learn the finished reader<a class="anchor" href="#1-learn-the-finished-reader">#</a></h2>
+<p>Click a story to read its summary and mark it read. Star it to keep it important. Search matches titles and summaries; Unread only and Starred only combine with the source selector. Mark visible read affects only your current filtered list. Backup library downloads your subscriptions, cached entries and reading flags as JSON; the Import control accepts that backup as well as RSS/Atom XML.</p>
+<p>Click <strong>3D paper river</strong> to explore the same filtered stories spatially. Drag to orbit and use the wheel to zoom. Click a paper to open its reading pane, then <strong>Flick this paper</strong> to drop that paper with an impulse. The ordinary list remains available at any time. Flicking is a temporary visual action: it does not delete an article from your library.</p>
+<p>The initial subscriptions are:</p>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>Purpose</th>
+<th>Default endpoint</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Hacker News through hnrss</td>
+<td>Developer/community news</td>
+<td><code>https://hnrss.org/frontpage</code></td>
+</tr>
+<tr>
+<td>Simon Willison</td>
+<td>AI/LLMs and practical development</td>
+<td><code>https://simonwillison.net/atom/everything/</code></td>
+</tr>
+<tr>
+<td>GitHub Engineering</td>
+<td>Coding and engineering</td>
+<td><code>https://github.blog/engineering/feed/</code></td>
+</tr>
+</tbody></table>
+<p>These endpoints were checked while building the tutorial. Feeds change and network access can fail; the reader shows an update error and keeps cached content. Nothing fetches until you click Refresh. The local demo is a fourth, clearly marked source used only for the tutorial.</p>
+<h2 id="2-open-and-edit-the-real-project">2. Open and edit the real project<a class="anchor" href="#2-open-and-edit-the-real-project">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Responsibility</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>feeds.js</code></td>
+<td>Default subscriptions, RSS/Atom parsing, safe links and merge rules</td>
+</tr>
+<tr>
+<td><code>app.js</code></td>
+<td>Reader UI, filters, refresh/import, reading flags and local save</td>
+</tr>
+<tr>
+<td><code>river.js</code></td>
+<td>Article textures, flow, importance and physics flicks</td>
+</tr>
+<tr>
+<td><code>desk.js</code></td>
+<td>Shared Babylon/Havok desk, local script loading and downloads</td>
+</tr>
+<tr>
+<td><code>save.js</code></td>
+<td>Nord Save class backed by localStorage</td>
+</tr>
+<tr>
+<td><code>demo.xml</code></td>
+<td>Original local sample articles</td>
+</tr>
+<tr>
+<td><code>nord-desktop.js</code></td>
+<td>Existing Nord host bridge for permitted HTTP requests</td>
+</tr>
+<tr>
+<td><code>.offline-allow</code></td>
+<td>Explicit feed hosts used as app data, not CDN dependencies</td>
+</tr>
+<tr>
+<td><code>style.css</code></td>
+<td>Modern list, reading page, sidebar and responsive layout</td>
+</tr>
+</tbody></table>
+<p>Change the subtitle in <code>app.js</code> and stop/start Play to see it. Change an original demo title in <code>demo.xml</code> and click Load local demo to merge the updated entry. Use the Console for source errors. The guide&#39;s code blocks are editable/copyable CodeMirror views; the complete files at the end are the runnable solution.</p>
+<p>This project is inspired by reader workflows in FreshRSS and NetNewsWire. Their repositories were consulted for product context; no PHP/Swift source or assets were copied. This app implements its own small browser data model and renderer rather than claiming to port a complete mature aggregator.</p>
+<h2 id="3-parse-rss-and-atom-into-one-article-model">3. Parse RSS and Atom into one article model<a class="anchor" href="#3-parse-rss-and-atom-into-one-article-model">#</a></h2>
+<p>RSS uses <code>item</code>, <code>title</code>, <code>link</code>, <code>description</code> and often <code>guid</code>. Atom uses <code>entry</code>, link attributes, <code>summary</code>/<code>content</code> and <code>id</code>. <code>parseFeed()</code> accepts both and converts each entry into the same shape:</p>
+<pre class="code" data-lang="js"><code>{
+  id: 'source:stable-entry-id', feed: 'source', source: 'Source name',
+  title: 'Article title', link: 'https://example.org/article',
+  summary: 'Plain text excerpt', date: '', read: false, star: false
+}</code></pre>
+<p>The source ID is part of the article key, so identical entry IDs from different feeds do not collide. Prefer a feed&#39;s stable ID, then a link, with a final title-based fallback. Limit entries and text lengths so one huge feed cannot overwhelm the view.</p>
+<p>The parser rejects malformed XML and accepts only HTTP/HTTPS article links. It converts description markup to plain text using an inert parsed document, removes active container elements, and reads <code>textContent</code>. The UI creates DOM nodes and sets <code>textContent</code>; it does not insert remote description HTML into its controls. Remote images and tracking pixels are not loaded by the summary reader.</p>
+<p><strong>Learning check:</strong> import a tiny RSS file with two items. Give one a description containing bold text and verify it appears as text, then try malformed XML and check the visible error. Add an Atom <code>entry</code> with an alternate <code>link href</code> and confirm Read original points to that link.</p>
+<h2 id="4-merge-updates-without-losing-reading-state">4. Merge updates without losing reading state<a class="anchor" href="#4-merge-updates-without-losing-reading-state">#</a></h2>
+<p><code>mergeArticles(old, incoming)</code> indexes existing entries by stable ID. Incoming content updates a record while preserving its old <code>read</code> and <code>star</code> flags. Refreshing should not turn every article unread again or remove a star.</p>
+<pre class="code" data-lang="js"><code>const previous = map.get(article.id);
+map.set(article.id, { ...article,
+  read: previous?.read || false,
+  star: previous?.star || false
+});</code></pre>
+<p>The cache is capped at 240 entries; this is a small personal reading room rather than an archival database. Search and source filters operate on that cache. Switching between list and river changes the view, not the stored articles.</p>
+<p>Try starring a demo article, loading the demo again and refreshing the page. The star should remain. Mark visible read with a source filter active, then remove the filter and confirm other sources were not affected.</p>
+<h2 id="5-handle-browser-cors-honestly">5. Handle browser CORS honestly<a class="anchor" href="#5-handle-browser-cors-honestly">#</a></h2>
+<p>A feed being public does not guarantee browsers can fetch it from your app&#39;s origin. At verification time Simon Willison and GitHub Engineering returned permissive CORS headers; the Hacker News endpoint did not. A browser may therefore reject that request even though opening its URL directly works.</p>
+<p>RSS River offers three explicit paths:</p>
+<ul>
+<li>Refresh feeds uses normal browser <code>fetch()</code> with a timeout and reports per-feed failures.</li>
+<li>Import accepts a downloaded RSS/Atom XML file, so any source can be read without a public proxy.</li>
+<li>Fetch with Nord host calls Nord&#39;s existing capability-checked <code>desktop.http.fetch()</code> bridge when running under Nord&#39;s host/dev server.</li>
+</ul>
+<p>The project manifest declares only the three default feed hosts for native HTTP. Adding a custom feed URL does not silently expand those permissions; add its hostname to <code>desktop.permissions.net.hosts</code> and review Nord&#39;s normal grant prompt if using host fetch. A plain static browser export has no native bridge and should use CORS-enabled feeds or XML import.</p>
+<p>The <code>.offline-allow</code> file tells Nord&#39;s static URL scanner that these explicit feed endpoints are intentional app data. All JavaScript, physics, fonts used by the page and the sprite sheet remain local. The app needs a connection only when refreshing external news. Do not solve CORS by pasting a random public proxy into a supposedly private reader.</p>
+<h2 id="6-build-a-readable-html-list-first">6. Build a readable HTML list first<a class="anchor" href="#6-build-a-readable-html-list-first">#</a></h2>
+<p><code>renderList()</code> creates one button per visible story, with source, title and a short summary. Clicking opens a separate article pane, marks the item read and writes the library. The read pane uses a comfortable light paper surface and a large serif title; the surrounding app uses a dark developer-tool palette.</p>
+<p>A safe Read original anchor uses the normalized URL, a new tab and <code>noopener noreferrer</code>. The app caches summaries rather than claiming to scrape full articles. Read the publisher&#39;s original when you want the complete story.</p>
+<p>The supplied original sprite sheet includes paper, three sticky colours, a ghost, pen, clip and boat. RSS River uses the boat as its identity; Paper Worlds uses the ghost. It is bundled at <code>assets/dev-desk-sprites.png</code>. You can replace it with your own 4×2 sheet and keep the CSS background positions.</p>
+<p><strong>Learning check:</strong> narrow the browser window. The reading pane should move below the list rather than crush the article text. Confirm an empty filter produces a useful message and that the local demo can restore a working view without network access.</p>
+<h2 id="7-paint-articles-onto-babylon-papers">7. Paint articles onto Babylon papers<a class="anchor" href="#7-paint-articles-onto-babylon-papers">#</a></h2>
+<p><img src="../../assets/screenshots/ed-rss-river.png" alt="The optional 3D river with readable article papers"></p>
+<p><code>createRiver()</code> receives up to eighteen filtered articles. For each it creates a plane and a DynamicTexture. A canvas painter wraps the title and summary, prints the source and reading status, and fills an ivory page. The material is unlit/emissive for stable text legibility; the mesh casts a shadow onto the illuminated desk.</p>
+<pre class="code" data-lang="js"><code>const paper = desk.paper('Article', width, height, context =&gt; {
+  context.fillStyle = '#f7f4e9';
+  context.fillRect(0, 0, 1024, 768);
+  // Draw source, wrapped title, excerpt and status here.
+});</code></pre>
+<p>The complete wrapping helper in <code>river.js</code> measures words and limits line count. It does not depend on remote fonts or a website screenshot. Every paper has metadata containing its article ID; Babylon picking sends that ID back to the same <code>read()</code> function used by the list.</p>
+<p>A render-loop callback moves floating papers slowly along Z and wraps them to the start. A small sine offset gives gentle vertical motion and tilt. Starred papers use larger dimensions and a higher base Y, making importance visible in space. This movement is a view effect and does not change article order or reading flags.</p>
+<h2 id="8-flick-a-floating-paper-into-real-physics">8. Flick a floating paper into real physics<a class="anchor" href="#8-flick-a-floating-paper-into-real-physics">#</a></h2>
+<p>A floating paper initially follows its authored river animation. Clicking Flick creates an invisible thin box collider of the same dimensions and parents the visual plane to it. A dynamic Babylon PhysicsAggregate takes over and receives an impulse. That paper stops participating in the river movement loop.</p>
+<pre class="code" data-lang="js"><code>aggregate.body.applyImpulse(
+  new BABYLON.Vector3(1.6, 2.8, -1.2), body.position);</code></pre>
+<p>Havok handles gravity, collision with the desk, bounce and friction. The collider is a thin box rather than a zero-thickness plane, which gives the rigid-body solver useful dimensions. Returning to list and reopening the river rebuilds the temporary papers; your saved library is unchanged.</p>
+<p>The desk helper loads the pinned Havok WASM from the project&#39;s local vendor folder. It disposes physics aggregates, scene, engine and resize listener when a view is replaced. Search or starring can rebuild the river, so cleanup prevents old render loops from accumulating.</p>
+<h2 id="9-save-and-back-up-the-useful-parts">9. Save and back up the useful parts<a class="anchor" href="#9-save-and-back-up-the-useful-parts">#</a></h2>
+<p>Nord&#39;s Save service stores subscriptions and articles in versioned localStorage slots. In a scene script you access that service as <code>game.save</code>; this HTML app creates <code>new Save(&#39;rss-river&#39;)</code> directly. Read/star changes persist immediately. Offline opening shows the cache or the original local demo, with no automatic network refresh.</p>
+<p>Backup library downloads JSON. Import restores that JSON or adds XML as a clearly named imported source. Local storage belongs to the current browser origin, so use backups when changing machines, server ports or browser profiles. Storage quota errors ask you to back up rather than claiming your changes were saved.</p>
+<h2 id="10-export-and-understand-the-boundaries">10. Export and understand the boundaries<a class="anchor" href="#10-export-and-understand-the-boundaries">#</a></h2>
+<p>Export through Nord&#39;s <strong>HTML</strong> target and serve the output over HTTP. The folder includes the list/river code, demo, generated sprites, Babylon, Havok loader and WASM. Offline cache, XML import and the demo remain available; external news refresh naturally requires connectivity and the source&#39;s CORS policy or a Nord host.</p>
+<p>Optional hosting: serve the HTML export as static files, and add a trusted Node feed relay only if you later need same-origin remote feed fetching; no Node implementation is included.</p>
+<p><strong>WASM, briefly:</strong> the included Havok <code>.wasm</code> is compiled physics called from JavaScript; this reader&#39;s UI and feed parsing remain HTML/JavaScript. A Rust/WASM export would require a Rust implementation of the relevant app logic, not simply selecting a different target for this project.</p>
+<h2 id="11-finish-with-a-short-useful-check">11. Finish with a short useful check<a class="anchor" href="#11-finish-with-a-short-useful-check">#</a></h2>
+<p>Load the demo, read/star a story, search it, refresh the page, import XML, back up JSON, switch to 3D and flick a paper. Then refresh your chosen live feed and confirm failures leave cached content usable. The focused automated smoke checks parsing errors, cache/star persistence, real 3D paper creation and Havok flicks. Feed headers were checked separately; external availability and complete native permission dialogs are not asserted by the offline browser smoke test.</p>
+<h2 id="complete-project-source">Complete project source<a class="anchor" href="#complete-project-source">#</a></h2>
+<p>All authored text files follow in offline CodeMirror viewers. The archive includes the original sprite sheet and all pinned binary/vendor dependencies and licences. It contains no scraped article collection: <code>demo.xml</code> is original, explicitly fictional tutorial material, and real news comes from the subscriptions you choose to refresh.</p>
+<!-- GENERATED GAME SOURCE: regenerate with node tools/build-code-workshops.mjs --><h3 id="app-js">app.js<a class="anchor" href="#app-js">#</a></h3>
+<pre class="code" data-lang="js"><code>import {Save} from './save.js';
+import {DEFAULT_FEEDS,parseFeed,mergeArticles,safeLink} from './feeds.js';
+import {createRiver} from './river.js';
+import {download} from './desk.js';
+export async function mount(root){root.innerHTML=`&lt;link rel=&quot;stylesheet&quot; href=&quot;style.css&quot;&gt;&lt;main&gt;&lt;header&gt;&lt;div class=&quot;brand&quot;&gt;&lt;span class=&quot;boat&quot;&gt;&lt;/span&gt;&lt;div&gt;&lt;h1&gt;RSS River&lt;/h1&gt;&lt;p&gt;A quieter current for curious developers.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;nav&gt;&lt;button id=&quot;refresh&quot;&gt;Refresh feeds&lt;/button&gt;&lt;button id=&quot;native&quot;&gt;Fetch with Nord host&lt;/button&gt;&lt;button id=&quot;mode&quot;&gt;3D paper river&lt;/button&gt;&lt;button id=&quot;backup&quot;&gt;Backup library&lt;/button&gt;&lt;/nav&gt;&lt;/header&gt;&lt;section class=&quot;layout&quot;&gt;&lt;aside&gt;&lt;h3&gt;SOURCES&lt;/h3&gt;&lt;select id=&quot;feed&quot;&gt;&lt;option value=&quot;all&quot;&gt;All sources&lt;/option&gt;&lt;/select&gt;&lt;input id=&quot;search&quot; placeholder=&quot;Search titles &amp; summaries&quot;&gt;&lt;label&gt;&lt;input id=&quot;unread&quot; type=&quot;checkbox&quot;&gt; Unread only&lt;/label&gt;&lt;label&gt;&lt;input id=&quot;stars&quot; type=&quot;checkbox&quot;&gt; Starred only&lt;/label&gt;&lt;button id=&quot;readall&quot;&gt;Mark visible read&lt;/button&gt;&lt;hr&gt;&lt;h3&gt;IMPORT A FEED&lt;/h3&gt;&lt;label&gt;RSS / Atom XML&lt;input id=&quot;import&quot; type=&quot;file&quot; accept=&quot;.xml,.rss,.atom,.json&quot;&gt;&lt;/label&gt;&lt;input id=&quot;custom&quot; placeholder=&quot;https://example.org/feed.xml&quot;&gt;&lt;button id=&quot;add&quot;&gt;Add feed URL&lt;/button&gt;&lt;button id=&quot;demo&quot;&gt;Load local demo&lt;/button&gt;&lt;p&gt;Feeds refresh only when asked. Read cached news offline. If a site blocks browser CORS, import its XML or use Nord host fetch.&lt;/p&gt;&lt;div id=&quot;counts&quot;&gt;&lt;/div&gt;&lt;/aside&gt;&lt;div class=&quot;content&quot;&gt;&lt;div class=&quot;viewbar&quot;&gt;&lt;b id=&quot;heading&quot;&gt;Your reading room&lt;/b&gt;&lt;span id=&quot;status&quot;&gt;Local cache ready&lt;/span&gt;&lt;/div&gt;&lt;div id=&quot;list&quot;&gt;&lt;/div&gt;&lt;canvas id=&quot;river&quot; hidden&gt;&lt;/canvas&gt;&lt;/div&gt;&lt;article id=&quot;reader&quot;&gt;&lt;p class=&quot;eyebrow&quot;&gt;SELECT A PAPER&lt;/p&gt;&lt;h2&gt;Welcome to the river.&lt;/h2&gt;&lt;p&gt;Your saved articles stay on this device. The initial demo is original tutorial content, clearly marked as local demo.&lt;/p&gt;&lt;/article&gt;&lt;/section&gt;&lt;footer&gt;Local-first RSS + Atom · no account · Crowelian 2026 + Sonnet&lt;/footer&gt;&lt;/main&gt;`;
+ const $=id=&gt;root.querySelector('#'+id),save=new Save('rss-river');let feeds=save.get('feeds',DEFAULT_FEEDS),articles=save.get('articles',[]),selected=null,river=null,in3d=false,alive=true;
+ if(!Array.isArray(feeds)||!feeds.length)feeds=[...DEFAULT_FEEDS];if(!Array.isArray(articles))articles=[];
+ const say=t=&gt;$('status').textContent=t;
+ const persist=()=&gt;{try{save.set('feeds',feeds);save.set('articles',articles);}catch{say('Storage is full; use Backup library.');}};
+ function feedOptions(){const select=$('feed'),value=select.value;select.replaceChildren();for(const f of[{id:'all',name:'All sources'},...feeds]){const o=document.createElement('option');o.value=f.id;o.textContent=f.name;select.append(o);}select.value=[...select.options].some(o=&gt;o.value===value)?value:'all';}feedOptions();
+ const visible=()=&gt;articles.filter(a=&gt;($('feed').value==='all'||a.feed===$('feed').value)&amp;&amp;(!$('unread').checked||!a.read)&amp;&amp;(!$('stars').checked||a.star)&amp;&amp;(a.title+' '+a.summary).toLowerCase().includes($('search').value.toLowerCase())).slice().reverse();
+ function read(id){selected=id;const a=articles.find(a=&gt;a.id===id);if(!a)return;a.read=true;persist();const reader=$('reader');reader.replaceChildren();const source=document.createElement('p');source.className='eyebrow';source.textContent=a.source;const h=document.createElement('h2');h.textContent=a.title;const date=document.createElement('p');date.className='date';date.textContent=a.date?new Date(a.date).toLocaleString():'';const text=document.createElement('p');text.textContent=a.summary;
+  const star=document.createElement('button');star.textContent=a.star?'★ Starred':'☆ Star';star.onclick=()=&gt;{a.star=!a.star;persist();read(id);if(in3d)showRiver();};const flick=document.createElement('button');flick.textContent='Flick this paper';flick.onclick=()=&gt;river?.flick(id);reader.append(source,h,date,text,star,flick);
+  const link=safeLink(a.link);if(link){const aTag=document.createElement('a');aTag.textContent='Read original ↗';aTag.href=link;aTag.target='_blank';aTag.rel='noopener noreferrer';reader.append(aTag);}renderList();
+ }
+ function renderList(){const list=$('list');list.replaceChildren();const items=visible();for(const a of items){const b=document.createElement('button');b.className='news '+(a.read?'read ':'')+(a.id===selected?'selected':'');const tag=document.createElement('span');tag.textContent=(a.star?'★ ':'')+a.source;const title=document.createElement('strong');title.textContent=a.title;const summary=document.createElement('p');summary.textContent=a.summary.slice(0,150);b.append(tag,title,summary);b.onclick=()=&gt;read(a.id);list.append(b);}if(!items.length)list.textContent='No articles match. Refresh, import a feed, or load the local demo.';$('counts').textContent=`${articles.length} cached · ${articles.filter(a=&gt;!a.read).length} unread · ${articles.filter(a=&gt;a.star).length} starred`;$('heading').textContent=`${items.length} papers in your current`;}
+ async function showRiver(){try{say('Preparing Babylon + Havok…');river?.dispose();river=await createRiver($('river'),visible(),read);in3d=true;$('list').hidden=true;$('river').hidden=false;$('mode').textContent='2D reading list';river.resize();say('Orbit slowly · click a paper to read · Flick drops it with Havok');}catch(e){say(e.message);}}
+ $('mode').onclick=()=&gt;{if(in3d){in3d=false;$('list').hidden=false;$('river').hidden=true;$('mode').textContent='3D paper river';river?.dispose();river=null;}else showRiver();};
+ for(const id of['feed','search','unread','stars'])$(id).addEventListener('input',()=&gt;{renderList();if(in3d)showRiver();});
+ async function refresh(native=false){$('refresh').disabled=true;let count=0;const errors=[];let desktop;
+  if(native){try{desktop=(await import('./nord-desktop.js')).default;}catch(e){errors.push(e.message);}}
+  for(const feed of feeds.filter(f=&gt;!f.demo)){try{let xml;if(native){if(!desktop)throw Error('Nord desktop bridge unavailable');const r=await desktop.http.fetch(feed.url);if(r.status&gt;=400)throw Error('HTTP '+r.status);xml=r.body;}else{const r=await fetch(feed.url,{signal:AbortSignal.timeout(12000)});if(!r.ok)throw Error('HTTP '+r.status);xml=await r.text();}const items=parseFeed(xml,feed);articles=mergeArticles(articles,items);count+=items.length;}catch(e){errors.push(feed.name+': '+e.message);}}
+  persist();renderList();if(in3d)await showRiver();say(`Updated ${count} entries${errors.length?' · Some feeds blocked/offline; XML import or Nord host fetch works. '+errors.join(' | '):''}`);$('refresh').disabled=false;
+ }
+ $('refresh').onclick=()=&gt;refresh();$('native').onclick=()=&gt;refresh(true);
+ $('readall').onclick=()=&gt;{visible().forEach(a=&gt;a.read=true);persist();renderList();};
+ $('add').onclick=()=&gt;{const url=safeLink($('custom').value);if(!url){say('Enter an HTTP or HTTPS feed URL.');return;}if(feeds.some(f=&gt;f.url===url)){say('Already subscribed.');return;}feeds.push({id:'custom-'+Date.now(),name:new URL(url).hostname,url});feedOptions();persist();say('Feed added; click Refresh. Native fetch needs that host in project permissions.');};
+ async function demo(){const r=await fetch('demo.xml');const f={id:'demo',name:'Local demo — tutorial stories',url:'https://example.org/',demo:true};if(!feeds.some(v=&gt;v.id==='demo'))feeds.push(f);articles=mergeArticles(articles,parseFeed(await r.text(),f));feedOptions();persist();renderList();say('Original local demo loaded — not live news.');}
+ $('demo').onclick=demo;
+ $('import').onchange=async()=&gt;{const file=$('import').files[0];if(!file)return;try{if(file.size&gt;2000000)throw Error('Choose a file below 2 MB');const text=await file.text();if(file.name.endsWith('.json')){const data=JSON.parse(text);if(!Array.isArray(data.feeds)||!Array.isArray(data.articles))throw Error('Expected RSS River backup');feeds=data.feeds.slice(0,30).filter(f=&gt;typeof f.name==='string'&amp;&amp;safeLink(f.url));articles=data.articles.slice(-240).filter(a=&gt;typeof a.id==='string'&amp;&amp;typeof a.title==='string'&amp;&amp;typeof a.summary==='string');}else{const f={id:'import-'+Date.now(),name:file.name,url:'https://example.org/',demo:true};articles=mergeArticles(articles,parseFeed(text,f));feeds.push(f);}feedOptions();persist();renderList();say('Imported '+file.name);}catch(e){say(e.message);}};
+ $('backup').onclick=()=&gt;download('rss-river-library.json',JSON.stringify({feeds,articles},null,2));
+ renderList();if(!articles.length)await demo();
+ window.__rss={get articles(){return articles;},get feeds(){return feeds;},get river(){return river;},read};
+ return()=&gt;{alive=false;river?.dispose();root.replaceChildren();};
+}</code></pre>
+<details>
+<summary>Complete .offline-allow</summary><pre class="code" data-lang="text"><code>hnrss.org
+simonwillison.net
+github.blog</code></pre>
+</details><details>
+<summary>Complete demo.xml</summary><pre class="code" data-lang="xml"><code>&lt;?xml version=&quot;1.0&quot;?&gt;&lt;rss version=&quot;2.0&quot;&gt;&lt;channel&gt;&lt;title&gt;Original tutorial demo — not live news&lt;/title&gt;&lt;link&gt;https://example.org/&lt;/link&gt;&lt;description&gt;Fictional local content for learning RSS River.&lt;/description&gt;
+&lt;item&gt;&lt;guid&gt;demo-1&lt;/guid&gt;&lt;title&gt;A small app can be a place you want to visit&lt;/title&gt;&lt;link&gt;https://example.org/demo/1&lt;/link&gt;&lt;description&gt;This is original tutorial demo content, not a published news report. Try starring this paper, switching to the 3D river and flicking it onto the desk.&lt;/description&gt;&lt;/item&gt;
+&lt;item&gt;&lt;guid&gt;demo-2&lt;/guid&gt;&lt;title&gt;AI reading list: keep the source next to the summary&lt;/title&gt;&lt;link&gt;https://example.org/demo/2&lt;/link&gt;&lt;description&gt;Demo: a good reading tool preserves the original link. The app stores plain text and lets you open the publisher when you want the complete article.&lt;/description&gt;&lt;/item&gt;
+&lt;item&gt;&lt;guid&gt;demo-3&lt;/guid&gt;&lt;title&gt;Why seconds and milliseconds deserve different names&lt;/title&gt;&lt;link&gt;https://example.org/demo/3&lt;/link&gt;&lt;description&gt;Demo coding note: engines often give delta time in seconds while a physics API expects milliseconds. Write the conversion at the boundary.&lt;/description&gt;&lt;/item&gt;
+&lt;item&gt;&lt;guid&gt;demo-4&lt;/guid&gt;&lt;title&gt;Offline-first means your notes survive a train ride&lt;/title&gt;&lt;link&gt;https://example.org/demo/4&lt;/link&gt;&lt;description&gt;Demo: refresh news when connected, then read the cached titles and summaries offline. Back up the library before clearing browser storage.&lt;/description&gt;&lt;/item&gt;
+&lt;item&gt;&lt;guid&gt;demo-5&lt;/guid&gt;&lt;title&gt;Make important things a little bigger&lt;/title&gt;&lt;link&gt;https://example.org/demo/5&lt;/link&gt;&lt;description&gt;Demo design idea: starred papers are physically larger and float higher. One data flag changes both the reading list and spatial view.&lt;/description&gt;&lt;/item&gt;
+&lt;item&gt;&lt;guid&gt;demo-6&lt;/guid&gt;&lt;title&gt;Read a feed without trusting its markup&lt;/title&gt;&lt;link&gt;https://example.org/demo/6&lt;/link&gt;&lt;description&gt;Demo security lesson: convert feed descriptions to text. Never execute a publisher's script or insert its HTML into your app's controls.&lt;/description&gt;&lt;/item&gt;
+&lt;item&gt;&lt;guid&gt;demo-7&lt;/guid&gt;&lt;title&gt;Slow motion is a feature of a calm interface&lt;/title&gt;&lt;link&gt;https://example.org/demo/7&lt;/link&gt;&lt;description&gt;Demo: the river is a gentle browse mode. Use the ordinary list and keyboard for precise reading, and keep motion optional.&lt;/description&gt;&lt;/item&gt;
+&lt;item&gt;&lt;guid&gt;demo-8&lt;/guid&gt;&lt;title&gt;Ship the smallest complete version&lt;/title&gt;&lt;link&gt;https://example.org/demo/8&lt;/link&gt;&lt;description&gt;Demo: include import, backup, empty states and connection errors before adding an account system. A complete local app is already useful.&lt;/description&gt;&lt;/item&gt;
+&lt;/channel&gt;&lt;/rss&gt;</code></pre>
+</details><details>
+<summary>Complete desk.js</summary><pre class="code" data-lang="js"><code>export async function loadScript(src){if(document.querySelector(`script[data-local=&quot;${src}&quot;]`))return;await new Promise((ok,no)=&gt;{const el=document.createElement('script');el.src=src;el.dataset.local=src;el.onload=ok;el.onerror=()=&gt;no(Error('Cannot load '+src));document.head.append(el);});}
+export async function createDesk(canvas,{physics=true}={}){
+ await loadScript('vendor/babylonjs/babylon.js');const B=window.BABYLON;
+ const engine=new B.Engine(canvas,true,{preserveDrawingBuffer:true,stencil:true}),scene=new B.Scene(engine);scene.clearColor=B.Color4.FromHexString('#101b2bff');
+ const camera=new B.ArcRotateCamera('Orbit',-Math.PI/2,.67,28,new B.Vector3(0,0,0),scene);camera.attachControl(canvas,true);camera.lowerRadiusLimit=4;camera.upperRadiusLimit=70;camera.wheelPrecision=25;camera.minZ=.1;
+ const fill=new B.HemisphericLight('Sky',new B.Vector3(0,1,0),scene);fill.intensity=.65;
+ const light=new B.DirectionalLight('Sun',new B.Vector3(-.4,-1,.5),scene);light.position.set(8,18,-8);light.intensity=1.2;
+ const shadows=new B.ShadowGenerator(1024,light);shadows.useBlurExponentialShadowMap=true;shadows.blurKernel=16;
+ const mat=new B.StandardMaterial('Desk surface',scene);mat.diffuseColor=B.Color3.FromHexString('#253a46');mat.specularColor=new B.Color3(.1,.1,.1);
+ const desk=B.MeshBuilder.CreateBox('Desk',{width:45,depth:35,height:.6},scene);desk.position.y=-.45;desk.material=mat;desk.receiveShadows=true;
+ const aggregates=[];
+ if(physics){await loadScript('vendor/havok/HavokPhysics_umd.js');const havok=await window.HavokPhysics({locateFile:name=&gt;'vendor/havok/'+name});scene.enablePhysics(new B.Vector3(0,-9.81,0),new B.HavokPlugin(true,havok));aggregates.push(new B.PhysicsAggregate(desk,B.PhysicsShapeType.BOX,{mass:0,restitution:.2},scene));}
+ const paper=(name,width,height,paint)=&gt;{const mesh=B.MeshBuilder.CreatePlane(name,{width,height,sideOrientation:B.Mesh.DOUBLESIDE},scene);mesh.rotation.x=Math.PI/2;
+  const texture=new B.DynamicTexture(name+' texture',{width:1024,height:768},scene,false);const material=new B.StandardMaterial(name+' material',scene);material.emissiveTexture=texture;material.emissiveColor=B.Color3.White();material.disableLighting=true;material.diffuseColor=B.Color3.Black();material.specularColor=B.Color3.Black();material.backFaceCulling=false;mesh.material=material;shadows.addShadowCaster(mesh);mesh.receiveShadows=true;paint?.(texture.getContext());texture.update();return {mesh,texture,material};};
+ const box=(name,pos,color='#f6d675',mass=.2)=&gt;{const mesh=B.MeshBuilder.CreateBox(name,{width:1.1,height:.13,depth:.9},scene);mesh.position.copyFromFloats(...pos);const material=new B.StandardMaterial(name+' paint',scene);material.diffuseColor=B.Color3.FromHexString(color);mesh.material=material;shadows.addShadowCaster(mesh);
+  const aggregate=physics?new B.PhysicsAggregate(mesh,B.PhysicsShapeType.BOX,{mass,restitution:.55,friction:.45},scene):null;if(aggregate)aggregates.push(aggregate);return {mesh,aggregate};};
+ const update=new Set(),render=()=&gt;{for(const fn of update)fn(Math.min(.05,engine.getDeltaTime()/1000));scene.render();};engine.runRenderLoop(render);const resize=()=&gt;engine.resize();window.addEventListener('resize',resize);
+ return {B,engine,scene,camera,shadows,paper,box,update,resize,setActive(on){engine.stopRenderLoop(render);if(on)engine.runRenderLoop(render);},dispose(){window.removeEventListener('resize',resize);for(const a of aggregates)a.dispose();scene.dispose();engine.dispose();}};
+}
+export function download(name,content,type='application/json'){const blob=content instanceof Blob?content:new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=&gt;URL.revokeObjectURL(url),1000);}</code></pre>
+</details><details>
+<summary>Complete feeds.js</summary><pre class="code" data-lang="js"><code>// Feed URLs are user data, not CDN dependencies. Nothing is requested until Refresh.
+export const DEFAULT_FEEDS=[{id:'hn',name:'Hacker News',url:'https://hnrss.org/frontpage',topic:'Community'},{id:'ai',name:'Simon Willison — AI &amp; LLMs',url:'https://simonwillison.net/atom/everything/',topic:'AI'},{id:'code',name:'GitHub Engineering',url:'https://github.blog/engineering/feed/',topic:'Coding'}];
+export function safeLink(value,base='https://example.org/'){try{const u=new URL(value,base);return ['https:','http:'].includes(u.protocol)?u.href:'';}catch{return '';}}
+export function parseFeed(xml,feed){if(xml.length&gt;2000000)throw Error('Feed is larger than 2 MB');const doc=new DOMParser().parseFromString(xml,'application/xml');if(doc.querySelector('parsererror'))throw Error('Invalid RSS/Atom XML');
+ const entries=[...doc.querySelectorAll('item, entry')];if(!entries.length)throw Error('No RSS items or Atom entries found');
+ const plain=html=&gt;{const d=new DOMParser().parseFromString(html,'text/html');d.querySelectorAll('script,style,iframe,object').forEach(e=&gt;e.remove());return (d.body.textContent||'').replace(/\s+/g,' ').trim();};
+ return entries.slice(0,80).map((node,index)=&gt;{const title=plain(node.querySelector('title')?.textContent||'Untitled').slice(0,180),linkNode=[...node.querySelectorAll('link')].find(n=&gt;!n.getAttribute('rel')||n.getAttribute('rel')==='alternate');const raw=linkNode?.getAttribute('href')||linkNode?.textContent||'',link=safeLink(raw,feed.url),guid=node.querySelector('guid, id')?.textContent||link||title+index;
+  return {id:feed.id+':'+guid,feed:feed.id,source:feed.name,title,link,summary:plain(node.querySelector('description, summary, content')?.textContent||'Open the original to read the full article.').slice(0,1200),date:node.querySelector('pubDate, published, updated')?.textContent||'',read:false,star:false};});
+}
+export function mergeArticles(old,items){const map=new Map(old.map(a=&gt;[a.id,a]));for(const a of items){const prev=map.get(a.id);map.set(a.id,{...a,read:prev?.read||false,star:prev?.star||false});}return [...map.values()].slice(-240);}</code></pre>
+</details><details>
+<summary>Complete index.html</summary><pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;nord-app-id&quot; content=&quot;com.crowelian.rssriver&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;&lt;title&gt;RSS River — a calm reading desk&lt;/title&gt;
+&lt;style&gt;html,body{margin:0;height:100%;background:#2e3440}#app{height:100vh}&lt;/style&gt;&lt;/head&gt;
+&lt;body&gt;&lt;div id=&quot;app&quot;&gt;&lt;/div&gt;
+&lt;script type=&quot;module&quot;&gt;
+import { mount } from './app.js';
+try { await mount(document.getElementById('app')); window.__nord_ready = true; } catch (e) { console.error(e); window.__nord_error = String(e); }
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</code></pre>
+</details><details>
+<summary>Complete nord-desktop.js</summary><pre class="code" data-lang="js"><code>// Nord desktop API (M9, ADR-020): window.nord.desktop.* — files, dialogs, notifications, clipboard, storage, windows, menus, tray.
+// One API, three transports, picked automatically:
+//   ipc  — inside the native player (wry): window.ipc.postMessage ⇄ Rust `nord-desktop` bridge, capability-checked
+//   http — `nord serve` / editor Play: POST /__desktop/call (same Rust bridge, same permissions)
+//   web  — plain browser export: graceful fallbacks (localStorage store + virtual appData files, Notification API, navigator.clipboard,
+//          &lt;input type=file&gt; / download for dialogs); everything else rejects with code &quot;unsupported&quot;.
+// Every method returns a Promise; failures reject with NordDesktopError { code: denied|unsupported|not_found|invalid|io|cancelled }.
+export class NordDesktopError extends Error {
+  constructor(code, message) { super(message); this.name = 'NordDesktopError'; this.code = code; }
+}
+const unsupported = (m) =&gt; Promise.reject(new NordDesktopError('unsupported', `${m} is not available in this environment`));
+const b64 = (u8) =&gt; { let s = ''; for (let i = 0; i &lt; u8.length; i += 0x8000) s += String.fromCharCode(...u8.subarray(i, i + 0x8000)); return btoa(s); };
+const unb64 = (s) =&gt; Uint8Array.from(atob(s), (c) =&gt; c.charCodeAt(0));
+const bytes = (d) =&gt; (typeof d === 'string' ? new TextEncoder().encode(d) : d instanceof ArrayBuffer ? new Uint8Array(d) : d);
+
+// ---- transports: (method, params) -&gt; Promise&lt;result&gt; ------------------------------------------------------------------------------
+function ipcTransport() {
+  let next = 1; const pending = new Map();
+  window.__nordDesktop = {
+    reply(id, json) { const p = pending.get(id); if (!p) return; pending.delete(id); const r = typeof json === 'string' ? JSON.parse(json) : json; r.error ? p[1](new NordDesktopError(r.error.code, r.error.message)) : p[0](r.ok); },
+    emit(name, payload) { emit(name, payload); },
+  };
+  return (method, params) =&gt; new Promise((ok, no) =&gt; { const id = next++; pending.set(id, [ok, no]); window.ipc.postMessage(JSON.stringify({ id, method, params: params ?? {} })); });
+}
+function httpTransport() {
+  return async (method, params) =&gt; {
+    const r = await fetch('/__desktop/call', { method: 'POST', headers: { 'content-type': 'application/json', 'x-nord': '1' }, body: JSON.stringify({ method, params: params ?? {} }) });
+    const j = await r.json();
+    if (j.error) throw new NordDesktopError(j.error.code, j.error.message);
+    return j.ok;
+  };
+}
+
+// ---- web fallbacks ---------------------------------------------------------------------------------------------------------------
+function webTransport(appId) {
+  const ls = (() =&gt; { try { return window.localStorage; } catch { return null; } })();
+  const mem = new Map();
+  const kv = { get: (k) =&gt; (ls ? ls.getItem(k) : mem.get(k) ?? null), set: (k, v) =&gt; (ls ? ls.setItem(k, v) : mem.set(k, v)), del: (k) =&gt; (ls ? ls.removeItem(k) : mem.delete(k)), keys: () =&gt; (ls ? Object.keys(ls) : [...mem.keys()]) };
+  const S = `nord.${appId}.store.`, F = `nord.${appId}.fs.`;
+  const norm = (p) =&gt; { p = String(p).replace(/^appData:/, ''); if (/^[a-z]+:/i.test(p) || p.startsWith('/') || p.split('/').includes('..') || p.includes('\\')) throw new NordDesktopError('denied', 'only app-data paths exist in the browser'); return p.split('/').filter((x) =&gt; x &amp;&amp; x !== '.').join('/'); };
+  // files are stored as base64 so binary survives; helpers convert from/to text
+  const fsRaw = (p) =&gt; { const v = kv.get(F + norm(p)); if (v === null) throw new NordDesktopError('not_found', p); return v; };
+  const fsRead = (p) =&gt; new TextDecoder().decode(unb64(fsRaw(p)));
+  const fsPut = (p, u8) =&gt; kv.set(F + norm(p), b64(u8));
+  const enc = (t) =&gt; new TextEncoder().encode(t);
+  const fsPaths = () =&gt; kv.keys().filter((k) =&gt; k.startsWith(F)).map((k) =&gt; k.slice(F.length));
+  const fileDialog = (accept, multiple) =&gt; new Promise((ok) =&gt; { const i = Object.assign(document.createElement('input'), { type: 'file', multiple, accept }); i.onchange = () =&gt; ok([...i.files]); i.oncancel = () =&gt; ok(null); i.click(); });
+  let wid = 0; const watchers = new Map();
+  const snap = (p) =&gt; new Map(fsPaths().filter((x) =&gt; !p || x === p || x.startsWith(p + '/')).map((x) =&gt; [x, kv.get(F + x)]));
+  const m = {
+    'app.info': () =&gt; ({ name: document.title, version: '', id: appId, os: 'web', arch: '', shell: 'web' }),
+    'app.paths': () =&gt; ({ appData: 'appData:' }), 'app.permissions': () =&gt; ({ summary: ['browser sandbox'], granted: {} }), 'app.launch': () =&gt; ({ files: [], urls: [] }),
+    'app.quit': () =&gt; window.close(), 'app.quitGuard': () =&gt; { },
+    'store.get': ({ key }) =&gt; { const v = kv.get(S + key); return v === null ? null : JSON.parse(v); },
+    'store.set': ({ key, value }) =&gt; kv.set(S + key, JSON.stringify(value)), 'store.remove': ({ key }) =&gt; kv.del(S + key),
+    'store.keys': () =&gt; kv.keys().filter((k) =&gt; k.startsWith(S)).map((k) =&gt; k.slice(S.length)).sort(),
+    'store.clear': () =&gt; kv.keys().filter((k) =&gt; k.startsWith(S)).forEach((k) =&gt; kv.del(k)),
+    'secret.get': ({ key }) =&gt; kv.get(`nord.${appId}.secret.${key}`), 'secret.set': ({ key, value }) =&gt; kv.set(`nord.${appId}.secret.${key}`, value), 'secret.delete': ({ key }) =&gt; kv.del(`nord.${appId}.secret.${key}`),
+    'fs.readText': ({ path }) =&gt; fsRead(path), 'fs.writeText': ({ path, text }) =&gt; fsPut(path, enc(text)), 'fs.append': ({ path, text }) =&gt; fsPut(path, enc((kv.get(F + norm(path)) === null ? '' : fsRead(path)) + text)),
+    'fs.read': ({ path }) =&gt; fsRaw(path), 'fs.write': ({ path, data }) =&gt; kv.set(F + norm(path), data),
+    'fs.exists': ({ path }) =&gt; { const p = norm(path); return p === '' || kv.get(F + p) !== null || fsPaths().some((x) =&gt; x.startsWith(p + '/')); },
+    'fs.stat': ({ path }) =&gt; { const p = norm(path), v = kv.get(F + p); if (v !== null) return { name: p.split('/').pop(), isDir: false, size: unb64(v).length, modified: 0 }; if (p === '' || fsPaths().some((x) =&gt; x.startsWith(p + '/'))) return { name: p.split('/').pop(), isDir: true, size: 0, modified: 0 }; throw new NordDesktopError('not_found', path); },
+    'fs.list': ({ path }) =&gt; { const p = norm(path), pre = p ? p + '/' : '', seen = new Map(); for (const x of fsPaths().filter((x) =&gt; x.startsWith(pre))) { const rest = x.slice(pre.length), n = rest.split('/')[0], dir = rest.includes('/'); seen.set(n, { name: n, isDir: dir, size: dir ? 0 : unb64(kv.get(F + x)).length, modified: 0 }); } return [...seen.values()].sort((a, b) =&gt; b.isDir - a.isDir || a.name.localeCompare(b.name)); },
+    'fs.mkdir': () =&gt; { },
+    'fs.watch': ({ path }) =&gt; { const p = norm(path), id = ++wid; watchers.set(id, { p, snap: snap(p) }); return id; },
+    'fs.poll': ({ id }) =&gt; { const w = watchers.get(id); if (!w) throw new NordDesktopError('not_found', 'no such watcher'); const now = snap(w.p), ev = []; for (const [k, v] of now) { if (!w.snap.has(k)) ev.push({ kind: 'created', path: k }); else if (w.snap.get(k) !== v) ev.push({ kind: 'modified', path: k }); } for (const k of w.snap.keys()) if (!now.has(k)) ev.push({ kind: 'removed', path: k }); w.snap = now; return ev; },
+    'fs.unwatch': ({ id }) =&gt; { watchers.delete(id); },
+    'fs.remove': ({ path, recursive }) =&gt; { const p = norm(path); if (kv.get(F + p) !== null) return kv.del(F + p); const ch = fsPaths().filter((x) =&gt; x.startsWith(p + '/')); if (ch.length &amp;&amp; !recursive) throw new NordDesktopError('io', 'directory not empty'); ch.forEach((x) =&gt; kv.del(F + x)); },
+    'fs.rename': ({ from, to }) =&gt; { const v = fsRaw(from); kv.set(F + norm(to), v); kv.del(F + norm(from)); }, 'fs.copy': ({ from, to }) =&gt; kv.set(F + norm(to), fsRaw(from)),
+    'dialog.message': ({ text }) =&gt; alert(text), 'dialog.confirm': ({ text }) =&gt; confirm(text), 'dialog.recent': () =&gt; [],
+    'dialog.open': async ({ filters, multiple }) =&gt; { const f = await fileDialog((filters ?? []).flatMap((x) =&gt; x.extensions.map((e) =&gt; '.' + e)).join(','), !!multiple); if (!f) return null; for (const x of f) fsPut('picked/' + x.name, new Uint8Array(await x.arrayBuffer())); return f.map((x) =&gt; 'appData:picked/' + x.name); },
+    'dialog.save': ({ fileName }) =&gt; 'appData:saved/' + (fileName ?? 'untitled.txt'),
+    'notify.show': async ({ title, body }) =&gt; { if (!('Notification' in window)) throw new NordDesktopError('unsupported', 'Notification API'); if (Notification.permission === 'default') await Notification.requestPermission(); if (Notification.permission !== 'granted') throw new NordDesktopError('denied', 'notifications blocked'); new Notification(title, { body }); },
+    'notify.badge': ({ text }) =&gt; { if (navigator.setAppBadge) return text ? navigator.setAppBadge(parseInt(text, 10) || undefined) : navigator.clearAppBadge(); }, 'notify.progress': () =&gt; { },
+    'clipboard.readText': () =&gt; navigator.clipboard.readText(), 'clipboard.writeText': ({ text }) =&gt; navigator.clipboard.writeText(text),
+    'shell.openUrl': ({ url }) =&gt; { if (!/^(https?:|mailto:)/i.test(url)) throw new NordDesktopError('denied', 'only http(s)/mailto'); window.open(url, '_blank', 'noopener'); },
+  };
+  return async (method, params) =&gt; {
+    const f = m[method];
+    if (!f) throw new NordDesktopError('unsupported', `${method} is not available in the browser`);
+    try { return await f(params ?? {}); } catch (e) { throw e instanceof NordDesktopError ? e : new NordDesktopError('io', String(e?.message ?? e)); }
+  };
+}
+
+// ---- events ----------------------------------------------------------------------------------------------------------------------
+const handlers = new Map();
+function emit(name, payload) { for (const f of handlers.get(name) ?? []) { try { f(payload); } catch (e) { console.error(e); } } }
+let poller = null;
+function startPolling() {
+  if (poller) return;
+  poller = setInterval(async () =&gt; { try { for (const e of await (await fetch('/__desktop/events')).json()) emit(e.name, e.payload); } catch { /* server gone */ } }, 400);
+}
+
+// ---- API -------------------------------------------------------------------------------------------------------------------------
+export function create(appId = 'web-app', force) {
+  const mode = force ?? (window.ipc?.postMessage &amp;&amp; location.protocol !== 'http:' &amp;&amp; location.protocol !== 'https:' ? 'ipc' : null);
+  let call = mode === 'ipc' ? ipcTransport() : null, transport = mode;
+  const ready = (async () =&gt; {
+    if (call) return;
+    try { const r = await fetch('/__desktop/events', { cache: 'no-store' }); if (r.ok &amp;&amp; (r.headers.get('content-type') ?? '').includes('json')) { call = httpTransport(); transport = 'http'; startPolling(); return; } } catch { /* no server bridge */ }
+    call = webTransport(appId); transport = 'web';
+  })();
+  const c = async (method, params) =&gt; { await ready; return call(method, params); };
+  const sub = (ns, names) =&gt; Object.fromEntries(names.map((n) =&gt; [n, (p) =&gt; c(`${ns}.${n}`, p)]));
+  const d = {
+    get transport() { return transport; },
+    ready,
+    app: {
+      ...sub('app', ['info', 'paths', 'permissions', 'launch', 'audit', 'quit']),
+      setQuitGuard: (enable = true) =&gt; c('app.quitGuard', { enable }), setAutostart: (enable = true) =&gt; c('app.autostart', { enable }),
+    },
+    fs: {
+      readText: (path) =&gt; c('fs.readText', { path }), writeText: (path, text) =&gt; c('fs.writeText', { path, text }), append: (path, text) =&gt; c('fs.append', { path, text }),
+      read: async (path) =&gt; unb64(await c('fs.read', { path })), write: (path, data) =&gt; c('fs.write', { path, data: b64(bytes(data)) }),
+      list: (path = '') =&gt; c('fs.list', { path }), stat: (path) =&gt; c('fs.stat', { path }), exists: (path) =&gt; c('fs.exists', { path }), mkdir: (path) =&gt; c('fs.mkdir', { path }),
+      remove: (path, { recursive = false } = {}) =&gt; c('fs.remove', { path, recursive }), rename: (from, to) =&gt; c('fs.rename', { from, to }), copy: (from, to) =&gt; c('fs.copy', { from, to }),
+      readJson: async (path) =&gt; JSON.parse(await c('fs.readText', { path })), writeJson: (path, v) =&gt; c('fs.writeText', { path, text: JSON.stringify(v, null, 2) }),
+      /** Calls cb({kind: created|modified|removed, path}) on changes (polled every `interval` ms). Returns an unwatch function. */
+      async watch(path, cb, { recursive = false, interval = 700 } = {}) {
+        const id = await c('fs.watch', { path, recursive });
+        const t = setInterval(async () =&gt; { try { for (const e of await c('fs.poll', { id })) cb(e); } catch { clearInterval(t); } }, interval);
+        return () =&gt; { clearInterval(t); c('fs.unwatch', { id }).catch(() =&gt; { }); };
+      },
+    },
+    dialog: {
+      open: (o = {}) =&gt; c('dialog.open', o), save: (o = {}) =&gt; c('dialog.save', o), folder: (o = {}) =&gt; c('dialog.folder', o), recent: () =&gt; c('dialog.recent'),
+      message: (text, o = {}) =&gt; c('dialog.message', { text, ...o }), confirm: (text, o = {}) =&gt; c('dialog.confirm', { text, ...o }),
+    },
+    notify: Object.assign((title, body = '') =&gt; c('notify.show', { title, body }), { setBadge: (text) =&gt; c('notify.badge', { text: text == null ? null : String(text) }), setProgress: (value) =&gt; c('notify.progress', { value }) }),
+    clipboard: { readText: () =&gt; c('clipboard.readText'), writeText: (text) =&gt; c('clipboard.writeText', { text }), readImage: () =&gt; c('clipboard.readImage'), writeImage: (png) =&gt; c('clipboard.writeImage', { png: b64(bytes(png)) }) },
+    store: { ...sub('store', ['get', 'remove', 'keys', 'clear']), set: (key, value) =&gt; c('store.set', { key, value }), get: (key, fallback = null) =&gt; c('store.get', { key }).then((v) =&gt; v ?? fallback) },
+    secret: { get: (key) =&gt; c('secret.get', { key }), set: (key, value) =&gt; c('secret.set', { key, value }), delete: (key) =&gt; c('secret.delete', { key }) },
+    shell: { openUrl: (url) =&gt; c('shell.openUrl', { url }), openPath: (path) =&gt; c('shell.openPath', { path }), reveal: (path) =&gt; c('shell.reveal', { path }) },
+    process: { run: (program, args = [], opts = {}) =&gt; c('process.run', { program, args, ...opts }) },
+    /** Local static web server (needs `server: true`): start({root, port?, cors?, spa?, listing?, liveReload?, lan?, cache?}) → {id, port, url} */
+    server: { start: (o) =&gt; c('server.start', o), stop: (id) =&gt; c('server.stop', { id }), list: () =&gt; c('server.list'), logs: (id, since = 0) =&gt; c('server.logs', { id, since }) },
+    http: { fetch: (url, o = {}) =&gt; c('http.fetch', { url, ...o }) },
+    window: { open: (o) =&gt; c('window.open', o), close: (id) =&gt; c('window.close', { id }), setTitle: (title) =&gt; c('window.setTitle', { title }), setFullscreen: (on = true) =&gt; c('window.setFullscreen', { on }), setAlwaysOnTop: (on = true) =&gt; c('window.setAlwaysOnTop', { on }) },
+    menu: { set: (items) =&gt; c('menu.set', { items }), context: (items, pos = {}) =&gt; c('menu.context', { items, ...pos }) },
+    tray: { set: (o) =&gt; c('tray.set', o), remove: () =&gt; c('tray.remove') },
+    shortcut: { register: async (id, accelerator, cb) =&gt; { if (cb) d.on('shortcut:' + id, cb); return c('shortcut.register', { id, accelerator }); }, unregister: (id) =&gt; c('shortcut.unregister', { id }) },
+    /** Events from the shell: `menu` {id}, `tray` {id}, `shortcut:&lt;id&gt;`, `drop` {files}, `open` {files, urls}, `quit-requested`. Returns an off function. */
+    on(name, fn) { (handlers.get(name) ?? handlers.set(name, new Set()).get(name)).add(fn); return () =&gt; handlers.get(name)?.delete(fn); },
+    off(name, fn) { handlers.get(name)?.delete(fn); },
+  };
+  // drag &amp; drop of files from the OS onto the page (browser + webview): reported as `drop` with File objects (web) — the native shell adds absolute paths
+  if (typeof window !== 'undefined') {
+    window.addEventListener('dragover', (e) =&gt; { if (e.dataTransfer?.types?.includes('Files')) e.preventDefault(); });
+    window.addEventListener('drop', (e) =&gt; { if (e.dataTransfer?.files?.length) { e.preventDefault(); emit('drop', { files: [...e.dataTransfer.files] }); } });
+  }
+  return d;
+}
+
+/** The shared instance: `import desktop from './nord-desktop.js'` (also exposed as window.nord.desktop). */
+const desktop = create(globalThis.NORD_APP_ID ?? document.querySelector('meta[name=nord-app-id]')?.content ?? location.host ?? 'web-app');
+(globalThis.nord ??= {}).desktop = desktop;
+export default desktop;</code></pre>
+</details><details>
+<summary>Complete nord.project.json</summary><pre class="code" data-lang="json"><code>{
+  &quot;format&quot;: 1,
+  &quot;name&quot;: &quot;RSS River&quot;,
+  &quot;id&quot;: &quot;com.crowelian.rssriver&quot;,
+  &quot;type&quot;: &quot;html&quot;,
+  &quot;engineVersion&quot;: &quot;0.1.0&quot;,
+  &quot;startScene&quot;: &quot;&quot;,
+  &quot;display&quot;: {
+    &quot;width&quot;: 640,
+    &quot;height&quot;: 360,
+    &quot;scale&quot;: &quot;fit&quot;,
+    &quot;pixelArt&quot;: false,
+    &quot;background&quot;: &quot;#2e3440&quot;
+  },
+  &quot;physics&quot;: {
+    &quot;engine&quot;: &quot;none&quot;,
+    &quot;gravity&quot;: [
+      0,
+      0,
+      0
+    ]
+  },
+  &quot;input&quot;: {
+    &quot;actions&quot;: {
+      &quot;left&quot;: [
+        &quot;KeyA&quot;,
+        &quot;ArrowLeft&quot;
+      ],
+      &quot;right&quot;: [
+        &quot;KeyD&quot;,
+        &quot;ArrowRight&quot;
+      ],
+      &quot;up&quot;: [
+        &quot;KeyW&quot;,
+        &quot;ArrowUp&quot;
+      ],
+      &quot;down&quot;: [
+        &quot;KeyS&quot;,
+        &quot;ArrowDown&quot;
+      ],
+      &quot;jump&quot;: [
+        &quot;Space&quot;,
+        &quot;KeyW&quot;,
+        &quot;ArrowUp&quot;
+      ],
+      &quot;fire&quot;: [
+        &quot;Space&quot;,
+        &quot;Mouse0&quot;
+      ],
+      &quot;interact&quot;: [
+        &quot;KeyE&quot;,
+        &quot;Enter&quot;
+      ]
+    }
+  },
+  &quot;plugins&quot;: [
+    &quot;ui&quot;,
+    &quot;audio&quot;
+  ],
+  &quot;ui&quot;: {
+    &quot;skin&quot;: &quot;cyber&quot;,
+    &quot;theme&quot;: &quot;nord&quot;
+  },
+  &quot;desktop&quot;: {
+    &quot;permissions&quot;: {
+      &quot;net&quot;: {
+        &quot;hosts&quot;: [
+          &quot;hnrss.org&quot;,
+          &quot;simonwillison.net&quot;,
+          &quot;github.blog&quot;
+        ]
+      }
+    }
+  }
+}</code></pre>
+</details><details>
+<summary>Complete river.js</summary><pre class="code" data-lang="js"><code>import {createDesk} from './desk.js';
+export async function createRiver(canvas,articles,open){const d=await createDesk(canvas),{B,scene}=d;const papers=[],bodies=[];let time=0;
+ const wrapText=(ctx,text,x,y,width,lineHeight,max=4)=&gt;{let line='',n=0;for(const word of text.split(/\s+/)){if(ctx.measureText(line+word).width&gt;width&amp;&amp;line){ctx.fillText(line,x,y+n*lineHeight);if(++n&gt;=max)return;line='';}line+=word+' ';}if(n&lt;max)ctx.fillText(line,x,y+n*lineHeight);};
+ articles.slice(0,18).forEach((a,i)=&gt;{const width=a.star?4.5:3.6,height=a.star?3.2:2.5,p=d.paper('Article '+i,width,height,ctx=&gt;{ctx.fillStyle=a.star?'#fff2c9':'#f7f4e9';ctx.fillRect(0,0,1024,768);ctx.fillStyle='#298a86';ctx.fillRect(58,60,72,8);ctx.font='22px system-ui';ctx.fillText(a.source.toUpperCase().slice(0,45),58,112);ctx.fillStyle='#1e3548';ctx.font='bold 48px system-ui';wrapText(ctx,a.title,58,205,900,60,4);ctx.fillStyle='#5f737b';ctx.font='27px system-ui';wrapText(ctx,a.summary,58,500,890,36,5);ctx.font='22px system-ui';ctx.fillText(a.star?'STARRED · FLOATING HIGHER':a.read?'READ':'UNREAD',58,728);});
+  p.mesh.position.set((i%3-1)*5,a.star?2:1,Math.floor(i/3)*4.6-12);p.mesh.rotation.z=(i%2?.035:-.035);p.mesh.metadata={article:a.id};papers.push({...p,article:a,width,height,phase:i,dropped:false});
+ });
+ scene.onPointerObservable.add(info=&gt;{if(info.type===B.PointerEventTypes.POINTERPICK){const id=info.pickInfo?.pickedMesh?.metadata?.article;if(id)open(id);}});
+ d.update.add(dt=&gt;{time+=dt;for(const p of papers)if(!p.dropped){p.mesh.position.z+=dt*.65;if(p.mesh.position.z&gt;15)p.mesh.position.z=-14;p.mesh.position.y=(p.article.star?2:1)+Math.sin(time*.7+p.phase)*.15;p.mesh.rotation.z=Math.sin(time*.35+p.phase)*.035;}});
+ return {...d,papers,flick(id){const p=papers.find(p=&gt;p.article.id===id);if(!p||p.dropped)return;p.dropped=true;const body=B.MeshBuilder.CreateBox('Paper collider',{width:p.width,height:.05,depth:p.height},scene);body.position.copyFrom(p.mesh.position);body.visibility=0;p.mesh.parent=body;p.mesh.position.set(0,0,0);const aggregate=new B.PhysicsAggregate(body,B.PhysicsShapeType.BOX,{mass:.2,restitution:.5,friction:.5},scene);aggregate.body.applyImpulse(new B.Vector3(1.6,2.8,-1.2),body.position);bodies.push(aggregate);},dispose(){bodies.forEach(v=&gt;v.dispose());d.dispose();}};
+}</code></pre>
+</details><details>
+<summary>Complete save.js</summary><pre class="code" data-lang="js"><code>// Versioned save slots on top of localStorage (or any Storage-like object).
+export class Save {
+  constructor(gameId, { version = 1, storage = globalThis.localStorage, migrate = null } = {}) {
+    this.prefix = `nord:${gameId}:`;
+    this.version = version;
+    this.storage = storage ?? new MemoryStorage();
+    this.migrate = migrate; // (data, fromVersion) =&gt; data
+    this.slotId = 0;
+  }
+  slot(n) { this.slotId = n; return this; }
+  #key(n = this.slotId) { return `${this.prefix}slot${n}`; }
+  #read(n) {
+    try {
+      const raw = this.storage.getItem(this.#key(n));
+      if (!raw) return { v: this.version, data: {} };
+      const o = JSON.parse(raw);
+      if (o.v &lt; this.version &amp;&amp; this.migrate) { o.data = this.migrate(o.data, o.v); o.v = this.version; }
+      return o;
+    } catch { return { v: this.version, data: {} }; }
+  }
+  get(k, def) { const d = this.#read().data; return k in d ? d[k] : def; }
+  set(k, v) { const o = this.#read(); o.data[k] = v; o.v = this.version; o.t = Date.now(); this.storage.setItem(this.#key(), JSON.stringify(o)); }
+  all() { return this.#read().data; }
+  has(n = this.slotId) { return this.storage.getItem(this.#key(n)) != null; }
+  delete(n = this.slotId) { this.storage.removeItem(this.#key(n)); }
+}
+export class MemoryStorage {
+  #m = new Map();
+  getItem(k) { return this.#m.has(k) ? this.#m.get(k) : null; }
+  setItem(k, v) { this.#m.set(k, String(v)); }
+  removeItem(k) { this.#m.delete(k); }
+}</code></pre>
+</details><details>
+<summary>Complete style.css</summary><pre class="code" data-lang="css"><code>html,body{height:auto;min-height:100%;background:#101b2b}*{box-sizing:border-box}body{margin:0;color:#dce9ee;font:14px system-ui}main{max-width:1500px;padding:22px;margin:auto}header{display:flex;align-items:center;justify-content:space-between;gap:15px;padding-bottom:24px}.brand{display:flex;gap:12px;align-items:center}.boat{display:block;width:66px;height:66px;background:url(assets/dev-desk-sprites.png) 100% 100%/400% 200%}h1{font-size:30px;margin:0;letter-spacing:-1px}header p{color:#8fa9b7;margin:5px 0}button,input,select{font:inherit;background:#20364b;color:#e7f3f6;border:1px solid #3c5b71;border-radius:7px;padding:9px}button{cursor:pointer}button:hover{background:#33546c}nav button{margin:3px}#mode{background:#297f7b}.layout{display:grid;grid-template-columns:205px minmax(350px,1fr) 330px;gap:18px;align-items:start}aside{background:#14283a;border-radius:12px;padding:15px}h3,.eyebrow{font-size:11px;letter-spacing:1.5px;color:#83cfc3}aside select,aside&gt;input,aside button{width:100%;margin:6px 0}label{display:block;margin:12px 0;font-size:12px}input[type=file]{max-width:175px;font-size:11px}aside p,#counts{font-size:12px;color:#94aebc;line-height:1.6}hr{border:0;border-top:1px solid #34495d;margin:22px 0}.viewbar{display:flex;flex-direction:column;gap:6px;padding:15px;background:#203448;border-radius:10px 10px 0 0}#status{font-size:11px;color:#8dc6c5;max-height:65px;overflow:auto}#list{height:680px;overflow:auto;background:#142536;padding:12px;border-radius:0 0 10px 10px}.news{display:block;width:100%;text-align:left;background:#20374b;border:1px solid #35556a;padding:17px;margin-bottom:10px}.news span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#8bcfc4}.news strong{display:block;font-size:17px;line-height:1.4;margin:8px 0}.news p{font-size:12px;line-height:1.5;color:#a0b8c5;margin-bottom:0}.news.read{opacity:.65}.news.selected{border-color:#66cbbd;opacity:1}#reader{background:#f7f4e9;color:#253a4c;border-radius:10px;padding:24px;min-height:400px;line-height:1.8;box-shadow:0 8px 30px #0003}#reader .eyebrow{color:#277e7a}#reader h2{font:600 25px/1.35 Georgia,serif}#reader .date{font-size:11px;color:#71818a}#reader a{display:block;color:#267b78;margin-top:18px}#reader button{margin:4px}#river{height:680px;width:100%;display:block;touch-action:none;border-radius:0 0 10px 10px}footer{font-size:12px;color:#7895a6;padding-top:22px}[hidden]{display:none!important}@media(max-width:1050px){.layout{grid-template-columns:180px minmax(300px,1fr)}#reader{grid-column:2}header{flex-wrap:wrap}}@media(max-width:650px){main{padding:8px}.layout{display:block}aside{margin-bottom:12px}#reader{margin-top:12px}}</code></pre>
+</details>
+<div class="pager"><a href="tut-t42-paper-worlds.html"><small>← Previous</small>T42 Paper Worlds — draw in 2D, explore your ideas in 3D</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-learn-the-finished-reader">1. Learn the finished reader </a><a href="#2-open-and-edit-the-real-project">2. Open and edit the real project </a><a href="#3-parse-rss-and-atom-into-one-article-model">3. Parse RSS and Atom into one article model </a><a href="#4-merge-updates-without-losing-reading-state">4. Merge updates without losing reading state </a><a href="#5-handle-browser-cors-honestly">5. Handle browser CORS honestly </a><a href="#6-build-a-readable-html-list-first">6. Build a readable HTML list first </a><a href="#7-paint-articles-onto-babylon-papers">7. Paint articles onto Babylon papers </a><a href="#8-flick-a-floating-paper-into-real-physics">8. Flick a floating paper into real physics </a><a href="#9-save-and-back-up-the-useful-parts">9. Save and back up the useful parts </a><a href="#10-export-and-understand-the-boundaries">10. Export and understand the boundaries </a><a href="#11-finish-with-a-short-useful-check">11. Finish with a short useful check </a><a href="#complete-project-source">Complete project source </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

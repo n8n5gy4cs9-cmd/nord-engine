@@ -55,3 +55,8 @@ Star-Not: `tools/fetch-upstreams.sh sc2-uqm` clones **uqm-ee** for the owner-req
 `deepnight/ldtk` at `2b7b5512f2f88fa281cb6492debbb26ead7838d4` (MIT) cloned to ignored `third_party/ldtk/`. Read the tile/int-grid tools and adapted only `Tool.hx::_floodFillImpl` into the sparse map model. Original notice retained in `editor/level2d/LDtk-LICENSE.txt`; attribution in THIRD_PARTY.md. Tiled's upstream COPYING reviewed (editor GPL / libtiled BSD-2); no files copied. Existing Nord scripts/physics/export are the primary reused implementation.
 
 M12-28: owner requested `00-Evan/shattered-pixel-dungeon`. Shallow sparse clone pinned to `57a4e06a4caf162446d1c28caa7983f0493fecf0`, actors/items/levels inspected. Small Char.hit comparison and Rat stats adapted for the GPL-3.0-or-later two-floor Creator example. All media original Nord; full attribution/licence in example/template SOURCE.md / LICENSE.md and THIRD_PARTY.md.
+
+
+## Retro full-game tutorial source study
+
+Reference clones `outrun-reference`, `starfox-reference`, `kirpich-reference`, `tengen-reference` are pinned in UPSTREAM.lock.json and fetchable by tools/fetch-upstreams.sh. Read RESEARCH_GAME_TUTORIALS.md for concrete source paths, license boundaries and original-design conclusions. No code/assets from these four are harvested. In particular, cartridge data and disassembly output are not tutorial dependencies, and Kirpich's unfinished serial multiplayer declarations are not treated as working network code.

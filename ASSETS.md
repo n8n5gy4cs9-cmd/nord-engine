@@ -167,3 +167,17 @@ M6-51: Night Watch investigator/officer walk frames now register the head to one
 ## Advanced coding tutorials (T35–T37)
 
 Prism Relay reuses Crystal Relay/platformer3d art/audio and adds original procedural GLSL colour patterns; no new external artwork. Circuit Vault draws its original interface with HTML/CSS only. Orbital Salvage draws original geometric stars/ship/rocks/cargo through macroquad and uses its bundled default font, with no imported art/audio. `docs/screenshots/ed-advanced-*.png` are captures from the real browser samples/export, not generated concept art.
+
+
+## Original retro tutorial assets (T38/T39)
+
+- Coastline Sprint reuses original Nord Amiga `assets/packs/nord-amiga/racing-cars.png` and `roadside.png` with metadata. All required copies ship in the source download; no OutRun art is used.
+- `tools/gen/retro_audio.py`, invoked by `python3 tools/gen_assets.py retro-audio`, deterministically synthesizes four original arpeggio music tracks (`coast-drive`, `coast-night`, `vector-flight`, `vector-boss`) and eight SFX (`engine`, `skid`, `crash`, `checkpoint`, `laser`, `explosion`, `shield`, `win`) in `assets/audio/retro-tutorials/`, WAV masters plus MP3 via ffmpeg. Requires Python numpy and the existing audio helpers. Audio-only generation no longer initializes the documentation Chromium renderer. All playable MP3s are included in each relevant project's `assets/audio/`; config and tutorials teach replacement with user-owned MP3/WAV/OGG.
+- `tools/art/vector-patrol/assemblies.json` defines original fighter/drone/carrier/gate assemblies using only Blocksmith built-in primitives. `node tools/build-retro-models.mjs` uses the installed Blocksmith MCP, exports GLBs, portable `.blocksmith.json` and four-view PNG previews, removing only its own temporary blocks. Actual outputs are committed under tools/art and tools/examples/vector-patrol/assets/models and copied to the complete project/download. No catalog assets, ROM models or upstream graphics used.
+- JengaTedris and Nord Engine Office draw their original boards, station tiles, avatars and UI directly in canvas/CSS. No new raster asset is required. JengaTedris includes the existing pinned Phaser/Matter bundle and its licence for fully offline physics.
+- Own tutorial code, original models/graphics/audio: Crowelian 2026 + Sonnet, project MIT licence.
+
+
+## Modern app stationery sprites (T42/T43)
+
+`tools/art/dev-desk/dev-desk-sprites.png` is an original transparent ImageGen sheet with ivory paper, yellow/mint/lavender notes, teal ghost, cobalt pen, coral clip and blue paper boat. Prompt/provenance: tools/art/dev-desk/README.md. It is copied intact into both complete app projects at assets/dev-desk-sprites.png and used by their CSS identity sprites. Paper/card contents are original canvas drawing or user-supplied feed text. RSS demo.xml is fictional original tutorial content, not scraped news. All sprites ship in each source archive. The image tool created this art; no upstream reader/sketch-app assets were copied.

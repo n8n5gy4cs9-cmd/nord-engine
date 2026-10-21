@@ -1752,6 +1752,42 @@
       "status": "done"
     },
     {
+      "id": "M7-24",
+      "milestone": "M7",
+      "title": "Full Amiga road-racing tutorial/game with solo keyboard and keyboard/gamepad split-screen, original music and SFX",
+      "status": "done"
+    },
+    {
+      "id": "M7-25",
+      "milestone": "M7",
+      "title": "Full original retro rail-shooter tutorial/game with Blocksmith models and PS1 rendering, source and audio",
+      "status": "done"
+    },
+    {
+      "id": "M7-26",
+      "milestone": "M7",
+      "title": "JengaTedris full grid and physics game tutorial, source download and Node battle server",
+      "status": "done"
+    },
+    {
+      "id": "M7-27",
+      "milestone": "M7",
+      "title": "Nord Engine Office multiplayer tasks and AI coworker full tutorial and source download",
+      "status": "done"
+    },
+    {
+      "id": "M7-28",
+      "milestone": "M7",
+      "title": "Paper Worlds full Phaser/Babylon drawing desk tutorial with physics, portals, minigames and complete source",
+      "status": "done"
+    },
+    {
+      "id": "M7-29",
+      "milestone": "M7",
+      "title": "RSS River full offline reader and 3D physics paper tutorial with three default feeds and complete source",
+      "status": "done"
+    },
+    {
       "id": "M8-01",
       "milestone": "M8",
       "title": ".dmg packaging + notarisation notes",
@@ -1881,6 +1917,24 @@
       "id": "M8-22",
       "milestone": "M8",
       "title": "Fix Arcade scene restart retaining destroyed collision tilemap layers",
+      "status": "done"
+    },
+    {
+      "id": "M8-23",
+      "milestone": "M8",
+      "title": "Preserve imported glTF material colours instead of replacing them with the default material",
+      "status": "done"
+    },
+    {
+      "id": "M8-24",
+      "milestone": "M8",
+      "title": "Allow audio-only asset generation without importing Linux-only Chromium documentation renderer",
+      "status": "done"
+    },
+    {
+      "id": "M8-25",
+      "milestone": "M8",
+      "title": "Dependable scene restart resets paused/time/input and saved scene state with explicit Persist opt-in",
       "status": "done"
     },
     {

@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 270/283 tasks (95%)** · updated 2026-10-21
+**Overall: 279/292 tasks (96%)** · updated 2026-10-21
 
 | Milestone | Progress |
 |---|---|
@@ -14,8 +14,8 @@
 | M4 Export | 8/11 (73%) |
 | M5 Rust/WASM | 9/9 (100%) |
 | M6 Library | 51/51 (100%) |
-| M7 Docs | 23/23 (100%) |
-| M8 Polish & portability | 17/22 (77%) |
+| M7 Docs | 29/29 (100%) |
+| M8 Polish & portability | 20/25 (80%) |
 | M9 Desktop apps | 16/16 (100%) |
 | M10 Construct-style editor | 35/35 (100%) |
 | M11 Web editor | 14/16 (88%) |
@@ -222,6 +222,12 @@ _manual, guides, tutorials, in-editor docs_
 - [x] **M7-21** Full playable 2D Platformer and 3D Platformer tutorials
 - [x] **M7-22** Two code-first full game tutorials with CodeMirror explanations, complete JavaScript and downloadable working project sources
 - [x] **M7-23** Three advanced full coding workshops: reactive GLSL game, Node-backed web game and Rust/WASM arcade export
+- [x] **M7-24** Full Amiga road-racing tutorial/game with solo keyboard and keyboard/gamepad split-screen, original music and SFX
+- [x] **M7-25** Full original retro rail-shooter tutorial/game with Blocksmith models and PS1 rendering, source and audio
+- [x] **M7-26** JengaTedris full grid and physics game tutorial, source download and Node battle server
+- [x] **M7-27** Nord Engine Office multiplayer tasks and AI coworker full tutorial and source download
+- [x] **M7-28** Paper Worlds full Phaser/Babylon drawing desk tutorial with physics, portals, minigames and complete source
+- [x] **M7-29** RSS River full offline reader and 3D physics paper tutorial with three default feeds and complete source
 
 ## M8 — Polish & portability
 _dmg, CI, Windows, Linux, perf_
@@ -248,6 +254,9 @@ _dmg, CI, Windows, Linux, perf_
 - [x] **M8-20** Code editor word wrap and configurable line height/letter spacing
 - [x] **M8-21** Bug fix run: protect locked/hidden layers from palette drops
 - [x] **M8-22** Fix Arcade scene restart retaining destroyed collision tilemap layers
+- [x] **M8-23** Preserve imported glTF material colours instead of replacing them with the default material
+- [x] **M8-24** Allow audio-only asset generation without importing Linux-only Chromium documentation renderer
+- [x] **M8-25** Dependable scene restart resets paused/time/input and saved scene state with explicit Persist opt-in
 
 ## M9 — Desktop apps
 _real native desktop apps (Rust backend): files, dialogs, notifications, tray, windows, storage, packaging_

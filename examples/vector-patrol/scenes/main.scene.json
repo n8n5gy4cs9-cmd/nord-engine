@@ -1,0 +1,721 @@
+{
+  "format": 1,
+  "name": "main",
+  "settings": {},
+  "entities": [
+    {
+      "id": "eeeeee25",
+      "name": "Camera",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          2,
+          -18
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "camera",
+          "fov": 65,
+          "near": 0.1,
+          "far": 450
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee26",
+      "name": "Fighter",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          0.75,
+          0.75,
+          0.75
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/fighter.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee27",
+      "name": "Drone0",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          140
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/drone.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee28",
+      "name": "Drone1",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          140
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/drone.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee29",
+      "name": "Drone2",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          140
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/drone.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee2a",
+      "name": "Drone3",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          140
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/drone.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee2b",
+      "name": "Drone4",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          140
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/drone.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee2c",
+      "name": "Drone5",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          140
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/drone.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee2d",
+      "name": "Drone6",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          140
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/drone.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee2e",
+      "name": "Drone7",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          140
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/drone.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee2f",
+      "name": "Drone8",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          140
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/drone.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee2g",
+      "name": "Drone9",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          140
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/drone.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee2h",
+      "name": "Drone10",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          140
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/drone.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee2i",
+      "name": "Drone11",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          140
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/drone.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee2j",
+      "name": "Drone12",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          140
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/drone.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee2k",
+      "name": "Drone13",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          140
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/drone.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee2l",
+      "name": "Carrier",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          130
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          3.5,
+          3.5,
+          3.5
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/carrier.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee2m",
+      "name": "Gate0",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          150
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/gate.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee2n",
+      "name": "Gate1",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          150
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/gate.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee2o",
+      "name": "Gate2",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          150
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/gate.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee2p",
+      "name": "FlightGame",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [
+        {
+          "path": "scripts/flight.js",
+          "attributes": {}
+        }
+      ],
+      "children": [],
+      "prefab": null
+    }
+  ]
+}

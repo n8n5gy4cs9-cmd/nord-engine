@@ -1,5 +1,9 @@
 # Changelog
 
+- 2026-10-21 — M8-23/25: preserve imported glTF palettes (BUG-013); make scene restart resume/reset clock/input/Persist state and clone saved scene data (BUG-014), with lifecycle/cache/scheduler/Persist regressions and updated guide. M8-24: audio-only asset generation no longer initializes the documentation Chromium renderer.
+
+- 2026-10-21 — M7-24…29: six complete coding tutorials and source downloads: T38 Coastline Sprint (Amiga art, split keyboard/gamepad, original MP3s); T39 Vector Patrol (actual Blocksmith models, retro shader/dots, waves/boss/audio); T40 JengaTedris (grid, real Matter and Node battle); T41 Nord Engine Office (tasks/pranks/AI, Node rooms); T42 Paper Worlds (Phaser drawing, Babylon/Havok desk/doors/toys/portfolio); T43 RSS River (three defaults, RSS/Atom, cache/import, 3D paper physics). All have explained stages, CodeMirror/full code, local assets, screenshots and exact complete source archives. Deep pinned reference-source report added. Focused app checks and limited builds per owner request; no Node code for T42/T43, only short hosting/WASM notes.
+
 - 2026-10-21 — M7-23: three advanced full coding workshops and runnable games: T35 Prism Relay reactive GLSL; T36 Circuit Vault with real Node HTTP sessions, validated actions and leaderboard; T37 Orbital Salvage in Rust with pure rules/tests and WebAssembly export. Full source appendices/archives, screenshots, CodeMirror checks and CI/browser coverage included.
 
 - 2026-10-21 — M7-22: full code-first T33 Coin Rush (2D) and T34 Crystal Relay (3D), with explained JavaScript stages, CodeMirror/Copy, all project text source at the end, complete editable source downloads and working feature-rich samples. Repeatable listing/archive generator and browser regressions added. M8-22 / BUG-012: unregister destroyed Arcade tilemap collision layers so retrying a game keeps simulating.

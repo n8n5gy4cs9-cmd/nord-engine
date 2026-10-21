@@ -7,3 +7,4 @@ dist/
 *.log
 .nord-cache/
 TEMP/
+__pycache__/

@@ -1,0 +1,1 @@
+export const AUDIO={music:['assets/audio/vector-flight.mp3','assets/audio/vector-boss.mp3'],sfx:{laser:'assets/audio/laser.mp3',explosion:'assets/audio/explosion.mp3',crash:'assets/audio/crash.mp3',shield:'assets/audio/shield.mp3',checkpoint:'assets/audio/checkpoint.mp3',win:'assets/audio/win.mp3'}};
