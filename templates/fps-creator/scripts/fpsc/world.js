@@ -101,7 +101,8 @@ export class World {
       const cell = this.cellAt(L, cx, cz);
       if (cell && cell.f && cellContains(cell, x, z, cx, cz)) { const y = this.cellFloorY(L, cell, x, z); if (y <= maxY + EPS) return { y, layer: L }; }
     }
-    if (this.level.settings.ground !== 'none' && !this.cellAt(0, cx, cz)) return 0 <= maxY + EPS ? { y: 0, layer: 0 } : null;
+    const c0 = this.cellAt(0, cx, cz); // the cut-away corner of a diagonal/round cell is outdoors again
+    if (this.level.settings.ground !== 'none' && (!c0 || !cellContains(c0, x, z, cx, cz))) return 0 <= maxY + EPS ? { y: 0, layer: 0 } : null;
     return null;
   }
 

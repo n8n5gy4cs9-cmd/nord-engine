@@ -1,6 +1,6 @@
 // First-person player: input, movement/collision (World.moveCircle + floorAt), weapons/ammo, view model. Used by the runtime and the editor's play-test.
 import { STORY } from './level.js';
-import { WEAPONS, AMMO, weaponDef } from './weapons.js';
+import { WEAPONS, AMMO, weaponDef, aimOf } from './weapons.js';
 import { Model } from './models.js';
 
 const D2R = Math.PI / 180;
@@ -44,7 +44,7 @@ export class Player {
     Object.assign(this, { x: 0, y: 0, z: 0, layer: 0, yaw: 0, pitch: 0, vx: 0, vy: 0, vz: 0, onGround: true, crouching: false, eye: PLAYER.eye, height: PLAYER.height, radius: PLAYER.radius, bobT: 0, stepT: 0 });
     this.maxHp = 100; this.hp = 100; this.armor = 0; this.alive = true; this.keys = new Set(); this.flashlight = false;
     this.owned = new Set(); this.ammo = { bullets: 0, shells: 0, rockets: 0, cells: 0 }; this.mags = {}; this.cur = null; this.last = null;
-    this.cool = 0; this.reload = 0; this.swap = 0; this.score = 0; this.kills = 0; this.time = 0; this.kick = 0; this.shots = 0; this.hits = 0; this.fell = 0; this.god = false; this.speedMul = 1;
+    this.cool = 0; this.ads = 0; this.reload = 0; this.swap = 0; this.score = 0; this.kills = 0; this.time = 0; this.kick = 0; this.shots = 0; this.hits = 0; this.fell = 0; this.god = false; this.speedMul = 1;
     this.noclip = false;
   }
   get pos() { return [this.x, this.y, this.z]; }
@@ -97,7 +97,7 @@ export class Player {
   heal(n) { this.hp = Math.min(this.maxHp, this.hp + n); }
 
   /** Mouse look (once per frame). */
-  look(ctl) { if (!this.alive) return; const [mx, my] = ctl.take(); this.yaw += mx * ctl.sens; this.pitch = Math.max(-1.5, Math.min(1.5, this.pitch + my * ctl.sens)); }
+  look(ctl) { if (!this.alive) return; const [mx, my] = ctl.take(); const k = this.ads > 0 && this.weapon ? 1 - this.ads * (1 - aimOf(this.weapon).sens) : 1; this.yaw += mx * ctl.sens * k; this.pitch = Math.max(-1.5, Math.min(1.5, this.pitch + my * ctl.sens * k)); }
 
   update(dt, ctl) {
     const w = this.world;
@@ -170,11 +170,11 @@ export class ViewModel {
     const w = p.weapon; if (!w) return;
     this.t += dt; this.kick = Math.max(0, this.kick - dt * 8);
     if (this.flashT > 0 && (this.flashT -= dt) <= 0) m.muzzle?.setEnabled(false);
-    const bob = p.onGround ? Math.min(1, p.speed / 5) : 0, bt = p.bobT;
+    const bob = (p.onGround ? Math.min(1, p.speed / 5) : 0) * (1 - (p.ads || 0) * 0.85), bt = p.bobT;
     const swap = Math.max(0, p.swap) / 0.28, rel = p.reload > 0 ? Math.sin(Math.min(1, 1 - p.reload / (w.reload || 1)) * Math.PI) : 0;
-    const [bx, by, bz] = w.view.pos;
+    const ads = p.ads || 0, aim = ads > 0 ? aimOf(w).pos : w.view.pos, hip = w.view.pos, [bx, by, bz] = [0, 1, 2].map((i) => hip[i] + (aim[i] - hip[i]) * ads), calm = 1 - ads * 0.85;
     m.root.position.set(bx + Math.sin(bt * 0.5) * 0.012 * bob, by + Math.abs(Math.cos(bt * 0.5)) * 0.01 * bob - swap * 0.4 - rel * 0.25 + Math.sin(this.t * 1.6) * 0.002, bz - this.kick * (w.recoil ?? 0.05) * 2.2);
-    m.root.rotation.set(-this.kick * (w.recoil ?? 0.05) * 3 + rel * 0.7, -0.03 * bob * Math.sin(bt * 0.5), 0);
+    m.root.rotation.set(-this.kick * (w.recoil ?? 0.05) * 3 * (1 - ads * 0.5) + rel * 0.7, -0.03 * bob * Math.sin(bt * 0.5), 0);
     if (w.type === 'melee' && this.kick > 0) m.root.rotation.set(-this.kick * 0.9, -this.kick * 0.5, this.kick * 0.5);
   }
   dispose() { for (const m of this.models.values()) m.dispose(); this.models.clear(); }

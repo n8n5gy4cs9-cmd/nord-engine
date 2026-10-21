@@ -123,7 +123,7 @@ All additions live in `<project>/fpsc/` and are listed in `fpsc/bank.json`; the 
 | **3D model** | `.glb`, 1 unit = 1 m, origin at the feet: `model: { "kind": "glb", "url", "scale", "rotY"? }` (needs `babylonjs.loaders` — the template page already loads it). Lit by one flat light. |
 | **Procedural model** | `model: { "kind": "parts", "parts": [ { "shape": "box\|cyl\|sph\|cone", "s": [w,h,d], "p": [x,y,z], "c": "#hex", "e": true } ] }` or reuse a built-in id (`soldier`, `crate`, …). Named `group` pivots can be animated by scripts. |
 | **Sound** | `sounds: { "pistol": "fpsc/sounds/my.wav" }` — a built-in name replaces the synth sound; any other name is usable in rules/script params. |
-| **Weapon** | `weapons: { "id": { type, dmg, rate, mag, ammo, spread, view: { pos, parts } … } }` (same fields as `runtime/fpsc/weapons.js`). Give with the Player start's *Weapons* list or `pickup` with `give: "weapon_<id>"`. |
+| **Weapon** | `weapons: { "id": { type, dmg, rate, mag, ammo, spread, view: { pos, parts, aim } … } }` (same fields as `runtime/fpsc/weapons.js`). Give with the Player start's *Weapons* list or `pickup` with `give: "weapon_<id>"`. |
 | **Script** | `fpsc/scripts/name.js` (default export as above) + path in `scripts`. Assets ▸ New script has templates (blank / enemy / pickup / trigger). |
 
 Rules of thumb: ids are lowercase `a-z 0-9 _`; never edit `scripts/fpsc/` (re-installed on upgrade) — put everything of yours in `fpsc/`; a missing/bad custom item only produces a **warning** (editor console, game console) and is skipped.
@@ -183,7 +183,18 @@ The Inspector lists only the parameters a script actually uses (e.g. no sounds f
 `GET /api/fpsc/ls?dir=levels` · `POST /api/fpsc/save?path=levels/x.fpsl.json` (raw body, header `x-nord-fpsc: 1`, only `levels/` and `fpsc/`, known extensions, ≤ 64 MB, no `..`/hidden parts) · `POST /api/fpsc/install[?start=true]`. The custom header forces a CORS preflight, so other web pages cannot write to your project.
 
 ## Controls in the game
-WASD move · mouse look · Shift sprint · Space jump · C crouch · **E** use / open doors · LMB fire · R reload · 1-6 / wheel / Q weapons · **F** flashlight · M minimap · Esc pause.
+WASD move · mouse look · Shift sprint · Space jump · C crouch · **E** use / open doors · LMB fire · **RMB (hold) aim down sights** · R reload · 1-6 / wheel / Q weapons · **F** flashlight · M minimap · Esc pause.
+
+**Aiming (right mouse button).** Hold RMB to raise any gun to the sights: the weapon slides to the screen centre, the view zooms in a little, bullet spread and mouse sensitivity drop and the crosshair fades. It is off while reloading/swapping, for melee weapons, and in the "hold RMB to look" fallback (no pointer lock). The pose of each weapon is editable with `view.aim` in `fpsc/bank.json` — every field is optional:
+
+```json
+"weapons": { "pistol": { "view": { "pos": [0.26, -0.26, 0.55], "parts": [ … ],
+  "aim": { "pos": [0, -0.08, 0.5], "zoom": 0.8, "spread": 0.3, "sens": 0.7 } } } }
+```
+
+* `aim.pos` `[x, y, z]` — view-model position while aiming (camera space; x right, y up, z forward). Default: x 0, and y chosen so the top of the barrel/sights sits just under the crosshair, so a custom weapon is centred automatically.
+* `aim.zoom` — field-of-view multiplier (default 0.85; the rifle uses 0.72; 1 = no zoom).
+* `aim.spread` — multiplier on `spread` while aiming (default 0.35). `aim.sens` — mouse-look multiplier (default 0.75).
 
 ## Testing
 `node tools/fpsc-test.mjs [unit|api|nord|game|editor]` (needs `cargo build -p nord-cli`, Playwright + Chromium): node unit tests (`runtime/fpsc/fpi.test.mjs`: 9 for the .fpi interpreter and importer; `runtime/fpsc/fpsc.test.mjs`: level model, collision, rays, A\*, geometry+baking, bank, rules), the file API/CLI, Nord boot of the template, 17 gameplay scenarios on the demo level (doors, locks, keys, shooting, AI, stairs, rules, ambush, hazards, checkpoints, boss, win/death/restart, custom glb/sprite/script bank) and 17 editor scenarios (every tool with real mouse input, inspector, undo, save/reload, assets, play-test). Rust: `cargo test -p nord-core fpsc`, `cargo test -p nord-editor --test ui fps_tab`. Screenshots land in `target/fpsc/`.

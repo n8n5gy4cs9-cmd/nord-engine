@@ -276,3 +276,16 @@ The first version supports 45° cuts and a 4 m-radius quarter circle with eight 
 Variants capture properties, scripts (including enabled state and parameters) and rules. They do not copy world position, name, tags, the direct Target field or patrol coordinates. A rule can still point at a named door or entity: check its targets when reusing it in another level. A rule list is copied into each new placement; updating defaults does not rewrite all those lists. This is for individual FPS items, not entire room assemblies.
 
 To change appearance, use an exposed model property or create a sprite/GLB entity in **Assets**, then save variants of it. Wall/corner textures remain directly editable in Build and the cell/piece Inspector. Saving variants requires a connected project server; bank definitions are not removed by undoing a level edit.
+
+
+## Aiming down the sights (right mouse button)
+
+Hold the **right mouse button** to aim: the gun moves to the screen centre, the view zooms slightly, spread and mouse sensitivity drop and the crosshair fades. Aiming is disabled while reloading or switching weapons, for melee weapons, and when mouse capture is unavailable (the "hold RMB to look" fallback).
+
+Every weapon can have its own aim pose. In `fpsc/bank.json` add `view.aim` to the weapon (all fields optional):
+
+```json
+"aim": { "pos": [0, -0.08, 0.5], "zoom": 0.8, "spread": 0.3, "sens": 0.7 }
+```
+
+`pos` is the view-model position while aiming (x right, y up, z forward, relative to the camera) — nudge `y` until the sights line up with the crosshair. Without `pos` the weapon is centred automatically from its parts. `zoom` multiplies the field of view (smaller = closer), `spread` and `sens` multiply the bullet spread and the mouse-look speed.

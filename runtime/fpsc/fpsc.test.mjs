@@ -183,6 +183,11 @@ for (const kind of ['diagonal', 'round']) for (const corner of CORNERS) test(`co
   assert.ok(polygon.length === (kind==='round'?10:3));
 });
 
+for (const kind of ['diagonal', 'round']) for (const corner of CORNERS) test(`corner ${kind} ${corner}: the cut-away corner is outdoor ground, not a hole`, () => {
+  const lv = newLevel({ w: 5, d: 5 }); setCell(lv, 0, 1, 1, { f: 'wood_floor', c: 'ceiling_tiles', shape: { kind, corner, t: 'brick' } });
+  const w = world(lv), removed = [corner.includes('E') ? 7.8 : 4.2, corner.includes('N') ? 7.8 : 4.2];
+  assert.equal(lv.settings.ground !== 'none', true); assert.equal(w.floorAt(...removed, 0.5)?.y, 0);
+});
 test('corner navigation uses retained-side centroids; restoring square reveals preserved walls', () => {
   const lv=newLevel({w:5,d:5});lv.settings.ground='none';
   setCell(lv,0,1,1,{f:'wood_floor',shape:{kind:'diagonal',corner:'NE',t:'brick'}});
@@ -234,4 +239,14 @@ test('Outpost Zero example demonstrates both shapes without cutting away any gam
     for(const [x,z] of e.path??[]) assert.ok(cellContains(lv.layers[e.layer].cells[`${Math.floor(x/CELL)},${Math.floor(z/CELL)}`],x,z),`cut removed patrol point for ${e.id}`);
   }
   assert.equal(lv.layers[0].edges['8,19,V'].k,'door');assert.equal(lv.entities.find(e=>e.type==='player_start').x,4.5*CELL);
+});
+
+test('aim down sights: default pose centres every built-in weapon, view.aim overrides', async () => {
+  const { WEAPONS, aimOf } = await import('./weapons.js');
+  for (const w of Object.values(WEAPONS).filter((x) => x.type !== 'melee')) {
+    const a = aimOf(w); assert.equal(a.pos[0], 0); assert.ok(a.pos[1] < 0 && a.pos[1] > -0.25, `${w.id} aim y ${a.pos[1]}`);
+    assert.ok(a.zoom < 1 && a.spread < 1 && a.sens <= 1);
+  }
+  assert.equal(aimOf(WEAPONS.rifle).zoom, 0.72);
+  assert.deepEqual(aimOf({ view: { pos: [0.3, -0.3, 0.6], parts: [], aim: { pos: [0, -0.1, 0.4], zoom: 0.5 } } }), { pos: [0, -0.1, 0.4], zoom: 0.5, spread: 0.35, sens: 0.75 });
 });

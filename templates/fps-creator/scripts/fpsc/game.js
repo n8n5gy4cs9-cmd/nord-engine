@@ -10,7 +10,7 @@ import { Model, modelSpec } from './models.js';
 import { Fx } from './fx.js';
 import { Hud } from './hud.js';
 import { Sfx } from './audio.js';
-import { weaponDef, AMMO } from './weapons.js';
+import { weaponDef, AMMO, aimOf } from './weapons.js';
 import { installRules } from './actions.js';
 import { resolveScripts } from './bank.js';
 
@@ -322,6 +322,10 @@ export class FpsGame {
     for (let n = 1; n <= 9; n++) if (ctl.pressed(`Digit${n}`)) { const w = p.weaponList().find((x) => x.slot === n); if (w) p.select(w.id); }
     if (ctl.wheel) p.cycle(ctl.wheel); if (ctl.pressed('KeyQ') && p.last) p.select(p.last);
     const w = p.weapon; if (!w) return;
+    // aim down sights: hold the right mouse button (not while reloading/swapping, with melee or in the drag-to-look fallback)
+    const aiming = !!(ctl.buttons & 4) && w.type !== 'melee' && p.reload <= 0 && p.swap <= 0 && !ctl.dragLook && p.alive;
+    p.ads = Math.max(0, Math.min(1, p.ads + ((aiming ? 1 : 0) - p.ads) * Math.min(1, dt * 12)));
+    if (!aiming && p.ads < 0.01) p.ads = 0;
     if (p.reload > 0) { p.reload -= dt; if (p.reload <= 0) { const need = w.mag - (p.mags[w.id] ?? 0), take = Math.min(need, p.ammo[w.ammo]); p.mags[w.id] = (p.mags[w.id] ?? 0) + take; p.ammo[w.ammo] -= take; } return; }
     if (ctl.pressed('KeyR') && w.mag && (p.mags[w.id] ?? 0) < w.mag && p.ammo[w.ammo] > 0) { p.reload = w.reload || 1.2; this.sound('reload', null); return; }
     const want = (ctl.buttons | ctl.clicked) & 1, edge = want && !p._was; p._was = want;
@@ -340,7 +344,7 @@ export class FpsGame {
     if (w.type === 'projectile') { const org = [o[0] + d[0] * 0.5 + right[0] * 0.2, o[1] + d[1] * 0.5 - 0.15, o[2] + d[2] * 0.5 + right[2] * 0.2]; this.fireProjectile(p, org, d, { ...w.projectile, dmg: w.dmg, splash: w.splash }); return; }
     const muzzle = [o[0] + d[0] * 0.7 + right[0] * 0.22, o[1] + d[1] * 0.7 - 0.2, o[2] + d[2] * 0.7 + right[2] * 0.22];
     for (let i = 0; i < (w.pellets ?? 1); i++) {
-      const s = (w.spread ?? 0.01) * (p.speed > 1 ? 1.6 : 1) * (p.crouching ? 0.6 : 1);
+      const s = (w.spread ?? 0.01) * (p.speed > 1 ? 1.6 : 1) * (p.crouching ? 0.6 : 1) * (1 - p.ads * (1 - aimOf(w).spread));
       const dir = norm([d[0] + (Math.random() - 0.5) * s * 2, d[1] + (Math.random() - 0.5) * s * 2, d[2] + (Math.random() - 0.5) * s * 2]);
       this.hitscan(o, dir, w.range ?? 80, w.dmg, p, { tracer: i < 3 ? w.tracer : null, muzzle });
     }
@@ -411,6 +415,8 @@ export class FpsGame {
     cam.position.set(p.x + (Math.random() - 0.5) * sh * 0.05, p.y + p.eye + bob + (Math.random() - 0.5) * sh * 0.05, p.z);
     cam.rotation.set(p.pitch + (Math.random() - 0.5) * sh * 0.02, p.yaw, (Math.random() - 0.5) * sh * 0.01);
     this.sfx.listener = { x: p.x, y: p.y, z: p.z, yaw: p.yaw };
+    const zoom = p.ads > 0 && p.weapon ? aimOf(p.weapon).zoom : 1; cam.fov = 1.25 * (1 + (zoom - 1) * p.ads);
+    this.hud.cross.style.opacity = String(0.9 * (1 - p.ads * 0.85));
     this.viewmodel.update(dt, p);
     // dynamic lights: transient fx + nearest dynamic level lights + flashlight
     const dl = [];

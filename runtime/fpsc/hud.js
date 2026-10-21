@@ -56,7 +56,7 @@ export class Hud {
 <div class="fpsc-screen fpsc-intro"><h1 class="t"></h1><p class="intro"></p><div class="fpsc-row"><button data-a="begin">Click to play</button></div></div>`;
     container.appendChild(r);
     this.$ = (s) => r.querySelector(s);
-    this.mini = this.$('.fpsc-mini'); this.mctx = this.mini.getContext('2d');
+    this.cross = this.$('.fpsc-cross'); this.mini = this.$('.fpsc-mini'); this.mctx = this.mini.getContext('2d');
     this.handlers = {};
     r.addEventListener('click', (e) => { const a = e.target?.dataset?.a; if (a) this.handlers[a]?.(); });
     this.msgT = 0; this.hurtT = 0; this.pickT = 0;

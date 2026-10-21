@@ -630,6 +630,12 @@
       "status": "done"
     },
     {
+      "id": "M12-24",
+      "milestone": "M12",
+      "title": "FPS Creator: right-mouse aim down sights (per-weapon editable pose/zoom/spread/sens) + fix fall-through in cut corner",
+      "status": "done"
+    },
+    {
       "id": "M9-01",
       "milestone": "M9",
       "title": "PLAN: docs/DESKTOP_APPS.md — desktop target architecture (ADR): reuse nord-player/wry shell vs native egui apps; capability model, API surface per tier (JS via IPC bridge, Rust direct); permissions/sandbox; what real apps need (checklist)",

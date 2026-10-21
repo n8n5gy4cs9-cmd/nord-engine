@@ -9,6 +9,7 @@ Start with the **FPS Creator** template and open **FPS Level**. The [full illust
 
 | Task | Control |
 |---|---|
+| Fire / aim in a test | Left mouse / hold right mouse (aim down sights; per-weapon `view.aim` in bank.json) |
 | Build a room | R, drag a rectangle |
 | Replace a wall with a door/window | Build: choose the piece; W, click the wall edge |
 | Paint floor / ceiling | F / C; Ctrl-drag rectangle, Shift erase |
