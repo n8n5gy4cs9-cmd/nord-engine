@@ -324,7 +324,7 @@ export class FpsGame {
     const w = p.weapon; if (!w) return;
     if (p.reload > 0) { p.reload -= dt; if (p.reload <= 0) { const need = w.mag - (p.mags[w.id] ?? 0), take = Math.min(need, p.ammo[w.ammo]); p.mags[w.id] = (p.mags[w.id] ?? 0) + take; p.ammo[w.ammo] -= take; } return; }
     if (ctl.pressed('KeyR') && w.mag && (p.mags[w.id] ?? 0) < w.mag && p.ammo[w.ammo] > 0) { p.reload = w.reload || 1.2; this.sound('reload', null); return; }
-    const want = ctl.buttons & 1, edge = want && !p._was; p._was = want;
+    const want = (ctl.buttons | ctl.clicked) & 1, edge = want && !p._was; p._was = want;
     if (!want || p.cool > 0 || p.swap > 0 || (!w.auto && !edge)) return;
     if (w.ammo && p.magOf(w) <= 0) { if (edge) { this.sound('empty', null); if (w.mag && p.ammo[w.ammo] > 0) { p.reload = w.reload || 1.2; this.sound('reload', null); } } p.cool = 0.2; return; }
     this.#playerFire(w);
@@ -391,6 +391,7 @@ export class FpsGame {
     } else if (this.state === 'won' || this.state === 'dead') { this.#updateTimers(dt); for (const e of this.ents) if (e.enabled) e.call('idle', dt); }
     this.#updateDoors(this.state === 'play' ? dt : 0);
     this.fx.update(dt); this.#sync(dt);
+    this.ctl.endFrame();
   }
   #pushOutOfSolids() {
     const p = this.player;

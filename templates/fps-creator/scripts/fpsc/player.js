@@ -9,20 +9,20 @@ export const PLAYER = { radius: 0.34, height: 1.78, crouchHeight: 1.05, eye: 1.6
 /** Keyboard + mouse (+ pointer lock). Keys by KeyboardEvent.code, so layouts do not matter. */
 export class Controls {
   constructor(canvas) {
-    this.canvas = canvas; this.keys = new Set(); this.pressedQ = new Set(); this.mx = 0; this.my = 0; this.buttons = 0; this.wheel = 0; this.locked = false; this.enabled = true; this.sens = 0.0022;
+    this.canvas = canvas; this.keys = new Set(); this.pressedQ = new Set(); this.mx = 0; this.my = 0; this.buttons = 0; this.clicked = 0; this.wheel = 0; this.locked = false; this.enabled = true; this.sens = 0.0022;
     this.onLockChange = null; this.dragLook = false;
     const kd = (e) => { if (!this.enabled) return; if (!e.repeat) this.pressedQ.add(e.code); this.keys.add(e.code); if (['Space', 'ArrowUp', 'ArrowDown', 'Tab'].includes(e.code)) e.preventDefault(); };
     const ku = (e) => { this.keys.delete(e.code); };
     const mm = (e) => { if (typeof e.buttons === 'number') this.buttons = (e.buttons & 1) | ((e.buttons & 2) << 1) | ((e.buttons & 4) >> 1); /* self-heal a lost mouseup (pointer-lock hand-over in webviews) */ if (this.locked || (this.dragLook && (this.buttons & 6))) { this.mx += e.movementX || 0; this.my += e.movementY || 0; } };
-    const md = (e) => { this.buttons |= 1 << e.button; if (!this.locked && this.enabled && !this.noLock) this.lock(); };
+    const md = (e) => { this.buttons |= 1 << e.button; this.clicked |= 1 << e.button; /* latched until the game has polled it: a click shorter than a frame must still fire */ if (!this.locked && this.enabled && !this.noLock) this.lock(); };
     const mu = (e) => { this.buttons &= ~(1 << e.button); };
     const wh = (e) => { if (this.enabled) this.wheel += Math.sign(e.deltaY); };
     const pl = () => { this.buttons = 0; this.locked = document.pointerLockElement === canvas; this.onLockChange?.(this.locked); };
     const cm = (e) => e.preventDefault();
     const blur = () => { this.keys.clear(); this.buttons = 0; };
-    window.addEventListener('keydown', kd); window.addEventListener('keyup', ku); window.addEventListener('mousemove', mm); canvas.addEventListener('mousedown', md); window.addEventListener('mouseup', mu);
+    window.addEventListener('keydown', kd); window.addEventListener('keyup', ku); window.addEventListener('mousemove', mm); canvas.addEventListener('mousedown', md); window.addEventListener('mouseup', mu); canvas.addEventListener('pointerdown', md); window.addEventListener('pointerup', mu); window.addEventListener('pointercancel', mu);
     canvas.addEventListener('wheel', wh, { passive: true }); document.addEventListener('pointerlockchange', pl); canvas.addEventListener('contextmenu', cm); window.addEventListener('blur', blur);
-    this.off = () => { window.removeEventListener('keydown', kd); window.removeEventListener('keyup', ku); window.removeEventListener('mousemove', mm); canvas.removeEventListener('mousedown', md); window.removeEventListener('mouseup', mu); canvas.removeEventListener('wheel', wh); document.removeEventListener('pointerlockchange', pl); canvas.removeEventListener('contextmenu', cm); window.removeEventListener('blur', blur); };
+    this.off = () => { window.removeEventListener('keydown', kd); window.removeEventListener('keyup', ku); window.removeEventListener('mousemove', mm); canvas.removeEventListener('mousedown', md); window.removeEventListener('mouseup', mu); canvas.removeEventListener('pointerdown', md); window.removeEventListener('pointerup', mu); window.removeEventListener('pointercancel', mu); canvas.removeEventListener('wheel', wh); document.removeEventListener('pointerlockchange', pl); canvas.removeEventListener('contextmenu', cm); window.removeEventListener('blur', blur); };
   }
   /** Capture the mouse. Where pointer lock does not exist or is refused (some embedded webviews) fall back to "hold the RIGHT mouse button to look". */
   lock() {
@@ -34,7 +34,7 @@ export class Controls {
   down(...codes) { return codes.some((c) => this.keys.has(c)); }
   pressed(...codes) { return codes.some((c) => this.pressedQ.has(c)); }
   take() { const d = [this.mx, this.my]; this.mx = this.my = 0; return d; }
-  endFrame() { this.pressedQ.clear(); this.wheel = 0; }
+  endFrame() { this.pressedQ.clear(); this.clicked = 0; this.wheel = 0; }
   get fire() { return !!(this.buttons & 1) || this.keys.has('KeyF') && false; }
 }
 
