@@ -1,0 +1,2497 @@
+{
+  "format": "fpsc-level/1",
+  "name": "Hotel Meridian",
+  "author": "Crowelian 2026 + Sonnet",
+  "w": 24,
+  "d": 20,
+  "cell": 4,
+  "story": 3.2,
+  "settings": {
+    "sky": "day",
+    "skyColor": "#8fb8e8",
+    "ground": "grass",
+    "fog": false,
+    "fogColor": "#9bb0c8",
+    "fogDensity": 0.012,
+    "ambient": 0.55,
+    "ambientColor": "#a6b2c8",
+    "music": "",
+    "intro": "Hotel Meridian has been quiet since last night.\nFind the red key in the boiler room, open the suite on the guest floor, and use the yellow key on the basement service door.\n\nThree floors: basement, lobby, guest rooms.",
+    "objective": "Red key (boiler room) → Suite 204 → yellow key → basement service door.",
+    "timeLimit": 0
+  },
+  "layers": [
+    {
+      "name": "Basement / grass level",
+      "cells": {
+        "6,8": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "6,9": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "6,10": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "6,11": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "6,12": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "6,13": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "7,8": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "7,9": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "7,10": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "7,11": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "7,12": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "7,13": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "8,8": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "8,9": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "8,10": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "8,11": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "8,12": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "8,13": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "9,8": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "9,9": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "9,10": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "9,11": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "9,12": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "9,13": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "10,8": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "10,9": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "10,10": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "10,11": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "10,12": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "10,13": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "11,8": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "11,9": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "11,10": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "11,11": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "11,12": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "11,13": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "12,8": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "12,9": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "12,10": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "12,11": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "12,12": {
+          "f": "floor_concrete",
+          "s": {
+            "id": "stairs",
+            "d": "N"
+          }
+        },
+        "12,13": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "13,8": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "13,9": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "13,10": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "13,11": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "13,12": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "13,13": {
+          "f": "floor_concrete",
+          "c": "ceiling_tiles"
+        },
+        "9,5": {
+          "f": "floor_concrete",
+          "s": {
+            "id": "stairs",
+            "d": "N"
+          }
+        }
+      },
+      "edges": {
+        "6,8,H": {
+          "k": "wall",
+          "t": "concrete",
+          "tb": "brick"
+        },
+        "7,8,H": {
+          "k": "wall",
+          "t": "concrete",
+          "tb": "brick"
+        },
+        "8,8,H": {
+          "k": "wall",
+          "t": "concrete",
+          "tb": "brick"
+        },
+        "9,8,H": {
+          "k": "wall",
+          "t": "concrete",
+          "tb": "brick"
+        },
+        "10,8,H": {
+          "k": "wall",
+          "t": "concrete",
+          "tb": "brick"
+        },
+        "11,8,H": {
+          "k": "wall",
+          "t": "concrete",
+          "tb": "brick"
+        },
+        "12,8,H": {
+          "k": "wall",
+          "t": "concrete",
+          "tb": "brick"
+        },
+        "13,8,H": {
+          "k": "wall",
+          "t": "concrete",
+          "tb": "brick"
+        },
+        "6,14,H": {
+          "k": "wall",
+          "t": "brick",
+          "tb": "concrete"
+        },
+        "7,14,H": {
+          "k": "wall",
+          "t": "brick",
+          "tb": "concrete"
+        },
+        "8,14,H": {
+          "k": "wall",
+          "t": "brick",
+          "tb": "concrete"
+        },
+        "9,14,H": {
+          "k": "wall",
+          "t": "brick",
+          "tb": "concrete"
+        },
+        "10,14,H": {
+          "k": "wall",
+          "t": "brick",
+          "tb": "concrete"
+        },
+        "11,14,H": {
+          "k": "wall",
+          "t": "brick",
+          "tb": "concrete"
+        },
+        "12,14,H": {
+          "k": "wall",
+          "t": "brick",
+          "tb": "concrete"
+        },
+        "13,14,H": {
+          "k": "wall",
+          "t": "brick",
+          "tb": "concrete"
+        },
+        "6,8,V": {
+          "k": "wall",
+          "t": "concrete",
+          "tb": "brick"
+        },
+        "6,9,V": {
+          "k": "wall",
+          "t": "concrete",
+          "tb": "brick"
+        },
+        "6,10,V": {
+          "k": "wall",
+          "t": "concrete",
+          "tb": "brick"
+        },
+        "6,11,V": {
+          "k": "wall",
+          "t": "concrete",
+          "tb": "brick"
+        },
+        "6,12,V": {
+          "k": "wall",
+          "t": "concrete",
+          "tb": "brick"
+        },
+        "6,13,V": {
+          "k": "wall",
+          "t": "concrete",
+          "tb": "brick"
+        },
+        "14,8,V": {
+          "k": "wall",
+          "t": "brick",
+          "tb": "concrete"
+        },
+        "14,9,V": {
+          "k": "wall",
+          "t": "brick",
+          "tb": "concrete"
+        },
+        "14,10,V": {
+          "k": "door",
+          "t": "concrete",
+          "td": "door_yellow",
+          "lock": "yellow",
+          "name": "servicedoor"
+        },
+        "14,11,V": {
+          "k": "wall",
+          "t": "concrete"
+        },
+        "14,12,V": {
+          "k": "wall",
+          "t": "brick",
+          "tb": "concrete"
+        },
+        "14,13,V": {
+          "k": "wall",
+          "t": "brick",
+          "tb": "concrete"
+        },
+        "6,10,H": {
+          "k": "wall",
+          "t": "concrete"
+        },
+        "7,10,H": {
+          "k": "door",
+          "t": "concrete",
+          "td": "door_metal"
+        },
+        "8,10,H": {
+          "k": "wall",
+          "t": "concrete"
+        },
+        "9,10,H": {
+          "k": "wall",
+          "t": "concrete"
+        },
+        "10,10,H": {
+          "k": "wall",
+          "t": "concrete"
+        },
+        "11,10,H": {
+          "k": "door",
+          "t": "concrete",
+          "td": "door_metal"
+        },
+        "12,10,H": {
+          "k": "wall",
+          "t": "concrete"
+        },
+        "13,10,H": {
+          "k": "wall",
+          "t": "concrete"
+        },
+        "6,12,H": {
+          "k": "wall",
+          "t": "concrete"
+        },
+        "7,12,H": {
+          "k": "door",
+          "t": "concrete",
+          "td": "door_metal",
+          "name": "boilerdoor"
+        },
+        "8,12,H": {
+          "k": "wall",
+          "t": "concrete"
+        },
+        "9,12,H": {
+          "k": "wall",
+          "t": "concrete"
+        },
+        "13,12,H": {
+          "k": "wall",
+          "t": "concrete"
+        },
+        "10,8,V": {
+          "k": "wall",
+          "t": "concrete"
+        },
+        "10,9,V": {
+          "k": "wall",
+          "t": "concrete"
+        },
+        "10,12,V": {
+          "k": "wall",
+          "t": "concrete"
+        },
+        "10,13,V": {
+          "k": "wall",
+          "t": "concrete"
+        },
+        "12,12,V": {
+          "k": "wall",
+          "t": "concrete"
+        },
+        "13,12,V": {
+          "k": "wall",
+          "t": "concrete"
+        },
+        "12,13,H": {
+          "k": "wall_low",
+          "t": "concrete"
+        },
+        "9,5,V": {
+          "k": "wall_low",
+          "t": "concrete"
+        },
+        "10,5,V": {
+          "k": "wall_low",
+          "t": "concrete"
+        },
+        "8,6,V": {
+          "k": "wall",
+          "t": "concrete"
+        },
+        "8,7,V": {
+          "k": "wall",
+          "t": "concrete"
+        },
+        "12,6,V": {
+          "k": "wall",
+          "t": "concrete"
+        },
+        "12,7,V": {
+          "k": "wall",
+          "t": "concrete"
+        },
+        "8,6,H": {
+          "k": "wall",
+          "t": "concrete"
+        },
+        "10,6,H": {
+          "k": "wall",
+          "t": "concrete"
+        },
+        "11,6,H": {
+          "k": "wall",
+          "t": "concrete"
+        }
+      }
+    },
+    {
+      "name": "Lobby floor",
+      "cells": {
+        "6,8": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "6,9": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "6,10": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "6,11": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "6,12": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "6,13": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "7,8": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "7,9": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "7,10": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "7,11": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "7,12": {
+          "f": "marble",
+          "s": {
+            "id": "stairs",
+            "d": "N"
+          }
+        },
+        "8,8": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "8,9": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "8,10": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "8,11": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "8,12": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "8,13": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "9,8": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "9,9": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "9,10": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "9,11": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "9,12": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "9,13": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "10,8": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "10,9": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "10,10": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "10,11": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "10,12": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "10,13": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "11,8": {
+          "f": "tile_checker",
+          "c": "ceiling_tiles"
+        },
+        "11,9": {
+          "f": "tile_checker",
+          "c": "ceiling_tiles"
+        },
+        "11,10": {
+          "f": "tile_checker",
+          "c": "ceiling_tiles"
+        },
+        "11,11": {
+          "f": "tile_checker",
+          "c": "ceiling_tiles"
+        },
+        "11,12": {
+          "f": "tile_checker",
+          "c": "ceiling_tiles"
+        },
+        "11,13": {
+          "f": "tile_checker",
+          "c": "ceiling_tiles"
+        },
+        "12,8": {
+          "f": "tile_checker",
+          "c": "ceiling_tiles"
+        },
+        "12,9": {
+          "f": "tile_checker",
+          "c": "ceiling_tiles"
+        },
+        "12,10": {
+          "f": "tile_checker",
+          "c": "ceiling_tiles"
+        },
+        "12,11": {
+          "f": "tile_checker",
+          "c": "ceiling_tiles"
+        },
+        "12,12": {
+          "c": "ceiling_tiles"
+        },
+        "12,13": {
+          "f": "tile_checker",
+          "c": "ceiling_tiles"
+        },
+        "13,8": {
+          "f": "tile_checker",
+          "c": "ceiling_tiles"
+        },
+        "13,9": {
+          "f": "tile_checker",
+          "c": "ceiling_tiles"
+        },
+        "13,10": {
+          "f": "tile_checker",
+          "c": "ceiling_tiles"
+        },
+        "13,11": {
+          "f": "tile_checker",
+          "c": "ceiling_tiles"
+        },
+        "13,12": {
+          "f": "tile_checker",
+          "c": "ceiling_tiles"
+        },
+        "13,13": {
+          "f": "tile_checker",
+          "c": "ceiling_tiles"
+        },
+        "8,6": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "8,7": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "9,6": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "9,7": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "10,6": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "10,7": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "11,6": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        },
+        "11,7": {
+          "f": "marble",
+          "c": "ceiling_tiles"
+        }
+      },
+      "edges": {
+        "6,8,H": {
+          "k": "wall",
+          "t": "plaster",
+          "tb": "brick"
+        },
+        "7,8,H": {
+          "k": "window_wide",
+          "t": "plaster",
+          "tb": "brick"
+        },
+        "8,8,H": {
+          "k": "window_wide",
+          "t": "plaster",
+          "tb": "brick"
+        },
+        "9,8,H": {
+          "k": "door_glass_hotel",
+          "t": "plaster",
+          "tb": "brick",
+          "name": "entrance"
+        },
+        "10,8,H": {
+          "k": "wall",
+          "t": "plaster",
+          "tb": "brick"
+        },
+        "11,8,H": {
+          "k": "window_wide",
+          "t": "plaster",
+          "tb": "brick"
+        },
+        "12,8,H": {
+          "k": "window_wide",
+          "t": "plaster",
+          "tb": "brick"
+        },
+        "13,8,H": {
+          "k": "wall",
+          "t": "plaster",
+          "tb": "brick"
+        },
+        "6,14,H": {
+          "k": "wall",
+          "t": "brick",
+          "tb": "plaster"
+        },
+        "7,14,H": {
+          "k": "wall",
+          "t": "brick",
+          "tb": "plaster"
+        },
+        "8,14,H": {
+          "k": "wall",
+          "t": "brick",
+          "tb": "plaster"
+        },
+        "9,14,H": {
+          "k": "window",
+          "t": "brick",
+          "tb": "plaster"
+        },
+        "10,14,H": {
+          "k": "wall",
+          "t": "brick",
+          "tb": "plaster"
+        },
+        "11,14,H": {
+          "k": "wall",
+          "t": "brick",
+          "tb": "plaster"
+        },
+        "12,14,H": {
+          "k": "window",
+          "t": "brick",
+          "tb": "plaster"
+        },
+        "13,14,H": {
+          "k": "wall",
+          "t": "brick",
+          "tb": "plaster"
+        },
+        "6,8,V": {
+          "k": "wall",
+          "t": "plaster",
+          "tb": "brick"
+        },
+        "6,9,V": {
+          "k": "wall",
+          "t": "plaster",
+          "tb": "brick"
+        },
+        "6,10,V": {
+          "k": "window_wide",
+          "t": "plaster",
+          "tb": "brick"
+        },
+        "6,11,V": {
+          "k": "wall",
+          "t": "plaster",
+          "tb": "brick"
+        },
+        "6,12,V": {
+          "k": "wall",
+          "t": "plaster",
+          "tb": "brick"
+        },
+        "6,13,V": {
+          "k": "wall",
+          "t": "plaster",
+          "tb": "brick"
+        },
+        "14,8,V": {
+          "k": "wall",
+          "t": "brick",
+          "tb": "plaster"
+        },
+        "14,9,V": {
+          "k": "wall",
+          "t": "brick",
+          "tb": "plaster"
+        },
+        "14,10,V": {
+          "k": "window_wide",
+          "t": "brick",
+          "tb": "plaster"
+        },
+        "14,11,V": {
+          "k": "wall",
+          "t": "brick",
+          "tb": "plaster"
+        },
+        "14,12,V": {
+          "k": "wall",
+          "t": "brick",
+          "tb": "plaster"
+        },
+        "14,13,V": {
+          "k": "wall",
+          "t": "brick",
+          "tb": "plaster"
+        },
+        "11,8,V": {
+          "k": "wall",
+          "t": "plaster"
+        },
+        "11,9,V": {
+          "k": "wall",
+          "t": "plaster"
+        },
+        "11,11,V": {
+          "k": "wall",
+          "t": "plaster"
+        },
+        "11,12,V": {
+          "k": "wall",
+          "t": "plaster"
+        },
+        "11,13,V": {
+          "k": "wall",
+          "t": "plaster"
+        },
+        "11,10,V": {
+          "k": "doorway_wide",
+          "t": "plaster"
+        },
+        "8,6,V": {
+          "k": "railing",
+          "t": "concrete"
+        },
+        "12,6,V": {
+          "k": "railing",
+          "t": "concrete"
+        },
+        "8,7,V": {
+          "k": "railing",
+          "t": "concrete"
+        },
+        "12,7,V": {
+          "k": "railing",
+          "t": "concrete"
+        },
+        "8,6,H": {
+          "k": "railing",
+          "t": "concrete"
+        },
+        "10,6,H": {
+          "k": "railing",
+          "t": "concrete"
+        },
+        "11,6,H": {
+          "k": "railing",
+          "t": "concrete"
+        },
+        "7,12,V": {
+          "k": "wall",
+          "t": "plaster"
+        },
+        "8,12,V": {
+          "k": "wall",
+          "t": "plaster"
+        },
+        "7,13,H": {
+          "k": "wall_low",
+          "t": "plaster"
+        },
+        "7,13,V": {
+          "k": "wall",
+          "t": "plaster"
+        },
+        "8,13,V": {
+          "k": "wall",
+          "t": "plaster"
+        },
+        "12,12,V": {
+          "k": "railing",
+          "t": "concrete"
+        },
+        "13,12,V": {
+          "k": "railing",
+          "t": "concrete"
+        },
+        "12,12,H": {
+          "k": "railing",
+          "t": "concrete"
+        }
+      }
+    },
+    {
+      "name": "Guest floor",
+      "cells": {
+        "6,8": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "6,9": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "6,10": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "6,11": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "6,12": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "6,13": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "7,8": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "7,9": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "7,10": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "7,11": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "7,12": {
+          "c": "ceiling_tiles"
+        },
+        "7,13": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "8,8": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "8,9": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "8,10": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "8,11": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "8,12": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "8,13": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "9,8": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "9,9": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "9,10": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "9,11": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "9,12": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "9,13": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "10,8": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "10,9": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "10,10": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "10,11": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "10,12": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "10,13": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "11,8": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "11,9": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "11,10": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "11,11": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "11,12": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "11,13": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "12,8": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "12,9": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "12,10": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "12,11": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "12,12": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "12,13": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "13,8": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "13,9": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "13,10": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "13,11": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "13,12": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        },
+        "13,13": {
+          "f": "carpet",
+          "c": "ceiling_tiles"
+        }
+      },
+      "edges": {
+        "6,8,H": {
+          "k": "wall",
+          "t": "plaster",
+          "tb": "brick"
+        },
+        "7,8,H": {
+          "k": "window_wide",
+          "t": "plaster",
+          "tb": "brick"
+        },
+        "8,8,H": {
+          "k": "wall",
+          "t": "plaster",
+          "tb": "brick"
+        },
+        "9,8,H": {
+          "k": "window_wide",
+          "t": "plaster",
+          "tb": "brick"
+        },
+        "10,8,H": {
+          "k": "wall",
+          "t": "plaster",
+          "tb": "brick"
+        },
+        "11,8,H": {
+          "k": "wall",
+          "t": "plaster",
+          "tb": "brick"
+        },
+        "12,8,H": {
+          "k": "window_wide",
+          "t": "plaster",
+          "tb": "brick"
+        },
+        "13,8,H": {
+          "k": "wall",
+          "t": "plaster",
+          "tb": "brick"
+        },
+        "6,14,H": {
+          "k": "wall",
+          "t": "brick",
+          "tb": "plaster"
+        },
+        "7,14,H": {
+          "k": "wall",
+          "t": "brick",
+          "tb": "plaster"
+        },
+        "8,14,H": {
+          "k": "wall",
+          "t": "brick",
+          "tb": "plaster"
+        },
+        "9,14,H": {
+          "k": "window",
+          "t": "brick",
+          "tb": "plaster"
+        },
+        "10,14,H": {
+          "k": "wall",
+          "t": "brick",
+          "tb": "plaster"
+        },
+        "11,14,H": {
+          "k": "wall",
+          "t": "brick",
+          "tb": "plaster"
+        },
+        "12,14,H": {
+          "k": "window",
+          "t": "brick",
+          "tb": "plaster"
+        },
+        "13,14,H": {
+          "k": "wall",
+          "t": "brick",
+          "tb": "plaster"
+        },
+        "6,8,V": {
+          "k": "wall",
+          "t": "plaster",
+          "tb": "brick"
+        },
+        "6,9,V": {
+          "k": "wall",
+          "t": "plaster",
+          "tb": "brick"
+        },
+        "6,10,V": {
+          "k": "window_wide",
+          "t": "plaster",
+          "tb": "brick"
+        },
+        "6,11,V": {
+          "k": "wall",
+          "t": "plaster",
+          "tb": "brick"
+        },
+        "6,12,V": {
+          "k": "wall",
+          "t": "plaster",
+          "tb": "brick"
+        },
+        "6,13,V": {
+          "k": "wall",
+          "t": "plaster",
+          "tb": "brick"
+        },
+        "14,8,V": {
+          "k": "wall",
+          "t": "brick",
+          "tb": "plaster"
+        },
+        "14,9,V": {
+          "k": "wall",
+          "t": "brick",
+          "tb": "plaster"
+        },
+        "14,10,V": {
+          "k": "window_wide",
+          "t": "brick",
+          "tb": "plaster"
+        },
+        "14,11,V": {
+          "k": "wall",
+          "t": "brick",
+          "tb": "plaster"
+        },
+        "14,12,V": {
+          "k": "wall",
+          "t": "brick",
+          "tb": "plaster"
+        },
+        "14,13,V": {
+          "k": "wall",
+          "t": "brick",
+          "tb": "plaster"
+        },
+        "6,10,H": {
+          "k": "wall",
+          "t": "plaster"
+        },
+        "7,10,H": {
+          "k": "door_swing",
+          "t": "plaster",
+          "td": "door_wood"
+        },
+        "8,10,H": {
+          "k": "wall",
+          "t": "plaster"
+        },
+        "9,10,H": {
+          "k": "door_swing",
+          "t": "plaster",
+          "td": "door_wood"
+        },
+        "10,10,H": {
+          "k": "wall",
+          "t": "plaster"
+        },
+        "11,10,H": {
+          "k": "wall",
+          "t": "plaster"
+        },
+        "12,10,H": {
+          "k": "door_swing",
+          "t": "plaster",
+          "td": "door_wood"
+        },
+        "13,10,H": {
+          "k": "wall",
+          "t": "plaster"
+        },
+        "9,8,V": {
+          "k": "wall",
+          "t": "plaster"
+        },
+        "9,9,V": {
+          "k": "wall",
+          "t": "plaster"
+        },
+        "11,8,V": {
+          "k": "wall",
+          "t": "plaster"
+        },
+        "11,9,V": {
+          "k": "wall",
+          "t": "plaster"
+        },
+        "8,12,H": {
+          "k": "wall",
+          "t": "plaster"
+        },
+        "9,12,H": {
+          "k": "door",
+          "t": "plaster",
+          "td": "door_red",
+          "lock": "red",
+          "name": "suite204"
+        },
+        "10,12,H": {
+          "k": "wall",
+          "t": "plaster"
+        },
+        "11,12,H": {
+          "k": "wall",
+          "t": "plaster"
+        },
+        "12,12,H": {
+          "k": "door_swing",
+          "t": "plaster",
+          "td": "door_wood"
+        },
+        "13,12,H": {
+          "k": "wall",
+          "t": "plaster"
+        },
+        "8,12,V": {
+          "k": "wall",
+          "t": "plaster"
+        },
+        "8,13,V": {
+          "k": "wall",
+          "t": "plaster"
+        },
+        "11,12,V": {
+          "k": "wall",
+          "t": "plaster"
+        },
+        "11,13,V": {
+          "k": "wall",
+          "t": "plaster"
+        },
+        "7,12,V": {
+          "k": "railing",
+          "t": "concrete"
+        },
+        "7,12,H": {
+          "k": "railing",
+          "t": "concrete"
+        }
+      }
+    }
+  ],
+  "entities": [
+    {
+      "id": "h001",
+      "type": "player_start",
+      "x": 38,
+      "z": 14,
+      "layer": 0,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h002",
+      "type": "tree",
+      "x": 18,
+      "z": 22,
+      "layer": 0,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h003",
+      "type": "tree",
+      "x": 62,
+      "z": 18,
+      "layer": 0,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h004",
+      "type": "plant",
+      "x": 33.6,
+      "z": 26,
+      "layer": 1,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h005",
+      "type": "plant",
+      "x": 46,
+      "z": 26,
+      "layer": 1,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h006",
+      "type": "light_warm",
+      "x": 38,
+      "z": 28,
+      "layer": 1,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {
+        "range": 8
+      },
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h007",
+      "type": "message_zone",
+      "x": 38,
+      "z": 16.8,
+      "layer": 0,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {
+        "w": 5,
+        "d": 3,
+        "text": "Hotel Meridian. Stairs up to the lobby, glass doors open by themselves.",
+        "seconds": 5
+      },
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h008",
+      "type": "light_ceiling",
+      "x": 30,
+      "z": 38,
+      "layer": 1,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h009",
+      "type": "light_ceiling",
+      "x": 38,
+      "z": 48,
+      "layer": 1,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h010",
+      "type": "light_ceiling",
+      "x": 48,
+      "z": 38,
+      "layer": 1,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h011",
+      "type": "light_ceiling",
+      "x": 48,
+      "z": 48,
+      "layer": 1,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h012",
+      "type": "table",
+      "x": 34,
+      "z": 44.8,
+      "layer": 1,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h013",
+      "type": "chair",
+      "x": 32.4,
+      "z": 47.6,
+      "layer": 1,
+      "rot": 180,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h014",
+      "type": "plant",
+      "x": 26.8,
+      "z": 34.8,
+      "layer": 1,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h015",
+      "type": "plant",
+      "x": 41.2,
+      "z": 34.8,
+      "layer": 1,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h016",
+      "type": "terminal",
+      "x": 35.6,
+      "z": 51.2,
+      "layer": 1,
+      "rot": 180,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h017",
+      "type": "npc_civilian",
+      "x": 32,
+      "z": 48.8,
+      "layer": 1,
+      "rot": 180,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h018",
+      "type": "enemy_guard",
+      "x": 38,
+      "z": 42,
+      "layer": 1,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {
+        "health": 60
+      },
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h019",
+      "type": "health_small",
+      "x": 27.2,
+      "z": 46,
+      "layer": 1,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h020",
+      "type": "checkpoint",
+      "x": 38,
+      "z": 36.8,
+      "layer": 1,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h021",
+      "type": "table",
+      "x": 49.2,
+      "z": 37.2,
+      "layer": 1,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h022",
+      "type": "chair",
+      "x": 47.2,
+      "z": 37.2,
+      "layer": 1,
+      "rot": 90,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h023",
+      "type": "table",
+      "x": 52,
+      "z": 44,
+      "layer": 1,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h024",
+      "type": "chair",
+      "x": 50,
+      "z": 44,
+      "layer": 1,
+      "rot": 90,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h025",
+      "type": "enemy_soldier",
+      "x": 50,
+      "z": 40.8,
+      "layer": 1,
+      "rot": 180,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h026",
+      "type": "ammo_bullets",
+      "x": 52.8,
+      "z": 34.8,
+      "layer": 1,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h027",
+      "type": "message_zone",
+      "x": 50,
+      "z": 51.2,
+      "layer": 1,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {
+        "w": 3,
+        "d": 2,
+        "text": "Stairs down to the basement. Mind the railing.",
+        "seconds": 4
+      },
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h028",
+      "type": "message_zone",
+      "x": 30,
+      "z": 44.8,
+      "layer": 1,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {
+        "w": 3,
+        "d": 2,
+        "text": "Stairs up to the guest floor.",
+        "seconds": 3
+      },
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h029",
+      "type": "light_ceiling",
+      "x": 30,
+      "z": 43.2,
+      "layer": 0,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h030",
+      "type": "light_ceiling",
+      "x": 46,
+      "z": 43.2,
+      "layer": 0,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h031",
+      "type": "light_flicker",
+      "x": 39.2,
+      "z": 44,
+      "layer": 0,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h032",
+      "type": "light_ceiling",
+      "x": 30,
+      "z": 36,
+      "layer": 0,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h033",
+      "type": "light_ceiling",
+      "x": 46,
+      "z": 36,
+      "layer": 0,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h034",
+      "type": "light_red",
+      "x": 30,
+      "z": 50.4,
+      "layer": 0,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {
+        "range": 6
+      },
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h035",
+      "type": "crate",
+      "x": 27.2,
+      "z": 34.8,
+      "layer": 0,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h036",
+      "type": "crate_metal",
+      "x": 34.4,
+      "z": 36.8,
+      "layer": 0,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h037",
+      "type": "barrel",
+      "x": 26.4,
+      "z": 38.4,
+      "layer": 0,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h038",
+      "type": "locker",
+      "x": 42.4,
+      "z": 34.4,
+      "layer": 0,
+      "rot": 180,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h039",
+      "type": "locker",
+      "x": 53.2,
+      "z": 37.6,
+      "layer": 0,
+      "rot": 90,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h040",
+      "type": "health_large",
+      "x": 49.6,
+      "z": 34.8,
+      "layer": 0,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h041",
+      "type": "barrel_explosive",
+      "x": 26.8,
+      "z": 50.8,
+      "layer": 0,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h042",
+      "type": "barrel_explosive",
+      "x": 35.2,
+      "z": 50.4,
+      "layer": 0,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h043",
+      "type": "fx_steam",
+      "x": 33.6,
+      "z": 53.2,
+      "layer": 0,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h044",
+      "type": "enemy_heavy",
+      "x": 31.2,
+      "z": 51.6,
+      "layer": 0,
+      "rot": 180,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {
+        "health": 220
+      },
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h045",
+      "type": "key_red",
+      "x": 26.4,
+      "z": 53.2,
+      "layer": 0,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h046",
+      "type": "enemy_soldier",
+      "x": 44,
+      "z": 45.6,
+      "layer": 0,
+      "rot": 270,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h047",
+      "type": "ammo_shells",
+      "x": 43.2,
+      "z": 51.2,
+      "layer": 0,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h048",
+      "type": "weapon_shotgun",
+      "x": 53.6,
+      "z": 51.2,
+      "layer": 0,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h049",
+      "type": "message_zone",
+      "x": 30,
+      "z": 42.4,
+      "layer": 0,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {
+        "w": 3,
+        "d": 2,
+        "text": "The boiler-room door is behind the corridor’s west end.",
+        "seconds": 3
+      },
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h050",
+      "type": "light_ceiling",
+      "x": 32,
+      "z": 44,
+      "layer": 2,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h051",
+      "type": "light_ceiling",
+      "x": 48,
+      "z": 44,
+      "layer": 2,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h052",
+      "type": "light_ceiling",
+      "x": 28,
+      "z": 36,
+      "layer": 2,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h053",
+      "type": "light_ceiling",
+      "x": 38,
+      "z": 36,
+      "layer": 2,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h054",
+      "type": "light_ceiling",
+      "x": 48,
+      "z": 36,
+      "layer": 2,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h055",
+      "type": "light_ceiling",
+      "x": 38,
+      "z": 52,
+      "layer": 2,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h056",
+      "type": "light_ceiling",
+      "x": 48,
+      "z": 52,
+      "layer": 2,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h057",
+      "type": "table",
+      "x": 28,
+      "z": 34.8,
+      "layer": 2,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h058",
+      "type": "chair",
+      "x": 31.2,
+      "z": 36.8,
+      "layer": 2,
+      "rot": 90,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h059",
+      "type": "health_small",
+      "x": 27.2,
+      "z": 37.2,
+      "layer": 2,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h060",
+      "type": "table",
+      "x": 38.4,
+      "z": 34.4,
+      "layer": 2,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h061",
+      "type": "armor",
+      "x": 40.8,
+      "z": 37.6,
+      "layer": 2,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h062",
+      "type": "enemy_soldier",
+      "x": 48,
+      "z": 36,
+      "layer": 2,
+      "rot": 180,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {
+        "health": 70
+      },
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h063",
+      "type": "ammo_bullets",
+      "x": 52.8,
+      "z": 34.4,
+      "layer": 2,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h064",
+      "type": "enemy_guard",
+      "x": 43.2,
+      "z": 43.2,
+      "layer": 2,
+      "rot": 270,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {
+        "health": 60
+      },
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h065",
+      "type": "plant",
+      "x": 52.8,
+      "z": 40.8,
+      "layer": 2,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h066",
+      "type": "plant",
+      "x": 26.4,
+      "z": 40.8,
+      "layer": 2,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h067",
+      "type": "table",
+      "x": 38,
+      "z": 52.8,
+      "layer": 2,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h068",
+      "type": "chair",
+      "x": 36,
+      "z": 50.4,
+      "layer": 2,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h069",
+      "type": "key_yellow",
+      "x": 38.4,
+      "z": 51.2,
+      "layer": 2,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": [],
+      "y": 0.9
+    },
+    {
+      "id": "h070",
+      "type": "light_warm",
+      "x": 37.2,
+      "z": 52,
+      "layer": 2,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {
+        "range": 6
+      },
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h071",
+      "type": "crate",
+      "x": 49.2,
+      "z": 53.2,
+      "layer": 2,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h072",
+      "type": "ammo_rockets",
+      "x": 52.8,
+      "z": 50.4,
+      "layer": 2,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h073",
+      "type": "weapon_rifle",
+      "x": 46.8,
+      "z": 50.4,
+      "layer": 2,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h074",
+      "type": "checkpoint",
+      "x": 28,
+      "z": 44,
+      "layer": 2,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {},
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h075",
+      "type": "level_exit",
+      "x": 64.8,
+      "z": 43.2,
+      "layer": 0,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {
+        "w": 3,
+        "d": 3,
+        "next": ""
+      },
+      "scripts": [],
+      "rules": []
+    },
+    {
+      "id": "h076",
+      "type": "light_warm",
+      "x": 60.8,
+      "z": 42,
+      "layer": 0,
+      "rot": 0,
+      "name": "",
+      "tag": "",
+      "target": "",
+      "props": {
+        "range": 7
+      },
+      "scripts": [],
+      "rules": []
+    }
+  ]
+}

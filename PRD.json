@@ -636,6 +636,12 @@
       "status": "done"
     },
     {
+      "id": "M12-25",
+      "milestone": "M12",
+      "title": "FPS Creator example level Hotel Meridian: 3 storeys, stairs, black-framed glass hotel door (+piece/texture)",
+      "status": "done"
+    },
+    {
       "id": "M9-01",
       "milestone": "M9",
       "title": "PLAN: docs/DESKTOP_APPS.md — desktop target architecture (ADR): reuse nord-player/wry shell vs native egui apps; capability model, API surface per tier (JS via IPC bridge, Rust direct); permissions/sandbox; what real apps need (checklist)",

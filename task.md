@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 256/271 tasks (94%)** · updated 2026-10-21
+**Overall: 257/272 tasks (94%)** · updated 2026-10-21
 
 | Milestone | Progress |
 |---|---|
@@ -19,7 +19,7 @@
 | M9 Desktop apps | 16/16 (100%) |
 | M10 Construct-style editor | 35/35 (100%) |
 | M11 Web editor | 14/16 (88%) |
-| M12 FPS Creator addon | 21/24 (88%) |
+| M12 FPS Creator addon | 22/25 (88%) |
 
 ## Next up
 - **M12-13** OWNER: verify the FPS Level tab + play-test on macOS/Windows with a real GPU (pointer lock in the embedded webview, performance, feel of movement/combat); decide on gamepad/touch controls and shadowed dynamic lights
@@ -350,6 +350,7 @@ _a full first-person level editor + runtime modelled on the classic FPS Creator 
 - [ ] **M12-22** 2D Level Creator built-in sprite bank: bundle Amiga collection, previews, animation presets, palette categories and project asset copying
 - [x] **M12-23** Import FPS Creator .fpi scripts: interpreter (runtime/fpsc/fpi.js), importer tool, tests and docs
 - [x] **M12-24** FPS Creator: right-mouse aim down sights (per-weapon editable pose/zoom/spread/sens) + fix fall-through in cut corner
+- [x] **M12-25** FPS Creator example level Hotel Meridian: 3 storeys, stairs, black-framed glass hotel door (+piece/texture)
 
 ## Features (PRD)
 

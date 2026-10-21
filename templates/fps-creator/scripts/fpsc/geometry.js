@@ -107,7 +107,7 @@ export function buildGeometry(world, level, bank, opts = {}) {
       if (hiddenCornerEdge(ly, k)) continue;
       const [ex, ez, o] = unkey(k); const def = world.lookup.piece(piece.k); if (!def) continue;
       const door = world.doors.get(`${L}:${k}`);
-      const mats = { main: piece.t || 'concrete', trim: piece.tt || 'metal_panel', door: piece.td || 'door_metal', glass: piece.tg || 'glass', mesh: 'fence_mesh' };
+      const mats = { main: piece.t || 'concrete', trim: piece.tt || def.tt || 'metal_panel', door: piece.td || 'door_metal', glass: piece.tg || 'glass', mesh: 'fence_mesh' };
       const ctx = {
         o, ox: ex * CELL, oz: ez * CELL, by, mats, back: piece.tb || mats.main,
         startUsed: nodeUsed(L, ex, ez, k), endUsed: nodeUsed(L, o === 'H' ? ex + 1 : ex, o === 'H' ? ez : ez + 1, k),

@@ -327,7 +327,7 @@ function rulesSection(ed, e) {
 function edgeInspector(ed, key) {
   const [x, z, o] = key.split(','); const piece = ed.level.layers[ed.layer].edges[key]; if (!piece) return emptyInspector(ed);
   const def = ed.bank.piece(piece.k), root = el('div'), kind = classify(def);
-  const pv = piecePreview(ed, def, { wall: piece.t, trim: piece.tt || 'metal_panel', door: piece.td || 'door_metal' }, 64, 36); pv.style.cssText = 'width:64px;height:36px;border-radius:4px';
+  const pv = piecePreview(ed, def, { wall: piece.t, trim: piece.tt || def.tt || 'metal_panel', door: piece.td || 'door_metal' }, 64, 36); pv.style.cssText = 'width:64px;height:36px;border-radius:4px';
   root.append(el('div', { class: 'insp-head' }, pv, el('div', {}, el('b', {}, def?.label ?? piece.k), el('small', {}, `edge ${x},${z} ${o === 'H' ? '(east–west)' : '(north–south)'} · layer ${ed.layer}`))));
   const p = el('div', { class: 'insp-pad' });
   const upd = (patch) => { Object.assign(piece, patch); for (const k of Object.keys(patch)) if (patch[k] === '' || patch[k] === undefined || patch[k] === false) delete piece[k]; ed.commit('edit piece', { keepInspector: true }); };

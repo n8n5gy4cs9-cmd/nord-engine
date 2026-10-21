@@ -29,6 +29,7 @@ Think of it as a toy box. The **map** (left) is a top-down plan, the **3D view**
 |---|---|---|
 | `levels/level1.fpsl.json` | **FPS Level → Open… → level1.fpsl.json** | Outpost Zero: the template's playable starting map |
 | `levels/corners.fpsl.json` | **FPS Level → Open… → corners.fpsl.json** | Diagonal and circular room workshop |
+| `levels/hotel.fpsl.json` | **FPS Level → Open… → hotel.fpsl.json** | Three-storey hotel: basement, lobby, guest floor, stairs, black-framed glass door |
 | `levels/my_level.fpsl.json` | **FPS Level → Save as…** to create it, then **Open…** | Your own reusable level file |
 | `scenes/main.scene.json` | Normal **Scene** tab and its **Inspector** | FPS Level host entity and its Level file setting |
 
@@ -289,3 +290,16 @@ Every weapon can have its own aim pose. In `fpsc/bank.json` add `view.aim` to th
 ```
 
 `pos` is the view-model position while aiming (x right, y up, z forward, relative to the camera) — nudge `y` until the sights line up with the crosshair. Without `pos` the weapon is centred automatically from its parts. `zoom` multiplies the field of view (smaller = closer), `spread` and `sens` multiply the bullet spread and the mouse-look speed.
+
+
+## Hotel Meridian: a three-storey example
+
+Open **FPS Level → Open… → hotel.fpsl.json**. It has a basement, a lobby floor and a guest floor joined by three staircases, plus the **Hotel glass door (black frame)** wall piece at the entrance: two glass leaves slide apart, the frame and handles are black (the piece's default trim texture is `black_metal`; pick another *Trim texture* in Build to recolour it).
+
+Things to copy into your own levels:
+
+* **Layers are floors**, 3.2 m apart. Layer 0 is the grass level and the basement; layer 1 stands on a plinth reached by the porch stairs.
+* **Stairs between floors:** stair cell (`S` tool) on the lower layer, a *hole* (ceiling, no floor) above it on the upper layer, and the landing in the next cell on the upper layer.
+* **Make shafts safe:** railings round the hole, a low wall at the stair's high end, and walls round the empty cell above it.
+* **Back texture:** set *Back texture* so the street side is brick and the inside plaster.
+* **Objective chain:** red key (boiler room) → locked Suite 204 → yellow key → basement service door → exit.

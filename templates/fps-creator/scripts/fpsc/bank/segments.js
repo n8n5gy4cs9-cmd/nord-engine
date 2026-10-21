@@ -50,6 +50,16 @@ export const PIECES = [
   { id: 'door_swing', label: 'Door (swings open)', cat: 'Doors', door: { style: 'swing', speed: 2.4 }, parts: [...frame(0.18, 0.82, 2.4), { u: [0.18, 0.82], y: [0, 2.4], t: [-0.05, 0.05], mat: 'door', leaf: true }] },
   { id: 'door_wide', label: 'Wide door (slides up)', cat: 'Doors', door: { style: 'up', speed: 1.4 }, parts: [...frame(0.1, 0.9, 2.6), { u: [0.1, 0.9], y: [0, 2.6], t: [-0.08, 0.08], mat: 'door', leaf: true }] },
   { id: 'door_glass', label: 'Glass door (slides sideways)', cat: 'Doors', door: { style: 'side', speed: 2.2 }, parts: [...frame(0.18, 0.82, 2.4), { u: [0.18, 0.82], y: [0, 2.4], t: [-0.03, 0.03], mat: 'glass', opaque: false, leaf: true }] },
+  // Hotel entrance: 3 m opening, slim black frame, two glass leaves that slide apart (sensor-style), black stiles/kick rails and pull handles. Frame colour = trim texture, default black_metal.
+  { id: 'door_glass_hotel', label: 'Hotel glass door (black frame)', cat: 'Doors', tt: 'black_metal', door: { style: 'side', speed: 2.0 }, parts: [
+    ...frame(0.12, 0.88, 2.5),
+    { u: [0.12, 0.135], y: [0, 2.5], t: [-0.06, 0.06], mat: 'trim' }, { u: [0.865, 0.88], y: [0, 2.5], t: [-0.06, 0.06], mat: 'trim' }, { u: [0.12, 0.88], y: [2.44, 2.5], t: [-0.06, 0.06], mat: 'trim' },
+    { u: [0.135, 0.865], y: [0.1, 2.44], t: [-0.02, 0.02], mat: 'glass', opaque: false, leaf: true },
+    { u: [0.135, 0.15], y: [0, 2.44], t: [-0.045, 0.045], mat: 'trim', leaf: true }, { u: [0.85, 0.865], y: [0, 2.44], t: [-0.045, 0.045], mat: 'trim', leaf: true },
+    { u: [0.488, 0.512], y: [0, 2.44], t: [-0.045, 0.045], mat: 'trim', leaf: true },
+    { u: [0.135, 0.865], y: [0, 0.12], t: [-0.045, 0.045], mat: 'trim', leaf: true }, { u: [0.135, 0.865], y: [2.32, 2.44], t: [-0.045, 0.045], mat: 'trim', leaf: true },
+    { u: [0.452, 0.462], y: [0.9, 1.5], t: [-0.07, 0.07], mat: 'trim', leaf: true, solid: false }, { u: [0.538, 0.548], y: [0.9, 1.5], t: [-0.07, 0.07], mat: 'trim', leaf: true, solid: false },
+  ] },
   { id: 'door_secret', label: 'Secret door (looks like wall)', cat: 'Doors', door: { style: 'side', speed: 1.2, secret: true }, parts: [{ u: [0, 1], y: [0, H], t: [-0.15, 0.15] }, { u: [0.18, 0.82], y: [0, 2.4], t: [-0.16, 0.16], mat: 'main', leaf: true, over: true }] },
   { id: 'doorway', label: 'Doorway (no door)', cat: 'Doors', parts: frame(0.18, 0.82, 2.4) },
   { id: 'doorway_wide', label: 'Wide opening', cat: 'Doors', parts: frame(0.1, 0.9, 2.6) },

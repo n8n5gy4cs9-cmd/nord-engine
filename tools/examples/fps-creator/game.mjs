@@ -3,6 +3,7 @@
 import { E, project } from '../lib.mjs';
 import { cornerDemo } from '../../fpsc-corner-demo.mjs';
 import { outpostZero } from '../../gen_fpsc_level.mjs';
+import { hotelMeridian } from '../../fpsc-hotel-demo.mjs';
 
 const BANK = { textures: [], entities: [], sounds: {}, scripts: [] };
 export default () => ({
@@ -13,6 +14,7 @@ export default () => ({
   files: {
     'levels/level1.fpsl.json': outpostZero(),
     'levels/corners.fpsl.json': cornerDemo(),
+    'levels/hotel.fpsl.json': hotelMeridian(),
     'fpsc/bank.json': BANK,
     'fpsc/README.md': '# fpsc/ — your FPS Creator content\n\n- `bank.json` registers your own textures, wall pieces, entities, sounds and scripts.\n- `textures/`, `art/` (sprites), `models/` (.glb), `sounds/`, `scripts/` hold the files.\n- Levels live in `../levels/*.fpsl.json`. Edit them with the **FPS Level** tab (or open /editor/fpsc/index.html on `nord serve`).\n- The runtime is `../scripts/fpsc/` — run `nord fpsc init` after updating Nord to upgrade it (your files here are never touched).\n\nFull guide: docs/FPS_CREATOR.md.\n',
   },
@@ -25,6 +27,7 @@ A complete first-person game made with Nord's **FPS Creator** addon: levels are 
 - **Play**: run the project — the *FPS Level* entity in \`scenes/main.scene.json\` loads \`levels/level1.fpsl.json\`. Click to start. WASD, mouse, E use, F flashlight, 1-6 weapons.
 - **Add your own**: textures, sprites, 3D models, sounds and scripts go in \`fpsc/\` (see \`fpsc/README.md\` and docs/FPS_CREATOR.md).
 - **Corner workshop**: open \`levels/corners.fpsl.json\` in FPS Level for an octagonal room and a circular room with matching cut floors.
+- **Hotel Meridian**: open \`levels/hotel.fpsl.json\` for a three-storey building (basement, lobby, guest floor), three staircases and a black-framed glass hotel door.
 - **Upgrade the runtime** after updating Nord: \`nord fpsc init\`.
 `,
 });

@@ -250,3 +250,40 @@ test('aim down sights: default pose centres every built-in weapon, view.aim over
   assert.equal(aimOf(WEAPONS.rifle).zoom, 0.72);
   assert.deepEqual(aimOf({ view: { pos: [0.3, -0.3, 0.6], parts: [], aim: { pos: [0, -0.1, 0.4], zoom: 0.5 } } }), { pos: [0, -0.1, 0.4], zoom: 0.5, spread: 0.35, sens: 0.75 });
 });
+
+test('Hotel Meridian: three storeys, black-framed glass door, every stair walkable and every stair shaft sealed', async () => {
+  const { hotelMeridian } = await import('../../tools/fpsc-hotel-demo.mjs');
+  const lv = hotelMeridian(), w = world(lv);
+  assert.deepEqual(validate(lv, bank), []); assert.equal(lv.layers.length, 3);
+  const door = lv.layers[1].edges['9,8,H']; assert.equal(door.k, 'door_glass_hotel'); assert.equal(bank.piece('door_glass_hotel').tt, 'black_metal'); assert.ok(bank.texture('black_metal'));
+  assert.ok(bank.piece('door_glass_hotel').parts.some((p) => p.mat === 'glass' && p.leaf) && bank.piece('door_glass_hotel').parts.some((p) => p.mat === 'trim'));
+  for (const d of w.doors.values()) d.open = 1;
+  const P = { x: 38, z: 14, y: 0, vy: 0, layer: 0, onGround: true };
+  const step = (tx, tz, dt = 1 / 60) => { // same floor/ceiling rules as Player.update
+    const dx = tx - P.x, dz = tz - P.z, d = Math.hypot(dx, dz), sp = Math.min(5, d / dt), m = w.moveCircle(P.x, P.z, P.y, 1.8, 0.35, dx / (d || 1) * sp * dt, dz / (d || 1) * sp * dt);
+    P.x = m.x; P.z = m.z; P.vy -= 24 * dt; P.y += P.vy * dt;
+    const fl = w.floorAt(P.x, P.z, P.y + 0.55);
+    if (fl && P.vy <= 0 && P.y <= fl.y + 0.001) { P.y = fl.y; P.vy = 0; P.onGround = true; P.layer = fl.layer; }
+    else if (fl && P.onGround && P.vy <= 0 && P.y - fl.y < 0.55) { P.y = fl.y; P.vy = 0; P.layer = fl.layer; } else P.onGround = false;
+    const ce = w.ceilingAt(P.x, P.z, P.y + 0.3); if (P.y + 1.8 > ce) { P.y = ce - 1.8; if (P.vy > 0) P.vy = 0; }
+    return d;
+  };
+  const reach = (tx, tz, max = 400) => { let n = 0; while (step(tx, tz) > 0.25 && n++ < max) if (P.y < -3) return 'fell'; return n >= max ? 'stuck' : 'ok'; };
+  const walk = (tx, tz, layer, label) => {
+    const route = w.path({ x: P.x, z: P.z, layer: P.layer }, { x: tx * CELL, z: tz * CELL, layer }, { doors: 'open' }); assert.ok(route, `no path: ${label}`);
+    for (const wp of route) {
+      const snap = { ...P }; let r = reach(wp.x, wp.z);
+      for (const via of [(p) => ({ x: wp.x, z: p.z }), (p) => ({ x: p.x, z: wp.z })]) { if (r === 'ok' || r === 'fell') break; Object.assign(P, snap); const v = via(snap); r = reach(v.x, v.z) === 'ok' ? reach(wp.x, wp.z) : 'stuck'; }
+      assert.equal(r, 'ok', `${label}: ${r} at ${(P.x / CELL).toFixed(1)},${(P.z / CELL).toFixed(1)} y ${P.y.toFixed(2)}`);
+    }
+    assert.equal(P.layer, layer, label); assert.ok(Math.abs(P.y - layer * STORY) < 0.05, `${label}: y ${P.y}`);
+  };
+  walk(9.5, 10, 1, 'porch stairs + glass door'); walk(6.5, 13.5, 2, 'lobby stairs up to the guest floor'); walk(9.5, 11.2, 2, 'guest corridor');
+  walk(7.5, 11, 1, 'stairs down to the lobby'); walk(12.5, 13.5, 1, 'restaurant landing'); walk(12.5, 9.5, 0, 'stairs down to the basement');
+  walk(6.8, 13, 0, 'boiler room'); for (const d of w.doors.values()) d.locked = null; walk(16.2, 10.8, 0, 'service door to the grass');
+  const probe = (label, fx, fz, y, layer, tx, tz, floor) => { Object.assign(P, { x: fx * CELL, z: fz * CELL, y, vy: 0, layer, onGround: true }); const r = reach(tx * CELL, tz * CELL, 600); assert.ok(r !== 'fell' && P.y >= floor, `${label} leaks (y ${P.y})`); };
+  probe('down-hole from the south', 12.5, 11.5, 3.2, 1, 12.5, 12.5, 3); probe('down-hole from the west', 11.5, 12.5, 3.2, 1, 12.5, 12.5, 3);
+  probe('up-hole from the south', 7.5, 11.5, 6.4, 2, 7.5, 12.5, 6); probe('up-hole from the west', 6.5, 12.5, 6.4, 2, 7.5, 12.5, 6);
+  probe('basement stair top from below', 12.5, 13.5, 0, 0, 12.5, 12, -0.01);
+  probe('empty cell above the stair top (west)', 6.5, 13.5, 3.2, 1, 7.5, 13.5, 3); probe('empty cell above the stair top (east)', 8.5, 13.5, 3.2, 1, 7.5, 13.5, 3);
+});
