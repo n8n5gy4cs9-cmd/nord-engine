@@ -12,7 +12,7 @@ path = "src/main.rs"
 [features]
 default = []
 # wry child webview for viewport/preview/docs (macOS target; see docs/DECISIONS.md)
-webview = ["dep:wry"]
+webview = ["dep:wry", "dep:objc2", "dep:block2"]
 
 [dependencies]
 nord-core = { path = "../nord-core" }
@@ -49,3 +49,7 @@ zip = { version = "2", default-features = false, features = ["deflate"] }
 
 [dev-dependencies]
 egui_kittest = { version = "0.31", default-features = false }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+objc2 = { version = "0.6", optional = true }
+block2 = { version = "0.6", optional = true }

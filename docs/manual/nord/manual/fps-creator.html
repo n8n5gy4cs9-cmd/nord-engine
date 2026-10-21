@@ -14,11 +14,66 @@
 </aside><figure class="shot"><img src="../../assets/screenshots/ed-fpsc-editor.png" alt="The FPS level editor with the 2D map on the left, the live 3D preview in the middle and the inspector with scripts and rules on the right" loading="lazy"><figcaption>The FPS Level tab: item palette (left), map and live 3D preview (centre), inspector with scripts and no-code rules (right). The selected lab terminal opens the boss gate with its rules.</figcaption></figure><h2 id="start-in-one-minute">Start in one minute<a class="anchor" href="#start-in-one-minute">#</a></h2>
 <ol>
 <li>On the project hub choose <strong>New project ▸ FPS Creator (level editor)</strong> — or open any 3D project and click <strong>Project ▸ Add / upgrade FPS Creator…</strong> (or the button in the <strong>FPS Level</strong> tab).</li>
-<li>Open the <strong>FPS Level</strong> tab. The demo level <em>Outpost Zero</em> is loaded: a bunker, hall, armory behind a red-key door, a lab terminal, a courtyard, a tower with stairs and a boss arena.</li>
+<li>Open the <strong>FPS Level</strong> tab, click <strong>Open…</strong>, then <strong>level1.fpsl.json</strong>. This opens the demo <em>Outpost Zero</em>: a bunker, hall, armory behind a red-key door, a lab terminal, a courtyard, a tower with stairs and a boss arena.</li>
 <li>Press <strong>F5</strong>. Click the game to capture the mouse. WASD, mouse, <strong>E</strong> to use things, <strong>F</strong> flashlight, <strong>1–6</strong> weapons.</li>
 <li>Stop the test with <strong>Shift+Esc</strong>, <strong>Esc → Quit</strong>, or the top-right <strong>Close test</strong> button. Save the level before checking it with the normal editor’s <strong>▶ Play</strong> button.</li>
 </ol>
-<figure class="shot"><img src="../../assets/screenshots/ed-fpsc-yard.png" alt="First-person view of the courtyard in the demo level: trees, sandbags, soldiers and a stone tower" loading="lazy"><figcaption>Press F5 and you are standing in your level. The demo level "Outpost Zero" is the template's starting point.</figcaption></figure><h2 id="the-editor-window">The editor window<a class="anchor" href="#the-editor-window">#</a></h2>
+<figure class="shot"><img src="../../assets/screenshots/ed-fpsc-yard.png" alt="First-person view of the courtyard in the demo level: trees, sandbags, soldiers and a stone tower" loading="lazy"><figcaption>Press F5 and you are standing in your level. The demo level "Outpost Zero" is the template's starting point.</figcaption></figure><h2 id="open-edit-and-switch-level-files">Open, edit and switch level files<a class="anchor" href="#open-edit-and-switch-level-files">#</a></h2>
+<p><strong>Edit <code>levels/level1.fpsl.json</code> in the FPS Level tab.</strong> It contains rooms, wall shapes, floors, enemies, lights and rules. The normal <strong>Scene</strong> tab edits <code>scenes/main.scene.json</code>, which hosts the FPS runtime and chooses which saved FPS level the game loads.</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Where to edit it</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>levels/level1.fpsl.json</code></td>
+<td><strong>FPS Level → Open… → level1.fpsl.json</strong></td>
+<td>Outpost Zero: the template&#39;s playable starting map</td>
+</tr>
+<tr>
+<td><code>levels/corners.fpsl.json</code></td>
+<td><strong>FPS Level → Open… → corners.fpsl.json</strong></td>
+<td>Diagonal and circular room workshop</td>
+</tr>
+<tr>
+<td><code>levels/my_level.fpsl.json</code></td>
+<td><strong>FPS Level → Save as…</strong> to create it, then <strong>Open…</strong></td>
+<td>Your own reusable level file</td>
+</tr>
+<tr>
+<td><code>scenes/main.scene.json</code></td>
+<td>Normal <strong>Scene</strong> tab and its <strong>Inspector</strong></td>
+<td>FPS Level host entity and its Level file setting</td>
+</tr>
+</tbody></table>
+<h3 id="edit-the-map-that-main-play-currently-runs">Edit the map that main Play currently runs<a class="anchor" href="#edit-the-map-that-main-play-currently-runs">#</a></h3>
+<ol>
+<li>Stop main Play if it is running. Click the <strong>FPS Level</strong> tab.</li>
+<li>Click <strong>Open…</strong> in the FPS editor&#39;s own top bar (beside <strong>New</strong>).</li>
+<li>Click <strong>level1.fpsl.json</strong>. The picker lists <code>.fpsl.json</code> files directly inside this project&#39;s <code>levels/</code> folder. Opening a different project gives you that project&#39;s files.</li>
+<li>Draw walls, change corner shapes, move items or adjust Inspector properties. The top bar shows the open file path; <strong>unsaved</strong> means this map has no file yet.</li>
+<li>Click the FPS editor&#39;s <strong>Save</strong>. <strong>F5 / Test</strong> checks your current edits, including unsaved ones. Stop Test with <strong>Shift+Esc</strong>.</li>
+<li>Press the normal editor&#39;s <strong>Play</strong> to check the saved game. With the template&#39;s original Level file setting, it loads the saved <code>levels/level1.fpsl.json</code>.</li>
+</ol>
+<figure class="shot"><img src="../../assets/screenshots/ed-fpsc-open-native.png" alt="Native Nord editor FPS Level Open dialog listing corners.fpsl.json and level1.fpsl.json" loading="lazy"><figcaption>FPS Level → Open… lists maps in the current project's levels folder. Click level1.fpsl.json to edit Outpost Zero, or corners.fpsl.json for the shaped-room workshop.</figcaption></figure><h3 id="open-a-different-map-or-make-another-one">Open a different map or make another one<a class="anchor" href="#open-a-different-map-or-make-another-one">#</a></h3>
+<p>Use <strong>Open… → corners.fpsl.json</strong> to switch to the workshop. Save your current edits first; if prompted to discard changes, cancel and save if you want to keep them. <strong>New</strong> creates a small starter with diagonal and rounded rooms. <strong>Save as…</strong> writes it to a new path such as <code>levels/my_level.fpsl.json</code>; <strong>Save</strong> subsequently updates that file. To load a file from elsewhere on disk, use the top bar&#39;s <strong>Import</strong> button, then <strong>Save as…</strong> into <code>levels/</code> so it appears in Open.</p>
+<p>The FPS view can reopen its last-used map or show the unsaved starter. <strong>Opening a map does not change the game&#39;s starting level.</strong> Its top-bar path tells you exactly what you are editing.</p>
+<h3 id="make-main-play-and-export-start-in-your-new-map">Make main Play and export start in your new map<a class="anchor" href="#make-main-play-and-export-start-in-your-new-map">#</a></h3>
+<ol>
+<li>In <strong>FPS Level</strong>, save the map as, for example, <code>levels/my_level.fpsl.json</code>.</li>
+<li>Switch to the normal <strong>Scene</strong> tab. Open the game&#39;s start scene (<code>scenes/main.scene.json</code> in the template) if necessary.</li>
+<li>Select <strong>FPS Level</strong> in the normal <strong>Hierarchy</strong>. In its <strong>Inspector</strong>, find the attached <code>scripts/fpsc/level-script.js</code> script and set <strong>Level file</strong> to <code>levels/my_level.fpsl.json</code> (relative to the project folder).</li>
+<li>Save the <strong>scene</strong> using the normal editor&#39;s Save control. The FPS map and the host scene are separate files, each with its own Save.</li>
+<li>Press main <strong>Play</strong>. Export uses this saved scene reference too. A Level exit can use another saved level&#39;s project-relative path to continue to it.</li>
+</ol>
+<p>If Test and main Play show different maps, compare the FPS top-bar path against the scene script&#39;s <strong>Level file</strong>, and save both. Test runs the open in-memory map; main Play runs the saved start scene and its referenced map.</p>
+<h3 id="mouse-capture-in-the-native-editor">Mouse capture in the native editor<a class="anchor" href="#mouse-capture-in-the-native-editor">#</a></h3>
+<p>Launch the updated editor with <code>./run.sh</code>, start <strong>Play</strong> or FPS <strong>Test</strong>, then click <strong>Click to play</strong> inside the game. Mouse look captures the pointer. <strong>Esc</strong> releases it and pauses; <strong>Resume</strong> captures it again. In FPS Test, <strong>Shift+Esc</strong> closes the test; main Play uses the normal <strong>Stop</strong> button. The 3D building preview uses right-drag to look and does not capture the pointer.</p>
+<p>macOS builds include the native WebKit pointer-lock permission handler. Restart an already-running editor after updating Nord so it uses the rebuilt native code. The right-drag fallback remains for hosts that cannot provide pointer lock.</p>
+<h2 id="the-editor-window">The editor window<a class="anchor" href="#the-editor-window">#</a></h2>
 <ul>
 <li><strong>Top bar</strong>: file (New / Open / Save / Save as / download / import), undo/redo, <strong>tools</strong>, the active <strong>layer</strong> (storey), 2D · split · 3D view, <strong>▶ Test</strong> and <strong>▶ From here</strong>, the <strong>✓</strong> problems checker and <strong>?</strong> help.</li>
 <li><strong>Left</strong>: <strong>Build</strong> (materials and wall pieces), <strong>Items</strong> (entities), <strong>Scripts</strong>, <strong>Level</strong> (sky, fog, ambient, intro, layers) <strong>Assets</strong> (add your own), and <strong>Objects</strong> (find things already placed).</li>
@@ -277,5 +332,5 @@ Targets are entity names, <code>#tags</code> (groups) or door names. The ✓ che
 </ol>
 <figure class="shot"><img src="../../assets/screenshots/ed-fpsc-variant.png" alt="Save reusable variant dialog with display name and id, plus explanation of captured defaults and instance-specific fields" loading="lazy"><figcaption>Edit a normal item, then save it as a named reusable variant. No bank JSON editing is required.</figcaption></figure><p>Variants capture properties, scripts (including enabled state and parameters) and rules. They do not copy world position, name, tags, the direct Target field or patrol coordinates. A rule can still point at a named door or entity: check its targets when reusing it in another level. A rule list is copied into each new placement; updating defaults does not rewrite all those lists. This is for individual FPS items, not entire room assemblies.</p>
 <p>To change appearance, use an exposed model property or create a sprite/GLB entity in <strong>Assets</strong>, then save variants of it. Wall/corner textures remain directly editable in Build and the cell/piece Inspector. Saving variants requires a connected project server; bank definitions are not removed by undoing a level edit.</p>
-<div class="pager"><a href="web-editor.html"><small>← Previous</small>Run the editor in a browser or on a server</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#start-in-one-minute">Start in one minute </a><a href="#the-editor-window">The editor window </a><a href="#ready-made-things">Ready-made things </a><a href="#doors-keys-and-switches">Doors, keys and switches </a><a href="#scripts-attach-behaviour">Scripts: attach behaviour </a><a href="#rules-logic-without-code">Rules: logic without code </a><a href="#add-your-own-assets">Add your own assets </a><a href="#test-test-from-here-and-the-main-play-button">Test, Test from here, and the main Play button </a><a href="#save-run-the-project-export-and-upgrade">Save, run the project, export and upgrade </a><a href="#troubleshooting">Troubleshooting </a><a href="#find-objects-and-refine-patrols">Find objects and refine patrols </a><a href="#build-a-complete-small-level">Build a complete small level </a><a href="#where-your-work-lives">Where your work lives </a><a href="#limits-to-plan-around">Limits to plan around </a><a href="#diagonal-rounded-and-circular-rooms">Diagonal, rounded and circular rooms </a><a href="#turn-an-edited-item-into-a-reusable-variant">Turn an edited item into a reusable variant </a></aside></div>
+<div class="pager"><a href="web-editor.html"><small>← Previous</small>Run the editor in a browser or on a server</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#start-in-one-minute">Start in one minute </a><a href="#open-edit-and-switch-level-files">Open, edit and switch level files </a><a href="#the-editor-window">The editor window </a><a href="#ready-made-things">Ready-made things </a><a href="#doors-keys-and-switches">Doors, keys and switches </a><a href="#scripts-attach-behaviour">Scripts: attach behaviour </a><a href="#rules-logic-without-code">Rules: logic without code </a><a href="#add-your-own-assets">Add your own assets </a><a href="#test-test-from-here-and-the-main-play-button">Test, Test from here, and the main Play button </a><a href="#save-run-the-project-export-and-upgrade">Save, run the project, export and upgrade </a><a href="#troubleshooting">Troubleshooting </a><a href="#find-objects-and-refine-patrols">Find objects and refine patrols </a><a href="#build-a-complete-small-level">Build a complete small level </a><a href="#where-your-work-lives">Where your work lives </a><a href="#limits-to-plan-around">Limits to plan around </a><a href="#diagonal-rounded-and-circular-rooms">Diagonal, rounded and circular rooms </a><a href="#turn-an-edited-item-into-a-reusable-variant">Turn an edited item into a reusable variant </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

@@ -606,6 +606,12 @@
       "status": "done"
     },
     {
+      "id": "M12-20",
+      "milestone": "M12",
+      "title": "Fix native macOS FPS mouse capture and document level file workflows",
+      "status": "done"
+    },
+    {
       "id": "M9-01",
       "milestone": "M9",
       "title": "PLAN: docs/DESKTOP_APPS.md — desktop target architecture (ADR): reuse nord-player/wry shell vs native egui apps; capability model, API surface per tier (JS via IPC bridge, Rust direct); permissions/sandbox; what real apps need (checklist)",

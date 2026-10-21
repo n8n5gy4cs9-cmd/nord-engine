@@ -15,11 +15,55 @@ Think of it as a toy box. The **map** (left) is a top-down plan, the **3D view**
 
 ## Start in one minute
 1. On the project hub choose **New project ▸ FPS Creator (level editor)** — or open any 3D project and click **Project ▸ Add / upgrade FPS Creator…** (or the button in the **FPS Level** tab).
-2. Open the **FPS Level** tab. The demo level *Outpost Zero* is loaded: a bunker, hall, armory behind a red-key door, a lab terminal, a courtyard, a tower with stairs and a boss arena.
+2. Open the **FPS Level** tab, click **Open…**, then **level1.fpsl.json**. This opens the demo *Outpost Zero*: a bunker, hall, armory behind a red-key door, a lab terminal, a courtyard, a tower with stairs and a boss arena.
 3. Press **F5**. Click the game to capture the mouse. WASD, mouse, **E** to use things, **F** flashlight, **1–6** weapons.
 4. Stop the test with **Shift+Esc**, **Esc → Quit**, or the top-right **Close test** button. Save the level before checking it with the normal editor’s **▶ Play** button.
 
 <figure class="shot"><img src="assets/screenshots/ed-fpsc-yard.png" alt="First-person view of the courtyard in the demo level: trees, sandbags, soldiers and a stone tower" loading="lazy"><figcaption>Press F5 and you are standing in your level. The demo level "Outpost Zero" is the template's starting point.</figcaption></figure>
+
+## Open, edit and switch level files
+
+**Edit `levels/level1.fpsl.json` in the FPS Level tab.** It contains rooms, wall shapes, floors, enemies, lights and rules. The normal **Scene** tab edits `scenes/main.scene.json`, which hosts the FPS runtime and chooses which saved FPS level the game loads.
+
+| File | Where to edit it | Purpose |
+|---|---|---|
+| `levels/level1.fpsl.json` | **FPS Level → Open… → level1.fpsl.json** | Outpost Zero: the template's playable starting map |
+| `levels/corners.fpsl.json` | **FPS Level → Open… → corners.fpsl.json** | Diagonal and circular room workshop |
+| `levels/my_level.fpsl.json` | **FPS Level → Save as…** to create it, then **Open…** | Your own reusable level file |
+| `scenes/main.scene.json` | Normal **Scene** tab and its **Inspector** | FPS Level host entity and its Level file setting |
+
+### Edit the map that main Play currently runs
+
+1. Stop main Play if it is running. Click the **FPS Level** tab.
+2. Click **Open…** in the FPS editor's own top bar (beside **New**).
+3. Click **level1.fpsl.json**. The picker lists `.fpsl.json` files directly inside this project's `levels/` folder. Opening a different project gives you that project's files.
+4. Draw walls, change corner shapes, move items or adjust Inspector properties. The top bar shows the open file path; **unsaved** means this map has no file yet.
+5. Click the FPS editor's **Save**. **F5 / Test** checks your current edits, including unsaved ones. Stop Test with **Shift+Esc**.
+6. Press the normal editor's **Play** to check the saved game. With the template's original Level file setting, it loads the saved `levels/level1.fpsl.json`.
+
+<figure class="shot"><img src="assets/screenshots/ed-fpsc-open-native.png" alt="Native Nord editor FPS Level Open dialog listing corners.fpsl.json and level1.fpsl.json" loading="lazy"><figcaption>FPS Level → Open… lists maps in the current project's levels folder. Click level1.fpsl.json to edit Outpost Zero, or corners.fpsl.json for the shaped-room workshop.</figcaption></figure>
+
+### Open a different map or make another one
+
+Use **Open… → corners.fpsl.json** to switch to the workshop. Save your current edits first; if prompted to discard changes, cancel and save if you want to keep them. **New** creates a small starter with diagonal and rounded rooms. **Save as…** writes it to a new path such as `levels/my_level.fpsl.json`; **Save** subsequently updates that file. To load a file from elsewhere on disk, use the top bar's **Import** button, then **Save as…** into `levels/` so it appears in Open.
+
+The FPS view can reopen its last-used map or show the unsaved starter. **Opening a map does not change the game's starting level.** Its top-bar path tells you exactly what you are editing.
+
+### Make main Play and export start in your new map
+
+1. In **FPS Level**, save the map as, for example, `levels/my_level.fpsl.json`.
+2. Switch to the normal **Scene** tab. Open the game's start scene (`scenes/main.scene.json` in the template) if necessary.
+3. Select **FPS Level** in the normal **Hierarchy**. In its **Inspector**, find the attached `scripts/fpsc/level-script.js` script and set **Level file** to `levels/my_level.fpsl.json` (relative to the project folder).
+4. Save the **scene** using the normal editor's Save control. The FPS map and the host scene are separate files, each with its own Save.
+5. Press main **Play**. Export uses this saved scene reference too. A Level exit can use another saved level's project-relative path to continue to it.
+
+If Test and main Play show different maps, compare the FPS top-bar path against the scene script's **Level file**, and save both. Test runs the open in-memory map; main Play runs the saved start scene and its referenced map.
+
+### Mouse capture in the native editor
+
+Launch the updated editor with `./run.sh`, start **Play** or FPS **Test**, then click **Click to play** inside the game. Mouse look captures the pointer. **Esc** releases it and pauses; **Resume** captures it again. In FPS Test, **Shift+Esc** closes the test; main Play uses the normal **Stop** button. The 3D building preview uses right-drag to look and does not capture the pointer.
+
+macOS builds include the native WebKit pointer-lock permission handler. Restart an already-running editor after updating Nord so it uses the rebuilt native code. The right-drag fallback remains for hosts that cannot provide pointer lock.
 
 ## The editor window
 * **Top bar**: file (New / Open / Save / Save as / download / import), undo/redo, **tools**, the active **layer** (storey), 2D · split · 3D view, **▶ Test** and **▶ From here**, the **✓** problems checker and **?** help.

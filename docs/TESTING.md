@@ -33,3 +33,7 @@
 Sandbox limits (Linux cloud container): no macOS, no display/WKWebView. egui renders headless via kittest; viewport JS tested in Chromium; the rest via macOS CI.
 
 Bug workflow: reproduce → add to `docs/KNOWN_ISSUES.md` (ID BUG-nnn) → fix → regression test/example → tick in `task.md` → `CHANGELOG.md`.
+
+### Native FPS mouse capture regression
+
+`./run.sh <disposable FPS template project>` → main Play → Click to play: free mouse movement turns the camera without a held button, Esc pauses/releases, Resume recaptures. Stop main Play, FPS Level → Open… → level1.fpsl.json → Test → Click to play: repeat capture, then Shift+Esc returns to editing. Check actual `document.pointerLockElement === canvas` with a temporary DOM probe when diagnosing host support; remove the probe afterward. Chromium tests alone cannot verify the WKWebView permission delegate. Rust grant-policy check: `cargo test -p nord-editor --features webview --lib only_focused_loopback_content_can_capture`.

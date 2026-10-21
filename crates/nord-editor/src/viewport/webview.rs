@@ -2,6 +2,9 @@
 //! the egui panel rect (macOS: WKWebView child view; verified only on macOS CI / by the owner, see KNOWN_ISSUES RISK-001).
 //! Without the feature — or if creation fails — the pane shows a card with "Open in browser" (separate-window
 //! fallback). Editor <-> page messaging does NOT depend on the webview: it goes over HTTP/SSE via nord-serve's Hub.
+#[cfg(all(target_os = "macos", feature = "webview"))]
+#[path = "mac_pointer_lock.rs"]
+mod mac_pointer_lock;
 use egui::{Ui, Vec2};
 use std::collections::{HashMap, HashSet};
 
@@ -209,6 +212,10 @@ impl WebPanes {
                     .build_as_child(frame)
                 {
                     Ok(wv) => {
+                        #[cfg(target_os = "macos")]
+                        if key != "docs" && url.starts_with("http://127.0.0.1:") {
+                            mac_pointer_lock::install(&wv);
+                        }
                         self.panes.insert(key.to_string(), wv);
                         self.urls.insert(key.to_string(), url.to_string());
                     }

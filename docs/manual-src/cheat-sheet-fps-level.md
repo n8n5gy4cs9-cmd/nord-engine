@@ -55,3 +55,12 @@ Save the level → set the scene’s **Level file** → save the scene → verif
 * **Circular room:** draw a 2×2 room, apply rounded SW/SE/NW/NE cuts to its corresponding outer corners. Each is a quarter circle. Open the included `levels/corners.fpsl.json` for a working example.
 * **Reusable variant:** select an item → change properties/scripts/rules → Reusable item → Save as variant → name/id → Save. Place the new entry from Items. Select/edit it later → Update variant defaults. Built-ins stay intact; instance overrides and copied rules are retained. Save the level separately.
 * **Existing projects:** Upgrade runtime before main Play/export. Shapes and variants are documented in the [full guide](fps-creator.html).
+
+## Open the right map
+
+* **Edit Outpost Zero:** FPS Level → Open… → level1.fpsl.json → edit → FPS Save.
+* **Switch map:** FPS Level → Open… → corners.fpsl.json (or another saved map). New + Save as… creates another level in `levels/`.
+* **Choose the game start map:** normal Scene → Hierarchy FPS Level → Inspector script Level file → `levels/your_map.fpsl.json` → save the scene. Main Play/export use this reference; FPS Test uses the open map.
+* **Capture mouse:** click Click to play; Esc releases/pauses, Resume recaptures. Restart `./run.sh` after updating the native editor.
+
+See [Open, edit and switch level files](fps-creator.html#open-edit-and-switch-level-files) for the complete workflow and screenshot.
