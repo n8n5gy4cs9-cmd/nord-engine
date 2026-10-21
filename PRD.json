@@ -624,6 +624,12 @@
       "status": "todo"
     },
     {
+      "id": "M12-23",
+      "milestone": "M12",
+      "title": "Import FPS Creator .fpi scripts: interpreter (runtime/fpsc/fpi.js), importer tool, tests and docs",
+      "status": "done"
+    },
+    {
       "id": "M9-01",
       "milestone": "M9",
       "title": "PLAN: docs/DESKTOP_APPS.md — desktop target architecture (ADR): reuse nord-player/wry shell vs native egui apps; capability model, API surface per tier (JS via IPC bridge, Rust direct); permissions/sandbox; what real apps need (checklist)",

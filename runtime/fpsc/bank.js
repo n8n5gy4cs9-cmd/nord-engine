@@ -6,6 +6,7 @@ import { ENTITIES, CATEGORIES } from './bank/entities.js';
 import { MODELS } from './models.js';
 import { WEAPONS } from './weapons.js';
 import { BUILTIN_SCRIPTS } from './behaviours/index.js';
+import { makeFpiScript } from './fpi.js';
 
 const byId = (list) => new Map(list.map((x) => [x.id, x]));
 
@@ -40,7 +41,8 @@ export async function createBank(custom = {}, opts = {}) {
   for (const path of custom.scripts ?? []) {
     try {
       if (!opts.importer) { warns.push(`custom script ${path}: no importer available`); continue; }
-      const mod = await opts.importer(path); const s = mod.default ?? mod;
+      const mod = await opts.importer(path); let s = mod.default ?? mod;
+      if (s && typeof s.fpi === 'string') s = makeFpiScript(s); // imported FPS Creator .fpi script (data-only module)
       if (!s?.id) { warns.push(`custom script ${path}: needs "export default { id: '…', … }"`); continue; }
       s.custom = true; s.file = path; scripts.set(s.id, s); customScripts.push(s);
     } catch (e) { warns.push(`custom script ${path} failed to load: ${e.message}`); }

@@ -16,12 +16,12 @@ const test = async (name, fn) => { try { await fn(); pass++; console.log(`  ok  
 
 if (run('unit')) {
   console.log('unit');
-  const r = spawnSync('node', ['--test', path.join(ROOT, 'runtime/fpsc/fpsc.test.mjs'), path.join(ROOT, 'editor/fpsc/shortcuts.test.mjs')], { encoding: 'utf8' });
+  const r = spawnSync('node', ['--test', path.join(ROOT, 'runtime/fpsc/fpsc.test.mjs'), path.join(ROOT, 'runtime/fpsc/fpi.test.mjs'), path.join(ROOT, 'editor/fpsc/shortcuts.test.mjs')], { encoding: 'utf8' });
   await test('runtime model and editor shortcut unit tests', () => assert.equal(r.status, 0, r.stdout.split('\n').filter((l) => /^not ok|error:/.test(l)).join('\n')));
   const gen = spawnSync('node', [path.join(ROOT, 'tools/gen_fpsc_level.mjs'), path.join(os.tmpdir(), 'fpsc-gen-check.json')], { encoding: 'utf8' });
   await test('demo level generator runs', () => assert.equal(gen.status, 0, gen.stderr));
 }
-const needServer = run('api') || run('nord') || run('game') || run('editor');
+const needServer = run('api') || run('nord') || run('game') || run('editor') || run('fpi');
 let cleanup = () => {};
 if (!needServer) summary();
 
@@ -60,7 +60,7 @@ if (run('api')) {
   await test('nord check passes on the template', () => { const r = spawnSync(bin, ['check', path.join(ROOT, 'templates/fps-creator')], { encoding: 'utf8' }); assert.equal(r.status, 0, r.stdout + r.stderr); });
 }
 
-if (run('nord') || run('game') || run('editor')) {
+if (run('nord') || run('game') || run('editor') || run('fpi')) {
   const { chromium } = loadPlaywright();
   const browser = await chromium.launch({ args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--no-sandbox'] });
   const newPage = async (w = 1280, h = 720) => {
@@ -87,6 +87,50 @@ if (run('nord') || run('game') || run('editor')) {
     });
     await test('no console errors during boot', () => noErrors(page));
     await page.close();
+  }
+
+  if (run('fpi')) {
+    console.log('fpi (imported FPS Creator scripts)');
+    const fpiDir = ['scriptbank', 'TEMP/Fps-Creator-Modern/FPS Creator Shared/FPS Creator/Projects/FPSCREATOR/Files/scriptbank'].map((d) => path.join(ROOT, d)).find((d) => fs.existsSync(d));
+    if (!fpiDir) console.log('  skip (no FPS Creator scriptbank in TEMP/)');
+    else {
+      const imp = spawnSync('node', [path.join(ROOT, 'tools/fpsc-import-fpi.mjs'), fpiDir, proj, '--only', 'door1,switch1,pickuphealth,light1'], { encoding: 'utf8' });
+      await test('importer writes door1, switch1, pickuphealth, light1', () => { assert.equal(imp.status, 0, imp.stderr); assert.ok(fs.existsSync(path.join(proj, 'fpsc/scripts/fpi-door1.js'))); });
+      const { newLevel, paintRoom } = await import(path.join(ROOT, 'runtime/fpsc/level.js'));
+      const lv = newLevel({ name: 'FPI', w: 12, d: 12 }); paintRoom(lv, 0, 1, 1, 8, 8, { tex: 'brick' });
+      const E = (id, type, x, z, extra = {}) => ({ id, type, x, z, y: 0, layer: 0, rot: 0, props: {}, scripts: [], rules: [], ...extra });
+      lv.entities.push(E('ps', 'player_start', 8, 8), E('door', 'crate', 20, 8, { name: 'dbox', scripts: [{ id: 'fpi-door1', params: { s0: 'door', s1: 'door', anim: 0.5 } }] }),
+        E('sw', 'crate', 8, 20, { name: 'sw', target: 'lamp', scripts: [{ id: 'fpi-switch1', params: { s0: 'switch' } }] }), E('lamp', 'light_ceiling', 8, 26, { name: 'lamp' }),
+        E('hp', 'health_small', 26, 26, { scripts: [{ id: 'pickup', remove: true }, { id: 'fpi-pickuphealth', params: { s0: 'pickup' } }] }));
+      fs.writeFileSync(path.join(proj, 'levels/fpi.fpsl.json'), JSON.stringify(lv));
+      const page = await newPage();
+      await page.goto(`${base}/editor/fpsc/play.html?level=levels/fpi.fpsl.json&autostart&nolock`);
+      await page.waitForFunction(() => window.__fpsc_ready || window.__fpsc_error, null, { timeout: 30000 });
+      const G = (fn, arg) => page.evaluate(`(${fn})(window.__fpsc.game, ${JSON.stringify(arg ?? null)})`);
+      const step = (n) => G(`(g, n) => { for (let i = 0; i < n; i++) { g.update(1 / 30); g.ctl.endFrame(); } }`, n);
+      const tp = (x, z, yawDeg = 0) => G(`(g, a) => { g.player.teleport(a[0], a[1], 0); g.player.yaw = a[2] * Math.PI / 180; g.player.pitch = 0; }`, [x, z, yawDeg]);
+      const st = (name) => G(`(g, n) => { const e = g.ents.find((x) => x.name === n || x.type === n); const s = e.scripts.find((q) => q.id.startsWith('fpi-')); return s ? { state: s.s.state, frame: s.s.frame } : null; }`, name);
+      await test('level loads with the imported scripts and no bank warnings', async () => { const w = await G('(g) => g.bank.warns'); assert.deepEqual(w, []); assert.equal(await G(`(g) => g.ents.filter((e) => e.scripts.some((s) => s.id.startsWith('fpi-'))).length`), 3); });
+      await test('door1: opens when the player is near and closes again when they leave', async () => {
+        await tp(8 * 1, 28, 0); await step(5); assert.equal((await st('dbox')).state, 0, 'idle far away');
+        await tp(20 - 1.5, 8, 90); await step(5); assert.ok((await st('dbox')).state >= 1, 'started opening');
+        await step(30); const open = await st('dbox'); assert.equal(open.state, 2, 'fully open'); assert.equal(open.frame, 1);
+        await tp(8, 28, 0); await step(60); assert.equal((await st('dbox')).state, 0, 'closed and ready again');
+      });
+      await test('switch1: pressing E toggles the target light', async () => {
+        const light = () => G(`(g) => g.ents.find((x) => x.name === 'lamp').light?.on`);
+        const before = await light(); await tp(8, 20 - 1.6, 0); await step(3);
+        assert.match(await G(`(g) => document.querySelector('.fpsc-msg')?.textContent ?? ''`), /Press E to use/, 'FPS Creator prompt text shown');
+        await G(`(g) => g.ctl.pressedQ.add('KeyE')`); await step(3);
+        const after = await light(); assert.notEqual(after, before, `light toggled (${before} -> ${after})`);
+      });
+      await test('pickuphealth: heals once and hides', async () => {
+        await G('(g) => { g.player.hp = 30; }'); await tp(26, 26, 0); await step(5);
+        assert.equal(await G('(g) => g.player.hp'), 80); await G('(g) => { g.player.hp = 30; }'); await step(10); assert.equal(await G('(g) => g.player.hp'), 30, 'only once');
+      });
+      await test('no console errors', () => noErrors(page));
+      await page.screenshot({ path: `${OUT}/fpi.png` }); await page.close();
+    }
   }
 
   if (run('game')) {

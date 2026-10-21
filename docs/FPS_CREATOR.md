@@ -128,6 +128,35 @@ All additions live in `<project>/fpsc/` and are listed in `fpsc/bank.json`; the 
 
 Rules of thumb: ids are lowercase `a-z 0-9 _`; never edit `scripts/fpsc/` (re-installed on upgrade) — put everything of yours in `fpsc/`; a missing/bad custom item only produces a **warning** (editor console, game console) and is skipped.
 
+## Importing FPS Creator scripts (.fpi) — M12-23
+FPS Creator (Classic/Modern) behaviours are small state machines in plain-text `.fpi` files (`scriptbank/`). Nord runs them with its own interpreter (`runtime/fpsc/fpi.js`); **nothing from the FPS Creator files is shipped in Nord** — you import from your own local copy (see the licence note in `THIRD_PARTY.md`).
+
+```sh
+node tools/fpsc-import-fpi.mjs <path/to/scriptbank> <your-project> --dry     # preview: what converts, what is skipped
+node tools/fpsc-import-fpi.mjs <path/to/scriptbank> <your-project>          # write the scripts
+node tools/fpsc-import-fpi.mjs <path/to/scriptbank> <your-project> --only door1,switch1,pickuphealth   # just some
+```
+Each convertible script becomes `fpsc/scripts/fpi-<name>.js` (a data-only module that holds the original text in `fpi`) and is added to `fpsc/bank.json` → `scripts`; a report goes to `fpsc/fpi/IMPORT_REPORT.md`. Re-running is safe. Reopen the editor: the imported scripts appear in the **Scripts** tab under the categories *FPI*, *FPI destroy*, … Attach them like any script (drag onto an entity, or *Attach* in the Inspector).
+
+**How a line works.** `:conditions:actions` — every update the lines run top to bottom and a line fires when all its conditions hold. `state=N` as a condition tests the state, as an action sets it (later lines see the new state in the same update). Example (proximity door): `:state=0,plrdistwithin=120:state=4`.
+
+**Setting the script up (Inspector → Scripts → parameters).**
+| Parameter | Meaning |
+|---|---|
+| `$0 … $3` sounds (`s0…s3`) | FPS Creator passes sound files from the entity (`soundset`). Enter a Nord sound name (`pickup`, `door`, `switch`…) or any name from `bank.json` → `sounds`. Paths written in the script (`audiobank\items\pickup.wav`) use the file name without extension as the sound name. |
+| Pickup gives / amount / message | What `playertake` hands over: `health`, `armor`, `ammo_bullets`, `weapon_shotgun`, `key_red` … (the FPS Creator item definition is not imported). |
+| Animation time | FPS Creator animates a model with frames (`incframe`, `frameatend` …). Nord does not import those animations; the frame counter simply runs over this many seconds, so door/switch cycles keep their timing. |
+| **Target** field of the entity | Replaces FPS Creator's *IfUsed* field: `activate`, `activateifused` and `plrmoveifused` act on it (a door name, a light, an entity name or `#tag`). A door opens/closes; a plain Nord light **toggles on every press**; an entity that runs an imported script (e.g. `fpi-light1`) receives the activation and reacts as in FPS Creator. |
+
+The Inspector lists only the parameters a script actually uses (e.g. no sounds for a script without `$0`).
+
+**Supported (79 of the 166 stock scripts convert):** pickups (ammo, health, weapons, keys, items), doors/lifts/switches in all their variants, lights (on/off/toggle), zones (heal, hurt, sound, music text, story, activate, transport), appear/disappear, vars and timers. **Conditions:** `state plrdistwithin plrdistfurther plrhigher plrusingaction plrwithinzone anywithinzone anywithin anyfurther activated varequal/notequal/less/greater timergreater random frameatend frameatstart cantake plrhaskey plrcanbeseen alphafadeequal playerassociated raycastup`. **Actions:** `state sound plrsound loopsound hudshow activate activateifused activateallinzone playertake plraddhealth plrsubhealth addhealth subhealth sethealth plrmoveto plrmoveifused lighton lightoff moveup associateplayer unassociateplayer timerstart setvar incvar decvar dimvar setframe incframe decframe setalphafade incalphafade spinrate floatrate destroy spawnon spawnoff`.
+**Accepted but without effect** (visual/engine-only): `coloff colon animate alttexture rundecal lightintensity music hud layout …` (full list: `IGNORED` in `fpi.js`). Distances are converted at 1 unit = 2.5 cm; `raycastup=A B` is approximated as "lift reached B units above where it started"; 3D-model frame animation, collision toggling and decals are not reproduced.
+
+**Skipped:** the enemy-AI scripts (`people/*`, `Dark AI/*`: `aiattack`, `settarget`, weapons, waypoints, teams…) cannot be interpreted. The report names the closest Nord AI script for each: `shoot*`→`ai-shooter`, `snipe*`→`ai-sniper`, `melee*/chase*`→`ai-melee`, `pace*/cover*/coward*`→`ai-patrol`, `mover*`→`ai-flyer`. Use the matching Nord enemy entity instead.
+
+**Your own `.fpi` scripts.** Any text following those rules works: put it in a data-only module `export default { id: 'my-door', title: 'My door', fpi: ':state=0,plrdistwithin=120:state=1\n…' }` in `fpsc/scripts/` and list the file in `bank.json`. Unknown commands make a line never fire (the importer lists them) — check `unsupported(parseFpi(text))` from `runtime/fpsc/fpi.js`.
+
 ## Level format (`*.fpsl.json`, `"format": "fpsc-level/1"`)
 ```jsonc
 {
@@ -157,7 +186,7 @@ Rules of thumb: ids are lowercase `a-z 0-9 _`; never edit `scripts/fpsc/` (re-in
 WASD move · mouse look · Shift sprint · Space jump · C crouch · **E** use / open doors · LMB fire · R reload · 1-6 / wheel / Q weapons · **F** flashlight · M minimap · Esc pause.
 
 ## Testing
-`node tools/fpsc-test.mjs [unit|api|nord|game|editor]` (needs `cargo build -p nord-cli`, Playwright + Chromium): 15 node unit tests (`runtime/fpsc/fpsc.test.mjs`: level model, collision, rays, A\*, geometry+baking, bank, rules), the file API/CLI, Nord boot of the template, 17 gameplay scenarios on the demo level (doors, locks, keys, shooting, AI, stairs, rules, ambush, hazards, checkpoints, boss, win/death/restart, custom glb/sprite/script bank) and 17 editor scenarios (every tool with real mouse input, inspector, undo, save/reload, assets, play-test). Rust: `cargo test -p nord-core fpsc`, `cargo test -p nord-editor --test ui fps_tab`. Screenshots land in `target/fpsc/`.
+`node tools/fpsc-test.mjs [unit|api|nord|game|editor]` (needs `cargo build -p nord-cli`, Playwright + Chromium): node unit tests (`runtime/fpsc/fpi.test.mjs`: 9 for the .fpi interpreter and importer; `runtime/fpsc/fpsc.test.mjs`: level model, collision, rays, A\*, geometry+baking, bank, rules), the file API/CLI, Nord boot of the template, 17 gameplay scenarios on the demo level (doors, locks, keys, shooting, AI, stairs, rules, ambush, hazards, checkpoints, boss, win/death/restart, custom glb/sprite/script bank) and 17 editor scenarios (every tool with real mouse input, inspector, undo, save/reload, assets, play-test). Rust: `cargo test -p nord-core fpsc`, `cargo test -p nord-editor --test ui fps_tab`. Screenshots land in `target/fpsc/`.
 
 ## Known limits
 See `docs/KNOWN_ISSUES.md` (FPS Creator section): software-GL only verified headlessly; no shadows from dynamic lights; static light changes at runtime re-bake (short hitch); multi-storey light bleeding through floors is approximate; sprites/glb are flat-lit; touch controls/gamepad not implemented; bundled single-file export cannot import custom scripts dynamically; web-editor (wasm) shows the tab but cannot install the runtime (use the CLI on the server).

@@ -138,6 +138,19 @@ Everything you add lives in your project's `fpsc/` folder and works offline and 
 
 Power users edit `fpsc/bank.json` directly (new wall pieces, entities that *extend* built-ins, weapons). The full rules table is in **Help (F1)** and in `docs/FPS_CREATOR.md`.
 
+## Use scripts from FPS Creator (.fpi)
+If you own a copy of FPS Creator, you can reuse its ready-made behaviours (doors, lifts, switches, pickups, lights, trigger zones). They are plain-text `.fpi` files in its `scriptbank` folder; Nord runs them with a built-in interpreter. Nord does not include any FPS Creator files — you import from your own folder.
+
+1. Preview what will work (change the paths):
+   ```
+   node tools/fpsc-import-fpi.mjs ~/Downloads/FPS-Creator/Files/scriptbank ~/MyGame --dry
+   ```
+2. Import for real (leave off `--dry`). To take only a few scripts add `--only door1,switch1,pickuphealth`.
+3. Reopen the **FPS Level** tab. The **Scripts** tab now has *FPI* categories. Drag, for example, **Player Proximity Door** (`fpi-door1`) onto an entity, or use *Attach* in the Inspector.
+4. In the Inspector set the script's parameters: the **sounds** (`$0`, `$1`: type a Nord sound name such as `door` or `pickup`), **Pickup gives** (for example `health` and the amount) and the **Target** field (it replaces FPS Creator's *IfUsed* box, so a switch's Target is the door or light it controls).
+
+About 80 of the 166 stock scripts work. The enemy-AI scripts (`people`, `Dark AI`) do not; `fpsc/fpi/IMPORT_REPORT.md` lists each skipped file and which built-in Nord enemy script to use instead. FPS Creator model animations are not imported, so a door script keeps its timing (set **Animation time**) but no model moves. Details: `docs/FPS_CREATOR.md`, "Importing FPS Creator scripts".
+
 ## Test, Test from here, and the main Play button
 
 These are two different ways to run your work. FPS tests are for the level you are editing; the main editor plays the project through its configured start scene.

@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 254/269 tasks (94%)** · updated 2026-10-21
+**Overall: 255/270 tasks (94%)** · updated 2026-10-21
 
 | Milestone | Progress |
 |---|---|
@@ -19,7 +19,7 @@
 | M9 Desktop apps | 16/16 (100%) |
 | M10 Construct-style editor | 35/35 (100%) |
 | M11 Web editor | 14/16 (88%) |
-| M12 FPS Creator addon | 19/22 (86%) |
+| M12 FPS Creator addon | 20/23 (87%) |
 
 ## Next up
 - **M12-13** OWNER: verify the FPS Level tab + play-test on macOS/Windows with a real GPU (pointer lock in the embedded webview, performance, feel of movement/combat); decide on gamepad/touch controls and shadowed dynamic lights
@@ -348,6 +348,7 @@ _a full first-person level editor + runtime modelled on the classic FPS Creator 
 - [x] **M12-20** Fix native macOS FPS mouse capture and document level file workflows
 - [ ] **M12-21** 2D Level Creator: FPS Level workflow adapted to side-scroller and top-down maps with tile layers, collision, entities, scripts and test/export
 - [ ] **M12-22** 2D Level Creator built-in sprite bank: bundle Amiga collection, previews, animation presets, palette categories and project asset copying
+- [x] **M12-23** Import FPS Creator .fpi scripts: interpreter (runtime/fpsc/fpi.js), importer tool, tests and docs
 
 ## Features (PRD)
 
