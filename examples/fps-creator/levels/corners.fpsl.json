@@ -1,0 +1,334 @@
+{
+  "format": "fpsc-level/1",
+  "name": "Corner workshop",
+  "author": "",
+  "w": 13,
+  "d": 8,
+  "cell": 4,
+  "story": 3.2,
+  "settings": {
+    "sky": "day",
+    "skyColor": "#8fb8e8",
+    "ground": "none",
+    "fog": false,
+    "fogColor": "#9bb0c8",
+    "fogDensity": 0.012,
+    "ambient": 0.65,
+    "ambientColor": "#a6b2c8",
+    "music": "",
+    "intro": "",
+    "objective": "Explore the octagon. The circular room is linked by a teleporter.",
+    "timeLimit": 0
+  },
+  "layers": [
+    {
+      "name": "Ground",
+      "cells": {
+        "1,1": {
+          "f": "wood_floor",
+          "c": "ceiling_tiles",
+          "shape": {
+            "kind": "diagonal",
+            "corner": "SW",
+            "t": "brick"
+          }
+        },
+        "1,2": {
+          "f": "wood_floor",
+          "c": "ceiling_tiles"
+        },
+        "1,3": {
+          "f": "wood_floor",
+          "c": "ceiling_tiles"
+        },
+        "1,4": {
+          "f": "wood_floor",
+          "c": "ceiling_tiles",
+          "shape": {
+            "kind": "diagonal",
+            "corner": "NW",
+            "t": "brick"
+          }
+        },
+        "2,1": {
+          "f": "wood_floor",
+          "c": "ceiling_tiles"
+        },
+        "2,2": {
+          "f": "wood_floor",
+          "c": "ceiling_tiles"
+        },
+        "2,3": {
+          "f": "wood_floor",
+          "c": "ceiling_tiles"
+        },
+        "2,4": {
+          "f": "wood_floor",
+          "c": "ceiling_tiles"
+        },
+        "3,1": {
+          "f": "wood_floor",
+          "c": "ceiling_tiles"
+        },
+        "3,2": {
+          "f": "wood_floor",
+          "c": "ceiling_tiles"
+        },
+        "3,3": {
+          "f": "wood_floor",
+          "c": "ceiling_tiles"
+        },
+        "3,4": {
+          "f": "wood_floor",
+          "c": "ceiling_tiles"
+        },
+        "4,1": {
+          "f": "wood_floor",
+          "c": "ceiling_tiles",
+          "shape": {
+            "kind": "diagonal",
+            "corner": "SE",
+            "t": "brick"
+          }
+        },
+        "4,2": {
+          "f": "wood_floor",
+          "c": "ceiling_tiles"
+        },
+        "4,3": {
+          "f": "wood_floor",
+          "c": "ceiling_tiles"
+        },
+        "4,4": {
+          "f": "wood_floor",
+          "c": "ceiling_tiles",
+          "shape": {
+            "kind": "diagonal",
+            "corner": "NE",
+            "t": "brick"
+          }
+        },
+        "8,2": {
+          "f": "tile_checker",
+          "c": "ceiling_tiles",
+          "shape": {
+            "kind": "round",
+            "corner": "SW",
+            "t": "metal_panel"
+          }
+        },
+        "8,3": {
+          "f": "tile_checker",
+          "c": "ceiling_tiles",
+          "shape": {
+            "kind": "round",
+            "corner": "NW",
+            "t": "metal_panel"
+          }
+        },
+        "9,2": {
+          "f": "tile_checker",
+          "c": "ceiling_tiles",
+          "shape": {
+            "kind": "round",
+            "corner": "SE",
+            "t": "metal_panel"
+          }
+        },
+        "9,3": {
+          "f": "tile_checker",
+          "c": "ceiling_tiles",
+          "shape": {
+            "kind": "round",
+            "corner": "NE",
+            "t": "metal_panel"
+          }
+        }
+      },
+      "edges": {
+        "1,1,H": {
+          "k": "wall",
+          "t": "brick"
+        },
+        "1,5,H": {
+          "k": "wall",
+          "t": "brick"
+        },
+        "2,1,H": {
+          "k": "wall",
+          "t": "brick"
+        },
+        "2,5,H": {
+          "k": "wall",
+          "t": "brick"
+        },
+        "3,1,H": {
+          "k": "wall",
+          "t": "brick"
+        },
+        "3,5,H": {
+          "k": "wall",
+          "t": "brick"
+        },
+        "4,1,H": {
+          "k": "wall",
+          "t": "brick"
+        },
+        "4,5,H": {
+          "k": "wall",
+          "t": "brick"
+        },
+        "1,1,V": {
+          "k": "wall",
+          "t": "brick"
+        },
+        "5,1,V": {
+          "k": "wall",
+          "t": "brick"
+        },
+        "1,2,V": {
+          "k": "wall",
+          "t": "brick"
+        },
+        "5,2,V": {
+          "k": "wall",
+          "t": "brick"
+        },
+        "1,3,V": {
+          "k": "wall",
+          "t": "brick"
+        },
+        "5,3,V": {
+          "k": "wall",
+          "t": "brick"
+        },
+        "1,4,V": {
+          "k": "wall",
+          "t": "brick"
+        },
+        "5,4,V": {
+          "k": "wall",
+          "t": "brick"
+        },
+        "8,2,H": {
+          "k": "wall",
+          "t": "metal_panel"
+        },
+        "8,4,H": {
+          "k": "wall",
+          "t": "metal_panel"
+        },
+        "9,2,H": {
+          "k": "wall",
+          "t": "metal_panel"
+        },
+        "9,4,H": {
+          "k": "wall",
+          "t": "metal_panel"
+        },
+        "8,2,V": {
+          "k": "wall",
+          "t": "metal_panel"
+        },
+        "10,2,V": {
+          "k": "wall",
+          "t": "metal_panel"
+        },
+        "8,3,V": {
+          "k": "wall",
+          "t": "metal_panel"
+        },
+        "10,3,V": {
+          "k": "wall",
+          "t": "metal_panel"
+        }
+      }
+    }
+  ],
+  "entities": [
+    {
+      "id": "corner_0",
+      "type": "player_start",
+      "x": 12,
+      "z": 12,
+      "layer": 0,
+      "rot": 0,
+      "props": {}
+    },
+    {
+      "id": "corner_1",
+      "type": "level_exit",
+      "x": 12,
+      "z": 8,
+      "layer": 0,
+      "rot": 0,
+      "props": {}
+    },
+    {
+      "id": "corner_2",
+      "type": "teleporter",
+      "x": 18,
+      "z": 12,
+      "layer": 0,
+      "rot": 0,
+      "props": {},
+      "name": "to_circle",
+      "target": "circle_arrival"
+    },
+    {
+      "id": "corner_3",
+      "type": "spawn_point",
+      "x": 36,
+      "z": 12,
+      "layer": 0,
+      "rot": 0,
+      "props": {},
+      "name": "circle_arrival"
+    },
+    {
+      "id": "corner_4",
+      "type": "teleporter",
+      "x": 38,
+      "z": 12,
+      "layer": 0,
+      "rot": 0,
+      "props": {},
+      "name": "to_octagon",
+      "target": "octagon_arrival"
+    },
+    {
+      "id": "corner_5",
+      "type": "spawn_point",
+      "x": 14,
+      "z": 12,
+      "layer": 0,
+      "rot": 0,
+      "props": {},
+      "name": "octagon_arrival"
+    },
+    {
+      "id": "corner_6",
+      "type": "light_point",
+      "x": 12,
+      "z": 12,
+      "layer": 0,
+      "rot": 0,
+      "props": {
+        "intensity": 1,
+        "range": 18
+      }
+    },
+    {
+      "id": "corner_7",
+      "type": "light_point",
+      "x": 36,
+      "z": 12,
+      "layer": 0,
+      "rot": 0,
+      "props": {
+        "intensity": 1,
+        "range": 10
+      }
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 // Top-down 2D map: draws the level (floors with their real textures, walls/doors/windows by kind, entities, zones, paths) and answers pick queries.
 import { CELL, STORY, unkey, ekey } from '/runtime/fpsc/level.js';
+import { hasCorner, cellPolygon, cornerBoundary, hiddenCornerEdge } from '/runtime/fpsc/corners.js';
 import { paintTexture } from '/runtime/fpsc/bank/textures.js';
 
 const cache = { cv: new Map(), avg: new Map() };
@@ -102,13 +103,22 @@ export class Map2D {
     c.save(); c.globalAlpha = alpha;
     for (const [k, cell] of Object.entries(ly.cells)) {
       const [cx, cz] = unkey(k), [sx, sy] = this.toScreen(cx * CELL, (cz + 1) * CELL), s = CELL * Z;
+      c.save();
+      if (hasCorner(cell)) {
+        c.beginPath(); cellPolygon(cell,cx,cz).forEach(([x,z],i) => { const p=this.toScreen(x,z); if(i)c.lineTo(...p);else c.moveTo(...p); }); c.closePath(); c.clip();
+      }
       if (cell.f) { c.fillStyle = this.pattern(cell.f); c.save(); c.translate(0, 0); c.fillRect(sx, sy, s, s); c.restore(); } else { c.fillStyle = '#0c0c0c'; c.fillRect(sx, sy, s, s); c.strokeStyle = '#a33'; c.beginPath(); c.moveTo(sx, sy); c.lineTo(sx + s, sy + s); c.moveTo(sx + s, sy); c.lineTo(sx, sy + s); c.stroke(); }
       if (cell.h) { c.fillStyle = cell.h > 0 ? `rgba(255,255,255,${Math.min(0.35, cell.h * 0.2)})` : `rgba(0,0,0,${Math.min(0.55, -cell.h * 0.3)})`; c.fillRect(sx, sy, s, s); if (Z > 6) { c.fillStyle = '#fff'; c.font = '10px sans-serif'; c.fillText(`${cell.h > 0 ? '+' : ''}${cell.h}`, sx + 3, sy + 11); } }
       if (cell.s) { const dir = cell.s.d || 'N', ang = { N: 0, E: Math.PI / 2, S: Math.PI, W: -Math.PI / 2 }[dir]; c.save(); c.translate(sx + s / 2, sy + s / 2); c.rotate(ang); c.strokeStyle = 'rgba(255,255,255,.7)'; c.lineWidth = 1; for (let i = -3; i <= 3; i++) { c.beginPath(); c.moveTo(-s * 0.4, i * s * 0.12); c.lineTo(s * 0.4, i * s * 0.12); c.stroke(); } c.fillStyle = '#ffd23a'; c.beginPath(); c.moveTo(0, -s * 0.42); c.lineTo(-s * 0.18, -s * 0.14); c.lineTo(s * 0.18, -s * 0.14); c.fill(); c.restore(); }
       if (cell.p) { c.fillStyle = rgb(texAvg(ed.bank, cell.pt || 'concrete')); c.fillRect(sx + s * 0.3, sy + s * 0.3, s * 0.4, s * 0.4); c.strokeStyle = '#000'; c.strokeRect(sx + s * 0.3, sy + s * 0.3, s * 0.4, s * 0.4); }
       if (cell.c === undefined && cell.f && alpha === 1 && Z > 5) { c.fillStyle = 'rgba(80,160,255,.35)'; c.fillRect(sx + 2, sy + 2, 4, 4); } // no ceiling marker
+      c.restore();
     }
-    for (const [k, piece] of Object.entries(ly.edges)) this.drawEdge(k, piece, alpha);
+    for (const [k, cell] of Object.entries(ly.cells)) if(hasCorner(cell)) {
+      const [x,z]=unkey(k); c.strokeStyle=rgb(texAvg(ed.bank,cell.shape.t||'concrete')); c.lineWidth=Math.max(3,0.34*Z); c.beginPath();
+      cornerBoundary(cell,x,z).forEach(([wx,wz],i)=>{const p=this.toScreen(wx,wz);if(i)c.lineTo(...p);else c.moveTo(...p);});c.stroke();
+    }
+    for (const [k, piece] of Object.entries(ly.edges)) if (!hiddenCornerEdge(ly,k)) this.drawEdge(k, piece, alpha);
     c.restore();
   }
   edgeEnds(x, z, o) { const a = this.toScreen(x * CELL, z * CELL), b = o === 'H' ? this.toScreen((x + 1) * CELL, z * CELL) : this.toScreen(x * CELL, (z + 1) * CELL); return [a, b]; }

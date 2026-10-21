@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { newLevel, newLayer, paintRoom, setEdge, setCell, getCell, validate, normalize, CELL, STORY, sideEdge, bounds } from './level.js';
 import { World } from './world.js';
 import { buildGeometry, bakeBatches, lightAtPoint } from './geometry.js';
-import { createBank, resolveScripts } from './bank.js';
+import { createBank, resolveScripts, entityVariant } from './bank.js';
 import { TEXTURES } from './bank/textures.js';
 import { PIECES } from './bank/segments.js';
 import { ACTIONS, RUN, WHENS } from './actions.js';
@@ -156,4 +156,69 @@ test('math: ray vs vertical cylinder', () => {
   assert.ok(Math.abs(rayCylinder([0, 1, 0], [0, 0, 1], 0, 5, 1, 0, 2, 20) - 4) < 1e-6);
   assert.equal(rayCylinder([0, 5, 0], [0, 0, 1], 0, 5, 1, 0, 2, 20), null, 'passes above');
   assert.ok(Math.abs(rayCylinder([0, 5, 5], [0, -1, 0], 0, 5, 1, 0, 2, 20) - 3) < 1e-6, 'hits the top cap');
+});
+
+// The same footprint must define what is drawn, walkable, and opaque in every orientation.
+const { CORNERS, cellPolygon, cellCenter, cellContains } = await import('./corners.js');
+for (const kind of ['diagonal', 'round']) for (const corner of CORNERS) test(`corner ${kind} ${corner}: cut surfaces, capsule collision, rays and navigation agree`, () => {
+  const lv = newLevel({ w: 5, d: 5 }); lv.settings.ground = 'none';
+  const c = { f: 'wood_floor', c: 'ceiling_tiles', shape: { kind, corner, t: 'brick' } };
+  setCell(lv, 0, 1, 1, c); const w = world(lv), polygon = cellPolygon(c, 1, 1), center = cellCenter(c, 1, 1);
+  assert.ok(cellContains(c, ...center)); assert.equal(w.floorAt(...center)?.y, 0);
+  const removed = [corner.includes('E') ? 7.8 : 4.2, corner.includes('N') ? 7.8 : 4.2];
+  assert.equal(w.floorAt(...removed), null); assert.equal(w.ceilingAt(...removed, 1), Infinity);
+  assert.equal(w.ceilingAt(...center, 1), STORY);
+  const ray = w.ray(center[0],1,center[1],removed[0]-center[0],0,removed[1]-center[1],8,'bullet');
+  assert.ok(ray); assert.ok(Math.abs(Math.hypot(ray.nx,ray.nz)-1) < 1e-6);
+  assert.equal(w.los([center[0],1,center[1]],[removed[0],1,removed[1]]), false);
+  let [x,z]=center; const dx=(removed[0]-x)/100,dz=(removed[1]-z)/100;
+  for(let i=0;i<150;i++) { const m=w.moveCircle(x,z,0,1.8,0.3,dx,dz); x=m.x;z=m.z; }
+  assert.ok(cellContains(c,x,z), `capsule crossed boundary at ${x},${z}`);
+  assert.equal(w.path({x:center[0],z:center[1],layer:0},{x:removed[0],z:removed[1],layer:0}),null);
+  const g=buildGeometry(w,lv,bank), floor=g.batches.get('wood_floor'); let area=0;
+  for(let i=0;i<floor.idx.length;i+=3) { const p=floor.idx.slice(i,i+3).map(j=>[floor.pos[j*3],floor.pos[j*3+2]]); area+=Math.abs((p[1][0]-p[0][0])*(p[2][1]-p[0][1])-(p[1][1]-p[0][1])*(p[2][0]-p[0][0]))/2; }
+  const expected=kind==='diagonal'?8:8*8*Math.sin(Math.PI/16);
+  assert.ok(Math.abs(area-expected)<1e-6, `floor area ${area} expected ${expected}`);
+  for(let i=0;i<floor.pos.length;i+=3) assert.ok(cellContains(c,floor.pos[i],floor.pos[i+2],1,1));
+  assert.ok(polygon.length === (kind==='round'?10:3));
+});
+
+test('corner navigation uses retained-side centroids; restoring square reveals preserved walls', () => {
+  const lv=newLevel({w:5,d:5});lv.settings.ground='none';
+  setCell(lv,0,1,1,{f:'wood_floor',shape:{kind:'diagonal',corner:'NE',t:'brick'}});
+  for(const [x,z] of [[0,1],[1,0]]) setCell(lv,0,x,z,{f:'wood_floor'});
+  const w=world(lv), route=w.path({x:2,z:6,layer:0},{x:6,z:2,layer:0});
+  assert.ok(route && route.length>=2);
+  for(const p of route) assert.ok(w.floorAt(p.x,p.z));
+  for(let i=0;i<route.length;i++) { const a=i?route[i-1]:{x:2,z:6},b=route[i]; assert.ok(!w.ray(a.x,1,a.z,b.x-a.x,0,b.z-a.z,Math.hypot(b.x-a.x,b.z-a.z),'move')); }
+  setEdge(lv,0,1,2,'H',{k:'wall',t:'brick'}); const before=JSON.stringify(lv.layers[0].edges);
+  assert.equal(world(lv).ray(5,1,9,0,0,-1,0.8),null,'cut-away outer wall not rendered/colliding');
+  delete lv.layers[0].cells['1,1'].shape;
+  assert.equal(JSON.stringify(lv.layers[0].edges),before);
+  assert.ok(world(lv).ray(5,1,9,0,0,-1,2));
+});
+
+
+test('reusable variant captures properties, disabled scripts and rules without placement identity', async () => {
+  const def=bank.entity('enemy_soldier'), e={id:'one',type:def.id,x:12,z:16,name:'guard1',target:'door1',path:[[12,16]],props:{health:123},scripts:[{id:'ai-shooter',params:{damage:2},off:true}],rules:[{when:'died',do:'message',text:'Done'}]};
+  const preset=entityVariant(def,e,'gentle_guard','Gentle guard'), custom=await createBank({entities:[preset]});
+  assert.equal(custom.entity('gentle_guard').props.health.default,123);
+  assert.equal(resolveScripts(custom.entity('gentle_guard'),{})[0].off,true);
+  assert.equal(resolveScripts(custom.entity('gentle_guard'),{scripts:[{id:'ai-shooter',params:{damage:3}}]})[0].off,true);
+  assert.equal(resolveScripts(custom.entity('gentle_guard'),{scripts:[{id:'ai-shooter',off:false}]})[0].off,false);
+  assert.equal(preset.rules[0].text,'Done');
+  for(const key of ['x','z','path','name','target']) assert.equal(preset[key],undefined);
+  preset.rules[0].text='Changed';assert.equal(e.rules[0].text,'Done');
+  assert.notEqual(bank.entity('enemy_soldier').props.health.default,123);
+});
+
+
+test('upper cut floors keep holes and lower ceilings; raised corners retain finite skirts', () => {
+  const lv=newLevel({w:4,d:4});lv.settings.ground='none';lv.layers.push(newLayer('Upper'));
+  setCell(lv,0,1,1,{f:'wood_floor',c:'ceiling_tiles'});setCell(lv,1,1,1,{f:'wood_floor',shape:{kind:'diagonal',corner:'NE',t:'brick'},h:0.4});
+  const w=world(lv),g=buildGeometry(w,lv,bank);
+  assert.equal(w.floorAt(4.5,4.5).y,STORY+0.4);assert.equal(w.floorAt(7.5,7.5).y,0);
+  assert.equal(w.ceilingAt(7.5,7.5,1),STORY);
+  const ceil=g.batches.get('ceiling_tiles');assert.ok(ceil&&ceil.idx.length>0,'lower ceiling remains visible under the cut-away portion');
+  for(const b of g.batches.values()) { assert.ok(b.pos.every(Number.isFinite));assert.ok(b.nor.every(Number.isFinite));assert.ok(b.uv.every(Number.isFinite)); }
 });

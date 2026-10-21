@@ -1,12 +1,13 @@
 // Nord FPS Level Editor — state, tools, undo, file IO, play-test. Views: map2d.js (2D), view3d.js (3D); palettes + inspector: panels.js.
 import { newLevel, newLayer, normalize, validate, setCell, getCell, setEdge, CELL, STORY, key, ekey, unkey, uid, bounds, FORMAT } from '/runtime/fpsc/level.js';
-import { createBank } from '/runtime/fpsc/bank.js';
+import { createBank, entityVariant } from '/runtime/fpsc/bank.js';
 import { SOUND_NAMES } from '/runtime/fpsc/audio.js';
 import { el, modal, toast, debounce } from './forms.js';
 import { Map2D, classify } from './map2d.js';
 import { View3D } from './view3d.js';
 import { buildPanel, itemsPanel, scriptsPanel, levelPanel, assetsPanel, objectsPanel, inspector } from './panels.js';
 import { normalizeShortcuts, matchesShortcut, shortcutLabel } from './shortcuts.js';
+import { hiddenCornerEdge } from '/runtime/fpsc/corners.js';
 import { HELP } from './help.js';
 
 const $ = (id) => document.getElementById(id);
@@ -15,7 +16,7 @@ const LS = { get: (k) => { try { return localStorage.getItem(k); } catch { retur
 const TOOLS = [
   ['select', 'V', '⬚', 'Select / move / box-select'], ['wall', 'W', '▬', 'Wall pieces: click an edge or drag a line (Shift = erase)'], ['room', 'R', '▭', 'Room: drag a rectangle → floor, ceiling and walls'],
   ['floor', 'F', '▦', 'Paint floors (drag; Ctrl = rectangle; Shift = erase)'], ['ceiling', 'C', '▔', 'Paint ceilings (Shift = open sky)'], ['fill', 'G', '◩', 'Fill a region with the floor texture'],
-  ['cell', 'S', '≣', 'Stairs / floor height / pillars'], ['entity', 'A', '◉', 'Add: place the chosen item (Items tab)'], ['path', 'P', '⤳', 'Patrol path of the selected entity'],
+  ['cell', 'S', '≣', 'Stairs / floor height / pillars / corners'], ['entity', 'A', '◉', 'Add: place the chosen item (Items tab)'], ['path', 'P', '⤳', 'Patrol path of the selected entity'],
   ['erase', 'X', '⌫', 'Erase: click or drag a rectangle (Shift = only wall pieces)'], ['eyedrop', 'I', '✎', 'Eyedropper (also Alt+click with any tool)'],
 ];
 const HINTS = {
@@ -25,7 +26,7 @@ const HINTS = {
   floor: 'Drag to paint floor cells with the Floor texture · Ctrl+drag = rectangle · Shift = remove floor (hole)',
   ceiling: 'Drag to paint ceilings with the Ceiling texture · Shift = remove (open sky)',
   fill: 'Click a cell: fills the connected region (walls stop it) with the Floor texture (and ceiling if the cell had one)',
-  cell: 'Click a cell · stairs: drag toward the direction it climbs · Shift = remove',
+  cell: 'Build → Cell objects chooses stairs, height, pillars or corners · click a cell · Shift = remove / restore Square',
   entity: 'Click to place · Q/E rotate · Alt = free position · Ctrl = cell centre · drag items from the Items tab onto the map',
   path: 'Select an enemy first · click = add waypoint · Shift+click = remove · Esc = done',
   erase: 'Click to erase the item / wall piece / cell under the cursor · drag a rectangle to erase an area (Shift = only wall pieces)',
@@ -165,11 +166,37 @@ ed.copySettingsToSimilar = (src) => { let n = 0; for (const e of ed.level.entiti
 ed.addEntity = (type, x, z, rot = ed.entRot, extra = {}) => {
   const def = ed.bank.entity(type); if (!def) return null;
   if (def.single) { const old = ed.level.entities.find((e) => e.type === type); if (old) { old.x = x; old.z = z; old.layer = ed.layer; old.rot = rot; ed.commit(`moved ${def.label}`); ed.selectEntity(old.id); return old; } }
-  const e = { id: uid(), type, x, z, layer: ed.layer, rot, name: '', tag: '', target: '', props: {}, scripts: [], rules: [], ...extra }; ed.level.entities.push(e);
+  const e = { id: uid(), type, x, z, layer: ed.layer, rot, name: '', tag: '', target: '', props: {}, scripts: [], rules: structuredClone(def.rules ?? []), ...extra }; ed.level.entities.push(e);
   ed.sel.ents.clear(); ed.sel.edges.clear(); ed.sel.cells.clear(); ed.sel.ents.add(e.id); ed.commit(`placed ${def.label}`); ed.v3.selectionChanged(); return e;
 };
+// Custom bank definitions are shared defaults; built-ins remain intact.
+ed.saveVariant = async (entity, update = false) => {
+  if (!ed.api.available) return toast('Open a project server to save reusable variants.');
+  const def = ed.bank.entity(entity.type); if (!def) return;
+  const existing = ed.bankJson.entities?.find(v => v.id === entity.type);
+  if (update && !existing) return;
+  const label = el('input',{type:'text',value:update?def.label:`${def.label} variant`,'aria-label':'Variant name'});
+  const id = el('input',{type:'text',value:update?def.id:`${def.id}_custom`,'aria-label':'Variant id',disabled:update});
+  const result = await modal(update?'Update variant defaults':'Save reusable variant',[
+    el('div',{class:'tip'},'Captures current properties, enabled/disabled scripts, script parameters and rules. Position, name, tags, target and patrol route stay instance-specific. Rules may still refer to named targets in this level.'),
+    el('div',{class:'row'},el('label',{},'Name'),label),el('div',{class:'row'},el('label',{},'Id'),id),
+    el('div',{class:'muted'},update?'Updates defaults for this variant. Other placed objects keep their per-instance overrides; new placements use these defaults.':'Creates a new Items entry in fpsc/bank.json. The original item remains available.')
+  ],[{label:'Cancel'},{label:update?'Update variant':'Save variant',primary:true}]);
+  if(result !== (update?'Update variant':'Save variant')) return;
+  const key=id.value.trim(), title=label.value.trim();
+  if(!/^[a-z][a-z0-9_]*$/.test(key)||!title) return toast('Use a name and a lowercase id (letters, numbers, underscore).');
+  if(!update && ed.bank.entity(key)) return toast('That id already exists. Choose another id.');
+  const captured=entityVariant(def,entity,key,title);
+  if(update) Object.assign(captured,{...existing,...captured,extends:existing.extends});
+  try {
+    await ed.editBank(b=>{ b.entities??=[]; const i=b.entities.findIndex(v=>v.id===key); if(i<0)b.entities.push(captured);else b.entities[i]=captured; });
+    entity.type=key; entity.props={}; entity.scripts=[];
+    ed.brush.entity=key; ed.commit(update?'updated variant':'saved variant'); ed.setTab('items');
+    toast(`Saved ${title}; place it from Items. Save the level to keep this instance.`);
+  } catch(err) { log('error',`Variant save failed: ${err.message}`); }
+};
 ed.scriptEntry = (e, id) => { e.scripts ??= []; let s = e.scripts.find((x) => x.id === id); if (!s) { s = { id, params: {} }; e.scripts.push(s); } s.params ??= {}; return s; };
-ed.tidyScripts = (e, def) => { const base = new Set((def?.scripts ?? []).map((s) => s.id)); e.scripts = (e.scripts ?? []).filter((s) => s.remove || s.off || Object.keys(s.params ?? {}).length || !base.has(s.id)); for (const s of e.scripts) if (s.params && !Object.keys(s.params).length) delete s.params; };
+ed.tidyScripts = (e, def) => { const base = new Set((def?.scripts ?? []).map((s) => s.id)); e.scripts = (e.scripts ?? []).filter((s) => s.remove || Object.hasOwn(s,'off') || Object.keys(s.params ?? {}).length || !base.has(s.id)); for (const s of e.scripts) if (s.params && !Object.keys(s.params).length) delete s.params; };
 ed.attachScript = (id, ent = ed.selectedEntity()) => {
   if (!ent) return toast('Select an entity first'); const def = ed.bank.entity(ent.type); ent.scripts ??= [];
   const has = ent.scripts.find((s) => s.id === id);
@@ -304,6 +331,13 @@ function paintPreview() { const d = drag; let cells = [...d.set.values()]; if (d
 function updateCellPreview() { const d = drag; ed.preview = { cells: [d.a], erase: d.erase }; ed.map.draw(); }
 function applyCellTool(d, cx, cz) {
   if (!inLevel(cx, cz)) return; const b = ed.brush, cell = getCell(ed.level, ed.layer, cx, cz) ?? null;
+  if (b.cellMode === 'corner') {
+    if (cell?.s || cell?.p) { toast('Remove stairs/pillars before shaping this cell.'); return; }
+    if (!cell && !d.erase) setCell(ed.level,ed.layer,cx,cz,{f:b.floorTex,c:b.ceilTex});
+    setCell(ed.level,ed.layer,cx,cz,{shape:d.erase?null:{kind:b.cornerKind||'diagonal',corner:b.corner||'NE',t:b.wallTex,tb:b.backTex||undefined}});
+    return;
+  }
+  if (cell?.shape && b.cellMode !== 'height' && !d.erase) { toast('Restore Square before adding stairs/pillars.'); return; }
   if (b.cellMode === 'height') { if (!cell) setCell(ed.level, ed.layer, cx, cz, { f: b.floorTex, c: b.ceilTex }); setCell(ed.level, ed.layer, cx, cz, { h: d.erase ? 0 : b.height }); }
   else if (b.cellMode === 'pillar') { if (!cell) setCell(ed.level, ed.layer, cx, cz, { f: b.floorTex }); setCell(ed.level, ed.layer, cx, cz, d.erase ? { p: null, pt: null } : { p: b.pillar, pt: b.wallTex }); }
   else { if (d.erase) setCell(ed.level, ed.layer, cx, cz, { s: null }); else { if (!cell?.f) setCell(ed.level, ed.layer, cx, cz, { f: b.floorTex }); setCell(ed.level, ed.layer, cx, cz, { s: { id: b.stair, d: d.dir ?? b.stairDir } }); } }
@@ -384,7 +418,7 @@ function onUp(e) {
 function clickSelect(wx, wz, additive) {
   const m = ed.map, ly = layerData(), edge = m.pickEdge(wx, wz, 0.22), [cx, cz] = cellOf(wx, wz);
   if (!additive) ed.clearSelRaw();
-  if (edge && ly.edges[edge.key]) { if (additive && ed.sel.edges.has(edge.key)) ed.sel.edges.delete(edge.key); else ed.sel.edges.add(edge.key); }
+  if (edge && ly.edges[edge.key] && !hiddenCornerEdge(ly,edge.key)) { if (additive && ed.sel.edges.has(edge.key)) ed.sel.edges.delete(edge.key); else ed.sel.edges.add(edge.key); }
   else if (ly.cells[key(cx, cz)]) { const k = key(cx, cz); if (additive && ed.sel.cells.has(k)) ed.sel.cells.delete(k); else ed.sel.cells.add(k); }
   ed.renderSel(); ed.refreshInspector(); m.draw(); ed.v3.selectionChanged();
 }

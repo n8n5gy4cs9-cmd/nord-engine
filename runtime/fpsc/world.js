@@ -1,5 +1,6 @@
 // Collision, line-of-sight, floor height and path-finding for a level. Pure JS (no Babylon/DOM) so it is unit-tested in node.
 import { CELL, STORY, key, unkey, ekey, dirVec, edgeCells } from './level.js';
+import { hasCorner, cornerBoundary, cellContains, cellCenter, hiddenCornerEdge } from './corners.js';
 import { pieceDef as defaultPiece, cellPieceDef as defaultCellPiece, stairDef as defaultStair } from './bank/segments.js';
 
 const EPS = 1e-6;
@@ -29,6 +30,7 @@ export class World {
     lv.layers.forEach((ly, L) => {
       const by = this.base(L);
       for (const [k, piece] of Object.entries(ly.edges)) {
+        if (hiddenCornerEdge(ly, k)) continue;
         const [ex, ez, o] = unkey(k);
         const def = this.lookup.piece(piece.k);
         if (!def) continue;
@@ -49,6 +51,16 @@ export class World {
         });
       }
       for (const [k, cell] of Object.entries(ly.cells)) {
+        if (hasCorner(cell)) {
+          const [cx, cz] = unkey(k), points = cornerBoundary(cell, cx, cz);
+          for (let i = 1; i < points.length; i++) {
+            const [ox, oz] = points[i-1], [ex, ez] = points[i], len = Math.hypot(ex-ox, ez-oz), ux = (ex-ox)/len, uz = (ez-oz)/len;
+            const pad = 0.16, r = 0.15, ends = [[-pad,-r],[len+pad,-r],[len+pad,r],[-pad,r]].map(([a,b]) => [ox+ux*a-uz*b, oz+uz*a+ux*b]);
+            const c = box(Math.min(...ends.map(p=>p[0])), Math.max(...ends.map(p=>p[0])), Math.min(...ends.map(p=>p[1])), Math.max(...ends.map(p=>p[1])), by + Math.min(0, cell.h || 0), by + STORY, {}, null);
+            c.frame = { ox, oz, ux, uz, x0: -pad, x1: len+pad, z0: -r, z1: r };
+            this.#register(L, c);
+          }
+        }
         if (!cell.p) continue;
         const [cx, cz] = unkey(k); const def = this.lookup.cellPiece(cell.p); if (!def) continue;
         const mx = (cx + 0.5) * CELL, mz = (cz + 0.5) * CELL, fy = by + (cell.h || 0);
@@ -87,7 +99,7 @@ export class World {
     const cx = Math.floor(x / CELL), cz = Math.floor(z / CELL);
     for (let L = this.level.layers.length - 1; L >= 0; L--) {
       const cell = this.cellAt(L, cx, cz);
-      if (cell && cell.f) { const y = this.cellFloorY(L, cell, x, z); if (y <= maxY + EPS) return { y, layer: L }; }
+      if (cell && cell.f && cellContains(cell, x, z, cx, cz)) { const y = this.cellFloorY(L, cell, x, z); if (y <= maxY + EPS) return { y, layer: L }; }
     }
     if (this.level.settings.ground !== 'none' && !this.cellAt(0, cx, cz)) return 0 <= maxY + EPS ? { y: 0, layer: 0 } : null;
     return null;
@@ -98,7 +110,7 @@ export class World {
     const cx = Math.floor(x / CELL), cz = Math.floor(z / CELL);
     let best = Infinity;
     for (let L = 0; L < this.level.layers.length; L++) {
-      const cell = this.cellAt(L, cx, cz); if (!cell) continue;
+      const cell = this.cellAt(L, cx, cz); if (!cell || !cellContains(cell, x, z, cx, cz)) continue;
       if (cell.c) { const cy = this.base(L) + STORY; if (cy > y + 0.2 && cy < best) best = cy; }
       if (L > 0 && cell.f) { const fy = this.cellFloorY(L, cell, x, z); if (fy > y + 0.2 && fy < best) best = fy; }
     }
@@ -124,14 +136,17 @@ export class World {
       this.#near(px - r, px + r, pz - r, pz + r, y, hi, (c) => {
         if (!c.solid || c.y1 <= lo || c.y0 >= hi) return;
         if (c.door && c.door.open >= 0.8) return;
-        const qx = Math.max(c.x0, Math.min(px, c.x1)), qz = Math.max(c.z0, Math.min(pz, c.z1));
-        let ex = px - qx, ez = pz - qz; const d2 = ex * ex + ez * ez;
+        const f = c.frame, b = f ?? c;
+        let lx = f ? (px-f.ox)*f.ux + (pz-f.oz)*f.uz : px, lz = f ? -(px-f.ox)*f.uz + (pz-f.oz)*f.ux : pz;
+        const qx = Math.max(b.x0, Math.min(lx, b.x1)), qz = Math.max(b.z0, Math.min(lz, b.z1));
+        let ex = lx - qx, ez = lz - qz; const d2 = ex * ex + ez * ez;
         if (d2 >= r * r) return;
-        if (d2 > EPS) { const d = Math.sqrt(d2), k = (r - d) / d; px += ex * k; pz += ez * k; }
+        if (d2 > EPS) { const d = Math.sqrt(d2), k = (r - d) / d; lx += ex * k; lz += ez * k; }
         else { // centre inside the box: leave through the nearest face
-          const l = px - c.x0, rr = c.x1 - px, b = pz - c.z0, t = c.z1 - pz, m = Math.min(l, rr, b, t);
-          if (m === l) px = c.x0 - r; else if (m === rr) px = c.x1 + r; else if (m === b) pz = c.z0 - r; else pz = c.z1 + r;
+          const l = lx - b.x0, rr = b.x1 - lx, bot = lz - b.z0, top = b.z1 - lz, m = Math.min(l, rr, bot, top);
+          if (m === l) lx = b.x0 - r; else if (m === rr) lx = b.x1 + r; else if (m === bot) lz = b.z0 - r; else lz = b.z1 + r;
         }
+        px = f ? f.ox + lx*f.ux - lz*f.uz : lx; pz = f ? f.oz + lx*f.uz + lz*f.ux : lz;
         moved = true; hit = true;
       });
       if (!moved) break;
@@ -158,8 +173,12 @@ export class World {
         if (b < t1) t1 = b;
         return t0 <= t1;
       };
-      if (!slab(ox, dx, c.x0, c.x1, 'x') || !slab(oz, dz, c.z0, c.z1, 'z') || !slab(oy, dy, c.y0, c.y1, 'y')) return;
+      const f = c.frame, b = f ?? c;
+      const lx = f ? (ox-f.ox)*f.ux+(oz-f.oz)*f.uz : ox, lz = f ? -(ox-f.ox)*f.uz+(oz-f.oz)*f.ux : oz;
+      const vx = f ? dx*f.ux+dz*f.uz : dx, vz = f ? -dx*f.uz+dz*f.ux : dz;
+      if (!slab(lx, vx, b.x0, b.x1, 'x') || !slab(lz, vz, b.z0, b.z1, 'z') || !slab(oy, dy, c.y0, c.y1, 'y')) return;
       if (t0 < 0 || t0 > maxD) { if (!(t0 < 0 && t1 > 0)) return; t0 = 0; }
+      if (f) { const n = nx; nx = n*f.ux-nz*f.uz; nz = n*f.uz+nz*f.ux; }
       if (!best || t0 < best.t) best = { t: t0, x: ox + dx * t0, y: oy + dy * t0, z: oz + dz * t0, nx, nz, c };
     };
     // 2D DDA across the grid
@@ -191,7 +210,9 @@ export class World {
   // ---- navigation ------------------------------------------------------------------------------------------------------------
   /** Free gap (in u 0..1) of an edge piece for a walker 1.7 m tall? Returns the widest free [u0,u1] or null. `doors`: 'open' = closed doors count as free, 'none' = doors block. */
   edgeGap(L, x, z, o, doors = 'open') {
-    const piece = this.level.layers[L]?.edges[ekey(x, z, o)];
+    const ly = this.level.layers[L];
+    if (ly && hiddenCornerEdge(ly, ekey(x,z,o))) return null;
+    const piece = ly?.edges[ekey(x, z, o)];
     if (!piece) return [0, 1];
     const def = this.lookup.piece(piece.k); if (!def) return [0, 1];
     const door = this.doors.get(`${L}:${ekey(x, z, o)}`);
@@ -224,7 +245,7 @@ export class World {
     const sx = Math.floor(from.x / CELL), sz = Math.floor(from.z / CELL), tx = Math.floor(to.x / CELL), tz = Math.floor(to.z / CELL);
     const nL = this.level.layers.length;
     const id = (L, x, z) => (L * this.D + z) * this.W + x;
-    if (!this.#cellWalkable(to.layer, tx, tz)) return null;
+    if (!this.#cellWalkable(to.layer, tx, tz) || !cellContains(this.cellAt(to.layer, tx, tz), to.x, to.z) || !cellContains(this.cellAt(from.layer, sx, sz), from.x, from.z)) return null;
     const start = id(from.layer, sx, sz), goal = id(to.layer, tx, tz);
     if (start === goal) return [{ x: to.x, z: to.z, layer: to.layer }];
     const g = new Map([[start, 0]]), prev = new Map(), open = [[0, start, from.layer, sx, sz]], closed = new Set();
@@ -235,7 +256,7 @@ export class World {
       const [, cur, L, x, z] = open.splice(bi, 1)[0];
       if (cur === goal) {
         const out = []; let c = cur;
-        while (c !== start) { const [cL, cxx, czz] = [Math.floor(c / (this.W * this.D)), c % this.W, Math.floor(c / this.W) % this.D]; out.push({ x: (cxx + 0.5) * CELL, z: (czz + 0.5) * CELL, layer: cL }); c = prev.get(c); }
+        while (c !== start) { const [cL, cxx, czz] = [Math.floor(c / (this.W * this.D)), c % this.W, Math.floor(c / this.W) % this.D]; const [wx,wz] = cellCenter(this.cellAt(cL,cxx,czz),cxx,czz); out.push({ x: wx, z: wz, layer: cL }); c = prev.get(c); }
         out.reverse(); out[out.length - 1] = { x: to.x, z: to.z, layer: to.layer }; return out;
       }
       if (closed.has(cur)) continue; closed.add(cur);
@@ -250,6 +271,7 @@ export class World {
       for (const d of ['N', 'E', 'S', 'W']) { const [dx, dz] = dirVec[d]; tryMove(x + dx, z + dz, L, edgeOf(d), 1); }
       for (const [a, b] of [['N', 'E'], ['N', 'W'], ['S', 'E'], ['S', 'W']]) { // diagonals only when both straight neighbours are open
         const [ax, az] = dirVec[a], [bx, bz] = dirVec[b];
+        if ([[x,z],[x+ax,z+az],[x+bx,z+bz],[x+ax+bx,z+az+bz]].some(([cx,cz]) => hasCorner(this.cellAt(L,cx,cz)))) continue;
         if (this.edgeGap(...edgeOf(a), doors) && this.edgeGap(...edgeOf(b), doors) && this.#cellWalkable(L, x + ax, z + az) && this.#cellWalkable(L, x + bx, z + bz)) tryMove(x + ax + bx, z + az + bz, L, null, 1.45);
       }
       const cell = this.cellAt(L, x, z);

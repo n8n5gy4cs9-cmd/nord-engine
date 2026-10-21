@@ -1,6 +1,8 @@
 // Level → triangle batches (pure data) + baked vertex lighting. No Babylon here, so it is unit-tested in node; render.js turns batches into meshes.
 import { CELL, STORY, unkey, ekey } from './level.js';
 
+import { hasCorner, cornerBoundary, cellPolygon, hiddenCornerEdge } from './corners.js';
+
 const Hn = (v) => (v === 'H' ? STORY : v);
 const MAXE = 2; // longest quad edge in metres (finer = smoother baked light, more vertices)
 
@@ -63,11 +65,16 @@ export function buildGeometry(world, level, bank, opts = {}) {
   level.layers.forEach((ly, L) => {
     if (L > maxLayer) return;
     const by = L * STORY;
-    const hasFloorAbove = (cx, cz) => { for (let l2 = L + 1; l2 < level.layers.length; l2++) if (level.layers[l2].cells[`${cx},${cz}`]?.f) return true; return false; };
+    const hasFloorAbove = (cx, cz) => { for (let l2 = L + 1; l2 < level.layers.length; l2++) { const above=level.layers[l2].cells[`${cx},${cz}`], cell=ly.cells[`${cx},${cz}`]; if(above?.f && (!hasCorner(above) || hasCorner(cell) && above.shape.kind===cell.shape.kind && above.shape.corner===cell.shape.corner)) return true; } return false; };
     // ---- cells: floors, ceilings, stairs, raised platforms, pillars
     for (const [k, cell] of Object.entries(ly.cells)) {
       const [cx, cz] = unkey(k); const x0 = cx * CELL, x1 = x0 + CELL, z0 = cz * CELL, z1 = z0 + CELL;
       const fy = by + (cell.h || 0);
+      if (hasCorner(cell)) {
+        const below=level.layers[L-1]?.cells[k], underside=!(below?.c && (!hasCorner(below)||below.shape.kind===cell.shape.kind&&below.shape.corner===cell.shape.corner));
+        emitCorner(cell, cx, cz, by, ceilings && !hasFloorAbove(cx,cz), batchFor, tileOf, ly, underside);
+        continue;
+      }
       if (cell.f) {
         const fb = batchFor(cell.f), ft = tileOf(cell.f);
         if (cell.s) buildStairs(world, cell, L, cx, cz, fb, ft, batchFor);
@@ -97,6 +104,7 @@ export function buildGeometry(world, level, bank, opts = {}) {
     }
     // ---- edge pieces
     for (const [k, piece] of Object.entries(ly.edges)) {
+      if (hiddenCornerEdge(ly, k)) continue;
       const [ex, ez, o] = unkey(k); const def = world.lookup.piece(piece.k); if (!def) continue;
       const door = world.doors.get(`${L}:${k}`);
       const mats = { main: piece.t || 'concrete', trim: piece.tt || 'metal_panel', door: piece.td || 'door_metal', glass: piece.tg || 'glass', mesh: 'fence_mesh' };
@@ -125,6 +133,56 @@ export function buildGeometry(world, level, bank, opts = {}) {
   });
   // ground plane etc. is created by the renderer
   return { batches, doors };
+}
+
+/** Subdivide cut floors for the same baked-light density as rectangular floors. */
+function triangleSurface(batch, a, b, c, y, sign, tile) {
+  if (Math.max(Math.hypot(a[0]-b[0],a[1]-b[1]),Math.hypot(b[0]-c[0],b[1]-c[1]),Math.hypot(c[0]-a[0],c[1]-a[1])) > MAXE + 1e-6) {
+    const mid = (p,q) => [(p[0]+q[0])/2,(p[1]+q[1])/2], ab=mid(a,b),bc=mid(b,c),ca=mid(c,a);
+    for (const t of [[a,ab,ca],[ab,b,bc],[ca,bc,c],[ab,bc,ca]]) triangleSurface(batch,...t,y,sign,tile);
+    return;
+  }
+  const n = batch.verts;
+  for (const p of [a,b,c]) { batch.pos.push(p[0],y,p[1]); batch.nor.push(0,sign,0); batch.uv.push(p[0]/tile,p[1]/tile); }
+  batch.idx.push(...(sign > 0 ? [n,n+2,n+1] : [n,n+1,n+2]));
+}
+function emitCorner(cell, cx, cz, by, ceiling, batchFor, tileOf, layer, underside) {
+  const polygon = cellPolygon(cell,cx,cz), fy = by+(cell.h||0), boundary=cornerBoundary(cell,cx,cz);
+  if (cell.f) for (let i=1;i<polygon.length-1;i++) {
+    triangleSurface(batchFor(cell.f),polygon[0],polygon[i],polygon[i+1],fy,1,tileOf(cell.f));
+    if (by > 0 && underside) triangleSurface(batchFor(cell.f),polygon[0],polygon[i],polygon[i+1],fy,-1,tileOf(cell.f));
+  }
+  // Retained straight edges keep the same step/pit skirts as square cells.
+  if(cell.f && cell.h) for(let i=0;i<polygon.length;i++) {
+    const a=polygon[i],b=polygon[(i+1)%polygon.length]; let neighbour;
+    if(Math.abs(a[0]-b[0])<1e-6) neighbour=layer.cells[`${cx+(a[0]< (cx+0.5)*CELL?-1:1)},${cz}`];
+    else if(Math.abs(a[1]-b[1])<1e-6) neighbour=layer.cells[`${cx},${cz+(a[1]< (cz+0.5)*CELL?-1:1)}`]; else continue;
+    if(neighbour?.s)continue;
+    const ny=neighbour?.f?by+(neighbour.h||0):by, lo=Math.min(ny,fy),hi=Math.max(ny,fy);
+    if(hi-lo<1e-6)continue;
+    const len=Math.hypot(b[0]-a[0],b[1]-a[1]), n=Math.max(1,Math.ceil(len/MAXE)), target=batchFor(cell.f), tile=tileOf(cell.f);
+    for(let j=0;j<n;j++) {
+      const t0=j/n,t1=(j+1)/n,x0=a[0]+(b[0]-a[0])*t0,z0=a[1]+(b[1]-a[1])*t0,x1=a[0]+(b[0]-a[0])*t1,z1=a[1]+(b[1]-a[1])*t1,k=target.verts,sgn=fy>ny?1:-1;
+      for(const [x,y,z] of [[x0,lo,z0],[x1,lo,z1],[x0,hi,z0],[x1,hi,z1]]) { target.pos.push(x,y,z);target.nor.push(sgn*(b[1]-a[1])/len,0,-sgn*(b[0]-a[0])/len);target.uv.push((j+(x===x1&&z===z1?1:0))*len/n/tile,y/tile); }
+      target.idx.push(...(sgn>0?[k,k+2,k+1,k+1,k+2,k+3]:[k,k+1,k+2,k+1,k+3,k+2]));
+    }
+  }
+  if (ceiling && cell.c) for (let i=1;i<polygon.length-1;i++) triangleSurface(batchFor(cell.c),polygon[0],polygon[i],polygon[i+1],by+STORY,-1,tileOf(cell.c));
+  const front = cell.shape.t || 'concrete', back = cell.shape.tb || front;
+  for (let i=1;i<boundary.length;i++) {
+    const [ox,oz]=boundary[i-1],[ex,ez]=boundary[i],len=Math.hypot(ex-ox,ez-oz),ux=(ex-ox)/len,uz=(ez-oz)/len;
+    // Generate ordinary textured boxes locally, then rotate their vertices/normals (not a staircase of AABBs).
+    const local = new Map(), bf = id => { if(!local.has(id)) local.set(id,new Batch(id)); return local.get(id); }, f=bf(front), b=bf(back), tf=tileOf(front),tb=tileOf(back);
+    box({px:f,nx:f,py:f,ny:null,pz:f,nz:b},-0.16,len+0.16,by+Math.min(0,cell.h||0),by+STORY,-0.15,0.15,{px:tf,nx:tf,py:tf,ny:tf,pz:tf,nz:tb});
+    for (const [id,part] of local) {
+      const target=batchFor(id), offset=target.verts;
+      for(let j=0;j<part.pos.length;j+=3) {
+        const x=part.pos[j],z=part.pos[j+2],nx=part.nor[j],nz=part.nor[j+2];
+        target.pos.push(ox+ux*x-uz*z,part.pos[j+1],oz+uz*x+ux*z); target.nor.push(ux*nx-uz*nz,part.nor[j+1],uz*nx+ux*nz);
+      }
+      target.uv.push(...part.uv); target.idx.push(...part.idx.map(n=>n+offset));
+    }
+  }
 }
 
 /** World-space box of an edge part: [x0,x1,z0,z1] (thickness across the edge, extended slightly at used nodes so corners close). */

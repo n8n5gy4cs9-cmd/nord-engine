@@ -46,3 +46,10 @@ Open whole-editor **Settings** (Cmd/Ctrl+,). Edit the three **FPS Level** key fi
 ## Before exporting
 
 Save the level → set the scene’s **Level file** → save the scene → verify project start scene → main Play → normal web-folder export. Include custom content in `fpsc/`. Use the normal folder export for dynamically imported custom scripts.
+
+## Shape rooms and reuse edited items
+
+* **Diagonal/round:** Build → Cell objects → Mode → Diagonal / rounded corner. Choose shape and cut-off direction; click a corner cell. Floor/ceiling cut automatically. Shift-click restores Square and its original walls. Use separate cells for stairs/pillars.
+* **Circular room:** draw a 2×2 room, apply rounded SW/SE/NW/NE cuts to its corresponding outer corners. Each is a quarter circle. Open the included `levels/corners.fpsl.json` for a working example.
+* **Reusable variant:** select an item → change properties/scripts/rules → Reusable item → Save as variant → name/id → Save. Place the new entry from Items. Select/edit it later → Update variant defaults. Built-ins stay intact; instance overrides and copied rules are retained. Save the level separately.
+* **Existing projects:** Upgrade runtime before main Play/export. Shapes and variants are documented in the [full guide](fps-creator.html).

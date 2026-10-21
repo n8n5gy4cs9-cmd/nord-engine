@@ -30,6 +30,10 @@ try {
   await frame.evaluate(() => { const g = window.__fpsc.game; g.ctl.noLock = true; g.begin(); g.player.god = true; g.player.teleport(24.2 * 4, 19.5 * 4, 0); g.player.yaw = 80 * Math.PI / 180; g.player.pitch = 0.05; g.update(1 / 30); g.pause(true); });
   await ed.waitForTimeout(500); await ed.screenshot({ path: `${tmp}/ed-fpsc-stop-test.png` });
   await E(`(ed) => ed.stopPlay()`);
+  await E(`async ed=>{ed.setLevel(await (await fetch('/levels/corners.fpsl.json')).json(),'levels/corners.fpsl.json');ed.setTab('build');ed.brush.cellMode='corner';ed.setTool('cell');ed.map.fit(ed.level);ed.map.draw();const v=ed.v3;v.cam.position.set(23,58,-40);v.yaw=0;v.pitch=0.8;ed.sel.cells.add('4,4');ed.refreshInspector();document.getElementById('left-body').scrollTop=10000;v.setVisible(true);}`);
+  await ed.waitForTimeout(1400); await ed.screenshot({path:`${tmp}/ed-fpsc-corners.png`});
+  await E(`ed=>{const e=ed.addEntity('enemy_soldier',12,14);e.props.health=123;ed.scriptEntry(e,'ai-shooter').params.damage=2;ed.commit('gentle guard');ed.setTab('items');ed.saveVariant(e);}`);
+  await ed.waitForSelector('[aria-label="Variant name"]'); await ed.screenshot({path:`${tmp}/ed-fpsc-variant.png`}); await ed.keyboard.press('Escape');
   const pg = await browser.newPage({ viewport: { width: 1280, height: 720 } });
   await pg.goto(`${base}/editor/fpsc/play.html?level=levels/level1.fpsl.json&autostart&nolock&shot`); await pg.waitForFunction(() => window.__fpsc_ready);
   for (const [n, x, z, yaw, pitch] of [['yard', 24.2, 19.5, 80, 0.05], ['hall', 15.6, 16.5, 25, 0.02], ['arena', 29.5, 28.6, 0, 0.06]]) {

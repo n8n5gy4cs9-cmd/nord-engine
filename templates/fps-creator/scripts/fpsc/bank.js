@@ -60,12 +60,21 @@ export async function createBank(custom = {}, opts = {}) {
  */
 export function resolveScripts(def, data, bank = null) {
   const out = new Map();
-  for (const s of def?.scripts ?? []) out.set(s.id, { id: s.id, params: { ...(s.params ?? {}) } });
+  for (const s of def?.scripts ?? []) out.set(s.id, { id: s.id, params: { ...(s.params ?? {}) }, ...(s.off ? { off: true } : {}) });
   for (const s of data?.scripts ?? []) {
     if (s.remove) { out.delete(s.id); continue; }
     const prev = out.get(s.id);
-    out.set(s.id, { id: s.id, params: { ...(prev?.params ?? {}), ...(s.params ?? {}) }, off: s.off });
+    out.set(s.id, { id: s.id, params: { ...(prev?.params ?? {}), ...(s.params ?? {}) }, off: s.off ?? prev?.off });
   }
   void bank;
   return [...out.values()];
+}
+
+/** Capture reusable defaults, deliberately excluding placement, identity and patrol coordinates. */
+export function entityVariant(def, entity, id, label) {
+  const props = structuredClone(def.props ?? {});
+  for (const [key,value] of Object.entries(entity.props ?? {})) {
+    props[key] = { ...(props[key] ?? { type: typeof value === 'boolean' ? 'bool' : typeof value === 'number' ? 'number' : 'string', label: key }), default: structuredClone(value) };
+  }
+  return { id, label, extends: def.id, props, scripts: structuredClone(resolveScripts(def,entity)), rules: structuredClone(entity.rules ?? []) };
 }

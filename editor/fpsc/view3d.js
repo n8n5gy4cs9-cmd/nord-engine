@@ -2,6 +2,7 @@
 import { World } from '/runtime/fpsc/world.js';
 import { LevelRenderer, hex } from '/runtime/fpsc/render.js';
 import { Model, modelSpec } from '/runtime/fpsc/models.js';
+import { defaultsOf } from '/runtime/fpsc/entity.js';
 import { CELL, STORY, normalize } from '/runtime/fpsc/level.js';
 
 const D2R = Math.PI / 180;
@@ -54,8 +55,9 @@ export class View3D {
       for (const e of lv.entities) {
         const def = ed.bank.entity(e.type); if (!def) continue;
         const fl = this.world.floorAt(e.x, e.z, e.layer * STORY + STORY - 0.05), fy = (fl ? fl.y : e.layer * STORY) + (def.elev ?? 0) + (+e.y || 0);
-        if (def.light && e.props?.on !== false) lights.push({ x: e.x, y: fy + (def.light.y ?? 0.5), z: e.z, color: hex(e.props?.color || def.light.color), intensity: +(e.props?.intensity ?? def.light.intensity), range: +(e.props?.range ?? def.light.range) });
-        spawn.push([e, def, fy]);
+        const props={...defaultsOf(def.props),...e.props};
+        if (def.light && props.on !== false) lights.push({ x: e.x, y: fy + (def.light.y ?? 0.5), z: e.z, color: hex(props.color || def.light.color), intensity: +(props.intensity ?? def.light.intensity), range: +(props.range ?? def.light.range) });
+        spawn.push([{...e,props:{...defaultsOf(def.props),...e.props}}, def, fy]);
       }
       this.rend.build(lights);
       for (const [e, def, fy] of spawn) this.#entity(e, def, fy);

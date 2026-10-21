@@ -1,3 +1,4 @@
+import { cornerBoundary, hiddenCornerEdge } from './corners.js';
 // FpsGame — runs one FPS Creator level in an existing Babylon scene: world, renderer, player, entities+scripts, doors, projectiles, HUD, level flow.
 // Not tied to Nord's scene system: the Nord wrapper (level-script.js) and the editor play-test (editor/fpsc/play.html) both create one of these.
 import { CELL, STORY, normalize, startOf } from './level.js';
@@ -116,7 +117,7 @@ export class FpsGame {
   }
   /** Spawn at runtime (scripts: game.spawn('enemy_zombie', x, z, layer, { health: 50 })). */
   spawn(type, x, z, layer = 0, props = {}, extra = {}) {
-    const e = this.#make({ type, x, z, layer, rot: extra.rot ?? Math.random() * 360, props, name: extra.name ?? '', tag: extra.tag ?? '', rules: [], scripts: extra.scripts ?? [], id: `s${(this._sp = (this._sp ?? 0) + 1)}` });
+    const e = this.#make({ type, x, z, layer, rot: extra.rot ?? Math.random() * 360, props, name: extra.name ?? '', tag: extra.tag ?? '', rules: extra.rules, scripts: extra.scripts ?? [], id: `s${(this._sp = (this._sp ?? 0) + 1)}` });
     if (!e) return null;
     installRules(this, e); this.#startEnt(e);
     if (e.enemy) this.stats.total++;
@@ -433,7 +434,8 @@ export class FpsGame {
     c.scale(1, -1);
     const px = (x, z) => [(x - p.x) * S, (z - p.z) * S];
     c.strokeStyle = '#9ec3ff'; c.lineWidth = 1.5; c.beginPath();
-    for (const k of Object.keys(ly.edges)) { const [x, z, o] = k.split(','); const piece = ly.edges[k]; if (!this.bank.piece(piece.k)?.parts.some((q) => q.opaque !== false)) continue; const X = +x * CELL, Z = +z * CELL; const a = o === 'H' ? px(X, Z) : px(X, Z), b = o === 'H' ? px(X + CELL, Z) : px(X, Z + CELL); if (Math.abs(a[0]) > 90 && Math.abs(b[0]) > 90 || Math.abs(a[1]) > 90 && Math.abs(b[1]) > 90) continue; c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); }
+    for (const [k,cell] of Object.entries(ly.cells)) { const [x,z]=k.split(',').map(Number); cornerBoundary(cell,x,z).forEach(([wx,wz],i)=>{ const q=px(wx,wz);if(i)c.lineTo(...q);else c.moveTo(...q); }); }
+    for (const k of Object.keys(ly.edges)) { if(hiddenCornerEdge(ly,k)) continue; const [x, z, o] = k.split(','); const piece = ly.edges[k]; if (!this.bank.piece(piece.k)?.parts.some((q) => q.opaque !== false)) continue; const X = +x * CELL, Z = +z * CELL; const a = o === 'H' ? px(X, Z) : px(X, Z), b = o === 'H' ? px(X + CELL, Z) : px(X, Z + CELL); if (Math.abs(a[0]) > 90 && Math.abs(b[0]) > 90 || Math.abs(a[1]) > 90 && Math.abs(b[1]) > 90) continue; c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); }
     c.stroke();
     for (const e of this.ents) { if (!e.alive || e.destroyed || e.layer !== p.layer) continue; const q = px(e.x, e.z); if (Math.abs(q[0]) > 72 || Math.abs(q[1]) > 72) continue; const col = e.enemy ? '#ff4d4d' : e.def.cat === 'Pickups' ? '#6dff9b' : e.type === 'level_exit' ? '#ffd23a' : null; if (!col) continue; c.fillStyle = col; c.fillRect(q[0] - 1.5, q[1] - 1.5, 3, 3); }
     c.restore(); c.fillStyle = '#fff'; c.beginPath(); c.moveTo(W / 2, W / 2 - 5); c.lineTo(W / 2 - 4, W / 2 + 4); c.lineTo(W / 2 + 4, W / 2 + 4); c.fill();

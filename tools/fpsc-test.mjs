@@ -172,7 +172,7 @@ if (run('nord') || run('game') || run('editor')) {
       fs.writeFileSync(path.join(proj, 'fpsc/models/tri.glb'), glb); fs.writeFileSync(path.join(proj, 'fpsc/art/ghost.png'), png);
       fs.writeFileSync(path.join(proj, 'fpsc/scripts/bob.js'), "export default { id: 'bob', title: 'Bob', cat: 'Custom', desc: 'x', params: { amp: { type: 'number', default: 0.5 } }, start(c) { c.self.state.bobStarted = c.p.amp; }, update(c, dt) { c.s.n = (c.s.n ?? 0) + 1; } };\n");
       fs.writeFileSync(path.join(proj, 'fpsc/bank.json'), JSON.stringify({ entities: [{ id: 'my_tri', label: 'Tri', cat: 'Props', extends: 'crate', model: { kind: 'glb', url: 'fpsc/models/tri.glb', scale: 2 } }, { id: 'ghost', label: 'Ghost', extends: 'enemy_zombie', model: { kind: 'billboard', url: 'fpsc/art/ghost.png', w: 1, h: 1.8 }, scripts: [{ id: 'ai-melee', params: { speed: 4 } }, { id: 'bob', params: { amp: 2 } }] }], sounds: { pistol: 'fpsc/sounds/none.wav' }, scripts: ['fpsc/scripts/bob.js'] }));
-      const lv = JSON.parse(fs.readFileSync(path.join(ROOT, 'target/fpsc/test.fpsl.json'), 'utf8')); lv.entities.push({ id: 'g1', type: 'my_tri', x: 14, z: 18, layer: 0, rot: 0, props: {} }, { id: 'g2', type: 'ghost', x: 20, z: 18, layer: 0, rot: 0, props: {} }); fs.writeFileSync(path.join(proj, 'levels/custom.fpsl.json'), JSON.stringify(lv));
+      const lv = JSON.parse(fs.readFileSync(path.join(proj, 'levels/level1.fpsl.json'), 'utf8')); lv.entities.push({ id: 'g1', type: 'my_tri', x: 14, z: 18, layer: 0, rot: 0, props: {} }, { id: 'g2', type: 'ghost', x: 20, z: 18, layer: 0, rot: 0, props: {} }); fs.writeFileSync(path.join(proj, 'levels/custom.fpsl.json'), JSON.stringify(lv));
       const pg = await newPage(); await pg.goto(`${base}/editor/fpsc/play.html?level=levels/custom.fpsl.json&autostart&nolock`); await pg.waitForFunction(() => window.__fpsc_ready || window.__fpsc_error, null, { timeout: 30000 }); assert.equal(await pg.evaluate(() => window.__fpsc_error), undefined);
       await pg.waitForTimeout(800);
       const r = await pg.evaluate(() => { const g = window.__fpsc.game, a = g.ents.find((e) => e.type === 'my_tri'), b = g.ents.find((e) => e.type === 'ghost'); for (let i = 0; i < 5; i++) g.update(1 / 30); return { glb: !!a.model.glbNodes?.length, bb: !!b.model.bb, scripts: b.scripts.map((s) => s.id + ':' + JSON.stringify(s.p.speed ?? s.p.amp)), bob: b.state.bobStarted, warns: g.bank.warns.length, crate: a.props.health, hp: b.hp, solid: a.def.solid }; });
@@ -180,6 +180,12 @@ if (run('nord') || run('game') || run('editor')) {
       fs.writeFileSync(path.join(proj, 'fpsc/bank.json'), JSON.stringify({ textures: [], entities: [], sounds: {}, scripts: [] })); // restore for the editor tests
     });
 
+    await test('corner workshop runs with cut circular floor and blocks player movement at the curved wall', async () => {
+      const cp=await newPage(); await cp.goto(`${base}/editor/fpsc/play.html?level=levels/corners.fpsl.json&autostart&nolock`);
+      await cp.waitForFunction(()=>window.__fpsc_ready,null,{timeout:30000});
+      const result=await cp.evaluate(()=>{const g=window.__fpsc.game;for(const e of g.ents)if(e.type==='teleporter')e.enabled=false;g.player.teleport(36,12,0);g.player.yaw=0;g.ctl.keys.add('KeyD');for(let i=0;i<180;i++){g.update(1/60);g.ctl.endFrame();}g.ctl.keys.delete('KeyD');return {name:g.level.name,x:g.player.x,floor:g.world.floorAt(32.1,8.1),ceil:g.world.ceilingAt(32.1,8.1,1),warnings:g.bank.warns};});
+      assert.equal(result.name,'Corner workshop');assert.equal(result.floor,null);assert.equal(result.ceil,Infinity);assert.ok(result.x<39.8&&result.x>36,JSON.stringify(result));assert.deepEqual(result.warnings,[]);noErrors(cp);await cp.close();
+    });
     console.log('game visuals');
     const vp = await newPage(1280, 720); await vp.goto(`${base}/editor/fpsc/play.html?level=levels/level1.fpsl.json&autostart&nolock&shot`); await vp.waitForFunction(() => window.__fpsc_ready, null, { timeout: 30000 });
     const shots = [['start', 4.5, 19.5, 90], ['hall', 15.5, 17, 20], ['yard', 24.5, 19.5, 80], ['arena', 29.5, 28.4, 0], ['armory', 17.5, 14.4, 180]];
@@ -301,6 +307,20 @@ if (run('nord') || run('game') || run('editor')) {
     await test('layers: add a storey, validation reports a missing player start', async () => {
       await ED(`(ed) => ed.addLayer()`); assert.equal(await ED(`(ed) => ed.level.layers.length`), 2); await ED(`(ed) => ed.setLayer(0)`); await ED(`(ed) => ed.showProblems()`); assert.ok(await ED(`(ed) => ed.problems.some((p) => /player start/i.test(p.msg))`));
     });
+    await test('corner tool cuts floor and wall, inspector restores square, undo keeps original edges', async () => {
+      await ED(`ed=>{ed.setLayer(0);ed.setTab('build');ed.brush.cellMode='corner';ed.brush.cornerKind='diagonal';ed.brush.corner='NE';ed.setTool('cell');}`);
+      const point=await scr(8*C+2,6*C+2); await page.mouse.click(...point);
+      assert.equal(await ED(`ed=>ed.level.layers[0].cells['8,6'].shape.kind`),'diagonal');
+      await ED(`ed=>{ed.setTool('select');ed.clearSelRaw();ed.sel.cells.add('8,6');ed.renderSel();ed.refreshInspector();}`);
+      await page.selectOption('[aria-label="Cell corner shape"]','round');
+      assert.equal(await ED(`ed=>ed.level.layers[0].cells['8,6'].shape.kind`),'round');
+      await ED(`ed=>ed.undo()`); assert.equal(await ED(`ed=>ed.level.layers[0].cells['8,6'].shape.kind`),'diagonal');
+      await ED(`ed=>ed.redo()`); assert.equal(await ED(`ed=>ed.level.layers[0].cells['8,6'].shape.kind`),'round');
+      await ED(`ed=>{ed.sel.cells.add('8,6');ed.renderSel();ed.refreshInspector();}`);
+      await page.selectOption('[aria-label="Cell corner shape"]','');
+      assert.equal(await ED(`ed=>!!ed.level.layers[0].cells['8,6'].shape`),false);
+      assert.ok(await ED(`ed=>!!ed.level.layers[0].edges['8,7,H']`));
+    });
     await test('Save writes the level into levels/ and reopening restores it', async () => {
       await ED(`(ed) => { ed.path = 'levels/ed_test.fpsl.json'; }`); await page.keyboard.press('Control+s'); await page.waitForTimeout(600);
       const f = path.join(proj, 'levels/ed_test.fpsl.json'); assert.ok(fs.existsSync(f), 'file written'); const lv = JSON.parse(fs.readFileSync(f, 'utf8')); assert.equal(lv.layers.length, 2); assert.ok(lv.layers[0].edges['6,4,H'].name === 'vault');
@@ -313,6 +333,23 @@ if (run('nord') || run('game') || run('editor')) {
       await page.click('#left-tabs [data-tab=assets]'); await page.locator('details:has-text("New script")').first().evaluate((d) => { d.open = true; }); await page.locator('details:has-text("New script") input[type=text]').first().fill('my-test'); await page.click('button:has-text("Create script")'); await page.waitForTimeout(1200);
       assert.ok(fs.existsSync(path.join(proj, 'fpsc/scripts/my-test.js')), 'script file'); assert.ok(await ED(`(ed) => !!ed.bank.script('my-test')`), 'script loaded'); assert.deepEqual(JSON.parse(fs.readFileSync(path.join(proj, 'fpsc/bank.json'), 'utf8')).scripts, ['fpsc/scripts/my-test.js']);
       await shot('assets');
+    });
+    await test('save reusable item variant, place it, update defaults and preserve original', async () => {
+      await ED(`ed=>{const e=ed.addEntity('enemy_soldier',24,24);e.props.health=123;ed.scriptEntry(e,'ai-shooter').params.damage=2;ed.commit('gentle guard');}`);
+      await page.getByRole('button',{name:'Save as variant…',exact:true}).click();
+      await page.fill('[aria-label="Variant name"]','Gentle guard'); await page.fill('[aria-label="Variant id"]','gentle_guard');
+      await page.getByRole('button',{name:'Save variant',exact:true}).click();
+      await page.waitForFunction(()=>!!window.__fpscEditor.bank.entity('gentle_guard'));
+      assert.equal(await ED(`ed=>ed.bank.entity('gentle_guard').props.health.default`),123);
+      assert.notEqual(await ED(`ed=>ed.bank.entity('enemy_soldier').props.health.default`),123);
+      await ED(`ed=>{const e=ed.addEntity('gentle_guard',28,24);e.props.health=150;ed.commit('new health');}`);
+      await page.getByRole('button',{name:'Update variant defaults…',exact:true}).click();
+      await page.getByRole('button',{name:'Update variant',exact:true}).click();
+      await page.waitForFunction(()=>window.__fpscEditor.bank.entity('gentle_guard').props.health.default===150);
+      const bankFile=JSON.parse(fs.readFileSync(path.join(proj,'fpsc/bank.json'),'utf8'));
+      assert.equal(bankFile.entities.find(v=>v.id==='gentle_guard').extends,'enemy_soldier');
+      assert.equal(await ED(`ed=>ed.bank.entity('gentle_guard').props.health.default`),150);
+      await shot('variant');
     });
     await test('custom script runs in the game: attached to an entity, listed in the dropdown', async () => {
       await ED(`(ed) => { ed.setTab('items'); const e = ed.addEntity('crate', 20, 20); ed.attachScript('my-test', e); }`); assert.ok(await ED(`(ed) => ed.selectedEntity().scripts.some((s) => s.id === 'my-test')`));

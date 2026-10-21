@@ -40,8 +40,8 @@ export class Ent {
     this.layer = data.layer | 0; this.x = x; this.y = y; this.z = z; this.rot = data.rot || 0;
     this.props = { ...defaultsOf(def.props), ...(data.props ?? {}) };
     this.radius = def.radius ?? 0.4; this.height = def.height ?? 1.8; this.hit = def.hit ?? false;
-    this.maxHp = this.props.health ?? 0; this.hp = this.maxHp; this.alive = true; this.enabled = !data.props?.disabled; this.destroyed = false;
-    this.scripts = []; this.model = null; this.state = {}; this.vy = 0; this.rules = data.rules ?? [];
+    this.maxHp = this.props.health ?? 0; this.hp = this.maxHp; this.alive = true; this.enabled = !this.props.disabled; this.destroyed = false;
+    this.scripts = []; this.model = null; this.state = {}; this.vy = 0; this.rules = structuredClone(data.rules ?? def.rules ?? []);
     this.visible = true; this.kind = def.cat; this.enemy = !!def.enemy; this.born = game.time;
   }
   get pos() { return [this.x, this.y, this.z]; }

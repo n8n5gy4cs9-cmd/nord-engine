@@ -7,6 +7,7 @@ import { CELL, STORY } from '/runtime/fpsc/level.js';
 import { FLOOR_HEIGHTS } from '/runtime/fpsc/bank/segments.js';
 import { SKIES } from '/runtime/fpsc/render.js';
 import { SOUND_NAMES } from '/runtime/fpsc/audio.js';
+import { CORNERS } from '/runtime/fpsc/corners.js';
 import { assetsPanel } from './assets.js';
 
 const SLOTS = [['wall', 'Wall', 'wall'], ['back', 'Back side', 'wall'], ['trim', 'Trim', 'wall'], ['door', 'Door leaf', 'door'], ['floor', 'Floor', 'floor'], ['ceil', 'Ceiling', 'ceiling']];
@@ -62,7 +63,7 @@ export function buildPanel(ed) {
   root.append(el('h4', {}, 'Room tool (R) — drag a rectangle'));
   for (const [k, l] of [['floor', 'Floor'], ['ceiling', 'Ceiling'], ['walls', 'Walls (active piece)']]) root.append(el('div', { class: 'row' }, el('label', {}, l), el('input', { type: 'checkbox', checked: b.room[k], onchange: (e) => { b.room[k] = e.target.checked; } })));
   root.append(el('h4', {}, 'Cell objects (S)'));
-  root.append(el('div', { class: 'row' }, el('label', {}, 'Mode'), el('select', { onchange: (e) => { b.cellMode = e.target.value; ed.renderLeft(); ed.setTool('cell'); } }, ...[['stairs', 'Stairs / ramp'], ['height', 'Raise / lower floor'], ['pillar', 'Pillar / block']].map(([v, l]) => el('option', { value: v, selected: b.cellMode === v }, l)))));
+  root.append(el('div', { class: 'row' }, el('label', {}, 'Mode'), el('select', { onchange: (e) => { b.cellMode = e.target.value; ed.renderLeft(); ed.setTool('cell'); } }, ...[['stairs', 'Stairs / ramp'], ['height', 'Raise / lower floor'], ['pillar', 'Pillar / block'], ['corner', 'Diagonal / rounded corner']].map(([v, l]) => el('option', { value: v, selected: b.cellMode === v }, l)))));
   if (b.cellMode === 'stairs') {
     root.append(el('div', { class: 'row' }, el('label', {}, 'Type'), el('select', { onchange: (e) => { b.stair = e.target.value; } }, ...ed.bank.stairs.map((s) => el('option', { value: s.id, selected: s.id === b.stair }, s.label)))));
     root.append(el('div', { class: 'row' }, el('label', {}, 'Climbs toward'), el('select', { onchange: (e) => { b.stairDir = e.target.value; } }, ...['N', 'E', 'S', 'W'].map((d) => el('option', { value: d, selected: d === b.stairDir }, { N: 'North ↑', E: 'East →', S: 'South ↓', W: 'West ←' }[d])))));
@@ -70,6 +71,10 @@ export function buildPanel(ed) {
   } else if (b.cellMode === 'height') {
     root.append(el('div', { class: 'row' }, el('label', {}, 'Floor height'), el('select', { onchange: (e) => { b.height = +e.target.value; } }, ...FLOOR_HEIGHTS.map((h) => el('option', { value: h, selected: h === b.height }, `${h > 0 ? '+' : ''}${h} m`)))));
     root.append(el('div', { class: 'muted' }, 'Click a cell to set its height (platforms, steps, pits). Shift-click resets to 0.'));
+  } else if (b.cellMode === 'corner') {
+    root.append(el('div', { class: 'row' }, el('label', {}, 'Shape'), el('select', { 'aria-label': 'Corner brush shape', onchange: ev => { b.cornerKind=ev.target.value; } }, ...[['diagonal','45° diagonal'],['round','Rounded quarter-circle']].map(([v,l])=>el('option',{value:v,selected:(b.cornerKind||'diagonal')===v},l)))));
+    root.append(el('div', { class: 'row' }, el('label', {}, 'Cut off corner'), el('select', { 'aria-label': 'Cut off corner', onchange: ev => { b.corner=ev.target.value; } }, ...CORNERS.map(v=>el('option',{value:v,selected:(b.corner||'NE')===v},v)))));
+    root.append(el('div', { class: 'tip' }, 'Click a corner cell of a room. Wall and floor/ceiling are cut together. Uses Wall/Back textures. Shift-click restores the square and its original walls. Corners cannot share a cell with stairs or pillars.'));
   } else {
     root.append(el('div', { class: 'row' }, el('label', {}, 'Piece'), el('select', { onchange: (e) => { b.pillar = e.target.value; } }, ...ed.bank.cellPieces.map((s) => el('option', { value: s.id, selected: s.id === b.pillar }, s.label)))));
     root.append(el('div', { class: 'muted' }, 'Uses the Wall texture. Click a cell; Shift-click removes.'));
@@ -262,6 +267,10 @@ function entityInspector(ed, e) {
     if (e.path?.length > 1) p.append(el('button', { onclick: () => { e.path.reverse(); ed.commit('reverse patrol'); } }, 'Reverse route'));
     root.append(p);
   }
+  root.append(el('div',{class:'insp-pad'},el('h4',{},'Reusable item'),el('div',{class:'row'},
+    el('button',{disabled:!ed.api.available,onclick:()=>ed.saveVariant(e)},'Save as variant…'),
+    def?.custom?el('button',{disabled:!ed.api.available,onclick:()=>ed.saveVariant(e,true)},'Update variant defaults…'):null),
+    el('div',{class:'muted'},'Edit this instance above, then save a reusable variant. Built-ins are kept.')));
   root.append(scriptsSection(ed, e, def));
   root.append(rulesSection(ed, e));
   const foot = el('div', { class: 'insp-pad' }, el('div', { class: 'row' }, el('button', { onclick: () => ed.duplicateSel() }, 'Duplicate'), el('button', { class: 'danger', onclick: () => ed.deleteSelection() }, 'Delete'), el('button', { title: 'Copy scripts, rules and properties to every other entity of this type', onclick: () => ed.copySettingsToSimilar(e) }, 'Copy settings to similar')));
@@ -280,7 +289,7 @@ function scriptsSection(ed, e, def) {
     if (!mod) body.append(el('div', { style: { color: 'var(--err)' } }, 'Script not found in the bank.'));
     else { body.append(el('div', { class: 'muted' }, mod.desc ?? '')); body.append(buildForm(mod.params ?? {}, mergeParams(def, e, s.id), (k, v) => { const ent = ed.scriptEntry(e, s.id); if (v === undefined) delete ent.params[k]; else ent.params[k] = v; ed.tidyScripts(e, def); ed.commit(`script ${s.id}.${k}`, { keepInspector: true }); }, ed.formCtx())); }
     sec.append(el('div', { class: `script${s.off ? ' off' : ''}` }, el('header', {}, el('b', {}, mod?.title ?? s.id), defaults.has(s.id) ? el('span', { class: 'badge' }, 'default') : null,
-      el('label', { class: 'chk', title: 'Enable / disable this script' }, el('input', { type: 'checkbox', checked: !s.off, onchange: (ev) => { const ent = ed.scriptEntry(e, s.id); if (ev.target.checked) delete ent.off; else ent.off = true; ed.tidyScripts(e, def); ed.commit('toggle script'); } })),
+      el('label', { class: 'chk', title: 'Enable / disable this script' }, el('input', { type: 'checkbox', checked: !s.off, onchange: (ev) => { const ent = ed.scriptEntry(e, s.id); if (ev.target.checked) { if(def?.scripts?.find(x=>x.id===s.id)?.off) ent.off=false;else delete ent.off; } else ent.off = true; ed.tidyScripts(e, def); ed.commit('toggle script'); } })),
       el('button', { title: 'Remove this script', onclick: () => { ed.removeScript(e, s.id, def); } }, '✕')), body));
     void entry;
   }
@@ -347,9 +356,18 @@ function cellInspector(ed, key) {
   const upd = (patch) => { ed.applyToSelectedCells((c) => { for (const [k, v] of Object.entries(patch)) { if (v === '' || v === null || v === undefined) delete c[k]; else c[k] = v; } }); };
   const tex = (label, k, cats) => p.append(el('div', { class: 'row' }, el('label', {}, label), el('select', { onchange: (ev) => upd({ [k]: ev.target.value }) }, el('option', { value: '' }, k === 'f' ? '(hole)' : '(open sky)'), ...ed.bank.textures.filter((t) => cats.includes(t.cat)).map((t) => el('option', { value: t.id, selected: cell[k] === t.id }, t.label)))));
   tex('Floor', 'f', ['floor', 'wall']); tex('Ceiling', 'c', ['ceiling', 'floor', 'wall']);
+  const shapeEdit = (patch) => {
+    if ([...ed.sel.cells].some(k => { const c=ed.level.layers[ed.layer].cells[k]; return c?.s || c?.p; })) return toast('Remove stairs/pillars before shaping these cells.');
+    ed.applyToSelectedCells(c => { if (patch.kind === '') delete c.shape; else c.shape = { kind:'diagonal',corner:'NE',t:ed.brush.wallTex,...c.shape,...patch }; });
+  };
+  p.append(el('div',{class:'row'},el('label',{},'Corner shape'),el('select',{'aria-label':'Cell corner shape',onchange:ev=>shapeEdit({kind:ev.target.value})},...[['','Square'],['diagonal','45° diagonal'],['round','Rounded']].map(([v,l])=>el('option',{value:v,selected:(cell.shape?.kind||'')===v},l)))));
+  if (cell.shape) {
+    p.append(el('div',{class:'row'},el('label',{},'Cut off corner'),el('select',{'aria-label':'Cell cut corner',onchange:ev=>shapeEdit({corner:ev.target.value})},...CORNERS.map(v=>el('option',{value:v,selected:cell.shape.corner===v},v)))));
+    for(const [field,label] of [['t','Corner wall'],['tb','Corner back']]) p.append(el('div',{class:'row'},el('label',{},label),el('select',{onchange:ev=>shapeEdit({[field]:ev.target.value})},...ed.bank.textures.filter(t=>t.cat==='wall').map(t=>el('option',{value:t.id,selected:(cell.shape[field]||cell.shape.t)===t.id},t.label)))));
+  }
   p.append(el('div', { class: 'row' }, el('label', {}, 'Floor height'), el('select', { onchange: (ev) => upd({ h: +ev.target.value || '' }) }, ...FLOOR_HEIGHTS.map((h) => el('option', { value: h, selected: (cell.h || 0) === h }, `${h > 0 ? '+' : ''}${h} m`)))));
-  p.append(el('div', { class: 'row' }, el('label', {}, 'Stairs'), el('select', { onchange: (ev) => { const v = ev.target.value; ed.applyToSelectedCells((c) => { if (!v) delete c.s; else c.s = { id: v, d: c.s?.d || 'N' }; }); } }, el('option', { value: '' }, '(none)'), ...ed.bank.stairs.map((s) => el('option', { value: s.id, selected: cell.s?.id === s.id }, s.label))), cell.s ? el('select', { style: { flex: 'none', width: '60px' }, onchange: (ev) => ed.applyToSelectedCells((c) => { c.s.d = ev.target.value; }) }, ...['N', 'E', 'S', 'W'].map((d) => el('option', { value: d, selected: cell.s.d === d }, d))) : null));
-  p.append(el('div', { class: 'row' }, el('label', {}, 'Pillar / block'), el('select', { onchange: (ev) => upd({ p: ev.target.value }) }, el('option', { value: '' }, '(none)'), ...ed.bank.cellPieces.map((s) => el('option', { value: s.id, selected: cell.p === s.id }, s.label)))));
+  p.append(el('div', { class: 'row' }, el('label', {}, 'Stairs'), el('select', { onchange: (ev) => { const v = ev.target.value; if (v && cell.shape) return toast('Restore Square before adding stairs.'); ed.applyToSelectedCells((c) => { if (!v) delete c.s; else c.s = { id: v, d: c.s?.d || 'N' }; }); } }, el('option', { value: '' }, '(none)'), ...ed.bank.stairs.map((s) => el('option', { value: s.id, selected: cell.s?.id === s.id }, s.label))), cell.s ? el('select', { style: { flex: 'none', width: '60px' }, onchange: (ev) => ed.applyToSelectedCells((c) => { c.s.d = ev.target.value; }) }, ...['N', 'E', 'S', 'W'].map((d) => el('option', { value: d, selected: cell.s.d === d }, d))) : null));
+  p.append(el('div', { class: 'row' }, el('label', {}, 'Pillar / block'), el('select', { onchange: (ev) => { if(ev.target.value && cell.shape) return toast('Restore Square before adding a pillar.'); upd({ p: ev.target.value }); } }, el('option', { value: '' }, '(none)'), ...ed.bank.cellPieces.map((s) => el('option', { value: s.id, selected: cell.p === s.id }, s.label)))));
   p.append(el('div', { class: 'row', style: { marginTop: '8px' } }, el('button', { class: 'danger', onclick: () => ed.deleteSelection() }, 'Clear cell'), el('button', { onclick: () => ed.copySel() }, 'Copy')));
   root.append(p); return root;
 }

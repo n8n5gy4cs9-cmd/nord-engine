@@ -184,3 +184,34 @@ Browser recovery stores a temporary unsaved backup; it is not a substitute for s
 The current addon uses keyboard/mouse controls, procedural characters and weapons, grid collision and baked static light. Touch/gamepad, animated skinned glTF characters, moving platforms, dynamic shadow casting and exact world-state saves are not implemented. Embedded pointer lock and feel still need native WKWebView/WebView2 testing; if capture is unavailable, the game offers hold-right-mouse look. Use the external browser option when comparing behaviour.
 
 **Next:** [FPS Level quick reference](cheat-sheet-fps-level.html) · [First FPS level tutorial](tut-t27-fps-level.html).
+
+## Diagonal, rounded and circular rooms
+
+**Upgrade existing projects first:** click **FPS Level → Upgrade runtime** before using the new shapes through main Play or an export. FPS Test reads the current engine code; the project uses its own installed runtime copy.
+
+1. Draw a rectangular room with R as before.
+2. In **Build → Cell objects → Mode**, choose **Diagonal / rounded corner**. Select **45° diagonal** or **Rounded quarter-circle**, then the corner to **cut off**: NE, NW, SE or SW (north is up on the map).
+3. Click the corresponding corner cell of the room. The wall, floor and ceiling change together; the floor does not stick out beyond the wall. It uses your current Wall/Back materials and retains the cell's floor/ceiling textures and height.
+4. Repeat at the other room corners. Four diagonal cuts give an octagonal room. Rounded cuts give rounded room corners. Four rounded cells in a 2×2 room form a circular room.
+5. Select a cell with V to change **Corner shape**, direction, **Corner wall** or **Corner back** in the Inspector. **Shift-click** with the corner tool restores Square. The original two boundary walls are retained internally and reappear; undo/redo works too.
+6. Test the full route and From here. Place starts, exits, enemies and patrol points inside the retained floor; the removed corner has no floor or ceiling.
+
+<figure class="shot"><img src="assets/screenshots/ed-fpsc-corners.png" alt="Corner workshop with an octagonal brick room and a circular metal room, matching cut floors in the map and 3D preview" loading="lazy"><figcaption>Open <code>levels/corners.fpsl.json</code> in a new FPS Creator project to explore these editable examples. The rooms are linked by teleporters.</figcaption></figure>
+
+The first version supports 45° cuts and a 4 m-radius quarter circle with eight segments, in four orientations. Walking, shots, sight/light occlusion and navigation use the same footprint. These are solid shaped walls: doors/windows remain on ordinary straight grid edges. Stairs and pillars need separate cells. Restore Square before adding them; the UI preserves existing stairs/pillars rather than replacing them. This does not add arbitrary-angle drawing or free-size curves.
+
+## Turn an edited item into a reusable variant
+
+**Items** contains the things you can place; **Objects** finds the things already placed. To customise an enemy or prop without changing every built-in item:
+
+1. Place it, select it, and edit **Properties**, **Scripts** and **Rules**. For example, place Soldier, set Health to 123, and set Shooter AI's damage to 2.
+2. Scroll to **Reusable item → Save as variant…**. Name it **Gentle guard**, use an unused id such as `gentle_guard`, and click **Save variant**. Use a key-like id: lowercase letters, digits and underscores, starting with a letter.
+3. Find Gentle guard in **Items** and place more. They inherit the Soldier model and behaviour plus the defaults you saved. The built-in Soldier remains unchanged.
+4. Later, select a Gentle guard, edit it and use **Update variant defaults…**. Confirm the update. New placements use the updated values; existing instances inherit property/script defaults where they have no override. Their own overrides and copied rules are kept.
+5. **Save the level** too. Variants are saved immediately to the project's `fpsc/bank.json`; the level's placement/type changes have separate Save/undo history.
+
+<figure class="shot"><img src="assets/screenshots/ed-fpsc-variant.png" alt="Save reusable variant dialog with display name and id, plus explanation of captured defaults and instance-specific fields" loading="lazy"><figcaption>Edit a normal item, then save it as a named reusable variant. No bank JSON editing is required.</figcaption></figure>
+
+Variants capture properties, scripts (including enabled state and parameters) and rules. They do not copy world position, name, tags, the direct Target field or patrol coordinates. A rule can still point at a named door or entity: check its targets when reusing it in another level. A rule list is copied into each new placement; updating defaults does not rewrite all those lists. This is for individual FPS items, not entire room assemblies.
+
+To change appearance, use an exposed model property or create a sprite/GLB entity in **Assets**, then save variants of it. Wall/corner textures remain directly editable in Build and the cell/piece Inspector. Saving variants requires a connected project server; bank definitions are not removed by undoing a level edit.
