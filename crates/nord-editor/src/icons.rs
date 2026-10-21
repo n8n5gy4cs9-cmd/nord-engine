@@ -138,12 +138,24 @@ pub fn mini(ui: &mut Ui, name: &'static str, tip: &str) -> egui::Response {
 
 pub fn mini_toggle(ui: &mut Ui, name: &'static str, tip: &str, selected: bool) -> egui::Response {
     let (rect, resp) = ui.allocate_exact_size(Vec2::splat(20.0), egui::Sense::click());
-    resp.widget_info(|| egui::WidgetInfo::selected(egui::WidgetType::Button, ui.is_enabled(), selected, tip));
+    resp.widget_info(|| {
+        egui::WidgetInfo::selected(egui::WidgetType::Button, ui.is_enabled(), selected, tip)
+    });
     if ui.is_rect_visible(rect) {
         let v = ui.style().interact_selectable(&resp, selected);
-        let fill = if selected { ui.visuals().selection.bg_fill } else if resp.hovered() { v.bg_fill } else { Color32::TRANSPARENT };
+        let fill = if selected {
+            ui.visuals().selection.bg_fill
+        } else if resp.hovered() {
+            v.bg_fill
+        } else {
+            Color32::TRANSPARENT
+        };
         ui.painter().rect_filled(rect, v.corner_radius, fill);
-        icon(name, 13.0, v.fg_stroke.color).paint_at(ui, egui::Rect::from_center_size(rect.center(), Vec2::splat(13.0)));
+        icon(name, 13.0, v.fg_stroke.color).paint_at(
+            ui,
+            egui::Rect::from_center_size(rect.center(), Vec2::splat(13.0)),
+        );
     }
-    resp.on_hover_cursor(egui::CursorIcon::PointingHand).on_hover_text(tip)
+    resp.on_hover_cursor(egui::CursorIcon::PointingHand)
+        .on_hover_text(tip)
 }

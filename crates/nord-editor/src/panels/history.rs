@@ -40,16 +40,26 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
     }
     let selected = st.history_ui.selected.clone();
     ui.columns(2, |cols| {
-        egui::ScrollArea::vertical().id_salt("snaps").show(&mut cols[0], |ui| {
-            for s in &snaps {
-                let text = format!("{}  ·  {}  ·  {} files", history::age_text(s.time), s.label, s.files);
-                if ui.selectable_label(selected.as_deref() == Some(&s.id), text).clicked() {
-                    st.history_ui.selected = Some(s.id.clone());
-                    st.history_ui.file = None;
-                    st.history_ui.confirm_restore = false;
+        egui::ScrollArea::vertical()
+            .id_salt("snaps")
+            .show(&mut cols[0], |ui| {
+                for s in &snaps {
+                    let text = format!(
+                        "{}  ·  {}  ·  {} files",
+                        history::age_text(s.time),
+                        s.label,
+                        s.files
+                    );
+                    if ui
+                        .selectable_label(selected.as_deref() == Some(&s.id), text)
+                        .clicked()
+                    {
+                        st.history_ui.selected = Some(s.id.clone());
+                        st.history_ui.file = None;
+                        st.history_ui.confirm_restore = false;
+                    }
                 }
-            }
-        });
+            });
         let ui = &mut cols[1];
         let Some(id) = st.history_ui.selected.clone() else {
             ui.weak("Select a snapshot to compare it with the current files");
@@ -57,8 +67,15 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         };
         let changes = history::diff(&root, &id).unwrap_or_default();
         ui.horizontal(|ui| {
-            ui.strong(format!("{} changed file(s) since this snapshot", changes.len()));
-            let label = if st.history_ui.confirm_restore { "Click again to restore" } else { "Restore this snapshot" };
+            ui.strong(format!(
+                "{} changed file(s) since this snapshot",
+                changes.len()
+            ));
+            let label = if st.history_ui.confirm_restore {
+                "Click again to restore"
+            } else {
+                "Restore this snapshot"
+            };
             if ui.button(label).clicked() {
                 if st.history_ui.confirm_restore {
                     match history::restore(&root, &id) {
@@ -80,15 +97,30 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                 Change::Removed => ("removed", Color32::from_rgb(220, 110, 110)),
                 Change::Modified => ("modified", Color32::from_rgb(230, 190, 100)),
             };
-            if ui.selectable_label(st.history_ui.file.as_deref() == Some(f), RichText::new(format!("{tag}  {f}")).color(col)).clicked() {
+            if ui
+                .selectable_label(
+                    st.history_ui.file.as_deref() == Some(f),
+                    RichText::new(format!("{tag}  {f}")).color(col),
+                )
+                .clicked()
+            {
                 st.history_ui.file = Some(f.clone());
             }
         }
         if let Some(f) = st.history_ui.file.clone() {
             ui.separator();
             egui::ScrollArea::both().id_salt("diff").show(ui, |ui| {
-                for (t, line) in history::file_diff(&root, &id, &f).unwrap_or_default().iter().filter(|(t, _)| *t != ' ').take(400) {
-                    let col = if *t == '+' { Color32::from_rgb(130, 200, 130) } else { Color32::from_rgb(220, 110, 110) };
+                for (t, line) in history::file_diff(&root, &id, &f)
+                    .unwrap_or_default()
+                    .iter()
+                    .filter(|(t, _)| *t != ' ')
+                    .take(400)
+                {
+                    let col = if *t == '+' {
+                        Color32::from_rgb(130, 200, 130)
+                    } else {
+                        Color32::from_rgb(220, 110, 110)
+                    };
                     ui.label(RichText::new(format!("{t} {line}")).monospace().color(col));
                 }
             });

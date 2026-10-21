@@ -1,10 +1,10 @@
 //! Project tools (M10-25): find all references, project-wide replace, safe rename of assets and objects.
 //! Works on the same text sources as version history (`history::source_files`). Every mutating function has a `dry_run` mode that only
 //! reports what it would change.
+use crate::vfs as fs;
 use crate::vfs::PathExt;
 use crate::{history, io, Error, Result};
 use serde_json::Value;
-use crate::vfs as fs;
 use std::path::Path;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -29,7 +29,8 @@ fn find_all(hay: &str, needle: &str, whole_word: bool) -> Vec<usize> {
         let at = from + i;
         let end = at + needle.len();
         let ok = !whole_word
-            || (!hay[..at].chars().next_back().is_some_and(is_ident) && !hay[end..].chars().next().is_some_and(is_ident));
+            || (!hay[..at].chars().next_back().is_some_and(is_ident)
+                && !hay[end..].chars().next().is_some_and(is_ident));
         if ok {
             out.push(at);
         }
@@ -42,10 +43,16 @@ fn find_all(hay: &str, needle: &str, whole_word: bool) -> Vec<usize> {
 pub fn find(root: &Path, needle: &str, whole_word: bool) -> Vec<Hit> {
     let mut hits = vec![];
     for f in history::source_files(root) {
-        let Ok(text) = fs::read_to_string(root.join(&f)) else { continue };
+        let Ok(text) = fs::read_to_string(root.join(&f)) else {
+            continue;
+        };
         for (i, l) in text.lines().enumerate() {
             if !find_all(l, needle, whole_word).is_empty() {
-                hits.push(Hit { file: f.clone(), line: i + 1, text: l.trim().chars().take(200).collect() });
+                hits.push(Hit {
+                    file: f.clone(),
+                    line: i + 1,
+                    text: l.trim().chars().take(200).collect(),
+                });
             }
         }
     }
@@ -53,10 +60,18 @@ pub fn find(root: &Path, needle: &str, whole_word: bool) -> Vec<Hit> {
 }
 
 /// Replace text everywhere. Returns (file, replacements) for files that change.
-pub fn replace_all(root: &Path, find: &str, with: &str, whole_word: bool, dry_run: bool) -> Result<Vec<(String, usize)>> {
+pub fn replace_all(
+    root: &Path,
+    find: &str,
+    with: &str,
+    whole_word: bool,
+    dry_run: bool,
+) -> Result<Vec<(String, usize)>> {
     let mut out = vec![];
     for f in history::source_files(root) {
-        let Ok(text) = fs::read_to_string(root.join(&f)) else { continue };
+        let Ok(text) = fs::read_to_string(root.join(&f)) else {
+            continue;
+        };
         let at = find_all(&text, find, whole_word);
         if at.is_empty() {
             continue;
@@ -85,7 +100,9 @@ fn safe_rel(p: &str) -> bool {
 /// Returns the files whose text changes (the moved file itself is not listed).
 pub fn rename_asset(root: &Path, from: &str, to: &str, dry_run: bool) -> Result<Vec<String>> {
     if !safe_rel(from) || !safe_rel(to) {
-        return Err(Error::Msg("paths must be relative and stay inside the project".into()));
+        return Err(Error::Msg(
+            "paths must be relative and stay inside the project".into(),
+        ));
     }
     if !root.join(from).v_is_file() {
         return Err(Error::Msg(format!("{from} does not exist")));
@@ -95,7 +112,9 @@ pub fn rename_asset(root: &Path, from: &str, to: &str, dry_run: bool) -> Result<
     }
     let mut changed = vec![];
     for f in history::source_files(root) {
-        let Ok(text) = fs::read_to_string(root.join(&f)) else { continue };
+        let Ok(text) = fs::read_to_string(root.join(&f)) else {
+            continue;
+        };
         let mut new = text.clone();
         for q in ['"', '\'', '`'] {
             new = new.replace(&format!("{q}{from}{q}"), &format!("{q}{to}{q}"));
@@ -108,12 +127,16 @@ pub fn rename_asset(root: &Path, from: &str, to: &str, dry_run: bool) -> Result<
         }
     }
     if !dry_run {
-        for (a, b) in [(from.to_string(), to.to_string()), (format!("{from}.meta.json"), format!("{to}.meta.json"))] {
+        for (a, b) in [
+            (from.to_string(), to.to_string()),
+            (format!("{from}.meta.json"), format!("{to}.meta.json")),
+        ] {
             if root.join(&a).v_is_file() {
                 if let Some(p) = root.join(&b).parent() {
                     fs::create_dir_all(p).map_err(|e| io::io_err(p, e))?;
                 }
-                fs::rename(root.join(&a), root.join(&b)).map_err(|e| io::io_err(&root.join(&a), e))?;
+                fs::rename(root.join(&a), root.join(&b))
+                    .map_err(|e| io::io_err(&root.join(&a), e))?;
             }
         }
     }
@@ -140,12 +163,18 @@ fn rename_in_sheet(v: &mut Value, old: &str, new: &str, key: Option<&str>) -> bo
     match v {
         Value::String(s) => {
             let exact = s == old && matches!(key, Some("object" | "type" | "target"));
-            let n = if exact { new.to_string() } else { rename_in_expr(s, old, new) };
+            let n = if exact {
+                new.to_string()
+            } else {
+                rename_in_expr(s, old, new)
+            };
             let ch = n != *s;
             *s = n;
             ch
         }
-        Value::Array(a) => a.iter_mut().fold(false, |c, x| rename_in_sheet(x, old, new, key) | c),
+        Value::Array(a) => a
+            .iter_mut()
+            .fold(false, |c, x| rename_in_sheet(x, old, new, key) | c),
         Value::Object(m) => {
             let mut c = false;
             for (k, x) in m.iter_mut() {
@@ -177,8 +206,11 @@ fn rename_entities(list: &mut [Value], old: &str, new: &str) -> bool {
 /// Rename an object (entity name) across scenes, prefabs and event sheets: entity `name`s, sheet `object`s, `Old.X` / `Old(…)`
 /// inside expressions, scene families and timeline targets. Tags and script code are NOT touched (use `replace_all`).
 pub fn rename_object(root: &Path, old: &str, new: &str, dry_run: bool) -> Result<Vec<String>> {
-    if old.is_empty() || new.is_empty() || !new.chars().all(|c| is_ident(c) || c == ' ' || c == '-') {
-        return Err(Error::Msg("new name must be letters, digits, '_' , '-' or spaces".into()));
+    if old.is_empty() || new.is_empty() || !new.chars().all(|c| is_ident(c) || c == ' ' || c == '-')
+    {
+        return Err(Error::Msg(
+            "new name must be letters, digits, '_' , '-' or spaces".into(),
+        ));
     }
     let mut changed = vec![];
     for f in history::source_files(root) {
@@ -188,7 +220,9 @@ pub fn rename_object(root: &Path, old: &str, new: &str, dry_run: bool) -> Result
         if !(is_scene || is_prefab || is_sheet) {
             continue;
         }
-        let Ok(mut v) = io::load_json::<Value>(&root.join(&f)) else { continue };
+        let Ok(mut v) = io::load_json::<Value>(&root.join(&f)) else {
+            continue;
+        };
         let mut c = false;
         if is_scene {
             if let Some(a) = v["entities"].as_array_mut() {
@@ -249,7 +283,10 @@ mod tests {
         assert_eq!(dry, vec![("a.js".to_string(), 1)]);
         assert!(fs::read_to_string(d.join("a.js")).unwrap().contains("hero"));
         replace_all(&d, "hero", "knight", true, false).unwrap();
-        assert_eq!(fs::read_to_string(d.join("a.js")).unwrap(), "let knight = 1;\nlet heroine = 2;\n");
+        assert_eq!(
+            fs::read_to_string(d.join("a.js")).unwrap(),
+            "let knight = 1;\nlet heroine = 2;\n"
+        );
         let _ = fs::remove_dir_all(&d);
     }
 
@@ -258,13 +295,32 @@ mod tests {
         let d = proj("asset");
         fs::write(d.join("assets/hero.png"), [1u8]).unwrap();
         fs::write(d.join("assets/hero.png.meta.json"), "{}").unwrap();
-        fs::write(d.join("scenes/m.scene.json"), r#"{"t":"assets/hero.png","u":"assets/hero.png.bak"}"#).unwrap();
+        fs::write(
+            d.join("scenes/m.scene.json"),
+            r#"{"t":"assets/hero.png","u":"assets/hero.png.bak"}"#,
+        )
+        .unwrap();
         fs::write(d.join("s.js"), "load('assets/hero.png')").unwrap();
-        assert_eq!(rename_asset(&d, "assets/hero.png", "assets/knight.png", true).unwrap().len(), 2);
-        assert!(d.join("assets/hero.png").v_exists(), "dry run moves nothing");
+        assert_eq!(
+            rename_asset(&d, "assets/hero.png", "assets/knight.png", true)
+                .unwrap()
+                .len(),
+            2
+        );
+        assert!(
+            d.join("assets/hero.png").v_exists(),
+            "dry run moves nothing"
+        );
         rename_asset(&d, "assets/hero.png", "assets/knight.png", false).unwrap();
-        assert!(d.join("assets/knight.png").v_exists() && d.join("assets/knight.png.meta.json").v_exists() && !d.join("assets/hero.png").v_exists());
-        assert_eq!(fs::read_to_string(d.join("scenes/m.scene.json")).unwrap(), r#"{"t":"assets/knight.png","u":"assets/hero.png.bak"}"#);
+        assert!(
+            d.join("assets/knight.png").v_exists()
+                && d.join("assets/knight.png.meta.json").v_exists()
+                && !d.join("assets/hero.png").v_exists()
+        );
+        assert_eq!(
+            fs::read_to_string(d.join("scenes/m.scene.json")).unwrap(),
+            r#"{"t":"assets/knight.png","u":"assets/hero.png.bak"}"#
+        );
         assert!(rename_asset(&d, "assets/knight.png", "../x.png", false).is_err());
         assert!(rename_asset(&d, "assets/nope.png", "assets/y.png", false).is_err());
         let _ = fs::remove_dir_all(&d);
@@ -284,10 +340,19 @@ mod tests {
         assert_eq!(s["settings"]["families"]["Foes"][0], "Goo");
         let e: Value = io::load_json(&d.join("events/m.events.json")).unwrap();
         assert_eq!(e["events"][0]["conditions"][0]["object"], "Goo");
-        assert_eq!(e["events"][0]["conditions"][0]["params"]["value"], "Goo.X + 1");
+        assert_eq!(
+            e["events"][0]["conditions"][0]["params"]["value"],
+            "Goo.X + 1"
+        );
         assert_eq!(e["events"][0]["actions"][0]["params"]["object"], "Goo");
-        assert_eq!(e["events"][0]["actions"][1]["params"]["value"], "Slimey.X + Goo(0).Y");
-        assert_eq!(e["events"][1]["text"], "Slime rules", "comments are left alone");
+        assert_eq!(
+            e["events"][0]["actions"][1]["params"]["value"],
+            "Slimey.X + Goo(0).Y"
+        );
+        assert_eq!(
+            e["events"][1]["text"], "Slime rules",
+            "comments are left alone"
+        );
         assert!(rename_object(&d, "Goo", "bad;name", false).is_err());
         let _ = fs::remove_dir_all(&d);
     }

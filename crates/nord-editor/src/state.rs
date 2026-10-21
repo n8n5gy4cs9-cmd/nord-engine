@@ -842,7 +842,10 @@ impl EditorState {
     pub fn ensure_server(&mut self) -> Option<String> {
         if self.play.is_none() {
             let root = self.root.clone()?;
-            let engine = self.engine_root.clone().or_else(crate::platform::web_engine_root);
+            let engine = self
+                .engine_root
+                .clone()
+                .or_else(crate::platform::web_engine_root);
             let Some(engine) = engine else {
                 self.log(
                     LogLevel::Error,
@@ -1102,7 +1105,8 @@ mod appearance_tests {
         s.fps_shortcuts.stop.command = true;
         s.run_key = "Enter".into();
         s.theme = "github-light".into();
-        let mut saved: Settings = serde_json::from_str(&serde_json::to_string(&s).unwrap()).unwrap();
+        let mut saved: Settings =
+            serde_json::from_str(&serde_json::to_string(&s).unwrap()).unwrap();
         assert_eq!(saved.fps_shortcuts.stop.key, "F8");
         assert!(saved.fps_shortcuts.stop.command);
         saved.reset_shortcuts();

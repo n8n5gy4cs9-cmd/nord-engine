@@ -1,9 +1,9 @@
 //! Layout tab (M10-12/13/14): layers, layout properties (size, scrolling, event sheet, guides), arrange selection, object types,
 //! overview map and the list of layouts (scenes). All edits go through `EditorState::edit_scene`, so they undo together with the objects.
-use nord_core::vfs::PathExt;
 use crate::layout::{self, Align};
 use crate::state::EditorState;
 use egui::{Color32, Rect, RichText, Sense, Ui, Vec2};
+use nord_core::vfs::PathExt;
 use serde_json::json;
 
 #[derive(Default)]
@@ -20,133 +20,210 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         ui.weak("No scene open");
         return;
     }
-    egui::ScrollArea::vertical().auto_shrink([false, false]).show(ui, |ui| {
-        layers_section(st, ui);
-        ui.add_space(6.0);
-        properties_section(st, ui);
-        ui.add_space(6.0);
-        arrange_section(st, ui);
-        ui.add_space(6.0);
-        objects_section(st, ui);
-        ui.add_space(6.0);
-        overview_section(st, ui);
-        ui.add_space(6.0);
-        views_section(st, ui);
-        ui.add_space(6.0);
-        layouts_section(st, ui);
-    });
+    egui::ScrollArea::vertical()
+        .auto_shrink([false, false])
+        .show(ui, |ui| {
+            layers_section(st, ui);
+            ui.add_space(6.0);
+            properties_section(st, ui);
+            ui.add_space(6.0);
+            arrange_section(st, ui);
+            ui.add_space(6.0);
+            objects_section(st, ui);
+            ui.add_space(6.0);
+            overview_section(st, ui);
+            ui.add_space(6.0);
+            views_section(st, ui);
+            ui.add_space(6.0);
+            layouts_section(st, ui);
+        });
 }
 
 fn layers_section(st: &mut EditorState, ui: &mut Ui) {
-    egui::CollapsingHeader::new(RichText::new("Layers").strong()).default_open(true).show(ui, |ui| {
-        let list = layout::layers(st.scene.as_ref().unwrap());
-        // top layer first, like Construct's layer list
-        for l in list.iter().rev() {
+    egui::CollapsingHeader::new(RichText::new("Layers").strong())
+        .default_open(true)
+        .show(ui, |ui| {
+            let list = layout::layers(st.scene.as_ref().unwrap());
+            // top layer first, like Construct's layer list
+            for l in list.iter().rev() {
+                ui.horizontal(|ui| {
+                    let (mut vis, mut lock) = (l.visible, l.locked);
+                    if ui
+                        .checkbox(&mut vis, "")
+                        .on_hover_text("Visible (also at runtime)")
+                        .changed()
+                    {
+                        st.edit_scene("Layer visibility", None, |s| {
+                            layout::set_layer_prop(s, l.id, "visible", json!(vis))
+                        });
+                    }
+                    if crate::icons::mini_toggle(
+                        ui,
+                        if lock { "lock" } else { "unlock" },
+                        "Locked: objects on it cannot be selected in the viewport",
+                        lock,
+                    )
+                    .clicked()
+                    {
+                        lock = !lock;
+                        st.edit_scene("Layer lock", None, |s| {
+                            layout::set_layer_prop(s, l.id, "locked", json!(lock))
+                        });
+                    }
+                    let mut name = l.name.clone();
+                    let r = ui.add(egui::TextEdit::singleline(&mut name).desired_width(120.0));
+                    if r.changed() {
+                        st.edit_scene("Rename layer", Some(&format!("layer-name-{}", l.id)), |s| {
+                            layout::set_layer_prop(s, l.id, "name", json!(name))
+                        });
+                    }
+                    if ui
+                        .selectable_label(
+                            st.layout_ui.active_layer == l.id,
+                            format!("#{}  ·  {} object(s)", l.id, l.count),
+                        )
+                        .clicked()
+                    {
+                        st.layout_ui.active_layer = l.id;
+                    }
+                    if crate::icons::mini(ui, "arrow-up", "Move layer up (drawn later)").clicked() {
+                        st.edit_scene("Move layer up", None, |s| {
+                            layout::move_layer(s, l.id, true);
+                        });
+                    }
+                    if crate::icons::mini(ui, "arrow-down", "Move layer down").clicked() {
+                        st.edit_scene("Move layer down", None, |s| {
+                            layout::move_layer(s, l.id, false);
+                        });
+                    }
+                    if crate::icons::mini(ui, "x", "Delete layer (objects drop to the layer below)")
+                        .clicked()
+                    {
+                        st.edit_scene("Delete layer", None, |s| {
+                            layout::delete_layer(s, l.id);
+                        });
+                    }
+                });
+            }
             ui.horizontal(|ui| {
-                let (mut vis, mut lock) = (l.visible, l.locked);
-                if ui.checkbox(&mut vis, "").on_hover_text("Visible (also at runtime)").changed() {
-                    st.edit_scene("Layer visibility", None, |s| layout::set_layer_prop(s, l.id, "visible", json!(vis)));
-                }
-                if crate::icons::mini_toggle(ui, if lock { "lock" } else { "unlock" }, "Locked: objects on it cannot be selected in the viewport", lock).clicked() {
-                    lock = !lock;
-                    st.edit_scene("Layer lock", None, |s| layout::set_layer_prop(s, l.id, "locked", json!(lock)));
-                }
-                let mut name = l.name.clone();
-                let r = ui.add(egui::TextEdit::singleline(&mut name).desired_width(120.0));
-                if r.changed() {
-                    st.edit_scene("Rename layer", Some(&format!("layer-name-{}", l.id)), |s| layout::set_layer_prop(s, l.id, "name", json!(name)));
-                }
-                if ui.selectable_label(st.layout_ui.active_layer == l.id, format!("#{}  ·  {} object(s)", l.id, l.count)).clicked() {
-                    st.layout_ui.active_layer = l.id;
-                }
-                if crate::icons::mini(ui, "arrow-up", "Move layer up (drawn later)").clicked() {
-                    st.edit_scene("Move layer up", None, |s| {
-                        layout::move_layer(s, l.id, true);
+                if ui.button("+ Layer").clicked() {
+                    st.edit_scene("Add layer", None, |s| {
+                        layout::add_layer(s);
                     });
                 }
-                if crate::icons::mini(ui, "arrow-down", "Move layer down").clicked() {
-                    st.edit_scene("Move layer down", None, |s| {
-                        layout::move_layer(s, l.id, false);
-                    });
-                }
-                if crate::icons::mini(ui, "x", "Delete layer (objects drop to the layer below)").clicked() {
-                    st.edit_scene("Delete layer", None, |s| {
-                        layout::delete_layer(s, l.id);
+                let sel = st.selection.clone();
+                if ui
+                    .add_enabled(
+                        !sel.is_empty(),
+                        egui::Button::new("Move selection to active layer"),
+                    )
+                    .clicked()
+                {
+                    let to = st.layout_ui.active_layer;
+                    st.edit("Move to layer", None, |ents| {
+                        for id in &sel {
+                            if let Some(e) = find_mut(ents, id) {
+                                e.layer = to;
+                            }
+                        }
                     });
                 }
             });
-        }
-        ui.horizontal(|ui| {
-            if ui.button("+ Layer").clicked() {
-                st.edit_scene("Add layer", None, |s| {
-                    layout::add_layer(s);
-                });
-            }
-            let sel = st.selection.clone();
-            if ui.add_enabled(!sel.is_empty(), egui::Button::new("Move selection to active layer")).clicked() {
-                let to = st.layout_ui.active_layer;
-                st.edit("Move to layer", None, |ents| {
-                    for id in &sel {
-                        if let Some(e) = find_mut(ents, id) {
-                            e.layer = to;
+            let active = st.layout_ui.active_layer;
+            if let Some(l) = list.iter().find(|l| l.id == active) {
+                ui.separator();
+                ui.label(RichText::new(format!("Layer #{} — {}", l.id, l.name)).strong());
+                egui::Grid::new("layer-props")
+                    .num_columns(2)
+                    .spacing([10.0, 4.0])
+                    .show(ui, |ui| {
+                        let mut op = l.opacity;
+                        ui.label("Opacity");
+                        if ui.add(egui::Slider::new(&mut op, 0.0..=1.0)).changed() {
+                            st.edit_scene(
+                                "Layer opacity",
+                                Some(&format!("layer-op-{}", l.id)),
+                                |s| layout::set_layer_prop(s, l.id, "opacity", json!(op)),
+                            );
                         }
-                    }
-                });
+                        ui.end_row();
+                        let mut par = l.parallax;
+                        ui.label("Parallax");
+                        let changed = ui
+                            .horizontal(|ui| {
+                                let a = ui
+                                    .add(egui::DragValue::new(&mut par[0]).speed(0.01).prefix("x "))
+                                    .on_hover_text(
+                                        "0 = fixed to the screen, 1 = moves with the world",
+                                    )
+                                    .changed();
+                                let b = ui
+                                    .add(egui::DragValue::new(&mut par[1]).speed(0.01).prefix("y "))
+                                    .changed();
+                                a || b
+                            })
+                            .inner;
+                        if changed {
+                            st.edit_scene(
+                                "Layer parallax",
+                                Some(&format!("layer-par-{}", l.id)),
+                                |s| layout::set_layer_prop(s, l.id, "parallax", json!(par)),
+                            );
+                        }
+                        ui.end_row();
+                        let mut blend = l.blend.clone();
+                        ui.label("Blend");
+                        egui::ComboBox::from_id_salt("layer-blend")
+                            .selected_text(blend.clone())
+                            .show_ui(ui, |ui| {
+                                for b in ["normal", "add", "multiply", "screen"] {
+                                    ui.selectable_value(&mut blend, b.to_string(), b);
+                                }
+                            });
+                        if blend != l.blend {
+                            st.edit_scene("Layer blend", None, |s| {
+                                layout::set_layer_prop(s, l.id, "blend", json!(blend))
+                            });
+                        }
+                        ui.end_row();
+                        let mut transparent = l.transparent;
+                        ui.label("Background");
+                        ui.horizontal(|ui| {
+                            if ui.checkbox(&mut transparent, "transparent").changed() {
+                                st.edit_scene("Layer transparency", None, |s| {
+                                    layout::set_layer_prop(
+                                        s,
+                                        l.id,
+                                        "transparent",
+                                        json!(transparent),
+                                    )
+                                });
+                            }
+                            let mut bg = l.background.clone();
+                            if ui
+                                .add_enabled(
+                                    !transparent,
+                                    egui::TextEdit::singleline(&mut bg).desired_width(80.0),
+                                )
+                                .changed()
+                            {
+                                st.edit_scene(
+                                    "Layer background",
+                                    Some(&format!("layer-bg-{}", l.id)),
+                                    |s| layout::set_layer_prop(s, l.id, "background", json!(bg)),
+                                );
+                            }
+                        });
+                        ui.end_row();
+                    });
             }
         });
-        let active = st.layout_ui.active_layer;
-        if let Some(l) = list.iter().find(|l| l.id == active) {
-            ui.separator();
-            ui.label(RichText::new(format!("Layer #{} — {}", l.id, l.name)).strong());
-            egui::Grid::new("layer-props").num_columns(2).spacing([10.0, 4.0]).show(ui, |ui| {
-                let mut op = l.opacity;
-                ui.label("Opacity");
-                if ui.add(egui::Slider::new(&mut op, 0.0..=1.0)).changed() {
-                    st.edit_scene("Layer opacity", Some(&format!("layer-op-{}", l.id)), |s| layout::set_layer_prop(s, l.id, "opacity", json!(op)));
-                }
-                ui.end_row();
-                let mut par = l.parallax;
-                ui.label("Parallax");
-                let changed = ui
-                    .horizontal(|ui| {
-                        let a = ui.add(egui::DragValue::new(&mut par[0]).speed(0.01).prefix("x ")).on_hover_text("0 = fixed to the screen, 1 = moves with the world").changed();
-                        let b = ui.add(egui::DragValue::new(&mut par[1]).speed(0.01).prefix("y ")).changed();
-                        a || b
-                    })
-                    .inner;
-                if changed {
-                    st.edit_scene("Layer parallax", Some(&format!("layer-par-{}", l.id)), |s| layout::set_layer_prop(s, l.id, "parallax", json!(par)));
-                }
-                ui.end_row();
-                let mut blend = l.blend.clone();
-                ui.label("Blend");
-                egui::ComboBox::from_id_salt("layer-blend").selected_text(blend.clone()).show_ui(ui, |ui| {
-                    for b in ["normal", "add", "multiply", "screen"] {
-                        ui.selectable_value(&mut blend, b.to_string(), b);
-                    }
-                });
-                if blend != l.blend {
-                    st.edit_scene("Layer blend", None, |s| layout::set_layer_prop(s, l.id, "blend", json!(blend)));
-                }
-                ui.end_row();
-                let mut transparent = l.transparent;
-                ui.label("Background");
-                ui.horizontal(|ui| {
-                    if ui.checkbox(&mut transparent, "transparent").changed() {
-                        st.edit_scene("Layer transparency", None, |s| layout::set_layer_prop(s, l.id, "transparent", json!(transparent)));
-                    }
-                    let mut bg = l.background.clone();
-                    if ui.add_enabled(!transparent, egui::TextEdit::singleline(&mut bg).desired_width(80.0)).changed() {
-                        st.edit_scene("Layer background", Some(&format!("layer-bg-{}", l.id)), |s| layout::set_layer_prop(s, l.id, "background", json!(bg)));
-                    }
-                });
-                ui.end_row();
-            });
-        }
-    });
 }
 
-fn find_mut<'a>(list: &'a mut [nord_core::scene::Entity], id: &str) -> Option<&'a mut nord_core::scene::Entity> {
+fn find_mut<'a>(
+    list: &'a mut [nord_core::scene::Entity],
+    id: &str,
+) -> Option<&'a mut nord_core::scene::Entity> {
     for e in list {
         if e.id == id {
             return Some(e);
@@ -250,29 +327,41 @@ fn properties_section(st: &mut EditorState, ui: &mut Ui) {
 }
 
 fn arrange_section(st: &mut EditorState, ui: &mut Ui) {
-    egui::CollapsingHeader::new(RichText::new("Arrange selection").strong()).default_open(false).show(ui, |ui| {
-        let sel = st.selection.clone();
-        ui.weak(format!("{} selected (select two or more in the Hierarchy)", sel.len()));
-        ui.add_enabled_ui(sel.len() >= 2, |ui| {
-            ui.horizontal_wrapped(|ui| {
-                for (label, mode) in [("Left", Align::Left), ("Centre", Align::CenterH), ("Right", Align::Right), ("Top", Align::Top), ("Middle", Align::CenterV), ("Bottom", Align::Bottom)] {
-                    if ui.button(label).clicked() {
-                        st.edit("Align", None, |e| layout::align(e, &sel, mode));
+    egui::CollapsingHeader::new(RichText::new("Arrange selection").strong())
+        .default_open(false)
+        .show(ui, |ui| {
+            let sel = st.selection.clone();
+            ui.weak(format!(
+                "{} selected (select two or more in the Hierarchy)",
+                sel.len()
+            ));
+            ui.add_enabled_ui(sel.len() >= 2, |ui| {
+                ui.horizontal_wrapped(|ui| {
+                    for (label, mode) in [
+                        ("Left", Align::Left),
+                        ("Centre", Align::CenterH),
+                        ("Right", Align::Right),
+                        ("Top", Align::Top),
+                        ("Middle", Align::CenterV),
+                        ("Bottom", Align::Bottom),
+                    ] {
+                        if ui.button(label).clicked() {
+                            st.edit("Align", None, |e| layout::align(e, &sel, mode));
+                        }
                     }
-                }
-            });
-            ui.horizontal(|ui| {
-                ui.add_enabled_ui(sel.len() >= 3, |ui| {
-                    if ui.button("Distribute horizontally").clicked() {
-                        st.edit("Distribute", None, |e| layout::distribute(e, &sel, true));
-                    }
-                    if ui.button("Distribute vertically").clicked() {
-                        st.edit("Distribute", None, |e| layout::distribute(e, &sel, false));
-                    }
+                });
+                ui.horizontal(|ui| {
+                    ui.add_enabled_ui(sel.len() >= 3, |ui| {
+                        if ui.button("Distribute horizontally").clicked() {
+                            st.edit("Distribute", None, |e| layout::distribute(e, &sel, true));
+                        }
+                        if ui.button("Distribute vertically").clicked() {
+                            st.edit("Distribute", None, |e| layout::distribute(e, &sel, false));
+                        }
+                    });
                 });
             });
         });
-    });
 }
 
 fn objects_section(st: &mut EditorState, ui: &mut Ui) {
@@ -360,106 +449,138 @@ fn overview_section(st: &mut EditorState, ui: &mut Ui) {
 }
 
 fn views_section(st: &mut EditorState, ui: &mut Ui) {
-    egui::CollapsingHeader::new(RichText::new("Views").strong()).default_open(false).show(ui, |ui| {
-        let views = layout::views(st.scene.as_ref().unwrap());
-        let mut go: Option<[f64; 3]> = None;
-        let mut del: Option<String> = None;
-        for (name, c) in &views {
+    egui::CollapsingHeader::new(RichText::new("Views").strong())
+        .default_open(false)
+        .show(ui, |ui| {
+            let views = layout::views(st.scene.as_ref().unwrap());
+            let mut go: Option<[f64; 3]> = None;
+            let mut del: Option<String> = None;
+            for (name, c) in &views {
+                ui.horizontal(|ui| {
+                    if ui.button(format!("Go to {name}")).clicked() {
+                        go = Some(*c);
+                    }
+                    ui.weak(format!("{:.0}, {:.0} · {:.0}%", c[0], c[1], c[2] * 100.0));
+                    if crate::icons::mini(ui, "x", "Delete view").clicked() {
+                        del = Some(name.clone());
+                    }
+                });
+            }
             ui.horizontal(|ui| {
-                if ui.button(format!("Go to {name}")).clicked() {
-                    go = Some(*c);
+                ui.add(
+                    egui::TextEdit::singleline(&mut st.layout_ui.view_name)
+                        .hint_text("view name")
+                        .desired_width(120.0),
+                );
+                let cam = st.viewport_cam;
+                if ui
+                    .add_enabled(
+                        cam.is_some() && !st.layout_ui.view_name.trim().is_empty(),
+                        egui::Button::new("Save current view"),
+                    )
+                    .on_hover_text("remembers where the 2D viewport is looking")
+                    .clicked()
+                {
+                    let n = st.layout_ui.view_name.trim().to_string();
+                    st.edit_scene("Save view", None, |s| {
+                        layout::save_view(s, &n, cam.unwrap())
+                    });
+                    st.layout_ui.view_name.clear();
                 }
-                ui.weak(format!("{:.0}, {:.0} · {:.0}%", c[0], c[1], c[2] * 100.0));
-                if crate::icons::mini(ui, "x", "Delete view").clicked() {
-                    del = Some(name.clone());
+                if cam.is_none() {
+                    ui.weak("(open the Scene tab and move the view first)");
                 }
             });
-        }
-        ui.horizontal(|ui| {
-            ui.add(egui::TextEdit::singleline(&mut st.layout_ui.view_name).hint_text("view name").desired_width(120.0));
-            let cam = st.viewport_cam;
-            if ui.add_enabled(cam.is_some() && !st.layout_ui.view_name.trim().is_empty(), egui::Button::new("Save current view")).on_hover_text("remembers where the 2D viewport is looking").clicked() {
-                let n = st.layout_ui.view_name.trim().to_string();
-                st.edit_scene("Save view", None, |s| layout::save_view(s, &n, cam.unwrap()));
-                st.layout_ui.view_name.clear();
+            if let Some(c) = go {
+                st.send_viewport(json!({"t": "view", "x": c[0], "y": c[1], "zoom": c[2]}));
             }
-            if cam.is_none() {
-                ui.weak("(open the Scene tab and move the view first)");
+            if let Some(n) = del {
+                st.edit_scene("Delete view", None, |s| {
+                    let rest: Vec<_> = layout::views(s)
+                        .into_iter()
+                        .filter(|(x, _)| *x != n)
+                        .collect();
+                    layout::set_views(s, &rest);
+                });
             }
         });
-        if let Some(c) = go {
-            st.send_viewport(json!({"t": "view", "x": c[0], "y": c[1], "zoom": c[2]}));
-        }
-        if let Some(n) = del {
-            st.edit_scene("Delete view", None, |s| {
-                let rest: Vec<_> = layout::views(s).into_iter().filter(|(x, _)| *x != n).collect();
-                layout::set_views(s, &rest);
-            });
-        }
-    });
 }
 
 fn layouts_section(st: &mut EditorState, ui: &mut Ui) {
-    egui::CollapsingHeader::new(RichText::new("Layouts (scenes)").strong()).default_open(false).show(ui, |ui| {
-        let scenes: Vec<String> = st.project_files(".scene.json");
-        let cur = st.scene_file.clone();
-        let start = st.project.as_ref().map(|p| p.start_scene.clone());
-        let mut open: Option<String> = None;
-        let mut make_start: Option<String> = None;
-        for p in &scenes {
+    egui::CollapsingHeader::new(RichText::new("Layouts (scenes)").strong())
+        .default_open(false)
+        .show(ui, |ui| {
+            let scenes: Vec<String> = st.project_files(".scene.json");
+            let cur = st.scene_file.clone();
+            let start = st.project.as_ref().map(|p| p.start_scene.clone());
+            let mut open: Option<String> = None;
+            let mut make_start: Option<String> = None;
+            for p in &scenes {
+                ui.horizontal(|ui| {
+                    if ui.selectable_label(cur.as_deref() == Some(p), p).clicked() {
+                        open = Some(p.clone());
+                    }
+                    if start.as_deref() == Some(p) {
+                        ui.weak("start");
+                    } else if ui.small_button("set as start").clicked() {
+                        make_start = Some(p.clone());
+                    }
+                });
+            }
             ui.horizontal(|ui| {
-                if ui.selectable_label(cur.as_deref() == Some(p), p).clicked() {
-                    open = Some(p.clone());
+                ui.add(
+                    egui::TextEdit::singleline(&mut st.layout_ui.new_layout)
+                        .hint_text("new layout name")
+                        .desired_width(140.0),
+                );
+                if ui.button("+ New layout").clicked() && !st.layout_ui.new_layout.trim().is_empty()
+                {
+                    let name = st.layout_ui.new_layout.trim().replace(' ', "-");
+                    let rel = format!("scenes/{name}.scene.json");
+                    if let Some(root) = st.root.clone() {
+                        if root.join(&rel).v_exists() {
+                            st.toast("A layout with that name exists");
+                        } else if nord_core::io::save_json(
+                            &root.join(&rel),
+                            &nord_core::Scene::new(&name),
+                        )
+                        .is_ok()
+                        {
+                            st.layout_ui.new_layout.clear();
+                            st.refresh_assets();
+                            open = Some(rel);
+                        }
+                    }
                 }
-                if start.as_deref() == Some(p) {
-                    ui.weak("start");
-                } else if ui.small_button("set as start").clicked() {
-                    make_start = Some(p.clone());
+                if ui.button("Duplicate current").clicked() {
+                    if let (Some(root), Some(f), Some(s)) =
+                        (st.root.clone(), cur.clone(), st.scene.clone())
+                    {
+                        let stem = f.trim_end_matches(".scene.json").to_string();
+                        let rel = format!("{stem}-copy.scene.json");
+                        let mut copy = s;
+                        copy.name = format!("{}-copy", copy.name);
+                        if nord_core::io::save_json(&root.join(&rel), &copy).is_ok() {
+                            st.refresh_assets();
+                            open = Some(rel);
+                        }
+                    }
                 }
             });
-        }
-        ui.horizontal(|ui| {
-            ui.add(egui::TextEdit::singleline(&mut st.layout_ui.new_layout).hint_text("new layout name").desired_width(140.0));
-            if ui.button("+ New layout").clicked() && !st.layout_ui.new_layout.trim().is_empty() {
-                let name = st.layout_ui.new_layout.trim().replace(' ', "-");
-                let rel = format!("scenes/{name}.scene.json");
-                if let Some(root) = st.root.clone() {
-                    if root.join(&rel).v_exists() {
-                        st.toast("A layout with that name exists");
-                    } else if nord_core::io::save_json(&root.join(&rel), &nord_core::Scene::new(&name)).is_ok() {
-                        st.layout_ui.new_layout.clear();
-                        st.refresh_assets();
-                        open = Some(rel);
-                    }
+            if let Some(p) = make_start {
+                if let (Some(root), Some(pr)) = (st.root.clone(), st.project.as_mut()) {
+                    pr.start_scene = p;
+                    let _ = nord_core::io::save_project(&root, pr);
+                    st.toast("Start layout changed");
                 }
             }
-            if ui.button("Duplicate current").clicked() {
-                if let (Some(root), Some(f), Some(s)) = (st.root.clone(), cur.clone(), st.scene.clone()) {
-                    let stem = f.trim_end_matches(".scene.json").to_string();
-                    let rel = format!("{stem}-copy.scene.json");
-                    let mut copy = s;
-                    copy.name = format!("{}-copy", copy.name);
-                    if nord_core::io::save_json(&root.join(&rel), &copy).is_ok() {
-                        st.refresh_assets();
-                        open = Some(rel);
-                    }
+            if let Some(p) = open {
+                if st.dirty {
+                    st.save();
+                }
+                if let Err(e) = st.open_scene(&p) {
+                    st.toast(e);
                 }
             }
         });
-        if let Some(p) = make_start {
-            if let (Some(root), Some(pr)) = (st.root.clone(), st.project.as_mut()) {
-                pr.start_scene = p;
-                let _ = nord_core::io::save_project(&root, pr);
-                st.toast("Start layout changed");
-            }
-        }
-        if let Some(p) = open {
-            if st.dirty {
-                st.save();
-            }
-            if let Err(e) = st.open_scene(&p) {
-                st.toast(e);
-            }
-        }
-    });
 }

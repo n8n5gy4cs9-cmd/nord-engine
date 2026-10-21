@@ -11,7 +11,8 @@ fn put(img: &mut RgbaImage, x: i32, y: i32, c: Color) {
 }
 
 pub fn get(img: &RgbaImage, x: i32, y: i32) -> Option<Color> {
-    (x >= 0 && y >= 0 && (x as u32) < img.width() && (y as u32) < img.height()).then(|| img.get_pixel(x as u32, y as u32).0)
+    (x >= 0 && y >= 0 && (x as u32) < img.width() && (y as u32) < img.height())
+        .then(|| img.get_pixel(x as u32, y as u32).0)
 }
 
 /// Square brush of `size` pixels centred on (x, y) (size 1 = single pixel).
@@ -48,7 +49,16 @@ pub fn line(img: &mut RgbaImage, x0: i32, y0: i32, x1: i32, y1: i32, size: i32, 
     }
 }
 
-pub fn rect(img: &mut RgbaImage, x0: i32, y0: i32, x1: i32, y1: i32, size: i32, c: Color, filled: bool) {
+pub fn rect(
+    img: &mut RgbaImage,
+    x0: i32,
+    y0: i32,
+    x1: i32,
+    y1: i32,
+    size: i32,
+    c: Color,
+    filled: bool,
+) {
     let (ax, bx, ay, by) = (x0.min(x1), x0.max(x1), y0.min(y1), y0.max(y1));
     if filled {
         for y in ay..=by {
@@ -65,11 +75,25 @@ pub fn rect(img: &mut RgbaImage, x0: i32, y0: i32, x1: i32, y1: i32, size: i32, 
 }
 
 /// Ellipse inscribed in the box (x0,y0)-(x1,y1).
-pub fn ellipse(img: &mut RgbaImage, x0: i32, y0: i32, x1: i32, y1: i32, size: i32, c: Color, filled: bool) {
+pub fn ellipse(
+    img: &mut RgbaImage,
+    x0: i32,
+    y0: i32,
+    x1: i32,
+    y1: i32,
+    size: i32,
+    c: Color,
+    filled: bool,
+) {
     let (ax, bx, ay, by) = (x0.min(x1), x0.max(x1), y0.min(y1), y0.max(y1));
     let (cx, cy) = ((ax + bx) as f64 / 2.0, (ay + by) as f64 / 2.0);
-    let (rx, ry) = (((bx - ax) as f64 / 2.0).max(0.5), ((by - ay) as f64 / 2.0).max(0.5));
-    let inside = |x: i32, y: i32| ((x as f64 - cx) / rx).powi(2) + ((y as f64 - cy) / ry).powi(2) <= 1.0 + 1e-9;
+    let (rx, ry) = (
+        ((bx - ax) as f64 / 2.0).max(0.5),
+        ((by - ay) as f64 / 2.0).max(0.5),
+    );
+    let inside = |x: i32, y: i32| {
+        ((x as f64 - cx) / rx).powi(2) + ((y as f64 - cy) / ry).powi(2) <= 1.0 + 1e-9
+    };
     for y in ay..=by {
         for x in ax..=bx {
             if !inside(x, y) {
@@ -77,7 +101,8 @@ pub fn ellipse(img: &mut RgbaImage, x0: i32, y0: i32, x1: i32, y1: i32, size: i3
             }
             // outline = inside pixels with an outside 4-neighbour within the brush thickness
             let t = size.max(1);
-            let edge = !inside(x + t, y) || !inside(x - t, y) || !inside(x, y + t) || !inside(x, y - t);
+            let edge =
+                !inside(x + t, y) || !inside(x - t, y) || !inside(x, y + t) || !inside(x, y - t);
             if filled || edge {
                 put(img, x, y, c);
             }
@@ -87,16 +112,24 @@ pub fn ellipse(img: &mut RgbaImage, x0: i32, y0: i32, x1: i32, y1: i32, size: i3
 
 /// Flood fill from (x, y); `tolerance` = max per-channel difference counted as the same colour. Returns pixels changed.
 pub fn fill(img: &mut RgbaImage, x: i32, y: i32, c: Color, tolerance: u8) -> usize {
-    let Some(target) = get(img, x, y) else { return 0 };
+    let Some(target) = get(img, x, y) else {
+        return 0;
+    };
     if target == c {
         return 0;
     }
-    let same = |p: Color| p.iter().zip(target.iter()).all(|(a, b)| a.abs_diff(*b) <= tolerance);
+    let same = |p: Color| {
+        p.iter()
+            .zip(target.iter())
+            .all(|(a, b)| a.abs_diff(*b) <= tolerance)
+    };
     let mut stack = vec![(x, y)];
     let mut seen = vec![false; (img.width() * img.height()) as usize];
     let mut n = 0;
     while let Some((px, py)) = stack.pop() {
-        let Some(cur) = get(img, px, py) else { continue };
+        let Some(cur) = get(img, px, py) else {
+            continue;
+        };
         let i = (py as u32 * img.width() + px as u32) as usize;
         if seen[i] || !same(cur) {
             continue;
@@ -129,7 +162,14 @@ pub fn crop(img: &RgbaImage, x0: i32, y0: i32, x1: i32, y1: i32) -> RgbaImage {
     if bx < ax || by < ay {
         return RgbaImage::new(1, 1);
     }
-    image::imageops::crop_imm(img, ax as u32, ay as u32, (bx - ax + 1) as u32, (by - ay + 1) as u32).to_image()
+    image::imageops::crop_imm(
+        img,
+        ax as u32,
+        ay as u32,
+        (bx - ax + 1) as u32,
+        (by - ay + 1) as u32,
+    )
+    .to_image()
 }
 
 /// Make the box transparent.
@@ -171,13 +211,21 @@ pub fn auto_trace(img: &RgbaImage, threshold: u8, max_points: usize) -> Vec<[f64
     }
     pts.sort();
     pts.dedup();
-    let cross = |o: (i64, i64), a: (i64, i64), b: (i64, i64)| (a.0 - o.0) * (b.1 - o.1) - (a.1 - o.1) * (b.0 - o.0);
+    let cross = |o: (i64, i64), a: (i64, i64), b: (i64, i64)| {
+        (a.0 - o.0) * (b.1 - o.1) - (a.1 - o.1) * (b.0 - o.0)
+    };
     let mut hull: Vec<(i64, i64)> = vec![];
     for pass in 0..2 {
         let start = hull.len();
-        let it: Box<dyn Iterator<Item = &(i64, i64)>> = if pass == 0 { Box::new(pts.iter()) } else { Box::new(pts.iter().rev()) };
+        let it: Box<dyn Iterator<Item = &(i64, i64)>> = if pass == 0 {
+            Box::new(pts.iter())
+        } else {
+            Box::new(pts.iter().rev())
+        };
         for &p in it {
-            while hull.len() >= start + 2 && cross(hull[hull.len() - 2], hull[hull.len() - 1], p) <= 0 {
+            while hull.len() >= start + 2
+                && cross(hull[hull.len() - 2], hull[hull.len() - 1], p) <= 0
+            {
                 hull.pop();
             }
             hull.push(p);
@@ -226,7 +274,10 @@ mod tests {
         assert_eq!(count(&j, R), 12, "4×4 outline = 12 pixels");
         let mut k = RgbaImage::new(9, 9);
         ellipse(&mut k, 0, 0, 8, 8, 1, R, true);
-        assert!(get(&k, 4, 4) == Some(R) && get(&k, 0, 0) == Some(T), "disc: centre set, corner empty");
+        assert!(
+            get(&k, 4, 4) == Some(R) && get(&k, 0, 0) == Some(T),
+            "disc: centre set, corner empty"
+        );
         let n = count(&k, R);
         assert!((44..=56).contains(&n), "disc area ≈ π·4² ({n})");
         brush(&mut k, -5, -5, 3, T); // off-canvas: ignored, no panic
@@ -243,7 +294,11 @@ mod tests {
         let mut g = RgbaImage::from_pixel(4, 1, Rgba([100, 100, 100, 255]));
         g.put_pixel(2, 0, Rgba([104, 100, 100, 255]));
         assert_eq!(fill(&mut g.clone(), 0, 0, R, 0), 2);
-        assert_eq!(fill(&mut g, 0, 0, R, 8), 4, "tolerance spans the near colour");
+        assert_eq!(
+            fill(&mut g, 0, 0, R, 8),
+            4,
+            "tolerance spans the near colour"
+        );
     }
 
     #[test]

@@ -126,8 +126,12 @@ impl App {
         for e in crate::platform::poll_events() {
             match e {
                 crate::platform::WebEvent::OpenProject(p) => self.st.push(Action::OpenPath(p)),
-                crate::platform::WebEvent::ImportFiles(f) => crate::panels::assets::import_files(&mut self.st, &f),
-                crate::platform::WebEvent::Error(m) | crate::platform::WebEvent::Info(m) => self.st.toast(m),
+                crate::platform::WebEvent::ImportFiles(f) => {
+                    crate::panels::assets::import_files(&mut self.st, &f)
+                }
+                crate::platform::WebEvent::Error(m) | crate::platform::WebEvent::Info(m) => {
+                    self.st.toast(m)
+                }
                 crate::platform::WebEvent::Log(m) => self.st.log(LogLevel::Build, m),
             }
         }
@@ -390,7 +394,8 @@ impl App {
     pub fn run(&mut self, a: Action, ctx: &Context) {
         let st = &mut self.st;
         match a {
-            Action::DownloadZip => {
+            Action::DownloadZip =>
+            {
                 #[cfg(target_arch = "wasm32")]
                 if let Some(root) = st.root.clone() {
                     if st.dirty {
@@ -414,7 +419,10 @@ impl App {
             Action::OpenPath(d) => {
                 // server mode: the project's files must be downloaded first (async); it re-enters here when they are in place
                 #[cfg(target_arch = "wasm32")]
-                if crate::web::server_mode() && !crate::web::is_pulled(&d) && d.starts_with(crate::web::PROJECTS_DIR) {
+                if crate::web::server_mode()
+                    && !crate::web::is_pulled(&d)
+                    && d.starts_with(crate::web::PROJECTS_DIR)
+                {
                     crate::web::pull_project(&d);
                     st.toast("Opening from the server…");
                     return;
@@ -508,7 +516,8 @@ impl App {
             Action::FpsInstall => {
                 #[cfg(not(target_arch = "wasm32"))]
                 {
-                    let (Some(root), Some(engine)) = (st.root.clone(), st.engine_root.clone()) else {
+                    let (Some(root), Some(engine)) = (st.root.clone(), st.engine_root.clone())
+                    else {
                         st.toast("Open a project first");
                         return;
                     };
@@ -518,7 +527,10 @@ impl App {
                             for w in r["warnings"].as_array().into_iter().flatten() {
                                 st.log(LogLevel::Warn, w.as_str().unwrap_or_default().to_string());
                             }
-                            st.log(LogLevel::Build, format!("FPS Creator: {n} runtime file(s) updated in scripts/fpsc"));
+                            st.log(
+                                LogLevel::Build,
+                                format!("FPS Creator: {n} runtime file(s) updated in scripts/fpsc"),
+                            );
                             st.toast("FPS Creator installed — use the FPS Level tab");
                             self.web = WebPanes::default();
                             self.show_tab(Tab::Fps);

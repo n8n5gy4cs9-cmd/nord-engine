@@ -259,7 +259,11 @@ fn anim_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
                 st.anim.meta["anims"][&n]["frames"] = json!(parse_frames(&st.anim.frames_text));
             }
             if frame_list(&mut st.anim.meta["anims"][&n], ui) {
-                st.anim.frames_text = frames_text(st.anim.meta["anims"][&n]["frames"].as_array().map_or(&[][..], |v| &v[..]));
+                st.anim.frames_text = frames_text(
+                    st.anim.meta["anims"][&n]["frames"]
+                        .as_array()
+                        .map_or(&[][..], |v| &v[..]),
+                );
             }
             if ui.button("Delete animation").clicked() {
                 if let Some(o) = st.anim.meta["anims"].as_object_mut() {
@@ -275,16 +279,27 @@ fn anim_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
                     .unwrap_or_default();
                 if !frames.is_empty() {
                     st.anim.clock += ui.input(|i| i.unstable_dt) as f64;
-                    let fi = frame_at(&st.anim.meta["anims"][&n], frames.len(), st.anim.clock * fps);
+                    let fi = frame_at(
+                        &st.anim.meta["anims"][&n],
+                        frames.len(),
+                        st.anim.clock * fps,
+                    );
                     let cols_n = (size.x / fw).floor().max(1.0) as i64;
                     let f = frames[fi];
                     let uv = frame_uv(f, cols_n, fw, fh, size);
                     let (r, _) = ui.allocate_exact_size(Vec2::splat(96.0), Sense::hover());
                     if st.anim.onion {
                         // onion skin: the previous and next frames of the animation, faded
-                        for (off, tint) in [(frames.len() - 1, Color32::from_rgba_unmultiplied(255, 120, 120, 70)), (1, Color32::from_rgba_unmultiplied(120, 255, 120, 70))] {
+                        for (off, tint) in [
+                            (
+                                frames.len() - 1,
+                                Color32::from_rgba_unmultiplied(255, 120, 120, 70),
+                            ),
+                            (1, Color32::from_rgba_unmultiplied(120, 255, 120, 70)),
+                        ] {
                             let g = frames[(fi + off) % frames.len()];
-                            ui.painter().image(id, r, frame_uv(g, cols_n, fw, fh, size), tint);
+                            ui.painter()
+                                .image(id, r, frame_uv(g, cols_n, fw, fh, size), tint);
                         }
                     }
                     ui.painter().image(id, r, uv, Color32::WHITE);
@@ -354,7 +369,15 @@ fn anim_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
 pub fn advanced_props(a: &mut Value, ui: &mut Ui) {
     ui.horizontal_wrapped(|ui| {
         let mut speed = a["speed"].as_f64().unwrap_or(1.0);
-        if ui.add(egui::DragValue::new(&mut speed).speed(0.05).range(0.1..=10.0).prefix("speed × ")).changed() {
+        if ui
+            .add(
+                egui::DragValue::new(&mut speed)
+                    .speed(0.05)
+                    .range(0.1..=10.0)
+                    .prefix("speed × "),
+            )
+            .changed()
+        {
             a["speed"] = json!(speed);
         }
         let mut pp = a["pingPong"].as_bool().unwrap_or(false);
@@ -366,8 +389,13 @@ pub fn advanced_props(a: &mut Value, ui: &mut Ui) {
         if a["loop"].as_bool().unwrap_or(true) {
             let mut on = a["repeatTo"].is_number();
             let mut at = a["repeatTo"].as_i64().unwrap_or(0);
-            let c = ui.checkbox(&mut on, "repeat to frame #").on_hover_text("play once, then loop from this frame of the list").changed();
-            let d = ui.add_enabled(on, egui::DragValue::new(&mut at).range(0..=999)).changed();
+            let c = ui
+                .checkbox(&mut on, "repeat to frame #")
+                .on_hover_text("play once, then loop from this frame of the list")
+                .changed();
+            let d = ui
+                .add_enabled(on, egui::DragValue::new(&mut at).range(0..=999))
+                .changed();
             if c || d {
                 if on {
                     a["repeatTo"] = json!(at);
@@ -377,44 +405,81 @@ pub fn advanced_props(a: &mut Value, ui: &mut Ui) {
             }
         } else {
             let mut r = a["repeat"].as_i64().unwrap_or(0);
-            if ui.add(egui::DragValue::new(&mut r).range(0..=99).prefix("repeat ")).on_hover_text("extra plays after the first").changed() {
+            if ui
+                .add(egui::DragValue::new(&mut r).range(0..=99).prefix("repeat "))
+                .on_hover_text("extra plays after the first")
+                .changed()
+            {
                 a["repeat"] = json!(r);
             }
         }
-        let mut tags = a["tags"].as_array().map(|t| t.iter().filter_map(Value::as_str).collect::<Vec<_>>().join(", ")).unwrap_or_default();
-        if ui.add(egui::TextEdit::singleline(&mut tags).hint_text("tags: attack, loop-safe").desired_width(140.0)).changed() {
-            a["tags"] = json!(tags.split(',').map(str::trim).filter(|t| !t.is_empty()).collect::<Vec<_>>());
+        let mut tags = a["tags"]
+            .as_array()
+            .map(|t| {
+                t.iter()
+                    .filter_map(Value::as_str)
+                    .collect::<Vec<_>>()
+                    .join(", ")
+            })
+            .unwrap_or_default();
+        if ui
+            .add(
+                egui::TextEdit::singleline(&mut tags)
+                    .hint_text("tags: attack, loop-safe")
+                    .desired_width(140.0),
+            )
+            .changed()
+        {
+            a["tags"] = json!(tags
+                .split(',')
+                .map(str::trim)
+                .filter(|t| !t.is_empty())
+                .collect::<Vec<_>>());
         }
     });
 }
 
 /// Frame list with per-frame duration multipliers; reorder, duplicate, delete. Returns true when the frame list changed.
 pub fn frame_list(a: &mut Value, ui: &mut Ui) -> bool {
-    let frames: Vec<i64> = a["frames"].as_array().map(|f| f.iter().filter_map(Value::as_i64).collect()).unwrap_or_default();
-    let mut durs: Vec<f64> = (0..frames.len()).map(|i| a["frameDurations"][i].as_f64().unwrap_or(1.0)).collect();
+    let frames: Vec<i64> = a["frames"]
+        .as_array()
+        .map(|f| f.iter().filter_map(Value::as_i64).collect())
+        .unwrap_or_default();
+    let mut durs: Vec<f64> = (0..frames.len())
+        .map(|i| a["frameDurations"][i].as_f64().unwrap_or(1.0))
+        .collect();
     let mut fr = frames.clone();
     let mut changed = false;
     let mut act: Option<(usize, &str)> = None;
-    egui::CollapsingHeader::new("Frame list (durations)").default_open(false).show(ui, |ui| {
-        for i in 0..fr.len() {
-            ui.horizontal(|ui| {
-                ui.monospace(format!("{i:>2}  frame {}", fr[i]));
-                ui.add(egui::DragValue::new(&mut durs[i]).speed(0.05).range(0.1..=20.0).prefix("× "));
-                if crate::icons::mini(ui, "arrow-up", "Move up").clicked() && i > 0 {
-                    act = Some((i, "up"));
-                }
-                if crate::icons::mini(ui, "arrow-down", "Move down").clicked() && i + 1 < fr.len() {
-                    act = Some((i, "down"));
-                }
-                if crate::icons::mini(ui, "copy", "Duplicate frame").clicked() {
-                    act = Some((i, "dup"));
-                }
-                if crate::icons::mini(ui, "x", "Delete frame").clicked() && fr.len() > 1 {
-                    act = Some((i, "del"));
-                }
-            });
-        }
-    });
+    egui::CollapsingHeader::new("Frame list (durations)")
+        .default_open(false)
+        .show(ui, |ui| {
+            for i in 0..fr.len() {
+                ui.horizontal(|ui| {
+                    ui.monospace(format!("{i:>2}  frame {}", fr[i]));
+                    ui.add(
+                        egui::DragValue::new(&mut durs[i])
+                            .speed(0.05)
+                            .range(0.1..=20.0)
+                            .prefix("× "),
+                    );
+                    if crate::icons::mini(ui, "arrow-up", "Move up").clicked() && i > 0 {
+                        act = Some((i, "up"));
+                    }
+                    if crate::icons::mini(ui, "arrow-down", "Move down").clicked()
+                        && i + 1 < fr.len()
+                    {
+                        act = Some((i, "down"));
+                    }
+                    if crate::icons::mini(ui, "copy", "Duplicate frame").clicked() {
+                        act = Some((i, "dup"));
+                    }
+                    if crate::icons::mini(ui, "x", "Delete frame").clicked() && fr.len() > 1 {
+                        act = Some((i, "del"));
+                    }
+                });
+            }
+        });
     if let Some((i, what)) = act {
         match what {
             "up" => {
@@ -437,7 +502,9 @@ pub fn frame_list(a: &mut Value, ui: &mut Ui) -> bool {
         changed = true;
         a["frames"] = json!(fr);
     }
-    let was: Vec<f64> = (0..frames.len()).map(|i| a["frameDurations"][i].as_f64().unwrap_or(1.0)).collect();
+    let was: Vec<f64> = (0..frames.len())
+        .map(|i| a["frameDurations"][i].as_f64().unwrap_or(1.0))
+        .collect();
     if changed || durs != was {
         if durs.iter().all(|d| (*d - 1.0).abs() < 1e-9) {
             if let Some(o) = a.as_object_mut() {
@@ -455,13 +522,23 @@ pub fn frame_at(a: &Value, n: usize, ticks: f64) -> usize {
     if n == 0 {
         return 0;
     }
-    let mult: Vec<f64> = (0..n).map(|i| a["frameDurations"][i].as_f64().unwrap_or(1.0).max(0.01)).collect();
+    let mult: Vec<f64> = (0..n)
+        .map(|i| a["frameDurations"][i].as_f64().unwrap_or(1.0).max(0.01))
+        .collect();
     let pp = a["pingPong"].as_bool().unwrap_or(false);
     let total: f64 = mult.iter().sum();
-    let period = if pp && n > 1 { total * 2.0 - mult[0] - mult[n - 1] } else { total };
+    let period = if pp && n > 1 {
+        total * 2.0 - mult[0] - mult[n - 1]
+    } else {
+        total
+    };
     let mut t = ticks.rem_euclid(period.max(0.01));
     // forward, then (ping-pong) back without repeating the end frames
-    let seq: Vec<usize> = if pp && n > 1 { (0..n).chain((1..n - 1).rev()).collect() } else { (0..n).collect() };
+    let seq: Vec<usize> = if pp && n > 1 {
+        (0..n).chain((1..n - 1).rev()).collect()
+    } else {
+        (0..n).collect()
+    };
     for i in seq {
         t -= mult[i];
         if t < 0.0 {
@@ -496,37 +573,93 @@ fn tile_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
         st.anim.zoom = 2.0;
     }
     if st.anim.new_tile == 0 {
-        (st.anim.new_tile, st.anim.new_w, st.anim.new_h, st.anim.anim_fps) = (16, 40, 23, 6.0);
+        (
+            st.anim.new_tile,
+            st.anim.new_w,
+            st.anim.new_h,
+            st.anim.anim_fps,
+        ) = (16, 40, 23, 6.0);
     }
-    let maps: Vec<String> = st.assets.iter().filter(|a| a.path.ends_with(".tilemap.json") || a.path.ends_with(".tmj")).map(|a| a.path.clone()).collect();
-    let images: Vec<String> = st.assets.iter().filter(|a| matches!(a.kind, AssetType::Image | AssetType::Spritesheet)).map(|a| a.path.clone()).collect();
+    let maps: Vec<String> = st
+        .assets
+        .iter()
+        .filter(|a| a.path.ends_with(".tilemap.json") || a.path.ends_with(".tmj"))
+        .map(|a| a.path.clone())
+        .collect();
+    let images: Vec<String> = st
+        .assets
+        .iter()
+        .filter(|a| matches!(a.kind, AssetType::Image | AssetType::Spritesheet))
+        .map(|a| a.path.clone())
+        .collect();
     ui.horizontal_wrapped(|ui| {
-        egui::ComboBox::from_id_salt("tmap").selected_text(st.anim.map.clone().unwrap_or_else(|| "(choose tilemap)".into())).show_ui(ui, |ui| {
-            for m in &maps {
-                if ui.selectable_label(st.anim.map.as_deref() == Some(m), m).clicked() {
-                    st.anim.map = Some(m.clone());
-                    st.anim.map_json = nord_core::io::load_json(&root.join(m)).unwrap_or(Value::Null);
-                    st.anim.layer = 0;
-                    st.anim.dirty_map = false;
+        egui::ComboBox::from_id_salt("tmap")
+            .selected_text(
+                st.anim
+                    .map
+                    .clone()
+                    .unwrap_or_else(|| "(choose tilemap)".into()),
+            )
+            .show_ui(ui, |ui| {
+                for m in &maps {
+                    if ui
+                        .selectable_label(st.anim.map.as_deref() == Some(m), m)
+                        .clicked()
+                    {
+                        st.anim.map = Some(m.clone());
+                        st.anim.map_json =
+                            nord_core::io::load_json(&root.join(m)).unwrap_or(Value::Null);
+                        st.anim.layer = 0;
+                        st.anim.dirty_map = false;
+                    }
                 }
-            }
-        });
+            });
         ui.menu_button("New tilemap…", |ui| {
             ui.label("Tileset image");
-            egui::ComboBox::from_id_salt("nt-tileset").selected_text(st.anim.new_tileset.clone()).show_ui(ui, |ui| {
-                for i in &images {
-                    ui.selectable_value(&mut st.anim.new_tileset, i.clone(), i);
-                }
-            });
+            egui::ComboBox::from_id_salt("nt-tileset")
+                .selected_text(st.anim.new_tileset.clone())
+                .show_ui(ui, |ui| {
+                    for i in &images {
+                        ui.selectable_value(&mut st.anim.new_tileset, i.clone(), i);
+                    }
+                });
             ui.horizontal(|ui| {
-                ui.add(egui::DragValue::new(&mut st.anim.new_tile).range(4..=256).prefix("tile "));
-                ui.add(egui::DragValue::new(&mut st.anim.new_w).range(1..=500).prefix("map w "));
-                ui.add(egui::DragValue::new(&mut st.anim.new_h).range(1..=500).prefix("h "));
+                ui.add(
+                    egui::DragValue::new(&mut st.anim.new_tile)
+                        .range(4..=256)
+                        .prefix("tile "),
+                );
+                ui.add(
+                    egui::DragValue::new(&mut st.anim.new_w)
+                        .range(1..=500)
+                        .prefix("map w "),
+                );
+                ui.add(
+                    egui::DragValue::new(&mut st.anim.new_h)
+                        .range(1..=500)
+                        .prefix("h "),
+                );
             });
-            ui.add(egui::TextEdit::singleline(&mut st.anim.new_name).hint_text("name").desired_width(160.0));
-            if ui.button("Create").clicked() && !st.anim.new_name.trim().is_empty() && !st.anim.new_tileset.is_empty() {
-                let rel = format!("assets/maps/{}.tilemap.json", st.anim.new_name.trim().replace(' ', "-"));
-                let m = tm::new_map(&st.anim.new_tileset, st.anim.new_tile, st.anim.new_tile, st.anim.new_w, st.anim.new_h);
+            ui.add(
+                egui::TextEdit::singleline(&mut st.anim.new_name)
+                    .hint_text("name")
+                    .desired_width(160.0),
+            );
+            if ui.button("Create").clicked()
+                && !st.anim.new_name.trim().is_empty()
+                && !st.anim.new_tileset.is_empty()
+            {
+                let rel = format!(
+                    "assets/maps/{}.tilemap.json",
+                    st.anim.new_name.trim().replace(' ', "-")
+                );
+                let m = tm::new_map(
+                    &st.anim.new_tileset,
+                    st.anim.new_tile,
+                    st.anim.new_tile,
+                    st.anim.new_w,
+                    st.anim.new_h,
+                );
                 if let Some(p) = root.join(&rel).parent() {
                     let _ = std::fs::create_dir_all(p);
                 }
@@ -545,7 +678,10 @@ fn tile_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
             }
         });
         ui.add(egui::Slider::new(&mut st.anim.zoom, 0.5..=6.0).text("zoom"));
-        if ui.add_enabled(st.anim.dirty_map, egui::Button::new("Save tilemap")).clicked() {
+        if ui
+            .add_enabled(st.anim.dirty_map, egui::Button::new("Save tilemap"))
+            .clicked()
+        {
             if let Some(m) = &st.anim.map {
                 match nord_core::io::save_json(&root.join(m), &st.anim.map_json) {
                     Ok(()) => {
@@ -565,18 +701,38 @@ fn tile_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
         return;
     }
     let (mw, mh) = map_size(&st.anim.map_json);
-    let tw = st.anim.map_json["tileWidth"].as_f64().or(st.anim.map_json["tilewidth"].as_f64()).unwrap_or(16.0) as f32;
-    let th = st.anim.map_json["tileHeight"].as_f64().or(st.anim.map_json["tileheight"].as_f64()).unwrap_or(16.0) as f32;
-    let tileset = st.anim.map_json["tileset"].as_str().map(String::from).or_else(|| st.anim.map_json["tilesets"][0]["image"].as_str().map(String::from));
+    let tw = st.anim.map_json["tileWidth"]
+        .as_f64()
+        .or(st.anim.map_json["tilewidth"].as_f64())
+        .unwrap_or(16.0) as f32;
+    let th = st.anim.map_json["tileHeight"]
+        .as_f64()
+        .or(st.anim.map_json["tileheight"].as_f64())
+        .unwrap_or(16.0) as f32;
+    let tileset = st.anim.map_json["tileset"]
+        .as_str()
+        .map(String::from)
+        .or_else(|| {
+            st.anim.map_json["tilesets"][0]["image"]
+                .as_str()
+                .map(String::from)
+        });
     let tinfo = tileset.as_deref().and_then(|t| tex(ui, root, t));
     let nl = st.anim.map_json["layers"].as_array().map_or(0, Vec::len);
     st.anim.layer = st.anim.layer.min(nl.saturating_sub(1));
     // layers: select, add, rename, reorder, hide, delete
     ui.horizontal_wrapped(|ui| {
         for i in 0..nl {
-            let name = st.anim.map_json["layers"][i]["name"].as_str().unwrap_or("layer").to_string();
+            let name = st.anim.map_json["layers"][i]["name"]
+                .as_str()
+                .unwrap_or("layer")
+                .to_string();
             let hidden = st.anim.map_json["layers"][i]["visible"].as_bool() == Some(false);
-            ui.selectable_value(&mut st.anim.layer, i, if hidden { format!("({name})") } else { name });
+            ui.selectable_value(
+                &mut st.anim.layer,
+                i,
+                if hidden { format!("({name})") } else { name },
+            );
         }
         let l = st.anim.layer;
         if crate::icons::mini(ui, "plus", "Add layer").clicked() {
@@ -584,8 +740,14 @@ fn tile_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
             st.anim.layer = nl;
             st.anim.dirty_map = true;
         }
-        let mut name = st.anim.map_json["layers"][l]["name"].as_str().unwrap_or("").to_string();
-        if ui.add(egui::TextEdit::singleline(&mut name).desired_width(90.0)).changed() {
+        let mut name = st.anim.map_json["layers"][l]["name"]
+            .as_str()
+            .unwrap_or("")
+            .to_string();
+        if ui
+            .add(egui::TextEdit::singleline(&mut name).desired_width(90.0))
+            .changed()
+        {
             st.anim.map_json["layers"][l]["name"] = json!(name);
             st.anim.dirty_map = true;
         }
@@ -606,7 +768,9 @@ fn tile_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
                 st.anim.dirty_map = true;
             }
         }
-        if crate::icons::mini(ui, "x", "Delete layer").clicked() && tm::delete_layer(&mut st.anim.map_json, l) {
+        if crate::icons::mini(ui, "x", "Delete layer").clicked()
+            && tm::delete_layer(&mut st.anim.map_json, l)
+        {
             st.anim.layer = l.saturating_sub(1);
             st.anim.dirty_map = true;
         }
@@ -618,24 +782,45 @@ fn tile_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
             (Brush::Single, "Paint", "Click/drag; right-click erases"),
             (Brush::Rect, "Rectangle", "Drag a box"),
             (Brush::Fill, "Fill", "Flood fill the area"),
-            (Brush::Random, "Random", "Random tile from the ctrl-clicked tileset tiles"),
-            (Brush::Terrain, "Terrain", "Auto-tile: picks edges/corners from neighbours"),
-            (Brush::DefineTerrain, "Define terrain", "Assign tileset tiles to the 16 neighbour masks"),
+            (
+                Brush::Random,
+                "Random",
+                "Random tile from the ctrl-clicked tileset tiles",
+            ),
+            (
+                Brush::Terrain,
+                "Terrain",
+                "Auto-tile: picks edges/corners from neighbours",
+            ),
+            (
+                Brush::DefineTerrain,
+                "Define terrain",
+                "Assign tileset tiles to the 16 neighbour masks",
+            ),
         ] {
-            ui.selectable_value(&mut st.anim.brush_kind, b, label).on_hover_text(tip);
+            ui.selectable_value(&mut st.anim.brush_kind, b, label)
+                .on_hover_text(tip);
         }
         ui.weak(format!("{mw}×{mh} tiles, brush {}", st.anim.brush));
     });
     if matches!(st.anim.brush_kind, Brush::Terrain | Brush::DefineTerrain) {
         ui.horizontal_wrapped(|ui| {
-            egui::ComboBox::from_id_salt("terrain-pick").selected_text(terr.get(st.anim.terrain).map_or("(no terrain)".to_string(), |t| t.name.clone())).show_ui(ui, |ui| {
-                for (i, t) in terr.iter().enumerate() {
-                    ui.selectable_value(&mut st.anim.terrain, i, &t.name);
-                }
-            });
+            egui::ComboBox::from_id_salt("terrain-pick")
+                .selected_text(
+                    terr.get(st.anim.terrain)
+                        .map_or("(no terrain)".to_string(), |t| t.name.clone()),
+                )
+                .show_ui(ui, |ui| {
+                    for (i, t) in terr.iter().enumerate() {
+                        ui.selectable_value(&mut st.anim.terrain, i, &t.name);
+                    }
+                });
             if ui.small_button("+ terrain").clicked() {
                 let mut all = terr.clone();
-                all.push(tm::Terrain { name: format!("terrain{}", all.len() + 1), tiles: [-1; 16] });
+                all.push(tm::Terrain {
+                    name: format!("terrain{}", all.len() + 1),
+                    tiles: [-1; 16],
+                });
                 st.anim.terrain = all.len() - 1;
                 tm::set_terrains(&mut st.anim.map_json, &all);
                 st.anim.dirty_map = true;
@@ -644,8 +829,18 @@ fn tile_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
                 ui.weak("pick a mask, then click a tileset tile:");
                 for m in 0..16usize {
                     let t = terr.get(st.anim.terrain).map_or(-1, |t| t.tiles[m]);
-                    let label = format!("{}{}{}{}->{t}", if m & 1 != 0 { "N" } else { "" }, if m & 2 != 0 { "E" } else { "" }, if m & 4 != 0 { "S" } else { "" }, if m & 8 != 0 { "W" } else { "" });
-                    ui.selectable_value(&mut st.anim.mask_slot, m, if m == 0 { format!("alone->{t}") } else { label });
+                    let label = format!(
+                        "{}{}{}{}->{t}",
+                        if m & 1 != 0 { "N" } else { "" },
+                        if m & 2 != 0 { "E" } else { "" },
+                        if m & 4 != 0 { "S" } else { "" },
+                        if m & 8 != 0 { "W" } else { "" }
+                    );
+                    ui.selectable_value(
+                        &mut st.anim.mask_slot,
+                        m,
+                        if m == 0 { format!("alone->{t}") } else { label },
+                    );
                 }
             }
         });
@@ -653,69 +848,112 @@ fn tile_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
     // properties of the brush tile: collision + animation
     ui.horizontal_wrapped(|ui| {
         let tile = st.anim.brush;
-        let mut col = st.anim.map_json["collides"].as_array().is_some_and(|a| a.iter().any(|v| v.as_i64() == Some(tile)));
-        if ui.checkbox(&mut col, format!("tile {tile} blocks movement")).changed() {
+        let mut col = st.anim.map_json["collides"]
+            .as_array()
+            .is_some_and(|a| a.iter().any(|v| v.as_i64() == Some(tile)));
+        if ui
+            .checkbox(&mut col, format!("tile {tile} blocks movement"))
+            .changed()
+        {
             tm::toggle_collide(&mut st.anim.map_json, tile);
             st.anim.dirty_map = true;
         }
         ui.label("animate frames");
-        ui.add(egui::TextEdit::singleline(&mut st.anim.anim_frames).hint_text("e.g. 5, 6, 7").desired_width(90.0));
-        ui.add(egui::DragValue::new(&mut st.anim.anim_fps).range(1.0..=30.0).prefix("fps "));
-        if ui.small_button("Apply").on_hover_text("animated tile: fewer than 2 frames removes the animation").clicked() {
+        ui.add(
+            egui::TextEdit::singleline(&mut st.anim.anim_frames)
+                .hint_text("e.g. 5, 6, 7")
+                .desired_width(90.0),
+        );
+        ui.add(
+            egui::DragValue::new(&mut st.anim.anim_fps)
+                .range(1.0..=30.0)
+                .prefix("fps "),
+        );
+        if ui
+            .small_button("Apply")
+            .on_hover_text("animated tile: fewer than 2 frames removes the animation")
+            .clicked()
+        {
             let frames = parse_frames(&st.anim.anim_frames);
-            tm::set_animated(&mut st.anim.map_json, tile, &frames, st.anim.anim_fps.max(1.0));
+            tm::set_animated(
+                &mut st.anim.map_json,
+                tile,
+                &frames,
+                st.anim.anim_fps.max(1.0),
+            );
             st.anim.dirty_map = true;
         }
     });
-    egui::SidePanel::left("tile-palette").default_width(150.0).show_inside(ui, |ui| {
-        ui.strong("Tileset");
-        if let Some((id, size)) = tinfo {
-            egui::ScrollArea::both().show(ui, |ui| {
-                let z = 2.0;
-                let (r, resp) = ui.allocate_exact_size(size * z, Sense::click());
-                ui.painter().image(id, r, Rect::from_min_max(Pos2::ZERO, Pos2::new(1.0, 1.0)), Color32::WHITE);
-                let cols = (size.x / tw).floor().max(1.0) as i64;
-                if resp.clicked() {
-                    if let Some(p) = resp.interact_pointer_pos() {
-                        let (cx, cy) = (((p.x - r.left()) / (tw * z)) as i64, ((p.y - r.top()) / (th * z)) as i64);
-                        let t = cy * cols + cx;
-                        if st.anim.brush_kind == Brush::DefineTerrain {
-                            let mut all = terr.clone();
-                            if let Some(tr) = all.get_mut(st.anim.terrain) {
-                                tr.tiles[st.anim.mask_slot.min(15)] = t;
-                                tm::set_terrains(&mut st.anim.map_json, &all);
-                                st.anim.dirty_map = true;
-                            }
-                        } else if ui.input(|i| i.modifiers.command || i.modifiers.ctrl) {
-                            if let Some(p) = st.anim.brush_set.iter().position(|x| *x == t) {
-                                st.anim.brush_set.remove(p);
+    egui::SidePanel::left("tile-palette")
+        .default_width(150.0)
+        .show_inside(ui, |ui| {
+            ui.strong("Tileset");
+            if let Some((id, size)) = tinfo {
+                egui::ScrollArea::both().show(ui, |ui| {
+                    let z = 2.0;
+                    let (r, resp) = ui.allocate_exact_size(size * z, Sense::click());
+                    ui.painter().image(
+                        id,
+                        r,
+                        Rect::from_min_max(Pos2::ZERO, Pos2::new(1.0, 1.0)),
+                        Color32::WHITE,
+                    );
+                    let cols = (size.x / tw).floor().max(1.0) as i64;
+                    if resp.clicked() {
+                        if let Some(p) = resp.interact_pointer_pos() {
+                            let (cx, cy) = (
+                                ((p.x - r.left()) / (tw * z)) as i64,
+                                ((p.y - r.top()) / (th * z)) as i64,
+                            );
+                            let t = cy * cols + cx;
+                            if st.anim.brush_kind == Brush::DefineTerrain {
+                                let mut all = terr.clone();
+                                if let Some(tr) = all.get_mut(st.anim.terrain) {
+                                    tr.tiles[st.anim.mask_slot.min(15)] = t;
+                                    tm::set_terrains(&mut st.anim.map_json, &all);
+                                    st.anim.dirty_map = true;
+                                }
+                            } else if ui.input(|i| i.modifiers.command || i.modifiers.ctrl) {
+                                if let Some(p) = st.anim.brush_set.iter().position(|x| *x == t) {
+                                    st.anim.brush_set.remove(p);
+                                } else {
+                                    st.anim.brush_set.push(t);
+                                }
                             } else {
-                                st.anim.brush_set.push(t);
+                                st.anim.brush = t;
+                                st.anim.brush_set = vec![t];
                             }
-                        } else {
-                            st.anim.brush = t;
-                            st.anim.brush_set = vec![t];
                         }
                     }
-                }
-                let mark = |t: i64, col: Color32| {
-                    let (bx, by) = ((t % cols) as f32, (t / cols) as f32);
-                    ui.painter().rect_stroke(Rect::from_min_size(r.min + Vec2::new(bx * tw * z, by * th * z), Vec2::new(tw * z, th * z)), 0.0, egui::Stroke::new(2.0_f32, col), egui::StrokeKind::Inside);
-                };
-                for t in &st.anim.brush_set {
-                    mark(*t, Color32::from_rgb(120, 200, 255));
-                }
-                if st.anim.brush >= 0 {
-                    mark(st.anim.brush, Color32::YELLOW);
-                }
-            });
-        } else {
-            ui.weak("tileset image not found");
-        }
-    });
+                    let mark = |t: i64, col: Color32| {
+                        let (bx, by) = ((t % cols) as f32, (t / cols) as f32);
+                        ui.painter().rect_stroke(
+                            Rect::from_min_size(
+                                r.min + Vec2::new(bx * tw * z, by * th * z),
+                                Vec2::new(tw * z, th * z),
+                            ),
+                            0.0,
+                            egui::Stroke::new(2.0_f32, col),
+                            egui::StrokeKind::Inside,
+                        );
+                    };
+                    for t in &st.anim.brush_set {
+                        mark(*t, Color32::from_rgb(120, 200, 255));
+                    }
+                    if st.anim.brush >= 0 {
+                        mark(st.anim.brush, Color32::YELLOW);
+                    }
+                });
+            } else {
+                ui.weak("tileset image not found");
+            }
+        });
     let z = st.anim.zoom;
     egui::ScrollArea::both().show(ui, |ui| {
-        let (r, resp) = ui.allocate_exact_size(Vec2::new(mw as f32 * tw * z, mh as f32 * th * z), Sense::click_and_drag());
+        let (r, resp) = ui.allocate_exact_size(
+            Vec2::new(mw as f32 * tw * z, mh as f32 * th * z),
+            Sense::click_and_drag(),
+        );
         ui.painter().rect_filled(r, 0.0, Color32::from_gray(30));
         let layer = st.anim.layer;
         let cols = tinfo.map_or(1, |(_, s)| (s.x / tw).floor().max(1.0) as i64);
@@ -723,17 +961,25 @@ fn tile_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
             if st.anim.map_json["layers"][li]["visible"].as_bool() == Some(false) {
                 continue;
             }
-            let faded = if li == layer { Color32::WHITE } else { Color32::from_white_alpha(130) };
+            let faded = if li == layer {
+                Color32::WHITE
+            } else {
+                Color32::from_white_alpha(130)
+            };
             for y in 0..mh {
                 for x in 0..mw {
-                    let cell = Rect::from_min_size(r.min + Vec2::new(x as f32 * tw * z, y as f32 * th * z), Vec2::new(tw * z, th * z));
+                    let cell = Rect::from_min_size(
+                        r.min + Vec2::new(x as f32 * tw * z, y as f32 * th * z),
+                        Vec2::new(tw * z, th * z),
+                    );
                     if !ui.is_rect_visible(cell) {
                         continue;
                     }
                     let v = get_cell(&st.anim.map_json["layers"][li], mw, x, y);
                     if v >= 0 {
                         if let Some((id, size)) = tinfo {
-                            ui.painter().image(id, cell, frame_uv(v, cols, tw, th, size), faded);
+                            ui.painter()
+                                .image(id, cell, frame_uv(v, cols, tw, th, size), faded);
                         }
                     }
                 }
@@ -741,13 +987,26 @@ fn tile_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
         }
         for y in 0..mh {
             for x in 0..mw {
-                let cell = Rect::from_min_size(r.min + Vec2::new(x as f32 * tw * z, y as f32 * th * z), Vec2::new(tw * z, th * z));
+                let cell = Rect::from_min_size(
+                    r.min + Vec2::new(x as f32 * tw * z, y as f32 * th * z),
+                    Vec2::new(tw * z, th * z),
+                );
                 if ui.is_rect_visible(cell) {
-                    ui.painter().rect_stroke(cell, 0.0, egui::Stroke::new(0.5_f32, Color32::from_white_alpha(18)), egui::StrokeKind::Inside);
+                    ui.painter().rect_stroke(
+                        cell,
+                        0.0,
+                        egui::Stroke::new(0.5_f32, Color32::from_white_alpha(18)),
+                        egui::StrokeKind::Inside,
+                    );
                 }
             }
         }
-        let cell_at = |p: Pos2| (((p.x - r.left()) / (tw * z)).floor() as i64, ((p.y - r.top()) / (th * z)).floor() as i64);
+        let cell_at = |p: Pos2| {
+            (
+                ((p.x - r.left()) / (tw * z)).floor() as i64,
+                ((p.y - r.top()) / (th * z)).floor() as i64,
+            )
+        };
         let kind = st.anim.brush_kind;
         if kind == Brush::DefineTerrain {
             return;
@@ -762,19 +1021,36 @@ fn tile_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
         if kind == Brush::Rect {
             if let (Some(s0), Some(p)) = (st.anim.drag_start, resp.interact_pointer_pos()) {
                 let e = cell_at(p);
-                let (a, b) = ((s0.0.min(e.0), s0.1.min(e.1)), (s0.0.max(e.0), s0.1.max(e.1)));
-                let pr = Rect::from_min_max(r.min + Vec2::new(a.0 as f32 * tw * z, a.1 as f32 * th * z), r.min + Vec2::new((b.0 + 1) as f32 * tw * z, (b.1 + 1) as f32 * th * z));
-                ui.painter().rect_stroke(pr, 0.0, egui::Stroke::new(2.0_f32, Color32::YELLOW), egui::StrokeKind::Outside);
+                let (a, b) = (
+                    (s0.0.min(e.0), s0.1.min(e.1)),
+                    (s0.0.max(e.0), s0.1.max(e.1)),
+                );
+                let pr = Rect::from_min_max(
+                    r.min + Vec2::new(a.0 as f32 * tw * z, a.1 as f32 * th * z),
+                    r.min + Vec2::new((b.0 + 1) as f32 * tw * z, (b.1 + 1) as f32 * th * z),
+                );
+                ui.painter().rect_stroke(
+                    pr,
+                    0.0,
+                    egui::Stroke::new(2.0_f32, Color32::YELLOW),
+                    egui::StrokeKind::Outside,
+                );
             }
         }
         let mut changed = false;
         if let Some(p) = resp.interact_pointer_pos() {
             let (x, y) = cell_at(p);
             let brush = st.anim.brush;
-            let set = if st.anim.brush_set.is_empty() { vec![brush] } else { st.anim.brush_set.clone() };
+            let set = if st.anim.brush_set.is_empty() {
+                vec![brush]
+            } else {
+                st.anim.brush_set.clone()
+            };
             if erase {
                 match (&terrain, kind) {
-                    (Some(t), Brush::Terrain) => tm::erase_terrain(&mut st.anim.map_json, layer, x, y, t),
+                    (Some(t), Brush::Terrain) => {
+                        tm::erase_terrain(&mut st.anim.map_json, layer, x, y, t)
+                    }
                     _ => tm::set(&mut st.anim.map_json, layer, x, y, -1),
                 }
                 changed = true;
@@ -794,7 +1070,13 @@ fn tile_ui(st: &mut EditorState, ui: &mut Ui, root: &Path) {
                     Brush::Fill if resp.clicked() => {
                         tm::flood(&mut st.anim.map_json, layer, x, y, brush);
                     }
-                    Brush::Random => tm::set(&mut st.anim.map_json, layer, x, y, tm::random_pick(&set, x, y, 7)),
+                    Brush::Random => tm::set(
+                        &mut st.anim.map_json,
+                        layer,
+                        x,
+                        y,
+                        tm::random_pick(&set, x, y, 7),
+                    ),
                     Brush::Terrain => {
                         if let Some(t) = &terrain {
                             tm::paint_terrain(&mut st.anim.map_json, layer, x, y, t);
@@ -821,9 +1103,15 @@ mod tests {
     #[test]
     fn frame_at_respects_durations_and_ping_pong() {
         let a = json!({"frames":[0,1,2],"frameDurations":[1.0,3.0,1.0]});
-        assert_eq!([0.5, 1.5, 3.9, 4.5, 5.5].map(|t| frame_at(&a, 3, t)), [0, 1, 1, 2, 0]);
+        assert_eq!(
+            [0.5, 1.5, 3.9, 4.5, 5.5].map(|t| frame_at(&a, 3, t)),
+            [0, 1, 1, 2, 0]
+        );
         let pp = json!({"frames":[0,1,2],"pingPong":true});
-        assert_eq!([0.5, 1.5, 2.5, 3.5, 4.5].map(|t| frame_at(&pp, 3, t)), [0, 1, 2, 1, 0]);
+        assert_eq!(
+            [0.5, 1.5, 2.5, 3.5, 4.5].map(|t| frame_at(&pp, 3, t)),
+            [0, 1, 2, 1, 0]
+        );
     }
 
     #[test]

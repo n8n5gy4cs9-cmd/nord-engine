@@ -31,7 +31,11 @@ pub struct Group {
 
 fn strings(v: &Value) -> Vec<String> {
     v.as_array()
-        .map(|a| a.iter().filter_map(|s| s.as_str().map(String::from)).collect())
+        .map(|a| {
+            a.iter()
+                .filter_map(|s| s.as_str().map(String::from))
+                .collect()
+        })
         .unwrap_or_default()
 }
 
@@ -91,7 +95,10 @@ pub fn set_project_aces(extra: Option<&Value>) {
     }
     let mut all = parse_groups(&base_json());
     for g in extra_groups {
-        match all.iter().position(|x| x.kind == g.kind && x.name == g.name) {
+        match all
+            .iter()
+            .position(|x| x.kind == g.kind && x.name == g.name)
+        {
             Some(i) => all[i] = g,
             None => all.push(g),
         }
@@ -103,12 +110,18 @@ pub fn set_project_aces(extra: Option<&Value>) {
 pub fn pretty(id: &str) -> String {
     let s = id.replace('-', " ");
     let mut c = s.chars();
-    c.next().map(|f| f.to_uppercase().collect::<String>() + c.as_str()).unwrap_or_default()
+    c.next()
+        .map(|f| f.to_uppercase().collect::<String>() + c.as_str())
+        .unwrap_or_default()
 }
 
 /// Catalog entries matching every word of `query` (group name + ace name), conditions or actions.
 pub fn search<'a>(cat: &'a [Group], cond: bool, query: &str) -> Vec<(&'a Group, &'a Ace)> {
-    let words: Vec<String> = query.to_lowercase().split_whitespace().map(String::from).collect();
+    let words: Vec<String> = query
+        .to_lowercase()
+        .split_whitespace()
+        .map(String::from)
+        .collect();
     let mut out = vec![];
     for g in cat {
         for a in if cond { &g.conditions } else { &g.actions } {
@@ -124,7 +137,8 @@ pub fn search<'a>(cat: &'a [Group], cond: bool, query: &str) -> Vec<(&'a Group, 
 /// The JSON node for a picked ACE. Plugins (System, Keyboard…) are their own object; others get `object`.
 pub fn ace_node(g: &Group, a: &Ace, object: &str) -> Value {
     // plugins are their own object; behaviors and data types (Array, Dictionary…) act on a named object
-    let mut n = json!({ "object": if g.kind == "plugin" { g.name.as_str() } else { object }, "id": a.id });
+    let mut n =
+        json!({ "object": if g.kind == "plugin" { g.name.as_str() } else { object }, "id": a.id });
     if g.kind == "behavior" {
         n["behavior"] = json!(g.name);
     }
@@ -139,10 +153,18 @@ pub fn ace_node(g: &Group, a: &Ace, object: &str) -> Value {
 }
 
 /// Catalog definition of a sheet node (`{object,id,behavior?}`), looked up the way the runtime resolves it.
-pub fn find_ace<'a>(cat: &'a [Group], node: &Value, cond: bool, data: &[(String, String)]) -> Option<&'a Ace> {
+pub fn find_ace<'a>(
+    cat: &'a [Group],
+    node: &Value,
+    cond: bool,
+    data: &[(String, String)],
+) -> Option<&'a Ace> {
     let id = node["id"].as_str()?;
     let obj = node["object"].as_str();
-    let data_type = data.iter().find(|(n, _)| Some(n.as_str()) == obj).map(|(_, t)| t.as_str());
+    let data_type = data
+        .iter()
+        .find(|(n, _)| Some(n.as_str()) == obj)
+        .map(|(_, t)| t.as_str());
     let want = |g: &&Group| -> bool {
         if let Some(t) = data_type {
             g.kind == "data" && g.name == t
@@ -198,7 +220,12 @@ pub fn remove_at(events: &mut Vec<Value>, path: &[usize]) -> Option<Value> {
 
 /// Move the node at `from` so it ends up at index `to_idx` of the list under `to_parent` (indices as before the move).
 /// Refuses to move a node into itself.
-pub fn move_node(events: &mut Vec<Value>, from: &[usize], to_parent: &[usize], to_idx: usize) -> bool {
+pub fn move_node(
+    events: &mut Vec<Value>,
+    from: &[usize],
+    to_parent: &[usize],
+    to_idx: usize,
+) -> bool {
     if from.is_empty() || to_parent.starts_with(from) {
         return false;
     }
@@ -210,10 +237,15 @@ pub fn move_node(events: &mut Vec<Value>, from: &[usize], to_parent: &[usize], t
         if to_idx > *f_last {
             to_idx -= 1;
         }
-    } else if to_parent.len() > f_parent.len() && to_parent.starts_with(f_parent) && to_parent[f_parent.len()] > *f_last {
+    } else if to_parent.len() > f_parent.len()
+        && to_parent.starts_with(f_parent)
+        && to_parent[f_parent.len()] > *f_last
+    {
         to_parent[f_parent.len()] -= 1;
     }
-    let Some(n) = remove_at(events, from) else { return false };
+    let Some(n) = remove_at(events, from) else {
+        return false;
+    };
     insert_at(events, &to_parent, to_idx, n)
 }
 
@@ -240,9 +272,39 @@ pub fn variables(events: &[Value], out: &mut Vec<String>) {
 }
 
 const BUILTINS: &[&str] = &[
-    "abs", "angle", "atan2", "ceil", "choose", "clamp", "cos", "distance", "dt", "find", "floor", "int", "left", "len", "lerp",
-    "loopindex", "lowercase", "max", "mid", "min", "pi", "random", "replace", "right", "round", "sin", "sqrt", "tan", "tickcount",
-    "time", "tonumber", "uppercase", "zeropad",
+    "abs",
+    "angle",
+    "atan2",
+    "ceil",
+    "choose",
+    "clamp",
+    "cos",
+    "distance",
+    "dt",
+    "find",
+    "floor",
+    "int",
+    "left",
+    "len",
+    "lerp",
+    "loopindex",
+    "lowercase",
+    "max",
+    "mid",
+    "min",
+    "pi",
+    "random",
+    "replace",
+    "right",
+    "round",
+    "sin",
+    "sqrt",
+    "tan",
+    "tickcount",
+    "time",
+    "tonumber",
+    "uppercase",
+    "zeropad",
 ];
 
 /// Expression autocomplete: candidates for the identifier at the end of `text`.
@@ -263,15 +325,28 @@ pub fn completions(text: &str, vars: &[String], objects: &[String], cat: &[Group
     };
     vars.iter().for_each(|v| push(v.clone()));
     objects.iter().for_each(|o| push(o.clone()));
-    BUILTINS.iter().for_each(|b| push(format!("{b}{}", if b.len() > 2 && !["dt", "pi", "time", "tickcount", "loopindex"].contains(b) { "(" } else { "" })));
+    BUILTINS.iter().for_each(|b| {
+        push(format!(
+            "{b}{}",
+            if b.len() > 2 && !["dt", "pi", "time", "tickcount", "loopindex"].contains(b) {
+                "("
+            } else {
+                ""
+            }
+        ))
+    });
     for g in cat.iter().filter(|g| g.kind == "plugin") {
-        g.expressions.iter().for_each(|e| push(format!("{}.{e}", g.name)));
+        g.expressions
+            .iter()
+            .for_each(|e| push(format!("{}.{e}", g.name)));
     }
     // `Hero.` → generic object expressions (X, Y, Angle, Count…)
     if let Some((obj, _)) = word.split_once('.') {
         if objects.iter().any(|o| o == obj) {
             for g in cat.iter().filter(|g| g.kind == "object") {
-                g.expressions.iter().for_each(|e| push(format!("{obj}.{e}")));
+                g.expressions
+                    .iter()
+                    .for_each(|e| push(format!("{obj}.{e}")));
             }
         }
     }
@@ -392,7 +467,10 @@ impl EventsUi {
 
     fn record(&mut self, before: Value) {
         let now = Instant::now();
-        let coalesce = self.last_edit.is_some_and(|t| now.duration_since(t) < Duration::from_millis(600)) && !self.undo.is_empty();
+        let coalesce = self
+            .last_edit
+            .is_some_and(|t| now.duration_since(t) < Duration::from_millis(600))
+            && !self.undo.is_empty();
         if !coalesce {
             self.undo.push(before);
             if self.undo.len() > 200 {
@@ -445,7 +523,13 @@ impl EventsUi {
                     }
                 }
             }
-            Op::Pick { target, cond } => self.picker = Some(Picker { target, cond, query: String::new() }),
+            Op::Pick { target, cond } => {
+                self.picker = Some(Picker {
+                    target,
+                    cond,
+                    query: String::new(),
+                })
+            }
         }
     }
 }
@@ -572,9 +656,16 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
             ev.push(json!({"type":"group","title":"Group","active":true,"children":[]}));
         }
         if ui.button("+ Variable").clicked() {
-            ev.insert(0, json!({"type":"variable","name":"var1","valueType":"number","value":0}));
+            ev.insert(
+                0,
+                json!({"type":"variable","name":"var1","valueType":"number","value":0}),
+            );
         }
-        if ui.button("+ Data object").on_hover_text("Array, Dictionary, JSON, AJAX…").clicked() {
+        if ui
+            .button("+ Data object")
+            .on_hover_text("Array, Dictionary, JSON, AJAX…")
+            .clicked()
+        {
             ev.insert(0, json!({"type":"object","name":"Data1","plugin":"Array"}));
         }
         if ui.button("+ Comment").clicked() {
@@ -584,25 +675,48 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
     ui.separator();
 
     let mut vars = vec![];
-    variables(&st.events.doc["events"].as_array().cloned().unwrap_or_default(), &mut vars);
+    variables(
+        &st.events.doc["events"]
+            .as_array()
+            .cloned()
+            .unwrap_or_default(),
+        &mut vars,
+    );
     let mut data = vec![];
-    declared_objects(&st.events.doc["events"].as_array().cloned().unwrap_or_default(), &mut data);
-    if let Some(m) = st.scene.as_ref().and_then(|s| s.settings.extra.get("dataObjects")).and_then(Value::as_object) {
+    declared_objects(
+        &st.events.doc["events"]
+            .as_array()
+            .cloned()
+            .unwrap_or_default(),
+        &mut data,
+    );
+    if let Some(m) = st
+        .scene
+        .as_ref()
+        .and_then(|s| s.settings.extra.get("dataObjects"))
+        .and_then(Value::as_object)
+    {
         for (n, v) in m {
             if let Some(t) = v.as_str().or(v["plugin"].as_str()) {
                 data.push((n.clone(), t.into()));
             }
         }
     }
-    let cx = Ctx { objects: entity_names(st), vars, data };
+    let cx = Ctx {
+        objects: entity_names(st),
+        vars,
+        data,
+    };
     let mut ops: Vec<Op> = vec![];
-    egui::ScrollArea::vertical().auto_shrink([false, false]).show(ui, |ui| {
-        let ev = st.events.events();
-        if ev.is_empty() {
-            ui.weak("No events yet — add one above.");
-        }
-        nodes(ui, ev, &mut vec![], &cx, &mut ops);
-    });
+    egui::ScrollArea::vertical()
+        .auto_shrink([false, false])
+        .show(ui, |ui| {
+            let ev = st.events.events();
+            if ev.is_empty() {
+                ui.weak("No events yet — add one above.");
+            }
+            nodes(ui, ev, &mut vec![], &cx, &mut ops);
+        });
     for op in ops {
         st.events.apply(op);
     }
@@ -628,66 +742,115 @@ fn refresh_addon_aces(root: &std::path::Path) -> Result<String, String> {
     if out.status.success() {
         Ok(text)
     } else {
-        Err(format!("{text} {}", String::from_utf8_lossy(&out.stderr).trim()))
+        Err(format!(
+            "{text} {}",
+            String::from_utf8_lossy(&out.stderr).trim()
+        ))
     }
 }
 
 fn picker_window(st: &mut EditorState, ctx: &egui::Context, cx: &Ctx) {
-    let Some(p) = st.events.picker.as_mut() else { return };
+    let Some(p) = st.events.picker.as_mut() else {
+        return;
+    };
     let mut open = true;
     let mut chosen: Option<(usize, usize, Option<String>)> = None;
     let cat = catalog();
-    let title = if p.cond { "Add condition" } else { "Add action" };
-    egui::Window::new(title).open(&mut open).collapsible(false).default_width(360.0).show(ctx, |ui| {
-        let r = ui.add(egui::TextEdit::singleline(&mut p.query).hint_text("search… e.g. 'platform jump' or 'set x'").desired_width(f32::INFINITY));
-        if !r.has_focus() && p.query.is_empty() {
-            r.request_focus();
-        }
-        let mut hits: Vec<(&Group, &Ace, Option<&str>)> = search(cat, p.cond, &p.query).into_iter().filter(|(g, _)| g.kind != "data").map(|(g, a)| (g, a, None)).collect();
-        let words: Vec<String> = p.query.to_lowercase().split_whitespace().map(String::from).collect();
-        for (name, ty) in &cx.data {
-            for g in cat.iter().filter(|g| g.kind == "data" && &g.name == ty) {
-                for a in if p.cond { &g.conditions } else { &g.actions } {
-                    let hay = format!("{name} {ty} {}", a.id.replace('-', " ")).to_lowercase();
-                    if words.iter().all(|w| hay.contains(w)) {
-                        hits.push((g, a, Some(name.as_str())));
+    let title = if p.cond {
+        "Add condition"
+    } else {
+        "Add action"
+    };
+    egui::Window::new(title)
+        .open(&mut open)
+        .collapsible(false)
+        .default_width(360.0)
+        .show(ctx, |ui| {
+            let r = ui.add(
+                egui::TextEdit::singleline(&mut p.query)
+                    .hint_text("search… e.g. 'platform jump' or 'set x'")
+                    .desired_width(f32::INFINITY),
+            );
+            if !r.has_focus() && p.query.is_empty() {
+                r.request_focus();
+            }
+            let mut hits: Vec<(&Group, &Ace, Option<&str>)> = search(cat, p.cond, &p.query)
+                .into_iter()
+                .filter(|(g, _)| g.kind != "data")
+                .map(|(g, a)| (g, a, None))
+                .collect();
+            let words: Vec<String> = p
+                .query
+                .to_lowercase()
+                .split_whitespace()
+                .map(String::from)
+                .collect();
+            for (name, ty) in &cx.data {
+                for g in cat.iter().filter(|g| g.kind == "data" && &g.name == ty) {
+                    for a in if p.cond { &g.conditions } else { &g.actions } {
+                        let hay = format!("{name} {ty} {}", a.id.replace('-', " ")).to_lowercase();
+                        if words.iter().all(|w| hay.contains(w)) {
+                            hits.push((g, a, Some(name.as_str())));
+                        }
                     }
                 }
             }
-        }
-        let enter = r.lost_focus() && ui.input(|i| i.key_pressed(egui::Key::Enter));
-        egui::ScrollArea::vertical().max_height(320.0).show(ui, |ui| {
-            for (n, (g, a, inst)) in hits.iter().enumerate().take(200) {
-                let tag = match g.kind.as_str() {
-                    "behavior" => Color32::from_rgb(200, 150, 90),
-                    "plugin" => Color32::from_rgb(120, 170, 230),
-                    _ => Color32::from_rgb(150, 200, 140),
-                };
-                let text = RichText::new(format!("{}  >  {}{}", inst.unwrap_or(&g.name), pretty(&a.id), if a.trigger { "  (trigger)" } else { "" })).color(tag);
-                if ui.selectable_label(false, text).clicked() || (enter && n == 0) {
-                    let gi = cat.iter().position(|x| std::ptr::eq(x, *g)).unwrap();
-                    let ai = (if p.cond { &g.conditions } else { &g.actions }).iter().position(|x| std::ptr::eq(x, *a)).unwrap();
-                    chosen = Some((gi, ai, inst.map(String::from)));
-                }
-            }
-            if hits.is_empty() {
-                ui.weak("nothing matches");
-            }
+            let enter = r.lost_focus() && ui.input(|i| i.key_pressed(egui::Key::Enter));
+            egui::ScrollArea::vertical()
+                .max_height(320.0)
+                .show(ui, |ui| {
+                    for (n, (g, a, inst)) in hits.iter().enumerate().take(200) {
+                        let tag = match g.kind.as_str() {
+                            "behavior" => Color32::from_rgb(200, 150, 90),
+                            "plugin" => Color32::from_rgb(120, 170, 230),
+                            _ => Color32::from_rgb(150, 200, 140),
+                        };
+                        let text = RichText::new(format!(
+                            "{}  >  {}{}",
+                            inst.unwrap_or(&g.name),
+                            pretty(&a.id),
+                            if a.trigger { "  (trigger)" } else { "" }
+                        ))
+                        .color(tag);
+                        if ui.selectable_label(false, text).clicked() || (enter && n == 0) {
+                            let gi = cat.iter().position(|x| std::ptr::eq(x, *g)).unwrap();
+                            let ai = (if p.cond { &g.conditions } else { &g.actions })
+                                .iter()
+                                .position(|x| std::ptr::eq(x, *a))
+                                .unwrap();
+                            chosen = Some((gi, ai, inst.map(String::from)));
+                        }
+                    }
+                    if hits.is_empty() {
+                        ui.weak("nothing matches");
+                    }
+                });
         });
-    });
     if let Some((gi, ai, inst)) = chosen {
         let (target, cond) = (p.target.clone(), p.cond);
         let g = &cat[gi];
-        let a = if cond { &g.conditions[ai] } else { &g.actions[ai] };
+        let a = if cond {
+            &g.conditions[ai]
+        } else {
+            &g.actions[ai]
+        };
         let ev = st.events.events();
-        let object = inst.or_else(|| node_mut(ev, &target)
-            .and_then(|n| {
-                n["conditions"].as_array().into_iter().chain(n["actions"].as_array()).flatten().find_map(|c| {
-                    let o = c["object"].as_str()?;
-                    (!catalog().iter().any(|g| g.kind == "plugin" && g.name == o)).then(|| o.to_string())
+        let object = inst
+            .or_else(|| {
+                node_mut(ev, &target).and_then(|n| {
+                    n["conditions"]
+                        .as_array()
+                        .into_iter()
+                        .chain(n["actions"].as_array())
+                        .flatten()
+                        .find_map(|c| {
+                            let o = c["object"].as_str()?;
+                            (!catalog().iter().any(|g| g.kind == "plugin" && g.name == o))
+                                .then(|| o.to_string())
+                        })
                 })
             })
-            ).or_else(|| cx.objects.first().cloned())
+            .or_else(|| cx.objects.first().cloned())
             .unwrap_or_else(|| "Player".into());
         if let Some(n) = node_mut(ev, &target) {
             let key = if cond { "conditions" } else { "actions" };
@@ -713,7 +876,15 @@ fn nodes(ui: &mut Ui, list: &mut [Value], parent: &mut Path, cx: &Ctx, ops: &mut
                 ui.horizontal(|ui| {
                     handle(ui, &path, ops);
                     let mut t = list[i]["text"].as_str().unwrap_or("").to_string();
-                    if ui.add(egui::TextEdit::multiline(&mut t).desired_rows(1).desired_width(f32::INFINITY).text_color(Color32::from_rgb(220, 200, 120))).changed() {
+                    if ui
+                        .add(
+                            egui::TextEdit::multiline(&mut t)
+                                .desired_rows(1)
+                                .desired_width(f32::INFINITY)
+                                .text_color(Color32::from_rgb(220, 200, 120)),
+                        )
+                        .changed()
+                    {
                         list[i]["text"] = json!(t);
                     }
                     row_buttons(ui, &path, ops, false);
@@ -741,7 +912,11 @@ fn nodes(ui: &mut Ui, list: &mut [Value], parent: &mut Path, cx: &Ctx, ops: &mut
 fn handle(ui: &mut Ui, path: &Path, ops: &mut Vec<Op>) {
     let id = egui::Id::new(("ev-drag", path));
     ui.dnd_drag_source(id, path.clone(), |ui| {
-        ui.add(crate::icons::icon("grip-vertical", 14.0, ui.visuals().weak_text_color()));
+        ui.add(crate::icons::icon(
+            "grip-vertical",
+            14.0,
+            ui.visuals().weak_text_color(),
+        ));
     });
     let _ = ops;
 }
@@ -749,10 +924,18 @@ fn handle(ui: &mut Ui, path: &Path, ops: &mut Vec<Op>) {
 fn drop_target(ui: &Ui, resp: &egui::Response, path: &Path, ops: &mut Vec<Op>) {
     if let Some(from) = resp.dnd_release_payload::<Path>() {
         if *from != *path {
-            ops.push(Op::DropOn { from: (*from).clone(), onto: path.clone() });
+            ops.push(Op::DropOn {
+                from: (*from).clone(),
+                onto: path.clone(),
+            });
         }
     } else if resp.dnd_hover_payload::<Path>().is_some() {
-        ui.painter().rect_stroke(resp.rect, 2.0, egui::Stroke::new(2.0_f32, Color32::from_rgb(120, 170, 230)), egui::StrokeKind::Outside);
+        ui.painter().rect_stroke(
+            resp.rect,
+            2.0,
+            egui::Stroke::new(2.0_f32, Color32::from_rgb(120, 170, 230)),
+            egui::StrokeKind::Outside,
+        );
     }
 }
 
@@ -785,15 +968,21 @@ fn variable(ui: &mut Ui, v: &mut Value, path: &Path, ops: &mut Vec<Op>) {
             handle(ui, path, ops);
             ui.label(RichText::new("var").color(Color32::from_rgb(180, 140, 220)));
             let mut name = v["name"].as_str().unwrap_or("").to_string();
-            if ui.add(egui::TextEdit::singleline(&mut name).desired_width(110.0)).changed() {
+            if ui
+                .add(egui::TextEdit::singleline(&mut name).desired_width(110.0))
+                .changed()
+            {
                 v["name"] = json!(name);
             }
             let mut ty = v["valueType"].as_str().unwrap_or("number").to_string();
-            egui::ComboBox::from_id_salt(("vt", path)).selected_text(ty.clone()).width(80.0).show_ui(ui, |ui| {
-                for t in ["number", "string", "boolean"] {
-                    ui.selectable_value(&mut ty, t.to_string(), t);
-                }
-            });
+            egui::ComboBox::from_id_salt(("vt", path))
+                .selected_text(ty.clone())
+                .width(80.0)
+                .show_ui(ui, |ui| {
+                    for t in ["number", "string", "boolean"] {
+                        ui.selectable_value(&mut ty, t.to_string(), t);
+                    }
+                });
             if ty != v["valueType"].as_str().unwrap_or("number") {
                 v["valueType"] = json!(ty);
                 v["value"] = match ty.as_str() {
@@ -811,14 +1000,21 @@ fn variable(ui: &mut Ui, v: &mut Value, path: &Path, ops: &mut Vec<Op>) {
                 }
                 "string" => {
                     let mut s = v["value"].as_str().unwrap_or("").to_string();
-                    if ui.add(egui::TextEdit::singleline(&mut s).desired_width(140.0)).changed() {
+                    if ui
+                        .add(egui::TextEdit::singleline(&mut s).desired_width(140.0))
+                        .changed()
+                    {
                         v["value"] = json!(s);
                     }
                 }
                 _ => {
                     let mut n = v["value"].as_f64().unwrap_or(0.0);
                     if ui.add(egui::DragValue::new(&mut n)).changed() {
-                        v["value"] = if n.fract() == 0.0 { json!(n as i64) } else { json!(n) };
+                        v["value"] = if n.fract() == 0.0 {
+                            json!(n as i64)
+                        } else {
+                            json!(n)
+                        };
                     }
                 }
             }
@@ -834,18 +1030,28 @@ fn data_object(ui: &mut Ui, v: &mut Value, path: &Path, ops: &mut Vec<Op>) {
             handle(ui, path, ops);
             ui.label(RichText::new("object").color(Color32::from_rgb(230, 170, 110)));
             let mut name = v["name"].as_str().unwrap_or("").to_string();
-            if ui.add(egui::TextEdit::singleline(&mut name).desired_width(110.0)).changed() {
+            if ui
+                .add(egui::TextEdit::singleline(&mut name).desired_width(110.0))
+                .changed()
+            {
                 v["name"] = json!(name);
             }
             let mut ty = v["plugin"].as_str().unwrap_or("Array").to_string();
-            egui::ComboBox::from_id_salt(("dt", path)).selected_text(ty.clone()).width(100.0).show_ui(ui, |ui| {
-                for g in catalog().iter().filter(|g| g.kind == "data") {
-                    ui.selectable_value(&mut ty, g.name.clone(), &g.name);
-                }
-            });
+            egui::ComboBox::from_id_salt(("dt", path))
+                .selected_text(ty.clone())
+                .width(100.0)
+                .show_ui(ui, |ui| {
+                    for g in catalog().iter().filter(|g| g.kind == "data") {
+                        ui.selectable_value(&mut ty, g.name.clone(), &g.name);
+                    }
+                });
             v["plugin"] = json!(ty);
             let mut global = v["global"].as_bool().unwrap_or(false);
-            if ui.checkbox(&mut global, "global").on_hover_text("kept when changing scenes").changed() {
+            if ui
+                .checkbox(&mut global, "global")
+                .on_hover_text("kept when changing scenes")
+                .changed()
+            {
                 v["global"] = json!(global);
             }
             row_buttons(ui, path, ops, false);
@@ -856,7 +1062,8 @@ fn data_object(ui: &mut Ui, v: &mut Value, path: &Path, ops: &mut Vec<Op>) {
 
 fn group(ui: &mut Ui, g: &mut Value, path: &Path, cx: &Ctx, ops: &mut Vec<Op>) {
     let id = ui.make_persistent_id(("ev-group", path));
-    let state = egui::collapsing_header::CollapsingState::load_with_default_open(ui.ctx(), id, true);
+    let state =
+        egui::collapsing_header::CollapsingState::load_with_default_open(ui.ctx(), id, true);
     let mut hdr_resp = None;
     state
         .show_header(ui, |ui| {
@@ -864,11 +1071,22 @@ fn group(ui: &mut Ui, g: &mut Value, path: &Path, cx: &Ctx, ops: &mut Vec<Op>) {
                 .horizontal(|ui| {
                     handle(ui, path, ops);
                     let mut active = g["active"].as_bool().unwrap_or(true);
-                    if ui.checkbox(&mut active, "").on_hover_text("Group active").changed() {
+                    if ui
+                        .checkbox(&mut active, "")
+                        .on_hover_text("Group active")
+                        .changed()
+                    {
                         g["active"] = json!(active);
                     }
                     let mut t = g["title"].as_str().unwrap_or("").to_string();
-                    if ui.add(egui::TextEdit::singleline(&mut t).font(egui::TextStyle::Heading).desired_width(220.0)).changed() {
+                    if ui
+                        .add(
+                            egui::TextEdit::singleline(&mut t)
+                                .font(egui::TextStyle::Heading)
+                                .desired_width(220.0),
+                        )
+                        .changed()
+                    {
                         g["title"] = json!(t);
                     }
                     if ui.small_button("+ event").clicked() {
@@ -893,14 +1111,32 @@ fn group(ui: &mut Ui, g: &mut Value, path: &Path, cx: &Ctx, ops: &mut Vec<Op>) {
 
 fn event(ui: &mut Ui, ev: &mut Value, path: &Path, cx: &Ctx, ops: &mut Vec<Op>, function: bool) {
     let disabled = ev["disabled"].as_bool().unwrap_or(false);
-    let frame = egui::Frame::group(ui.style()).fill(if disabled { Color32::from_black_alpha(40) } else { ui.visuals().faint_bg_color });
+    let frame = egui::Frame::group(ui.style()).fill(if disabled {
+        Color32::from_black_alpha(40)
+    } else {
+        ui.visuals().faint_bg_color
+    });
     let r = frame.show(ui, |ui| {
         ui.horizontal(|ui| {
             handle(ui, path, ops);
-            ui.label(RichText::new(if function { "ƒ".to_string() } else { format!("{}", path.last().unwrap() + 1) }).weak());
+            ui.label(
+                RichText::new(if function {
+                    "ƒ".to_string()
+                } else {
+                    format!("{}", path.last().unwrap() + 1)
+                })
+                .weak(),
+            );
             if function {
                 let mut n = ev["name"].as_str().unwrap_or("").to_string();
-                if ui.add(egui::TextEdit::singleline(&mut n).hint_text("function name").desired_width(120.0)).changed() {
+                if ui
+                    .add(
+                        egui::TextEdit::singleline(&mut n)
+                            .hint_text("function name")
+                            .desired_width(120.0),
+                    )
+                    .changed()
+                {
                     ev["name"] = json!(n);
                 }
             } else {
@@ -938,7 +1174,11 @@ fn event(ui: &mut Ui, ev: &mut Value, path: &Path, cx: &Ctx, ops: &mut Vec<Op>, 
 fn ace_list(ui: &mut Ui, ev: &mut Value, key: &str, path: &Path, cx: &Ctx, ops: &mut Vec<Op>) {
     let cond = key == "conditions";
     let cat = catalog();
-    let (color, title) = if cond { (Color32::from_rgb(120, 170, 230), "Conditions") } else { (Color32::from_rgb(130, 200, 130), "Actions") };
+    let (color, title) = if cond {
+        (Color32::from_rgb(120, 170, 230), "Conditions")
+    } else {
+        (Color32::from_rgb(130, 200, 130), "Actions")
+    };
     ui.label(RichText::new(title).color(color).small());
     let mut remove: Option<usize> = None;
     let mut swap: Option<(usize, usize)> = None;
@@ -949,33 +1189,54 @@ fn ace_list(ui: &mut Ui, ev: &mut Value, key: &str, path: &Path, cx: &Ctx, ops: 
             ui.horizontal_wrapped(|ui| {
                 if cond {
                     let mut inv = node["inverted"].as_bool().unwrap_or(false);
-                    if ui.toggle_value(&mut inv, "!").on_hover_text("Invert").changed() {
+                    if ui
+                        .toggle_value(&mut inv, "!")
+                        .on_hover_text("Invert")
+                        .changed()
+                    {
                         node["inverted"] = json!(inv);
                     }
                 }
                 let obj = node["object"].as_str().unwrap_or("").to_string();
-                if cat.iter().any(|g| g.kind == "plugin" && g.name == obj) && node.get("behavior").is_none() {
+                if cat.iter().any(|g| g.kind == "plugin" && g.name == obj)
+                    && node.get("behavior").is_none()
+                {
                     ui.label(RichText::new(&obj).strong());
                 } else {
-                    ui.menu_button(RichText::new(if obj.is_empty() { "(object)" } else { &obj }).strong(), |ui| {
-                        let mut v = obj.clone();
-                        if ui.add(egui::TextEdit::singleline(&mut v).hint_text("object / tag / family")).changed() {
-                            node["object"] = json!(v);
-                        }
-                        for o in &cx.objects {
-                            if ui.button(o).clicked() {
-                                node["object"] = json!(o);
-                                ui.close_menu();
+                    ui.menu_button(
+                        RichText::new(if obj.is_empty() { "(object)" } else { &obj }).strong(),
+                        |ui| {
+                            let mut v = obj.clone();
+                            if ui
+                                .add(
+                                    egui::TextEdit::singleline(&mut v)
+                                        .hint_text("object / tag / family"),
+                                )
+                                .changed()
+                            {
+                                node["object"] = json!(v);
                             }
-                        }
-                    });
+                            for o in &cx.objects {
+                                if ui.button(o).clicked() {
+                                    node["object"] = json!(o);
+                                    ui.close_menu();
+                                }
+                            }
+                        },
+                    );
                 }
                 let label = node["id"].as_str().map(pretty).unwrap_or_default();
-                let bh = node["behavior"].as_str().map(|b| format!("{b}: ")).unwrap_or_default();
+                let bh = node["behavior"]
+                    .as_str()
+                    .map(|b| format!("{b}: "))
+                    .unwrap_or_default();
                 ui.label(RichText::new(format!("{bh}{label}")).color(color));
                 let names: Vec<String> = match def {
                     Some(d) => d.params.clone(),
-                    None => node["params"].as_object().map(|o| o.keys().cloned().collect()).unwrap_or_default(),
+                    None => node["params"]
+                        .as_object()
+                        .map(|o| o.keys().cloned().collect())
+                        .unwrap_or_default(),
                 };
                 for name in names {
                     let raw = def.is_some_and(|d| d.raw.contains(&name));
@@ -1009,13 +1270,30 @@ fn ace_list(ui: &mut Ui, ev: &mut Value, key: &str, path: &Path, cx: &Ctx, ops: 
             list.swap(a, b);
         }
     }
-    if ui.small_button(if cond { "+ Add condition" } else { "+ Add action" }).clicked() {
-        ops.push(Op::Pick { target: path.clone(), cond });
+    if ui
+        .small_button(if cond {
+            "+ Add condition"
+        } else {
+            "+ Add action"
+        })
+        .clicked()
+    {
+        ops.push(Op::Pick {
+            target: path.clone(),
+            cond,
+        });
     }
 }
 
 /// One parameter: a text box (expression or raw text). Expressions get autocomplete suggestions while focused.
-fn param_edit(ui: &mut Ui, salt: (&Path, &str, usize, &str), name: &str, cur: &str, raw: bool, cx: &Ctx) -> Option<String> {
+fn param_edit(
+    ui: &mut Ui,
+    salt: (&Path, &str, usize, &str),
+    name: &str,
+    cur: &str,
+    raw: bool,
+    cx: &Ctx,
+) -> Option<String> {
     let mut s = cur.to_string();
     let w = (s.chars().count() as f32 * 7.5 + 24.0).clamp(46.0, 240.0);
     let r = ui.add(
@@ -1023,7 +1301,11 @@ fn param_edit(ui: &mut Ui, salt: (&Path, &str, usize, &str), name: &str, cur: &s
             .id(egui::Id::new(("ev-param", salt)))
             .hint_text(name)
             .desired_width(w)
-            .text_color(if raw { Color32::from_rgb(200, 170, 120) } else { ui.visuals().text_color() }),
+            .text_color(if raw {
+                Color32::from_rgb(200, 170, 120)
+            } else {
+                ui.visuals().text_color()
+            }),
     );
     let mut out = None;
     if s != cur {
@@ -1033,17 +1315,20 @@ fn param_edit(ui: &mut Ui, salt: (&Path, &str, usize, &str), name: &str, cur: &s
         let sugg = completions(&s, &cx.vars, &cx.objects, catalog());
         if !sugg.is_empty() {
             let mut picked = None;
-            egui::Area::new(egui::Id::new(("ev-ac", salt))).order(egui::Order::Foreground).fixed_pos(r.rect.left_bottom()).show(ui.ctx(), |ui| {
-                egui::Frame::popup(ui.style()).show(ui, |ui| {
-                    for c in &sugg {
-                        let b = ui.selectable_label(false, c);
-                        // the text box loses focus on mouse-down, so accept on press rather than on click
-                        if b.hovered() && ui.input(|i| i.pointer.primary_pressed()) {
-                            picked = Some(apply_completion(&s, c));
+            egui::Area::new(egui::Id::new(("ev-ac", salt)))
+                .order(egui::Order::Foreground)
+                .fixed_pos(r.rect.left_bottom())
+                .show(ui.ctx(), |ui| {
+                    egui::Frame::popup(ui.style()).show(ui, |ui| {
+                        for c in &sugg {
+                            let b = ui.selectable_label(false, c);
+                            // the text box loses focus on mouse-down, so accept on press rather than on click
+                            if b.hovered() && ui.input(|i| i.pointer.primary_pressed()) {
+                                picked = Some(apply_completion(&s, c));
+                            }
                         }
-                    }
+                    });
                 });
-            });
             if picked.is_some() {
                 out = picked;
             }
@@ -1066,14 +1351,20 @@ mod tests {
     }
 
     fn name(ev: &mut Vec<Value>, p: &[usize]) -> String {
-        node_mut(ev, p).map(|n| n["name"].as_str().unwrap_or("?").to_string()).unwrap_or("none".into())
+        node_mut(ev, p)
+            .map(|n| n["name"].as_str().unwrap_or("?").to_string())
+            .unwrap_or("none".into())
     }
 
     #[test]
     fn catalog_has_engine_aces() {
         let c = catalog();
-        assert!(c.iter().any(|g| g.name == "System" && g.conditions.iter().any(|a| a.id == "every-tick")));
-        assert!(c.iter().any(|g| g.kind == "behavior" && g.name == "Platform"));
+        assert!(c
+            .iter()
+            .any(|g| g.name == "System" && g.conditions.iter().any(|a| a.id == "every-tick")));
+        assert!(c
+            .iter()
+            .any(|g| g.kind == "behavior" && g.name == "Platform"));
         assert!(c.iter().any(|g| g.kind == "object"));
     }
 
@@ -1081,17 +1372,32 @@ mod tests {
     fn search_and_nodes() {
         let c = catalog();
         let hits = search(c, false, "platform jump");
-        assert!(hits.iter().any(|(g, a)| g.name == "Platform" && a.id.contains("jump")));
+        assert!(hits
+            .iter()
+            .any(|(g, a)| g.name == "Platform" && a.id.contains("jump")));
         assert!(search(c, true, "zzzzqq").is_empty());
-        let (g, a) = search(c, true, "system compare two").into_iter().next().unwrap();
+        let (g, a) = search(c, true, "system compare two")
+            .into_iter()
+            .next()
+            .unwrap();
         let n = ace_node(g, a, "Hero");
         assert_eq!(n["object"], "System");
         assert_eq!(n["params"]["comparison"], "");
         assert_eq!(n["params"]["first"], "0");
-        let (g, a) = search(c, false, "platform simulate").into_iter().next().or_else(|| search(c, false, "platform jump").into_iter().next()).unwrap();
+        let (g, a) = search(c, false, "platform simulate")
+            .into_iter()
+            .next()
+            .or_else(|| search(c, false, "platform jump").into_iter().next())
+            .unwrap();
         let n = ace_node(g, a, "Hero");
-        assert_eq!((n["object"].as_str(), n["behavior"].as_str()), (Some("Hero"), Some("Platform")));
-        assert_eq!(find_ace(c, &n, false, &[]).map(|a| a.id.as_str()), Some(a.id.as_str()));
+        assert_eq!(
+            (n["object"].as_str(), n["behavior"].as_str()),
+            (Some("Hero"), Some("Platform"))
+        );
+        assert_eq!(
+            find_ace(c, &n, false, &[]).map(|a| a.id.as_str()),
+            Some(a.id.as_str())
+        );
     }
 
     #[test]
@@ -1120,9 +1426,16 @@ mod tests {
     fn project_addons_extend_the_catalog() {
         let extra = json!({"groups":[{"name":"Dice","kind":"plugin","conditions":[],"actions":[{"id":"roll","params":["sides"]}],"expressions":["Roll"]}]});
         set_project_aces(Some(&extra));
-        assert!(catalog().iter().any(|g| g.name == "Dice" && g.actions[0].id == "roll"));
-        assert!(catalog().iter().any(|g| g.name == "System"), "engine groups stay");
-        assert!(search(catalog(), false, "dice roll").iter().any(|(g, _)| g.name == "Dice"));
+        assert!(catalog()
+            .iter()
+            .any(|g| g.name == "Dice" && g.actions[0].id == "roll"));
+        assert!(
+            catalog().iter().any(|g| g.name == "System"),
+            "engine groups stay"
+        );
+        assert!(search(catalog(), false, "dice roll")
+            .iter()
+            .any(|(g, _)| g.name == "Dice"));
         set_project_aces(Some(&json!({"groups":[]})));
         assert!(!catalog().iter().any(|g| g.name == "Dice"));
     }
@@ -1135,8 +1448,12 @@ mod tests {
         assert_eq!(c, vec!["score".to_string()]);
         assert_eq!(apply_completion("1 + sc", "score"), "1 + score");
         assert!(completions("flo", &vars, &objs, catalog()).contains(&"floor(".to_string()));
-        assert!(completions("Mouse.", &vars, &objs, catalog()).iter().any(|s| s.starts_with("Mouse.")));
-        assert!(completions("Hero.", &vars, &objs, catalog()).iter().any(|s| s.starts_with("Hero.")));
+        assert!(completions("Mouse.", &vars, &objs, catalog())
+            .iter()
+            .any(|s| s.starts_with("Mouse.")));
+        assert!(completions("Hero.", &vars, &objs, catalog())
+            .iter()
+            .any(|s| s.starts_with("Hero.")));
         assert!(completions("", &vars, &objs, catalog()).is_empty());
     }
 }

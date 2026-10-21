@@ -14,6 +14,8 @@ pub struct HubUi {
     pub error: Option<String>,
     pub search: String,
     pub show_docs: bool,
+    /// recent project awaiting delete confirmation
+    pub confirm_delete: Option<PathBuf>,
 }
 
 impl Default for HubUi {
@@ -36,6 +38,7 @@ impl Default for HubUi {
             error: None,
             search: String::new(),
             show_docs: false,
+            confirm_delete: None,
         }
     }
 }
@@ -368,11 +371,58 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                                     .show(ui, |ui| {
                                         for p in recent {
                                             let name = project_name(&p);
-                                            if project_row(ui, &name, &p.display().to_string())
-                                                .clicked()
-                                            {
-                                                st.push(Action::OpenPath(p));
+                                            if st.hub.confirm_delete.as_ref() == Some(&p) {
+                                                ui.horizontal_wrapped(|ui| {
+                                                    ui.colored_label(
+                                                        ui.visuals().error_fg_color,
+                                                        format!("Permanently delete \"{name}\" and all its files?"),
+                                                    );
+                                                    if ui
+                                                        .add(egui::Button::new(
+                                                            RichText::new("Delete forever")
+                                                                .color(egui::Color32::WHITE),
+                                                        )
+                                                        .fill(egui::Color32::from_rgb(190, 40, 40)))
+                                                        .clicked()
+                                                    {
+                                                        st.hub.confirm_delete = None;
+                                                        match nord_core::io::delete_recent_project(
+                                                            &p,
+                                                            st.engine_root.as_deref(),
+                                                        ) {
+                                                            Ok(()) => st.hub.error = None,
+                                                            Err(e) => st.hub.error = Some(e.to_string()),
+                                                        }
+                                                    }
+                                                    if ui.button("Cancel").clicked() {
+                                                        st.hub.confirm_delete = None;
+                                                    }
+                                                });
+                                                continue;
                                             }
+                                            ui.horizontal(|ui| {
+                                                let w = (ui.available_width() - 34.0).max(40.0);
+                                                if ui
+                                                    .scope(|ui| {
+                                                        ui.set_width(w);
+                                                        project_row(ui, &name, &p.display().to_string())
+                                                    })
+                                                    .inner
+                                                    .clicked()
+                                                {
+                                                    st.push(Action::OpenPath(p.clone()));
+                                                }
+                                                if ui
+                                                    .add(egui::Button::new(
+                                                        RichText::new("🗑").color(egui::Color32::WHITE),
+                                                    )
+                                                    .fill(egui::Color32::from_rgb(190, 40, 40)))
+                                                    .on_hover_text("Delete this project…")
+                                                    .clicked()
+                                                {
+                                                    st.hub.confirm_delete = Some(p.clone());
+                                                }
+                                            });
                                         }
                                     });
                             });

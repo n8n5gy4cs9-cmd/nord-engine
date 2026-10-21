@@ -1,6 +1,5 @@
 //! Inspector generated from `schema.rs` (component tables + script `static attributes`). Edits a clone of the selected
 //! entity and commits one coalesced undo step when anything changed.
-use nord_core::vfs::PathExt;
 use crate::{
     icons, scene_ops,
     schema::{self, Field, FieldType},
@@ -8,6 +7,7 @@ use crate::{
     theme,
 };
 use egui::{DragValue, Ui};
+use nord_core::vfs::PathExt;
 use nord_core::{
     assets::{Asset, AssetType},
     scene::{Component, Entity, ScriptRef},

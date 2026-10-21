@@ -74,7 +74,10 @@ pub fn start(st: &mut EditorState) {
         st.export_ui.status = "Loading engine files… press Export again in a moment".into();
         return;
     }
-    let (Some(root), Some(engine)) = (st.root.clone(), crate::platform::engine_root().or_else(crate::platform::web_engine_root)) else {
+    let (Some(root), Some(engine)) = (
+        st.root.clone(),
+        crate::platform::engine_root().or_else(crate::platform::web_engine_root),
+    ) else {
         st.export_ui.status = "No project open or engine folder not found (set NORD_ROOT)".into();
         return;
     };

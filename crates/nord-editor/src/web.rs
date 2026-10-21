@@ -41,7 +41,10 @@ fn entries(v: JsValue) -> Vec<(String, Vec<u8>)> {
         .iter()
         .filter_map(|e| {
             let pair = Array::from(&e);
-            Some((pair.get(0).as_string()?, pair.get(1).dyn_into::<Uint8Array>().ok()?.to_vec()))
+            Some((
+                pair.get(0).as_string()?,
+                pair.get(1).dyn_into::<Uint8Array>().ok()?.to_vec(),
+            ))
         })
         .collect()
 }
@@ -70,7 +73,13 @@ fn status_of(v: &JsValue) -> u16 {
 
 fn body_of(v: JsValue) -> (u16, Vec<u8>) {
     let a = Array::from(&v);
-    (a.get(0).as_f64().unwrap_or(0.0) as u16, a.get(1).dyn_into::<Uint8Array>().map(|b| b.to_vec()).unwrap_or_default())
+    (
+        a.get(0).as_f64().unwrap_or(0.0) as u16,
+        a.get(1)
+            .dyn_into::<Uint8Array>()
+            .map(|b| b.to_vec())
+            .unwrap_or_default(),
+    )
 }
 
 /// `/projects/<name>/<rel>` -> (name, rel)
@@ -81,7 +90,9 @@ fn split_project(p: &str) -> Option<(&str, &str)> {
 }
 
 fn enc(s: &str) -> String {
-    js_sys::encode_uri_component(s).as_string().unwrap_or_default()
+    js_sys::encode_uri_component(s)
+        .as_string()
+        .unwrap_or_default()
 }
 
 /// Install the browser tree as the VFS backend and restore what the last session saved (IndexedDB) or, in server mode, the
@@ -89,7 +100,10 @@ fn enc(s: &str) -> String {
 pub async fn init() {
     let mem = Arc::new(MemFs::new());
     let mut saved = HashMap::new();
-    let ping = server_ping().await.as_string().and_then(|s| serde_json::from_str::<serde_json::Value>(&s).ok());
+    let ping = server_ping()
+        .await
+        .as_string()
+        .and_then(|s| serde_json::from_str::<serde_json::Value>(&s).ok());
     let server = ping.as_ref().is_some_and(|p| p["authed"] == true);
     SERVER.store(server, std::sync::atomic::Ordering::Relaxed);
     if let Ok(v) = load_all().await {
@@ -105,11 +119,24 @@ pub async fn init() {
     if server {
         // list the server's projects: stub project files make the hub's "Recent projects" show them; the rest is pulled on open
         let (st, body) = body_of(srv_get("api/projects", "GET", None).await);
-        let list: Vec<serde_json::Value> = if st == 200 { serde_json::from_slice(&body).unwrap_or_default() } else { vec![] };
+        let list: Vec<serde_json::Value> = if st == 200 {
+            serde_json::from_slice(&body).unwrap_or_default()
+        } else {
+            vec![]
+        };
         let mut recent = vec![];
         for p in list {
-            let Some(name) = p["name"].as_str() else { continue };
-            let (s2, f) = body_of(srv_get(&format!("api/p/{}/file?path=nord.project.json", enc(name)), "GET", None).await);
+            let Some(name) = p["name"].as_str() else {
+                continue;
+            };
+            let (s2, f) = body_of(
+                srv_get(
+                    &format!("api/p/{}/file?path=nord.project.json", enc(name)),
+                    "GET",
+                    None,
+                )
+                .await,
+            );
             if s2 == 200 {
                 lock(&SERVER_KNOWN).push(name.to_string());
                 mem.import(&format!("{PROJECTS_DIR}/{name}/nord.project.json"), f);
@@ -160,14 +187,27 @@ pub fn flush() {
             }
         }
     }
-    let gone: Vec<String> = saved.keys().filter(|p| !seen.contains(*p)).cloned().collect();
+    let gone: Vec<String> = saved
+        .keys()
+        .filter(|p| !seen.contains(*p))
+        .cloned()
+        .collect();
     for p in gone {
         match split_project(&p).filter(|_| server) {
             Some((name, rel)) => {
-                if !lock(&READ_ONLY).iter().any(|n| n == name) && lock(&PULLED).iter().any(|n| n == name) {
+                if !lock(&READ_ONLY).iter().any(|n| n == name)
+                    && lock(&PULLED).iter().any(|n| n == name)
+                {
                     let (name, rel) = (name.to_string(), rel.to_string());
                     wasm_bindgen_futures::spawn_local(async move {
-                        let st = status_of(&srv_send("DELETE", &format!("api/p/{}/file?path={}", enc(&name), enc(&rel)), None).await);
+                        let st = status_of(
+                            &srv_send(
+                                "DELETE",
+                                &format!("api/p/{}/file?path={}", enc(&name), enc(&rel)),
+                                None,
+                            )
+                            .await,
+                        );
                         if st == 0 {
                             note("Server unreachable — a deletion was not sent; reload to resync");
                         }
@@ -196,7 +236,10 @@ fn note(msg: &str) {
 
 /// Upload one changed file; the saved stamp moves only after the server accepted it, so failures are retried by the next flush.
 fn push_remote(name: String, rel: String, path: String, rev: u64) {
-    let (known, pulled) = (lock(&SERVER_KNOWN).contains(&name), lock(&PULLED).contains(&name));
+    let (known, pulled) = (
+        lock(&SERVER_KNOWN).contains(&name),
+        lock(&PULLED).contains(&name),
+    );
     if lock(&READ_ONLY).contains(&name) || (known && !pulled) {
         return; // not opened from the server (only its list stub is here), or opened read-only
     }
@@ -216,7 +259,10 @@ fn push_remote(name: String, rel: String, path: String, rev: u64) {
         let mut st = status_of(&srv_send("PUT", &url, Some(data.clone())).await);
         if st == 404 {
             // a project made in this browser: create it on the server, take the lock, retry
-            let body = format!("{{\"name\":{},\"kind\":\"html\"}}", serde_json::to_string(&name).unwrap_or_default());
+            let body = format!(
+                "{{\"name\":{},\"kind\":\"html\"}}",
+                serde_json::to_string(&name).unwrap_or_default()
+            );
             let (c, _) = body_of(srv_get("api/projects", "POST", Some(body)).await);
             if c == 201 || c == 409 {
                 let _ = srv_send("POST", &format!("api/p/{}/lock", enc(&name)), None).await;
@@ -279,8 +325,12 @@ fn emit(e: WebEvent) {
 /// Pick a `.zip` project and unpack it into `/projects/<name>`; emits `OpenProject` when done.
 pub fn import_zip() {
     wasm_bindgen_futures::spawn_local(async {
-        let Ok(v) = pick_files(".zip", false).await else { return };
-        let Some((name, data)) = entries(v).into_iter().next() else { return };
+        let Ok(v) = pick_files(".zip", false).await else {
+            return;
+        };
+        let Some((name, data)) = entries(v).into_iter().next() else {
+            return;
+        };
         match unzip_project(&name, &data) {
             Ok(dir) => emit(WebEvent::OpenProject(dir)),
             Err(e) => emit(WebEvent::Error(format!("Could not open {name}: {e}"))),
@@ -291,7 +341,9 @@ pub fn import_zip() {
 /// Pick asset files and stage them in `/imports`; emits `ImportFiles`.
 pub fn import_files() {
     wasm_bindgen_futures::spawn_local(async {
-        let Ok(v) = pick_files("*/*", true).await else { return };
+        let Ok(v) = pick_files("*/*", true).await else {
+            return;
+        };
         let _ = vfs::create_dir_all("/imports");
         let mut out = vec![];
         for (name, data) in entries(v) {
@@ -309,13 +361,27 @@ pub fn import_files() {
 fn unzip_project(zip_name: &str, data: &[u8]) -> Result<PathBuf, String> {
     let mut z = zip::ZipArchive::new(Cursor::new(data)).map_err(|e| e.to_string())?;
     // a zip made by "Download project" has a single top folder; strip it so nord.project.json lands at the root
-    let names: Vec<String> = (0..z.len()).filter_map(|i| z.by_index(i).ok().map(|f| f.name().to_string())).collect();
-    let top = names.first().and_then(|n| n.split('/').next()).unwrap_or("").to_string();
-    let strip = !top.is_empty()
-        && names.iter().all(|n| n.starts_with(&format!("{top}/")));
+    let names: Vec<String> = (0..z.len())
+        .filter_map(|i| z.by_index(i).ok().map(|f| f.name().to_string()))
+        .collect();
+    let top = names
+        .first()
+        .and_then(|n| n.split('/').next())
+        .unwrap_or("")
+        .to_string();
+    let strip = !top.is_empty() && names.iter().all(|n| n.starts_with(&format!("{top}/")));
     let stem = zip_name.trim_end_matches(".zip");
     let base = if strip { top.as_str() } else { stem };
-    let safe: String = base.chars().map(|c| if c.is_alphanumeric() || " -_.".contains(c) { c } else { '_' }).collect();
+    let safe: String = base
+        .chars()
+        .map(|c| {
+            if c.is_alphanumeric() || " -_.".contains(c) {
+                c
+            } else {
+                '_'
+            }
+        })
+        .collect();
     let mut dir = Path::new(PROJECTS_DIR).join(&safe);
     let mut n = 2;
     while vfs::metadata(&dir).is_ok() {
@@ -328,9 +394,16 @@ fn unzip_project(zip_name: &str, data: &[u8]) -> Result<PathBuf, String> {
             continue;
         }
         let rel = f.name().to_string();
-        let rel = if strip { rel[top.len() + 1..].to_string() } else { rel };
+        let rel = if strip {
+            rel[top.len() + 1..].to_string()
+        } else {
+            rel
+        };
         // zip-slip guard: no absolute or parent components
-        if rel.split('/').any(|c| c == ".." || c.is_empty() && rel.starts_with('/')) {
+        if rel
+            .split('/')
+            .any(|c| c == ".." || c.is_empty() && rel.starts_with('/'))
+        {
             continue;
         }
         let mut buf = vec![];
@@ -352,15 +425,21 @@ fn unzip_project(zip_name: &str, data: &[u8]) -> Result<PathBuf, String> {
 pub fn download_project(root: &Path) -> Result<(), String> {
     let mem = MEM.get().ok_or("browser storage not ready")?;
     let prefix = format!("{}/", root.to_string_lossy().trim_end_matches('/'));
-    let name = root.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_else(|| "project".into());
+    let name = root
+        .file_name()
+        .map(|n| n.to_string_lossy().into_owned())
+        .unwrap_or_else(|| "project".into());
     let mut w = zip::ZipWriter::new(Cursor::new(Vec::new()));
     let opts = zip::write::SimpleFileOptions::default();
     for (p, data) in mem.files() {
-        let Some(rel) = p.strip_prefix(&prefix) else { continue };
+        let Some(rel) = p.strip_prefix(&prefix) else {
+            continue;
+        };
         if rel.starts_with(".nord-cache/") {
             continue;
         }
-        w.start_file(format!("{name}/{rel}"), opts).map_err(|e| e.to_string())?;
+        w.start_file(format!("{name}/{rel}"), opts)
+            .map_err(|e| e.to_string())?;
         w.write_all(&data).map_err(|e| e.to_string())?;
     }
     let bytes = w.finish().map_err(|e| e.to_string())?.into_inner();
@@ -393,27 +472,42 @@ pub fn start_hub(root: PathBuf) -> Arc<nord_serve::Hub> {
     });
     // iframe -> editor
     let h = hub.clone();
-    let on_msg = Closure::<dyn FnMut(web_sys::MessageEvent)>::new(move |ev: web_sys::MessageEvent| {
-        let d = ev.data();
-        let kind = js_sys::Reflect::get(&d, &"nord".into()).ok().and_then(|v| v.as_string());
-        match kind.as_deref() {
-            Some("ipc") => {
-                let msg = js_sys::Reflect::get(&d, &"msg".into()).unwrap_or(JsValue::NULL);
-                if let Some(v) = js_sys::JSON::stringify(&msg).ok().and_then(|s| s.as_string()).and_then(|s| serde_json::from_str(&s).ok()) {
-                    h.inbox.lock().unwrap_or_else(|e| e.into_inner()).push(v);
+    let on_msg =
+        Closure::<dyn FnMut(web_sys::MessageEvent)>::new(move |ev: web_sys::MessageEvent| {
+            let d = ev.data();
+            let kind = js_sys::Reflect::get(&d, &"nord".into())
+                .ok()
+                .and_then(|v| v.as_string());
+            match kind.as_deref() {
+                Some("ipc") => {
+                    let msg = js_sys::Reflect::get(&d, &"msg".into()).unwrap_or(JsValue::NULL);
+                    if let Some(v) = js_sys::JSON::stringify(&msg)
+                        .ok()
+                        .and_then(|s| s.as_string())
+                        .and_then(|s| serde_json::from_str(&s).ok())
+                    {
+                        h.inbox.lock().unwrap_or_else(|e| e.into_inner()).push(v);
+                    }
                 }
-            }
-            Some("log") => {
-                let get = |k: &str| js_sys::Reflect::get(&d, &k.into()).ok().and_then(|v| v.as_string()).unwrap_or_default();
-                let mut l = h.logs.lock().unwrap_or_else(|e| e.into_inner());
-                if l.len() > 5000 {
-                    l.drain(..1000);
+                Some("log") => {
+                    let get = |k: &str| {
+                        js_sys::Reflect::get(&d, &k.into())
+                            .ok()
+                            .and_then(|v| v.as_string())
+                            .unwrap_or_default()
+                    };
+                    let mut l = h.logs.lock().unwrap_or_else(|e| e.into_inner());
+                    if l.len() > 5000 {
+                        l.drain(..1000);
+                    }
+                    l.push(nord_serve::LogEntry {
+                        level: get("level"),
+                        text: get("text"),
+                    });
                 }
-                l.push(nord_serve::LogEntry { level: get("level"), text: get("text") });
+                _ => {}
             }
-            _ => {}
-        }
-    });
+        });
     if let Some(w) = web_sys::window() {
         let _ = w.add_event_listener_with_callback("message", on_msg.as_ref().unchecked_ref());
     }
@@ -434,18 +528,33 @@ pub fn start_hub(root: PathBuf) -> Arc<nord_serve::Hub> {
 }
 
 fn pane(key: &str) -> Option<web_sys::HtmlIFrameElement> {
-    web_sys::window()?.document()?.get_element_by_id(&format!("nord-pane-{key}"))?.dyn_into().ok()
+    web_sys::window()?
+        .document()?
+        .get_element_by_id(&format!("nord-pane-{key}"))?
+        .dyn_into()
+        .ok()
 }
 
 /// Create or move the `<iframe>` for pane `key` (CSS pixels, relative to the page) and load `url` when it changed.
 pub fn place_iframe(key: &str, url: &str, x: f32, y: f32, w: f32, h: f32, visible: bool) {
-    let Some(doc) = web_sys::window().and_then(|w| w.document()) else { return };
+    let Some(doc) = web_sys::window().and_then(|w| w.document()) else {
+        return;
+    };
     let f = match pane(key) {
         Some(f) => f,
         None => {
-            let Some(f) = doc.create_element("iframe").ok().and_then(|e| e.dyn_into::<web_sys::HtmlIFrameElement>().ok()) else { return };
+            let Some(f) = doc
+                .create_element("iframe")
+                .ok()
+                .and_then(|e| e.dyn_into::<web_sys::HtmlIFrameElement>().ok())
+            else {
+                return;
+            };
             f.set_id(&format!("nord-pane-{key}"));
-            let _ = f.set_attribute("allow", "autoplay; fullscreen; gamepad; clipboard-read; clipboard-write");
+            let _ = f.set_attribute(
+                "allow",
+                "autoplay; fullscreen; gamepad; clipboard-read; clipboard-write",
+            );
             let st = f.style();
             let _ = st.set_property("position", "fixed");
             let _ = st.set_property("border", "0");
@@ -478,7 +587,9 @@ pub fn post_to_pane(key: &str, message: &serde_json::Value) {
 
 pub fn set_iframe_visible(key: &str, visible: bool) {
     if let Some(f) = pane(key) {
-        let _ = f.style().set_property("display", if visible { "block" } else { "none" });
+        let _ = f
+            .style()
+            .set_property("display", if visible { "block" } else { "none" });
     }
 }
 
@@ -497,7 +608,10 @@ pub fn reload_iframe(key: &str) {
 }
 
 fn volatile(p: &str) -> bool {
-    p.starts_with("/engine/") || p.starts_with("/tmp/") || p.contains("/dist/") || p.ends_with("/dist.zip")
+    p.starts_with("/engine/")
+        || p.starts_with("/tmp/")
+        || p.contains("/dist/")
+        || p.ends_with("/dist.zip")
 }
 
 static ENGINE: std::sync::atomic::AtomicU8 = std::sync::atomic::AtomicU8::new(0); // 0 idle, 1 loading, 2 ready
@@ -514,12 +628,17 @@ pub fn load_engine() {
         return;
     }
     wasm_bindgen_futures::spawn_local(async {
-        let list: Vec<String> = match fetch_bytes("engine/manifest.json").await.dyn_into::<Uint8Array>() {
+        let list: Vec<String> = match fetch_bytes("engine/manifest.json")
+            .await
+            .dyn_into::<Uint8Array>()
+        {
             Ok(b) => serde_json::from_slice(&b.to_vec()).unwrap_or_default(),
             Err(_) => vec![],
         };
         if list.is_empty() {
-            emit(WebEvent::Error("engine files are not available (engine/manifest.json missing)".into()));
+            emit(WebEvent::Error(
+                "engine files are not available (engine/manifest.json missing)".into(),
+            ));
             ENGINE.store(0, Relaxed);
             return;
         }
@@ -533,13 +652,18 @@ pub fn load_engine() {
             }
         }
         ENGINE.store(2, Relaxed);
-        emit(WebEvent::Info("Engine files ready — press Export again".into()));
+        emit(WebEvent::Info(
+            "Engine files ready — press Export again".into(),
+        ));
     });
 }
 
 async fn futures_join(chunk: &[String]) -> Vec<(String, Option<Vec<u8>>)> {
     // wasm is single-threaded: start every fetch, then await them in order (they run concurrently in the browser)
-    let pending: Vec<_> = chunk.iter().map(|rel| (rel.clone(), fetch_bytes_owned(format!("engine/{rel}")))).collect();
+    let pending: Vec<_> = chunk
+        .iter()
+        .map(|rel| (rel.clone(), fetch_bytes_owned(format!("engine/{rel}"))))
+        .collect();
     let mut out = vec![];
     for (rel, fut) in pending {
         out.push((rel, fut.await));
@@ -548,42 +672,64 @@ async fn futures_join(chunk: &[String]) -> Vec<(String, Option<Vec<u8>>)> {
 }
 
 async fn fetch_bytes_owned(url: String) -> Option<Vec<u8>> {
-    fetch_bytes(&url).await.dyn_into::<Uint8Array>().ok().map(|b| b.to_vec())
+    fetch_bytes(&url)
+        .await
+        .dyn_into::<Uint8Array>()
+        .ok()
+        .map(|b| b.to_vec())
 }
 
 /// Hand a file of the virtual FS to the browser as a download.
 pub fn download_file(path: &Path) -> Result<(), String> {
     let data = vfs::read(path).map_err(|e| e.to_string())?;
-    let name = path.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_else(|| "export.zip".into());
+    let name = path
+        .file_name()
+        .map(|n| n.to_string_lossy().into_owned())
+        .unwrap_or_else(|| "export.zip".into());
     download(&name, &data);
     Ok(())
 }
 
 /// Server mode: download a project's files into the tree and take its writer lock; emits `OpenProject` (or `Error`) when done.
 pub fn pull_project(dir: &Path) {
-    let Some(name) = dir.file_name().map(|n| n.to_string_lossy().into_owned()) else { return };
+    let Some(name) = dir.file_name().map(|n| n.to_string_lossy().into_owned()) else {
+        return;
+    };
     let dir = dir.to_path_buf();
     wasm_bindgen_futures::spawn_local(async move {
         let Some(mem) = MEM.get() else { return };
         let (st, body) = body_of(srv_get(&format!("api/p/{}/tree", enc(&name)), "GET", None).await);
         if st != 200 {
-            return emit(WebEvent::Error(format!("Could not open “{name}” from the server ({st})")));
+            return emit(WebEvent::Error(format!(
+                "Could not open “{name}” from the server ({st})"
+            )));
         }
         let files: Vec<serde_json::Value> = serde_json::from_slice(&body).unwrap_or_default();
         let (l, _) = body_of(srv_get(&format!("api/p/{}/lock", enc(&name)), "POST", None).await);
         if l == 423 {
             lock(&READ_ONLY).push(name.clone());
-            emit(WebEvent::Info(format!("“{name}” is being edited in another session — opened read-only")));
+            emit(WebEvent::Info(format!(
+                "“{name}” is being edited in another session — opened read-only"
+            )));
         } else if l != 200 {
             emit(WebEvent::Error(format!("Could not lock “{name}” ({l})")));
         }
         for f in files {
-            let Some(rel) = f["path"].as_str() else { continue };
+            let Some(rel) = f["path"].as_str() else {
+                continue;
+            };
             if f["dir"] == true {
                 let _ = vfs::create_dir_all(dir.join(rel));
                 continue;
             }
-            let (s2, data) = body_of(srv_get(&format!("api/p/{}/file?path={}", enc(&name), enc(rel)), "GET", None).await);
+            let (s2, data) = body_of(
+                srv_get(
+                    &format!("api/p/{}/file?path={}", enc(&name), enc(rel)),
+                    "GET",
+                    None,
+                )
+                .await,
+            );
             if s2 == 200 {
                 mem.import(&dir.join(rel).to_string_lossy(), data);
             }
@@ -603,13 +749,16 @@ pub fn pull_project(dir: &Path) {
 }
 
 pub fn is_pulled(dir: &Path) -> bool {
-    dir.file_name().is_some_and(|n| lock(&PULLED).iter().any(|p| *p == n.to_string_lossy()))
+    dir.file_name()
+        .is_some_and(|n| lock(&PULLED).iter().any(|p| *p == n.to_string_lossy()))
 }
 
 /// Server mode: run the project's export on the server (full pipeline: minify, single-file, optimise, event-sheet compile) and
 /// download the zip. Progress lines arrive as `WebEvent::Log`.
 pub fn server_export(root: &Path, opts_json: String) {
-    let Some(name) = root.file_name().map(|n| n.to_string_lossy().into_owned()) else { return };
+    let Some(name) = root.file_name().map(|n| n.to_string_lossy().into_owned()) else {
+        return;
+    };
     wasm_bindgen_futures::spawn_local(async move {
         // let pending uploads finish first, so the server exports what the editor shows
         LAST_FLUSH.lock().unwrap_or_else(|e| e.into_inner()).take();
@@ -620,21 +769,50 @@ pub fn server_export(root: &Path, opts_json: String) {
             }
             sleep_ms(500).await;
         }
-        let (st, body) = body_of(srv_get(&format!("api/p/{}/jobs/export", enc(&name)), "POST", Some(opts_json)).await);
+        let (st, body) = body_of(
+            srv_get(
+                &format!("api/p/{}/jobs/export", enc(&name)),
+                "POST",
+                Some(opts_json),
+            )
+            .await,
+        );
         if st != 202 {
-            let why = serde_json::from_slice::<serde_json::Value>(&body).ok().and_then(|v| v["error"].as_str().map(String::from)).unwrap_or_default();
-            return emit(WebEvent::Error(format!("Server export refused ({st}) {why}")));
+            let why = serde_json::from_slice::<serde_json::Value>(&body)
+                .ok()
+                .and_then(|v| v["error"].as_str().map(String::from))
+                .unwrap_or_default();
+            return emit(WebEvent::Error(format!(
+                "Server export refused ({st}) {why}"
+            )));
         }
-        let Some(id) = serde_json::from_slice::<serde_json::Value>(&body).ok().and_then(|v| v["job"].as_str().map(String::from)) else { return };
+        let Some(id) = serde_json::from_slice::<serde_json::Value>(&body)
+            .ok()
+            .and_then(|v| v["job"].as_str().map(String::from))
+        else {
+            return;
+        };
         let mut since = 0;
         loop {
             sleep_ms(1000).await;
-            let (st, b) = body_of(srv_get(&format!("api/p/{}/jobs/{id}/status?since={since}", enc(&name)), "GET", None).await);
+            let (st, b) = body_of(
+                srv_get(
+                    &format!("api/p/{}/jobs/{id}/status?since={since}", enc(&name)),
+                    "GET",
+                    None,
+                )
+                .await,
+            );
             if st != 200 {
                 return emit(WebEvent::Error("Lost the export job".into()));
             }
             let v: serde_json::Value = serde_json::from_slice(&b).unwrap_or_default();
-            for l in v["lines"].as_array().into_iter().flatten().filter_map(|l| l.as_str()) {
+            for l in v["lines"]
+                .as_array()
+                .into_iter()
+                .flatten()
+                .filter_map(|l| l.as_str())
+            {
                 emit(WebEvent::Log(l.to_string()));
             }
             since = v["next"].as_u64().unwrap_or(0) as usize;
@@ -644,7 +822,12 @@ pub fn server_export(root: &Path, opts_json: String) {
                     download_url(&format!("api/p/{}/jobs/{id}/download", enc(&name)));
                     return emit(WebEvent::Info("Server export done — downloading".into()));
                 }
-                other => return emit(WebEvent::Error(format!("Server export {}", other.unwrap_or("failed")))),
+                other => {
+                    return emit(WebEvent::Error(format!(
+                        "Server export {}",
+                        other.unwrap_or("failed")
+                    )))
+                }
             }
         }
     });

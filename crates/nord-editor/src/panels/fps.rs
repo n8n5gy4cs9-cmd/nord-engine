@@ -66,8 +66,12 @@ pub fn ui(
         ui.weak("Levels live in levels/*.fpsl.json · your content in fpsc/ · F1 inside the editor = help");
     });
     web.show(ui, frame, "fpsc", &url, overlay);
-    web.post_message("fpsc", &serde_json::json!({
-        "type": "fpsc-shortcuts", "shortcuts": st.settings.fps_shortcuts
-    }));
-    ui.ctx().request_repaint_after(std::time::Duration::from_millis(250));
+    web.post_message(
+        "fpsc",
+        &serde_json::json!({
+            "type": "fpsc-shortcuts", "shortcuts": st.settings.fps_shortcuts
+        }),
+    );
+    ui.ctx()
+        .request_repaint_after(std::time::Duration::from_millis(250));
 }

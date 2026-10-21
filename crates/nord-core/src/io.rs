@@ -183,6 +183,82 @@ pub fn add_recent(root: &Path) -> Result<()> {
     save_json(&config_dir().join("recent.json"), &list)
 }
 
+/// Files/dirs that mark engine, source-control or dependency trees; a folder holding any of them is never deleted.
+#[cfg(not(target_arch = "wasm32"))]
+const DELETE_FORBIDDEN_MARKERS: [&str; 9] = [
+    ".git",
+    "Cargo.toml",
+    "Cargo.lock",
+    "PRD.json",
+    "crates",
+    "src",
+    "node_modules",
+    "tools",
+    "third_party",
+];
+
+/// Delete ONE project folder that is listed in the recent-projects list, and drop it from that list.
+/// Refuses (deleting nothing) unless every check passes: exact entry of the recent list, real directory
+/// (not a symlink), contains `nord.project.json`, not the home dir / a shallow path, not the engine
+/// (or inside/containing it), not the running exe/cwd, no engine/VCS markers, not locked by another process.
+#[cfg(not(target_arch = "wasm32"))]
+pub fn delete_recent_project(root: &Path, engine_root: Option<&Path>) -> Result<()> {
+    let bad = |m: &str| Err(Error::Msg(format!("refusing to delete project: {m}")));
+    if !recent_projects().iter().any(|p| p == root) {
+        return bad("not in the recent projects list");
+    }
+    let meta = std::fs::symlink_metadata(root).map_err(|e| io_err(root, e))?;
+    if meta.file_type().is_symlink() || !meta.is_dir() {
+        return bad("not a real directory");
+    }
+    let canon = std::fs::canonicalize(root).map_err(|e| io_err(root, e))?;
+    if canon != root {
+        return bad("path is not canonical");
+    }
+    if !canon.join(PROJECT_FILE).is_file() {
+        return bad("no nord.project.json inside");
+    }
+    if canon.components().count() < 4 {
+        return bad("path is too shallow");
+    }
+    if let Some(home) = std::env::var_os("HOME").map(PathBuf::from) {
+        let home = std::fs::canonicalize(&home).unwrap_or(home);
+        if home.starts_with(&canon) {
+            return bad("contains the home folder");
+        }
+    }
+    for guard in engine_root
+        .into_iter()
+        .map(Path::to_path_buf)
+        .chain(std::env::current_exe().ok())
+        .chain(std::env::current_dir().ok())
+        .chain(Some(config_dir()))
+    {
+        let g = std::fs::canonicalize(&guard).unwrap_or(guard);
+        if g.starts_with(&canon) || canon.starts_with(&g) {
+            return bad("overlaps the engine, the running app or its config");
+        }
+    }
+    if DELETE_FORBIDDEN_MARKERS
+        .iter()
+        .any(|m| canon.join(m).exists())
+    {
+        return bad("looks like engine/source code");
+    }
+    // not open elsewhere (own pid is fine: the caller closes the project first)
+    if let Ok(txt) = std::fs::read_to_string(canon.join(".nord-cache/lock")) {
+        if let Ok(pid) = txt.trim().parse::<u32>() {
+            if pid != std::process::id() && pid_alive(pid) {
+                return bad("open in another Nord process");
+            }
+        }
+    }
+    std::fs::remove_dir_all(&canon).map_err(|e| io_err(&canon, e))?;
+    let mut list = recent_projects();
+    list.retain(|p| p != root);
+    save_json(&config_dir().join("recent.json"), &list)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -220,5 +296,33 @@ mod tests {
         assert!(ProjectLock::acquire(&d).is_err());
         drop(l); // removes file
         assert!(ProjectLock::acquire(&d).is_ok());
+    }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    #[test]
+    fn delete_recent_project_is_guarded() {
+        let base = tmp("del");
+        std::env::set_var("NORD_CONFIG_DIR", base.join("cfg"));
+        let proj = base.join("a").join("b").join("game");
+        fs::create_dir_all(&proj).unwrap();
+        let p = Project::new("T", "com.x.t", crate::ProjectType::TwoD);
+        save_project(&proj, &p).unwrap();
+        let proj = std::fs::canonicalize(&proj).unwrap();
+        // not in the recent list -> refused
+        assert!(delete_recent_project(&proj, None).is_err());
+        add_recent(&proj).unwrap();
+        // engine/source markers -> refused
+        std::fs::write(proj.join("Cargo.toml"), "").unwrap();
+        assert!(delete_recent_project(&proj, None).is_err());
+        std::fs::remove_file(proj.join("Cargo.toml")).unwrap();
+        // engine root inside the project -> refused
+        assert!(delete_recent_project(&proj, Some(&proj.join("x"))).is_err());
+        assert!(proj.exists());
+        // sibling data survives
+        std::fs::write(proj.parent().unwrap().join("keep.txt"), "k").unwrap();
+        delete_recent_project(&proj, None).unwrap();
+        assert!(!proj.exists());
+        assert!(proj.parent().unwrap().join("keep.txt").exists());
+        assert!(recent_projects().is_empty());
     }
 }

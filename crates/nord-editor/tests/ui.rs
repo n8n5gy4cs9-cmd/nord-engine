@@ -459,7 +459,8 @@ fn fps_shortcut_settings_are_visible() {
     h.state_mut().st.settings.fps_shortcuts.stop.key = "F8".into();
     h.state_mut().st.settings.run_key = "Enter".into();
     h.state_mut().st.settings.theme = "dracula".into();
-    h.get_by_label("Reset shortcuts to defaults").simulate_click();
+    h.get_by_label("Reset shortcuts to defaults")
+        .simulate_click();
     h.run_steps(3);
     assert_eq!(h.state().st.settings.fps_shortcuts.stop.key, "Escape");
     assert_eq!(h.state().st.settings.run_key, "R");
@@ -1022,8 +1023,14 @@ fn event_sheet_editor_edits_picks_undoes_and_saves() {
     let mut st = EditorState::new();
     st.open_project(&d).unwrap();
     let rel = "events/main.events.json";
-    assert_eq!(st.project_files(".events.json"), vec![rel.to_string()], "sheets outside assets/ are listed");
-    assert!(st.project_files(".scene.json").contains(&"scenes/main.scene.json".to_string()));
+    assert_eq!(
+        st.project_files(".events.json"),
+        vec![rel.to_string()],
+        "sheets outside assets/ are listed"
+    );
+    assert!(st
+        .project_files(".scene.json")
+        .contains(&"scenes/main.scene.json".to_string()));
     st.events.load(&d, rel).unwrap();
     let n0 = st.events.doc["events"].as_array().unwrap().len();
     let mut h = Harness::builder()
@@ -1034,7 +1041,10 @@ fn event_sheet_editor_edits_picks_undoes_and_saves() {
     // add an event, then open the action picker on it and choose an action by search
     h.get_by_label("+ Event").click();
     h.run_steps(3);
-    assert_eq!(h.state().events.doc["events"].as_array().unwrap().len(), n0 + 1);
+    assert_eq!(
+        h.state().events.doc["events"].as_array().unwrap().len(),
+        n0 + 1
+    );
     h.get_all_by_label("+ Add action").last().unwrap().click();
     h.run_steps(3);
     h.get_by_label("Add action");
@@ -1042,7 +1052,10 @@ fn event_sheet_editor_edits_picks_undoes_and_saves() {
         // type into the picker search through state (the TextEdit is focused automatically)
         let st = h.state_mut();
         let cat = panels::events::catalog();
-        let (g, a) = panels::events::search(cat, false, "system set var").into_iter().next().unwrap();
+        let (g, a) = panels::events::search(cat, false, "system set var")
+            .into_iter()
+            .next()
+            .unwrap();
         let node = panels::events::ace_node(g, a, "Hero");
         let last = st.events.doc["events"].as_array().unwrap().len() - 1;
         st.events.doc["events"][last]["actions"] = serde_json::json!([node]);
@@ -1092,7 +1105,11 @@ fn history_panel_snapshots_diffs_and_restores() {
     h.get_by_label("Click again to restore").click();
     h.run_steps(3);
     assert_eq!(std::fs::read_to_string(&sheet).unwrap(), orig);
-    assert_eq!(nord_core::history::list(&d).len(), 2, "restore took a safety snapshot");
+    assert_eq!(
+        nord_core::history::list(&d).len(),
+        2,
+        "restore took a safety snapshot"
+    );
 }
 
 #[test]
@@ -1118,12 +1135,24 @@ fn project_tab_edits_properties_and_renames_an_object_safely() {
     assert_eq!(p["display"]["width"], 800);
     h.get_by_label("Preview object rename").click();
     h.run_steps(3);
-    assert!(h.state().project_ui.preview.iter().any(|f| f.ends_with("main.scene.json")), "{:?}", h.state().project_ui.preview);
-    h.get_by_label_contains("Apply (take a version-history").click();
+    assert!(
+        h.state()
+            .project_ui
+            .preview
+            .iter()
+            .any(|f| f.ends_with("main.scene.json")),
+        "{:?}",
+        h.state().project_ui.preview
+    );
+    h.get_by_label_contains("Apply (take a version-history")
+        .click();
     h.run_steps(3);
     let scene = std::fs::read_to_string(d.join("scenes/main.scene.json")).unwrap();
     assert!(scene.contains("\"Goo\"") && !scene.contains("\"Slime\""));
-    assert!(!nord_core::history::list(&d).is_empty(), "a snapshot was taken before the edit");
+    assert!(
+        !nord_core::history::list(&d).is_empty(),
+        "a snapshot was taken before the edit"
+    );
 }
 
 #[test]
@@ -1137,7 +1166,10 @@ fn phone_preview_starts_shows_a_window_and_stops() {
     assert!(port > 0);
     let mut h = Harness::builder()
         .with_size(egui::vec2(800.0, 700.0))
-        .build_state(|ctx, st: &mut EditorState| panels::preview::window(st, ctx), st);
+        .build_state(
+            |ctx, st: &mut EditorState| panels::preview::window(st, ctx),
+            st,
+        );
     h.run_steps(3);
     h.get_by_label("Stop phone preview").click();
     h.run_steps(3);
@@ -1157,13 +1189,29 @@ fn layout_panel_layers_arrange_and_undo() {
     let n0 = nord_editor::layout::layers(h.state().scene.as_ref().unwrap()).len();
     h.get_by_label("+ Layer").click();
     h.run_steps(3);
-    assert_eq!(nord_editor::layout::layers(h.state().scene.as_ref().unwrap()).len(), n0 + 1);
+    assert_eq!(
+        nord_editor::layout::layers(h.state().scene.as_ref().unwrap()).len(),
+        n0 + 1
+    );
     // undo restores the settings together with the entities
     h.state_mut().do_undo();
     h.run_steps(2);
-    assert_eq!(nord_editor::layout::layers(h.state().scene.as_ref().unwrap()).len(), n0);
+    assert_eq!(
+        nord_editor::layout::layers(h.state().scene.as_ref().unwrap()).len(),
+        n0
+    );
     // align two objects through the panel
-    let ids: Vec<String> = h.state().scene.as_ref().unwrap().entities.iter().filter(|e| e.name.starts_with("Coin")).take(3).map(|e| e.id.clone()).collect();
+    let ids: Vec<String> = h
+        .state()
+        .scene
+        .as_ref()
+        .unwrap()
+        .entities
+        .iter()
+        .filter(|e| e.name.starts_with("Coin"))
+        .take(3)
+        .map(|e| e.id.clone())
+        .collect();
     assert!(ids.len() >= 3);
     h.state_mut().selection = ids.clone();
     h.run_steps(2);
@@ -1172,8 +1220,25 @@ fn layout_panel_layers_arrange_and_undo() {
     h.run_steps(2);
     h.get_by_label_contains("Left").click();
     h.run_steps(2);
-    let xs: Vec<f64> = ids.iter().map(|id| h.state().scene.as_ref().unwrap().entities.iter().find(|e| &e.id == id).unwrap().transform.pos[0]).collect();
-    assert!(xs.windows(2).all(|w| (w[0] - w[1]).abs() < 1e-9), "aligned: {xs:?}");
+    let xs: Vec<f64> = ids
+        .iter()
+        .map(|id| {
+            h.state()
+                .scene
+                .as_ref()
+                .unwrap()
+                .entities
+                .iter()
+                .find(|e| &e.id == id)
+                .unwrap()
+                .transform
+                .pos[0]
+        })
+        .collect();
+    assert!(
+        xs.windows(2).all(|w| (w[0] - w[1]).abs() < 1e-9),
+        "aligned: {xs:?}"
+    );
 }
 
 #[test]
@@ -1190,9 +1255,15 @@ fn sprite_editor_paints_saves_and_stores_origin_points_and_collision() {
     st.sprite.pointer(Phase::Move, 6, 4);
     st.sprite.pointer(Phase::Move, 9, 5);
     st.sprite.pointer(Phase::Up, 9, 5);
-    let px = |s: &nord_editor::panels::sprite::SpriteUi, x: u32, y: u32| s.img.as_ref().unwrap().get_pixel(x, y).0;
+    let px = |s: &nord_editor::panels::sprite::SpriteUi, x: u32, y: u32| {
+        s.img.as_ref().unwrap().get_pixel(x, y).0
+    };
     assert_eq!(px(&st.sprite, 5, 3), [255, 0, 0, 255]);
-    assert_eq!(px(&st.sprite, 10, 3)[3], 0, "outside the rectangle stays transparent");
+    assert_eq!(
+        px(&st.sprite, 10, 3)[3],
+        0,
+        "outside the rectangle stays transparent"
+    );
     // eraser punches a hole, undo brings it back
     st.sprite.tool = Tool::Eraser;
     st.sprite.pointer(Phase::Down, 5, 3);
@@ -1214,13 +1285,26 @@ fn sprite_editor_paints_saves_and_stores_origin_points_and_collision() {
     h.run_steps(3);
     h.get_by_label_contains("Flip H").click();
     h.run_steps(2);
-    assert_eq!(h.state().sprite.img.as_ref().unwrap().get_pixel(15 - 5, 3).0, [255, 0, 0, 255], "flip H mirrors the image");
+    assert_eq!(
+        h.state()
+            .sprite
+            .img
+            .as_ref()
+            .unwrap()
+            .get_pixel(15 - 5, 3)
+            .0,
+        [255, 0, 0, 255],
+        "flip H mirrors the image"
+    );
     h.get_by_label("Save").click();
     h.run_steps(3);
-    let img = image::open(d.join("assets/sprites/painted.png")).unwrap().to_rgba8();
+    let img = image::open(d.join("assets/sprites/painted.png"))
+        .unwrap()
+        .to_rgba8();
     assert_eq!((img.width(), img.height()), (16, 16));
     assert_eq!(img.get_pixel(10, 3).0, [255, 0, 0, 255]);
-    let meta: serde_json::Value = nord_core::io::load_json(&d.join("assets/sprites/painted.png.meta.json")).unwrap();
+    let meta: serde_json::Value =
+        nord_core::io::load_json(&d.join("assets/sprites/painted.png.meta.json")).unwrap();
     assert_eq!(meta["points"]["muzzle"], serde_json::json!([9.0, 3.0]));
     assert_eq!(meta["origin"], serde_json::json!([5.5, 3.5]));
     assert!(meta["collision"].as_array().unwrap().len() >= 3);
@@ -1234,7 +1318,13 @@ fn tilemap_v2_ui_renders_every_brush_and_layer_controls() {
     st.open_project(&d).unwrap();
     let mut m = nord_editor::tilemap::new_map("assets/sprites/hero.png", 16, 16, 8, 6);
     nord_editor::tilemap::add_layer(&mut m, "top");
-    nord_editor::tilemap::set_terrains(&mut m, &[nord_editor::tilemap::Terrain { name: "wall".into(), tiles: std::array::from_fn(|i| i as i64) }]);
+    nord_editor::tilemap::set_terrains(
+        &mut m,
+        &[nord_editor::tilemap::Terrain {
+            name: "wall".into(),
+            tiles: std::array::from_fn(|i| i as i64),
+        }],
+    );
     st.anim.mode = Mode::Tile;
     st.anim.map = Some("assets/maps/v2.tilemap.json".into());
     st.anim.map_json = m;
@@ -1243,18 +1333,31 @@ fn tilemap_v2_ui_renders_every_brush_and_layer_controls() {
         .build_ui_state(|ui, st: &mut EditorState| panels::animation::ui(st, ui), st);
     loaders(&h);
     h.run_steps(3);
-    for b in [Brush::Single, Brush::Rect, Brush::Fill, Brush::Random, Brush::Terrain, Brush::DefineTerrain] {
+    for b in [
+        Brush::Single,
+        Brush::Rect,
+        Brush::Fill,
+        Brush::Random,
+        Brush::Terrain,
+        Brush::DefineTerrain,
+    ] {
         h.state_mut().anim.brush_kind = b;
         h.run_steps(2);
     }
     // layer controls
     h.get_by_label("Add layer").click();
     h.run_steps(2);
-    assert_eq!(h.state().anim.map_json["layers"].as_array().unwrap().len(), 3);
+    assert_eq!(
+        h.state().anim.map_json["layers"].as_array().unwrap().len(),
+        3
+    );
     assert!(h.state().anim.dirty_map);
     h.get_by_label("Delete layer").click();
     h.run_steps(2);
-    assert_eq!(h.state().anim.map_json["layers"].as_array().unwrap().len(), 2);
+    assert_eq!(
+        h.state().anim.map_json["layers"].as_array().unwrap().len(),
+        2
+    );
 }
 
 #[test]
@@ -1262,7 +1365,16 @@ fn particles_panel_adds_component_applies_presets_and_edits_with_undo() {
     let d = example_copy("part", "event-sheets");
     let mut st = EditorState::new();
     st.open_project(&d).unwrap();
-    let id = st.scene.as_ref().unwrap().entities.iter().find(|e| e.name == "Message").unwrap().id.clone();
+    let id = st
+        .scene
+        .as_ref()
+        .unwrap()
+        .entities
+        .iter()
+        .find(|e| e.name == "Message")
+        .unwrap()
+        .id
+        .clone();
     st.select(Some(id.clone()));
     let mut h = Harness::builder()
         .with_size(egui::vec2(1100.0, 800.0))
@@ -1271,10 +1383,26 @@ fn particles_panel_adds_component_applies_presets_and_edits_with_undo() {
     h.run_steps(2);
     h.get_by_label_contains("Add particles component").click();
     h.run_steps(3);
-    let comp = |h: &Harness<'_, EditorState>| h.state().scene.as_ref().unwrap().entities.iter().find(|e| e.id == id).unwrap().components.iter().find(|c| c.kind == "particles").cloned();
+    let comp = |h: &Harness<'_, EditorState>| {
+        h.state()
+            .scene
+            .as_ref()
+            .unwrap()
+            .entities
+            .iter()
+            .find(|e| e.id == id)
+            .unwrap()
+            .components
+            .iter()
+            .find(|c| c.kind == "particles")
+            .cloned()
+    };
     assert_eq!(comp(&h).unwrap().fields["lifespan"], 400.0);
     // apply the "fire" preset through the combo, then edit a value through the model and check undo
-    h.get_all_by_role(egui::accesskit::Role::ComboBox).next().unwrap().click();
+    h.get_all_by_role(egui::accesskit::Role::ComboBox)
+        .next()
+        .unwrap()
+        .click();
     h.run_steps(2);
     h.get_by_label("fire").click();
     h.run_steps(3);
@@ -1282,7 +1410,11 @@ fn particles_panel_adds_component_applies_presets_and_edits_with_undo() {
     assert_eq!(comp(&h).unwrap().fields["tintEnd"], "#7a1010");
     h.state_mut().do_undo();
     h.run_steps(2);
-    assert_eq!(comp(&h).unwrap().fields["lifespan"], 400.0, "preset change is one undo step");
+    assert_eq!(
+        comp(&h).unwrap().fields["lifespan"],
+        400.0,
+        "preset change is one undo step"
+    );
 }
 
 #[test]
@@ -1298,7 +1430,10 @@ fn timeline_panel_creates_timelines_tracks_markers_and_undoes() {
     h.run_steps(2);
     h.get_by_label("Add timeline").click();
     h.run_steps(3);
-    assert_eq!(nord_editor::timeline::names(h.state().scene.as_ref().unwrap()), vec!["intro".to_string()]);
+    assert_eq!(
+        nord_editor::timeline::names(h.state().scene.as_ref().unwrap()),
+        vec!["intro".to_string()]
+    );
     h.state_mut().timeline_ui.new_target = "Hero".into();
     h.run_steps(2);
     h.get_by_label("+ Track").click();
@@ -1328,7 +1463,13 @@ fn timeline_panel_creates_timelines_tracks_markers_and_undoes() {
     // undo removes the marker, then the keys
     h.state_mut().do_undo();
     h.run_steps(2);
-    assert_eq!(nord_editor::timeline::get(h.state().scene.as_ref().unwrap(), "intro").unwrap()["events"].as_array().unwrap().len(), 0);
+    assert_eq!(
+        nord_editor::timeline::get(h.state().scene.as_ref().unwrap(), "intro").unwrap()["events"]
+            .as_array()
+            .unwrap()
+            .len(),
+        0
+    );
 }
 
 #[test]
@@ -1347,7 +1488,10 @@ fn layout_views_and_drag_placement_in_the_panel() {
     h.run_steps(2);
     h.get_by_label("Save current view").click();
     h.run_steps(3);
-    assert_eq!(nord_editor::layout::views(h.state().scene.as_ref().unwrap()), vec![("arena".to_string(), [320.0, 180.0, 1.5])]);
+    assert_eq!(
+        nord_editor::layout::views(h.state().scene.as_ref().unwrap()),
+        vec![("arena".to_string(), [320.0, 180.0, 1.5])]
+    );
     // placing is covered by the model test; the section renders with objects listed
     h.get_by_label("Object types").click();
     h.run_steps(2);
@@ -1360,19 +1504,34 @@ fn fps_tab_offers_install_and_detects_the_runtime() {
     let st = state_with_scene("fps-tab");
     let root = st.root.clone().unwrap();
     assert!(!panels::fps::installed(&root));
-    let mut h = Harness::builder().with_size(egui::vec2(900.0, 500.0)).build_ui_state(
-        |ui, s: &mut (EditorState, WebPanes)| panels::fps::ui(&mut s.0, ui, &mut s.1, None, false),
-        (st, WebPanes::default()),
-    );
+    let mut h = Harness::builder()
+        .with_size(egui::vec2(900.0, 500.0))
+        .build_ui_state(
+            |ui, s: &mut (EditorState, WebPanes)| {
+                panels::fps::ui(&mut s.0, ui, &mut s.1, None, false)
+            },
+            (st, WebPanes::default()),
+        );
     loaders(&h);
     h.run();
     h.get_by_label("Add FPS Creator to this project").click();
     h.run_steps(2);
-    assert!(h.state().0.actions.iter().any(|a| matches!(a, Action::FpsInstall)), "button dispatches the install action");
+    assert!(
+        h.state()
+            .0
+            .actions
+            .iter()
+            .any(|a| matches!(a, Action::FpsInstall)),
+        "button dispatches the install action"
+    );
     // the action itself calls nord_core::fpsc::install against the engine checkout
     let engine = nord_editor::platform::engine_root().expect("engine root (vendor/VENDOR.json)");
     let r = nord_core::fpsc::install(&engine, &root, false).unwrap();
     assert!(r["updated"].as_array().unwrap().len() > 10, "{r}");
     assert!(panels::fps::installed(&root));
-    assert!(root.join("levels/level1.fpsl.json").exists() && root.join("fpsc/bank.json").exists() && root.join("scenes/fps.scene.json").exists());
+    assert!(
+        root.join("levels/level1.fpsl.json").exists()
+            && root.join("fpsc/bank.json").exists()
+            && root.join("scenes/fps.scene.json").exists()
+    );
 }

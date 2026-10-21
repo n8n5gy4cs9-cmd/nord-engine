@@ -23,7 +23,11 @@ fn layers_map(s: &Scene) -> Option<&Map<String, Value>> {
 }
 
 fn layers_mut(s: &mut Scene) -> &mut Map<String, Value> {
-    let v = s.settings.extra.entry("layers").or_insert_with(|| json!({}));
+    let v = s
+        .settings
+        .extra
+        .entry("layers")
+        .or_insert_with(|| json!({}));
     if !v.is_object() {
         *v = json!({});
     }
@@ -50,14 +54,29 @@ pub fn layers(s: &Scene) -> Vec<LayerInfo> {
     counts
         .into_iter()
         .map(|(id, count)| {
-            let p = layers_map(s).and_then(|m| m.get(&id.to_string())).cloned().unwrap_or(Value::Null);
+            let p = layers_map(s)
+                .and_then(|m| m.get(&id.to_string()))
+                .cloned()
+                .unwrap_or(Value::Null);
             LayerInfo {
                 id,
-                name: p["name"].as_str().map_or_else(|| if id == 0 { "Layer 0".into() } else { format!("Layer {id}") }, String::from),
+                name: p["name"].as_str().map_or_else(
+                    || {
+                        if id == 0 {
+                            "Layer 0".into()
+                        } else {
+                            format!("Layer {id}")
+                        }
+                    },
+                    String::from,
+                ),
                 visible: p["visible"].as_bool().unwrap_or(true),
                 locked: p["locked"].as_bool().unwrap_or(false),
                 opacity: p["opacity"].as_f64().unwrap_or(1.0),
-                parallax: [p["parallax"][0].as_f64().unwrap_or(1.0), p["parallax"][1].as_f64().unwrap_or(1.0)],
+                parallax: [
+                    p["parallax"][0].as_f64().unwrap_or(1.0),
+                    p["parallax"][1].as_f64().unwrap_or(1.0),
+                ],
                 blend: p["blend"].as_str().unwrap_or("normal").into(),
                 background: p["background"].as_str().unwrap_or("#000000").into(),
                 transparent: p["transparent"].as_bool().unwrap_or(true),
@@ -95,9 +114,13 @@ fn renumber(list: &mut [Entity], from: i32, to: i32) {
 /// Swap a layer with its neighbour above (`up`) or below: entities and layer properties both move.
 pub fn move_layer(s: &mut Scene, id: i32, up: bool) -> bool {
     let all = layers(s);
-    let Some(i) = all.iter().position(|l| l.id == id) else { return false };
+    let Some(i) = all.iter().position(|l| l.id == id) else {
+        return false;
+    };
     let j = if up { i + 1 } else { i.wrapping_sub(1) };
-    let Some(other) = all.get(j) else { return false };
+    let Some(other) = all.get(j) else {
+        return false;
+    };
     let other = other.id;
     // park via a sentinel number so the two renumberings do not collide
     renumber(&mut s.entities, id, i32::MIN);
@@ -120,7 +143,9 @@ pub fn delete_layer(s: &mut Scene, id: i32) -> bool {
     if all.len() <= 1 {
         return false;
     }
-    let Some(i) = all.iter().position(|l| l.id == id) else { return false };
+    let Some(i) = all.iter().position(|l| l.id == id) else {
+        return false;
+    };
     let target = if i > 0 { all[i - 1].id } else { all[i + 1].id };
     renumber(&mut s.entities, id, target);
     layers_mut(s).remove(&id.to_string());
@@ -129,7 +154,13 @@ pub fn delete_layer(s: &mut Scene, id: i32) -> bool {
 
 pub fn layer_of_entity(s: &Scene, id: &str) -> Option<i32> {
     fn find(list: &[Entity], id: &str) -> Option<i32> {
-        list.iter().find_map(|e| if e.id == id { Some(e.layer) } else { find(&e.children, id) })
+        list.iter().find_map(|e| {
+            if e.id == id {
+                Some(e.layer)
+            } else {
+                find(&e.children, id)
+            }
+        })
     }
     find(&s.entities, id)
 }
@@ -145,14 +176,20 @@ pub fn size_of(e: &Entity) -> [f64; 2] {
             "collider" => "size",
             _ => continue,
         };
-        if let (Some(w), Some(h)) = (c.fields.get(key).and_then(|v| v[0].as_f64()), c.fields.get(key).and_then(|v| v[1].as_f64())) {
+        if let (Some(w), Some(h)) = (
+            c.fields.get(key).and_then(|v| v[0].as_f64()),
+            c.fields.get(key).and_then(|v| v[1].as_f64()),
+        ) {
             sz = [w, h];
             if c.kind == "sprite" {
                 break;
             }
         }
     }
-    [sz[0] * e.transform.scale[0].abs(), sz[1] * e.transform.scale[1].abs()]
+    [
+        sz[0] * e.transform.scale[0].abs(),
+        sz[1] * e.transform.scale[1].abs(),
+    ]
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -186,12 +223,24 @@ pub fn align(entities: &mut [Entity], ids: &[String], mode: Align) {
         .iter()
         .filter_map(|id| {
             let e = find_mut(entities, id)?;
-            Some((id.clone(), [e.transform.pos[0], e.transform.pos[1]], size_of(e)))
+            Some((
+                id.clone(),
+                [e.transform.pos[0], e.transform.pos[1]],
+                size_of(e),
+            ))
         })
         .collect();
-    let (lo_x, hi_x, lo_y, hi_y) = boxes.iter().fold((f64::MAX, f64::MIN, f64::MAX, f64::MIN), |a, (_, p, s)| {
-        (a.0.min(p[0] - s[0] / 2.0), a.1.max(p[0] + s[0] / 2.0), a.2.min(p[1] - s[1] / 2.0), a.3.max(p[1] + s[1] / 2.0))
-    });
+    let (lo_x, hi_x, lo_y, hi_y) =
+        boxes
+            .iter()
+            .fold((f64::MAX, f64::MIN, f64::MAX, f64::MIN), |a, (_, p, s)| {
+                (
+                    a.0.min(p[0] - s[0] / 2.0),
+                    a.1.max(p[0] + s[0] / 2.0),
+                    a.2.min(p[1] - s[1] / 2.0),
+                    a.3.max(p[1] + s[1] / 2.0),
+                )
+            });
     for (id, _, s) in boxes {
         if let Some(e) = find_mut(entities, &id) {
             match mode {
@@ -209,7 +258,10 @@ pub fn align(entities: &mut [Entity], ids: &[String], mode: Align) {
 /// Spread entities evenly between the outermost two along an axis (centres equally spaced); needs at least three.
 pub fn distribute(entities: &mut [Entity], ids: &[String], horizontal: bool) {
     let ax = usize::from(!horizontal);
-    let mut v: Vec<(String, f64)> = ids.iter().filter_map(|id| Some((id.clone(), find_mut(entities, id)?.transform.pos[ax]))).collect();
+    let mut v: Vec<(String, f64)> = ids
+        .iter()
+        .filter_map(|id| Some((id.clone(), find_mut(entities, id)?.transform.pos[ax])))
+        .collect();
     if v.len() < 3 {
         return;
     }
@@ -242,16 +294,30 @@ pub fn object_types(s: &Scene) -> Vec<ObjType> {
     }
     let mut m = std::collections::BTreeMap::new();
     go(&s.entities, &mut m);
-    m.into_iter().map(|(name, ids)| ObjType { name, count: ids.len(), ids }).collect()
+    m.into_iter()
+        .map(|(name, ids)| ObjType {
+            name,
+            count: ids.len(),
+            ids,
+        })
+        .collect()
 }
 
 /// "Object type = shared properties": copy components, behaviors, effects, scripts, tags and layer of `from` to every other
 /// instance with the same name (positions, rotation, scale, ids and children are kept). Returns the instances changed.
 pub fn sync_type(entities: &mut [Entity], from: &str) -> usize {
     fn find<'a>(list: &'a [Entity], id: &str) -> Option<&'a Entity> {
-        list.iter().find_map(|e| if e.id == id { Some(e) } else { find(&e.children, id) })
+        list.iter().find_map(|e| {
+            if e.id == id {
+                Some(e)
+            } else {
+                find(&e.children, id)
+            }
+        })
     }
-    let Some(src) = find(entities, from).cloned() else { return 0 };
+    let Some(src) = find(entities, from).cloned() else {
+        return 0;
+    };
     fn go(list: &mut [Entity], src: &Entity, n: &mut usize) {
         for e in list {
             if e.name == src.name && e.id != src.id {
@@ -276,7 +342,11 @@ pub fn sync_type(entities: &mut [Entity], from: &str) -> usize {
 /// `settings.guides = { "x": [..], "y": [..] }` (world coordinates; drawn as rulers' guide lines in the viewport).
 pub fn guides(s: &Scene) -> (Vec<f64>, Vec<f64>) {
     let g = s.settings.extra.get("guides");
-    let list = |k: &str| g.and_then(|g| g[k].as_array()).map(|a| a.iter().filter_map(Value::as_f64).collect()).unwrap_or_default();
+    let list = |k: &str| {
+        g.and_then(|g| g[k].as_array())
+            .map(|a| a.iter().filter_map(Value::as_f64).collect())
+            .unwrap_or_default()
+    };
     (list("x"), list("y"))
 }
 
@@ -284,18 +354,43 @@ pub fn set_guides(s: &mut Scene, x: Vec<f64>, y: Vec<f64>) {
     if x.is_empty() && y.is_empty() {
         s.settings.extra.remove("guides");
     } else {
-        s.settings.extra.insert("guides".into(), json!({ "x": x, "y": y }));
+        s.settings
+            .extra
+            .insert("guides".into(), json!({ "x": x, "y": y }));
     }
 }
 
 /// Snap `v` to the closest guide within `radius`.
 pub fn snap_to_guides(v: f64, guides: &[f64], radius: f64) -> f64 {
-    guides.iter().copied().filter(|g| (g - v).abs() <= radius).min_by(|a, b| (a - v).abs().total_cmp(&(b - v).abs())).unwrap_or(v)
+    guides
+        .iter()
+        .copied()
+        .filter(|g| (g - v).abs() <= radius)
+        .min_by(|a, b| (a - v).abs().total_cmp(&(b - v).abs()))
+        .unwrap_or(v)
 }
 
 /// Saved camera views (`settings.views = [{name, x, y, zoom}]`).
 pub fn views(s: &Scene) -> Vec<(String, [f64; 3])> {
-    s.settings.extra.get("views").and_then(Value::as_array).map(|a| a.iter().map(|v| (v["name"].as_str().unwrap_or("view").to_string(), [v["x"].as_f64().unwrap_or(0.0), v["y"].as_f64().unwrap_or(0.0), v["zoom"].as_f64().unwrap_or(1.0)])).collect()).unwrap_or_default()
+    s.settings
+        .extra
+        .get("views")
+        .and_then(Value::as_array)
+        .map(|a| {
+            a.iter()
+                .map(|v| {
+                    (
+                        v["name"].as_str().unwrap_or("view").to_string(),
+                        [
+                            v["x"].as_f64().unwrap_or(0.0),
+                            v["y"].as_f64().unwrap_or(0.0),
+                            v["zoom"].as_f64().unwrap_or(1.0),
+                        ],
+                    )
+                })
+                .collect()
+        })
+        .unwrap_or_default()
 }
 
 pub fn save_view(s: &mut Scene, name: &str, cam: [f64; 3]) {
@@ -309,15 +404,32 @@ pub fn set_views(s: &mut Scene, v: &[(String, [f64; 3])]) {
     if v.is_empty() {
         s.settings.extra.remove("views");
     } else {
-        s.settings.extra.insert("views".into(), json!(v.iter().map(|(n, c)| json!({"name": n, "x": c[0], "y": c[1], "zoom": c[2]})).collect::<Vec<_>>()));
+        s.settings.extra.insert(
+            "views".into(),
+            json!(v
+                .iter()
+                .map(|(n, c)| json!({"name": n, "x": c[0], "y": c[1], "zoom": c[2]}))
+                .collect::<Vec<_>>()),
+        );
     }
 }
 
 /// Place a copy of the first instance of object type `name` at world position (x, y) (top level). Returns the new id.
 pub fn place_instance(s: &mut Scene, name: &str, x: f64, y: f64) -> Option<String> {
-    let src = object_types(s).into_iter().find(|t| t.name == name)?.ids.first()?.clone();
+    let src = object_types(s)
+        .into_iter()
+        .find(|t| t.name == name)?
+        .ids
+        .first()?
+        .clone();
     fn find<'a>(list: &'a [Entity], id: &str) -> Option<&'a Entity> {
-        list.iter().find_map(|e| if e.id == id { Some(e) } else { find(&e.children, id) })
+        list.iter().find_map(|e| {
+            if e.id == id {
+                Some(e)
+            } else {
+                find(&e.children, id)
+            }
+        })
     }
     let mut c = crate::scene_ops::clone_fresh(find(&s.entities, &src)?);
     c.transform.pos[0] = x;
@@ -333,10 +445,20 @@ pub fn content_bounds(s: &Scene) -> Option<[f64; 4]> {
     for e in &s.entities {
         let sz = size_of(e);
         let (x, y) = (e.transform.pos[0], e.transform.pos[1]);
-        let r = [x - sz[0] / 2.0, y - sz[1] / 2.0, x + sz[0] / 2.0, y + sz[1] / 2.0];
+        let r = [
+            x - sz[0] / 2.0,
+            y - sz[1] / 2.0,
+            x + sz[0] / 2.0,
+            y + sz[1] / 2.0,
+        ];
         b = Some(match b {
             None => r,
-            Some(o) => [o[0].min(r[0]), o[1].min(r[1]), o[2].max(r[2]), o[3].max(r[3])],
+            Some(o) => [
+                o[0].min(r[0]),
+                o[1].min(r[1]),
+                o[2].max(r[2]),
+                o[3].max(r[3]),
+            ],
         });
     }
     b
@@ -351,7 +473,9 @@ pub fn layout_size(s: &Scene) -> Option<[f64; 2]> {
 pub fn set_layout_size(s: &mut Scene, size: Option<[f64; 2]>) {
     match size {
         Some([w, h]) => {
-            s.settings.extra.insert("layoutSize".into(), json!({ "width": w, "height": h }));
+            s.settings
+                .extra
+                .insert("layoutSize".into(), json!({ "width": w, "height": h }));
         }
         None => {
             s.settings.extra.remove("layoutSize");
@@ -368,7 +492,10 @@ mod tests {
         let mut e = Entity::new(name);
         e.transform.pos = [x, y, 0.0];
         e.layer = layer;
-        let mut c = Component { kind: "sprite".into(), fields: Default::default() };
+        let mut c = Component {
+            kind: "sprite".into(),
+            fields: Default::default(),
+        };
         c.fields.insert("size".into(), json!([w, h]));
         e.components.push(c);
         e
@@ -376,7 +503,11 @@ mod tests {
 
     fn scene() -> Scene {
         let mut s = Scene::new("t");
-        s.entities = vec![ent("A", 10.0, 10.0, 20.0, 20.0, 0), ent("B", 100.0, 50.0, 40.0, 40.0, 1), ent("C", 60.0, 90.0, 10.0, 10.0, 1)];
+        s.entities = vec![
+            ent("A", 10.0, 10.0, 20.0, 20.0, 0),
+            ent("B", 100.0, 50.0, 40.0, 40.0, 1),
+            ent("C", 60.0, 90.0, 10.0, 10.0, 1),
+        ];
         s
     }
 
@@ -384,7 +515,10 @@ mod tests {
     fn layers_list_add_prop_move_delete() {
         let mut s = scene();
         let l = layers(&s);
-        assert_eq!(l.iter().map(|l| (l.id, l.count)).collect::<Vec<_>>(), vec![(0, 1), (1, 2)]);
+        assert_eq!(
+            l.iter().map(|l| (l.id, l.count)).collect::<Vec<_>>(),
+            vec![(0, 1), (1, 2)]
+        );
         let id = add_layer(&mut s);
         assert_eq!(id, 2);
         set_layer_prop(&mut s, 2, "opacity", json!(0.5));
@@ -410,14 +544,32 @@ mod tests {
         let ids: Vec<String> = s.entities.iter().map(|e| e.id.clone()).collect();
         align(&mut s.entities, &ids, Align::Left);
         // leftmost edge = A: 10 - 10 = 0 → A.x 10, B.x 20, C.x 5
-        assert_eq!(s.entities.iter().map(|e| e.transform.pos[0]).collect::<Vec<_>>(), vec![10.0, 20.0, 5.0]);
+        assert_eq!(
+            s.entities
+                .iter()
+                .map(|e| e.transform.pos[0])
+                .collect::<Vec<_>>(),
+            vec![10.0, 20.0, 5.0]
+        );
         align(&mut s.entities, &ids, Align::Bottom);
         // lowest bottom edge: C 90+5=95
-        assert_eq!(s.entities.iter().map(|e| e.transform.pos[1]).collect::<Vec<_>>(), vec![85.0, 75.0, 90.0]);
+        assert_eq!(
+            s.entities
+                .iter()
+                .map(|e| e.transform.pos[1])
+                .collect::<Vec<_>>(),
+            vec![85.0, 75.0, 90.0]
+        );
         let mut t = scene();
         let ids: Vec<String> = t.entities.iter().map(|e| e.id.clone()).collect();
         distribute(&mut t.entities, &ids, true);
-        assert_eq!(t.entities.iter().map(|e| e.transform.pos[0]).collect::<Vec<_>>(), vec![10.0, 100.0, 55.0]);
+        assert_eq!(
+            t.entities
+                .iter()
+                .map(|e| e.transform.pos[0])
+                .collect::<Vec<_>>(),
+            vec![10.0, 100.0, 55.0]
+        );
     }
 
     #[test]
@@ -427,12 +579,20 @@ mod tests {
         b2.tags = vec!["x".into()];
         s.entities.push(b2);
         let t = object_types(&s);
-        assert_eq!(t.iter().map(|t| (t.name.as_str(), t.count)).collect::<Vec<_>>(), vec![("A", 1), ("B", 2), ("C", 1)]);
+        assert_eq!(
+            t.iter()
+                .map(|t| (t.name.as_str(), t.count))
+                .collect::<Vec<_>>(),
+            vec![("A", 1), ("B", 2), ("C", 1)]
+        );
         let from = s.entities[1].id.clone();
         s.entities[1].behaviors.push(json!({"type": "Solid"}));
         assert_eq!(sync_type(&mut s.entities, &from), 1);
         assert_eq!(s.entities[3].behaviors.len(), 1);
-        assert_eq!(s.entities[3].components[0].fields["size"], json!([40.0, 40.0]));
+        assert_eq!(
+            s.entities[3].components[0].fields["size"],
+            json!([40.0, 40.0])
+        );
         assert_eq!(s.entities[3].transform.pos[0], 200.0, "position stays");
         assert_eq!(s.entities[3].layer, 1);
     }
@@ -443,15 +603,33 @@ mod tests {
         save_view(&mut s, "boss", [500.0, 200.0, 0.5]);
         save_view(&mut s, "start", [0.0, 0.0, 1.0]);
         save_view(&mut s, "boss", [600.0, 200.0, 0.5]);
-        assert_eq!(views(&s), vec![("start".to_string(), [0.0, 0.0, 1.0]), ("boss".to_string(), [600.0, 200.0, 0.5])]);
+        assert_eq!(
+            views(&s),
+            vec![
+                ("start".to_string(), [0.0, 0.0, 1.0]),
+                ("boss".to_string(), [600.0, 200.0, 0.5])
+            ]
+        );
         set_views(&mut s, &[]);
         assert!(!s.settings.extra.contains_key("views"));
         let n = s.entities.len();
         let id = place_instance(&mut s, "B", 321.0, 123.0).unwrap();
         assert_eq!(s.entities.len(), n + 1);
         let e = s.entities.last().unwrap();
-        assert_eq!((e.id.clone(), e.name.as_str(), e.transform.pos[0], e.transform.pos[1]), (id, "B", 321.0, 123.0));
-        assert_eq!(e.components[0].fields["size"], json!([40.0, 40.0]), "a full copy");
+        assert_eq!(
+            (
+                e.id.clone(),
+                e.name.as_str(),
+                e.transform.pos[0],
+                e.transform.pos[1]
+            ),
+            (id, "B", 321.0, 123.0)
+        );
+        assert_eq!(
+            e.components[0].fields["size"],
+            json!([40.0, 40.0]),
+            "a full copy"
+        );
         assert!(place_instance(&mut s, "Nope", 0.0, 0.0).is_none());
     }
 

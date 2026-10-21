@@ -1,7 +1,7 @@
 //! Command palette (Cmd+K) and quick open (Cmd+P) with subsequence fuzzy matching.
-use nord_core::vfs::PathExt;
 use crate::state::{Action, EditorState, Tool};
 use egui::{Context, Key};
+use nord_core::vfs::PathExt;
 use std::path::Path;
 
 #[derive(Default, PartialEq, Clone, Copy)]
@@ -100,7 +100,9 @@ pub const COMMANDS: &[(&str, CmdFn)] = &[
         Action::ShowTab(crate::app::Tab::Library)
     }),
     ("View: Docs tab", || Action::ShowTab(crate::app::Tab::Docs)),
-    ("View: FPS Level editor", || Action::ShowTab(crate::app::Tab::Fps)),
+    ("View: FPS Level editor", || {
+        Action::ShowTab(crate::app::Tab::Fps)
+    }),
     ("Project: Add / upgrade FPS Creator", || Action::FpsInstall),
     ("View: Animation & tilemap tab", || {
         Action::ShowTab(crate::app::Tab::Animation)

@@ -252,11 +252,24 @@ impl WebPanes {
                 .strip_prefix("http://127.0.0.1:0/")
                 .map(|r| format!("play/{r}"))
                 .unwrap_or_else(|| url.to_string());
-            let page = if page.contains("__edit") { format!("{page}&web=1") } else { page };
-            crate::web::place_iframe(key, &page, rect.min.x * z, rect.min.y * z, rect.width() * z, rect.height() * z, !overlay);
+            let page = if page.contains("__edit") {
+                format!("{page}&web=1")
+            } else {
+                page
+            };
+            crate::web::place_iframe(
+                key,
+                &page,
+                rect.min.x * z,
+                rect.min.y * z,
+                rect.width() * z,
+                rect.height() * z,
+                !overlay,
+            );
             self.panes.insert(key.to_string(), ());
             if overlay {
-                ui.painter().rect_filled(rect, 0.0, ui.visuals().extreme_bg_color);
+                ui.painter()
+                    .rect_filled(rect, 0.0, ui.visuals().extreme_bg_color);
                 ui.painter().text(
                     rect.center(),
                     egui::Align2::CENTER_CENTER,
