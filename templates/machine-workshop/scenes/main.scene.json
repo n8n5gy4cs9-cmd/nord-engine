@@ -1,0 +1,560 @@
+{
+  "format": 1,
+  "name": "main",
+  "settings": {
+    "layers": {
+      "0": {
+        "visible": true,
+        "opacity": 1,
+        "parallax": [
+          0.5,
+          0.5
+        ]
+      },
+      "1": {
+        "visible": true,
+        "opacity": 1,
+        "parallax": [
+          0.5,
+          0.5
+        ]
+      },
+      "10": {
+        "visible": true,
+        "opacity": 1,
+        "parallax": [
+          1,
+          1
+        ]
+      },
+      "11": {
+        "visible": true,
+        "opacity": 1,
+        "parallax": [
+          1,
+          1
+        ]
+      }
+    },
+    "layoutSize": {
+      "width": 960,
+      "height": 544
+    }
+  },
+  "entities": [
+    {
+      "id": "ddaasetb",
+      "name": "Player",
+      "enabled": true,
+      "tags": [
+        "player",
+        "ball"
+      ],
+      "layer": 11,
+      "transform": {
+        "pos": [
+          130,
+          70,
+          11
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1.7777777777777777,
+          1.7777777777777777,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/packs/level2d-kenney/kenney_sports-pack/PNG/Equipment/ball_basket1.png",
+          "frame": 0,
+          "origin": [
+            0.5,
+            0.5
+          ],
+          "alpha": 1,
+          "scrollFactor": [
+            1,
+            1
+          ],
+          "flipX": false,
+          "speed": 1
+        },
+        {
+          "type": "rigidbody",
+          "mode": "dynamic",
+          "fixedRotation": false,
+          "mass": 1,
+          "bounce": 0.25,
+          "friction": 0.005,
+          "drag": 0,
+          "gravityScale": 1
+        },
+        {
+          "type": "collider",
+          "shape": "circle",
+          "radius": 16,
+          "size": [
+            32,
+            32
+          ],
+          "trigger": false
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "dgcifk83",
+      "name": "Ramp A",
+      "enabled": true,
+      "tags": [],
+      "layer": 11,
+      "transform": {
+        "pos": [
+          260,
+          220,
+          11
+        ],
+        "rot": [
+          0,
+          0,
+          15
+        ],
+        "scale": [
+          2.96875,
+          0.140625,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/packs/level2d-kenney/kenney_platformer-pack-remastered/PNG/Tiles/boxCrate.png",
+          "frame": 0,
+          "origin": [
+            0.5,
+            0.5
+          ],
+          "alpha": 1,
+          "scrollFactor": [
+            1,
+            1
+          ],
+          "flipX": false,
+          "speed": 1
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static",
+          "fixedRotation": false,
+          "mass": 1,
+          "bounce": 0.15,
+          "friction": 0.02,
+          "drag": 0,
+          "gravityScale": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "radius": 9,
+          "size": [
+            380,
+            18
+          ],
+          "trigger": false
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "d6503h4g",
+      "name": "Ramp B",
+      "enabled": true,
+      "tags": [],
+      "layer": 11,
+      "transform": {
+        "pos": [
+          640,
+          365,
+          11
+        ],
+        "rot": [
+          0,
+          0,
+          15
+        ],
+        "scale": [
+          2.65625,
+          0.140625,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/packs/level2d-kenney/kenney_platformer-pack-remastered/PNG/Tiles/boxCrate.png",
+          "frame": 0,
+          "origin": [
+            0.5,
+            0.5
+          ],
+          "alpha": 1,
+          "scrollFactor": [
+            1,
+            1
+          ],
+          "flipX": false,
+          "speed": 1
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static",
+          "fixedRotation": false,
+          "mass": 1,
+          "bounce": 0.15,
+          "friction": 0.02,
+          "drag": 0,
+          "gravityScale": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "radius": 9,
+          "size": [
+            340,
+            18
+          ],
+          "trigger": false
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "dkptp2cg",
+      "name": "Floor",
+      "enabled": true,
+      "tags": [],
+      "layer": 11,
+      "transform": {
+        "pos": [
+          480,
+          535,
+          11
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          7.5,
+          0.1875,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/packs/level2d-kenney/kenney_platformer-pack-remastered/PNG/Tiles/boxCrate.png",
+          "frame": 0,
+          "origin": [
+            0.5,
+            0.5
+          ],
+          "alpha": 1,
+          "scrollFactor": [
+            1,
+            1
+          ],
+          "flipX": false,
+          "speed": 1
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static",
+          "fixedRotation": false,
+          "mass": 1,
+          "bounce": 0.15,
+          "friction": 0.02,
+          "drag": 0,
+          "gravityScale": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "radius": 12,
+          "size": [
+            960,
+            24
+          ],
+          "trigger": false
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "d3q7qobv",
+      "name": "Basket wall",
+      "enabled": true,
+      "tags": [],
+      "layer": 11,
+      "transform": {
+        "pos": [
+          850,
+          430,
+          11
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          0.15625,
+          1.5625,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/packs/level2d-kenney/kenney_platformer-pack-remastered/PNG/Tiles/boxCrate.png",
+          "frame": 0,
+          "origin": [
+            0.5,
+            0.5
+          ],
+          "alpha": 1,
+          "scrollFactor": [
+            1,
+            1
+          ],
+          "flipX": false,
+          "speed": 1
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static",
+          "fixedRotation": false,
+          "mass": 1,
+          "bounce": 0.15,
+          "friction": 0.02,
+          "drag": 0,
+          "gravityScale": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "radius": 10,
+          "size": [
+            20,
+            200
+          ],
+          "trigger": false
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "dypyog08",
+      "name": "Basket base",
+      "enabled": true,
+      "tags": [],
+      "layer": 11,
+      "transform": {
+        "pos": [
+          760,
+          520,
+          11
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1.40625,
+          0.125,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/packs/level2d-kenney/kenney_platformer-pack-remastered/PNG/Tiles/boxCrate.png",
+          "frame": 0,
+          "origin": [
+            0.5,
+            0.5
+          ],
+          "alpha": 1,
+          "scrollFactor": [
+            1,
+            1
+          ],
+          "flipX": false,
+          "speed": 1
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static",
+          "fixedRotation": false,
+          "mass": 1,
+          "bounce": 0.15,
+          "friction": 0.02,
+          "drag": 0,
+          "gravityScale": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "radius": 8,
+          "size": [
+            180,
+            16
+          ],
+          "trigger": false
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "ddd46k4x",
+      "name": "Goal basket",
+      "enabled": true,
+      "tags": [],
+      "layer": 11,
+      "transform": {
+        "pos": [
+          795,
+          485,
+          11
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1.09375,
+          1.015625,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/packs/nord-amiga/sports-equipment.png",
+          "frame": 6,
+          "origin": [
+            0.5,
+            0.5
+          ],
+          "alpha": 1,
+          "scrollFactor": [
+            1,
+            1
+          ],
+          "flipX": false,
+          "speed": 1
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static",
+          "fixedRotation": false,
+          "mass": 1,
+          "bounce": 0,
+          "friction": 0.1,
+          "drag": 0,
+          "gravityScale": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "radius": 32.5,
+          "size": [
+            70,
+            65
+          ],
+          "trigger": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/level2d/level-actions.js",
+          "attributes": {
+            "action": "win",
+            "target": "",
+            "amount": 1,
+            "message": "Machine solved! The ball reached the basket.",
+            "requireScore": 0
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "d2camera",
+      "name": "Camera",
+      "enabled": true,
+      "tags": [],
+      "layer": 100,
+      "transform": {
+        "pos": [
+          480,
+          270,
+          100
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "camera",
+          "follow": "",
+          "lerp": 0.15,
+          "bounds": [
+            0,
+            0,
+            960,
+            544
+          ]
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/machine.js",
+          "attributes": {}
+        }
+      ],
+      "children": [],
+      "prefab": null
+    }
+  ]
+}

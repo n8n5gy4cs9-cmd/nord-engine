@@ -115,6 +115,10 @@ jobs:
       # M12 FPS Creator addon: node unit tests, file API/CLI, Nord boot, gameplay + editor scenarios (real `nord serve`)
       - name: FPS Creator suites
         run: node tools/fpsc-test.mjs
+      - name: 2D Level Creator and sprite bank
+        run: |
+          node --test editor/level2d/model.test.mjs
+          node tools/level2d-test.mjs
   # M11: the editor in the browser (wasm) and on a server. Desktop jobs above are unaffected by it.
   web-editor:
     runs-on: ubuntu-latest

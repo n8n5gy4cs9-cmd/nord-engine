@@ -6,6 +6,7 @@ pub mod assets;
 pub mod fpsc;
 pub mod history;
 pub mod io;
+pub mod level2d;
 pub mod offline;
 pub mod project;
 pub mod refs;

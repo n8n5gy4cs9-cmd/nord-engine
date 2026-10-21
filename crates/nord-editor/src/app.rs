@@ -32,6 +32,7 @@ pub enum Tab {
     Library,
     Docs,
     Fps,
+    Level2d,
 }
 
 impl Tab {
@@ -55,6 +56,7 @@ impl Tab {
             Tab::Library => "Library",
             Tab::Docs => "Docs",
             Tab::Fps => "FPS Level",
+            Tab::Level2d => "2D Level",
         }
     }
 }
@@ -67,6 +69,7 @@ pub fn default_dock() -> DockState<Tab> {
         Tab::Events,
         Tab::Layout,
         Tab::Fps,
+        Tab::Level2d,
         Tab::Animation,
         Tab::Sprite,
         Tab::Particles,
@@ -436,6 +439,8 @@ impl App {
                         st.viewport_ready = false;
                         if st.recover.is_some() {
                             st.toast("Unsaved autosave found — see Edit ▸ Recover autosave");
+                        } else if d.join("levels/workshop.level2d.json").exists() {
+                            self.show_tab(Tab::Level2d);
                         } else if panels::fps::installed(&d) {
                             self.show_tab(Tab::Fps); // FPS Creator projects open on the level editor
                         }
@@ -654,6 +659,7 @@ impl App {
                     Tab::Events,
                     Tab::Layout,
                     Tab::Fps,
+                    Tab::Level2d,
                     Tab::History,
                     Tab::Project,
                     Tab::Hierarchy,
@@ -873,6 +879,7 @@ impl TabViewer for Viewer<'_> {
             Tab::Timeline => panels::timeline::ui(st, ui),
             Tab::Events => panels::events::ui(st, ui),
             Tab::Layout => panels::layout::ui(st, ui),
+            Tab::Level2d => panels::level2d::ui(st, ui, self.web, self.frame, self.overlay),
             Tab::Fps => panels::fps::ui(st, ui, self.web, self.frame, self.overlay),
             Tab::History => panels::history::ui(st, ui),
             Tab::Project => panels::project::ui(st, ui),

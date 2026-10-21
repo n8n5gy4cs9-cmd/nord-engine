@@ -49,3 +49,7 @@ Star-Not: `tools/fetch-upstreams.sh sc2-uqm` clones **uqm-ee** for the owner-req
 
 ## FPS-Creator-Classic (reference only, not cloned)
 `Dark-Basic-Software-Limited/FPS-Creator-Classic` — **no open-source licence** (personal compile/run only). Used only as a workflow reference for the M12 FPS Creator addon (grid segments, entity bank, script attachment); never cloned into `third_party/`, nothing taken. See `docs/FPS_CREATOR.md` and ADR-026.
+
+## 2D Level Creator
+
+`deepnight/ldtk` at `2b7b5512f2f88fa281cb6492debbb26ead7838d4` (MIT) cloned to ignored `third_party/ldtk/`. Read the tile/int-grid tools and adapted only `Tool.hx::_floodFillImpl` into the sparse map model. Original notice retained in `editor/level2d/LDtk-LICENSE.txt`; attribution in THIRD_PARTY.md. Tiled's upstream COPYING reviewed (editor GPL / libtiled BSD-2); no files copied. Existing Nord scripts/physics/export are the primary reused implementation.

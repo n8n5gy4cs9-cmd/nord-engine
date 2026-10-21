@@ -80,3 +80,7 @@ Sidecar `assets/foo.png.meta.json` only when non-default: `{ "type":"spritesheet
 ## Library index (`library/INDEX.json`)
 `[{ "id":"controller.platformer2d", "title":"…", "category":"controllers", "tags":[], "tier":["2d"], "file":"…",
 "description":"…", "attributes":[…], "requires":["physics.arcade"], "demo":"examples/…", "source":"original|<upstream>" }]`
+
+## 2D Level Creator authoring files
+
+`levels/*.level2d.json` uses `format: "nord-level2d/1"`: `name`, `mode` (`platform/topdown`), `physics` (`arcade/matter`), map `width/height/tileSize`, `gravity/background`, ordered `layers` (id/name/visible/locked/parallax/opacity and sparse `"x,y"` tiles), `entities` (sprite ID, transform/body fields, tags, scripts), custom image definitions and level-local variants. Save compiles this to ordinary `scenes/*.scene.json` and copies referenced assets. Authoring is not round-tripped from a modified scene. See `LEVEL_CREATOR_2D.md`; normal scene/runtime/export format is unchanged.

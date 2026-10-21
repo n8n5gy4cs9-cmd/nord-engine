@@ -1,0 +1,1432 @@
+{
+  "format": "nord-level2d/1",
+  "name": "2D Platform Workshop",
+  "mode": "platform",
+  "physics": "arcade",
+  "width": 40,
+  "height": 24,
+  "tileSize": 32,
+  "background": "#192631",
+  "gravity": 900,
+  "layers": [
+    {
+      "id": "de4s48ez",
+      "name": "Background",
+      "visible": true,
+      "locked": false,
+      "parallax": 0.5,
+      "opacity": 1,
+      "tiles": {}
+    },
+    {
+      "id": "dyebxftw",
+      "name": "World",
+      "visible": true,
+      "locked": false,
+      "parallax": 1,
+      "opacity": 1,
+      "tiles": {
+        "0,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "0,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "0,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "0,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "0,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "0,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "1,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "1,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "1,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "1,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "1,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "1,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "2,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "2,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "2,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "2,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "2,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "2,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "3,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "3,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "3,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "3,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "3,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "3,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "4,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "4,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "4,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "4,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "4,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "4,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "5,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "5,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "5,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "5,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "5,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "5,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "6,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "6,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "6,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "6,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "6,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "6,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "7,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "7,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "7,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "7,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "7,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "7,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "8,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "8,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "8,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "8,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "8,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "8,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "9,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "9,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "9,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "9,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "9,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "9,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "10,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "10,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "10,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "10,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "10,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "10,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "11,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "11,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "11,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "11,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "11,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "11,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "12,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "12,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "12,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "12,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "12,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "12,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "13,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "13,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "13,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "13,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "13,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "13,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "14,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "14,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "14,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "14,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "14,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "14,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "15,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "15,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "15,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "15,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "15,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "15,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "16,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "16,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "16,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "16,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "16,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "16,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "17,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "17,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "17,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "17,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "17,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "17,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "18,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "18,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "18,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "18,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "18,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "18,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "19,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "19,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "19,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "19,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "19,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "19,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "20,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "20,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "20,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "20,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "20,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "20,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "21,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "21,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "21,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "21,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "21,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "21,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "22,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "22,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "22,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "22,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "22,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "22,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "23,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "23,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "23,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "23,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "23,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "23,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "24,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "24,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "24,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "24,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "24,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "24,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "25,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "25,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "25,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "25,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "25,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "25,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "26,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "26,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "26,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "26,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "26,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "26,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "27,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "27,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "27,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "27,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "27,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "27,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "28,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "28,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "28,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "28,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "28,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "28,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "29,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "29,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "29,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "29,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "29,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "29,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "30,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "30,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "30,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "30,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "30,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "30,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "31,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "31,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "31,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "31,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "31,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "31,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "32,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "32,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "32,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "32,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "32,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "32,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "33,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "33,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "33,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "33,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "33,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "33,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "34,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "34,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "34,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "34,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "34,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "34,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "35,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "35,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "35,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "35,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "35,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "35,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "36,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "36,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "36,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "36,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "36,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "36,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "37,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "37,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "37,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "37,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "37,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "37,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "38,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "38,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "38,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "38,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "38,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "38,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "39,18": {
+          "asset": "amiga-platform-tiles-16-1",
+          "frame": 1,
+          "solid": true
+        },
+        "39,19": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "39,20": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "39,21": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "39,22": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        },
+        "39,23": {
+          "asset": "amiga-platform-tiles-16-3",
+          "frame": 3,
+          "solid": true
+        }
+      }
+    }
+  ],
+  "entities": [
+    {
+      "id": "djk6zjll",
+      "name": "Player",
+      "asset": "amiga-adventurer-run",
+      "x": 128,
+      "y": 480,
+      "w": 36,
+      "h": 48,
+      "rot": 0,
+      "flipX": false,
+      "frame": 0,
+      "anim": "run",
+      "layer": "dyebxftw",
+      "tags": [
+        "player"
+      ],
+      "body": "dynamic",
+      "trigger": false,
+      "scripts": [
+        {
+          "path": "scripts/level2d/platformer2d.js",
+          "attributes": {
+            "speed": 180,
+            "jumpForce": 420,
+            "coyoteTime": 0.1,
+            "jumpBuffer": 0.12,
+            "dash": false
+          }
+        },
+        {
+          "path": "scripts/level2d/health.js",
+          "attributes": {
+            "max": 5,
+            "invulnTime": 0.8,
+            "destroyOnDeath": false
+          }
+        },
+        {
+          "path": "scripts/level2d/level-animate.js",
+          "attributes": {
+            "run": "run",
+            "south": "run-south",
+            "east": "run-east",
+            "north": "run-north",
+            "west": "run-west",
+            "idleFrame": -1
+          }
+        }
+      ],
+      "fixedRotation": true
+    },
+    {
+      "id": "dbfzep4f",
+      "name": "coinGold",
+      "asset": "kenney-platformer-pack-remastered-png-items-coingold",
+      "x": 230,
+      "y": 520,
+      "w": 32,
+      "h": 32,
+      "rot": 0,
+      "flipX": false,
+      "frame": 0,
+      "anim": "",
+      "layer": "dyebxftw",
+      "tags": [],
+      "body": "static",
+      "trigger": true,
+      "scripts": [
+        {
+          "path": "scripts/level2d/pickup.js",
+          "attributes": {
+            "kind": "score",
+            "value": 10,
+            "tag": "player",
+            "magnet": 0,
+            "bob": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "dwimsf6o",
+      "name": "coinGold",
+      "asset": "kenney-platformer-pack-remastered-png-items-coingold",
+      "x": 294,
+      "y": 520,
+      "w": 32,
+      "h": 32,
+      "rot": 0,
+      "flipX": false,
+      "frame": 0,
+      "anim": "",
+      "layer": "dyebxftw",
+      "tags": [],
+      "body": "static",
+      "trigger": true,
+      "scripts": [
+        {
+          "path": "scripts/level2d/pickup.js",
+          "attributes": {
+            "kind": "score",
+            "value": 10,
+            "tag": "player",
+            "magnet": 0,
+            "bob": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "dld2okrl",
+      "name": "coinGold",
+      "asset": "kenney-platformer-pack-remastered-png-items-coingold",
+      "x": 358,
+      "y": 520,
+      "w": 32,
+      "h": 32,
+      "rot": 0,
+      "flipX": false,
+      "frame": 0,
+      "anim": "",
+      "layer": "dyebxftw",
+      "tags": [],
+      "body": "static",
+      "trigger": true,
+      "scripts": [
+        {
+          "path": "scripts/level2d/pickup.js",
+          "attributes": {
+            "kind": "score",
+            "value": 10,
+            "tag": "player",
+            "magnet": 0,
+            "bob": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "dlilj16m",
+      "name": "coinGold",
+      "asset": "kenney-platformer-pack-remastered-png-items-coingold",
+      "x": 422,
+      "y": 520,
+      "w": 32,
+      "h": 32,
+      "rot": 0,
+      "flipX": false,
+      "frame": 0,
+      "anim": "",
+      "layer": "dyebxftw",
+      "tags": [],
+      "body": "static",
+      "trigger": true,
+      "scripts": [
+        {
+          "path": "scripts/level2d/pickup.js",
+          "attributes": {
+            "kind": "score",
+            "value": 10,
+            "tag": "player",
+            "magnet": 0,
+            "bob": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "dg9tdsts",
+      "name": "doorOpen mid",
+      "asset": "kenney-platformer-pack-remastered-png-tiles-dooropen-mid",
+      "x": 980,
+      "y": 520,
+      "w": 48,
+      "h": 80,
+      "rot": 0,
+      "flipX": false,
+      "frame": 0,
+      "anim": "",
+      "layer": "dyebxftw",
+      "tags": [],
+      "body": "static",
+      "trigger": true,
+      "scripts": [
+        {
+          "path": "scripts/level2d/level-actions.js",
+          "attributes": {
+            "action": "win",
+            "target": "",
+            "amount": 1,
+            "message": "Level complete!",
+            "requireScore": 0
+          }
+        }
+      ]
+    }
+  ],
+  "variants": [],
+  "custom": []
+}

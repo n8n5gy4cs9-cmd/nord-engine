@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 258/273 tasks (95%)** · updated 2026-10-21
+**Overall: 261/277 tasks (94%)** · updated 2026-10-21
 
 | Milestone | Progress |
 |---|---|
@@ -19,14 +19,14 @@
 | M9 Desktop apps | 16/16 (100%) |
 | M10 Construct-style editor | 35/35 (100%) |
 | M11 Web editor | 14/16 (88%) |
-| M12 FPS Creator addon | 23/26 (88%) |
+| M12 FPS Creator addon | 26/30 (87%) |
 
 ## Next up
 - **M12-13** OWNER: verify the FPS Level tab + play-test on macOS/Windows with a real GPU (pointer lock in the embedded webview, performance, feel of movement/combat); decide on gamepad/touch controls and shadowed dynamic lights
-- **M12-21** 2D Level Creator: FPS Level workflow adapted to side-scroller and top-down maps with tile layers, collision, entities, scripts and test/export
-- **M12-22** 2D Level Creator built-in sprite bank: bundle Amiga collection, previews, animation presets, palette categories and project asset copying
+- **M12-28** Add editable two-floor Shattered Pixel Dungeon adaptation to 2D Level Creator
+- **M12-29** Add editable NES-style top-down tank game and starter
+- **M12-30** Add full illustrated HTML tutorials for Machine Workshop, dungeon and tank games
 - **M3-07** SPIKE: wry child webview embedded in egui panel on macOS (resize, HiDPI, focus, IPC both ways); fallback separate window
-- **M3-25** OWNER: verify webview embedding on macOS (checklist in docs/KNOWN_ISSUES.md RISK-001a), then tick M3-07
 
 ## M0 — Planning, identity, assets, vendoring
 _Plans, brand, placeholder assets, vendored libs, workspace skeleton_
@@ -346,12 +346,16 @@ _a full first-person level editor + runtime modelled on the classic FPS Creator 
 - [x] **M12-18** Save and update reusable FPS item variants from the Inspector
 - [x] **M12-19** Show diagonal and rounded rooms in the default FPS starter and Outpost Zero
 - [x] **M12-20** Fix native macOS FPS mouse capture and document level file workflows
-- [ ] **M12-21** 2D Level Creator: FPS Level workflow adapted to side-scroller and top-down maps with tile layers, collision, entities, scripts and test/export
-- [ ] **M12-22** 2D Level Creator built-in sprite bank: bundle Amiga collection, previews, animation presets, palette categories and project asset copying
+- [x] **M12-21** 2D Level Creator: FPS Level workflow adapted to side-scroller and top-down maps with tile layers, collision, entities, scripts and test/export
+- [x] **M12-22** 2D Level Creator built-in sprite bank: bundle Amiga collection, previews, animation presets, palette categories and project asset copying
 - [x] **M12-23** Import FPS Creator .fpi scripts: interpreter (runtime/fpsc/fpi.js), importer tool, tests and docs
 - [x] **M12-24** FPS Creator: right-mouse aim down sights (per-weapon editable pose/zoom/spread/sens) + fix fall-through in cut corner
 - [x] **M12-25** FPS Creator example level Hotel Meridian: 3 storeys, stairs, black-framed glass hotel door (+piece/texture)
 - [x] **M12-26** Fix persistent FPS camera tilt after damage shake
+- [x] **M12-27** Add 2D physics machine puzzle sample and welcome-screen category filters
+- [ ] **M12-28** Add editable two-floor Shattered Pixel Dungeon adaptation to 2D Level Creator
+- [ ] **M12-29** Add editable NES-style top-down tank game and starter
+- [ ] **M12-30** Add full illustrated HTML tutorials for Machine Workshop, dungeon and tank games
 
 ## Features (PRD)
 

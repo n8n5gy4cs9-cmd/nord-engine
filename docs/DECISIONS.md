@@ -162,3 +162,11 @@ Event sheets, behaviors and the new editors are added **beside** JS scripting an
 ## ADR-028 macOS embedded game pointer-lock permission (2026-10-21)
 
 Wry 0.50.5 omits WebKit's host pointer-lock callback, so native FPS games always fall back to right-drag. Keep a small macOS/webview-only compatibility shim: add the callback through an ivar-free subclass of the existing UI delegate, retaining its inherited behavior; reassign to refresh WebKit's selector cache. Grant focused loopback content only; WebKit retains DOM user-gesture enforcement. Skip the shim when the delegate already implements the callback. This uses WebKit SPI until Wry exposes support; browser, wasm and Windows paths are unchanged. Verified with real DOM pointer-lock state in native main Play and FPS Test, release and resume. API reference: WebKit source `Source/WebKit/UIProcess/API/Cocoa/WKUIDelegatePrivate.h` and `UIProcess/Cocoa/UIDelegate.mm`.
+
+## ADR-029 2D Level Creator compiles to ordinary Nord scenes (2026-10-21)
+
+**Context.** M12-21/22 asks for the FPS Level workflow in 2D, a built-in Amiga/general sprite bank, editable scripts and easy physics puzzles. Nord already has Phaser, controllers, animation metadata, physics and export.
+
+**Decision.** Add `editor/level2d/` and the native 2D Level tab using the FPS page-in-webview pattern. Author finite tile/object maps in `nord-level2d/1` JSON, compile to existing scene components and copy referenced catalogue assets into the project. Reuse existing library scripts, Arcade/Matter, metadata and export. A same-origin, symlink-rejecting publisher writes only a named level/scene and approved bank assets; explicitly choosing Use as game start applies project-wide settings. Retain project-owned script edits. Adapt only LDtk's small MIT flood-fill routine with its notice, not its Haxe/Electron application.
+
+**Consequences.** Exports use one runtime and work without the editor bank. The editable level is the source of truth; compiled scenes regenerate on Save. Physics/input/display settings remain project-wide. Hidden layers are excluded, and collision layers require parallax 1. Variants are level-local snapshots. Full external-editor format compatibility, autotiling, arbitrary polygons and joint authoring are outside this change.

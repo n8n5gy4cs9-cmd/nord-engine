@@ -20,6 +20,7 @@
     go.setSize(cfg.size[0], cfg.size[1]);
     const shape = cfg.shape === 'circle' ? { type: 'circle', radius: cfg.radius } : { type: 'rectangle', width: cfg.size[0], height: cfg.size[1] };
     this.scene.matter.add.gameObject(go, {
+      angle: go.rotation, // Matter shapes must inherit the editor's initial rotation (e.g. sloped ramps).
       shape, isStatic: cfg.mode === 'static' || cfg.mode === 'kinematic', isSensor: cfg.trigger, mass: cfg.mass,
       frictionAir: cfg.drag * 0.05, restitution: cfg.bounce, friction: cfg.friction, ignoreGravity: cfg.mode !== 'dynamic' || cfg.gravityScale === 0,
     });

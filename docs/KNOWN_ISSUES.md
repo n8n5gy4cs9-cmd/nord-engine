@@ -161,3 +161,12 @@ Owner requested no tests: `examples/amiga-showcase` has not been run in browser/
 Current human/car sheets replace the first detailed set. Four-step human loops, tiny soccer players and discrete rear-left/back/right/front cars are packed and wired into the example; no runtime validation, tests, engine/manual builds performed per owner. Old detailed masters remain source history, not active character/car exports. Animation timing and source pose consistency remain unverified by gameplay.
 
 M6-51: Night Watch root-drift correction is asset registration, not a direction/movement change. Head anchors aligned before downsampling for investigator/officer strips. No runtime validation or tests/builds per owner.
+
+## 2D Level Creator (M12-21/22/27)
+
+- Native embedded-webview focus/resize, keyboard feel and Windows interaction remain owner checks; browser movement/collision tests do not verify native hosting.
+- Authoring JSON regenerates its compiled scene on Save. Direct Scene-tab changes are not round-tripped. Physics/input/display remain project-wide; Use as game start applies them explicitly.
+- Finite orthogonal maps only; no isometric/hex/autotile, polygon or joint authoring, skeletal animation or Tiled/LDtk import. Variants live in their level. Kinematic Matter bodies are script-driven static bodies. Arcade collisions stay axis-aligned.
+- Imported PNG files are project-owned; removing an item or undoing registration does not delete its image file. Save preserves existing project-owned helper scripts, so existing projects keep their edited versions.
+- Level → Level controller overrides the normal HUD with a project script. Machine Workshop uses `scripts/machine.js`, retained through authoring Save/Test. That custom script must exist in the project.
+- Strict workspace Clippy still reports the five pre-existing editor lints (font/tokenizer branches and pixel draw argument counts); this change does not claim those are fixed.

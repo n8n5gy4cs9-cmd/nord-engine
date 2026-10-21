@@ -101,5 +101,11 @@
     "sha": "d0f959d013b52c275f27d944039073d066dc8c93",
     "licenceFile": "sc2/COPYING",
     "licenceHead": "GPL-2.0-or-later code; CC-BY-NC-SA-2.5 upstream content (no content copied)"
+  },
+  "ldtk": {
+    "repo": "deepnight/ldtk",
+    "sha": "2b7b5512f2f88fa281cb6492debbb26ead7838d4",
+    "licenceFile": "LICENSE",
+    "licenceHead": "MIT License. Copyright (c) 2020, Sébastien Benard - Deepnight Games"
   }
 }

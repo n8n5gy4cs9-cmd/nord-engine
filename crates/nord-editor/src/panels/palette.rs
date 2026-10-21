@@ -100,6 +100,9 @@ pub const COMMANDS: &[(&str, CmdFn)] = &[
         Action::ShowTab(crate::app::Tab::Library)
     }),
     ("View: Docs tab", || Action::ShowTab(crate::app::Tab::Docs)),
+    ("View: 2D Level Creator", || {
+        Action::ShowTab(crate::app::Tab::Level2d)
+    }),
     ("View: FPS Level editor", || {
         Action::ShowTab(crate::app::Tab::Fps)
     }),

@@ -13,6 +13,8 @@ pub struct HubUi {
     pub parent: PathBuf,
     pub error: Option<String>,
     pub search: String,
+    pub sample_filter: String,
+    pub template_filter: String,
     pub show_docs: bool,
     /// recent project awaiting delete confirmation
     pub confirm_delete: Option<PathBuf>,
@@ -37,6 +39,8 @@ impl Default for HubUi {
             },
             error: None,
             search: String::new(),
+            sample_filter: "Featured".into(),
+            template_filter: "Featured".into(),
             show_docs: false,
             confirm_delete: None,
         }
@@ -279,7 +283,9 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                                     egui::CollapsingHeader::new("Starter templates")
                                         .default_open(false)
                                         .show(ui, |ui| {
+                                            filter_ui(ui, &mut st.hub.template_filter);
                                             for (id, title, desc, ty) in &rows {
+                                                if !category_matches(&st.hub.template_filter, id, ty, desc) { continue; }
                                                 let selected =
                                                     st.hub.starter.as_deref() == Some(id.as_str());
                                                 if ui
@@ -386,6 +392,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                                                         .clicked()
                                                     {
                                                         st.hub.confirm_delete = None;
+                                                        #[cfg(not(target_arch = "wasm32"))]
                                                         match nord_core::io::delete_recent_project(
                                                             &p,
                                                             st.engine_root.as_deref(),
@@ -413,7 +420,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                                                     // button first = fixed right-hand column, same x on every row
                                                     let del = ui
                                                         .add_enabled(
-                                                            !protected,
+                                                            !protected && cfg!(not(target_arch = "wasm32")),
                                                             egui::Button::new(
                                                                 RichText::new("🗑")
                                                                     .color(egui::Color32::WHITE),
@@ -449,6 +456,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                                         .hint_text("Search examples and tutorials…")
                                         .desired_width(f32::INFINITY),
                                 );
+                                filter_ui(ui, &mut st.hub.sample_filter);
                                 let query = st.hub.search.to_lowercase();
                                 let ex = st
                                     .engine_root
@@ -460,7 +468,9 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                                 let mut count = 0;
                                 for p in ex {
                                     let name = project_name(&p);
-                                    if !name.to_lowercase().contains(&query) {
+                                    let meta = sample_meta(&p);
+                                    let effective_filter = if !query.is_empty() && st.hub.sample_filter == "Featured" { "All" } else { &st.hub.sample_filter };
+                                    if !format!("{name} {} {}", meta.0, meta.1).to_lowercase().contains(&query) || !category_matches(effective_filter, &name, &meta.0, &meta.1) {
                                         continue;
                                     }
                                     count += 1;
@@ -469,7 +479,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                                     } else {
                                         "Open current example files"
                                     };
-                                    if project_row(ui, &name, hint).clicked() {
+                                    if project_row(ui, &name, &format!("{hint} · {}", meta.0)).clicked() {
                                         open_sample(st, &p);
                                     }
                                 }
@@ -506,6 +516,62 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
             },
         );
     });
+}
+
+/// Shared category chips keep growing starter and sample lists navigable.
+fn filter_ui(ui: &mut Ui, selected: &mut String) {
+    ui.horizontal_wrapped(|ui| {
+        for label in [
+            "Featured", "All", "2D", "3D", "FPS", "Physics", "Apps", "Rust",
+        ] {
+            if ui.selectable_label(selected == label, label).clicked() {
+                *selected = label.into();
+            }
+        }
+    });
+}
+
+pub fn category_matches(filter: &str, id: &str, kind: &str, description: &str) -> bool {
+    let text = format!("{id} {description}").to_lowercase();
+    match filter {
+        "Featured" => [
+            "level2d-platform",
+            "level2d-topdown",
+            "machine-workshop",
+            "fps-creator",
+            "xkom",
+            "vallout",
+            "amiga-showcase",
+            "midnight-sun-tour",
+            "light2d",
+            "desktop-code-editor",
+        ]
+        .contains(&id),
+        "2D" => kind == "2d",
+        "3D" => kind == "3d",
+        "FPS" => text.contains("fps") || id == "noom",
+        "Physics" => {
+            text.contains("physics") || text.contains("machine") || text.contains("matter")
+        }
+        "Apps" => kind == "html" || kind == "wasm-app",
+        "Rust" => kind.starts_with("wasm") || id.starts_with("rust-"),
+        _ => true,
+    }
+}
+
+fn sample_meta(path: &Path) -> (String, String) {
+    let v = nord_core::vfs::read_to_string(path.join("nord.project.json"))
+        .ok()
+        .and_then(|s| serde_json::from_str::<serde_json::Value>(&s).ok())
+        .unwrap_or_default();
+    (
+        v["type"].as_str().unwrap_or("").into(),
+        format!(
+            "{} {}",
+            v["name"].as_str().unwrap_or(""),
+            v["description"].as_str().unwrap_or("")
+        ),
+    )
 }
 
 fn card(ui: &mut Ui, content: impl FnOnce(&mut Ui)) {

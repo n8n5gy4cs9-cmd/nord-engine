@@ -116,6 +116,19 @@ async fn static_files(State(a): State<App>, uri: Uri) -> Response {
             return archived_manual(&a.engine, r);
         }
         (a.engine.join("docs/manual"), r)
+    } else if let Some(r) = path.strip_prefix("/__spritebank/") {
+        if !r.starts_with("assets/packs/") {
+            return StatusCode::FORBIDDEN.into_response();
+        }
+        (a.engine.as_ref().clone(), r)
+    } else if let Some(r) = path.strip_prefix("/__level2d-library/") {
+        if !nord_core::level2d::LIBRARY
+            .iter()
+            .any(|id| r == format!("{id}.js"))
+        {
+            return StatusCode::FORBIDDEN.into_response();
+        }
+        (a.engine.join("library/scripts"), r)
     } else if path == "/__edit" {
         (a.engine.join("editor/viewport"), "edit.html")
     } else if let Some(r) = path.strip_prefix("/editor/") {
@@ -338,6 +351,52 @@ async fn fpsc_install(State(a): State<App>, headers: axum::http::HeaderMap, Quer
     }
 }
 
+async fn level2d_asset(
+    State(a): State<App>,
+    headers: axum::http::HeaderMap,
+    Query(q): Query<std::collections::HashMap<String, String>>,
+    body: Bytes,
+) -> Response {
+    if headers.get("x-nord-level2d").is_none_or(|v| v != "1") {
+        return StatusCode::FORBIDDEN.into_response();
+    }
+    let name = q.get("name").map(String::as_str).unwrap_or("");
+    if !name.ends_with(".png")
+        || name.len() > 100
+        || !name
+            .bytes()
+            .all(|b| b.is_ascii_alphanumeric() || b"-_.".contains(&b))
+        || !body.starts_with(b"\x89PNG\r\n\x1a\n")
+    {
+        return StatusCode::BAD_REQUEST.into_response();
+    }
+    match nord_core::level2d::jailed(&a.project, &format!("assets/level2d/custom/{name}")) {
+        Ok(p) if !p.exists() => match nord_core::io::write_atomic(&p, &body) {
+            Ok(()) => StatusCode::NO_CONTENT.into_response(),
+            Err(e) => (StatusCode::BAD_REQUEST, e.to_string()).into_response(),
+        },
+        _ => (StatusCode::BAD_REQUEST, "Image exists or path is invalid").into_response(),
+    }
+}
+
+async fn level2d_publish(
+    State(a): State<App>,
+    headers: axum::http::HeaderMap,
+    body: Bytes,
+) -> Response {
+    if headers.get("x-nord-level2d").is_none_or(|v| v != "1") {
+        return StatusCode::FORBIDDEN.into_response();
+    }
+    let v: serde_json::Value = match serde_json::from_slice(&body) {
+        Ok(v) => v,
+        Err(e) => return (StatusCode::BAD_REQUEST, e.to_string()).into_response(),
+    };
+    match nord_core::level2d::publish(&a.engine, &a.project, &v) {
+        Ok(v) => Json(v).into_response(),
+        Err(e) => (StatusCode::BAD_REQUEST, e.to_string()).into_response(),
+    }
+}
+
 /// Model thumbnails rendered by the 3D edit viewport arrive as a PNG data URL; stored where nord-core caches thumbs.
 async fn thumb_upload(
     State(a): State<App>,
@@ -517,6 +576,14 @@ pub fn router(project: PathBuf, engine: PathBuf) -> (Router, Arc<Hub>) {
         .route("/api/validate", get(api_validate))
         .route("/api/thumb/*path", get(api_thumb))
         .route("/api/thumb-upload/:sha", post(thumb_upload))
+        .route(
+            "/api/level2d/asset",
+            post(level2d_asset).layer(DefaultBodyLimit::max(8 << 20)),
+        )
+        .route(
+            "/api/level2d/publish",
+            post(level2d_publish).layer(DefaultBodyLimit::max(16 << 20)),
+        )
         .route("/api/fpsc/ls", get(fpsc_ls))
         .route("/api/fpsc/save", post(fpsc_save).layer(DefaultBodyLimit::max(nord_core::fpsc::MAX_BYTES)))
         .route("/api/fpsc/install", post(fpsc_install))

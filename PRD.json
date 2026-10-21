@@ -615,13 +615,13 @@
       "id": "M12-21",
       "milestone": "M12",
       "title": "2D Level Creator: FPS Level workflow adapted to side-scroller and top-down maps with tile layers, collision, entities, scripts and test/export",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M12-22",
       "milestone": "M12",
       "title": "2D Level Creator built-in sprite bank: bundle Amiga collection, previews, animation presets, palette categories and project asset copying",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "M12-23",
@@ -646,6 +646,30 @@
       "milestone": "M12",
       "title": "Fix persistent FPS camera tilt after damage shake",
       "status": "done"
+    },
+    {
+      "id": "M12-27",
+      "milestone": "M12",
+      "title": "Add 2D physics machine puzzle sample and welcome-screen category filters",
+      "status": "done"
+    },
+    {
+      "id": "M12-28",
+      "milestone": "M12",
+      "title": "Add editable two-floor Shattered Pixel Dungeon adaptation to 2D Level Creator",
+      "status": "todo"
+    },
+    {
+      "id": "M12-29",
+      "milestone": "M12",
+      "title": "Add editable NES-style top-down tank game and starter",
+      "status": "todo"
+    },
+    {
+      "id": "M12-30",
+      "milestone": "M12",
+      "title": "Add full illustrated HTML tutorials for Machine Workshop, dungeon and tank games",
+      "status": "todo"
     },
     {
       "id": "M9-01",

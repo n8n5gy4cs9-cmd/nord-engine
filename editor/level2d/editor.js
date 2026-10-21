@@ -1,0 +1,69 @@
+import { clone, uid, newLevel, place, History, compile, projectSettings, SCRIPTS, validate } from './model.js';
+import { starter as makeStarter } from './starter.js';
+const starter=mode=>makeStarter(mode,app.bank);
+import { MapView } from './view.js';
+import { Panels, node, button, field } from './ui.js';
+const $=s=>document.querySelector(s);
+const tools={select:'V Select',brush:'B Brush',rect:'R Rectangle',fill:'F Fill',erase:'X Erase',entity:'E Object',pick:'I Pick'};
+const app={level:newLevel(),bank:[],byId:new Map(),selected:new Set(),history:new History(),activeLayer:'',tool:'brush',role:'decoration',asset:null,frame:0,anim:'',space:false,showCollision:true,dirty:false,name:'level1',variant:null};
+window.editor2d=app;
+app.status=text=>{$('#status').textContent=text;};
+app.layer=()=>app.level.layers.find(l=>l.id===app.activeLayer)??app.level.layers.at(-1);
+app.refreshInspector=()=>app.panels.inspector();
+app.record=before=>{app.history.push(before,app.level);if(JSON.stringify(before)!==JSON.stringify(app.level)){app.dirty=true;app.updateTitle();}};
+app.mutate=fn=>{const before=clone(app.level);fn();app.record(before);};
+app.updateTitle=()=>{$('#filename').textContent=`${app.dirty?'● ':''}${app.name}.level2d.json` ;$('#mode').textContent=`${app.level.mode==='platform'?'Side-scroller':'Top-down'} · ${app.level.physics??'arcade'} physics`;};
+app.choose=b=>{if(!b)return;app.asset=b;app.frame=b.frame??0;app.anim=Object.keys(b.anims??{})[0]??'';app.selected.clear();app.refreshInspector();};
+app.setTool=t=>{app.tool=t;$('#tools').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.tool===t));app.status(tools[t]+' · drag to paint/move · wheel zoom · middle/right drag pan');};
+app.attach=id=>{const e=app.level.entities.find(e=>app.selected.has(e.id));if(!e)return app.status('Select an object first');app.mutate(()=>e.scripts.push({path:'scripts/level2d/'+id+'.js',attributes:clone(SCRIPTS[id].attrs)}));app.refreshInspector();};
+app.customScript=async()=>{const e=app.level.entities.find(e=>app.selected.has(e.id));if(!e)return app.status('Select an object first');const path=await app.ask('Project-relative script path','scripts/my-script.js');if(!path)return;if(!/^scripts\/[a-zA-Z0-9_./-]+\.js$/.test(path)||path.split('/').includes('..'))return app.status('Use a relative scripts/*.js path');app.mutate(()=>e.scripts.push({path,attributes:{}}));app.refreshInspector();};
+app.addEntity=(x,y)=>{const step=$('#snap').checked?app.level.tileSize/2:1;x=Math.round(x/step)*step;y=Math.round(y/step)*step;
+  let e;if(app.variant){e=clone(app.variant.entity);Object.assign(e,{id:uid(),x,y,layer:app.layer().id});app.level.entities.push(e);}else e=place(app.level,app.asset,x,y,app.layer().id,app.role);
+  app.selected=new Set([e.id]);app.refreshInspector();
+};
+app.remove=()=>{app.mutate(()=>app.level.entities=app.level.entities.filter(e=>!app.selected.has(e.id)||app.level.layers.find(l=>l.id===e.layer)?.locked));app.selected.clear();app.refreshInspector();};
+app.duplicate=()=>{app.mutate(()=>{const selected=app.level.entities.filter(e=>app.selected.has(e.id)&&!app.level.layers.find(l=>l.id===e.layer)?.locked);app.selected.clear();for(const e of selected){const d=clone(e);d.id=uid();d.name+=' copy';d.x+=16;d.y+=16;app.level.entities.push(d);app.selected.add(d.id);}});app.refreshInspector();};
+app.dialog=async(title,render)=>{const dlg=$('#dialog'),body=$('#dialog-body');body.replaceChildren();node('h2',title,body);const read=render(body);dlg.showModal();return new Promise(resolve=>{dlg.addEventListener('close',()=>resolve(dlg.returnValue==='ok'?read():null),{once:true});});};
+app.ask=(title,value='')=>app.dialog(title,body=>{const input=node('input','',body,'full');input.value=value;requestAnimationFrame(()=>{input.focus();input.select();});return()=>input.value.trim();});
+app.confirm=async title=>(await app.dialog(title,body=>{node('p','This replaces the current contents. Save first if you want to keep them.',body);return()=>true;}))===true;
+app.message=(title,text)=>app.dialog(title,body=>{node('p',text,body,'error');return()=>true;});
+app.load=(l,name)=>{
+  if(l?.format!=='nord-level2d/1'||!Array.isArray(l.layers)||!l.layers.length||!Array.isArray(l.entities))throw Error('Invalid 2D level');
+  const custom=l.custom??[];for(const b of custom)if(!/^assets\/[a-zA-Z0-9_./-]+\.png$/.test(b.source)||b.source.split('/').includes('..')||!(b.width>0&&b.height>0&&b.columns>0))throw Error('Invalid custom sprite');
+  app.level=l;app.bank=[...app.builtins,...custom];app.byId=new Map(app.bank.map(b=>[b.id,b]));app.activeLayer=l.layers.at(-1).id;app.name=name??'level1';app.selected.clear();app.history=new History();app.dirty=false;app.updateTitle();app.view.fit();app.panels.left();app.refreshInspector();
+};
+app.publish=async(start=false,as=false)=>{
+  if(as){const name=await app.ask('Level filename (letters, numbers, - or _)',app.name);if(!name)return;app.name=name;}
+  const result=compile(app.level,app.bank),payload={name:app.name,level:app.level,...result,assets:result.assets.filter(id=>!app.byId.get(id).custom),settings:projectSettings(app.level),start};
+  const res=await fetch('/api/level2d/publish',{method:'POST',headers:{'content-type':'application/json','x-nord-level2d':'1'},body:JSON.stringify(payload)});if(!res.ok)throw Error(await res.text());const out=await res.json();app.dirty=false;app.updateTitle();app.status(`Saved ${out.level} + ${out.scene}; ${out.images} bundled images copied${start?' · game start updated':''}`);return out;
+};
+app.test=()=>{const errors=validate(app.level,app.bank);if(errors.length)return app.message('Level needs attention',errors.join('\n'));$('#test').hidden=false;$('#test-frame').src='/editor/level2d/play.html';};
+app.stop=()=>{$('#test').hidden=true;$('#test-frame').src='about:blank';$('#map').focus();};
+window.addEventListener('message',e=>{if(e.origin!==location.origin||e.source!==$('#test-frame').contentWindow)return;if(e.data?.type==='level2d-ready')e.source.postMessage({type:'level2d-run',level:app.level,bank:app.bank},location.origin);if(e.data?.type==='level2d-stop')app.stop();});$('#stop').onclick=app.stop;
+app.registerImage=async()=>{
+  const b=await app.dialog('Register project PNG / spritesheet',p=>{let path='assets/sprites/custom.png',w=32,h=32,columns=1,frames=1,fps=8;field(p,'Path',path,v=>path=v);field(p,'Frame width',w,v=>w=v);field(p,'Frame height',h,v=>h=v);field(p,'Columns',columns,v=>columns=v);field(p,'Animation frames',frames,v=>frames=v);field(p,'FPS',fps,v=>fps=v);node('p','For a still image use its full width/height and one column. Animation frames are consecutive cells starting at zero.',p);return()=>({path,w,h,columns,frames,fps});});
+  if(!b)return;if(!/^assets\/[a-zA-Z0-9_./-]+\.png$/.test(b.path)||b.path.split('/').includes('..')||![b.w,b.h,b.columns,b.frames,b.fps].every(v=>Number.isFinite(v)&&v>0))throw Error('Invalid project sprite settings');
+  const res=await fetch('/'+b.path);if(!res.ok)throw Error('Image does not exist in project');
+  await app.addCustom({id:uid(),title:b.path.split('/').at(-1),source:b.path,category:'Custom',pack:'Project',custom:true,width:b.w,height:b.h,columns:b.columns,frame:0,anims:b.frames>1?{loop:{frames:Array.from({length:Math.min(256,b.frames)},(_,i)=>i),fps:b.fps,loop:true}}:{}});
+};
+app.addCustom=async b=>{app.mutate(()=>app.level.custom.push(b));app.bank.push(b);app.byId.set(b.id,b);app.choose(b);app.panels.left();};
+app.importImage=()=>{const input=document.createElement('input');input.type='file';input.accept='image/png';input.onchange=async()=>{try{const f=input.files[0];if(!f)return;const bytes=await f.arrayBuffer(),bitmap=await createImageBitmap(f);const name=uid()+'-'+f.name.replace(/[^a-zA-Z0-9_-]/g,'-').replace(/-png$/,'')+'.png';const res=await fetch('/api/level2d/asset?name='+encodeURIComponent(name),{method:'POST',headers:{'x-nord-level2d':'1'},body:bytes});if(!res.ok)throw Error(await res.text());await app.addCustom({id:uid(),title:f.name,source:'assets/level2d/custom/'+name,category:'Custom',pack:'Project',custom:true,width:bitmap.width,height:bitmap.height,columns:1,frame:0,anims:{}});bitmap.close();}catch(err){app.message('Import failed',err.message);}};input.click();};
+const actions={
+  new:async()=>{if(app.dirty&&!await app.confirm('Replace unsaved level?'))return;const mode=await app.dialog('New 2D level',p=>{const s=node('select','',p,'full');for(const[v,t]of [['platform','Side-scroller workshop'],['topdown','Top-down workshop'],['physics','Physics machine workshop']]){const o=node('option',t,s);o.value=v;}return()=>s.value;});if(mode)app.load(starter(mode),'level1');},
+  open:async()=>{if(app.dirty&&!await app.confirm('Replace unsaved level?'))return;const res=await fetch('/api/fpsc/ls?dir=levels');if(!res.ok)throw Error(await res.text());const list=(await res.json()).filter(e=>e.name.endsWith('.level2d.json'));const name=await app.dialog('Open 2D level',p=>{if(!list.length){node('p','No saved 2D levels in this project yet.',p);return()=>null;}const s=node('select','',p,'full');for(const e of list){const o=node('option',e.name,s);o.value=e.name;}return()=>s.value;});if(name){const r=await fetch('/levels/'+encodeURIComponent(name));if(!r.ok)throw Error(await r.text());app.load(await r.json(),name.replace('.level2d.json',''));}},
+  save:()=>app.publish(),saveas:()=>app.publish(false,true),start:async()=>{if(await app.dialog('Use this level as the game start?',p=>{node('p','Save this level and scene, then set the project start scene, display, physics engine/gravity and movement keys. Other scenes keep their files; project physics settings apply to all scenes.',p);return()=>true;}))await app.publish(true);},
+  undo:()=>{app.level=app.history.step(app.level);app.activeLayer=app.layer().id;app.dirty=true;app.panels.left();app.refreshInspector();app.updateTitle();},redo:()=>{app.level=app.history.step(app.level,true);app.activeLayer=app.layer().id;app.dirty=true;app.panels.left();app.refreshInspector();app.updateTitle();},
+  fit:()=>app.view.fit(),test:()=>app.test(),download:()=>{const url=URL.createObjectURL(new Blob([JSON.stringify(app.level,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download=app.name+'.level2d.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);},
+  import:()=>$('#file').click(),help:()=>app.message('2D Level Creator',`Build: choose a bank sprite and paint. B brush · R rectangle · F fill · X erase · I eyedropper. Solid tiles collide. Items: choose a role, then E places it. V selects and drags objects; Shift-click selects several. Del deletes, Ctrl+D duplicates. Wheel zooms, middle/right drag pans, Home fits. Ctrl+S saves, Ctrl+Z undoes. F5 tests the unsaved level; Shift+Esc stops. Level manages layers, gravity and Arcade/Matter physics. Inspector edits bodies and script values. Save as variant keeps reusable item defaults in this level. Save copies referenced bank art and scripts into the project and writes a normal scene. Use as game start applies settings. Export through Nord's normal Export command. Player must be named Player for the camera. Custom scripts are edited in Nord's Code tab.`),
+};
+for(const b of document.querySelectorAll('[data-act]'))b.onclick=()=>Promise.resolve().then(()=>actions[b.dataset.act]()).catch(e=>app.message('Could not complete action',e.message));
+$('#file').onchange=async e=>{try{const f=e.target.files[0];if(f&&(!app.dirty||await app.confirm('Replace unsaved level?')))app.load(JSON.parse(await f.text()),f.name.replace('.level2d.json',''));}catch(err){app.message('Import failed',err.message);}e.target.value='';};
+window.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&e.shiftKey&&!$('#test').hidden){e.preventDefault();app.stop();return;}if($('#dialog').open||!$('#test').hidden||['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName))return;
+  if(e.code==='Space'){app.space=true;e.preventDefault();}const cmd=e.ctrlKey||e.metaKey;
+  let action;if(cmd&&e.key.toLowerCase()==='s')action=actions.save;if(cmd&&e.key.toLowerCase()==='z')action=e.shiftKey?actions.redo:actions.undo;if(cmd&&e.key.toLowerCase()==='y')action=actions.redo;if(cmd&&e.key.toLowerCase()==='d')action=app.duplicate;if(e.key==='Delete'||e.key==='Backspace')action=app.remove;if(e.key==='F5')action=app.test;if(e.key==='Home')action=actions.fit;
+  if(action){e.preventDefault();Promise.resolve().then(action).catch(err=>app.message('Action failed',err.message));return;}
+  const t={v:'select',b:'brush',r:'rect',f:'fill',x:'erase',e:'entity',i:'pick'}[e.key.toLowerCase()];if(t&&!cmd)app.setTool(t);
+});window.addEventListener('keyup',e=>{if(e.code==='Space')app.space=false;});window.addEventListener('blur',()=>app.space=false);window.addEventListener('beforeunload',e=>{if(app.dirty){e.preventDefault();e.returnValue='';}});
+async function init(){const res=await fetch('/editor/level2d/bank.json');if(!res.ok)throw Error('Sprite bank not found');app.bank=(await res.json()).entries;app.builtins=app.bank;app.byId=new Map(app.bank.map(b=>[b.id,b]));app.view=new MapView(app);app.panels=new Panels(app);for(const[t,title]of Object.entries(tools)){const b=button($('#tools'),title,()=>app.setTool(t));b.dataset.tool=t;}app.load(starter('platform'));app.choose(app.byId.get('amiga-platform-tiles-16-1')??app.bank[0]);app.setTool('brush');requestAnimationFrame(()=>app.view.fit());const saved=await fetch('/api/fpsc/ls?dir=levels').then(r=>r.ok?r.json():[]).catch(()=>[]);const initial=saved.find(f=>f.name==='workshop.level2d.json')??saved.find(f=>f.name.endsWith('.level2d.json'));if(initial){const r=await fetch('/levels/'+encodeURIComponent(initial.name));if(r.ok)app.load(await r.json(),initial.name.replace('.level2d.json',''));}app.status(`Ready · ${app.bank.length} sprite entries · choose Build or Items to begin`);}
+init().catch(err=>app.status(err.stack));

@@ -1535,3 +1535,18 @@ fn fps_tab_offers_install_and_detects_the_runtime() {
             && root.join("scenes/fps.scene.json").exists()
     );
 }
+
+#[test]
+fn workshop_hub_categories_and_level_tab_are_available() {
+    use nord_editor::panels::hub::category_matches;
+    assert!(category_matches("Featured", "machine-workshop", "2d", ""));
+    assert!(category_matches("2D", "machine-workshop", "2d", ""));
+    assert!(category_matches("Physics", "machine-workshop", "2d", ""));
+    assert!(!category_matches("3D", "machine-workshop", "2d", ""));
+    assert!(category_matches("FPS", "fps-creator", "3d", ""));
+    assert!(category_matches("Apps", "desktop-notes", "html", ""));
+    assert!(category_matches("Rust", "rust-game", "wasm-game", ""));
+    assert!(!category_matches("Featured", "old-basic-example", "2d", ""));
+    assert!(category_matches("All", "old-basic-example", "2d", ""));
+    assert_eq!(nord_editor::app::Tab::Level2d.title(), "2D Level");
+}

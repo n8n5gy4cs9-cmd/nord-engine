@@ -11,6 +11,7 @@ pub mod history;
 pub mod hub;
 pub mod inspector;
 pub mod layout;
+pub mod level2d;
 pub mod library;
 pub mod palette;
 pub mod particles;

@@ -1,5 +1,23 @@
 [
   {
+    "id": "level2d-platform",
+    "title": "2D Platform Workshop",
+    "description": "2D Level Creator side-scroller with Amiga sprite bank and Arcade physics.",
+    "type": "2d"
+  },
+  {
+    "id": "level2d-topdown",
+    "title": "2D Top-down Workshop",
+    "description": "2D Level Creator top-down map, sprite bank, pickups and collision.",
+    "type": "2d"
+  },
+  {
+    "id": "machine-workshop",
+    "title": "Machine Workshop",
+    "description": "2D Matter physics puzzle: ball, ramps, basket, editable mass, bounce and friction.",
+    "type": "2d"
+  },
+  {
     "id": "desktop-clipboard-manager",
     "title": "Desktop app: clipboard manager",
     "description": "Clipboard history with search/pin, tray icon + menu, global shortcut Ctrl+Alt+V, badge count.",
@@ -8,7 +26,7 @@
   {
     "id": "desktop-code-editor",
     "title": "Desktop app: code editor",
-    "description": "Tabs, file tree, syntax highlighting (JS/TS/HTML/CSS/JSON/MD/Rust/GLSL/TOML), find & replace, multi-cursor, quick open — CodeMirror 6 + window.nord.desktop.",
+    "description": "Tabs, file tree, syntax highlighting (JS/TS/HTML/CSS/JSON/MD/Rust/GLSL/TOML), find & replace, multi-cursor, quick open \u2014 CodeMirror 6 + window.nord.desktop.",
     "type": "html"
   },
   {
@@ -32,13 +50,13 @@
   {
     "id": "ui-app",
     "title": "UI app (Todo)",
-    "description": "Plain HTML/JS app with a tiny DOM kit — todo list with persistence. Swap in any library app kit.",
+    "description": "Plain HTML/JS app with a tiny DOM kit \u2014 todo list with persistence. Swap in any library app kit.",
     "type": "html"
   },
   {
     "id": "desktop-web-server",
     "title": "Desktop app: local web server",
-    "description": "Serve a folder over HTTP: live reload, SPA fallback, CORS, directory listing, request log + graph — window.nord.desktop.server.",
+    "description": "Serve a folder over HTTP: live reload, SPA fallback, CORS, directory listing, request log + graph \u2014 window.nord.desktop.server.",
     "type": "html"
   },
   {
@@ -56,7 +74,7 @@
   {
     "id": "fps-creator",
     "title": "FPS Creator (level editor)",
-    "description": "Build first-person shooter levels like FPS Creator: grid editor with walls, doors, windows, stairs, lights, ready-made enemies, pickups and scripts — plus a playable demo level.",
+    "description": "Build first-person shooter levels like FPS Creator: grid editor with walls, doors, windows, stairs, lights, ready-made enemies, pickups and scripts \u2014 plus a playable demo level.",
     "type": "3d"
   },
   {
@@ -74,7 +92,7 @@
   {
     "id": "card-game",
     "title": "Card game (Memory)",
-    "description": "Card grid with flip animation, matching logic, move counter and win state — DOM UI based.",
+    "description": "Card grid with flip animation, matching logic, move counter and win state \u2014 DOM UI based.",
     "type": "2d"
   },
   {
@@ -152,25 +170,25 @@
   {
     "id": "es-platformer",
     "title": "Platformer (event sheet)",
-    "description": "Platform behavior, coins, slimes, a turret and a goal — everything is an event sheet. The tutorial T24 game.",
+    "description": "Platform behavior, coins, slimes, a turret and a goal \u2014 everything is an event sheet. The tutorial T24 game.",
     "type": "2d"
   },
   {
     "id": "es-topdown-shooter",
     "title": "Top-down shooter (event sheet)",
-    "description": "WASD + mouse aim, bullets, chasing enemies, score and lives — no scripts, all event sheet + behaviors.",
+    "description": "WASD + mouse aim, bullets, chasing enemies, score and lives \u2014 no scripts, all event sheet + behaviors.",
     "type": "2d"
   },
   {
     "id": "es-endless-runner",
     "title": "Endless runner (event sheet)",
-    "description": "Auto-run, jump over obstacles, speed ramp, distance score — event sheet + Platform/Bullet behaviors only.",
+    "description": "Auto-run, jump over obstacles, speed ramp, distance score \u2014 event sheet + Platform/Bullet behaviors only.",
     "type": "2d"
   },
   {
     "id": "es-lights-out",
     "title": "Lights Out puzzle (event sheet)",
-    "description": "Grid puzzle with instance variables, picking by expression and a solvable shuffle — pure event sheet.",
+    "description": "Grid puzzle with instance variables, picking by expression and a solvable shuffle \u2014 pure event sheet.",
     "type": "2d"
   },
   {

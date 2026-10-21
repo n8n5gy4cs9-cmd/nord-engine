@@ -1,0 +1,5031 @@
+{
+  "format": "nord-level2d/1",
+  "name": "2D Top-down Workshop",
+  "mode": "topdown",
+  "physics": "arcade",
+  "width": 40,
+  "height": 24,
+  "tileSize": 32,
+  "background": "#192631",
+  "gravity": 0,
+  "layers": [
+    {
+      "id": "dt3v8hlt",
+      "name": "Background",
+      "visible": true,
+      "locked": false,
+      "parallax": 0.5,
+      "opacity": 1,
+      "tiles": {}
+    },
+    {
+      "id": "d6dofhp9",
+      "name": "World",
+      "visible": true,
+      "locked": false,
+      "parallax": 1,
+      "opacity": 1,
+      "tiles": {
+        "0,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "0,1": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "0,2": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "0,3": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "0,4": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "0,5": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "0,6": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "0,7": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "0,8": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "0,9": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "0,10": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "0,11": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "0,12": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "0,13": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "0,14": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "0,15": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "0,16": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "0,17": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "0,18": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "0,19": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "0,20": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "0,21": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "0,22": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "0,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "1,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "1,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "1,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "1,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "1,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "1,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "1,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "1,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "1,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "1,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "1,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "1,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "1,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "1,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "1,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "1,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "1,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "1,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "1,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "1,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "1,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "1,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "1,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "1,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "2,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "2,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "2,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "2,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "2,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "2,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "2,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "2,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "2,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "2,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "2,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "2,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "2,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "2,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "2,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "2,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "2,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "2,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "2,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "2,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "2,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "2,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "2,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "2,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "3,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "3,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "3,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "3,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "3,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "3,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "3,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "3,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "3,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "3,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "3,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "3,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "3,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "3,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "3,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "3,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "3,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "3,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "3,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "3,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "3,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "3,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "3,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "3,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "4,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "4,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "4,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "4,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "4,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "4,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "4,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "4,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "4,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "4,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "4,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "4,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "4,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "4,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "4,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "4,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "4,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "4,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "4,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "4,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "4,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "4,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "4,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "4,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "5,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "5,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "5,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "5,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "5,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "5,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "5,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "5,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "5,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "5,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "5,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "5,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "5,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "5,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "5,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "5,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "5,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "5,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "5,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "5,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "5,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "5,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "5,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "5,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "6,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "6,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "6,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "6,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "6,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "6,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "6,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "6,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "6,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "6,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "6,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "6,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "6,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "6,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "6,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "6,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "6,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "6,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "6,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "6,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "6,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "6,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "6,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "6,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "7,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "7,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "7,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "7,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "7,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "7,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "7,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "7,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "7,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "7,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "7,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "7,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "7,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "7,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "7,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "7,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "7,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "7,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "7,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "7,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "7,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "7,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "7,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "7,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "8,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "8,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "8,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "8,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "8,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "8,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "8,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "8,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "8,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "8,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "8,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "8,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "8,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "8,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "8,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "8,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "8,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "8,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "8,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "8,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "8,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "8,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "8,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "8,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "9,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "9,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "9,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "9,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "9,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "9,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "9,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "9,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "9,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "9,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "9,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "9,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "9,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "9,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "9,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "9,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "9,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "9,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "9,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "9,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "9,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "9,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "9,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "9,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "10,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "10,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "10,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "10,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "10,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "10,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "10,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "10,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "10,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "10,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "10,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "10,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "10,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "10,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "10,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "10,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "10,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "10,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "10,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "10,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "10,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "10,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "10,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "10,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "11,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "11,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "11,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "11,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "11,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "11,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "11,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "11,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "11,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "11,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "11,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "11,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "11,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "11,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "11,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "11,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "11,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "11,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "11,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "11,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "11,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "11,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "11,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "11,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "12,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "12,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "12,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "12,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "12,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "12,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "12,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "12,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "12,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "12,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "12,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "12,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "12,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "12,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "12,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "12,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "12,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "12,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "12,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "12,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "12,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "12,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "12,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "12,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "13,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "13,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "13,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "13,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "13,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "13,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "13,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "13,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "13,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "13,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "13,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "13,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "13,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "13,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "13,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "13,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "13,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "13,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "13,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "13,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "13,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "13,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "13,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "13,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "14,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "14,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "14,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "14,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "14,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "14,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "14,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "14,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "14,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "14,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "14,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "14,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "14,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "14,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "14,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "14,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "14,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "14,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "14,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "14,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "14,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "14,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "14,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "14,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "15,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "15,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "15,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "15,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "15,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "15,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "15,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "15,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "15,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "15,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "15,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "15,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "15,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "15,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "15,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "15,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "15,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "15,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "15,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "15,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "15,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "15,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "15,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "15,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "16,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "16,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "16,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "16,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "16,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "16,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "16,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "16,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "16,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "16,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "16,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "16,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "16,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "16,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "16,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "16,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "16,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "16,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "16,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "16,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "16,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "16,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "16,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "16,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "17,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "17,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "17,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "17,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "17,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "17,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "17,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "17,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "17,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "17,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "17,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "17,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "17,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "17,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "17,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "17,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "17,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "17,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "17,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "17,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "17,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "17,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "17,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "17,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "18,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "18,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "18,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "18,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "18,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "18,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "18,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "18,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "18,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "18,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "18,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "18,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "18,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "18,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "18,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "18,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "18,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "18,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "18,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "18,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "18,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "18,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "18,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "18,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "19,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "19,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "19,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "19,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "19,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "19,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "19,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "19,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "19,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "19,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "19,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "19,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "19,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "19,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "19,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "19,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "19,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "19,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "19,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "19,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "19,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "19,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "19,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "19,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "20,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "20,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "20,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "20,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "20,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "20,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "20,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "20,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "20,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "20,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "20,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "20,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "20,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "20,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "20,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "20,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "20,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "20,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "20,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "20,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "20,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "20,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "20,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "20,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "21,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "21,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "21,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "21,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "21,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "21,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "21,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "21,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "21,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "21,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "21,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "21,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "21,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "21,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "21,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "21,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "21,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "21,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "21,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "21,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "21,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "21,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "21,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "21,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "22,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "22,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "22,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "22,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "22,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "22,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "22,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "22,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "22,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "22,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "22,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "22,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "22,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "22,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "22,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "22,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "22,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "22,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "22,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "22,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "22,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "22,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "22,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "22,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "23,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "23,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "23,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "23,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "23,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "23,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "23,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "23,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "23,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "23,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "23,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "23,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "23,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "23,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "23,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "23,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "23,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "23,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "23,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "23,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "23,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "23,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "23,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "23,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "24,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "24,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "24,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "24,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "24,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "24,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "24,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "24,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "24,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "24,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "24,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "24,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "24,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "24,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "24,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "24,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "24,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "24,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "24,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "24,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "24,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "24,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "24,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "24,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "25,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "25,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "25,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "25,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "25,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "25,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "25,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "25,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "25,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "25,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "25,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "25,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "25,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "25,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "25,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "25,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "25,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "25,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "25,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "25,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "25,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "25,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "25,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "25,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "26,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "26,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "26,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "26,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "26,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "26,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "26,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "26,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "26,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "26,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "26,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "26,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "26,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "26,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "26,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "26,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "26,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "26,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "26,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "26,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "26,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "26,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "26,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "26,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "27,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "27,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "27,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "27,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "27,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "27,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "27,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "27,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "27,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "27,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "27,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "27,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "27,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "27,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "27,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "27,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "27,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "27,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "27,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "27,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "27,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "27,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "27,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "27,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "28,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "28,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "28,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "28,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "28,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "28,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "28,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "28,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "28,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "28,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "28,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "28,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "28,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "28,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "28,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "28,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "28,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "28,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "28,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "28,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "28,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "28,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "28,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "28,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "29,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "29,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "29,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "29,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "29,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "29,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "29,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "29,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "29,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "29,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "29,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "29,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "29,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "29,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "29,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "29,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "29,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "29,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "29,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "29,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "29,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "29,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "29,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "29,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "30,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "30,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "30,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "30,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "30,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "30,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "30,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "30,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "30,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "30,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "30,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "30,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "30,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "30,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "30,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "30,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "30,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "30,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "30,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "30,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "30,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "30,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "30,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "30,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "31,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "31,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "31,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "31,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "31,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "31,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "31,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "31,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "31,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "31,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "31,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "31,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "31,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "31,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "31,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "31,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "31,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "31,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "31,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "31,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "31,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "31,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "31,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "31,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "32,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "32,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "32,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "32,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "32,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "32,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "32,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "32,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "32,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "32,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "32,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "32,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "32,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "32,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "32,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "32,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "32,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "32,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "32,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "32,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "32,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "32,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "32,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "32,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "33,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "33,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "33,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "33,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "33,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "33,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "33,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "33,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "33,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "33,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "33,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "33,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "33,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "33,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "33,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "33,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "33,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "33,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "33,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "33,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "33,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "33,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "33,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "33,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "34,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "34,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "34,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "34,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "34,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "34,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "34,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "34,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "34,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "34,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "34,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "34,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "34,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "34,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "34,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "34,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "34,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "34,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "34,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "34,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "34,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "34,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "34,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "34,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "35,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "35,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "35,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "35,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "35,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "35,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "35,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "35,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "35,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "35,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "35,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "35,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "35,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "35,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "35,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "35,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "35,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "35,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "35,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "35,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "35,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "35,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "35,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "35,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "36,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "36,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "36,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "36,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "36,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "36,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "36,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "36,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "36,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "36,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "36,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "36,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "36,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "36,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "36,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "36,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "36,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "36,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "36,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "36,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "36,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "36,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "36,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "36,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "37,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "37,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "37,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "37,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "37,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "37,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "37,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "37,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "37,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "37,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "37,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "37,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "37,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "37,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "37,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "37,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "37,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "37,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "37,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "37,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "37,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "37,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "37,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "37,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "38,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "38,1": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "38,2": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "38,3": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "38,4": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "38,5": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "38,6": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "38,7": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "38,8": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "38,9": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "38,10": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "38,11": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "38,12": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "38,13": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "38,14": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "38,15": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "38,16": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "38,17": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "38,18": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "38,19": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "38,20": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "38,21": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "38,22": {
+          "asset": "amiga-topdown-tiles-0",
+          "frame": 0,
+          "solid": false
+        },
+        "38,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "39,0": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "39,1": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "39,2": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "39,3": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "39,4": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "39,5": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "39,6": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "39,7": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "39,8": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "39,9": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "39,10": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "39,11": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "39,12": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "39,13": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "39,14": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "39,15": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "39,16": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "39,17": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "39,18": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "39,19": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "39,20": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "39,21": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "39,22": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        },
+        "39,23": {
+          "asset": "amiga-topdown-tiles-2",
+          "frame": 2,
+          "solid": true
+        }
+      }
+    }
+  ],
+  "entities": [
+    {
+      "id": "dx17zs23",
+      "name": "Player",
+      "asset": "amiga-soccer-overhead",
+      "x": 128,
+      "y": 160,
+      "w": 32.516129032258064,
+      "h": 48,
+      "rot": 0,
+      "flipX": false,
+      "frame": 0,
+      "anim": "run-south",
+      "layer": "d6dofhp9",
+      "tags": [
+        "player"
+      ],
+      "body": "dynamic",
+      "trigger": false,
+      "scripts": [
+        {
+          "path": "scripts/level2d/topdown.js",
+          "attributes": {
+            "speed": 150,
+            "accel": 1200,
+            "fourWay": false,
+            "faceMovement": false
+          }
+        },
+        {
+          "path": "scripts/level2d/health.js",
+          "attributes": {
+            "max": 5,
+            "invulnTime": 0.8,
+            "destroyOnDeath": false
+          }
+        },
+        {
+          "path": "scripts/level2d/level-animate.js",
+          "attributes": {
+            "run": "run",
+            "south": "run-south",
+            "east": "run-east",
+            "north": "run-north",
+            "west": "run-west",
+            "idleFrame": -1
+          }
+        }
+      ],
+      "fixedRotation": true
+    },
+    {
+      "id": "dx8h7v2c",
+      "name": "coinGold",
+      "asset": "kenney-platformer-pack-remastered-png-items-coingold",
+      "x": 230,
+      "y": 200,
+      "w": 32,
+      "h": 32,
+      "rot": 0,
+      "flipX": false,
+      "frame": 0,
+      "anim": "",
+      "layer": "d6dofhp9",
+      "tags": [],
+      "body": "static",
+      "trigger": true,
+      "scripts": [
+        {
+          "path": "scripts/level2d/pickup.js",
+          "attributes": {
+            "kind": "score",
+            "value": 10,
+            "tag": "player",
+            "magnet": 0,
+            "bob": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "d6nbdd20",
+      "name": "coinGold",
+      "asset": "kenney-platformer-pack-remastered-png-items-coingold",
+      "x": 294,
+      "y": 200,
+      "w": 32,
+      "h": 32,
+      "rot": 0,
+      "flipX": false,
+      "frame": 0,
+      "anim": "",
+      "layer": "d6dofhp9",
+      "tags": [],
+      "body": "static",
+      "trigger": true,
+      "scripts": [
+        {
+          "path": "scripts/level2d/pickup.js",
+          "attributes": {
+            "kind": "score",
+            "value": 10,
+            "tag": "player",
+            "magnet": 0,
+            "bob": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "df9ggehc",
+      "name": "coinGold",
+      "asset": "kenney-platformer-pack-remastered-png-items-coingold",
+      "x": 358,
+      "y": 200,
+      "w": 32,
+      "h": 32,
+      "rot": 0,
+      "flipX": false,
+      "frame": 0,
+      "anim": "",
+      "layer": "d6dofhp9",
+      "tags": [],
+      "body": "static",
+      "trigger": true,
+      "scripts": [
+        {
+          "path": "scripts/level2d/pickup.js",
+          "attributes": {
+            "kind": "score",
+            "value": 10,
+            "tag": "player",
+            "magnet": 0,
+            "bob": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "dtlclilw",
+      "name": "coinGold",
+      "asset": "kenney-platformer-pack-remastered-png-items-coingold",
+      "x": 422,
+      "y": 200,
+      "w": 32,
+      "h": 32,
+      "rot": 0,
+      "flipX": false,
+      "frame": 0,
+      "anim": "",
+      "layer": "d6dofhp9",
+      "tags": [],
+      "body": "static",
+      "trigger": true,
+      "scripts": [
+        {
+          "path": "scripts/level2d/pickup.js",
+          "attributes": {
+            "kind": "score",
+            "value": 10,
+            "tag": "player",
+            "magnet": 0,
+            "bob": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "d29tbfgb",
+      "name": "doorOpen mid",
+      "asset": "kenney-platformer-pack-remastered-png-tiles-dooropen-mid",
+      "x": 980,
+      "y": 320,
+      "w": 48,
+      "h": 80,
+      "rot": 0,
+      "flipX": false,
+      "frame": 0,
+      "anim": "",
+      "layer": "d6dofhp9",
+      "tags": [],
+      "body": "static",
+      "trigger": true,
+      "scripts": [
+        {
+          "path": "scripts/level2d/level-actions.js",
+          "attributes": {
+            "action": "win",
+            "target": "",
+            "amount": 1,
+            "message": "Level complete!",
+            "requireScore": 0
+          }
+        }
+      ]
+    }
+  ],
+  "variants": [],
+  "custom": []
+}

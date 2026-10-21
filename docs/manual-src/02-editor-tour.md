@@ -97,3 +97,7 @@ Manual code previews have their own **Wrap: on/off** button and 1.6 line height.
 
 ## FPS Level tab (FPS Creator addon)
 Projects that use the FPS Creator addon get an extra **FPS Level** tab: a grid level editor with a live 3D preview and one-click play-test. See the [full illustrated FPS Creator guide](fps-creator.html), [first-level tutorial](tut-t27-fps-level.html) and [quick reference](cheat-sheet-fps-level.html). Test/From here use unsaved level edits; main Play reads the saved project. Settings exposes all three FPS test bindings and a shortcut-only reset.
+
+## Find 2D, 3D and physics projects
+
+The welcome screen filters both starter templates and samples with **Featured**, **All**, **2D**, **3D**, **FPS**, **Physics**, **Apps**, and **Rust**. Featured shows a short curated set; searching also reaches older examples. Choose the **2D Platform Workshop**, **2D Top-down Workshop** or **Machine Workshop** template to begin in the [2D Level Creator](level-creator-2d.html).

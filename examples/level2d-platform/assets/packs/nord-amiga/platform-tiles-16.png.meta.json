@@ -1,0 +1,12 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 16,
+  "frameHeight": 16,
+  "filter": "nearest",
+  "anims": {},
+  "tags": [
+    "amiga",
+    "original",
+    "2d"
+  ]
+}
