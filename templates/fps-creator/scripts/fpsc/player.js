@@ -13,11 +13,11 @@ export class Controls {
     this.onLockChange = null; this.dragLook = false;
     const kd = (e) => { if (!this.enabled) return; if (!e.repeat) this.pressedQ.add(e.code); this.keys.add(e.code); if (['Space', 'ArrowUp', 'ArrowDown', 'Tab'].includes(e.code)) e.preventDefault(); };
     const ku = (e) => { this.keys.delete(e.code); };
-    const mm = (e) => { if (this.locked || (this.dragLook && (this.buttons & 6))) { this.mx += e.movementX || 0; this.my += e.movementY || 0; } };
+    const mm = (e) => { if (typeof e.buttons === 'number') this.buttons = (e.buttons & 1) | ((e.buttons & 2) << 1) | ((e.buttons & 4) >> 1); /* self-heal a lost mouseup (pointer-lock hand-over in webviews) */ if (this.locked || (this.dragLook && (this.buttons & 6))) { this.mx += e.movementX || 0; this.my += e.movementY || 0; } };
     const md = (e) => { this.buttons |= 1 << e.button; if (!this.locked && this.enabled && !this.noLock) this.lock(); };
     const mu = (e) => { this.buttons &= ~(1 << e.button); };
     const wh = (e) => { if (this.enabled) this.wheel += Math.sign(e.deltaY); };
-    const pl = () => { this.locked = document.pointerLockElement === canvas; this.onLockChange?.(this.locked); };
+    const pl = () => { this.buttons = 0; this.locked = document.pointerLockElement === canvas; this.onLockChange?.(this.locked); };
     const cm = (e) => e.preventDefault();
     const blur = () => { this.keys.clear(); this.buttons = 0; };
     window.addEventListener('keydown', kd); window.addEventListener('keyup', ku); window.addEventListener('mousemove', mm); canvas.addEventListener('mousedown', md); window.addEventListener('mouseup', mu);
