@@ -105,3 +105,14 @@ Imports *of* the script (helper modules) are not re-fetched — reload the page 
 
 ## Scripts in Rust
 The Rust tiers use a `Script` trait instead — see [Rust / WASM](rust-wasm.html).
+
+
+## Restart the current scene from saved data
+
+`this.game.restart()` returns a promise for a fresh current scene, like loading the level again. It destroys old entities/scripts and scheduled callbacks, rebuilds from saved JSON, resets the clock and time scale, clears held/virtual input and resumes even from Pause. Persist entities reset by default; use `restart({ preservePersistent: true })` only when you want to migrate them. Normal `loadScene(path)` transitions keep Persist state.
+
+```js
+this.ui.button('Restart', () => { this.game.restart(); return; });
+```
+
+Keep run state in script instances and clean up custom listeners, UI, native objects and audio in `onDestroy()`. Save storage and asset/script module caches survive. Restart does not undo external server state or reload edited source modules; use Stop/Play for source changes. Existing copied projects need **Upgrade runtime**. T39 demonstrates a complete scene-based restart; T40 and T41 show HTML apps resetting their own rule state and server rounds.

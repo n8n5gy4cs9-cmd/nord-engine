@@ -163,3 +163,11 @@ test('Persist keeps an entity across loadScene', async () => {
   await g.loadScene('b'); g.tick(1 / 60);
   const k = g.scene.find('Keeper'); assert.ok(k); assert.deepEqual(k.pos.slice(0, 2), [50, 60]); assert.equal(k.vars.n, 7); assert.equal(g.scene.find('Temp'), null);
 });
+
+test('restart resets Persist entities unless explicitly preserved', async () => {
+  files.a={name:'a',entities:[E('Keeper',5,5,10,10,[{type:'Persist'}],{vars:{n:7}})]};
+  const g=mk();await g.loadScene('a');g.scene.find('Keeper').pos=[50,60,0];
+  await g.restart();assert.deepEqual(g.scene.find('Keeper').pos,[5,5,0]);
+  g.scene.find('Keeper').pos=[70,80,0];await g.restart({preservePersistent:true});g.tick(1/60);
+  assert.deepEqual(g.scene.find('Keeper').pos,[70,80,0]);
+});

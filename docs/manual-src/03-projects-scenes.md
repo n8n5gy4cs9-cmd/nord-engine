@@ -52,7 +52,7 @@ A prefab is a saved entity (with children). Scenes reference it with `"prefab": 
 At runtime: `await this.scene.spawn('prefabs/bullet.prefab.json', { pos: [x, y, 0], overrides: {…} })`.
 
 ## Scenes
-A scene is one JSON file. `game.loadScene(path)` swaps scenes; the start scene is `startScene` in the project file.
+A scene is one JSON file. `game.loadScene(path)` swaps scenes; the start scene is `startScene` in the project file. `game.restart()` reloads the current saved scene, resets run time/input and resumes from Pause; it resets Persist entities unless explicitly preserved. See the Scripting chapter for cleanup and storage semantics.
 Scene `settings` hold ambient colour, skybox and gravity overrides.
 
 ::: tip

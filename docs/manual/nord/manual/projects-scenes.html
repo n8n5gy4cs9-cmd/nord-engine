@@ -40,7 +40,7 @@ See <a href="scripting.html">Scripting</a>. A script&#39;s <code>static attribut
 (<code>{&quot;components&quot;: {&quot;0&quot;: {&quot;tint&quot;: &quot;#f00&quot;}}}</code>). Instance fields (<code>name</code>, <code>transform</code>, <code>tags</code>, <code>enabled</code>) win over the prefab&#39;s.
 At runtime: <code>await this.scene.spawn(&#39;prefabs/bullet.prefab.json&#39;, { pos: [x, y, 0], overrides: {…} })</code>.</p>
 <h2 id="scenes">Scenes<a class="anchor" href="#scenes">#</a></h2>
-<p>A scene is one JSON file. <code>game.loadScene(path)</code> swaps scenes; the start scene is <code>startScene</code> in the project file.
+<p>A scene is one JSON file. <code>game.loadScene(path)</code> swaps scenes; the start scene is <code>startScene</code> in the project file. <code>game.restart()</code> reloads the current saved scene, resets run time/input and resumes from Pause; it resets Persist entities unless explicitly preserved. See the Scripting chapter for cleanup and storage semantics.
 Scene <code>settings</code> hold ambient colour, skybox and gravity overrides.</p>
 <aside class="box tip"><div class="box-title">Tip</div><p>Hand-editing JSON is fine — <code>nord check</code> validates ids, tags and missing files, and the editor shows the same problems.</p>
 </aside>

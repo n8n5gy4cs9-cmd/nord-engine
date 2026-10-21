@@ -10,6 +10,11 @@ export class Input {
     this.pointer = { x: 0, y: 0, worldX: 0, worldY: 0, down: false };
     this.stick = [0, 0];
   }
+  /** Clear held keys, edge states, virtual controls and pointer press on scene restart. */
+  reset() {
+    this.held.clear(); this.virtual.clear(); this.prev.clear(); this.cur.clear();
+    this.stick = [0, 0]; this.pointer.down = false;
+  }
   setKey(code, down) { down ? this.held.add(code) : this.held.delete(code); }
   setVirtual(action, on) { on ? this.virtual.add(action) : this.virtual.delete(action); }
   /** Call once per frame before scripts update: snapshots action state so pressed/released work. */

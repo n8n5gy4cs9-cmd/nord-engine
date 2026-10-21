@@ -223,3 +223,22 @@ test('effects: unknown/unsupported handled, backend effect handles set/disable/r
   assert.equal(g.effects.of('scene').length, 1);
   assert.ok(log.some((l) => l[0] === 'rm' && l[1] === 'vignette'));
 });
+
+test('restart reloads saved scene, resumes, clears input/time and cancels old schedules', async () => {
+  let destroyed=0, starts=0, oldTimer=0;
+  class RestartScript extends NordScript { start(){starts++;} onDestroy(){destroyed++;} }
+  files['mod:restart.js']=RestartScript;
+  const saved={name:'fresh',settings:{custom:{value:1}},entities:[ent('Player',{transform:{pos:[2,3,0]},scripts:[{path:'restart.js'}]})]};
+  const g=mk({fetchJSON:async()=>saved}); await g.loadScene('s');
+  const old=g.scene; old.find('Player').pos=[99,99,0]; old.settings.custom.value=9;
+  old.scheduler.after(.1,()=>oldTimer++); g.save.set('best',123);
+  g.input.setKey('Space',true); g.input.setVirtual('left',true); g.input.beginFrame();
+  g.input.pointer.down=true;g.input.stick=[1,1];g.time.elapsed=99;g.timeScale=0;g.pause();
+  const a=g.restart(),b=g.restart();assert.equal(a,b);await a;
+  assert.notEqual(g.scene,old);assert.deepEqual(g.scene.find('Player').pos,[2,3,0]);
+  assert.equal(g.scene.settings.custom.value,1);assert.equal(saved.settings.custom.value,1);
+  assert.equal(g.paused,false);assert.equal(g.timeScale,1);assert.equal(g.time.elapsed,0);
+  assert.equal(g.input.down('jump'),false);assert.equal(g.input.key('Space'),false);
+  assert.equal(g.input.virtual.size,0);assert.equal(g.input.pointer.down,false);assert.deepEqual(g.input.stick,[0,0]);
+  g.tick(.2);assert.equal(oldTimer,0);assert.equal(destroyed,1);assert.equal(starts,2);assert.equal(g.save.get('best'),123);
+});

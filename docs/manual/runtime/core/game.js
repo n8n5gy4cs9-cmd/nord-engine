@@ -101,14 +101,19 @@ export class Game {
       return true;
     } catch (err) { this.reportError(err, { constructor: { name: 'EventSheet' } }, 'hotReload'); return false; }
   }
-  async loadScene(path = this.project.startScene) {
+  async loadScene(path = this.project.startScene, { preservePersistent = true, reset = false } = {}) {
     if (!this._i18nReady) { this._i18nReady = true; await this.i18n.init(); await loadAddons(this); }
-    const kept = (this.scene?.roots ?? []).flatMap((r) => [...r.all()]).filter((e) => e.behavior('Persist') && !e.parent).map((e) => e.toJSON());
+    const kept = (preservePersistent ? (this.scene?.roots ?? []) : []).flatMap((r) => [...r.all()]).filter((e) => e.behavior('Persist') && !e.parent).map((e) => e.toJSON());
     this.effects.clear('scene'); this.effects.prune();
     this.scene?.destroy();
     this.events.emit('sceneUnload', this.scene?.name);
+    if (reset) {
+      this.paused = false; this.timeScale = 1;
+      this.time.delta = 0; this.time.elapsed = 0;
+      this.input.reset();
+    }
     this._scenePath = path;
-    const scene = new Scene(this, await this.loadJSON(path));
+    const scene = new Scene(this, structuredClone(await this.loadJSON(path)));
     this.scene = scene;
     await scene.build();
     for (const d of kept) { // Persist behavior: the surviving instance replaces the layout's own copy of the same name
@@ -125,7 +130,17 @@ export class Game {
     this.events.emit('sceneLoad', scene.name);
     return scene;
   }
-  restart() { return this.loadScene(this._scenePath); }
+  /** Reload the current scene from its saved data. Resumes, resets time/input and drops Persist state by default.
+   * Save storage, asset/module caches and game services survive. Concurrent restart calls share one Promise.
+   * @param {object} options { preservePersistent?: boolean } opt in to migrating Persist entities
+   * @returns {Promise<Scene>} fresh scene, after init/start
+   */
+  restart({ preservePersistent = false } = {}) {
+    if (this._restartPromise) return this._restartPromise;
+    this._restartPromise = this.loadScene(this._scenePath ?? this.project.startScene, { preservePersistent, reset: true })
+      .finally(() => { this._restartPromise = null; });
+    return this._restartPromise;
+  }
   pause() { this.paused = true; this.events.emit('pause'); }
   resume() { this.paused = false; this.events.emit('resume'); }
   /** Backends call this from their render loop with real delta seconds. */

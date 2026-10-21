@@ -38,7 +38,20 @@ or Babylon TransformNode — escape hatch).
 `input.key('KeyW')`, `input.pointer` `{x,y,worldX,worldY,down}`, gamepad, touch, virtual joystick (ui plugin). Actions come from `nord.project.json`.
 
 ## Scene
-`game.loadScene(path)`, `game.restart()`, `game.pause()/resume()`, `game.timeScale`, `scene.spawn(prefabPath, {pos})`, `scene.find…`.
+`game.loadScene(path)`, `game.restart(options?)`, `game.pause()/resume()`, `game.timeScale`, `scene.spawn(prefabPath, {pos})`, `scene.find…`.
+
+`await game.restart()` reloads the current saved scene (or the project start scene before the first load), destroys the old scene and scripts, cancels its scheduler, and builds fresh entities/components/script instances. It resets `time.elapsed`, `time.delta`, `timeScale` to 1, paused state to false, and held/edge/virtual input, stick and pointer press. Concurrent restart calls share a promise; it resolves after the new scene starts. Scene JSON is cloned before building so runtime component/settings changes cannot mutate cached saved data.
+
+Unlike normal `loadScene(path)`, restart resets Persist entities by default. Use `restart({ preservePersistent: true })` to migrate their state deliberately. Normal scene transitions retain their existing Persist behavior. Save storage, asset/module caches, global services, module-level JavaScript and external servers survive. Keep per-run variables on script instances; release custom DOM/UI, window listeners, native meshes/materials and audio in `onDestroy()`. Calling restart does not reload edited script modules; use Stop/Play or hot reload for code changes. An old scene script is destroyed by restart: call it and return rather than continuing to mutate the old instance.
+
+```js
+// A UI callback can restart even while game.pause() is active.
+this.ui.button('Restart', () => { this.game.restart(); return; });
+// A persistent app controller can await the fresh scene:
+const freshScene = await game.restart();
+```
+
+Existing copied projects need **Upgrade runtime** to receive this behavior.
 
 ## Events
 `events.on(name, fn)`, `events.emit(name, data)`, global bus + per-entity.
