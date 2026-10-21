@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>T31 Full game workshop — Coin Canyon (2D) — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="tutorials.html" class="active" aria-current="page">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Tutorials</div><a href="tutorials.html">Learn by building</a><a href="tut-t01-hello-nord.html">T01 Hello Nord</a><a href="tut-t02-sprite-movement.html">T02 Sprite &amp; movement</a><a href="tut-t03-first-script.html">T03 Your first script</a><a href="tut-t04-platformer.html">T04 Platformer from template</a><a href="tut-t05-physics.html">T05 Physics &amp; collisions</a><a href="tut-t06-tilemaps.html">T06 Tilemaps</a><a href="tut-t07-animation-juice.html">T07 Animation &amp; juice</a><a href="tut-t08-ui-hud.html">T08 UI &amp; HUD</a><a href="tut-t09-audio.html">T09 Audio</a><a href="tut-t10-3d-scene.html">T10 3D scene &amp; camera</a><a href="tut-t11-3d-physics.html">T11 3D physics (FPS)</a><a href="tut-t12-enemy-ai.html">T12 Enemy AI</a><a href="tut-t13-save-load.html">T13 Save &amp; load</a><a href="tut-t14-export-host.html">T14 Export to web &amp; host it</a><a href="tut-t15-mac-app.html">T15 Mac app</a><a href="tut-t16-rust-game.html">T16 Rust/WASM game</a><a href="tut-t17-rust-egui-app.html">T17 Rust egui app</a><a href="tut-t18-library-snippets.html">T18 Writing library snippets</a><a href="tut-t19-notepaint.html">T19 Build notepaint, from a blank folder</a><a href="tut-t20-star-not.html">T20 Build Star-Not, a complete small space adventure</a><a href="tut-t21-project-design.html">T21 Plan a bigger Nord project</a><a href="tut-t22-shader-terrain.html">T22 Put a terrain shader in a Nord app</a><a href="tut-t23-light-shadows.html">T23 2D lights and real shadows</a><a href="tut-t24-event-sheet-platformer.html">T24 A platformer from events</a><a href="tut-t25-topdown-shooter.html">T25 A top-down shooter from events</a><a href="tut-t26-menus-languages.html">T26 Menus and two languages</a><a href="tut-t27-fps-level.html">T27 Build your first FPS level</a><a href="tut-t28-machine-workshop.html">T28 Machine Workshop — build a gravity puzzle in 2D Level</a><a href="tut-t29-dungeon-two-floors.html">T29 Two Floors — edit a Shattered Pixel Dungeon adaptation</a><a href="tut-t30-tank-patrol.html">T30 Tiny Tank Patrol — build a top-down tank arena</a><a href="tut-t31-full-2d-platformer.html" class="cur" aria-current="page">T31 Full game workshop — Coin Canyon (2D)</a><a href="tut-t32-full-3d-platformer.html">T32 Full game workshop — Sunset Gems (3D)</a></nav><main id="content"><div class="crumb">Tutorials / Nord Engine</div><h1>T31 Full game workshop — Coin Canyon (2D)</h1>
+<p>Build <strong>Coin Canyon</strong>, a short side-scrolling challenge: cross three gaps, collect coins, activate flags and defeat the giant slime. This is a complete workshop using Nord&#39;s existing <strong>Platformer</strong> game. You will understand and change the actual project, rather than assemble a scene that only looks like a game.</p>
+<p><strong>Allow:</strong> 60–90 minutes. <strong>You need:</strong> Nord Editor, a keyboard, and a writable project folder. The terminal route uses the engine&#39;s <code>nord</code> executable (from a checkout, <code>target/debug/nord</code>). All libraries and art are already bundled. No download or account is needed. The game is keyboard controlled; this workshop does not add mobile buttons.</p>
+<h2 id="1-make-your-own-project">1. Make your own project<a class="anchor" href="#1-make-your-own-project">#</a></h2>
+<p>In the welcome screen choose <strong>New project</strong>, select <strong>Platformer</strong>, and create a folder named <code>coin-canyon</code>. Open that project. Use a new project so your changes belong to you and the bundled example stays available as a reference.</p>
+<p>The terminal equivalent, from a folder where you keep projects:</p>
+<pre class="code" data-lang="sh"><code>nord new coin-canyon -t platformer
+nord serve coin-canyon</code></pre>
+<p>Open the local address printed by <code>serve</code>. Keep that process running during browser testing; Ctrl+C stops it. Editor users can use the editor&#39;s Play button instead.</p>
+<p>The files you will use are:</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>nord.project.json</code></td>
+<td>Project name, display, physics and start scene</td>
+</tr>
+<tr>
+<td><code>scenes/main.scene.json</code></td>
+<td>Hero, coins, slimes, flags, camera and systems</td>
+</tr>
+<tr>
+<td><code>assets/maps/level.tilemap.json</code></td>
+<td>The solid terrain grid</td>
+</tr>
+<tr>
+<td><code>scripts/platformer2d.js</code></td>
+<td>Reusable movement controller</td>
+</tr>
+<tr>
+<td><code>scripts/enemy.js</code> and <code>scripts/boss.js</code></td>
+<td>Stomp/contact rules and final victory</td>
+</tr>
+<tr>
+<td><code>scripts/hero-fx.js</code></td>
+<td>Movement animation and jump sound</td>
+</tr>
+</tbody></table>
+<p>Save a backup of the project folder before the terrain-editing step. Inside this personal project, edit the files directly. In the engine repository, generated <code>examples/</code> and <code>templates/</code> instead come from <code>tools/examples/</code>; changes there require the generator.</p>
+<h2 id="2-play-the-unchanged-game-first">2. Play the unchanged game first<a class="anchor" href="#2-play-the-unchanged-game-first">#</a></h2>
+<p>Press <strong>Play</strong>. Click the game to give it keyboard focus. A/D or arrows move, Space jumps, and Shift or K dashes. Hold Space for a higher jump; release early for a short hop. Land on a small slime from above to stomp it; side contact costs health. Flags set the respawn position. The large slime takes five stomps and ends the game when defeated.</p>
+<p>Go as far as the first flag. Notice how the camera follows <strong>Hero</strong>, and how coins disappear while the score rises. Stop Play before editing; runtime changes are temporary.</p>
+<p><strong>Checkpoint:</strong> you can move, jump, collect a coin and see the hearts. If input does nothing, click the game again. If you see an error, inspect Console before continuing.</p>
+<figure class="shot"><img src="../../assets/screenshots/ed-tut-full-platformer.png" alt="The actual Platformer baseline: coins lead across the terrain; slimes and flags give the route its rhythm." loading="lazy"><figcaption>The actual Platformer baseline: coins lead across the terrain; slimes and flags give the route its rhythm.</figcaption></figure><h2 id="3-understand-one-working-character">3. Understand one working character<a class="anchor" href="#3-understand-one-working-character">#</a></h2>
+<p>Open <code>scenes/main.scene.json</code> and select <strong>Hero</strong> in Hierarchy. Its name is Hero, not Player. Its <code>player</code> tag identifies it to enemies and checkpoints. The animated sprite supplies artwork; the dynamic rigidbody and collider provide contact; scripts provide movement, health and animation.</p>
+<p>In Hero&#39;s movement script attributes, change <strong>speed</strong> from <code>130</code> to <code>150</code> and <strong>jumpForce</strong> from <code>340</code> to <code>380</code>. Keep <strong>dash</strong> enabled and <strong>dashSpeed</strong> at <code>280</code>. Save the scene, Play, and compare the first gap with your baseline. Stop and reduce speed if you overshoot.</p>
+<p>These numbers can also be edited in the Hero entry&#39;s <code>scripts</code> array in JSON. Change the attributes of the existing <code>scripts/platformer2d.js</code> entry; do not replace the entire entity or add a second movement script.</p>
+<p><strong>Why this changes the game:</strong> gravity is <code>900</code> pixels per second squared. A stronger jump gives more time in the air, and more horizontal speed gives more range. Change one value at a time after this first comparison. A dash should be an optional shortcut before it becomes a required skill.</p>
+<p><strong>Checkpoint:</strong> the hero reaches the first landing without a dash, and a short tap still produces a visibly smaller jump than a held press.</p>
+<h2 id="4-build-a-readable-coin-trail">4. Build a readable coin trail<a class="anchor" href="#4-build-a-readable-coin-trail">#</a></h2>
+<p>Select <strong>Coin0</strong>. Its pickup script awards <code>10</code> points. Its trigger detects contact without blocking the hero. Duplicate it with Cmd/Ctrl+D, rename the copy <code>CoinTutorial</code>, and set its position to <code>[198, 240, 1]</code>. This puts an early reward before the first elevated platform. Save and Play. Collect it and confirm the score increases by ten.</p>
+<p>Use the existing coins to show the route rather than scattering new ones randomly. For example, move <strong>Coin1</strong> to <code>[238, 200, 1]</code> and <strong>Coin2</strong> to <code>[270, 200, 1]</code>. In 2D, smaller Y is higher on screen. Test that both are reachable from the platform near them.</p>
+<p>For a deliberate bonus, change only CoinTutorial&#39;s pickup <strong>value</strong> to <code>50</code>. Keep its <code>kind</code> as <code>score</code> and keep its rigidbody static and collider a trigger. A decorative coin with no pickup script will never award points.</p>
+<p><strong>Checkpoint:</strong> each coin disappears once and awards its configured value. Stop/Play resets the run and restores collected coins.</p>
+<h2 id="5-change-the-actual-terrain">5. Change the actual terrain<a class="anchor" href="#5-change-the-actual-terrain">#</a></h2>
+<p>The original Platformer uses a <strong>tilemap</strong>, not a <code>.level2d.json</code> authoring file. Open <code>assets/maps/level.tilemap.json</code> in the code editor. Its first layer has a <code>data</code> array with 23 rows and 100 columns. Tiles are 16×16 pixels. <code>-1</code> means empty; tile <code>0</code> and tile <code>3</code> are solid.</p>
+<p>The main walking surface is row <code>18</code>. The first gap occupies columns <code>22</code>, <code>23</code> and <code>24</code>. For an easier introductory jump, replace the <code>-1</code> at row 18, column 22 with <code>0</code>, leaving columns 23 and 24 empty. Array indices start at zero: row 18 is the nineteenth row, column 22 the twenty-third entry. Keep the array rectangular and preserve commas and brackets.</p>
+<p>A safer way to make that exact edit, if you use the terminal, is to run this <strong>from inside your new project folder</strong>:</p>
+<pre class="code" data-lang="sh"><code>node --input-type=module &lt;&lt;'JS'
+import fs from 'node:fs';
+const file = 'assets/maps/level.tilemap.json';
+const map = JSON.parse(fs.readFileSync(file, 'utf8'));
+map.layers[0].data[18][22] = 0;
+fs.writeFileSync(file, JSON.stringify(map, null, 2) + '\n');
+JS</code></pre>
+<p>Save and restart Play. The lip of the first gap now extends one tile farther right. Do not fill every gap: the interesting choice is when to jump and when to dash. Avoid painting terrain over the hero, flags or slime spawn positions.</p>
+<p><strong>Checkpoint:</strong> the gap is visibly narrower and the hero lands on the new tile. If the whole map vanishes, restore the backup and check the JSON syntax.</p>
+<h2 id="6-teach-an-enemy-then-build-the-finale">6. Teach an enemy, then build the finale<a class="anchor" href="#6-teach-an-enemy-then-build-the-finale">#</a></h2>
+<p>Select the first <strong>Slime</strong>. Its patrol script starts with speed <code>35</code> and distance <code>90</code>. Lower speed to <code>25</code> to make the first encounter readable. Keep its enemy script attached. Save and test two approaches: a descending jump should stomp it; walking into its side should remove health.</p>
+<p>Select <strong>Boss</strong> near the far end. Its scale is twice that of a normal slime. In <code>scripts/boss.js</code> attributes set <strong>hp</strong> to <code>3</code> and <strong>damage</strong> to <code>1</code> for your first complete run. This is the same boss with a gentler learning curve. Later restore five HP for the challenge version.</p>
+<p>Read <code>scripts/enemy.js</code>: contact checks whether the hero is above the enemy and falling. A stomp bounces the hero; a side collision emits damage. <code>boss.js</code> reuses those rules and emits <code>game:win</code> when the last hit lands. Keep one boss so the finale remains unambiguous.</p>
+<p>Do not put the boss at a cliff edge. Leave a flat approach with space to jump, miss, recover and try again. Keep the final flag before the encounter so failure repeats the interesting part, not the entire course.</p>
+<p><strong>Checkpoint:</strong> a clean stomp removes an ordinary slime; three clean stomps defeat your edited boss and display victory. Contact invulnerability prevents health disappearing every frame, but it does not make side contact safe.</p>
+<h2 id="7-make-a-complete-difficulty-curve">7. Make a complete difficulty curve<a class="anchor" href="#7-make-a-complete-difficulty-curve">#</a></h2>
+<p>Play from the beginning without editing during the run. Your first stretch should teach movement and one easy coin. The next stretch should require a normal jump. A flag should appear before the harder route; the boss should test a skill already taught by small slimes.</p>
+<p>Use this acceptance list before calling the level finished:</p>
+<ul>
+<li>A new player can see safe ground from the spawn and reach the first coin.</li>
+<li>Every mandatory gap has a reliable landing, including without perfect timing.</li>
+<li>A flag activates before the boss; falling returns you to a usable position.</li>
+<li>Coins award points, side contact hurts, stomps work, and boss defeat wins.</li>
+<li>Stop/Play starts a fresh game, with no errors in Console.</li>
+</ul>
+<p>Ask a friend to play without explaining every jump. If they repeatedly fail at the same landing, widen it or move the preceding coin trail. Add difficulty through combinations of learned actions rather than hidden collision surprises.</p>
+<h2 id="8-export-and-test-the-delivered-game">8. Export and test the delivered game<a class="anchor" href="#8-export-and-test-the-delivered-game">#</a></h2>
+<p>Save all files. In <strong>Project → Export…</strong>, choose the normal web folder export and an output folder. The terminal equivalent is:</p>
+<pre class="code" data-lang="sh"><code>nord check coin-canyon
+nord build coin-canyon --out coin-canyon-web --zip
+python3 -m http.server 8000 --directory coin-canyon-web</code></pre>
+<p>Run these commands from the parent folder containing <code>coin-canyon</code>. Open <code>http://localhost:8000</code>, click the game and repeat the first coin, a death/respawn, and the boss finale. This checks the exported copy rather than the editor server. Keep the whole output folder together. The zip can be uploaded to a browser-game host; <code>index.html</code> must stay at its root.</p>
+<p>If export shows old gameplay, save the scene and rebuild into the folder you are serving. Missing art usually means a renamed path or an incomplete upload. A silent game may need a click to unlock audio. For collision problems, check the collider and solid tile IDs before changing artwork.</p>
+<p>You now have a short game with movement, scoring, enemies, checkpoints, a boss and a tested delivery path. For a second level, duplicate your personal project first and make a new route before adding more systems.</p>
+<p>Related references: <a href="../manual/2d.html">2D games</a>, <a href="../manual/scripting.html">Scripting</a>, <a href="../manual/export.html">Export</a>.</p>
+<div class="pager"><a href="tut-t30-tank-patrol.html"><small>← Previous</small>T30 Tiny Tank Patrol — build a top-down tank arena</a><a href="tut-t32-full-3d-platformer.html"><small>Next →</small>T32 Full game workshop — Sunset Gems (3D)</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-make-your-own-project">1. Make your own project </a><a href="#2-play-the-unchanged-game-first">2. Play the unchanged game first </a><a href="#3-understand-one-working-character">3. Understand one working character </a><a href="#4-build-a-readable-coin-trail">4. Build a readable coin trail </a><a href="#5-change-the-actual-terrain">5. Change the actual terrain </a><a href="#6-teach-an-enemy-then-build-the-finale">6. Teach an enemy, then build the finale </a><a href="#7-make-a-complete-difficulty-curve">7. Make a complete difficulty curve </a><a href="#8-export-and-test-the-delivered-game">8. Export and test the delivered game </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

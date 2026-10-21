@@ -30,7 +30,7 @@ Middle/right drag or Space-drag pans, wheel zooms and Home fits the map. Ctrl/Cm
 
 ## Layers and reusable items
 
-**Level** manages layers from back to front. Select a layer to paint on it; hide, lock, reorder or rename it. Opacity and parallax control scenery. Parallax 1 is the normal world; 0 is fixed to the screen. Solid tile layers require 1. Hidden layers do not appear in gameplay.
+**Level** manages layers from back to front. Select a layer to paint on it; hide, lock, reorder or rename it. Opacity and parallax control scenery. Parallax 1 is the normal world; 0 is fixed to the screen. Solid tile layers require 1. Hidden layers do not appear in gameplay. Brush clicks and palette drops both reject locked or hidden active layers; unlock and show the layer before placing content.
 
 Select an object and use **Save as variant** to keep its appearance, body and scripts as a reusable item. **Assets** lists the saved variants; each placement gets a new independent identity. Variants live in the level file and are saved with it.
 

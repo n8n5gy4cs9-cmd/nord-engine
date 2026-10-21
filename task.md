@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 265/278 tasks (95%)** · updated 2026-10-21
+**Overall: 267/280 tasks (95%)** · updated 2026-10-21
 
 | Milestone | Progress |
 |---|---|
@@ -14,8 +14,8 @@
 | M4 Export | 8/11 (73%) |
 | M5 Rust/WASM | 9/9 (100%) |
 | M6 Library | 51/51 (100%) |
-| M7 Docs | 20/20 (100%) |
-| M8 Polish & portability | 15/20 (75%) |
+| M7 Docs | 21/21 (100%) |
+| M8 Polish & portability | 16/21 (76%) |
 | M9 Desktop apps | 16/16 (100%) |
 | M10 Construct-style editor | 35/35 (100%) |
 | M11 Web editor | 14/16 (88%) |
@@ -219,6 +219,7 @@ _manual, guides, tutorials, in-editor docs_
 - [x] **M7-18** Visible mobile touch-control guide and reusable Star-Not joystick/buttons
 - [x] **M7-19** Add manual noindex metadata and server upload files
 - [x] **M7-20** Organize manual output into folders and rebuild only changed files
+- [x] **M7-21** Full playable 2D Platformer and 3D Platformer tutorials
 
 ## M8 — Polish & portability
 _dmg, CI, Windows, Linux, perf_
@@ -243,6 +244,7 @@ _dmg, CI, Windows, Linux, perf_
 - [x] **M8-18** Editor UI uplift: charcoal theme, polished workspace and hub, reliable toolbar and dialogs
 - [x] **M8-19** Fix Assets folder divider resizing and staircase thumbnail grid
 - [x] **M8-20** Code editor word wrap and configurable line height/letter spacing
+- [x] **M8-21** Bug fix run: protect locked/hidden layers from palette drops
 
 ## M9 — Desktop apps
 _real native desktop apps (Rust backend): files, dialogs, notifications, tray, windows, storage, packaging_

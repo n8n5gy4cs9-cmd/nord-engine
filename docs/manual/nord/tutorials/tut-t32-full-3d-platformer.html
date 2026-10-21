@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>T32 Full game workshop — Sunset Gems (3D) — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="tutorials.html" class="active" aria-current="page">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Tutorials</div><a href="tutorials.html">Learn by building</a><a href="tut-t01-hello-nord.html">T01 Hello Nord</a><a href="tut-t02-sprite-movement.html">T02 Sprite &amp; movement</a><a href="tut-t03-first-script.html">T03 Your first script</a><a href="tut-t04-platformer.html">T04 Platformer from template</a><a href="tut-t05-physics.html">T05 Physics &amp; collisions</a><a href="tut-t06-tilemaps.html">T06 Tilemaps</a><a href="tut-t07-animation-juice.html">T07 Animation &amp; juice</a><a href="tut-t08-ui-hud.html">T08 UI &amp; HUD</a><a href="tut-t09-audio.html">T09 Audio</a><a href="tut-t10-3d-scene.html">T10 3D scene &amp; camera</a><a href="tut-t11-3d-physics.html">T11 3D physics (FPS)</a><a href="tut-t12-enemy-ai.html">T12 Enemy AI</a><a href="tut-t13-save-load.html">T13 Save &amp; load</a><a href="tut-t14-export-host.html">T14 Export to web &amp; host it</a><a href="tut-t15-mac-app.html">T15 Mac app</a><a href="tut-t16-rust-game.html">T16 Rust/WASM game</a><a href="tut-t17-rust-egui-app.html">T17 Rust egui app</a><a href="tut-t18-library-snippets.html">T18 Writing library snippets</a><a href="tut-t19-notepaint.html">T19 Build notepaint, from a blank folder</a><a href="tut-t20-star-not.html">T20 Build Star-Not, a complete small space adventure</a><a href="tut-t21-project-design.html">T21 Plan a bigger Nord project</a><a href="tut-t22-shader-terrain.html">T22 Put a terrain shader in a Nord app</a><a href="tut-t23-light-shadows.html">T23 2D lights and real shadows</a><a href="tut-t24-event-sheet-platformer.html">T24 A platformer from events</a><a href="tut-t25-topdown-shooter.html">T25 A top-down shooter from events</a><a href="tut-t26-menus-languages.html">T26 Menus and two languages</a><a href="tut-t27-fps-level.html">T27 Build your first FPS level</a><a href="tut-t28-machine-workshop.html">T28 Machine Workshop — build a gravity puzzle in 2D Level</a><a href="tut-t29-dungeon-two-floors.html">T29 Two Floors — edit a Shattered Pixel Dungeon adaptation</a><a href="tut-t30-tank-patrol.html">T30 Tiny Tank Patrol — build a top-down tank arena</a><a href="tut-t31-full-2d-platformer.html">T31 Full game workshop — Coin Canyon (2D)</a><a href="tut-t32-full-3d-platformer.html" class="cur" aria-current="page">T32 Full game workshop — Sunset Gems (3D)</a></nav><main id="content"><div class="crumb">Tutorials / Nord Engine</div><h1>T32 Full game workshop — Sunset Gems (3D)</h1>
+<p>Make <strong>Sunset Gems</strong>, a compact 3D jumping game. The player climbs a winding chain of stone platforms, double-jumps toward gold gems and finishes by collecting all seven. You will work on the existing <strong>3D platformer</strong> project, learn what every gameplay piece does, redesign part of the route and export a playable web folder.</p>
+<p><strong>Allow:</strong> 60–90 minutes. <strong>You need:</strong> Nord Editor, keyboard, a writable project folder and a browser with WebGL. Everything needed by this example is bundled. The terminal commands assume <code>nord</code> is available; in an engine checkout its binary is <code>target/debug/nord</code>. This is a keyboard game with a following camera, not an FPS mouse-look game.</p>
+<h2 id="1-create-a-personal-game">1. Create a personal game<a class="anchor" href="#1-create-a-personal-game">#</a></h2>
+<p>In the welcome screen choose <strong>New project → 3D platformer</strong> and create <code>sunset-gems</code>. This copies the working starter into your folder. The bundled example is named <code>platformer3d</code>; the template ID used by the CLI is <code>platformer-3d</code>.</p>
+<pre class="code" data-lang="sh"><code>nord new sunset-gems -t platformer-3d
+nord serve sunset-gems</code></pre>
+<p>Open the printed local address if using the browser. Editor users can press Play. Keep a backup before you start changing physics or scripts.</p>
+<table>
+<thead>
+<tr>
+<th>File or object</th>
+<th>What you will change</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>scenes/main.scene.json</code></td>
+<td>All platforms, gems, Player and Camera</td>
+</tr>
+<tr>
+<td>Player → <code>scripts/platformer3d.js</code> attributes</td>
+<td>Speed, jump strength and double jump</td>
+</tr>
+<tr>
+<td>Camera → <code>scripts/camera-follow3d.js</code> attributes</td>
+<td>Target, framing and smoothing</td>
+</tr>
+<tr>
+<td><code>scripts/collect.js</code></td>
+<td>Gem counter, victory message and low-Y recovery</td>
+</tr>
+<tr>
+<td>Mover → <code>scripts/physics-moving-platform.js</code></td>
+<td>Travel distance and cycle time</td>
+</tr>
+</tbody></table>
+<p>Edit your personal project. If you are maintaining the engine&#39;s bundled example, its source is <code>tools/examples/platformer3d/</code>; the generated <code>examples/</code> copy is not the source of truth.</p>
+<h2 id="2-learn-the-original-route">2. Learn the original route<a class="anchor" href="#2-learn-the-original-route">#</a></h2>
+<p>Press Play and click the game for focus. WASD or arrows move along world axes. Space jumps. Release and press Space again in the air for the double jump. The camera follows from behind; move a little in each direction to understand the screen relationship before attempting a gap.</p>
+<p>The seven stepping stones are named <strong>Plat0</strong> through <strong>Plat6</strong>, with one gem above each. The blue <strong>Mover</strong> is a side feature rather than a required gem platform. You can complete the original seven-gem objective without using it.</p>
+<p>Try the first two gems. Notice the HUD changes from <code>Gems 0/7</code> to <code>Gems 1/7</code>. Collecting all gems shows <strong>All gems collected!</strong>. Restart with Stop/Play or reload the browser page.</p>
+<p>There is a large sandy ground below the route. Missing a jump may land you on sand rather than kill you. The script only teleports you back when Y drops below <code>-8</code>; do not assume every missed jump triggers that condition. For this tutorial the sand is a forgiving practice floor.</p>
+<p><strong>Checkpoint:</strong> movement works, the camera follows Player, and touching the first gem removes it and increments the counter exactly once.</p>
+<figure class="shot"><img src="../../assets/screenshots/ed-tut-full-platformer3d.png" alt="The actual 3D Platformer baseline: gold gems mark a winding climb above a forgiving sandy floor." loading="lazy"><figcaption>The actual 3D Platformer baseline: gold gems mark a winding climb above a forgiving sandy floor.</figcaption></figure><h2 id="3-read-the-scene-as-a-game-designer">3. Read the scene as a game designer<a class="anchor" href="#3-read-the-scene-as-a-game-designer">#</a></h2>
+<p>Stop Play and open the main scene. Select <strong>Player</strong>. Its capsule mesh provides a visible character; its dynamic rigidbody and capsule collider make it fall and land. Its <code>player</code> tag lets pickups recognize it. <code>platformer3d.js</code> moves it, while <code>collect.js</code> owns the goal counter.</p>
+<p>Select <strong>Plat0</strong>. A platform is a box mesh with a material, static rigidbody and collider. The transform position is its centre. Here, Y goes <strong>up</strong> and X/Z lie across the floor. This is different from a 2D canvas, where increasing Y usually moves down.</p>
+<p>The route starts on <strong>Start</strong> at <code>[0, 0.25, 0]</code>. Plat0 is <code>[0, 0.25, 6]</code>, Plat1 is <code>[4, 0.9, 10]</code>, and later platforms turn left while climbing. Changing a mesh&#39;s visible colour does not change its collision. Removing its collider does.</p>
+<p><strong>Checkpoint:</strong> identify the Start, Player, Camera, Plat0, Gem0 and Mover before editing any of them. Select by Hierarchy name if clicking overlapping meshes is awkward.</p>
+<h2 id="4-tune-a-jump-before-moving-the-world">4. Tune a jump before moving the world<a class="anchor" href="#4-tune-a-jump-before-moving-the-world">#</a></h2>
+<p>Select Player. In its <code>scripts/platformer3d.js</code> attributes, keep <strong>speed</strong> at <code>6</code>, change <strong>jumpSpeed</strong> from <code>8.5</code> to <code>9</code>, and explicitly set <strong>doubleJump</strong> to <code>true</code> if the Inspector shows it. Save and Play.</p>
+<p>Try three jumps: tap Space, hold Space, then press it twice with a release between presses. A tap cuts the rise early; holding gets more height; the second press grants the air jump. The controller also includes short coyote-time and jump-buffer windows, making near-edge input more forgiving.</p>
+<p>Stop Play and change only speed to <code>5</code>. Test the same first gap. This comparison shows why a stronger jump does not automatically solve a large horizontal gap: time in the air and forward speed work together. Restore speed <code>6</code> after the comparison.</p>
+<p><strong>Checkpoint:</strong> the first two platforms can be reached repeatedly. If not, improve their spacing before adding enemies, timers or a death floor.</p>
+<h2 id="5-build-a-friendlier-first-landing">5. Build a friendlier first landing<a class="anchor" href="#5-build-a-friendlier-first-landing">#</a></h2>
+<p>Move <strong>Plat1</strong> from <code>[4, 0.9, 10]</code> to <code>[3, 0.9, 9]</code>. Move <strong>Gem1</strong> to <code>[3, 2.1, 9]</code>, keeping it 1.2 units above the platform&#39;s centre. Change transforms through Inspector or the <code>transform.pos</code> arrays of those named scene entries.</p>
+<p>Save and test. You have shortened the diagonal approach and kept the reward over the landing. The next platform, Plat2, is still at <code>[8, 1.6, 14]</code>; confirm that this next jump remains possible. A local improvement can create a difficult outgoing jump, so always test the platform before and after the one you change.</p>
+<p>If you want wider first steps, change both the box <strong>mesh size</strong> and its <strong>collider size</strong> from <code>[3, 0.5, 3]</code> to <code>[4, 0.5, 4]</code>. Keep these dimensions matched. Do not use a collider that is visibly smaller than the landing unless you deliberately want an unforgiving edge.</p>
+<p>Use green material colours for safe landing stones and a warmer colour for the final stone. This is a readability choice: players should recognize the route without needing to inspect the scene tree.</p>
+<p><strong>Checkpoint:</strong> you can start on Start, collect Gem0, land on edited Plat1, collect Gem1 and continue to Plat2. Your capsule stands on the entire visible landing.</p>
+<h2 id="6-add-an-optional-reward-the-correct-way">6. Add an optional reward the correct way<a class="anchor" href="#6-add-an-optional-reward-the-correct-way">#</a></h2>
+<p>Duplicate <strong>Gem0</strong>, rename it <strong>GemBonus</strong>, and put it at <code>[0, 2.5, 0]</code> above the starting platform. Keep its <code>gem</code> tag, pickup script, spin script, static rigidbody and trigger collider. If duplicating through JSON, assign a fresh unique entity ID as well as the new name; editor Duplicate does this for you.</p>
+<p>Save and restart. The counter should now read <code>Gems 0/8</code>, because <code>collect.js</code> counts all entities tagged <code>gem</code> when the scene starts. Jump into the bonus gem and confirm <code>Gems 1/8</code>.</p>
+<p>The pickup&#39;s <strong>kind</strong> must remain <code>score</code>. Its score value does not determine the number in this game&#39;s gem counter: the collection script increments once for each pickup event. Avoid adding unrelated health or ammo pickups in this workshop, because the current counter listens to the global pickup event without filtering by type.</p>
+<p>For your final seven-gem course, delete GemBonus, save and restart. The counter returns to seven. This exercise shows how scene data and script logic jointly define an objective.</p>
+<p><strong>Checkpoint:</strong> adding a tagged gem changes the total; removing it changes the total back; collecting it only adds one to the count.</p>
+<h2 id="7-make-the-moving-platform-readable">7. Make the moving platform readable<a class="anchor" href="#7-make-the-moving-platform-readable">#</a></h2>
+<p>Select <strong>Mover</strong>. Its initial position is <code>[14, 2.4, 22]</code>, its size is <code>[3, 0.5, 3]</code>, and its kinematic body is driven by <code>physics-moving-platform.js</code>. The initial offset <code>[0, 0, 8]</code> moves it along Z; its period is <code>5</code> seconds.</p>
+<p>Change <strong>period</strong> to <code>7</code> to give the player more boarding time. Keep <strong>carryTag</strong> as <code>player</code>. Do not add a second motion script or change the body to dynamic: this platform is script-driven.</p>
+<p>For a separate practice exercise, temporarily move Mover to <code>[5, 0.25, 0]</code> and reduce its offset to <code>[0, 0, 3]</code>. It is now beside Start, so you can test boarding without replaying the entire climb. Save, Play, step aboard and observe a whole outward/return cycle. Restore its original position and offset afterward, or leave it as a practice attraction that does not block the main route.</p>
+<p><strong>Checkpoint:</strong> the platform moves repeatedly and a standing Player travels with it. If it slides underneath the character, check carryTag and the Player&#39;s tag, then inspect Console.</p>
+<h2 id="8-frame-the-next-decision">8. Frame the next decision<a class="anchor" href="#8-frame-the-next-decision">#</a></h2>
+<p>Select <strong>Camera</strong>. Its follow script targets the entity named <code>Player</code>, with offset <code>[0, 5, -8]</code> and smoothing <code>4</code>. Try offset <code>[0, 6, -10]</code> for a wider view, keeping the target unchanged. Save and play through the first bend.</p>
+<p>Choose the framing that shows the current platform and the next landing together. If the player becomes too small, move back toward the original offset. Keep one active gameplay camera. A second camera is not needed to solve a framing problem.</p>
+<p>The camera also has bloom, FXAA, tone mapping and a vignette. If bright gems lose their shape, reduce bloom before increasing brightness. Make the level readable first; use effects to support that readability.</p>
+<p><strong>Checkpoint:</strong> the first bend can be navigated without guessing where the next landing is. Movement remains aligned to world axes even when the camera framing changes.</p>
+<h2 id="9-verify-the-whole-goal-and-recovery">9. Verify the whole goal and recovery<a class="anchor" href="#9-verify-the-whole-goal-and-recovery">#</a></h2>
+<p>Read <code>scripts/collect.js</code>. At start it stores the spawn position and counts <code>gem</code> entities. On pickup it updates the label; when the count reaches the total it creates the victory message. Its update checks whether Player has fallen below <strong>killY</strong> and teleports back to spawn.</p>
+<p>Test a full run after deleting the temporary bonus gem. Collect every gem, including the last one at the top of the route. Confirm the message appears when the counter reaches seven. Then Stop/Play and verify a clean counter and restored gems.</p>
+<p>To test low-Y recovery without making the ground disappear, use a disposable copy of your project: delete the <strong>Ground</strong> entity, keeping Start and all stepping stones. Save, Play and walk off Start into the empty space. The character should fall and teleport back onto Start after crossing killY. Restore Ground from your backup before continuing. A sand landing inside the ground&#39;s area is expected to be safe; it does not test the low-Y branch.</p>
+<p>Before release, check:</p>
+<ul>
+<li>The first jump teaches the controls and does not require perfect timing.</li>
+<li>Every gem is reachable and visible from a sensible approach.</li>
+<li>Changed platforms have matching visible and collision dimensions.</li>
+<li>The moving platform carries the player and cannot trap the main route.</li>
+<li>Seven collected gems produce victory; restarting resets the run.</li>
+<li>Console contains no script errors.</li>
+</ul>
+<h2 id="10-export-the-actual-game">10. Export the actual game<a class="anchor" href="#10-export-the-actual-game">#</a></h2>
+<p>Save all project files. Use <strong>Project → Export…</strong> and choose the normal web folder target. From the parent directory of your project, the terminal equivalent is:</p>
+<pre class="code" data-lang="sh"><code>nord check sunset-gems
+nord build sunset-gems --out sunset-gems-web --zip
+python3 -m http.server 8001 --directory sunset-gems-web</code></pre>
+<p>Open <code>http://localhost:8001</code> and repeat movement, gem collection, moving-platform boarding and victory in that exported copy. Keep the entire output folder intact when uploading, including libraries, scripts, skybox faces and textures. Use the zip when a host expects an HTML game archive.</p>
+<p>If the page is blank, inspect Console and verify WebGL is enabled. Missing textures usually indicate an incomplete upload or changed filename. If the game opens an old route, save the scene, rebuild, and confirm the server points at your new output. If a gem looks correct but cannot be collected, inspect its trigger collider, pickup script and Player tag.</p>
+<p>Your finished game has a learnable route, a movement challenge, an explicit goal, moving scenery and an export you have actually played. A good next revision is a shorter alternative route with harder jumps; preserve the tested easy route until the new one is fun.</p>
+<p>Related references: <a href="../manual/3d.html">3D games</a>, <a href="../manual/physics.html">Physics</a>, <a href="../manual/export.html">Export</a>.</p>
+<div class="pager"><a href="tut-t31-full-2d-platformer.html"><small>← Previous</small>T31 Full game workshop — Coin Canyon (2D)</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-create-a-personal-game">1. Create a personal game </a><a href="#2-learn-the-original-route">2. Learn the original route </a><a href="#3-read-the-scene-as-a-game-designer">3. Read the scene as a game designer </a><a href="#4-tune-a-jump-before-moving-the-world">4. Tune a jump before moving the world </a><a href="#5-build-a-friendlier-first-landing">5. Build a friendlier first landing </a><a href="#6-add-an-optional-reward-the-correct-way">6. Add an optional reward the correct way </a><a href="#7-make-the-moving-platform-readable">7. Make the moving platform readable </a><a href="#8-frame-the-next-decision">8. Frame the next decision </a><a href="#9-verify-the-whole-goal-and-recovery">9. Verify the whole goal and recovery </a><a href="#10-export-the-actual-game">10. Export the actual game </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

@@ -1734,6 +1734,12 @@
       "status": "done"
     },
     {
+      "id": "M7-21",
+      "milestone": "M7",
+      "title": "Full playable 2D Platformer and 3D Platformer tutorials",
+      "status": "done"
+    },
+    {
       "id": "M8-01",
       "milestone": "M8",
       "title": ".dmg packaging + notarisation notes",
@@ -1851,6 +1857,12 @@
       "id": "M8-20",
       "milestone": "M8",
       "title": "Code editor word wrap and configurable line height/letter spacing",
+      "status": "done"
+    },
+    {
+      "id": "M8-21",
+      "milestone": "M8",
+      "title": "Bug fix run: protect locked/hidden layers from palette drops",
       "status": "done"
     },
     {
