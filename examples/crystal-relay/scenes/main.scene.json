@@ -1,0 +1,1379 @@
+{
+  "format": 1,
+  "name": "main",
+  "settings": {},
+  "entities": [
+    {
+      "id": "eeeeeeeu",
+      "name": "Sun",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          10,
+          0
+        ],
+        "rot": [
+          50,
+          -30,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "light",
+          "kind": "directional",
+          "intensity": 1.4,
+          "castShadows": true,
+          "color": "#fff4e0"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeev",
+      "name": "Ambient",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "light",
+          "kind": "hemispheric",
+          "intensity": 0.55,
+          "color": "#b0c0ff"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeew",
+      "name": "Sky",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "skybox",
+          "path": "assets/skybox/sunset"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeex",
+      "name": "Ground",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "ground",
+          "size": [
+            120,
+            0.2,
+            120
+          ]
+        },
+        {
+          "type": "material",
+          "texture": "assets/textures/sand.png",
+          "uvScale": [
+            30,
+            30
+          ],
+          "roughness": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeey",
+      "name": "Start",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0.25,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "box",
+          "size": [
+            6,
+            0.5,
+            6
+          ]
+        },
+        {
+          "type": "material",
+          "texture": "assets/textures/stone.png",
+          "uvScale": [
+            3,
+            3
+          ],
+          "roughness": 0.8,
+          "metallic": 0
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static",
+          "mass": 1,
+          "bounce": 0,
+          "fixedRotation": false
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            6,
+            0.5,
+            6
+          ],
+          "trigger": false
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeez",
+      "name": "Plat0",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0.25,
+          6
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "box",
+          "size": [
+            3,
+            0.5,
+            3
+          ]
+        },
+        {
+          "type": "material",
+          "texture": "assets/textures/checker.png",
+          "uvScale": [
+            1.5,
+            1.5
+          ],
+          "roughness": 0.8,
+          "metallic": 0
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static",
+          "mass": 1,
+          "bounce": 0,
+          "fixedRotation": false
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            3,
+            0.5,
+            3
+          ],
+          "trigger": false
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee10",
+      "name": "Plat1",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          4,
+          0.9,
+          10
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "box",
+          "size": [
+            3,
+            0.5,
+            3
+          ]
+        },
+        {
+          "type": "material",
+          "texture": "assets/textures/checker.png",
+          "uvScale": [
+            1.5,
+            1.5
+          ],
+          "roughness": 0.8,
+          "metallic": 0
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static",
+          "mass": 1,
+          "bounce": 0,
+          "fixedRotation": false
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            3,
+            0.5,
+            3
+          ],
+          "trigger": false
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee11",
+      "name": "Plat2",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          8,
+          1.6,
+          14
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "box",
+          "size": [
+            3,
+            0.5,
+            3
+          ]
+        },
+        {
+          "type": "material",
+          "texture": "assets/textures/checker.png",
+          "uvScale": [
+            1.5,
+            1.5
+          ],
+          "roughness": 0.8,
+          "metallic": 0
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static",
+          "mass": 1,
+          "bounce": 0,
+          "fixedRotation": false
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            3,
+            0.5,
+            3
+          ],
+          "trigger": false
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee12",
+      "name": "Plat3",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          3,
+          2.4,
+          18
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "box",
+          "size": [
+            3,
+            0.5,
+            3
+          ]
+        },
+        {
+          "type": "material",
+          "texture": "assets/textures/checker.png",
+          "uvScale": [
+            1.5,
+            1.5
+          ],
+          "roughness": 0.8,
+          "metallic": 0
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static",
+          "mass": 1,
+          "bounce": 0,
+          "fixedRotation": false
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            3,
+            0.5,
+            3
+          ],
+          "trigger": false
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee13",
+      "name": "Plat4",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          -2,
+          3.2,
+          22
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "box",
+          "size": [
+            3,
+            0.5,
+            3
+          ]
+        },
+        {
+          "type": "material",
+          "texture": "assets/textures/checker.png",
+          "uvScale": [
+            1.5,
+            1.5
+          ],
+          "roughness": 0.8,
+          "metallic": 0
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static",
+          "mass": 1,
+          "bounce": 0,
+          "fixedRotation": false
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            3,
+            0.5,
+            3
+          ],
+          "trigger": false
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee14",
+      "name": "Plat5",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          -7,
+          3.9,
+          25
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "box",
+          "size": [
+            3,
+            0.5,
+            3
+          ]
+        },
+        {
+          "type": "material",
+          "texture": "assets/textures/checker.png",
+          "uvScale": [
+            1.5,
+            1.5
+          ],
+          "roughness": 0.8,
+          "metallic": 0
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static",
+          "mass": 1,
+          "bounce": 0,
+          "fixedRotation": false
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            3,
+            0.5,
+            3
+          ],
+          "trigger": false
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee15",
+      "name": "Plat6",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          -12,
+          4.6,
+          29
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "box",
+          "size": [
+            4,
+            0.5,
+            4
+          ]
+        },
+        {
+          "type": "material",
+          "texture": "assets/textures/checker.png",
+          "uvScale": [
+            2,
+            2
+          ],
+          "roughness": 0.8,
+          "metallic": 0
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static",
+          "mass": 1,
+          "bounce": 0,
+          "fixedRotation": false
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            4,
+            0.5,
+            4
+          ],
+          "trigger": false
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee16",
+      "name": "Mover",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          14,
+          2.4,
+          22
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "box",
+          "size": [
+            3,
+            0.5,
+            3
+          ]
+        },
+        {
+          "type": "material",
+          "color": "#88c0d0",
+          "roughness": 0.8,
+          "metallic": 0
+        },
+        {
+          "type": "rigidbody",
+          "mode": "kinematic",
+          "mass": 1,
+          "bounce": 0,
+          "fixedRotation": false
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            3,
+            0.5,
+            3
+          ],
+          "trigger": false
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/physics-moving-platform.js",
+          "attributes": {
+            "offset": [
+              0,
+              0,
+              8
+            ],
+            "period": 5,
+            "carryTag": "player"
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee17",
+      "name": "Gem0",
+      "enabled": true,
+      "tags": [
+        "gem"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          1.45,
+          6
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "sphere",
+          "size": [
+            0.5,
+            0.5,
+            0.5
+          ]
+        },
+        {
+          "type": "material",
+          "color": "#ebcb8b",
+          "metallic": 0.6,
+          "roughness": 0.3,
+          "emissive": "#6b5a20"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "sphere",
+          "radius": 0.5,
+          "trigger": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/spin.js",
+          "attributes": {
+            "speed": 120,
+            "axis": "y"
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee18",
+      "name": "Gem1",
+      "enabled": true,
+      "tags": [
+        "gem"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          4,
+          2.1,
+          10
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "sphere",
+          "size": [
+            0.5,
+            0.5,
+            0.5
+          ]
+        },
+        {
+          "type": "material",
+          "color": "#ebcb8b",
+          "metallic": 0.6,
+          "roughness": 0.3,
+          "emissive": "#6b5a20"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "sphere",
+          "radius": 0.5,
+          "trigger": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/spin.js",
+          "attributes": {
+            "speed": 120,
+            "axis": "y"
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee19",
+      "name": "Gem2",
+      "enabled": true,
+      "tags": [
+        "gem"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          8,
+          2.8,
+          14
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "sphere",
+          "size": [
+            0.5,
+            0.5,
+            0.5
+          ]
+        },
+        {
+          "type": "material",
+          "color": "#ebcb8b",
+          "metallic": 0.6,
+          "roughness": 0.3,
+          "emissive": "#6b5a20"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "sphere",
+          "radius": 0.5,
+          "trigger": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/spin.js",
+          "attributes": {
+            "speed": 120,
+            "axis": "y"
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee1a",
+      "name": "Gem3",
+      "enabled": true,
+      "tags": [
+        "gem"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          3,
+          3.5999999999999996,
+          18
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "sphere",
+          "size": [
+            0.5,
+            0.5,
+            0.5
+          ]
+        },
+        {
+          "type": "material",
+          "color": "#ebcb8b",
+          "metallic": 0.6,
+          "roughness": 0.3,
+          "emissive": "#6b5a20"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "sphere",
+          "radius": 0.5,
+          "trigger": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/spin.js",
+          "attributes": {
+            "speed": 120,
+            "axis": "y"
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee1b",
+      "name": "Gem4",
+      "enabled": true,
+      "tags": [
+        "gem"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          -2,
+          4.4,
+          22
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "sphere",
+          "size": [
+            0.5,
+            0.5,
+            0.5
+          ]
+        },
+        {
+          "type": "material",
+          "color": "#ebcb8b",
+          "metallic": 0.6,
+          "roughness": 0.3,
+          "emissive": "#6b5a20"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "sphere",
+          "radius": 0.5,
+          "trigger": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/spin.js",
+          "attributes": {
+            "speed": 120,
+            "axis": "y"
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee1c",
+      "name": "Gem5",
+      "enabled": true,
+      "tags": [
+        "gem"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          -7,
+          5.1,
+          25
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "sphere",
+          "size": [
+            0.5,
+            0.5,
+            0.5
+          ]
+        },
+        {
+          "type": "material",
+          "color": "#ebcb8b",
+          "metallic": 0.6,
+          "roughness": 0.3,
+          "emissive": "#6b5a20"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "sphere",
+          "radius": 0.5,
+          "trigger": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/spin.js",
+          "attributes": {
+            "speed": 120,
+            "axis": "y"
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee1d",
+      "name": "Gem6",
+      "enabled": true,
+      "tags": [
+        "gem"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          -12,
+          5.8,
+          29
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "sphere",
+          "size": [
+            0.5,
+            0.5,
+            0.5
+          ]
+        },
+        {
+          "type": "material",
+          "color": "#ebcb8b",
+          "metallic": 0.6,
+          "roughness": 0.3,
+          "emissive": "#6b5a20"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "static"
+        },
+        {
+          "type": "collider",
+          "shape": "sphere",
+          "radius": 0.5,
+          "trigger": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/spin.js",
+          "attributes": {
+            "speed": 120,
+            "axis": "y"
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee1e",
+      "name": "Player",
+      "enabled": true,
+      "tags": [
+        "player"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          1.5,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "capsule",
+          "size": [
+            0.8,
+            1.6,
+            0.8
+          ]
+        },
+        {
+          "type": "material",
+          "color": "#a3be8c"
+        },
+        {
+          "type": "rigidbody",
+          "mode": "dynamic",
+          "mass": 1,
+          "fixedRotation": true,
+          "drag": 0
+        },
+        {
+          "type": "collider",
+          "shape": "capsule",
+          "size": [
+            0.8,
+            1.6,
+            0.8
+          ]
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/platformer3d.js",
+          "attributes": {
+            "speed": 6,
+            "jumpSpeed": 8.5
+          }
+        },
+        {
+          "path": "scripts/util-sfx.js",
+          "attributes": {}
+        },
+        {
+          "path": "scripts/relay.js",
+          "attributes": {}
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee1f",
+      "name": "Camera",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          5,
+          -8
+        ],
+        "rot": [
+          20,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "camera",
+          "fov": 60
+        },
+        {
+          "type": "postProcess",
+          "fxaa": true,
+          "bloom": true,
+          "vignette": 0.3,
+          "tonemap": true
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/camera-follow3d.js",
+          "attributes": {
+            "target": "Player",
+            "offset": [
+              0,
+              5,
+              -8
+            ],
+            "smoothing": 4
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee1g",
+      "name": "Hazard",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          3,
+          3.3,
+          18
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "mesh",
+          "shape": "sphere",
+          "size": [
+            0.8,
+            0.8,
+            0.8
+          ]
+        },
+        {
+          "type": "material",
+          "color": "#ff4433",
+          "emissive": "#aa1100"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    }
+  ]
+}

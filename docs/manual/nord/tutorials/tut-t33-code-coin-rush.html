@@ -1,0 +1,4821 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>T33 Code a full 2D game — Coin Rush — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="tutorials.html" class="active" aria-current="page">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Tutorials</div><a href="tutorials.html">Learn by building</a><a href="tut-t01-hello-nord.html">T01 Hello Nord</a><a href="tut-t02-sprite-movement.html">T02 Sprite &amp; movement</a><a href="tut-t03-first-script.html">T03 Your first script</a><a href="tut-t04-platformer.html">T04 Platformer from template</a><a href="tut-t05-physics.html">T05 Physics &amp; collisions</a><a href="tut-t06-tilemaps.html">T06 Tilemaps</a><a href="tut-t07-animation-juice.html">T07 Animation &amp; juice</a><a href="tut-t08-ui-hud.html">T08 UI &amp; HUD</a><a href="tut-t09-audio.html">T09 Audio</a><a href="tut-t10-3d-scene.html">T10 3D scene &amp; camera</a><a href="tut-t11-3d-physics.html">T11 3D physics (FPS)</a><a href="tut-t12-enemy-ai.html">T12 Enemy AI</a><a href="tut-t13-save-load.html">T13 Save &amp; load</a><a href="tut-t14-export-host.html">T14 Export to web &amp; host it</a><a href="tut-t15-mac-app.html">T15 Mac app</a><a href="tut-t16-rust-game.html">T16 Rust/WASM game</a><a href="tut-t17-rust-egui-app.html">T17 Rust egui app</a><a href="tut-t18-library-snippets.html">T18 Writing library snippets</a><a href="tut-t19-notepaint.html">T19 Build notepaint, from a blank folder</a><a href="tut-t20-star-not.html">T20 Build Star-Not, a complete small space adventure</a><a href="tut-t21-project-design.html">T21 Plan a bigger Nord project</a><a href="tut-t22-shader-terrain.html">T22 Put a terrain shader in a Nord app</a><a href="tut-t23-light-shadows.html">T23 2D lights and real shadows</a><a href="tut-t24-event-sheet-platformer.html">T24 A platformer from events</a><a href="tut-t25-topdown-shooter.html">T25 A top-down shooter from events</a><a href="tut-t26-menus-languages.html">T26 Menus and two languages</a><a href="tut-t27-fps-level.html">T27 Build your first FPS level</a><a href="tut-t28-machine-workshop.html">T28 Machine Workshop — build a gravity puzzle in 2D Level</a><a href="tut-t29-dungeon-two-floors.html">T29 Two Floors — edit a Shattered Pixel Dungeon adaptation</a><a href="tut-t30-tank-patrol.html">T30 Tiny Tank Patrol — build a top-down tank arena</a><a href="tut-t31-full-2d-platformer.html">T31 Full game workshop — Coin Canyon (2D)</a><a href="tut-t32-full-3d-platformer.html">T32 Full game workshop — Sunset Gems (3D)</a><a href="tut-t33-code-coin-rush.html" class="cur" aria-current="page">T33 Code a full 2D game — Coin Rush</a><a href="tut-t34-code-crystal-relay.html">T34 Code a full 3D game — Crystal Relay</a></nav><main id="content"><div class="crumb">Tutorials / Nord Engine</div><h1>T33 Code a full 2D game — Coin Rush</h1>
+<p>This time <strong>you write the game rules</strong>. Coin Rush starts with Nord&#39;s Platformer foundation and becomes a timed arcade challenge: collect eight coins, stomp the boss, preserve three lives and build a combo before time expires. Coins add time; spare time and lives become a victory bonus. A pause menu and a persistent best score finish the loop.</p>
+<p><strong>Allow two sessions of about an hour.</strong> Basic typing is enough; each new JavaScript idea is explained below. You will use Nord&#39;s Assets, code editor, Hierarchy, Inspector, Console, Play and Export. No external service or library installation is needed.</p>
+<p><a href="../../assets/downloads/coin-rush-source.zip">Download the complete Coin Rush project source</a>. This includes every script, scene, asset and project file. Extract it to a writable folder, then open <code>nord.project.json</code> in Nord. It runs through Nord&#39;s server; the source archive is not a standalone web export.</p>
+<figure class="shot"><img src="../../assets/screenshots/ed-code-coin-rush.png" alt="Coin Rush with its coded countdown, lives and combo HUD" loading="lazy"><figcaption>The finished sample. You will write the controller that turns the platformer into this arcade challenge.</figcaption></figure><h2 id="1-start-from-a-known-foundation">1. Start from a known foundation<a class="anchor" href="#1-start-from-a-known-foundation">#</a></h2>
+<p>Choose <strong>New project → Platformer</strong>, save it as <code>my-coin-rush</code>, then Play. Click the game for focus. A/D or arrows move, Space jumps, Shift/K dashes; descending onto slimes stomps them. Flags are checkpoints and the giant slime is the boss. Stop before editing.</p>
+<p>The original project already supplies terrain, physics, movement, health, pickup sounds, animation and enemy contact. We deliberately reuse those systems. The code you write owns the <strong>run</strong>: time, score, lives and victory. The full-source appendix includes the reused scripts too, so there is no hidden custom code.</p>
+<p>Open <code>scenes/main.scene.json</code>. Select <strong>Systems</strong> in Hierarchy. In Inspector remove the attached <code>scripts/score.js</code> and <code>scripts/ui-gameover.js</code> scripts from <strong>this entity</strong>. Keep the health HUD, sound helper and hitstop scripts. Do not delete their files. Removing those two attachments prevents a second score counter and an old Game Over menu from competing with your rules.</p>
+<p>In the project folder create <code>scripts/course.js</code> using your file manager, refresh Assets if necessary, then open it in Nord&#39;s code editor. Save this first working version:</p>
+<pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
+
+export default class CoinRush extends NordScript {
+  start() {
+    console.log('Coin Rush rules started');
+  }
+}</code></pre>
+<p>Select Systems → <strong>Add script</strong> → <code>scripts/course.js</code>. Save the scene. Play and inspect <strong>Console</strong>: the message appears once per run. Stop and Play again; it should appear once again, not twice in a single run. If it appears twice, remove the duplicate attachment.</p>
+<p><code>import</code> loads an exported value from another module. <code>&#39;nord&#39;</code> is Nord&#39;s supplied module name. <code>class</code> groups state and functions; <code>extends NordScript</code> gives access to <code>this.scene</code>, <code>this.ui</code>, <code>this.events</code>, <code>this.save</code> and the other engine services. <code>this</code> means this particular script instance. Nord calls <code>start()</code> when the scene is ready.</p>
+<h2 id="2-declare-settings-the-inspector-can-edit">2. Declare settings the Inspector can edit<a class="anchor" href="#2-declare-settings-the-inspector-can-edit">#</a></h2>
+<p>Add this inside the class, above <code>start()</code>:</p>
+<pre class="code" data-lang="js"><code>static attributes = {
+  seconds: { type: 'number', default: 150, min: 10 },
+  lives: { type: 'int', default: 3, min: 1 },
+  requiredCoins: { type: 'int', default: 8, min: 1 },
+  comboWindow: { type: 'number', default: 2, min: 0.1 },
+};</code></pre>
+<p>An <strong>object</strong> is a set of named values inside braces. <code>seconds</code> is a key; the smaller object describes that setting. <code>int</code> means a whole number. <code>min</code> lets Nord clamp invalid low values. During a run read the resolved settings through <code>this.attrs.seconds</code>, not <code>this.seconds</code>.</p>
+<p>Select Systems and find the new script settings. Set seconds to <code>180</code>, save the scene, then later compare it with <code>150</code>. An Inspector override is saved in the scene. Changing a JavaScript default does not overwrite an explicit scene override.</p>
+<p><strong>Checkpoint:</strong> the settings appear and you can save an override without changing the script.</p>
+<h2 id="3-store-run-state-and-show-it">3. Store run state and show it<a class="anchor" href="#3-store-run-state-and-show-it">#</a></h2>
+<p>Replace the temporary <code>start()</code> with this smaller teaching version. Add the other two methods beside it, inside the same class:</p>
+<pre class="code" data-lang="js"><code>start() {
+  this.remaining = this.attrs.seconds;
+  this.lives = this.attrs.lives;
+  this.coins = 0;
+  this.score = 0;
+  this.hud = this.ui.label('', {
+    screen: 'course', x: 12, y: 55, size: 14,
+  });
+  this.ui.show('course');
+  this.draw();
+}
+
+update(dt) {
+  this.remaining = Math.max(0, this.remaining - dt);
+  this.draw();
+}
+
+draw() {
+  this.hud.set(`Time ${Math.ceil(this.remaining)} | Lives ${this.lives}`);
+}</code></pre>
+<p>Nord calls <code>update(dt)</code> each frame. <code>dt</code> is seconds since the previous frame. Subtracting it gives a clock that works at different frame rates; subtracting one each frame would run sixty times too fast on a 60 FPS display.</p>
+<p><code>Math.max(0, value)</code> prevents negative time. <code>Math.ceil</code> rounds up for the display without rounding the stored clock. Backticks form a <strong>template string</strong>, and <code>${...}</code> inserts a calculated value. <code>this.hud</code> stores the returned UI handle so <code>draw()</code> updates one label instead of creating hundreds.</p>
+<p>Custom UI screens start hidden. <code>this.ui.show(&#39;course&#39;)</code> is essential. If you see the label in DOM inspection but not on screen, check that call before changing colours.</p>
+<p><strong>Checkpoint:</strong> Play for a few seconds. The countdown decreases about once a second and never creates overlapping copies. At this intermediate stage zero does not end the run yet.</p>
+<h2 id="4-give-events-a-job">4. Give events a job<a class="anchor" href="#4-give-events-a-job">#</a></h2>
+<p>Add listeners in <code>start()</code> after initializing state:</p>
+<pre class="code" data-lang="js"><code>this.offs = [
+  this.events.on('score', n =&gt; this.addScore(n)),
+  this.events.on('pickup', p =&gt; this.pickup(p)),
+];</code></pre>
+<p><code>on</code> subscribes to an event and returns an unsubscribe function. <code>n =&gt; this.addScore(n)</code> is an <strong>arrow function</strong>: when a score arrives, call this instance&#39;s method with the supplied number. Storing unsubscribe functions in an array lets you clean them up together.</p>
+<p>The existing pickup script emits a numeric <code>score</code> event and then <code>pickup</code> with <code>{ kind, value }</code>. Use score for points and pickup for the number of collected coins. Boss and enemy rewards also emit score, so counting every score event as a coin would make the objective wrong.</p>
+<p>Start with these simple methods:</p>
+<pre class="code" data-lang="js"><code>addScore(n) {
+  if (typeof n !== 'number' || n &lt;= 0) return;
+  this.score += n;
+}
+
+pickup(p) {
+  if (p.kind !== 'score') return;
+  this.coins++;
+  this.remaining += 2;
+}</code></pre>
+<p><code>if</code> runs a condition; <code>return</code> exits early. <code>||</code> means OR. <code>+=</code> adds to an existing value, and <code>++</code> adds one. Extend your label to show coins and score using template-string fields.</p>
+<p><strong>Checkpoint:</strong> a coin disappears, increases the coin count by one and adds two seconds. A stomp awards points but does not increase the coin count.</p>
+<h2 id="5-build-the-combo-deliberately">5. Build the combo deliberately<a class="anchor" href="#5-build-the-combo-deliberately">#</a></h2>
+<p>The complete version replaces the simple addScore with:</p>
+<pre class="code" data-lang="js"><code>addScore(n) {
+  if (this.ended || typeof n !== 'number' || n &lt;= 0) return;
+  this.combo = this.comboLeft &gt; 0 ? Math.min(5, this.combo + 1) : 1;
+  this.comboLeft = this.attrs.comboWindow;
+  this.score += n * this.combo;
+}</code></pre>
+<p>Initialize <code>combo</code> and <code>comboLeft</code> to zero in start. In update, subtract dt from comboLeft and clamp it to zero. When it expires, reset combo to zero. Add these fields using the final source below before testing this step.</p>
+<p><code>condition ? a : b</code> is a <strong>conditional expression</strong>: use a when true, otherwise b. A quick second reward advances the multiplier; a reward after the window starts a fresh x1 chain. <code>Math.min(5, ...)</code> caps it. The displayed multiplier is at least one even when the internal chain is idle.</p>
+<p><strong>Try:</strong> collect two nearby coins rapidly; the second should score more. Then wait longer than two seconds before taking another. That next reward starts at x1. Change comboWindow to four in Inspector and feel the difference.</p>
+<h2 id="6-lives-checkpoint-ownership-and-a-fair-goal">6. Lives, checkpoint ownership and a fair goal<a class="anchor" href="#6-lives-checkpoint-ownership-and-a-fair-goal">#</a></h2>
+<p>Subscribe to <code>died</code>, <code>checkpoint</code> and <code>game:win</code> as shown in the final controller. <code>loseLife()</code> spends one life and resets the combo. The existing checkpoint scripts already listen for death, heal the hero and return to the last flag after a delay; your controller should not schedule a second competing teleport.</p>
+<p>The final checkWin deliberately has two conditions: <code>bossCleared</code> and enough collected coins. Defeating the boss first displays how many more coins you need. A later pickup rechecks victory, so the run is not stuck after the boss is gone.</p>
+<pre class="code" data-lang="js"><code>checkWin() {
+  if (!this.bossCleared) return;
+  if (this.coins &lt; this.attrs.requiredCoins) {
+    this.notice = `Boss defeated! Find ${this.attrs.requiredCoins - this.coins} more coins.`;
+    return;
+  }
+  this.finish(true, 'Canyon cleared!');
+}</code></pre>
+<p>An <strong>invariant</strong> is a condition your game must always preserve. Here, “the run finishes once” matters: a dying boss can emit events while a pickup is also being processed. <code>finish()</code> begins with <code>if (this.ended) return</code> and sets ended immediately, so the bonus and save only happen once.</p>
+<p><strong>Checkpoint:</strong> at zero lives you get a retry menu; at zero time you get a different loss message. A living player with eight coins still needs the boss. Boss-first completion remains recoverable.</p>
+<h2 id="7-pause-without-locking-the-player-out">7. Pause without locking the player out<a class="anchor" href="#7-pause-without-locking-the-player-out">#</a></h2>
+<p>A pause function can stop updates with <code>this.game.pause()</code>. A keyboard check inside update would then stop too, so it could never detect the key that resumes the game. Use DOM menu buttons: their click callbacks still run while simulation is paused.</p>
+<pre class="code" data-lang="js"><code>this.ui.menu('course-menu', [
+  { text: 'Resume', onClick: () =&gt; {
+    this.ui.clear('course-menu');
+    this.game.resume();
+  } },
+  { text: 'Restart run', onClick: () =&gt; this.restart() },
+], { x: 20, y: 195 });
+this.ui.show('course-menu');</code></pre>
+<p>The final pause method ignores clicks after ending or while already paused, preventing duplicate menus. Restart resumes first, then asks Nord to reload the current scene. It does not manually rebuild every coin.</p>
+<p><strong>Checkpoint:</strong> pause for five seconds. The remaining time stays still. Resume moves it again. Restart restores the coins and lives.</p>
+<h2 id="8-save-the-result-and-clean-up">8. Save the result and clean up<a class="anchor" href="#8-save-the-result-and-clean-up">#</a></h2>
+<p>A win adds <code>ceil(remaining) * 5 + lives * 100</code> to score, then stores the larger of the old record and current score:</p>
+<pre class="code" data-lang="js"><code>this.best = Math.max(this.best, this.score);
+this.save.set('coin-rush.best', this.best);</code></pre>
+<p>Load the record in start with <code>this.save.get(&#39;coin-rush.best&#39;, 0)</code>. This is a local best score, not a mid-run save. The key is specific to this game; sharing the generic name <code>highscore</code> with another prototype would mix records.</p>
+<p>Cleanup is part of game code:</p>
+<pre class="code" data-lang="js"><code>onDestroy() {
+  this.offs.forEach(off =&gt; off());
+  this.ui.clear('course');
+  this.ui.clear('course-menu');
+  this.game.resume();
+}</code></pre>
+<p><code>forEach</code> calls each stored unsubscribe function. Without it, old script instances keep hearing events after Restart, producing duplicate scoring and leaking memory. Clearing custom UI screens prevents old labels remaining over a new run.</p>
+<h2 id="9-assemble-debug-and-export">9. Assemble, debug and export<a class="anchor" href="#9-assemble-debug-and-export">#</a></h2>
+<p>Replace your teaching version with the <strong>complete course.js below</strong>. The earlier blocks were focused stages, not extra scripts to attach. Keep exactly one CoinRush script on Systems. Save both code and scene, Stop, then Play for a clean start; hot reload does not rerun start, so new state fields need a restart.</p>
+<p>Use Console while learning. Temporarily add <code>console.log(&#39;pickup&#39;, p)</code> inside pickup to inspect payloads, then remove it. A red syntax error usually points to a missing brace, quote or comma. An undefined field often means you pasted a method but did not initialize its state in start. A missing HUD usually means the custom screen was not shown. Default changes that appear ineffective may have scene overrides.</p>
+<p>Test a full loop: coin → combo → flag → damage/death → respawn → boss → victory → retry. Also test boss-first, no lives and timeout. Finish a win, reload the page and check that Best persists while the run resets.</p>
+<p>From the parent folder of your personal project:</p>
+<pre class="code" data-lang="sh"><code>nord check my-coin-rush
+nord build my-coin-rush --out coin-rush-web --zip
+python3 -m http.server 8000 --directory coin-rush-web</code></pre>
+<p>Open <code>http://localhost:8000</code> and test that exported copy. Upload the entire output folder or zip, with index.html at the root. The source zip below instead belongs in Nord so you can inspect and change it.</p>
+<p><strong>Experiment:</strong> change requiredCoins to twelve, increase the first-life time allowance, or award three seconds per coin. Predict the result before editing, then compare it with Play. Keep the invariant that every legal order of boss and coins can reach victory.</p>
+<h2 id="complete-game-source">Complete game source<a class="anchor" href="#complete-game-source">#</a></h2>
+<p>The first file below is every line of the custom game controller. The remaining disclosures contain <strong>all other text source files</strong> in the finished project, including inherited JavaScript, project/scene JSON, map data, HTML and asset metadata. Art/audio binaries are included in the <a href="../../assets/downloads/coin-rush-source.zip">complete source download</a>. Copying course.js alone still requires the Platformer foundation and the two attachment removals described in step 1.</p>
+<!-- GENERATED GAME SOURCE: regenerate with node tools/build-code-workshops.mjs --><h3 id="scripts-course-js">scripts/course.js<a class="anchor" href="#scripts-course-js">#</a></h3>
+<pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
+
+export default class CoinRush extends NordScript {
+  static attributes = {
+    seconds: { type: 'number', default: 150, min: 10 },
+    lives: { type: 'int', default: 3, min: 1 },
+    requiredCoins: { type: 'int', default: 8, min: 1 },
+    comboWindow: { type: 'number', default: 2, min: 0.1 },
+  };
+
+  start() {
+    this.remaining = this.attrs.seconds;
+    this.lives = this.attrs.lives;
+    this.coins = 0;
+    this.score = 0;
+    this.combo = 0;
+    this.comboLeft = 0;
+    this.bossCleared = false;
+    this.ended = false;
+    this.best = this.save.get('coin-rush.best', 0);
+    this.notice = `Collect ${this.attrs.requiredCoins} coins, then defeat the boss. Shift/K dashes.`;
+    this.hud = this.ui.label('', { screen: 'course', x: 12, y: 55, size: 14, style: { whiteSpace: 'pre-wrap', maxWidth: '95%' } });
+    this.pauseButton = this.ui.button('Pause', () =&gt; this.pause(), {
+      screen: 'course', x: 12, y: 105,
+    });
+    this.offs = [
+      this.events.on('score', n =&gt; this.addScore(n)),
+      this.events.on('pickup', p =&gt; this.pickup(p)),
+      this.events.on('died', () =&gt; this.loseLife()),
+      this.events.on('checkpoint', () =&gt; { this.notice = 'Checkpoint activated!'; }),
+      this.events.on('game:win', () =&gt; { this.bossCleared = true; this.checkWin(); }),
+    ];
+    this.ui.show('course');
+    this.draw();
+  }
+
+  addScore(n) {
+    if (this.ended || typeof n !== 'number' || n &lt;= 0) return;
+    this.combo = this.comboLeft &gt; 0 ? Math.min(5, this.combo + 1) : 1;
+    this.comboLeft = this.attrs.comboWindow;
+    this.score += n * this.combo;
+  }
+
+  pickup(p) {
+    if (this.ended || p.kind !== 'score') return;
+    this.coins++;
+    this.remaining += 2;
+    this.notice = '+2 seconds! Keep the combo alive.';
+    this.checkWin();
+  }
+
+  loseLife() {
+    if (this.ended) return;
+    this.lives--;
+    this.comboLeft = 0;
+    this.combo = 0;
+    this.notice = 'Life lost. Returning to your last flag.';
+    if (this.lives &lt;= 0) this.finish(false, 'No lives left');
+    // Existing checkpoint scripts heal and return the hero after a short delay.
+  }
+
+  checkWin() {
+    if (!this.bossCleared) return;
+    if (this.coins &lt; this.attrs.requiredCoins) {
+      this.notice = `Boss defeated! Find ${this.attrs.requiredCoins - this.coins} more coins.`;
+      return;
+    }
+    this.finish(true, 'Canyon cleared!');
+  }
+
+  update(dt) {
+    if (this.ended) return;
+    this.remaining = Math.max(0, this.remaining - dt);
+    this.comboLeft = Math.max(0, this.comboLeft - dt);
+    if (this.comboLeft === 0) this.combo = 0;
+    if (this.remaining === 0) this.finish(false, 'Time ran out');
+    this.draw();
+  }
+
+  draw() {
+    this.hud.set(`Time ${Math.ceil(this.remaining)} | Lives ${this.lives} | ` +
+      `Coins ${this.coins}/${this.attrs.requiredCoins} | Score ${this.score} | ` +
+      `Combo x${Math.max(1, this.combo)} | Best ${this.best}\n${this.notice}`);
+  }
+
+  pause() {
+    if (this.ended || this.game.paused) return;
+    this.ui.show('course-menu');
+    this.game.pause();
+    this.ui.label('Paused', { screen: 'course-menu', x: 20, y: 150, size: 32 });
+    this.ui.menu('course-menu', [
+      { text: 'Resume', onClick: () =&gt; { this.ui.clear('course-menu'); this.game.resume(); } },
+      { text: 'Restart run', onClick: () =&gt; this.restart() },
+    ], { x: 20, y: 195 });
+  }
+
+  finish(won, title) {
+    if (this.ended) return;
+    this.ended = true;
+    if (won) {
+      this.score += Math.ceil(this.remaining) * 5 + this.lives * 100;
+      this.best = Math.max(this.best, this.score);
+      this.save.set('coin-rush.best', this.best);
+    }
+    this.draw();
+    this.ui.clear('course-menu');
+    this.ui.label(`${title} — score ${this.score}`, {
+      screen: 'course-menu', x: 20, y: 150, size: 28,
+    });
+    this.ui.menu('course-menu', [
+      { text: 'Try again', onClick: () =&gt; this.restart() },
+    ], { x: 20, y: 195 });
+    this.ui.show('course-menu');
+    this.game.pause();
+  }
+
+  restart() {
+    this.game.resume();
+    this.game.restart();
+  }
+
+  onDestroy() {
+    this.offs.forEach(off =&gt; off());
+    this.ui.clear('course');
+    this.ui.clear('course-menu');
+    this.game.resume();
+  }
+}</code></pre>
+<details>
+<summary>Complete assets/maps/level.tilemap.json</summary><pre class="code" data-lang="json"><code>{
+  &quot;tileset&quot;: &quot;assets/sprites/tileset_platformer.png&quot;,
+  &quot;tileWidth&quot;: 16,
+  &quot;tileHeight&quot;: 16,
+  &quot;collides&quot;: [
+    0,
+    3
+  ],
+  &quot;layers&quot;: [
+    {
+      &quot;name&quot;: &quot;ground&quot;,
+      &quot;data&quot;: [
+        [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          0,
+          0,
+          0,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          0,
+          0,
+          0,
+          0,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          0,
+          0,
+          0,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          0,
+          0,
+          0,
+          0,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          0,
+          0,
+          0,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          0,
+          0,
+          0,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          0,
+          0,
+          0,
+          0,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -1,
+          -1,
+          -1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -1,
+          -1,
+          -1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -1,
+          -1,
+          -1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          -1,
+          -1,
+          -1,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          -1,
+          -1,
+          -1,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          -1,
+          -1,
+          -1,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          -1,
+          -1,
+          -1,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          -1,
+          -1,
+          -1,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          -1,
+          -1,
+          -1,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          -1,
+          -1,
+          -1,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          -1,
+          -1,
+          -1,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          -1,
+          -1,
+          -1,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          -1,
+          -1,
+          -1,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          -1,
+          -1,
+          -1,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          -1,
+          -1,
+          -1,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ]
+      ]
+    }
+  ]
+}</code></pre>
+</details><details>
+<summary>Complete assets/sprites/coin.png.meta.json</summary><pre class="code" data-lang="json"><code>{
+  &quot;type&quot;: &quot;spritesheet&quot;,
+  &quot;frameWidth&quot;: 16,
+  &quot;frameHeight&quot;: 16,
+  &quot;filter&quot;: &quot;nearest&quot;,
+  &quot;anims&quot;: {
+    &quot;spin&quot;: {
+      &quot;frames&quot;: [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      &quot;fps&quot;: 10,
+      &quot;loop&quot;: true
+    }
+  }
+}</code></pre>
+</details><details>
+<summary>Complete assets/sprites/enemy_slime.png.meta.json</summary><pre class="code" data-lang="json"><code>{
+  &quot;type&quot;: &quot;spritesheet&quot;,
+  &quot;frameWidth&quot;: 32,
+  &quot;frameHeight&quot;: 32,
+  &quot;filter&quot;: &quot;nearest&quot;,
+  &quot;anims&quot;: {
+    &quot;idle&quot;: {
+      &quot;frames&quot;: [
+        0,
+        1,
+        2,
+        1
+      ],
+      &quot;fps&quot;: 6,
+      &quot;loop&quot;: true
+    }
+  }
+}</code></pre>
+</details><details>
+<summary>Complete assets/sprites/flag.png.meta.json</summary><pre class="code" data-lang="json"><code>{
+  &quot;type&quot;: &quot;spritesheet&quot;,
+  &quot;frameWidth&quot;: 16,
+  &quot;frameHeight&quot;: 32,
+  &quot;filter&quot;: &quot;nearest&quot;,
+  &quot;anims&quot;: {
+    &quot;wave&quot;: {
+      &quot;frames&quot;: [
+        0,
+        1,
+        2,
+        3
+      ],
+      &quot;fps&quot;: 6,
+      &quot;loop&quot;: true
+    }
+  }
+}</code></pre>
+</details><details>
+<summary>Complete assets/sprites/hero.png.meta.json</summary><pre class="code" data-lang="json"><code>{
+  &quot;type&quot;: &quot;spritesheet&quot;,
+  &quot;frameWidth&quot;: 32,
+  &quot;frameHeight&quot;: 32,
+  &quot;filter&quot;: &quot;nearest&quot;,
+  &quot;anims&quot;: {
+    &quot;idle&quot;: {
+      &quot;frames&quot;: [
+        0,
+        1
+      ],
+      &quot;fps&quot;: 3,
+      &quot;loop&quot;: true
+    },
+    &quot;walk&quot;: {
+      &quot;frames&quot;: [
+        2,
+        3,
+        4,
+        5
+      ],
+      &quot;fps&quot;: 10,
+      &quot;loop&quot;: true
+    },
+    &quot;jump&quot;: {
+      &quot;frames&quot;: [
+        6
+      ],
+      &quot;fps&quot;: 1,
+      &quot;loop&quot;: false
+    },
+    &quot;hurt&quot;: {
+      &quot;frames&quot;: [
+        7
+      ],
+      &quot;fps&quot;: 1,
+      &quot;loop&quot;: false
+    }
+  }
+}</code></pre>
+</details><details>
+<summary>Complete assets/sprites/tileset_platformer.png.meta.json</summary><pre class="code" data-lang="json"><code>{
+  &quot;type&quot;: &quot;tileset&quot;,
+  &quot;tileWidth&quot;: 16,
+  &quot;tileHeight&quot;: 16,
+  &quot;filter&quot;: &quot;nearest&quot;,
+  &quot;columns&quot;: 8,
+  &quot;layout&quot;: &quot;cols: top, top-left, top-right, mid, left, right, bottom, platform; rows: grass, stone, sand, snow&quot;
+}</code></pre>
+</details><details>
+<summary>Complete index.html</summary><pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;&lt;title&gt;Coin Rush — code workshop&lt;/title&gt;
+&lt;style&gt;html,body{margin:0;height:100%;background:#101418;overflow:hidden}#stage{position:relative;width:100vw;height:100vh}&lt;/style&gt;
+&lt;script type=&quot;importmap&quot;&gt;{&quot;imports&quot;:{&quot;nord&quot;:&quot;/runtime/core/index.js&quot;}}&lt;/script&gt;&lt;/head&gt;
+&lt;body&gt;&lt;div id=&quot;stage&quot;&gt;&lt;/div&gt;
+&lt;script src=&quot;/vendor/phaser/phaser.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;module&quot;&gt;
+import { boot } from '/runtime/phaser/index.js';
+try {
+  const project = await (await fetch('nord.project.json')).json();
+  await boot(project, { container: document.getElementById('stage') });
+  window.__nord_ready = true;
+} catch (e) { console.error(e); window.__nord_error = String(e); }
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</code></pre>
+</details><details>
+<summary>Complete nord.project.json</summary><pre class="code" data-lang="json"><code>{
+  &quot;format&quot;: 1,
+  &quot;name&quot;: &quot;Coin Rush — code workshop&quot;,
+  &quot;id&quot;: &quot;com.crowelian.coinrush&quot;,
+  &quot;type&quot;: &quot;2d&quot;,
+  &quot;engineVersion&quot;: &quot;0.1.0&quot;,
+  &quot;startScene&quot;: &quot;scenes/main.scene.json&quot;,
+  &quot;display&quot;: {
+    &quot;width&quot;: 640,
+    &quot;height&quot;: 360,
+    &quot;scale&quot;: &quot;fit&quot;,
+    &quot;pixelArt&quot;: true,
+    &quot;background&quot;: &quot;#2e3440&quot;
+  },
+  &quot;physics&quot;: {
+    &quot;engine&quot;: &quot;arcade&quot;,
+    &quot;gravity&quot;: [
+      0,
+      900,
+      0
+    ]
+  },
+  &quot;input&quot;: {
+    &quot;actions&quot;: {
+      &quot;left&quot;: [
+        &quot;KeyA&quot;,
+        &quot;ArrowLeft&quot;
+      ],
+      &quot;right&quot;: [
+        &quot;KeyD&quot;,
+        &quot;ArrowRight&quot;
+      ],
+      &quot;up&quot;: [
+        &quot;KeyW&quot;,
+        &quot;ArrowUp&quot;
+      ],
+      &quot;down&quot;: [
+        &quot;KeyS&quot;,
+        &quot;ArrowDown&quot;
+      ],
+      &quot;jump&quot;: [
+        &quot;Space&quot;,
+        &quot;KeyW&quot;,
+        &quot;ArrowUp&quot;
+      ],
+      &quot;fire&quot;: [
+        &quot;Space&quot;,
+        &quot;Mouse0&quot;
+      ],
+      &quot;interact&quot;: [
+        &quot;KeyE&quot;,
+        &quot;Enter&quot;
+      ],
+      &quot;dash&quot;: [
+        &quot;ShiftLeft&quot;,
+        &quot;KeyK&quot;
+      ]
+    }
+  },
+  &quot;plugins&quot;: [
+    &quot;ui&quot;,
+    &quot;audio&quot;
+  ],
+  &quot;ui&quot;: {
+    &quot;skin&quot;: &quot;cyber&quot;,
+    &quot;theme&quot;: &quot;tokyo-night&quot;
+  }
+}</code></pre>
+</details><details>
+<summary>Complete scenes/main.scene.json</summary><pre class="code" data-lang="json"><code>{
+  &quot;format&quot;: 1,
+  &quot;name&quot;: &quot;main&quot;,
+  &quot;settings&quot;: {
+    &quot;ambient&quot;: &quot;#ffffff&quot;
+  },
+  &quot;entities&quot;: [
+    {
+      &quot;id&quot;: &quot;eeeeeee1&quot;,
+      &quot;name&quot;: &quot;Sky&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0,
+          -100
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;parallax&quot;,
+          &quot;texture&quot;: &quot;assets/sprites/bg_sky.png&quot;,
+          &quot;factor&quot;: [
+            0,
+            0
+          ]
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeeee2&quot;,
+      &quot;name&quot;: &quot;Hills&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0,
+          -90
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;parallax&quot;,
+          &quot;texture&quot;: &quot;assets/sprites/bg_hills_far.png&quot;,
+          &quot;factor&quot;: [
+            0.3,
+            0
+          ]
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeeee3&quot;,
+      &quot;name&quot;: &quot;Level&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0,
+          -1
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;tilemap&quot;,
+          &quot;map&quot;: &quot;assets/maps/level.tilemap.json&quot;,
+          &quot;tileset&quot;: &quot;assets/sprites/tileset_platformer.png&quot;
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeeee4&quot;,
+      &quot;name&quot;: &quot;Hero&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;player&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          48,
+          250,
+          2
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;animatedSprite&quot;,
+          &quot;texture&quot;: &quot;assets/sprites/hero.png&quot;,
+          &quot;anim&quot;: &quot;idle&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;dynamic&quot;,
+          &quot;mass&quot;: 1
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            14,
+            28
+          ],
+          &quot;offset&quot;: [
+            9,
+            4
+          ]
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/platformer2d.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;speed&quot;: 130,
+            &quot;jumpForce&quot;: 340,
+            &quot;wallSlide&quot;: false,
+            &quot;dash&quot;: true,
+            &quot;dashSpeed&quot;: 280
+          }
+        },
+        {
+          &quot;path&quot;: &quot;scripts/health.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;max&quot;: 3,
+            &quot;deathEvent&quot;: &quot;died&quot;,
+            &quot;invulnTime&quot;: 1
+          }
+        },
+        {
+          &quot;path&quot;: &quot;scripts/hero-fx.js&quot;,
+          &quot;attributes&quot;: {}
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeeee5&quot;,
+      &quot;name&quot;: &quot;Coin0&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;coin&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          230,
+          260,
+          1
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;animatedSprite&quot;,
+          &quot;texture&quot;: &quot;assets/sprites/coin.png&quot;,
+          &quot;anim&quot;: &quot;spin&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            12,
+            12
+          ],
+          &quot;trigger&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/pickup.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;kind&quot;: &quot;score&quot;,
+            &quot;value&quot;: 10,
+            &quot;bob&quot;: 0,
+            &quot;sfx&quot;: &quot;assets/audio/sfx/coin.wav&quot;
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeeee6&quot;,
+      &quot;name&quot;: &quot;Coin1&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;coin&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          262,
+          215,
+          1
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;animatedSprite&quot;,
+          &quot;texture&quot;: &quot;assets/sprites/coin.png&quot;,
+          &quot;anim&quot;: &quot;spin&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            12,
+            12
+          ],
+          &quot;trigger&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/pickup.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;kind&quot;: &quot;score&quot;,
+            &quot;value&quot;: 10,
+            &quot;bob&quot;: 0,
+            &quot;sfx&quot;: &quot;assets/audio/sfx/coin.wav&quot;
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeeee7&quot;,
+      &quot;name&quot;: &quot;Coin2&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;coin&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          298,
+          215,
+          1
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;animatedSprite&quot;,
+          &quot;texture&quot;: &quot;assets/sprites/coin.png&quot;,
+          &quot;anim&quot;: &quot;spin&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            12,
+            12
+          ],
+          &quot;trigger&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/pickup.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;kind&quot;: &quot;score&quot;,
+            &quot;value&quot;: 10,
+            &quot;bob&quot;: 0,
+            &quot;sfx&quot;: &quot;assets/audio/sfx/coin.wav&quot;
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeeee8&quot;,
+      &quot;name&quot;: &quot;Coin3&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;coin&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          334,
+          215,
+          1
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;animatedSprite&quot;,
+          &quot;texture&quot;: &quot;assets/sprites/coin.png&quot;,
+          &quot;anim&quot;: &quot;spin&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            12,
+            12
+          ],
+          &quot;trigger&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/pickup.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;kind&quot;: &quot;score&quot;,
+            &quot;value&quot;: 10,
+            &quot;bob&quot;: 0,
+            &quot;sfx&quot;: &quot;assets/audio/sfx/coin.wav&quot;
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeeee9&quot;,
+      &quot;name&quot;: &quot;Coin4&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;coin&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          500,
+          180,
+          1
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;animatedSprite&quot;,
+          &quot;texture&quot;: &quot;assets/sprites/coin.png&quot;,
+          &quot;anim&quot;: &quot;spin&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            12,
+            12
+          ],
+          &quot;trigger&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/pickup.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;kind&quot;: &quot;score&quot;,
+            &quot;value&quot;: 10,
+            &quot;bob&quot;: 0,
+            &quot;sfx&quot;: &quot;assets/audio/sfx/coin.wav&quot;
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeeeea&quot;,
+      &quot;name&quot;: &quot;Coin5&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;coin&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          540,
+          180,
+          1
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;animatedSprite&quot;,
+          &quot;texture&quot;: &quot;assets/sprites/coin.png&quot;,
+          &quot;anim&quot;: &quot;spin&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            12,
+            12
+          ],
+          &quot;trigger&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/pickup.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;kind&quot;: &quot;score&quot;,
+            &quot;value&quot;: 10,
+            &quot;bob&quot;: 0,
+            &quot;sfx&quot;: &quot;assets/audio/sfx/coin.wav&quot;
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeeeeb&quot;,
+      &quot;name&quot;: &quot;Coin6&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;coin&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          580,
+          180,
+          1
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;animatedSprite&quot;,
+          &quot;texture&quot;: &quot;assets/sprites/coin.png&quot;,
+          &quot;anim&quot;: &quot;spin&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            12,
+            12
+          ],
+          &quot;trigger&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/pickup.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;kind&quot;: &quot;score&quot;,
+            &quot;value&quot;: 10,
+            &quot;bob&quot;: 0,
+            &quot;sfx&quot;: &quot;assets/audio/sfx/coin.wav&quot;
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeeeec&quot;,
+      &quot;name&quot;: &quot;Coin7&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;coin&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          640,
+          196,
+          1
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;animatedSprite&quot;,
+          &quot;texture&quot;: &quot;assets/sprites/coin.png&quot;,
+          &quot;anim&quot;: &quot;spin&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            12,
+            12
+          ],
+          &quot;trigger&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/pickup.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;kind&quot;: &quot;score&quot;,
+            &quot;value&quot;: 10,
+            &quot;bob&quot;: 0,
+            &quot;sfx&quot;: &quot;assets/audio/sfx/coin.wav&quot;
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeeeed&quot;,
+      &quot;name&quot;: &quot;Coin8&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;coin&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          700,
+          196,
+          1
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;animatedSprite&quot;,
+          &quot;texture&quot;: &quot;assets/sprites/coin.png&quot;,
+          &quot;anim&quot;: &quot;spin&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            12,
+            12
+          ],
+          &quot;trigger&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/pickup.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;kind&quot;: &quot;score&quot;,
+            &quot;value&quot;: 10,
+            &quot;bob&quot;: 0,
+            &quot;sfx&quot;: &quot;assets/audio/sfx/coin.wav&quot;
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeeeee&quot;,
+      &quot;name&quot;: &quot;Coin9&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;coin&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          960,
+          215,
+          1
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;animatedSprite&quot;,
+          &quot;texture&quot;: &quot;assets/sprites/coin.png&quot;,
+          &quot;anim&quot;: &quot;spin&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            12,
+            12
+          ],
+          &quot;trigger&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/pickup.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;kind&quot;: &quot;score&quot;,
+            &quot;value&quot;: 10,
+            &quot;bob&quot;: 0,
+            &quot;sfx&quot;: &quot;assets/audio/sfx/coin.wav&quot;
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeeeef&quot;,
+      &quot;name&quot;: &quot;Coin10&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;coin&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          1000,
+          215,
+          1
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;animatedSprite&quot;,
+          &quot;texture&quot;: &quot;assets/sprites/coin.png&quot;,
+          &quot;anim&quot;: &quot;spin&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            12,
+            12
+          ],
+          &quot;trigger&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/pickup.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;kind&quot;: &quot;score&quot;,
+            &quot;value&quot;: 10,
+            &quot;bob&quot;: 0,
+            &quot;sfx&quot;: &quot;assets/audio/sfx/coin.wav&quot;
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeeeeg&quot;,
+      &quot;name&quot;: &quot;Coin11&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;coin&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          1040,
+          180,
+          1
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;animatedSprite&quot;,
+          &quot;texture&quot;: &quot;assets/sprites/coin.png&quot;,
+          &quot;anim&quot;: &quot;spin&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            12,
+            12
+          ],
+          &quot;trigger&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/pickup.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;kind&quot;: &quot;score&quot;,
+            &quot;value&quot;: 10,
+            &quot;bob&quot;: 0,
+            &quot;sfx&quot;: &quot;assets/audio/sfx/coin.wav&quot;
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeeeeh&quot;,
+      &quot;name&quot;: &quot;Coin12&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;coin&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          1130,
+          260,
+          1
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;animatedSprite&quot;,
+          &quot;texture&quot;: &quot;assets/sprites/coin.png&quot;,
+          &quot;anim&quot;: &quot;spin&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            12,
+            12
+          ],
+          &quot;trigger&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/pickup.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;kind&quot;: &quot;score&quot;,
+            &quot;value&quot;: 10,
+            &quot;bob&quot;: 0,
+            &quot;sfx&quot;: &quot;assets/audio/sfx/coin.wav&quot;
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeeeei&quot;,
+      &quot;name&quot;: &quot;Coin13&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;coin&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          1170,
+          260,
+          1
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;animatedSprite&quot;,
+          &quot;texture&quot;: &quot;assets/sprites/coin.png&quot;,
+          &quot;anim&quot;: &quot;spin&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            12,
+            12
+          ],
+          &quot;trigger&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/pickup.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;kind&quot;: &quot;score&quot;,
+            &quot;value&quot;: 10,
+            &quot;bob&quot;: 0,
+            &quot;sfx&quot;: &quot;assets/audio/sfx/coin.wav&quot;
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeeeej&quot;,
+      &quot;name&quot;: &quot;Coin14&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;coin&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          1250,
+          196,
+          1
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;animatedSprite&quot;,
+          &quot;texture&quot;: &quot;assets/sprites/coin.png&quot;,
+          &quot;anim&quot;: &quot;spin&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            12,
+            12
+          ],
+          &quot;trigger&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/pickup.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;kind&quot;: &quot;score&quot;,
+            &quot;value&quot;: 10,
+            &quot;bob&quot;: 0,
+            &quot;sfx&quot;: &quot;assets/audio/sfx/coin.wav&quot;
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeeeek&quot;,
+      &quot;name&quot;: &quot;Coin15&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;coin&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          1300,
+          156,
+          1
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;animatedSprite&quot;,
+          &quot;texture&quot;: &quot;assets/sprites/coin.png&quot;,
+          &quot;anim&quot;: &quot;spin&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            12,
+            12
+          ],
+          &quot;trigger&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/pickup.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;kind&quot;: &quot;score&quot;,
+            &quot;value&quot;: 10,
+            &quot;bob&quot;: 0,
+            &quot;sfx&quot;: &quot;assets/audio/sfx/coin.wav&quot;
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeeeel&quot;,
+      &quot;name&quot;: &quot;Slime&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;enemy&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          300,
+          268,
+          1
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;animatedSprite&quot;,
+          &quot;texture&quot;: &quot;assets/sprites/enemy_slime.png&quot;,
+          &quot;anim&quot;: &quot;idle&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;dynamic&quot;,
+          &quot;fixedRotation&quot;: true
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            20,
+            14
+          ],
+          &quot;offset&quot;: [
+            6,
+            14
+          ]
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/ai-patrol.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;speed&quot;: 35,
+            &quot;distance&quot;: 90
+          }
+        },
+        {
+          &quot;path&quot;: &quot;scripts/enemy.js&quot;,
+          &quot;attributes&quot;: {}
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeeeem&quot;,
+      &quot;name&quot;: &quot;Slime&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;enemy&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          520,
+          268,
+          1
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;animatedSprite&quot;,
+          &quot;texture&quot;: &quot;assets/sprites/enemy_slime.png&quot;,
+          &quot;anim&quot;: &quot;idle&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;dynamic&quot;,
+          &quot;fixedRotation&quot;: true
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            20,
+            14
+          ],
+          &quot;offset&quot;: [
+            6,
+            14
+          ]
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/ai-patrol.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;speed&quot;: 35,
+            &quot;distance&quot;: 90
+          }
+        },
+        {
+          &quot;path&quot;: &quot;scripts/enemy.js&quot;,
+          &quot;attributes&quot;: {}
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeeeen&quot;,
+      &quot;name&quot;: &quot;Slime&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;enemy&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          760,
+          268,
+          1
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;animatedSprite&quot;,
+          &quot;texture&quot;: &quot;assets/sprites/enemy_slime.png&quot;,
+          &quot;anim&quot;: &quot;idle&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;dynamic&quot;,
+          &quot;fixedRotation&quot;: true
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            20,
+            14
+          ],
+          &quot;offset&quot;: [
+            6,
+            14
+          ]
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/ai-patrol.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;speed&quot;: 35,
+            &quot;distance&quot;: 90
+          }
+        },
+        {
+          &quot;path&quot;: &quot;scripts/enemy.js&quot;,
+          &quot;attributes&quot;: {}
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeeeeo&quot;,
+      &quot;name&quot;: &quot;Slime&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;enemy&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          1100,
+          268,
+          1
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;animatedSprite&quot;,
+          &quot;texture&quot;: &quot;assets/sprites/enemy_slime.png&quot;,
+          &quot;anim&quot;: &quot;idle&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;dynamic&quot;,
+          &quot;fixedRotation&quot;: true
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            20,
+            14
+          ],
+          &quot;offset&quot;: [
+            6,
+            14
+          ]
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/ai-patrol.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;speed&quot;: 35,
+            &quot;distance&quot;: 90
+          }
+        },
+        {
+          &quot;path&quot;: &quot;scripts/enemy.js&quot;,
+          &quot;attributes&quot;: {}
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeeeep&quot;,
+      &quot;name&quot;: &quot;Boss&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;enemy&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          1380,
+          268,
+          1
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          2,
+          2,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;animatedSprite&quot;,
+          &quot;texture&quot;: &quot;assets/sprites/enemy_slime.png&quot;,
+          &quot;anim&quot;: &quot;idle&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;dynamic&quot;,
+          &quot;fixedRotation&quot;: true
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            20,
+            14
+          ],
+          &quot;offset&quot;: [
+            6,
+            14
+          ]
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/ai-patrol.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;speed&quot;: 40,
+            &quot;distance&quot;: 120
+          }
+        },
+        {
+          &quot;path&quot;: &quot;scripts/boss.js&quot;,
+          &quot;attributes&quot;: {}
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeeeeq&quot;,
+      &quot;name&quot;: &quot;Checkpoint&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          720,
+          256,
+          0
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;animatedSprite&quot;,
+          &quot;texture&quot;: &quot;assets/sprites/flag.png&quot;,
+          &quot;anim&quot;: &quot;wave&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            16,
+            32
+          ],
+          &quot;trigger&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/checkpoint.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;killY&quot;: 400
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeeeer&quot;,
+      &quot;name&quot;: &quot;Checkpoint&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          1290,
+          256,
+          0
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;animatedSprite&quot;,
+          &quot;texture&quot;: &quot;assets/sprites/flag.png&quot;,
+          &quot;anim&quot;: &quot;wave&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            16,
+            32
+          ],
+          &quot;trigger&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/checkpoint.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;killY&quot;: 400
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeeees&quot;,
+      &quot;name&quot;: &quot;Camera&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          320,
+          180,
+          0
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;camera&quot;,
+          &quot;zoom&quot;: 1,
+          &quot;bounds&quot;: [
+            0,
+            0,
+            1600,
+            368
+          ]
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/camera-follow.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;target&quot;: &quot;Hero&quot;,
+            &quot;smoothing&quot;: 7,
+            &quot;bounds&quot;: [
+              0,
+              0,
+              1600,
+              368
+            ],
+            &quot;lookAhead&quot;: 24
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeeeet&quot;,
+      &quot;name&quot;: &quot;Systems&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/ui-hud.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;target&quot;: &quot;Hero&quot;,
+            &quot;style&quot;: &quot;hearts&quot;,
+            &quot;coins&quot;: false
+          }
+        },
+        {
+          &quot;path&quot;: &quot;scripts/util-sfx.js&quot;,
+          &quot;attributes&quot;: {}
+        },
+        {
+          &quot;path&quot;: &quot;scripts/fx-hitstop.js&quot;,
+          &quot;attributes&quot;: {}
+        },
+        {
+          &quot;path&quot;: &quot;scripts/course.js&quot;,
+          &quot;attributes&quot;: {}
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    }
+  ]
+}</code></pre>
+</details><details>
+<summary>Complete scripts/ai-patrol.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;ai.patrol&quot;,&quot;title&quot;:&quot;Enemy AI: patrol&quot;,&quot;category&quot;:&quot;ai&quot;,&quot;tier&quot;:[&quot;2d&quot;],&quot;tags&quot;:[&quot;enemy&quot;,&quot;patrol&quot;,&quot;platformer&quot;],&quot;requires&quot;:[&quot;rigidbody&quot;],&quot;description&quot;:&quot;Walks back and forth over a distance, turning at walls/ledge ends (checks ground ahead with overlapBox) and pauses at the ends.&quot;}
+import { NordScript } from 'nord';
+
+export default class Patrol extends NordScript {
+  static attributes = { speed: { type: 'number', default: 50 }, distance: { type: 'number', default: 96 }, pause: { type: 'number', default: 0.5 }, ledgeCheck: { type: 'bool', default: true } };
+  start() { this.x0 = this.entity.pos[0]; this.dir = 1; this.wait = 0; this.sprite = this.entity.getComponent('animatedSprite') ?? this.entity.getComponent('sprite'); }
+  fixedUpdate(dt) {
+    if (this.entity.stunned) return;
+    if (this.wait &gt; 0) { this.wait -= dt; this.physics.setVelocity(this.entity, 0, null); return; }
+    const x = this.entity.pos[0], far = Math.abs(x - this.x0) &gt; this.attrs.distance / 2 &amp;&amp; Math.sign(x - this.x0) === this.dir;
+    const ahead = this.attrs.ledgeCheck &amp;&amp; this.physics.isGrounded(this.entity) &amp;&amp; !(this.physics.overlapBox?.(x + this.dir * 14, this.entity.pos[1] + 15, 4, 6)?.filter((o) =&gt; o !== this.entity).length ?? 1);
+    if (far || ahead) { this.dir = -this.dir; this.wait = this.attrs.pause; return; }
+    this.sprite?.setFlip?.(this.dir &lt; 0);
+    this.physics.setVelocity(this.entity, this.dir * this.attrs.speed * (this.entity.speedMul ?? 1), null);
+  }
+  onCollisionEnter(o) { if (!o.hasTag('player') &amp;&amp; Math.abs(o.pos[1] - this.entity.pos[1]) &lt; 12) this.dir = -this.dir; }
+}</code></pre>
+</details><details>
+<summary>Complete scripts/boss.js</summary><pre class="code" data-lang="js"><code>import Enemy from './enemy.js';
+
+export default class Boss extends Enemy {
+  static attributes = { ...Enemy.attributes, hp: { type: 'int', default: 5 }, damage: { type: 'number', default: 2 } };
+  hurt() {
+    this.game.camera?.shake?.(200, 0.01); this.physics.setVelocity(this.entity, null, -120);
+    super.hurt();
+    if (this.hp &lt;= 0) { this.events.emit('score', 200); this.after(0.6, () =&gt; this.events.emit('game:win')); }
+  }
+}</code></pre>
+</details><details>
+<summary>Complete scripts/camera-follow.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;camera.follow&quot;,&quot;title&quot;:&quot;Camera follow (lerp + deadzone + look-ahead)&quot;,&quot;category&quot;:&quot;camera&quot;,&quot;tier&quot;:[&quot;2d&quot;],&quot;tags&quot;:[&quot;camera&quot;,&quot;follow&quot;,&quot;deadzone&quot;],&quot;description&quot;:&quot;Put on the camera entity (its position is the view centre; remove the camera's own 'follow'): smoothly follows a target (by name or tag) with a deadzone and optional look-ahead in the movement direction, clamped to world bounds.&quot;}
+import { NordScript } from 'nord';
+
+export default class CameraFollow extends NordScript {
+  static attributes = {
+    target: { type: 'string', default: 'Player', label: 'Target entity name (or tag if no name matches)' },
+    smoothing: { type: 'number', default: 6, min: 0, label: 'Follow speed (0 = snap)' },
+    deadzone: { type: 'vec2', default: [24, 16] },
+    lookAhead: { type: 'number', default: 0, min: 0, label: 'Look-ahead distance (px)' },
+    bounds: { type: 'array', default: [], label: 'World bounds [minX,minY,maxX,maxY] (empty = none)' },
+    viewport: { type: 'vec2', default: [640, 360] },
+  };
+  start() {
+    const t = this.scene.find(this.attrs.target) ?? this.scene.findByTag(this.attrs.target)[0];
+    this.t = t; this.pos = t ? [t.pos[0], t.pos[1]] : [0, 0]; this.last = t ? [...t.pos] : [0, 0, 0]; this.ahead = 0;
+    this.entity.pos = [...this.pos, this.entity.pos[2]];
+  }
+  lateUpdate(dt) {
+    const t = this.t; if (!t || t.destroyed) return;
+    const a = this.attrs, dx = t.pos[0] - this.last[0];
+    this.last = [...t.pos];
+    this.ahead += ((Math.sign(dx) * a.lookAhead || (dx === 0 ? this.ahead : 0)) - this.ahead) * Math.min(1, 4 * dt);
+    const gx = t.pos[0] + this.ahead, gy = t.pos[1];
+    let tx = this.pos[0], ty = this.pos[1];
+    if (Math.abs(gx - tx) &gt; a.deadzone[0]) tx = gx - Math.sign(gx - tx) * a.deadzone[0];
+    if (Math.abs(gy - ty) &gt; a.deadzone[1]) ty = gy - Math.sign(gy - ty) * a.deadzone[1];
+    const k = a.smoothing ? Math.min(1, a.smoothing * dt) : 1;
+    this.pos[0] += (tx - this.pos[0]) * k; this.pos[1] += (ty - this.pos[1]) * k;
+    let [x, y] = this.pos;
+    if (a.bounds.length === 4) {
+      const hw = a.viewport[0] / 2, hh = a.viewport[1] / 2;
+      x = Math.max(a.bounds[0] + hw, Math.min(a.bounds[2] - hw, x)); y = Math.max(a.bounds[1] + hh, Math.min(a.bounds[3] - hh, y));
+    }
+    this.entity.pos = [x, y, this.entity.pos[2]];
+  }
+}</code></pre>
+</details><details>
+<summary>Complete scripts/checkpoint.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;gameplay.checkpoint&quot;,&quot;title&quot;:&quot;Checkpoints &amp; respawn&quot;,&quot;category&quot;:&quot;gameplay&quot;,&quot;tier&quot;:[&quot;2d&quot;,&quot;3d&quot;],&quot;tags&quot;:[&quot;checkpoint&quot;,&quot;respawn&quot;],&quot;requires&quot;:[&quot;trigger&quot;],&quot;description&quot;:&quot;Put on every checkpoint trigger entity: touching one sets the respawn point; when the global 'died' event fires (or y passes killY) the player is moved back and healed after a delay. Emits 'checkpoint' and 'respawned'.&quot;}
+import { NordScript } from 'nord';
+
+export default class Checkpoint extends NordScript {
+  static attributes = { tag: { type: 'string', default: 'player' }, respawnEvent: { type: 'string', default: 'died' }, killY: { type: 'number', default: 1e9, label: 'Respawn when player y exceeds this (2D, y down)' }, delay: { type: 'number', default: 0.8 } };
+  start() {
+    this.player = this.scene.findByTag(this.attrs.tag)[0]; this.point = this.player ? [...this.player.pos] : null;
+    this.offs = [this.events.on('checkpoint', (pos) =&gt; { this.point = [...pos]; }), this.events.on(this.attrs.respawnEvent, () =&gt; this.after(this.attrs.delay, () =&gt; this.respawn()))];
+  }
+  onDestroy() { this.offs.forEach((o) =&gt; o()); }
+  onTriggerEnter(o) { if (o.hasTag(this.attrs.tag)) { this.events.emit('checkpoint', this.entity.pos); this.entity.emit('activated'); } }
+  update() { if (this.player &amp;&amp; this.player.pos[1] &gt; this.attrs.killY) this.respawn(); }
+  respawn() {
+    if (!this.player || !this.point) return; this.player.pos = [...this.point]; this.physics.setVelocity?.(this.player, 0, 0);
+    this.player.emit('heal', { amount: 999 }); this.events.emit('respawned', this.player);
+  }
+}</code></pre>
+</details><details>
+<summary>Complete scripts/enemy.js</summary><pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
+
+// Contact rules: land on top of it (falling) → it dies and you bounce; touch it from the side → you take damage.
+export default class Enemy extends NordScript {
+  static attributes = { hp: { type: 'int', default: 1 }, damage: { type: 'number', default: 1 }, bounce: { type: 'number', default: 260 } };
+  start() { this.hp = this.attrs.hp; }
+  onCollisionEnter(o) {
+    if (!o.hasTag('player')) return;
+    const [, vy] = this.physics.velocity(o), above = o.pos[1] &lt; this.entity.pos[1] - 6 * this.entity.scale[1];
+    if (above &amp;&amp; vy &gt;= 0) { this.physics.setVelocity(o, null, -this.attrs.bounce); this.hurt(); } else o.emit('damage', { amount: this.attrs.damage, from: this.entity });
+  }
+  hurt() {
+    this.events.emit('sfx', 'hit'); this.events.emit('hitstop', 40);
+    if (--this.hp &gt; 0) return;
+    this.events.emit('score', 25); this.entity.emit('death'); this.entity.destroy();
+  }
+}</code></pre>
+</details><details>
+<summary>Complete scripts/fx-hitstop.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;fx.hitstop-slowmo&quot;,&quot;title&quot;:&quot;Hit-stop, slow-mo, flash&quot;,&quot;category&quot;:&quot;fx&quot;,&quot;tier&quot;:[&quot;2d&quot;,&quot;3d&quot;],&quot;tags&quot;:[&quot;juice&quot;,&quot;hitstop&quot;,&quot;slowmo&quot;,&quot;flash&quot;],&quot;description&quot;:&quot;Game-feel events: 'hitstop' (ms) freezes time briefly, 'slowmo' ({scale,time}) eases timeScale, 'flash' flashes the screen. Also reacts to the global 'hit' event with a tiny hit-stop.&quot;}
+import { NordScript } from 'nord';
+
+export default class Juice extends NordScript {
+  static attributes = { hitStopOnHit: { type: 'number', default: 50, min: 0, label: 'ms of hit-stop on &quot;hit&quot;' }, flashColor: { type: 'color', default: '#ffffff' } };
+  start() {
+    this.offs = [this.events.on('hitstop', (ms) =&gt; this.stop(ms)), this.events.on('hit', () =&gt; this.attrs.hitStopOnHit &amp;&amp; this.stop(this.attrs.hitStopOnHit)),
+      this.events.on('slowmo', ({ scale = 0.3, time = 1 } = {}) =&gt; { this.game.timeScale = scale; setTimeout(() =&gt; { const o = { s: scale }; this.scene.scheduler.tween(o, { s: 1 }, { duration: 0.4, onUpdate: () =&gt; { this.game.timeScale = o.s; } }); }, time * 1000); }),
+      this.events.on('flash', (ms = 120) =&gt; this.game.camera?.flash?.(ms, this.attrs.flashColor))];
+  }
+  onDestroy() { this.offs.forEach((o) =&gt; o()); this.game.timeScale = 1; }
+  stop(ms) { const prev = this.game.timeScale || 1; if (this.frozen) return; this.frozen = true; this.game.timeScale = 0.0001; setTimeout(() =&gt; { this.game.timeScale = prev; this.frozen = false; }, ms); }
+}</code></pre>
+</details><details>
+<summary>Complete scripts/health.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;gameplay.health&quot;,&quot;title&quot;:&quot;Health &amp; damage&quot;,&quot;category&quot;:&quot;gameplay&quot;,&quot;tier&quot;:[&quot;2d&quot;,&quot;3d&quot;],&quot;tags&quot;:[&quot;health&quot;,&quot;damage&quot;,&quot;invulnerable&quot;,&quot;game-ready&quot;],&quot;description&quot;:&quot;Hit points with damage/heal, invulnerability frames with blink, death handling. Listens for the entity 'damage' event {amount}; emits 'health' {hp,max} on the entity and global 'died' when it hits 0.&quot;}
+import { NordScript } from 'nord';
+
+export default class Health extends NordScript {
+  static attributes = {
+    max: { type: 'number', default: 5, min: 1 },
+    invulnTime: { type: 'number', default: 0.8, min: 0 },
+    destroyOnDeath: { type: 'bool', default: false },
+    barName: { type: 'string', default: '', label: 'Name of a uiBar entity to update' },
+    deathEvent: { type: 'string', default: 'died' },
+  };
+  start() {
+    this.hp = this.attrs.max; this.inv = 0;
+    this.entity.on('damage', (d) =&gt; this.damage(d?.amount ?? 1, d?.from));
+    this.entity.on('heal', (d) =&gt; this.heal(d?.amount ?? 1));
+    this.bar = this.attrs.barName ? this.scene.find(this.attrs.barName) : null; this.#sync();
+  }
+  update(dt) {
+    if (this.inv &lt;= 0) return;
+    this.inv -= dt; this.entity.set('sprite', 'alpha', this.inv &gt; 0 &amp;&amp; Math.floor(this.inv * 20) % 2 ? 0.3 : 1);
+  }
+  damage(n, from) {
+    if (this.inv &gt; 0 || this.hp &lt;= 0) return false;
+    this.hp = Math.max(0, this.hp - n); this.inv = this.attrs.invulnTime; this.#sync();
+    this.events.emit('hit', n);
+    if (this.hp === 0) { this.entity.emit('death', from); this.events.emit(this.attrs.deathEvent, this.entity); if (this.attrs.destroyOnDeath) this.entity.destroy(); }
+    return true;
+  }
+  heal(n) { this.hp = Math.min(this.attrs.max, this.hp + n); this.#sync(); }
+  #sync() { this.entity.emit('health', { hp: this.hp, max: this.attrs.max }); this.bar?.set('uiBar', 'value', this.hp / this.attrs.max); }
+}</code></pre>
+</details><details>
+<summary>Complete scripts/hero-fx.js</summary><pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
+
+// Hero animation + sound glue (kept separate from the movement controller on purpose).
+export default class HeroFx extends NordScript {
+  start() { this.sprite = this.entity.getComponent('animatedSprite'); this.off = [this.events.on('jump', () =&gt; this.audio.play('assets/audio/sfx/coin.wav', { volume: 0.2 }))]; }
+  onDestroy() { this.off?.forEach((o) =&gt; o()); }
+  update() {
+    const g = this.physics.isGrounded(this.entity), dir = this.input.axis('left', 'right'), want = this.entity.stunned ? 'hurt' : !g ? 'jump' : dir ? 'walk' : 'idle';
+    if (want !== this.sprite.current) this.sprite.play(want);
+  }
+}</code></pre>
+</details><details>
+<summary>Complete scripts/mk.js</summary><pre class="code" data-lang="js"><code>// Tiny helpers to spawn coloured rectangles / circles / text at runtime (placeholder art). Generated by tools/gen_examples.mjs.
+const base = (name, x, y, z, tags, comps) =&gt; ({ name, tags: tags ?? [], transform: { pos: [x, y, z ?? 0], rot: [0, 0, 0], scale: [1, 1, 1] }, components: comps, scripts: [], children: [] });
+export const rectData = (name, x, y, w, h, color, o = {}) =&gt; base(name, x, y, o.z, o.tags, [{ type: 'sprite', texture: 'assets/sprites/square.png', size: [w, h], tint: color, alpha: o.alpha ?? 1 }]);
+export const circleData = (name, x, y, d, color, o = {}) =&gt; base(name, x, y, o.z, o.tags, [{ type: 'sprite', texture: 'assets/sprites/circle.png', size: [d, d], tint: color, alpha: o.alpha ?? 1 }]);
+export const textData = (name, x, y, t, o = {}) =&gt; base(name, x, y, o.z ?? 50, o.tags, [{ type: 'text', text: t, size: o.size ?? 20, color: o.color ?? '#eceff4' }]);
+export const rect = (scene, ...a) =&gt; scene.spawnData(rectData(...a));
+export const circle = (scene, ...a) =&gt; scene.spawnData(circleData(...a));
+export const label = (scene, ...a) =&gt; scene.spawnData(textData(...a));
+export const aabb = (a, b) =&gt; Math.abs(a.pos[0] - b.pos[0]) * 2 &lt; a.w + b.w &amp;&amp; Math.abs(a.pos[1] - b.pos[1]) * 2 &lt; a.h + b.h;</code></pre>
+</details><details>
+<summary>Complete scripts/pickup.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;gameplay.pickup&quot;,&quot;title&quot;:&quot;Pickups &amp; power-ups&quot;,&quot;category&quot;:&quot;gameplay&quot;,&quot;tier&quot;:[&quot;2d&quot;,&quot;3d&quot;],&quot;tags&quot;:[&quot;coin&quot;,&quot;pickup&quot;,&quot;powerup&quot;,&quot;game-ready&quot;],&quot;requires&quot;:[&quot;trigger&quot;],&quot;description&quot;:&quot;Put on collectible entities: when the player touches it, emits a global event (default 'score' + value), or applies a power-up (heal / speed / shield via entity events), plays a sound and disappears with a pop tween. Magnetises toward the player when close.&quot;}
+import { NordScript } from 'nord';
+
+export default class Pickup extends NordScript {
+  static attributes = { kind: { type: 'enum', options: ['score', 'heal', 'speed', 'shield', 'xp', 'custom'], default: 'score' }, value: { type: 'number', default: 10 }, duration: { type: 'number', default: 5 }, event: { type: 'string', default: '', label: 'Custom global event' }, sfx: { type: 'asset', assetType: 'audio', default: '' }, tag: { type: 'string', default: 'player' }, magnet: { type: 'number', default: 0, label: 'Magnet radius' }, bob: { type: 'number', default: 3 } };
+  start() { this.y0 = this.entity.pos[1]; this.t = this.rng.range(0, 6); this.taken = false; }
+  update(dt) {
+    const a = this.attrs, e = this.entity; this.t += dt;
+    const p = a.magnet &amp;&amp; this.scene.findByTag(a.tag)[0];
+    if (p &amp;&amp; Math.hypot(p.pos[0] - e.pos[0], p.pos[1] - e.pos[1]) &lt; a.magnet) { const dx = p.pos[0] - e.pos[0], dy = p.pos[1] - e.pos[1], d = Math.hypot(dx, dy) || 1; e.pos = [e.pos[0] + (dx / d) * 220 * dt, e.pos[1] + (dy / d) * 220 * dt, e.pos[2]]; this.y0 = e.pos[1]; }
+    else if (a.bob) e.pos = [e.pos[0], this.y0 + Math.sin(this.t * 4) * a.bob, e.pos[2]];
+  }
+  onTriggerEnter(o) {
+    if (this.taken || !o.hasTag(this.attrs.tag)) return; this.taken = true; const a = this.attrs;
+    if (a.kind === 'score') this.events.emit('score', a.value); else if (a.kind === 'xp') this.events.emit('xp', a.value); else if (a.kind === 'heal') o.emit('heal', { amount: a.value });
+    else if (a.kind === 'speed') o.emit('apply', { type: 'haste', duration: a.duration, power: 1 }); else if (a.kind === 'shield') o.emit('shield', a.duration);
+    else if (a.event) this.events.emit(a.event, o);
+    if (a.sfx) this.audio.play(a.sfx); this.events.emit('pickup', { kind: a.kind, value: a.value });
+    const s = { k: 1 }; this.tween(s, { k: 1.6 }, { duration: 0.12, onUpdate: () =&gt; { this.entity.scale = [s.k, s.k, s.k]; }, onComplete: () =&gt; this.entity.destroy() });
+  }
+}</code></pre>
+</details><details>
+<summary>Complete scripts/platformer2d.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;controller.platformer2d&quot;,&quot;title&quot;:&quot;Platformer 2D&quot;,&quot;category&quot;:&quot;controllers&quot;,&quot;tier&quot;:[&quot;2d&quot;],&quot;tags&quot;:[&quot;platformer&quot;,&quot;jump&quot;,&quot;game-ready&quot;],&quot;requires&quot;:[&quot;rigidbody&quot;,&quot;collider&quot;],&quot;description&quot;:&quot;Side-scroller controller: run, coyote time, jump buffer, variable jump height, wall slide/jump and dash. Needs actions left/right/jump (+ optional dash).&quot;}
+import { NordScript } from 'nord';
+
+export default class Platformer2D extends NordScript {
+  static attributes = {
+    speed: { type: 'number', default: 180, min: 0, label: 'Run speed' },
+    jumpForce: { type: 'number', default: 420, min: 0 },
+    coyoteTime: { type: 'number', default: 0.1, min: 0, label: 'Coyote time (s)' },
+    jumpBuffer: { type: 'number', default: 0.12, min: 0, label: 'Jump buffer (s)' },
+    cutJump: { type: 'number', default: 0.5, min: 0, max: 1, label: 'Velocity kept when jump released early' },
+    wallSlide: { type: 'bool', default: false },
+    wallSlideSpeed: { type: 'number', default: 60, min: 0 },
+    dash: { type: 'bool', default: false },
+    dashSpeed: { type: 'number', default: 420, min: 0 },
+    dashTime: { type: 'number', default: 0.14, min: 0 },
+    dashCooldown: { type: 'number', default: 0.6, min: 0 },
+  };
+
+  start() {
+    this.coyote = 0; this.buffer = 0; this.dashLeft = 0; this.dashCd = 0; this.facing = 1; this.jumping = false;
+    this.sprite = this.entity.getComponent('animatedSprite') ?? this.entity.getComponent('sprite');
+  }
+
+  fixedUpdate(dt) {
+    const a = this.attrs, p = this.physics, e = this.entity;
+    const dir = this.input.axis('left', 'right');
+    const grounded = p.isGrounded(e);
+    const [, vy] = p.velocity(e);
+    this.coyote = grounded ? a.coyoteTime : this.coyote - dt;
+    this.buffer = this.input.pressed('jump') ? a.jumpBuffer : this.buffer - dt;
+    this.dashCd -= dt;
+    if (dir) { this.facing = dir; this.sprite?.setFlip?.(dir &lt; 0); }
+
+    if (a.dash &amp;&amp; this.dashCd &lt;= 0 &amp;&amp; this.input.pressed('dash')) { this.dashLeft = a.dashTime; this.dashCd = a.dashCooldown; this.events.emit('dash', e); }
+    if (this.dashLeft &gt; 0) { this.dashLeft -= dt; p.setVelocity(e, this.facing * a.dashSpeed, 0); return; }
+
+    p.setVelocity(e, dir * a.speed, null);
+    if (this.buffer &gt; 0 &amp;&amp; this.coyote &gt; 0) {
+      p.setVelocity(e, null, -a.jumpForce); this.buffer = 0; this.coyote = 0; this.jumping = true; this.events.emit('jump', e);
+    } else if (this.jumping &amp;&amp; vy &lt; 0 &amp;&amp; !this.input.down('jump')) { p.setVelocity(e, null, vy * a.cutJump); this.jumping = false; }
+    if (grounded) this.jumping = false;
+    if (a.wallSlide &amp;&amp; !grounded &amp;&amp; dir &amp;&amp; vy &gt; a.wallSlideSpeed) {
+      const w = p.overlapBox?.(e.pos[0] + dir * 10, e.pos[1], 4, 12)?.filter((o) =&gt; o !== e) ?? [];
+      if (w.some?.((o) =&gt; o !== e &amp;&amp; !o.getComponent?.('collider')?.data.trigger)) {
+        p.setVelocity(e, null, a.wallSlideSpeed);
+        if (this.input.pressed('jump')) { p.setVelocity(e, -dir * a.speed, -a.jumpForce); this.facing = -dir; }
+      }
+    }
+  }
+}</code></pre>
+</details><details>
+<summary>Complete scripts/score.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;gameplay.score&quot;,&quot;title&quot;:&quot;Score, combo &amp; high score&quot;,&quot;category&quot;:&quot;gameplay&quot;,&quot;tier&quot;:[&quot;2d&quot;,&quot;3d&quot;],&quot;tags&quot;:[&quot;score&quot;,&quot;combo&quot;,&quot;highscore&quot;,&quot;hud&quot;,&quot;game-ready&quot;],&quot;requires&quot;:[&quot;ui&quot;],&quot;description&quot;:&quot;Score counter with a combo multiplier that decays, persistent high score and a HUD label. Add points via the global event 'score' (number) or addScore(n).&quot;}
+import { NordScript } from 'nord';
+
+export default class Score extends NordScript {
+  static attributes = { comboWindow: { type: 'number', default: 2, min: 0 }, maxCombo: { type: 'int', default: 8, min: 1 }, hud: { type: 'bool', default: true }, x: { type: 'number', default: 12 }, y: { type: 'number', default: 8 }, saveKey: { type: 'string', default: 'highscore' } };
+  start() {
+    this.score = 0; this.combo = 1; this.t = 0; this.high = this.save.get(this.attrs.saveKey, 0);
+    this.off = this.events.on('score', (n) =&gt; this.addScore(typeof n === 'number' ? n : 1));
+    this.label = this.attrs.hud ? this.ui.label('', { screen: 'hud', x: this.attrs.x, y: this.attrs.y, size: 22 }) : null; this.#draw();
+  }
+  onDestroy() { this.off?.(); this.label?.remove(); }
+  addScore(n) {
+    this.score += n * this.combo; this.combo = Math.min(this.attrs.maxCombo, this.combo + 1); this.t = this.attrs.comboWindow;
+    if (this.score &gt; this.high) { this.high = this.score; this.save.set(this.attrs.saveKey, this.high); }
+    this.events.emit('score:changed', { score: this.score, combo: this.combo, high: this.high }); this.#draw();
+  }
+  update(dt) { if (this.t &gt; 0 &amp;&amp; (this.t -= dt) &lt;= 0) { this.combo = 1; this.#draw(); } }
+  #draw() { this.label?.set(`Score ${this.score}${this.combo &gt; 1 ? `  x${this.combo}` : ''}   Best ${this.high}`); }
+}</code></pre>
+</details><details>
+<summary>Complete scripts/ui-gameover.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;ui.game-over&quot;,&quot;title&quot;:&quot;Game over / win screen&quot;,&quot;category&quot;:&quot;ui&quot;,&quot;tier&quot;:[&quot;2d&quot;,&quot;3d&quot;],&quot;tags&quot;:[&quot;game-over&quot;,&quot;win&quot;,&quot;restart&quot;,&quot;game-ready&quot;],&quot;requires&quot;:[&quot;ui&quot;],&quot;description&quot;:&quot;Shows a Game Over screen on the global 'game:over' (or the configured death event) and a You Win screen on 'game:win' (also 'wave:all-done'), with Restart. Shows the score if gameplay.score is present.&quot;}
+import { NordScript } from 'nord';
+
+export default class GameOver extends NordScript {
+  static attributes = { loseEvent: { type: 'string', default: 'died' }, delay: { type: 'number', default: 0.8 }, winEvent: { type: 'string', default: 'game:win' } };
+  start() { this.offs = [this.events.on(this.attrs.loseEvent, () =&gt; this.after(this.attrs.delay, () =&gt; this.show('Game Over'))), this.events.on('game:over', () =&gt; this.show('Game Over')), this.events.on(this.attrs.winEvent, () =&gt; this.show('You Win!')), this.events.on('wave:all-done', () =&gt; this.show('You Win!'))]; }
+  onDestroy() { this.offs.forEach((o) =&gt; o()); }
+  show(text) {
+    const ui = this.ui; ui.clear('end'); ui.panel({ screen: 'end', x: 0, y: 0, style: { inset: 0, width: '100%', height: '100%', background: '#000b', border: 0, borderRadius: 0 } });
+    ui.label(text, { screen: 'end', x: 0, y: 90, size: 56, style: { width: '100%', textAlign: 'center' } });
+    const sc = this.scene.all &amp;&amp; [...this.scene.all()].flatMap((e) =&gt; e.scripts).find((s) =&gt; 'score' in s &amp;&amp; 'high' in s);
+    if (sc) ui.label(`Score ${sc.score}   Best ${sc.high}`, { screen: 'end', x: 0, y: 170, size: 22, style: { width: '100%', textAlign: 'center' } });
+    ui.menu('end', [{ text: 'Restart', onClick: () =&gt; { ui.hide('end'); this.game.restart(); } }], { x: 0, y: 220 }).el.style.cssText += ';left:50%;transform:translateX(-50%)';
+    ui.show('end');
+  }
+}</code></pre>
+</details><details>
+<summary>Complete scripts/ui-hud.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;ui.hud&quot;,&quot;title&quot;:&quot;HUD: hearts, bars, score&quot;,&quot;category&quot;:&quot;ui&quot;,&quot;tier&quot;:[&quot;2d&quot;,&quot;3d&quot;],&quot;tags&quot;:[&quot;hud&quot;,&quot;hearts&quot;,&quot;health-bar&quot;,&quot;game-ready&quot;],&quot;requires&quot;:[&quot;ui&quot;,&quot;gameplay.health&quot;],&quot;description&quot;:&quot;Heads-up display bound to events: hearts or a health bar from the target's 'health' entity event, optional mana bar from the global 'mana' event, and a coin counter from 'pickup'. Put anywhere in the scene.&quot;}
+import { NordScript } from 'nord';
+
+export default class Hud extends NordScript {
+  static attributes = { target: { type: 'string', default: 'Player' }, style: { type: 'enum', options: ['hearts', 'bar'], default: 'hearts' }, coins: { type: 'bool', default: true } };
+  start() {
+    const t = this.scene.find(this.attrs.target); this.hearts = this.ui.label('', { screen: 'hud', x: 12, y: 8, size: 26, color: '#bf616a' }); this.bar = this.ui.bar(1, { screen: 'hud', x: 12, y: 12, color: '#bf616a' });
+    this.bar.el.hidden = this.attrs.style !== 'bar'; this.hearts.el.hidden = this.attrs.style !== 'hearts';
+    t?.on('health', ({ hp, max }) =&gt; { this.hearts.set('♥'.repeat(Math.ceil(hp)) + '♡'.repeat(Math.max(0, Math.ceil(max - hp)))); this.bar.set(hp / max); });
+    this.n = 0; if (this.attrs.coins) { this.coin = this.ui.label('● 0', { screen: 'hud', anchor: 'tr', x: 12, y: 8, size: 22, color: '#ebcb8b' }); this.off = this.events.on('pickup', (p) =&gt; { if (p.kind === 'score') this.coin.set(`● ${++this.n}`); }); }
+  }
+  onDestroy() { this.hearts?.remove(); this.bar?.remove(); this.coin?.remove(); this.off?.(); }
+}</code></pre>
+</details><details>
+<summary>Complete scripts/util-sfx.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;util.sfx-synth&quot;,&quot;title&quot;:&quot;Procedural sfx (jsfxr-style)&quot;,&quot;category&quot;:&quot;utilities&quot;,&quot;tier&quot;:[&quot;any&quot;],&quot;tags&quot;:[&quot;audio&quot;,&quot;sfx&quot;,&quot;synth&quot;,&quot;retro&quot;],&quot;description&quot;:&quot;Generates retro sound effects with WebAudio, no files needed: sfx(game,'coin'|'jump'|'hit'|'laser'|'explosion'|'powerup'). Listens to global events 'sfx' (name). import { sfx } from './util-sfx.js' for direct use.&quot;}
+import { NordScript } from 'nord';
+
+const P = { coin: { w: 'square', f: [880, 1760], d: 0.18, v: 0.25 }, jump: { w: 'square', f: [260, 620], d: 0.2, v: 0.25 }, hit: { w: 'sawtooth', f: [220, 60], d: 0.18, v: 0.3 }, laser: { w: 'sawtooth', f: [1400, 200], d: 0.25, v: 0.2 }, powerup: { w: 'triangle', f: [300, 1200], d: 0.4, v: 0.3 }, explosion: { w: 'noise', f: [800, 40], d: 0.6, v: 0.4 } };
+let ctx;
+export function sfx(name, vol = 1) {
+  const p = P[name]; if (!p) return; ctx ??= new (window.AudioContext || window.webkitAudioContext)(); const t = ctx.currentTime, g = ctx.createGain(); g.gain.setValueAtTime(p.v * vol, t); g.gain.exponentialRampToValueAtTime(0.001, t + p.d); g.connect(ctx.destination);
+  let src;
+  if (p.w === 'noise') { const b = ctx.createBuffer(1, ctx.sampleRate * p.d, ctx.sampleRate), d = b.getChannelData(0); for (let i = 0; i &lt; d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length); src = ctx.createBufferSource(); src.buffer = b; const f = ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.setValueAtTime(p.f[0], t); f.frequency.exponentialRampToValueAtTime(p.f[1], t + p.d); src.connect(f); f.connect(g); }
+  else { src = ctx.createOscillator(); src.type = p.w; src.frequency.setValueAtTime(p.f[0], t); src.frequency.exponentialRampToValueAtTime(p.f[1], t + p.d); src.connect(g); }
+  src.start(t); src.stop(t + p.d);
+}
+
+export default class SfxSynth extends NordScript {
+  static attributes = { volume: { type: 'number', default: 1, min: 0, max: 1 }, map: { type: 'string', default: '{&quot;pickup&quot;:&quot;coin&quot;,&quot;jump&quot;:&quot;jump&quot;,&quot;hit&quot;:&quot;hit&quot;,&quot;explosion&quot;:&quot;explosion&quot;,&quot;enemy:shoot&quot;:&quot;laser&quot;}', label: 'JSON global-event → sfx name' } };
+  start() { this.offs = [this.events.on('sfx', (n) =&gt; sfx(n, this.attrs.volume)), ...Object.entries(JSON.parse(this.attrs.map)).map(([ev, n]) =&gt; this.events.on(ev, () =&gt; sfx(n, this.attrs.volume)))]; }
+  onDestroy() { this.offs.forEach((o) =&gt; o()); }
+}</code></pre>
+</details><div class="pager"><a href="tut-t32-full-3d-platformer.html"><small>← Previous</small>T32 Full game workshop — Sunset Gems (3D)</a><a href="tut-t34-code-crystal-relay.html"><small>Next →</small>T34 Code a full 3D game — Crystal Relay</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-start-from-a-known-foundation">1. Start from a known foundation </a><a href="#2-declare-settings-the-inspector-can-edit">2. Declare settings the Inspector can edit </a><a href="#3-store-run-state-and-show-it">3. Store run state and show it </a><a href="#4-give-events-a-job">4. Give events a job </a><a href="#5-build-the-combo-deliberately">5. Build the combo deliberately </a><a href="#6-lives-checkpoint-ownership-and-a-fair-goal">6. Lives, checkpoint ownership and a fair goal </a><a href="#7-pause-without-locking-the-player-out">7. Pause without locking the player out </a><a href="#8-save-the-result-and-clean-up">8. Save the result and clean up </a><a href="#9-assemble-debug-and-export">9. Assemble, debug and export </a><a href="#complete-game-source">Complete game source </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

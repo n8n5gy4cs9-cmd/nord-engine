@@ -1,5 +1,7 @@
 # Changelog
 
+- 2026-10-21 — M7-22: full code-first T33 Coin Rush (2D) and T34 Crystal Relay (3D), with explained JavaScript stages, CodeMirror/Copy, all project text source at the end, complete editable source downloads and working feature-rich samples. Repeatable listing/archive generator and browser regressions added. M8-22 / BUG-012: unregister destroyed Arcade tilemap collision layers so retrying a game keeps simulating.
+
 - 2026-10-21 — M8-21 / BUG-011: reject 2D palette drops onto locked/hidden layers before selection or mutation; regression and unlocked-drop control pass. M7-21: full illustrated Coin Canyon 2D and Sunset Gems 3D game workshops, covering exact edits, gameplay checkpoints, debugging and web export. Both game validations/builds and browser movement/pickup checks pass; manual regenerated.
 
 - 2026-10-21 (M12-26): Fixed persistent FPS mouse-look tilt after damage shake (reported in Hotel basement). Babylon cached a tilted up vector after roll returned to zero; camera sync now derives it from the current rotation every frame. All 51 FPS unit checks pass, including a regression through real damage/sync and vendored Babylon; Hotel basement Chromium render check passes. Runtime/template/example synced; existing projects need Upgrade runtime for main Play/export. Native editor feel remains unverified.

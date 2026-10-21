@@ -126,7 +126,7 @@ export function registerPhaserComponents(backend) {
         for (const [li, x, y] of a.cells) comp.layers[li]?.putTileAt(a.frames[f], x, y);
       }
     },
-    destroy(comp) { for (const l of comp.layers ?? []) l.destroy(); comp.map?.destroy(); },
+    destroy(comp) { for (const l of comp.layers ?? []) { backend.physics?.removeTilemap(l); l.destroy(); } comp.map?.destroy(); },
   });
 
   registerComponent('particles', {

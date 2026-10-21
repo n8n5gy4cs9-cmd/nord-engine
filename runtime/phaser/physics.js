@@ -62,6 +62,7 @@ class Base {
     }
   }
   tilemap(layer) { this.layers.push(layer); }
+  removeTilemap(layer) { this.layers = this.layers.filter(l => l !== layer); }
   forget(entity) { this.dirty.delete(entity); this.bodies.delete(entity); for (const [k, p] of this.touching) if (p.a === entity || p.b === entity) this.touching.delete(k); }
 }
 

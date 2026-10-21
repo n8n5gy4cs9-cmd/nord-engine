@@ -121,6 +121,8 @@ jobs:
           node tools/level2d-test.mjs
           node tools/level2d-placement-test.mjs
           node tools/creator-games-test.mjs
+      - name: Full coding workshop games
+        run: node tools/code-workshops-test.mjs --manual
   # M11: the editor in the browser (wasm) and on a server. Desktop jobs above are unaffected by it.
   web-editor:
     runs-on: ubuntu-latest

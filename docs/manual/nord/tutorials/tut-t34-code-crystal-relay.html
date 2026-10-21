@@ -1,0 +1,1874 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>T34 Code a full 3D game — Crystal Relay — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="tutorials.html" class="active" aria-current="page">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Tutorials</div><a href="tutorials.html">Learn by building</a><a href="tut-t01-hello-nord.html">T01 Hello Nord</a><a href="tut-t02-sprite-movement.html">T02 Sprite &amp; movement</a><a href="tut-t03-first-script.html">T03 Your first script</a><a href="tut-t04-platformer.html">T04 Platformer from template</a><a href="tut-t05-physics.html">T05 Physics &amp; collisions</a><a href="tut-t06-tilemaps.html">T06 Tilemaps</a><a href="tut-t07-animation-juice.html">T07 Animation &amp; juice</a><a href="tut-t08-ui-hud.html">T08 UI &amp; HUD</a><a href="tut-t09-audio.html">T09 Audio</a><a href="tut-t10-3d-scene.html">T10 3D scene &amp; camera</a><a href="tut-t11-3d-physics.html">T11 3D physics (FPS)</a><a href="tut-t12-enemy-ai.html">T12 Enemy AI</a><a href="tut-t13-save-load.html">T13 Save &amp; load</a><a href="tut-t14-export-host.html">T14 Export to web &amp; host it</a><a href="tut-t15-mac-app.html">T15 Mac app</a><a href="tut-t16-rust-game.html">T16 Rust/WASM game</a><a href="tut-t17-rust-egui-app.html">T17 Rust egui app</a><a href="tut-t18-library-snippets.html">T18 Writing library snippets</a><a href="tut-t19-notepaint.html">T19 Build notepaint, from a blank folder</a><a href="tut-t20-star-not.html">T20 Build Star-Not, a complete small space adventure</a><a href="tut-t21-project-design.html">T21 Plan a bigger Nord project</a><a href="tut-t22-shader-terrain.html">T22 Put a terrain shader in a Nord app</a><a href="tut-t23-light-shadows.html">T23 2D lights and real shadows</a><a href="tut-t24-event-sheet-platformer.html">T24 A platformer from events</a><a href="tut-t25-topdown-shooter.html">T25 A top-down shooter from events</a><a href="tut-t26-menus-languages.html">T26 Menus and two languages</a><a href="tut-t27-fps-level.html">T27 Build your first FPS level</a><a href="tut-t28-machine-workshop.html">T28 Machine Workshop — build a gravity puzzle in 2D Level</a><a href="tut-t29-dungeon-two-floors.html">T29 Two Floors — edit a Shattered Pixel Dungeon adaptation</a><a href="tut-t30-tank-patrol.html">T30 Tiny Tank Patrol — build a top-down tank arena</a><a href="tut-t31-full-2d-platformer.html">T31 Full game workshop — Coin Canyon (2D)</a><a href="tut-t32-full-3d-platformer.html">T32 Full game workshop — Sunset Gems (3D)</a><a href="tut-t33-code-coin-rush.html">T33 Code a full 2D game — Coin Rush</a><a href="tut-t34-code-crystal-relay.html" class="cur" aria-current="page">T34 Code a full 3D game — Crystal Relay</a></nav><main id="content"><div class="crumb">Tutorials / Nord Engine</div><h1>T34 Code a full 3D game — Crystal Relay</h1>
+<p>Crystal Relay is a 3D time trial built on Nord&#39;s 3D Platformer. Sprint and double-jump along the route, collect crystals <strong>in order</strong>, dodge a moving red hazard and reach the last crystal before time expires. Each crystal grants time, refills energy and becomes a respawn checkpoint. Limited lives and a persistent best time make replay meaningful.</p>
+<p>You will write the rules in JavaScript, attach them to Player, add one visible hazard and test every system in Nord. The scene continues to use Babylon/Havok through Nord; you do not need to learn a second rendering or physics API.</p>
+<p><strong>Allow two hours.</strong> Do T03 first if imports and functions are completely new. <a href="../../assets/downloads/crystal-relay-source.zip">Download the entire Crystal Relay source project</a> to inspect the finished version in Nord while building your own. Extract it before opening its <code>nord.project.json</code>.</p>
+<figure class="shot"><img src="../../assets/screenshots/ed-code-crystal-relay.png" alt="Crystal Relay's 3D route with coded time, lives and sprint-energy display" loading="lazy"><figcaption>The enlarged crystal is the next objective. The red moving sphere is a hazard; collecting a crystal saves a safe landing.</figcaption></figure><h2 id="1-make-the-playable-starting-project">1. Make the playable starting project<a class="anchor" href="#1-make-the-playable-starting-project">#</a></h2>
+<p>Choose <strong>New project → 3D platformer</strong>, name your folder <code>my-crystal-relay</code>, then Play. WASD/arrows move; Space jumps and a second press after releasing gives an air jump. Stop and open <code>scenes/main.scene.json</code>.</p>
+<p>Select <strong>Player</strong>. Keep <code>scripts/platformer3d.js</code> and the sound helper, but remove the old <code>scripts/collect.js</code> attachment. That script owns the original gem counter and would compete with your ordered objective.</p>
+<p>Select every <strong>Gem0</strong> through <strong>Gem6</strong> and remove each <code>scripts/pickup.js</code> attachment. Keep <code>scripts/spin.js</code>, the mesh/material, and the <code>gem</code> tag. Our controller will decide which gem is legal and destroy it itself. If you leave the old pickup attached, an out-of-order gem can disappear before your controller wants it.</p>
+<p>Select <strong>Ground</strong> and remove its rigidbody and collider components, keeping the visible sand mesh and material. In this variant the sand is distant scenery: missing the platforms falls through it and eventually costs a life. Keep collision on Start and every Plat entity.</p>
+<p><strong>Checkpoint:</strong> Play now. Movement and jumping still work, gems spin, but touching a gem no longer gives the old counter. That temporary absence confirms ownership has moved out of the old script.</p>
+<h2 id="2-add-one-action-one-hazard-and-one-script">2. Add one action, one hazard and one script<a class="anchor" href="#2-add-one-action-one-hazard-and-one-script">#</a></h2>
+<p>Open <code>nord.project.json</code>. Within the existing <code>input.actions</code> object add:</p>
+<pre class="code" data-lang="json"><code>&quot;sprint&quot;: [&quot;ShiftLeft&quot;, &quot;ShiftRight&quot;]</code></pre>
+<p>Keep a comma between neighboring entries. Do not replace the other actions. This maps physical keys to a named gameplay intent, so code asks for sprint rather than hard-coding a browser key handler.</p>
+<p>In the scene add an entity named <strong>Hazard</strong> at <code>[3, 3.3, 18]</code>. Add a <strong>mesh</strong> component with shape <code>sphere</code> and size <code>[0.8, 0.8, 0.8]</code>, and a <strong>material</strong> with color <code>#ff4433</code> and emissive <code>#aa1100</code>. It needs no rigidbody or collider: the controller tests a deliberately simple spherical danger radius.</p>
+<p>Create <code>scripts/relay.js</code> in your project folder and open it in Nord&#39;s code editor. Start with:</p>
+<pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
+
+export default class CrystalRelay extends NordScript {
+  start() {
+    console.log('Relay attached to', this.entity.name);
+  }
+}</code></pre>
+<p>Attach it <strong>once to Player</strong>, save the scene and Play. Console must say Relay attached to Player. If it says Camera or Systems, move the attachment now: the complete script treats its own entity as the player.</p>
+<h2 id="3-declare-state-and-find-the-world">3. Declare state and find the world<a class="anchor" href="#3-declare-state-and-find-the-world">#</a></h2>
+<p>The final file starts with four attributes: seconds, lives, normal speed and sprintSpeed. These appear in Inspector and let you tune difficulty without editing logic. It then finds the existing movement controller, the ordered gems and Hazard:</p>
+<pre class="code" data-lang="js"><code>this.player = this.entity;
+this.controller = this.player.scripts.find(s =&gt; 'jumpSpeed' in s.attrs);
+this.gems = this.scene.findByTag('gem')
+  .sort((a, b) =&gt; a.name.localeCompare(b.name));
+this.hazard = this.scene.find('Hazard');
+this.spawn = [...this.player.pos];</code></pre>
+<p><code>find</code> returns the first match. The arrow function identifies the existing movement script by its jumpSpeed attribute. This project has exactly one such script; for a larger project you would use an explicit component/script reference instead of relying on that convention.</p>
+<p><code>findByTag</code> returns an array of entities. <code>sort</code> orders Gem0 through Gem6 by name. With more than nine gems, names such as Gem10 sort before Gem2; use padded names or a numeric route index if expanding this example.</p>
+<p><code>[...this.player.pos]</code> makes a <strong>copy</strong> of the three coordinates. Saving the original array by reference could accidentally let later edits move the saved checkpoint. World coordinates are <code>[x, y, z]</code>, with positive Y upward.</p>
+<p>The remaining start fields initialize elapsed time, countdown, next index, lives, normalized energy from zero to one, a short hazard-protection timer, the saved record and UI. The final source contains that complete setup; install it before testing the later systems.</p>
+<h2 id="4-use-time-correctly-two-clocks-two-jobs">4. Use time correctly: two clocks, two jobs<a class="anchor" href="#4-use-time-correctly-two-clocks-two-jobs">#</a></h2>
+<p>Inside update:</p>
+<pre class="code" data-lang="js"><code>this.elapsed += dt;
+this.remaining = Math.max(0, this.remaining - dt);
+this.safeTime = Math.max(0, this.safeTime - dt);</code></pre>
+<p>Elapsed time measures performance and determines medals. Remaining time is a resource, so crystals can add to it. If you used remaining time as your record, a time bonus would make a slower run appear faster. Both clocks stop while Nord is paused because the engine stops calling update.</p>
+<p><code>dt</code> is seconds. A rate multiplied by dt has consistent behavior across frame rates. Never increment your clock by one per frame.</p>
+<p><strong>Checkpoint:</strong> after adding the full controller, standing still reduces the countdown; pausing keeps it unchanged. Inspector&#39;s seconds setting changes the starting allowance, not your medal thresholds.</p>
+<h2 id="5-turn-sprint-into-a-resource">5. Turn sprint into a resource<a class="anchor" href="#5-turn-sprint-into-a-resource">#</a></h2>
+<p>The player movement script already controls velocity. We change its speed setting instead of moving the body a second time:</p>
+<pre class="code" data-lang="js"><code>const sprint = this.input.down('sprint') &amp;&amp; this.energy &gt; 0;
+this.controller.attrs.speed = sprint ? this.attrs.sprintSpeed : this.attrs.speed;
+this.energy = Math.max(0, Math.min(1,
+  this.energy + (sprint ? -0.45 : 0.25) * dt));</code></pre>
+<p><code>const</code> declares a local binding that will not be reassigned. <code>&amp;&amp;</code> means AND: sprint requires a held input <strong>and</strong> available energy. The conditional expression chooses the fast or normal speed. Energy drains at 0.45 per second and recharges at 0.25; the nested min/max clamps it between zero and one.</p>
+<p>This simple version permits small bursts while energy recharges if Shift remains held. A more advanced version could require release or a recovery threshold before re-entering sprint. First learn the displayed version, then implement that extension deliberately.</p>
+<p><strong>Try:</strong> hold Shift on Start and watch Sprint fall. Release and watch it refill. Compare a first-gap jump at normal speed with a sprint jump. Keep safe landing width while tuning; speed changes affect every gap.</p>
+<h2 id="6-animate-a-hazard-and-test-distance">6. Animate a hazard and test distance<a class="anchor" href="#6-animate-a-hazard-and-test-distance">#</a></h2>
+<p>The hazard moves side to side:</p>
+<pre class="code" data-lang="js"><code>this.hazard.pos = [3 + Math.sin(this.elapsed * 1.5) * 2, 3.3, 18];
+const distance = (a, b) =&gt; Math.hypot(...a.map((v, i) =&gt; v - b[i]));</code></pre>
+<p><code>Math.sin</code> oscillates between -1 and 1. Multiplying by two gives a two-unit reach each side of X=3. The <code>1.5</code> controls angular speed, not travel distance. Y and Z remain constant.</p>
+<p>The distance helper subtracts matching coordinates with <code>map</code>. The spread operator passes the resulting three numbers to <code>Math.hypot</code>, which calculates their combined distance. The hazard hits below <code>0.9</code> units while safeTime is zero. This is a simple centre-distance gameplay test, not mesh collision: changing the artwork size does not automatically change the danger radius.</p>
+<p><code>p[1] &lt; -5</code> detects a fall. The OR operator combines fall and hazard conditions. <code>respawn()</code> spends one life, teleports using Nord physics, clears velocity, refills energy and grants two seconds of hazard protection. Teleporting without clearing velocity can immediately launch or drop the player again.</p>
+<p><strong>Checkpoint:</strong> fall from Start. With lives remaining you return to the initial checkpoint. Later, test contact with the red sphere and verify one lost life rather than one per frame.</p>
+<h2 id="7-make-ordered-collection-and-checkpoints-work-together">7. Make ordered collection and checkpoints work together<a class="anchor" href="#7-make-ordered-collection-and-checkpoints-work-together">#</a></h2>
+<p>The controller checks only <code>this.gems[this.next]</code>. It enlarges that crystal as a visual cue. Touching a later gem does nothing, preserving a clear route.</p>
+<pre class="code" data-lang="js"><code>const gem = this.gems[this.next];
+if (gem) {
+  gem.scale = [1.4, 1.4, 1.4];
+  if (distance(this.player.pos, gem.pos) &lt; 1.25) this.collect(gem);
+}</code></pre>
+<p><code>next</code> is an array index, starting at zero. <code>if (gem)</code> handles the end of the array safely. The code uses real world distance; a gem looking close in the camera projection is not enough if it is far above or behind the player.</p>
+<p>Collection destroys the gem, finds its matching platform, copies a safe spawn position above that platform, advances next and gives the bonuses:</p>
+<pre class="code" data-lang="js"><code>const platform = this.scene.find('Plat' + this.next);
+this.spawn = [platform.pos[0], platform.pos[1] + 1.5, platform.pos[2]];
+this.next++;
+this.remaining += 6;
+this.energy = 1;</code></pre>
+<p>The naming contract is important: Gem0 belongs to Plat0, and so on. Rename both together or change the mapping. A missing platform produces a useful Console error rather than a valid checkpoint. The extra Y places the capsule above the landing rather than inside it.</p>
+<p><strong>Checkpoint:</strong> approach Gem2 first; it stays. Collect Gem0; it disappears, the counter advances, the next gem grows and time increases. Fall afterward; you return to Plat0 with collected progress preserved.</p>
+<h2 id="8-finish-once-award-medals-and-persist-a-record">8. Finish once, award medals and persist a record<a class="anchor" href="#8-finish-once-award-medals-and-persist-a-record">#</a></h2>
+<p>When next reaches the array length, call <code>finish(true, ...)</code>. Zero time or lives calls it with false. The ended guard makes a finish idempotent: calling it again has no effect.</p>
+<p>On victory:</p>
+<pre class="code" data-lang="js"><code>this.best = this.best === null ? this.elapsed : Math.min(this.best, this.elapsed);
+this.save.set('crystal-relay.best', this.best);
+const medal = this.elapsed &lt; 45 ? 'Gold'
+  : this.elapsed &lt; 70 ? 'Silver' : 'Bronze';</code></pre>
+<p>The first record starts as null, meaning no completed run. A smaller elapsed value wins. Strict <code>&lt;</code> means exactly 45 seconds earns Silver and exactly 70 earns Bronze. These are tuning values, not a claim that a beginner must finish in that time.</p>
+<p>The result menu shows Try again. A pause menu uses Resume and Restart buttons whose callbacks continue running while simulation is paused. Do not put the only resume handler in update: update is stopped during pause.</p>
+<p><code>onDestroy()</code> restores the movement speed, clears both custom screens and resumes the engine. The new scene then starts with clean state while its best record is loaded from local storage. This saves the record, not a suspended run or cross-device progress.</p>
+<h2 id="9-assemble-and-learn-through-debugging">9. Assemble and learn through debugging<a class="anchor" href="#9-assemble-and-learn-through-debugging">#</a></h2>
+<p>Replace your temporary relay.js with the complete file below. Keep one relay attachment, no old collect attachment, and no pickup script on the seven gems. Save <strong>code, scene and project input changes</strong>. Stop and Play to initialize all new fields; adding state through hot reload alone does not call start again.</p>
+<p>Common errors tell you which contract to inspect:</p>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Check</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>HUD invisible</td>
+<td>Custom <code>relay</code> screen must be shown</td>
+</tr>
+<tr>
+<td>Reading attrs of undefined</td>
+<td>Player must retain platformer3d.js</td>
+</tr>
+<tr>
+<td>Hazard pos error</td>
+<td>Entity must be named exactly Hazard</td>
+</tr>
+<tr>
+<td>Checkpoint pos error</td>
+<td>GemN needs a matching PlatN</td>
+</tr>
+<tr>
+<td>Out-of-order gem disappears</td>
+<td>Remove the old pickup attachment</td>
+</tr>
+<tr>
+<td>Shift does nothing</td>
+<td>Save sprint under input.actions; click game for focus</td>
+</tr>
+<tr>
+<td>Fall lands safely on sand</td>
+<td>Ground still has a collider</td>
+</tr>
+<tr>
+<td>Two counters overlap</td>
+<td>Remove old collect.js attachment</td>
+</tr>
+</tbody></table>
+<p>Use <code>console.log(this.next, this.spawn)</code> inside collect to inspect progression, then remove it. Change one value, predict the effect and test it. Compare the sample project if the script never starts; don&#39;t paste a second controller to compensate for a missing attachment.</p>
+<h2 id="10-verify-and-deliver">10. Verify and deliver<a class="anchor" href="#10-verify-and-deliver">#</a></h2>
+<p>Play a full run and test alternate paths through the state machine: early fall, hazard contact, pause/resume, timeout, no lives, complete collection, retry and page reload. A retry resets crystals and lives while preserving Best. A failed run must not overwrite a completed best time.</p>
+<p>From the parent folder of your own project:</p>
+<pre class="code" data-lang="sh"><code>nord check my-crystal-relay
+nord build my-crystal-relay --out crystal-relay-web --zip
+python3 -m http.server 8001 --directory crystal-relay-web</code></pre>
+<p>Open <code>http://localhost:8001</code>, click for keyboard focus and play the exported copy. Upload all files in the output folder, or its zip. The download below is the editable source for Nord, while this build creates the standalone web delivery.</p>
+<p><strong>Extend it:</strong> add numbered crystals, make a second hazard with a different sine phase, expose medal thresholds as Inspector attributes, or implement a sprint recovery threshold. Add a visible rule and a test for each feature. If you add Gem7, also add Plat7 and test its landing before extending the route again.</p>
+<h2 id="complete-game-source">Complete game source<a class="anchor" href="#complete-game-source">#</a></h2>
+<p>The first file is the entire custom relay controller, followed by all other text source files: movement, camera, moving-platform and sound helpers, full scene/project data, HTML and asset metadata. Binaries are included in the <a href="../../assets/downloads/crystal-relay-source.zip">full source project archive</a>. These files reproduce the finished game; no omitted controller code or CDN is required.</p>
+<!-- GENERATED GAME SOURCE: regenerate with node tools/build-code-workshops.mjs --><h3 id="scripts-relay-js">scripts/relay.js<a class="anchor" href="#scripts-relay-js">#</a></h3>
+<pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
+
+export default class CrystalRelay extends NordScript {
+  static attributes = {
+    seconds: { type: 'number', default: 100, min: 10 },
+    lives: { type: 'int', default: 3, min: 1 },
+    speed: { type: 'number', default: 6, min: 1 },
+    sprintSpeed: { type: 'number', default: 10, min: 1 },
+  };
+
+  start() {
+    this.player = this.entity;
+    this.controller = this.player.scripts.find(s =&gt; 'jumpSpeed' in s.attrs);
+    this.gems = this.scene.findByTag('gem').sort((a, b) =&gt; a.name.localeCompare(b.name));
+    this.hazard = this.scene.find('Hazard');
+    this.spawn = [...this.player.pos];
+    this.next = 0;
+    this.elapsed = 0;
+    this.remaining = this.attrs.seconds;
+    this.lives = this.attrs.lives;
+    this.energy = 1;
+    this.safeTime = 0;
+    this.ended = false;
+    this.best = this.save.get('crystal-relay.best', null);
+    this.notice = 'Follow the large crystal. Hold Shift to sprint.';
+    this.hud = this.ui.label('', { screen: 'relay', x: 12, y: 8, size: 16, style: { whiteSpace: 'pre-wrap', maxWidth: '95%' } });
+    this.ui.button('Pause', () =&gt; this.pause(), { screen: 'relay', x: 12, y: 85 });
+    this.ui.show('relay');
+    this.draw();
+  }
+
+  update(dt) {
+    if (this.ended) return;
+    this.elapsed += dt;
+    this.remaining = Math.max(0, this.remaining - dt);
+    this.safeTime = Math.max(0, this.safeTime - dt);
+    const sprint = this.input.down('sprint') &amp;&amp; this.energy &gt; 0;
+    this.controller.attrs.speed = sprint ? this.attrs.sprintSpeed : this.attrs.speed;
+    this.energy = Math.max(0, Math.min(1, this.energy + (sprint ? -0.45 : 0.25) * dt));
+    // Move a red hazard across the middle landing in world units.
+    this.hazard.pos = [3 + Math.sin(this.elapsed * 1.5) * 2, 3.3, 18];
+    const p = this.player.pos;
+    const distance = (a, b) =&gt; Math.hypot(...a.map((v, i) =&gt; v - b[i]));
+    if (p[1] &lt; -5 || (this.safeTime === 0 &amp;&amp; distance(p, this.hazard.pos) &lt; 0.9)) {
+      this.respawn();
+      if (this.ended) return;
+    }
+    // Only the next crystal can be collected; later crystals remain in the scene.
+    const gem = this.gems[this.next];
+    if (gem) {
+      gem.scale = [1.4, 1.4, 1.4];
+      if (distance(this.player.pos, gem.pos) &lt; 1.25) this.collect(gem);
+    }
+    if (!this.ended &amp;&amp; this.remaining === 0) this.finish(false, 'Time ran out');
+    this.draw();
+  }
+
+  collect(gem) {
+    gem.destroy();
+    const platform = this.scene.find('Plat' + this.next);
+    this.spawn = [platform.pos[0], platform.pos[1] + 1.5, platform.pos[2]];
+    this.next++;
+    this.remaining += 6;
+    this.energy = 1;
+    this.notice = 'Checkpoint saved. +6 seconds and full sprint energy!';
+    this.audio.play('assets/audio/sfx/coin.wav');
+    if (this.next === this.gems.length) this.finish(true, 'Relay complete');
+  }
+
+  respawn() {
+    this.lives--;
+    if (this.lives &lt;= 0) { this.finish(false, 'No lives left'); return; }
+    this.physics.teleport(this.player, ...this.spawn);
+    this.physics.setVelocity(this.player, 0, 0, 0);
+    this.safeTime = 2;
+    this.energy = 1;
+    this.notice = 'Back at your last crystal. Two seconds of hazard protection.';
+  }
+
+  draw() {
+    this.hud.set(`Crystal ${this.next}/${this.gems.length} | Time ${Math.ceil(this.remaining)} | ` +
+      `Lives ${this.lives} | Sprint ${Math.round(this.energy * 100)}%\n` +
+      `Best ${this.best === null ? '—' : this.best.toFixed(1) + 's'} | ${this.notice}`);
+  }
+
+  pause() {
+    if (this.ended || this.game.paused) return;
+    this.ui.show('relay-menu');
+    this.game.pause();
+    this.ui.menu('relay-menu', [
+      { text: 'Resume relay', onClick: () =&gt; { this.ui.clear('relay-menu'); this.game.resume(); } },
+      { text: 'Restart', onClick: () =&gt; this.restart() },
+    ], { x: 20, y: 150 });
+  }
+
+  finish(won, title) {
+    if (this.ended) return;
+    this.ended = true;
+    if (won) {
+      this.best = this.best === null ? this.elapsed : Math.min(this.best, this.elapsed);
+      this.save.set('crystal-relay.best', this.best);
+      const medal = this.elapsed &lt; 45 ? 'Gold' : this.elapsed &lt; 70 ? 'Silver' : 'Bronze';
+      title += ` — ${medal}, ${this.elapsed.toFixed(1)}s`;
+    }
+    this.draw();
+    this.ui.clear('relay-menu');
+    this.ui.label(title, { screen: 'relay-menu', x: 20, y: 130, size: 30 });
+    this.ui.menu('relay-menu', [{ text: 'Try again', onClick: () =&gt; this.restart() }], { x: 20, y: 180 });
+    this.ui.show('relay-menu');
+    this.game.pause();
+  }
+
+  restart() { this.game.resume(); this.game.restart(); }
+
+  onDestroy() {
+    this.controller.attrs.speed = this.attrs.speed;
+    this.ui.clear('relay');
+    this.ui.clear('relay-menu');
+    this.game.resume();
+  }
+}</code></pre>
+<details>
+<summary>Complete index.html</summary><pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;&lt;title&gt;Crystal Relay — code workshop&lt;/title&gt;
+&lt;style&gt;html,body{margin:0;height:100%;background:#101418;overflow:hidden}#stage{position:relative;width:100vw;height:100vh}&lt;/style&gt;
+&lt;script type=&quot;importmap&quot;&gt;{&quot;imports&quot;:{&quot;nord&quot;:&quot;/runtime/core/index.js&quot;}}&lt;/script&gt;&lt;/head&gt;
+&lt;body&gt;&lt;div id=&quot;stage&quot;&gt;&lt;/div&gt;
+&lt;script src=&quot;/vendor/babylonjs/babylon.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;/vendor/babylonjs-loaders/babylonjs.loaders.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;/vendor/babylonjs-gui/babylon.gui.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;/vendor/havok/HavokPhysics_umd.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;module&quot;&gt;
+import { boot } from '/runtime/babylon/index.js';
+try {
+  const project = await (await fetch('nord.project.json')).json();
+  await boot(project, { container: document.getElementById('stage'), preserveDrawingBuffer: true });
+  window.__nord_ready = true;
+} catch (e) { console.error(e); window.__nord_error = String(e); }
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</code></pre>
+</details><details>
+<summary>Complete nord.project.json</summary><pre class="code" data-lang="json"><code>{
+  &quot;format&quot;: 1,
+  &quot;name&quot;: &quot;Crystal Relay — code workshop&quot;,
+  &quot;id&quot;: &quot;com.crowelian.crystalrelay&quot;,
+  &quot;type&quot;: &quot;3d&quot;,
+  &quot;engineVersion&quot;: &quot;0.1.0&quot;,
+  &quot;startScene&quot;: &quot;scenes/main.scene.json&quot;,
+  &quot;display&quot;: {
+    &quot;width&quot;: 1280,
+    &quot;height&quot;: 720,
+    &quot;scale&quot;: &quot;fit&quot;,
+    &quot;pixelArt&quot;: false,
+    &quot;background&quot;: &quot;#2e3440&quot;
+  },
+  &quot;physics&quot;: {
+    &quot;engine&quot;: &quot;havok&quot;,
+    &quot;gravity&quot;: [
+      0,
+      -9.81,
+      0
+    ]
+  },
+  &quot;input&quot;: {
+    &quot;actions&quot;: {
+      &quot;left&quot;: [
+        &quot;KeyA&quot;,
+        &quot;ArrowLeft&quot;
+      ],
+      &quot;right&quot;: [
+        &quot;KeyD&quot;,
+        &quot;ArrowRight&quot;
+      ],
+      &quot;up&quot;: [
+        &quot;KeyW&quot;,
+        &quot;ArrowUp&quot;
+      ],
+      &quot;down&quot;: [
+        &quot;KeyS&quot;,
+        &quot;ArrowDown&quot;
+      ],
+      &quot;jump&quot;: [
+        &quot;Space&quot;
+      ],
+      &quot;fire&quot;: [
+        &quot;Space&quot;,
+        &quot;Mouse0&quot;
+      ],
+      &quot;interact&quot;: [
+        &quot;KeyE&quot;,
+        &quot;Enter&quot;
+      ],
+      &quot;camLeft&quot;: [
+        &quot;KeyQ&quot;
+      ],
+      &quot;camRight&quot;: [
+        &quot;KeyE&quot;
+      ],
+      &quot;sprint&quot;: [
+        &quot;ShiftLeft&quot;,
+        &quot;ShiftRight&quot;
+      ]
+    }
+  },
+  &quot;plugins&quot;: [
+    &quot;ui&quot;,
+    &quot;audio&quot;
+  ],
+  &quot;ui&quot;: {
+    &quot;skin&quot;: &quot;cyber&quot;,
+    &quot;theme&quot;: &quot;nord&quot;
+  }
+}</code></pre>
+</details><details>
+<summary>Complete scenes/main.scene.json</summary><pre class="code" data-lang="json"><code>{
+  &quot;format&quot;: 1,
+  &quot;name&quot;: &quot;main&quot;,
+  &quot;settings&quot;: {},
+  &quot;entities&quot;: [
+    {
+      &quot;id&quot;: &quot;eeeeeeeu&quot;,
+      &quot;name&quot;: &quot;Sun&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          10,
+          0
+        ],
+        &quot;rot&quot;: [
+          50,
+          -30,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;light&quot;,
+          &quot;kind&quot;: &quot;directional&quot;,
+          &quot;intensity&quot;: 1.4,
+          &quot;castShadows&quot;: true,
+          &quot;color&quot;: &quot;#fff4e0&quot;
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeeeev&quot;,
+      &quot;name&quot;: &quot;Ambient&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;light&quot;,
+          &quot;kind&quot;: &quot;hemispheric&quot;,
+          &quot;intensity&quot;: 0.55,
+          &quot;color&quot;: &quot;#b0c0ff&quot;
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeeeew&quot;,
+      &quot;name&quot;: &quot;Sky&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;skybox&quot;,
+          &quot;path&quot;: &quot;assets/skybox/sunset&quot;
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeeeex&quot;,
+      &quot;name&quot;: &quot;Ground&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;ground&quot;,
+          &quot;size&quot;: [
+            120,
+            0.2,
+            120
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;texture&quot;: &quot;assets/textures/sand.png&quot;,
+          &quot;uvScale&quot;: [
+            30,
+            30
+          ],
+          &quot;roughness&quot;: 1
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeeeey&quot;,
+      &quot;name&quot;: &quot;Start&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0.25,
+          0
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            6,
+            0.5,
+            6
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;texture&quot;: &quot;assets/textures/stone.png&quot;,
+          &quot;uvScale&quot;: [
+            3,
+            3
+          ],
+          &quot;roughness&quot;: 0.8,
+          &quot;metallic&quot;: 0
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;,
+          &quot;mass&quot;: 1,
+          &quot;bounce&quot;: 0,
+          &quot;fixedRotation&quot;: false
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            6,
+            0.5,
+            6
+          ],
+          &quot;trigger&quot;: false
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeeeez&quot;,
+      &quot;name&quot;: &quot;Plat0&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          0.25,
+          6
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            3,
+            0.5,
+            3
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;texture&quot;: &quot;assets/textures/checker.png&quot;,
+          &quot;uvScale&quot;: [
+            1.5,
+            1.5
+          ],
+          &quot;roughness&quot;: 0.8,
+          &quot;metallic&quot;: 0
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;,
+          &quot;mass&quot;: 1,
+          &quot;bounce&quot;: 0,
+          &quot;fixedRotation&quot;: false
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            3,
+            0.5,
+            3
+          ],
+          &quot;trigger&quot;: false
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee10&quot;,
+      &quot;name&quot;: &quot;Plat1&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          4,
+          0.9,
+          10
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            3,
+            0.5,
+            3
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;texture&quot;: &quot;assets/textures/checker.png&quot;,
+          &quot;uvScale&quot;: [
+            1.5,
+            1.5
+          ],
+          &quot;roughness&quot;: 0.8,
+          &quot;metallic&quot;: 0
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;,
+          &quot;mass&quot;: 1,
+          &quot;bounce&quot;: 0,
+          &quot;fixedRotation&quot;: false
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            3,
+            0.5,
+            3
+          ],
+          &quot;trigger&quot;: false
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee11&quot;,
+      &quot;name&quot;: &quot;Plat2&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          8,
+          1.6,
+          14
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            3,
+            0.5,
+            3
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;texture&quot;: &quot;assets/textures/checker.png&quot;,
+          &quot;uvScale&quot;: [
+            1.5,
+            1.5
+          ],
+          &quot;roughness&quot;: 0.8,
+          &quot;metallic&quot;: 0
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;,
+          &quot;mass&quot;: 1,
+          &quot;bounce&quot;: 0,
+          &quot;fixedRotation&quot;: false
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            3,
+            0.5,
+            3
+          ],
+          &quot;trigger&quot;: false
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee12&quot;,
+      &quot;name&quot;: &quot;Plat3&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          3,
+          2.4,
+          18
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            3,
+            0.5,
+            3
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;texture&quot;: &quot;assets/textures/checker.png&quot;,
+          &quot;uvScale&quot;: [
+            1.5,
+            1.5
+          ],
+          &quot;roughness&quot;: 0.8,
+          &quot;metallic&quot;: 0
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;,
+          &quot;mass&quot;: 1,
+          &quot;bounce&quot;: 0,
+          &quot;fixedRotation&quot;: false
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            3,
+            0.5,
+            3
+          ],
+          &quot;trigger&quot;: false
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee13&quot;,
+      &quot;name&quot;: &quot;Plat4&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          -2,
+          3.2,
+          22
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            3,
+            0.5,
+            3
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;texture&quot;: &quot;assets/textures/checker.png&quot;,
+          &quot;uvScale&quot;: [
+            1.5,
+            1.5
+          ],
+          &quot;roughness&quot;: 0.8,
+          &quot;metallic&quot;: 0
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;,
+          &quot;mass&quot;: 1,
+          &quot;bounce&quot;: 0,
+          &quot;fixedRotation&quot;: false
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            3,
+            0.5,
+            3
+          ],
+          &quot;trigger&quot;: false
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee14&quot;,
+      &quot;name&quot;: &quot;Plat5&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          -7,
+          3.9,
+          25
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            3,
+            0.5,
+            3
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;texture&quot;: &quot;assets/textures/checker.png&quot;,
+          &quot;uvScale&quot;: [
+            1.5,
+            1.5
+          ],
+          &quot;roughness&quot;: 0.8,
+          &quot;metallic&quot;: 0
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;,
+          &quot;mass&quot;: 1,
+          &quot;bounce&quot;: 0,
+          &quot;fixedRotation&quot;: false
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            3,
+            0.5,
+            3
+          ],
+          &quot;trigger&quot;: false
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee15&quot;,
+      &quot;name&quot;: &quot;Plat6&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          -12,
+          4.6,
+          29
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            4,
+            0.5,
+            4
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;texture&quot;: &quot;assets/textures/checker.png&quot;,
+          &quot;uvScale&quot;: [
+            2,
+            2
+          ],
+          &quot;roughness&quot;: 0.8,
+          &quot;metallic&quot;: 0
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;,
+          &quot;mass&quot;: 1,
+          &quot;bounce&quot;: 0,
+          &quot;fixedRotation&quot;: false
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            4,
+            0.5,
+            4
+          ],
+          &quot;trigger&quot;: false
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee16&quot;,
+      &quot;name&quot;: &quot;Mover&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          14,
+          2.4,
+          22
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            3,
+            0.5,
+            3
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;color&quot;: &quot;#88c0d0&quot;,
+          &quot;roughness&quot;: 0.8,
+          &quot;metallic&quot;: 0
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;kinematic&quot;,
+          &quot;mass&quot;: 1,
+          &quot;bounce&quot;: 0,
+          &quot;fixedRotation&quot;: false
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;box&quot;,
+          &quot;size&quot;: [
+            3,
+            0.5,
+            3
+          ],
+          &quot;trigger&quot;: false
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/physics-moving-platform.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;offset&quot;: [
+              0,
+              0,
+              8
+            ],
+            &quot;period&quot;: 5,
+            &quot;carryTag&quot;: &quot;player&quot;
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee17&quot;,
+      &quot;name&quot;: &quot;Gem0&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;gem&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          1.45,
+          6
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;sphere&quot;,
+          &quot;size&quot;: [
+            0.5,
+            0.5,
+            0.5
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;color&quot;: &quot;#ebcb8b&quot;,
+          &quot;metallic&quot;: 0.6,
+          &quot;roughness&quot;: 0.3,
+          &quot;emissive&quot;: &quot;#6b5a20&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;sphere&quot;,
+          &quot;radius&quot;: 0.5,
+          &quot;trigger&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/spin.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;speed&quot;: 120,
+            &quot;axis&quot;: &quot;y&quot;
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee18&quot;,
+      &quot;name&quot;: &quot;Gem1&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;gem&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          4,
+          2.1,
+          10
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;sphere&quot;,
+          &quot;size&quot;: [
+            0.5,
+            0.5,
+            0.5
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;color&quot;: &quot;#ebcb8b&quot;,
+          &quot;metallic&quot;: 0.6,
+          &quot;roughness&quot;: 0.3,
+          &quot;emissive&quot;: &quot;#6b5a20&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;sphere&quot;,
+          &quot;radius&quot;: 0.5,
+          &quot;trigger&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/spin.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;speed&quot;: 120,
+            &quot;axis&quot;: &quot;y&quot;
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee19&quot;,
+      &quot;name&quot;: &quot;Gem2&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;gem&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          8,
+          2.8,
+          14
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;sphere&quot;,
+          &quot;size&quot;: [
+            0.5,
+            0.5,
+            0.5
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;color&quot;: &quot;#ebcb8b&quot;,
+          &quot;metallic&quot;: 0.6,
+          &quot;roughness&quot;: 0.3,
+          &quot;emissive&quot;: &quot;#6b5a20&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;sphere&quot;,
+          &quot;radius&quot;: 0.5,
+          &quot;trigger&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/spin.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;speed&quot;: 120,
+            &quot;axis&quot;: &quot;y&quot;
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee1a&quot;,
+      &quot;name&quot;: &quot;Gem3&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;gem&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          3,
+          3.5999999999999996,
+          18
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;sphere&quot;,
+          &quot;size&quot;: [
+            0.5,
+            0.5,
+            0.5
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;color&quot;: &quot;#ebcb8b&quot;,
+          &quot;metallic&quot;: 0.6,
+          &quot;roughness&quot;: 0.3,
+          &quot;emissive&quot;: &quot;#6b5a20&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;sphere&quot;,
+          &quot;radius&quot;: 0.5,
+          &quot;trigger&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/spin.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;speed&quot;: 120,
+            &quot;axis&quot;: &quot;y&quot;
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee1b&quot;,
+      &quot;name&quot;: &quot;Gem4&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;gem&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          -2,
+          4.4,
+          22
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;sphere&quot;,
+          &quot;size&quot;: [
+            0.5,
+            0.5,
+            0.5
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;color&quot;: &quot;#ebcb8b&quot;,
+          &quot;metallic&quot;: 0.6,
+          &quot;roughness&quot;: 0.3,
+          &quot;emissive&quot;: &quot;#6b5a20&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;sphere&quot;,
+          &quot;radius&quot;: 0.5,
+          &quot;trigger&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/spin.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;speed&quot;: 120,
+            &quot;axis&quot;: &quot;y&quot;
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee1c&quot;,
+      &quot;name&quot;: &quot;Gem5&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;gem&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          -7,
+          5.1,
+          25
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;sphere&quot;,
+          &quot;size&quot;: [
+            0.5,
+            0.5,
+            0.5
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;color&quot;: &quot;#ebcb8b&quot;,
+          &quot;metallic&quot;: 0.6,
+          &quot;roughness&quot;: 0.3,
+          &quot;emissive&quot;: &quot;#6b5a20&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;sphere&quot;,
+          &quot;radius&quot;: 0.5,
+          &quot;trigger&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/spin.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;speed&quot;: 120,
+            &quot;axis&quot;: &quot;y&quot;
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee1d&quot;,
+      &quot;name&quot;: &quot;Gem6&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;gem&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          -12,
+          5.8,
+          29
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;sphere&quot;,
+          &quot;size&quot;: [
+            0.5,
+            0.5,
+            0.5
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;color&quot;: &quot;#ebcb8b&quot;,
+          &quot;metallic&quot;: 0.6,
+          &quot;roughness&quot;: 0.3,
+          &quot;emissive&quot;: &quot;#6b5a20&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;static&quot;
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;sphere&quot;,
+          &quot;radius&quot;: 0.5,
+          &quot;trigger&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/spin.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;speed&quot;: 120,
+            &quot;axis&quot;: &quot;y&quot;
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee1e&quot;,
+      &quot;name&quot;: &quot;Player&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [
+        &quot;player&quot;
+      ],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          1.5,
+          0
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;capsule&quot;,
+          &quot;size&quot;: [
+            0.8,
+            1.6,
+            0.8
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;color&quot;: &quot;#a3be8c&quot;
+        },
+        {
+          &quot;type&quot;: &quot;rigidbody&quot;,
+          &quot;mode&quot;: &quot;dynamic&quot;,
+          &quot;mass&quot;: 1,
+          &quot;fixedRotation&quot;: true,
+          &quot;drag&quot;: 0
+        },
+        {
+          &quot;type&quot;: &quot;collider&quot;,
+          &quot;shape&quot;: &quot;capsule&quot;,
+          &quot;size&quot;: [
+            0.8,
+            1.6,
+            0.8
+          ]
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/platformer3d.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;speed&quot;: 6,
+            &quot;jumpSpeed&quot;: 8.5
+          }
+        },
+        {
+          &quot;path&quot;: &quot;scripts/util-sfx.js&quot;,
+          &quot;attributes&quot;: {}
+        },
+        {
+          &quot;path&quot;: &quot;scripts/relay.js&quot;,
+          &quot;attributes&quot;: {}
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee1f&quot;,
+      &quot;name&quot;: &quot;Camera&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          0,
+          5,
+          -8
+        ],
+        &quot;rot&quot;: [
+          20,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;camera&quot;,
+          &quot;fov&quot;: 60
+        },
+        {
+          &quot;type&quot;: &quot;postProcess&quot;,
+          &quot;fxaa&quot;: true,
+          &quot;bloom&quot;: true,
+          &quot;vignette&quot;: 0.3,
+          &quot;tonemap&quot;: true
+        }
+      ],
+      &quot;scripts&quot;: [
+        {
+          &quot;path&quot;: &quot;scripts/camera-follow3d.js&quot;,
+          &quot;attributes&quot;: {
+            &quot;target&quot;: &quot;Player&quot;,
+            &quot;offset&quot;: [
+              0,
+              5,
+              -8
+            ],
+            &quot;smoothing&quot;: 4
+          }
+        }
+      ],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    },
+    {
+      &quot;id&quot;: &quot;eeeeee1g&quot;,
+      &quot;name&quot;: &quot;Hazard&quot;,
+      &quot;enabled&quot;: true,
+      &quot;tags&quot;: [],
+      &quot;layer&quot;: 0,
+      &quot;transform&quot;: {
+        &quot;pos&quot;: [
+          3,
+          3.3,
+          18
+        ],
+        &quot;rot&quot;: [
+          0,
+          0,
+          0
+        ],
+        &quot;scale&quot;: [
+          1,
+          1,
+          1
+        ]
+      },
+      &quot;components&quot;: [
+        {
+          &quot;type&quot;: &quot;mesh&quot;,
+          &quot;shape&quot;: &quot;sphere&quot;,
+          &quot;size&quot;: [
+            0.8,
+            0.8,
+            0.8
+          ]
+        },
+        {
+          &quot;type&quot;: &quot;material&quot;,
+          &quot;color&quot;: &quot;#ff4433&quot;,
+          &quot;emissive&quot;: &quot;#aa1100&quot;
+        }
+      ],
+      &quot;scripts&quot;: [],
+      &quot;children&quot;: [],
+      &quot;prefab&quot;: null
+    }
+  ]
+}</code></pre>
+</details><details>
+<summary>Complete scripts/camera-follow3d.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;camera.follow3d&quot;,&quot;title&quot;:&quot;Camera follow (3D rig)&quot;,&quot;category&quot;:&quot;camera&quot;,&quot;tier&quot;:[&quot;3d&quot;],&quot;tags&quot;:[&quot;camera&quot;,&quot;follow&quot;,&quot;chase&quot;],&quot;description&quot;:&quot;Chase camera for 3D: keeps an offset from a target entity (by name), smoothing position. Put on a camera entity (non-orbit) — it looks at the target.&quot;}
+import { NordScript } from 'nord';
+
+export default class CameraFollow3D extends NordScript {
+  static attributes = { target: { type: 'string', default: 'Player' }, offset: { type: 'vec3', default: [0, 4, -8] }, smoothing: { type: 'number', default: 5, min: 0 } };
+  start() { this.t = this.scene.find(this.attrs.target); }
+  lateUpdate(dt) {
+    if (!this.t || this.t.destroyed) return;
+    const a = this.attrs, tp = this.t.worldPos, p = this.entity.pos, k = Math.min(1, a.smoothing * dt || 1);
+    const want = [tp[0] + a.offset[0], tp[1] + a.offset[1], tp[2] + a.offset[2]];
+    const np = p.map((v, i) =&gt; v + (want[i] - v) * k);
+    this.entity.pos = np;
+    const d = [tp[0] - np[0], tp[1] - np[1], tp[2] - np[2]];
+    this.entity.rot = [(-Math.atan2(d[1], Math.hypot(d[0], d[2])) * 180) / Math.PI, (Math.atan2(d[0], d[2]) * 180) / Math.PI, 0];
+  }
+}</code></pre>
+</details><details>
+<summary>Complete scripts/mk.js</summary><pre class="code" data-lang="js"><code>// Tiny helpers to spawn coloured rectangles / circles / text at runtime (placeholder art). Generated by tools/gen_examples.mjs.
+const base = (name, x, y, z, tags, comps) =&gt; ({ name, tags: tags ?? [], transform: { pos: [x, y, z ?? 0], rot: [0, 0, 0], scale: [1, 1, 1] }, components: comps, scripts: [], children: [] });
+export const rectData = (name, x, y, w, h, color, o = {}) =&gt; base(name, x, y, o.z, o.tags, [{ type: 'sprite', texture: 'assets/sprites/square.png', size: [w, h], tint: color, alpha: o.alpha ?? 1 }]);
+export const circleData = (name, x, y, d, color, o = {}) =&gt; base(name, x, y, o.z, o.tags, [{ type: 'sprite', texture: 'assets/sprites/circle.png', size: [d, d], tint: color, alpha: o.alpha ?? 1 }]);
+export const textData = (name, x, y, t, o = {}) =&gt; base(name, x, y, o.z ?? 50, o.tags, [{ type: 'text', text: t, size: o.size ?? 20, color: o.color ?? '#eceff4' }]);
+export const rect = (scene, ...a) =&gt; scene.spawnData(rectData(...a));
+export const circle = (scene, ...a) =&gt; scene.spawnData(circleData(...a));
+export const label = (scene, ...a) =&gt; scene.spawnData(textData(...a));
+export const aabb = (a, b) =&gt; Math.abs(a.pos[0] - b.pos[0]) * 2 &lt; a.w + b.w &amp;&amp; Math.abs(a.pos[1] - b.pos[1]) * 2 &lt; a.h + b.h;</code></pre>
+</details><details>
+<summary>Complete scripts/physics-moving-platform.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;physics.moving-platform&quot;,&quot;title&quot;:&quot;Moving platform&quot;,&quot;category&quot;:&quot;physics&quot;,&quot;tier&quot;:[&quot;2d&quot;,&quot;3d&quot;],&quot;tags&quot;:[&quot;platform&quot;,&quot;path&quot;,&quot;carry&quot;],&quot;description&quot;:&quot;Moves back and forth between its start and start+offset (sine or linear). Riders (anything standing on it with a rigidbody) are carried by applying the platform's delta.&quot;}
+import { NordScript } from 'nord';
+
+export default class MovingPlatform extends NordScript {
+  static attributes = { offset: { type: 'vec3', default: [120, 0, 0] }, period: { type: 'number', default: 4, min: 0.1 }, mode: { type: 'enum', options: ['sine', 'pingpong'], default: 'sine' }, carryTag: { type: 'string', default: 'player' } };
+  start() { this.o = [...this.entity.pos]; this.t = 0; this.prev = [...this.o]; }
+  fixedUpdate(dt) {
+    const a = this.attrs; this.t += dt / a.period;
+    const f = a.mode === 'sine' ? (1 - Math.cos(this.t * Math.PI * 2)) / 2 : 1 - Math.abs(((this.t * 2) % 2) - 1);
+    const np = this.o.map((v, i) =&gt; v + a.offset[i] * f), d = np.map((v, i) =&gt; v - this.prev[i]);
+    this.entity.pos = np; this.prev = np;
+    for (const r of this.scene.findByTag(a.carryTag)) {
+      const dx = r.pos[0] - np[0], top = this.entity.getComponent('collider')?.data.size ?? [64, 16];
+      if (Math.abs(dx) &lt; top[0] / 2 &amp;&amp; this.physics.isGrounded(r)) r.pos = r.pos.map((v, i) =&gt; v + d[i]);
+    }
+  }
+}</code></pre>
+</details><details>
+<summary>Complete scripts/pickup.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;gameplay.pickup&quot;,&quot;title&quot;:&quot;Pickups &amp; power-ups&quot;,&quot;category&quot;:&quot;gameplay&quot;,&quot;tier&quot;:[&quot;2d&quot;,&quot;3d&quot;],&quot;tags&quot;:[&quot;coin&quot;,&quot;pickup&quot;,&quot;powerup&quot;,&quot;game-ready&quot;],&quot;requires&quot;:[&quot;trigger&quot;],&quot;description&quot;:&quot;Put on collectible entities: when the player touches it, emits a global event (default 'score' + value), or applies a power-up (heal / speed / shield via entity events), plays a sound and disappears with a pop tween. Magnetises toward the player when close.&quot;}
+import { NordScript } from 'nord';
+
+export default class Pickup extends NordScript {
+  static attributes = { kind: { type: 'enum', options: ['score', 'heal', 'speed', 'shield', 'xp', 'custom'], default: 'score' }, value: { type: 'number', default: 10 }, duration: { type: 'number', default: 5 }, event: { type: 'string', default: '', label: 'Custom global event' }, sfx: { type: 'asset', assetType: 'audio', default: '' }, tag: { type: 'string', default: 'player' }, magnet: { type: 'number', default: 0, label: 'Magnet radius' }, bob: { type: 'number', default: 3 } };
+  start() { this.y0 = this.entity.pos[1]; this.t = this.rng.range(0, 6); this.taken = false; }
+  update(dt) {
+    const a = this.attrs, e = this.entity; this.t += dt;
+    const p = a.magnet &amp;&amp; this.scene.findByTag(a.tag)[0];
+    if (p &amp;&amp; Math.hypot(p.pos[0] - e.pos[0], p.pos[1] - e.pos[1]) &lt; a.magnet) { const dx = p.pos[0] - e.pos[0], dy = p.pos[1] - e.pos[1], d = Math.hypot(dx, dy) || 1; e.pos = [e.pos[0] + (dx / d) * 220 * dt, e.pos[1] + (dy / d) * 220 * dt, e.pos[2]]; this.y0 = e.pos[1]; }
+    else if (a.bob) e.pos = [e.pos[0], this.y0 + Math.sin(this.t * 4) * a.bob, e.pos[2]];
+  }
+  onTriggerEnter(o) {
+    if (this.taken || !o.hasTag(this.attrs.tag)) return; this.taken = true; const a = this.attrs;
+    if (a.kind === 'score') this.events.emit('score', a.value); else if (a.kind === 'xp') this.events.emit('xp', a.value); else if (a.kind === 'heal') o.emit('heal', { amount: a.value });
+    else if (a.kind === 'speed') o.emit('apply', { type: 'haste', duration: a.duration, power: 1 }); else if (a.kind === 'shield') o.emit('shield', a.duration);
+    else if (a.event) this.events.emit(a.event, o);
+    if (a.sfx) this.audio.play(a.sfx); this.events.emit('pickup', { kind: a.kind, value: a.value });
+    const s = { k: 1 }; this.tween(s, { k: 1.6 }, { duration: 0.12, onUpdate: () =&gt; { this.entity.scale = [s.k, s.k, s.k]; }, onComplete: () =&gt; this.entity.destroy() });
+  }
+}</code></pre>
+</details><details>
+<summary>Complete scripts/platformer3d.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;controller3d.platformer&quot;,&quot;title&quot;:&quot;3D platformer&quot;,&quot;category&quot;:&quot;controllers&quot;,&quot;tier&quot;:[&quot;3d&quot;],&quot;tags&quot;:[&quot;platformer&quot;,&quot;jump&quot;,&quot;coyote&quot;],&quot;requires&quot;:[&quot;rigidbody&quot;,&quot;collider&quot;],&quot;description&quot;:&quot;World-axis movement (works with a fixed or follow camera looking down +z): coyote time, jump buffer, variable jump height, double jump.&quot;}
+import { NordScript } from 'nord';
+
+export default class Platformer3D extends NordScript {
+  static attributes = {
+    speed: { type: 'number', default: 5, min: 0 }, jumpSpeed: { type: 'number', default: 8, min: 0 },
+    coyote: { type: 'number', default: 0.1, min: 0 }, buffer: { type: 'number', default: 0.12, min: 0 },
+    doubleJump: { type: 'bool', default: true }, cut: { type: 'number', default: 0.5, min: 0, max: 1 },
+  };
+  start() { this.ct = 0; this.bt = 0; this.air = 0; }
+  fixedUpdate(dt) {
+    const a = this.attrs, e = this.entity, g = this.physics.isGrounded(e);
+    const [mx, mz] = this.input.vec('left', 'right', 'down', 'up');
+    this.physics.setVelocity(e, mx * a.speed, null, mz * a.speed);
+    if (mx || mz) e.rot = [0, (Math.atan2(mx, mz) * 180) / Math.PI, 0];
+    this.ct = g ? a.coyote : this.ct - dt; if (g) this.air = 0;
+    this.bt = this.input.pressed('jump') ? a.buffer : this.bt - dt;
+    const vy = this.physics.velocity(e)[1];
+    if (this.bt &gt; 0 &amp;&amp; (this.ct &gt; 0 || (a.doubleJump &amp;&amp; this.air === 1))) {
+      if (this.ct &lt;= 0) this.air = 2; else this.air = 1;
+      this.physics.setVelocity(e, null, a.jumpSpeed, null); this.bt = 0; this.ct = 0;
+    } else if (!g &amp;&amp; vy &gt; 0 &amp;&amp; this.input.released('jump')) this.physics.setVelocity(e, null, vy * a.cut, null);
+  }
+}</code></pre>
+</details><details>
+<summary>Complete scripts/spin.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;: &quot;util.spin&quot;, &quot;title&quot;: &quot;Spin&quot;, &quot;category&quot;: &quot;utilities&quot;, &quot;tier&quot;: [&quot;2d&quot;, &quot;3d&quot;], &quot;tags&quot;: [&quot;rotate&quot;, &quot;simple&quot;], &quot;description&quot;: &quot;Rotates the entity continuously around one axis.&quot;, &quot;requires&quot;: []}
+// Spin — rotates the entity continuously. Works in 2D (z axis) and 3D (y axis).
+import { NordScript } from 'nord';
+
+export default class Spin extends NordScript {
+  static attributes = {
+    speed: { type: 'number', default: 90, label: 'Degrees / second' },
+    axis: { type: 'enum', options: ['x', 'y', 'z'], default: 'z' },
+  };
+
+  update(dt) {
+    const r = [...this.entity.rot];
+    r[{ x: 0, y: 1, z: 2 }[this.attrs.axis]] += this.attrs.speed * dt;
+    this.entity.rot = r;
+  }
+}</code></pre>
+</details><details>
+<summary>Complete scripts/util-sfx.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;util.sfx-synth&quot;,&quot;title&quot;:&quot;Procedural sfx (jsfxr-style)&quot;,&quot;category&quot;:&quot;utilities&quot;,&quot;tier&quot;:[&quot;any&quot;],&quot;tags&quot;:[&quot;audio&quot;,&quot;sfx&quot;,&quot;synth&quot;,&quot;retro&quot;],&quot;description&quot;:&quot;Generates retro sound effects with WebAudio, no files needed: sfx(game,'coin'|'jump'|'hit'|'laser'|'explosion'|'powerup'). Listens to global events 'sfx' (name). import { sfx } from './util-sfx.js' for direct use.&quot;}
+import { NordScript } from 'nord';
+
+const P = { coin: { w: 'square', f: [880, 1760], d: 0.18, v: 0.25 }, jump: { w: 'square', f: [260, 620], d: 0.2, v: 0.25 }, hit: { w: 'sawtooth', f: [220, 60], d: 0.18, v: 0.3 }, laser: { w: 'sawtooth', f: [1400, 200], d: 0.25, v: 0.2 }, powerup: { w: 'triangle', f: [300, 1200], d: 0.4, v: 0.3 }, explosion: { w: 'noise', f: [800, 40], d: 0.6, v: 0.4 } };
+let ctx;
+export function sfx(name, vol = 1) {
+  const p = P[name]; if (!p) return; ctx ??= new (window.AudioContext || window.webkitAudioContext)(); const t = ctx.currentTime, g = ctx.createGain(); g.gain.setValueAtTime(p.v * vol, t); g.gain.exponentialRampToValueAtTime(0.001, t + p.d); g.connect(ctx.destination);
+  let src;
+  if (p.w === 'noise') { const b = ctx.createBuffer(1, ctx.sampleRate * p.d, ctx.sampleRate), d = b.getChannelData(0); for (let i = 0; i &lt; d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length); src = ctx.createBufferSource(); src.buffer = b; const f = ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.setValueAtTime(p.f[0], t); f.frequency.exponentialRampToValueAtTime(p.f[1], t + p.d); src.connect(f); f.connect(g); }
+  else { src = ctx.createOscillator(); src.type = p.w; src.frequency.setValueAtTime(p.f[0], t); src.frequency.exponentialRampToValueAtTime(p.f[1], t + p.d); src.connect(g); }
+  src.start(t); src.stop(t + p.d);
+}
+
+export default class SfxSynth extends NordScript {
+  static attributes = { volume: { type: 'number', default: 1, min: 0, max: 1 }, map: { type: 'string', default: '{&quot;pickup&quot;:&quot;coin&quot;,&quot;jump&quot;:&quot;jump&quot;,&quot;hit&quot;:&quot;hit&quot;,&quot;explosion&quot;:&quot;explosion&quot;,&quot;enemy:shoot&quot;:&quot;laser&quot;}', label: 'JSON global-event → sfx name' } };
+  start() { this.offs = [this.events.on('sfx', (n) =&gt; sfx(n, this.attrs.volume)), ...Object.entries(JSON.parse(this.attrs.map)).map(([ev, n]) =&gt; this.events.on(ev, () =&gt; sfx(n, this.attrs.volume)))]; }
+  onDestroy() { this.offs.forEach((o) =&gt; o()); }
+}</code></pre>
+</details><div class="pager"><a href="tut-t33-code-coin-rush.html"><small>← Previous</small>T33 Code a full 2D game — Coin Rush</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-make-the-playable-starting-project">1. Make the playable starting project </a><a href="#2-add-one-action-one-hazard-and-one-script">2. Add one action, one hazard and one script </a><a href="#3-declare-state-and-find-the-world">3. Declare state and find the world </a><a href="#4-use-time-correctly-two-clocks-two-jobs">4. Use time correctly: two clocks, two jobs </a><a href="#5-turn-sprint-into-a-resource">5. Turn sprint into a resource </a><a href="#6-animate-a-hazard-and-test-distance">6. Animate a hazard and test distance </a><a href="#7-make-ordered-collection-and-checkpoints-work-together">7. Make ordered collection and checkpoints work together </a><a href="#8-finish-once-award-medals-and-persist-a-record">8. Finish once, award medals and persist a record </a><a href="#9-assemble-and-learn-through-debugging">9. Assemble and learn through debugging </a><a href="#10-verify-and-deliver">10. Verify and deliver </a><a href="#complete-game-source">Complete game source </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

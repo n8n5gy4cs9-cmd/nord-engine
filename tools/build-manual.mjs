@@ -499,6 +499,7 @@ copy(path.join(root, 'assets/docs/editor-layout.svg'), 'assets/editor-layout.svg
 copy(path.join(root, 'vendor/codemirror/cm.bundle.js'), 'assets/cm.bundle.js');
 for (const [source, name] of [['inter/inter-latin-400-normal.woff2', 'inter.woff2'], ['plus-jakarta-sans/plus-jakarta-sans-latin-700-normal.woff2', 'jakarta.woff2'], ['jetbrains-mono/jetbrains-mono-latin-400-normal.woff2', 'mono.woff2']]) copy(path.join(root, 'vendor/fonts', source), `assets/${name}`);
 copyTree(path.join(root, 'vendor/engine-docs'), 'assets/engine-docs');
+if (fs.existsSync(path.join(root, 'docs/tutorial-downloads'))) copyTree(path.join(root, 'docs/tutorial-downloads'), 'assets/downloads');
 for (const file of ['vallout-03-classic-explore.png', 'automies-2-drive.png', 'xkom-tactical.png', 'manual-hello-nord.png', ...fs.readdirSync(path.join(root, 'docs/screenshots')).filter((f) => /^(es|ed)-.*\.png$/.test(f))]) copy(path.join(root, 'docs/screenshots', file), `assets/screenshots/${file}`);
 for (const [source, name] of [['notepaint/assets/ui/tools.png', 'notepaint-tools.png'], ['star-not/assets/sprites/space.png', 'star-not-space.png'], ['star-not/assets/ui/portraits.png', 'star-not-ui.png']]) copy(path.join(root, 'examples', source), `assets/tutorials/${name}`);
 // The vendored bundle is standalone ESM. Expose its exact exports as a classic-script global
