@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 250/263 tasks (95%)** · updated 2026-10-21
+**Overall: 252/267 tasks (94%)** · updated 2026-10-21
 
 | Milestone | Progress |
 |---|---|
@@ -13,20 +13,20 @@
 | M3 Editor | 24/26 (92%) |
 | M4 Export | 8/11 (73%) |
 | M5 Rust/WASM | 9/9 (100%) |
-| M6 Library | 47/47 (100%) |
+| M6 Library | 49/49 (100%) |
 | M7 Docs | 20/20 (100%) |
 | M8 Polish & portability | 15/20 (75%) |
 | M9 Desktop apps | 16/16 (100%) |
 | M10 Construct-style editor | 35/35 (100%) |
 | M11 Web editor | 14/16 (88%) |
-| M12 FPS Creator addon | 19/20 (95%) |
+| M12 FPS Creator addon | 19/22 (86%) |
 
 ## Next up
 - **M12-13** OWNER: verify the FPS Level tab + play-test on macOS/Windows with a real GPU (pointer lock in the embedded webview, performance, feel of movement/combat); decide on gamepad/touch controls and shadowed dynamic lights
+- **M12-21** 2D Level Creator: FPS Level workflow adapted to side-scroller and top-down maps with tile layers, collision, entities, scripts and test/export
+- **M12-22** 2D Level Creator built-in sprite bank: bundle Amiga collection, previews, animation presets, palette categories and project asset copying
 - **M3-07** SPIKE: wry child webview embedded in egui panel on macOS (resize, HiDPI, focus, IPC both ways); fallback separate window
 - **M3-25** OWNER: verify webview embedding on macOS (checklist in docs/KNOWN_ISSUES.md RISK-001a), then tick M3-07
-- **M4-08** nord-player crate (Tauri shell) + `bundle-mac` command (resource swap, Info.plist, icns, ad-hoc codesign)
-- **M4-09** CI builds NordPlayer.app + NordEditor.app on macos-14, uploads artifacts
 
 ## M0 — Planning, identity, assets, vendoring
 _Plans, brand, placeholder assets, vendored libs, workspace skeleton_
@@ -191,6 +191,8 @@ _snippets, controllers, systems, asset packs, examples_
 - [x] **M6-45** Add private tour console and Ruisrock visitor tycoon management with booked-artist audio
 - [x] **M6-46** Replace every remaining Midnight Sun Tour legacy minigame view and remake Moose Run, petrol, driving, camping and arcade games with native-pixel art
 - [x] **M6-47** Light & shadow example: Crypt of Embers + fx.light2d library scripts
+- [x] **M6-48** Amiga-inspired original 2D art collection: animated humans, environments, sports, vehicles and UI with frame metadata
+- [x] **M6-49** Single Amiga Arcade attract-mode example: animated platformer, top-down patrol, overhead soccer, racing and full asset gallery (owner: no tests)
 
 ## M7 — Docs
 _manual, guides, tutorials, in-editor docs_
@@ -342,6 +344,8 @@ _a full first-person level editor + runtime modelled on the classic FPS Creator 
 - [x] **M12-18** Save and update reusable FPS item variants from the Inspector
 - [x] **M12-19** Show diagonal and rounded rooms in the default FPS starter and Outpost Zero
 - [x] **M12-20** Fix native macOS FPS mouse capture and document level file workflows
+- [ ] **M12-21** 2D Level Creator: FPS Level workflow adapted to side-scroller and top-down maps with tile layers, collision, entities, scripts and test/export
+- [ ] **M12-22** 2D Level Creator built-in sprite bank: bundle Amiga collection, previews, animation presets, palette categories and project asset copying
 
 ## Features (PRD)
 

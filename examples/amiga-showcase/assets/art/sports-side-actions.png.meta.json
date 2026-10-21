@@ -1,0 +1,41 @@
+{
+  "type": "spritesheet",
+  "frameWidth": 32,
+  "frameHeight": 48,
+  "filter": "nearest",
+  "anims": {
+    "red-run": {
+      "frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "fps": 10,
+      "loop": true
+    },
+    "blue-run": {
+      "frames": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "fps": 10,
+      "loop": true
+    }
+  },
+  "tags": [
+    "amiga",
+    "original",
+    "2d"
+  ]
+}

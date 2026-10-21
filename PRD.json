@@ -612,6 +612,18 @@
       "status": "done"
     },
     {
+      "id": "M12-21",
+      "milestone": "M12",
+      "title": "2D Level Creator: FPS Level workflow adapted to side-scroller and top-down maps with tile layers, collision, entities, scripts and test/export",
+      "status": "todo"
+    },
+    {
+      "id": "M12-22",
+      "milestone": "M12",
+      "title": "2D Level Creator built-in sprite bank: bundle Amiga collection, previews, animation presets, palette categories and project asset copying",
+      "status": "todo"
+    },
+    {
       "id": "M9-01",
       "milestone": "M9",
       "title": "PLAN: docs/DESKTOP_APPS.md — desktop target architecture (ADR): reuse nord-player/wry shell vs native egui apps; capability model, API surface per tier (JS via IPC bridge, Rust direct); permissions/sandbox; what real apps need (checklist)",
@@ -1521,6 +1533,18 @@
       "id": "M6-47",
       "milestone": "M6",
       "title": "Light & shadow example: Crypt of Embers + fx.light2d library scripts",
+      "status": "done"
+    },
+    {
+      "id": "M6-48",
+      "milestone": "M6",
+      "title": "Amiga-inspired original 2D art collection: animated humans, environments, sports, vehicles and UI with frame metadata",
+      "status": "done"
+    },
+    {
+      "id": "M6-49",
+      "milestone": "M6",
+      "title": "Single Amiga Arcade attract-mode example: animated platformer, top-down patrol, overhead soccer, racing and full asset gallery (owner: no tests)",
       "status": "done"
     },
     {

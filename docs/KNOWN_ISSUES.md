@@ -152,3 +152,6 @@ Verified: node unit tests, the file API/CLI, Nord boot of the template, 18 gamep
 - The web editor (wasm) shows the tab but cannot run `install`; use `nord fpsc init` on the server. Browser-only mode has no file API (Save downloads the JSON).
 - No mid-level quick-save: checkpoints (a checkpoint pad) restore health/ammo/keys/position after dying, nothing else (enemies respawn).
 - Level size ≤ 256×256 cells; baking cost grows with vertices × lights in range (the demo level, 12k tris/21 lights, bakes in ~0.2 s; very large levels may take seconds).
+
+## Amiga collection / attract demo (2026-10-21)
+Owner requested no tests: `examples/amiga-showcase` has not been run in browser/native editor/export. Generated PNGs and source code only. Art is a curated pool, not a complete drop-in redraw of every TEMP/ART file. Generated tile seams, nine-slice insets, animation foot stability and timing still need human polish. Gallery includes alternate-size versions. Soccer now uses dedicated overhead 21×31 four-direction runs; the separate side-view sports sheet is excluded from football gameplay. The demo is scripted attract mode, not playable full games. 2D editor integration is future M12-21/22 work.

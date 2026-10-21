@@ -81,3 +81,6 @@ M6-46 replaces all remaining legacy activity views with the native-pixel `retro.
 Moose/petrol use actual raster objects; the circuit rotates its vehicles; gigs animate instruments;
 space games use real sprites and the obsolete flattened 3D shim is removed. The band has title-inspired
 portraits and performance/walking poses. Exact prompts and packing contracts ship in `RETRO_ART.md`.
+
+## Amiga asset collection / later 2D Creator
+`assets/packs/nord-amiga/catalog.json` is the reusable art catalogue; pack README documents import, frame sizes and animations. `examples/amiga-showcase` is one automatic multi-scene art demonstration. M12-21 will adapt FPS Level workflows to side-scroller/top-down tile layers, collision, entity placement, scripts/rules, test and export. M12-22 will bundle this catalogue in the editor with category palettes, live animation previews, presets and project-local asset copying. These two tasks are planned, not implemented.
