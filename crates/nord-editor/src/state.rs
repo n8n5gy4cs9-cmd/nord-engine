@@ -12,6 +12,44 @@ use std::{
 };
 use web_time::Instant;
 
+/// Keyboard shortcut shared with the FPS editor and its play-test iframe.
+#[derive(Serialize, Deserialize, Clone, PartialEq, Eq)]
+pub struct FpsShortcut {
+    pub key: String,
+    pub shift: bool,
+    pub command: bool,
+    pub alt: bool,
+}
+
+impl FpsShortcut {
+    fn new(key: &str, shift: bool) -> Self {
+        Self {
+            key: key.into(),
+            shift,
+            command: false,
+            alt: false,
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Clone, PartialEq, Eq)]
+#[serde(default)]
+pub struct FpsShortcuts {
+    pub test: FpsShortcut,
+    pub test_here: FpsShortcut,
+    pub stop: FpsShortcut,
+}
+
+impl Default for FpsShortcuts {
+    fn default() -> Self {
+        Self {
+            test: FpsShortcut::new("F5", false),
+            test_here: FpsShortcut::new("F5", true),
+            stop: FpsShortcut::new("Escape", true),
+        }
+    }
+}
+
 #[derive(Serialize, Deserialize, Clone)]
 #[serde(default)]
 pub struct Settings {
@@ -50,6 +88,7 @@ pub struct Settings {
     pub run_key: String,
     /// Cmd/Ctrl + key: stop only
     pub stop_key: String,
+    pub fps_shortcuts: FpsShortcuts,
 }
 
 impl Default for Settings {
@@ -79,11 +118,19 @@ impl Default for Settings {
             game_offset: [0.0, 0.0],
             run_key: "R".into(),
             stop_key: ".".into(),
+            fps_shortcuts: FpsShortcuts::default(),
         }
     }
 }
 
 impl Settings {
+    /// Restore only run/stop and FPS test keys, preserving appearance and layout.
+    pub fn reset_shortcuts(&mut self) {
+        self.run_key = "R".into();
+        self.stop_key = ".".into();
+        self.fps_shortcuts = FpsShortcuts::default();
+    }
+
     /// Key bound to run/stop-toggle (`run`) or stop-only; falls back to the default when the saved name is not a key.
     pub fn key(&self, run: bool) -> egui::Key {
         let (n, d) = if run {
@@ -1044,6 +1091,26 @@ impl EditorState {
 #[cfg(test)]
 mod appearance_tests {
     use super::Settings;
+
+    #[test]
+    fn fps_shortcuts_migrate_persist_and_reset_without_changing_appearance() {
+        let mut s: Settings = serde_json::from_str("{}").unwrap();
+        assert_eq!(s.fps_shortcuts.test.key, "F5");
+        assert!(s.fps_shortcuts.test_here.shift);
+        assert_eq!(s.fps_shortcuts.stop.key, "Escape");
+        s.fps_shortcuts.stop.key = "F8".into();
+        s.fps_shortcuts.stop.command = true;
+        s.run_key = "Enter".into();
+        s.theme = "github-light".into();
+        let mut saved: Settings = serde_json::from_str(&serde_json::to_string(&s).unwrap()).unwrap();
+        assert_eq!(saved.fps_shortcuts.stop.key, "F8");
+        assert!(saved.fps_shortcuts.stop.command);
+        saved.reset_shortcuts();
+        assert_eq!(saved.run_key, "R");
+        assert_eq!(saved.stop_key, ".");
+        assert!(saved.fps_shortcuts == super::FpsShortcuts::default());
+        assert_eq!(saved.theme, "github-light");
+    }
 
     #[test]
     fn upgrade_default_once_and_keep_custom_themes_and_play_color() {

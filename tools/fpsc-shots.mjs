@@ -21,6 +21,15 @@ try {
   await ed.waitForTimeout(1500); await ed.screenshot({ path: `${tmp}/ed-fpsc-editor.png` });
   await E(`(ed) => { ed.setTab('build'); ed.clearSel(); ed.setTool('wall'); ed.brush.piece = 'window'; ed.renderLeft(); }`); await ed.waitForTimeout(500); await ed.screenshot({ path: `${tmp}/ed-fpsc-build.png` });
   await E(`(ed) => { ed.setTab('assets'); ed.setTool('select'); }`); await ed.waitForTimeout(400); await ed.screenshot({ path: `${tmp}/ed-fpsc-assets.png` });
+  await E(`(ed) => { const guard = ed.level.entities.find((e) => ed.bank.entity(e.type)?.enemy && e.path?.length > 1); guard.name ||= 'patrol_guard'; ed.selectEntity(guard.id, false, true); ed.objectsUi = { q: guard.name, layer: 'all' }; ed.setTab('objects'); ed.setTool('select'); ed.map.zoom = 8; ed.map.draw(); }`);
+  await ed.waitForTimeout(900); await ed.screenshot({ path: `${tmp}/ed-fpsc-objects-patrol.png` });
+  await E(`(ed) => ed.play(false)`);
+  await ed.waitForFunction(() => document.getElementById('play-frame').contentWindow?.__fpsc_ready, null, { timeout: 30000 });
+  const frame = ed.frames().find((f) => f.url().includes('play.html'));
+  await frame.waitForFunction(() => window.__fpsc_ready);
+  await frame.evaluate(() => { const g = window.__fpsc.game; g.ctl.noLock = true; g.begin(); g.player.god = true; g.player.teleport(24.2 * 4, 19.5 * 4, 0); g.player.yaw = 80 * Math.PI / 180; g.player.pitch = 0.05; g.update(1 / 30); g.pause(true); });
+  await ed.waitForTimeout(500); await ed.screenshot({ path: `${tmp}/ed-fpsc-stop-test.png` });
+  await E(`(ed) => ed.stopPlay()`);
   const pg = await browser.newPage({ viewport: { width: 1280, height: 720 } });
   await pg.goto(`${base}/editor/fpsc/play.html?level=levels/level1.fpsl.json&autostart&nolock&shot`); await pg.waitForFunction(() => window.__fpsc_ready);
   for (const [n, x, z, yaw, pitch] of [['yard', 24.2, 19.5, 80, 0.05], ['hall', 15.6, 16.5, 25, 0.02], ['arena', 29.5, 28.6, 0, 0.06]]) {

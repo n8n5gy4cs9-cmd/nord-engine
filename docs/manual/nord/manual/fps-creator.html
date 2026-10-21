@@ -16,12 +16,12 @@
 <li>On the project hub choose <strong>New project ▸ FPS Creator (level editor)</strong> — or open any 3D project and click <strong>Project ▸ Add / upgrade FPS Creator…</strong> (or the button in the <strong>FPS Level</strong> tab).</li>
 <li>Open the <strong>FPS Level</strong> tab. The demo level <em>Outpost Zero</em> is loaded: a bunker, hall, armory behind a red-key door, a lab terminal, a courtyard, a tower with stairs and a boss arena.</li>
 <li>Press <strong>F5</strong>. Click the game to capture the mouse. WASD, mouse, <strong>E</strong> to use things, <strong>F</strong> flashlight, <strong>1–6</strong> weapons.</li>
-<li>Press <strong>Run</strong> in the normal editor to play the same level as your finished game.</li>
+<li>Stop the test with <strong>Shift+Esc</strong>, <strong>Esc → Quit</strong>, or the top-right <strong>Close test</strong> button. Save the level before checking it with the normal editor’s <strong>▶ Play</strong> button.</li>
 </ol>
 <figure class="shot"><img src="../../assets/screenshots/ed-fpsc-yard.png" alt="First-person view of the courtyard in the demo level: trees, sandbags, soldiers and a stone tower" loading="lazy"><figcaption>Press F5 and you are standing in your level. The demo level "Outpost Zero" is the template's starting point.</figcaption></figure><h2 id="the-editor-window">The editor window<a class="anchor" href="#the-editor-window">#</a></h2>
 <ul>
 <li><strong>Top bar</strong>: file (New / Open / Save / Save as / download / import), undo/redo, <strong>tools</strong>, the active <strong>layer</strong> (storey), 2D · split · 3D view, <strong>▶ Test</strong> and <strong>▶ From here</strong>, the <strong>✓</strong> problems checker and <strong>?</strong> help.</li>
-<li><strong>Left</strong>: <strong>Build</strong> (materials and wall pieces), <strong>Items</strong> (entities), <strong>Scripts</strong>, <strong>Level</strong> (sky, fog, ambient, intro, layers) and <strong>Assets</strong> (add your own).</li>
+<li><strong>Left</strong>: <strong>Build</strong> (materials and wall pieces), <strong>Items</strong> (entities), <strong>Scripts</strong>, <strong>Level</strong> (sky, fog, ambient, intro, layers) <strong>Assets</strong> (add your own), and <strong>Objects</strong> (find things already placed).</li>
 <li><strong>Centre</strong>: the 2D map and the live 3D preview. Wheel = zoom, middle/right-drag = pan, <code>Tab</code> = cycle views. In 3D: right-drag to look, <strong>WASD/QE</strong> to fly, <strong>F</strong> to focus the selection, click to select.</li>
 <li><strong>Right</strong>: the <strong>Inspector</strong> for whatever is selected.</li>
 </ul>
@@ -129,14 +129,70 @@ Targets are entity names, <code>#tags</code> (groups) or door names. The ✓ che
 <li><strong>Script</strong> — from a template.</li>
 </ul>
 <figure class="shot"><img src="../../assets/screenshots/ed-fpsc-assets.png" alt="Assets tab with forms to add textures, sprites, 3D models, sounds and scripts" loading="lazy"><figcaption>The Assets tab copies your files into <code>fpsc/</code> and registers them in <code>bank.json</code>.</figcaption></figure><p>Power users edit <code>fpsc/bank.json</code> directly (new wall pieces, entities that <em>extend</em> built-ins, weapons). The full rules table is in <strong>Help (F1)</strong> and in <code>docs/FPS_CREATOR.md</code>.</p>
-<h2 id="playing-exporting-upgrading">Playing, exporting, upgrading<a class="anchor" href="#playing-exporting-upgrading">#</a></h2>
+<h2 id="test-test-from-here-and-the-main-play-button">Test, Test from here, and the main Play button<a class="anchor" href="#test-test-from-here-and-the-main-play-button">#</a></h2>
+<p>These are two different ways to run your work. FPS tests are for the level you are editing; the main editor plays the project through its configured start scene.</p>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th>What it runs</th>
+<th>Where you start</th>
+<th>Default shortcut</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>▶ Test</strong></td>
+<td>Current FPS level, including unsaved edits</td>
+<td>Player Start marker</td>
+<td>F5</td>
+</tr>
+<tr>
+<td><strong>▶ From here</strong></td>
+<td>Current FPS level, including unsaved edits</td>
+<td>Selected object’s position; otherwise the cursor cell on the active storey</td>
+<td>Shift+F5</td>
+</tr>
+<tr>
+<td>Main editor <strong>▶ Play</strong></td>
+<td>Project start scene and its referenced saved level</td>
+<td>Saved Player Start</td>
+<td>Cmd/Ctrl+R on desktop</td>
+</tr>
+</tbody></table>
+<p><strong>From here prioritises a selected object.</strong> Clear the selection before using it to test from the cursor. If the level has no Player Start, ordinary Test also falls back to the selected position/cursor. Testing does not save your level or change the project’s start scene.</p>
+<h3 id="stop-a-test-and-return-to-building">Stop a test and return to building<a class="anchor" href="#stop-a-test-and-return-to-building">#</a></h3>
 <ul>
-<li><strong>Run</strong> the project: the <em>FPS Level</em> entity loads the level named in <code>levels/</code>. Change <strong>Level file</strong> in its Inspector or set the <em>Next level</em> field to chain levels.</li>
+<li><strong>Shift+Esc</strong> closes an FPS test immediately, including while the game iframe has focus.</li>
+<li><strong>Esc</strong> releases mouse capture and pauses. Click <strong>Quit</strong> to return to the level editor, or <strong>Resume</strong> to continue.</li>
+<li>The top-right <strong>✕ Close test</strong> button always closes the test. Its label shows your current Stop test shortcut.</li>
+<li>Main-editor Play is stopped separately with <strong>■ Stop</strong>, its Play toggle, or its configured Stop shortcut (desktop defaults Cmd/Ctrl+R and Cmd/Ctrl+Period). The browser build uses Alt for the main Play/Stop shortcuts.</li>
+</ul>
+<figure class="shot"><img src="../../assets/screenshots/ed-fpsc-stop-test.png" alt="FPS test paused, showing Resume, Restart level, Quit and the top-right Close test button" loading="lazy"><figcaption>Quit returns to building. Close test and the configured Stop test shortcut also work from the intro, pause, death and completion screens.</figcaption></figure><h3 id="change-shortcuts-in-the-whole-editor">Change shortcuts in the whole editor<a class="anchor" href="#change-shortcuts-in-the-whole-editor">#</a></h3>
+<ol>
+<li>Open <strong>Settings</strong> from the main editor menu (<strong>Cmd/Ctrl+,</strong>).</li>
+<li>Find <strong>FPS Level: Test</strong>, <strong>FPS Level: Test from here</strong>, and <strong>FPS Level: Stop test</strong>. Enter a key such as <code>F6</code> or <code>F8</code>, then choose <strong>Shift</strong>, <strong>Cmd/Ctrl</strong>, and <strong>Alt</strong> modifiers as wanted. Enter the key alone; use the modifier checkboxes instead of typing <code>Shift+F6</code>.</li>
+<li>Choose different combinations. A configured FPS test binding takes precedence over an FPS tool binding. Stop test takes priority when bindings are duplicated. An invalid key falls back to that action’s default.</li>
+<li>Close Settings to save. The embedded FPS page updates without reloading or discarding unsaved level edits. Its test-button tooltips and Close test label show the active bindings. An already-open test receives the new Stop binding.</li>
+<li><strong>Reset shortcuts to defaults</strong> restores the main editor’s Run/Stop and the three FPS bindings. Your theme, layout and other settings stay as they were. <strong>Reset all settings to defaults</strong> is the broader reset.</li>
+</ol>
+<p>The <strong>Open in browser</strong> button passes the current FPS bindings to that browser page when opening it. An already-open separate browser page keeps that snapshot; reopen it to pick up later changes. A page opened directly through <code>nord serve</code> uses F5, Shift+F5 and Shift+Esc. The three configurable bindings are editor commands, not exported-game control settings; WASD, firing and Esc-to-pause are unchanged. Start shortcuts do not fire while you type in a field.</p>
+<h2 id="save-run-the-project-export-and-upgrade">Save, run the project, export and upgrade<a class="anchor" href="#save-run-the-project-export-and-upgrade">#</a></h2>
+<ol>
+<li>Click <strong>Save</strong> in FPS Level (Cmd/Ctrl+S). For a new level choose a project path such as <code>levels/my_outpost.fpsl.json</code>; <strong>Save as</strong> creates a different level file. Download/import let you move a JSON level between projects, but custom assets must travel with it.</li>
+<li>Return to the normal scene editor. Select the entity with the FPS level script and set <strong>Level file</strong> to the exact saved path. Save that scene. Confirm that the project’s start scene is this scene if it should launch first.</li>
+<li>Click the main <strong>▶ Play</strong> button. This checks the project route a player will use. If it shows an older/different map, check both the saved level path and the project start scene.</li>
+<li>An exit’s <strong>Next level</strong> path (or Level settings’ Next level) enables <strong>Next level</strong> after completion; save the destination too. Inventory is not a cross-level campaign system: test the destination’s own Player Start loadout.</li>
+</ol>
+<ul>
 <li><strong>Export</strong> as usual — <code>scripts/</code>, <code>levels/</code> and <code>fpsc/</code> are part of the project, so they ship automatically.</li>
 <li><strong>Upgrade</strong> after updating Nord: <em>FPS Level ▸ Upgrade runtime</em> (or <code>nord fpsc init</code>). Your levels and <code>fpsc/</code> content are never overwritten.</li>
 </ul>
 <h2 id="troubleshooting">Troubleshooting<a class="anchor" href="#troubleshooting">#</a></h2>
 <ul>
+<li><em>Test will not close</em> → press your <strong>Stop test</strong> shortcut (default Shift+Esc), use <strong>Esc → Quit</strong>, or click <strong>Close test</strong>. The main editor’s Stop button controls main Play, not this overlay.</li>
+<li><em>My new key does nothing</em> → close Settings to save, click the map/game to focus it, check the key name and modifiers, and avoid duplicate bindings. Reopen a separate browser page from FPS Level after changing keys.</li>
+<li><em>From here starts in the wrong place</em> → a selection overrides the cursor. Clear it and move the cursor to the desired cell/storey.</li>
+<li><em>Main Play shows old work</em> → save the FPS level, then check the scene’s <strong>Level file</strong> and project start scene.</li>
 <li><em>Rooms are very dark</em> → add lights, raise <strong>Level ▸ Ambient light</strong>, or choose a lighter floor texture.</li>
 <li><em>Enemy stands still</em> → give it a path (<code>P</code>) or check that its <strong>sight range</strong> reaches the player and that a wall is not in the way.</li>
 <li><em>Door will not open</em> → is it <strong>locked</strong>? Does the key exist? With <em>Opens by itself</em> off you need a switch, rule or <code>E</code>.</li>
@@ -147,5 +203,56 @@ Targets are entity names, <code>#tags</code> (groups) or door names. The ✓ che
 <p>Use the <strong>Objects</strong> tab to search placed entities by name, tag, type or script across every storey. Click a result to select it and centre the map; Shift-click toggles selection; double-click focuses the 3D preview. Choose <strong>Current storey</strong> to narrow the list.</p>
 <p>The toolbar’s placement grid offers <strong>0.25, 0.5, 1, 2 and 4 metres</strong>; the default stays 0.5 m. It applies to entity placement, dragging and drawn waypoints. Turn Snap off for free placement. Room cells and wall edges still use the 4 m building grid.</p>
 <p>Select an enemy and expand <strong>Patrol path</strong> to edit each point’s X/Z and wait in seconds (default 0.8). The arrow buttons reorder points; <strong>+</strong> inserts a midpoint after one; <strong>×</strong> removes it; <strong>Reverse route</strong> reverses the order. Drawing with P and Shift-click removal still work. Every route edit supports undo/redo and saves with your level.</p>
-<div class="pager"><a href="web-editor.html"><small>← Previous</small>Run the editor in a browser or on a server</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#start-in-one-minute">Start in one minute </a><a href="#the-editor-window">The editor window </a><a href="#ready-made-things">Ready-made things </a><a href="#doors-keys-and-switches">Doors, keys and switches </a><a href="#scripts-attach-behaviour">Scripts: attach behaviour </a><a href="#rules-logic-without-code">Rules: logic without code </a><a href="#add-your-own-assets">Add your own assets </a><a href="#playing-exporting-upgrading">Playing, exporting, upgrading </a><a href="#troubleshooting">Troubleshooting </a><a href="#find-objects-and-refine-patrols">Find objects and refine patrols </a></aside></div>
+<figure class="shot"><img src="../../assets/screenshots/ed-fpsc-objects-patrol.png" alt="Objects search selects a patrol enemy and the inspector exposes waypoint coordinates, wait times and reorder controls" loading="lazy"><figcaption>Objects finds what is already in your map; Items chooses what you want to add. Patrol rows show X/Z in metres and the wait at each point in seconds.</figcaption></figure><h2 id="build-a-complete-small-level">Build a complete small level<a class="anchor" href="#build-a-complete-small-level">#</a></h2>
+<p>Follow <a href="../tutorials/tut-t27-fps-level.html">T27: Build your first FPS level</a> for a room-by-room exercise, then use this checklist:</p>
+<ol>
+<li><strong>Geometry:</strong> two connected rooms, a door, floors and ceilings; no accidental holes. The 4 m building grid is separate from the adjustable object-placement grid. Use 0.25–0.5 m for furniture and 1–4 m for coarse placement.</li>
+<li><strong>Player route:</strong> place a Player Start facing the first door and a Level exit in the last room. Keep spawn points clear of walls and solid props. Run ✓ and fix missing starts, unknown types, duplicate names and broken targets.</li>
+<li><strong>Lighting:</strong> put a lamp in each enclosed room. In Level choose sky, fog and ambient light. Static lights bake at build/test time; named or scripted lights can change during play, but do not cast dynamic shadows.</li>
+<li><strong>Challenge:</strong> place one guard, then select it through Objects. Draw a short path with P. Adjust coordinates and waits in Patrol path; use arrows to choose the walking order. The route loops. Add a checkpoint before a harder fight and a medkit afterward.</li>
+<li><strong>Objective:</strong> add an exit and optionally gate it on a named event such as <code>warden.died</code>. Give the enemy that exact name. A name addresses one object; <code>#tag</code> addresses a group. Check rule targets with ✓.</li>
+<li><strong>Storeys:</strong> PageUp/PageDown changes the active storey. Put stairs on the lower storey, aim their climb direction and leave the upper cell above the top open. Test the ascent and descent from both ends.</li>
+<li><strong>Iteration:</strong> Test from Player Start to check the whole route. Use From here near a changed room for quick checks. Stop, undo/redo edits, and save when the result works.</li>
+<li><strong>Delivery:</strong> verify main-editor Play, export to a normal web folder, and check the exported copy. Keep <code>levels/</code>, <code>fpsc/</code> and installed <code>scripts/fpsc/</code> together. Custom dynamic scripts require the normal folder export rather than bundled single-file export.</li>
+</ol>
+<h2 id="where-your-work-lives">Where your work lives<a class="anchor" href="#where-your-work-lives">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Folder/file</th>
+<th>Purpose</th>
+<th>When to edit it</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>levels/*.fpsl.json</code></td>
+<td>Geometry, entities, patrol routes, scripts, rules and level settings</td>
+<td>FPS Level Save/Open; plain JSON also works</td>
+</tr>
+<tr>
+<td><code>fpsc/bank.json</code></td>
+<td>Registers project textures, entities, models, sounds, weapons and custom scripts</td>
+<td>Assets tab or careful manual edits</td>
+</tr>
+<tr>
+<td><code>fpsc/textures</code>, <code>art</code>, <code>models</code>, <code>sounds</code>, <code>scripts</code></td>
+<td>Your custom content</td>
+<td>Add through Assets; keep with the project</td>
+</tr>
+<tr>
+<td><code>scripts/fpsc/</code></td>
+<td>Installed engine runtime</td>
+<td>Upgrade through Nord; put personal changes in <code>fpsc/</code></td>
+</tr>
+<tr>
+<td>Scene with the FPS level script</td>
+<td>Connects a saved level to the project</td>
+<td>Normal scene editor, <strong>Level file</strong> attribute</td>
+</tr>
+</tbody></table>
+<p>Browser recovery stores a temporary unsaved backup; it is not a substitute for saving your project folder. Checkpoints restore the player during the current page session; they are not a complete mid-level save of enemies and world state.</p>
+<h2 id="limits-to-plan-around">Limits to plan around<a class="anchor" href="#limits-to-plan-around">#</a></h2>
+<p>The current addon uses keyboard/mouse controls, procedural characters and weapons, grid collision and baked static light. Touch/gamepad, animated skinned glTF characters, moving platforms, dynamic shadow casting and exact world-state saves are not implemented. Embedded pointer lock and feel still need native WKWebView/WebView2 testing; if capture is unavailable, the game offers hold-right-mouse look. Use the external browser option when comparing behaviour.</p>
+<p><strong>Next:</strong> <a href="../guides/cheat-sheet-fps-level.html">FPS Level quick reference</a> · <a href="../tutorials/tut-t27-fps-level.html">First FPS level tutorial</a>.</p>
+<div class="pager"><a href="web-editor.html"><small>← Previous</small>Run the editor in a browser or on a server</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#start-in-one-minute">Start in one minute </a><a href="#the-editor-window">The editor window </a><a href="#ready-made-things">Ready-made things </a><a href="#doors-keys-and-switches">Doors, keys and switches </a><a href="#scripts-attach-behaviour">Scripts: attach behaviour </a><a href="#rules-logic-without-code">Rules: logic without code </a><a href="#add-your-own-assets">Add your own assets </a><a href="#test-test-from-here-and-the-main-play-button">Test, Test from here, and the main Play button </a><a href="#save-run-the-project-export-and-upgrade">Save, run the project, export and upgrade </a><a href="#troubleshooting">Troubleshooting </a><a href="#find-objects-and-refine-patrols">Find objects and refine patrols </a><a href="#build-a-complete-small-level">Build a complete small level </a><a href="#where-your-work-lives">Where your work lives </a><a href="#limits-to-plan-around">Limits to plan around </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

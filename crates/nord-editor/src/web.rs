@@ -468,6 +468,14 @@ pub fn place_iframe(key: &str, url: &str, x: f32, y: f32, w: f32, h: f32, visibl
     let _ = st.set_property("display", if visible { "block" } else { "none" });
 }
 
+pub fn post_to_pane(key: &str, message: &serde_json::Value) {
+    if let Some(window) = pane(key).and_then(|f| f.content_window()) {
+        if let Ok(value) = js_sys::JSON::parse(&message.to_string()) {
+            let _ = window.post_message(&value, "*");
+        }
+    }
+}
+
 pub fn set_iframe_visible(key: &str, visible: bool) {
     if let Some(f) = pane(key) {
         let _ = f.style().set_property("display", if visible { "block" } else { "none" });

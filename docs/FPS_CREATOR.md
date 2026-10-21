@@ -57,7 +57,14 @@ Placement grid: choose **0.25, 0.5 (default), 1, 2 or 4 m** beside Snap. It appl
 The **Patrol path** inspector exposes each waypoint’s X/Z coordinates and wait in seconds (default 0.8). Move points earlier/later, insert a midpoint after a point, remove points or reverse the route. Changes use normal undo/redo and save in the existing `[x,z,wait]` format. Drawing and Shift-click removal remain available.
 
 ### Play-test
-`F5` runs the **unsaved** level in an overlay (iframe of `play.html`; the editor posts the level over `postMessage`). `Shift+F5` starts at the cursor or selected item. Script errors and warnings appear in the editor's console. `Esc` leaves pointer-lock → pause menu → Quit.
+`F5` runs the **unsaved** level in an overlay (iframe of `play.html`; the editor posts the level over `postMessage`). `Shift+F5` starts at the cursor or selected item. Script errors and warnings appear in the editor's console. `Esc` leaves pointer-lock → pause menu → Quit. **Shift+Esc** (default) or the top-right **Close test** button closes the test directly, including while the game iframe has focus.
+
+### Configurable test shortcuts
+Whole-editor **Settings** has **FPS Level: Test**, **Test from here**, and **Stop test**: enter a key name and select Shift/Cmd-Ctrl/Alt modifiers. Defaults are F5, Shift+F5 and Shift+Escape. Close Settings to save; the embedded editor and an already-running test receive changes without navigation or loss of unsaved work. Invalid key names fall back to defaults; use distinct bindings. Stop wins duplicate bindings, and test-start bindings override FPS tools (except while typing).
+
+**Reset shortcuts to defaults** restores main-editor Run/Stop plus these three FPS bindings, keeping other settings. **Open in browser** receives current bindings in its opening URL; reopen separate browser pages after changes. Direct server URLs use defaults. Main-editor Play remains a separate project run, reading the saved level specified by its start scene; save level + scene before checking it.
+
+Illustrated user guide: manual chapter 28 (`docs/manual-src/28-fps-creator.md`), tutorial T27, and **FPS Level — quick reference** under Guides.
 
 ### Problems checker (✓ button)
 Missing player start, no exit, unknown entity types, entities outside the level, duplicate names, targets/rule targets that do not exist (entity names, `#tags` and named doors all count).

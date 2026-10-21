@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 244/257 tasks (95%)** · updated 2026-10-21
+**Overall: 246/259 tasks (95%)** · updated 2026-10-21
 
 | Milestone | Progress |
 |---|---|
@@ -19,7 +19,7 @@
 | M9 Desktop apps | 16/16 (100%) |
 | M10 Construct-style editor | 35/35 (100%) |
 | M11 Web editor | 14/16 (88%) |
-| M12 FPS Creator addon | 13/14 (93%) |
+| M12 FPS Creator addon | 15/16 (94%) |
 
 ## Next up
 - **M12-13** OWNER: verify the FPS Level tab + play-test on macOS/Windows with a real GPU (pointer lock in the embedded webview, performance, feel of movement/combat); decide on gamepad/touch controls and shadowed dynamic lights
@@ -336,6 +336,8 @@ _a full first-person level editor + runtime modelled on the classic FPS Creator 
 - [x] **M12-12** Docs: FPS_CREATOR.md, manual chapter 28 + tutorial T27, ADR-026, changelog, known issues, third-party/licence note, editor tour
 - [ ] **M12-13** OWNER: verify the FPS Level tab + play-test on macOS/Windows with a real GPU (pointer lock in the embedded webview, performance, feel of movement/combat); decide on gamepad/touch controls and shadowed dynamic lights
 - [x] **M12-14** Improve FPS editor object navigation, placement grid and patrol editing after Modern comparison
+- [x] **M12-15** Make FPS test shortcuts configurable in editor Settings with shortcut reset
+- [x] **M12-16** Expand illustrated FPS Level manual, quick reference, tutorial and screenshots
 
 ## Features (PRD)
 

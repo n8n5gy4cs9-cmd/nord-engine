@@ -95,6 +95,13 @@ impl WebPanes {
         }
     }
 
+    /// Deliver settings without navigating away from unsaved work.
+    pub fn post_message(&self, key: &str, message: &serde_json::Value) {
+        self.eval(key, &format!("window.postMessage({}, '*')", message));
+        #[cfg(target_arch = "wasm32")]
+        crate::web::post_to_pane(key, message);
+    }
+
     /// Reload the pane's URL (used by Play/Reload).
     #[allow(unused_variables)]
     pub fn reload(&mut self, key: &str) {

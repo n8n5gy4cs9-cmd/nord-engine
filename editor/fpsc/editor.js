@@ -6,6 +6,7 @@ import { el, modal, toast, debounce } from './forms.js';
 import { Map2D, classify } from './map2d.js';
 import { View3D } from './view3d.js';
 import { buildPanel, itemsPanel, scriptsPanel, levelPanel, assetsPanel, objectsPanel, inspector } from './panels.js';
+import { normalizeShortcuts, matchesShortcut, shortcutLabel } from './shortcuts.js';
 import { HELP } from './help.js';
 
 const $ = (id) => document.getElementById(id);
@@ -38,6 +39,23 @@ const ed = {
   hist: [], hi: -1, api: { available: false },
 };
 window.__fpscEditor = ed;
+
+// Updating bindings never reloads the page or touches the level/undo history.
+ed.shortcuts = normalizeShortcuts();
+ed.configureShortcuts = (value) => {
+  const next = normalizeShortcuts(value);
+  if (JSON.stringify(next) === JSON.stringify(ed.shortcuts) && ed.shortcutsReady) return;
+  ed.shortcuts = next; ed.shortcutsReady = true;
+  $('top').querySelector('[data-act="play"]').title = `Play-test from Player Start (${shortcutLabel(next.test)})`;
+  $('top').querySelector('[data-act="playhere"]').title = `Play-test from selection / cursor (${shortcutLabel(next.test_here)})`;
+  $('play-close').textContent = `✕ Close test (${shortcutLabel(next.stop)})`;
+  if (ed.playing) $('play-frame').contentWindow?.postMessage({ type: 'fpsc-shortcuts', shortcuts: next }, location.origin);
+};
+try { ed.configureShortcuts(JSON.parse(new URLSearchParams(location.search).get('shortcuts') || 'null')); } catch { ed.configureShortcuts(null); }
+window.addEventListener('message', (e) => {
+  if (e.origin !== location.origin || ![window, window.parent].includes(e.source)) return;
+  if (e.data?.type === 'fpsc-shortcuts') ed.configureShortcuts(e.data.shortcuts);
+});
 
 // ================================================================================================================================ API
 ed.api.save = async (path, data) => {
@@ -217,12 +235,12 @@ ed.play = (here = false) => {
   let start = null;
   if (here || !hasStart) { const p = ed.selectedPos(); start = p ? { x: p[0], z: p[1], layer: p[2], rot: 0 } : { x: (ed.cursorCell[0] + 0.5) * CELL, z: (ed.cursorCell[1] + 0.5) * CELL, layer: ed.layer, rot: 0 }; if (!hasStart && !here) toast('No player start — testing from the cursor'); }
   const frame = $('play-frame'), box = $('play'); box.classList.remove('hidden'); ed.playing = true;
-  const send = () => frame.contentWindow.postMessage({ type: 'fpsc-level', level: ed.level, playtest: start ? { ...start, autostart: false } : null }, '*');
+  const send = () => frame.contentWindow.postMessage({ type: 'fpsc-level', level: ed.level, playtest: start ? { ...start, autostart: false } : null, shortcuts: ed.shortcuts }, '*');
   ed.onReady = send; frame.src = `/editor/fpsc/play.html?base=/&t=${Date.now()}`;
   log('info', `Play-test started${start ? ' at cursor' : ''}.`);
 };
 ed.stopPlay = () => { $('play').classList.add('hidden'); $('play-frame').src = 'about:blank'; ed.playing = false; ed.map.cv.focus({ preventScroll: true }); };
-window.addEventListener('message', (e) => { const m = e.data; if (!m || typeof m !== 'object') return; if (m.type === 'fpsc-ready') ed.onReady?.(); else if (m.type === 'fpsc-quit') ed.stopPlay(); else if (m.type === 'fpsc-log') log(m.level === 'error' ? 'error' : m.level === 'warn' ? 'warn' : 'info', `[play] ${m.msg}`); });
+window.addEventListener('message', (e) => { const m = e.data; if (!m || typeof m !== 'object') return; if (e.source !== $('play-frame').contentWindow || e.origin !== location.origin) return; if (m.type === 'fpsc-ready') ed.onReady?.(); else if (m.type === 'fpsc-quit') ed.stopPlay(); else if (m.type === 'fpsc-log') log(m.level === 'error' ? 'error' : m.level === 'warn' ? 'warn' : 'info', `[play] ${m.msg}`); });
 
 // ================================================================================================================================ UI render
 ed.setTool = (id) => { ed.tool = id; ed.preview = null; for (const b of $('tools').children) b.classList.toggle('on', b.dataset.tool === id); $('tool-hint').textContent = HINTS[id] ?? ''; $('st-tool').textContent = TOOLS.find((t) => t[0] === id)?.[3] ?? ''; ed.map?.draw(); if (ed.tab === 'items' || ed.tab === 'build') ed.renderLeft(); ed.refreshInspector(); };
@@ -413,11 +431,16 @@ async function showHelp() { await modal('FPS Level Editor — help & rules', [el
 
 function keydown(e, acts) {
   const t = e.target, typing = t.matches?.('input,textarea,select') && !(t.type === 'checkbox'); const ctrl = e.ctrlKey || e.metaKey;
-  if (e.code === 'Escape') { if (ed.playing) return ed.stopPlay(); if (!$('modal').classList.contains('hidden')) return $('modal').classList.add('hidden'); if (ed.tool === 'path') return ed.setTool('select'); if (drag) { drag = null; ed.preview = null; ed.map.draw(); return; } ed.clearSel(); return; }
+  if (ed.playing && matchesShortcut(e, ed.shortcuts.stop)) { e.preventDefault(); return ed.stopPlay(); }
+  if (!ed.playing && $('modal').classList.contains('hidden') && !typing) {
+    if (matchesShortcut(e, ed.shortcuts.test_here)) { e.preventDefault(); return ed.play(true); }
+    if (matchesShortcut(e, ed.shortcuts.test)) { e.preventDefault(); return ed.play(false); }
+  }
+  if (e.code === 'Escape') { if (ed.playing) return; if (!$('modal').classList.contains('hidden')) return $('modal').classList.add('hidden'); if (ed.tool === 'path') return ed.setTool('select'); if (drag) { drag = null; ed.preview = null; ed.map.draw(); return; } ed.clearSel(); return; }
   if (ed.playing || !$('modal').classList.contains('hidden')) return;
   if (t.id === 'c3d' && !ctrl && !['F5', 'F1', 'Tab'].includes(e.code)) return; // WASD/QE/F fly the 3D camera — they must not switch tools
   if (ctrl) { const k = e.key.toLowerCase(); if (k === 's') { e.preventDefault(); return ed.saveLevel(e.shiftKey); } if (typing) return; if (k === 'z') { e.preventDefault(); return e.shiftKey ? ed.redo() : ed.undo(); } if (k === 'y') { e.preventDefault(); return ed.redo(); } if (k === 'c') { e.preventDefault(); return ed.copySel(); } if (k === 'x') { e.preventDefault(); ed.copySel(); return ed.deleteSelection(); } if (k === 'v') { e.preventDefault(); return ed.paste(); } if (k === 'd') { e.preventDefault(); return ed.duplicateSel(); } if (k === 'a') { e.preventDefault(); const ly = layerData(); ed.clearSelRaw(); for (const en of ed.level.entities) if (en.layer === ed.layer) ed.sel.ents.add(en.id); for (const kk of Object.keys(ly.edges)) ed.sel.edges.add(kk); for (const kk of Object.keys(ly.cells)) ed.sel.cells.add(kk); ed.renderSel(); ed.refreshInspector(); ed.map.draw(); return; } if (k === 'n') { e.preventDefault(); return ed.newLevel(); } if (k === 'o') { e.preventDefault(); return ed.openLevel(); } return; }
-  if (e.code === 'F5') { e.preventDefault(); return ed.play(e.shiftKey); } if (e.code === 'F1') { e.preventDefault(); return showHelp(); }
+  if (e.code === 'F1') { e.preventDefault(); return showHelp(); }
   if (typing) return;
   if (e.code === 'Space') { spaceDown = true; e.preventDefault(); return; }
   if (e.code === 'Tab') { e.preventDefault(); return acts.view(); }

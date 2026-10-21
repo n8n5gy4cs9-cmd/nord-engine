@@ -137,6 +137,7 @@ Verified headless only (token, hidden paths, shutdown, QR matrix). Not verified 
 
 
 ## FPS Creator addon (M12, 2026-10-20)
+2026-10-21 M12-15/16: configurable test keys and reset verified by settings serde/reset + UI tests, 21 browser editor checks (custom keys, iframe stop, live defaults without losing level edits), native webview and wasm compile checks. Native WKWebView/WebView2 key delivery remains an owner check. Separate external browser pages receive a snapshot when opened and must be reopened after Settings changes. Strict Clippy reports five existing lints in untouched events/timeline/pixel code.
 2026-10-21 M12-14: all 20 editor checks (including object search/storeys, patrol editing/undo, placement snapping/free placement and prior tools/save/assets/play-test), unit/API checks, CLI build and manual validation passed on macOS headless Chromium. Canvas focus now prevents scrolling before reading a placement click. Native WKWebView/WebView2 interaction remains unverified.
 Verified: node unit tests, the file API/CLI, Nord boot of the template, 18 gameplay scenarios and 17 editor scenarios in headless Chromium (software GL), Rust `cargo test -p nord-core fpsc` and a kittest for the tab. **Not verified / limits:**
 - Mouse capture uses the Pointer Lock API; where a webview does not provide it the game says so and falls back to "hold the RIGHT mouse button to look" (works, but unverified in WKWebView/WebView2).

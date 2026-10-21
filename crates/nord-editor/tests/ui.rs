@@ -445,6 +445,28 @@ fn settings_cached_content_defaults_off_and_toggles() {
 }
 
 #[test]
+fn fps_shortcut_settings_are_visible() {
+    let mut app = App::new(false);
+    app.st.settings = Default::default();
+    app.st.settings_open = true;
+    let mut h = Harness::builder()
+        .with_size(egui::vec2(1400.0, 1400.0))
+        .build_state(|ctx, app: &mut App| app.frame_ui(ctx, None), app);
+    h.run_steps(3);
+    h.get_by_label("FPS Level: Test");
+    h.get_by_label("FPS Level: Test from here");
+    h.get_by_label("FPS Level: Stop test");
+    h.state_mut().st.settings.fps_shortcuts.stop.key = "F8".into();
+    h.state_mut().st.settings.run_key = "Enter".into();
+    h.state_mut().st.settings.theme = "dracula".into();
+    h.get_by_label("Reset shortcuts to defaults").simulate_click();
+    h.run_steps(3);
+    assert_eq!(h.state().st.settings.fps_shortcuts.stop.key, "Escape");
+    assert_eq!(h.state().st.settings.run_key, "R");
+    assert_eq!(h.state().st.settings.theme, "dracula");
+}
+
+#[test]
 fn settings_switch_skin_and_theme_live() {
     let mut app = App::new(false);
     app.st.settings = Default::default();

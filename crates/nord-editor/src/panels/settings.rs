@@ -88,6 +88,27 @@ pub fn window(st: &mut EditorState, ctx: &Context) {
                     ui.add(egui::TextEdit::singleline(&mut s.stop_key).desired_width(36.0)).on_hover_text("Stop only. Change it if your game/app uses Cmd+. itself");
                 });
                 ui.end_row();
+                for (label, binding) in [
+                    ("FPS Level: Test", &mut s.fps_shortcuts.test),
+                    ("FPS Level: Test from here", &mut s.fps_shortcuts.test_here),
+                    ("FPS Level: Stop test", &mut s.fps_shortcuts.stop),
+                ] {
+                    ui.label(label);
+                    ui.horizontal(|ui| {
+                        ui.add(egui::TextEdit::singleline(&mut binding.key).desired_width(60.0))
+                            .on_hover_text("Key name: F5, F6, Escape, Enter, Space, A… Invalid keys use the action's default.");
+                        ui.checkbox(&mut binding.shift, "Shift");
+                        ui.checkbox(&mut binding.command, "Cmd/Ctrl");
+                        ui.checkbox(&mut binding.alt, "Alt");
+                    });
+                    ui.end_row();
+                }
+                ui.label("Shortcut defaults");
+                if ui.button("Reset shortcuts to defaults").clicked() {
+                    s.reset_shortcuts();
+                    s.save();
+                }
+                ui.end_row();
                 ui.label("Snap move / rotate / scale");
                 ui.horizontal(|ui| {
                     ui.add(egui::DragValue::new(&mut s.snap_move).speed(0.1));
@@ -112,6 +133,7 @@ pub fn window(st: &mut EditorState, ctx: &Context) {
                 }
             });
             ui.separator();
+            ui.weak("FPS keys apply inside FPS Level and its test. Esc pauses; Stop test closes it. Use distinct bindings; Stop takes priority if duplicated.");
             ui.strong("Shortcuts");
             egui::Grid::new("shortcuts").num_columns(2).show(ui, |ui| {
                 for (k, d) in SHORTCUTS {

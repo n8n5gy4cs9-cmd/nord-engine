@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>FPS Level — quick reference — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="cookbook.html" class="active" aria-current="page">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Guides</div><details open><summary>Guides</summary><a href="cookbook.html">Cookbook</a><a href="mobile-controls.html">Mobile and on-screen touch controls</a><a href="cheat-sheet-nordjs.html">Cheat sheet — nord.js</a><a href="cheat-sheet-export.html">Cheat sheet — export</a><a href="glossary.html">Glossary</a><a href="shortcuts.html">Keyboard shortcuts</a><a href="cheat-sheet-fps-level.html" class="cur" aria-current="page">FPS Level — quick reference</a></details><details><summary>Appendix</summary><a href="../appendix/appendix.html">Appendix</a><a href="../appendix/decisions.html">Design decisions</a><a href="../appendix/known-issues.html">Known issues</a><a href="../appendix/changelog.html">Changelog</a></details></nav><main id="content"><div class="crumb">Guides / Nord Engine</div><h1>FPS Level — quick reference</h1>
+<p>Start with the <strong>FPS Creator</strong> template and open <strong>FPS Level</strong>. The <a href="../manual/fps-creator.html">full illustrated guide</a> explains the panels, ready-made content, scripts, rules, files and export. <a href="../tutorials/tut-t27-fps-level.html">T27</a> walks through a playable level.</p>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Control</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Build a room</td>
+<td>R, drag a rectangle</td>
+</tr>
+<tr>
+<td>Replace a wall with a door/window</td>
+<td>Build: choose the piece; W, click the wall edge</td>
+</tr>
+<tr>
+<td>Paint floor / ceiling</td>
+<td>F / C; Ctrl-drag rectangle, Shift erase</td>
+</tr>
+<tr>
+<td>Add enemy / light / pickup</td>
+<td>Items: pick it, click map; Q/E rotates</td>
+</tr>
+<tr>
+<td>Find an existing object</td>
+<td>Objects: search name, tag, type, ID or script</td>
+</tr>
+<tr>
+<td>Select and locate a search result</td>
+<td>Click; Shift-click toggles; double-click focuses 3D</td>
+</tr>
+<tr>
+<td>Edit patrol</td>
+<td>Select enemy; P draws points; Patrol path edits X/Z and wait, inserts, reorders, removes or reverses</td>
+</tr>
+<tr>
+<td>Adjust object precision</td>
+<td>Toolbar Snap spacing: 0.25 / 0.5 / 1 / 2 / 4 m</td>
+</tr>
+<tr>
+<td>Change storey</td>
+<td>PageUp / PageDown, or Layer selector</td>
+</tr>
+<tr>
+<td>Change view</td>
+<td>Tab: 2D / split / 3D</td>
+</tr>
+<tr>
+<td>Fit map / pan / zoom</td>
+<td>Home / middle or right drag / wheel</td>
+</tr>
+<tr>
+<td>Save level</td>
+<td>Cmd/Ctrl+S</td>
+</tr>
+<tr>
+<td>Undo / redo</td>
+<td>Cmd/Ctrl+Z / Cmd/Ctrl+Shift+Z</td>
+</tr>
+<tr>
+<td>Check missing starts, names and targets</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Help</td>
+<td>F1</td>
+</tr>
+</tbody></table>
+<h2 id="test-and-stop">Test and stop<a class="anchor" href="#test-and-stop">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Default</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>F5</td>
+<td>Test unsaved current level from Player Start</td>
+</tr>
+<tr>
+<td>Shift+F5</td>
+<td>Test unsaved current level from selected object, otherwise cursor cell</td>
+</tr>
+<tr>
+<td>Shift+Esc</td>
+<td>Close the FPS test and return to editing</td>
+</tr>
+<tr>
+<td>Esc</td>
+<td>Release mouse capture and pause; choose Resume or Quit</td>
+</tr>
+<tr>
+<td>Close test, top-right</td>
+<td>Close the FPS test at any time</td>
+</tr>
+</tbody></table>
+<p><strong>Main-editor Play is separate:</strong> it starts the project’s configured scene and reads a saved level. Save your FPS work first; check the scene’s <strong>Level file</strong>. Use the main <strong>■ Stop</strong> to end main Play.</p>
+<h2 id="change-or-reset-keys">Change or reset keys<a class="anchor" href="#change-or-reset-keys">#</a></h2>
+<p>Open whole-editor <strong>Settings</strong> (Cmd/Ctrl+,). Edit the three <strong>FPS Level</strong> key fields and choose Shift, Cmd/Ctrl or Alt with checkboxes. Close Settings to save. Embedded tests update without losing level edits. Open in browser receives the bindings when the page opens; reopen it after changes. Direct <code>nord serve</code> pages use the defaults.</p>
+<p><strong>Reset shortcuts to defaults</strong> restores main Run/Stop plus the FPS Test/From here/Stop keys, keeping your theme and layout. Invalid keys fall back to defaults. Use different combinations; Stop takes priority. FPS start bindings override FPS tools, so avoid common building keys unless intended.</p>
+<h2 id="before-exporting">Before exporting<a class="anchor" href="#before-exporting">#</a></h2>
+<p>Save the level → set the scene’s <strong>Level file</strong> → save the scene → verify project start scene → main Play → normal web-folder export. Include custom content in <code>fpsc/</code>. Use the normal folder export for dynamically imported custom scripts.</p>
+<div class="pager"><a href="shortcuts.html"><small>← Previous</small>Keyboard shortcuts</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#test-and-stop">Test and stop </a><a href="#change-or-reset-keys">Change or reset keys </a><a href="#before-exporting">Before exporting </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

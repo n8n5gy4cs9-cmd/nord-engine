@@ -96,4 +96,4 @@ The Code toolbar has a **Word wrap** toggle. It wraps the view without inserting
 Manual code previews have their own **Wrap: on/off** button and 1.6 line height. That preference belongs to this browser/manual, separately from the native editor settings.
 
 ## FPS Level tab (FPS Creator addon)
-Projects that use the FPS Creator addon get an extra **FPS Level** tab: a grid level editor with a live 3D preview and one-click play-test. See [FPS Creator](fps-creator.html).
+Projects that use the FPS Creator addon get an extra **FPS Level** tab: a grid level editor with a live 3D preview and one-click play-test. See the [full illustrated FPS Creator guide](fps-creator.html), [first-level tutorial](tut-t27-fps-level.html) and [quick reference](cheat-sheet-fps-level.html). Test/From here use unsaved level edits; main Play reads the saved project. Settings exposes all three FPS test bindings and a shortcut-only reset.

@@ -16,8 +16,8 @@ const test = async (name, fn) => { try { await fn(); pass++; console.log(`  ok  
 
 if (run('unit')) {
   console.log('unit');
-  const r = spawnSync('node', ['--test', path.join(ROOT, 'runtime/fpsc/fpsc.test.mjs')], { encoding: 'utf8' });
-  await test('node --test runtime/fpsc/fpsc.test.mjs', () => assert.equal(r.status, 0, r.stdout.split('\n').filter((l) => /^not ok|error:/.test(l)).join('\n')));
+  const r = spawnSync('node', ['--test', path.join(ROOT, 'runtime/fpsc/fpsc.test.mjs'), path.join(ROOT, 'editor/fpsc/shortcuts.test.mjs')], { encoding: 'utf8' });
+  await test('runtime model and editor shortcut unit tests', () => assert.equal(r.status, 0, r.stdout.split('\n').filter((l) => /^not ok|error:/.test(l)).join('\n')));
   const gen = spawnSync('node', [path.join(ROOT, 'tools/gen_fpsc_level.mjs'), path.join(os.tmpdir(), 'fpsc-gen-check.json')], { encoding: 'utf8' });
   await test('demo level generator runs', () => assert.equal(gen.status, 0, gen.stderr));
 }
@@ -322,6 +322,34 @@ if (run('nord') || run('game') || run('editor')) {
       const fr = page.frames().find((f) => f.url().includes('play.html')); await fr.waitForFunction(() => window.__fpsc_ready || window.__fpsc_error, null, { timeout: 30000 });
       assert.equal(await fr.evaluate(() => window.__fpsc_error), undefined); assert.equal(await fr.evaluate(() => window.__fpsc.game.level.name), await ED(`(ed) => ed.level.name`)); assert.ok(await fr.evaluate(() => window.__fpsc.game.ents.some((e) => e.type === 'crate')));
       await shot('playtest'); await page.click('#play-close'); assert.ok(await page.evaluate(() => document.getElementById('play').classList.contains('hidden')));
+    });
+    await test('rebound FPS keys apply without losing edits and stop while the test iframe has focus', async () => {
+      const before = await ED(`(ed) => JSON.stringify(ed.level)`);
+      await page.evaluate(() => window.postMessage({ type: 'fpsc-shortcuts', shortcuts: {
+        test: { key: 'F6' }, test_here: { key: 'F6', shift: true }, stop: { key: 'F8', command: true }
+      } }, location.origin));
+      await page.waitForFunction(() => window.__fpscEditor.shortcuts.test.key === 'F6');
+      assert.equal(await ED(`(ed) => JSON.stringify(ed.level)`), before);
+      await page.focus('#c2d'); await page.keyboard.press('F5');
+      assert.equal(await ED(`(ed) => ed.playing`), false, 'old key no longer starts a test');
+      await page.keyboard.press('F6'); await page.waitForSelector('#play:not(.hidden)');
+      await page.waitForFunction(() => document.getElementById('play-frame').contentWindow?.__fpsc_ready, null, { timeout: 30000 });
+      let fr = page.frames().find((f) => f.url().includes('play.html'));
+      await fr.waitForFunction(() => window.__fpsc_ready, null, { timeout: 30000 });
+      await fr.locator('#c').focus(); await page.keyboard.press('Control+F8');
+      await page.waitForSelector('#play.hidden', { state: 'hidden' });
+      await ED(`(ed) => ed.selectEntity(ed.level.entities.find((e) => e.type === 'crate').id)`);
+      const point = await ED(`(ed) => ed.selectedPos()`);
+      await page.focus('#c2d'); await page.keyboard.press('Shift+F6');
+      await page.waitForFunction(() => document.getElementById('play-frame').contentWindow?.__fpsc_ready, null, { timeout: 30000 });
+      fr = page.frames().find((f) => f.url().includes('play.html'));
+      await fr.waitForFunction(() => window.__fpsc_ready, null, { timeout: 30000 });
+      assert.deepEqual(await fr.evaluate(() => { const p = window.__fpsc.game.opts.playtest; return [p.x,p.z,p.layer]; }), point);
+      // Live changes reach an already-running iframe, including the restored default Stop.
+      await ED(`(ed) => ed.configureShortcuts(null)`);
+      await fr.locator('#c').focus(); await page.keyboard.press('Shift+Escape');
+      await page.waitForSelector('#play.hidden', { state: 'hidden' });
+      assert.equal(await ED(`(ed) => JSON.stringify(ed.level)`), before);
     });
     await test('3D preview and help dialog work', async () => { await ED(`(ed) => ed.setView('3d')`); await page.waitForTimeout(700); assert.ok(await ED(`(ed) => ed.v3.rend.stats.tris > 100`)); await shot('3d'); await ED(`(ed) => { ed.setTool('select'); }`); await page.focus('#c3d'); await page.keyboard.press('KeyW'); await page.keyboard.press('KeyF'); assert.equal(await ED(`(ed) => ed.tool`), 'select', 'WASD/F in the 3D view must not switch tools'); await ED(`(ed) => ed.setView('split')`); await page.keyboard.press('F1'); assert.match(await page.textContent('#modal-box'), /Adding assets/); await page.keyboard.press('Escape'); });
     await test('no console errors in the editor', () => { noErrors(page); });
